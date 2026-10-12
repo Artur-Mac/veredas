@@ -51,7 +51,7 @@
     "typecheck": "tsc --noEmit && tsc --noEmit -p tests",
     "test": "jest",
     "verificar": "npm run typecheck && npm run lint && npm test",
-    "capturas": "node scripts/capturas/capturar.mjs"
+    "capturas": "expo export --platform web && node scripts/capturas/capturar.mjs"
   },
   "private": true,
   "jest": {
