@@ -87,14 +87,33 @@ VEREDA's visual system follows **Direction 04: Chassi Editorial com Inscrição 
 .
 ├── index.html                       # Standalone interactive mobile prototype
 ├── README.md                        # Master project overview & documentation
+├── research/                        # Strategic Research Arsenal & Cross-Industry Intelligence
+│   ├── README.md                    # Master index, module guide & executive roadmap
+│   ├── 01_MASTER_RESEARCH_ATLAS_STAGE1.md # Full 40k-word Stage 1 Monograph
+│   ├── 02_DEEP_RESEARCH_ATLAS_STAGE2.md   # Full 30k-word Stage 2 Monograph
+│   ├── summaries/                   # Fast-reading executive summaries & playbooks
+│   ├── stage1_foundations/          # 9 Foundation monographs (PropTech critique, CV, GeoSampa)
+│   └── stage2_deep_dive/            # 9 Deep-dive monographs (Brazil grounding, pairwise engine)
 ├── docs/
 │   ├── VEREDA_IMPROVEMENT_ROADMAP_EPOCHS.md  # 6-Epoch comprehensive technical & UI spec
 │   ├── BRAND_IDENTITY_SPECIFICATION.md       # Full design system tokens & rules
-│   └── CAMPUS_MOBILE_BRIEF.md                # Project brief, problem statement & team roles
+│   ├── CAMPUS_MOBILE_BRIEF.md                # Project brief, problem statement & team roles
+│   ├── PRD-PropSight.md                      # Product Requirements Document
+│   └── references/                           # Analytical reference briefs & PDFs
 └── assets/
     ├── brand/                       # Google Stitch Brand Book & wordmark studies
     └── screenshots/                 # Application screen captures & UX flows
 ```
+
+---
+
+## 🔬 Strategic Research Arsenal
+
+The repository features an exhaustive research arsenal located in [`research/`](./research/README.md), covering over 70,000 words of cross-industry investigation, sensor proxies, Brazilian open data integration, and behavioral decision mechanics:
+
+* **[Master Atlas (Stage 1)](./research/01_MASTER_RESEARCH_ATLAS_STAGE1.md):** 105 decision mechanisms, cross-industry analogies (aviation, diagnostics, finance, dating), and Brazilian municipal GIS integration (GeoSampa, CNEFE).
+* **[Deep Research Atlas (Stage 2)](./research/02_DEEP_RESEARCH_ATLAS_STAGE2.md):** Epistemological audit, Brazilian hyper-local grounding (title deed encumbrances, water rodízio, structural legacies), revealed-preference pairwise engines, and the Anti-Listing architecture.
+* **[Executive Summaries & Playbooks](./research/summaries/):** High-level decision guides synthesized for Campus Mobile evaluations and product development sprints.
 
 ---
 
