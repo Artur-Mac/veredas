@@ -30,6 +30,7 @@ export default function LayoutDasAbas() {
         name="index"
         options={{
           title: 'Verificar',
+          tabBarAccessibilityLabel: 'Verificar',
           tabBarIcon: ({ color, size }) => <Feather name="search" color={color} size={size - 2} />,
         }}
       />
@@ -37,6 +38,7 @@ export default function LayoutDasAbas() {
         name="dossies"
         options={{
           title: 'Meus dossiês',
+          tabBarAccessibilityLabel: 'Meus dossiês',
           tabBarIcon: ({ color, size }) => <Feather name="folder" color={color} size={size - 2} />,
         }}
       />
