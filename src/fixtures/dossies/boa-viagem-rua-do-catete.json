@@ -1,0 +1,518 @@
+{
+  "dossie_id": "boa-viagem-rua-do-catete",
+  "gerado_em": "2026-10-12T08:35:13-03:00",
+  "versao_metodo": "0.1.0",
+  "anuncio": {
+    "operacao": "aluguel",
+    "codigo_anuncio": "1541528320",
+    "coletado_em": "2026-10-12",
+    "campos_declarados": {
+      "preco": 5500,
+      "condominio": null,
+      "iptu": null,
+      "iptu_periodicidade": null,
+      "area_m2": 43,
+      "quartos": 1,
+      "suites": null,
+      "banheiros": 1,
+      "vagas": 1,
+      "andar": null,
+      "edificio": "Ivani Silvestre Residence",
+      "logradouro": "Rua do Catete",
+      "numero": "359",
+      "complemento": "Apto. 1005",
+      "bairro": "Boa Viagem"
+    },
+    "trechos_descricao": []
+  },
+  "identidade": {
+    "status": "resolvido",
+    "confianca": "alta",
+    "origem": "resolvedor",
+    "edificio": {
+      "id": "alvo",
+      "dsqfl": "61850070020340",
+      "endereco_oficial": "Avenida Boa Viagem, 6472, Boa Viagem",
+      "pavimentos": 18,
+      "area_construida_m2": 7867.8,
+      "ano_construcao": 2016,
+      "unidades": 84,
+      "contorno": "lote",
+      "evidencias": [
+        "O logradouro declarado não consta no cadastro de logradouros nem no CNEFE de Recife.",
+        "O nome declarado do edifício aparece no complemento de 84 unidades do IPTU 2026, todas em Avenida Boa Viagem, 6472, Boa Viagem.",
+        "A unidade declarada (1005) consta no IPTU 2026 nesse endereço.",
+        "O cadastro de lotes registra 18 pavimentos nesse lote."
+      ]
+    },
+    "candidatas": []
+  },
+  "cartoes": [
+    {
+      "id": "c_endereco",
+      "bloco": 1,
+      "categoria": "inconsistencia",
+      "titulo": "Endereço divergente",
+      "resumo": "Endereço no IPTU: Avenida Boa Viagem, 6472",
+      "claim": "O anúncio informa Rua do Catete, 359; essa rua não aparece no cadastro de logradouros nem no CNEFE de Recife. O nome do edifício e a unidade 1005 aparecem no IPTU 2026 em Avenida Boa Viagem, 6472, Boa Viagem.",
+      "fonte": "Anúncio, Prefeitura do Recife (cadastro de logradouros da Área Urbana e IPTU 2026) e IBGE CNEFE 2022",
+      "url_fonte": "https://dados.recife.pe.gov.br/dataset/area-urbana",
+      "data_ref": "2026-03-02",
+      "data_coleta": "2026-10-12",
+      "escala": "edificio",
+      "metodo": "Busca do logradouro declarado em todos os bairros do cadastro de logradouros e no CNEFE 2022, pelo nome normalizado; busca do nome do edifício no complemento das unidades do IPTU 2026.",
+      "limitacao": "O nome da rua pode estar escrito de outro jeito no anúncio; a busca compara nomes sem acentos, com abreviações expandidas e também sem títulos.",
+      "acao": "Confirme o endereço completo com o corretor antes de marcar a visita.",
+      "pergunta_id": "q_identidade"
+    },
+    {
+      "id": "c_edificacao",
+      "bloco": 1,
+      "categoria": "registro_oficial",
+      "titulo": "Lote cadastrado",
+      "resumo": "18 pavimentos, 7.868 m² construídos",
+      "claim": "O lote 61850070020340 está cadastrado em Avenida Boa Viagem, 6472, Boa Viagem, com 18 pavimentos e 7.868 m² de área construída no cadastro de lotes.",
+      "fonte": "Prefeitura do Recife, Área Urbana (Lotes)",
+      "url_fonte": "https://dados.recife.pe.gov.br/dataset/area-urbana",
+      "data_ref": "2026-03-02",
+      "data_coleta": "2026-10-12",
+      "escala": "edificio",
+      "metodo": "A edificação não consta na camada de edificações; o lote foi encontrado pelo endereço oficial ou pela posição das unidades do IPTU; pavimentos e área total construída vêm do cadastro de lotes.",
+      "limitacao": "O cadastro de edificações pode não refletir reformas e ampliações recentes. Esta edificação não consta na camada de edificações; pavimentos e área vêm do cadastro de lotes.",
+      "acao": "Na visita, confira se o número de andares do prédio bate com o cadastro.",
+      "pergunta_id": "q_identidade"
+    },
+    {
+      "id": "c_fiscal_edificio",
+      "bloco": 1,
+      "categoria": "registro_oficial",
+      "titulo": "Unidades no cadastro fiscal",
+      "resumo": "84 unidades, construção de 2016",
+      "claim": "No IPTU 2026, este endereço tem 84 unidades prediais, com construção registrada em 2016.",
+      "fonte": "Prefeitura do Recife, IPTU por contribuinte e ano, exercício 2026",
+      "url_fonte": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+      "data_ref": "2026-01-01/2026-12-31",
+      "data_coleta": "2026-10-12",
+      "escala": "edificio",
+      "metodo": "Contagem das unidades do IPTU 2026 com o mesmo código de logradouro e número; ano da construção corrigido mais frequente.",
+      "limitacao": "A contagem inclui unidades não residenciais, se houver. O ano vem do campo \"ano da construção corrigido\" do IPTU e pode não coincidir com a entrega do prédio.",
+      "acao": "Confirme com o corretor que a unidade anunciada é a APTO 1005, achada pelo complemento do anúncio.",
+      "pergunta_id": "q_identidade"
+    },
+    {
+      "id": "c_fiscal_unidade",
+      "bloco": 2,
+      "categoria": "registro_oficial",
+      "titulo": "Unidade no cadastro fiscal",
+      "resumo": "42,7 m², IPTU de R$ 1.572,22 por ano",
+      "claim": "A unidade APTO 1005 tem 42,7 m² de área construída e IPTU de R$ 1.572,22 cobrado em 2026.",
+      "fonte": "Prefeitura do Recife, IPTU por contribuinte e ano, exercício 2026",
+      "url_fonte": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+      "data_ref": "2026-01-01/2026-12-31",
+      "data_coleta": "2026-10-12",
+      "escala": "unidade",
+      "metodo": "Unidade localizada pelo número do complemento declarado no anúncio entre as unidades do endereço no IPTU 2026.",
+      "limitacao": "Área construída fiscal não é área privativa; o cadastro fiscal não é laudo.",
+      "acao": "Peça o carnê do IPTU 2026 da unidade e compare com este valor.",
+      "pergunta_id": "q_custo_total"
+    },
+    {
+      "id": "c_interdicao",
+      "bloco": 2,
+      "categoria": "registro_oficial",
+      "titulo": "Isenção por interdição",
+      "resumo": "Nenhuma de 84 unidades com isenção por interdição",
+      "claim": "Nenhuma das 84 unidades deste endereço aparece no IPTU 2026 com isenção por imóvel interditado.",
+      "fonte": "Prefeitura do Recife, IPTU por contribuinte e ano, exercício 2026",
+      "url_fonte": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+      "data_ref": "2026-01-01/2026-12-31",
+      "data_coleta": "2026-10-12",
+      "escala": "edificio",
+      "metodo": "Contagem das unidades do endereço com regime de tributação \"Isenção Imóvel Interditado\" no IPTU 2026.",
+      "limitacao": "Só aparece quando a isenção por interdição foi registrada no IPTU; um prédio com problema estrutural pode não ter esse registro. O cadastro fiscal não é laudo. Ausência de registro não significa ausência de problema.",
+      "acao": "Procure fissuras, infiltração e piso desnivelado; se encontrar, peça a avaliação de um engenheiro antes de assinar.",
+      "pergunta_id": "q_estrutura"
+    },
+    {
+      "id": "c_suscetibilidade",
+      "bloco": 2,
+      "categoria": "registro_oficial",
+      "titulo": "Suscetibilidade do terreno",
+      "resumo": "Inundação: fora das manchas; deslizamento: baixa",
+      "claim": "Na carta do SGB de 2015, feita na escala 1:45.000, o prédio fica fora das áreas de suscetibilidade a inundação e em área de suscetibilidade baixa a deslizamento.",
+      "fonte": "Serviço Geológico do Brasil, Carta de suscetibilidade a movimentos gravitacionais de massa e inundação, Recife, 2015",
+      "url_fonte": "https://rigeo.sgb.gov.br/handle/doc/15030",
+      "data_ref": "2015-01-01",
+      "data_coleta": "2026-10-12",
+      "escala": "microarea",
+      "metodo": "Interseção do polígono do lote com os polígonos de inundação e de deslizamento da carta.",
+      "limitacao": "Indica suscetibilidade do terreno, não risco do edifício; a escala 1:45.000 não distingue lotes vizinhos. Ausência de registro não significa ausência de problema.",
+      "acao": "Procure marcas de água nas paredes da garagem e do térreo e pergunte ao porteiro se a rua alaga quando chove forte.",
+      "pergunta_id": "q_alagamento"
+    },
+    {
+      "id": "c_defesa_civil",
+      "bloco": 2,
+      "categoria": "registro_oficial",
+      "titulo": "Atendimentos da Defesa Civil",
+      "resumo": "72 atendimentos em 4 ruas próximas, 2021 a 2024",
+      "claim": "Nas 4 ruas com registro que passam a até 150 m do prédio, a Defesa Civil registrou 72 atendimentos entre 2021 e 2024, contando cada rua inteira dentro do bairro; 27 foram em imóveis com danos ou risco.",
+      "fonte": "Prefeitura do Recife, Registro de Atendimentos da Defesa Civil, 2021 a 2024",
+      "url_fonte": "https://dados.recife.pe.gov.br/dataset/registro-de-atendimentos-da-defesa-civil",
+      "data_ref": "2021-01-01/2024-12-31",
+      "data_coleta": "2026-10-12",
+      "escala": "rua",
+      "metodo": "Registros de 2021 a 2024 ligados ao logradouro oficial pelo nome da rua e pelo bairro (ou por bairro vizinho quando o nome só existe lá); entram as ruas cujos trechos passam a até 150 m do prédio, no mesmo bairro do trecho. Como o número do imóvel vem mascarado, cada atendimento conta para a rua inteira dentro do bairro. Ano = ano do arquivo publicado; tipo = ocorrência e, quando vazia, solicitação.",
+      "limitacao": "Reflete quem acionou a Defesa Civil, não todas as ocorrências. A Prefeitura publica o número do imóvel mascarado, então cada atendimento conta para a rua inteira dentro do bairro, não para o trecho em frente ao prédio. Ausência de registro não significa ausência de problema.",
+      "acao": "Pergunte ao corretor se o prédio já teve vistoria da Defesa Civil e peça o laudo, se houver.",
+      "pergunta_id": "q_estrutura",
+      "visual": {
+        "tipo": "ocorrencias",
+        "total": 72,
+        "raio_m": 150,
+        "periodo": "2021 a 2024",
+        "por_ano": [
+          {
+            "ano": 2021,
+            "n": 12
+          },
+          {
+            "ano": 2022,
+            "n": 12
+          },
+          {
+            "ano": 2023,
+            "n": 26
+          },
+          {
+            "ano": 2024,
+            "n": 22
+          }
+        ],
+        "por_tipo": [
+          {
+            "tipo": "Tipo não informado",
+            "n": 42
+          },
+          {
+            "tipo": "Imóveis com Danos / Risco",
+            "n": 27
+          },
+          {
+            "tipo": "Desabamento Parcial Imóveis",
+            "n": 1
+          },
+          {
+            "tipo": "Vistoria em Imóveis",
+            "n": 1
+          },
+          {
+            "tipo": "Vítimas",
+            "n": 1
+          }
+        ],
+        "ruas": [
+          {
+            "nome": "AVENIDA BOA VIAGEM",
+            "n": 44
+          },
+          {
+            "nome": "RUA SETUBAL",
+            "n": 14
+          },
+          {
+            "nome": "RUA VISCONDE DE JEQUITINHONHA",
+            "n": 12
+          },
+          {
+            "nome": "RUA BALTAZAR PASSOS",
+            "n": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "c_setorizacao",
+      "bloco": 2,
+      "categoria": "desconhecido",
+      "titulo": "Setorização de risco",
+      "resumo": "Sem setorização pública do SGB",
+      "claim": "Não há setorização oficial de risco alto e muito alto para o Recife nas bases públicas do SGB consultadas.",
+      "fonte": "Serviço Geológico do Brasil, repositório RIGeo",
+      "url_fonte": "https://rigeo.sgb.gov.br",
+      "data_ref": null,
+      "data_coleta": "2026-10-11",
+      "escala": "municipio",
+      "metodo": "Busca no repositório RIGeo por setorização de risco alto e muito alto do Recife.",
+      "limitacao": "Consultamos o repositório RIGeo em 11/10/2026; o portal GeoSGB não foi verificado. Ausência de setorização não significa ausência de risco.",
+      "acao": "Pergunte à Defesa Civil do Recife, pelos canais de atendimento da Prefeitura, se a rua está em setor de risco mapeado.",
+      "pergunta_id": "q_setorizacao"
+    },
+    {
+      "id": "c_area",
+      "bloco": 3,
+      "categoria": "registro_oficial",
+      "titulo": "Área declarada e cadastrada",
+      "resumo": "Anúncio 43 m²; cadastro 42,7 m²",
+      "claim": "O anúncio informa 43 m² de área útil; o cadastro fiscal registra 42,7 m² de área construída para a unidade.",
+      "fonte": "Anúncio e Prefeitura do Recife, IPTU 2026",
+      "url_fonte": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+      "data_ref": "2026-01-01/2026-12-31",
+      "data_coleta": "2026-10-12",
+      "escala": "unidade",
+      "metodo": "Comparação entre a área do anúncio e a área construída fiscal (unidade identificada pelo complemento declarado); o anúncio fica 0,7% acima da referência de 42,7 m². Vira inconsistência quando o anúncio passa do cadastro em mais de 15% ou fica mais de 30% abaixo dele, porque a área construída fiscal costuma ser maior que a área útil.",
+      "limitacao": "Área construída fiscal não é área privativa; o cadastro fiscal não é laudo. A área construída fiscal pode incluir paredes e parte das áreas comuns. A área do anúncio foi declarada pelo anunciante.",
+      "acao": "Peça a matrícula ou a convenção com a área privativa da unidade.",
+      "pergunta_id": "q_area_privativa",
+      "visual": {
+        "tipo": "comparacao_area",
+        "itens": [
+          {
+            "rotulo": "anúncio, área útil",
+            "valor_m2": 43,
+            "categoria": "declarado_anunciante"
+          },
+          {
+            "rotulo": "cadastro fiscal, unidade",
+            "valor_m2": 42.7,
+            "categoria": "registro_oficial"
+          }
+        ]
+      }
+    },
+    {
+      "id": "c_custo",
+      "bloco": 3,
+      "categoria": "declarado_anunciante",
+      "titulo": "Custo mensal",
+      "resumo": "Aluguel de R$ 5.500; condomínio não informado",
+      "claim": "Aluguel de R$ 5.500 informado no anúncio; condomínio não informado; IPTU do cadastro fiscal.",
+      "fonte": "Anúncio e IPTU 2026",
+      "url_fonte": null,
+      "data_ref": null,
+      "data_coleta": "2026-10-12",
+      "escala": "unidade",
+      "metodo": "Parcelas mensais copiadas do anúncio. IPTU anual do cadastro fiscal dividido por 12.",
+      "limitacao": "Valores declarados pelo anunciante ainda não verificados. O IPTU vem do cadastro fiscal de 2026, dividido por 12. Parcelas não informadas ficam fora do total.",
+      "acao": "Confirme com o corretor os valores atuais de condomínio, IPTU e taxas extras.",
+      "pergunta_id": "q_custo_total",
+      "visual": {
+        "tipo": "custo_mensal",
+        "parcelas": [
+          {
+            "rotulo": "Aluguel",
+            "valor": 5500,
+            "faixa": null,
+            "origem": "informado_no_anuncio"
+          },
+          {
+            "rotulo": "Condomínio",
+            "valor": null,
+            "faixa": null,
+            "origem": "nao_informado"
+          },
+          {
+            "rotulo": "IPTU",
+            "valor": 131.02,
+            "faixa": null,
+            "origem": "do_cadastro_fiscal"
+          },
+          {
+            "rotulo": "Seguro-fiança",
+            "valor": null,
+            "faixa": null,
+            "origem": "nao_informado"
+          }
+        ]
+      }
+    }
+  ],
+  "cartoes_por_candidata": {},
+  "perguntas": [
+    {
+      "id": "q_identidade",
+      "texto": "Qual é o edifício deste anúncio?",
+      "status": "parcial",
+      "evidencias": [
+        "c_edificacao",
+        "c_endereco"
+      ],
+      "acao": {
+        "tipo": "pergunta",
+        "texto": "Peça ao corretor o endereço completo, com número e nome do edifício."
+      },
+      "para_corretor": "Qual é o endereço completo do imóvel, com número, nome do edifício e andar?"
+    },
+    {
+      "id": "q_setorizacao",
+      "texto": "O endereço está em área de risco mapeada oficialmente?",
+      "status": "desconhecida",
+      "evidencias": [
+        "c_setorizacao"
+      ],
+      "acao": {
+        "tipo": "profissional",
+        "texto": "Pergunte à Defesa Civil do Recife, pelos canais de atendimento da Prefeitura, se a rua está em setor de risco mapeado."
+      },
+      "para_corretor": null
+    },
+    {
+      "id": "q_alagamento",
+      "texto": "A rua costuma alagar ou ter deslizamento?",
+      "status": "desconhecida",
+      "evidencias": [
+        "c_suscetibilidade"
+      ],
+      "acao": {
+        "tipo": "visita",
+        "texto": "Procure marcas de água nas paredes da garagem e do térreo e pergunte ao porteiro se a rua alaga quando chove forte."
+      },
+      "para_corretor": "A rua ou a garagem do prédio costumam alagar em chuva forte?"
+    },
+    {
+      "id": "q_estrutura",
+      "texto": "Há registro de problema estrutural ou interdição no prédio?",
+      "status": "parcial",
+      "evidencias": [
+        "c_interdicao",
+        "c_defesa_civil"
+      ],
+      "acao": {
+        "tipo": "visita",
+        "texto": "Procure fissuras, infiltração e piso desnivelado; se encontrar, peça a avaliação de um engenheiro antes de assinar."
+      },
+      "para_corretor": "Há registro de problema estrutural, interdição ou obra de recuperação no prédio?"
+    },
+    {
+      "id": "q_custo_total",
+      "texto": "Quanto custa morar aqui por mês?",
+      "status": "parcial",
+      "evidencias": [
+        "c_custo"
+      ],
+      "acao": {
+        "tipo": "pergunta",
+        "texto": "Confirme com o corretor os valores atuais de condomínio, IPTU e taxas extras."
+      },
+      "para_corretor": "Quais são os valores atuais de condomínio e IPTU, e há alguma taxa extra?"
+    },
+    {
+      "id": "q_area_privativa",
+      "texto": "A área anunciada é a área privativa?",
+      "status": "parcial",
+      "evidencias": [
+        "c_area"
+      ],
+      "acao": {
+        "tipo": "documento",
+        "texto": "Peça a matrícula ou a convenção com a área privativa da unidade."
+      },
+      "para_corretor": "a matrícula ou a convenção do condomínio, com a área privativa da unidade"
+    },
+    {
+      "id": "q_cota_extra",
+      "texto": "O condomínio aprovou cota extra ou obra?",
+      "status": "desconhecida",
+      "evidencias": [],
+      "acao": {
+        "tipo": "documento",
+        "texto": "Peça as atas das assembleias dos últimos 12 meses."
+      },
+      "para_corretor": "as atas das assembleias dos últimos 12 meses"
+    },
+    {
+      "id": "q_inadimplencia",
+      "texto": "O condomínio tem inadimplência ou contas em atraso?",
+      "status": "desconhecida",
+      "evidencias": [],
+      "acao": {
+        "tipo": "documento",
+        "texto": "Peça o último balancete do condomínio."
+      },
+      "para_corretor": "o último balancete do condomínio"
+    },
+    {
+      "id": "q_sol",
+      "texto": "Quanto sol a unidade recebe?",
+      "status": "desconhecida",
+      "evidencias": [],
+      "acao": {
+        "tipo": "visita",
+        "texto": "Visite no fim da tarde e pergunte para que lado ficam as janelas dos quartos."
+      },
+      "para_corretor": "Para que lado ficam as janelas dos quartos, nascente ou poente?"
+    },
+    {
+      "id": "q_vaga",
+      "texto": "A vaga é fixa, coberta e livre?",
+      "status": "desconhecida",
+      "evidencias": [],
+      "acao": {
+        "tipo": "pergunta",
+        "texto": "Pergunte se a vaga é fixa, coberta e se depende de manobrista."
+      },
+      "para_corretor": "A vaga de garagem é fixa, coberta e livre, sem depender de manobrista?"
+    },
+    {
+      "id": "q_agua",
+      "texto": "A pressão da água é suficiente?",
+      "status": "desconhecida",
+      "evidencias": [],
+      "acao": {
+        "tipo": "visita",
+        "texto": "Abra o chuveiro e uma torneira ao mesmo tempo por um minuto."
+      },
+      "para_corretor": null
+    },
+    {
+      "id": "q_ruido",
+      "texto": "Como é o barulho da rua à noite?",
+      "status": "desconhecida",
+      "evidencias": [],
+      "acao": {
+        "tipo": "visita",
+        "texto": "No quarto voltado para a rua, fique dois minutos com as janelas fechadas e depois abertas."
+      },
+      "para_corretor": null
+    },
+    {
+      "id": "q_acesso_pe",
+      "texto": "Como é o acesso a pé ao transporte?",
+      "status": "desconhecida",
+      "evidencias": [],
+      "acao": {
+        "tipo": "visita",
+        "texto": "Faça a pé o trajeto até a parada de ônibus ou estação mais próxima."
+      },
+      "para_corretor": null
+    },
+    {
+      "id": "q_garantia",
+      "texto": "Que garantia o proprietário exige?",
+      "status": "desconhecida",
+      "evidencias": [],
+      "acao": {
+        "tipo": "pergunta",
+        "texto": "Pergunte se aceitam fiador, caução ou seguro-fiança e quanto custa cada opção."
+      },
+      "para_corretor": "Quais garantias são aceitas (fiador, caução ou seguro-fiança) e qual o custo de cada uma?"
+    },
+    {
+      "id": "q_vistoria",
+      "texto": "Como será registrado o estado do imóvel na entrada?",
+      "status": "desconhecida",
+      "evidencias": [],
+      "acao": {
+        "tipo": "documento",
+        "texto": "Peça o laudo de vistoria de entrada, com fotos, antes de assinar."
+      },
+      "para_corretor": "o modelo do laudo de vistoria de entrada, com fotos"
+    }
+  ],
+  "resumo": {
+    "inconsistencia": 1,
+    "registro_oficial": 7,
+    "desconhecido": 1,
+    "declarado_anunciante": 1
+  }
+}

@@ -43,6 +43,9 @@ function formatar(dossie: Dossie, campo: CampoDeclarado): string | null {
       if (c.iptu === null) {
         return null;
       }
+      if (c.iptu_periodicidade === null) {
+        return `${moeda(c.iptu)}, sem dizer se é por mês ou por ano`;
+      }
       return c.iptu_periodicidade === 'anual' ? `${moeda(c.iptu)} por ano` : `${moeda(c.iptu)} por mês`;
     case 'area_m2':
       return c.area_m2 === null ? null : area(c.area_m2);
@@ -63,4 +66,12 @@ export function camposExibidos(dossie: Dossie): CampoExibido[] {
     rotulo: campo === 'preco' ? (dossie.anuncio.operacao === 'aluguel' ? 'Aluguel' : 'Preço de venda') : rotuloCampo[campo],
     valor: formatar(dossie, campo),
   }));
+}
+
+export function andarEfetivo(dossie: Dossie, correcao: string | undefined): number | null {
+  if (correcao === undefined) {
+    return dossie.anuncio.campos_declarados.andar;
+  }
+  const digitos = correcao.replace(/\D+/g, '');
+  return digitos.length === 0 ? null : Number.parseInt(digitos, 10);
 }

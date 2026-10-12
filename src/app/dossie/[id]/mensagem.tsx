@@ -7,6 +7,8 @@ import { Botao } from '@/componentes/Botao';
 import { DesvioDeRota } from '@/componentes/dossie/DesvioDeRota';
 import { Cabecalho, Tela } from '@/componentes/Tela';
 import { Texto } from '@/componentes/Texto';
+import { plural } from '@/dominio/formato';
+import { chaveDaResolucao } from '@/dominio/visao';
 import { useEstado, useRegistro } from '@/estado/armazenamento';
 import { useVisaoDaRota } from '@/navegacao/useVisaoDaRota';
 import { montarMensagem, partesDaMensagem } from '@/textos/mensagem';
@@ -23,15 +25,18 @@ export default function Mensagem() {
   const id = resultado.tipo === 'pronto' ? resultado.id : '';
   const registro = useRegistro(id);
   const [retorno, setRetorno] = useState<Retorno>(null);
+  const [alturaTexto, setAlturaTexto] = useState(280);
 
   if (resultado.tipo !== 'pronto') {
     return <DesvioDeRota resultado={resultado} />;
   }
 
+  const chave = chaveDaResolucao(resultado.visao);
+  const salva = registro.mensagens[chave] ?? null;
   const gerada = montarMensagem(resultado.visao);
-  const texto = registro.mensagem ?? gerada;
+  const texto = salva ?? gerada;
   const { perguntas, documentos } = partesDaMensagem(resultado.visao);
-  const editada = registro.mensagem !== null && registro.mensagem !== gerada;
+  const editada = salva !== null && salva !== gerada;
 
   const copiar = () => {
     Clipboard.setStringAsync(texto)
@@ -66,7 +71,7 @@ export default function Mensagem() {
       <View style={estilos.topo}>
         <Texto variante="titulo">Pergunte antes de ir.</Texto>
         <Texto variante="corpo" tom="tintaSuave">
-          {`Texto montado com ${perguntas.length} perguntas e ${documentos.length} documentos que nenhum registro respondeu. Edite à vontade.`}
+          {`Texto montado com ${plural(perguntas.length, 'pergunta', 'perguntas')} e ${plural(documentos.length, 'documento', 'documentos')} que os registros públicos não respondem por completo. Edite à vontade.`}
         </Texto>
       </View>
 
@@ -76,12 +81,13 @@ export default function Mensagem() {
           value={texto}
           onChangeText={(novo) => {
             setRetorno(null);
-            despachar({ tipo: 'salvarMensagem', id, texto: novo });
+            despachar({ tipo: 'salvarMensagem', id, chave, texto: novo });
           }}
           multiline
           scrollEnabled={false}
+          onContentSizeChange={(evento) => setAlturaTexto(Math.max(280, Math.ceil(evento.nativeEvent.contentSize.height) + 8))}
           accessibilityLabel="Texto da mensagem para o corretor"
-          style={[estilos.campo, { color: paleta.tinta, fontFamily: familias.texto }]}
+          style={[estilos.campo, { color: paleta.tinta, fontFamily: familias.texto, height: alturaTexto }]}
         />
       </View>
 
@@ -90,7 +96,7 @@ export default function Mensagem() {
           rotulo="Voltar ao texto gerado"
           variante="texto"
           icone="rotate-ccw"
-          aoPressionar={() => despachar({ tipo: 'salvarMensagem', id, texto: null })}
+          aoPressionar={() => despachar({ tipo: 'salvarMensagem', id, chave, texto: null })}
         />
       ) : null}
 

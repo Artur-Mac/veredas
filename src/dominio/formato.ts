@@ -67,3 +67,7 @@ export function codigoEdificacao(dsqfl: string): string {
 export function plural(quantidade: number, singular: string, pluralForma: string): string {
   return `${numero(quantidade)} ${quantidade === 1 ? singular : pluralForma}`;
 }
+
+export function ruaENumero(endereco: string): string {
+  return enderecoCurto(endereco).split(',').slice(0, 2).map((parte) => parte.trim()).join(', ');
+}

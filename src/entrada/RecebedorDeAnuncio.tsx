@@ -2,12 +2,18 @@ import { router } from 'expo-router';
 import { useShareIntentContext } from 'expo-share-intent';
 import { useEffect } from 'react';
 
+import { extrairCodigoAnuncio } from '@/dominio/link';
 import { dossiePorTexto } from '@/fixtures';
 
-export function rotaParaTexto(texto: string): { pathname: '/anuncio/[id]'; params: { id: string } } | { pathname: '/demonstracao'; params: { link: string } } {
+type RotaDeEntrada =
+  | { pathname: '/anuncio/[id]'; params: { id: string } }
+  | { pathname: '/demonstracao'; params: { codigo: string } | Record<string, never> };
+
+export function rotaParaTexto(texto: string): RotaDeEntrada {
   const dossie = dossiePorTexto(texto);
   if (dossie === null) {
-    return { pathname: '/demonstracao', params: { link: texto.slice(0, 300) } };
+    const codigo = extrairCodigoAnuncio(texto);
+    return { pathname: '/demonstracao', params: codigo === null ? {} : { codigo } };
   }
   return { pathname: '/anuncio/[id]', params: { id: dossie.dossie_id } };
 }

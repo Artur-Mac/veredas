@@ -31,7 +31,7 @@ export interface VisaoDossie {
   contagem: Record<Categoria, number>;
 }
 
-const escalasDeRua = new Set(['rua', 'microarea', 'bairro']);
+const escalasDeRua = new Set(['rua', 'microarea', 'bairro', 'municipio']);
 
 export const categoriasEmOrdem: Categoria[] = [
   'registro_oficial',
@@ -64,7 +64,11 @@ function mesclarPorId(base: Cartao[], sobrepostos: Cartao[]): Cartao[] {
 
 export function custoDosCamposDeclarados(campos: CamposDeclarados): ParcelaCusto[] {
   const iptuMensal =
-    campos.iptu === null ? null : campos.iptu_periodicidade === 'anual' ? campos.iptu / 12 : campos.iptu;
+    campos.iptu === null || campos.iptu_periodicidade === null
+      ? null
+      : campos.iptu_periodicidade === 'anual'
+        ? campos.iptu / 12
+        : campos.iptu;
   const parcela = (rotulo: string, valor: number | null): ParcelaCusto => ({
     rotulo,
     valor,
@@ -159,4 +163,11 @@ export function itensDoRoteiro(visao: VisaoDossie): PerguntaEfetiva[] {
 
 export function cartaoDaVisao(visao: VisaoDossie, cartaoId: string): Cartao | null {
   return visao.cartoes.find((c) => c.id === cartaoId) ?? null;
+}
+
+export function chaveDaResolucao(visao: VisaoDossie): string {
+  if (visao.modo === 'rua') {
+    return 'rua';
+  }
+  return visao.edificio?.id ?? 'sem-edificio';
 }

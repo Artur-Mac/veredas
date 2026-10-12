@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { campoDeclaradoSchema, type CampoDeclarado } from '@/dominio/esquema';
 import type { Resolucao } from '@/dominio/visao';
 
-const chaveArmazenamento = 'propsight:estado:v1';
+const chaveArmazenamento = 'propsight:estado:v2';
 
 export const estadosDossie = ['em_analise', 'visita_marcada', 'visitado', 'descartado', 'fechado'] as const;
 
@@ -24,7 +24,7 @@ const registroSchema = z.strictObject({
   correcoes: z.partialRecord(campoDeclaradoSchema, z.string()),
   roteiro: z.record(z.string(), z.boolean()),
   contestacoes: z.array(z.strictObject({ cartaoId: z.string(), texto: z.string(), em: z.string() })),
-  mensagem: z.string().nullable(),
+  mensagens: z.record(z.string(), z.string()),
 });
 
 const estadoSchema = z.strictObject({
@@ -44,7 +44,7 @@ export const registroInicial: RegistroDossie = {
   correcoes: {},
   roteiro: {},
   contestacoes: [],
-  mensagem: null,
+  mensagens: {},
 };
 
 const estadoInicial: EstadoApp = { tema: 'sistema', dossies: {} };
@@ -57,7 +57,7 @@ type Acao =
   | { tipo: 'corrigirCampo'; id: string; campo: CampoDeclarado; valor: string | null }
   | { tipo: 'marcarItem'; id: string; item: string; marcado: boolean }
   | { tipo: 'contestar'; id: string; cartaoId: string; texto: string; em: string }
-  | { tipo: 'salvarMensagem'; id: string; texto: string | null };
+  | { tipo: 'salvarMensagem'; id: string; chave: string; texto: string | null };
 
 function atualizarRegistro(
   estado: EstadoApp,
@@ -103,7 +103,15 @@ function redutor(estado: EstadoApp, acao: Acao): EstadoApp {
         contestacoes: [...r.contestacoes, { cartaoId: acao.cartaoId, texto: acao.texto, em: acao.em }],
       }));
     case 'salvarMensagem':
-      return atualizarRegistro(estado, acao.id, (r) => ({ ...r, mensagem: acao.texto }));
+      return atualizarRegistro(estado, acao.id, (r) => {
+        const mensagens = { ...r.mensagens };
+        if (acao.texto === null) {
+          delete mensagens[acao.chave];
+        } else {
+          mensagens[acao.chave] = acao.texto;
+        }
+        return { ...r, mensagens };
+      });
   }
 }
 
@@ -115,14 +123,24 @@ interface ContextoEstado {
 
 const Contexto = createContext<ContextoEstado | null>(null);
 
+function interpretar(bruto: string): unknown {
+  try {
+    return JSON.parse(bruto);
+  } catch (erro: unknown) {
+    console.warn(`Estado salvo em ${chaveArmazenamento} não é JSON válido.`, erro);
+    return null;
+  }
+}
+
 async function lerEstadoSalvo(): Promise<EstadoApp> {
   const bruto = await AsyncStorage.getItem(chaveArmazenamento);
   if (bruto === null) {
     return estadoInicial;
   }
-  const resultado = estadoSchema.safeParse(JSON.parse(bruto));
+  const resultado = estadoSchema.safeParse(interpretar(bruto));
   if (!resultado.success) {
-    console.warn(`Estado salvo em ${chaveArmazenamento} não segue o esquema atual e foi reiniciado.`, resultado.error.issues);
+    await AsyncStorage.setItem(`${chaveArmazenamento}:descartado`, bruto);
+    console.warn(`Estado salvo em ${chaveArmazenamento} não segue o esquema atual; a cópia foi guardada e o estado, reiniciado.`);
     return estadoInicial;
   }
   return resultado.data;
@@ -131,6 +149,7 @@ async function lerEstadoSalvo(): Promise<EstadoApp> {
 export function EstadoProvider({ children }: { children: ReactNode }) {
   const [estado, despachar] = useReducer(redutor, estadoInicial);
   const [hidratado, setHidratado] = useState(false);
+  const [gravacaoLiberada, setGravacaoLiberada] = useState(false);
 
   useEffect(() => {
     let ativo = true;
@@ -138,7 +157,11 @@ export function EstadoProvider({ children }: { children: ReactNode }) {
       .then((salvo) => {
         if (ativo) {
           despachar({ tipo: 'hidratar', estado: salvo });
+          setGravacaoLiberada(true);
         }
+      })
+      .catch((erro: unknown) => {
+        console.error('Não foi possível ler o estado local do PropSight; as mudanças desta sessão não serão gravadas.', erro);
       })
       .finally(() => {
         if (ativo) {
@@ -151,13 +174,13 @@ export function EstadoProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!hidratado) {
+    if (!gravacaoLiberada) {
       return;
     }
     AsyncStorage.setItem(chaveArmazenamento, JSON.stringify(estado)).catch((erro: unknown) => {
       console.error('Falha ao gravar o estado local do PropSight.', erro);
     });
-  }, [estado, hidratado]);
+  }, [estado, gravacaoLiberada]);
 
   return <Contexto.Provider value={{ estado, hidratado, despachar }}>{children}</Contexto.Provider>;
 }

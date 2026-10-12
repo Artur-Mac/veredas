@@ -4,14 +4,13 @@ import { StyleSheet, View } from 'react-native';
 import { ListaDeExemplos } from '@/componentes/ListaDeExemplos';
 import { Cabecalho, Tela } from '@/componentes/Tela';
 import { Texto } from '@/componentes/Texto';
-import { extrairCodigoAnuncio } from '@/dominio/link';
 import { useTema } from '@/tema/TemaProvider';
 import { raio } from '@/tema/tipografia';
 
 export default function Demonstracao() {
-  const { link } = useLocalSearchParams<{ link?: string }>();
+  const parametros = useLocalSearchParams<{ codigo?: string }>();
   const { paleta } = useTema();
-  const codigo = typeof link === 'string' ? extrairCodigoAnuncio(link) : null;
+  const codigo = typeof parametros.codigo === 'string' && /^\d{6,}$/.test(parametros.codigo) ? parametros.codigo : null;
   return (
     <Tela cabecalho={<Cabecalho titulo="Anúncio fora da demonstração" />}>
       <View style={estilos.topo}>

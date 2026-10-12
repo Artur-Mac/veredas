@@ -9,7 +9,7 @@ export const categoriaSchema = z.enum([
   'precisa_especialista',
 ]);
 
-export const escalaSchema = z.enum(['unidade', 'edificio', 'lote', 'rua', 'microarea', 'bairro']);
+export const escalaSchema = z.enum(['unidade', 'edificio', 'lote', 'rua', 'microarea', 'bairro', 'municipio']);
 
 export const origemParcelaSchema = z.enum(['informado_no_anuncio', 'do_cadastro_fiscal', 'nao_informado']);
 
@@ -102,6 +102,7 @@ export const edificioSchema = z.strictObject({
   area_construida_m2: z.number().positive().nullable(),
   ano_construcao: z.number().int().min(1800).max(2100).nullable(),
   unidades: z.number().int().positive().nullable(),
+  contorno: z.enum(['edificacao', 'lote']),
   evidencias: z.array(z.string().min(1)),
 });
 
@@ -199,6 +200,7 @@ export const mapaSchema = z.strictObject({
   fonte: z.string().min(1),
   data_ref: dataIso,
   quadras: z.array(anel),
+  lotes: z.array(anel),
   edificacoes: z.array(anel),
   logradouros: z.array(z.strictObject({ nome: z.string().min(1), pontos: z.array(ponto).min(2) })),
   alvos: z.array(z.strictObject({ id: z.string().min(1), dsqfl: z.string().regex(/^\d{14}$/), pontos: anel })),

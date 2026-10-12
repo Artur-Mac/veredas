@@ -7,7 +7,7 @@ export function DesvioDeRota({ resultado }: { resultado: Exclude<ResultadoRota, 
     case 'aguardando':
       return null;
     case 'inexistente':
-      return <Redirect href={{ pathname: '/demonstracao', params: { link: resultado.id } }} />;
+      return <Redirect href="/demonstracao" />;
     case 'confirmar':
       return <Redirect href={{ pathname: '/anuncio/[id]/confirmacao', params: { id: resultado.id } }} />;
   }

@@ -19,7 +19,7 @@ function resumoDoCartao(cartao: Cartao | null, semCartao: string): string {
     return cartao.resumo;
   }
   if (cartao.visual?.tipo === 'ocorrencias') {
-    return `${plural(cartao.visual.total, 'atendimento', 'atendimentos')} nas ruas a até ${cartao.visual.raio_m} m`;
+    return `${plural(cartao.visual.total, 'atendimento', 'atendimentos')} em ${plural(cartao.visual.ruas.length, 'rua próxima', 'ruas próximas')}`;
   }
   return cartao.titulo;
 }
@@ -38,7 +38,7 @@ export function etapasDoPipeline(dossie: Dossie): Etapa[] {
 
   const cadastro =
     edificio === null
-      ? `${plural(candidatas, 'edificação compatível', 'edificações compatíveis')} na rua`
+      ? `${plural(candidatas, 'edificação possível', 'edificações possíveis')} na rua`
       : [
           edificio.pavimentos === null ? null : plural(edificio.pavimentos, 'pavimento', 'pavimentos'),
           edificio.area_construida_m2 === null ? null : `${area(Math.round(edificio.area_construida_m2))} construídos`,
@@ -66,7 +66,7 @@ export function etapasDoPipeline(dossie: Dossie): Etapa[] {
           ? 'identificado automaticamente, confiança alta'
           : `${plural(candidatas, 'candidata', 'candidatas')}, falta a sua confirmação`,
     },
-    { id: 'cadastro', titulo: 'Cadastro de edificações', resultado: cadastro.length > 0 ? cadastro : 'sem dados no cadastro' },
+    { id: 'cadastro', titulo: 'Cadastro de lotes e edificações', resultado: cadastro.length > 0 ? cadastro : 'sem dados no cadastro' },
     { id: 'fiscal', titulo: 'Cadastro fiscal', resultado: fiscal.length > 0 ? fiscal : 'sem unidades no cadastro' },
     {
       id: 'defesa',

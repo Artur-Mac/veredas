@@ -89,7 +89,7 @@ export default function Roteiro() {
       <View style={estilos.topo}>
         <Texto variante="titulo">O que conferir na visita</Texto>
         <Texto variante="corpo" tom="tintaSuave">
-          Gerado das perguntas que nenhum registro respondeu. Marque conforme for conferindo; fica salvo neste aparelho.
+          Gerado das perguntas que os registros públicos não respondem por completo. Marque conforme for conferindo; fica salvo neste aparelho.
         </Texto>
       </View>
       <Progresso feitos={feitos} total={itens.length} />

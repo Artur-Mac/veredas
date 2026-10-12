@@ -32,12 +32,13 @@ export const explicacaoCategoria: Record<Categoria, string> = {
 };
 
 export const rotuloEscala: Record<Escala, string> = {
-  unidade: 'unidade',
-  edificio: 'edifício',
-  lote: 'lote',
-  rua: 'rua',
-  microarea: 'microárea',
-  bairro: 'bairro',
+  unidade: 'a unidade',
+  edificio: 'o prédio',
+  lote: 'o lote',
+  rua: 'a rua',
+  microarea: 'as ruas em volta',
+  bairro: 'o bairro',
+  municipio: 'a cidade',
 };
 
 export const rotuloOrigemParcela: Record<OrigemParcela, string> = {
