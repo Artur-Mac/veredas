@@ -13,7 +13,7 @@ import { Cabecalho, SeloDemonstracao, Tela } from '@/componentes/Tela';
 import { Texto } from '@/componentes/Texto';
 import { camposExibidos } from '@/dominio/camposDeclarados';
 import type { Cartao, TipoAcao } from '@/dominio/esquema';
-import { dataCurta } from '@/dominio/formato';
+import { dataCurta, enderecoCurto } from '@/dominio/formato';
 import { itensDoRoteiro, perguntasEmAberto, type VisaoDossie } from '@/dominio/visao';
 import { useRegistro } from '@/estado/armazenamento';
 import { mapaPorId } from '@/fixtures';
@@ -184,7 +184,7 @@ export default function Dossie() {
           {`${rotuloOperacao[dossie.anuncio.operacao]} · ${campos.bairro ?? 'Recife'} · anúncio coletado em ${dataCurta(dossie.anuncio.coletado_em)}`}
         </Texto>
         <Texto variante="titulo">
-          {visao.edificio === null ? `${campos.logradouro ?? 'Rua não informada'}, sem número` : visao.edificio.endereco_oficial}
+          {visao.edificio === null ? `${campos.logradouro ?? 'Rua não informada'}, sem número` : enderecoCurto(visao.edificio.endereco_oficial)}
         </Texto>
         <StatusIdentidade visao={visao} />
         <ResumoDaVisao visao={visao} abertas={abertas.length} />

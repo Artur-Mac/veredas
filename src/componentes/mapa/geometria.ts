@@ -62,6 +62,45 @@ export function centroide(anel: Ponto[]): Ponto {
   return [cx / (3 * areaDupla), cy / (3 * areaDupla)];
 }
 
+function comprimentoDaLinha(pontos: Ponto[]): number {
+  let total = 0;
+  for (let i = 0; i < pontos.length - 1; i += 1) {
+    const a = pontos[i];
+    const b = pontos[i + 1];
+    if (a !== undefined && b !== undefined) {
+      total += Math.hypot(b[0] - a[0], b[1] - a[1]);
+    }
+  }
+  return total;
+}
+
+export function pontoMedioDasLinhas(linhas: Ponto[][]): Ponto {
+  const maisLonga = linhas.reduce<Ponto[]>(
+    (atual, linha) => (comprimentoDaLinha(linha) > comprimentoDaLinha(atual) ? linha : atual),
+    linhas[0] ?? [],
+  );
+  const metade = comprimentoDaLinha(maisLonga) / 2;
+  let percorrido = 0;
+  for (let i = 0; i < maisLonga.length - 1; i += 1) {
+    const a = maisLonga[i];
+    const b = maisLonga[i + 1];
+    if (a === undefined || b === undefined) {
+      continue;
+    }
+    const trecho = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    if (percorrido + trecho >= metade && trecho > 0) {
+      const fracao = (metade - percorrido) / trecho;
+      return [a[0] + (b[0] - a[0]) * fracao, a[1] + (b[1] - a[1]) * fracao];
+    }
+    percorrido += trecho;
+  }
+  const primeiro = maisLonga[0];
+  if (primeiro === undefined) {
+    throw new Error('rua com ocorrências sem geometria');
+  }
+  return primeiro;
+}
+
 export function caixaDeFoco(mapa: Mapa, alvos: string[], incluirRaio: boolean): Caixa {
   const pontos: Ponto[] = mapa.alvos.filter((a) => alvos.includes(a.id)).flatMap((a) => a.pontos);
   if (incluirRaio) {

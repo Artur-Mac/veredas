@@ -82,7 +82,7 @@ Motivo comum **[DECISÃO]**: cada um desses itens ou exige dado que não existe 
 
 Pessoa física em Recife que **já encontrou um anúncio** de apartamento em edifício e está a até duas semanas de decidir se visita, propõe ou assina. Aluguel e compra.
 
-Perfil típico: usa o celular para tudo, abre o anúncio no app do portal, manda o link para parceiro ou família pelo WhatsApp, agenda visita pelo app. Não sabe que o cadastro municipal existe. Não lê 80 páginas de ata.
+Perfil típico: usa o celular para tudo, abre o anúncio no app do portal, manda o link para parceiro ou família por mensagem, agenda visita pelo app. Não sabe que o cadastro municipal existe. Não lê 80 páginas de ata.
 
 ### 4.2 Usuário secundário (Etapa 4 em diante)
 
@@ -462,7 +462,7 @@ Consultas espaciais são locais e sem custo marginal. Custo não é restrição 
 |---|---|---|---|
 | 11/10/2026 | Um anúncio, Recife, apartamentos, sem score | Buscador; comparador; score | Única decisão melhorável sem inventário nem scraping; precedente do portal americano que retirou scores climáticos |
 | 11/10/2026 | Categoria Tecnologias Urbanas | Diversidade | Regulamento cita moradia e segurança literalmente |
-| 11/10/2026 | React Native com Expo, Android primeiro | PWA; Kotlin; bot WhatsApp | Fullstack no time; share intent nativo; banca de telecom |
+| 11/10/2026 | React Native com Expo, Android primeiro | PWA; Kotlin; bot de mensagens | Fullstack no time; share intent nativo; banca de telecom |
 | 11/10/2026 | Ficha com aluguel e compra; protótipo demonstra fluxo de aluguel | Dois fluxos completos | Volume e ciclo curto para uso real; matriz de compra na tela final |
 | 11/10/2026 | Servidor nunca acessa portal; leitura na WebView do aparelho | Fetch de servidor | Portais retornam 403 a servidor e proíbem scraping; WebView é o navegador do usuário |
 | 11/10/2026 | Extração híbrida: regras + LLM só em texto livre | LLM em tudo; só regras | Campos estruturados existem; LLM necessário para nome de edifício em portais que só têm texto livre |

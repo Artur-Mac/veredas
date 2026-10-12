@@ -44,7 +44,7 @@ Arquivos: `src/fixtures/dossies/<id>.json` e `src/fixtures/mapas/<id>.json`. O a
 
 ### Dossiê
 
-Segue a seção 8.2 do PRD, com campos adicionais marcados como "novo".
+Segue a seção 8.2 do PRD, com campos adicionais marcados como "novo". O esquema executável em `src/dominio/esquema.ts` é a fonte de verdade; esta seção o resume. Os modelos de texto de cada cartão estão em `docs/CATALOGO-DE-CARTOES.md` e a matriz de perguntas em `scripts/dados/matriz_perguntas.json`.
 
 ```
 dossie_id            string, igual ao nome do arquivo
@@ -72,13 +72,13 @@ resumo               contagem de cartões por categoria
 
 Edificio: `id` ("alvo", "A", "B", "C"), `dsqfl` (14 dígitos), `endereco_oficial`, `pavimentos`, `area_construida_m2`, `ano_construcao`, `unidades`, `evidencias` (frases curtas que explicam por que é candidata).
 
-Cartao: `id`, `bloco` (1 a 4), `categoria` ("registro_oficial", "observacao_direta", "declarado_anunciante", "inconsistencia", "desconhecido", "precisa_especialista"), `titulo` (novo, até 5 palavras), `claim`, `fonte`, `url_fonte` (ou null), `data_ref` (data ISO, intervalo ISO "inicio/fim" ou null), `data_coleta`, `escala` ("unidade", "edificio", "lote", "rua", "microarea", "bairro"), `metodo`, `limitacao`, `acao`, `pergunta_id` (novo, ou null) e `visual` opcional (novo):
+Cartao: `id`, `bloco` (1 a 4), `categoria` ("registro_oficial", "observacao_direta", "declarado_anunciante", "inconsistencia", "desconhecido", "precisa_especialista"), `titulo` (novo, até 5 palavras), `resumo` (novo, opcional, até 70 caracteres, usado na tela de etapas), `claim`, `fonte`, `url_fonte` (ou null), `data_ref` (data ISO, intervalo ISO "inicio/fim" ou null), `data_coleta`, `escala` ("unidade", "edificio", "lote", "rua", "microarea", "bairro"), `metodo`, `limitacao`, `acao`, `pergunta_id` (novo, ou null) e `visual` opcional (novo):
 
 - `{ tipo: "comparacao_area", itens: [{ rotulo, valor_m2, categoria }] }`
-- `{ tipo: "ocorrencias", total, raio_m, periodo, por_ano: [{ ano, n }], por_tipo: [{ tipo, n }], sem_posicao }`
+- `{ tipo: "ocorrencias", total, raio_m, periodo, por_ano: [{ ano, n }], por_tipo: [{ tipo, n }], ruas: [{ nome, n }] }`
 - `{ tipo: "custo_mensal", parcelas: [{ rotulo, valor, faixa: [min, max] | null, origem: "informado_no_anuncio" | "do_cadastro_fiscal" | "nao_informado" }] }`
 
-Pergunta: `id`, `texto`, `status` ("respondida", "parcial", "desconhecida"), `status_modo_rua` (novo, opcional), `evidencias` (ids de cartões), `acao` (`{ tipo: "documento" | "pergunta" | "visita" | "profissional", texto }`).
+Pergunta: `id`, `texto`, `status` ("respondida", "parcial", "desconhecida"), `status_modo_rua` (novo, opcional), `evidencias` (ids de cartões), `acao` (`{ tipo: "documento" | "pergunta" | "visita" | "profissional", texto }`), `para_corretor` (novo; frase usada na mensagem ao corretor, ou null).
 
 ### Mapa
 
@@ -88,7 +88,7 @@ quadras        [[[x, y], ...]]          anel externo, metros relativos à origem
 edificacoes    [[[x, y], ...]]
 logradouros    [{ nome, pontos: [[x, y], ...] }]
 alvos          [{ id, dsqfl, pontos: [[x, y], ...] }]
-ocorrencias    [{ x, y, ano, tipo, n }]  só as posicionadas por número
+ruas_com_ocorrencias [{ nome, n, trechos: [[[x, y], ...]] }]  trechos dentro do raio; a Defesa Civil publica o número mascarado, então a posição é por rua
 centro_raio    [x, y]
 raio_m         150
 suscetibilidade [{ tipo, classe, pontos }]  vazio se a carta não for obtida

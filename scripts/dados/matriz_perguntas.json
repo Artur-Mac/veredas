@@ -1,0 +1,122 @@
+{
+  "comum": [
+    {
+      "id": "q_identidade",
+      "texto": "Qual é o edifício deste anúncio?",
+      "acao": { "tipo": "pergunta", "texto": "Peça ao corretor o endereço completo, com número e nome do edifício." },
+      "para_corretor": "Qual é o endereço completo do imóvel, com número e nome do edifício?"
+    },
+    {
+      "id": "q_setorizacao",
+      "texto": "O endereço está em área de risco mapeada oficialmente?",
+      "acao": { "tipo": "profissional", "texto": "Consulte a Defesa Civil do Recife sobre este endereço." },
+      "para_corretor": null
+    },
+    {
+      "id": "q_alagamento",
+      "texto": "A rua costuma alagar ou ter deslizamento?",
+      "acao": { "tipo": "visita", "texto": "Pergunte a moradores e olhe a garagem e a calçada depois de chuva forte." },
+      "para_corretor": "A rua ou a garagem do prédio costumam alagar em chuva forte?"
+    },
+    {
+      "id": "q_estrutura",
+      "texto": "Há registro de problema estrutural ou interdição no prédio?",
+      "acao": { "tipo": "profissional", "texto": "Se notar fissuras, infiltração ou piso desnivelado, peça a avaliação de um engenheiro antes de assinar." },
+      "para_corretor": "Há registro de problema estrutural, interdição ou obra de recuperação no prédio?"
+    },
+    {
+      "id": "q_custo_total",
+      "texto": "Quanto custa morar aqui por mês?",
+      "acao": { "tipo": "pergunta", "texto": "Confirme com o corretor os valores atuais de condomínio, IPTU e taxas extras." },
+      "para_corretor": "Quais são os valores atuais de condomínio e IPTU, e há alguma taxa extra?"
+    },
+    {
+      "id": "q_area_privativa",
+      "texto": "A área anunciada é a área privativa?",
+      "acao": { "tipo": "documento", "texto": "Peça a matrícula ou a convenção com a área privativa da unidade." },
+      "para_corretor": "a matrícula ou a convenção do condomínio, com a área privativa da unidade"
+    },
+    {
+      "id": "q_cota_extra",
+      "texto": "O condomínio aprovou cota extra ou obra?",
+      "acao": { "tipo": "documento", "texto": "Peça as atas das assembleias dos últimos 12 meses." },
+      "para_corretor": "as atas das assembleias dos últimos 12 meses"
+    },
+    {
+      "id": "q_inadimplencia",
+      "texto": "O condomínio tem inadimplência ou contas em atraso?",
+      "acao": { "tipo": "documento", "texto": "Peça o último balancete do condomínio." },
+      "para_corretor": "o último balancete do condomínio"
+    },
+    {
+      "id": "q_sol",
+      "texto": "Quanto sol a unidade recebe?",
+      "acao": { "tipo": "visita", "texto": "Visite no fim da tarde e pergunte para que lado ficam as janelas dos quartos." },
+      "para_corretor": "Para que lado ficam as janelas dos quartos, nascente ou poente?"
+    },
+    {
+      "id": "q_vaga",
+      "texto": "A vaga é fixa, coberta e livre?",
+      "acao": { "tipo": "pergunta", "texto": "Pergunte se a vaga é fixa, coberta e se depende de manobrista." },
+      "para_corretor": "A vaga de garagem é fixa, coberta e livre, sem depender de manobrista?"
+    },
+    {
+      "id": "q_agua",
+      "texto": "A pressão da água é suficiente?",
+      "acao": { "tipo": "visita", "texto": "Abra o chuveiro e uma torneira ao mesmo tempo por um minuto." },
+      "para_corretor": null
+    },
+    {
+      "id": "q_ruido",
+      "texto": "Como é o barulho da rua à noite?",
+      "acao": { "tipo": "visita", "texto": "No quarto voltado para a rua, fique dois minutos com as janelas fechadas e depois abertas." },
+      "para_corretor": null
+    },
+    {
+      "id": "q_acesso_pe",
+      "texto": "Como é o acesso a pé ao transporte?",
+      "acao": { "tipo": "visita", "texto": "Faça a pé o trajeto até a parada de ônibus ou estação mais próxima." },
+      "para_corretor": null
+    }
+  ],
+  "aluguel": [
+    {
+      "id": "q_garantia",
+      "texto": "Que garantia o proprietário exige?",
+      "acao": { "tipo": "pergunta", "texto": "Pergunte se aceitam fiador, caução ou seguro-fiança e quanto custa cada opção." },
+      "para_corretor": "Quais garantias são aceitas (fiador, caução ou seguro-fiança) e qual o custo de cada uma?"
+    },
+    {
+      "id": "q_vistoria",
+      "texto": "Como será registrado o estado do imóvel na entrada?",
+      "acao": { "tipo": "documento", "texto": "Peça o laudo de vistoria de entrada, com fotos, antes de assinar." },
+      "para_corretor": "o modelo do laudo de vistoria de entrada, com fotos"
+    }
+  ],
+  "compra": [
+    {
+      "id": "q_matricula",
+      "texto": "A matrícula está em ordem e sem ônus?",
+      "acao": { "tipo": "documento", "texto": "Peça a certidão atualizada da matrícula, de inteiro teor e de ônus reais." },
+      "para_corretor": "a certidão atualizada da matrícula, de inteiro teor e de ônus reais"
+    },
+    {
+      "id": "q_debitos",
+      "texto": "Há débitos de IPTU ou de condomínio?",
+      "acao": { "tipo": "documento", "texto": "Peça a certidão de débitos de IPTU e a declaração de quitação do condomínio." },
+      "para_corretor": "a certidão de débitos de IPTU e a declaração de quitação do condomínio"
+    },
+    {
+      "id": "q_convencao",
+      "texto": "O que a convenção permite e proíbe?",
+      "acao": { "tipo": "documento", "texto": "Peça a convenção e o regimento interno do condomínio." },
+      "para_corretor": "a convenção e o regimento interno do condomínio"
+    },
+    {
+      "id": "q_custos_transacao",
+      "texto": "Quanto custam ITBI, escritura e registro?",
+      "acao": { "tipo": "profissional", "texto": "Consulte a Prefeitura e o cartório sobre ITBI, escritura e registro antes de fazer a proposta." },
+      "para_corretor": null
+    }
+  ]
+}

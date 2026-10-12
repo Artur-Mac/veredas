@@ -1,131 +1,113 @@
-# VEREDA — Housing Decision Intelligence Platform
+# PropSight · protótipo da fase 0
 
-> **"Transforming fragmented property listings, municipal open data, cadastral records, and environmental context into traceable evidence, contextual interpretation, and empowering next steps."**
+Aplicativo móvel que transforma o link de um anúncio de apartamento em Recife num dossiê de evidências: qual é o prédio e como chegamos a ele, o que os registros públicos dizem sobre ele e a rua, o que o anúncio declara e onde não bate, e o que ainda falta confirmar, com documentos a pedir, perguntas e itens de visita. Sem nota, sem semáforo, sem veredito.
 
----
+Este protótipo é a fase 0 do roteiro do PRD (`docs/PRD-PropSight.md`, seção 12). Ele não tem backend: lê três dossiês montados com dados públicos reais de Recife e mostra a jornada completa no celular.
 
-## 🏛️ Project Overview
+## Como rodar
 
-**VEREDA** is an early-stage, mobile-first housing decision intelligence platform built for the Brazilian real estate market, developed for the **15ª Edição do Campus Mobile** (Category: *Tecnologias Urbanas*).
+Requisitos: Node 22 ou mais recente e npm.
 
-When choosing where to live, home seekers face severe information asymmetry. Portals and classifieds only display marketing-curated highlights:
-* Street numbers are frequently omitted.
-* Recurring condominium fees, auxiliary charges, and special assessments are hidden.
-* Topographic steepness, flood history, and urban noise are not disclosed.
-* Neighboring construction permits and legal encumbrances are invisible.
-
-VEREDA bridges the gap between **finding an advertisement** and **understanding what it actually means to live in that property**.
-
----
-
-## 🧭 The Core Mechanism
-
-Rather than outputting opaque, gamified scores or crawling endless listings, VEREDA operates on an evidence-first principle:
-
-```
-[Listing URL / Address Intake]
-       ↓
-[Entity & Building Cadastral Resolution]
-       ↓
-[Traceable Evidence Synthesis] ───→ "O que é fato verificado"
-       ↓
-[Contextual Human Interpretation] ───→ "Por que importa para sua vida"
-       ↓
-[Actionable Unknowns & Next Steps] ───→ "O que perguntar antes da visita"
-```
-
----
-
-## 📱 Interactive Mobile Prototype
-
-A fully functional, self-contained mobile web prototype is available in this repository:
-
-* **File:** [`index.html`](./index.html)
-* **Design Philosophy:** Editorial architecture, Swiss Grid alignment, warm tactile paper surfaces, and zero "generic blue SaaS" aesthetics.
-* **Key Flows Demonstrated:**
-  1. **Intake Terminal:** Paste real estate URLs (QuintoAndar, ZAP, Loft) or enter manual street addresses.
-  2. **Investigative Telemetry Pipeline:** Multi-step resolution with cadastral (CNEFE/IBGE), territorial (GeoSampa/SisRBC), and topographic layers.
-  3. **Candidate Building Resolution:** Resolves building identity when listings omit exact street numbers.
-  4. **Audited Monthly Outlay:** Strikethrough advertised price vs. audited total cost (`R$ 4.410` vs. `R$ 4.000 anunciado`).
-  5. **Evidence Ledger:** Findings structured by *Finding → Why It Matters → Action*, covering noise from adjacent 28-story construction, slope impact on subway walking routes, and municipal tax exemptions.
-  6. **Interactive Visit Checklist:** Dynamic field inspection points generated from document unknowns.
-  7. **1-Click WhatsApp In-Field Generator:** Auto-generates concise, courteous inquiries for real estate brokers before booking visits.
-  8. **Trade-Off Matrix:** Side-by-side comparison without arbitrary 0–10 scores, powered by narrative trade-off syntheses.
-  9. **Search Workspace ("Minha Busca"):** Active dossier monitoring and transparent discard logging.
-
-### How to Run Locally:
 ```bash
-# Simply open index.html in any modern browser:
-open index.html
-# Or serve locally:
-python3 -m http.server 8080
-# Open http://localhost:8080 in mobile emulation mode (F12)
+npm install
 ```
 
----
-
-## 🎨 Brand Identity & Design Tokens
-
-VEREDA's visual system follows **Direction 04: Chassi Editorial com Inscrição Cartográfica** developed in Google Stitch and Pomelli:
-
-| Token | Hex | Name | Functional Purpose |
-| :--- | :--- | :--- | :--- |
-| `--color-signal-orange` | `#F47745` | **Signal Orange** | Critical discoveries, cartographic vectors, primary CTAs |
-| `--color-near-black` | `#171717` | **Near Black / Ink** | High-contrast editorial typography, rigid cadastral bounds |
-| `--color-warm-paper` | `#F2EBDD` | **Warm Paper** | Tactile, human, anti-sterile editorial substrate |
-| `--color-deep-rust` | `#B94E36` | **Deep Rust** | Density layers, hazard highlights, cadastral metadata |
-| `--color-muted-sage` | `#7F8870` | **Muted Sage** | Bioclimatic layers, green zones, verified exemptions |
-
-* **Typography:** `DM Serif Display` / `Fraunces` (Editorial Display) + `Plus Jakarta Sans` / `Inter` (Interface) + `JetBrains Mono` (Cadastral Telemetry).
-* **Wordmark:** Distinctive sharp-cut serif **VEREDA** with an orange dashed cartographic route vector (`- - - - - - - -`).
-
----
-
-## 📚 Repository Structure
-
-```
-.
-├── index.html                       # Standalone interactive mobile prototype
-├── README.md                        # Master project overview & documentation
-├── research/                        # Strategic Research Arsenal & Cross-Industry Intelligence
-│   ├── README.md                    # Master index, module guide & executive roadmap
-│   ├── 01_MASTER_RESEARCH_ATLAS_STAGE1.md # Full 40k-word Stage 1 Monograph
-│   ├── 02_DEEP_RESEARCH_ATLAS_STAGE2.md   # Full 30k-word Stage 2 Monograph
-│   ├── summaries/                   # Fast-reading executive summaries & playbooks
-│   ├── stage1_foundations/          # 9 Foundation monographs (PropTech critique, CV, GeoSampa)
-│   └── stage2_deep_dive/            # 9 Deep-dive monographs (Brazil grounding, pairwise engine)
-├── docs/
-│   ├── VEREDA_IMPROVEMENT_ROADMAP_EPOCHS.md  # 6-Epoch comprehensive technical & UI spec
-│   ├── BRAND_IDENTITY_SPECIFICATION.md       # Full design system tokens & rules
-│   ├── CAMPUS_MOBILE_BRIEF.md                # Project brief, problem statement & team roles
-│   ├── PRD-PropSight.md                      # Product Requirements Document
-│   └── references/                           # Analytical reference briefs & PDFs
-└── assets/
-    ├── brand/                       # Google Stitch Brand Book & wordmark studies
-    └── screenshots/                 # Application screen captures & UX flows
+```bash
+npm run web
 ```
 
----
+O comando abre o app no navegador. Use a emulação de celular do navegador (390 × 844) para ver como no aparelho.
 
-## 🔬 Strategic Research Arsenal
+```bash
+npm run verificar
+```
 
-The repository features an exhaustive research arsenal located in [`research/`](./research/README.md), covering over 70,000 words of cross-industry investigation, sensor proxies, Brazilian open data integration, and behavioral decision mechanics:
+Roda typecheck, lint e testes. Os testes validam as fixtures contra o esquema e barram linguagem proibida (RNF-01 do PRD) e nomes de marcas de terceiros (regulamento 11.20 iv).
 
-* **[Master Atlas (Stage 1)](./research/01_MASTER_RESEARCH_ATLAS_STAGE1.md):** 105 decision mechanisms, cross-industry analogies (aviation, diagnostics, finance, dating), and Brazilian municipal GIS integration (GeoSampa, CNEFE).
-* **[Deep Research Atlas (Stage 2)](./research/02_DEEP_RESEARCH_ATLAS_STAGE2.md):** Epistemological audit, Brazilian hyper-local grounding (title deed encumbrances, water rodízio, structural legacies), revealed-preference pairwise engines, and the Anti-Listing architecture.
-* **[Executive Summaries & Playbooks](./research/summaries/):** High-level decision guides synthesized for Campus Mobile evaluations and product development sprints.
+O app também abre no Expo Go, mas o recebimento pela folha de compartilhamento só funciona no dev build ou no APK, porque depende de código nativo.
 
----
+## APK e dev build para Android
 
-## 🛡️ Scope & Methodology Statement
+O recebimento de anúncios pela folha de compartilhamento usa `expo-share-intent` (só Android nesta fase). Ele exige um build nativo.
 
-* **No Scrapers:** In accordance with project architecture and scope, this repository **does not contain any web scrapers, crawler scripts, or automated data harvesting pipelines**.
-* **Public & Voluntary Data Focus:** All intelligence features are architected around voluntary user inputs, open municipal APIs, national census coordinates (CNEFE/IBGE), and authorized official open data repositories.
+Requisitos: Android SDK (plataforma 36), JDK 17 (o Gradle do projeto não roda com JDK 26) e as variáveis `JAVA_HOME` e `ANDROID_HOME`.
 
----
+```bash
+npx expo prebuild --platform android --no-install
+```
 
-## 👥 Core Team (Campus Mobile)
+```bash
+cd android && ./gradlew assembleRelease --no-daemon
+```
 
-* **Samuel:** Product Strategy & User Journey
-* **Walter:** Visual Identity, Art Direction & Presentation Design
-* **Artur:** Research, Data Validation, Architecture & Engineering Integration
+O APK sai em `android/app/build/outputs/apk/release/app-release.apk`, com o JavaScript embutido. Ele roda sem servidor e serve para gravar a demonstração num celular. Está assinado com a chave de depuração pública do modelo Expo, então não serve para loja.
+
+Na rede corporativa em que o protótipo foi gerado, o Java não confiava no certificado do proxy e o Gradle não conseguia abrir sockets locais em `%TEMP%`. Se acontecer o mesmo, defina antes do build:
+
+```bash
+JAVA_TOOL_OPTIONS="-Djavax.net.ssl.trustStoreType=Windows-ROOT -Djdk.net.unixdomain.tmpdir=C:/caminho/curto/uds"
+```
+
+Para instalar e testar o compartilhamento num emulador ou aparelho:
+
+```bash
+adb install -r android/app/build/outputs/apk/release/app-release.apk
+```
+
+```bash
+adb shell am start -a android.intent.action.SEND -t text/plain --es android.intent.extra.TEXT "https://anuncio.exemplo/imovel/1541528320" -n br.propsight.prototipo/.MainActivity
+```
+
+No aparelho, basta abrir o anúncio no app do portal, tocar em compartilhar e escolher o PropSight. O app reconhece o anúncio pelo código numérico do link. Nesta fase ele só tem dossiês para os três anúncios de exemplo; qualquer outro link cai na tela "Este anúncio não está entre os exemplos".
+
+## O que é dado real e o que é fixo
+
+| Item | Origem |
+|---|---|
+| Campos dos três anúncios | Anúncios reais de Recife abertos no navegador em 12/10/2026. O endereço das páginas fica fora do repositório, em `data/anuncios/origem.local.json` |
+| Edificação, pavimentos, área construída, geometria do mapa | Prefeitura do Recife, Área Urbana (Edificações-Lotes, Edificações-Pavimentos, Quadras, Trechos de Logradouros), atualizada em 02/03/2026 |
+| Unidades, ano de construção, área e IPTU por unidade, regime de tributação | Prefeitura do Recife, IPTU 2026, só campos do imóvel (os de contribuinte foram descartados na ingestão) |
+| Atendimentos da Defesa Civil | Prefeitura do Recife, registros de 2021 a 2024, posicionados por rua |
+| Suscetibilidade | Serviço Geológico do Brasil, carta do Recife de 2015 (1:45.000) |
+| Setorização de risco | Não encontrada nas bases públicas do SGB; vira cartão "desconhecido" |
+| Matriz de perguntas, textos dos cartões e da mensagem | Fixos, escritos a partir do PRD (`scripts/dados/matriz_perguntas.json`, `docs/CATALOGO-DE-CARTOES.md`) |
+| Tempo das etapas de consulta | Simulado; o resultado de cada etapa vem das fixtures |
+| Correções, roteiro, contestações, estado dos dossiês, tema | Gravados só no aparelho |
+
+A derivação de cada valor está em `docs/FIXTURES.md`. Os scripts que geram as fixtures estão em `scripts/dados/` e rodam com `uv`.
+
+## Estrutura
+
+```
+src/app/            telas (Expo Router)
+src/componentes/    mapa cadastral, barra de custo, cartões, carimbos
+src/dominio/        esquema das fixtures (zod), visão do dossiê, formatos
+src/estado/         estado local persistido
+src/fixtures/       dossiês e mapas em JSON
+src/textos/         rótulos e modelo da mensagem ao corretor
+tests/              linguagem calibrada, marcas e fixtures
+scripts/dados/      download e derivação dos dados públicos
+scripts/capturas/   capturas de tela em docs/capturas
+docs/               PRD, glossário, panfleto, plano, catálogo de cartões, fixtures
+```
+
+## Limitações conhecidas
+
+- Só três anúncios. Não há leitura ao vivo do anúncio: a leitura no aparelho, prevista no PRD, entra na fase 2.
+- As etapas de consulta têm tempo simulado.
+- Corrigir um campo declarado marca o campo como "corrigido por você", mas não recalcula os cartões.
+- A Defesa Civil publica o número do imóvel mascarado. Por isso o cartão conta os atendimentos das ruas que passam a até 150 m, e não os do prédio.
+- O cadastro de edificações da Prefeitura cobre 60 dos 94 bairros.
+- Não há setorização oficial de risco alto e muito alto para o Recife nas bases públicas do SGB consultadas. O portal GeoSGB não foi verificado.
+- No navegador, a detecção de link na área de transferência só acontece se a permissão de leitura já tiver sido concedida.
+- O recebimento por compartilhamento está desligado no iOS nesta fase.
+- O APK é assinado com a chave de depuração.
+
+## Licenças e créditos
+
+Contém dados da Prefeitura do Recife, disponibilizados sob ODbL 1.0; as fixtures derivadas desses dados seguem a mesma licença. Contém dados do IBGE (CNEFE 2022) e do Serviço Geológico do Brasil. Fontes Bricolage Grotesque, Atkinson Hyperlegible Next e IBM Plex Mono, sob SIL Open Font License.
+
+## Outros materiais no repositório
+
+- `research/`: pesquisa de mercado e mecanismos feita pela equipe.
+- `index.html` e `docs/` anteriores: primeiro esboço em HTML e materiais de marca. Ficam como histórico. Eles citam portais por nome e não fazem parte do material do concurso.

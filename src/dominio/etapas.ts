@@ -19,7 +19,7 @@ function resumoDoCartao(cartao: Cartao | null, semCartao: string): string {
     return cartao.resumo;
   }
   if (cartao.visual?.tipo === 'ocorrencias') {
-    return `${plural(cartao.visual.total, 'atendimento', 'atendimentos')} em ${cartao.visual.raio_m} m`;
+    return `${plural(cartao.visual.total, 'atendimento', 'atendimentos')} nas ruas a até ${cartao.visual.raio_m} m`;
   }
   return cartao.titulo;
 }

@@ -11,11 +11,13 @@ import { useIdSvg } from '../Carimbo';
 import { Texto } from '../Texto';
 import {
   caixaDeFoco,
+  caminhoDaLinha,
   caminhoDoAnel,
   caminhoDosAneis,
   centroide,
   enquadrar,
   paraTela,
+  pontoMedioDasLinhas,
   rotulosDeRua,
 } from './geometria';
 
@@ -129,7 +131,7 @@ export function MapaCadastral({
       accessibilityLabel={
         ornamental
           ? 'Desenho de quadras e edificações do cadastro do Recife'
-          : `Mapa cadastral com ${mapa.edificacoes.length} edificações, ${mapa.ocorrencias.length} pontos de atendimento da Defesa Civil e raio de ${mapa.raio_m} metros`
+          : `Mapa cadastral com ${mapa.edificacoes.length} edificações, ${mapa.ruas_com_ocorrencias.length} ruas com atendimentos da Defesa Civil e raio de ${mapa.raio_m} metros`
       }
     >
       {quadro === null ? null : (
@@ -162,6 +164,20 @@ export function MapaCadastral({
                       stroke={paleta.azulejo}
                       strokeWidth={1 * metro}
                       strokeOpacity={0.5}
+                    />
+                  ))
+                : null}
+              {visiveis.ocorrencias && !ornamental
+                ? mapa.ruas_com_ocorrencias.map((rua) => (
+                    <Path
+                      key={`rua-${rua.nome}`}
+                      d={rua.trechos.map(caminhoDaLinha).join('')}
+                      fill="none"
+                      stroke={paleta.azulejo}
+                      strokeWidth={6 * metro}
+                      strokeOpacity={0.5}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                   ))
                 : null}
@@ -216,17 +232,24 @@ export function MapaCadastral({
                 </G>
               ))}
               {visiveis.ocorrencias && !ornamental
-                ? mapa.ocorrencias.map((ocorrencia, indice) => (
-                    <Circle
-                      key={`oc-${indice}`}
-                      cx={ocorrencia.x}
-                      cy={-ocorrencia.y}
-                      r={(3.2 + 1.6 * Math.sqrt(ocorrencia.n)) * metro}
-                      fill={paleta.fundo}
-                      stroke={paleta.azulejo}
-                      strokeWidth={2 * metro}
-                    />
-                  ))
+                ? mapa.ruas_com_ocorrencias.map((rua) => {
+                    const [x, y] = pontoMedioDasLinhas(rua.trechos);
+                    return (
+                      <G key={`selo-${rua.nome}`}>
+                        <Circle cx={x} cy={-y} r={10 * metro} fill={paleta.azulejo} stroke={paleta.fundo} strokeWidth={2 * metro} />
+                        <TextoSvg
+                          x={x}
+                          y={-y + 3.8 * metro}
+                          fontSize={10.5 * metro}
+                          fontFamily={familias.dadoForte}
+                          textAnchor="middle"
+                          fill={paleta.sobreTinta}
+                        >
+                          {String(rua.n)}
+                        </TextoSvg>
+                      </G>
+                    );
+                  })
                 : null}
             </Svg>
           </Animated.View>
@@ -319,8 +342,8 @@ export function LegendaMapa({ mapa, comAlvo = true }: { mapa: Mapa; comAlvo?: bo
   if (comAlvo) {
     itens.push({ chave: 'alvo', rotulo: 'edificação do anúncio', simbolo: 'alvo' });
   }
-  if (mapa.ocorrencias.length > 0) {
-    itens.push({ chave: 'oc', rotulo: 'atendimento da Defesa Civil', simbolo: 'ocorrencia' });
+  if (mapa.ruas_com_ocorrencias.length > 0) {
+    itens.push({ chave: 'oc', rotulo: 'rua com atendimentos da Defesa Civil', simbolo: 'ocorrencia' });
   }
   itens.push({ chave: 'raio', rotulo: `raio de ${mapa.raio_m} m`, simbolo: 'raio' });
   if (mapa.suscetibilidade.length > 0) {
@@ -333,7 +356,10 @@ export function LegendaMapa({ mapa, comAlvo = true }: { mapa: Mapa; comAlvo?: bo
           <Svg width={14} height={14} viewBox="0 0 14 14">
             {item.simbolo === 'alvo' ? <Rect x={1} y={2} width={12} height={10} fill={paleta.azulejo} /> : null}
             {item.simbolo === 'ocorrencia' ? (
-              <Circle cx={7} cy={7} r={4.5} fill={paleta.fundo} stroke={paleta.azulejo} strokeWidth={2} />
+              <>
+                <Line x1={1} y1={11} x2={13} y2={3} stroke={paleta.azulejo} strokeWidth={4} strokeOpacity={0.5} strokeLinecap="round" />
+                <Circle cx={7} cy={7} r={3.4} fill={paleta.azulejo} />
+              </>
             ) : null}
             {item.simbolo === 'raio' ? (
               <Circle cx={7} cy={7} r={5.5} fill="none" stroke={paleta.tinta} strokeWidth={1.2} strokeDasharray="2.5 2" />

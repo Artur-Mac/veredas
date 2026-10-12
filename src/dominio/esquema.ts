@@ -40,7 +40,7 @@ const visualOcorrencias = z.strictObject({
   periodo: z.string().min(1),
   por_ano: z.array(z.strictObject({ ano: z.number().int(), n: z.number().int().nonnegative() })),
   por_tipo: z.array(z.strictObject({ tipo: z.string().min(1), n: z.number().int().nonnegative() })),
-  sem_posicao: z.number().int().nonnegative(),
+  ruas: z.array(z.strictObject({ nome: z.string().min(1), n: z.number().int().nonnegative() })),
 });
 
 export const parcelaCustoSchema = z.strictObject({
@@ -202,13 +202,11 @@ export const mapaSchema = z.strictObject({
   edificacoes: z.array(anel),
   logradouros: z.array(z.strictObject({ nome: z.string().min(1), pontos: z.array(ponto).min(2) })),
   alvos: z.array(z.strictObject({ id: z.string().min(1), dsqfl: z.string().regex(/^\d{14}$/), pontos: anel })),
-  ocorrencias: z.array(
+  ruas_com_ocorrencias: z.array(
     z.strictObject({
-      x: z.number(),
-      y: z.number(),
-      ano: z.number().int(),
-      tipo: z.string().min(1),
+      nome: z.string().min(1),
       n: z.number().int().positive(),
+      trechos: z.array(z.array(ponto).min(2)).min(1),
     }),
   ),
   centro_raio: ponto,

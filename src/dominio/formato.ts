@@ -55,6 +55,11 @@ export function dataReferencia(dataRef: string | null): string {
   return anoInicio === anoFim ? anoInicio : `${anoInicio}–${anoFim}`;
 }
 
+export function enderecoCurto(endereco: string): string {
+  const semCidade = endereco.split(/,\s*Recife\b/i)[0] ?? endereco;
+  return semCidade.replace(/,\s*,/g, ',').replace(/,\s*$/, '').trim();
+}
+
 export function codigoEdificacao(dsqfl: string): string {
   return `${dsqfl.slice(0, 7)} ${dsqfl.slice(7)}`;
 }

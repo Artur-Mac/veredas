@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
-import { numero, plural } from '@/dominio/formato';
+import { numero } from '@/dominio/formato';
+import { nomeDeRua } from '@/componentes/mapa/geometria';
 import { useTema } from '@/tema/TemaProvider';
 
 import { Texto } from '../Texto';
@@ -11,10 +12,34 @@ interface Props {
   periodo: string;
   por_ano: { ano: number; n: number }[];
   por_tipo: { tipo: string; n: number }[];
-  sem_posicao: number;
+  ruas: { nome: string; n: number }[];
 }
 
-export function GraficoOcorrencias({ total, raio_m, periodo, por_ano, por_tipo, sem_posicao }: Props) {
+function Lista({ titulo, itens }: { titulo: string; itens: { chave: string; rotulo: string; n: number }[] }) {
+  const { paleta } = useTema();
+  if (itens.length === 0) {
+    return null;
+  }
+  return (
+    <View>
+      <Texto variante="rotulo" tom="tintaSuave" style={estilos.tituloLista}>
+        {titulo}
+      </Texto>
+      {itens.map((item) => (
+        <View key={item.chave} style={[estilos.item, { borderBottomColor: paleta.linha }]}>
+          <Texto variante="pequeno" style={estilos.nome}>
+            {item.rotulo}
+          </Texto>
+          <Texto variante="dado" tom="azulejo">
+            {numero(item.n)}
+          </Texto>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+export function GraficoOcorrencias({ total, raio_m, periodo, por_ano, por_tipo, ruas }: Props) {
   const { paleta } = useTema();
   const maiorAno = Math.max(...por_ano.map((a) => a.n), 1);
   return (
@@ -24,7 +49,7 @@ export function GraficoOcorrencias({ total, raio_m, periodo, por_ano, por_tipo, 
           {numero(total)}
         </Texto>
         <Texto variante="pequeno" tom="tintaSuave" style={estilos.legendaTotal}>
-          {`${total === 1 ? 'atendimento posicionado' : 'atendimentos posicionados'} a até ${raio_m} m, ${periodo}`}
+          {`${total === 1 ? 'atendimento registrado' : 'atendimentos registrados'} nas ruas a até ${raio_m} m, ${periodo}`}
         </Texto>
       </View>
       <View style={estilos.anos}>
@@ -50,32 +75,15 @@ export function GraficoOcorrencias({ total, raio_m, periodo, por_ano, por_tipo, 
           </View>
         ))}
       </View>
-      {por_tipo.length === 0 ? null : (
-        <View style={estilos.tipos}>
-          {por_tipo.map((tipo) => (
-            <View key={tipo.tipo} style={[estilos.tipo, { borderBottomColor: paleta.linha }]}>
-              <Texto variante="pequeno" style={estilos.nomeTipo}>
-                {tipo.tipo}
-              </Texto>
-              <Texto variante="dado" tom="azulejo">
-                {numero(tipo.n)}
-              </Texto>
-            </View>
-          ))}
-        </View>
-      )}
-      {sem_posicao === 0 ? null : (
-        <Texto variante="pequeno" tom="grafite">
-          {`Mais ${plural(sem_posicao, 'registro', 'registros')} na mesma rua sem número, que não conseguimos posicionar.`}
-        </Texto>
-      )}
+      <Lista titulo="por rua" itens={ruas.map((r) => ({ chave: r.nome, rotulo: nomeDeRua(r.nome), n: r.n }))} />
+      <Lista titulo="por tipo" itens={por_tipo.map((t) => ({ chave: t.tipo, rotulo: t.tipo, n: t.n }))} />
     </View>
   );
 }
 
 const estilos = StyleSheet.create({
   bloco: {
-    gap: 12,
+    gap: 14,
   },
   topo: {
     flexDirection: 'row',
@@ -106,17 +114,17 @@ const estilos = StyleSheet.create({
     borderTopLeftRadius: 3,
     borderTopRightRadius: 3,
   },
-  tipos: {
-    gap: 0,
+  tituloLista: {
+    marginBottom: 2,
   },
-  tipo: {
+  item: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
     paddingVertical: 7,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  nomeTipo: {
+  nome: {
     flex: 1,
   },
 });

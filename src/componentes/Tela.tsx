@@ -47,7 +47,7 @@ export function Cabecalho({ titulo, voltar = true, direita }: CabecalhoProps) {
           </Pressable>
         ) : null}
         {titulo === undefined ? null : (
-          <Texto variante="rotulo" tom="tintaSuave" numberOfLines={1}>
+          <Texto variante="rotulo" tom="tintaSuave" numberOfLines={1} style={estilos.titulo}>
             {titulo}
           </Texto>
         )}
@@ -120,6 +120,10 @@ const estilos = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: espaco.um5,
+    flex: 1,
+    minWidth: 0,
+  },
+  titulo: {
     flexShrink: 1,
   },
   cabecalhoDireita: {

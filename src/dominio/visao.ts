@@ -80,7 +80,7 @@ export function custoDosCamposDeclarados(campos: CamposDeclarados): ParcelaCusto
 }
 
 function custoDoAnuncio(dossie: Dossie, cartoes: Cartao[]): ParcelaCusto[] {
-  for (const cartao of cartoes) {
+  for (const cartao of [...cartoes, ...dossie.cartoes]) {
     if (cartao.visual?.tipo === 'custo_mensal') {
       return cartao.visual.parcelas;
     }

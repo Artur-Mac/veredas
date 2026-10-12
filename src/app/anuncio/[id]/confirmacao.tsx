@@ -9,7 +9,7 @@ import { LegendaMapa, MapaCadastral } from '@/componentes/mapa/MapaCadastral';
 import { Cabecalho, Tela } from '@/componentes/Tela';
 import { Texto } from '@/componentes/Texto';
 import type { Edificio } from '@/dominio/esquema';
-import { area, codigoEdificacao, plural } from '@/dominio/formato';
+import { area, codigoEdificacao, enderecoCurto, plural } from '@/dominio/formato';
 import { useEstado } from '@/estado/armazenamento';
 import { dossiePorId, mapaPorId } from '@/fixtures';
 import { useTema } from '@/tema/TemaProvider';
@@ -64,7 +64,7 @@ function OpcaoCandidata({
           </Texto>
         </View>
         <View style={estilos.textoOpcao}>
-          <Texto variante="destaque">{candidata.endereco_oficial}</Texto>
+          <Texto variante="destaque">{enderecoCurto(candidata.endereco_oficial)}</Texto>
           <Texto variante="dado" tom="tintaSuave">
             {fatos(candidata)}
           </Texto>
@@ -153,7 +153,7 @@ export default function Confirmacao() {
           altura={320}
           camadas={{ ocorrencias: false, raio: false, suscetibilidade: false }}
         />
-        <LegendaMapa mapa={{ ...mapa, ocorrencias: [], suscetibilidade: [] }} comAlvo={false} />
+        <LegendaMapa mapa={{ ...mapa, ruas_com_ocorrencias: [], suscetibilidade: [] }} comAlvo={false} />
       </View>
 
       <View style={estilos.lista} accessibilityRole="radiogroup">
