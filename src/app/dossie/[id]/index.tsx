@@ -9,9 +9,9 @@ import { CartaoEvidencia } from '@/componentes/CartaoEvidencia';
 import { DesvioDeRota } from '@/componentes/dossie/DesvioDeRota';
 import { FatosDoEdificio, GrupoDePerguntas, ResumoDaVisao, SecaoBloco } from '@/componentes/dossie/Partes';
 import { LegendaMapa, MapaCadastral } from '@/componentes/mapa/MapaCadastral';
-import { Cabecalho, SeloDemonstracao, Tela } from '@/componentes/Tela';
+import { Cabecalho, Tela } from '@/componentes/Tela';
 import { Texto } from '@/componentes/Texto';
-import { camposExibidos } from '@/dominio/camposDeclarados';
+import { andarEfetivo, camposExibidos } from '@/dominio/camposDeclarados';
 import type { Cartao, TipoAcao } from '@/dominio/esquema';
 import { dataCurta, enderecoCurto } from '@/dominio/formato';
 import { itensDoRoteiro, perguntasEmAberto, type VisaoDossie } from '@/dominio/visao';
@@ -90,7 +90,7 @@ function StatusIdentidade({ visao }: { visao: VisaoDossie }) {
         </Texto>
       </View>
       <Texto variante="rotulo" tom="tintaSuave">
-        {humano ? 'origem humana' : `confiança ${visao.dossie.identidade.confianca}`}
+        {humano ? 'você escolheu entre as candidatas' : `confiança ${visao.dossie.identidade.confianca}`}
       </Texto>
     </View>
   );
@@ -154,12 +154,28 @@ export default function Dossie() {
 
   return (
     <Tela
+      rodape={
+        <View style={estilos.acoes}>
+          <Botao
+            rotulo={`Roteiro · ${roteiro.length}`}
+            icone="check-square"
+            estilo={estilos.acao}
+            aoPressionar={() => router.push({ pathname: '/dossie/[id]/roteiro', params: { id, ...parametros } })}
+          />
+          <Botao
+            rotulo="Mensagem"
+            variante="secundario"
+            icone="message-square"
+            estilo={estilos.acao}
+            aoPressionar={() => router.push({ pathname: '/dossie/[id]/mensagem', params: { id, ...parametros } })}
+          />
+        </View>
+      }
       cabecalho={
         <Cabecalho
           titulo="Dossiê"
           direita={
             <>
-              <SeloDemonstracao />
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Meus dossiês"
@@ -200,11 +216,15 @@ export default function Dossie() {
               rotulo="Escolher o prédio no mapa"
               variante="secundario"
               icone="map"
-              aoPressionar={() => router.push({ pathname: '/anuncio/[id]/confirmacao', params: { id } })}
+              aoPressionar={() => router.push({ pathname: '/anuncio/[id]/confirmacao', params: { id, de: 'dossie' } })}
             />
           </View>
         ) : (
-          <FatosDoEdificio edificio={visao.edificio} />
+          <FatosDoEdificio
+            edificio={visao.edificio}
+            pegada={mapa.alvos.find((alvo) => alvo.id === visao.edificio?.id)?.pontos ?? null}
+            andar={andarEfetivo(dossie, registro.correcoes.andar)}
+          />
         )}
         <ListaDeCartoes cartoes={visao.cartoesPorBloco[1]} id={id} parametros={parametros} contestados={contestados} />
         {visao.origem === 'humano' ? (
@@ -212,7 +232,7 @@ export default function Dossie() {
             rotulo="Não é este prédio?"
             variante="texto"
             icone="refresh-ccw"
-            aoPressionar={() => router.push({ pathname: '/anuncio/[id]/confirmacao', params: { id } })}
+            aoPressionar={() => router.push({ pathname: '/anuncio/[id]/confirmacao', params: { id, de: 'dossie' } })}
           />
         ) : null}
       </SecaoBloco>
@@ -242,19 +262,6 @@ export default function Dossie() {
         {ordemAcoes.map((tipo) => (
           <GrupoDePerguntas key={tipo} tipo={tipo} perguntas={abertas.filter((p) => p.acao.tipo === tipo)} />
         ))}
-        <View style={estilos.acoes}>
-          <Botao
-            rotulo={`Roteiro de visita · ${roteiro.length} itens`}
-            icone="check-square"
-            aoPressionar={() => router.push({ pathname: '/dossie/[id]/roteiro', params: { id, ...parametros } })}
-          />
-          <Botao
-            rotulo="Mensagem para o corretor"
-            variante="secundario"
-            icone="message-square"
-            aoPressionar={() => router.push({ pathname: '/dossie/[id]/mensagem', params: { id, ...parametros } })}
-          />
-        </View>
       </SecaoBloco>
 
       <View style={[estilos.rodape, { borderTopColor: paleta.linha }]}>
@@ -332,8 +339,11 @@ const estilos = StyleSheet.create({
     padding: 16,
   },
   acoes: {
+    flexDirection: 'row',
     gap: 10,
-    marginTop: 6,
+  },
+  acao: {
+    flex: 1,
   },
   rodape: {
     borderTopWidth: StyleSheet.hairlineWidth,

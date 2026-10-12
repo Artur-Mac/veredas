@@ -23,7 +23,7 @@ export function SeloDemonstracao() {
       accessibilityLabel="Demonstração com dados reais pré-processados"
       style={[estilos.selo, { borderColor: paleta.linhaForte }]}
     >
-      <Texto variante="rotulo" tom="tintaSuave">
+      <Texto variante="carimbo" tom="tintaSuave">
         demonstração
       </Texto>
     </View>
@@ -52,7 +52,7 @@ export function Cabecalho({ titulo, voltar = true, direita }: CabecalhoProps) {
           </Texto>
         )}
       </View>
-      <View style={estilos.cabecalhoDireita}>{direita ?? <SeloDemonstracao />}</View>
+      <View style={estilos.cabecalhoDireita}>{direita}</View>
     </View>
   );
 }
@@ -63,12 +63,13 @@ interface TelaProps {
   rodape?: ReactNode;
   rolar?: boolean;
   grade?: boolean;
+  acimaDasAbas?: boolean;
 }
 
-export function Tela({ children, cabecalho, rodape, rolar = true, grade = true }: TelaProps) {
+export function Tela({ children, cabecalho, rodape, rolar = true, grade = false, acimaDasAbas = false }: TelaProps) {
   const { paleta } = useTema();
   return (
-    <SafeAreaView edges={['top', 'bottom']} style={[estilos.tela, { backgroundColor: paleta.fundo }]}>
+    <SafeAreaView edges={acimaDasAbas ? ['top'] : ['top', 'bottom']} style={[estilos.tela, { backgroundColor: paleta.fundo }]}>
       {grade ? <GradeDeLevantamento /> : null}
       {cabecalho}
       {rolar ? (
@@ -83,7 +84,9 @@ export function Tela({ children, cabecalho, rodape, rolar = true, grade = true }
         <View style={[estilos.conteudo, estilos.fixo]}>{children}</View>
       )}
       {rodape === undefined ? null : (
-        <View style={[estilos.rodape, { borderTopColor: paleta.linha, backgroundColor: paleta.fundo }]}>{rodape}</View>
+        <View style={[estilos.rodape, { borderTopColor: paleta.linha, backgroundColor: paleta.fundo }]}>
+          <View style={estilos.conteudoRodape}>{rodape}</View>
+        </View>
       )}
     </SafeAreaView>
   );
@@ -151,8 +154,12 @@ const estilos = StyleSheet.create({
     paddingHorizontal: espaco.dois + 4,
     paddingTop: espaco.um5,
     paddingBottom: espaco.um5,
+    width: '100%',
+  },
+  conteudoRodape: {
     gap: espaco.um,
     width: '100%',
+    maxWidth: 560 - (espaco.dois + 4) * 2,
     alignSelf: 'center',
   },
 });

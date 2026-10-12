@@ -96,7 +96,7 @@ export function Carimbo({ categoria }: { categoria: Categoria }) {
     >
       {categoria === 'inconsistencia' ? <Hachura cor={paleta.tinta} opacidade={0.18} /> : null}
       <SinalCategoria categoria={categoria} tamanho={10} />
-      <Texto variante="rotulo" tom={tom}>
+      <Texto variante="carimbo" tom={tom}>
         {rotuloCategoria[categoria]}
       </Texto>
     </View>

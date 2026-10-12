@@ -35,7 +35,7 @@ export default function LendoAnuncio() {
   }, [lidos, campos.length]);
 
   if (dossie === null) {
-    return <Redirect href={{ pathname: '/demonstracao', params: { link: id } }} />;
+    return <Redirect href="/demonstracao" />;
   }
 
   const completo = lidos >= campos.length;
@@ -46,7 +46,7 @@ export default function LendoAnuncio() {
       cabecalho={<Cabecalho titulo="Lendo o anúncio" />}
       rodape={
         <Botao
-          rotulo={completo ? 'Consultar registros públicos' : 'Lendo…'}
+          rotulo={completo ? 'Ver o que se sabe do prédio' : 'Lendo…'}
           iconeDepois="arrow-right"
           desativado={!completo}
           aoPressionar={() => router.push({ pathname: '/anuncio/[id]/etapas', params: { id } })}

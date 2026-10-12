@@ -92,7 +92,7 @@ export default function Etapas() {
   }, [concluidas, etapas.length, reduzido]);
 
   if (dossie === null) {
-    return <Redirect href={{ pathname: '/demonstracao', params: { link: id } }} />;
+    return <Redirect href="/demonstracao" />;
   }
 
   const pronto = concluidas >= etapas.length;
@@ -100,7 +100,8 @@ export default function Etapas() {
 
   return (
     <Tela
-      cabecalho={<Cabecalho titulo="Consultando registros" />}
+      grade
+      cabecalho={<Cabecalho titulo="Dados públicos" />}
       rodape={
         <Botao
           rotulo={!pronto ? 'Consultando…' : confirmar ? 'Confirmar o prédio' : 'Abrir o dossiê'}
@@ -115,7 +116,7 @@ export default function Etapas() {
       }
     >
       <View style={estilos.topo}>
-        <Texto variante="titulo">{pronto ? 'Registros consultados.' : 'Cruzando o anúncio com registros públicos.'}</Texto>
+        <Texto variante="titulo">{pronto ? 'Pronto.' : 'Procurando o prédio e a rua nos dados públicos.'}</Texto>
         <Texto variante="corpo" tom="tintaSuave">
           Cada etapa grava fonte, data e escala. O que não encontrarmos vira pergunta, não suposição.
         </Texto>

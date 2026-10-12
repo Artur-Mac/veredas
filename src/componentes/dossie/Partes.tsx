@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather';
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import type { Edificio } from '@/dominio/esquema';
+import type { Edificio, Ponto } from '@/dominio/esquema';
 import { area, codigoEdificacao, numero, plural } from '@/dominio/formato';
 import { categoriasEmOrdem, type Bloco, type PerguntaEfetiva, type VisaoDossie } from '@/dominio/visao';
 import { blocos, rotuloCategoriaPlural, rotuloStatusPergunta, rotuloTipoAcao } from '@/textos/rotulos';
@@ -10,6 +10,7 @@ import { useTema } from '@/tema/TemaProvider';
 import { raio } from '@/tema/tipografia';
 
 import { SinalCategoria } from '../Carimbo';
+import { SilhuetaDoPredio } from '../SilhuetaDoPredio';
 import { Texto } from '../Texto';
 
 export function SecaoBloco({ numeroBloco, children }: { numeroBloco: Bloco; children: ReactNode }) {
@@ -75,10 +76,20 @@ function Fato({ rotulo, valor }: { rotulo: string; valor: string }) {
   );
 }
 
-export function FatosDoEdificio({ edificio }: { edificio: Edificio }) {
+export function FatosDoEdificio({ edificio, pegada, andar }: { edificio: Edificio; pegada: Ponto[] | null; andar: number | null }) {
   const { paleta } = useTema();
   return (
     <View style={estilos.fatosBloco}>
+      {pegada === null || edificio.pavimentos === null ? null : (
+        <View style={[estilos.prancha, { borderColor: paleta.linha, backgroundColor: paleta.superficie }]}>
+          <SilhuetaDoPredio pegada={pegada} pavimentos={edificio.pavimentos} andarDeclarado={andar} contorno={edificio.contorno} />
+          <Texto variante="pequeno" tom="tintaFraca">
+            {edificio.contorno === 'lote'
+              ? 'Volume desenhado com o contorno do lote, não da edificação, e os pavimentos do cadastro. A altura de cada pavimento é ilustrativa.'
+              : 'Volume desenhado com o contorno da edificação e os pavimentos do cadastro. A altura de cada pavimento é ilustrativa.'}
+          </Texto>
+        </View>
+      )}
       <View style={estilos.fatos}>
         <Fato rotulo="Pavimentos" valor={edificio.pavimentos === null ? '—' : numero(edificio.pavimentos)} />
         <Fato rotulo="Construção" valor={edificio.ano_construcao === null ? '—' : String(edificio.ano_construcao)} />
@@ -90,8 +101,8 @@ export function FatosDoEdificio({ edificio }: { edificio: Edificio }) {
       </View>
       <View style={[estilos.codigo, { borderColor: paleta.azulejo }]}>
         <SinalCategoria categoria="registro_oficial" tamanho={10} />
-        <Texto variante="rotulo" tom="azulejo">
-          edificação cadastrada
+        <Texto variante="carimbo" tom="azulejo">
+          código do lote
         </Texto>
         <Texto variante="dado" tom="azulejo" selectable>
           {codigoEdificacao(edificio.dsqfl)}
@@ -101,7 +112,7 @@ export function FatosDoEdificio({ edificio }: { edificio: Edificio }) {
         <View style={estilos.evidencias}>
           {edificio.evidencias.map((evidencia) => (
             <View key={evidencia} style={estilos.evidencia}>
-              <Feather name="check" size={13} color={paleta.mare} />
+              <View style={[estilosMarcador.marcador, { backgroundColor: paleta.tintaFraca }]} />
               <Texto variante="pequeno" tom="tintaSuave" style={estilos.flex}>
                 {evidencia}
               </Texto>
@@ -194,6 +205,14 @@ const estilos = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
   },
+  prancha: {
+    borderWidth: 1,
+    borderRadius: raio.grande,
+    paddingHorizontal: 12,
+    paddingTop: 4,
+    paddingBottom: 12,
+    gap: 4,
+  },
   fatosBloco: {
     gap: 12,
   },
@@ -252,5 +271,14 @@ const estilos = StyleSheet.create({
   },
   grupo: {
     gap: 8,
+  },
+});
+
+const estilosMarcador = StyleSheet.create({
+  marcador: {
+    width: 5,
+    height: 5,
+    borderRadius: 3,
+    marginTop: 7,
   },
 });

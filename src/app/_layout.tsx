@@ -41,7 +41,7 @@ function Pilha() {
           animation: 'slide_from_right',
         }}
       >
-        <Stack.Screen name="index" options={{ animation: 'fade' }} />
+        <Stack.Screen name="(abas)" options={{ animation: 'fade' }} />
         <Stack.Screen name="dossie/[id]/cartao/[cartao]" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="dossie/[id]/contestar/[cartao]" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
       </Stack>

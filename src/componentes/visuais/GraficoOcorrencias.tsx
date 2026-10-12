@@ -49,7 +49,7 @@ export function GraficoOcorrencias({ total, raio_m, periodo, por_ano, por_tipo, 
           {numero(total)}
         </Texto>
         <Texto variante="pequeno" tom="tintaSuave" style={estilos.legendaTotal}>
-          {`${total === 1 ? 'atendimento registrado' : 'atendimentos registrados'} nas ruas a até ${raio_m} m, ${periodo}`}
+          {`${total === 1 ? 'atendimento registrado' : 'atendimentos registrados'}, ${periodo}, ${ruas.length === 1 ? 'na única rua' : `nas ${numero(ruas.length)} ruas`} que passam a até ${raio_m} m. Cada rua conta inteira, dentro do bairro.`}
         </Texto>
       </View>
       <View style={estilos.anos}>

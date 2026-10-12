@@ -74,31 +74,77 @@ function comprimentoDaLinha(pontos: Ponto[]): number {
   return total;
 }
 
-export function pontoMedioDasLinhas(linhas: Ponto[][]): Ponto {
-  const maisLonga = linhas.reduce<Ponto[]>(
-    (atual, linha) => (comprimentoDaLinha(linha) > comprimentoDaLinha(atual) ? linha : atual),
-    linhas[0] ?? [],
-  );
-  const metade = comprimentoDaLinha(maisLonga) / 2;
+function pontoNaLinha(linha: Ponto[], fracao: number): Ponto {
+  const alvo = comprimentoDaLinha(linha) * fracao;
   let percorrido = 0;
-  for (let i = 0; i < maisLonga.length - 1; i += 1) {
-    const a = maisLonga[i];
-    const b = maisLonga[i + 1];
+  for (let i = 0; i < linha.length - 1; i += 1) {
+    const a = linha[i];
+    const b = linha[i + 1];
     if (a === undefined || b === undefined) {
       continue;
     }
     const trecho = Math.hypot(b[0] - a[0], b[1] - a[1]);
-    if (percorrido + trecho >= metade && trecho > 0) {
-      const fracao = (metade - percorrido) / trecho;
-      return [a[0] + (b[0] - a[0]) * fracao, a[1] + (b[1] - a[1]) * fracao];
+    if (percorrido + trecho >= alvo && trecho > 0) {
+      const t = (alvo - percorrido) / trecho;
+      return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
     }
     percorrido += trecho;
   }
-  const primeiro = maisLonga[0];
+  const primeiro = linha[0];
   if (primeiro === undefined) {
     throw new Error('rua com ocorrências sem geometria');
   }
   return primeiro;
+}
+
+const fracoesDeTentativa = [0.5, 0.32, 0.68, 0.2, 0.8];
+
+function longeDe(ponto: Ponto, ocupados: Ponto[], folga: number): boolean {
+  return ocupados.every(([ox, oy]) => Math.hypot(ponto[0] - ox, ponto[1] - oy) > folga);
+}
+
+function posicaoInterna(linhas: Ponto[][], ocupados: Ponto[], folga: number, bloqueios: Caixa[]): Ponto {
+  const maisLonga = linhas.reduce<Ponto[]>(
+    (atual, linha) => (comprimentoDaLinha(linha) > comprimentoDaLinha(atual) ? linha : atual),
+    linhas[0] ?? [],
+  );
+  const livre = fracoesDeTentativa.map((fracao) => pontoNaLinha(maisLonga, fracao)).find((p) => longeDe(p, ocupados, folga) && !bloqueado(p, bloqueios));
+  return livre ?? pontoNaLinha(maisLonga, 0.5);
+}
+
+export interface Circulo {
+  centro: Ponto;
+  raio: number;
+}
+
+function bloqueado([x, y]: Ponto, bloqueios: Caixa[]): boolean {
+  return bloqueios.some((c) => x >= c.minX && x <= c.maxX && y >= c.minY && y <= c.maxY);
+}
+
+export function posicoesDosSelos(
+  linhasPorRua: Ponto[][][],
+  evitar: Ponto[],
+  folga: number,
+  borda: Circulo,
+  afastamento: number,
+  bloqueios: Caixa[],
+): Ponto[] {
+  const [cx, cy] = borda.centro;
+  const escolhidas: Ponto[] = [];
+  for (const linhas of linhasPorRua) {
+    const ocupados = [...evitar, ...escolhidas];
+    const naBorda = linhas
+      .flatMap((linha) => [linha[0], linha[linha.length - 1]])
+      .filter((p): p is Ponto => p !== undefined)
+      .filter(([x, y]) => Math.hypot(x - cx, y - cy) >= borda.raio - 1.5)
+      .map(([x, y]): Ponto => {
+        const fator = (borda.raio + afastamento) / Math.hypot(x - cx, y - cy);
+        return [cx + (x - cx) * fator, cy + (y - cy) * fator];
+      });
+    const livre = naBorda.find((p) => longeDe(p, ocupados, folga) && !bloqueado(p, bloqueios));
+    escolhidas.push(livre ?? posicaoInterna(linhas, ocupados, folga, bloqueios));
+  }
+  return escolhidas;
 }
 
 export function caixaDeFoco(mapa: Mapa, alvos: string[], incluirRaio: boolean): Caixa {
@@ -124,6 +170,10 @@ export function enquadrar(caixa: Caixa, largura: number, altura: number, margem:
     alturaVista = limite;
     larguraVista = alturaVista * proporcao;
   }
+  if (larguraVista > limite) {
+    larguraVista = limite;
+    alturaVista = larguraVista / proporcao;
+  }
   const centroX = (caixa.minX + caixa.maxX) / 2;
   const centroY = -(caixa.minY + caixa.maxY) / 2;
   const x = centroX - larguraVista / 2;
@@ -135,6 +185,16 @@ export function enquadrar(caixa: Caixa, largura: number, altura: number, margem:
     largura: larguraVista,
     altura: alturaVista,
     pixelsPorMetro: largura / larguraVista,
+  };
+}
+
+export function caixaDaTela(quadro: Enquadramento, esquerda: number, topo: number, largura: number, altura: number): Caixa {
+  const metro = 1 / quadro.pixelsPorMetro;
+  return {
+    minX: quadro.x + esquerda * metro,
+    maxX: quadro.x + (esquerda + largura) * metro,
+    minY: -(quadro.y + (topo + altura) * metro),
+    maxY: -(quadro.y + topo * metro),
   };
 }
 

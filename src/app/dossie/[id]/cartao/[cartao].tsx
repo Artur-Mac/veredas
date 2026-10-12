@@ -94,7 +94,7 @@ export default function CamadaDoCartao() {
         {url === null ? null : <Linha rotulo="Endereço da fonte" valor={url} selecionavel />}
         <Linha rotulo="Data de referência" valor={dataReferencia(cartao.data_ref)} />
         <Linha rotulo="Data de coleta" valor={dataCurta(cartao.data_coleta)} />
-        <Linha rotulo="Escala" valor={rotuloEscala[cartao.escala]} />
+        <Linha rotulo="Vale para" valor={rotuloEscala[cartao.escala]} />
         <Linha rotulo="Método" valor={cartao.metodo} />
         <Linha rotulo="Limitação principal" valor={cartao.limitacao} />
         <Linha rotulo="O que fazer" valor={cartao.acao} />
@@ -103,7 +103,7 @@ export default function CamadaDoCartao() {
 
       <View style={[estilos.aviso, { borderColor: paleta.linha }]}>
         <Texto variante="pequeno" tom="tintaSuave">
-          {`Este cartão vale para a escala "${rotuloEscala[cartao.escala]}". Não estenda a conclusão para uma escala menor do que a registrada.`}
+          {`Este cartão vale para ${rotuloEscala[cartao.escala]}. Não estenda a conclusão para algo menor do que isso.`}
         </Texto>
       </View>
     </Tela>

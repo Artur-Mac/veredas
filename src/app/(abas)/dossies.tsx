@@ -8,7 +8,7 @@ import { PegadaEdificio } from '@/componentes/ListaDeExemplos';
 import { Cabecalho, Tela } from '@/componentes/Tela';
 import { Texto } from '@/componentes/Texto';
 import type { Dossie } from '@/dominio/esquema';
-import { moeda } from '@/dominio/formato';
+import { moeda, ruaENumero } from '@/dominio/formato';
 import { estadosDossie, useEstado, useRegistro, type EstadoDossie, type PreferenciaTema } from '@/estado/armazenamento';
 import { dossies, mapaPorId } from '@/fixtures';
 import { rotuloEstadoDossie, rotuloOperacao, rotuloPreferenciaTema } from '@/textos/rotulos';
@@ -42,6 +42,13 @@ function ItemDossie({ dossie }: { dossie: Dossie }) {
   const [motivo, setMotivo] = useState(registro.motivoDescarte ?? '');
   const campos = dossie.anuncio.campos_declarados;
   const descartado = registro.estado === 'descartado';
+  const resolucao = registro.resolucao;
+  const escolhida = resolucao?.tipo === 'candidata' ? dossie.identidade.candidatas.find((c) => c.id === resolucao.candidata) : undefined;
+  const edificio = dossie.identidade.edificio ?? escolhida ?? null;
+  const titulo =
+    edificio !== null
+      ? ruaENumero(edificio.endereco_oficial)
+      : `${campos.logradouro ?? 'Endereço não informado'}${campos.numero === null ? ', sem número' : `, ${campos.numero}`}`;
   const parametros =
     registro.resolucao === null
       ? {}
@@ -68,8 +75,8 @@ function ItemDossie({ dossie }: { dossie: Dossie }) {
           <Texto variante="rotulo" tom="tintaSuave">
             {`${rotuloOperacao[dossie.anuncio.operacao]} · ${campos.bairro ?? 'Recife'}`}
           </Texto>
-          <Texto variante="destaque" numberOfLines={1} style={descartado ? estilos.riscado : null}>
-            {campos.logradouro ?? 'Endereço não informado'}
+          <Texto variante="destaque" numberOfLines={2} style={descartado ? estilos.riscado : null}>
+            {titulo}
           </Texto>
           <Texto variante="dado" tom="jambo">
             {campos.preco === null ? 'preço não informado' : moeda(campos.preco)}
@@ -129,11 +136,14 @@ export default function MeusDossies() {
   const { estado, despachar } = useEstado();
   const preferencias: PreferenciaTema[] = ['sistema', 'claro', 'escuro'];
   return (
-    <Tela cabecalho={<Cabecalho titulo="Meus dossiês" />}>
+    <Tela acimaDasAbas cabecalho={<Cabecalho voltar={false} titulo="Meus dossiês" />}>
       <View style={estilos.topo}>
         <Texto variante="titulo">Meus dossiês</Texto>
         <Texto variante="corpo" tom="tintaSuave">
           Os anúncios que você verificou, com o estado de cada um. Tudo fica salvo neste aparelho.
+        </Texto>
+        <Texto variante="pequeno" tom="tintaFraca">
+          Demonstração: três anúncios reais de Recife, com dados públicos processados antes. A leitura ao vivo de qualquer anúncio entra na próxima fase.
         </Texto>
       </View>
       <View style={estilos.lista}>

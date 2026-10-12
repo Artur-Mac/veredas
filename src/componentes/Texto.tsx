@@ -13,6 +13,7 @@ export type Variante =
   | 'corpoForte'
   | 'pequeno'
   | 'rotulo'
+  | 'carimbo'
   | 'dado'
   | 'dadoGrande';
 
@@ -72,6 +73,12 @@ const estilos = StyleSheet.create({
     lineHeight: escala.pequeno * 1.4,
   },
   rotulo: {
+    fontFamily: familias.textoMedio,
+    fontSize: 12.5,
+    lineHeight: 16,
+    letterSpacing: 0.15,
+  },
+  carimbo: {
     fontFamily: familias.dadoMedio,
     fontSize: escala.rotulo,
     lineHeight: escala.rotulo * 1.35,

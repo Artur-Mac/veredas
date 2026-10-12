@@ -72,7 +72,7 @@ export function CartaoEvidencia({ cartao, indice = 0, aoAbrir, aoContestar, aoVe
             <View style={estilos.topo}>
               <Carimbo categoria={cartao.categoria} />
               <View style={estilos.selos}>
-                <Selo texto={rotuloEscala[cartao.escala]} icone="map-pin" />
+                <Selo texto={`vale para ${rotuloEscala[cartao.escala]}`} icone="map-pin" />
                 {cartao.data_ref === null ? null : <Selo texto={dataReferencia(cartao.data_ref)} icone="calendar" />}
               </View>
             </View>
@@ -170,12 +170,12 @@ const estilos = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
-    paddingTop: 12,
+    paddingTop: 4,
   },
   link: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    minHeight: 28,
+    minHeight: 44,
   },
 });

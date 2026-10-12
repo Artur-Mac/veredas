@@ -4,7 +4,7 @@ import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 import type { Dossie, Mapa } from '@/dominio/esquema';
-import { area, moeda } from '@/dominio/formato';
+import { area, moeda, plural } from '@/dominio/formato';
 import { dossies, mapaPorId } from '@/fixtures';
 import { rotuloOperacao } from '@/textos/rotulos';
 import { useTema } from '@/tema/TemaProvider';
@@ -45,7 +45,7 @@ export function PegadaEdificio({ mapa, tamanho = 56 }: { mapa: Mapa; tamanho?: n
 function resumoDoAnuncio(dossie: Dossie): string {
   const c = dossie.anuncio.campos_declarados;
   return [
-    c.quartos === null ? null : `${c.quartos} quartos`,
+    c.quartos === null ? null : plural(c.quartos, 'quarto', 'quartos'),
     c.area_m2 === null ? null : area(c.area_m2),
     c.andar === null ? null : `${c.andar}º andar`,
   ]

@@ -7,6 +7,7 @@ import { Animated, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useAparecer } from '@/componentes/animacao';
 import { Botao, vibrarLeve } from '@/componentes/Botao';
 import { ListaDeExemplos } from '@/componentes/ListaDeExemplos';
+import { nomeDeRua } from '@/componentes/mapa/geometria';
 import { MapaCadastral } from '@/componentes/mapa/MapaCadastral';
 import { Cabecalho, SeloDemonstracao, Tela } from '@/componentes/Tela';
 import { Texto } from '@/componentes/Texto';
@@ -16,19 +17,34 @@ import { dossies, mapaPorId } from '@/fixtures';
 import { nomeProduto } from '@/textos/rotulos';
 import { useTema } from '@/tema/TemaProvider';
 import { familias, raio } from '@/tema/tipografia';
+import { ruaENumero } from '@/dominio/formato';
 
-function BotaoMeusDossies() {
+function enderecoDoCarimbo(endereco: string): string {
+  const [rua, numeroPredio] = ruaENumero(endereco).split(', ');
+  return [rua === undefined ? null : nomeDeRua(rua), numeroPredio ?? null].filter((parte): parte is string => parte !== null).join(', ');
+}
+
+const passos: { icone: 'smartphone' | 'share-2' | 'check-circle'; texto: string }[] = [
+  { icone: 'smartphone', texto: 'Abra o anúncio no app do portal' },
+  { icone: 'share-2', texto: 'Toque em compartilhar' },
+  { icone: 'check-circle', texto: `Escolha o ${nomeProduto}` },
+];
+
+function PassosDoCompartilhamento() {
   const { paleta } = useTema();
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel="Meus dossiês"
-      hitSlop={10}
-      onPress={() => router.push('/dossies')}
-      style={({ pressed }) => [estilos.botaoIcone, { borderColor: paleta.linha, opacity: pressed ? 0.6 : 1 }]}
-    >
-      <Feather name="folder" size={18} color={paleta.tinta} />
-    </Pressable>
+    <View style={estilos.passos} accessibilityLabel="Como enviar um anúncio pelo compartilhamento">
+      {passos.map((passo, indice) => (
+        <View key={passo.icone} style={estilos.passo}>
+          <View style={[estilos.iconePasso, { borderColor: paleta.linhaForte, backgroundColor: paleta.superficie }]}>
+            <Feather name={passo.icone} size={18} color={paleta.mare} />
+          </View>
+          <Texto variante="pequeno" tom="tintaSuave" style={estilos.textoPasso}>
+            {`${indice + 1}. ${passo.texto}`}
+          </Texto>
+        </View>
+      ))}
+    </View>
   );
 }
 
@@ -73,7 +89,7 @@ export default function Entrada() {
   const { link, descartar } = useLinkNaAreaDeTransferencia();
   const heroi = useAparecer(0);
   const campo = useAparecer(160);
-  const primeiro = dossies[0];
+  const exemplo = dossies.find((d) => d.identidade.status === 'resolvido');
 
   const verificar = (conteudo: string) => {
     const limpo = conteudo.trim();
@@ -90,7 +106,7 @@ export default function Entrada() {
   };
 
   return (
-    <Tela cabecalho={<Cabecalho voltar={false} direita={<><SeloDemonstracao /><BotaoMeusDossies /></>} />}>
+    <Tela grade acimaDasAbas cabecalho={<Cabecalho voltar={false} direita={<SeloDemonstracao />} />}>
       <Animated.View style={[heroi, estilos.heroi]}>
         <Texto variante="rotulo" tom="mare">
           Recife · verificação de anúncio
@@ -98,10 +114,29 @@ export default function Entrada() {
         <Texto variante="marca" accessibilityRole="header">
           {nomeProduto}
         </Texto>
+        {exemplo === undefined || exemplo.identidade.edificio === null ? null : (
+          <View style={estilos.faixa}>
+            <MapaCadastral mapa={mapaPorId(exemplo.dossie_id)} alvos={['alvo']} ornamental altura={168} />
+            <View style={[estilos.carimbo, { backgroundColor: paleta.superficieElevada, borderColor: paleta.azulejo }]}>
+              <Texto variante="carimbo" tom="azulejo">
+                cadastro da Prefeitura
+              </Texto>
+              <Texto variante="dado" tom="tinta">
+                {[
+                  enderecoDoCarimbo(exemplo.identidade.edificio.endereco_oficial),
+                  exemplo.identidade.edificio.pavimentos === null ? null : `${exemplo.identidade.edificio.pavimentos} pavimentos`,
+                ]
+                  .filter((parte): parte is string => parte !== null)
+                  .join(' · ')}
+              </Texto>
+            </View>
+          </View>
+        )}
         <Texto variante="titulo">Compartilhe ou cole o link do anúncio.</Texto>
         <Texto variante="corpo" tom="tintaSuave">
           Mostramos o que os registros públicos dizem sobre o prédio, o que o anúncio declara e o que ainda falta confirmar antes da visita.
         </Texto>
+        <PassosDoCompartilhamento />
       </Animated.View>
 
       {link === null ? null : (
@@ -144,15 +179,6 @@ export default function Entrada() {
         </Texto>
       </Animated.View>
 
-      {primeiro === undefined ? null : (
-        <View style={estilos.ilustracao}>
-          <MapaCadastral mapa={mapaPorId(primeiro.dossie_id)} alvos={['alvo']} ornamental altura={150} />
-          <Texto variante="pequeno" tom="tintaFraca">
-            Quadras e edificações desenhadas com o cadastro aberto da Prefeitura do Recife, sem mapa de terceiros.
-          </Texto>
-        </View>
-      )}
-
       <View style={estilos.secao}>
         <Texto variante="rotulo" tom="tintaSuave">
           Anúncios de exemplo · dados reais de Recife
@@ -168,13 +194,25 @@ const estilos = StyleSheet.create({
     gap: 10,
     paddingTop: 12,
   },
-  botaoIcone: {
+  passos: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 4,
+  },
+  passo: {
+    flex: 1,
+    gap: 6,
+  },
+  iconePasso: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: 12,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  textoPasso: {
+    lineHeight: 17,
   },
   aviso: {
     borderRadius: raio.grande,
@@ -219,8 +257,18 @@ const estilos = StyleSheet.create({
     fontSize: 14,
     paddingVertical: 12,
   },
-  ilustracao: {
-    gap: 8,
+  faixa: {
+    marginVertical: 4,
+  },
+  carimbo: {
+    position: 'absolute',
+    left: 10,
+    bottom: 10,
+    borderWidth: 1.2,
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    gap: 1,
   },
   secao: {
     gap: 12,
