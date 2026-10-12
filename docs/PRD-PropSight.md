@@ -312,7 +312,7 @@ Tabela de resolução (nome_edifício_normalizado, dsqfl, confirmações, últim
 | IBGE CNEFE 2022, município 2611606 | Coordenadas por endereço; dicionário de geocodificação | Público | **Confirmado** (zip 17 MB) | Coordenada de apartamento pode herdar a do número |
 | SGB, Carta de suscetibilidade a movimentos de massa e inundação, Recife (2015, 1:45.000, SIG) | Cartão de suscetibilidade | Público | **Confirmado** | Não é setorização de risco |
 | SGB, Setorização de risco alto e muito alto, Recife | Cartão de risco oficial | | **Não encontrado** no RIGeo; GeoSGB a verificar | Cartão vira "Desconhecido oficial" |
-| Lista de prédios-caixão por endereço | Cartão de maior impacto possível | | **Não pública**; só agregados (TRF5, MPPE) e exemplos em notícias | Alvo de articulação com Prefeitura, Defesa Civil, CAIXA |
+| Lista de prédios-caixão por endereço | Cartão de maior impacto possível | | **Não pública**; só agregados (TRF5, MPPE) e exemplos em notícias | Alvo de articulação com Prefeitura, Defesa Civil e o banco público que financia habitação |
 | OpenStreetMap | Nomes de edifício, rede de pedestres, POIs | ODbL | A medir por bairro | Cobertura variável |
 | Página do anúncio, lida na WebView do usuário | Campos declarados | Termos de uso dos portais proíbem scraping; leitura no aparelho do usuário é inferência técnica, **revisão jurídica pendente** | Confirmado em três portais: um expõe schema.org com coordenadas, outro expõe endereço com número e andar no texto, outro só texto livre | Fetch de servidor bloqueado (403) em quatro dos cinco portais testados |
 | Documentos do usuário | Leitor documental | Consentimento | Experimento E3 pendente | Erro de extração; exige citação |
@@ -356,7 +356,7 @@ Tabela de resolução (nome_edifício_normalizado, dsqfl, confirmações, últim
 | Dados espaciais | PostgreSQL + PostGIS com Área Urbana e CNEFE carregados | Interseções e vizinhança por rua |
 | Auditoria de fontes | DuckDB | Exploração de CSV e GeoJSON grandes |
 | Pareamento | Regras em fev; Splink (Fellegi-Sunter sobre DuckDB) na Etapa 4 | Explicável, barato, gera rótulos |
-| LLM | Claude Opus 5.5 via API Anthropic, saída estruturada | Qualidade em texto livre de descrição; custo de centavos por anúncio |
+| LLM | Modelo de linguagem de grande porte via API, com saída estruturada | Qualidade em texto livre de descrição; custo de centavos por anúncio |
 | Rotas (Etapa 4) | openrouteservice self-hosted ou OSMnx | Sem restrição de cache, custo zero por consulta |
 | Texto dos cartões | Templates por categoria + testes automatizados | Auditabilidade |
 
@@ -446,7 +446,7 @@ Consultas espaciais são locais e sem custo marginal. Custo não é restrição 
 2. O que cada app de portal envia na folha de compartilhamento? (teste em aparelho, 10 minutos)
 3. Parecer jurídico sobre leitura na WebView do usuário.
 4. Cobertura real de edificações cadastradas por bairro (E4).
-5. Lista de prédios-caixão: quem na Prefeitura, Defesa Civil ou CAIXA pode fornecer, e sob que condições.
+5. Lista de prédios-caixão: quem na Prefeitura, na Defesa Civil ou no banco público que financia habitação pode fornecer, e sob que condições.
 6. Precisão da geocodificação da Defesa Civil contra CNEFE.
 7. Forma da Semana Imersiva (presencial, online, híbrida), divulgada em 04/12.
 8. Valores possíveis de "regime de tributação" no IPTU: qual deles indica isenção ou imunidade.

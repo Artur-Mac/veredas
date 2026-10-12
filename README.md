@@ -26,6 +26,12 @@ Roda typecheck, lint e testes. Os testes validam as fixtures contra o esquema e 
 
 O app também abre no Expo Go, mas o recebimento pela folha de compartilhamento só funciona no dev build ou no APK, porque depende de código nativo.
 
+```bash
+npm run capturas
+```
+
+Exporta o app para a web e grava as telas em `docs/capturas/`, no tema claro e numa seleção em tema escuro. Usa o Microsoft Edge instalado no Windows. As capturas do APK num emulador Android ficam em `docs/capturas/android/`.
+
 ## APK e dev build para Android
 
 O recebimento de anúncios pela folha de compartilhamento usa `expo-share-intent` (só Android nesta fase). Ele exige um build nativo.
@@ -65,14 +71,14 @@ No aparelho, basta abrir o anúncio no app do portal, tocar em compartilhar e es
 | Item | Origem |
 |---|---|
 | Campos dos três anúncios | Anúncios reais de Recife abertos no navegador em 12/10/2026. O endereço das páginas fica fora do repositório, em `data/anuncios/origem.local.json` |
-| Edificação, pavimentos, área construída, geometria do mapa | Prefeitura do Recife, Área Urbana (Edificações-Lotes, Edificações-Pavimentos, Quadras, Trechos de Logradouros), atualizada em 02/03/2026 |
+| Edificação, pavimentos, área construída, geometria do mapa e da silhueta do prédio | Prefeitura do Recife, Área Urbana (Edificações-Lotes, Edificações-Pavimentos, Lotes, Quadras, Trechos de Logradouros), atualizada em 02/03/2026. A altura de cada pavimento na silhueta é ilustrativa |
 | Unidades, ano de construção, área e IPTU por unidade, regime de tributação | Prefeitura do Recife, IPTU 2026, só campos do imóvel (os de contribuinte foram descartados na ingestão) |
-| Atendimentos da Defesa Civil | Prefeitura do Recife, registros de 2021 a 2024, posicionados por rua |
+| Atendimentos da Defesa Civil | Prefeitura do Recife, registros de 2021 a 2024, contados por rua inteira dentro do bairro |
 | Suscetibilidade | Serviço Geológico do Brasil, carta do Recife de 2015 (1:45.000) |
 | Setorização de risco | Não encontrada nas bases públicas do SGB; vira cartão "desconhecido" |
 | Matriz de perguntas, textos dos cartões e da mensagem | Fixos, escritos a partir do PRD (`scripts/dados/matriz_perguntas.json`, `docs/CATALOGO-DE-CARTOES.md`) |
 | Tempo das etapas de consulta | Simulado; o resultado de cada etapa vem das fixtures |
-| Correções, roteiro, contestações, estado dos dossiês, tema | Gravados só no aparelho |
+| Correções, roteiro, contestações, mensagem editada, estado dos dossiês, tema | Gravados só no aparelho |
 
 A derivação de cada valor está em `docs/FIXTURES.md`. Os scripts que geram as fixtures estão em `scripts/dados/` e rodam com `uv`.
 
@@ -80,7 +86,7 @@ A derivação de cada valor está em `docs/FIXTURES.md`. Os scripts que geram as
 
 ```
 src/app/            telas (Expo Router)
-src/componentes/    mapa cadastral, barra de custo, cartões, carimbos
+src/componentes/    mapa cadastral, silhueta do prédio, barra de custo, cartões, carimbos
 src/dominio/        esquema das fixtures (zod), visão do dossiê, formatos
 src/estado/         estado local persistido
 src/fixtures/       dossiês e mapas em JSON
@@ -95,9 +101,9 @@ docs/               PRD, glossário, panfleto, plano, catálogo de cartões, fix
 
 - Só três anúncios. Não há leitura ao vivo do anúncio: a leitura no aparelho, prevista no PRD, entra na fase 2.
 - As etapas de consulta têm tempo simulado.
-- Corrigir um campo declarado marca o campo como "corrigido por você", mas não recalcula os cartões.
-- A Defesa Civil publica o número do imóvel mascarado. Por isso o cartão conta os atendimentos das ruas que passam a até 150 m, e não os do prédio.
-- O cadastro de edificações da Prefeitura cobre 60 dos 94 bairros.
+- Corrigir um campo declarado marca o campo como "corrigido por você" e redesenha o andar na silhueta, mas não recalcula os cartões.
+- A Defesa Civil publica o número do imóvel mascarado. Por isso o cartão escolhe as ruas que passam a até 150 m e conta os atendimentos de cada rua inteira dentro do bairro, não os do prédio.
+- A camada de edificações da Prefeitura tem edificações em 63 dos 94 bairros (`scripts/dados/cobertura_edificacoes.py`), com lacunas mesmo nesses bairros. Sem ela, pavimentos e área vêm do cadastro de lotes, e a silhueta usa o contorno do lote.
 - Não há setorização oficial de risco alto e muito alto para o Recife nas bases públicas do SGB consultadas. O portal GeoSGB não foi verificado.
 - No navegador, a detecção de link na área de transferência só acontece se a permissão de leitura já tiver sido concedida.
 - O recebimento por compartilhamento está desligado no iOS nesta fase.

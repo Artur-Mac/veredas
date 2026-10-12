@@ -18,6 +18,8 @@ Telas, na ordem da jornada do PRD (seções 5 e 6):
 8. Modo rua: o anúncio sem número, quando o usuário não reconhece nenhuma candidata.
 9. Meus dossiês: os três dossiês com estado e motivo de descarte opcional.
 
+Entrada e Meus dossiês ficam em duas abas inferiores ("Verificar" e "Meus dossiês"); as demais telas empilham por cima delas.
+
 Entrada por compartilhamento: `expo-share-intent` em dev build, com limite de 4 horas de esforço. O campo de colar link funciona sempre.
 
 ## O que é dado real e o que é fixo
@@ -27,16 +29,16 @@ Entrada por compartilhamento: `expo-share-intent` em dev build, com limite de 4 
 | Campos dos 3 anúncios | Anúncios reais de Recife, abertos no navegador em outubro de 2026. O endereço da página fica fora do repositório |
 | Edificação, lote, pavimentos, área construída | Prefeitura do Recife, Área Urbana (Edificações-Lotes, Edificações-Pavimentos, Lotes) |
 | Unidades, ano de construção, área e IPTU por unidade | Prefeitura do Recife, IPTU 2026, só campos do imóvel |
-| Atendimentos da Defesa Civil em 150 m | Prefeitura do Recife, 2021 a 2024, geocodificados contra o CNEFE 2022 |
-| Suscetibilidade | Carta SGB 2015 do Recife, se o download funcionar; senão, cartão desconhecido |
-| Geometria do mapa | Quadras, edificações e trechos de logradouro da Prefeitura, reprojetados para metros locais |
+| Atendimentos da Defesa Civil nas ruas que passam a até 150 m | Prefeitura do Recife, 2021 a 2024, ligados ao logradouro oficial; cada atendimento conta para a rua inteira dentro do bairro, porque o número do imóvel vem mascarado |
+| Suscetibilidade | Carta SGB 2015 do Recife |
+| Geometria do mapa e da silhueta do prédio | Quadras, lotes, edificações e trechos de logradouro da Prefeitura, reprojetados para metros locais; a altura de cada pavimento na silhueta é ilustrativa |
 | Matriz de perguntas, textos dos cartões e da mensagem | Fixos, escritos a partir do PRD |
 | Tempo das etapas do pipeline | Simulado; o resultado de cada etapa vem das fixtures |
 | Estado do usuário (correções, roteiro, estado do dossiê) | Local no aparelho |
 
 ## Direção visual
 
-Prancha cadastral viva. O app se comporta como uma folha de levantamento da Prefeitura que ganha vida no celular: o mapa não usa tiles de terceiros, é desenhado com a geometria real de quadras, lotes e edificações do cadastro municipal, com escala, norte, o código de 14 dígitos e coordenadas em fonte mono. A certeza é codificada pela forma da linha, nunca por cor de semáforo: traço contínuo é registro, tracejado é desconhecido, hachura é conflito entre fontes, e a voz do anunciante tem cor própria. A paleta vem de Recife: tinta de mangue no lugar do preto, azul de azulejo para registros oficiais, verde de maré para observação direta, jambo para o que o anunciante declara, e branco de cal frio como superfície, com um tema escuro de rio à noite. Tipografia: Bricolage Grotesque nos títulos (continuidade com o panfleto), Atkinson Hyperlegible no texto corrido (legibilidade para leigos) e IBM Plex Mono em dados, códigos e datas.
+Prancha cadastral viva. O app se comporta como uma folha de levantamento da Prefeitura que ganha vida no celular: o mapa não usa tiles de terceiros, é desenhado com a geometria real de quadras, lotes e edificações do cadastro municipal, com escala, norte, o código de 14 dígitos e coordenadas em fonte mono. A certeza é codificada pela forma da linha, nunca por cor de semáforo: traço contínuo é registro, tracejado é desconhecido, hachura é conflito entre fontes, e a voz do anunciante tem cor própria. A paleta vem de Recife: tinta de mangue no lugar do preto, azul de azulejo para registros oficiais, verde de maré para observação direta, jambo para o que o anunciante declara, e branco de cal frio como superfície, com um tema escuro de rio à noite. Tipografia: Bricolage Grotesque nos títulos (continuidade com o panfleto), Atkinson Hyperlegible no texto corrido (legibilidade para leigos) e IBM Plex Mono em dados, códigos e datas. Os dois momentos de impacto são o mapa, que se monta camada por camada até o alvo, e a barra de custo segmentada por origem; a silhueta isométrica do prédio, extrudada do contorno cadastral, mostra o andar anunciado aceso em jambo ou flutuando tracejado acima do último pavimento quando o cadastro não comporta o andar.
 
 ## Contrato das fixtures
 
@@ -70,9 +72,9 @@ perguntas            Pergunta[]
 resumo               contagem de cartões por categoria
 ```
 
-Edificio: `id` ("alvo", "A", "B", "C"), `dsqfl` (14 dígitos), `endereco_oficial`, `pavimentos`, `area_construida_m2`, `ano_construcao`, `unidades`, `evidencias` (frases curtas que explicam por que é candidata).
+Edificio: `id` ("alvo", "A", "B", "C"), `dsqfl` (14 dígitos), `endereco_oficial`, `pavimentos`, `area_construida_m2`, `ano_construcao`, `unidades`, `contorno` (novo; "edificacao" ou "lote", diz de onde vem o polígono), `evidencias` (frases curtas que explicam por que é candidata).
 
-Cartao: `id`, `bloco` (1 a 4), `categoria` ("registro_oficial", "observacao_direta", "declarado_anunciante", "inconsistencia", "desconhecido", "precisa_especialista"), `titulo` (novo, até 5 palavras), `resumo` (novo, opcional, até 70 caracteres, usado na tela de etapas), `claim`, `fonte`, `url_fonte` (ou null), `data_ref` (data ISO, intervalo ISO "inicio/fim" ou null), `data_coleta`, `escala` ("unidade", "edificio", "lote", "rua", "microarea", "bairro"), `metodo`, `limitacao`, `acao`, `pergunta_id` (novo, ou null) e `visual` opcional (novo):
+Cartao: `id`, `bloco` (1 a 4), `categoria` ("registro_oficial", "observacao_direta", "declarado_anunciante", "inconsistencia", "desconhecido", "precisa_especialista"), `titulo` (novo, até 5 palavras), `resumo` (novo, opcional, até 70 caracteres, usado na tela de etapas), `claim`, `fonte`, `url_fonte` (ou null), `data_ref` (data ISO, intervalo ISO "inicio/fim" ou null), `data_coleta`, `escala` ("unidade", "edificio", "lote", "rua", "microarea", "bairro", "municipio"), `metodo`, `limitacao`, `acao`, `pergunta_id` (novo, ou null) e `visual` opcional (novo):
 
 - `{ tipo: "comparacao_area", itens: [{ rotulo, valor_m2, categoria }] }`
 - `{ tipo: "ocorrencias", total, raio_m, periodo, por_ano: [{ ano, n }], por_tipo: [{ tipo, n }], ruas: [{ nome, n }] }`
@@ -85,10 +87,11 @@ Pergunta: `id`, `texto`, `status` ("respondida", "parcial", "desconhecida"), `st
 ```
 dossie_id, crs ("EPSG:31985"), origem_utm [E, N], origem_wgs84 [lon, lat], lado_m, fonte, data_ref
 quadras        [[[x, y], ...]]          anel externo, metros relativos à origem, y para norte
+lotes          [[[x, y], ...]]
 edificacoes    [[[x, y], ...]]
 logradouros    [{ nome, pontos: [[x, y], ...] }]
 alvos          [{ id, dsqfl, pontos: [[x, y], ...] }]
-ruas_com_ocorrencias [{ nome, n, trechos: [[[x, y], ...]] }]  trechos dentro do raio; a Defesa Civil publica o número mascarado, então a posição é por rua
+ruas_com_ocorrencias [{ nome, n, trechos: [[[x, y], ...]] }]  trechos dentro do raio; n vale para a rua inteira no bairro, porque a Defesa Civil publica o número mascarado
 centro_raio    [x, y]
 raio_m         150
 suscetibilidade [{ tipo, classe, pontos }]  vazio se a carta não for obtida
