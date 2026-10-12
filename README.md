@@ -66,6 +66,14 @@ adb shell am start -a android.intent.action.SEND -t text/plain --es android.inte
 
 No aparelho, basta abrir o anúncio no app do portal, tocar em compartilhar e escolher o PropSight. O app reconhece o anúncio pelo código numérico do link. Nesta fase ele só tem dossiês para os três anúncios de exemplo; qualquer outro link cai na tela "Este anúncio não está entre os exemplos".
 
+Com o APK instalado num emulador ou aparelho conectado, este roteiro percorre os fluxos pelo compartilhamento e grava as telas em `docs/capturas/android/`:
+
+```bash
+node scripts/capturas/capturar-android.mjs
+```
+
+Ele usa o `adb` de `ANDROID_HOME`, apaga os dados do app no aparelho, desliga as animações do sistema durante a captura e as religa no fim. O tema escuro é escolhido na tela Meus dossiês, porque a imagem de emulador usada trava o modo noturno do sistema.
+
 ## O que é dado real e o que é fixo
 
 | Item | Origem |
