@@ -1,0 +1,109 @@
+[
+  {
+    "id": "boa-viagem-rua-do-catete",
+    "operacao": "aluguel",
+    "codigo_anuncio": "1541528320",
+    "coletado_em": "2026-10-12",
+    "campos_declarados": {
+      "preco": 5500,
+      "condominio": null,
+      "iptu": null,
+      "iptu_periodicidade": null,
+      "area_m2": 43,
+      "quartos": 1,
+      "suites": null,
+      "banheiros": 1,
+      "vagas": 1,
+      "andar": null,
+      "edificio": "Ivani Silvestre Residence",
+      "logradouro": "Rua do Catete",
+      "numero": "359",
+      "complemento": "Apto. 1005",
+      "bairro": "Boa Viagem"
+    },
+    "trechos_descricao": [],
+    "tipo_de_area": "útil",
+    "parcelas_extras": [],
+    "parcelas_nao_informadas": [
+      "Seguro-fiança"
+    ],
+    "posicao_declarada": null,
+    "criterios_candidatas": null
+  },
+  {
+    "id": "casa-amarela-estrada-do-arraial",
+    "operacao": "compra",
+    "codigo_anuncio": "2715610223",
+    "coletado_em": "2026-10-12",
+    "campos_declarados": {
+      "preco": 650000,
+      "condominio": 700,
+      "iptu": 2000,
+      "iptu_periodicidade": null,
+      "area_m2": 74,
+      "quartos": 3,
+      "suites": 1,
+      "banheiros": 3,
+      "vagas": 2,
+      "andar": null,
+      "edificio": null,
+      "logradouro": "Estrada do Arraial",
+      "numero": "3574",
+      "complemento": null,
+      "bairro": "Casa Amarela"
+    },
+    "trechos_descricao": [],
+    "tipo_de_area": null,
+    "parcelas_extras": [],
+    "parcelas_nao_informadas": [],
+    "posicao_declarada": null,
+    "criterios_candidatas": null
+  },
+  {
+    "id": "boa-vista-rua-do-aragao",
+    "operacao": "aluguel",
+    "codigo_anuncio": "893547852",
+    "coletado_em": "2026-10-12",
+    "campos_declarados": {
+      "preco": 2600,
+      "condominio": 315,
+      "iptu": 31,
+      "iptu_periodicidade": "mensal",
+      "area_m2": 46,
+      "quartos": 1,
+      "suites": null,
+      "banheiros": 1,
+      "vagas": 0,
+      "andar": 11,
+      "edificio": null,
+      "logradouro": "Rua do Aragão",
+      "numero": null,
+      "complemento": null,
+      "bairro": "Boa Vista"
+    },
+    "trechos_descricao": [],
+    "tipo_de_area": null,
+    "parcelas_extras": [
+      {
+        "rotulo": "Seguro incêndio",
+        "valor": 52
+      },
+      {
+        "rotulo": "Taxa de serviço",
+        "valor": 67
+      }
+    ],
+    "parcelas_nao_informadas": [],
+    "posicao_declarada": {
+      "lat": -8.0620121,
+      "lon": -34.8868452
+    },
+    "criterios_candidatas": {
+      "pavimentos_minimos": null,
+      "area_unidade_m2": [
+        40,
+        55
+      ]
+    }
+  }
+]

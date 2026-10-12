@@ -4,24 +4,24 @@
       "id": "q_identidade",
       "texto": "Qual é o edifício deste anúncio?",
       "acao": { "tipo": "pergunta", "texto": "Peça ao corretor o endereço completo, com número e nome do edifício." },
-      "para_corretor": "Qual é o endereço completo do imóvel, com número e nome do edifício?"
+      "para_corretor": "Qual é o endereço completo do imóvel, com número, nome do edifício e andar?"
     },
     {
       "id": "q_setorizacao",
       "texto": "O endereço está em área de risco mapeada oficialmente?",
-      "acao": { "tipo": "profissional", "texto": "Consulte a Defesa Civil do Recife sobre este endereço." },
+      "acao": { "tipo": "profissional", "texto": "Pergunte à Defesa Civil do Recife, pelos canais de atendimento da Prefeitura, se a rua está em setor de risco mapeado." },
       "para_corretor": null
     },
     {
       "id": "q_alagamento",
       "texto": "A rua costuma alagar ou ter deslizamento?",
-      "acao": { "tipo": "visita", "texto": "Pergunte a moradores e olhe a garagem e a calçada depois de chuva forte." },
+      "acao": { "tipo": "visita", "texto": "Procure marcas de água nas paredes da garagem e do térreo e pergunte ao porteiro se a rua alaga quando chove forte." },
       "para_corretor": "A rua ou a garagem do prédio costumam alagar em chuva forte?"
     },
     {
       "id": "q_estrutura",
       "texto": "Há registro de problema estrutural ou interdição no prédio?",
-      "acao": { "tipo": "profissional", "texto": "Se notar fissuras, infiltração ou piso desnivelado, peça a avaliação de um engenheiro antes de assinar." },
+      "acao": { "tipo": "visita", "texto": "Procure fissuras, infiltração e piso desnivelado; se encontrar, peça a avaliação de um engenheiro antes de assinar." },
       "para_corretor": "Há registro de problema estrutural, interdição ou obra de recuperação no prédio?"
     },
     {
@@ -96,7 +96,7 @@
   "compra": [
     {
       "id": "q_matricula",
-      "texto": "A matrícula está em ordem e sem ônus?",
+      "texto": "O que a matrícula registra de proprietário, ônus e restrições?",
       "acao": { "tipo": "documento", "texto": "Peça a certidão atualizada da matrícula, de inteiro teor e de ônus reais." },
       "para_corretor": "a certidão atualizada da matrícula, de inteiro teor e de ônus reais"
     },
