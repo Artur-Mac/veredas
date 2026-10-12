@@ -10,6 +10,8 @@
 
 Convenção: **[FATO]** verificado em fonte citada; **[HIPÓTESE]** suposição a testar; **[DECISÃO]** escolha tomada pela equipe, com motivo.
 
+Nota desta cópia: nomes de portais e de empresas foram trocados por descrições neutras, por causa do item 11.20 (iv) do regulamento. Todo o resto é idêntico à versão 1.1.
+
 ---
 
 ## 1. Resumo
@@ -36,7 +38,7 @@ Recife agrava o problema: cerca de 26,5% dos domicílios são alugados (acima da
 - CNEFE 2022 do IBGE traz coordenadas por endereço para o Recife **[FATO]**.
 - A Prefeitura publica o **cadastro fiscal do IPTU por unidade** (2005 a 2026, com endereço, complemento, área construída, ano de construção, pavimentos, valor venal e IPTU cobrado) e os **processos de licenciamento urbanístico** (alvarás de construção, reforma e demolição por endereço) **[FATO, dados.recife.pe.gov.br, verificado em 12/10/2026]**. Isso permite verificar área e IPTU declarados por unidade e reforçar a resolução de edifício com número, pavimentos e ano.
 - LLMs tornam barata a extração de campos de texto livre e a leitura de documentos com citação de página.
-- Os portais investem em busca, conversa e preço (QuintoAndar, Grupo OLX); nenhum tem produto de verificação pós-descoberta para o consumidor **[FATO, benchmark na avaliação crítica]**.
+- Os portais investem em busca, conversa e preço (os dois maiores grupos nacionais); nenhum tem produto de verificação pós-descoberta para o consumidor **[FATO, benchmark na avaliação crítica]**.
 
 ### 2.3 Contexto do concurso
 
@@ -70,7 +72,7 @@ Restrições do regulamento que afetam o produto: uso obrigatório de telefonia 
 
 Buscador de imóveis; comparação ou ranking entre imóveis; score ou nota de risco; estimativa de preço ou "valor justo"; histórico de preço; detecção de duplicatas entre portais; conforto térmico, ruído ou risco de alagamento modelados; inspeção visual de fotos; áudio; LiDAR; relatos de moradores; preferências inferidas; chat livre; agente que contata terceiros; qualquer cidade além de Recife; coleta longitudinal de anúncios por scraping.
 
-Motivo comum **[DECISÃO]**: cada um desses itens ou exige dado que não existe de forma lícita e validável, ou replica incumbentes, ou cria risco de falsa garantia (precedente: Zillow retirou os scores climáticos da First Street em 2025 após contestação de precisão).
+Motivo comum **[DECISÃO]**: cada um desses itens ou exige dado que não existe de forma lícita e validável, ou replica incumbentes, ou cria risco de falsa garantia (precedente: um grande portal americano retirou em 2025 os scores climáticos de um fornecedor de modelos de risco, após contestação de precisão).
 
 ---
 
@@ -312,7 +314,7 @@ Tabela de resolução (nome_edifício_normalizado, dsqfl, confirmações, últim
 | SGB, Setorização de risco alto e muito alto, Recife | Cartão de risco oficial | | **Não encontrado** no RIGeo; GeoSGB a verificar | Cartão vira "Desconhecido oficial" |
 | Lista de prédios-caixão por endereço | Cartão de maior impacto possível | | **Não pública**; só agregados (TRF5, MPPE) e exemplos em notícias | Alvo de articulação com Prefeitura, Defesa Civil, CAIXA |
 | OpenStreetMap | Nomes de edifício, rede de pedestres, POIs | ODbL | A medir por bairro | Cobertura variável |
-| Página do anúncio, lida na WebView do usuário | Campos declarados | Termos de uso dos portais proíbem scraping; leitura no aparelho do usuário é inferência técnica, **revisão jurídica pendente** | Confirmado que QuintoAndar expõe schema.org com coordenadas, ZAP expõe endereço com número e andar no texto, OLX só texto livre | Fetch de servidor bloqueado (403) em ZAP, Viva Real, OLX, Imovelweb |
+| Página do anúncio, lida na WebView do usuário | Campos declarados | Termos de uso dos portais proíbem scraping; leitura no aparelho do usuário é inferência técnica, **revisão jurídica pendente** | Confirmado em três portais: um expõe schema.org com coordenadas, outro expõe endereço com número e andar no texto, outro só texto livre | Fetch de servidor bloqueado (403) em quatro dos cinco portais testados |
 | Documentos do usuário | Leitor documental | Consentimento | Experimento E3 pendente | Erro de extração; exige citação |
 | CNM / SAEC (ONR) | Matrícula em compra | Pago pelo usuário | Confirmado na avaliação crítica | Sem busca por endereço |
 
@@ -375,7 +377,7 @@ Consultas espaciais são locais e sem custo marginal. Custo não é restrição 
 - Cota inicial gratuita de dossiês por usuário; gratuito durante todo o programa.
 - Créditos comprados avulsos.
 - Créditos ganhos por confirmação do edifício, por feedback pós-visita e por motivo de descarte informado em "Meus dossiês" (os três dados que constroem o ativo e são baratos de verificar). Nunca por documentos: documento condominial é dado de terceiros, não pode ser revendido, e pagar por ele incentiva lixo.
-- Canal corretor (Etapa 4): dossiê white-label por assinatura, modelo do precedente Sprift (Reino Unido). O que se vende é o dossiê do edifício construído de fontes oficiais e da tabela de resolução; nunca documentos ou relatos de outro usuário.
+- Canal corretor (Etapa 4): dossiê white-label por assinatura, modelo de um serviço britânico de relatórios imobiliários vendido a profissionais. O que se vende é o dossiê do edifício construído de fontes oficiais e da tabela de resolução; nunca documentos ou relatos de outro usuário.
 
 ---
 
@@ -429,7 +431,7 @@ Consultas espaciais são locais e sem custo marginal. Custo não é restrição 
 | R3 | Sem setorização oficial de risco para Recife, o cartão de risco perde força | Alta (já materializado) | Médio | Defesa Civil por trecho; suscetibilidade rotulada; "desconhecido oficial" como demonstração do produto; articulação com Defesa Civil municipal |
 | R4 | Defesa Civil, IPTU e licenciamento sem coordenadas nem `dsqfl`: ligação por endereço textual imprecisa | Média | Médio | Um único geocodificador para as três bases, com CNEFE e código de logradouro como dicionário; escala sempre declarada; taxa de casamento medida por bairro em E4; unidade fiscal só associada quando logradouro, número e complemento batem |
 | R11 | Cadastro fiscal contém dados de contribuinte pseudonimizados; risco de percepção de uso indevido | Baixa | Alto | Campos de contribuinte descartados na ingestão; política escrita; só atributos do imóvel exibidos |
-| R5 | Substituição por LLM genérico | Alta | Médio | Diferencial é identidade resolvida e proveniência; E2 cego contra ChatGPT |
+| R5 | Substituição por LLM genérico | Alta | Médio | Diferencial é identidade resolvida e proveniência; E2 cego contra um assistente de IA genérico |
 | R6 | Banca percebe o produto como "só agregação" | Média | Médio | Demo centrada na resolução no mapa e na inconsistência real do anúncio; IA nomeada onde está |
 | R7 | Economia B2C fraca | Média | Médio | Créditos por dados; canal corretor na Etapa 4 |
 | R8 | Falso match em confiança alta atribui risco ao prédio errado | Baixa | Alto | Limiar conservador; origem registrada; "isso está errado"; auditoria |
@@ -458,12 +460,12 @@ Consultas espaciais são locais e sem custo marginal. Custo não é restrição 
 
 | Data | Decisão | Alternativas | Motivo |
 |---|---|---|---|
-| 11/10/2026 | Um anúncio, Recife, apartamentos, sem score | Buscador; comparador; score | Única decisão melhorável sem inventário nem scraping; precedente Zillow/First Street |
+| 11/10/2026 | Um anúncio, Recife, apartamentos, sem score | Buscador; comparador; score | Única decisão melhorável sem inventário nem scraping; precedente do portal americano que retirou scores climáticos |
 | 11/10/2026 | Categoria Tecnologias Urbanas | Diversidade | Regulamento cita moradia e segurança literalmente |
 | 11/10/2026 | React Native com Expo, Android primeiro | PWA; Kotlin; bot WhatsApp | Fullstack no time; share intent nativo; banca de telecom |
 | 11/10/2026 | Ficha com aluguel e compra; protótipo demonstra fluxo de aluguel | Dois fluxos completos | Volume e ciclo curto para uso real; matriz de compra na tela final |
 | 11/10/2026 | Servidor nunca acessa portal; leitura na WebView do aparelho | Fetch de servidor | Portais retornam 403 a servidor e proíbem scraping; WebView é o navegador do usuário |
-| 11/10/2026 | Extração híbrida: regras + LLM só em texto livre | LLM em tudo; só regras | Campos estruturados existem; LLM necessário para nome de edifício na OLX |
+| 11/10/2026 | Extração híbrida: regras + LLM só em texto livre | LLM em tudo; só regras | Campos estruturados existem; LLM necessário para nome de edifício em portais que só têm texto livre |
 | 11/10/2026 | Opus 5.5 na extração | Haiku 4.5 | Qualidade em descrição livre; custo irrelevante no volume |
 | 11/10/2026 | Créditos por confirmação e feedback; nunca por documentos | Crédito por qualquer dado | Documento é de terceiros; incentivo a lixo |
 | 11/10/2026 | Origem da resolução (resolvedor ou humano) gravada no ledger | Só confiança | Ativo de dados, diagnóstico de erro, linguagem no dossiê |

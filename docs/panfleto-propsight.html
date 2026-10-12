@@ -1,0 +1,402 @@
+<title>PropSight</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: folha de cadastro municipal. Grade de papel técnico, fichas com carimbo de categoria, telas de celular em fileira como uma prancha de fluxo. */
+:root{
+  --paper:#EEF3F1; --paper-2:#E2EAE7; --ink:#12303A; --ink-2:#3F5C64; --ink-3:#7B9298;
+  --line:#C5D3CF; --mare:#0E7F76; --mare-soft:#D3EAE6; --areia:#B8781E; --areia-soft:#F3E4C9;
+  --oficial:#1E5F8E; --oficial-soft:#D9E7F2; --alerta:#A9402F; --alerta-soft:#F3DBD5;
+  --phone:#0E1F26; --phone-screen:#F7FAF9;
+  --display:"Bricolage Grotesque","Archivo",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#0F1C21; --paper-2:#15262D; --ink:#E6EEEC; --ink-2:#B2C4C6; --ink-3:#7E959A;
+  --line:#2B4048; --mare:#4FC2B5; --mare-soft:#143A38; --areia:#E0A54A; --areia-soft:#3A2D14;
+  --oficial:#6FB0E0; --oficial-soft:#16303F; --alerta:#E58A77; --alerta-soft:#3F1F18;
+  --phone:#05090B; --phone-screen:#132228; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --paper:#0F1C21; --paper-2:#15262D; --ink:#E6EEEC; --ink-2:#B2C4C6; --ink-3:#7E959A;
+  --line:#2B4048; --mare:#4FC2B5; --mare-soft:#143A38; --areia:#E0A54A; --areia-soft:#3A2D14;
+  --oficial:#6FB0E0; --oficial-soft:#16303F; --alerta:#E58A77; --alerta-soft:#3F1F18;
+  --phone:#05090B; --phone-screen:#132228; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:48px 48px;background-position:-1px -1px;}
+.wrap{max-width:1180px;margin:0 auto;padding-block:32px 64px;padding-inline:20px;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.05}
+h2{font-size:clamp(1.5rem,3vw,2.1rem);font-weight:700}
+h3{font-size:1.05rem;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.sec{display:flex;flex-direction:column;gap:20px}
+.sec-head{display:flex;flex-direction:column;gap:6px;max-width:68ch}
+.lede{color:var(--ink-2);font-size:1.02rem}
+.stamp{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border:1.5px solid currentColor;border-radius:3px}
+.stamp.oficial{color:var(--oficial);background:var(--oficial-soft)}
+.stamp.declarado{color:var(--areia);background:var(--areia-soft)}
+.stamp.inconsist{color:var(--alerta);background:var(--alerta-soft)}
+.stamp.desconhecido{color:var(--ink-2);background:var(--paper-2)}
+.stamp.direta{color:var(--mare);background:var(--mare-soft)}
+
+/* Cabeçalho */
+.hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:end;border-bottom:3px solid var(--ink);padding-bottom:28px}
+.hero h1{font-size:clamp(3rem,9vw,6.5rem);font-weight:800;letter-spacing:-.03em}
+.hero h1 span{color:var(--mare)}
+.hero .tag{font-family:var(--display);font-size:clamp(1.2rem,2.4vw,1.7rem);font-weight:500;color:var(--ink-2);margin-top:10px;max-width:30ch}
+.meta{display:flex;flex-direction:column;gap:10px;font-family:var(--mono);font-size:.78rem;color:var(--ink-2)}
+.meta b{color:var(--ink);font-weight:500}
+.meta .row{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:8px}
+.meta .row:first-child{border-top:0;padding-top:0}
+
+/* Números */
+.nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.num{background:var(--paper-2);border-top:3px solid var(--mare);padding:18px 18px 16px;display:flex;flex-direction:column;gap:6px}
+.num .v{font-family:var(--display);font-size:clamp(2.2rem,5vw,3.4rem);font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.num .l{font-size:.95rem;color:var(--ink-2)}
+.num .s{font-family:var(--mono);font-size:.68rem;color:var(--ink-3)}
+
+/* Fluxo com celulares */
+.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;align-items:start}
+.step{display:flex;flex-direction:column;gap:12px;min-width:0}
+.step .n{font-family:var(--mono);font-size:.72rem;color:var(--mare);letter-spacing:.1em}
+.step h3{font-size:1rem}
+.step p{font-size:.88rem;color:var(--ink-2)}
+.step .t{font-family:var(--mono);font-size:.68rem;color:var(--ink-3)}
+.phone{background:var(--phone);border-radius:26px;padding:9px;aspect-ratio:9/18.5;max-width:100%;box-shadow:0 10px 30px rgba(10,30,36,.18)}
+.screen{background:var(--phone-screen);border-radius:18px;height:100%;overflow:hidden;display:flex;flex-direction:column;font-size:.62rem;line-height:1.35;color:var(--ink)}
+.bar{height:16px;display:flex;justify-content:center;align-items:center}
+.bar i{display:block;width:34%;height:4px;border-radius:2px;background:var(--ink-3);opacity:.5}
+.sc{padding:8px 10px;display:flex;flex-direction:column;gap:6px;flex:1;min-height:0}
+.sc .h{font-family:var(--display);font-weight:700;font-size:.74rem;line-height:1.15}
+.sc .sub{color:var(--ink-3);font-family:var(--mono);font-size:.55rem}
+.field{border:1px solid var(--line);border-radius:6px;padding:5px 7px;background:var(--paper);display:flex;justify-content:space-between;gap:6px}
+.field b{font-weight:500}
+.field.filled{border-color:var(--mare)}
+.sheet{margin-top:auto;background:var(--paper-2);border-radius:10px 10px 0 0;padding:8px 10px;display:flex;flex-direction:column;gap:5px}
+.sheet .app{display:flex;align-items:center;gap:6px}
+.sheet .app i{width:14px;height:14px;border-radius:4px;background:var(--ink-3);opacity:.45;display:inline-block}
+.sheet .app.me i{background:var(--mare);opacity:1}
+.sheet .app.me{font-weight:600;color:var(--mare)}
+.ldr{height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.ldr i{display:block;height:100%;width:62%;background:var(--mare)}
+.cardlet{border-left:3px solid var(--oficial);background:var(--paper);padding:5px 7px;display:flex;flex-direction:column;gap:2px}
+.cardlet.decl{border-left-color:var(--areia)}
+.cardlet.inc{border-left-color:var(--alerta)}
+.cardlet.unk{border-left-color:var(--ink-3)}
+.cardlet .k{font-family:var(--mono);font-size:.52rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.cardlet .act{color:var(--mare);font-weight:500}
+.blk{display:flex;gap:6px;align-items:baseline}
+.blk b{font-family:var(--display);font-size:.7rem}
+.blk span{font-family:var(--mono);font-size:.55rem;color:var(--ink-3)}
+.cta{margin-top:auto;background:var(--mare);color:#fff;text-align:center;border-radius:7px;padding:6px;font-weight:600;font-size:.64rem}
+.flow svg.map{width:100%;height:auto;display:block;border-radius:6px}
+
+/* Dossiê */
+.blocks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.block{border:1px solid var(--line);background:var(--paper-2);padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.block .n{font-family:var(--display);font-size:2rem;font-weight:800;color:var(--mare);line-height:1}
+.block p{font-size:.9rem;color:var(--ink-2)}
+.ledger{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:start}
+.card{background:var(--paper-2);border:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card .claim{font-family:var(--display);font-size:1.15rem;font-weight:700;line-height:1.25}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;font-size:.84rem}
+.kv dt{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding-top:3px}
+.kv dd{margin:0;color:var(--ink-2)}
+.kv dd.a{color:var(--mare);font-weight:500}
+.scale{display:flex;flex-direction:column;gap:8px}
+.scale .r{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;font-size:.9rem;color:var(--ink-2)}
+
+/* Listas e fontes */
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.list{display:flex;flex-direction:column;gap:8px;padding:0;margin:0;list-style:none}
+.list li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;font-size:.95rem;color:var(--ink-2)}
+.list li::before{content:"";width:10px;height:10px;border-radius:50%;margin-top:7px;background:var(--mare)}
+.list.no li::before{background:transparent;border:2px solid var(--alerta);width:8px;height:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--paper-2);padding:6px 10px;font-size:.86rem;border-radius:3px}
+.chip i{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--mare)}
+.chip.pend i{background:var(--areia)}
+.chip.no i{background:var(--alerta)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:.7rem;color:var(--ink-3)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+/* Inovação */
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.mech{border-top:3px solid var(--ink);padding-top:14px;display:flex;flex-direction:column;gap:8px}
+.mech p{font-size:.92rem;color:var(--ink-2)}
+
+/* Linha do tempo */
+.tl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;position:relative}
+.tl::before{content:"";position:absolute;left:0;right:0;top:9px;height:2px;background:var(--line)}
+.tl .m{position:relative;padding-top:24px;padding-right:14px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.tl .m::before{content:"";position:absolute;top:3px;left:0;width:14px;height:14px;border-radius:50%;background:var(--paper);border:3px solid var(--mare)}
+.tl .m.now::before{background:var(--mare)}
+.tl .d{font-family:var(--mono);font-size:.7rem;color:var(--ink-3)}
+.tl h3{font-size:.95rem}
+.tl p{font-size:.86rem;color:var(--ink-2)}
+
+footer{border-top:3px solid var(--ink);padding-top:18px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:.74rem;color:var(--ink-2)}
+footer b{color:var(--ink);font-weight:500}
+
+@media (max-width:980px){
+  .flow{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .blocks{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tl{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:28px}
+  .tl::before{display:none}
+}
+@media (max-width:640px){
+  .hero{grid-template-columns:1fr}
+  .nums{grid-template-columns:1fr}
+  .flow{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .blocks,.ledger,.two,.three{grid-template-columns:1fr}
+  .tl{grid-template-columns:1fr}
+  body{background-size:32px 32px}
+}
+@media (max-width:420px){ .flow{grid-template-columns:1fr} .phone{max-width:260px} }
+@media (prefers-reduced-motion:no-preference){ .ldr i{animation:ld 2.4s ease-in-out infinite alternate} @keyframes ld{from{width:38%}to{width:84%}} }
+</style>
+
+<div class="wrap">
+
+<header class="hero">
+  <div>
+    <p class="eyebrow">Campus Mobile · 15ª edição · Tecnologias Urbanas · Recife</p>
+    <h1>Prop<span>Sight</span></h1>
+    <p class="tag">Compartilhe o anúncio. Veja o prédio certo no mapa. Saiba o que é fato, o que é promessa e o que ainda falta confirmar.</p>
+  </div>
+  <div class="meta">
+    <div class="row"><span>O que é</span><b>Dossiê de evidências de um anúncio</b></div>
+    <div class="row"><span>Para quem</span><b>Quem vai alugar ou comprar apartamento</b></div>
+    <div class="row"><span>Onde</span><b>Recife, edifício por edifício</b></div>
+    <div class="row"><span>Entrada</span><b>Um link, pela folha de compartilhar</b></div>
+    <div class="row"><span>Saída</span><b>4 blocos, 0 notas, 0 vereditos</b></div>
+  </div>
+</header>
+
+<section class="sec">
+  <div class="sec-head">
+    <p class="eyebrow">O problema</p>
+    <h2>A informação que muda a decisão existe. Está espalhada, em formato que ninguém lê, e o anúncio não tem incentivo para contá-la.</h2>
+    <p class="lede">Quem procura apartamento decide com três fontes: o anúncio, trinta minutos de visita e a memória de conhecidos. Cadastro municipal, atendimentos da Defesa Civil, cartas do Serviço Geológico e atas de condomínio ficam fora da conta.</p>
+  </div>
+  <div class="nums">
+    <div class="num"><span class="v">26,5%</span><span class="l">dos domicílios do Recife são alugados, acima da média nacional de 22%</span><span class="s">Censo 2022, resultados preliminares</span></div>
+    <div class="num"><span class="v">30%</span><span class="l">dos domicílios são apartamentos, o maior percentual de Pernambuco</span><span class="s">Censo 2022 · 166 mil unidades</span></div>
+    <div class="num"><span class="v">161</span><span class="l">prédios-caixão condenados no município, 431 na região metropolitana, sem lista pública por endereço</span><span class="s">Acordo-base 2024 · TRF5 / MPPE</span></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-head">
+    <p class="eyebrow">Como funciona · fluxo do primeiro uso</p>
+    <h2>Do link ao dossiê em menos de um minuto, com uma única pergunta ao usuário, e só quando necessária.</h2>
+  </div>
+  <div class="flow">
+
+    <div class="step">
+      <span class="n">PASSO 1 · 2 toques</span>
+      <h3>Compartilhar o anúncio</h3>
+      <div class="phone"><div class="screen">
+        <div class="bar"><i></i></div>
+        <div class="sc">
+          <div class="h">Apartamento com 3 quartos para alugar, 80 m², Boa Viagem</div>
+          <div class="sub">R$ 2.800/mês · condomínio isento · IPTU não informado</div>
+          <div class="field"><span>Metragem</span><b>80 m²</b></div>
+          <div class="field"><span>Andar</span><b>10º</b></div>
+          <div class="sheet">
+            <div class="sub">Compartilhar com</div>
+            <div class="app me"><i></i>PropSight</div>
+            <div class="app"><i></i>Mensagens</div>
+            <div class="app"><i></i>E-mail</div>
+          </div>
+        </div>
+      </div></div>
+      <p>No app de qualquer portal, toque em compartilhar e escolha o PropSight. Ou cole o link. O servidor nunca acessa o portal: a página é lida no seu próprio aparelho.</p>
+    </div>
+
+    <div class="step">
+      <span class="n">PASSO 2 · 5 a 15 s</span>
+      <h3>Lendo o anúncio</h3>
+      <div class="phone"><div class="screen">
+        <div class="bar"><i></i></div>
+        <div class="sc">
+          <div class="h">Lendo o anúncio…</div>
+          <div class="ldr"><i></i></div>
+          <div class="field filled"><span>Aluguel</span><b>R$ 2.800</b></div>
+          <div class="field filled"><span>Área</span><b>80 m²</b></div>
+          <div class="field filled"><span>Rua</span><b>José Hipólito Cardoso, 116</b></div>
+          <div class="field filled"><span>Bairro</span><b>Boa Viagem</b></div>
+          <div class="field"><span>Condomínio</span><b>—</b></div>
+          <div class="field"><span>IPTU</span><b>—</b></div>
+          <div class="sub" style="margin-top:auto">Tudo acima é <span class="stamp declarado" style="font-size:.5rem;padding:1px 4px">declarado pelo anunciante</span>. Toque para corrigir.</div>
+        </div>
+      </div></div>
+      <p>Campos estruturados saem por regras. Um modelo de linguagem lê só a descrição livre: nome do edifício, andar, contradições.</p>
+    </div>
+
+    <div class="step">
+      <span class="n">PASSO 3 · só se preciso</span>
+      <h3>Qual é o prédio?</h3>
+      <div class="phone"><div class="screen">
+        <div class="bar"><i></i></div>
+        <div class="sc">
+          <div class="h">Qual é o prédio?</div>
+          <div class="sub">Encontramos 3 edificações nesta rua. Não temos certeza.</div>
+          <svg class="map" viewBox="0 0 160 120" role="img" aria-label="Mapa com três candidatas na rua">
+            <rect width="160" height="120" fill="#DCE8E4"/>
+            <path d="M0 70 L160 58" stroke="#F7FAF9" stroke-width="12" fill="none"/>
+            <path d="M48 0 L56 120 M112 0 L104 120" stroke="#F7FAF9" stroke-width="7" fill="none"/>
+            <rect x="12" y="22" width="30" height="34" fill="#9FB7B1"/><rect x="62" y="18" width="40" height="36" fill="#9FB7B1"/><rect x="118" y="14" width="32" height="38" fill="#9FB7B1"/>
+            <rect x="10" y="80" width="38" height="30" fill="#B7C9C4"/><rect x="66" y="76" width="34" height="34" fill="#B7C9C4"/><rect x="116" y="72" width="36" height="36" fill="#B7C9C4"/>
+            <g fill="#0E7F76"><circle cx="27" cy="36" r="7"/><circle cx="82" cy="34" r="7"/><circle cx="134" cy="30" r="7"/></g>
+            <g fill="#fff" font-family="monospace" font-size="8" text-anchor="middle"><text x="27" y="39">A</text><text x="82" y="37">B</text><text x="134" y="33">C</text></g>
+          </svg>
+          <div class="field"><span>A · nº 98</span><b>8 pav.</b></div>
+          <div class="field filled"><span>B · nº 116</span><b>12 pav.</b></div>
+          <div class="field"><span>C · nº 130</span><b>14 pav.</b></div>
+          <div class="cta">Confirmar B</div>
+        </div>
+      </div></div>
+      <p>Com confiança alta, esta tela não aparece. Com dúvida, dois ou três pinos, endereço oficial e número de pavimentos. O toque vira dado: a tabela de edifícios de Recife cresce a cada confirmação.</p>
+    </div>
+
+    <div class="step">
+      <span class="n">PASSO 4 · 10 a 30 s</span>
+      <h3>O dossiê</h3>
+      <div class="phone"><div class="screen">
+        <div class="bar"><i></i></div>
+        <div class="sc">
+          <div class="blk"><b>1 · Identidade</b><span>confirmado por você</span></div>
+          <div class="cardlet"><span class="k">registro oficial · lote</span>Rua José Hipólito Cardoso, 116 · 12 pavimentos · 4.310 m² construídos</div>
+          <div class="blk"><b>2 · Registros oficiais</b><span>3 cartões</span></div>
+          <div class="cardlet"><span class="k">registro oficial · rua · 2021–2024</span>4 atendimentos da Defesa Civil no trecho (alagamento de via)</div>
+          <div class="blk"><b>3 · O que não bate</b><span>1 cartão</span></div>
+          <div class="cardlet inc"><span class="k">inconsistência</span>Campo: 80 m². Descrição: 86 m² privativos. <span class="act">Confirme na matrícula.</span></div>
+          <div class="blk"><b>4 · Não sabemos</b><span>6 cartões</span></div>
+          <div class="cardlet unk"><span class="k">desconhecido</span>IPTU e seguro-fiança não informados</div>
+        </div>
+      </div></div>
+      <p>Quatro blocos em ordem fixa. Cada cartão traz fonte, data, escala (rua não é edifício) e uma ação. Sem nota, sem semáforo.</p>
+    </div>
+
+    <div class="step">
+      <span class="n">PASSO 5 · a parte que se compartilha</span>
+      <h3>O que perguntar antes de ir</h3>
+      <div class="phone"><div class="screen">
+        <div class="bar"><i></i></div>
+        <div class="sc">
+          <div class="h">6 coisas que ainda não sabemos</div>
+          <div class="cardlet unk"><span class="k">peça ao corretor</span>Últimas 12 atas, balancete, convenção</div>
+          <div class="cardlet unk"><span class="k">pergunte</span>Há cota extraordinária aprovada? Qual o IPTU?</div>
+          <div class="cardlet unk"><span class="k">na visita</span>Garagem e teto do último andar depois de chuva</div>
+          <div class="cardlet unk"><span class="k">profissional</span>Qualquer dúvida estrutural</div>
+          <div class="cardlet decl"><span class="k">depois</span>Envie as atas e o dossiê se atualiza com página e trecho</div>
+          <div class="cta">Compartilhar dossiê</div>
+        </div>
+      </div></div>
+      <p>Incerteza vira lista de ações, gerada do que ficou desconhecido, não de um modelo fixo. É o que a pessoa manda para o parceiro, para a família e para o corretor.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-head">
+    <p class="eyebrow">A unidade do produto · o cartão</p>
+    <h2>Cada afirmação carrega sua própria ficha. O texto é gerado por modelo de frase da categoria, nunca livremente, e passa por teste automático de palavras proibidas.</h2>
+  </div>
+  <div class="ledger">
+    <div class="card">
+      <span class="stamp oficial">registro oficial</span>
+      <p class="claim">4 atendimentos da Defesa Civil registrados neste trecho de rua entre 2021 e 2024, todos por alagamento de via.</p>
+      <dl class="kv">
+        <dt>Fonte</dt><dd>Prefeitura do Recife, Registro de Atendimentos da Defesa Civil</dd>
+        <dt>Referência</dt><dd>2021 a 2024 · coletado em 15/10/2026</dd>
+        <dt>Escala</dt><dd>Rua. Não diz nada sobre o edifício nem sobre a garagem.</dd>
+        <dt>Método</dt><dd>Endereço textual geocodificado contra o CNEFE 2022; raio de 150 m</dd>
+        <dt>Limitação</dt><dd>Reflete quem acionou a Defesa Civil, não o total de ocorrências</dd>
+        <dt>Ação</dt><dd class="a">Pergunte a moradores sobre a garagem em chuva forte</dd>
+      </dl>
+    </div>
+    <div class="scale">
+      <p class="eyebrow">Sete categorias de confiança, com linguagem própria</p>
+      <div class="r"><span class="stamp direta">observação direta</span><span>Medido por geometria: distância real a pé, declividade</span></div>
+      <div class="r"><span class="stamp oficial">registro oficial</span><span>Consta em base pública, com data e escala declaradas</span></div>
+      <div class="r"><span class="stamp declarado">declarado pelo anunciante</span><span>Veio do anúncio e ainda não foi verificado</span></div>
+      <div class="r"><span class="stamp inconsist">inconsistência</span><span>Duas fontes discordam; mostramos as duas, nunca escolhemos</span></div>
+      <div class="r"><span class="stamp desconhecido">desconhecido</span><span>Não sabemos, e dizemos exatamente como descobrir</span></div>
+      <div class="r"><span class="stamp desconhecido">precisa de especialista</span><span>Indício estrutural, jurídico ou registral: encaminhamos</span></div>
+      <div class="r"><span class="stamp desconhecido">sinal exploratório</span><span>Hipótese em pesquisa. Não aparece no dossiê nesta versão</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="two">
+    <div class="sec">
+      <div class="sec-head"><p class="eyebrow">O que é novo</p><h2>Três mecanismos, nenhum deles "IA" como enfeite</h2></div>
+      <div class="three" style="grid-template-columns:1fr">
+        <div class="mech"><h3>Resolvedor de edifício para anúncios sem número</h3><p>Cruza logradouro, nome do prédio, andar declarado e área com o cadastro municipal (14 dígitos por edificação, pavimentos agregados), CNEFE e OpenStreetMap. Pareamento probabilístico; confirmação humana desenhada como parte do fluxo, não como falha. Cada toque vira linha na única tabela que ninguém mais tem para Recife.</p></div>
+        <div class="mech"><h3>Ledger de evidência com linguagem calibrada</h3><p>Claim, categoria, fonte, data, escala, método, limitação e ação por cartão. O texto é modelo de frase por categoria; a lista de frases proibidas ("seguro", "perigoso", "vale a pena", "risco de X%") é teste automatizado antes de renderizar.</p></div>
+        <div class="mech"><h3>Desconhecidos como saída de primeira classe</h3><p>Uma matriz de perguntas por tipo de operação é cruzada com o que o ledger respondeu. O que sobrou vira documento a pedir, pergunta, item de visita ou encaminhamento. Nenhum produto conhecido organiza a saída em torno do que não sabe.</p></div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-head"><p class="eyebrow">O que não fazemos, de propósito</p><h2>Menos promessa, mais prova</h2></div>
+      <ul class="list no">
+        <li>Nota, score ou semáforo de risco. Score sem rastreabilidade derrubou um gigante americano em 2025; não repetimos.</li>
+        <li>Busca, ranking ou comparação entre imóveis. Agimos depois da descoberta e antes do contato.</li>
+        <li>Estimativa de preço ou "valor justo". Os portais têm dados de transação; nós não, e não fingimos ter.</li>
+        <li>Coleta em massa de anúncios. Só o anúncio que a pessoa trouxe, lido no aparelho dela.</li>
+        <li>Diagnóstico de foto, áudio, LiDAR, relato de morador. Sem rótulo de verdade, vira falso alarme.</li>
+        <li>Qualquer cidade além do Recife, até o resolvedor provar que funciona aqui.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-head">
+    <p class="eyebrow">De onde vêm as evidências</p>
+    <h2>Só fontes lícitas e públicas, cada uma com contrato de uso, data e cobertura. Verificadas em outubro de 2026.</h2>
+  </div>
+  <div class="chips">
+    <span class="chip"><i></i>Recife · Edificações-Lotes, Pavimentos, 3D, Lotes, Quadras (ODbL, mar/2026)</span>
+    <span class="chip"><i></i>Recife · Atendimentos da Defesa Civil 2014–2024 (geocodificamos nós)</span>
+    <span class="chip"><i></i>IBGE · CNEFE 2022, coordenadas por endereço</span>
+    <span class="chip"><i></i>SGB · Carta de suscetibilidade, Recife 2015 (rotulada como tal)</span>
+    <span class="chip"><i></i>OpenStreetMap · nomes de edifício, calçadas, POIs</span>
+    <span class="chip"><i></i>Página do anúncio · lida no aparelho do usuário</span>
+    <span class="chip"><i></i>Documentos do condomínio · enviados pelo usuário, cifrados</span>
+    <span class="chip pend"><i></i>SGB · setorização de risco do Recife: não encontrada, vira "desconhecido oficial"</span>
+    <span class="chip pend"><i></i>Lista de prédios-caixão por endereço: não pública, alvo de articulação com Prefeitura e Defesa Civil</span>
+    <span class="chip no"><i></i>Scraping de portais: fora, por termos de uso e por bloqueio técnico</span>
+  </div>
+  <div class="legend"><span><i style="background:var(--mare)"></i>disponível</span><span><i style="background:var(--areia)"></i>pendente ou a negociar</span><span><i style="background:var(--alerta)"></i>excluído</span></div>
+</section>
+
+<section class="sec">
+  <div class="sec-head">
+    <p class="eyebrow">Roteiro · calendário do Campus Mobile</p>
+    <h2>Cada etapa só se justifica pela evidência da anterior</h2>
+  </div>
+  <div class="tl">
+    <div class="m now"><span class="d">até 17 out 2026</span><h3>Inscrição</h3><p>Cadastro municipal e CNEFE carregados para 3 bairros. 3 anúncios reais resolvidos à mão. App com 4 telas. Vídeo de 2 min.</p></div>
+    <div class="m"><span class="d">nov · dez 2026</span><h3>Dados</h3><p>Cobertura por bairro medida. 50 anúncios rotulados: taxa de resolução automática. Geocodificador da Defesa Civil.</p></div>
+    <div class="m"><span class="d">18 jan · 26 fev 2027</span><h3>Protótipo</h3><p>Resolvedor automático, cartões reais, testes de linguagem, 10 sessões com usuários. Demo na Semana Imersiva.</p></div>
+    <div class="m"><span class="d">mar · jun 2027</span><h3>Uso real</h3><p>Leitor de atas com página e trecho. Créditos por confirmação e feedback. 2 ou 3 corretores parceiros em Recife. Auditoria de 50 dossiês.</p></div>
+    <div class="m"><span class="d">depois</span><h3>Horizonte</h3><p>Rotas e sol. Comparar dossiês do mesmo usuário. Segunda cidade só quando o resolvedor for parametrizável.</p></div>
+  </div>
+</section>
+
+<footer>
+  <div><b>PropSight</b> · 3 pessoas, dados e software, Recife · Expo + FastAPI + PostGIS</div>
+  <div>Dossiê · Cartão · Edifício resolvido · Modo rua · Desconhecido · Crédito</div>
+</footer>
+
+</div>
