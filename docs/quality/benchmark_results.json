@@ -1,92 +1,233 @@
 {
-  "filesize_bytes": 80113,
-  "filesize_kb": 78.24,
-  "checks": [
-    {
-      "test": "Screen screen-home",
-      "status": "PASS"
-    },
-    {
-      "test": "Screen screen-loading",
-      "status": "PASS"
-    },
-    {
-      "test": "Screen screen-dossier",
-      "status": "PASS"
-    },
-    {
-      "test": "Screen screen-checklist",
-      "status": "PASS"
-    },
-    {
-      "test": "Screen screen-compare",
-      "status": "PASS"
-    },
-    {
-      "test": "Screen screen-saved",
-      "status": "PASS"
-    },
-    {
-      "test": "Modal modalCandidate",
-      "status": "PASS"
-    },
-    {
-      "test": "Modal modalWhatsApp",
-      "status": "PASS"
-    },
-    {
-      "test": "Modal modalCadastralProvenance",
-      "status": "PASS"
-    },
-    {
-      "test": "Near Black (#171717) on Warm Paper (#F2EBDD)",
-      "ratio": "15.11:1",
-      "target": 4.5,
-      "status": "PASS"
-    },
-    {
-      "test": "Near Black (#171717) on White (#FFFFFF)",
-      "ratio": "17.93:1",
-      "target": 4.5,
-      "status": "PASS"
-    },
-    {
-      "test": "Deep Rust (#B94E36) on White (#FFFFFF)",
-      "ratio": "4.99:1",
-      "target": 4.5,
-      "status": "PASS"
-    },
-    {
-      "test": "Signal Orange (#F47745) on Near Black (#171717)",
-      "ratio": "6.46:1",
-      "target": 3.0,
-      "status": "PASS"
-    },
-    {
-      "test": "Muted Sage (#7F8870) on White (#FFFFFF)",
-      "ratio": "3.71:1",
-      "target": 3.0,
-      "status": "PASS"
-    },
-    {
-      "test": "SVG Count >= 8",
-      "status": "PASS"
-    },
-    {
-      "test": "Property solar data",
-      "status": "PASS"
-    },
-    {
-      "test": "Property pauliceia data",
-      "status": "PASS"
-    },
-    {
-      "test": "Property marfim data",
-      "status": "PASS"
-    },
-    {
-      "test": "Triad Rule Enforcement",
-      "status": "PASS"
-    }
-  ]
+  "timestamp": "2026-10-12T10:45:00-03:00",
+  "suites": {
+    "structural": [
+      {
+        "test": "App File Size Within Mobile Budget",
+        "status": "PASS",
+        "details": "78.2 KB"
+      },
+      {
+        "test": "Screen Container: #screen-home",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Screen Container: #screen-loading",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Screen Container: #screen-dossier",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Screen Container: #screen-checklist",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Screen Container: #screen-compare",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Screen Container: #screen-saved",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Interactive Modal: #modalCandidate",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Interactive Modal: #modalWhatsApp",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Interactive Modal: #modalCadastralProvenance",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Inline SVGs for Declutter and Telemetry",
+        "status": "PASS",
+        "details": "18 SVGs found"
+      }
+    ],
+    "data_and_math": [
+      {
+        "test": "Average Slope Formula (22m / 620m)",
+        "status": "PASS",
+        "details": "Calculated: 3.55%"
+      },
+      {
+        "test": "Critical Segment Slope Formula (15m / 180m)",
+        "status": "PASS",
+        "details": "Calculated: 8.33%"
+      },
+      {
+        "test": "Tobler Hiking Speed on Incline (km/h)",
+        "status": "PASS",
+        "details": "3.76 km/h (~2.9 min in steep stretch)"
+      },
+      {
+        "test": "Cost Decomposition Sum Reconciled (R$ 4.000 -> R$ 4.410)",
+        "status": "PASS",
+        "details": "Sum: R$ 4410"
+      },
+      {
+        "test": "Multi-Property Dataset: 'solar'",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Multi-Property Dataset: 'pauliceia'",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Multi-Property Dataset: 'marfim'",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Primary Citation Grounding: 'GeoSampa'",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Primary Citation Grounding: 'CNEFE'",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Primary Citation Grounding: 'POF'",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Primary Citation Grounding: 'Lei do Inquilinato'",
+        "status": "PASS",
+        "details": ""
+      }
+    ],
+    "presentation_and_print": [
+      {
+        "test": "Canonical Slide Count = 7",
+        "status": "PASS",
+        "details": "7 slides found"
+      },
+      {
+        "test": "Print Media Query Present",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "CSS @page Dimensions Declared",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Slide CSS Break-After Declared",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Deck PDF File Exists",
+        "status": "PASS",
+        "details": "584.6 KB"
+      },
+      {
+        "test": "PDF Exact Page Count = 7 (No Overlap)",
+        "status": "PASS",
+        "details": "7 pages"
+      },
+      {
+        "test": "Rendered Preview: Slide 01",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Rendered Preview: Slide 02",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Rendered Preview: Slide 03",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Rendered Preview: Slide 04",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Rendered Preview: Slide 05",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Rendered Preview: Slide 06",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Rendered Preview: Slide 07",
+        "status": "PASS",
+        "details": ""
+      }
+    ],
+    "accessibility_and_ux": [
+      {
+        "test": "WCAG Contrast: Near Black (#171717) on Warm Paper (#F2EBDD)",
+        "status": "PASS",
+        "details": "15.11:1 (Target: 4.5:1)"
+      },
+      {
+        "test": "WCAG Contrast: Near Black (#171717) on White (#FFFFFF)",
+        "status": "PASS",
+        "details": "17.93:1 (Target: 4.5:1)"
+      },
+      {
+        "test": "WCAG Contrast: Deep Rust (#B94E36) on White (#FFFFFF)",
+        "status": "PASS",
+        "details": "4.99:1 (Target: 4.5:1)"
+      },
+      {
+        "test": "WCAG Contrast: Signal Orange (#F47745) on Near Black (#171717)",
+        "status": "PASS",
+        "details": "6.46:1 (Target: 3.0:1)"
+      },
+      {
+        "test": "WCAG Contrast: Muted Sage (#7F8870) on White (#FFFFFF)",
+        "status": "PASS",
+        "details": "3.71:1 (Target: 3.0:1)"
+      },
+      {
+        "test": "Keyboard Arrow Navigation Supported",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Direct Hash/Query Slide Navigation",
+        "status": "PASS",
+        "details": ""
+      },
+      {
+        "test": "Mobile Responsive Viewport Declared",
+        "status": "PASS",
+        "details": ""
+      }
+    ]
+  },
+  "summary": {
+    "pass": 43,
+    "fail": 0,
+    "warn": 0
+  }
 }
