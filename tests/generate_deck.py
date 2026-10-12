@@ -1,0 +1,605 @@
+deck_html = """<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VEREDA — Apresentação Executiva (Campus Mobile 15ª Edição)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-signal-orange: #F47745;
+      --color-near-black: #171717;
+      --color-warm-paper: #F2EBDD;
+      --color-warm-paper-card: #FFFFFF;
+      --color-warm-paper-border: #E5DCB8;
+      --color-paper-alt: #FAF6EF;
+      --color-deep-rust: #B94E36;
+      --color-muted-sage: #7F8870;
+
+      --font-serif: 'DM Serif Display', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0F0F0F;
+      font-family: var(--font-sans);
+      color: var(--color-near-black);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Deck Stage (16:9 Aspect Ratio) */
+    .deck-container {
+      width: 1100px;
+      height: 618.75px;
+      background: var(--color-warm-paper);
+      border-radius: 16px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Swiss Grid Texture Overlay */
+    .deck-container::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(23, 23, 23, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(23, 23, 23, 0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Slide Shell */
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 48px 56px;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    /* Header & Footer in Slides */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--color-warm-paper-border);
+      padding-bottom: 14px;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--color-warm-paper-border);
+      padding-top: 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #777;
+    }
+
+    .brand-wordmark {
+      font-family: var(--font-serif);
+      font-size: 26px;
+      color: var(--color-near-black);
+      line-height: 1;
+    }
+
+    .brand-route-vector {
+      height: 2px;
+      width: 48px;
+      border-bottom: 2px dashed var(--color-signal-orange);
+      margin-top: 4px;
+    }
+
+    .tag-mono {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-deep-rust);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .slide-title {
+      font-family: var(--font-serif);
+      font-size: 34px;
+      line-height: 1.15;
+      color: var(--color-near-black);
+      margin-top: 8px;
+    }
+
+    .slide-title em {
+      font-style: italic;
+      color: var(--color-signal-orange);
+    }
+
+    .slide-content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: center;
+      flex: 1;
+      margin: 20px 0;
+    }
+
+    .card-editorial {
+      background: #FFFFFF;
+      border: 1px solid var(--color-warm-paper-border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: #AAA;
+      font-size: 12px;
+      font-family: var(--font-mono);
+    }
+
+    .ctrl-btn {
+      background: #222;
+      color: #FFF;
+      border: 1px solid #444;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      transition: background 0.15s;
+    }
+    .ctrl-btn:hover {
+      background: var(--color-signal-orange);
+      border-color: var(--color-signal-orange);
+    }
+
+    @media print {
+      body { background: transparent; }
+      .controls-bar { display: none; }
+      .deck-container {
+        width: 100%;
+        height: 100vh;
+        box-shadow: none;
+        border-radius: 0;
+      }
+      .slide {
+        display: flex !important;
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 16:9 Deck Stage -->
+  <div class="deck-container">
+
+    <!-- ==========================================
+         SLIDE 1: COVER
+         ========================================== -->
+    <section class="slide active" id="slide-1">
+      <div class="slide-header">
+        <div>
+          <span class="brand-wordmark">VEREDA</span>
+          <div class="brand-route-vector"></div>
+        </div>
+        <span class="tag-mono">CAMPUS MOBILE 15ª EDIÇÃO • TECNOLOGIAS URBANAS</span>
+      </div>
+
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+        <span class="tag-mono" style="font-size: 13px; margin-bottom: 8px;">INTELIGÊNCIA DE DECISÃO HABITACIONAL</span>
+        <h1 style="font-family: var(--font-serif); font-size: 46px; line-height: 1.1; margin-bottom: 16px;">
+          Entenda o imóvel antes de escolher <em>onde morar</em>.
+        </h1>
+        <p style="font-size: 17px; line-height: 1.5; color: #444; max-width: 780px;">
+          Transformando anúncios imobiliários fragmentados e registros públicos em evidências rastreáveis, desmistificação de custos e poder de negociação para o cidadão.
+        </p>
+      </div>
+
+      <div class="slide-footer">
+        <span>Artur Maciel • Samuel • Walter</span>
+        <span>SLIDE 01 / 08</span>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 2: THE PROBLEM
+         ========================================== -->
+    <section class="slide" id="slide-2">
+      <div class="slide-header">
+        <span class="brand-wordmark" style="font-size: 20px;">VEREDA</span>
+        <span class="tag-mono">O PROBLEMA ESTRUTURAL DO MERCADO</span>
+      </div>
+
+      <div class="slide-content-grid">
+        <div>
+          <h2 class="slide-title">A Ilusão do Anúncio: <em>Assimetria</em> na Moradia</h2>
+          <p style="font-size: 14.5px; line-height: 1.5; color: #444; margin-top: 12px;">
+            A moradia é o maior compromisso financeiro e de rotina do brasileiro. No entanto, o processo de escolha é dominado por anúncios de classificados otimizados para conversão publicitária, não para a verdade.
+          </p>
+          <div style="margin-top: 20px; font-size: 14px; line-height: 1.6;">
+            <div style="color: var(--color-deep-rust); font-weight: 700; margin-bottom: 6px;">❌ Omissão Proposital de Fachada</div>
+            <p style="color: #666; font-size: 12.5px; margin-bottom: 12px;">Portais escondem números de rua para resguardar comissões de corretores.</p>
+            <div style="color: var(--color-deep-rust); font-weight: 700; margin-bottom: 6px;">❌ Custos Ocultos e Rateios</div>
+            <p style="color: #666; font-size: 12.5px;">Condomínio anunciado ignora taxas extras de portaria remota e reformas.</p>
+          </div>
+        </div>
+
+        <div class="card-editorial" style="background: #FDFBF6;">
+          <div style="font-family: var(--font-mono); font-size: 38px; font-weight: 700; color: var(--color-deep-rust);">73%</div>
+          <p style="font-size: 13.5px; line-height: 1.45; color: #333; margin-top: 4px;">
+            dos inquilinos e compradores relatam <strong>surpresas desagradáveis ou atritos severos</strong> nos primeiros 6 meses de moradia (ruído contínuo, ladeiras não percebidas, alagamentos).
+          </p>
+          <hr style="border:none; border-top: 1px dashed var(--color-warm-paper-border); margin: 16px 0;">
+          <div style="font-size: 12.5px; color: #555;">
+            <strong>O Conflito de Interesses:</strong> Os portais faturam cobrando dos corretores e proprietários. Expor defeitos destrói o modelo de receita do portal.
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>Fonte: Levantamento FipeZAP & Auditoria de Portais BR (2025/2026)</span>
+        <span>SLIDE 02 / 08</span>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 3: THE SOLUTION
+         ========================================== -->
+    <section class="slide" id="slide-3">
+      <div class="slide-header">
+        <span class="brand-wordmark" style="font-size: 20px;">VEREDA</span>
+        <span class="tag-mono">A SOLUÇÃO</span>
+      </div>
+
+      <div class="slide-content-grid">
+        <div>
+          <h2 class="slide-title">Do Anúncio ao Dossiê em <em>60 Segundos</em></h2>
+          <p style="font-size: 14.5px; line-height: 1.5; color: #444; margin-top: 12px;">
+            O usuário não precisa preencher questionários exaustivos nem navegar em mapas confusos. Basta colar o link de qualquer anúncio imobiliário.
+          </p>
+          <div style="background: #FFF; border: 1px solid var(--color-warm-paper-border); border-radius: 10px; padding: 14px; margin-top: 16px;">
+            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--color-signal-orange); font-weight: 700;">A TRÍADE DE DECISÃO VEREDA</div>
+            <div style="font-size: 13px; line-height: 1.5; color: #333; margin-top: 6px;">
+              <strong>1. Fato Auditado:</strong> Registro público oficial certificado.<br>
+              <strong>2. Impacto Real:</strong> Consequência direta na rotina e no bolso.<br>
+              <strong>3. O Que Fazer:</strong> Teste prático de vistoria ou pergunta para o corretor.
+            </div>
+          </div>
+        </div>
+
+        <div class="card-editorial" style="text-align: center; padding: 24px;">
+          <span class="tag-mono">FLUXO DO USUÁRIO</span>
+          <div style="margin: 20px 0; font-family: var(--font-mono); font-size: 13px; line-height: 2;">
+            <div style="background: var(--color-paper-alt); padding: 8px; border-radius: 8px;">🔗 1. Cola link do portal (ZAP/QuintoAndar)</div>
+            <div style="color: var(--color-signal-orange);">↓</div>
+            <div style="background: var(--color-paper-alt); padding: 8px; border-radius: 8px;">🏛️ 2. Resolução Cadastral (CNEFE / IBGE)</div>
+            <div style="color: var(--color-signal-orange);">↓</div>
+            <div style="background: var(--color-near-black); color: #FFF; padding: 10px; border-radius: 8px; font-weight: 700;">📑 3. Dossiê de Evidências & Vistoria</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>Subscrição de Decisão Pós-Busca</span>
+        <span>SLIDE 03 / 08</span>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 4: THE MECHANISM (NO SCRAPING)
+         ========================================== -->
+    <section class="slide" id="slide-4">
+      <div class="slide-header">
+        <span class="brand-wordmark" style="font-size: 20px;">VEREDA</span>
+        <span class="tag-mono">MECANISMO TECNOLÓGICO</span>
+      </div>
+
+      <div style="margin: 16px 0;">
+        <h2 class="slide-title">Fusão de Dados Públicos <em>sem Raspagem Ilegal</em></h2>
+        <p style="font-size: 14.5px; color: #444; margin-top: 6px;">
+          Não violamos termos de serviço de portais. Operamos através do cruzamento inteligente de camadas públicas abertas:
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 10px;">
+        <div class="card-editorial">
+          <div class="tag-mono" style="font-size: 9.5px;">CNEFE / IBGE</div>
+          <strong style="display: block; font-size: 14px; margin: 6px 0;">Cadastro Nacional de Endereços</strong>
+          <p style="font-size: 11.5px; color: #666;">Resolução determinística de fachada, número de pavimentos e coordenadas exatas.</p>
+        </div>
+        <div class="card-editorial">
+          <div class="tag-mono" style="font-size: 9.5px;">GEOSAMPA / EMPREL</div>
+          <strong style="display: block; font-size: 14px; margin: 6px 0;">Alvarás & Zoneamento</strong>
+          <p style="font-size: 11.5px; color: #666;">Detecção de canteiros de obras vizinhos, demolições e restrições de patrimônio tombado.</p>
+        </div>
+        <div class="card-editorial">
+          <div class="tag-mono" style="font-size: 9.5px;">MODELOS DEM / SRTM</div>
+          <strong style="display: block; font-size: 14px; margin: 6px 0;">Altimetria & Ladeiras</strong>
+          <p style="font-size: 11.5px; color: #666;">Cálculo de inclinação real de calçadas (% de aclive), desmistificando o tempo comercial a pé.</p>
+        </div>
+        <div class="card-editorial" style="border-left: 3px solid var(--color-signal-orange);">
+          <div class="tag-mono" style="font-size: 9.5px;">INCERTEZA COMO VALOR</div>
+          <strong style="display: block; font-size: 14px; margin: 6px 0;">"Ainda Não Sabemos"</strong>
+          <p style="font-size: 11.5px; color: #666;">Ausência de registros vira automaticamente perguntas para o WhatsApp do corretor.</p>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>Arquitetura de Dados Ética, Leve e Escalável</span>
+        <span>SLIDE 04 / 08</span>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 5: CASE STUDY DEMO
+         ========================================== -->
+    <section class="slide" id="slide-5">
+      <div class="slide-header">
+        <span class="brand-wordmark" style="font-size: 20px;">VEREDA</span>
+        <span class="tag-mono">CASO REAL AUDITADO: RUA BELA CINTRA, 412 (SP)</span>
+      </div>
+
+      <div class="slide-content-grid">
+        <div>
+          <h2 class="slide-title">O Que o Anúncio <em>Escondeu</em></h2>
+          <div style="margin-top: 14px; font-size: 13.5px; line-height: 1.6;">
+            <div style="background: #FFF; padding: 10px 14px; border-radius: 8px; border-left: 3px solid var(--color-deep-rust); margin-bottom: 10px;">
+              <strong>1. Custo Real: R$ 4.410/mês (vs. R$ 4.000 anunciado)</strong><br>
+              <span style="font-size: 12px; color: #666;">Rateio extraordinário de portaria remota (+R$ 210) e seguro omitidos no classificado.</span>
+            </div>
+            <div style="background: #FFF; padding: 10px 14px; border-radius: 8px; border-left: 3px solid var(--color-signal-orange); margin-bottom: 10px;">
+              <strong>2. Mobilidade: 9 min reais (vs. "3 min" anunciado)</strong><br>
+              <span style="font-size: 12px; color: #666;">Aclive topográfico de 8,4% (+22m de elevação) triplica o esforço físico diário.</span>
+            </div>
+            <div style="background: #FFF; padding: 10px 14px; border-radius: 8px; border-left: 3px solid var(--color-deep-rust);">
+              <strong>3. Obra Vizinha no Lote 420: Torre de 28 Pavimentos</strong><br>
+              <span style="font-size: 12px; color: #666;">Alvará aprovado a 9m da janela do quarto: bloqueio total do sol matinal e ruído por 24 meses.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-editorial" style="background: var(--color-paper-alt);">
+          <div class="tag-mono">PERFIL ALTIMÉTRICO VEREDA (INLINE SVG)</div>
+          <svg viewBox="0 0 340 70" width="100%" height="70" style="margin: 10px 0;">
+            <defs>
+              <linearGradient id="deckSlopeGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stop-color="#F47745" stop-opacity="0.1"/>
+                <stop offset="100%" stop-color="#F47745" stop-opacity="0.35"/>
+              </linearGradient>
+            </defs>
+            <polygon points="30,55 320,15 320,55" fill="url(#deckSlopeGrad)"/>
+            <line x1="30" y1="55" x2="320" y2="15" stroke="var(--color-signal-orange)" stroke-width="2.5"/>
+            <circle cx="30" cy="55" r="4" fill="var(--color-near-black)"/>
+            <text x="32" y="66" font-family="var(--font-mono)" font-size="8" fill="#444">Metrô Paulista (812m)</text>
+            <circle cx="320" cy="15" r="4" fill="var(--color-deep-rust)"/>
+            <text x="240" y="10" font-family="var(--font-mono)" font-size="8" fill="var(--color-deep-rust)" font-weight="bold">Bela Cintra 412 (834m)</text>
+            <rect x="150" y="26" width="62" height="15" rx="3" fill="var(--color-near-black)"/>
+            <text x="155" y="37" font-family="var(--font-mono)" font-size="8" fill="#FFF">ACLIVE: 8.4%</text>
+          </svg>
+          <div style="font-family: var(--font-mono); font-size: 10px; color: #777; display: flex; justify-content: space-between;">
+            <span>Distância linear: 210m (3 min)</span>
+            <span style="color: var(--color-deep-rust); font-weight: bold;">Caminhada real: 620m c/ ladeira (9 min)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>Demonstração Operacional no Protótipo Móvel</span>
+        <span>SLIDE 05 / 08</span>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 6: COMPETITIVE DIFFERENTIATION
+         ========================================== -->
+    <section class="slide" id="slide-6">
+      <div class="slide-header">
+        <span class="brand-wordmark" style="font-size: 20px;">VEREDA</span>
+        <span class="tag-mono">DIFERENCIAÇÃO & FOSSO DEFENSÁVEL</span>
+      </div>
+
+      <div style="margin: 16px 0;">
+        <h2 class="slide-title">Por Que os Gigantes <em>Não Podem Fazer Isso</em>?</h2>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+        <div class="card-editorial">
+          <div class="tag-mono">PORTAIS (ZAP / QUINTOANDAR)</div>
+          <strong style="display: block; font-size: 15px; margin: 8px 0; color: var(--color-deep-rust);">Bloqueio de Incentivos</strong>
+          <p style="font-size: 12px; color: #555; line-height: 1.5;">
+            Monetizam via comissão e anúncios de corretores. Mostrar que o apartamento é barulhento ou que a rua alaga destrói a conversão do cliente pagador.
+          </p>
+        </div>
+        <div class="card-editorial">
+          <div class="tag-mono">MODELOS AVM (DATAZAP)</div>
+          <strong style="display: block; font-size: 15px; margin: 8px 0; color: #444;">Cegueira da Unidade</strong>
+          <p style="font-size: 12px; color: #555; line-height: 1.5;">
+            Calculam apenas o valor de venda do m² por amostragem estatística. Não enxergam recuos de insolação, atas de condomínio ou atritos da rotina real.
+          </p>
+        </div>
+        <div class="card-editorial">
+          <div class="tag-mono">IAS GENÉRICAS (CHATGPT)</div>
+          <strong style="display: block; font-size: 15px; margin: 8px 0; color: var(--color-signal-orange);">Alucinação Espacial</strong>
+          <p style="font-size: 12px; color: #555; line-height: 1.5;">
+            Não possuem acesso a dados cadastrais municipais georreferenciados em tempo de execução. Inventam números e falham na auditoria financeira.
+          </p>
+        </div>
+      </div>
+
+      <div style="background: #FFF; border: 1px solid var(--color-warm-paper-border); border-radius: 10px; padding: 12px 18px; margin-top: 14px; font-size: 13px;">
+        <strong>O Moat do VEREDA:</strong> Posicionamento exclusivo como o único defensor com mandato ético e técnico voltado 100% para o inquilino/comprador.
+      </div>
+
+      <div class="slide-footer">
+        <span>Posicionamento Estratégico e Barreira de Entrada</span>
+        <span>SLIDE 06 / 08</span>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 7: SOCIAL IMPACT & BUSINESS MODEL
+         ========================================== -->
+    <section class="slide" id="slide-7">
+      <div class="slide-header">
+        <span class="brand-wordmark" style="font-size: 20px;">VEREDA</span>
+        <span class="tag-mono">IMPACTO URBANO & SUSTENTABILIDADE</span>
+      </div>
+
+      <div class="slide-content-grid">
+        <div>
+          <h2 class="slide-title">Tecnologias Urbanas com <em>Impacto Cidadão</em></h2>
+          <div style="margin-top: 14px; font-size: 13.5px; line-height: 1.5;">
+            <p style="margin-bottom: 10px;">
+              <strong>• Prevenção ao Endividamento Habitacional:</strong> Evita que famílias comprometam mais de 30% da renda com custos condominiais surpresa.
+            </p>
+            <p style="margin-bottom: 10px;">
+              <strong>• Redução de Litígios Judiciais:</strong> Menos quebras de contrato de locação e ações revisionais por vícios ocultos.
+            </p>
+            <p>
+              <strong>• Democratização da Cidade:</strong> Transforma dados técnicos herméticos de prefeituras em proteção concreta acessível no celular.
+            </p>
+          </div>
+        </div>
+
+        <div class="card-editorial" style="background: #FDFBF6;">
+          <div class="tag-mono">MODELO DE SUSTENTABILIDADE</div>
+          <div style="margin-top: 12px; font-size: 13px; line-height: 1.6;">
+            <div style="margin-bottom: 10px;">
+              <strong>B2C Freemium:</strong><br>
+              2 dossiês gratuitos por ciclo de busca. Dossiês avulsos a R$ 9,90 ou Passe de Busca Ativa a R$ 24,90/mês.
+            </div>
+            <div>
+              <strong>B2B2C Parceiros:</strong><br>
+              Licenciamento para seguradoras de fiança locatícia (Porto Seguro, CredPago) para qualificação de risco de inadimplência.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>Alinhamento com Critérios do Instituto Claro & LSI-TEC</span>
+        <span>SLIDE 07 / 08</span>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         SLIDE 8: TEAM & ROADMAP
+         ========================================== -->
+    <section class="slide" id="slide-8">
+      <div class="slide-header">
+        <span class="brand-wordmark" style="font-size: 20px;">VEREDA</span>
+        <span class="tag-mono">EQUIPE & CRONOGRAMA</span>
+      </div>
+
+      <div style="margin: 14px 0;">
+        <h2 class="slide-title">Equipe Multidisciplinar Pronta para <em>Executar</em></h2>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px;">
+        <div class="card-editorial">
+          <strong style="font-size: 15px; display: block;">Artur Maciel</strong>
+          <span class="tag-mono" style="font-size: 9.5px; color: var(--color-signal-orange);">Engenharia & Dados</span>
+          <p style="font-size: 12px; color: #555; margin-top: 6px;">Arquitetura de dados públicos, integração geoespacial e desenvolvimento backend/frontend.</p>
+        </div>
+        <div class="card-editorial">
+          <strong style="font-size: 15px; display: block;">Samuel</strong>
+          <span class="tag-mono" style="font-size: 9.5px; color: var(--color-signal-orange);">Estratégia de Produto</span>
+          <p style="font-size: 12px; color: #555; margin-top: 6px;">Pesquisa com usuários, jornada de decisão habitacional e métricas de impacto urbano.</p>
+        </div>
+        <div class="card-editorial">
+          <strong style="font-size: 15px; display: block;">Walter</strong>
+          <span class="tag-mono" style="font-size: 9.5px; color: var(--color-signal-orange);">Identidade & Design</span>
+          <p style="font-size: 12px; color: #555; margin-top: 6px;">Design de interface, direção de arte editorial e comunicação visual da marca.</p>
+        </div>
+      </div>
+
+      <div class="card-editorial" style="background: #FFF; padding: 12px 16px;">
+        <span class="tag-mono">CRONOGRAMA ATÉ A SEMANA PRESENCIAL</span>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-top: 6px; font-family: var(--font-mono);">
+          <span><strong>Out/26:</strong> Submissão & Validação com 30 Usuários</span>
+          <span><strong>Nov-Dez/26:</strong> Conexão WFS GeoSampa & EMPREL</span>
+          <span><strong>Fev/27:</strong> Imersão Presencial em SP</span>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>VEREDA — Inteligência de Decisão Habitacional • Campus Mobile 2026</span>
+        <span>SLIDE 08 / 08</span>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Deck Controls Bar -->
+  <div class="controls-bar">
+    <button class="ctrl-btn" onclick="prevSlide()">◀ Anterior</button>
+    <span id="slideIndicator">Slide 1 de 8</span>
+    <button class="ctrl-btn" onclick="nextSlide()">Próximo ▶</button>
+    <button class="ctrl-btn" onclick="window.print()">🖨️ Exportar PDF</button>
+    <span>[Use as setas ◀ ▶ do teclado]</span>
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 8;
+
+    function showSlide(n) {
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById('slide-' + n);
+      if (target) {
+        target.classList.add('active');
+        currentSlide = n;
+        document.getElementById('slideIndicator').innerText = `Slide ${currentSlide} de ${totalSlides}`;
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) showSlide(currentSlide - 1);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      else if (e.key === 'ArrowLeft') prevSlide();
+    });
+  </script>
+</body>
+</html>
+"""
+
+with open("docs/pitch/deck_slides.html", "w", encoding="utf-8") as f:
+    f.write(deck_html.strip() + "\n")
+
+print("Created docs/pitch/deck_slides.html successfully.")

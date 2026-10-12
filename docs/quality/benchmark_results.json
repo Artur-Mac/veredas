@@ -1,0 +1,92 @@
+{
+  "filesize_bytes": 80113,
+  "filesize_kb": 78.24,
+  "checks": [
+    {
+      "test": "Screen screen-home",
+      "status": "PASS"
+    },
+    {
+      "test": "Screen screen-loading",
+      "status": "PASS"
+    },
+    {
+      "test": "Screen screen-dossier",
+      "status": "PASS"
+    },
+    {
+      "test": "Screen screen-checklist",
+      "status": "PASS"
+    },
+    {
+      "test": "Screen screen-compare",
+      "status": "PASS"
+    },
+    {
+      "test": "Screen screen-saved",
+      "status": "PASS"
+    },
+    {
+      "test": "Modal modalCandidate",
+      "status": "PASS"
+    },
+    {
+      "test": "Modal modalWhatsApp",
+      "status": "PASS"
+    },
+    {
+      "test": "Modal modalCadastralProvenance",
+      "status": "PASS"
+    },
+    {
+      "test": "Near Black (#171717) on Warm Paper (#F2EBDD)",
+      "ratio": "15.11:1",
+      "target": 4.5,
+      "status": "PASS"
+    },
+    {
+      "test": "Near Black (#171717) on White (#FFFFFF)",
+      "ratio": "17.93:1",
+      "target": 4.5,
+      "status": "PASS"
+    },
+    {
+      "test": "Deep Rust (#B94E36) on White (#FFFFFF)",
+      "ratio": "4.99:1",
+      "target": 4.5,
+      "status": "PASS"
+    },
+    {
+      "test": "Signal Orange (#F47745) on Near Black (#171717)",
+      "ratio": "6.46:1",
+      "target": 3.0,
+      "status": "PASS"
+    },
+    {
+      "test": "Muted Sage (#7F8870) on White (#FFFFFF)",
+      "ratio": "3.71:1",
+      "target": 3.0,
+      "status": "PASS"
+    },
+    {
+      "test": "SVG Count >= 8",
+      "status": "PASS"
+    },
+    {
+      "test": "Property solar data",
+      "status": "PASS"
+    },
+    {
+      "test": "Property pauliceia data",
+      "status": "PASS"
+    },
+    {
+      "test": "Property marfim data",
+      "status": "PASS"
+    },
+    {
+      "test": "Triad Rule Enforcement",
+      "status": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "fixtures": [
+    {
+      "id": "solar",
+      "city": "Sao Paulo",
+      "neighborhood": "Consolacao",
+      "address": "Rua Bela Cintra, 412",
+      "unit": "84",
+      "year_built": 1974,
+      "declared_rent": 3400.0,
+      "declared_condo": 600.0,
+      "effective_condo": 810.0,
+      "extra_assessments": 210.0,
+      "iptu_exempt": true,
+      "elevation_gain_meters": 22.0,
+      "distance_meters": 620.0,
+      "slope_percentage": 8.4,
+      "advertised_walk_time_min": 3,
+      "actual_walk_time_min": 9,
+      "neighbor_permits": [
+        {
+          "lot": "420",
+          "permit_number": "SisRBC-2026-0192",
+          "floors": 28,
+          "distance_meters": 9.0,
+          "sunlight_obstruction": "morning_sun_blocked"
+        }
+      ]
+    },
+    {
+      "id": "pauliceia",
+      "city": "Sao Paulo",
+      "neighborhood": "Bela Vista",
+      "address": "Avenida Paulista, 2584",
+      "unit": "142",
+      "year_built": 1958,
+      "declared_rent": 3900.0,
+      "declared_condo": 980.0,
+      "effective_condo": 980.0,
+      "extra_assessments": 0.0,
+      "iptu_monthly": 180.0,
+      "elevation_gain_meters": 0.0,
+      "distance_meters": 240.0,
+      "slope_percentage": 0.2,
+      "advertised_walk_time_min": 3,
+      "actual_walk_time_min": 3,
+      "heritage_status": "CONDEPHAAT_TOMBADO"
+    },
+    {
+      "id": "marfim",
+      "city": "Recife",
+      "neighborhood": "Boa Viagem",
+      "address": "Rua dos Navegantes, 1040",
+      "unit": "502",
+      "year_built": 1988,
+      "declared_rent": 2900.0,
+      "declared_condo": 900.0,
+      "effective_condo": 1150.0,
+      "extra_assessments": 250.0,
+      "iptu_monthly": 380.0,
+      "coastal_distance_meters": 80.0,
+      "marine_corrosion_zone": "C4_SEVERE",
+      "flood_vulnerability": "HIGH_SPRING_TIDE",
+      "water_grid_autonomy": "ARTESIAN_WELL_ACTIVE"
+    }
+  ]
+}
