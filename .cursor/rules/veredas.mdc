@@ -1,0 +1,65 @@
+---
+description: Regras e padrões de engenharia e design editorial do Veredas (Anti-AI-Slop, Recife Real, Perícia Urbana)
+globs: **/*
+---
+
+# VEREDAS — DIRETRIZES DE ENGENHARIA, DESIGN EDITORIAL E AUDITORIA IMOBILIÁRIA
+
+## 1. Missão do Projeto
+O **Veredas** é uma plataforma de inteligência pericial e auditoria imobiliária hiperlocal focada em Recife/PE. O sistema audita anúncios de imóveis contra registros oficiais municipais (ESIG Recife, ITBI, IPTU, IBGE CNEFE), desmascara assimetrias de informação e decompõe matematicamente o preço justo via malha hexagonal H3 e SHAP Waterfall.
+
+---
+
+## 2. Bloqueio Estrito Anti-AI-Slop (Diretriz Visual Inegociável)
+Todo código de frontend, templates e componentes DEVE respeitar a estética de **Jornalismo de Dados e Perícia Urbana**.
+
+### 🚫 PROIBIDO:
+- Gradientes roxos, azuis elétricos, neon ou "efeito cyberpunk/SaaS genérico".
+- `background-clip: text` com texto gradiente brilhante.
+- Fontes genéricas de IA como `Inter` ou `Roboto` para títulos de veredito e telemetria.
+- Cards brancos com sombras difusas e excesso de blur (`box-shadow: 0 10px 30px rgba(...)`).
+- Cantos arredondados (`border-radius > 0px`). Todo componente, botão, input, card e modal tem `border-radius: 0px`.
+- Ícones de "estrelinhas de IA" (✨, 🪄, sparkles) ou linguagem antropomórfica ("A IA pensou...", "Mágica do algoritmo"). Use terminologia pericial: *"Auditoria Cadastral"*, *"Extração de Entidades"*, *"Decomposição SHAP"*, *"Malha H3"*.
+
+### ✅ OBRIGATÓRIO:
+- **Paleta de Superfícies de Papel Técnico:**
+  - `--veredas-bg-paper: #F4F1EA` (Fundo principal com textura sutil de grid/papel milimetrado)
+  - `--veredas-bg-card: #FAF8F4` (Superfície de fichas e laudos)
+  - `--veredas-bg-subtle: #EAE5DA` (Barras de telemetria e cabeçalhos técnicos)
+  - `--veredas-ink-primary: #141413` (Texto principal e bordas estruturais `1.5px solid #141413`)
+  - `--veredas-ink-secondary: #4A4843` | `--veredas-ink-muted: #78746C`
+  - `--veredas-border: #D5CFC2`
+- **Cores Semânticas de Perícia:**
+  - `--veredas-alert: #C84B31` / `--veredas-alert-bg: #F9EBE8` (Terracota Recife: sobrepreço, divergência grave ESIG, face Poente omitida, patologia construtiva)
+  - `--veredas-valid: #1B5E40` / `--veredas-valid-bg: #E6F2EC` (Verde Mangue: preço justo/abaixo da mediana H3, arbitragem favorável, cadastro íntegro)
+  - `--veredas-warn: #B86B11` / `--veredas-warn-bg: #FDF3E4` (Âmbar: dado omitido, risco moderado de alagamento/maré)
+  - `--veredas-official: #1D4E89` / `--veredas-official-bg: #EBF1F8` (Azul Cadastral: fontes oficiais ESIG Recife, ITBI, IBGE, OSM)
+- **Tríade Tipográfica:**
+  - `Instrument Serif`: Manchetes editoriais de veredito e Score Veredas (0–100).
+  - `Plus Jakarta Sans`: Corpo de texto, checklists, formulários e explicações.
+  - `JetBrains Mono` (`font-variant-numeric: tabular-nums`): TODOS os valores monetários (`R$`), metragens (`m²`), índices espaciais `h3_index`, selos de alvará e tabelas comparativas.
+- **Geometria & Sombras:**
+  - `border-radius: 0px` absoluto em botões, tags, inputs, tabelas e modais.
+  - Sombras duras e estruturais: `box-shadow: 4px 4px 0px #141413` ou `8px 8px 0px #141413`.
+  - Bordas arquitetônicas de `1.5px solid #141413`.
+
+---
+
+## 3. Arquitetura de Dados (Medalhão: Bronze, Silver, Gold)
+- **Camada Bronze (`pipelines/bronze/`):** Ingestão bruta de anúncios e extratos cadastrais sem tratamento (HTML bruto, JSON de portais imobiliários, extrato bruto ESIG/IPTU).
+- **Camada Silver (`pipelines/silver/`):** Entity Resolution (agrupamento de múltiplos anúncios do mesmo imóvel físico através de atributos tabulares, proximidade H3 e perceptual hash de fotos), normalização de logradouros, desmembramento de condomínio e IPTU.
+- **Camada Gold (`pipelines/gold/`):** Métricas analíticas agregadas por hexágono H3 (resolução 8 e 9), SHAP Waterfall decomposto por imóvel, índice de resiliência hidro-urbana (cota altimétrica + maré de sizígia) e matriz de arbitragem de preço.
+
+---
+
+## 4. Camada "Recife Real" (Conhecimento Territorial Específico)
+- **Bairros Primários:** Graças (Parque da Jaqueira, Rosa e Silva), Boa Viagem (Av. Boa Viagem, Navegantes, Setúbal) e Várzea (UFPE, Brennand).
+- **Resiliência Hidro-Urbana:** Recife possui cota altimétrica baixa em zonas de manguezal aterrado. Auditar vulnerabilidade a alagamento cruzando cota do logradouro com a tábua de marés de sizígia (marés > 2.2m).
+- **Conforto Bioclimático:** Face Poente (oeste) no Recife recebe insolação crítica vespertina sem ventilação de Sudeste (ventos alísios). Avaliar sempre azimute solar e sobrecusto de energia com ar-condicionado.
+- **Auditoria ESIG Recife:** Portais frequentemente somam vagas de garagem e hall privativo à área do apartamento para baratear artificialmente o R$/m². O Veredas sempre audita contra a Área Construída Privativa Real registrada no cadastro do ESIG Recife.
+
+---
+
+## 5. Modos de Uso e Revelação Progressiva
+- **Modo Curioso:** Foco na decisão rápida — Manchete de Veredito, Score Veredas (0-100), Custo Real Mensal Auditado, Menor Preço Multi-Imobiliária e Prancheta de Visita.
+- **Modo Detetive:** Revela toda a perícia forense — Dissecador de texto com notas de rodapé, Visão Computacional nas fotos com bounding boxes de patologias e lente 0.5x, Auditoria ESIG/ITBI, SHAP Waterfall e malha hexagonal H3 interativa.

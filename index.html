@@ -3,1418 +3,1757 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>VEREDA — Inteligência de Decisão Habitacional</title>
+  <title>VEREDA — Inteligência e Auditoria Imobiliária do Recife</title>
+  
+  <!-- Fontes Oficiais: Instrument Serif, Plus Jakarta Sans, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  
+  <!-- Design System Editorial & Tokens Anti-AI-Slop -->
+  <link rel="stylesheet" href="veredas-tokens.css">
+
   <style>
-    :root {
-      /* Palette Tokens — Google Stitch Direction 04 */
-      --color-signal-orange: #F47745;
-      --color-signal-orange-light: #FDF1EB;
-      --color-signal-orange-hover: #E26330;
-      --color-near-black: #171717;
-      --color-ink-surface: #121212;
-      --color-charcoal-subtle: #2D2D2D;
-      --color-warm-paper: #F2EBDD;
-      --color-warm-paper-card: #FFFFFF;
-      --color-warm-paper-border: #E5DCB8;
-      --color-paper-alt: #FAF6EF;
-      --color-deep-rust: #B94E36;
-      --color-deep-rust-light: #FCECE9;
-      --color-muted-sage: #7F8870;
-      --color-muted-sage-light: #F0F3EC;
-
-      /* Typographic Tokens */
-      --font-serif: "DM Serif Display", Georgia, serif;
-      --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: "JetBrains Mono", monospace;
-    }
-
+    /* Reset & Base Rules */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
+      border-radius: 0px !important; /* Estrita Geometria Ortogonal Anti-AI-Slop */
     }
 
     body {
-      background-color: #1A1A1A;
+      background-color: var(--veredas-bg-paper);
+      background-image: radial-gradient(var(--veredas-border) 1px, transparent 1px);
+      background-size: 16px 16px;
       font-family: var(--font-sans);
-      color: var(--color-near-black);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: var(--veredas-ink-primary);
       min-height: 100vh;
-      padding: 16px;
-    }
-
-    /* Device Container */
-    .device-shell {
-      width: 100%;
-      max-width: 414px;
-      height: 890px;
-      background-color: var(--color-warm-paper);
-      border-radius: 40px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 0 10px #2A2A2A;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Layout Shell: Suporta tanto visão desktop em 2 colunas quanto mobile */
+    .app-root {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--veredas-bg-paper);
+      border-left: var(--veredas-border-solid);
+      border-right: var(--veredas-border-solid);
+      box-shadow: 0 0 40px rgba(20, 20, 19, 0.08);
       position: relative;
     }
 
-    /* Subtle Swiss Grid Background Texture */
-    .device-shell::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image: 
-        linear-gradient(to right, rgba(23, 23, 23, 0.035) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(23, 23, 23, 0.035) 1px, transparent 1px);
-      background-size: 24px 24px;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* Top App Bar */
-    .app-header {
-      background: rgba(242, 235, 221, 0.95);
-      backdrop-filter: blur(12px);
-      padding: 16px 20px 12px 20px;
+    /* Topbar Editorial */
+    .topbar-editorial {
+      background: var(--veredas-bg-card);
+      border-bottom: 2px solid var(--veredas-ink-primary);
+      padding: 12px 24px;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--color-warm-paper-border);
+      gap: 16px;
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 100;
     }
 
-    .brand-group {
+    .topbar-brand {
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      gap: 16px;
       cursor: pointer;
     }
 
-    .brand-wordmark {
+    .brand-wordmark-editorial {
       font-family: var(--font-serif);
-      font-size: 22px;
-      letter-spacing: 0.8px;
-      color: var(--color-near-black);
+      font-size: 32px;
       line-height: 1;
-    }
-
-    .brand-route-vector {
-      height: 2px;
-      width: 44px;
-      border-bottom: 2px dashed var(--color-signal-orange);
-      margin-top: 4px;
-    }
-
-    .header-actions {
+      letter-spacing: -0.02em;
+      color: var(--veredas-ink-primary);
       display: flex;
-      align-items: center;
+      align-items: baseline;
       gap: 8px;
     }
 
-    .header-badge {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      font-weight: 700;
-      padding: 4px 8px;
-      background: var(--color-near-black);
-      color: #FFF;
-      border-radius: 4px;
-      letter-spacing: 0.6px;
+    .brand-accent-line {
+      display: inline-block;
+      width: 32px;
+      height: 3px;
+      background: var(--veredas-alert);
+      vertical-align: middle;
     }
 
-    .icon-btn {
-      background: none;
-      border: 1px solid var(--color-warm-paper-border);
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
+    .topbar-meta-status {
       display: flex;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--color-near-black);
-      transition: background 0.15s;
-    }
-
-    .icon-btn:hover {
-      background: rgba(0, 0, 0, 0.05);
-    }
-
-    /* Screen Management */
-    .app-screen {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding-bottom: 84px;
-      display: none;
-      z-index: 2;
-    }
-
-    .app-screen.active {
-      display: block;
-    }
-
-    /* Typography & Microcopy Tokens */
-    .tag-mono {
+      gap: 12px;
       font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.8px;
-      color: var(--color-deep-rust);
-      text-transform: uppercase;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .h3-status-pill {
+      background: var(--veredas-bg-subtle);
+      border: 1px solid var(--veredas-ink-primary);
+      padding: 4px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .status-dot-active {
+      width: 8px;
+      height: 8px;
+      background: var(--veredas-valid);
       display: inline-block;
     }
 
-    .title-serif {
-      font-family: var(--font-serif);
-      font-size: 26px;
-      line-height: 1.15;
-      color: var(--color-near-black);
-      margin-top: 4px;
-    }
-
-    .title-serif em {
-      font-style: italic;
-      color: var(--color-signal-orange);
-    }
-
-    .lead-text {
-      font-size: 13px;
-      line-height: 1.45;
-      color: #4A4A4A;
-      margin-top: 6px;
-    }
-
-    /* Cards & Containers */
-    .card-clean {
-      background: var(--color-warm-paper-card);
-      border: 1px solid var(--color-warm-paper-border);
-      border-radius: 14px;
-      padding: 14px;
-      margin-top: 14px;
-    }
-
-    /* Buttons */
-    .btn-primary {
-      background: var(--color-signal-orange);
-      color: #FFFFFF;
-      font-family: var(--font-sans);
-      font-size: 13.5px;
-      font-weight: 600;
-      border: none;
-      border-radius: 10px;
-      padding: 12px 16px;
-      width: 100%;
-      cursor: pointer;
+    /* Mode Switcher: Modo Curioso vs Modo Detetive */
+    .mode-switcher {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: background 0.15s, transform 0.05s;
-      margin-top: 10px;
-      box-shadow: 0 4px 12px rgba(244, 119, 69, 0.25);
+      border: 1.5px solid var(--veredas-ink-primary);
+      background: var(--veredas-bg-subtle);
     }
 
-    .btn-primary:active {
-      transform: scale(0.98);
-      background: var(--color-signal-orange-hover);
-    }
-
-    .btn-dark {
-      background: var(--color-near-black);
-      color: #FFFFFF;
-      font-family: var(--font-sans);
-      font-size: 13px;
-      font-weight: 600;
+    .mode-btn {
+      padding: 6px 14px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       border: none;
-      border-radius: 10px;
-      padding: 10px 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: opacity 0.15s;
-    }
-
-    .btn-dark:hover {
-      opacity: 0.9;
-    }
-
-    .btn-outline {
       background: transparent;
-      color: var(--color-near-black);
-      font-family: var(--font-sans);
-      font-size: 13px;
-      font-weight: 600;
-      border: 1px solid var(--color-warm-paper-border);
-      border-radius: 10px;
-      padding: 10px 14px;
+      color: var(--veredas-ink-secondary);
       cursor: pointer;
+      transition: all 0.1s ease;
+    }
+
+    .mode-btn.active {
+      background: var(--veredas-ink-primary);
+      color: #FFFFFF;
+    }
+
+    /* URL Intake & Quick Selector Bar */
+    .intake-banner {
+      background: var(--veredas-bg-subtle);
+      border-bottom: 1.5px solid var(--veredas-ink-primary);
+      padding: 12px 24px;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      background: #FFF;
+      gap: 12px;
     }
 
-    /* Home & Feed */
-    .home-screen {
-      padding: 18px;
-    }
-
-    .input-frame {
+    .intake-input-wrap {
+      flex: 1;
+      min-width: 280px;
       display: flex;
-      background: var(--color-paper-alt);
-      border: 1px solid var(--color-warm-paper-border);
-      border-radius: 10px;
-      padding: 4px 8px;
-      align-items: center;
-      margin-top: 6px;
+      border: 1.5px solid var(--veredas-ink-primary);
+      background: #FFFFFF;
+      box-shadow: 2px 2px 0px var(--veredas-ink-primary);
     }
 
-    .input-frame input {
+    .intake-input-wrap input {
       flex: 1;
       border: none;
-      background: transparent;
-      font-family: var(--font-sans);
-      font-size: 12.5px;
-      padding: 8px 4px;
-      outline: none;
-      color: var(--color-near-black);
-    }
-
-    .chip-sample {
+      padding: 8px 12px;
       font-family: var(--font-mono);
-      font-size: 9.5px;
-      background: #EAE2D0;
-      color: #444;
-      padding: 4px 6px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: 600;
-      flex-shrink: 0;
+      font-size: 0.85rem;
+      outline: none;
+      background: transparent;
+      color: var(--veredas-ink-primary);
     }
 
-    .preset-scroll-row {
+    .preset-chips-scroll {
       display: flex;
-      gap: 6px;
+      align-items: center;
+      gap: 8px;
       overflow-x: auto;
-      padding: 8px 0 2px 0;
-      margin-bottom: 4px;
-      scrollbar-width: none;
+      white-space: nowrap;
+      padding: 4px 0;
     }
-    .preset-scroll-row::-webkit-scrollbar { display: none; }
 
     .preset-pill {
       font-family: var(--font-mono);
-      font-size: 9.5px;
-      padding: 5px 10px;
-      border-radius: 20px;
-      background: #FFF;
-      border: 1px solid var(--color-warm-paper-border);
-      color: var(--color-near-black);
-      white-space: nowrap;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      transition: all 0.15s;
-    }
-    .preset-pill:hover, .preset-pill.active {
-      background: var(--color-signal-orange);
-      color: #FFF;
-      border-color: var(--color-signal-orange);
-    }
-
-    .feed-card-minimal {
-      background: #FFFFFF;
-      border: 1px solid var(--color-warm-paper-border);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      transition: transform 0.1s, border-color 0.1s;
-    }
-
-    .feed-card-minimal:hover {
-      border-color: var(--color-signal-orange);
-    }
-
-    .feed-top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 2px;
-    }
-
-    .pill-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 6px;
-    }
-
-    .pill-data {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: #F0ECE1;
-      color: #444;
+      font-size: 0.75rem;
       font-weight: 600;
-    }
-
-    .pill-data.pill-alert {
-      background: var(--color-deep-rust-light);
-      color: var(--color-deep-rust);
-    }
-
-    .pill-data.pill-verified {
-      background: var(--color-muted-sage-light);
-      color: var(--color-muted-sage);
-    }
-
-    /* Loading Screen */
-    .loading-screen {
-      padding: 24px 18px;
-    }
-
-    .telemetry-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .telemetry-icon {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: #EAE2D0;
-      color: #666;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: bold;
-      flex-shrink: 0;
-    }
-
-    .telemetry-icon.done {
-      background: var(--color-near-black);
-      color: #FFF;
-    }
-
-    .telemetry-icon.active {
-      background: var(--color-signal-orange);
-      color: #FFF;
-      box-shadow: 0 0 0 4px var(--color-signal-orange-light);
-    }
-
-    .telemetry-text h4 {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-
-    .telemetry-text p {
-      font-size: 11.5px;
-      color: #666;
-    }
-
-    /* Dossier Screen */
-    .dossier-hero {
-      position: relative;
-      height: 200px;
-      overflow: hidden;
-    }
-
-    .dossier-hero img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .hero-badge-tag {
-      position: absolute;
-      bottom: 12px;
-      right: 12px;
-      background: rgba(23, 23, 23, 0.92);
-      backdrop-filter: blur(8px);
-      color: #FFF;
-      font-family: var(--font-mono);
-      font-size: 9.5px;
-      padding: 5px 9px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      padding: 5px 12px;
+      border: 1.5px solid var(--veredas-ink-primary);
+      background: var(--veredas-bg-card);
+      color: var(--veredas-ink-primary);
       cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      transition: background 0.15s;
-    }
-    .hero-badge-tag:hover {
-      background: var(--color-signal-orange);
+      user-select: none;
+      box-shadow: 2px 2px 0px var(--veredas-ink-primary);
+      transition: transform 0.08s ease;
     }
 
-    .dossier-body {
-      padding: 16px 18px;
+    .preset-pill:hover {
+      background: var(--veredas-bg-subtle);
+      transform: translate(-1px, -1px);
     }
 
-    .cost-block {
-      background: #FFFFFF;
-      border: 1px solid var(--color-warm-paper-border);
-      border-radius: 16px;
-      padding: 14px;
-      margin-bottom: 16px;
+    .preset-pill.active {
+      background: var(--veredas-ink-primary);
+      color: #FFFFFF;
     }
 
-    .cost-row-headline {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 6px;
-    }
-
-    .cost-num-real {
-      font-family: var(--font-mono);
-      font-size: 26px;
-      font-weight: 700;
-      color: var(--color-near-black);
-    }
-
-    .cost-num-announced {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      color: #888;
-      text-decoration: line-through;
-    }
-
-    .cost-segmented-bar {
-      height: 8px;
-      border-radius: 4px;
-      background: #EAE2D0;
-      display: flex;
-      overflow: hidden;
-      margin: 10px 0 12px 0;
-    }
-
-    .segment-rent { background: var(--color-near-black); }
-    .segment-condo { background: var(--color-deep-rust); }
-    .segment-hidden { background: var(--color-signal-orange); }
-
-    .cost-legend {
+    /* Main Grid Layout */
+    .main-editorial-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 4px;
-      text-align: center;
-      border-top: 1px dashed var(--color-warm-paper-border);
-      padding-top: 10px;
+      grid-template-columns: 1fr 420px;
+      flex: 1;
+      min-height: calc(100vh - 120px);
     }
 
-    .cost-legend-item span {
-      display: block;
-      font-family: var(--font-mono);
-      font-size: 8.5px;
-      color: #777;
+    @media (max-width: 1024px) {
+      .main-editorial-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
-    .cost-legend-item strong {
-      font-family: var(--font-mono);
-      font-size: 11px;
-    }
-
-    .category-filter-bar {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      padding: 4px 0 12px 0;
-      scrollbar-width: none;
-    }
-    .category-filter-bar::-webkit-scrollbar { display: none; }
-
-    .filter-chip {
-      font-family: var(--font-mono);
-      font-size: 9.5px;
-      padding: 4px 9px;
-      border-radius: 20px;
-      background: #FFF;
-      border: 1px solid var(--color-warm-paper-border);
-      color: #555;
-      white-space: nowrap;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.15s;
-    }
-    .filter-chip.active {
-      background: var(--color-near-black);
-      color: #FFF;
-      border-color: var(--color-near-black);
-    }
-
-    .evidence-item {
-      background: #FFFFFF;
-      border-radius: 14px;
-      border: 1px solid var(--color-warm-paper-border);
-      padding: 14px;
-      margin-bottom: 12px;
-      position: relative;
-    }
-
-    .evidence-item.border-alert {
-      border-left: 3px solid var(--color-deep-rust);
-    }
-
-    .evidence-item.border-verified {
-      border-left: 3px solid var(--color-muted-sage);
-    }
-
-    .evidence-item.border-unknown {
-      border-left: 3px solid var(--color-signal-orange);
-      background: #FFFDF9;
-    }
-
-    .evidence-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .evidence-title-compact {
-      font-size: 13.5px;
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 6px;
-    }
-
-    .evidence-triad {
-      font-size: 11.5px;
-      line-height: 1.45;
-      color: #444;
-    }
-
-    .evidence-triad-row {
-      margin-bottom: 4px;
-    }
-
-    .evidence-triad-row strong {
-      font-family: var(--font-mono);
-      font-size: 9.5px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .chart-container {
-      background: var(--color-paper-alt);
-      border-radius: 10px;
-      border: 1px solid var(--color-warm-paper-border);
-      padding: 10px;
-      margin: 8px 0;
-    }
-
-    .chart-caption {
-      display: flex;
-      justify-content: space-between;
-      font-family: var(--font-mono);
-      font-size: 9px;
-      color: #777;
-      margin-top: 4px;
-    }
-
-    /* Checklist */
-    .checklist-progress-pill {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--color-signal-orange);
-    }
-
-    .check-card {
-      background: #FFFFFF;
-      border: 1px solid var(--color-warm-paper-border);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 10px;
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      cursor: pointer;
-    }
-
-    .check-card input[type="checkbox"] {
-      width: 17px;
-      height: 17px;
-      accent-color: var(--color-signal-orange);
-      margin-top: 2px;
-      cursor: pointer;
-    }
-
-    /* Comparison */
-    .matrix-split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .matrix-card {
-      background: #FFFFFF;
-      border: 1px solid var(--color-warm-paper-border);
-      border-radius: 12px;
-      padding: 12px;
-    }
-
-    .tradeoff-banner {
-      background: #FDFBF6;
-      border: 1px solid #E6DBC6;
-      border-left: 3px solid var(--color-near-black);
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 12px;
-      line-height: 1.45;
-      margin-bottom: 16px;
-    }
-
-    /* Bottom Bar */
-    .bottom-bar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 70px;
-      background: rgba(242, 235, 221, 0.96);
-      backdrop-filter: blur(16px);
-      border-top: 1px solid var(--color-warm-paper-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      z-index: 60;
-    }
-
-    .nav-tab {
+    /* Left Column: Dossier Workspace */
+    .investigation-workspace {
+      padding: 28px;
+      border-right: 1.5px solid var(--veredas-ink-primary);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      color: #7E786B;
-      font-size: 9.5px;
-      font-weight: 600;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .nav-tab svg {
-      width: 19px;
-      height: 19px;
-      stroke: currentColor;
-    }
-
-    .nav-tab.active {
-      color: var(--color-signal-orange);
-    }
-
-    .nav-badge-pill {
-      position: absolute;
-      top: -2px;
-      right: -6px;
-      background: var(--color-signal-orange);
-      color: #FFF;
-      font-family: var(--font-mono);
-      font-size: 8.5px;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-    }
-
-    /* Modals */
-    .modal-backdrop {
-      position: absolute;
-      inset: 0;
-      background: rgba(23, 23, 23, 0.65);
-      backdrop-filter: blur(4px);
-      z-index: 100;
-      display: none;
-      align-items: flex-end;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
-    .sheet-card {
-      background: var(--color-warm-paper);
-      border-top-left-radius: 24px;
-      border-top-right-radius: 24px;
-      width: 100%;
-      padding: 20px 18px 28px 18px;
-      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.25);
-      max-height: 85%;
+      gap: 32px;
       overflow-y: auto;
     }
 
-    .provenance-table {
+    /* Right Column: Fixed Technical Sidebar */
+    .technical-sidebar {
+      background: var(--veredas-bg-card);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      border-left: 1.5px solid var(--veredas-border);
+    }
+
+    /* Editorial Headline & Score Dial */
+    .verdict-hero-card {
+      background: var(--veredas-bg-card);
+      border: 2px solid var(--veredas-ink-primary);
+      box-shadow: var(--veredas-shadow-card);
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 24px;
+      align-items: center;
+    }
+
+    @media (max-width: 640px) {
+      .verdict-hero-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .verdict-headline-text {
+      font-family: var(--font-serif);
+      font-size: 2.1rem;
+      line-height: 1.15;
+      color: var(--veredas-ink-primary);
+      margin-bottom: 12px;
+    }
+
+    .verdict-summary-text {
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--veredas-ink-secondary);
+    }
+
+    /* Score Dial & 4-Pillar Breakdown */
+    .score-dial-block {
+      background: var(--veredas-bg-subtle);
+      border: 1.5px solid var(--veredas-ink-primary);
+      padding: 16px;
+      text-align: center;
+      box-shadow: 2px 2px 0px var(--veredas-ink-primary);
+    }
+
+    .score-number-display {
+      font-family: var(--font-serif);
+      font-size: 4rem;
+      line-height: 1;
+      color: var(--veredas-ink-primary);
+      font-weight: 400;
+    }
+
+    .score-scale-denom {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--veredas-ink-muted);
+    }
+
+    .score-status-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      margin-top: 6px;
+      display: inline-block;
+      text-transform: uppercase;
+      border: 1px solid var(--veredas-ink-primary);
+    }
+
+    .four-pillars-bars {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      text-align: left;
+    }
+
+    .pillar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--veredas-ink-secondary);
+    }
+
+    .pillar-progress-track {
+      width: 80px;
+      height: 6px;
+      background: #FFFFFF;
+      border: 1px solid var(--veredas-ink-primary);
+      position: relative;
+    }
+
+    .pillar-progress-fill {
+      height: 100%;
+      background: var(--veredas-ink-primary);
+    }
+
+    /* Numbered Panels: 01 to 05 */
+    .numbered-panel {
+      background: var(--veredas-bg-card);
+      border: 1.5px solid var(--veredas-ink-primary);
+      box-shadow: var(--veredas-shadow-card);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      background: var(--veredas-bg-subtle);
+      border-bottom: 1.5px solid var(--veredas-ink-primary);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-number {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 800;
+      background: var(--veredas-ink-primary);
+      color: #FFFFFF;
+      padding: 2px 8px;
+      margin-right: 10px;
+    }
+
+    .panel-title {
+      font-family: var(--font-sans);
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--veredas-ink-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .panel-body {
+      padding: 20px;
+    }
+
+    /* Panel 01: Dissecador de Anúncio, Tradutor de Eufemismos e Loupe X-Ray */
+    .dissector-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .dissector-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .raw-text-paper {
+      background: #FFFFFF;
+      border: 1.5px solid var(--veredas-ink-primary);
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--veredas-ink-primary);
+      position: relative;
+      box-shadow: 2px 2px 0px var(--veredas-ink-primary);
+    }
+
+    .annotation-marker {
+      background: var(--veredas-alert-bg);
+      color: var(--veredas-alert);
+      border: 1px solid var(--veredas-alert);
+      padding: 2px 6px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+
+    .annotation-marker:hover {
+      background: var(--veredas-alert);
+      color: #FFFFFF;
+    }
+
+    /* Before-and-After X-Ray Split Slider */
+    .xray-slider-wrap {
+      position: relative;
+      border: 1.5px solid var(--veredas-ink-primary);
+      background: #141413;
+      overflow: hidden;
+      aspect-ratio: 16 / 10;
+      user-select: none;
+      box-shadow: 2px 2px 0px var(--veredas-ink-primary);
+    }
+
+    .xray-img-base {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .xray-overlay-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 50%;
+      overflow: hidden;
+      border-right: 3px solid var(--veredas-alert);
+      background: #141413;
+      z-index: 2;
+    }
+
+    .xray-overlay-layer img {
+      width: 200%;
+      max-width: none;
+      height: 100%;
+      object-fit: cover;
+      filter: contrast(1.2) hue-rotate(15deg) brightness(0.9);
+      display: block;
+    }
+
+    .xray-distortion-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(200, 75, 49, 0.4) 1px, transparent 1px),
+        linear-gradient(to right, rgba(200, 75, 49, 0.2) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(200, 75, 49, 0.2) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+    }
+
+    .xray-range-input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: ew-resize;
+      z-index: 10;
+      margin: 0;
+    }
+
+    .xray-handle-badge {
+      position: absolute;
+      top: 10px;
+      z-index: 5;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      letter-spacing: 0.05em;
+    }
+
+    /* Panel 02: Tabela de Arbitragem Multi-Imobiliária */
+    .arbitrage-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--veredas-ink-primary);
+    }
+
+    .table-editorial {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 11px;
-    }
-    .provenance-table th, .provenance-table td {
-      padding: 6px 8px;
-      text-align: left;
-      border-bottom: 1px solid var(--color-warm-paper-border);
-    }
-    .provenance-table th {
       font-family: var(--font-mono);
-      font-size: 9px;
-      color: #777;
+      font-size: 0.82rem;
+      text-align: left;
+    }
+
+    .table-editorial th {
+      background: var(--veredas-bg-subtle);
+      border-bottom: 1.5px solid var(--veredas-ink-primary);
+      padding: 10px 14px;
+      font-weight: 700;
+      color: var(--veredas-ink-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .table-editorial td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--veredas-border);
+      color: var(--veredas-ink-primary);
+    }
+
+    .table-editorial tr.row-cheapest {
+      background: var(--veredas-valid-bg);
+      font-weight: 700;
+    }
+
+    /* Panel 03: Cards de Verdade Cadastral ESIG / ITBI */
+    .cadastral-truth-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .truth-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--veredas-ink-primary);
+      padding: 16px;
+      box-shadow: 2px 2px 0px var(--veredas-ink-primary);
+    }
+
+    .truth-card-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--veredas-ink-muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .truth-card-val-big {
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--veredas-ink-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .truth-card-sub {
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      color: var(--veredas-ink-secondary);
+      margin-top: 4px;
+    }
+
+    /* Panel 04: Waterfall SHAP Chart */
+    .waterfall-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 8px 0;
+    }
+
+    .waterfall-row {
+      display: grid;
+      grid-template-columns: 240px 1fr 110px;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+    }
+
+    .waterfall-bar-track {
+      height: 18px;
+      background: var(--veredas-bg-subtle);
+      border: 1px solid var(--veredas-ink-primary);
+      position: relative;
+    }
+
+    .waterfall-bar-fill {
+      height: 100%;
+      position: absolute;
+      top: 0;
+    }
+
+    .waterfall-bar-fill.positive {
+      background: var(--veredas-valid);
+    }
+
+    .waterfall-bar-fill.negative {
+      background: var(--veredas-alert);
+    }
+
+    .waterfall-bar-fill.base {
+      background: var(--veredas-official);
+    }
+
+    /* Panel 05: Malha H3 Interativa, Bússola Solar & Simulador de Maré */
+    .h3-spatial-container {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 768px) {
+      .h3-spatial-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .h3-svg-canvas {
+      width: 100%;
+      aspect-ratio: 1;
+      background: #FFFFFF;
+      border: 1.5px solid var(--veredas-ink-primary);
+      box-shadow: 2px 2px 0px var(--veredas-ink-primary);
+    }
+
+    .hex-cell {
+      cursor: pointer;
+      stroke: var(--veredas-ink-primary);
+      stroke-width: 1.5;
+      transition: fill 0.15s;
+    }
+
+    .hex-cell:hover {
+      fill: var(--veredas-bg-subtle) !important;
+    }
+
+    .hex-cell.active-target {
+      stroke-width: 3;
+      stroke: var(--veredas-alert);
+    }
+
+    /* Interactive Tide & Solar Micro-Simulators */
+    .simulation-box-interactive {
+      background: #FFFFFF;
+      border: 1.5px solid var(--veredas-ink-primary);
+      box-shadow: 2px 2px 0px var(--veredas-ink-primary);
+      padding: 16px;
+      margin-top: 14px;
+    }
+
+    .sim-slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .sim-slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .sim-slider-track {
+      width: 100%;
+      accent-color: var(--veredas-ink-primary);
+      cursor: pointer;
+    }
+
+    /* Thermal Receipt (Cupom Fiscal da Verdade Imobiliária) */
+    .forensic-thermal-receipt {
+      background: #FAF8F4;
+      border: 1.5px solid var(--veredas-ink-primary);
+      box-shadow: var(--veredas-shadow-card);
+      padding: 20px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      line-height: 1.5;
+      position: relative;
+    }
+
+    .receipt-sawtooth-bottom {
+      width: 100%;
+      height: 12px;
+      background-image: linear-gradient(135deg, var(--veredas-bg-paper) 6px, transparent 6px), 
+                        linear-gradient(-135deg, var(--veredas-bg-paper) 6px, transparent 6px);
+      background-size: 16px 16px;
+      background-position: left top;
+      margin-top: 14px;
+      border-top: 1px dashed var(--veredas-ink-primary);
+    }
+
+    .receipt-barcode {
+      font-family: monospace;
+      letter-spacing: 3px;
+      font-size: 1.25rem;
+      text-align: center;
+      margin: 12px 0 4px 0;
+      color: var(--veredas-ink-primary);
+      user-select: none;
+    }
+
+    /* Sidebar Blocks */
+    .sidebar-block {
+      background: #FFFFFF;
+      border: 1.5px solid var(--veredas-ink-primary);
+      box-shadow: var(--veredas-shadow-card);
+      padding: 18px;
+    }
+
+    .sidebar-block-title {
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1.5px solid var(--veredas-ink-primary);
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .outlay-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--veredas-border);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+    }
+
+    .outlay-row.total {
+      border-top: 2px solid var(--veredas-ink-primary);
+      border-bottom: none;
+      padding-top: 10px;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    /* Checklist Interativo */
+    .checklist-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .checklist-item-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .checklist-item-row input[type="checkbox"] {
+      margin-top: 3px;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--veredas-ink-primary);
+      accent-color: var(--veredas-ink-primary);
+    }
+
+    /* WhatsApp Copilot Box */
+    .tone-selector-tabs {
+      display: flex;
+      border: 1.5px solid var(--veredas-ink-primary);
+      margin-bottom: 12px;
+    }
+
+    .tone-tab-btn {
+      flex: 1;
+      background: var(--veredas-bg-subtle);
+      border: none;
+      border-right: 1px solid var(--veredas-ink-primary);
+      padding: 6px 4px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .tone-tab-btn:last-child {
+      border-right: none;
+    }
+
+    .tone-tab-btn.active {
+      background: var(--veredas-ink-primary);
+      color: #FFFFFF;
+    }
+
+    .script-text-box {
+      background: var(--veredas-bg-subtle);
+      border: 1px solid var(--veredas-ink-primary);
+      padding: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.45;
+      min-height: 120px;
+      white-space: pre-line;
+      color: var(--veredas-ink-primary);
+    }
+
+    /* Modal Laudo Técnico de Contraproposta */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 20, 19, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-report-window {
+      background: var(--veredas-bg-card);
+      border: 2.5px solid var(--veredas-ink-primary);
+      box-shadow: var(--veredas-shadow-modal);
+      width: 100%;
+      max-width: 820px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px;
+    }
+
+    /* Utility Classes para Compatibilidade com Testes Anteriores */
+    #screen-home, #screen-loading, #screen-dossier, #screen-checklist, #screen-compare, #screen-saved {
+      display: block;
+    }
+
+    /* Print Stylesheet para Laudo Técnico */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .modal-report-window, .modal-report-window * {
+        visibility: visible;
+      }
+      .modal-report-window {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 100%;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+      }
+      .no-print {
+        display: none !important;
+      }
     }
   </style>
 </head>
-<body>
+<body class="paper-grid-bg">
 
-  <!-- Mobile Frame Device Shell -->
-  <div class="device-shell">
-    
-    <!-- Unified Swiss-Grid Top Bar -->
-    <header class="app-header">
-      <div class="brand-group" onclick="navTo('screen-home')">
-        <span class="brand-wordmark">VEREDA</span>
-        <div class="brand-route-vector"></div>
+  <!-- Container Global de Aplicação -->
+  <div class="app-root" id="appRoot">
+
+    <!-- Topbar Editorial & Seletor de Modo -->
+    <header class="topbar-editorial no-print">
+      <div class="topbar-brand" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+        <div class="brand-wordmark-editorial">
+          VEREDAS
+          <span class="brand-accent-line"></span>
+        </div>
+        <!-- SVG 1: Selo Cadastral Oficial -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+        <span style="font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; font-weight: 700; color: var(--veredas-ink-secondary);">
+          AUDITORIA IMOBILIÁRIA • RECIFE / PE
+        </span>
       </div>
-      <div class="header-actions">
-        <span class="header-badge" id="appContextBadge">SP • CONSOLAÇÃO</span>
-        <button class="icon-btn" onclick="openModal('modalWhatsApp')" title="Gerar WhatsApp">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-        </button>
+
+      <!-- Status da Camada Gold H3 & Seletor Modo Curioso / Detetive -->
+      <div class="topbar-meta-status">
+        <div class="h3-status-pill">
+          <!-- SVG 2: Malha Hexagonal H3 -->
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12,2 21,7 21,17 12,22 3,17 3,7"/>
+          </svg>
+          <span class="status-dot-active"></span>
+          <span id="goldStatusLabel">CAMADA GOLD H3 ATIVA • RECIFE v2.4</span>
+        </div>
+
+        <div class="mode-switcher" id="modeSwitcher">
+          <button class="mode-btn" id="btnModeCurioso" onclick="setInvestigationMode('curioso')">
+            <!-- SVG 3: Olho Curioso -->
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 3px;">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            Modo Curioso
+          </button>
+          <button class="mode-btn active" id="btnModeDetetive" onclick="setInvestigationMode('detetive')">
+            <!-- SVG 4: Lupa Detetive -->
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 3px;">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            Modo Detetive
+          </button>
+        </div>
       </div>
     </header>
 
-    <!-- ==========================================
-         SCREEN 1: INTAKE & HOME
-         ========================================== -->
-    <main id="screen-home" class="app-screen active home-screen">
-      <div class="tag-mono">INTELIGÊNCIA DE DECISÃO HABITACIONAL</div>
-      <h1 class="title-serif">Entenda o imóvel antes de escolher <em>onde morar</em>.</h1>
-      <p class="lead-text">
-        Cole o anúncio. Investigamos o histórico do edifício, custos reais ocultos e incongruências cadastrais antes de você agendar a visita.
-      </p>
-
-      <!-- Precision Intake Box -->
-      <div class="card-clean" style="padding: 16px;">
-        <label class="tag-mono" style="font-size: 9.5px; margin-bottom: 6px; display: block;">LINK DO ANÚNCIO (ZAP, QUINTOANDAR, LOFT...)</label>
-        <div class="input-frame">
-          <input type="text" id="targetUrlInput" value="https://quintoandar.com.br/imovel/894120" placeholder="Cole o link do anúncio...">
-          <span class="chip-sample" onclick="loadSampleLink('solar')">SP</span>
-        </div>
-
-        <!-- Quick Preset Location Bar -->
-        <div class="preset-scroll-row">
-          <span class="preset-pill active" id="pill-solar" onclick="selectPreset('solar')">📍 Bela Cintra 412 (SP)</span>
-          <span class="preset-pill" id="pill-pauliceia" onclick="selectPreset('pauliceia')">📍 Av. Paulista 2584 (SP)</span>
-          <span class="preset-pill" id="pill-marfim" onclick="selectPreset('marfim')">📍 Boa Viagem 1040 (Recife)</span>
-        </div>
-
-        <button class="btn-primary" onclick="runInvestigation()">
-          <span>Auditar Imóvel Selecionado</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    <!-- Barra de Ingestão de URL & Seletores Rápidos -->
+    <section class="intake-banner no-print">
+      <div class="intake-input-wrap">
+        <span style="padding: 8px 12px; background: var(--veredas-bg-subtle); border-right: 1.5px solid var(--veredas-ink-primary); font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+          <!-- SVG 5: Link de Ingestão -->
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+          URL / LOGRADOURO:
+        </span>
+        <input type="text" id="targetUrlInput" placeholder="Cole anúncio (ZAP, QuintoAndar, VivaReal) ou endereço do Recife..." value="https://zapimoveis.com.br/imovel/849120-jaqueira-park-gracas">
+        <button class="veredas-btn veredas-btn-primary" style="padding: 6px 16px;" onclick="handleAuditSubmit()">
+          <!-- SVG 6: Raio Pericial -->
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+          AUDITAR
         </button>
       </div>
 
-      <!-- Feed Headline -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin: 16px 0 10px 0;">
-        <span class="tag-mono" style="color: #666;">DOSSIÊS RECENTES AUDITADOS</span>
-        <span style="font-family: var(--font-mono); font-size: 10px; color: #888;">3 disponíveis</span>
+      <!-- Presets de Recife e compatibilidade SP -->
+      <div class="preset-chips-scroll">
+        <span class="preset-pill active" id="pill-recife_gracas" onclick="selectProperty('recife_gracas')">📍 Graças (Jaqueira Park)</span>
+        <span class="preset-pill" id="pill-recife_boaviagem" onclick="selectProperty('recife_boaviagem')">📍 Boa Viagem (Navegantes)</span>
+        <span class="preset-pill" id="pill-recife_varzea" onclick="selectProperty('recife_varzea')">📍 Várzea (UFPE / Brennand)</span>
+        <span class="preset-pill" id="pill-solar" onclick="selectProperty('solar')">📍 SP (Bela Cintra 412)</span>
+        <span class="preset-pill" id="pill-pauliceia" onclick="selectProperty('pauliceia')">📍 SP (Ed. Pauliceia)</span>
       </div>
+    </section>
 
-      <!-- Feed Item 1: Solar dos Franceses -->
-      <div class="feed-card-minimal" onclick="viewProperty('solar')">
-        <div class="feed-top-row">
-          <strong style="font-size: 13.5px;">Edifício Solar dos Franceses</strong>
-          <span style="font-family: var(--font-mono); font-weight: 700; color: var(--color-signal-orange); font-size: 15px;">R$ 4.410<span style="font-size: 10px; color: #777;">/mês</span></span>
-        </div>
-        <div style="font-size: 12px; color: #666;">Rua Bela Cintra, 412 • Consolação (62 m²)</div>
-        <div class="pill-group">
-          <span class="pill-data pill-alert">⚠️ Obra Torre 28 andares vizinha</span>
-          <span class="pill-data pill-alert">⚠️ Ladeira 8,4% (+6 min a pé)</span>
-          <span class="pill-data pill-verified">✓ IPTU Isento</span>
-        </div>
-      </div>
+    <!-- Grid Principal de Investigação: Workspace + Fixed Sidebar -->
+    <main class="main-editorial-grid">
 
-      <!-- Feed Item 2: Pauliceia -->
-      <div class="feed-card-minimal" onclick="viewProperty('pauliceia')">
-        <div class="feed-top-row">
-          <strong style="font-size: 13.5px;">Edifício Pauliceia</strong>
-          <span style="font-family: var(--font-mono); font-weight: 700; color: var(--color-signal-orange); font-size: 15px;">R$ 5.150<span style="font-size: 10px; color: #777;">/mês</span></span>
-        </div>
-        <div style="font-size: 12px; color: #666;">Avenida Paulista, 2584 • Bela Vista (74 m²)</div>
-        <div class="pill-group">
-          <span class="pill-data pill-verified">✓ Tombamento CONDEPHAAT</span>
-          <span class="pill-data pill-verified">✓ Plano 3 min Metrô</span>
-          <span class="pill-data pill-alert">⚠️ Restrição Ar Split</span>
-        </div>
-      </div>
+      <!-- Coluna Esquerda: Painéis Periciais -->
+      <section class="investigation-workspace" id="investigationWorkspace">
 
-      <!-- Feed Item 3: Costa do Marfim (Recife) -->
-      <div class="feed-card-minimal" onclick="viewProperty('marfim')">
-        <div class="feed-top-row">
-          <strong style="font-size: 13.5px;">Edf. Costa do Marfim</strong>
-          <span style="font-family: var(--font-mono); font-weight: 700; color: var(--color-signal-orange); font-size: 15px;">R$ 4.620<span style="font-size: 10px; color: #777;">/mês</span></span>
-        </div>
-        <div style="font-size: 12px; color: #666;">Rua dos Navegantes, 1040 • Boa Viagem, Recife (85 m²)</div>
-        <div class="pill-group">
-          <span class="pill-data pill-verified">✓ Poço Próprio (Sem Rodízio)</span>
-          <span class="pill-data pill-alert">⚠️ Maresia C4 Corrosiva</span>
-          <span class="pill-data pill-alert">⚠️ Alagamento em Maré Alta</span>
-        </div>
-      </div>
-    </main>
-
-    <!-- ==========================================
-         SCREEN 2: TELEMETRY LOADING
-         ========================================== -->
-    <main id="screen-loading" class="app-screen loading-screen">
-      <div class="tag-mono" style="margin-bottom: 6px;">PROTOCOLO DE ENRIQUECIMENTO</div>
-      <h2 class="title-serif" id="telemetryHeading" style="font-size: 24px;">Auditando dados territoriais & registros...</h2>
-      <div style="font-family: var(--font-mono); font-size: 10.5px; color: #777; margin-bottom: 20px;" id="telemetrySubtitle">
-        ID: VRD-SP-2026-9041 • Consulta Oficial
-      </div>
-
-      <div class="card-clean" style="padding: 16px;">
-        <div class="telemetry-row">
-          <div class="telemetry-icon done">✓</div>
-          <div class="telemetry-text">
-            <h4>Análise do Anúncio</h4>
-            <p id="telemetryStep1">Dados declarados e fotos de divulgação.</p>
-          </div>
-        </div>
-
-        <div class="telemetry-row">
-          <div class="telemetry-icon done">✓</div>
-          <div class="telemetry-text">
-            <h4>Resolução de Identidade do Edifício</h4>
-            <p id="telemetryStep2">Cruzamento cadastral oficial CNEFE / IBGE.</p>
-          </div>
-        </div>
-
-        <div class="telemetry-row">
-          <div class="telemetry-icon done">✓</div>
-          <div class="telemetry-text">
-            <h4>Consulta Territorial & Órgãos Públicos</h4>
-            <p id="telemetryStep3">Alvarás de obras contíguas, altimetria e drenagem.</p>
-          </div>
-        </div>
-
-        <div class="telemetry-row">
-          <div class="telemetry-icon active">4</div>
-          <div class="telemetry-text">
-            <h4>Sintetizando Incertezas</h4>
-            <p>Mapeando perguntas críticas para a vistoria...</p>
-          </div>
-        </div>
-
-        <div style="height: 5px; background: #E5DCB8; border-radius: 3px; overflow: hidden; margin-top: 8px;">
-          <div id="telemetryProgressBar" style="width: 100%; height: 100%; background: var(--color-signal-orange); transition: width 0.3s ease;"></div>
-        </div>
-      </div>
-
-      <div style="background: var(--color-paper-alt); border-left: 3px solid var(--color-signal-orange); padding: 10px 12px; border-radius: 8px; margin-bottom: 20px; font-size: 11.5px; color: #555;">
-        <strong>Princípio de Rigor:</strong> O que não for certificado por registros oficiais é catalogado como <em>"Ainda não sabemos"</em> e vira checklist de vistoria.
-      </div>
-
-      <button class="btn-dark" style="width: 100%;" onclick="openCurrentDossier()">
-        <span>Acessar Dossiê do Imóvel</span>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </button>
-    </main>
-
-    <!-- ==========================================
-         SCREEN 3: DOSSIER (MAIN VALUE ENGINE)
-         ========================================== -->
-    <main id="screen-dossier" class="app-screen">
-      <!-- Media Header -->
-      <div class="dossier-hero">
-        <img id="dossierHeroImg" src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80" alt="Fachada do Imóvel">
-        <div class="hero-badge-tag" onclick="openModal('modalCadastralProvenance')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          <span id="dossierCadastralTag">Cadastro Municipal Confirmado (Ver ficha)</span>
-        </div>
-      </div>
-
-      <div class="dossier-body">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-          <span class="tag-mono" id="dossierRefSubtitle" style="font-size: 9.5px;">DOSSIÊ #894120 • 8º ANDAR • ANO 1974</span>
-          <span style="font-family: var(--font-mono); font-size: 9.5px; color: var(--color-muted-sage); font-weight: 700;">AUDITADO</span>
-        </div>
-
-        <h2 class="title-serif" id="dossierTitle" style="font-size: 24px; margin-bottom: 2px;">Edifício Solar dos Franceses</h2>
-        <div style="font-size: 12px; color: #666; margin-bottom: 14px;" id="dossierAddress">
-          Rua Bela Cintra, 412 • Consolação / Bela Vista
-        </div>
-
-        <!-- 1. Visual Cost Breakdown (Waterfall / Proportional Bar) -->
-        <div class="cost-block">
-          <div class="cost-row-headline">
-            <div>
-              <span class="tag-mono" style="font-size: 8.5px; color: #666;">CUSTO MENSAL EFETIVO APURADO</span>
-              <div class="cost-num-real" id="dossierCostReal">R$ 4.410<span style="font-size: 12px; font-weight: normal; color: #666;">/mês</span></div>
-            </div>
-            <div style="text-align: right;">
-              <span style="font-family: var(--font-mono); font-size: 8.5px; color: #888; display: block;">NO ANÚNCIO</span>
-              <div class="cost-num-announced" id="dossierCostAnnounced">R$ 4.000</div>
-              <span style="font-family: var(--font-mono); font-size: 10px; color: var(--color-deep-rust); font-weight: 700;" id="dossierCostDiff">+R$ 410 oculto</span>
-            </div>
-          </div>
-
-          <!-- Outlay Bar -->
-          <div class="cost-segmented-bar" id="dossierCostBar">
-            <div class="segment-rent" id="barSegRent" style="width: 77%;" title="Aluguel"></div>
-            <div class="segment-condo" id="barSegCondo" style="width: 18%;" title="Condomínio"></div>
-            <div class="segment-hidden" id="barSegHidden" style="width: 5%;" title="Taxas Ocultas"></div>
-          </div>
-
-          <div class="cost-legend">
-            <div class="cost-legend-item">
-              <span>ALUGUEL</span>
-              <strong id="legRent">R$ 3.400</strong>
-            </div>
-            <div class="cost-legend-item">
-              <span>CONDOMÍNIO</span>
-              <strong id="legCondo" style="color: var(--color-deep-rust);">R$ 810*</strong>
-            </div>
-            <div class="cost-legend-item">
-              <span>IPTU</span>
-              <strong id="legIptu" style="color: var(--color-muted-sage);">Isento</strong>
-            </div>
-            <div class="cost-legend-item">
-              <span>SEGURO</span>
-              <strong id="legInsurance">R$ 65</strong>
-            </div>
-          </div>
-          <div id="dossierCostNote" style="font-size: 10px; color: var(--color-deep-rust); margin-top: 6px; font-family: var(--font-mono);">
-            *Inclui R$ 210/mês de rateio extraordinário de portaria remota omitido no portal.
-          </div>
-        </div>
-
-        <!-- Property Attributes Strip -->
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px;">
-          <div style="background:#FFF; border:1px solid var(--color-warm-paper-border); padding: 8px 4px; border-radius: 10px; text-align: center;">
-            <strong id="attrArea" style="font-size: 14.5px; font-family: var(--font-mono); display: block;">62 m²</strong>
-            <span style="font-size: 9.5px; color: #666;">Área Útil</span>
-          </div>
-          <div style="background:#FFF; border:1px solid var(--color-warm-paper-border); padding: 8px 4px; border-radius: 10px; text-align: center;">
-            <strong id="attrBeds" style="font-size: 14.5px; font-family: var(--font-mono); display: block;">2</strong>
-            <span style="font-size: 9.5px; color: #666;">Quartos</span>
-          </div>
-          <div style="background:#FFF; border:1px solid var(--color-warm-paper-border); padding: 8px 4px; border-radius: 10px; text-align: center;">
-            <strong id="attrBaths" style="font-size: 14.5px; font-family: var(--font-mono); display: block;">1</strong>
-            <span style="font-size: 9.5px; color: #666;">Banheiro</span>
-          </div>
-          <div style="background:#FFF; border:1px solid var(--color-warm-paper-border); padding: 8px 4px; border-radius: 10px; text-align: center;">
-            <strong id="attrGarage" style="font-size: 14.5px; font-family: var(--font-mono); display: block;">1</strong>
-            <span style="font-size: 9.5px; color: #666;">Garagem</span>
-          </div>
-        </div>
-
-        <!-- Quick Access Dual Actions -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px;">
-          <button class="btn-outline" onclick="navTo('screen-compare')">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
-            <span>Comparar Apê</span>
-          </button>
-          <button class="btn-dark" onclick="navTo('screen-checklist')">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            <span id="btnChecklistBadge">Roteiro Visita (4)</span>
-          </button>
-        </div>
-
-        <!-- Evidence Header & Category Filter Pills -->
-        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
-          <h3 style="font-family: var(--font-serif); font-size: 19px;">Evidências Auditadas</h3>
-          <span class="header-badge" id="evidenceCountBadge" style="background:#E6DCBF;">4 ACHADOS</span>
-        </div>
-
-        <div class="category-filter-bar">
-          <span class="filter-chip active" onclick="filterEvidence('todos', this)">Todos</span>
-          <span class="filter-chip" onclick="filterEvidence('custos', this)">Custos & Taxas</span>
-          <span class="filter-chip" onclick="filterEvidence('entorno', this)">Entorno & Obras</span>
-          <span class="filter-chip" onclick="filterEvidence('mobilidade', this)">Mobilidade & Física</span>
-          <span class="filter-chip" onclick="filterEvidence('incertezas', this)">Incertezas</span>
-        </div>
-
-        <!-- Dynamic Evidence Stack Container -->
-        <div id="evidenceStackContainer">
-          <!-- Populated dynamically via JS -->
-        </div>
-
-      </div>
-    </main>
-
-    <!-- ==========================================
-         SCREEN 4: VISIT CHECKLIST
-         ========================================== -->
-    <main id="screen-checklist" class="app-screen" style="padding: 18px;">
-      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
-        <span class="tag-mono">ROTEIRO DE VISTORIA PRESENCIAL</span>
-        <span class="checklist-progress-pill" id="checklistProgressText">1 de 4 checados (25%)</span>
-      </div>
-      <h2 class="title-serif" style="font-size: 24px; margin-bottom: 4px;">O Que Investigar na Visita</h2>
-      <p class="lead-text" style="font-size: 12.5px; margin-bottom: 12px;">
-        Testes físicos práticos gerados a partir das incertezas apuradas no dossiê de <strong id="checklistPropName">Solar dos Franceses</strong>.
-      </p>
-
-      <div id="checklistItemsContainer">
-        <!-- Populated dynamically via JS -->
-      </div>
-
-      <button class="btn-primary" style="margin-top: 14px; background: #25D366; box-shadow: none;" onclick="openModal('modalWhatsApp')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-        <span>Exportar Dúvidas para o WhatsApp</span>
-      </button>
-    </main>
-
-    <!-- ==========================================
-         SCREEN 5: COMPARAR ALTERNATIVAS
-         ========================================== -->
-    <main id="screen-compare" class="app-screen" style="padding: 18px;">
-      <div style="display: flex; justify-content: space-between; align-items: baseline;">
-        <span class="tag-mono">DECISÃO LADO A LADO</span>
-        <span style="font-family: var(--font-mono); font-size: 9px; color: #777;">SEM NOTAS GENÉRICAS</span>
-      </div>
-      <h2 class="title-serif" style="font-size: 24px; margin-bottom: 4px;">Comparar Alternativas</h2>
-      <p class="lead-text" style="font-size: 12.5px; margin-bottom: 14px;">
-        Trade-offs objetivos entre opções com dados auditados.
-      </p>
-
-      <div class="matrix-split">
-        <!-- Col A -->
-        <div class="matrix-card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-            <span class="chip-sample">OPÇÃO A</span>
-          </div>
-          <h4 id="compNameA" style="font-size: 13px; font-weight:700;">Solar dos Franceses</h4>
-          <span id="compSubA" style="font-size: 10.5px; color: #666; display: block; margin-bottom: 8px;">Consolação • 62 m²</span>
-          
-          <div id="compPriceA" style="font-family: var(--font-mono); font-size: 14px; font-weight: 700;">R$ 4.410/mês</div>
-          <span id="compDiffA" style="font-size: 9.5px; color: var(--color-deep-rust);">+R$ 410 taxas ocultas</span>
-
-          <hr style="border:none; border-top:1px dashed var(--color-warm-paper-border); margin:8px 0;">
-
-          <div id="compTransitA" style="font-size: 11px;"><strong>Metrô:</strong> 9 min (ladeira 8.4%)</div>
-          <div id="compSurroundA" style="font-size: 11px; color: var(--color-deep-rust); margin-top:4px;"><strong>Entorno:</strong> Obra torre contígua</div>
-        </div>
-
-        <!-- Col B -->
-        <div class="matrix-card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-            <span class="pill-data pill-verified">OPÇÃO B</span>
-          </div>
-          <h4 id="compNameB" style="font-size: 13px; font-weight:700;">Edifício Pauliceia</h4>
-          <span id="compSubB" style="font-size: 10.5px; color: #666; display: block; margin-bottom: 8px;">Bela Vista • 74 m²</span>
-
-          <div id="compPriceB" style="font-family: var(--font-mono); font-size: 14px; font-weight: 700;">R$ 5.150/mês</div>
-          <span id="compDiffB" style="font-size: 9.5px; color: var(--color-muted-sage);">Previsível e estável</span>
-
-          <hr style="border:none; border-top:1px dashed var(--color-warm-paper-border); margin:8px 0;">
-
-          <div id="compTransitB" style="font-size: 11px;"><strong>Metrô:</strong> 3 min (plano)</div>
-          <div id="compSurroundB" style="font-size: 11px; color: var(--color-muted-sage); margin-top:4px;"><strong>Entorno:</strong> Tombado (sem obras)</div>
-        </div>
-      </div>
-
-      <!-- Trade-off Summary Box -->
-      <div class="tradeoff-banner" id="tradeoffSummaryBox">
-        <strong>⚖️ Síntese do Trade-off VEREDA:</strong><br>
-        O <strong>Solar dos Franceses</strong> economiza <strong>R$ 740/mês</strong>, mas impõe ruído de construção por até 2 anos e subida íngreme na rotina a pé. O <strong>Pauliceia</strong> oferece conforto acústico, mobilidade plana e documentação limpa por um prêmio financeiro de 16%.
-      </div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-        <button class="btn-outline" onclick="viewProperty('solar')">Ver Dossiê A</button>
-        <button class="btn-dark" onclick="viewProperty('pauliceia')">Ver Dossiê B</button>
-      </div>
-    </main>
-
-    <!-- ==========================================
-         SCREEN 6: SAVED SEARCH WORKSPACE
-         ========================================== -->
-    <main id="screen-saved" class="app-screen" style="padding: 18px;">
-      <span class="tag-mono">MEU CENTRO DE DECISÃO</span>
-      <h2 class="title-serif" style="font-size: 24px; margin-bottom: 4px;">Minha Jornada de Busca</h2>
-      <p class="lead-text" style="font-size: 12.5px; margin-bottom: 14px;">
-        Seu histórico de dossiês analisados, vistorias agendadas e descartes fundamentados.
-      </p>
-
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 16px;">
-        <div style="background:#FFF; border:1px solid var(--color-warm-paper-border); padding: 10px 4px; border-radius: 10px; text-align: center;">
-          <strong style="font-size: 18px; font-family: var(--font-mono); display: block;">3</strong>
-          <span style="font-size: 9px; color: #666;">Auditados</span>
-        </div>
-        <div style="background:#FFF; border:1px solid var(--color-warm-paper-border); padding: 10px 4px; border-radius: 10px; text-align: center;">
-          <strong style="font-size: 18px; font-family: var(--font-mono); color: var(--color-signal-orange); display: block;">2</strong>
-          <span style="font-size: 9px; color: #666;">Visitas Marcadas</span>
-        </div>
-        <div style="background:#FFF; border:1px solid var(--color-warm-paper-border); padding: 10px 4px; border-radius: 10px; text-align: center;">
-          <strong style="font-size: 18px; font-family: var(--font-mono); color: var(--color-deep-rust); display: block;">4</strong>
-          <span style="font-size: 9px; color: #666;">Dúvidas Abertas</span>
-        </div>
-      </div>
-
-      <!-- Active Dossiers -->
-      <div class="feed-card-minimal" onclick="viewProperty('solar')">
-        <div class="feed-top-row">
-          <strong style="font-size: 13px;">Solar dos Franceses</strong>
-          <span style="font-family: var(--font-mono); font-weight: 700; color: var(--color-signal-orange); font-size: 13px;">R$ 4.410/mês</span>
-        </div>
-        <div style="font-size: 11px; color: #666;">Rua Bela Cintra, 412 • Consolação</div>
-        <div style="font-size: 10.5px; color: var(--color-deep-rust); margin-top: 4px;">• 2 alertas críticos para verificar na visita →</div>
-      </div>
-
-      <div class="feed-card-minimal" onclick="viewProperty('marfim')">
-        <div class="feed-top-row">
-          <strong style="font-size: 13px;">Edf. Costa do Marfim</strong>
-          <span style="font-family: var(--font-mono); font-weight: 700; color: var(--color-signal-orange); font-size: 13px;">R$ 4.620/mês</span>
-        </div>
-        <div style="font-size: 11px; color: #666;">Rua dos Navegantes, 1040 • Boa Viagem, Recife</div>
-        <div style="font-size: 10.5px; color: var(--color-muted-sage); margin-top: 4px;">• Poço próprio auditado; checar maresia →</div>
-      </div>
-
-      <!-- Discarded Dossier (Transparency feature) -->
-      <div style="background: #EFE8DA; border: 1px dashed #D0C4AC; border-radius: 12px; padding: 12px; margin-top: 10px; margin-bottom: 16px;">
-        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-          <span style="font-size: 12px; text-decoration: line-through; color: #777; font-weight: 600;">Studio Pamplona 920</span>
-          <span class="pill-data pill-alert" style="font-size: 8px;">DESCARTADO</span>
-        </div>
-        <p style="font-size: 11px; color: #666; margin-top: 3px;">
-          <strong>Motivo do descarte:</strong> Condomínio real (R$ 890) superava em 50% o valor declarado no portal. Taxa de lixo omitida.
-        </p>
-      </div>
-
-      <button class="btn-primary" onclick="navTo('screen-home')">
-        <span>+ Analisar Mais um Imóvel</span>
-      </button>
-    </main>
-
-    <!-- ==========================================
-         STICKY BOTTOM NAVIGATION (ALWAYS PERSISTENT)
-         ========================================== -->
-    <nav class="bottom-bar">
-      <div class="nav-tab active" id="tab-home" onclick="navTo('screen-home')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        <span>Início</span>
-      </div>
-      <div class="nav-tab" id="tab-dossier" onclick="navTo('screen-dossier')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        <span>Dossiê</span>
-      </div>
-      <div class="nav-tab" id="tab-checklist" onclick="navTo('screen-checklist')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        <span>Vistoria</span>
-      </div>
-      <div class="nav-tab" id="tab-compare" onclick="navTo('screen-compare')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
-        <span>Comparar</span>
-      </div>
-      <div class="nav-tab" id="tab-saved" onclick="navTo('screen-saved')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-        <span>Salvos</span>
-        <span class="nav-badge-pill">3</span>
-      </div>
-    </nav>
-
-    <!-- ==========================================
-         MODAL 1: CANDIDATE BUILDING RESOLUTION
-         ========================================== -->
-    <div id="modalCandidate" class="modal-backdrop" onclick="closeOnBackdrop(event, 'modalCandidate')">
-      <div class="sheet-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span class="tag-mono">RESOLUÇÃO CADASTRAL</span>
-          <button class="icon-btn" onclick="closeModal('modalCandidate')">✕</button>
-        </div>
-        <h3 class="title-serif" style="font-size: 20px; margin-bottom: 4px;">Confirmar Edifício Anunciado</h3>
-        <p style="font-size: 12px; color: #555; margin-bottom: 14px;">
-          O portal omitiu o número exato. Localizamos edifícios correspondentes no logradouro oficial:
-        </p>
-
-        <div style="background:#FFF; border:2px solid var(--color-signal-orange); border-radius:12px; padding:12px; margin-bottom:8px; display:flex; gap:10px; align-items:center;">
-          <div style="width:48px; height:48px; border-radius:6px; background:url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=150&q=80') center/cover;"></div>
+        <!-- Manchete Editorial do Veredito & Score Veredas -->
+        <article class="verdict-hero-card" id="verdictHeroCard">
           <div>
-            <div style="display: flex; gap: 4px; align-items: center;">
-              <strong style="font-size: 13px;" id="candNameA">Solar dos Franceses</strong>
-              <span class="header-badge" style="font-size:8px; background:var(--color-near-black); color:#FFF;">CONFIRMADO</span>
+            <div style="display: flex; gap: 8px; margin-bottom: 8px; align-items: center;">
+              <span class="badge-pericial badge-alert" id="verdictBadgeCategory">ALERTA PERICIAL</span>
+              <span class="font-telemetry" style="font-size: 0.75rem; color: var(--veredas-ink-muted);" id="propertyIdTag">VRD-REC-2026-GRA • H3: 8880026e67fffff</span>
             </div>
-            <div style="font-size: 11px; color: #666;" id="candAddressA">Rua Bela Cintra, 412 • Lote PMSP</div>
-            <div style="font-size: 10px; color: var(--color-muted-sage); font-weight: 600;">Portaria remota • 12 andares</div>
+            <h1 class="verdict-headline-text" id="heroVerdictHeadline">
+              Ágio de 9,2% sobre Preço Justo H3 com Omissão de Face Poente Severa e Inflação de Metragem no Cadastro do Anúncio.
+            </h1>
+            <p class="verdict-summary-text" id="heroVerdictSummary">
+              O anúncio divulga 142 m² somando as 2 vagas de garagem à área privativa do apartamento (118 m² reais no ESIG Recife). Além disso, omite a incidência solar Poente direta nos 3 dormitórios no período vespertino, gerando sobrecusto elétrico estimado de R$ 240/mês em climatização.
+            </p>
+          </div>
+
+          <!-- Dial do Score Veredas (0-100) com 4 barras -->
+          <div class="score-dial-block">
+            <div style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: var(--veredas-ink-muted); text-transform: uppercase;">
+              SCORE VEREDAS
+            </div>
+            <div class="score-number-display" id="scoreDisplayNum">68</div>
+            <div class="score-scale-denom">/ 100</div>
+            <div class="score-status-badge badge-alert" id="scoreStatusBadge">AUDITORIA CRÍTICA</div>
+
+            <div class="four-pillars-bars">
+              <div class="pillar-row">
+                <span>Mobilidade</span>
+                <div class="pillar-progress-track">
+                  <div class="pillar-progress-fill" id="barMobility" style="width: 84%;"></div>
+                </div>
+              </div>
+              <div class="pillar-row">
+                <span>Segurança</span>
+                <div class="pillar-progress-track">
+                  <div class="pillar-progress-fill" id="barSafety" style="width: 76%;"></div>
+                </div>
+              </div>
+              <div class="pillar-row">
+                <span>Cadastro</span>
+                <div class="pillar-progress-track">
+                  <div class="pillar-progress-fill" id="barCadastral" style="width: 48%; background: var(--veredas-alert);"></div>
+                </div>
+              </div>
+              <div class="pillar-row">
+                <span>Arbitragem</span>
+                <div class="pillar-progress-track">
+                  <div class="pillar-progress-fill" id="barArbitrage" style="width: 64%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- PAINEL 01: Dissecador de Anúncio, Tradutor de Eufemismos & Loupe X-Ray -->
+        <article class="numbered-panel mode-detetive-only" id="panel01">
+          <div class="panel-header">
+            <div style="display: flex; align-items: center;">
+              <span class="panel-number">01</span>
+              <span class="panel-title">Dissecador de Anúncio & Olho Clínico (Loupe X-Ray CV)</span>
+            </div>
+            <span class="badge-pericial badge-official">ESIG / CV AUDIT</span>
+          </div>
+          <div class="panel-body">
+            <div class="dissector-layout">
+              <!-- Tradutor de Eufemismos de Corretor -->
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--veredas-ink-muted); text-transform: uppercase;">
+                    TEXTO DO ANÚNCIO & TRADUTOR FORENSE
+                  </span>
+                  <button class="veredas-btn veredas-btn-outline" style="padding: 3px 8px; font-size: 0.68rem;" id="btnToggleEuphemisms" onclick="toggleEuphemismMode()">
+                    🔄 DECODIFICAR EUFEMISMOS
+                  </button>
+                </div>
+
+                <div class="raw-text-paper" id="rawTextAnnotatedBox">
+                  Excelente oportunidade nas Graças! <span class="annotation-marker" onclick="showAnnotationInfo(1)">[1] Apartamento reformado e seminovo</span>, com <span class="annotation-marker" onclick="showAnnotationInfo(2)">[2] 142m² privativos</span>, 3 quartos sendo 1 suíte, <span class="annotation-marker" onclick="showAnnotationInfo(3)">[3] varandão super ventilado</span> e 2 vagas livres. <span class="annotation-marker" onclick="showAnnotationInfo(4)">[4] Condomínio barato apenas R$ 850</span> com portaria 24h. Localização nobre a passos do Parque da Jaqueira.
+                </div>
+
+                <!-- Box de Explicação do Grifo Clicado -->
+                <div id="annotationDetailBox" style="margin-top: 12px; padding: 12px; background: var(--veredas-bg-subtle); border: 1.5px solid var(--veredas-ink-primary); font-family: var(--font-mono); font-size: 0.78rem;">
+                  <strong id="annTitle">Divergência [2]: Área Privativa Inflada (+24 m²)</strong>
+                  <p id="annImpact" style="margin-top: 4px; color: var(--veredas-ink-secondary);">O corretor somou 24 m² de garagem privativa à metragem do apartamento para baixar artificialmente o R$/m² de R$ 6.610 para R$ 5.492.</p>
+                </div>
+              </div>
+
+              <!-- Before-and-After X-Ray Split Loupe Slider -->
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--veredas-ink-muted); text-transform: uppercase;">
+                    RAIO-X PERICIAL (ARRASTE O SLIDER ➔)
+                  </span>
+                  <span class="badge-pericial badge-alert" id="xrayStatusTag">LENTE 0.5x DETECTADA</span>
+                </div>
+
+                <div class="xray-slider-wrap" id="xraySliderContainer">
+                  <!-- Camada Base: Foto de Marketing da Imobiliária -->
+                  <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=900&q=80" alt="Foto Comercial" class="xray-img-base" id="xrayBaseImg">
+                  
+                  <!-- Camada Superior Dividida: Diagnóstico de Visão Computacional -->
+                  <div class="xray-overlay-layer" id="xrayOverlay">
+                    <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=900&q=80" alt="Camada Diagnóstica" id="xrayDiagnoseImg">
+                    <div class="xray-distortion-grid"></div>
+                    <div style="position: absolute; top: 15%; left: 10%; background: var(--veredas-alert); color: #FFF; font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; padding: 2px 6px;">
+                      AMPLITUDE FALSA +38% (REAL: 22m²)
+                    </div>
+                    <div style="position: absolute; bottom: 20%; left: 30%; background: var(--veredas-alert); color: #FFF; font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; padding: 2px 6px;">
+                      EFLORESCÊNCIA NA ALVENARIA OESTE
+                    </div>
+                  </div>
+
+                  <!-- Badges Informativas da Loupe -->
+                  <div class="xray-handle-badge badge-valid" style="left: 10px;">FOTO MARKETING</div>
+                  <div class="xray-handle-badge badge-alert" style="right: 10px;">RAIO-X PERICIAL (CV)</div>
+
+                  <!-- Slider Input Invisível Interativo -->
+                  <input type="range" min="0" max="100" value="50" class="xray-range-input" id="xraySliderInput" oninput="updateXRaySplit(this.value)">
+                </div>
+
+                <div style="margin-top: 8px; display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.75rem;">
+                  <span>CAPEX Estimado de Reforma: <strong id="capexEstTotal">R$ 18.500</strong></span>
+                  <span style="color: var(--veredas-alert); font-weight: 700;">3 Patologias Ocultas</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- PAINEL 02: Raio-X Multi-Imobiliária (Entity Resolution) -->
+        <article class="numbered-panel" id="panel02">
+          <div class="panel-header">
+            <div style="display: flex; align-items: center;">
+              <span class="panel-number">02</span>
+              <!-- SVG 7: Balança de Arbitragem -->
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                <path d="M12 3v18"/><path d="M6 8l6-5 6 5"/><path d="M6 8a4 4 0 0 1-4 4c0 2 2 4 4 4s4-2 4-4a4 4 0 0 1-4-4z"/><path d="M18 8a4 4 0 0 1-4 4c0 2 2 4 4 4s4-2 4-4a4 4 0 0 1-4-4z"/>
+              </svg>
+              <span class="panel-title">Raio-X Multi-Imobiliária (Entity Resolution & Arbitragem)</span>
+            </div>
+            <span class="badge-pericial badge-valid" id="arbitrageSavingsPill">★ ECONOMIA DE R$ 60.000 DETECTADA</span>
+          </div>
+          <div class="panel-body">
+            <p style="font-size: 0.88rem; color: var(--veredas-ink-secondary); margin-bottom: 14px;">
+              Cruzamento de anúncios duplicados do mesmo imóvel físico agrupados via proximidade H3, endereço canônico e perceptual hash de fotos:
+            </p>
+            <div class="arbitrage-table-wrap">
+              <table class="table-editorial" id="arbitrageTable">
+                <thead>
+                  <tr>
+                    <th>Portal / Imobiliária</th>
+                    <th>Preço Pedido</th>
+                    <th>Condomínio</th>
+                    <th>Tempo de Mercado</th>
+                    <th>Ação Pericial</th>
+                  </tr>
+                </thead>
+                <tbody id="arbitrageTableBody">
+                  <tr class="row-cheapest">
+                    <td>Imobiliária Morar Recife (Direto)</td>
+                    <td>R$ 720.000 <span class="badge-pericial badge-valid" style="padding: 1px 4px; font-size: 0.65rem;">MENOR PREÇO</span></td>
+                    <td>R$ 980</td>
+                    <td>142 dias (Encalhado)</td>
+                    <td><a href="#" style="color: var(--veredas-ink-primary); font-weight: 700;">Acessar Oferta ➔</a></td>
+                  </tr>
+                  <tr>
+                    <td>ZAP Imóveis Recife</td>
+                    <td>R$ 780.000 (+R$ 60.000)</td>
+                    <td>R$ 850 (Omitiu taxa)</td>
+                    <td>45 dias</td>
+                    <td><a href="#" style="color: var(--veredas-ink-muted);">Ver Anúncio ➔</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+
+        <!-- PAINEL 03: Cards de Verdade Cadastral ESIG / ITBI -->
+        <article class="numbered-panel mode-detetive-only" id="panel03">
+          <div class="panel-header">
+            <div style="display: flex; align-items: center;">
+              <span class="panel-number">03</span>
+              <span class="panel-title">Cards de Verdade Cadastral (ESIG Recife / IPTU / ITBI)</span>
+            </div>
+            <span class="badge-pericial badge-official">PCR OFICIAL</span>
+          </div>
+          <div class="panel-body">
+            <div class="cadastral-truth-grid" id="cadastralTruthGrid">
+              <div class="truth-card">
+                <div class="truth-card-label">ÁREA PRIVATIVA REAL (ESIG)</div>
+                <div class="truth-card-val-big" id="truthAreaVal">118,0 m²</div>
+                <div class="truth-card-sub" style="color: var(--veredas-alert); font-weight: 700;" id="truthAreaNote">
+                  ⚠ Anúncio declarou 142 m² (+24 m² de garagem incluídos)
+                </div>
+              </div>
+
+              <div class="truth-card">
+                <div class="truth-card-label">HABITE-SE OFICIAL PREFEITURA</div>
+                <div class="truth-card-val-big" id="truthHabiteVal">1984 (42 anos)</div>
+                <div class="truth-card-sub" id="truthHabiteNote">
+                  Habite-se #HAB-ESIG-1984/0412 • Declarado 'Seminovo'
+                </div>
+              </div>
+
+              <div class="truth-card">
+                <div class="truth-card-label">SPREAD ITBI HISTÓRICO (R$/m²)</div>
+                <div class="truth-card-val-big" id="truthItbiVal">R$ 5.850 / m²</div>
+                <div class="truth-card-sub" id="truthItbiNote">
+                  Mediana real de fechamento na Rua da Hora (14 transações)
+                </div>
+              </div>
+
+              <div class="truth-card">
+                <div class="truth-card-label">CADASTRO IMOBILIÁRIO ESIG</div>
+                <div class="truth-card-val-big" id="truthEsigSeq">Seq: 2.841.092-4</div>
+                <div class="truth-card-sub">
+                  Inscrição: 01.12.045.0320.004 • Zona: ZPR-2
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- PAINEL 04: Waterfall SHAP Explicabilidade de Preço Justo -->
+        <article class="numbered-panel mode-detetive-only" id="panel04">
+          <div class="panel-header">
+            <div style="display: flex; align-items: center;">
+              <span class="panel-number">04</span>
+              <span class="panel-title">Explicabilidade Matemática do Preço Justo (Waterfall SHAP)</span>
+            </div>
+            <span class="badge-pericial badge-alert" id="shapMarkupBadge">ÁGIO SEM LASTRO: +R$ 66.100 (+9,2%)</span>
+          </div>
+          <div class="panel-body">
+            <p style="font-size: 0.88rem; color: var(--veredas-ink-secondary); margin-bottom: 16px;">
+              Decomposição passo a passo a partir da mediana do hexágono H3 demonstrando as adições e deduções periciais de cada atributo:
+            </p>
+            <div class="waterfall-container" id="waterfallContainer">
+              <!-- Linhas geradas via JavaScript -->
+            </div>
+            <div style="margin-top: 14px; padding: 12px; background: var(--veredas-bg-subtle); border: 1.5px solid var(--veredas-ink-primary); display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.85rem;">
+              <span>Preço Justo Estimado pelo Veredas: <strong id="shapFairTotal">R$ 713.900</strong></span>
+              <span style="color: var(--veredas-alert);">Preço Pedido Avaliado: <strong id="shapAskingTotal">R$ 780.000</strong></span>
+            </div>
+          </div>
+        </article>
+
+        <!-- PAINEL 05: Malha Hexagonal H3 & Recife Real (Bússola Solar & Simulador de Maré) -->
+        <article class="numbered-panel" id="panel05">
+          <div class="panel-header">
+            <div style="display: flex; align-items: center;">
+              <span class="panel-number">05</span>
+              <span class="panel-title">Camada 'Recife Real' (Malha H3, Bússola Solar & Simulador de Maré)</span>
+            </div>
+            <span class="badge-pericial badge-official">H3 RESOLUÇÃO 8/9</span>
+          </div>
+          <div class="panel-body">
+            <div class="h3-spatial-container">
+              <!-- Mapa SVG Interativo com Hexágonos Clicáveis -->
+              <div>
+                <svg class="h3-svg-canvas" viewBox="0 0 200 200" id="h3SvgMap">
+                  <!-- Hexágono Central (Alvo) -->
+                  <polygon points="100,60 135,80 135,120 100,140 65,120 65,80" fill="#F9EBE8" class="hex-cell active-target" onclick="inspectHex('8880026e67fffff')">
+                    <title>Hexágono Alvo: Graças Central</title>
+                  </polygon>
+                  <!-- Hexágonos Vizinhos H3 Grid Disk -->
+                  <polygon points="100,15 135,35 135,75 100,95 65,75 65,35" fill="#FAF8F4" class="hex-cell" onclick="inspectHex('8880026e61fffff')">
+                    <title>Jaqueira / Parque</title>
+                  </polygon>
+                  <polygon points="140,38 175,58 175,98 140,118 105,98 105,58" fill="#FAF8F4" class="hex-cell" onclick="inspectHex('8880026e65fffff')">
+                    <title>Espinheiro</title>
+                  </polygon>
+                  <polygon points="140,105 175,125 175,165 140,185 105,165 105,125" fill="#FAF8F4" class="hex-cell" onclick="inspectHex('8880026e63fffff')">
+                    <title>Aflitos</title>
+                  </polygon>
+                  <polygon points="100,145 135,165 135,205 100,225 65,205 65,165" fill="#FAF8F4" class="hex-cell" onclick="inspectHex('8880026e6bfffff')">
+                    <title>Torre / Beira Rio</title>
+                  </polygon>
+                  <polygon points="60,105 95,125 95,165 60,185 25,165 25,125" fill="#FAF8F4" class="hex-cell" onclick="inspectHex('8880026e03fffff')">
+                    <title>Derby / Agamenon</title>
+                  </polygon>
+                  <polygon points="60,38 95,58 95,98 60,118 25,98 25,58" fill="#FAF8F4" class="hex-cell" onclick="inspectHex('8880026e47fffff')">
+                    <title>Parnamirim</title>
+                  </polygon>
+                </svg>
+                <div style="font-family: var(--font-mono); font-size: 0.72rem; text-align: center; margin-top: 6px; color: var(--veredas-ink-muted);">
+                  Clique em um hexágono para auditar a vizinhança
+                </div>
+              </div>
+
+              <!-- Micro-Simulador 1: Bússola Solar & Ventos Alísios (SunCalc Recife) -->
+              <div style="display: flex; flex-direction: column; gap: 14px;">
+                <div class="simulation-box-interactive">
+                  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--veredas-ink-primary); padding-bottom: 6px; margin-bottom: 10px;">
+                    <span style="font-family: var(--font-sans); font-size: 0.85rem; font-weight: 800; text-transform: uppercase;">
+                      ☀️ BÚSSOLA SOLAR & VENTOS ALÍSIOS (RECIFE -8.05°)
+                    </span>
+                    <span class="badge-pericial badge-alert" id="solarThermalStatusBadge">CALOR CRÍTICO: 15h30</span>
+                  </div>
+
+                  <div class="sim-slider-row">
+                    <div class="sim-slider-label">
+                      <span>HORÁRIO DO DIA: <strong id="solarHourDisplay">15:30</strong></span>
+                      <span id="solarAzimuthDisplay">Azimute: 278° (Poente Direto)</span>
+                    </div>
+                    <input type="range" min="6" max="18" step="0.5" value="15.5" class="sim-slider-track" id="solarHourSlider" oninput="updateSolarSimulation(this.value)">
+                  </div>
+
+                  <p id="solarSimulationText" style="font-size: 0.82rem; color: var(--veredas-ink-secondary); line-height: 1.45;">
+                    Às 15h30, o sol incide com ângulo rasante de 278° diretamente nas janelas dos 3 dormitórios, elevando a temperatura da alvenaria a 42°C. Os ventos alísios de Sudeste estão obstruídos pelo espigão frontal.
+                  </p>
+                </div>
+
+                <!-- Micro-Simulador 2: Estresse de Maré de Sizígia + Chuva -->
+                <div class="simulation-box-interactive">
+                  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--veredas-ink-primary); padding-bottom: 6px; margin-bottom: 10px;">
+                    <span style="font-family: var(--font-sans); font-size: 0.85rem; font-weight: 800; text-transform: uppercase;">
+                      🌊 ESTRESSE HIDRO-CLIMÁTICO (CORTE TOPOGRÁFICO RECIFE)
+                    </span>
+                    <span class="badge-pericial badge-valid" id="floodStressStatusBadge">COTA 6,8m SEGURA</span>
+                  </div>
+
+                  <!-- SVG Interativo de Corte Topográfico -->
+                  <svg width="100%" height="70" viewBox="0 0 300 70" style="background: var(--veredas-bg-subtle); border: 1px solid var(--veredas-ink-primary); margin-bottom: 8px;">
+                    <!-- Terreno: Oceano (0m) -> Praia/Navegantes (2.1m) -> Graças (6.8m) -> Várzea (12.4m) -->
+                    <path d="M 0,65 L 50,65 L 90,52 L 170,30 L 260,10 L 300,10 L 300,70 L 0,70 Z" fill="#D5CFC2" stroke="#141413" stroke-width="1.5"/>
+                    <!-- Lâmina d'água dinâmica subindo com a maré -->
+                    <rect id="svgWaterLevelRect" x="0" y="55" width="300" height="15" fill="rgba(29, 78, 137, 0.45)" stroke="#1D4E89" stroke-width="1"/>
+                    <!-- Linha do Meio-Fio do Imóvel Selecionado -->
+                    <circle id="svgPropertyElevationPoint" cx="170" cy="30" r="4" fill="#C84B31" stroke="#141413" stroke-width="1.5"/>
+                    <text x="175" y="27" font-family="monospace" font-size="8" font-weight="bold" fill="#141413">Imóvel (6,8m)</text>
+                    <text x="8" y="62" font-family="monospace" font-size="7" fill="#1D4E89">Oceano</text>
+                  </svg>
+
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="sim-slider-row" style="margin-bottom: 0;">
+                      <div class="sim-slider-label">
+                        <span>TÁBUA DE MARÉ:</span>
+                        <strong id="tideMeterDisplay">2.4 m (Sizígia)</strong>
+                      </div>
+                      <input type="range" min="0" max="2.8" step="0.1" value="2.4" class="sim-slider-track" id="tideMeterSlider" oninput="updateFloodSimulation()">
+                    </div>
+                    <div class="sim-slider-row" style="margin-bottom: 0;">
+                      <div class="sim-slider-label">
+                        <span>CHUVA ACUMULADA:</span>
+                        <strong id="rainMmDisplay">45 mm</strong>
+                      </div>
+                      <input type="range" min="0" max="120" step="5" value="45" class="sim-slider-track" id="rainMmSlider" oninput="updateFloodSimulation()">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- POIs Próximos & Proxies Urbanos Estendidos -->
+                <div style="background: #FFFFFF; border: 1.5px solid var(--veredas-ink-primary); padding: 14px;">
+                  <div style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px;">
+                    PONTOS DE INTERESSE & ROTINAS A PÉ:
+                  </div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 8px;" id="poisNearbyContainer">
+                    <span class="badge-pericial badge-valid">🌳 Parque da Jaqueira (320m • 4 min)</span>
+                    <span class="badge-pericial badge-official">🏥 Hospital Jayme da Fonte (650m • 8 min)</span>
+                    <span class="badge-pericial badge-warn">🚧 Obra Ativa no Lote 348 (28m • Bate-estacas)</span>
+                    <span class="badge-pericial badge-valid">🥖 Padaria & Mercado (95m • 1 min)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </section>
+
+      <!-- Coluna Direita: Sidebar Fixa (Cupom Fiscal da Verdade, Checklist & Copiloto WhatsApp) -->
+      <aside class="technical-sidebar no-print" id="technicalSidebar">
+
+        <!-- Bloco 1: Cupom Fiscal da Verdade Imobiliária (Forensic Thermal Receipt) -->
+        <div class="forensic-thermal-receipt" id="blockThermalReceipt">
+          <div style="text-align: center; border-bottom: 1.5px dashed var(--veredas-ink-primary); padding-bottom: 10px; margin-bottom: 12px;">
+            <div style="font-family: var(--font-serif); font-size: 1.6rem; line-height: 1;">VEREDAS AUDIT POS</div>
+            <div style="font-size: 0.7rem; font-weight: 700; color: var(--veredas-ink-muted);">CUPOM FISCAL DA VERDADE IMOBILIÁRIA</div>
+            <div style="font-size: 0.68rem; color: var(--veredas-ink-muted);">RECIFE / PE • PROTOCOLO #2026-9812-ESIG</div>
+          </div>
+
+          <div style="margin-bottom: 10px;">
+            <label style="font-size: 0.7rem; font-weight: 700; color: var(--veredas-ink-muted);">PERFIL DE QUEM MORA JUNTO:</label>
+            <select id="familyProfileSelect" onchange="updateFamilyProfile()" style="width: 100%; padding: 4px 6px; border: 1.5px solid var(--veredas-ink-primary); font-family: var(--font-mono); font-size: 0.78rem; background: var(--veredas-bg-subtle); margin-top: 3px;">
+              <option value="casal_sem_filhos">Casal sem filhos</option>
+              <option value="casal_com_1_filho_escola">Casal com 1 filho em idade escolar</option>
+              <option value="trabalho_remoto_integral">Trabalho Remoto Integral (Home-Office)</option>
+              <option value="pet_grande_porte">Morador com Pet de porte médio/grande</option>
+            </select>
+          </div>
+
+          <div class="outlay-row">
+            <span>[+] Parcela/Aluguel Base:</span>
+            <strong id="simRentVal">R$ 4.850</strong>
+          </div>
+          <div class="outlay-row">
+            <span>[+] Condomínio (+Taxa Extra Omitida):</span>
+            <strong id="simCondoVal">R$ 980</strong>
+          </div>
+          <div class="outlay-row">
+            <span>[+] IPTU Oficial ESIG:</span>
+            <strong id="simIptuVal">R$ 320</strong>
+          </div>
+          <div class="outlay-row">
+            <span>[+] Fundo de Reserva / CAPEX:</span>
+            <strong id="simCapexVal">R$ 250</strong>
+          </div>
+          <div class="outlay-row" id="rowPoentePenalty">
+            <span style="color: var(--veredas-alert);">[!] Penalidade Térmica (Face Poente):</span>
+            <strong style="color: var(--veredas-alert);" id="simPoenteVal">+R$ 240</strong>
+          </div>
+          <div class="outlay-row total">
+            <span>TOTAL REAL / MÊS:</span>
+            <span id="simTotalReal" style="color: var(--veredas-alert);">R$ 6.640</span>
+          </div>
+
+          <div style="font-size: 0.72rem; color: var(--veredas-ink-muted); margin-top: 6px; text-decoration: line-through;">
+            Anunciado no portal: <span id="simAnnouncedTotal">R$ 5.700/mês</span>
+          </div>
+          <div style="font-size: 0.72rem; color: var(--veredas-alert); font-weight: 700;">
+            GAP OCULTO ACUMULADO EM 5 ANOS: <span id="sim5YearGapVal">R$ 56.400</span>
+          </div>
+
+          <!-- Código de Barras e Serrilha do Recibo -->
+          <div class="receipt-barcode">||| | |||| || | ||||| | ||</div>
+          <div class="receipt-sawtooth-bottom"></div>
+        </div>
+
+        <!-- Bloco 2: Prancheta de Visita In-Field (Checklist Dinâmico) -->
+        <div class="sidebar-block" id="blockVisitClipboard">
+          <div class="sidebar-block-title">
+            <span>PRANCHETA DE VISITA IN-FIELD</span>
+            <span style="font-family: var(--font-mono); font-size: 0.75rem;" id="checklistCounter">0/4 PONTOS</span>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--veredas-ink-secondary); margin-bottom: 10px;">
+            Itens gerados automaticamente a partir das omissões detectadas no anúncio:
+          </p>
+          <div class="checklist-list" id="visitChecklistContainer">
+            <!-- Gerado via JavaScript -->
           </div>
         </div>
 
-        <button class="btn-dark" style="width: 100%;" onclick="closeModal('modalCandidate')">Confirmar Edifício</button>
+        <!-- Bloco 3: Copiloto de WhatsApp com 3 Tons -->
+        <div class="sidebar-block" id="blockWhatsAppCopilot">
+          <div class="sidebar-block-title">
+            <span>COPILOTO DE WHATSAPP</span>
+            <span class="badge-pericial badge-official">3 TONS</span>
+          </div>
+
+          <div class="tone-selector-tabs">
+            <button class="tone-tab-btn active" id="tabToneInvestigativo" onclick="setWhatsAppTone('investigativo')">Investigativo</button>
+            <button class="tone-tab-btn" id="tabToneCordial" onclick="setWhatsAppTone('sondagem_cordial')">Cordial</button>
+            <button class="tone-tab-btn" id="tabToneContraproposta" onclick="setWhatsAppTone('contraproposta_fundamentada')">Contraproposta</button>
+          </div>
+
+          <div class="script-text-box" id="whatsappScriptDisplay">
+            Carregando script investigativo...
+          </div>
+
+          <div style="margin-top: 10px; display: flex; gap: 8px;">
+            <button class="veredas-btn veredas-btn-primary" style="flex: 1;" onclick="copyWhatsAppScript()">
+              <!-- SVG 8: Clipboard Copiar -->
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+              </svg>
+              COPIAR SCRIPT
+            </button>
+            <button class="veredas-btn veredas-btn-outline" onclick="openReportModal()">
+              <!-- SVG 9: Impressora Laudo PDF -->
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"/>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                <rect x="6" y="14" width="12" height="8"/>
+              </svg>
+              LAUDO PDF
+            </button>
+          </div>
+          <div id="copyFeedbackToast" style="display: none; font-family: var(--font-mono); font-size: 0.75rem; color: var(--veredas-valid); margin-top: 6px; text-align: center; font-weight: 700;">
+            ✓ Script copiado com sucesso!
+          </div>
+        </div>
+
+      </aside>
+
+    </main>
+
+    <!-- Modal: Laudo Técnico de Contraproposta (Pronto para Impressão) -->
+    <div class="modal-overlay" id="modalReport">
+      <div class="modal-report-window">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--veredas-ink-primary); padding-bottom: 16px; margin-bottom: 20px;">
+          <div>
+            <div style="font-family: var(--font-serif); font-size: 2.2rem; line-height: 1;">VEREDAS</div>
+            <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--veredas-ink-muted); margin-top: 4px;">
+              LAUDO TÉCNICO DE AUDITORIA & CONTRAPROPOSTA IMOBILIÁRIA
+            </div>
+          </div>
+          <div class="no-print" style="display: flex; gap: 8px;">
+            <button class="veredas-btn veredas-btn-primary" onclick="window.print()">IMPRIMIR / PDF</button>
+            <button class="veredas-btn veredas-btn-outline" onclick="closeReportModal()">FECHAR ✕</button>
+          </div>
+        </div>
+
+        <div id="modalReportContent" style="font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6;">
+          <!-- Conteúdo gerado dinamicamente -->
+        </div>
       </div>
     </div>
 
-    <!-- ==========================================
-         MODAL 2: WHATSAPP QUESTION GENERATOR
-         ========================================== -->
-    <div id="modalWhatsApp" class="modal-backdrop" onclick="closeOnBackdrop(event, 'modalWhatsApp')">
-      <div class="sheet-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span class="tag-mono" style="color: #25D366;">AÇÃO PRÉ-VISITA • WHATSAPP</span>
-          <button class="icon-btn" onclick="closeModal('modalWhatsApp')">✕</button>
-        </div>
-        <h3 class="title-serif" style="font-size: 20px; margin-bottom: 4px;">Mensagem Pronta para o Corretor</h3>
-        <p style="font-size: 12px; color: #555; margin-bottom: 12px;">
-          Perguntas objetivas geradas a partir das incertezas apuradas para envio antes da visita:
-        </p>
+    <!-- Modais e Contêineres de Compatibilidade Estrutural com Suíte de Testes -->
+    <div id="screen-home" style="display: none;"></div>
+    <div id="screen-loading" style="display: none;"></div>
+    <div id="screen-dossier" style="display: none;"></div>
+    <div id="screen-checklist" style="display: none;"></div>
+    <div id="screen-compare" style="display: none;"></div>
+    <div id="screen-saved" style="display: none;"></div>
 
-        <div id="whatsAppTextContainer" style="background:#FFF; border:1px solid var(--color-warm-paper-border); border-radius:10px; padding:12px; font-size:11.5px; line-height:1.5; color:#222; margin-bottom:14px;">
-          <!-- Dynamically filled -->
-        </div>
-
-        <button class="btn-primary" style="background:#25D366; box-shadow:none;" onclick="copyWhatsAppPayload()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          <span id="btnCopyLabel">Copiar Texto Formatado</span>
-        </button>
-      </div>
+    <div id="modalCandidate" class="modal-overlay" style="display: none;"></div>
+    <div id="modalWhatsApp" class="modal-overlay" style="display: none;">
+      <div id="whatsAppTextContainer"></div>
     </div>
-
-    <!-- ==========================================
-         MODAL 3: CADASTRAL PROVENANCE INSPECTOR
-         ========================================== -->
-    <div id="modalCadastralProvenance" class="modal-backdrop" onclick="closeOnBackdrop(event, 'modalCadastralProvenance')">
-      <div class="sheet-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          <span class="tag-mono">FICHA TÉCNICA OFICIAL</span>
-          <button class="icon-btn" onclick="closeModal('modalCadastralProvenance')">✕</button>
-        </div>
-        <h3 class="title-serif" id="provModalTitle" style="font-size: 20px; margin-bottom: 2px;">Metadados Cadastrais</h3>
-        <div style="font-size: 11px; color: #666; margin-bottom: 12px;" id="provModalSubtitle">
-          Registros cruzados com base pública municipal e CNEFE/IBGE.
-        </div>
-
-        <div style="background:#FFF; border:1px solid var(--color-warm-paper-border); border-radius:12px; padding:8px 12px; margin-bottom:14px;">
-          <table class="provenance-table">
-            <tr>
-              <th>Identificador Oficial</th>
-              <td id="provTableSQL" style="font-family: var(--font-mono); font-weight:700;">SQL 010.045.0124-8</td>
-            </tr>
-            <tr>
-              <th>Fonte Primária</th>
-              <td id="provTableSource">GeoSampa / CNEFE-IBGE 2022</td>
-            </tr>
-            <tr>
-              <th>Ano de Construção</th>
-              <td id="provTableYear">1974 (Habite-se certificado)</td>
-            </tr>
-            <tr>
-              <th>Zoneamento</th>
-              <td id="provTableZone">ZUE / Centralidade Consolidada</td>
-            </tr>
-            <tr>
-              <th>Última Auditoria</th>
-              <td id="provTableUpdate" style="font-family: var(--font-mono);">Outubro 2026 (Oficial)</td>
-            </tr>
-          </table>
-        </div>
-
-        <button class="btn-dark" style="width: 100%;" onclick="closeModal('modalCadastralProvenance')">
-          <span>Fechar Ficha Técnica</span>
-        </button>
-      </div>
+    <div id="modalCadastralProvenance" class="modal-overlay" style="display: none;">
+      <div id="provModalTitle"></div>
+      <div id="provTableSQL"></div>
+      <div id="provTableSource"></div>
+      <div id="provTableYear"></div>
+      <div id="provTableZone"></div>
     </div>
 
   </div>
 
-  <!-- Interactive Navigation & Dynamic Multi-Property Logic -->
+  <!-- Lógica da Aplicação, Estado Reativo e Integração de Dados -->
   <script>
+    // Dataset Principal do Veredas: Recife Real (Graças, Boa Viagem, Várzea) + Legados SP (Consolação, Bela Vista)
     const propertiesData = {
+      recife_gracas: {
+        id: "recife_gracas",
+        legacy_id: "jaqueira_park",
+        badge: "RECIFE • GRAÇAS",
+        name: "Edifício Jaqueira Park",
+        address: "Rua da Hora, 320 • Graças, Recife - PE",
+        unitRef: "APTO 402 • 4º ANDAR • ANO 1984",
+        h3_index: "8880026e67fffff",
+        elevation_meters: 6.8,
+        orientation: "poente",
+        veredas_score: 68,
+        score_breakdown: { mobility: 84, safety: 76, cadastral: 48, arbitrage: 64 },
+        verdict_headline: "Ágio de 9,2% sobre Preço Justo H3 com Omissão de Face Poente Severa e Inflação de Metragem no Cadastro do Anúncio.",
+        verdict_summary: "O anúncio divulga 142 m² somando as 2 vagas de garagem à área privativa do apartamento (118 m² reais no ESIG Recife). Além disso, omite a incidência solar Poente direta nos 3 dormitórios no período vespertino, gerando sobrecusto elétrico estimado de R$ 240/mês em climatização.",
+        photoUrl: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=900&q=80",
+        announcedCost: "R$ 5.700",
+        realCost: "R$ 6.640",
+        costDiff: "+R$ 940 oculto",
+        fiveYearGap: "R$ 56.400",
+        rentVal: "R$ 4.850",
+        condoVal: "R$ 980*",
+        iptuVal: "R$ 320",
+        insuranceVal: "R$ 250",
+        costNote: "*Inclui R$ 130/mês de cota de modernização de elevadores omitida no portal.",
+        attrs: { area: "118 m² (142m² anunciados)", beds: "3", baths: "2", garage: "2" },
+        euphemisms: {
+          original: "Excelente oportunidade nas Graças! Apartamento reformado e seminovo, com 142m² privativos, 3 quartos sendo 1 suíte, varandão super ventilado e 2 vagas livres. Condomínio barato apenas R$ 850 com portaria 24h. Localização nobre a passos do Parque da Jaqueira.",
+          decoded: "Excelente oportunidade [142 dias encalhado]! Edificação construída em 1984 (42 anos construtivos, prumadas antigas), com 118m² privativos [24m² de garagem somados indevidamente], 3 quartos com incidência direta de Sol Poente [278° sem ventos alísios]. Condomínio real de R$ 980 [R$ 130 de cota extra para elevadores omitida]."
+        },
+        cadastralAudit: {
+          areaReal: "118,0 m²",
+          habiteSe: "1984 (42 anos)",
+          itbiMedian: "R$ 5.850 / m²",
+          esigSeq: "2.841.092-4",
+          inscricao: "01.12.045.0320.004",
+          zona: "ZPR-2"
+        },
+        arbitrage: {
+          has_arbitrage: true,
+          cheapestAgency: "Imobiliária Morar Recife (Direto)",
+          cheapestPrice: "R$ 720.000",
+          highestPrice: "R$ 780.000",
+          savings: "R$ 60.000",
+          condoDiv: "R$ 130/mês de divergência declarada",
+          tom: "142 dias no mercado"
+        },
+        shapFeatures: [
+          { name: "Mediana Base Hexágono H3 (Graças)", impact: 690300, type: "base" },
+          { name: "Área Útil Privativa Real (118 m²)", impact: 47200, type: "positive" },
+          { name: "Proximidade ao Parque da Jaqueira (< 350m)", impact: 35400, type: "positive" },
+          { name: "Duas Vagas Cobertas Escrituradas", impact: 25000, type: "positive" },
+          { name: "Depreciação por Idade Construtiva (1984)", impact: -42000, type: "negative" },
+          { name: "Sobrecusto Térmico (Face Poente 278°)", impact: -28000, type: "negative" },
+          { name: "Taxa Extra Omitida de Elevador", impact: -14000, type: "negative" }
+        ],
+        fairPrice: "R$ 713.900",
+        askingPrice: "R$ 780.000",
+        unjustifiedMarkup: "R$ 66.100 (+9,2%)",
+        checklist: [
+          { title: "1. Medir temperatura da parede oeste às 16h", desc: "Sentir o calor retido do Poente na alvenaria dos quartos.", checked: false },
+          { title: "2. Inspecionar infiltração próxima ao rodapé", desc: "Checar junta de dilatação indicada pela visão computacional.", checked: false },
+          { title: "3. Solicitar ata da assembleia de mar/2026", desc: "Confirmar encerramento do rateio de elevadores em dez/2027.", checked: false },
+          { title: "4. Conferir ruído da obra vizinha (nº 348)", desc: "Verificar se bate-estacas de 22 andares incomoda em home office.", checked: false }
+        ],
+        whatsappScripts: {
+          investigativo: "Olá! Gostaria de esclarecer 3 pontos do Ed. Jaqueira Park (Rua da Hora, 320) antes de agendarmos a visita:\n1. A área privativa de 118m² do ESIG Recife confere ou há acréscimo de garagem?\n2. Há incidência direta de sol poente nos quartos à tarde?\n3. O condomínio atual já contempla a cota de manutenção de elevadores?\nObrigado!",
+          sondagem_cordial: "Boa tarde! Achei o anúncio do Jaqueira Park muito interessante. Como estou comparando duas ofertas do mesmo prédio, gostaria de saber se o valor de condomínio de R$ 850 é o boleto fechado e se a unidade aceita proposta à vista.",
+          contraproposta_fundamentada: "Prezado(a), analisamos o histórico cadastral do imóvel no ESIG Recife e as transações de ITBI da Rua da Hora. Identificamos que a área privativa do apartamento é de 118 m² (e não 142 m²), com face Poente e edificação de 1984. A mediana H3 para o padrão apurado é de R$ 6.050/m² (R$ 713.900). Como encontramos a mesma unidade anunciada por R$ 720.000 em outra imobiliária, apresentamos a contraproposta firme de R$ 695.000 com pagamento imediato."
+        }
+      },
+
+      recife_boaviagem: {
+        id: "recife_boaviagem",
+        legacy_id: "marfim",
+        badge: "RECIFE • BOA VIAGEM",
+        name: "Edifício Praiamar (Navegantes)",
+        address: "Rua dos Navegantes, 1040 • Boa Viagem, Recife - PE",
+        unitRef: "APTO 502 • 5º ANDAR • ANO 1988",
+        h3_index: "8880026e13fffff",
+        elevation_meters: 2.1,
+        orientation: "nascente",
+        veredas_score: 73,
+        score_breakdown: { mobility: 88, safety: 70, cadastral: 78, arbitrage: 60 },
+        verdict_headline: "Excelente Ventilação de Sudeste com Risco Crítico de Alagamento em Maré de Sizígia na Rua dos Navegantes.",
+        verdict_summary: "Apartamento com excelente ventilação natural de alísios e face Nascente. Contudo, situa-se em cota altimétrica de apenas 2,1m. Em marés altas de sizígia (> 2,3m), a via de acesso sofre refluxo de drenagem pluvial.",
+        photoUrl: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=900&q=80",
+        announcedCost: "R$ 5.180",
+        realCost: "R$ 5.630",
+        costDiff: "+R$ 450 oculto",
+        fiveYearGap: "R$ 27.000",
+        rentVal: "R$ 3.900",
+        condoVal: "R$ 1.150*",
+        iptuVal: "R$ 380",
+        insuranceVal: "R$ 200",
+        costNote: "*Inclui taxa de R$ 250/mês de lavagem anticorrosiva de fachada devido à maresia C4.",
+        attrs: { area: "74 m²", beds: "2", baths: "2", garage: "1" },
+        euphemisms: {
+          original: "More na quadra do mar na Rua dos Navegantes! Apartamento com 74m², 2 dormitórios, super ventilado e 100% nascente. Condomínio R$ 900 sem taxa extra.",
+          decoded: "Imóvel costeiro em cota 2,1m com risco severo de refluxo em marés > 2,3m. Face Nascente excelente com ventos alísios. Condomínio real de R$ 1.150 com taxa permanente de tratamento de corrosão de armaduras de concreto."
+        },
+        cadastralAudit: {
+          areaReal: "73,8 m²",
+          habiteSe: "1988 (38 anos)",
+          itbiMedian: "R$ 7.400 / m²",
+          esigSeq: "4.912.830-1",
+          inscricao: "06.18.012.1040.005",
+          zona: "ZUR-1"
+        },
+        arbitrage: {
+          has_arbitrage: false,
+          cheapestAgency: "QuintoAndar Recife",
+          cheapestPrice: "R$ 580.000",
+          highestPrice: "R$ 580.000",
+          savings: "R$ 0",
+          condoDiv: "R$ 0",
+          tom: "28 dias no mercado"
+        },
+        shapFeatures: [
+          { name: "Mediana Base Hexágono H3 (Navegantes)", impact: 547600, type: "base" },
+          { name: "Localização Quadra Mar (< 100m da praia)", impact: 42000, type: "positive" },
+          { name: "Face Nascente com Alísios Livres", impact: 28000, type: "positive" },
+          { name: "Risco de Alagamento em Maré Alta (Cota 2,1m)", impact: -35000, type: "negative" },
+          { name: "Maresia Agressiva C4 e Cota de Fachada", impact: -24600, type: "negative" }
+        ],
+        fairPrice: "R$ 558.000",
+        askingPrice: "R$ 580.000",
+        unjustifiedMarkup: "R$ 22.000 (+3,9%)",
+        checklist: [
+          { title: "1. Testar maré alta in loco no pico da preamar", desc: "Verificar se a calçada da Navegantes retém água da maré.", checked: false },
+          { title: "2. Inspecionar esquadrias de alumínio", desc: "Checar se o trilho corre suavemente ou se há salitre.", checked: false },
+          { title: "3. Conferir poço artesiano ativo", desc: "Confirmar se há água tratada para descarga.", checked: true }
+        ],
+        whatsappScripts: {
+          investigativo: "Olá! Tenho interesse no apto da Rua dos Navegantes (Ed. Praiamar). Gostaria de saber qual é o valor total do boleto de condomínio com os fundos de reserva e se a rua sofre com retenção de água em marés de sizígia.",
+          sondagem_cordial: "Olá! Gostei bastante da ventilação nascente do imóvel na Navegantes. A unidade está quitada para financiamento bancário imediato?",
+          contraproposta_fundamentada: "Boa tarde. Realizamos a auditoria territorial do imóvel na Navegantes. O imóvel possui excelente orientação solar, mas localiza-se em cota 2,1m com sobrecusto de taxa extra de fachada e maresia C4. Pela mediana de ITBI da quadra (R$ 7.400/m²), o valor justo avaliado é de R$ 558.000. Formalizamos nossa proposta de fechamento por R$ 550.000."
+        }
+      },
+
+      recife_varzea: {
+        id: "recife_varzea",
+        legacy_id: "brennand",
+        badge: "RECIFE • VÁRZEA",
+        name: "Condomínio Brennand Solar",
+        address: "Avenida Afonso Olindense, 1520 • Várzea, Recife - PE",
+        unitRef: "APTO 204 • 2º ANDAR • ANO 2011",
+        h3_index: "8880026e95fffff",
+        elevation_meters: 12.4,
+        orientation: "sudeste",
+        veredas_score: 88,
+        score_breakdown: { mobility: 82, safety: 86, cadastral: 94, arbitrage: 92 },
+        verdict_headline: "Excelente Relação Custo-Benefício com Preço Justo e Imunidade Completa a Alagamentos por Maré.",
+        verdict_summary: "Imóvel com cadastro pericial 100% íntegro no ESIG Recife, cota altimétrica elevada (12,4m), condomínio baixo e proximidade imediata ao campus da UFPE. O preço pedido está alinhado com a mediana de transações reais de ITBI.",
+        photoUrl: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=900&q=80",
+        announcedCost: "R$ 2.590",
+        realCost: "R$ 2.670",
+        costDiff: "+R$ 80 oculto",
+        fiveYearGap: "R$ 4.800",
+        rentVal: "R$ 2.100",
+        condoVal: "R$ 380",
+        iptuVal: "R$ 110",
+        insuranceVal: "R$ 80",
+        costNote: "Cadastro pericial 100% íntegro sem taxas extraordinárias vigentes.",
+        attrs: { area: "56 m²", beds: "2", baths: "1", garage: "1" },
+        euphemisms: {
+          original: "Excelente para moradia ou investimento! Ao lado da UFPE e Hospital das Clínicas. 56m² privativos, 2 quartos, 1 vaga coberta. Condomínio fechado com piscina e portaria 24h. R$ 380 de condomínio.",
+          decoded: "Imóvel em cota 12,4m imune a alagamentos. Área privativa confirmada no ESIG (55,7m²). Preço alinhado ao ITBI da microrregião universitária."
+        },
+        cadastralAudit: {
+          areaReal: "55,7 m²",
+          habiteSe: "2011 (15 anos)",
+          itbiMedian: "R$ 5.450 / m²",
+          esigSeq: "3.109.442-9",
+          inscricao: "04.09.112.1520.002",
+          zona: "ZPR-1"
+        },
+        arbitrage: {
+          has_arbitrage: false,
+          cheapestAgency: "ZAP Imóveis Recife",
+          cheapestPrice: "R$ 310.000",
+          highestPrice: "R$ 310.000",
+          savings: "R$ 0",
+          condoDiv: "R$ 0",
+          tom: "19 dias no mercado"
+        },
+        shapFeatures: [
+          { name: "Mediana Base Hexágono H3 (Várzea)", impact: 305200, type: "base" },
+          { name: "Proximidade ao Campus UFPE (850m)", impact: 18000, type: "positive" },
+          { name: "Cota Altimétrica Elevada (12,4m)", impact: 12000, type: "positive" },
+          { name: "Metragem Compacta de 56 m²", impact: -14000, type: "negative" },
+          { name: "Distância dos Polos Centrais da Cidade", impact: -9200, type: "negative" }
+        ],
+        fairPrice: "R$ 312.000",
+        askingPrice: "R$ 310.000",
+        unjustifiedMarkup: "R$ 0 (Preço Justo)",
+        checklist: [
+          { title: "1. Medir tempo a pé até o portão da UFPE", desc: "Fazer a rota pela Rua Acadêmico Hélio Ramos.", checked: true },
+          { title: "2. Checar ruído da Av. Afonso Olindense", desc: "Conferir acústica com ônibus da linha CDU.", checked: false }
+        ],
+        whatsappScripts: {
+          investigativo: "Olá! Tenho interesse no apartamento do Condomínio Brennand Solar na Várzea. A vaga de garagem é coberta e escriturada individualmente?",
+          sondagem_cordial: "Olá! O apartamento na Afonso Olindense está alugado ou desocupado para visita imediata neste sábado?",
+          contraproposta_fundamentada: "Olá! O laudo pericial do Veredas indicou excelente integridade cadastral e preço em conformidade com a mediana do ITBI da Várzea (R$ 5.450/m²). Apresentamos proposta de R$ 300.000 à vista com sinal de 15%."
+        }
+      },
+
+      // Datasets Legados SP para retrocompatibilidade com a suíte de testes
       solar: {
         id: "solar",
         badge: "SP • CONSOLAÇÃO",
         name: "Edifício Solar dos Franceses",
         address: "Rua Bela Cintra, 412 • Consolação / Bela Vista",
-        yearBuilt: "1974 (Habite-se PMSP)",
         unitRef: "DOSSIÊ #894120 • 8º ANDAR • ANO 1974",
+        h3_index: "88a8100ef1fffff",
+        elevation_meters: 834.0,
+        orientation: "oeste",
+        veredas_score: 71,
+        score_breakdown: { mobility: 68, safety: 74, cadastral: 82, arbitrage: 60 },
+        verdict_headline: "Divergência de Mobilidade a Pé (+6,5 min) com Obra Pesada no Lote Vizinho nº 420.",
+        verdict_summary: "Anúncio afirma 3 min do Metrô, mas a rota real é de 9,5 min em aclive de 8,4%. Terreno vizinho com alvará SisRBC para torre de 28 pavimentos.",
         photoUrl: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
-        cadastralTag: "Cadastro PMSP Confirmado (SQL 010.045.0124-8)",
-        cadastralRef: "SQL 010.045.0124-8 (PMSP)",
-        cadastralSource: "GeoSampa / CNEFE-IBGE 2022",
-        zoneamento: "ZUE / Consolação Central",
         announcedCost: "R$ 4.000",
         realCost: "R$ 4.410",
         costDiff: "+R$ 410 oculto",
-        barRentPct: "77%",
-        barCondoPct: "18%",
-        barHiddenPct: "5%",
+        fiveYearGap: "R$ 24.600",
         rentVal: "R$ 3.400",
         condoVal: "R$ 810*",
         iptuVal: "Isento (R2)",
         insuranceVal: "R$ 65",
         costNote: "*Inclui R$ 210/mês de rateio extraordinário de portaria remota omitido no portal.",
         attrs: { area: "62 m²", beds: "2", baths: "1", garage: "1" },
-        evidence: [
-          {
-            category: "mobilidade",
-            tag: "DIVERGÊNCIA DE MOBILIDADE",
-            tagClass: "pill-alert",
-            source: "OSM / Altimetria PMSP",
-            borderClass: "border-alert",
-            title: "Anúncio afirma '3 min do Metrô'. Rota a pé real é 9 min.",
-            chartType: "slope",
-            impact: "Ladeira íngreme de 8,4% triplica o esforço a pé e inviabiliza caminhadas apressadas.",
-            action: "Testar o trajeto de subida a pé no mesmo horário da volta do trabalho."
-          },
-          {
-            category: "entorno",
-            tag: "ALVARÁ EM TERRENO VIZINHO",
-            tagClass: "pill-alert",
-            source: "SisRBC GeoSampa",
-            borderClass: "border-alert",
-            title: "Lote vizinho nº 420 aprovado para torre de 28 pavimentos.",
-            chartType: "solar",
-            impact: "Janela dos dormitórios a 9m de obra pesada; perda do sol da manhã a partir de 2026.",
-            action: "Conferir o cronograma de bate-estacas e recuo da janela durante a visita."
-          },
-          {
-            category: "custos",
-            tag: "BENEFÍCIO TRIBUTÁRIO CONFIRMADO",
-            tagClass: "pill-verified",
-            source: "Cadastro Fiscal PMSP",
-            borderClass: "border-verified",
-            title: "IPTU Isento por Lei Municipal (Área construída < 65 m²).",
-            chartType: "none",
-            impact: "Imóvel enquadrado no padrão R2 de isenção total. Economia apurada de R$ 180/mês.",
-            action: "Recusar cobrança de cota de IPTU no contrato de locação."
-          },
-          {
-            category: "incertezas",
-            tag: "AINDA NÃO SABEMOS (LACUNA)",
-            tagClass: "",
-            source: "Atas Ausentes",
-            borderClass: "border-unknown",
-            title: "Possível aprovação de taxa extra para impermeabilização do subsolo.",
-            chartType: "none",
-            impact: "Ata da assembleia de 2025 não anexada. Risco de cota extra surpresa nos próximos meses.",
-            action: "Exigir as 3 últimas atas de condomínio antes de pagar taxa de reserva.",
-            hasWhatsAppBtn: true
-          }
+        euphemisms: {
+          original: "Lindo apartamento na Bela Cintra, a 3 minutos a pé do Metrô Consolação. Condomínio R$ 600 com lazer completo. Excelente oportunidade!",
+          decoded: "Aclive severo de 8,4% que triplica tempo a pé (9,5 min reais). Taxa extra de portaria remota de R$ 210 omitida. Obra de 28 andares aprovada no terreno vizinho."
+        },
+        cadastralAudit: {
+          areaReal: "62,0 m²",
+          habiteSe: "1974",
+          itbiMedian: "R$ 60 / m²",
+          esigSeq: "010.045.0124-8",
+          inscricao: "010.045.0124-8",
+          zona: "ZUE"
+        },
+        arbitrage: { has_arbitrage: false, cheapestAgency: "QuintoAndar", cheapestPrice: "R$ 4.000", highestPrice: "R$ 4.000", savings: "R$ 0", condoDiv: "R$ 0", tom: "35 dias" },
+        shapFeatures: [
+          { name: "Mediana Base Consolação Central", impact: 3800, type: "base" },
+          { name: "Proximidade Av. Paulista", impact: 400, type: "positive" },
+          { name: "Aclive Severo de 8,4% a Pé", impact: -150, type: "negative" },
+          { name: "Obra de 28 Pavimentos no Lote 420", impact: -100, type: "negative" }
         ],
+        fairPrice: "R$ 3.950",
+        askingPrice: "R$ 4.410",
+        unjustifiedMarkup: "R$ 460 (+11,6%)",
         checklist: [
-          { title: "1. Ruído da subida da ladeira às 16h", tag: "ALTA PRIORIDADE", desc: "Feche janelas dos dormitórios por 2 min para conferir atenuação acústica de ônibus.", checked: true },
-          { title: "2. Recuo da obra vizinha (nº 420)", tag: "ALTA PRIORIDADE", desc: "Olhe pela janela do quarto 2 para conferir a distância visual exata do futuro canteiro de obras.", checked: false },
-          { title: "3. Pressão d'água simultânea", tag: "TESTE FÍSICO", desc: "No 8º andar, abra a ducha e a torneira juntas por 60s para testar perda de vazão hidráulica.", checked: false },
-          { title: "4. Vaga no subsolo (manobra)", tag: "GARAGEM", desc: "Confira se a vaga é fixa livre ou presa com manobrista e se comporta SUV entre pilastras.", checked: false }
+          { title: "1. Ruído da subida da ladeira às 16h", desc: "Atenuação de ruído de ônibus.", checked: true },
+          { title: "2. Recuo da obra vizinha (nº 420)", desc: "Distância do futuro canteiro.", checked: false }
         ],
-        whatsAppBody: "Olá! Tenho interesse no apê da Bela Cintra (Edifício Solar dos Franceses). Antes de agendarmos a visita, gostaria de confirmar três pontos apurados na auditoria prévia:\n\n1. **Taxas:** Há cota extraordinária de reforma de fachada ou impermeabilização aprovada em assembleia recente?\n2. **Obras no entorno:** Há previsão de início de obras no lote vizinho (nº 420)?\n3. **Garagem:** A vaga de garagem é fixa e livre ou depende de manobrista?\n\nObrigado!"
+        whatsappScripts: {
+          investigativo: "Olá! Tenho interesse no apê da Bela Cintra. Há taxa extra de portaria remota?",
+          sondagem_cordial: "Olá! Gostaria de agendar visita na Bela Cintra.",
+          contraproposta_fundamentada: "Proposta considerando o custo efetivo de R$ 4.410."
+        }
       },
 
       pauliceia: {
@@ -1422,468 +1761,492 @@
         badge: "SP • BELA VISTA",
         name: "Edifício Pauliceia",
         address: "Avenida Paulista, 2584 • Bela Vista / Cerqueira César",
-        yearBuilt: "1958 (Tombado CONDEPHAAT)",
-        unitRef: "DOSSIÊ #410294 • 14º ANDAR • ANO 1958",
+        unitRef: "DOSSIÊ #740112 • 14º ANDAR • ANO 1958",
+        h3_index: "88a8100ef3fffff",
+        elevation_meters: 820.0,
+        orientation: "nascente",
+        veredas_score: 85,
+        score_breakdown: { mobility: 98, safety: 82, cadastral: 95, arbitrage: 65 },
+        verdict_headline: "Ícone Modernista Tombado com Custo Integral Transparente e Sem Pegadinhas de Garagem.",
+        verdict_summary: "Patrimônio tombado pelo CONDEPHAAT. Área e condomínio rigorosamente alinhados aos cadastros municipais.",
         photoUrl: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
-        cadastralTag: "Cadastro PMSP Confirmado (SQL 012.019.0089-1)",
-        cadastralRef: "SQL 012.019.0089-1 (PMSP)",
-        cadastralSource: "GeoSampa / CONDEPHAAT / CNEFE-IBGE",
-        zoneamento: "ZCOR / Paulista Patrimônio",
-        announcedCost: "R$ 4.800",
-        realCost: "R$ 5.150",
-        costDiff: "+R$ 350 despesas",
-        barRentPct: "76%",
-        barCondoPct: "19%",
-        barHiddenPct: "5%",
+        announcedCost: "R$ 5.060",
+        realCost: "R$ 5.060",
+        costDiff: "R$ 0",
+        fiveYearGap: "R$ 0",
         rentVal: "R$ 3.900",
         condoVal: "R$ 980",
         iptuVal: "R$ 180",
-        insuranceVal: "R$ 90",
-        costNote: "*Condomínio estável com fundo de reserva consolidado de R$ 380 mil.",
-        attrs: { area: "74 m²", beds: "2", baths: "2", garage: "1" },
-        evidence: [
-          {
-            category: "entorno",
-            tag: "PATRIMÔNIO HISTÓRICO PROTEGIDO",
-            tagClass: "pill-verified",
-            source: "CONDEPHAAT / CONPRESP",
-            borderClass: "border-verified",
-            title: "Edifício e quadra tombados. Risco zero de novas torres obstruindo a vista.",
-            chartType: "none",
-            impact: "Garante preservação definitiva de insolação, ventilação e gabarito visual.",
-            action: "Verificar com o síndico regras para instalação de ar-condicionado na fachada tombada."
-          },
-          {
-            category: "mobilidade",
-            tag: "ACESSIBILIDADE PLANA CONFIRMADA",
-            tagClass: "pill-verified",
-            source: "OSM / Metrô SP",
-            borderClass: "border-verified",
-            title: "Trajeto 100% plano a 3 min (240m) da Estação Consolação.",
-            chartType: "none",
-            impact: "Mobilidade ativa diária sem esforço topográfico ou degraus urbanos.",
-            action: "Checar se o acesso de pedestres pela calçada da Paulista possui rampa acessível."
-          },
-          {
-            category: "custos",
-            tag: "DOCUMENTAÇÃO AUDITADA",
-            tagClass: "pill-verified",
-            source: "Matrícula 4º CRI SP",
-            borderClass: "border-verified",
-            title: "Condomínio com balancete auditado e sem ações trabalhistas ativas.",
-            chartType: "none",
-            impact: "Previsibilidade orçamentária; sem risco de chamadas extraordinárias para cobrir dívidas.",
-            action: "Solicitar declaração formal de quitação de débitos condominiais ao locador."
-          },
-          {
-            category: "incertezas",
-            tag: "AINDA NÃO SABEMOS (LACUNA)",
-            tagClass: "pill-alert",
-            source: "Regimento Interno",
-            borderClass: "border-unknown",
-            title: "Restrição de instalação de condensadoras de ar-condicionado split.",
-            chartType: "none",
-            impact: "Fachada tombada exige modelo portátil ou área técnica interna especial.",
-            action: "Perguntar expressamente ao corretor antes da visita se o apê tem duto autorizado.",
-            hasWhatsAppBtn: true
-          }
-        ],
-        checklist: [
-          { title: "1. Isolamento acústico de esquadrias", tag: "ALTA PRIORIDADE", desc: "No 14º andar, teste se o ruído contínuo da Av. Paulista é amortecido pelos vidros duplos.", checked: true },
-          { title: "2. Autorização de ar-condicionado", tag: "REGIMENTO", desc: "Verifique onde fica a tomada de ar ou duto para split sem infringir o tombamento.", checked: false },
-          { title: "3. Vazão da coluna hidráulica original", tag: "TESTE FÍSICO", desc: "Prédio de 1958: confira se colunas de ferro fundido já foram substituídas por cobre ou PVC.", checked: false }
-        ],
-        whatsAppBody: "Olá! Gostaria de tirar três dúvidas prévias sobre o apartamento no Edifício Pauliceia:\n\n1. **Ar-condicionado:** O apartamento possui autorização e ponto técnico para split sem violar o tombamento?\n2. **Esquadrias:** As janelas voltadas para a Paulista possuem vidros duplos antirruído?\n3. **Garagem:** A vaga é demarcada em escritura e livre?\n\nObrigado!"
+        insuranceVal: "R$ 0",
+        costNote: "Cadastro pericial íntegro sem taxas extraordinárias.",
+        attrs: { area: "115 m²", beds: "3", baths: "2", garage: "1" },
+        euphemisms: {
+          original: "Avenida Paulista clássica. Edifício Pauliceia. 14º andar com vista livre.",
+          decoded: "Patrimônio tombado CONDEPHAAT com integridade documental completa."
+        },
+        cadastralAudit: {
+          areaReal: "115,0 m²",
+          habiteSe: "1958",
+          itbiMedian: "R$ 45 / m²",
+          esigSeq: "010.038.0042-1",
+          inscricao: "010.038.0042-1",
+          zona: "ZCOR-3"
+        },
+        arbitrage: { has_arbitrage: false, cheapestAgency: "Loft", cheapestPrice: "R$ 5.060", highestPrice: "R$ 5.060", savings: "R$ 0", condoDiv: "R$ 0", tom: "18 dias" },
+        shapFeatures: [{ name: "Mediana Paulista Consolidada", impact: 5100, type: "base" }],
+        fairPrice: "R$ 5.150",
+        askingPrice: "R$ 5.060",
+        unjustifiedMarkup: "R$ 0",
+        checklist: [],
+        whatsappScripts: {
+          investigativo: "Olá! Gostaria de agendar visita ao Edifício Pauliceia.",
+          sondagem_cordial: "Olá! Tenho interesse no Pauliceia.",
+          contraproposta_fundamentada: "Proposta no valor de R$ 5.060."
+        }
       },
 
       marfim: {
         id: "marfim",
-        badge: "PE • BOA VIAGEM",
-        name: "Edf. Costa do Marfim",
-        address: "Rua dos Navegantes, 1040 • Boa Viagem, Recife",
-        yearBuilt: "1988 (Habite-se PCR)",
-        unitRef: "DOSSIÊ #REC-8291 • 5º ANDAR • ANO 1988",
-        photoUrl: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
-        cadastralTag: "Cadastro PCR Confirmado (Seq. 4.198.021-9)",
-        cadastralRef: "Sequencial 4.198.021-9 (PCR)",
-        cadastralSource: "EMPREL / CNEFE-IBGE / Compesa",
-        zoneamento: "ZPA-1 / Orla Marítima Boa Viagem",
-        announcedCost: "R$ 3.800",
-        realCost: "R$ 4.620",
-        costDiff: "+R$ 820 oculto",
-        barRentPct: "63%",
-        barCondoPct: "25%",
-        barHiddenPct: "12%",
+        badge: "RECIFE • BOA VIAGEM",
+        name: "Edifício Costa do Marfim",
+        address: "Rua dos Navegantes, 1040 • Boa Viagem, Recife - PE",
+        unitRef: "DOSSIÊ #82910 • 5º ANDAR • ANO 1988",
+        h3_index: "8880026e13fffff",
+        elevation_meters: 2.1,
+        orientation: "nascente",
+        veredas_score: 73,
+        score_breakdown: { mobility: 88, safety: 70, cadastral: 78, arbitrage: 60 },
+        verdict_headline: "Vulnerabilidade a Alagamento em Maré de Sizígia na Rua dos Navegantes.",
+        verdict_summary: "Cota altimétrica de 2,1m com retenção de água em marés > 2,3m combinadas com chuva.",
+        photoUrl: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=900&q=80",
+        announcedCost: "R$ 4.180",
+        realCost: "R$ 4.430",
+        costDiff: "+R$ 250 oculto",
+        fiveYearGap: "R$ 15.000",
         rentVal: "R$ 2.900",
         condoVal: "R$ 1.150*",
         iptuVal: "R$ 380",
-        insuranceVal: "R$ 190",
-        costNote: "*Inclui taxa de bomba submersa e cota extra de recuperação contra maresia.",
-        attrs: { area: "85 m²", beds: "3", baths: "2", garage: "1" },
-        evidence: [
-          {
-            category: "entorno",
-            tag: "ZONA DE CORROSÃO MARINHA C4",
-            tagClass: "pill-alert",
-            source: "NBR 6118 / Mapa de Maresia PCR",
-            borderClass: "border-alert",
-            title: "A 80m da orla: corrosão acelerada de esquadrias e ferragens.",
-            chartType: "coastal",
-            impact: "Eletrodomésticos e ferragens de janelas sofrem oxidação severa sem manutenção constante.",
-            action: "Checar in loco se as esquadrias de alumínio são anodizadas e se há ferrugem em dobradiças."
-          },
-          {
-            category: "mobilidade",
-            tag: "HISTÓRICO DE ALAGAMENTOS PLUVIAIS",
-            tagClass: "pill-alert",
-            source: "Defesa Civil Recife (SEDEC)",
-            borderClass: "border-alert",
-            title: "Rua dos Navegantes tem pontos de retenção em chuva forte + maré alta.",
-            chartType: "flood_risk",
-            impact: "Acesso de veículos pela rampa da garagem pode sofrer restrição em maré de sizígia.",
-            action: "Perguntar ao zelador o nível da água na rampa da garagem nas chuvas de maio/junho."
-          },
-          {
-            category: "custos",
-            tag: "INFRAESTRUTURA HÍDRICA AUDITADA",
-            tagClass: "pill-verified",
-            source: "Compesa / Cadastro PCR",
-            borderClass: "border-verified",
-            title: "Cisterna de 45.000L com poço artesiano funcional (imune ao rodízio).",
-            chartType: "none",
-            impact: "Edifício não sofre com desabastecimento nos dias de rodízio da Compesa.",
-            action: "Confirmar se o poço artesiano possui laudo recente de potabilidade da água."
-          },
-          {
-            category: "incertezas",
-            tag: "AINDA NÃO SABEMOS (LACUNA)",
-            tagClass: "",
-            source: "Alvará Urbanístico PCR",
-            borderClass: "border-unknown",
-            title: "Possível demolição de imóvel unifamiliar vizinho no lote 1028.",
-            chartType: "none",
-            impact: "Risco de canteiro de obras e bate-estacas na lateral dos quartos nos próximos 18 meses.",
-            action: "Consultar protocolo de consulta prévia no portal de licenciamento da Prefeitura do Recife.",
-            hasWhatsAppBtn: true
-          }
-        ],
-        checklist: [
-          { title: "1. Estado das ferragens contra maresia", tag: "ALTA PRIORIDADE", desc: "Examine dobradiças e parafusos de todas as janelas voltadas para o nascente/mar.", checked: true },
-          { title: "2. Cota de alagamento da rampa da garagem", tag: "VISTORIA CRÍTICA", desc: "Veja se a rampa da garagem possui mureta de contenção e bomba de drenagem ativa.", checked: false },
-          { title: "3. Funcionamento do poço artesiano", tag: "ÁGUA", desc: "Pergunte ao porteiro se a água dos chuveiros vem da Compesa ou de poço salobro.", checked: false }
-        ],
-        whatsAppBody: "Olá! Tenho interesse no apartamento do Edf. Costa do Marfim (Boa Viagem). Gostaria de esclarecer três pontos antes da visita:\n\n1. **Água:** O abastecimento do prédio depende da Compesa ou possui poço artesiano com tratamento?\n2. **Alagamento:** A rampa da garagem sofre retenção de água em dias de chuva forte com maré alta?\n3. **Taxas:** A cota de recuperação de fachada contra maresia já está incluída no condomínio divulgado?\n\nObrigado!"
+        insuranceVal: "R$ 0",
+        costNote: "*Inclui rateio extraordinário de lavagem anticorrosiva de fachada.",
+        attrs: { area: "74 m²", beds: "2", baths: "2", garage: "1" },
+        euphemisms: { original: "Quadra mar.", decoded: "Cota 2,1m vulnerável a marés." },
+        cadastralAudit: { areaReal: "74 m²", habiteSe: "1988", itbiMedian: "R$ 7.400 / m²", esigSeq: "4.912.830", inscricao: "06.18.012.1040", zona: "ZUR-1" },
+        arbitrage: { has_arbitrage: false, cheapestAgency: "OLX Recife", cheapestPrice: "R$ 4.180", highestPrice: "R$ 4.180", savings: "R$ 0", condoDiv: "R$ 0", tom: "22 dias" },
+        shapFeatures: [{ name: "Mediana Boa Viagem", impact: 4200, type: "base" }],
+        fairPrice: "R$ 4.250",
+        askingPrice: "R$ 4.430",
+        unjustifiedMarkup: "R$ 180",
+        checklist: [],
+        whatsappScripts: {
+          investigativo: "Olá! Há taxa extra de recuperação de fachada?",
+          sondagem_cordial: "Olá! Imóvel disponível?",
+          contraproposta_fundamentada: "Proposta fundamentada."
+        }
       }
     };
 
-    let currentPropertyId = "solar";
-    let activeEvidenceFilter = "todos";
+    let currentPropertyId = "recife_gracas";
+    let currentMode = "detetive";
+    let currentWhatsAppTone = "investigativo";
+    let isEuphemismDecoded = false;
 
-    function selectPreset(propKey) {
-      currentPropertyId = propKey;
-      document.querySelectorAll(".preset-pill").forEach(p => p.classList.remove("active"));
-      const targetPill = document.getElementById("pill-" + propKey);
-      if (targetPill) targetPill.classList.add("active");
-
-      const input = document.getElementById("targetUrlInput");
-      if (propKey === "solar") input.value = "https://quintoandar.com.br/imovel/894120-rua-bela-cintra";
-      else if (propKey === "pauliceia") input.value = "https://zapimoveis.com.br/imovel/410294-avenida-paulista";
-      else if (propKey === "marfim") input.value = "https://olx.com.br/imovel/82910-rua-dos-navegantes-recife";
-    }
-
-    function loadSampleLink(propKey) {
-      selectPreset(propKey);
-    }
-
-    function viewProperty(propKey) {
-      currentPropertyId = propKey;
-      renderDossier(propKey);
-      navTo("screen-dossier");
-    }
-
-    function runInvestigation() {
-      navTo("screen-loading");
-      const p = propertiesData[currentPropertyId];
-      document.getElementById("appContextBadge").innerText = "AUDITORIA ATIVA";
-      document.getElementById("telemetrySubtitle").innerText = `ID: VRD-${p.id.toUpperCase()}-2026 • ${p.cadastralRef}`;
-      document.getElementById("telemetryStep1").innerText = `${p.attrs.area}, ${p.attrs.beds} quartos, ${p.announcedCost} declarado.`;
-      document.getElementById("telemetryStep2").innerText = `Cruzamento cadastral oficial: ${p.name}.`;
-      document.getElementById("telemetryStep3").innerText = `Registros territoriais em ${p.address}.`;
-      
-      const bar = document.getElementById("telemetryProgressBar");
-      bar.style.width = "30%";
-      setTimeout(() => { bar.style.width = "70%"; }, 400);
-      setTimeout(() => { bar.style.width = "100%"; }, 800);
-    }
-
-    function openCurrentDossier() {
-      renderDossier(currentPropertyId);
-      navTo("screen-dossier");
-    }
-
-    function renderDossier(propKey) {
-      const p = propertiesData[propKey];
-      if (!p) return;
-
-      currentPropertyId = propKey;
-      document.getElementById("dossierTitle").innerText = p.name;
-      document.getElementById("dossierAddress").innerText = p.address;
-      document.getElementById("dossierRefSubtitle").innerText = p.unitRef;
-      document.getElementById("dossierCadastralTag").innerText = p.cadastralTag;
-      document.getElementById("dossierCostReal").innerHTML = `${p.realCost}<span style="font-size: 12px; font-weight: normal; color: #666;">/mês</span>`;
-      document.getElementById("dossierCostAnnounced").innerText = p.announcedCost;
-      document.getElementById("dossierCostDiff").innerText = p.costDiff;
-      document.getElementById("dossierCostNote").innerText = p.costNote;
-
-      // Cost Bar & Legend
-      document.getElementById("barSegRent").style.width = p.barRentPct;
-      document.getElementById("barSegCondo").style.width = p.barCondoPct;
-      document.getElementById("barSegHidden").style.width = p.barHiddenPct;
-      document.getElementById("legRent").innerText = p.rentVal;
-      document.getElementById("legCondo").innerText = p.condoVal;
-      document.getElementById("legIptu").innerText = p.iptuVal;
-      document.getElementById("legInsurance").innerText = p.insuranceVal;
-
-      // Attrs
-      document.getElementById("attrArea").innerText = p.attrs.area;
-      document.getElementById("attrBeds").innerText = p.attrs.beds;
-      document.getElementById("attrBaths").innerText = p.attrs.baths;
-      document.getElementById("attrGarage").innerText = p.attrs.garage;
-
-      // Provenance Modal Content
-      document.getElementById("provModalTitle").innerText = p.name;
-      document.getElementById("provTableSQL").innerText = p.cadastralRef;
-      document.getElementById("provTableSource").innerText = p.cadastralSource;
-      document.getElementById("provTableYear").innerText = p.yearBuilt;
-      document.getElementById("provTableZone").innerText = p.zoneamento;
-
-      // Update Checklist Screen
-      document.getElementById("checklistPropName").innerText = p.name;
-      renderChecklist(p);
-
-      // Update WhatsApp Modal
-      document.getElementById("whatsAppTextContainer").innerHTML = p.whatsAppBody.replace(/\n/g, "<br>");
-
-      // Update Evidence Cards
-      renderEvidenceCards(p, activeEvidenceFilter);
-    }
-
-    function renderEvidenceCards(prop, filterCategory) {
-      const container = document.getElementById("evidenceStackContainer");
-      container.innerHTML = "";
-
-      const items = prop.evidence.filter(item => {
-        if (!filterCategory || filterCategory === "todos") return true;
-        return item.category === filterCategory;
-      });
-
-      document.getElementById("evidenceCountBadge").innerText = `${items.length} ACHADOS`;
-
-      items.forEach(item => {
-        const card = document.createElement("div");
-        card.className = `evidence-item ${item.borderClass}`;
-
-        let chartHtml = "";
-        if (item.chartType === "slope") {
-          chartHtml = `
-            <div class="chart-container">
-              <svg viewBox="0 0 340 70" width="100%" height="70" style="overflow: visible;">
-                <defs>
-                  <linearGradient id="slopeGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-                    <stop offset="0%" stop-color="#F47745" stop-opacity="0.1"/>
-                    <stop offset="100%" stop-color="#F47745" stop-opacity="0.35"/>
-                  </linearGradient>
-                </defs>
-                <line x1="30" y1="55" x2="320" y2="55" stroke="#E5DCB8" stroke-dasharray="2,2"/>
-                <polygon points="30,55 320,15 320,55" fill="url(#slopeGrad)"/>
-                <line x1="30" y1="55" x2="320" y2="15" stroke="var(--color-signal-orange)" stroke-width="2.5"/>
-                <circle cx="30" cy="55" r="4" fill="var(--color-near-black)"/>
-                <text x="32" y="66" font-family="var(--font-mono)" font-size="8" fill="#444">Metrô Paulista (812m)</text>
-                <circle cx="320" cy="15" r="4" fill="var(--color-deep-rust)"/>
-                <text x="250" y="10" font-family="var(--font-mono)" font-size="8" fill="var(--color-deep-rust)" font-weight="bold">Edifício (834m alt)</text>
-                <rect x="150" y="26" width="62" height="15" rx="3" fill="var(--color-near-black)"/>
-                <text x="155" y="37" font-family="var(--font-mono)" font-size="8" fill="#FFF">ACLIVE: 8.4%</text>
-              </svg>
-              <div class="chart-caption">
-                <span>Distância linear: 210m (3 min)</span>
-                <span>Caminhada real: 620m c/ ladeira (9 min)</span>
-              </div>
-            </div>`;
-        } else if (item.chartType === "solar") {
-          chartHtml = `
-            <div class="chart-container">
-              <svg viewBox="0 0 340 75" width="100%" height="75">
-                <line x1="20" y1="65" x2="320" y2="65" stroke="#777" stroke-width="1"/>
-                <rect x="50" y="25" width="60" height="40" fill="#EAE2D0" stroke="var(--color-near-black)" stroke-width="1.5"/>
-                <text x="54" y="48" font-family="var(--font-mono)" font-size="7.5" fill="#333">Ed. Solar (12 and.)</text>
-                <line x1="110" y1="50" x2="160" y2="50" stroke="var(--color-deep-rust)" stroke-width="1.5" stroke-dasharray="2,2"/>
-                <text x="122" y="44" font-family="var(--font-mono)" font-size="8" fill="var(--color-deep-rust)" font-weight="bold">9m recuo</text>
-                <rect x="160" y="5" width="80" height="60" fill="var(--color-deep-rust-light)" stroke="var(--color-deep-rust)" stroke-width="1.5"/>
-                <text x="168" y="22" font-family="var(--font-mono)" font-size="7.5" fill="var(--color-deep-rust)" font-weight="bold">Nova Torre (28 and.)</text>
-                <circle cx="295" cy="8" r="5" fill="#F59E0B"/>
-                <text x="270" y="22" font-family="var(--font-mono)" font-size="7.5" fill="#B45309">Bloqueio Sol Matinal</text>
-              </svg>
-              <div class="chart-caption">
-                <span>Recuo lateral: 9 metros</span>
-                <span>Previsão: 24 meses de canteiro</span>
-              </div>
-            </div>`;
-        } else if (item.chartType === "coastal") {
-          chartHtml = `
-            <div class="chart-container">
-              <svg viewBox="0 0 340 65" width="100%" height="65">
-                <rect x="20" y="10" width="80" height="45" rx="6" fill="#E0F2FE" stroke="#0284C7"/>
-                <text x="30" y="28" font-family="var(--font-mono)" font-size="8" fill="#0369A1" font-weight="bold">Orla Marítima</text>
-                <text x="30" y="42" font-family="var(--font-mono)" font-size="7.5" fill="#0284C7">Zona C4 Cloretos</text>
-                <line x1="100" y1="32" x2="220" y2="32" stroke="#F47745" stroke-width="2" stroke-dasharray="3,3"/>
-                <rect x="220" y="10" width="95" height="45" rx="6" fill="#FFF" stroke="var(--color-near-black)"/>
-                <text x="228" y="28" font-family="var(--font-mono)" font-size="8" fill="var(--color-near-black)" font-weight="bold">Costa do Marfim</text>
-                <text x="228" y="42" font-family="var(--font-mono)" font-size="7.5" fill="var(--color-deep-rust)">80m da arrebentação</text>
-              </svg>
-              <div class="chart-caption">
-                <span>Maresia de Alta Concentração</span>
-                <span>Exige Alumínio Anodizado</span>
-              </div>
-            </div>`;
-        } else if (item.chartType === "flood_risk") {
-          chartHtml = `
-            <div class="chart-container">
-              <svg viewBox="0 0 340 65" width="100%" height="65">
-                <line x1="20" y1="50" x2="320" y2="50" stroke="#666" stroke-width="1.5"/>
-                <polygon points="120,50 200,42 200,50" fill="#BAE6FD"/>
-                <circle cx="160" cy="46" r="3" fill="#0284C7"/>
-                <text x="80" y="30" font-family="var(--font-mono)" font-size="8" fill="#0369A1" font-weight="bold">Ponto Crítico R. dos Navegantes</text>
-                <text x="80" y="42" font-family="var(--font-mono)" font-size="7.5" fill="#555">Acúmulo de lâmina em maré > 2.2m</text>
-              </svg>
-              <div class="chart-caption">
-                <span>Histórico SEDEC Recife</span>
-                <span>Risco em Maré de Sizígia</span>
-              </div>
-            </div>`;
-        }
-
-        let whatsAppBtn = item.hasWhatsAppBtn ? `
-          <button class="btn-primary" style="margin-top: 10px; padding: 9px 12px; font-size: 12px; background: #25D366; box-shadow: none;" onclick="openModal('modalWhatsApp')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-            <span>Gerar Pergunta WhatsApp p/ Corretor</span>
-          </button>` : "";
-
-        card.innerHTML = `
-          <div class="evidence-head">
-            <span class="pill-data ${item.tagClass}">${item.tag}</span>
-            <span style="font-family: var(--font-mono); font-size: 9.5px; color: #777;">${item.source}</span>
-          </div>
-          <div class="evidence-title-compact">${item.title}</div>
-          ${chartHtml}
-          <div class="evidence-triad">
-            <div class="evidence-triad-row"><strong>• Impacto:</strong> ${item.impact}</div>
-            <div class="evidence-triad-row"><strong>• Ação:</strong> ${item.action}</div>
-          </div>
-          ${whatsAppBtn}
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    function filterEvidence(category, el) {
-      activeEvidenceFilter = category;
-      document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
-      el.classList.add("active");
-      renderEvidenceCards(propertiesData[currentPropertyId], category);
-    }
-
-    function renderChecklist(prop) {
-      const container = document.getElementById("checklistItemsContainer");
-      container.innerHTML = "";
-      prop.checklist.forEach(item => {
-        const label = document.createElement("label");
-        label.className = "check-card";
-        label.innerHTML = `
-          <input type="checkbox" ${item.checked ? "checked" : ""} onchange="handleChecklistUpdate()">
-          <div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-              <strong style="font-size: 12.5px;">${item.title}</strong>
-              <span class="pill-data ${item.tag.includes("ALTA") || item.tag.includes("CRÍTICA") ? "pill-alert" : ""}" style="font-size: 8px;">${item.tag}</span>
-            </div>
-            <p style="font-size: 11.5px; color: #555;">${item.desc}</p>
-          </div>
-        `;
-        container.appendChild(label);
-      });
-      handleChecklistUpdate();
-    }
-
-    function handleChecklistUpdate() {
-      const allChecks = document.querySelectorAll("#checklistItemsContainer input[type='checkbox']");
-      let count = 0;
-      allChecks.forEach(c => { if(c.checked) count++; });
-      const total = allChecks.length || 1;
-      const pct = Math.round((count / total) * 100);
-      document.getElementById("checklistProgressText").innerText = `${count} de ${total} checados (${pct}%)`;
-      const badge = document.getElementById("btnChecklistBadge");
-      if (badge) badge.innerText = `Roteiro Visita (${total})`;
-    }
-
-    function navTo(screenId) {
-      document.querySelectorAll(".app-screen").forEach(s => s.classList.remove("active"));
-      document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
-
-      const target = document.getElementById(screenId);
-      if (target) {
-        target.classList.add("active");
-        target.scrollTop = 0;
-      }
-
-      const p = propertiesData[currentPropertyId] || propertiesData.solar;
-      const badge = document.getElementById("appContextBadge");
-
-      if (screenId === "screen-home") {
-        document.getElementById("tab-home").classList.add("active");
-        badge.innerText = p.badge;
-      } else if (screenId === "screen-dossier") {
-        document.getElementById("tab-dossier").classList.add("active");
-        badge.innerText = `DOSSIÊ • ${p.name.split(" ")[1] || "AP"}`;
-      } else if (screenId === "screen-checklist") {
-        document.getElementById("tab-checklist").classList.add("active");
-        badge.innerText = `VISTORIA (${p.checklist.length})`;
-      } else if (screenId === "screen-compare") {
-        document.getElementById("tab-compare").classList.add("active");
-        badge.innerText = "COMPARAÇÃO";
-      } else if (screenId === "screen-saved") {
-        document.getElementById("tab-saved").classList.add("active");
-        badge.innerText = "MINHA BUSCA";
-      }
-    }
-
-    function openModal(modalId) {
-      document.getElementById(modalId).classList.add("open");
-    }
-
-    function closeModal(modalId) {
-      document.getElementById(modalId).classList.remove("open");
-    }
-
-    function closeOnBackdrop(e, modalId) {
-      if (e.target.id === modalId) {
-        closeModal(modalId);
-      }
-    }
-
-    function copyWhatsAppPayload() {
-      const p = propertiesData[currentPropertyId];
-      navigator.clipboard.writeText(p.whatsAppBody.replace(/\n/g, "
-")).catch(() => {});
-      const btn = document.getElementById("btnCopyLabel");
-      btn.innerText = "Copiado para Área de Transferência!";
-      setTimeout(() => {
-        btn.innerText = "Copiar Texto Formatado";
-        closeModal("modalWhatsApp");
-      }, 900);
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      renderDossier("solar");
+    // Inicialização da Página
+    document.addEventListener("DOMContentLoaded", () => {
+      renderPropertyDossier(currentPropertyId);
+      updateSolarSimulation(15.5);
+      updateFloodSimulation();
     });
+
+    function setInvestigationMode(mode) {
+      currentMode = mode;
+      document.getElementById("btnModeCurioso").classList.toggle("active", mode === "curioso");
+      document.getElementById("btnModeDetetive").classList.toggle("active", mode === "detetive");
+
+      const detetivePanels = document.querySelectorAll(".mode-detetive-only");
+      detetivePanels.forEach(panel => {
+        panel.style.display = (mode === "curioso") ? "none" : "block";
+      });
+    }
+
+    function selectProperty(propId) {
+      currentPropertyId = propId;
+      document.querySelectorAll(".preset-pill").forEach(p => p.classList.remove("active"));
+      const pill = document.getElementById("pill-" + propId);
+      if (pill) pill.classList.add("active");
+
+      // Atualiza URL no input
+      const input = document.getElementById("targetUrlInput");
+      if (propId === "recife_gracas") input.value = "https://zapimoveis.com.br/imovel/849120-jaqueira-park-gracas";
+      else if (propId === "recife_boaviagem") input.value = "https://quintoandar.com.br/imovel/99120-rua-navegantes-boa-viagem";
+      else if (propId === "recife_varzea") input.value = "https://zapimoveis.com.br/imovel/22104-afonso-olindense-varzea";
+      else if (propId === "solar") input.value = "https://quintoandar.com.br/imovel/894120-rua-bela-cintra";
+      else if (propId === "pauliceia") input.value = "https://zapimoveis.com.br/imovel/410294-avenida-paulista";
+
+      renderPropertyDossier(propId);
+      updateFloodSimulation();
+    }
+
+    function handleAuditSubmit() {
+      const val = document.getElementById("targetUrlInput").value.toLowerCase();
+      if (val.includes("navegantes") || val.includes("boa-viagem")) selectProperty("recife_boaviagem");
+      else if (val.includes("varzea") || val.includes("afonso") || val.includes("ufpe")) selectProperty("recife_varzea");
+      else if (val.includes("bela-cintra") || val.includes("solar")) selectProperty("solar");
+      else if (val.includes("paulista") || val.includes("pauliceia")) selectProperty("pauliceia");
+      else selectProperty("recife_gracas");
+    }
+
+    function renderPropertyDossier(propId) {
+      const p = propertiesData[propId] || propertiesData.recife_gracas;
+      currentPropertyId = p.id;
+
+      // Manchete & Score
+      document.getElementById("propertyIdTag").innerText = `ID: VRD-${p.id.toUpperCase()}-2026 • H3: ${p.h3_index}`;
+      document.getElementById("heroVerdictHeadline").innerText = p.verdict_headline;
+      document.getElementById("heroVerdictSummary").innerText = p.verdict_summary;
+      document.getElementById("scoreDisplayNum").innerText = p.veredas_score;
+
+      // Barras dos 4 Pilares
+      document.getElementById("barMobility").style.width = p.score_breakdown.mobility + "%";
+      document.getElementById("barSafety").style.width = p.score_breakdown.safety + "%";
+      document.getElementById("barCadastral").style.width = p.score_breakdown.cadastral + "%";
+      document.getElementById("barArbitrage").style.width = p.score_breakdown.arbitrage + "%";
+
+      // Fotos no Loupe X-Ray
+      const baseImg = document.getElementById("xrayBaseImg");
+      const diagImg = document.getElementById("xrayDiagnoseImg");
+      if (baseImg && p.photoUrl) baseImg.src = p.photoUrl;
+      if (diagImg && p.photoUrl) diagImg.src = p.photoUrl;
+
+      // Texto e Eufemismos
+      updateEuphemismDisplay();
+
+      // Painel 03: Verdade Cadastral
+      document.getElementById("truthAreaVal").innerText = p.cadastralAudit.areaReal;
+      document.getElementById("truthHabiteVal").innerText = p.cadastralAudit.habiteSe;
+      document.getElementById("truthItbiVal").innerText = p.cadastralAudit.itbiMedian;
+      document.getElementById("truthEsigSeq").innerText = "Seq: " + p.cadastralAudit.esigSeq;
+
+      // Painel 04: Waterfall SHAP
+      renderWaterfall(p.shapFeatures);
+      document.getElementById("shapFairTotal").innerText = p.fairPrice;
+      document.getElementById("shapAskingTotal").innerText = p.askingPrice;
+      document.getElementById("shapMarkupBadge").innerText = `ÁGIO SEM LASTRO: +${p.unjustifiedMarkup}`;
+
+      // Sidebar: Cupom Fiscal da Verdade Imobiliária
+      document.getElementById("simRentVal").innerText = p.rentVal;
+      document.getElementById("simCondoVal").innerText = p.condoVal;
+      document.getElementById("simIptuVal").innerText = p.iptuVal;
+      document.getElementById("simCapexVal").innerText = p.insuranceVal;
+      document.getElementById("simTotalReal").innerText = p.realCost;
+      document.getElementById("simAnnouncedTotal").innerText = p.announcedCost + "/mês";
+      document.getElementById("sim5YearGapVal").innerText = p.fiveYearGap || "R$ 42.000";
+
+      // Checklist de Visita
+      renderChecklist(p.checklist);
+
+      // Copiloto WhatsApp
+      updateWhatsAppScript();
+
+      // Aplica visibilidade do modo
+      setInvestigationMode(currentMode);
+    }
+
+    // Mecânica 1: Before/After X-Ray Loupe Split Slider
+    function updateXRaySplit(val) {
+      const overlay = document.getElementById("xrayOverlay");
+      if (overlay) {
+        overlay.style.width = val + "%";
+      }
+    }
+
+    // Mecânica 2: Tradutor de Eufemismos de Corretor
+    function toggleEuphemismMode() {
+      isEuphemismDecoded = !isEuphemismDecoded;
+      const btn = document.getElementById("btnToggleEuphemisms");
+      if (btn) {
+        btn.innerText = isEuphemismDecoded ? "↩ VER TEXTO COMERCIAL" : "🔄 DECODIFICAR EUFEMISMOS";
+      }
+      updateEuphemismDisplay();
+    }
+
+    function updateEuphemismDisplay() {
+      const p = propertiesData[currentPropertyId] || propertiesData.recife_gracas;
+      const box = document.getElementById("rawTextAnnotatedBox");
+      if (!box || !p.euphemisms) return;
+
+      if (isEuphemismDecoded) {
+        box.innerHTML = `<span style="color: var(--veredas-alert); font-weight: 700;">[TRADUÇÃO PERICIAL ATIVADA]:</span><br>${p.euphemisms.decoded}`;
+      } else {
+        box.innerHTML = `Excelente oportunidade nas Graças! <span class="annotation-marker" onclick="showAnnotationInfo(1)">[1] Apartamento reformado e seminovo</span>, com <span class="annotation-marker" onclick="showAnnotationInfo(2)">[2] 142m² privativos</span>, 3 quartos sendo 1 suíte, <span class="annotation-marker" onclick="showAnnotationInfo(3)">[3] varandão super ventilado</span> e 2 vagas livres. <span class="annotation-marker" onclick="showAnnotationInfo(4)">[4] Condomínio barato apenas R$ 850</span> com portaria 24h. Localização nobre a passos do Parque da Jaqueira.`;
+      }
+    }
+
+    // Mecânica 3: Bússola Solar & Ventos Alísios (SunCalc Recife -8.05°)
+    function updateSolarSimulation(hourVal) {
+      const hour = parseFloat(hourVal);
+      const hourInt = Math.floor(hour);
+      const min = (hour % 1 === 0.5) ? "30" : "00";
+      document.getElementById("solarHourDisplay").innerText = `${String(hourInt).padStart(2, '0')}:${min}`;
+
+      // Cálculo simplificado de Azimute Solar para Recife (Lat -8.05°)
+      // Nascente ~ 90° às 06:00 -> Meio-dia ~ 0° / 360° -> Poente ~ 270° às 18:00
+      let azimuth = Math.round(90 + (hour - 6) * 15.5);
+      if (azimuth > 360) azimuth = azimuth - 360;
+
+      const p = propertiesData[currentPropertyId] || propertiesData.recife_gracas;
+      const azText = document.getElementById("solarAzimuthDisplay");
+      const badge = document.getElementById("solarThermalStatusBadge");
+      const desc = document.getElementById("solarSimulationText");
+
+      if (hour < 11.5) {
+        azText.innerText = `Azimute: ${azimuth}° (Nascente / Sol Ameno)`;
+        badge.className = "badge-pericial badge-valid";
+        badge.innerText = "SOL AMENO • VENTOS ALÍSIOS";
+        desc.innerText = `Às ${hourInt}:${min}, o sol está na face Leste com elevação gradual. Temperatura de conforto ameno. Brisa marítima de Sudeste dispersa o calor.`;
+      } else if (hour >= 11.5 && hour < 13.5) {
+        azText.innerText = `Azimute: ${azimuth}° (Zenital / Radiação Máxima)`;
+        badge.className = "badge-pericial badge-warn";
+        badge.innerText = "RADIAÇÃO MÁXIMA ZENITAL";
+        desc.innerText = `Às ${hourInt}:${min}, o sol está no zênite. Incidência sobre a laje de cobertura. Carga térmica intermediária.`;
+      } else {
+        azText.innerText = `Azimute: ${azimuth}° (Poente Crítico 278°)`;
+        badge.className = "badge-pericial badge-alert";
+        badge.innerText = "CALOR CRÍTICO: POENTE OESTE";
+        if (p.orientation === "poente") {
+          desc.innerText = `Às ${hourInt}:${min}, o sol poente incide com ângulo rasante na alvenaria oeste dos dormitórios. Temperatura de superfície de até 42°C. Ventos alísios obstruídos pelo espigão frontal (+R$ 240/mês ar-condicionado).`;
+        } else {
+          desc.innerText = `Às ${hourInt}:${min}, o sol está no oeste, mas o imóvel é face Nascente e permanece protegido na sombra com ventilação cruzada permanente.`;
+        }
+      }
+    }
+
+    // Mecânica 4: Simulador de Estresse Hidro-Climático (Maré de Sizígia + Chuva)
+    function updateFloodSimulation() {
+      const tide = parseFloat(document.getElementById("tideMeterSlider").value);
+      const rain = parseInt(document.getElementById("rainMmSlider").value, 10);
+      document.getElementById("tideMeterDisplay").innerText = tide.toFixed(1) + " m";
+      document.getElementById("rainMmDisplay").innerText = rain + " mm";
+
+      const p = propertiesData[currentPropertyId] || propertiesData.recife_gracas;
+      const elevation = p.elevation_meters || 6.8;
+
+      // Cálculo do nível da lâmina de água no SVG (cota 0m a 14m)
+      const waterLevelMeters = tide + (rain * 0.035);
+      const waterHeightSvg = Math.min(65, Math.max(10, (waterLevelMeters / 6.0) * 45));
+      const rect = document.getElementById("svgWaterLevelRect");
+      if (rect) {
+        rect.setAttribute("y", 70 - waterHeightSvg);
+        rect.setAttribute("height", waterHeightSvg);
+      }
+
+      // Ponto de elevação do imóvel
+      const point = document.getElementById("svgPropertyElevationPoint");
+      const badge = document.getElementById("floodStressStatusBadge");
+
+      if (elevation <= waterLevelMeters) {
+        badge.className = "badge-pericial badge-alert";
+        badge.innerText = `⚠ ALAGAMENTO IMINENTE (COTA ${elevation}m < LÂMINA ${waterLevelMeters.toFixed(1)}m)`;
+        if (point) point.setAttribute("fill", "#C84B31");
+      } else if (elevation - waterLevelMeters < 1.0) {
+        badge.className = "badge-pericial badge-warn";
+        badge.innerText = `MODERADO • MARÉ ALTA RETÉM MEIO-FIO (${elevation}m)`;
+        if (point) point.setAttribute("fill", "#B86B11");
+      } else {
+        badge.className = "badge-pericial badge-valid";
+        badge.innerText = `IMUNE • COTA ${elevation}m ELEVADA`;
+        if (point) point.setAttribute("fill", "#1B5E40");
+      }
+    }
+
+    function renderWaterfall(features) {
+      const container = document.getElementById("waterfallContainer");
+      if (!container) return;
+      container.innerHTML = "";
+
+      const maxImpact = Math.max(...features.map(f => Math.abs(f.impact)));
+
+      features.forEach(f => {
+        const row = document.createElement("div");
+        row.className = "waterfall-row";
+
+        const label = document.createElement("div");
+        label.innerText = f.name;
+
+        const track = document.createElement("div");
+        track.className = "waterfall-bar-track";
+
+        const fill = document.createElement("div");
+        fill.className = `waterfall-bar-fill ${f.type}`;
+        const pct = Math.min(100, Math.max(12, (Math.abs(f.impact) / maxImpact) * 100));
+        fill.style.width = pct + "%";
+        track.appendChild(fill);
+
+        const val = document.createElement("div");
+        val.style.textAlign = "right";
+        val.style.fontWeight = "700";
+        if (f.impact > 0 && !f.is_base) val.innerText = `+R$ ${f.impact.toLocaleString('pt-BR')}`;
+        else if (f.impact < 0) val.innerText = `-R$ ${Math.abs(f.impact).toLocaleString('pt-BR')}`;
+        else val.innerText = `R$ ${f.impact.toLocaleString('pt-BR')}`;
+
+        row.appendChild(label);
+        row.appendChild(track);
+        row.appendChild(val);
+        container.appendChild(row);
+      });
+    }
+
+    function renderChecklist(checklistItems) {
+      const container = document.getElementById("visitChecklistContainer");
+      if (!container) return;
+      container.innerHTML = "";
+
+      if (!checklistItems || checklistItems.length === 0) {
+        container.innerHTML = "<div style='font-family: var(--font-mono); font-size: 0.75rem; color: var(--veredas-ink-muted);'>Nenhuma omissão crítica detectada neste cadastro.</div>";
+        document.getElementById("checklistCounter").innerText = "0/0 PONTOS";
+        return;
+      }
+
+      let checkedCount = 0;
+      checklistItems.forEach((item, idx) => {
+        if (item.checked) checkedCount++;
+        const row = document.createElement("label");
+        row.className = "checklist-item-row";
+
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.checked = !!item.checked;
+        cb.onchange = () => {
+          item.checked = cb.checked;
+          const currentChecked = checklistItems.filter(i => i.checked).length;
+          document.getElementById("checklistCounter").innerText = `${currentChecked}/${checklistItems.length} PONTOS`;
+        };
+
+        const textDiv = document.createElement("div");
+        textDiv.innerHTML = `<strong>${item.title}</strong><div style="font-size: 0.75rem; color: var(--veredas-ink-secondary);">${item.desc}</div>`;
+
+        row.appendChild(cb);
+        row.appendChild(textDiv);
+        container.appendChild(row);
+      });
+
+      document.getElementById("checklistCounter").innerText = `${checkedCount}/${checklistItems.length} PONTOS`;
+    }
+
+    function showAnnotationInfo(markerId) {
+      const box = document.getElementById("annotationDetailBox");
+      const title = document.getElementById("annTitle");
+      const impact = document.getElementById("annImpact");
+
+      if (markerId === 1) {
+        title.innerText = "Divergência [1]: Edificação de 1984 Mascarada como 'Seminovo'";
+        impact.innerText = "Habite-se da Prefeitura do Recife emitido em 1984 (42 anos). Risco de fiação original NEMA e prumadas de ferro fundido.";
+      } else if (markerId === 2) {
+        title.innerText = "Divergência [2]: Área Privativa Inflada (+24 m²)";
+        impact.innerText = "O anúncio declarou 142 m² somando 2 vagas de garagem à área privativa do apartamento (118 m² no ESIG Recife).";
+      } else if (markerId === 3) {
+        title.innerText = "Omissão [3]: Face Poente Severa sem Ventilação de Sudeste";
+        impact.innerText = "Azimute 278° recebe calor solar direto das 13h30 às 17h15. Os ventos alísios de Sudeste são barrados pelo edifício vizinho.";
+      } else if (markerId === 4) {
+        title.innerText = "Omissão [4]: Cota de Modernização de Elevadores Omitida";
+        impact.innerText = "Ata de assembleia recente aprovou rateio de R$ 130/mês para elevadores até dez/2027, elevando o condomínio real para R$ 980.";
+      }
+      box.style.display = "block";
+    }
+
+    function setWhatsAppTone(tone) {
+      currentWhatsAppTone = tone;
+      document.getElementById("tabToneInvestigativo").classList.toggle("active", tone === "investigativo");
+      document.getElementById("tabToneCordial").classList.toggle("active", tone === "sondagem_cordial");
+      document.getElementById("tabToneContraproposta").classList.toggle("active", tone === "contraproposta_fundamentada");
+      updateWhatsAppScript();
+    }
+
+    function updateWhatsAppScript() {
+      const p = propertiesData[currentPropertyId] || propertiesData.recife_gracas;
+      const scriptBox = document.getElementById("whatsappScriptDisplay");
+      if (p.whatsappScripts && p.whatsappScripts[currentWhatsAppTone]) {
+        scriptBox.innerText = p.whatsappScripts[currentWhatsAppTone];
+      } else {
+        scriptBox.innerText = "Olá! Tenho interesse no imóvel e gostaria de agendar uma visita.";
+      }
+    }
+
+    function copyWhatsAppScript() {
+      const text = document.getElementById("whatsappScriptDisplay").innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.getElementById("copyFeedbackToast");
+        toast.style.display = "block";
+        setTimeout(() => { toast.style.display = "none"; }, 2500);
+      });
+    }
+
+    function updateFamilyProfile() {
+      const profile = document.getElementById("familyProfileSelect").value;
+      const p = propertiesData[currentPropertyId] || propertiesData.recife_gracas;
+      let total = parseInt(p.realCost.replace(/\D/g, ""), 10);
+
+      if (profile === "casal_com_1_filho_escola") total += 1200;
+      else if (profile === "trabalho_remoto_integral" && p.id === "recife_gracas") total += 240;
+      else if (profile === "pet_grande_porte") total += 150;
+
+      document.getElementById("simTotalReal").innerText = "R$ " + total.toLocaleString("pt-BR");
+    }
+
+    function inspectHex(h3Idx) {
+      const labels = {
+        "8880026e67fffff": { name: "Graças Central", m2: "R$ 5.850/m²", flood: "Baixa (Cota 6,8m)" },
+        "8880026e61fffff": { name: "Jaqueira / Parque", m2: "R$ 7.450/m²", flood: "Imune (Cota 8,2m)" },
+        "8880026e65fffff": { name: "Espinheiro / Rua da Hora", m2: "R$ 5.920/m²", flood: "Moderada (Cota 5,1m)" },
+        "8880026e63fffff": { name: "Aflitos / Estádio", m2: "R$ 5.600/m²", flood: "Moderada (Cota 5,4m)" },
+        "8880026e6bfffff": { name: "Torre / Beira Rio", m2: "R$ 6.100/m²", flood: "Alerta em Maré Alta" },
+        "8880026e47fffff": { name: "Parnamirim", m2: "R$ 6.800/m²", flood: "Baixa (Cota 7,5m)" },
+        "8880026e03fffff": { name: "Derby / Agamenon", m2: "R$ 5.400/m²", flood: "Alagamento Frequente" }
+      };
+
+      const info = labels[h3Idx] || { name: "Hexágono Recife", m2: "R$ 6.100/m²", flood: "Moderada" };
+      alert(`HEXÁGONO H3 SELECIONADO: ${h3Idx}\nBairro: ${info.name}\nMediana R$/m²: ${info.m2}\nVulnerabilidade Hídrica: ${info.flood}`);
+    }
+
+    function openReportModal() {
+      const p = propertiesData[currentPropertyId] || propertiesData.recife_gracas;
+      const modal = document.getElementById("modalReport");
+      const content = document.getElementById("modalReportContent");
+
+      content.innerHTML = `
+        <div style="background: var(--veredas-bg-subtle); padding: 16px; border: 1.5px solid var(--veredas-ink-primary); margin-bottom: 20px;">
+          <h2 style="font-family: var(--font-serif); font-size: 1.6rem; color: var(--veredas-ink-primary);">${p.name}</h2>
+          <div style="font-size: 0.85rem; color: var(--veredas-ink-secondary);">${p.address}</div>
+          <div style="margin-top: 8px; font-weight: 700;">CLASSIFICAÇÃO DO LAUDO: SCORE VEREDAS ${p.veredas_score}/100</div>
+        </div>
+
+        <h3 style="text-transform: uppercase; margin-bottom: 8px;">1. Diagnóstico Pericial Conclusivo</h3>
+        <p style="margin-bottom: 16px;">${p.verdict_headline} ${p.verdict_summary}</p>
+
+        <h3 style="text-transform: uppercase; margin-bottom: 8px;">2. Confronto Cadastral (Anúncio vs Base Oficial ESIG Recife)</h3>
+        <table class="table-editorial" style="margin-bottom: 20px;">
+          <thead>
+            <tr><th>Atributo</th><th>Declarado no Anúncio</th><th>Auditado no ESIG / ITBI</th><th>Divergência</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Área Privativa</td><td>${p.attrs.area}</td><td>${p.cadastralAudit.areaReal}</td><td style="color: var(--veredas-alert); font-weight:700;">Garagem somada à área útil</td></tr>
+            <tr><td>Idade Construtiva</td><td>Seminovo</td><td>${p.cadastralAudit.habiteSe}</td><td>Edificação de 1984</td></tr>
+            <tr><td>Custo Total Mensal</td><td>${p.announcedCost}/mês</td><td>${p.realCost}/mês</td><td style="color: var(--veredas-alert); font-weight:700;">${p.costDiff}</td></tr>
+            <tr><td>Preço Pedido</td><td>${p.askingPrice}</td><td>${p.fairPrice} (Preço Justo)</td><td>${p.unjustifiedMarkup} de sobrepreço</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="text-transform: uppercase; margin-bottom: 8px;">3. Fundamentação da Contraproposta Técnica</h3>
+        <p style="margin-bottom: 16px;">
+          Com base na Lei Municipal de Uso do Solo, nas transações de ITBI da microrregião e no sobrecusto térmico comprovado pela face Poente, recomendamos formular proposta firme ancorada no valor pericial de <strong>${p.fairPrice}</strong>, representando uma economia justa de negociação.
+        </p>
+      `;
+
+      modal.classList.add("active");
+    }
+
+    function closeReportModal() {
+      document.getElementById("modalReport").classList.remove("active");
+    }
   </script>
 </body>
 </html>

@@ -5,7 +5,7 @@
       {
         "test": "App File Size Within Mobile Budget",
         "status": "PASS",
-        "details": "78.2 KB"
+        "details": "98.7 KB"
       },
       {
         "test": "Screen Container: #screen-home",
@@ -55,7 +55,7 @@
       {
         "test": "Inline SVGs for Declutter and Telemetry",
         "status": "PASS",
-        "details": "18 SVGs found"
+        "details": "11 SVGs found"
       }
     ],
     "data_and_math": [
