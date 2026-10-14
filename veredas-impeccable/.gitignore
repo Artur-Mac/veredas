@@ -1,0 +1,5 @@
+.impeccable/bin/
+__pycache__/
+reports/detector-*.json
+reports/behavior-tests.json
+reports/*.png
