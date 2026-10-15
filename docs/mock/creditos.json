@@ -1,0 +1,13 @@
+{
+  "observacao": "saldo e extrato inventados para o mock; no app ficam só no aparelho",
+  "extrato": [
+    { "data": "2026-10-15", "tipo": "dossie", "dossie": "madalena", "delta": -1 },
+    { "data": "2026-10-15", "tipo": "dossie", "dossie": "espinheiro", "delta": -1 },
+    { "data": "2026-10-14", "tipo": "feedback_pos_visita", "dossie": "boa-viagem", "delta": 1 },
+    { "data": "2026-10-14", "tipo": "dossie", "dossie": "gracas", "delta": -1 },
+    { "data": "2026-10-13", "tipo": "dossie", "dossie": "casa-forte", "delta": -1 },
+    { "data": "2026-10-12", "tipo": "confirmacao_lote", "dossie": "boa-viagem", "delta": 1 },
+    { "data": "2026-10-12", "tipo": "dossie", "dossie": "boa-viagem", "delta": -1 },
+    { "data": "2026-10-12", "tipo": "cota_inicial", "dossie": null, "delta": 5 }
+  ]
+}

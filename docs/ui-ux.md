@@ -13,7 +13,8 @@ Crime por bairro ("registros da SDS-PE compilados pelo Crime Brasil", registro o
 | 15/10/2026 | O exemplo principal do mock é um anúncio de aluguel em Boa Viagem, com dados mock tão completos quanto os de compra (régua com quartis, N e controles). |
 | 15/10/2026 | No mock, o crime do bairro é comparado com os bairros que fazem divisa com ele (malha oficial de bairros), em ocorrências por mil moradores (Censo 2022). |
 | 15/10/2026 | Rotas e "abrir no mapa" vão para o app de mapas padrão do sistema, sem seletor próprio (seção 3.5). |
-| 15/10/2026 | T1 vira a tela de entrada: logotipo no cabeçalho, cartão para colar o link com a frase da imagem-chave, aviso de leitura e bairros cobertos, a lista de dossiês, os quatro passos e o acesso a "Sobre os dados" (seção 5.1). Sem ilustração no topo. |
+| 15/10/2026 | T1 vira a tela de entrada: logotipo no cabeçalho, cartão para colar o link com a frase da imagem-chave, aviso de leitura e bairros cobertos, a lista de dossiês, os quatro passos e o acesso a "Sobre os dados" (seção 5.1). |
+| 15/10/2026 | T1 com cara de aplicativo: miniatura da imagem-chave (seção 7.7) no cartão de entrada, campo com o botão "Colar" dentro, cartão de créditos com saldo, trilho, formas de ganhar e extrato numa folha nova (T16), lista com chip de tipo e seta. A etiqueta "Protótipo" sai de todas as telas; só "Final" continua (seção 4.14). Os quatro dossiês fictícios ganham endereço e campos de anúncio inventados, marcados como ilustrativos nos dados (seção 8.3). Substitui "sem ilustração no topo". |
 
 As divergências que essas decisões criam com o PRD estão em [Pendências de PRD](#pendências-de-prd), no fim do documento. Quando o PRD atualizado chegar, `docs/PRD-Vereda-2.1.md` é substituído pela versão nova sem edição, e as duas tabelas são revistas.
 
@@ -326,6 +327,7 @@ Lista fechada. T12 (seletor de app de mapas) saiu em 15/10/2026: a saída para m
 | T13 | Linha do tempo do prédio | Tela | Final | Final | IPTU, ITBI, licenciamento e Defesa Civil em ordem de data |
 | T14 | Dados do domicílio | Folha | Final | Final | Pessoas, criança em idade escolar, veículos, deslocamento, pet, em faixas. Só no aparelho. Botão "Apagar" |
 | T15 | Sobre os dados | Tela | Protótipo | Regra 5; Aberto, jurídico 2 | Fontes, licenças e atribuições exigidas. "Apagar dados do aparelho" |
+| T16 | Créditos | Folha | Final (no mock com dados inventados) | PRD 1.1, seção 10; PRD 2.1, Final | Saldo, extrato de movimentos e as três formas de ganhar crédito. "Comprar créditos" sem preço |
 
 A barra de abas aparece só dentro de um dossiê, com quatro destinos: Dossiê (T4), Mapa (T5), Visita (T6) e Meus dossiês (T1). Fora do dossiê não há barra.
 
@@ -355,6 +357,7 @@ A barra de abas aparece só dentro de um dossiê, com quatro destinos: Dossiê (
 | T1 | Selecionar 2 ou 3 e "Comparar" | T9 |
 | T9 | Tocar num dossiê | T4 |
 | T1 | Sobre os dados | T15 |
+| T1 | Pílula de créditos no cabeçalho, "Ver extrato" ou "Comprar créditos" | T16 |
 
 Voltar sempre volta para a tela anterior. Uma folha fecha com gesto para baixo ou com "Fechar". O link compartilhado abre o dossiê certo mesmo com o app fechado.
 
@@ -380,6 +383,7 @@ flowchart TD
   T1 -->|selecionar e comparar| T9[T9 Comparar]
   T9 --> T4
   T1 --> T15[T15 Sobre os dados]
+  T1 -.->|créditos| T16[[T16 Créditos]]
   T4 -->|Final| T13[T13 Linha do tempo]
   T4 -.->|Final| T14[[T14 Dados do domicílio]]
 ```
@@ -406,6 +410,7 @@ Proposta para o porte com Expo Router, com as telas em `src/app/`. O mock em HTM
 | T13 | `/dossie/[id]/linha-do-tempo` |
 | T14 | `/dossie/[id]/domicilio` |
 | T15 | `/sobre-os-dados` |
+| T16 | `/creditos` |
 
 ### 3.5 Saída para o app de mapas
 
@@ -566,7 +571,7 @@ Botão secundário "Abrir rota" ou "Abrir no mapa". Entrega o destino ao sistema
 
 ### 4.14 Etiqueta de fase
 
-Pílula em `tipo-etiqueta`, contorno `cor-linha`: "Protótipo" ou "Final". Aparece no canto de cada tela e de cada seção do Final. O mock tem um seletor "Mostrar o Final" que esconde tudo com etiqueta "Final".
+Pílula em `tipo-etiqueta`, contorno `cor-linha`, só com o texto "Final", no canto de cada tela, cartão e seção do Final. O que é do Protótipo não leva etiqueta (decisão de 15/10/2026: a tela precisa parecer o app, não o protótipo). O mock tem um seletor "Mostrar o Final" que esconde tudo com etiqueta "Final", inclusive o cartão de créditos e a pílula do cabeçalho de T1.
 
 ### 4.15 Ilustrativo
 
@@ -584,12 +589,15 @@ Cada tela lista o conteúdo na ordem em que aparece, a etiqueta de fase e o que 
 
 | Ordem | Conteúdo | Toque |
 | --- | --- | --- |
-| 1 | Cabeçalho com o logotipo (seção 7.5) e a etiqueta de fase | Sem toque |
-| 2 | Cartão de entrada: frase da imagem-chave (seção 7.7), campo do link, botão principal "Colar link", aviso de leitura e bairros cobertos | O campo aceita colar e abre T2. O botão lê o link da área de transferência; sem link, foca o campo |
-| 3 | Título "Meus dossiês" e a lista: polígono do lote, endereço, valor e área declarados, "Aluguel" ou "Compra", bairro, data do dossiê | Tocar abre T4. Tocar e segurar seleciona para comparar |
-| 4 | Passos: Colar link, Confirmar o lote, Dossiê, Preparar visita | Sem toque |
-| 5 | "Sobre os dados", com as bases citadas numa linha | Abre T15 |
-| 6 | Barra "Comparar 2" quando há 2 ou 3 selecionados. O botão "Colar link" passa a secundário, para manter um botão principal por tela | Abre T9 |
+| 1 | Cabeçalho com o logotipo (seção 7.5) à esquerda e, à direita, a pílula de créditos: símbolo e o número de créditos disponíveis, sem a palavra "créditos" (fica no nome acessível) | A pílula abre T16 |
+| 2 | Cartão de entrada: frase da imagem-chave e apoio à esquerda, miniatura da imagem-chave (seção 7.7) à direita, campo do link com o botão principal "Colar" dentro, aviso de leitura e bairros cobertos | O campo aceita colar e abre T2. O botão lê o link da área de transferência; sem link, foca o campo |
+| 3 | Cartão "Créditos" (etiqueta Final): número de dossiês disponíveis em `tipo-numero`, trilho com uma célula por crédito (disponíveis em barro, usados em `cor-linha`), linha "Cota gratuita de {n}, {g} ganhos, {u} usados", lista das três formas de ganhar com "+1", "Ver extrato" e "Comprar créditos" | Os dois links abrem T16 |
+| 4 | Título "Meus dossiês" com "Selecionar" à direita e a lista: polígono do lote num quadrado de `cor-fundo`, endereço, valor e área declarados numa linha, chip "Aluguel" ou "Compra", bairro, data do dossiê, seta | Tocar abre T4. Tocar e segurar, ou "Selecionar" e tocar, seleciona para comparar |
+| 5 | Passos: Colar link, Confirmar o lote, Dossiê, Preparar visita | Sem toque |
+| 6 | "Sobre os dados", com as bases citadas numa linha | Abre T15 |
+| 7 | Barra "Comparar 2" quando há 2 ou 3 selecionados. O botão "Colar" passa a secundário, para manter um botão principal por tela | Abre T9 |
+
+O crédito segue o PRD 1.1 (seção 10) e o CONTEXT.md: um crédito abre um dossiê; a cota inicial é gratuita; créditos são ganhos por confirmação do lote, feedback pós-visita e motivo do descarte, nunca por envio de documentos. No mock, saldo e extrato vêm de `mock/creditos.json` (seção 8.1). A pílula "ilustrativo" não aparece na lista; ela continua no cartão de endereço do dossiê.
 
 Vazio: "Nenhum dossiê ainda. Compartilhe um anúncio de apartamento com o Vereda ou cole o link acima."
 
@@ -709,6 +717,7 @@ PRD, item 11: diferença por magnitude, sem recomendação; comparáveis só com
 | T13 Linha do tempo | Final | Eventos do prédio em ordem de data, cada um com fonte | Tocar abre T10 do evento |
 | T14 Dados do domicílio | Final | Pessoas (1, 2, 3 a 4, 5 ou mais), criança em idade escolar, veículos (0, 1, 2 ou mais), deslocamento, pet; "Fica só neste aparelho" | "Salvar"; "Apagar" |
 | T15 Sobre os dados | Protótipo | Fontes, licenças e atribuições; "Apagar dados do aparelho" | Cada fonte abre o portal |
+| T16 Créditos | Final | Número de dossiês disponíveis; extrato em ordem de data, com nome do movimento, bairro ou endereço do dossiê, data e "+1" ou "−1"; texto da regra; "Comprar créditos" como botão secundário, sem preço | "Comprar créditos" fica sem destino no mock |
 
 ## 6. Microcopy
 
@@ -758,22 +767,23 @@ Navegação e ações gerais:
 | Abas | Dossiê; Mapa; Visita; Meus dossiês |
 | Cabeçalho | Voltar (leitor de tela); Compartilhar (leitor de tela) |
 | Seção | Ver fonte; Isso está errado; Expandido / Recolhido (leitor de tela) |
-| Etiquetas | Protótipo; Final; ilustrativo (leitor de tela: dado ilustrativo, pendente de fonte) |
+| Etiquetas | Final; ilustrativo (leitor de tela: dado ilustrativo, pendente de fonte) |
 | Seletor do mock | Mostrar o Final; Ver escuro; Ver claro |
 
 T1 Meus dossiês:
 
 | Contexto | Texto |
 | --- | --- |
-| Cabeçalho | logotipo (imagem, nome acessível "Vereda") |
+| Cabeçalho | logotipo (imagem, nome acessível "Vereda"); pílula {n} (leitor de tela: {n} créditos, ver extrato) |
 | Chamada | O link do anúncio vira um dossiê de evidências. |
 | Apoio | Recife, a partir de registros públicos. |
-| Campo | Colar link (leitor de tela); exemplo no campo: https:// |
-| Avisos | Só lemos campos do imóvel. Nada sobre quem anuncia.; Por enquanto o Vereda cobre Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena. |
-| Título da lista | Meus dossiês |
-| Item | {endereço}; {valor}, {área}; {Aluguel ou Compra}, {bairro}, {data} |
+| Campo | Colar link (leitor de tela); exemplo no campo: Cole o link do anúncio; botão: Colar |
+| Avisos | Só lemos campos do imóvel. Nada sobre quem anuncia.; Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena. |
+| Créditos | Créditos; Um crédito abre um dossiê; {n} dossiês disponíveis (ou dossiê disponível); Cota gratuita de {c}, {g} ganhos, {u} usados.; Confirmar o lote +1; Feedback pós-visita +1; Motivo do descarte +1; Ver extrato; Comprar créditos |
+| Título da lista | Meus dossiês; Selecionar; Cancelar |
+| Item | {endereço}; {valor} · {área}; {Aluguel ou Compra}, {bairro} · {data} |
 | Passos | Colar link; Confirmar o lote; Dossiê; Preparar visita |
-| Dica | Toque e segure para selecionar. |
+| Dica | Toque e segure para selecionar e comparar.; Toque para selecionar 2 ou 3 e comparar. |
 | Botão | Comparar {2 ou 3} |
 | Vazio | Nenhum dossiê ainda. Compartilhe um anúncio de apartamento com o Vereda ou cole o link acima. |
 | Link | Sobre os dados |
@@ -886,6 +896,7 @@ Folhas e telas de apoio:
 | T11, depois do envio | Recebido. O fato continua visível enquanto conferimos. |
 | T14 Dados do domicílio | Dados do domicílio; Fica só neste aparelho.; Pessoas; Criança em idade escolar; Veículos; Deslocamento; Pet; Salvar; Apagar; Dados apagados. |
 | T15 Sobre os dados | Sobre os dados; Apagar dados do aparelho |
+| T16 Créditos | Créditos; {n} dossiês disponíveis; Cota inicial; Dossiê; Confirmação do lote; Feedback pós-visita; Motivo do descarte; Um crédito abre um dossiê. Você ganha créditos ao confirmar o lote, ao enviar o feedback pós-visita e ao informar o motivo do descarte. Nunca por envio de documentos.; Comprar créditos |
 | T15, confirmação | Apagar todos os dossiês e destinos deste aparelho? Não dá para desfazer.; Apagar; Cancelar |
 
 ### 6.4 Números e datas
@@ -996,6 +1007,7 @@ Junta as três assinaturas do produto: o lote, o símbolo e a régua.
 | [`mock/dossies/gracas.json`](mock/dossies/gracas.json) | Compra, fictício, com indício de tipologia |
 | [`mock/dossies/espinheiro.json`](mock/dossies/espinheiro.json) | Aluguel, fictício |
 | [`mock/dossies/madalena.json`](mock/dossies/madalena.json) | Compra, fictício |
+| [`mock/creditos.json`](mock/creditos.json) | Extrato de créditos inventado: cota inicial de 5, dois ganhos em Boa Viagem (confirmação do lote e feedback pós-visita), cinco dossiês usados, saldo 2. O saldo é a soma dos movimentos |
 
 Os dossiês ficam em arquivos `.json` separados, e não dentro deste documento, para que o mock em HTML e depois o app carreguem os mesmos arquivos sem cópia. Os cinco foram validados contra o esquema em 15/10/2026.
 
@@ -1046,7 +1058,7 @@ Exemplo de fato real:
 | Espinheiro | Aluguel | P25 28, mediana 33, P75 39, N = 64 | R$ 36/m², acima de 66% | Defesa Civil, crime e vizinhos | Endereço, anúncio, prédio, régua de aluguel |
 | Madalena | Compra | P25 3.549, mediana 4.646, P75 5.985, N = 501 | R$ 4.565/m², acima de 47% | Régua do ITBI, Defesa Civil, crime e vizinhos | Endereço, anúncio, prédio |
 
-Os dossiês fictícios usam "Endereço ilustrativo" no lugar de rua e número, para não apontar para um prédio real. Areias não tem dossiê (pendência 8).
+Os dossiês fictícios usam endereços inventados em ruas reais dos bairros (Rua Jornalista Guerra de Holanda, 232; Rua Amélia, 412; Rua da Hora, 1030; Rua Benfica, 475), com `ilustrativo: true` no endereço e nos campos do anúncio: o prédio não foi consultado, e o número pode não existir. Areias não tem dossiê (pendência 8).
 
 ### 8.4 Dados reais, consultados em 15/10/2026
 
@@ -1087,7 +1099,7 @@ O que o mock recebe deste documento:
 | Ordem e conteúdo de cada tela, etiqueta de fase | Seção 5 |
 | Textos fixos e de interface | Seção 6 |
 | Símbolo, logotipo, ícone e abertura | `docs/kv/` (seção 7) |
-| Esquema e os cinco dossiês | `docs/mock/` (seção 8) |
+| Esquema, os cinco dossiês e o extrato de créditos | `docs/mock/` (seção 8) |
 | Seletores do mock | Tema (sistema, claro, escuro) e "Mostrar o Final" |
 | Pendências que o mock mostra como estão hoje | Pendências de PRD, abaixo |
 
@@ -1108,3 +1120,4 @@ Resolvidas na revisão de 15/10/2026: fonte e rótulo do crime (registros da SDS
 | 7 | ITBI e lista branca | A lista branca exclui o complemento só no IPTU | O ITBI publicado também traz "complemento" ao lado de logradouro e número; o mesmo risco de reidentificação vale. Proposta: excluir na ingestão. | Consulta ao portal em 15/10/2026 |
 | 8 | Areias | Briefing: só exemplo de "fora dos bairros cobertos", sem dossiê. PRD revisado: "Areias (dossiê demonstrativo)" na tabela de crime | A definir nas seções 5 e 8 | PRD revisado em 15/10/2026 |
 | 9 | Rotas | Item 12: seletor com uma linha por app de mapas instalado, cada um com origem, destino e modo, e "Outro app" via `geo:`; texto fixo de Rotas "abre no app de mapas que você escolher" | Entrega ao app padrão do sistema (`geo:` no Android, Apple Maps no iOS). No Android perde origem e modo. O texto fixo continua literal; no iOS a pessoa não escolhe o app | Decisão de 15/10/2026 |
+| 10 | Créditos | PRD 2.1 põe créditos no Final ("crédito só por confirmação corroborada") e não descreve saldo, cota nem compra; o PRD 1.1 (seção 10) diz que o uso é gratuito durante o programa | T1 mostra cartão de créditos e a folha T16 com etiqueta Final e dados inventados; "Comprar créditos" aparece sem preço e sem destino. As três formas de ganhar vêm do PRD 1.1. Precisa de decisão sobre cota inicial, compra e o que "corroborada" muda na tela | Decisão de 15/10/2026 |

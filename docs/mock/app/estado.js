@@ -2,9 +2,11 @@ import { aparelho, hojeIso } from "./dados.js";
 
 export const estado = {
   dossies: new Map(),
+  creditos: { extrato: [] },
   forcado: "padrao",
   apagado: false,
   selecao: [],
+  selecionando: false,
   abertas: new Map(),
   natureza: new Set(),
   recebido: null,

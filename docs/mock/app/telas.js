@@ -1,7 +1,7 @@
 import {
   h, ROTULOS, TEXTO_ILUSTRATIVO, TEXTO_ROTAS, maiuscula, formatarData, formatarNumero, formatarReais, formatarDistancia,
   tipoDoDossie, enderecoDoDossie, acharFato, reguaComoFato, secao as secaoDe, fato as fatoDe, secaoDoFato,
-  distanciaMetros, metrosParaCoordenada, linkDoMapa, aparelho, hojeIso, IDS_DOSSIES,
+  distanciaMetros, metrosParaCoordenada, linkDoMapa, aparelho, hojeIso, IDS_DOSSIES, NOMES_DE_MOVIMENTO, COMO_GANHAR, resumoDosCreditos,
 } from "./dados.js";
 import {
   estado, seccoesAbertas, loteConfirmado, confirmarLote, contestar, estadoDoFato, destinos,
@@ -19,34 +19,101 @@ function dossieOuErro(id) {
   return dossie;
 }
 
-function linhaDoDossie(dossie) {
-  return `${tipoDoDossie(dossie)}, ${dossie.bairro}, ${formatarData(dossie.gerado_em)}`;
+const PASSOS = [["link", "Colar link"], ["map-pin", "Confirmar o lote"], ["file-text", "Dossiê"], ["clipboard-check", "Preparar visita"]];
+
+const KV_MINI = `<svg class="kv-mini" viewBox="0 0 160 130" aria-hidden="true">
+  <g transform="rotate(-8 80 50)" fill="none" stroke="var(--crime-3)" stroke-width="1.25" stroke-dasharray="4 3">
+    <rect x="22" y="8" width="36" height="30"/><rect x="62" y="8" width="36" height="30"/><rect x="102" y="8" width="36" height="30"/>
+    <rect x="22" y="42" width="36" height="30"/><rect x="102" y="42" width="36" height="30"/>
+    <rect x="22" y="76" width="36" height="30"/><rect x="62" y="76" width="36" height="30"/><rect x="102" y="76" width="36" height="30"/>
+  </g>
+  <g transform="rotate(-8 80 50)">
+    <rect x="62" y="42" width="36" height="30" fill="var(--cor-azul-cadastral)" fill-opacity="0.12" stroke="var(--cor-azul-cadastral)" stroke-width="2"/>
+    <path fill="var(--cor-barro)" fill-rule="evenodd" transform="translate(70 47) scale(0.21)" d="M 18,80 C 7,79 2,66 2,49 C 2,24 20,4 50,3 C 79,2 97,25 97,49 C 97,68 89,80 79,80 C 64,80 34,81 18,80 Z M 40,58 C 35,42 40,24 53,23 C 64,22 69,40 64,57 C 59,72 45,72 40,58 Z"/>
+  </g>
+  <line x1="80" y1="74" x2="80" y2="112" stroke="var(--cor-barro)" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <rect x="8" y="114" width="144" height="6" rx="3" fill="var(--cor-linha)"/>
+  <rect x="52" y="114" width="56" height="6" rx="3" fill="var(--cor-faixa-regua)"/>
+  <line x1="72" y1="111" x2="72" y2="123" stroke="var(--cor-traco)" stroke-width="1.5"/>
+  <circle cx="80" cy="117" r="6" fill="var(--cor-barro)" stroke="var(--cor-superficie)" stroke-width="2"/>
+</svg>`;
+
+function cabecalhoDaEntrada() {
+  const { disponiveis } = resumoDosCreditos(estado.creditos);
+  return `<header class="cabecalho" style="padding-right:var(--espaco-3)">
+    <h1 class="cresce" style="padding-left:var(--espaco-3)">
+      <img class="logo-app logo-claro" src="../kv/logotipo-claro.svg" alt="Vereda">
+      <img class="logo-app logo-escuro" src="../kv/logotipo-escuro.svg" alt="Vereda">
+    </h1>
+    <a class="pilula-credito tipo-etiqueta pressionavel" href="#/creditos" data-fase="final" aria-label="${disponiveis} créditos, ver extrato">${icone("coins", "icone-p")}<span>${disponiveis}</span></a>
+  </header>`;
 }
 
-const PASSOS = [["link", "Colar link"], ["map-pin", "Confirmar o lote"], ["file-text", "Dossiê"], ["clipboard-check", "Preparar visita"]];
+function cartaoEntrada(comparando) {
+  return `<section class="cartao"><div class="cartao-corpo pilha">
+    <div class="entrada">
+      <div class="entrada-textos">
+        <h2 class="tipo-titulo-tela">O link do anúncio vira um dossiê de evidências.</h2>
+        <p class="tipo-corpo apoio">Recife, a partir de registros públicos.</p>
+      </div>
+      ${KV_MINI}
+    </div>
+    <form class="campo-acao" data-form="colar">
+      ${icone("link")}
+      <input name="url" type="url" inputmode="url" autocomplete="off" placeholder="Cole o link do anúncio" aria-label="Colar link">
+      <button class="botao ${comparando ? "botao-secundario" : "botao-principal"} tipo-botao" type="button" data-acao="colar-link">${icone("clipboard", "icone-p")}Colar</button>
+    </form>
+    <ul class="avisos tipo-apoio apoio">
+      <li>${icone("shield-lock", "icone-p")}<span>Só lemos campos do imóvel. Nada sobre quem anuncia.</span></li>
+      <li>${icone("map-pin", "icone-p")}<span>Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena.</span></li>
+    </ul>
+  </div></section>`;
+}
+
+function cartaoCreditos() {
+  const resumo = resumoDosCreditos(estado.creditos);
+  const total = resumo.cotaInicial + resumo.ganhos;
+  const trilho = Array.from({ length: total }, (_, i) => `<span class="${i < resumo.disponiveis ? "disponivel" : ""}"></span>`).join("");
+  const ganhos = COMO_GANHAR.map(([nomeIcone, tipo, mais]) => `<li class="tipo-corpo"><span class="secao-icone secao-icone-p">${icone(nomeIcone, "icone-p")}</span><span class="nome">${NOMES_DE_MOVIMENTO[tipo]}</span><span class="mais">+${mais}</span></li>`).join("");
+  return `<section class="cartao" data-fase="final"><div class="cartao-corpo pilha">
+    <div class="creditos-topo">
+      <span class="secao-icone">${icone("coins")}</span>
+      <span class="secao-textos"><span class="tipo-secao">Créditos</span><span class="tipo-apoio apoio">Um crédito abre um dossiê</span></span>
+      ${etiquetaFase("final")}
+    </div>
+    <div class="creditos-numero"><span class="tipo-numero">${resumo.disponiveis}</span><span class="tipo-corpo">${resumo.disponiveis === 1 ? "dossiê disponível" : "dossiês disponíveis"}</span></div>
+    <div class="creditos-trilho" role="img" aria-label="${resumo.disponiveis} disponíveis de ${total}">${trilho}</div>
+    <p class="tipo-apoio apoio">Cota gratuita de ${resumo.cotaInicial}, ${resumo.ganhos} ganhos, ${resumo.usados} usados.</p>
+    <ul class="ganhos" aria-label="Como ganhar créditos">${ganhos}</ul>
+    <div class="rodape-acoes tipo-corpo">
+      <a class="linha-link" href="#/creditos">Ver extrato</a>
+      <a class="linha-link" href="#/creditos">Comprar créditos</a>
+    </div>
+  </div></section>`;
+}
 
 function itemDoDossie(dossie, marcado) {
   const campos = dossie.anuncio.campos;
   const principal = campos.aluguel || campos.preco;
-  const resumo = [principal, campos.area].filter(Boolean).map((f) => f.texto).join(", ");
-  const ilustrativo = dossie.endereco.ilustrativo || principal.ilustrativo;
+  const resumo = [principal, campos.area].filter(Boolean).map((f) => f.texto).join(" · ");
   return `<li><button class="item-dossie" data-dossie="${dossie.id}" aria-pressed="${marcado}">
-    ${poligonoMini(dossie, loteConfirmado(dossie))}
+    <span class="item-lote">${poligonoMini(dossie, loteConfirmado(dossie))}</span>
     <span class="item-textos">
-      <span class="linha"><span class="tipo-secao">${h(enderecoDoDossie(dossie))}</span>${ilustrativo ? pilulaIlustrativo() : ""}</span>
+      <span class="tipo-secao">${h(enderecoDoDossie(dossie))}</span>
       <span class="tipo-corpo">${h(resumo)}</span>
-      <span class="tipo-apoio apoio">${h(linhaDoDossie(dossie))}</span>
+      <span class="item-meta tipo-apoio apoio"><span class="chip-tipo tipo-etiqueta">${tipoDoDossie(dossie)}</span><span>${h(dossie.bairro)}</span><span>·</span><span>${formatarData(dossie.gerado_em)}</span></span>
     </span>
-    <span class="item-marca">${marcado ? icone("check") : ""}</span>
+    <span class="item-marca">${marcado ? icone("check") : icone("chevron-right", "icone-p")}</span>
   </button></li>`;
 }
 
 export function telaMeus() {
   const lista = estado.apagado ? [] : IDS_DOSSIES.map((id) => estado.dossies.get(id));
   const selecao = estado.selecao;
+  const selecionando = estado.selecionando || selecao.length > 0;
   const comparando = selecao.length >= 2 && selecao.length <= 3;
   const corpo = lista.length
-    ? `<ul class="lista-dossies">${lista.map((d) => itemDoDossie(d, selecao.includes(d.id))).join("")}</ul><p class="dica tipo-apoio apoio">Toque e segure para selecionar.</p>`
+    ? `<ul class="lista-dossies">${lista.map((d) => itemDoDossie(d, selecao.includes(d.id))).join("")}</ul><p class="dica tipo-apoio apoio">${selecionando ? "Toque para selecionar 2 ou 3 e comparar." : "Toque e segure para selecionar e comparar."}</p>`
     : `<p class="vazio vazio-esq tipo-corpo" style="padding:0 var(--espaco-4)">Nenhum dossiê ainda. Compartilhe um anúncio de apartamento com o Vereda ou cole o link acima.</p>`;
   const passos = PASSOS.map(([nomeIcone, texto]) => `<li><span class="secao-icone">${icone(nomeIcone)}</span><span class="tipo-apoio">${texto}</span></li>`).join("");
   const fontes = fontesDoApp().map((f) => f.base).join(", ");
@@ -55,28 +122,11 @@ export function telaMeus() {
     : "";
   return {
     html: `<div class="tela">
-      <header class="cabecalho">
-        <h1 class="cresce" style="padding-left:var(--espaco-3)">
-          <img class="logo-app logo-claro" src="../kv/logotipo-claro.svg" alt="Vereda">
-          <img class="logo-app logo-escuro" src="../kv/logotipo-escuro.svg" alt="Vereda">
-        </h1>
-        ${etiquetaFase("prototipo")}
-      </header>
+      ${cabecalhoDaEntrada()}
       <div class="tela-rolagem">
-        <section class="cartao"><div class="cartao-corpo pilha">
-          <h2 class="tipo-titulo-tela">O link do anúncio vira um dossiê de evidências.</h2>
-          <p class="tipo-corpo apoio" style="margin-top:calc(var(--espaco-1) * -2)">Recife, a partir de registros públicos.</p>
-          <form class="campo campo-interno" data-form="colar">
-            ${icone("link")}
-            <input name="url" type="url" inputmode="url" autocomplete="off" placeholder="https://" aria-label="Colar link">
-          </form>
-          <button class="botao ${comparando ? "botao-secundario" : "botao-principal"} tipo-botao" data-acao="colar-link">${icone("clipboard")}Colar link</button>
-          <ul class="avisos tipo-apoio apoio">
-            <li>${icone("shield-lock", "icone-p")}<span>Só lemos campos do imóvel. Nada sobre quem anuncia.</span></li>
-            <li>${icone("map-pin", "icone-p")}<span>Por enquanto o Vereda cobre Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena.</span></li>
-          </ul>
-        </div></section>
-        <h2 class="titulo-grupo tipo-secao" style="padding-top:var(--espaco-3)">Meus dossiês</h2>
+        ${cartaoEntrada(comparando)}
+        ${cartaoCreditos()}
+        <div class="cabeca-grupo"><h2 class="tipo-secao">Meus dossiês</h2>${lista.length ? `<button class="linha-link tipo-apoio" data-acao="selecionar">${selecionando ? "Cancelar" : "Selecionar"}</button>` : ""}</div>
         ${corpo}
         <ol class="passos cartao">${passos}</ol>
         <section class="cartao">
@@ -90,6 +140,25 @@ export function telaMeus() {
       ${comparar}
     </div>`,
   };
+}
+
+export function folhaCreditos() {
+  const resumo = resumoDosCreditos(estado.creditos);
+  const linhas = estado.creditos.extrato.map((m) => {
+    const dossie = m.dossie ? estado.dossies.get(m.dossie) : null;
+    const detalhe = m.tipo === "cota_inicial" ? "gratuita" : m.tipo === "dossie" ? (dossie ? dossie.bairro : m.dossie) : (dossie ? enderecoDoDossie(dossie) : "");
+    return `<li class="tipo-corpo">
+      <span class="nome"><span>${NOMES_DE_MOVIMENTO[m.tipo]}</span><span class="tipo-apoio apoio">${h(detalhe)} · ${formatarData(m.data)}</span></span>
+      <span class="delta">${m.delta > 0 ? "+" : "−"}${Math.abs(m.delta)}</span>
+    </li>`;
+  }).join("");
+  const conteudo = `<div class="pilha">
+    <div class="creditos-numero"><span class="tipo-numero">${resumo.disponiveis}</span><span class="tipo-corpo">${resumo.disponiveis === 1 ? "dossiê disponível" : "dossiês disponíveis"}</span></div>
+    <ul class="extrato" aria-label="Extrato">${linhas}</ul>
+    <p class="tipo-apoio apoio">Um crédito abre um dossiê. Você ganha créditos ao confirmar o lote, ao enviar o feedback pós-visita e ao informar o motivo do descarte. Nunca por envio de documentos.</p>
+    <a class="botao botao-secundario tipo-botao" href="#/creditos">Comprar créditos</a>
+  </div>`;
+  return { html: folha({ titulo: "Créditos", conteudo }) };
 }
 
 const ETAPAS = ["Anúncio aberto", "Preço, área e quartos lidos", "Procurando o lote", "Lote encontrado"];
@@ -609,7 +678,6 @@ export function telaAoVivo(rota) {
       <header class="cabecalho">
         <h1 class="tipo-barra">Modo visita</h1>
         <a class="botao botao-secundario botao-pilula tipo-botao" href="#/dossie/${dossie.id}/visita" data-acao="encerrar">Encerrar</a>
-        ${etiquetaFase("prototipo")}
       </header>
       <div class="tela-rolagem">
         <section class="cartao"><div class="cartao-corpo linha" style="justify-content:space-between">

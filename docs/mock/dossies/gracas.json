@@ -5,8 +5,8 @@
   "fase": "prototipo",
   "gerado_em": "2026-10-15",
   "endereco": {
-    "logradouro": "Endereço ilustrativo",
-    "numero": null,
+    "logradouro": "Rua Amélia",
+    "numero": "412",
     "ilustrativo": true
   },
   "lote": {
@@ -21,7 +21,7 @@
   },
   "anuncio": {
     "lido_em": "2026-10-15",
-    "observacao": "dossiê fictício",
+    "observacao": "endereço e campos do anúncio inventados para o mock; o prédio não foi consultado",
     "campos": {
       "preco": {
         "id": "anuncio_preco",

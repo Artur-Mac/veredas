@@ -9,6 +9,36 @@ export async function carregarDossies() {
   return new Map(lidos.map((dossie) => [dossie.id, dossie]));
 }
 
+export async function carregarCreditos() {
+  const resposta = await fetch("creditos.json");
+  if (!resposta.ok) throw new Error(`creditos.json respondeu ${resposta.status}`);
+  return resposta.json();
+}
+
+export const NOMES_DE_MOVIMENTO = {
+  cota_inicial: "Cota inicial",
+  dossie: "Dossiê",
+  confirmacao_lote: "Confirmação do lote",
+  feedback_pos_visita: "Feedback pós-visita",
+  motivo_descarte: "Motivo do descarte",
+};
+
+export const COMO_GANHAR = [
+  ["map-pin", "confirmacao_lote", 1],
+  ["message-circle", "feedback_pos_visita", 1],
+  ["square-x", "motivo_descarte", 1],
+];
+
+export function resumoDosCreditos(creditos) {
+  const soma = (filtro) => creditos.extrato.filter(filtro).reduce((total, m) => total + m.delta, 0);
+  return {
+    disponiveis: soma(() => true),
+    cotaInicial: soma((m) => m.tipo === "cota_inicial"),
+    ganhos: soma((m) => m.delta > 0 && m.tipo !== "cota_inicial"),
+    usados: -soma((m) => m.delta < 0),
+  };
+}
+
 const CHAVE = "vereda-mock";
 
 function lerTudo() {

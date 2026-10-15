@@ -1,9 +1,9 @@
-import { carregarDossies, IDS_DOSSIES } from "./dados.js";
+import { carregarDossies, carregarCreditos, IDS_DOSSIES } from "./dados.js";
 import { estado, seccoesAbertas } from "./estado.js";
 import { ir, registrarVisita, voltar } from "./nav.js";
 import {
   telaMeus, telaLer, telaConfirmarLote, telaDossie, telaMapa, telaVisita, telaAoVivo, telaCaminhos, telaComparar,
-  folhaFonte, folhaContestar, telaLinhaDoTempo, folhaDomicilio, telaSobre,
+  folhaFonte, folhaContestar, telaLinhaDoTempo, folhaDomicilio, telaSobre, folhaCreditos,
 } from "./telas.js";
 
 const ROTAS = [
@@ -21,12 +21,13 @@ const ROTAS = [
   { tela: "T13", padrao: "/dossie/:id/linha-do-tempo", criar: telaLinhaDoTempo, final: true },
   { tela: "T14", padrao: "/dossie/:id/domicilio", criar: folhaDomicilio, folha: true, final: true },
   { tela: "T15", padrao: "/sobre-os-dados", criar: telaSobre },
+  { tela: "T16", padrao: "/creditos", criar: folhaCreditos, folha: true, base: telaMeus, final: true },
 ];
 
 const NOMES_DAS_TELAS = {
   T1: "Meus dossiês", T2: "Lendo o anúncio", T3: "Confirmar o lote", T4: "Dossiê", T5: "Mapa", T6: "Visita", T7: "Modo visita",
   T8: "Caminhos diários", T9: "Comparar", T10: "Ver fonte", T11: "Isso está errado", T13: "Linha do tempo do prédio",
-  T14: "Dados do domicílio", T15: "Sobre os dados",
+  T14: "Dados do domicílio", T15: "Sobre os dados", T16: "Créditos",
 };
 
 const ESTADOS_DE_T2 = [
@@ -97,6 +98,7 @@ function paiDe(rota) {
 }
 
 function chaveDeRolagem(rota) {
+  if (rota.tela === "T16") return "T1/";
   return `${rota.tela === "T10" || rota.tela === "T11" || rota.tela === "T14" ? "T4" : rota.tela}/${rota.params.id || ""}`;
 }
 
@@ -113,7 +115,7 @@ function renderizar() {
     return;
   }
   if (rota.final && document.body.dataset.final === "nao") {
-    ir(`#/dossie/${rota.params.id}`, true);
+    ir(rota.params.id ? `#/dossie/${rota.params.id}` : "#/", true);
     return;
   }
   if (rota.params.id && !estado.dossies.has(rota.params.id)) {
@@ -125,7 +127,7 @@ function renderizar() {
   limpar.forEach((fn) => fn && fn());
   limpar = [];
   const partes = [];
-  if (rota.folha) partes.push(telaDossie(rota));
+  if (rota.folha) partes.push((rota.base || telaDossie)(rota));
   partes.push(rota.criar(rota));
   aparelhoEl.innerHTML = partes.map((p) => p.html).join("");
   for (const parte of partes) if (parte.montar) limpar.push(parte.montar(aparelhoEl));
@@ -202,14 +204,18 @@ aparelhoEl.addEventListener("click", async (evento) => {
       ignorarClique = false;
       return;
     }
-    if (estado.selecao.length) alternarSelecao(item.dataset.dossie);
+    if (estado.selecao.length || estado.selecionando) alternarSelecao(item.dataset.dossie);
     else ir(`#/dossie/${item.dataset.dossie}`);
     return;
   }
   const alvo = evento.target.closest("[data-acao]");
   if (!alvo) return;
   const acao = alvo.dataset.acao;
-  if (acao === "voltar") voltar(paiDe(rotaAtual));
+  if (acao === "selecionar") {
+    estado.selecionando = !(estado.selecionando || estado.selecao.length);
+    estado.selecao = [];
+    renderizar();
+  } else if (acao === "voltar") voltar(paiDe(rotaAtual));
   else if (acao === "fechar-folha" && rotaAtual.folha) voltar(paiDe(rotaAtual));
   else if (acao === "secao") alternarSecao(alvo);
   else if (acao === "ir-fato") abrirFato(alvo.dataset.fato);
@@ -308,8 +314,9 @@ function desenharBarra() {
     ["T13", `#/dossie/${id}/linha-do-tempo`],
     ["T14", `#/dossie/${id}/domicilio`],
     ["T15", "#/sobre-os-dados"],
+    ["T16", "#/creditos"],
   ];
-  const finais = new Set(["T13", "T14"]);
+  const finais = new Set(["T13", "T14", "T16"]);
   const itens = links.map(([tela, href]) => {
     const sub = tela === "T2"
       ? ESTADOS_DE_T2.slice(1).map(([valor, nome]) => `<a class="mock-sub tipo-apoio" href="#/ler?url=&estado=${valor}"${atual === `#/ler?url=&estado=${valor}` ? ` aria-current="page"` : ""}>${nome}</a>`).join("")
@@ -356,7 +363,7 @@ async function iniciar() {
   aplicarFinal();
   barraEl.querySelector("[data-dossie-mock]").innerHTML = IDS_DOSSIES.map((id) => `<option value="${id}">${id}</option>`).join("");
   try {
-    estado.dossies = await carregarDossies();
+    [estado.dossies, estado.creditos] = await Promise.all([carregarDossies(), carregarCreditos()]);
   } catch (erro) {
     barraEl.querySelector("[data-erro]").hidden = false;
     barraEl.querySelector("[data-erro]").textContent = erro.message;

@@ -11,7 +11,8 @@ export function icone(nome, classe = "") {
 }
 
 export function etiquetaFase(fase) {
-  return `<span class="etiqueta tipo-etiqueta" data-fase="${fase}">${fase === "final" ? "Final" : "Protótipo"}</span>`;
+  if (fase !== "final") return "";
+  return `<span class="etiqueta tipo-etiqueta" data-fase="final">Final</span>`;
 }
 
 export function pilulaIlustrativo() {
