@@ -1,0 +1,58 @@
+{
+  "expo": {
+    "name": "Vereda",
+    "slug": "vereda",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "vereda",
+    "userInterfaceStyle": "automatic",
+    "backgroundColor": "#F3F4F2",
+    "android": {
+      "package": "br.vereda.prototipo",
+      "predictiveBackGestureEnabled": false
+    },
+    "ios": {
+      "bundleIdentifier": "br.vereda.prototipo"
+    },
+    "web": {
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-font",
+      "expo-web-browser",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F3F4F2",
+          "dark": {
+            "backgroundColor": "#14181B"
+          }
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Para confirmar o prédio, o Vereda usa a sua localização só durante a visita."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "O Vereda usa a câmera para a foto da fachada durante a visita.",
+          "photosPermission": false
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "O Vereda usa o microfone para medir o ruído durante a visita."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
