@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Vereda</title>
+  <link rel="icon" type="image/svg+xml" href="../kv/simbolo-pequeno-barro.svg">
+  <link rel="apple-touch-icon" href="../kv/icone-app.svg">
+  <link rel="preload" href="fontes/Archivo-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="fontes/ArchivoCondensed-ExtraBold.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="app/estilo.css">
+</head>
+<body data-final="sim">
+  <div class="mock">
+    <aside class="mock-barra" data-mock-barra>
+      <img class="mock-logo mock-logo-claro" src="../kv/logotipo-claro.svg" alt="Vereda">
+      <img class="mock-logo mock-logo-escuro" src="../kv/logotipo-escuro.svg" alt="Vereda">
+      <p class="mock-erro tipo-apoio" data-erro hidden></p>
+      <div class="segmentos tipo-apoio" role="group">
+        <button data-tema-mock="sistema" aria-pressed="true">Tema do sistema</button>
+        <button data-tema-mock="claro" aria-pressed="false">Ver claro</button>
+        <button data-tema-mock="escuro" aria-pressed="false">Ver escuro</button>
+      </div>
+      <label class="alterna tipo-corpo"><span>Mostrar o Final</span><input type="checkbox" role="switch" data-final-mock checked></label>
+      <div class="segmentos tipo-apoio" role="group" style="flex-wrap:wrap;border-radius:var(--raio-cartao)">
+        <button data-estado-mock="padrao" aria-pressed="true">Padrão</button>
+        <button data-estado-mock="carregando" aria-pressed="false">Carregando</button>
+        <button data-estado-mock="contestado" aria-pressed="false">Contestado</button>
+        <button data-estado-mock="em_verificacao" aria-pressed="false">Em verificação</button>
+      </div>
+      <select class="campo-linha tipo-corpo" data-dossie-mock aria-label="Dossiê"></select>
+      <nav class="mock-telas" data-telas></nav>
+    </aside>
+    <main class="aparelho" data-aparelho></main>
+  </div>
+  <script type="module" src="app/main.js"></script>
+</body>
+</html>

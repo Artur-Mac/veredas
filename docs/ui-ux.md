@@ -13,6 +13,7 @@ Crime por bairro ("registros da SDS-PE compilados pelo Crime Brasil", registro o
 | 15/10/2026 | O exemplo principal do mock é um anúncio de aluguel em Boa Viagem, com dados mock tão completos quanto os de compra (régua com quartis, N e controles). |
 | 15/10/2026 | No mock, o crime do bairro é comparado com os bairros que fazem divisa com ele (malha oficial de bairros), em ocorrências por mil moradores (Censo 2022). |
 | 15/10/2026 | Rotas e "abrir no mapa" vão para o app de mapas padrão do sistema, sem seletor próprio (seção 3.5). |
+| 15/10/2026 | T1 vira a tela de entrada: logotipo no cabeçalho, cartão para colar o link com a frase da imagem-chave, aviso de leitura e bairros cobertos, a lista de dossiês, os quatro passos e o acesso a "Sobre os dados" (seção 5.1). Sem ilustração no topo. |
 
 As divergências que essas decisões criam com o PRD estão em [Pendências de PRD](#pendências-de-prd), no fim do documento. Quando o PRD atualizado chegar, `docs/PRD-Vereda-2.1.md` é substituído pela versão nova sem edição, e as duas tabelas são revistas.
 
@@ -583,10 +584,12 @@ Cada tela lista o conteúdo na ordem em que aparece, a etiqueta de fase e o que 
 
 | Ordem | Conteúdo | Toque |
 | --- | --- | --- |
-| 1 | Título "Meus dossiês" e "Sobre os dados" | "Sobre os dados" abre T15 |
-| 2 | Campo "Colar link" fixo | Cola o link e abre T2 |
-| 3 | Lista de dossiês: polígono do lote, endereço, "Aluguel" ou "Compra", bairro, data do dossiê | Tocar abre T4. Tocar e segurar seleciona para comparar |
-| 4 | Barra "Comparar 2" quando há 2 ou 3 selecionados | Abre T9 |
+| 1 | Cabeçalho com o logotipo (seção 7.5) e a etiqueta de fase | Sem toque |
+| 2 | Cartão de entrada: frase da imagem-chave (seção 7.7), campo do link, botão principal "Colar link", aviso de leitura e bairros cobertos | O campo aceita colar e abre T2. O botão lê o link da área de transferência; sem link, foca o campo |
+| 3 | Título "Meus dossiês" e a lista: polígono do lote, endereço, valor e área declarados, "Aluguel" ou "Compra", bairro, data do dossiê | Tocar abre T4. Tocar e segurar seleciona para comparar |
+| 4 | Passos: Colar link, Confirmar o lote, Dossiê, Preparar visita | Sem toque |
+| 5 | "Sobre os dados", com as bases citadas numa linha | Abre T15 |
+| 6 | Barra "Comparar 2" quando há 2 ou 3 selecionados. O botão "Colar link" passa a secundário, para manter um botão principal por tela | Abre T9 |
 
 Vazio: "Nenhum dossiê ainda. Compartilhe um anúncio de apartamento com o Vereda ou cole o link acima."
 
@@ -762,9 +765,14 @@ T1 Meus dossiês:
 
 | Contexto | Texto |
 | --- | --- |
-| Título | Meus dossiês |
-| Campo | Colar link |
-| Item | {endereço}; {Aluguel ou Compra}, {bairro}, {data} |
+| Cabeçalho | logotipo (imagem, nome acessível "Vereda") |
+| Chamada | O link do anúncio vira um dossiê de evidências. |
+| Apoio | Recife, a partir de registros públicos. |
+| Campo | Colar link (leitor de tela); exemplo no campo: https:// |
+| Avisos | Só lemos campos do imóvel. Nada sobre quem anuncia.; Por enquanto o Vereda cobre Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena. |
+| Título da lista | Meus dossiês |
+| Item | {endereço}; {valor}, {área}; {Aluguel ou Compra}, {bairro}, {data} |
+| Passos | Colar link; Confirmar o lote; Dossiê; Preparar visita |
 | Dica | Toque e segure para selecionar. |
 | Botão | Comparar {2 ou 3} |
 | Vazio | Nenhum dossiê ainda. Compartilhe um anúncio de apartamento com o Vereda ou cole o link acima. |
