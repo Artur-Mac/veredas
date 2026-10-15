@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vereda/docs/mock/dossie.schema.json",
+  "title": "Dossiê do Vereda",
+  "type": "object",
+  "required": ["id", "tipo", "bairro", "fase", "gerado_em", "endereco", "lote", "anuncio", "preco", "visita", "secoes", "mapa"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z-]+$" },
+    "tipo": { "enum": ["aluguel", "compra"] },
+    "bairro": { "type": "string" },
+    "fase": { "enum": ["prototipo", "final"] },
+    "gerado_em": { "type": "string", "format": "date" },
+    "endereco": {
+      "type": "object",
+      "required": ["logradouro", "numero", "ilustrativo"],
+      "additionalProperties": false,
+      "properties": {
+        "logradouro": { "type": "string" },
+        "numero": { "type": ["string", "null"] },
+        "ilustrativo": { "type": "boolean" }
+      }
+    },
+    "lote": {
+      "type": "object",
+      "required": ["dsqfl", "confirmado", "centro", "poligono", "ilustrativo_poligono"],
+      "additionalProperties": false,
+      "properties": {
+        "dsqfl": { "type": ["string", "null"] },
+        "confirmado": { "type": "boolean" },
+        "centro": { "$ref": "#/$defs/coordenada" },
+        "poligono": { "type": ["array", "null"], "items": { "$ref": "#/$defs/coordenada" } },
+        "ilustrativo_poligono": { "type": "boolean" }
+      }
+    },
+    "anuncio": {
+      "type": "object",
+      "required": ["lido_em", "observacao", "campos"],
+      "additionalProperties": false,
+      "properties": {
+        "lido_em": { "type": "string", "format": "date" },
+        "observacao": { "type": "string" },
+        "campos": {
+          "type": "object",
+          "propertyNames": { "enum": ["preco", "aluguel", "condominio", "iptu", "area", "quartos", "suites", "banheiros", "vagas", "andar"] },
+          "additionalProperties": { "$ref": "#/$defs/fato" }
+        }
+      }
+    },
+    "preco": {
+      "type": "object",
+      "required": ["valor_m2", "regua"],
+      "additionalProperties": false,
+      "properties": {
+        "valor_m2": { "type": "number" },
+        "regua": { "$ref": "#/$defs/regua" }
+      }
+    },
+    "visita": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["texto", "origem"],
+        "additionalProperties": false,
+        "properties": {
+          "texto": { "type": "string" },
+          "origem": { "type": "array", "items": { "type": "string" } },
+          "escala": { "type": "string" },
+          "rotulo": { "$ref": "#/$defs/rotulo" }
+        }
+      }
+    },
+    "secoes": { "type": "array", "items": { "$ref": "#/$defs/secao" } },
+    "mapa": {
+      "type": "object",
+      "required": ["raios_m", "pontos", "pontos_ilustrativos"],
+      "additionalProperties": false,
+      "properties": {
+        "raios_m": { "type": "array", "items": { "type": "integer" } },
+        "pontos": { "type": "array" },
+        "pontos_ilustrativos": { "type": "boolean" }
+      }
+    }
+  },
+  "$defs": {
+    "coordenada": { "type": "array", "prefixItems": [{ "type": "number" }, { "type": "number" }], "minItems": 2, "maxItems": 2, "description": "[longitude, latitude], WGS-84" },
+    "rotulo": { "enum": ["registro_oficial", "declarado", "inferencia", "nao_sabemos"] },
+    "estado": { "enum": ["padrao", "carregando", "vazio", "nao_sabemos", "contestado", "em_verificacao"] },
+    "fonte": {
+      "type": "object",
+      "required": ["base", "orgao", "licenca", "url", "atualizado_em", "consultado_em", "via"],
+      "additionalProperties": false,
+      "properties": {
+        "base": { "type": "string" },
+        "orgao": { "type": ["string", "null"] },
+        "licenca": { "type": ["string", "null"] },
+        "url": { "type": ["string", "null"] },
+        "atualizado_em": { "type": ["string", "null"] },
+        "consultado_em": { "type": ["string", "null"] },
+        "via": { "type": ["string", "null"] }
+      }
+    },
+    "fato": {
+      "type": "object",
+      "required": ["id", "rotulo", "valor", "unidade", "texto", "fonte", "escala", "ilustrativo", "estado", "motivo_nao_sabemos"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "rotulo": { "$ref": "#/$defs/rotulo" },
+        "valor": {},
+        "unidade": { "type": ["string", "null"] },
+        "texto": { "type": "string" },
+        "fonte": { "$ref": "#/$defs/fonte" },
+        "escala": { "type": ["string", "null"] },
+        "ilustrativo": { "type": "boolean" },
+        "estado": { "$ref": "#/$defs/estado" },
+        "motivo_nao_sabemos": { "type": ["string", "null"] }
+      },
+      "allOf": [
+        { "if": { "properties": { "estado": { "const": "nao_sabemos" } } }, "then": { "properties": { "motivo_nao_sabemos": { "type": "string" } } } }
+      ]
+    },
+    "regua": {
+      "type": "object",
+      "required": ["universo", "recorte", "periodo_meses", "n", "p25", "mediana", "p75", "minimo", "maximo", "valor_anuncio", "posicao_percentil", "unidade", "rotulo", "fonte", "escala", "ilustrativo", "frase"],
+      "additionalProperties": false,
+      "properties": {
+        "universo": { "type": "string" },
+        "recorte": { "enum": ["bairro", "raio_500", "raio_1000"] },
+        "periodo_meses": { "enum": [12, 24] },
+        "n": { "type": "integer", "minimum": 10 },
+        "p25": { "type": "number" },
+        "mediana": { "type": "number" },
+        "p75": { "type": "number" },
+        "minimo": { "type": "number" },
+        "maximo": { "type": "number" },
+        "valor_anuncio": { "type": "number" },
+        "posicao_percentil": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "unidade": { "type": "string" },
+        "rotulo": { "$ref": "#/$defs/rotulo" },
+        "fonte": { "$ref": "#/$defs/fonte" },
+        "escala": { "type": "string" },
+        "ilustrativo": { "type": "boolean" },
+        "frase": { "type": "string" }
+      }
+    },
+    "fatia": {
+      "type": "object",
+      "required": ["nome", "valor", "cor"],
+      "additionalProperties": false,
+      "properties": {
+        "nome": { "type": "string" },
+        "valor": { "type": "integer", "minimum": 0 },
+        "cor": { "enum": ["cat-ipe-roxo", "cat-goiaba", "cat-ipe-amarelo", "cat-mare", "cat-terra", "cat-outros", "crime-1", "crime-2", "crime-3"] }
+      }
+    },
+    "anel": {
+      "type": "object",
+      "required": ["tipo", "rotulo_centro", "total", "fatias"],
+      "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "anel" },
+        "rotulo_centro": { "type": "string" },
+        "total": { "type": "integer" },
+        "fatias": { "type": "array", "maxItems": 6, "items": { "$ref": "#/$defs/fatia" } }
+      }
+    },
+    "barras_vizinhos": {
+      "type": "object",
+      "required": ["tipo", "ordem", "itens", "detalhe"],
+      "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "barras_vizinhos" },
+        "ordem": { "const": "norte_para_sul" },
+        "detalhe": { "$ref": "#/$defs/anel" },
+        "itens": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["bairro", "do_dossie", "ocorrencias", "moradores", "por_mil", "estado", "motivo_nao_sabemos"],
+            "additionalProperties": false,
+            "properties": {
+              "bairro": { "type": "string" },
+              "do_dossie": { "type": "boolean" },
+              "ocorrencias": { "type": "integer" },
+              "moradores": { "type": ["integer", "null"] },
+              "por_mil": { "type": ["number", "null"] },
+              "estado": { "$ref": "#/$defs/estado" },
+              "motivo_nao_sabemos": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "secao": {
+      "type": "object",
+      "required": ["id", "titulo", "fase", "bloco_prd", "icone", "resumo", "fatos", "grafico"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "titulo": { "type": "string" },
+        "fase": { "enum": ["prototipo", "final"] },
+        "bloco_prd": { "enum": ["cadastro", "fiscal", "defesa_civil", "consistencia", "extra_final", "extra_mock"] },
+        "icone": { "type": "string" },
+        "resumo": { "type": "string" },
+        "fatos": { "type": "array", "items": { "$ref": "#/$defs/fato" } },
+        "grafico": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/anel" }, { "$ref": "#/$defs/barras_vizinhos" }] },
+        "ilustrativo": { "type": "boolean" }
+      }
+    }
+  }
+}

@@ -1,0 +1,806 @@
+{
+  "id": "gracas",
+  "tipo": "compra",
+  "bairro": "Graças",
+  "fase": "prototipo",
+  "gerado_em": "2026-10-15",
+  "endereco": {
+    "logradouro": "Endereço ilustrativo",
+    "numero": null,
+    "ilustrativo": true
+  },
+  "lote": {
+    "dsqfl": null,
+    "confirmado": true,
+    "centro": [
+      -34.9025,
+      -8.048
+    ],
+    "poligono": null,
+    "ilustrativo_poligono": true
+  },
+  "anuncio": {
+    "lido_em": "2026-10-15",
+    "observacao": "dossiê fictício",
+    "campos": {
+      "preco": {
+        "id": "anuncio_preco",
+        "rotulo": "declarado",
+        "valor": 455000,
+        "unidade": "R$",
+        "texto": "R$ 455.000",
+        "fonte": {
+          "base": "dado ilustrativo, pendente de fonte",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": null,
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": true,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      },
+      "condominio": {
+        "id": "anuncio_condominio",
+        "rotulo": "declarado",
+        "valor": 820,
+        "unidade": "R$/mês",
+        "texto": "R$ 820/mês",
+        "fonte": {
+          "base": "dado ilustrativo, pendente de fonte",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": null,
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": true,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      },
+      "area": {
+        "id": "anuncio_area",
+        "rotulo": "declarado",
+        "valor": 110,
+        "unidade": "m²",
+        "texto": "110 m²",
+        "fonte": {
+          "base": "dado ilustrativo, pendente de fonte",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": null,
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": true,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      },
+      "quartos": {
+        "id": "anuncio_quartos",
+        "rotulo": "declarado",
+        "valor": 3,
+        "unidade": null,
+        "texto": "3",
+        "fonte": {
+          "base": "dado ilustrativo, pendente de fonte",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": null,
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": true,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      },
+      "banheiros": {
+        "id": "anuncio_banheiros",
+        "rotulo": "declarado",
+        "valor": 2,
+        "unidade": null,
+        "texto": "2",
+        "fonte": {
+          "base": "dado ilustrativo, pendente de fonte",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": null,
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": true,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      },
+      "vagas": {
+        "id": "anuncio_vagas",
+        "rotulo": "declarado",
+        "valor": 1,
+        "unidade": null,
+        "texto": "1",
+        "fonte": {
+          "base": "dado ilustrativo, pendente de fonte",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": null,
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": true,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      },
+      "andar": {
+        "id": "anuncio_andar",
+        "rotulo": "declarado",
+        "valor": 5,
+        "unidade": null,
+        "texto": "5º andar",
+        "fonte": {
+          "base": "dado ilustrativo, pendente de fonte",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": null,
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": true,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      }
+    }
+  },
+  "preco": {
+    "valor_m2": 4136,
+    "regua": {
+      "universo": "avaliações fiscais de apartamentos",
+      "recorte": "bairro",
+      "periodo_meses": 12,
+      "n": 465,
+      "p25": 2946,
+      "mediana": 3891,
+      "p75": 4878,
+      "minimo": 1928,
+      "maximo": 7486,
+      "valor_anuncio": 4136,
+      "posicao_percentil": 55,
+      "unidade": "R$/m²",
+      "rotulo": "registro_oficial",
+      "fonte": {
+        "base": "ITBI 2015-2026",
+        "orgao": "Prefeitura do Recife",
+        "licenca": "ODbL",
+        "url": "https://dados.recife.pe.gov.br/dataset/imposto-sobre-transmissao-de-bens-imoveis-itbi",
+        "atualizado_em": null,
+        "consultado_em": "2026-10-15",
+        "via": null
+      },
+      "escala": "quartis do ITBI, Graças, 12 meses, N = 465",
+      "ilustrativo": false,
+      "frase": "Acima de 55% das avaliações fiscais de apartamentos no bairro."
+    }
+  },
+  "visita": [
+    {
+      "texto": "Prédio de 4 pavimentos anterior a 2005: ver o que observar no indício de tipologia.",
+      "origem": [
+        "pavimentos",
+        "ano"
+      ]
+    },
+    {
+      "texto": "Suscetibilidade: não sabemos.",
+      "origem": [],
+      "escala": "SGB 2015, sem setorização no Recife",
+      "rotulo": "nao_sabemos"
+    }
+  ],
+  "secoes": [
+    {
+      "id": "predio",
+      "titulo": "O prédio",
+      "fase": "prototipo",
+      "bloco_prd": "cadastro",
+      "icone": "building",
+      "resumo": "4 pavimentos, construído em 1987",
+      "fatos": [
+        {
+          "id": "pavimentos",
+          "rotulo": "registro_oficial",
+          "valor": 4,
+          "unidade": null,
+          "texto": "4",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": null,
+          "ilustrativo": true,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        },
+        {
+          "id": "ano",
+          "rotulo": "registro_oficial",
+          "valor": 1987,
+          "unidade": null,
+          "texto": "1987",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": null,
+          "ilustrativo": true,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": true
+    },
+    {
+      "id": "transmissoes",
+      "titulo": "Transmissões no prédio",
+      "fase": "prototipo",
+      "bloco_prd": "fiscal",
+      "icone": "arrows-exchange",
+      "resumo": "14 avaliações fiscais desde 2015",
+      "fatos": [
+        {
+          "id": "transmissoes_total",
+          "rotulo": "registro_oficial",
+          "valor": 14,
+          "unidade": null,
+          "texto": "14",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": "avaliação fiscal do ITBI, não preço; agregado do edifício, 2015-2026",
+          "ilustrativo": true,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": true
+    },
+    {
+      "id": "obras",
+      "titulo": "Obras próximas",
+      "fase": "prototipo",
+      "bloco_prd": "cadastro",
+      "icone": "crane",
+      "resumo": "Nenhuma obra em 150 m desde 2017",
+      "fatos": [
+        {
+          "id": "obras_total",
+          "rotulo": "registro_oficial",
+          "valor": 0,
+          "unidade": null,
+          "texto": "0",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": "licenciamento em 150 m, só processos digitais desde 2017; ausência não é irregularidade",
+          "ilustrativo": true,
+          "estado": "vazio",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": true
+    },
+    {
+      "id": "defesa_civil",
+      "titulo": "Defesa Civil no bairro",
+      "fase": "prototipo",
+      "bloco_prd": "defesa_civil",
+      "icone": "home-shield",
+      "resumo": "20 atendimentos em 2024",
+      "fatos": [
+        {
+          "id": "dc_total",
+          "rotulo": "registro_oficial",
+          "valor": 20,
+          "unidade": "atendimentos",
+          "texto": "20",
+          "fonte": {
+            "base": "Registro de atendimentos da Defesa Civil 2024",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/registro-de-atendimentos-da-defesa-civil",
+            "atualizado_em": "2026-03-04",
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "atendimentos registrados pela Defesa Civil, 2024, por bairro; sem registro não significa sem risco",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": {
+        "tipo": "anel",
+        "rotulo_centro": "atendimentos",
+        "total": 20,
+        "fatias": [
+          {
+            "nome": "Encaminhamentos aos parceiros",
+            "valor": 7,
+            "cor": "cat-ipe-amarelo"
+          },
+          {
+            "nome": "Análise visual estrutural",
+            "valor": 5,
+            "cor": "cat-goiaba"
+          },
+          {
+            "nome": "Atendimento social",
+            "valor": 5,
+            "cor": "cat-ipe-roxo"
+          },
+          {
+            "nome": "Análise de processos",
+            "valor": 2,
+            "cor": "cat-terra"
+          },
+          {
+            "nome": "Ações porta a porta",
+            "valor": 1,
+            "cor": "cat-mare"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bairro",
+      "titulo": "O bairro",
+      "fase": "final",
+      "bloco_prd": "extra_mock",
+      "icone": "map-pin",
+      "resumo": "205 ocorrências em 12 meses, 10,4 por mil moradores",
+      "fatos": [
+        {
+          "id": "crime_total",
+          "rotulo": "registro_oficial",
+          "valor": 205,
+          "unidade": "ocorrências",
+          "texto": "205",
+          "fonte": {
+            "base": "registros de ocorrências",
+            "orgao": "SDS-PE",
+            "licenca": "não declarada; a Portaria 752/2023 exige citar a SDS",
+            "url": "https://crimebrasil.com.br/fontes/sds-pe",
+            "atualizado_em": "2026-09",
+            "consultado_em": "2026-10-15",
+            "via": "Crime Brasil"
+          },
+          "escala": "contagem bruta de ocorrências registradas, 12 meses (out/2025 a set/2026), por bairro informado no registro policial; registros da SDS-PE compilados pelo Crime Brasil; não é o total de crimes, há subnotificação",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        },
+        {
+          "id": "crime_taxa",
+          "rotulo": "registro_oficial",
+          "valor": 10.4,
+          "unidade": "por mil moradores",
+          "texto": "10,4 por mil moradores",
+          "fonte": {
+            "base": "Censo 2022",
+            "orgao": "IBGE, conforme apresentação do ICPS/Prefeitura do Recife",
+            "licenca": "citar o IBGE",
+            "url": "https://conselhodacidade.recife.pe.gov.br/sites/default/files/inline-files/2025.03.11%20-%20Apresenta%C3%A7%C3%A3o%20do%20ICPS_0.pdf",
+            "atualizado_em": "2025-03-11",
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "Moradores: Censo 2022",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": {
+        "tipo": "barras_vizinhos",
+        "ordem": "norte_para_sul",
+        "itens": [
+          {
+            "bairro": "Tamarineira",
+            "do_dossie": false,
+            "ocorrencias": 156,
+            "moradores": 13236,
+            "por_mil": 11.8,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          },
+          {
+            "bairro": "Rosarinho",
+            "do_dossie": false,
+            "ocorrencias": 106,
+            "moradores": 7271,
+            "por_mil": 14.6,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          },
+          {
+            "bairro": "Encruzilhada",
+            "do_dossie": false,
+            "ocorrencias": 197,
+            "moradores": 15249,
+            "por_mil": 12.9,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          },
+          {
+            "bairro": "Jaqueira",
+            "do_dossie": false,
+            "ocorrencias": 34,
+            "moradores": 1342,
+            "por_mil": 25.3,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          },
+          {
+            "bairro": "Aflitos",
+            "do_dossie": false,
+            "ocorrencias": 92,
+            "moradores": 4990,
+            "por_mil": 18.4,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          },
+          {
+            "bairro": "Torre",
+            "do_dossie": false,
+            "ocorrencias": 257,
+            "moradores": 20872,
+            "por_mil": 12.3,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          },
+          {
+            "bairro": "Espinheiro",
+            "do_dossie": false,
+            "ocorrencias": 197,
+            "moradores": 10741,
+            "por_mil": 18.3,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          },
+          {
+            "bairro": "Graças",
+            "do_dossie": true,
+            "ocorrencias": 205,
+            "moradores": 19694,
+            "por_mil": 10.4,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          },
+          {
+            "bairro": "Madalena",
+            "do_dossie": false,
+            "ocorrencias": 424,
+            "moradores": 25832,
+            "por_mil": 16.4,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          },
+          {
+            "bairro": "Derby",
+            "do_dossie": false,
+            "ocorrencias": 195,
+            "moradores": 1867,
+            "por_mil": 104.4,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          },
+          {
+            "bairro": "Boa Vista",
+            "do_dossie": false,
+            "ocorrencias": 883,
+            "moradores": null,
+            "por_mil": null,
+            "estado": "nao_sabemos",
+            "motivo_nao_sabemos": "população do Censo 2022 ainda não conferida para este bairro"
+          }
+        ],
+        "detalhe": {
+          "tipo": "anel",
+          "rotulo_centro": "ocorrências",
+          "total": 205,
+          "fatias": [
+            {
+              "nome": "Roubo a transeunte",
+              "valor": 75,
+              "cor": "crime-1"
+            },
+            {
+              "nome": "Ameaça",
+              "valor": 58,
+              "cor": "crime-2"
+            },
+            {
+              "nome": "Roubo em estabelecimento comercial ou de serviços",
+              "valor": 22,
+              "cor": "crime-3"
+            },
+            {
+              "nome": "Lesão corporal",
+              "valor": 19,
+              "cor": "crime-3"
+            },
+            {
+              "nome": "Roubo",
+              "valor": 8,
+              "cor": "crime-3"
+            },
+            {
+              "nome": "Outras",
+              "valor": 23,
+              "cor": "crime-3"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "tipologia",
+      "titulo": "Indício de tipologia",
+      "fase": "final",
+      "bloco_prd": "consistencia",
+      "icone": "alert-square",
+      "resumo": "3 sinais cadastrais: 4 pavimentos, 1987, padrão Médio",
+      "fatos": [
+        {
+          "id": "tipologia",
+          "rotulo": "inferencia",
+          "valor": true,
+          "unidade": null,
+          "texto": "indício por 3 sinais",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": "indício por 3 sinais cadastrais; não é laudo",
+          "ilustrativo": true,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": true
+    },
+    {
+      "id": "sol",
+      "titulo": "Sol e sombra",
+      "fase": "final",
+      "bloco_prd": "cadastro",
+      "icone": "sun",
+      "resumo": "altura inferida por pavimentos",
+      "fatos": [
+        {
+          "id": "altura",
+          "rotulo": "inferencia",
+          "valor": 36,
+          "unidade": "m",
+          "texto": "36 m",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": "altura inferida por pavimentos",
+          "ilustrativo": true,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": true
+    },
+    {
+      "id": "calor",
+      "titulo": "Calor e árvores",
+      "fase": "final",
+      "bloco_prd": "extra_final",
+      "icone": "temperature",
+      "resumo": "temperatura de superfície por célula de 100 m",
+      "fatos": [
+        {
+          "id": "calor_amplitude",
+          "rotulo": "nao_sabemos",
+          "valor": null,
+          "unidade": null,
+          "texto": "não sabemos",
+          "fonte": {
+            "base": "Landsat 8 e 9, pesquisa de viabilidade inv5",
+            "orgao": "USGS",
+            "licenca": "sem restrição, pede crédito",
+            "url": null,
+            "atualizado_em": "2025-09",
+            "consultado_em": "2026-10-14",
+            "via": null
+          },
+          "escala": "por célula de 100 m, temperatura de superfície, não do ar, ~09h30, mediana de 9 cenas 2022-2025",
+          "ilustrativo": false,
+          "estado": "nao_sabemos",
+          "motivo_nao_sabemos": "a pesquisa de viabilidade mediu a amplitude só em Boa Viagem e Casa Forte"
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": false
+    },
+    {
+      "id": "alagamento",
+      "titulo": "Alagamento e barulho",
+      "fase": "final",
+      "bloco_prd": "extra_final",
+      "icone": "droplet",
+      "resumo": "faixas marginais e vias",
+      "fatos": [
+        {
+          "id": "faixa_marginal",
+          "rotulo": "registro_oficial",
+          "valor": false,
+          "unidade": null,
+          "texto": "fora de faixa marginal",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": null,
+          "ilustrativo": true,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": true
+    },
+    {
+      "id": "renda",
+      "titulo": "Renda do setor",
+      "fase": "final",
+      "bloco_prd": "extra_final",
+      "icone": "chart-donut",
+      "resumo": "mediana do rendimento do responsável",
+      "fatos": [
+        {
+          "id": "renda_mediana",
+          "rotulo": "registro_oficial",
+          "valor": 4200,
+          "unidade": "R$",
+          "texto": "R$ 4.200",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": "mediana do rendimento mensal do responsável, setor censitário, Censo 2022, N = 312 responsáveis",
+          "ilustrativo": true,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": true
+    },
+    {
+      "id": "custo",
+      "titulo": "Custo por partes",
+      "fase": "final",
+      "bloco_prd": "fiscal",
+      "icone": "receipt",
+      "resumo": "5 partes, sem total",
+      "fatos": [
+        {
+          "id": "custo_transporte",
+          "rotulo": "nao_sabemos",
+          "valor": null,
+          "unidade": null,
+          "texto": "não sabemos",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": null,
+          "ilustrativo": false,
+          "estado": "nao_sabemos",
+          "motivo_nao_sabemos": "depende dos dados do domicílio"
+        },
+        {
+          "id": "custo_cesta",
+          "rotulo": "registro_oficial",
+          "valor": 720,
+          "unidade": "R$",
+          "texto": "R$ 720",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": "cesta básica DIEESE, Recife",
+          "ilustrativo": true,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": true
+    }
+  ],
+  "mapa": {
+    "raios_m": [
+      500,
+      1000,
+      1500
+    ],
+    "pontos": [],
+    "pontos_ilustrativos": true
+  }
+}

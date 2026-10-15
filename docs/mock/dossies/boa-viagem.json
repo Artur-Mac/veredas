@@ -1,0 +1,1026 @@
+{
+  "id": "boa-viagem",
+  "tipo": "aluguel",
+  "bairro": "Boa Viagem",
+  "fase": "prototipo",
+  "gerado_em": "2026-10-15",
+  "endereco": {
+    "logradouro": "Rua João Cardoso Aires",
+    "numero": "327",
+    "ilustrativo": false
+  },
+  "lote": {
+    "dsqfl": null,
+    "confirmado": true,
+    "centro": [
+      -34.907662,
+      -8.142946
+    ],
+    "poligono": null,
+    "ilustrativo_poligono": true
+  },
+  "anuncio": {
+    "lido_em": "2026-10-15",
+    "observacao": "campos do anúncio de venda real; o aluguel é ilustrativo",
+    "campos": {
+      "aluguel": {
+        "id": "anuncio_aluguel",
+        "rotulo": "declarado",
+        "valor": 4500,
+        "unidade": "R$/mês",
+        "texto": "R$ 4.500/mês",
+        "fonte": {
+          "base": "dado ilustrativo, pendente de fonte",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": null,
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": true,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      },
+      "condominio": {
+        "id": "anuncio_condominio",
+        "rotulo": "declarado",
+        "valor": 1190,
+        "unidade": "R$/mês",
+        "texto": "R$ 1.190/mês",
+        "fonte": {
+          "base": "anúncio",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": "2026-10-15",
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": false,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      },
+      "iptu": {
+        "id": "anuncio_iptu",
+        "rotulo": "declarado",
+        "valor": 288,
+        "unidade": "R$",
+        "texto": "R$ 288, período não informado",
+        "fonte": {
+          "base": "anúncio",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": "2026-10-15",
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": false,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      },
+      "area": {
+        "id": "anuncio_area",
+        "rotulo": "declarado",
+        "valor": 125,
+        "unidade": "m²",
+        "texto": "125 m²",
+        "fonte": {
+          "base": "anúncio",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": "2026-10-15",
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": false,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      },
+      "quartos": {
+        "id": "anuncio_quartos",
+        "rotulo": "declarado",
+        "valor": 4,
+        "unidade": null,
+        "texto": "4",
+        "fonte": {
+          "base": "anúncio",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": "2026-10-15",
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": false,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      },
+      "suites": {
+        "id": "anuncio_suites",
+        "rotulo": "declarado",
+        "valor": 3,
+        "unidade": null,
+        "texto": "3",
+        "fonte": {
+          "base": "anúncio",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": "2026-10-15",
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": false,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      },
+      "banheiros": {
+        "id": "anuncio_banheiros",
+        "rotulo": "declarado",
+        "valor": 1,
+        "unidade": null,
+        "texto": "1",
+        "fonte": {
+          "base": "anúncio",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": "2026-10-15",
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": false,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      },
+      "vagas": {
+        "id": "anuncio_vagas",
+        "rotulo": "declarado",
+        "valor": 3,
+        "unidade": null,
+        "texto": "3",
+        "fonte": {
+          "base": "anúncio",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": "2026-10-15",
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": false,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      },
+      "andar": {
+        "id": "anuncio_andar",
+        "rotulo": "declarado",
+        "valor": 1,
+        "unidade": null,
+        "texto": "1º andar",
+        "fonte": {
+          "base": "anúncio",
+          "orgao": null,
+          "licenca": null,
+          "url": null,
+          "atualizado_em": null,
+          "consultado_em": "2026-10-15",
+          "via": null
+        },
+        "escala": null,
+        "ilustrativo": false,
+        "estado": "padrao",
+        "motivo_nao_sabemos": null
+      }
+    }
+  },
+  "preco": {
+    "valor_m2": 36,
+    "regua": {
+      "universo": "aluguéis anunciados",
+      "recorte": "bairro",
+      "periodo_meses": 12,
+      "n": 186,
+      "p25": 29,
+      "mediana": 34,
+      "p75": 41,
+      "minimo": 20,
+      "maximo": 57,
+      "valor_anuncio": 36,
+      "posicao_percentil": 58,
+      "unidade": "R$/m²",
+      "rotulo": "declarado",
+      "fonte": {
+        "base": "dado ilustrativo, pendente de fonte",
+        "orgao": null,
+        "licenca": null,
+        "url": null,
+        "atualizado_em": null,
+        "consultado_em": null,
+        "via": null
+      },
+      "escala": "anúncios de aluguel, Boa Viagem, 12 meses, N = 186",
+      "ilustrativo": true,
+      "frase": "Acima de 58% dos aluguéis anunciados no bairro."
+    }
+  },
+  "visita": [
+    {
+      "texto": "O anúncio diz 3 suítes e 1 banheiro.",
+      "origem": [
+        "anuncio_suites",
+        "anuncio_banheiros"
+      ]
+    },
+    {
+      "texto": "O anúncio diz IPTU de R$ 288, sem período; o IPTU 2026 cobrado no prédio vai de R$ 3.934 a R$ 4.457 por ano.",
+      "origem": [
+        "anuncio_iptu",
+        "iptu_cobrado"
+      ]
+    },
+    {
+      "texto": "Suscetibilidade: não sabemos.",
+      "origem": [],
+      "escala": "SGB 2015, sem setorização no Recife",
+      "rotulo": "nao_sabemos"
+    }
+  ],
+  "secoes": [
+    {
+      "id": "predio",
+      "titulo": "O prédio",
+      "fase": "prototipo",
+      "bloco_prd": "cadastro",
+      "icone": "building",
+      "resumo": "44 unidades residenciais, construído em 2010",
+      "fatos": [
+        {
+          "id": "unidades",
+          "rotulo": "registro_oficial",
+          "valor": 44,
+          "unidade": null,
+          "texto": "44 unidades residenciais",
+          "fonte": {
+            "base": "IPTU 2026",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+            "atualizado_em": "2026-10-03",
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "área e valor cobrado, IPTU 2026, Prefeitura do Recife",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        },
+        {
+          "id": "ano",
+          "rotulo": "registro_oficial",
+          "valor": 2010,
+          "unidade": null,
+          "texto": "2010",
+          "fonte": {
+            "base": "IPTU 2026",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+            "atualizado_em": "2026-10-03",
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "ano da construção corrigido, IPTU 2026",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        },
+        {
+          "id": "area_unidade",
+          "rotulo": "registro_oficial",
+          "valor": 124.81,
+          "unidade": "m²",
+          "texto": "124,81 m² em todas as unidades",
+          "fonte": {
+            "base": "IPTU 2026",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+            "atualizado_em": "2026-10-03",
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "área e valor cobrado, IPTU 2026, Prefeitura do Recife",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        },
+        {
+          "id": "iptu_cobrado",
+          "rotulo": "registro_oficial",
+          "valor": [
+            3934,
+            4457
+          ],
+          "unidade": "R$/ano",
+          "texto": "de R$ 3.934 a R$ 4.457 por ano",
+          "fonte": {
+            "base": "IPTU 2026",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+            "atualizado_em": "2026-10-03",
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "área e valor cobrado, IPTU 2026, Prefeitura do Recife",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        },
+        {
+          "id": "padrao",
+          "rotulo": "registro_oficial",
+          "valor": "Superior",
+          "unidade": null,
+          "texto": "Superior",
+          "fonte": {
+            "base": "IPTU 2026",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+            "atualizado_em": "2026-10-03",
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "tipo de padrão da construção, IPTU 2026",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        },
+        {
+          "id": "pavimentos",
+          "rotulo": "registro_oficial",
+          "valor": 12,
+          "unidade": null,
+          "texto": "12",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": null,
+          "ilustrativo": true,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        },
+        {
+          "id": "area_lote",
+          "rotulo": "registro_oficial",
+          "valor": 1240,
+          "unidade": "m²",
+          "texto": "1.240 m²",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": null,
+          "ilustrativo": true,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": false
+    },
+    {
+      "id": "transmissoes",
+      "titulo": "Transmissões no prédio",
+      "fase": "prototipo",
+      "bloco_prd": "fiscal",
+      "icone": "arrows-exchange",
+      "resumo": "56 avaliações fiscais desde 2015",
+      "fatos": [
+        {
+          "id": "transmissoes_total",
+          "rotulo": "registro_oficial",
+          "valor": 56,
+          "unidade": null,
+          "texto": "56",
+          "fonte": {
+            "base": "ITBI 2015-2026",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/imposto-sobre-transmissao-de-bens-imoveis-itbi",
+            "atualizado_em": null,
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "avaliação fiscal do ITBI, não preço; agregado do edifício, 2015-2026",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        },
+        {
+          "id": "transmissoes_mediana",
+          "rotulo": "registro_oficial",
+          "valor": 4339,
+          "unidade": "R$/m²",
+          "texto": "mediana de R$ 4.339/m²",
+          "fonte": {
+            "base": "ITBI 2015-2026",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/imposto-sobre-transmissao-de-bens-imoveis-itbi",
+            "atualizado_em": null,
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "avaliação fiscal do ITBI, não preço; agregado do edifício, 2015-2026",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        },
+        {
+          "id": "transmissoes_2017",
+          "rotulo": "nao_sabemos",
+          "valor": null,
+          "unidade": null,
+          "texto": "não sabemos",
+          "fonte": {
+            "base": "ITBI 2015-2026",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/imposto-sobre-transmissao-de-bens-imoveis-itbi",
+            "atualizado_em": null,
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": null,
+          "ilustrativo": false,
+          "estado": "nao_sabemos",
+          "motivo_nao_sabemos": "o arquivo de 2017 não está no datastore do portal"
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": false
+    },
+    {
+      "id": "obras",
+      "titulo": "Obras próximas",
+      "fase": "prototipo",
+      "bloco_prd": "cadastro",
+      "icone": "crane",
+      "resumo": "49 registros de obra em 150 m desde 2018",
+      "fatos": [
+        {
+          "id": "obras_total",
+          "rotulo": "registro_oficial",
+          "valor": 49,
+          "unidade": null,
+          "texto": "49",
+          "fonte": {
+            "base": "Licenciamento Urbanístico",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/licenciamento-urbanistico",
+            "atualizado_em": "2026-06-17",
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "licenciamento em 150 m, só processos digitais desde 2017; ausência não é irregularidade",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        },
+        {
+          "id": "obras_demolicao",
+          "rotulo": "registro_oficial",
+          "valor": 4,
+          "unidade": null,
+          "texto": "4 alvarás de demolição deferidos em 2026, entre 118 m e 140 m",
+          "fonte": {
+            "base": "Licenciamento Urbanístico",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/licenciamento-urbanistico",
+            "atualizado_em": "2026-06-17",
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "licenciamento em 150 m, só processos digitais desde 2017; ausência não é irregularidade",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": false
+    },
+    {
+      "id": "defesa_civil",
+      "titulo": "Defesa Civil no bairro",
+      "fase": "prototipo",
+      "bloco_prd": "defesa_civil",
+      "icone": "home-shield",
+      "resumo": "206 atendimentos em 2024",
+      "fatos": [
+        {
+          "id": "dc_total",
+          "rotulo": "registro_oficial",
+          "valor": 206,
+          "unidade": "atendimentos",
+          "texto": "206",
+          "fonte": {
+            "base": "Registro de atendimentos da Defesa Civil 2024",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/registro-de-atendimentos-da-defesa-civil",
+            "atualizado_em": "2026-03-04",
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "atendimentos registrados pela Defesa Civil, 2024, por bairro; sem registro não significa sem risco",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": {
+        "tipo": "anel",
+        "rotulo_centro": "atendimentos",
+        "total": 206,
+        "fatias": [
+          {
+            "nome": "Atendimento social",
+            "valor": 65,
+            "cor": "cat-ipe-roxo"
+          },
+          {
+            "nome": "Análise visual estrutural",
+            "valor": 63,
+            "cor": "cat-goiaba"
+          },
+          {
+            "nome": "Encaminhamentos aos parceiros",
+            "valor": 44,
+            "cor": "cat-ipe-amarelo"
+          },
+          {
+            "nome": "Ações porta a porta",
+            "valor": 19,
+            "cor": "cat-mare"
+          },
+          {
+            "nome": "Outros",
+            "valor": 15,
+            "cor": "cat-outros"
+          }
+        ]
+      }
+    },
+    {
+      "id": "linha_do_tempo",
+      "titulo": "Linha do tempo do prédio",
+      "fase": "final",
+      "bloco_prd": "extra_final",
+      "icone": "timeline",
+      "resumo": "2010, construção; 56 transmissões de 2015 a 2026",
+      "fatos": [
+        {
+          "id": "lt_construcao",
+          "rotulo": "registro_oficial",
+          "valor": 2010,
+          "unidade": null,
+          "texto": "2010, construção",
+          "fonte": {
+            "base": "IPTU 2026",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+            "atualizado_em": "2026-10-03",
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "ano da construção corrigido, IPTU 2026",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        },
+        {
+          "id": "lt_transmissoes",
+          "rotulo": "registro_oficial",
+          "valor": {
+            "2015": 15,
+            "2016": 12,
+            "2018": 5,
+            "2019": 2,
+            "2020": 3,
+            "2021": 3,
+            "2022": 4,
+            "2023": 3,
+            "2024": 3,
+            "2025": 3,
+            "2026": 3
+          },
+          "unidade": null,
+          "texto": "transmissões por ano",
+          "fonte": {
+            "base": "ITBI 2015-2026",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/imposto-sobre-transmissao-de-bens-imoveis-itbi",
+            "atualizado_em": null,
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "avaliação fiscal do ITBI, não preço; agregado do edifício, 2015-2026",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": false
+    },
+    {
+      "id": "tipologia",
+      "titulo": "Indício de tipologia",
+      "fase": "final",
+      "bloco_prd": "consistencia",
+      "icone": "alert-square",
+      "resumo": "Sem indício: o prédio não reúne os 3 sinais",
+      "fatos": [
+        {
+          "id": "tipologia",
+          "rotulo": "inferencia",
+          "valor": false,
+          "unidade": null,
+          "texto": "sem indício: construído em 2010, padrão Superior",
+          "fonte": {
+            "base": "IPTU 2026",
+            "orgao": "Prefeitura do Recife",
+            "licenca": "ODbL",
+            "url": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+            "atualizado_em": "2026-10-03",
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "indício por 3 sinais cadastrais; não é laudo",
+          "ilustrativo": false,
+          "estado": "vazio",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": false
+    },
+    {
+      "id": "bairro",
+      "titulo": "O bairro",
+      "fase": "final",
+      "bloco_prd": "extra_mock",
+      "icone": "map-pin",
+      "resumo": "2.165 ocorrências em 12 meses, 17,2 por mil moradores",
+      "fatos": [
+        {
+          "id": "crime_total",
+          "rotulo": "registro_oficial",
+          "valor": 2165,
+          "unidade": "ocorrências",
+          "texto": "2.165",
+          "fonte": {
+            "base": "registros de ocorrências",
+            "orgao": "SDS-PE",
+            "licenca": "não declarada; a Portaria 752/2023 exige citar a SDS",
+            "url": "https://crimebrasil.com.br/fontes/sds-pe",
+            "atualizado_em": "2026-09",
+            "consultado_em": "2026-10-15",
+            "via": "Crime Brasil"
+          },
+          "escala": "contagem bruta de ocorrências registradas, 12 meses (out/2025 a set/2026), por bairro informado no registro policial; registros da SDS-PE compilados pelo Crime Brasil; não é o total de crimes, há subnotificação",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        },
+        {
+          "id": "crime_taxa",
+          "rotulo": "registro_oficial",
+          "valor": 17.2,
+          "unidade": "por mil moradores",
+          "texto": "17,2 por mil moradores",
+          "fonte": {
+            "base": "Censo 2022",
+            "orgao": "IBGE, conforme apresentação do ICPS/Prefeitura do Recife",
+            "licenca": "citar o IBGE",
+            "url": "https://conselhodacidade.recife.pe.gov.br/sites/default/files/inline-files/2025.03.11%20-%20Apresenta%C3%A7%C3%A3o%20do%20ICPS_0.pdf",
+            "atualizado_em": "2025-03-11",
+            "consultado_em": "2026-10-15",
+            "via": null
+          },
+          "escala": "Moradores: Censo 2022",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": {
+        "tipo": "barras_vizinhos",
+        "ordem": "norte_para_sul",
+        "itens": [
+          {
+            "bairro": "Pina",
+            "do_dossie": false,
+            "ocorrencias": 654,
+            "moradores": 29195,
+            "por_mil": 22.4,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          },
+          {
+            "bairro": "Imbiribeira",
+            "do_dossie": false,
+            "ocorrencias": 905,
+            "moradores": 52158,
+            "por_mil": 17.4,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          },
+          {
+            "bairro": "Ibura",
+            "do_dossie": false,
+            "ocorrencias": 820,
+            "moradores": 45448,
+            "por_mil": 18.0,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          },
+          {
+            "bairro": "Boa Viagem",
+            "do_dossie": true,
+            "ocorrencias": 2165,
+            "moradores": 125805,
+            "por_mil": 17.2,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          },
+          {
+            "bairro": "Jordão",
+            "do_dossie": false,
+            "ocorrencias": 261,
+            "moradores": 20449,
+            "por_mil": 12.8,
+            "estado": "padrao",
+            "motivo_nao_sabemos": null
+          }
+        ],
+        "detalhe": {
+          "tipo": "anel",
+          "rotulo_centro": "ocorrências",
+          "total": 2165,
+          "fatias": [
+            {
+              "nome": "Ameaça",
+              "valor": 616,
+              "cor": "crime-1"
+            },
+            {
+              "nome": "Roubo a transeunte",
+              "valor": 581,
+              "cor": "crime-2"
+            },
+            {
+              "nome": "Roubo",
+              "valor": 212,
+              "cor": "crime-3"
+            },
+            {
+              "nome": "Furto",
+              "valor": 205,
+              "cor": "crime-3"
+            },
+            {
+              "nome": "Lesão corporal",
+              "valor": 157,
+              "cor": "crime-3"
+            },
+            {
+              "nome": "Outras",
+              "valor": 394,
+              "cor": "crime-3"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "sol",
+      "titulo": "Sol e sombra",
+      "fase": "final",
+      "bloco_prd": "cadastro",
+      "icone": "sun",
+      "resumo": "altura inferida por pavimentos",
+      "fatos": [
+        {
+          "id": "altura",
+          "rotulo": "inferencia",
+          "valor": 36,
+          "unidade": "m",
+          "texto": "36 m",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": "altura inferida por pavimentos",
+          "ilustrativo": true,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": true
+    },
+    {
+      "id": "calor",
+      "titulo": "Calor e árvores",
+      "fase": "final",
+      "bloco_prd": "extra_final",
+      "icone": "temperature",
+      "resumo": "temperatura de superfície por célula de 100 m",
+      "fatos": [
+        {
+          "id": "calor_amplitude",
+          "rotulo": "inferencia",
+          "valor": 6.6,
+          "unidade": "°C",
+          "texto": "6,6 °C entre as células mais quentes e mais frescas do bairro (P90 − P10)",
+          "fonte": {
+            "base": "Landsat 8 e 9, pesquisa de viabilidade inv5",
+            "orgao": "USGS",
+            "licenca": "sem restrição, pede crédito",
+            "url": null,
+            "atualizado_em": "2025-09",
+            "consultado_em": "2026-10-14",
+            "via": null
+          },
+          "escala": "por célula de 100 m, temperatura de superfície, não do ar, ~09h30, mediana de 9 cenas 2022-2025",
+          "ilustrativo": false,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": false
+    },
+    {
+      "id": "alagamento",
+      "titulo": "Alagamento e barulho",
+      "fase": "final",
+      "bloco_prd": "extra_final",
+      "icone": "droplet",
+      "resumo": "faixas marginais e vias",
+      "fatos": [
+        {
+          "id": "faixa_marginal",
+          "rotulo": "registro_oficial",
+          "valor": false,
+          "unidade": null,
+          "texto": "fora de faixa marginal",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": null,
+          "ilustrativo": true,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": true
+    },
+    {
+      "id": "renda",
+      "titulo": "Renda do setor",
+      "fase": "final",
+      "bloco_prd": "extra_final",
+      "icone": "chart-donut",
+      "resumo": "mediana do rendimento do responsável",
+      "fatos": [
+        {
+          "id": "renda_mediana",
+          "rotulo": "registro_oficial",
+          "valor": 4200,
+          "unidade": "R$",
+          "texto": "R$ 4.200",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": "mediana do rendimento mensal do responsável, setor censitário, Censo 2022, N = 312 responsáveis",
+          "ilustrativo": true,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": true
+    },
+    {
+      "id": "custo",
+      "titulo": "Custo por partes",
+      "fase": "final",
+      "bloco_prd": "fiscal",
+      "icone": "receipt",
+      "resumo": "5 partes, sem total",
+      "fatos": [
+        {
+          "id": "custo_transporte",
+          "rotulo": "nao_sabemos",
+          "valor": null,
+          "unidade": null,
+          "texto": "não sabemos",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": null,
+          "ilustrativo": false,
+          "estado": "nao_sabemos",
+          "motivo_nao_sabemos": "depende dos dados do domicílio"
+        },
+        {
+          "id": "custo_cesta",
+          "rotulo": "registro_oficial",
+          "valor": 720,
+          "unidade": "R$",
+          "texto": "R$ 720",
+          "fonte": {
+            "base": "dado ilustrativo, pendente de fonte",
+            "orgao": null,
+            "licenca": null,
+            "url": null,
+            "atualizado_em": null,
+            "consultado_em": null,
+            "via": null
+          },
+          "escala": "cesta básica DIEESE, Recife",
+          "ilustrativo": true,
+          "estado": "padrao",
+          "motivo_nao_sabemos": null
+        }
+      ],
+      "grafico": null,
+      "ilustrativo": true
+    }
+  ],
+  "mapa": {
+    "raios_m": [
+      500,
+      1000,
+      1500
+    ],
+    "pontos": [],
+    "pontos_ilustrativos": true
+  }
+}
