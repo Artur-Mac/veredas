@@ -21,7 +21,7 @@ const ROTAS = [
   { tela: "T13", padrao: "/dossie/:id/linha-do-tempo", criar: telaLinhaDoTempo, final: true },
   { tela: "T14", padrao: "/dossie/:id/domicilio", criar: folhaDomicilio, folha: true, final: true },
   { tela: "T15", padrao: "/sobre-os-dados", criar: telaSobre },
-  { tela: "T16", padrao: "/creditos", criar: folhaCreditos, folha: true, base: telaMeus, final: true },
+  { tela: "T16", padrao: "/creditos", criar: folhaCreditos, folha: true, base: telaMeus },
 ];
 
 const NOMES_DAS_TELAS = {
@@ -316,7 +316,7 @@ function desenharBarra() {
     ["T15", "#/sobre-os-dados"],
     ["T16", "#/creditos"],
   ];
-  const finais = new Set(["T13", "T14", "T16"]);
+  const finais = new Set(["T13", "T14"]);
   const itens = links.map(([tela, href]) => {
     const sub = tela === "T2"
       ? ESTADOS_DE_T2.slice(1).map(([valor, nome]) => `<a class="mock-sub tipo-apoio" href="#/ler?url=&estado=${valor}"${atual === `#/ler?url=&estado=${valor}` ? ` aria-current="page"` : ""}>${nome}</a>`).join("")

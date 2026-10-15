@@ -45,7 +45,7 @@ function cabecalhoDaEntrada() {
       <img class="logo-app logo-claro" src="../kv/logotipo-claro.svg" alt="Vereda">
       <img class="logo-app logo-escuro" src="../kv/logotipo-escuro.svg" alt="Vereda">
     </h1>
-    <a class="pilula-credito tipo-etiqueta pressionavel" href="#/creditos" data-fase="final" aria-label="${disponiveis} créditos, ver extrato">${icone("coins", "icone-p")}<span>${disponiveis}</span></a>
+    <a class="pilula-credito tipo-etiqueta pressionavel" href="#/creditos" aria-label="${disponiveis} créditos, ver extrato">${icone("coins", "icone-p")}<span>${disponiveis}</span></a>
   </header>`;
 }
 
@@ -75,11 +75,10 @@ function cartaoCreditos() {
   const total = resumo.cotaInicial + resumo.ganhos;
   const trilho = Array.from({ length: total }, (_, i) => `<span class="${i < resumo.disponiveis ? "disponivel" : ""}"></span>`).join("");
   const ganhos = COMO_GANHAR.map(([nomeIcone, tipo, mais]) => `<li class="tipo-corpo"><span class="secao-icone secao-icone-p">${icone(nomeIcone, "icone-p")}</span><span class="nome">${NOMES_DE_MOVIMENTO[tipo]}</span><span class="mais">+${mais}</span></li>`).join("");
-  return `<section class="cartao" data-fase="final"><div class="cartao-corpo pilha">
+  return `<section class="cartao"><div class="cartao-corpo pilha">
     <div class="creditos-topo">
       <span class="secao-icone">${icone("coins")}</span>
       <span class="secao-textos"><span class="tipo-secao">Créditos</span><span class="tipo-apoio apoio">Um crédito abre um dossiê</span></span>
-      ${etiquetaFase("final")}
     </div>
     <div class="creditos-numero"><span class="tipo-numero">${resumo.disponiveis}</span><span class="tipo-corpo">${resumo.disponiveis === 1 ? "dossiê disponível" : "dossiês disponíveis"}</span></div>
     <div class="creditos-trilho" role="img" aria-label="${resumo.disponiveis} disponíveis de ${total}">${trilho}</div>
