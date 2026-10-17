@@ -6,6 +6,29 @@ import { IDS_DOSSIES, creditos, dossieOuErro, dossies } from "../src/dados/dossi
 import { formatarData, formatarDistancia, formatarNumero, formatarReais } from "../src/dados/formatos";
 import { distanciaMetros, linkDoMapa, metrosParaCoordenada } from "../src/dados/geo";
 import { estadoDoFato } from "../src/dados/estadoDoFato";
+import { anuncioExemplo, eAnuncioExemplo } from "../src/dados/anuncioExemplo";
+
+describe("anúncio de referência", () => {
+  it("reconhece o link fornecido com parâmetros de busca e sem www", () => {
+    expect(eAnuncioExemplo(`${anuncioExemplo.url}?search_id=referencia&search_rank=0`)).toBe(true);
+    expect(eAnuncioExemplo(anuncioExemplo.url.replace("www.", ""))).toBe(true);
+  });
+
+  it("não confunde outros imóveis, domínios ou identificadores parciais com a referência", () => {
+    expect(eAnuncioExemplo(anuncioExemplo.url.replace("895773394", "895773395"))).toBe(false);
+    expect(eAnuncioExemplo(anuncioExemplo.url.replace("quintoandar.com.br", "quintoandar.com.br.exemplo.com"))).toBe(false);
+    expect(eAnuncioExemplo(anuncioExemplo.url.replace("895773394/", "8957733940/"))).toBe(false);
+    expect(eAnuncioExemplo("javascript:alert(1)")).toBe(false);
+    expect(eAnuncioExemplo("um link inválido")).toBe(false);
+  });
+
+  it("mantém o exemplo de São Paulo fora dos dossiês de Recife", () => {
+    expect(anuncioExemplo.cidade).toBe("São Paulo");
+    expect([...dossies.values()].some((dossie) => dossie.bairro === anuncioExemplo.bairro)).toBe(false);
+    expect(anuncioExemplo.fotos.length).toBeGreaterThan(0);
+    expect(anuncioExemplo.fotos.every((foto) => new URL(foto.url).hostname === "www.quintoandar.com.br" && foto.descricao)).toBe(true);
+  });
+});
 
 describe("dados do mock", () => {
   it("valida os cinco dossiês contra o esquema", () => {

@@ -128,7 +128,12 @@ export const esquemaDoDossie = z.strictObject({
     poligono: z.array(coordenada).nullable(),
     ilustrativo_poligono: z.boolean(),
   }),
-  anuncio: z.strictObject({ lido_em: z.string(), observacao: z.string(), campos: camposDoAnuncio }),
+  anuncio: z.strictObject({
+    lido_em: z.string(),
+    observacao: z.string(),
+    imagens: z.array(z.string().url().refine((url) => /^https?:\/\//i.test(url))).max(10).optional(),
+    campos: camposDoAnuncio,
+  }),
   preco: z.strictObject({ valor_m2: z.number(), regua }),
   visita: z.array(
     z.strictObject({

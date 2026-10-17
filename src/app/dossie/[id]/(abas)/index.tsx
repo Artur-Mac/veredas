@@ -4,7 +4,7 @@ import { useCallback, useRef } from "react";
 import { Share, View, type ScrollView } from "react-native";
 import { Botao, BotaoIcone } from "../../../../componentes/Botao";
 import { SecoesDoDossie } from "../../../../componentes/dossie/Secoes";
-import { CartaoEndereco, CartaoPreco, CartaoVisita, MapaDoTopo } from "../../../../componentes/dossie/Topo";
+import { CartaoDoAnuncio, CartaoVisita, TopoDoDossie } from "../../../../componentes/dossie/Topo";
 import { AreaDeBotoes, Cabecalho, Rolagem, Tela } from "../../../../componentes/Tela";
 import { secaoDoFato } from "../../../../dados/consultas";
 import { useSessao } from "../../../../estado/Sessao";
@@ -28,7 +28,7 @@ export default function TelaDoDossie() {
   const abrirFato = useCallback(
     (idFato: string) => {
       if (idFato.startsWith("anuncio_")) {
-        irPara("endereco");
+        irPara("imovel");
         return;
       }
       const secao = secaoDoFato(dossie, idFato);
@@ -43,7 +43,7 @@ export default function TelaDoDossie() {
     useCallback(() => {
       if (!recebido || !recebido.startsWith(`${dossie.id}/`)) return;
       const idFato = recebido.slice(dossie.id.length + 1);
-      const quando = setTimeout(() => (idFato === "regua" ? irPara("preco") : abrirFato(idFato)), 100);
+      const quando = setTimeout(() => (idFato === "regua" ? irPara("imovel") : abrirFato(idFato)), 100);
       return () => clearTimeout(quando);
     }, [recebido, dossie.id, irPara, abrirFato]),
   );
@@ -56,12 +56,9 @@ export default function TelaDoDossie() {
     <Tela comAbas>
       <Cabecalho titulo="Dossiê" pai="/" direita={<BotaoIcone icone="share" acessivel="Compartilhar" onPress={compartilhar} />} />
       <Rolagem ref={rolagem}>
-        <MapaDoTopo dossie={dossie} />
-        <View onLayout={(e) => medir("endereco", e.nativeEvent.layout.y)}>
-          <CartaoEndereco dossie={dossie} />
-        </View>
-        <View onLayout={(e) => medir("preco", e.nativeEvent.layout.y)}>
-          <CartaoPreco dossie={dossie} />
+        <TopoDoDossie dossie={dossie} />
+        <View onLayout={(e) => medir("imovel", e.nativeEvent.layout.y)}>
+          <CartaoDoAnuncio dossie={dossie} />
         </View>
         <CartaoVisita dossie={dossie} aoAbrirFato={abrirFato} />
         <SecoesDoDossie dossie={dossie} aoMedir={medir} />

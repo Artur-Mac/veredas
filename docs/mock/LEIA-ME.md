@@ -16,3 +16,9 @@ Rode na raiz do repositório e abra `http://127.0.0.1:8765/docs/mock/`. As telas
 | `fontes/` | As 5 instâncias estáticas da Archivo, do repositório oficial (licença OFL em `fontes/OFL.txt`) |
 
 A barra ao lado do aparelho é do mock, não do app: tema (sistema, claro, escuro), "Mostrar o Final", estado forçado (padrão, carregando, contestado, em verificação), dossiê e a lista de telas.
+
+## Referência de fotos no app Expo
+
+O arquivo `anuncios/quintoandar-895773394.json` registra o anúncio fornecido pelo usuário, consultado em 17/10/2026: endereço, valores e URLs públicas de dez fotos do QuintoAndar. É uma captura dos campos do anúncio nessa data; não há leitura automática de outros links nem cópia local das imagens.
+
+No app Expo, cole o link desse imóvel na Home ou abra **Controles do mock → Fotos do anúncio → Ver exemplo com fotos**. A prévia permite deslizar, usar anterior/próxima e ampliar as imagens. Como o imóvel fica no Brás, em São Paulo, a prévia informa a cobertura atual de Recife e não cria um dossiê com dados municipais para ele. Os cinco dossiês continuam com o mapa quando não possuem fotos.

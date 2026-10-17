@@ -2640,6 +2640,398 @@
     .field-dark-row:last-child {
       border-bottom: none;
     }
+      /* Dossiê: a mesma foto, papel, tipografia e respiro da Home. */
+    #view-dossier, #view-analyzing { --dossier-muted: #625C51; }
+    .dossier-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+    .dossier-toolbar > span { font-size:13px; color:var(--ink-secondary); }
+    .dossier-toolbar .ed-btn-secondary { min-height:44px; font-size:12px; padding:8px 12px; }
+    .dossier-stack { gap:20px; }
+    .dossier-property.ed-card { padding:0; overflow:hidden; }
+    .dossier-gallery { position:relative; background:var(--bg-subtle); }
+    .dossier-gallery [hidden] { display:none !important; }
+    .dossier-photo-track { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; aspect-ratio: 16/10; }
+    .dossier-photo-track::-webkit-scrollbar { display:none; }
+    .dossier-photo-track img { flex:0 0 100%; width:100%; min-width:0; height:100%; object-fit:cover; scroll-snap-align:start; }
+    .dossier-gallery-controls { position:absolute; bottom:12px; left:12px; display:flex; align-items:center; background:rgba(23,23,23,.8); color:white; border-radius:24px; font-size:12px; }
+    .dossier-gallery-controls button { width:44px; height:44px; border:0; background:transparent; color:inherit; font-size:24px; cursor:pointer; border-radius:50%; }
+    .dossier-gallery-controls button:disabled { opacity:.35; cursor:default; }
+    .dossier-map-link { position:absolute; right:12px; bottom:12px; min-height:44px; padding:8px 12px; background:rgba(255,255,255,.95); color:var(--ink-primary); border:1px solid rgba(23,23,23,.1); border-radius:10px; font:600 12px var(--font-sans); cursor:pointer; }
+    .dossier-photo-fallback > p { padding:72px 16px; text-align:center; color:var(--ink-secondary); }
+    .dossier-photo-fallback button { display:none; }
+    .dossier-property-body { padding:18px 16px 14px; }
+    .dossier-location { font-size:12px; color:var(--dossier-muted); margin-bottom:5px; }
+    .dossier-property-body .ed-title-lg { font-size:25px; line-height:1.2; }
+    .dossier-address { font-size:12px; color:var(--dossier-muted); margin-top:5px; }
+    .dossier-property-body .vereda-specs-strip { flex-wrap:wrap; row-gap:8px; margin:16px 0; }
+    .dossier-price-line { display:flex; align-items:flex-end; justify-content:space-between; gap:8px; padding-top:14px; border-top:1px solid var(--border-hairline); }
+    .dossier-label { color:var(--dossier-muted); font-size:12px; }
+    .dossier-main-price { font:500 28px/1.2 var(--font-display); margin-top:4px; font-variant-numeric:tabular-nums; letter-spacing:-.02em; }
+    .dossier-main-price small { font:400 13px var(--font-sans); margin-left:4px; color:var(--dossier-muted); }
+    .dossier-unit { font-size:12px; color:var(--dossier-muted); padding-bottom:4px; white-space:nowrap; }
+    .dossier-costs { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+    .dossier-costs > div { display:flex; flex-direction:column; gap:4px; min-width:0; }
+    .dossier-costs span { font-size:12px; color:var(--dossier-muted); }
+    .dossier-costs strong { font-size:13px; font-weight:600; }
+    .dossier-origin { display:flex; align-items:center; justify-content:space-between; font-size:11px; color:var(--dossier-muted); margin-top:8px; }
+    .dossier-origin .fact-link-btn, #view-dossier .fact-link-btn { min-height:44px; }
+    .dossier-lot { border-top:1px solid var(--border-hairline); padding-top:10px; font-size:12px; color:var(--ink-secondary); display:flex; align-items:center; gap:12px; }
+    .dossier-lot .fact-link-btn { flex-shrink:0; }
+    .dossier-section-title { font:500 21px/1.2 var(--font-display); letter-spacing:-.02em; }
+    .dossier-facts > h2 { padding:20px 16px 8px; }
+    .dossier-facts .fact-sec-title { font:600 13px/1.4 var(--font-sans); }
+    .dossier-facts .fact-sec-summary { font-size:12px; color:var(--dossier-muted); max-width:34ch; }
+    .dossier-facts .fact-sec-head { align-items:center; padding:16px; }
+    .dossier-facts .fact-sec-chevron { font-size:10px; }
+    .dossier-more > summary { display:flex; justify-content:space-between; align-items:center; padding:16px; font-size:12px; font-weight:600; cursor:pointer; list-style:none; }
+    .dossier-more > summary::-webkit-details-marker, .dossier-price-details > summary::-webkit-details-marker, .dossier-questions summary::-webkit-details-marker { display:none; }
+    .dossier-price-details > summary { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 16px; list-style:none; cursor:pointer; }
+    .dossier-price-details .fact-sec-title, .dossier-price-details .fact-sec-summary { display:block; }
+    .dossier-price-content { padding:0 16px 16px; }
+    .dossier-price-content .filter-pill { min-height:44px; }
+    .dossier-visit { padding:4px 2px 0; }
+    .dossier-visit h2 { margin-bottom:12px; }
+    .dossier-questions { margin-bottom:16px; }
+    .dossier-questions > details { border-bottom:1px solid var(--border-hairline); }
+    .dossier-questions summary { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:14px 0; min-height:48px; font-size:13px; font-weight:500; list-style:none; cursor:pointer; }
+    .dossier-question-detail { padding-bottom:12px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; }
+    .dossier-question-detail p { width:100%; font-size:12px; line-height:1.6; color:var(--ink-secondary); }
+    .dossier-end-actions { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    #view-dossier :is(button,summary,a,[tabindex]):focus-visible, #view-analyzing :is(button,summary,a,[tabindex]):focus-visible { outline:2px solid var(--brand-cadastral); outline-offset:3px; }
+    #view-dossier .conf-trace.nao-sabemos { color:var(--ink-secondary); }
+    #view-dossier .conf-trace.nao-sabemos .conf-line { border-color:var(--ink-muted); }
+    @media (prefers-reduced-motion: reduce) {
+      #view-dossier *, #view-analyzing * { animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+    }
+
+    /* T4 — Dossiê. Usa as mesmas superfícies, cores e fontes da Home. */
+    #view-dossier { --ds-muted: #625C51; --ds-line: #E9E1D4; }
+    #dossierContainer { max-width: 780px; margin-inline: auto; }
+    .viewport-wrapper.is-mobile-frame .app-frame:has(#view-dossier.active) { min-height: 0; height: calc(100dvh - 40px); max-height: none; overflow: hidden; }
+    .app-frame:has(#view-dossier.active) .main-stage { min-height: 0; padding-bottom: 0; }
+    .app-frame:has(#view-dossier.active) :is(.top-header-minimal,.bottom-dock) { flex-shrink: 0; }
+    #view-dossier button, .ds-sheet button { font-family: var(--font-sans); cursor: pointer; }
+    #view-dossier button:disabled { cursor: default; opacity: .45; }
+    #view-dossier :is(button,a,input,select,[tabindex]):focus-visible, .ds-sheet :is(button,a,input,select,[tabindex]):focus-visible { outline: 2px solid var(--brand-cadastral); outline-offset: 3px; }
+    .ds-overview { background: var(--bg-surface); border: 1px solid rgba(23,23,23,.09); border-radius: 18px; overflow: hidden; }
+    .ds-photo { position: relative; }
+    #view-dossier .ds-photo .dossier-photo-track { aspect-ratio: 16 / 10; }
+    .ds-photo-action { position: absolute; top: 12px; width: 44px; height: 44px; border: 1px solid rgba(23,23,23,.08); border-radius: 50%; background: rgba(255,255,255,.96); color: var(--ink-primary); display: grid; place-items: center; }
+    .ds-back { left: 12px; } .ds-save { right: 12px; }
+    .ds-save svg { width: 19px; height: 19px; }
+    #view-dossier .dossier-map-link { display: inline-flex; align-items: center; gap: 6px; border-radius: 24px; }
+    .ds-property-info { padding: 17px 18px 0; }
+    .ds-location { color: var(--ds-muted); font-size: 11px; margin-bottom: 5px; }
+    .ds-property-info h1 { font: 500 25px/1.17 var(--font-display); letter-spacing: -.035em; text-wrap: balance; }
+    .ds-address { font-size: 11px; line-height: 1.6; color: var(--ds-muted); margin-top: 7px; }
+    .ds-property-info .vereda-specs-strip { flex-wrap: wrap; gap: 7px; margin: 13px 0 16px; }
+    .ds-property-info .spec-item { font-size: 11px; }
+    .ds-property-links { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid var(--ds-line); }
+    .ds-link { padding: 10px 0; min-height: 44px; border: 0; background: none; color: var(--brand-rust); font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; text-align: left; text-decoration: none; }
+    .ds-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+    .ds-link-muted { color: var(--ds-muted); }
+    .ds-finance { padding: 16px 18px 18px; background: linear-gradient(150deg, #FFFCF7, #F8F2E9); border-top: 1px solid var(--ds-line); }
+    .ds-money-line { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+    .ds-label { display: block; color: var(--ds-muted); font-size: 11px; line-height: 1.45; }
+    .ds-price { font: 600 30px/1.2 var(--font-sans); letter-spacing: -.055em; font-variant-numeric: tabular-nums; margin-top: 5px; }
+    .ds-unit { font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .ds-unit small { font-size: 10px; font-weight: 400; color: var(--ds-muted); }
+    .ds-price small, .ds-total small { font: 400 11px var(--font-sans); letter-spacing: 0; color: var(--ds-muted); }
+    .ds-market-link { margin: 7px 0 0; font-size: 11px; color: var(--brand-rust); font-weight: 600; background: none; border: 0; display: flex; align-items: center; gap: 7px; min-height: 36px; text-align: left; }
+    .ds-total-block { border-top: 1px solid #DDD3C3; padding-top: 15px; margin-top: 10px; }
+    .ds-total { font: 600 31px/1.2 var(--font-sans); letter-spacing: -.05em; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .ds-expense-bar { display: flex; gap: 3px; height: 9px; border-radius: 5px; overflow: hidden; margin: 16px 0 12px; }
+    .ds-expense-bar > span { min-width: 0; }
+    .ds-expense-legend { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 11px 14px; }
+    .ds-expense-legend > div { min-width: 0; }
+    .ds-expense-legend dt { font-size: 10px; color: var(--ds-muted); display: flex; gap: 6px; align-items: center; }
+    .ds-expense-legend dd { font-size: 12px; font-weight: 600; padding-left: 12px; margin-top: 2px; }
+    .ds-dot { display: inline-block; width: 6px; height: 6px; border-radius: 2px; flex: 0 0 6px; }
+    .ds-pending { font-size: 10px; line-height: 1.6; color: var(--ds-muted); margin-top: 12px; }
+    .ds-finance > .ds-link { min-height: 32px; padding: 8px 0 0; }
+    .ds-tabs { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); padding: 4px; gap: 4px; border: 1px solid #DCD3C3; background: #EAE3D5; border-radius: 12px; margin: 18px 0 13px; }
+    .ds-tabs button { border: 0; background: none; min-height: 44px; border-radius: 8px; color: var(--ds-muted); font-size: 12px; font-weight: 500; }
+    .ds-tabs button[aria-selected="true"] { background: white; color: var(--ink-primary); font-weight: 700; box-shadow: 0 1px 3px #1717170D; }
+    .ds-panel { background: white; border: 1px solid rgba(23,23,23,.08); border-radius: 16px; padding: 20px 18px; }
+    .ds-panel h2, .ds-sheet h2 { font: 500 22px/1.2 var(--font-display); letter-spacing: -.025em; text-wrap: balance; }
+    .ds-eyebrow { font-size: 9px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--brand-rust); margin-bottom: 9px; }
+    .ds-copy { color: var(--ds-muted); font-size: 12px; line-height: 1.65; }
+    .ds-section { padding: 24px 0; border-top: 0; scroll-margin-top: 90px; }
+    .ds-section:first-child { border-top: 0; padding-top: 0; }
+    .ds-section:last-child { padding-bottom: 0; }
+    .ds-section > h2 { margin-bottom: 14px; }
+    .ds-primary-finding { margin: 16px 0 0; padding: 18px; border-radius: 11px; background: #F8F1E7; border-left: 3px solid var(--brand-orange); }
+    .ds-primary-finding h3 { font: 500 21px/1.2 var(--font-display); text-wrap: balance; }
+    .ds-finding-measure { display: flex; align-items: baseline; gap: 8px; margin: 16px 0 9px; }
+    .ds-finding-measure strong { font: 500 36px/1 var(--font-display); letter-spacing: -.035em; }
+    .ds-finding-measure span { font-size: 11px; color: var(--ds-muted); }
+    .ds-support-finding { padding: 19px 0 15px; border-bottom: 0; display: grid; grid-template-columns: 65px 1fr; gap: 14px; }
+    .ds-support-finding:last-of-type { border-bottom: 0; padding-bottom: 0; }
+    .ds-support-finding > strong { font: 500 27px/1.2 var(--font-display); letter-spacing: -.04em; }
+    .ds-support-finding h3 { font-size: 12px; line-height: 1.4; margin-bottom: 5px; font-weight: 600; }
+    .ds-support-finding .ds-copy { font-size: 11px; }
+    .ds-contrast { display: grid; grid-template-columns: 1fr 1fr; border-block: 1px solid #E4D9C8; padding: 12px 0; margin: 14px 0; gap: 12px; }
+    .ds-contrast strong { display: block; font-size: 20px; font-weight: 600; }
+    .ds-contrast span { font-size: 10px; color: var(--ds-muted); }
+    .ds-after-panel { margin-top: 18px; padding: 0 3px; }
+    .ds-primary { display: inline-flex; justify-content: center; align-items: center; gap: 8px; width: 100%; min-height: 48px; padding: 12px 16px; border: 0; border-radius: 11px; background: var(--brand-orange); color: #171717; font: 700 12px var(--font-sans); }
+    .ds-primary:hover { background: #EB6D3C; }
+    .ds-secondary { border: 1px solid #DED4C3; background: #FFFCF7; border-radius: 9px; min-height: 44px; padding: 9px 12px; font-size: 11px; color: var(--ink-primary); display: inline-flex; justify-content: center; align-items: center; gap: 6px; text-decoration: none; }
+    .ds-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .ds-stat-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+    .ds-stat-pair > div + div { padding-left: 14px; border-left: 1px solid var(--ds-line); }
+    .ds-stat-pair strong { display: block; font-size: 24px; line-height: 1.25; letter-spacing: -.04em; font-weight: 600; }
+    .ds-stat-pair span { display: block; color: var(--ds-muted); font-size: 10px; line-height: 1.5; margin-top: 3px; }
+    .ds-bar-row { display: grid; grid-template-columns: 67px 1fr 62px; align-items: center; gap: 10px; margin-top: 10px; font-size: 11px; }
+    .ds-bar-row > div { height: 9px; background: #EEE7DB; border-radius: 4px; overflow: hidden; }
+    .ds-bar-row i { display: block; height: 100%; background: var(--brand-sage); border-radius: 4px; }
+    .ds-bar-row.is-property i { background: var(--brand-orange); }
+    .ds-bar-row strong { font-size: 11px; font-weight: 600; text-align: right; }
+    .ds-route { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 0; align-items: center; }
+    .ds-route-name { font-size: 11px; font-weight: 600; line-height: 1.5; }
+    .ds-route small { display: block; color: var(--ds-muted); font-size: 10px; margin-top: 3px; }
+    .ds-route > a { flex-shrink: 0; }
+    .ds-map-tabs { display: flex; gap: 4px; flex-wrap: wrap; padding: 4px; background: #F4EEE4; border-radius: 8px; margin-bottom: 10px; }
+    .ds-map-tabs button { flex: 1; background: none; min-height: 44px; padding: 5px; border: 0; border-radius: 5px; font-size: 10px; color: var(--ds-muted); }
+    .ds-map-tabs button[aria-pressed="true"] { background: white; color: var(--ink-primary); font-weight: 700; }
+    .ds-map { height: 235px; position: relative; overflow: hidden; border-radius: 11px; background: #EBE7DA; border: 1px solid #DCD4C5; }
+    .ds-map iframe, .ds-map > svg { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .ds-map iframe { pointer-events: none; }
+    .ds-map > svg { pointer-events: none; }
+    .ds-map-controls { position: absolute; right: 9px; top: 9px; display: grid; gap: 5px; }
+    .ds-map-controls button { width: 44px; height: 44px; background: white; border: 1px solid #DDD3C3; border-radius: 7px; font-size: 20px; }
+    .ds-map-caption { position: absolute; bottom: 24px; left: 10px; max-width: calc(100% - 20px); background: rgba(255,255,255,.96); border-radius: 5px; padding: 6px 8px; font-size: 10px; }
+    .ds-map-credit { position: absolute; bottom: 0; left: 0; right: 0; background: #FFFFFFE8; padding: 3px 7px; text-align: right; font-size: 9px; color: #4A4740; }
+    .ds-map-credit a { color: inherit; }
+    .ds-map-note { font-size: 10px; line-height: 1.6; color: var(--ds-muted); margin-top: 9px; }
+    .ds-map-reading { margin-top: 12px; padding: 10px 0; border-bottom: 1px solid var(--ds-line); }
+    .ds-map-reading strong { font-size: 22px; font-weight: 500; letter-spacing: -.03em; }
+    .ds-map-reading span { display: block; font-size: 10px; color: var(--ds-muted); margin-top: 3px; }
+    .ds-env-visual { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px 0; border-block: 0; margin-bottom: 14px; }
+    .ds-env-visual strong { font: 500 29px var(--font-display); letter-spacing: -.03em; }
+    .ds-env-visual .ds-label { font-size: 10px; margin-top: 4px; }
+    .ds-trees { display: flex; flex-wrap: wrap; gap: 4px; max-width: 104px; margin-top: 8px; }
+    .ds-trees i { width: 7px; height: 7px; background: var(--brand-sage); border-radius: 50%; }
+    .ds-context-line { padding: 8px 0; border-top: 0; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 11px; }
+    .ds-context-line span { color: var(--ds-muted); } .ds-context-line strong { font-weight: 600; text-align: right; }
+    .ds-cadastre { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 12px; }
+    .ds-cadastre strong { display: block; font-size: 24px; line-height: 1.1; font-weight: 500; letter-spacing: -.04em; }
+    .ds-cadastre span { display: block; margin-top: 5px; font-size: 10px; color: var(--ds-muted); }
+    .ds-history { margin: 20px 0 8px; display: grid; gap: 0; list-style: none; }
+    .ds-history li { border-left: 1px solid #D8D1C3; padding: 0 0 16px 16px; position: relative; }
+    .ds-history li:last-child { padding-bottom: 0; }
+    .ds-history li::before { content: ''; width: 6px; height: 6px; border: 2px solid white; background: var(--brand-sage); border-radius: 50%; position: absolute; top: 3px; left: -5px; }
+    .ds-history time { color: var(--ds-muted); font-size: 10px; }
+    .ds-history p { font-size: 11px; font-weight: 600; margin-top: 3px; }
+    .ds-history small { display: block; font-size: 10px; color: var(--ds-muted); line-height: 1.6; margin-top: 3px; }
+    .ds-question { padding: 13px 0; border-bottom: 1px solid var(--ds-line); }
+    .ds-question p { font-size: 12px; line-height: 1.6; }
+    .ds-question small { color: var(--ds-muted); font-size: 10px; display: block; margin: 7px 0 0; }
+    .ds-shadow { background: #F6F2E9; border-radius: 10px; margin-top: 14px; overflow: hidden; }
+    .ds-shadow svg { width: 100%; height: auto; display: block; }
+    .ds-shadow-controls { padding: 0 12px 12px; }
+    .ds-shadow-controls label { display: flex; justify-content: space-between; gap: 10px; font-size: 11px; margin-bottom: 10px; }
+    .ds-shadow-controls input { width: 100%; accent-color: var(--brand-rust); min-height: 44px; }
+    .ds-note { padding: 12px 14px; background: #F6F1E8; border-radius: 8px; font-size: 11px; line-height: 1.6; color: var(--ds-muted); }
+    .ds-sheet { --ds-muted: #625C51; --ds-line: #E9E1D4; display: block; }
+    .ds-sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 12px; }
+    .ds-sheet-head > button { width: 44px; height: 44px; flex: 0 0 44px; display: grid; place-items: center; border: 0; background: #F5F0E8; border-radius: 50%; }
+    .ds-sheet .ds-copy { margin: 8px 0 15px; }
+    .ds-sheet .ds-secondary { min-height: 44px; }
+    .ds-sheet .ds-form-row { margin-top: 16px; }
+    .ds-form-row label { font-size: 12px; display: block; font-weight: 600; margin-bottom: 7px; }
+    .ds-form-row small { display: block; font-size: 10px; line-height: 1.6; color: var(--ds-muted); margin-top: 6px; }
+    .ds-form-controls { display: flex; gap: 8px; }
+    .ds-form-controls > * { min-width: 0; flex: 1; }
+    .ds-sheet :is(input:not([type=checkbox]),select) { width: 100%; background: #FCFAF5; border: 1px solid #D7CDBB; border-radius: 8px; min-height: 44px; padding: 10px; font: 12px var(--font-sans); color: var(--ink-primary); }
+    .ds-sheet form > .ds-primary { margin-top: 20px; }
+    .ds-checkbox { display: flex; align-items: center; gap: 8px; font-size: 11px; margin-top: 8px; min-height: 36px; }
+    .ds-sheet .ds-filter { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0; }
+    .ds-filter button[aria-pressed="true"] { border-color: var(--brand-rust); color: var(--brand-rust); background: #F9EFE7; }
+    /* Leitura concentrada: conclusão primeiro, método nos detalhes. */
+    .ds-panel .ds-copy { font-size: 14px; line-height: 1.5; }
+    .ds-panel .ds-link, .ds-sheet .ds-link { font-size: 12px; }
+    .ds-panel .ds-eyebrow { font-size: 10px; margin-bottom: 7px; }
+    .ds-panel h2 { font-size: 23px; }
+    .ds-primary-finding { padding: 16px; margin-top: 14px; }
+    .ds-primary-finding h3 { font-size: 23px; }
+    .ds-finding-measure { margin: 13px 0 8px; }
+    .ds-finding-measure strong { font-size: 40px; }
+    .ds-finding-measure span { font-size: 12px; }
+    .ds-support-finding { display: block; padding: 7px 0 0; }
+    .ds-support-action { width: 100%; min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border: 0; background: none; color: var(--ink-primary); text-align: left; padding: 12px 0; }
+    .ds-support-action > span { min-width: 0; }
+    .ds-support-action .ds-support-headline { font: 500 18px/1.45 var(--font-sans); letter-spacing: -.035em; }
+    .ds-support-action .ds-support-headline > strong { font: 500 27px/1 var(--font-display); white-space: nowrap; margin-right: 3px; }
+    .ds-support-action small { display: block; font-size: 12px; line-height: 1.5; color: var(--ds-muted); margin-top: 5px; }
+    .ds-support-action > svg { flex-shrink: 0; color: var(--brand-rust); }
+    .ds-support-action:hover .ds-support-headline { color: var(--brand-rust); }
+    .ds-section { padding: 20px 0; }
+    .ds-section > h2 { margin-bottom: 12px; }
+    .ds-relative { display: flex; align-items: center; gap: 16px; margin: 12px 0 16px; }
+    .ds-relative > strong { font-size: 42px; line-height: 1; letter-spacing: -.06em; font-weight: 600; white-space: nowrap; }
+    .ds-relative > span { font-size: 13px; line-height: 1.45; }
+    .ds-relative small { display: block; font-size: 11px; color: var(--ds-muted); margin-top: 4px; }
+    .ds-price-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-block: 1px solid var(--ds-line); padding: 11px 0; }
+    .ds-price-pair > span { font-size: 11px; color: var(--ds-muted); }
+    .ds-price-pair strong { display: block; color: var(--ink-primary); font-size: 18px; font-weight: 600; margin-top: 3px; letter-spacing: -.025em; }
+    .ds-price-pair small { font-size: 11px; font-weight: 400; }
+    .ds-env-visual { gap: 16px; padding: 14px 0; margin-bottom: 0; }
+    .ds-env-visual strong { font: 500 34px/1.2 var(--font-display); }
+    .ds-env-visual .ds-label { font-size: 12px; margin-top: 4px; display: flex; align-items: center; gap: 5px; }
+    .ds-env-visual small { display: block; font-size: 11px; color: var(--ds-muted); margin-top: 4px; }
+    .ds-green-score { padding: 0 0 0 15px; border: 0; border-left: 1px solid var(--ds-line); background: none; color: var(--ink-primary); text-align: left; }
+    .ds-green-score strong small, .ds-green-relative > strong small { display: inline; font: 400 12px var(--font-sans); letter-spacing: 0; }
+    .ds-green-score > i { display: block; height: 4px; background: #E6EBDD; border-radius: 3px; margin-top: 10px; max-width: 110px; overflow: hidden; }
+    .ds-green-score > i > b { display: block; height: 100%; background: #718063; border-radius: inherit; }
+    .ds-sun-summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 0 0; }
+    .ds-sun-summary strong { display: block; font-size: 13px; font-weight: 600; }
+    .ds-sun-summary small { display: block; font-size: 11px; color: var(--ds-muted); margin-top: 4px; }
+    .ds-poi-grid, .ds-interest-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 16px; }
+    .ds-poi-grid > a { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 46px; font-size: 13px; color: var(--ink-primary); text-decoration: none; border-bottom: 1px solid var(--ds-line); }
+    .ds-poi-grid > a > span { min-width: 0; overflow-wrap: anywhere; }
+    .ds-poi-grid > a > svg { flex-shrink: 0; }
+    .ds-poi-grid > a:hover { color: var(--brand-rust); }
+    .ds-interest-options { gap: 8px; }
+    .ds-context-line { font-size: 12px; }
+    .ds-check-entry { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 0 0; margin-top: 14px; border: 0; border-top: 1px solid var(--ds-line); background: none; color: var(--ink-primary); text-align: left; }
+    .ds-check-entry strong { font-size: 14px; font-weight: 600; display: block; }
+    .ds-check-entry small { display: block; margin-top: 4px; font-size: 12px; color: var(--ds-muted); }
+    .ds-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 13px; }
+    .ds-section-heading > span { font-size: 11px; color: var(--ds-muted); white-space: nowrap; }
+    .ds-priorities { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 4px; margin: 7px 0 9px; }
+    .ds-priorities button { border: 1px solid var(--ds-line); border-radius: 7px; background: #FFFCF7; min-height: 44px; font-size: 12px; color: var(--ds-muted); }
+    .ds-priorities button[aria-pressed="true"] { color: var(--brand-rust); border-color: #D9B49B; background: #F9EFE7; font-weight: 600; }
+    .ds-check-list > button { width: 100%; border: 0; border-bottom: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: none; color: var(--ink-primary); padding: 13px 0; text-align: left; min-height: 58px; }
+    .ds-check-list strong { font-size: 16px; line-height: 1.45; font-weight: 600; display: block; }
+    #ds-building-checks .ds-section-heading { align-items: flex-start; gap: 20px; margin-bottom: 21px; }
+    #ds-building-checks h2 { font-size: 31px; line-height: 1.08; max-width: 190px; }
+    .ds-check-count { display: flex; flex-direction: column; align-items: flex-end; padding-top: 1px; }
+    .ds-check-count strong { font: 500 40px/1 var(--font-display); color: var(--brand-rust); }
+    .ds-check-count small { font-size: 10px; color: var(--ds-muted); margin-top: 5px; }
+    #ds-building-checks .ds-check-list > button { padding: 17px 0; }
+    #ds-building-checks .ds-check-list strong { font-size: 18px; letter-spacing: -.025em; }
+    #ds-building-checks .ds-check-list > button:first-child strong { font-size: 20px; }
+    #ds-building-checks .ds-check-list small { margin-top: 5px; }
+    .ds-check-list small { font-size: 12px; line-height: 1.5; color: var(--ds-muted); display: block; margin-top: 3px; }
+    .ds-check-list svg { flex-shrink: 0; }
+    .ds-value-summary > strong { display: block; font-size: 29px; letter-spacing: -.045em; font-weight: 600; line-height: 1.25; margin-top: 7px; }
+    .ds-value-summary > strong small { font-size: 11px; font-weight: 400; letter-spacing: 0; color: var(--ds-muted); }
+    .ds-history { margin-top: 16px; }
+    .ds-history li { padding-bottom: 13px; }
+    .ds-history p { font-size: 12px; line-height: 1.5; }
+    .ds-sheet .ds-copy { font-size: 13px; line-height: 1.55; }
+    .ds-sheet .ds-note, .ds-sheet > .ds-primary { margin-top: 12px; }
+    .ds-sheet .fact-kv-label { font-size: 12px; }
+    .ds-sheet .fact-kv-val { font-size: 12px; }
+    .ds-score-part { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--ds-line); padding: 14px 0; }
+    .ds-score-part strong { display: block; font-size: 13px; font-weight: 600; }
+    .ds-score-part span { display: block; font-size: 12px; color: var(--ds-muted); margin-top: 4px; }
+    .ds-score-part > b { font-size: 20px; white-space: nowrap; font-weight: 600; }
+    .ds-score-part > b > small { font-size: 11px; font-weight: 400; color: var(--ds-muted); }
+    .ds-detail-title { font-size: 14px; font-weight: 600; margin: 23px 0 10px; }
+    .ds-nature { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 12px; line-height: 1.5; margin: 9px 0; }
+    .ds-nature > span { display: flex; align-items: baseline; gap: 7px; color: var(--ds-muted); }
+    .ds-nature strong { font-weight: 600; }
+    .ds-defense-chart { display: flex; align-items: center; gap: 14px; margin: 14px 0; }
+    .ds-defense-chart > svg { flex-shrink: 0; }
+    /* Comparações na mesma escala; espaço e cor organizam os grupos. */
+    .ds-price-delta.is-above > strong { color: var(--brand-rust); }
+    .ds-price-delta.is-below > strong { color: #53694B; }
+    .ds-bullet { margin: 20px 0 9px; }
+    .ds-bullet-track { height: 10px; border-radius: 6px; position: relative; background: #EDE7DB; }
+    .ds-bullet-track > span { height: 100%; display: block; background: var(--brand-orange); border-radius: inherit; }
+    .ds-bullet-track > i { position: absolute; width: 3px; height: 24px; top: -7px; background: #454940; border-radius: 2px; transform: translateX(-50%); box-shadow: 0 0 0 2px #FFF; }
+    .ds-bullet-labels { display: flex; justify-content: space-between; gap: 15px; margin-top: 14px; }
+    .ds-bullet-labels > div:last-child { text-align: right; }
+    .ds-bullet-labels span { display: inline-flex; align-items: center; gap: 6px; color: var(--ds-muted); font-size: 11px; }
+    .ds-bullet-labels strong { display: block; font-size: 19px; letter-spacing: -.03em; font-weight: 600; margin-top: 4px; }
+    .ds-bullet-labels small { font-size: 11px; font-weight: 400; letter-spacing: 0; color: var(--ds-muted); }
+    .ds-bullet-key { height: 7px; width: 13px; background: var(--brand-orange); border-radius: 3px; display: inline-block; }
+    .ds-reference-key { width: 3px; height: 13px; border-radius: 2px; background: #454940; display: inline-block; }
+    .ds-reference-key.is-property-key { background: var(--brand-rust); }
+    .ds-compare-modes { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 4px; border-radius: 9px; padding: 4px; background: #F1EBE0; margin: 8px 0 18px; }
+    .ds-compare-modes > button { border: 0; border-radius: 6px; background: none; color: var(--ds-muted); min-height: 44px; font-size: 12px; }
+    .ds-compare-modes > button[aria-pressed="true"] { color: var(--brand-rust); background: white; font-weight: 600; }
+    .ds-sample-summary { display: flex; justify-content: space-between; gap: 20px; padding: 14px 0 5px; }
+    .ds-sample-summary > div:last-child { text-align: right; }
+    .ds-sample-summary span { display: block; color: var(--ds-muted); font-size: 10px; line-height: 1.5; }
+    .ds-sample-summary strong { display: block; font-size: 17px; margin-top: 5px; font-weight: 600; }
+    .ds-sample-summary small { font-size: 10px; font-weight: 400; color: var(--ds-muted); }
+    .ds-comparison-key { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--brand-rust); margin: 10px 0 22px; }
+    .ds-neighborhood-row { margin: 20px 0 24px; }
+    .ds-neighborhood-row > div:first-child { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; align-items: baseline; }
+    .ds-neighborhood-row strong { font-weight: 600; }
+    .ds-neighborhood-row > small { font-size: 10px; color: var(--ds-muted); }
+    .ds-neighborhood-row span > small { font-size: 10px; color: var(--ds-muted); }
+    .ds-neighborhood-row .ds-bullet { margin: 14px 0 9px; }
+    .ds-bullet.is-neighborhood .ds-bullet-track > span { background: #87937A; }
+    .ds-bullet.is-neighborhood .ds-bullet-track > i { background: var(--brand-rust); }
+    .ds-full-select { width: 100%; margin: 7px 0 12px; font-family: var(--font-sans); }
+    .ds-property-comparison { display: flex; gap: 12px; align-items: center; margin: 8px 0 20px; }
+    .ds-property-comparison img { width: 48px; height: 48px; border-radius: 8px; object-fit: cover; }
+    .ds-property-comparison strong { display: block; font-size: 13px; font-weight: 600; line-height: 1.4; }
+    .ds-property-comparison span { display: block; font-size: 11px; color: var(--ds-muted); margin-top: 4px; }
+    .ds-cost-comparison { background: #F8F3E9; padding: 14px; border-radius: 10px; margin-top: 19px; }
+    .ds-cost-comparison > span { font-size: 11px; color: var(--ds-muted); }
+    .ds-cost-comparison > div { display: flex; justify-content: space-between; gap: 12px; margin-top: 9px; }
+    .ds-cost-comparison strong { font-size: 20px; font-weight: 600; }
+    .ds-cost-comparison small { display: block; font-size: 10px; font-weight: 400; color: var(--ds-muted); margin-top: 3px; }
+    .ds-cost-comparison p { font-size: 12px; line-height: 1.5; margin-top: 13px; color: var(--ds-muted); }
+    .ds-cost-comparison b { color: var(--ink-primary); font-weight: 600; }
+    .ds-layer-content { padding-top: 16px; }
+    .ds-layer-title { font-size: 14px; font-weight: 600; margin: 2px 0 13px; line-height: 1.5; }
+    .ds-layer-figure { display: flex; align-items: center; gap: 15px; margin: 6px 0 17px; }
+    .ds-layer-figure > strong { font-size: 38px; line-height: 1.1; font-weight: 500; letter-spacing: -.045em; white-space: nowrap; }
+    .ds-layer-figure span { font-size: 13px; line-height: 1.45; display: block; }
+    .ds-layer-figure small { font-size: 11px; color: var(--ds-muted); display: block; margin-top: 4px; }
+    .ds-water-insight .ds-layer-figure > strong, .ds-cool-insight .ds-layer-figure > strong { color: #326F83; }
+    .ds-warm-insight .ds-layer-figure > strong { color: var(--brand-rust); }
+    .ds-rain-title { font-size: 19px; font-weight: 600; line-height: 1.35; letter-spacing: -.035em; margin: 1px 0 16px; }
+    .ds-rain-season { display: flex; align-items: center; gap: 14px; }
+    .ds-rain-season > strong { font: 500 31px/1.2 var(--font-display); color: #326F83; letter-spacing: -.04em; white-space: nowrap; }
+    .ds-rain-season > span { font-size: 12px; line-height: 1.5; color: var(--ds-muted); }
+    .ds-rain-calendar { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: 3px; margin: 17px 0 15px; }
+    .ds-rain-calendar > span { text-align: center; font-size: 9px; color: var(--ds-muted); padding-top: 13px; position: relative; }
+    .ds-rain-calendar > span::before { content: ''; height: 5px; border-radius: 3px; background: #ECEAE2; position: absolute; top: 0; left: 0; right: 0; }
+    .ds-rain-calendar > span.is-rainy { color: #326F83; font-weight: 600; }
+    .ds-rain-calendar > span.is-rainy::before { background: #54889A; }
+    .ds-rain-question { font-size: 13px; line-height: 1.5; color: var(--ink-primary); margin: 0 0 3px; }
+    .ds-security-period { margin-top: 3px; }
+    .ds-security-stats { display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; margin: 20px 0 18px; }
+    .ds-security-stats strong { display: block; font-size: 40px; line-height: 1; letter-spacing: -.06em; font-weight: 500; }
+    .ds-security-stats > div:last-child strong { color: #53694B; }
+    .ds-security-stats span { display: block; margin-top: 9px; font-size: 12px; line-height: 1.5; }
+    .ds-security-stats small { display: block; color: var(--ds-muted); font-size: 10px; line-height: 1.5; margin-top: 4px; }
+    .ds-security-total { color: var(--ds-muted); font-size: 12px; line-height: 1.5; margin-bottom: 15px; }
+    .ds-security-total strong { color: var(--ink-primary); font-weight: 600; }
+    .ds-security-nature { display: flex; align-items: baseline; gap: 10px; font-size: 12px; line-height: 1.5; }
+    .ds-security-nature > strong { font-size: 22px; font-weight: 500; letter-spacing: -.04em; }
+    .ds-security-nature > span { color: var(--ds-muted); }
+    .ds-shadow-controls label > span { color: var(--ds-muted); }
+    .ds-shadow-controls output { font-size: 13px; font-weight: 600; }
+    .ds-heat-scale { margin: 21px 0 10px; }
+    .ds-heat-track { position: relative; height: 8px; border-radius: 5px; background: linear-gradient(90deg,#E1EEF1,#F2EEE4,#F7D9C5); }
+    .ds-heat-join { position: absolute; top: 2px; height: 4px; background: #4C8192; border-radius: 2px; }
+    .ds-warm-insight .ds-heat-join { background: var(--brand-rust); }
+    .ds-heat-reference { position: absolute; width: 3px; height: 22px; top: -7px; left: 50%; background: #6A695E; transform: translateX(-50%); border-radius: 2px; box-shadow: 0 0 0 2px white; }
+    .ds-heat-address { position: absolute; width: 13px; height: 13px; background: #326F83; border: 2px solid white; top: -2.5px; border-radius: 50%; transform: translateX(-50%); }
+    .ds-warm-insight .ds-heat-address { background: var(--brand-rust); }
+    .ds-heat-legend { display: flex; justify-content: space-between; gap: 12px; font-size: 10px; color: var(--ds-muted); margin-top: 15px; }
+    .ds-heat-legend > span { display: flex; align-items: center; gap: 5px; }
+    .ds-heat-legend i { width: 7px; height: 7px; border-radius: 50%; background: #326F83; }
+    .ds-warm-insight .ds-heat-legend i { background: var(--brand-rust); }
+    .ds-heat-legend b { width: 2px; height: 11px; background: #6A695E; border-radius: 1px; }
+    #view-dossier .ds-poi-grid { gap: 8px; }
+    #view-dossier .ds-poi-grid > a { background: #F6F2E9; border: 0; padding: 0 10px; border-radius: 7px; font-size: 12px; }
+    .ds-map-credit { min-height: 22px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; background: #FFFFFFF5; }
+    .ds-map-caption { bottom: 31px; }
+    @media (max-width: 380px) { #view-dossier .ds-property-info, #view-dossier .ds-finance, #view-dossier .ds-panel { padding-inline: 14px; } .ds-property-info h1 { font-size: 23px; } .ds-expense-legend { gap: 10px; } }
+    @media (max-width: 600px) {
+      .viewport-wrapper.is-mobile-frame:has(#view-dossier.active) { padding: 0; background: var(--bg-paper); }
+      .viewport-wrapper.is-mobile-frame .app-frame:has(#view-dossier.active) { height: 100dvh; max-width: none; border: 0; border-radius: 0; box-shadow: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { #view-dossier *, .ds-sheet * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
   </style>
 </head>
 <body>
@@ -2812,6 +3204,13 @@
         lotConfirmed: true,
         portalSource: 'Anúncio lido no aparelho · há 2 horas',
         image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1080&q=84',
+        images: [
+          'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1080&q=84'
+        ],
         announcedPrimaryLabel: 'Aluguel declarado',
         announcedValue: 4500,
         auditedPrimaryLabel: 'Desembolso c/ taxas apuradas',
@@ -2961,6 +3360,13 @@
         lotConfirmed: true,
         portalSource: 'Anúncio lido no aparelho · ontem',
         image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1080&q=84',
+        images: [
+          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1080&q=84'
+        ],
         announcedPrimaryLabel: 'Preço declarado',
         announcedValue: 1180000,
         auditedPrimaryLabel: 'Mediana avaliada no ITBI (160 m²)',
@@ -3103,6 +3509,12 @@
         lotConfirmed: true,
         portalSource: 'Anúncio lido no aparelho · há 3 dias',
         image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1080&q=84',
+        images: [
+          'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=1080&q=84'
+        ],
         announcedPrimaryLabel: 'Preço declarado',
         announcedValue: 455000,
         auditedPrimaryLabel: 'Mediana avaliada no ITBI (110 m²)',
@@ -3244,6 +3656,12 @@
         lotConfirmed: false,
         portalSource: 'Anúncio lido no aparelho · há 4 dias',
         image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1080&q=84',
+        images: [
+          'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1080&q=84'
+        ],
         announcedPrimaryLabel: 'Aluguel declarado',
         announcedValue: 2800,
         auditedPrimaryLabel: 'Aluguel + Condomínio + IPTU prédio',
@@ -3384,6 +3802,12 @@
         lotConfirmed: true,
         portalSource: 'Anúncio lido no aparelho · há 5 dias',
         image: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1080&q=84',
+        images: [
+          'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1540518614846-7ede433c4ef7?auto=format&fit=crop&w=1080&q=84',
+          'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1080&q=84'
+        ],
         announcedPrimaryLabel: 'Preço declarado',
         announcedValue: 420000,
         auditedPrimaryLabel: 'Mediana avaliada no ITBI (92 m²)',
@@ -3566,11 +3990,11 @@
       confirmedLotId: 'LOT-02',
       outOfCoverageMode: false,
       openSections: {
-        'predio': true,
+        'predio': false,
         'itbi': false,
         'obras': false,
         'defesa': false,
-        'bairro': true,
+        'bairro': false,
         'caminhos': false,
         'tipologia': false,
         'camadas': false
@@ -3762,7 +4186,10 @@
       if (badge && activeProp) badge.textContent = activeProp.shortCode;
 
       if (viewName === 'explore') renderExplore();
-      if (viewName === 'dossier') renderDossier();
+      if (viewName === 'dossier') {
+        renderDossier();
+        document.querySelector('.main-stage').scrollTo({ top: 0, behavior: 'instant' });
+      }
       if (viewName === 'compare') renderCompare();
       if (viewName === 'live-visit') renderLiveVisit();
       if (viewName === 'saved') renderSaved();
@@ -4247,29 +4674,6 @@
     // =========================================================================
     // T4: O DOSSIÊ DO IMÓVEL (ALTO IMPACTO, DESMODULARIZADO, FIEL AO DOC DEFINITIVO)
     // =========================================================================
-    function setItbiFilter(radius, period) {
-      if (radius) STATE.itbiRadius = radius;
-      if (period) STATE.itbiPeriod = period;
-      renderDossier();
-    }
-
-    function toggleFactSection(secKey) {
-      STATE.openSections[secKey] = !STATE.openSections[secKey];
-      renderDossier();
-    }
-
-    function toggleAllFactSections() {
-      const keys = Object.keys(STATE.openSections);
-      const allOpen = keys.every(k => STATE.openSections[k]);
-      keys.forEach(k => { STATE.openSections[k] = !allOpen; });
-      renderDossier();
-    }
-
-    function toggleCrimeByNature() {
-      STATE.showCrimeByNature = !STATE.showCrimeByNature;
-      renderDossier();
-    }
-
     function renderDonutSvg(breakdown, totalLabel) {
       const r = 34;
       const c = 2 * Math.PI * r;
@@ -4303,93 +4707,29 @@
       return d.toFixed(1).replace('.', ',');
     }
 
-    function renderDossier() {
-      const container = document.getElementById('dossierContainer');
-      if (!container) return;
-      const p = getProp(STATE.activePropId);
-      const isSaved = STATE.savedIds.includes(p.id);
-      const meta = HOME_CARD_META[p.id] || {
-        cleanName: p.title.split('·')[0].trim(),
-        shortAddr: p.address,
-        bathrooms: p.bathrooms || 2
+    function visitQuestionShort(q) {
+      const questions = {
+        'q-bv-1': 'Quantos banheiros o apartamento tem?',
+        'q-bv-2': 'O IPTU de R$ 288 é mensal?',
+        'q-bv-3': 'Qual é a altura do apartamento em relação à rua?',
+        'q-cf-1': 'Qual é o valor atual do IPTU?',
+        'q-cf-2': 'O preço inclui os móveis e as reformas?',
+        'q-gr-1': 'Qual é o tipo de estrutura do prédio?',
+        'q-gr-2': 'Qual é o valor atual do IPTU?',
+        'q-es-1': 'O IPTU está incluído no condomínio?',
+        'q-es-2': 'As obras próximas afetam o ruído ou a luz?',
+        'q-md-1': 'Qual é o valor atual do IPTU?',
+        'q-md-2': 'As janelas reduzem o barulho da rua?'
       };
+      return questions[q.id] || q.text;
+    }
 
-      const isRent = p.modality === 'Alugar';
-      const priceMainFormatted = formatBRL(p.announcedValue) + (isRent ? '/mês' : '');
-      const unitValuePerM2 = Math.round(p.announcedValue / p.areaM2);
-
-      // Régua de posição (P25 · Mediana · P75)
-      const itbiKey = `${STATE.itbiRadius || 'Bairro'}_${STATE.itbiPeriod || '12m'}`;
-      const stats = p.itbiMatrix[itbiKey] || p.itbiMatrix['Bairro_12m'];
-      const minScale = Math.round(stats.p25 * 0.78);
-      const maxScale = Math.round(stats.p75 * 1.22);
-      const span = Math.max(1, maxScale - minScale);
-      const pctP25 = Math.min(88, Math.max(12, ((stats.p25 - minScale) / span) * 100));
-      const pctMed = Math.min(90, Math.max(14, ((stats.median - minScale) / span) * 100));
-      const pctP75 = Math.min(92, Math.max(16, ((stats.p75 - minScale) / span) * 100));
-      const pctUnit = Math.min(95, Math.max(5, ((unitValuePerM2 - minScale) / span) * 100));
-
-      const maxCrimeRate = Math.max(...p.securitySection.neighborsNorthToSouth.map(n => n.rate), 25);
-      const allOpen = Object.keys(STATE.openSections).every(k => STATE.openSections[k]);
-
-      // Household consumption estimate (T14 — always kept separate, never summed into rent)
-      const hh = STATE.householdProfile;
-      const estEnergy = 140 + (hh.people * 45) + (hh.acUnits * 95) + (hh.homeOffice === 'Todos os dias' ? 70 : 25);
-      const estWater = 75 + (hh.people * 28);
-
-      container.innerHTML = `
-        <!-- Top Bar do Dossiê -->
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:10px;">
-          <button class="ed-btn-secondary" style="padding:7px 11px;font-size:12.5px;" onclick="switchView('explore')">
-            ← Meus dossiês
-          </button>
-
-          <div style="display:flex;align-items:center;gap:6px;">
-            <button class="ed-btn-secondary" style="padding:7px 11px;font-size:12px;" onclick="switchView('compare')">
-              Comparar
-            </button>
-            <button class="ed-btn-secondary" style="padding:7px 11px;font-size:12px;color:#78716C;" onclick="openDiscardSheet('${p.id}')">
-              Descartar
-            </button>
-            <button
-              class="ed-btn-secondary"
-              style="padding:7px 10px;font-size:12px;color:${isSaved ? '#C84616' : '#171717'};"
-              onclick="toggleSaveProp('${p.id}')"
-              title="Salvar dossiê"
-            >
-              ${isSaved ? 'Salvo ✓' : 'Salvar'}
-            </button>
-          </div>
-        </div>
-
-        <!-- Seletor Horizontal dos 5 Dossiês do Recife -->
-        <div class="ed-scroll-pills" style="margin-bottom:14px;">
-          ${PROPERTIES.map(item => `
-            <button class="ed-prop-pill ${item.id === p.id ? 'active' : ''}" onclick="switchView('dossier', '${item.id}')">
-              ${item.neighborhood} · ${item.modality}
-            </button>
-          `).join('')}
-        </div>
-
-        <!-- Aviso de Lote Não Confirmado (ex.: Espinheiro antes de confirmar) -->
-        ${!p.lotConfirmed ? `
-          <div style="padding:12px 14px;border-radius:14px;background:#FDE8E1;border:1px solid #F5C6B7;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
-            <div style="font-size:12.5px;color:#9A341E;line-height:1.38;">
-              <strong>Lote ainda não confirmado.</strong> Confirme o polígono do prédio para travar IPTU e ITBI (+1 crédito).
-            </div>
-            <button class="ed-btn-ink" style="padding:7px 11px;font-size:11.5px;flex-shrink:0;" onclick="triggerUrlDecode('${p.id}')">
-              Confirmar
-            </button>
-          </div>
-        ` : ''}
-
-        <div class="ed-stack">
-          <!-- ===============================================================
-               1. CABEÇALHO DO DOSSIÊ: MAPA DO LOTE DSQFL + ENDEREÇO + RÉGUA
-               =============================================================== -->
-          <article class="ed-card" style="padding:0;">
-            <!-- Mapa Superior do Lote DSQFL (170px) com botão Abrir Mapa (T5) -->
-            <div style="position:relative;height:168px;background:#EAE2D3;border-bottom:1px solid rgba(23,23,23,0.08);overflow:hidden;">
+    function renderDossierGallery(p, external = false, dossier = false) {
+      const photos = (p.images || [p.image]).filter(Boolean);
+      return `
+        <div class="dossier-gallery" aria-label="Fotos do imóvel">
+          <div class="dossier-photo-fallback" ${photos.length ? 'hidden' : ''}>
+            ${external ? '<p>Fotos indisponíveis</p>' : `            <div style="position:relative;height:168px;background:#EAE2D3;border-bottom:1px solid rgba(23,23,23,0.08);overflow:hidden;">
               <svg viewBox="0 0 400 168" width="100%" height="100%" style="display:block;">
                 <defs>
                   <pattern id="dossierGrid" width="24" height="24" patternUnits="userSpaceOnUse">
@@ -4437,499 +4777,796 @@
               </button>
             </div>
 
-            <!-- Corpo do Cabeçalho: Identificação + Atributos Declarados + Preço e Régua -->
-            <div style="padding:16px 16px 18px;">
-              <div style="display:flex;align-items: baseline;justify-content:space-between;gap:8px;">
-                <span style="font-size:12px;font-weight:600;color:#57534E;">${p.neighborhood} · ${p.city}</span>
-                <button type="button" class="fact-link-btn contest" onclick="triggerUrlDecode('${p.id}')">
-                  Não é este prédio
-                </button>
-              </div>
-
-              <h1 class="ed-title-lg" style="margin-top:2px;">${p.address.split('·')[0].trim()}</h1>
-              <div style="font-size:13px;color:#57534E;margin-top:2px;">${meta.cleanName} · ${p.floor}</div>
-
-              <!-- Faixa de atributos declarados -->
-              <div style="margin-top:11px;padding-top:11px;border-top:1px solid rgba(23,23,23,0.07);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-                ${renderSpecsStripHtml(p, meta)}
-                ${renderConfTrace('declarado', 'declarado no anúncio')}
-              </div>
-
-              <!-- Bloco de Preço e Régua de Distribuição (Sem "Soma Mágica") -->
-              <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(23,23,23,0.08);">
-                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;">
-                  <div>
-                    <div style="font-size:11.5px;color:#57534E;font-weight:500;">${p.announcedPrimaryLabel}</div>
-                    <div style="font-family:var(--font-display);font-size:26px;font-weight:500;color:#171717;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;line-height:1.15;margin-top:2px;">
-                      ${priceMainFormatted}
-                    </div>
-                  </div>
-                  <div style="text-align:right;">
-                    <div style="font-size:11.5px;color:#57534E;">Valor por m²</div>
-                    <div class="ed-num" style="font-size:15px;font-weight:700;color:#171717;margin-top:2px;">
-                      R$ ${unitValuePerM2.toLocaleString('pt-BR')}/m²
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Condomínio e IPTU declarados em linhas separadas (Zero Soma Mágica) -->
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;padding:10px 0;border-top:1px solid rgba(23,23,23,0.06);border-bottom:1px solid rgba(23,23,23,0.06);">
-                  <div>
-                    <div style="font-size:11px;color:#78716C;">Condomínio declarado</div>
-                    <div class="ed-num" style="font-size:13.5px;font-weight:600;color:#171717;margin-top:1px;">${p.condoDeclared}</div>
-                  </div>
-                  <div>
-                    <div style="font-size:11px;color:#78716C;">IPTU no anúncio</div>
-                    <div class="ed-num" style="font-size:13px;font-weight:600;color:${p.iptuDeclared.includes('Não') || p.iptuDeclared.includes('período') ? '#9A3C1E' : '#171717'};margin-top:1px;">
-                      ${p.iptuDeclared}
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Seletores de Recorte e Período da Régua -->
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;margin-top:14px;margin-bottom:10px;">
-                  <div class="filter-pills-group">
-                    <button class="filter-pill ${STATE.itbiRadius === 'Bairro' ? 'active' : ''}" onclick="setItbiFilter('Bairro', null)">Bairro</button>
-                    <button class="filter-pill ${STATE.itbiRadius === '500m' ? 'active' : ''}" onclick="setItbiFilter('500m', null)">500 m</button>
-                    <button class="filter-pill ${STATE.itbiRadius === '1km' ? 'active' : ''}" onclick="setItbiFilter('1km', null)">1 km</button>
-                  </div>
-                  <div class="filter-pills-group">
-                    <button class="filter-pill ${STATE.itbiPeriod === '12m' ? 'active' : ''}" onclick="setItbiFilter(null, '12m')">12 meses</button>
-                    <button class="filter-pill ${STATE.itbiPeriod === '24m' ? 'active' : ''}" onclick="setItbiFilter(null, '24m')">24 meses</button>
-                  </div>
-                </div>
-
-                <!-- Régua P25 · Mediana · P75 -->
-                <div class="ruler-track-wrap" style="padding:26px 14px 36px;background:#FAF7F0;border:1px solid rgba(23,23,23,0.08);border-radius:12px;">
-                  <div class="ruler-marker-callout" style="left:${pctUnit}%;font-family:var(--font-sans);border-radius:6px;">
-                    Este anúncio: R$ ${unitValuePerM2.toLocaleString('pt-BR')}/m²
-                  </div>
-                  <div class="ruler-rail"></div>
-                  <div class="ruler-iqr" style="left:${pctP25}%;width:${Math.max(5, pctP75 - pctP25)}%;"></div>
-                  <div class="ruler-median-tick" style="left:${pctMed}%;"></div>
-                  <div class="ruler-marker" style="left:${pctUnit}%;"></div>
-
-                  <div style="position:absolute;top:52px;left:${pctP25}%;transform:translateX(-50%);text-align:center;">
-                    <div style="font-size:10px;font-weight:600;color:#78716C;">P25</div>
-                    <div class="ed-num" style="font-size:11.5px;font-weight:600;color:#171717;">R$ ${stats.p25.toLocaleString('pt-BR')}</div>
-                  </div>
-                  <div style="position:absolute;top:52px;left:${pctMed}%;transform:translateX(-50%);text-align:center;">
-                    <div style="font-size:10px;font-weight:700;color:#D85B2B;">Mediana</div>
-                    <div class="ed-num" style="font-size:11.5px;font-weight:700;color:#D85B2B;">R$ ${stats.median.toLocaleString('pt-BR')}</div>
-                  </div>
-                  <div style="position:absolute;top:52px;left:${pctP75}%;transform:translateX(-50%);text-align:center;">
-                    <div style="font-size:10px;font-weight:600;color:#78716C;">P75</div>
-                    <div class="ed-num" style="font-size:11.5px;font-weight:600;color:#171717;">R$ ${stats.p75.toLocaleString('pt-BR')}</div>
-                  </div>
-                </div>
-
-                <!-- Frase Factual de Posição ("Posição é Fato, Adjetivo é Veredito") -->
-                <p style="font-size:13.5px;font-weight:600;color:#171717;margin-top:11px;line-height:1.4;">
-                  ${p.positionSentence}
-                  <span style="font-weight:400;color:#57534E;font-size:12.5px;"> (${stats.periodLabel})</span>
-                </p>
-
-                <!-- Rodapé de Proveniência da Régua -->
-                <div class="fact-provenance-bar">
-                  ${renderConfTrace(stats.confType, stats.sourceLabel)}
-                  <div class="fact-action-links">
-                    <button type="button" class="fact-link-btn" onclick="openSourceSheet('SEFAZ_ITBI')">Ver fonte</button>
-                    <button type="button" class="fact-link-btn contest" onclick="openContestSheet('${p.id}', 'regua_preco', 'Posição na régua de preço')">Isso está errado</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- ===============================================================
-               2. CARD "PARA PERGUNTAR NA VISITA" (SEMPRE ABERTO EM #F7EFE6)
-               =============================================================== -->
-          <section class="ed-cream-box" style="border-radius:18px;padding:16px;">
-            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:10px;">
-              <h2 class="ed-title-md">Para perguntar na visita</h2>
-              <span style="font-size:12px;color:#78716C;font-weight:500;">${p.visitQuestions.length} pontos levantados</span>
-            </div>
-
-            <div style="display:flex;flex-direction:column;">
-              ${p.visitQuestions.map((q, idx) => {
-                const contestedReason = STATE.contestedFacts[`${p.id}_${q.id}`];
-                return `
-                  <div style="padding:${idx === 0 ? '4px' : '11px'} 0 11px;border-bottom:1px solid rgba(23,23,23,0.08);">
-                    <p style="font-size:13.5px;line-height:1.46;color:#171717;margin-bottom:6px;">
-                      ${q.text}
-                    </p>
-                    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
-                      ${renderConfTrace(q.origin, q.originLabel)}
-                      ${contestedReason
-                        ? `<span style="font-size:11px;font-weight:600;color:#B94E36;">Marcado como contestado (${contestedReason})</span>`
-                        : `<button type="button" class="fact-link-btn contest" onclick="openContestSheet('${p.id}', '${q.id}', 'Pergunta da visita')">Isso está errado</button>`
-                      }
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-
-            <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px;">
-              <button
-                type="button"
-                class="btn-scanner-primary"
-                style="padding:11px 14px;font-size:13px;border-radius:11px;"
-                onclick="STATE.visitModeTab='prepare'; switchView('live-visit', '${p.id}')"
-              >
-                <span>Preparar visita e mensagem</span>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-                </svg>
-              </button>
-              <button
-                type="button"
-                class="ed-btn-secondary"
-                style="padding:11px 13px;font-size:12.5px;background:#FFFFFF;"
-                onclick="openNegotiationDrawer('${p.id}')"
-              >
-                WhatsApp
-              </button>
-            </div>
-          </section>
-
-          <!-- ===============================================================
-               3. SEÇÕES FACTUAIS EM FOLHA CONTÍNUA (DESMODULARIZADA, SEM CAIXAS ANINHADAS)
-               =============================================================== -->
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 2px 0;">
-            <span style="font-size:12px;font-weight:600;color:#57534E;">Base pública do lote e do bairro</span>
-            <button type="button" class="fact-link-btn" onclick="toggleAllFactSections()">
-              ${allOpen ? 'Recolher seções' : 'Expandir todas'}
-            </button>
+`}
           </div>
-
-          <section class="fact-sheet-card">
-            <!-- 3.1 O PRÉDIO (IPTU 2026) -->
-            <div class="fact-sec ${STATE.openSections['predio'] ? 'open' : ''}">
-              <button type="button" class="fact-sec-head" onclick="toggleFactSection('predio')">
-                <div>
-                  <div class="fact-sec-title">O prédio</div>
-                  <div class="fact-sec-summary">${p.buildingSection.summary}</div>
-                </div>
-                <span class="fact-sec-chevron">▼</span>
-              </button>
-              <div class="fact-sec-body">
-                <div class="fact-kv-list">
-                  ${p.buildingSection.items.map(it => `
-                    <div class="fact-kv-row">
-                      <span class="fact-kv-label">${it.label}</span>
-                      <span class="fact-kv-val">${it.value}</span>
-                    </div>
-                  `).join('')}
-                </div>
-                <div class="fact-provenance-bar">
-                  ${renderConfTrace('oficial', p.buildingSection.source)}
-                  <div class="fact-action-links">
-                    <button type="button" class="fact-link-btn" onclick="openSourceSheet('${p.buildingSection.sourceKey}')">Ver fonte</button>
-                    <button type="button" class="fact-link-btn contest" onclick="openContestSheet('${p.id}', 'sec_predio', 'Dados cadastrais do prédio')">Isso está errado</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3.2 TRANSMISSÕES NO PRÉDIO (ITBI 2015–2026) -->
-            <div class="fact-sec ${STATE.openSections['itbi'] ? 'open' : ''}">
-              <button type="button" class="fact-sec-head" onclick="toggleFactSection('itbi')">
-                <div>
-                  <div class="fact-sec-title">Transmissões no prédio</div>
-                  <div class="fact-sec-summary">${p.itbiBuildingSection.summary}</div>
-                </div>
-                <span class="fact-sec-chevron">▼</span>
-              </button>
-              <div class="fact-sec-body">
-                <div class="fact-kv-list">
-                  ${p.itbiBuildingSection.items.map(it => `
-                    <div class="fact-kv-row">
-                      <span class="fact-kv-label">${it.label}</span>
-                      <span class="fact-kv-val">${it.value}</span>
-                    </div>
-                  `).join('')}
-                </div>
-                <div class="fact-provenance-bar">
-                  ${renderConfTrace('oficial', p.itbiBuildingSection.source)}
-                  <div class="fact-action-links">
-                    <button type="button" class="fact-link-btn" onclick="openSourceSheet('SEFAZ_ITBI')">Ver fonte</button>
-                    <button type="button" class="fact-link-btn contest" onclick="openContestSheet('${p.id}', 'sec_itbi', 'Transmissões no prédio')">Isso está errado</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3.3 OBRAS PRÓXIMAS (LICENCIAMENTO 150 M) -->
-            <div class="fact-sec ${STATE.openSections['obras'] ? 'open' : ''}">
-              <button type="button" class="fact-sec-head" onclick="toggleFactSection('obras')">
-                <div>
-                  <div class="fact-sec-title">Obras próximas</div>
-                  <div class="fact-sec-summary">${p.worksSection.summary}</div>
-                </div>
-                <span class="fact-sec-chevron">▼</span>
-              </button>
-              <div class="fact-sec-body">
-                <div class="fact-kv-list">
-                  ${p.worksSection.items.map(it => `
-                    <div class="fact-kv-row">
-                      <span class="fact-kv-label">${it.label}</span>
-                      <span class="fact-kv-val">${it.value}</span>
-                    </div>
-                  `).join('')}
-                </div>
-                <div class="fact-provenance-bar">
-                  ${renderConfTrace('oficial', p.worksSection.source)}
-                  <div class="fact-action-links">
-                    <button type="button" class="fact-link-btn" onclick="openSourceSheet('LICENCIAMENTO_REC')">Ver fonte</button>
-                    <button type="button" class="fact-link-btn contest" onclick="openContestSheet('${p.id}', 'sec_obras', 'Obras próximas (150 m)')">Isso está errado</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3.4 DEFESA CIVIL NO BAIRRO (ANEL DE PROPORÇÃO + CONTAGEM 2024) -->
-            <div class="fact-sec ${STATE.openSections['defesa'] ? 'open' : ''}">
-              <button type="button" class="fact-sec-head" onclick="toggleFactSection('defesa')">
-                <div>
-                  <div class="fact-sec-title">Defesa Civil no bairro</div>
-                  <div class="fact-sec-summary">${p.civilDefenseSection.summary}</div>
-                </div>
-                <span class="fact-sec-chevron">▼</span>
-              </button>
-              <div class="fact-sec-body">
-                <div style="display:flex;align-items:center;gap:16px;padding:10px 0;border-top:1px solid rgba(23,23,23,0.06);">
-                  ${renderDonutSvg(p.civilDefenseSection.breakdown, p.civilDefenseSection.total)}
-                  <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
-                    ${p.civilDefenseSection.breakdown.map(b => `
-                      <div style="display:flex;align-items:center;justify-content:space-between;font-size:12.5px;">
-                        <span style="display:inline-flex;align-items:center;gap:6px;color:#44403C;">
-                          <span style="width:8px;height:8px;border-radius:2px;background:${b.color};"></span>
-                          ${b.label}
-                        </span>
-                        <strong class="ed-num" style="color:#171717;">${b.value} (${b.pct}%)</strong>
-                      </div>
-                    `).join('')}
-                  </div>
-                </div>
-                <div class="fact-provenance-bar">
-                  ${renderConfTrace('oficial', p.civilDefenseSection.source)}
-                  <div class="fact-action-links">
-                    <button type="button" class="fact-link-btn" onclick="openSourceSheet('DEFESA_CIVIL')">Ver fonte</button>
-                    <button type="button" class="fact-link-btn contest" onclick="openContestSheet('${p.id}', 'sec_defesa', 'Defesa Civil no bairro')">Isso está errado</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3.5 O BAIRRO (BARRAS HORIZONTAIS NORTE → SUL + VER POR NATUREZA) -->
-            <div class="fact-sec ${STATE.openSections['bairro'] ? 'open' : ''}">
-              <button type="button" class="fact-sec-head" onclick="toggleFactSection('bairro')">
-                <div>
-                  <div class="fact-sec-title">O bairro</div>
-                  <div class="fact-sec-summary">${p.securitySection.summary}</div>
-                </div>
-                <span class="fact-sec-chevron">▼</span>
-              </button>
-              <div class="fact-sec-body">
-                <div style="padding-top:10px;border-top:1px solid rgba(23,23,23,0.06);">
-                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                    <span style="font-size:11.5px;color:#57534E;font-weight:600;">Ocorrências por mil moradores (Norte → Sul)</span>
-                    <button type="button" class="fact-link-btn" onclick="toggleCrimeByNature()">
-                      ${STATE.showCrimeByNature ? 'Ocultar por natureza' : 'Ver por natureza'}
-                    </button>
-                  </div>
-
-                  <div>
-                    ${p.securitySection.neighborsNorthToSouth.map(nb => {
-                      const wPct = Math.min(100, Math.round((nb.rate / maxCrimeRate) * 100));
-                      return `
-                        <div class="neighbor-bar-row ${nb.current ? 'is-current' : ''}">
-                          <span style="font-weight:${nb.current ? '700' : '400'};color:${nb.current ? '#171717' : '#57534E'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                            ${nb.name}
-                          </span>
-                          <div class="neighbor-bar-track">
-                            <div class="neighbor-bar-fill" style="width:${wPct}%;"></div>
-                          </div>
-                          <span style="text-align:right;font-weight:${nb.current ? '700' : '500'};color:${nb.current ? '#171717' : '#57534E'};">
-                            ${nb.rate.toFixed(1).replace('.', ',')}/mil
-                          </span>
-                        </div>
-                      `;
-                    }).join('')}
-                  </div>
-
-                  ${STATE.showCrimeByNature ? `
-                    <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(23,23,23,0.06);display:flex;flex-direction:column;gap:5px;">
-                      <div style="font-size:11px;font-weight:600;color:#78716C;">Proporção por natureza (últimos 12 meses)</div>
-                      ${p.securitySection.byNature.map(nat => `
-                        <div style="display:flex;justify-content:space-between;font-size:12px;color:#44403C;">
-                          <span>${nat.label}</span>
-                          <strong class="ed-num">${nat.pct}%</strong>
-                        </div>
-                      `).join('')}
-                    </div>
-                  ` : ''}
-                </div>
-                <div class="fact-provenance-bar">
-                  ${renderConfTrace('oficial', p.securitySection.source)}
-                  <div class="fact-action-links">
-                    <button type="button" class="fact-link-btn" onclick="openSourceSheet('SDS_CRIME')">Ver fonte</button>
-                    <button type="button" class="fact-link-btn contest" onclick="openContestSheet('${p.id}', 'sec_bairro', 'Ocorrências no bairro')">Isso está errado</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3.6 SEUS CAMINHOS DIÁRIOS (T8 — LINHA RETA + ABRIR ROTA NO MAPA DO SISTEMA) -->
-            <div class="fact-sec ${STATE.openSections['caminhos'] ? 'open' : ''}">
-              <button type="button" class="fact-sec-head" onclick="toggleFactSection('caminhos')">
-                <div>
-                  <div class="fact-sec-title">Seus caminhos diários</div>
-                  <div class="fact-sec-summary">${STATE.dailyRoutes.length} destinos salvos neste aparelho · distância em linha reta</div>
-                </div>
-                <span class="fact-sec-chevron">▼</span>
-              </button>
-              <div class="fact-sec-body">
-                <div class="fact-kv-list">
-                  ${STATE.dailyRoutes.map(rt => {
-                    const distKm = computeStraightDistanceKm(p.coordinates, rt.coords);
-                    return `
-                      <div class="fact-kv-row" style="align-items:center;">
-                        <div>
-                          <div style="font-weight:600;color:#171717;">${rt.label}</div>
-                          <div class="ed-num" style="font-size:12px;color:#57534E;">${distKm} km em linha reta</div>
-                        </div>
-                        <a
-                          href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(rt.label + ' Recife')}"
-                          target="_blank"
-                          rel="noopener"
-                          class="fact-link-btn"
-                          onclick="showToast('Abrindo rota no aplicativo de mapas')"
-                        >
-                          Abrir rota ↗
-                        </a>
-                      </div>
-                    `;
-                  }).join('')}
-                </div>
-                <div style="margin-top:8px;">
-                  <button type="button" class="ed-btn-secondary" style="padding:7px 11px;font-size:12px;" onclick="addSampleDailyRoute()">
-                    + Adicionar destino frequente
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3.7 INDÍCIO CADASTRAL DE TIPOLOGIA (PRÉDIO-CAIXÃO — 3 SINAIS) -->
-            <div class="fact-sec ${STATE.openSections['tipologia'] || p.typologyCheck.triggeredCount === 3 ? 'open' : ''}">
-              <button type="button" class="fact-sec-head" onclick="toggleFactSection('tipologia')">
-                <div>
-                  <div class="fact-sec-title">Indício cadastral de tipologia</div>
-                  <div class="fact-sec-summary">${p.typologyCheck.summary}</div>
-                </div>
-                <span class="fact-sec-chevron">▼</span>
-              </button>
-              <div class="fact-sec-body">
-                <div class="fact-kv-list">
-                  ${p.typologyCheck.signals.map(sig => `
-                    <div class="fact-kv-row">
-                      <span class="fact-kv-label">${sig.label} (${sig.detail})</span>
-                      <span class="fact-kv-val" style="color:${sig.met ? '#9A3C1E' : '#1B5E40'};">
-                        ${sig.met ? 'Sim (sinal presente)' : 'Não'}
-                      </span>
-                    </div>
-                  `).join('')}
-                </div>
-                ${p.typologyCheck.visitQuestion ? `
-                  <p style="font-size:12.5px;color:#9A3C1E;line-height:1.45;margin-top:8px;">
-                    <strong>Pergunta adicionada à visita:</strong> ${p.typologyCheck.visitQuestion}
-                  </p>
-                ` : ''}
-                <div class="fact-provenance-bar">
-                  ${renderConfTrace('inferencia', 'Regra objetiva de 3 sinais sobre IPTU 2026')}
-                  <div class="fact-action-links">
-                    <button type="button" class="fact-link-btn" onclick="openSourceSheet('IPTU_PREF')">Ver fonte</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3.8 LINHA DO TEMPO (T13), MICROCLIMA & CUSTO POR PARTES SEM TOTAL (T14) -->
-            <div class="fact-sec ${STATE.openSections['camadas'] ? 'open' : ''}">
-              <button type="button" class="fact-sec-head" onclick="toggleFactSection('camadas')">
-                <div>
-                  <div class="fact-sec-title">Linha do tempo, clima e custo por partes</div>
-                  <div class="fact-sec-summary">${p.microclimateAndCensus.heatIsland.split('(')[0].trim()} · ${p.microclimateAndCensus.trees150m.split('(')[0].trim()}</div>
-                </div>
-                <span class="fact-sec-chevron">▼</span>
-              </button>
-              <div class="fact-sec-body">
-                <!-- Linha do tempo do prédio (T13) -->
-                <div style="padding-top:10px;border-top:1px solid rgba(23,23,23,0.06);">
-                  <div style="font-size:11.5px;font-weight:600;color:#57534E;margin-bottom:8px;">Linha do tempo do edifício e entorno</div>
-                  ${p.timelineEvents.map(ev => `
-                    <div class="fact-kv-row">
-                      <span class="fact-kv-label"><strong style="color:#171717;">${ev.year}</strong> · ${ev.title}</span>
-                      <span class="fact-kv-val" style="font-weight:400;color:#57534E;max-width:58%;">${ev.detail}</span>
-                    </div>
-                  `).join('')}
-                </div>
-
-                <!-- Sol, calor e árvores -->
-                <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(23,23,23,0.06);">
-                  <div style="font-size:11.5px;font-weight:600;color:#57534E;margin-bottom:6px;">Sol, temperatura de superfície e censo</div>
-                  <div class="fact-kv-row">
-                    <span class="fact-kv-label">Orientação solar</span>
-                    <span class="fact-kv-val">${p.microclimateAndCensus.sunFace}</span>
-                  </div>
-                  <div class="fact-kv-row">
-                    <span class="fact-kv-label">Superfície térmica (Landsat)</span>
-                    <span class="fact-kv-val">${p.microclimateAndCensus.heatIsland}</span>
-                  </div>
-                  <div class="fact-kv-row">
-                    <span class="fact-kv-label">Arborização pública (150 m)</span>
-                    <span class="fact-kv-val">${p.microclimateAndCensus.trees150m}</span>
-                  </div>
-                  <div class="fact-kv-row">
-                    <span class="fact-kv-label">Setor censitário (IBGE 2022)</span>
-                    <span class="fact-kv-val">${p.microclimateAndCensus.censusIncome}</span>
-                  </div>
-                </div>
-
-                <!-- Custo por partes (sem somar total mágico) + T14 Domicílio -->
-                <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(23,23,23,0.06);">
-                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-                    <span style="font-size:11.5px;font-weight:600;color:#57534E;">Custo mensal por partes (sem soma automática)</span>
-                    <button type="button" class="fact-link-btn" onclick="openHouseholdSheet()">
-                      ${hh.configured ? 'Editar meu domicílio' : 'Informar meu domicílio'}
-                    </button>
-                  </div>
-                  <div class="fact-kv-row">
-                    <span class="fact-kv-label">${p.announcedPrimaryLabel} (declarado)</span>
-                    <span class="fact-kv-val">${priceMainFormatted}</span>
-                  </div>
-                  <div class="fact-kv-row">
-                    <span class="fact-kv-label">Condomínio (declarado)</span>
-                    <span class="fact-kv-val">${p.condoDeclared}</span>
-                  </div>
-                  <div class="fact-kv-row">
-                    <span class="fact-kv-label">IPTU 2026 no prédio (registro oficial)</span>
-                    <span class="fact-kv-val">${p.buildingSection.items[3].value}</span>
-                  </div>
-                  ${hh.configured ? `
-                    <div class="fact-kv-row">
-                      <span class="fact-kv-label">Estimativa de energia e água (${hh.people} pess · ${hh.acUnits} ar)</span>
-                      <span class="fact-kv-val">~R$ ${estEnergy + estWater}/mês (estimado à parte)</span>
-                    </div>
-                  ` : ''}
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-      `;
+          <div class="dossier-photo-track" tabindex="0" aria-label="Galeria de fotos. Use as setas para navegar." onscroll="updatePhotoCount(this)" onkeydown="if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault(); moveDossierPhoto(this,event.key==='ArrowRight'?1:-1)}" ${photos.length ? '' : 'hidden'}>
+            ${photos.map((src, i) => `<img src="${src}" alt="${p.title.split('·')[0].trim()}, foto ${i + 1}" loading="${i === 0 ? 'eager' : 'lazy'}" onerror="failedDossierPhoto(this)" />`).join('')}
+          </div>
+          <div class="dossier-gallery-controls" ${photos.length > 1 ? '' : 'hidden'}>
+            <button class="photo-prev" aria-label="Foto anterior" disabled onclick="moveDossierPhoto(this,-1)">‹</button>
+            <span class="dossier-photo-count" aria-live="polite">1 / ${photos.length}</span>
+            <button class="photo-next" aria-label="Próxima foto" onclick="moveDossierPhoto(this,1)">›</button>
+          </div>
+          ${!external ? `<button class="dossier-map-link" onclick="${dossier ? 'focusDossierMap()' : `openFullMapSheet('${p.id}')`}">${dossier ? dossierIcon('map',14) : ''} Abrir mapa</button>` : ''}
+        </div>`;
     }
+
+    function moveDossierPhoto(control, direction) {
+      const track = control.closest('.dossier-gallery').querySelector('.dossier-photo-track');
+      track.scrollBy({left: direction * track.clientWidth, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
+    }
+
+    function updatePhotoCount(track) {
+      const gallery = track.closest('.dossier-gallery');
+      const total = track.children.length;
+      const index = Math.min(total - 1, Math.max(0, Math.round(track.scrollLeft / Math.max(1, track.clientWidth))));
+      gallery.querySelector('.dossier-photo-count').textContent = `${index + 1} / ${total}`;
+      gallery.querySelector('.photo-prev').disabled = index === 0;
+      gallery.querySelector('.photo-next').disabled = index >= total - 1;
+    }
+
+    function failedDossierPhoto(img) {
+      const track = img.parentElement;
+      const gallery = track.closest('.dossier-gallery');
+      img.remove();
+      gallery.querySelector('.dossier-gallery-controls').hidden = track.children.length < 2;
+      if (!track.children.length) {
+        track.hidden = true;
+        gallery.querySelector('.dossier-photo-fallback').hidden = false;
+      } else updatePhotoCount(track);
+    }
+
+    function openListingFacts(propId) {
+      const p = getProp(propId);
+      if (STATE.currentView === 'dossier') {
+        showDossierSheet('Dados do anúncio', `<p class="ds-copy">${dossierText(p.address)}</p>${dossierRows([{label:'Área anunciada',value:p.areaM2+' m²'},{label:'Quartos / suítes',value:p.bedrooms+' / '+p.suites},{label:'Banheiros',value:p.bathrooms},{label:'Vagas',value:p.parking}])}<p class="ds-map-note">Informações declaradas pelo anunciante.</p><button class="ds-link" onclick="openContestSheet('${p.id}','anuncio','Dados do anúncio')">Isso está errado</button><button class="ds-secondary" style="width:100%" onclick="closeDrawer(); triggerUrlDecode('${p.id}')">Não é este prédio</button>`);
+        return;
+      }
+      document.getElementById('drawerPanel').innerHTML = `
+        <div class="sheet-handle"></div>
+        <div class="dossier-toolbar"><h2 class="ed-title-md">Dados do anúncio</h2><button class="ed-btn-secondary" onclick="closeDrawer()">Fechar</button></div>
+        <p class="ed-subtitle">${p.address}</p>
+        <div class="fact-kv-list" style="margin-top:16px">
+          <div class="fact-kv-row"><span>Área</span><strong>${p.areaM2} m²</strong></div>
+          <div class="fact-kv-row"><span>Quartos / suítes</span><strong>${p.bedrooms} / ${p.suites}</strong></div>
+          <div class="fact-kv-row"><span>Banheiros</span><strong>${p.bathrooms}</strong></div>
+          <div class="fact-kv-row"><span>Vagas</span><strong>${p.parking}</strong></div>
+        </div>
+        <div class="fact-provenance-bar">${renderConfTrace('declarado')}<button class="fact-link-btn" onclick="openContestSheet('${p.id}', 'anuncio', 'Dados do anúncio')">Isso está errado</button></div>
+        <button class="ed-btn-secondary" style="width:100%;margin-top:16px" onclick="closeDrawer(); triggerUrlDecode('${p.id}')">Não é este prédio</button>`;
+      document.getElementById('drawerBackdrop').classList.add('open');
+    }
+
+    // T4 — estado restrito ao dossiê; os dados e os demais fluxos continuam compartilhados.
+    const DOSSIER = {
+      propertyId: null, category: 'destaques', radius: '500m', period: '12m',
+      mapLayer: 'rotas', mapZoom: 1, routeId: 'r1', sunHour: 9, expenses: {},
+      priority: 'custo', interests: {}, benchmarkMode:'recorte', compareId:null, heatCompareId:null
+    };
+    // Cenários do protótipo para testar o índice. Não são leituras de satélite ingeridas.
+    const DOSSIER_GREEN_CONTEXT = {
+      'boa-viagem': { vegetationPct: 18, parks1km: 1 },
+      'casa-forte': { vegetationPct: 42, parks1km: 3 },
+      gracas: { vegetationPct: 32, parks1km: 2 },
+      espinheiro: { vegetationPct: 22, parks1km: 2 },
+      madalena: { vegetationPct: 24, parks1km: 1 }
+    };
+
+    function getDossierGreen(p, context = DOSSIER_GREEN_CONTEXT[p.id]) {
+      const trees = dossierNumber(p.microclimateAndCensus?.trees150m);
+      const parts = [
+        { label:'Vegetação por satélite', value:context?.vegetationPct, target:50, weight:50, unit:'% da área em 1 km' },
+        { label:'Árvores registradas', value:trees, target:100, weight:30, unit:'em 150 m' },
+        { label:'Parques e praças', value:context?.parks1km, target:4, weight:20, unit:'em 1 km' }
+      ].map(part => ({...part, points:Number.isFinite(part.value) && part.value >= 0 ? Math.min(1,part.value/part.target)*part.weight : null}));
+      const score = parts.every(part=>part.points!==null) ? Math.round(parts.reduce((sum,part)=>sum+part.points,0)) : null;
+      return {score,parts,trees,vegetation:context?.vegetationPct,parks:context?.parks1km,
+        label:score===null?'Em levantamento':score>=75?'Muito verde':score>=50?'Verde presente':score>=25?'Verde moderado':'Pouco verde'};
+    }
+
+    function getDossierClimate(p) {
+      const micro=p.microclimateAndCensus || {}, heat=micro.heatIsland || '';
+      const delta=dossierNumber(heat);
+      const reference=/bairro/i.test(heat)?'bairro':/Zona Norte/i.test(heat)?'Zona Norte':/Recife/i.test(heat)?'Recife':/Capibaribe/i.test(heat)?'entorno do rio':'referência local';
+      const sun=String(micro.sunFace || p.sunOrientation || '').split('·').map(part=>part.trim());
+      const face=(sun[0] || 'Orientação a confirmar').replace(/^Face /i,'');
+      return {delta,reference,face,hasReference:/m[eé]dia/i.test(heat),sun:/manhã|matinal|nascente/i.test(micro.sunFace || p.sunOrientation || '')?'Sol da manhã':'Luz natural',
+        value:delta===null?'—':`${delta>0?'+':delta<0?'−':''}${Math.abs(delta).toLocaleString('pt-BR')} °C`};
+    }
+    const DOSSIER_COLORS = { aluguel: '#F47745', condominio: '#889477', iptu: '#7895AA', seguro: '#C4A574' };
+
+    function dossierText(value) {
+      return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function dossierIcon(name, size = 18) {
+      const paths = {
+        back: '<path d="M19 12H5m6-6-6 6 6 6"/>',
+        arrow: '<path d="M5 12h14m-6-6 6 6-6 6"/>',
+        trend: '<path d="m4 16 6-6 4 4 6-9m-6 0h6v6"/>',
+        map: '<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3Zm6-3v15m6-12v15"/>',
+        close: '<path d="m6 6 12 12M6 18 18 6"/>',
+        plus: '<path d="M12 5v14M5 12h14"/>',
+        check: '<path d="m5 12 4 4 10-10"/>'
+      };
+      return `<svg aria-hidden="true" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${paths[name] || paths.arrow}</svg>`;
+    }
+
+    function dossierNumber(text) {
+      if (typeof text === 'number') return Number.isFinite(text) ? text : null;
+      const match = String(text ?? '').match(/-?\d[\d.]*(?:,\d+)?/);
+      return match ? Number(match[0].replace(/\./g, '').replace(',', '.')) : null;
+    }
+
+    function normalizeDossierExpense(expense) {
+      if (!expense || !Number.isFinite(expense.amount) || expense.amount < 0) return null;
+      if (expense.period === 'month') return expense.amount;
+      if (expense.period === 'year') return expense.amount / 12;
+      return null;
+    }
+
+    function parseDossierMoney(text) {
+      const raw = String(text).trim();
+      if (!raw) return null;
+      if (/^\d{1,3}(?:\.\d{3})+(?:,\d{1,2})?$/.test(raw)) return Number(raw.replace(/\./g,'').replace(',','.'));
+      if (/^\d+(?:[,.]\d{1,2})?$/.test(raw)) return Number(raw.replace(',','.'));
+      return NaN;
+    }
+
+    function getDossierFinance(p, overrides = DOSSIER.expenses[p.id] || {}) {
+      const isRent = p.modality === 'Alugar';
+      const taxText = p.iptuDeclared || '';
+      const taxPeriod = /mês|mensal/i.test(taxText) ? 'month' : /ano|anual/i.test(taxText) ? 'year' : 'unknown';
+      const base = {
+        condominio: { amount: Number.isFinite(p.condoNumeric) ? p.condoNumeric : null, period: /mês|mensal/i.test(p.condoDeclared || '') ? 'month' : 'unknown', source: 'Anúncio', estimated: false },
+        iptu: { amount: /R\$/.test(taxText) ? dossierNumber(taxText) : null, period: taxPeriod, source: 'Anúncio', estimated: false },
+        seguro: { amount: null, period: 'month', source: 'Não informado', estimated: false }
+      };
+      const entries = isRent ? [{ key: 'aluguel', label: 'Aluguel', amount: p.announcedValue, period: 'month', source: 'Anúncio', estimated: false }] : [];
+      [['condominio', 'Condomínio'], ['iptu', 'IPTU'], ['seguro', 'Seguro']].forEach(([key, label]) => {
+        entries.push({ ...base[key], ...(overrides[key] || {}), key, label });
+      });
+      entries.forEach(item => { item.monthly = normalizeDossierExpense(item); });
+      const known = entries.filter(item => item.monthly !== null);
+      const pending = entries.filter(item => item.monthly === null);
+      const total = known.reduce((sum, item) => sum + item.monthly, 0);
+      return { entries, known, pending, total, isRent, complete: pending.length === 0, estimated: known.some(item => item.estimated) };
+    }
+
+    function getDossierMarket(p, radius = DOSSIER.radius, period = DOSSIER.period) {
+      const stats = p.itbiMatrix?.[`${radius}_${period}`];
+      const unit = Number.isFinite(p.announcedValue) && Number.isFinite(p.areaM2) && p.areaM2 > 0 ? p.announcedValue / p.areaM2 : null;
+      const valid = !!(stats && stats.count >= 10 && Number.isFinite(stats.median) && stats.median > 0 && Number.isFinite(unit));
+      const delta = valid ? (unit / stats.median - 1) * 100 : null;
+      return { stats, unit, valid, delta, radius, period, isRent: p.modality === 'Alugar' };
+    }
+
+    function dossierMarketSentence(market) {
+      if (!market.valid) return 'Amostra insuficiente para comparar';
+      const percent = Math.abs(Math.round(market.delta));
+      const direction = percent === 0 ? 'Na mediana' : `${percent}% ${market.delta > 0 ? 'acima' : 'abaixo'} da mediana`;
+      return `${direction} ${market.isRent ? (market.radius === 'Bairro' ? 'dos anúncios do bairro' : 'dos anúncios do entorno') : 'das avaliações fiscais'}`;
+    }
+
+    function renderDossierFinance(p) {
+      const finance = getDossierFinance(p);
+      const market = getDossierMarket(p);
+      const tax = finance.entries.find(item => item.key === 'iptu');
+      const pendingText = finance.pending.map(item => item.label).join(' e ');
+      const positive = finance.known.filter(item => item.monthly > 0);
+      return `
+        <div class="ds-money-line">
+          <div><span class="ds-label">${finance.isRent ? 'Aluguel anunciado' : 'Preço de compra anunciado'}</span><p class="ds-price">${Number.isFinite(p.announcedValue) ? formatBRL(p.announcedValue) : 'Não informado'}${finance.isRent ? '<small> /mês</small>' : ''}</p></div>
+          <div class="ds-unit">${market.unit === null ? 'Área a confirmar' : `${formatBRL(market.unit)}<small>/m²</small>`}</div>
+        </div>
+        <button class="ds-market-link" onclick="openDossierBenchmark()">${dossierIcon('trend', 15)}<span>${dossierMarketSentence(market)}</span>${dossierIcon('arrow', 13)}</button>
+        <div class="ds-total-block">
+          <span class="ds-label">${finance.complete ? (finance.estimated ? 'Custo mensal estimado' : 'Custo mensal') : (finance.isRent ? 'Custo mensal conhecido' : 'Manutenção mensal conhecida')}</span>
+          <p class="ds-total">${finance.known.length ? formatBRL(finance.total) : 'A confirmar'}${finance.known.length ? '<small> /mês</small>' : ''}</p>
+          ${positive.length ? `<div class="ds-expense-bar" role="img" aria-label="Composição dos ${formatBRL(finance.total)} mensais conhecidos: ${positive.map(item => item.label + ' ' + formatBRL(item.monthly)).join(', ')}">${positive.map(item => `<span title="${item.label}: ${formatBRL(item.monthly)}/mês" style="width:${item.monthly / finance.total * 100}%;background:${DOSSIER_COLORS[item.key]}"></span>`).join('')}</div>` : ''}
+          <dl class="ds-expense-legend">${finance.entries.map(item => `<div><dt><i class="ds-dot" style="background:${item.monthly === null ? '#C9BEA8' : DOSSIER_COLORS[item.key]}"></i>${item.label}${item.estimated ? ' estimado' : ''}</dt><dd>${item.monthly === null ? 'A confirmar' : formatBRL(item.monthly)}</dd></div>`).join('')}</dl>
+          ${finance.pending.length ? `<p class="ds-pending">${pendingText} fora da soma.${tax?.monthly === null && tax?.amount !== null ? ` O anúncio informa ${formatBRL(tax.amount)}, sem periodicidade.` : ''}</p>` : ''}
+          ${!finance.isRent ? '<p class="ds-pending">Preço de compra e financiamento não entram nesta soma.</p>' : ''}
+          ${finance.estimated ? '<p class="ds-pending">Inclui estimativas informadas por você.</p>' : ''}
+        </div>
+        <button class="ds-link" onclick="openDossierCosts()">Ver composição e ajustar valores ${dossierIcon('arrow', 13)}</button>`;
+    }
+
+    function renderDossier() {
+      const container = document.getElementById('dossierContainer');
+      if (!container) return;
+      const p = getProp(STATE.activePropId);
+      if (DOSSIER.propertyId !== p.id) {
+        DOSSIER.propertyId = p.id;
+        DOSSIER.category = 'destaques';
+        DOSSIER.radius = p.itbiMatrix?.['500m_12m']?.count >= 10 ? '500m' : 'Bairro';
+        DOSSIER.period = '12m';
+        DOSSIER.mapZoom = 1;
+        DOSSIER.mapLayer = 'rotas';
+        DOSSIER.benchmarkMode = 'recorte';
+        DOSSIER.compareId = null;
+        DOSSIER.heatCompareId = null;
+      }
+      const meta = HOME_CARD_META[p.id] || { cleanName: p.title.split('·')[0].trim(), bathrooms: p.bathrooms };
+      const isSaved = STATE.savedIds.includes(p.id);
+      container.innerHTML = `
+        <article class="ds-overview" aria-label="Resumo do imóvel">
+          <div class="ds-photo">
+            ${renderDossierGallery(p, false, true)}
+            <button class="ds-photo-action ds-back" aria-label="Voltar aos imóveis" onclick="switchView('explore')">${dossierIcon('back')}</button>
+            <button class="ds-photo-action ds-save" aria-label="${isSaved ? 'Remover dos salvos' : 'Salvar imóvel'}" aria-pressed="${isSaved}" onclick="toggleSaveDossier('${p.id}')">${renderBookmarkSvg(isSaved)}</button>
+          </div>
+          <div class="ds-property-info">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;">
+              <p class="ds-location" style="margin:0;">${dossierText(p.neighborhood)} · ${dossierText(p.city)}</p>
+              <span class="conf-trace ${p.lotConfirmed ? 'conf-oficial' : 'conf-inferencia'}" style="font-size:10.5px;padding:2px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px;">
+                <span class="conf-dot" style="background:${p.lotConfirmed ? '#2E5A85' : '#C84616'};"></span>
+                ${p.lotConfirmed ? 'Lote confirmado ✓' : 'Lote a confirmar'}
+              </span>
+            </div>
+            <h1>${dossierText(meta.cleanName)}</h1>
+            <p class="ds-address">${dossierText(p.address.split('·')[0].trim())} · ${dossierText(p.floor)}</p>
+            ${renderSpecsStripHtml(p, meta)}
+            <div class="ds-property-links"><button class="ds-link ds-link-muted" onclick="openListingFacts('${p.id}')">Dados do anúncio ${dossierIcon('arrow', 12)}</button>${!p.lotConfirmed ? `<button class="ds-link" onclick="triggerUrlDecode('${p.id}')">Confirmar prédio</button>` : `<button class="ds-link ds-link-muted" onclick="openDossierEvidence('cadastro')">Cadastro oficial (DSQFL)</button>`}</div>
+          </div>
+          <div class="ds-finance" id="dossier-financial">${renderDossierFinance(p)}</div>
+        </article>
+        <div class="ds-tabs" role="tablist" aria-label="Explorar o dossiê" onkeydown="dossierTabKey(event)">
+          ${[['destaques','Destaques'],['entorno','Entorno'],['edificio','Edifício']].map(([key,label]) => `<button id="ds-tab-${key}" role="tab" aria-controls="dossier-panel" aria-selected="${DOSSIER.category === key}" tabindex="${DOSSIER.category === key ? 0 : -1}" onclick="setDossierCategory('${key}')">${label}</button>`).join('')}
+        </div>
+        <div class="ds-panel" id="dossier-panel" role="tabpanel" aria-labelledby="ds-tab-${DOSSIER.category}" tabindex="0">${renderDossierCategory(p)}</div>
+        <div class="ds-after-panel">
+          <button class="ds-primary" onclick="STATE.visitModeTab='prepare'; switchView('live-visit','${p.id}')">Preparar visita ${dossierIcon('arrow',16)}</button>
+          <div class="ds-actions"><button class="ds-link ds-link-muted" onclick="switchView('compare')">Comparar imóveis</button><button class="ds-link ds-link-muted" onclick="openDiscardSheet('${p.id}')">Descartar</button></div>
+        </div>`;
+    }
+
+    function toggleSaveDossier(propId) {
+      const button = document.querySelector('#view-dossier .ds-save');
+      // Reaproveita os salvos sem reconstruir a foto nem perder a rolagem.
+      toggleSaveProp(propId, true);
+      const saved = STATE.savedIds.includes(propId);
+      button.innerHTML = renderBookmarkSvg(saved);
+      button.setAttribute('aria-pressed', String(saved));
+      button.setAttribute('aria-label', saved ? 'Remover dos salvos' : 'Salvar imóvel');
+    }
+
+    function dossierTabKey(event) {
+      const keys = ['destaques','entorno','edificio'];
+      const index = keys.indexOf(DOSSIER.category);
+      const next = event.key === 'ArrowRight' ? (index + 1) % 3 : event.key === 'ArrowLeft' ? (index + 2) % 3 : event.key === 'Home' ? 0 : event.key === 'End' ? 2 : -1;
+      if (next < 0) return;
+      event.preventDefault();
+      setDossierCategory(keys[next]);
+      document.getElementById('ds-tab-' + keys[next]).focus();
+    }
+
+    function setDossierCategory(category, anchor) {
+      if (!['destaques','entorno','edificio'].includes(category)) return;
+      DOSSIER.category = category;
+      document.querySelectorAll('.ds-tabs [role=tab]').forEach(button => {
+        const selected = button.id === 'ds-tab-' + category;
+        button.setAttribute('aria-selected', String(selected));
+        button.tabIndex = selected ? 0 : -1;
+      });
+      const panel = document.getElementById('dossier-panel');
+      panel.setAttribute('aria-labelledby','ds-tab-' + category);
+      panel.innerHTML = renderDossierCategory(getProp(STATE.activePropId));
+      if (anchor) {
+        const target = document.getElementById(anchor) || panel;
+        target.setAttribute('tabindex','-1');
+        target.focus({ preventScroll: true });
+        target.scrollIntoView({ block:'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+      }
+    }
+
+    function renderDossierCategory(p) {
+      return DOSSIER.category === 'entorno' ? renderDossierSurroundings(p) : DOSSIER.category === 'edificio' ? renderDossierBuilding(p) : renderDossierHighlights(p);
+    }
+
+    function getDossierFindings(p) {
+      const findings = [];
+      const market = getDossierMarket(p);
+      if (!p.lotConfirmed) findings.push({ type:'lote', title:'Confirme este prédio', metric:'1', unit:'passo para liberar o cadastro', text:'Selecione o lote para ver os registros.', action:'Confirmar prédio' });
+      if (p.lotConfirmed && p.typologyCheck?.triggeredCount === 3) findings.push({ type:'estrutura', title:'Antes de reformar, confira a estrutura', metric:'3', unit:'sinais no cadastro', text:'Prédio baixo, anterior a 2005 e padrão simples ou médio.', action:'Entender os sinais' });
+      if (Number.isFinite(p.suites) && Number.isFinite(p.bathrooms) && p.suites > p.bathrooms) findings.push({ type:'banheiros', title:'Banheiros não conferem', metric:`${p.suites} × ${p.bathrooms}`, unit:'suítes × banheiros', text:'Confirme a quantidade na visita.', action:'Ver divergência' });
+      if (market.valid && Math.abs(market.delta) >= 10) findings.push({ type:'mercado', title:market.isRent ? 'Aluguel fora da mediana' : market.delta>0 ? 'Pedido acima da base fiscal' : 'Pedido abaixo da base fiscal', metric:`${market.delta >= 0 ? '+' : '−'}${Math.abs(Math.round(market.delta))}%`, unit:market.isRent ? 'vs. aluguéis próximos' : 'vs. avaliações fiscais', text:market.isRent ? `${market.stats.count} anúncios comparados por m².` : 'Compare o pedido com os registros do entorno.', action:'Explorar comparação' });
+      const works = dossierNumber(p.worksSection?.items?.[0]?.value);
+      if (works >= 3) findings.push({ type:'obras', title:'Obras em 150 m', metric:String(works), unit:'registros desde 2017', text:p.worksSection.summary.split('·').slice(1).join('·').trim() || 'Veja os processos e o andamento.', action:'Ver registros' });
+      const flood=getDossierFlood(p);
+      if (flood.direct&&flood.count>0) findings.push({type:'alagamento',title:'Alagamentos registrados no bairro',metric:String(flood.count),unit:'registros em 2024',text:'Defesa Civil · '+p.neighborhood,action:'Ver o recorte'});
+      const heat = p.microclimateAndCensus?.heatIsland;
+      const delta = heat ? dossierNumber(heat) : null;
+      if (Number.isFinite(delta) && Math.abs(delta) >= 1.5) findings.push({ type:'calor', title:delta < 0 ? 'Superfície mais fresca' : 'Superfície mais quente', metric:`${delta > 0 ? '+' : '−'}${Math.abs(delta).toLocaleString('pt-BR')}°`, unit:'de diferença na superfície', text:`vs. ${getDossierClimate(p).reference} · Landsat 8/9`, action:'Ver ambiente' });
+      if (getDossierFinance(p).pending.some(item => item.key === 'iptu')) findings.push({ type:'iptu', title:'Falta fechar o IPTU', metric:'IPTU', unit:'valor mensal a confirmar', text:'Peça a guia atualizada.', action:'Ver composição' });
+      return findings.slice(0,3);
+    }
+
+    function openDossierFinding(type) {
+      if (type === 'lote') return triggerUrlDecode(STATE.activePropId);
+      if (type === 'mercado') return openDossierBenchmark();
+      if (type === 'obras') return setDossierCategory('edificio','ds-building-works');
+      if (type === 'calor' || type === 'alagamento') { DOSSIER.mapLayer=type; return setDossierCategory('entorno','ds-central-map'); }
+      if (type === 'iptu') return openDossierCosts();
+      openDossierEvidence(type === 'banheiros' ? 'anuncio' : 'estrutura');
+    }
+
+    function renderDossierHighlights(p) {
+      const findings = getDossierFindings(p);
+      const first = findings[0];
+      if (!first) return '<p class="ds-eyebrow">Leitura do imóvel</p><h2>Nenhuma divergência identificada nos dados disponíveis.</h2><p class="ds-copy">Explore o entorno e os registros do edifício para preparar a visita.</p>';
+      return `<p class="ds-eyebrow">O que o Vereda encontrou</p><h2>Além do anúncio.</h2>
+        <article class="ds-primary-finding"><h3>${first.title}</h3><div class="ds-finding-measure"><strong>${first.metric}</strong><span>${first.unit}</span></div><p class="ds-copy">${dossierText(first.text)}</p><button class="ds-link" onclick="openDossierFinding('${first.type}')">${first.action} ${dossierIcon('arrow',13)}</button></article>
+        ${findings.slice(1).map(finding => {
+          const label={obras:'registros de obra',calor:'na superfície',mercado:finding.unit,alagamento:'registros de alagamento',estrutura:'sinais no cadastro',iptu:'a confirmar',lote:'confirmação pendente',banheiros:'suítes × banheiros'}[finding.type] || finding.title;
+          const detail=finding.type==='obras'?'Em 150 m · '+finding.text:finding.text;
+          return `<article class="ds-support-finding"><button class="ds-support-action" onclick="openDossierFinding('${finding.type}')" aria-label="${dossierText(finding.metric+' '+label+'. '+finding.action)}"><span><span class="ds-support-headline"><strong>${dossierText(finding.metric)}</strong> ${dossierText(label)}</span><small>${dossierText(detail)}</small></span>${dossierIcon('arrow',17)}</button></article>`;
+        }).join('')}
+        ${p.lotConfirmed ? `<button class="ds-check-entry" onclick="setDossierCategory('edificio','ds-building-checks')"><span><strong>Antes de decidir</strong><small>${getDossierChecks(p).length} verificações para a visita</small></span>${dossierIcon('arrow',17)}</button>` : ''}`;
+    }
+
+    function dossierDelta(delta) {
+      const rounded=Math.abs(delta)<1?Math.round(Math.abs(delta)*10)/10:Math.round(Math.abs(delta));
+      return {metric:(rounded===0?'':delta>0?'+':'−')+rounded.toLocaleString('pt-BR')+'%',tone:rounded===0?'is-level':delta>0?'is-above':'is-below',direction:rounded===0?'na mediana':delta>0?'acima da mediana':'abaixo da mediana'};
+    }
+
+    function dossierUnit(value) {
+      return value.toLocaleString('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:0,maximumFractionDigits:1});
+    }
+
+    function renderDossierBullet(value, reference, options = {}) {
+      if (![value,reference].every(v=>Number.isFinite(v)&&v>=0)) return '';
+      const max=Math.max(options.max || 0,value,reference,1)*1.12;
+      const valueLabel=options.valueLabel || 'Este imóvel', referenceLabel=options.referenceLabel || 'Mediana';
+      return `<div class="ds-bullet ${options.reverse?'is-neighborhood':''}" role="img" aria-label="${dossierText(valueLabel+' '+dossierUnit(value)+' por m²; '+referenceLabel+' '+dossierUnit(reference)+' por m²')}"><div class="ds-bullet-track"><span style="width:${value/max*100}%"></span><i style="left:${reference/max*100}%"></i></div>${options.compact?'':`<div class="ds-bullet-labels"><div><span><i class="ds-bullet-key"></i>${dossierText(valueLabel)}</span><strong>${dossierUnit(value)}<small>/m²</small></strong></div><div><span><i class="ds-reference-key"></i>${dossierText(referenceLabel)}</span><strong>${dossierUnit(reference)}<small>/m²</small></strong></div></div>`}</div>`;
+    }
+
+    function renderDossierMarketChart(p, detailed = false) {
+      const m=getDossierMarket(p);
+      if (!m.valid) return `<p class="ds-copy">Amostra insuficiente.${detailed?' Amplie o raio ou o período.':''}</p>`;
+      const delta=dossierDelta(m.delta);
+      const summary=`<div class="ds-relative ds-price-delta ${delta.tone}"><strong>${delta.metric}</strong><span>${delta.direction}<small>${m.isRent?'Aluguéis do entorno':'Avaliações fiscais'} · ${m.radius==='Bairro'?'bairro':m.radius==='500m'?'500 m':'1 km'}</small></span></div>`;
+      return `${summary}${renderDossierBullet(m.unit,m.stats.median,{max:m.stats.p75,referenceLabel:m.isRent?'Mediana do entorno':'Mediana fiscal'})}${detailed?`<p class="ds-map-note">${dossierText(m.stats.periodLabel)}</p>`:''}`;
+    }
+
+    function getDossierComparables(p) {
+      const origin=dossierCoordinates(p);
+      const distance=item=>{const c=dossierCoordinates(item);return origin&&c?Math.hypot(c.lat-origin.lat,(c.lng-origin.lng)*Math.cos(origin.lat*Math.PI/180)):Infinity;};
+      return PROPERTIES.filter(item=>item.id!==p.id&&item.modality===p.modality&&Number.isFinite(item.areaM2)&&item.areaM2>0&&Number.isFinite(item.announcedValue)).sort((a,b)=>distance(a)-distance(b));
+    }
+
+    function renderDossierNeighborhoodComparison(p) {
+      const seen=new Set();
+      const rows=[p,...getDossierComparables(p)].filter(item=>{if(seen.has(item.neighborhood))return false;seen.add(item.neighborhood);return true;}).map(item=>({p:item,m:getDossierMarket(item,'Bairro',DOSSIER.period)})).filter(item=>item.m.valid);
+      if (!rows.length) return '<p class="ds-copy">Sem amostra suficiente para comparar bairros.</p>';
+      const unit=getDossierMarket(p).unit;
+      if (!Number.isFinite(unit)) return '<p class="ds-copy">Confirme a área para comparar por m².</p>';
+      const max=Math.max(unit,...rows.map(item=>item.m.stats.p75 || item.m.stats.median));
+      return `<p class="ds-copy">Mediana por bairro</p><p class="ds-comparison-key"><i class="ds-reference-key is-property-key"></i>Este imóvel · ${dossierUnit(unit)}/m²</p>${rows.map(item=>`<div class="ds-neighborhood-row"><div><strong>${dossierText(item.p.neighborhood)}</strong><span>${dossierUnit(item.m.stats.median)}<small>/m²</small></span></div>${renderDossierBullet(item.m.stats.median,unit,{compact:true,reverse:true,max,valueLabel:item.p.neighborhood,referenceLabel:'Este imóvel'})}<small>${item.m.stats.count} ${item.m.isRent?'anúncios':'avaliações fiscais'} · ${DOSSIER.period==='12m'?'12':'24'} meses</small></div>`).join('')}`;
+    }
+
+    function renderDossierPropertyComparison(p) {
+      const others=getDossierComparables(p), other=others.find(item=>item.id===DOSSIER.compareId) || others[0];
+      if (!other) return '<p class="ds-copy">Adicione outro imóvel desta modalidade para comparar.</p>';
+      const current=getDossierMarket(p).unit, reference=other.announcedValue/other.areaM2;
+      if (!Number.isFinite(current) || reference<=0) return '<p class="ds-copy">Confirme área e preço para comparar.</p>';
+      const delta=dossierDelta((current/reference-1)*100);
+      const otherName=HOME_CARD_META[other.id]?.cleanName || other.title.split('·')[0];
+      const currentCost=getDossierFinance(p), otherCost=getDossierFinance(other);
+      const saving=currentCost.total-otherCost.total;
+      return `<label class="ds-label" for="ds-compare-property">Comparar com</label><select class="ds-secondary ds-full-select" id="ds-compare-property" onchange="setDossierComparison('imoveis',this.value)">${others.map(item=>`<option value="${item.id}" ${other.id===item.id?'selected':''}>${dossierText(HOME_CARD_META[item.id]?.cleanName || item.neighborhood)}</option>`).join('')}</select><div class="ds-property-comparison"><img src="${dossierText(other.image)}" alt=""/><div><strong>${dossierText(otherName)}</strong><span>${dossierText(other.neighborhood)} · ${other.areaM2} m² · ${other.bedrooms} quartos</span></div></div><div class="ds-relative ds-price-delta ${delta.tone}"><strong>${delta.metric}</strong><span>${delta.metric==='0%'?'mesmo patamar por m²':current>reference?'a mais por m²':'a menos por m²'}<small>Este imóvel × opção selecionada</small></span></div>${renderDossierBullet(current,reference,{referenceLabel:'Outra opção'})}${p.modality==='Alugar'&&currentCost.known.length&&otherCost.known.length?`<div class="ds-cost-comparison"><span>Custo mensal conhecido</span><div><strong>${formatBRL(currentCost.total)}<small>este imóvel</small></strong><strong>${formatBRL(otherCost.total)}<small>outra opção</small></strong></div>${Math.abs(saving)>=1?`<p>A outra opção custa <b>${formatBRL(Math.abs(saving))} ${saving>0?'a menos':'a mais'}/mês</b>.</p>`:''}</div>`:''}<button class="ds-link" onclick="openDossierFullComparison('${other.id}')">Abrir comparação completa ${dossierIcon('arrow',13)}</button>`;
+    }
+
+    function setDossierComparison(mode, id) {
+      if (!['recorte','bairros','imoveis'].includes(mode)) return;
+      DOSSIER.benchmarkMode=mode;
+      if (id) DOSSIER.compareId=id;
+      openDossierBenchmark(true);
+      (id?document.getElementById('ds-compare-property'):document.getElementById('ds-compare-'+mode))?.focus({preventScroll:true});
+    }
+
+    function openDossierFullComparison(id) {
+      if (!getDossierComparables(getProp(STATE.activePropId)).some(item=>item.id===id)) return;
+      STATE.compareIds=[STATE.activePropId,id]; STATE.compareThreeCols=false;
+      closeDrawer(); switchView('compare');
+    }
+
+    function dossierCoordinates(p) {
+      const parts = String(p.coordinates || '').split(',');
+      const lat = parseFloat(parts[0]);
+      const lng = parseFloat(parts[1]);
+      return Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : null;
+    }
+
+    function dossierRouteUrl(route) {
+      const destination = route.address || (route.coords ? `${route.coords.lat},${route.coords.lng}` : route.label + ' Recife');
+      const start = dossierCoordinates(getProp(STATE.activePropId));
+      return `https://www.google.com/maps/dir/?api=1&${start ? `origin=${start.lat},${start.lng}&` : ''}destination=${encodeURIComponent(destination)}`;
+    }
+
+    function getDossierFlood(p) {
+      const all=p.civilDefenseSection?.breakdown?.filter(item=>Number.isFinite(item.value)&&item.value>=0) || [];
+      const direct=all.filter(item=>/alagamento|inunda[cç][aã]o/i.test(item.label)&&!/vistoria|drenagem|lona/i.test(item.label));
+      const related=all.filter(item=>/drenagem|lona|vistoria.*(?:alagamento|inunda)/i.test(item.label));
+      const entries=direct.length?direct:related;
+      const count=entries.length?entries.reduce((sum,item)=>sum+item.value,0):null;
+      const total=p.civilDefenseSection?.total;
+      const pointsMatch=p.microclimateAndCensus?.censusIncome?.match(/(\d+) pontos? cr[ií]ticos? de alagamento no quarteir[aã]o/i);
+      const points=pointsMatch?Number(pointsMatch[1]):null;
+      return {entries,count,total,points,direct:!!direct.length};
+    }
+
+    function getDossierHeatComparison(p) {
+      const climate=getDossierClimate(p);
+      const globalReference=['Recife','Zona Norte'].includes(climate.reference);
+      const candidates=PROPERTIES.filter(item=>item.id!==p.id&&globalReference&&getDossierClimate(item).reference===climate.reference&&getDossierClimate(item).hasReference);
+      const other=candidates.find(item=>item.id===DOSSIER.heatCompareId);
+      const reference=other?getDossierClimate(other).delta:0;
+      return {climate,candidates,other,difference:climate.delta===null?null:climate.delta-reference,
+        label:other?other.neighborhood:climate.reference==='bairro'?'Média do bairro':climate.reference==='Recife'?'Média de Recife':climate.reference==='Zona Norte'?'Média da Zona Norte':'Referência local'};
+    }
+
+    function renderDossierMapContext(p) {
+      if (DOSSIER.mapLayer==='rotas') return `<div class="ds-layer-content" aria-label="Destinos e rotas">${STATE.dailyRoutes.length?`<label class="ds-label" for="ds-route-select">Seu destino</label><select class="ds-secondary ds-full-select" id="ds-route-select" onchange="chooseDossierRoute(this.value)">${STATE.dailyRoutes.map(route=>`<option value="${dossierText(route.id)}" ${route.id===DOSSIER.routeId?'selected':''}>${dossierText(route.label)}</option>`).join('')}</select>`:''}${STATE.dailyRoutes.map(route=>`<div class="ds-route"><div><p class="ds-route-name">${dossierText(route.label)}</p><small>${route.coords?`${computeStraightDistanceKm(p.coordinates,route.coords)} km em linha reta`:dossierText(route.address)}</small></div><a class="ds-link" href="${dossierRouteUrl(route)}" target="_blank" rel="noopener">Abrir rota ${dossierIcon('arrow',12)}</a></div>`).join('')}<button class="ds-link" onclick="openDossierDestination()">${dossierIcon('plus',14)} Adicionar destino</button></div>`;
+      if (DOSSIER.mapLayer==='servicos') return `<div class="ds-layer-content" aria-label="Serviços próximos"><h3 class="ds-layer-title">O que você quer por perto?</h3><div id="ds-poi-mount">${renderDossierInterests(p)}</div></div>`;
+      if (DOSSIER.mapLayer==='alagamento') {
+        const flood=getDossierFlood(p);
+        const title=flood.points===0?'Sem pontos críticos no quarteirão':flood.points>0?`${flood.points} ${flood.points===1?'ponto crítico':'pontos críticos'} no quarteirão`:flood.direct&&flood.count>0?'Há registros de alagamento no bairro':'Como fica o acesso quando chove?';
+        return `<div class="ds-layer-content ds-water-insight" aria-label="Alagamento e período de chuva"><h3 class="ds-rain-title">${title}</h3>${renderDossierRainSeason()}<p class="ds-rain-question">Confira a rua e a entrada da garagem.</p><button class="ds-link" onclick="openDossierFlood()">Entender o entorno ${dossierIcon('arrow',13)}</button></div>`;
+      }
+      const heat=getDossierHeatComparison(p), {climate,difference,label}=heat;
+      const magnitude=difference===null?'—':`${difference<0?'−':difference>0?'+':''}${Math.abs(difference).toLocaleString('pt-BR',{maximumFractionDigits:1})} °C`;
+      const cool=(difference ?? 0)<0, max=Math.max(Math.abs(difference || 0),3.5)*1.15;
+      const position=50+(difference || 0)/max*50;
+      return `<div class="ds-layer-content ${cool?'ds-cool-insight':'ds-warm-insight'}" aria-label="Comparação de calor">${heat.candidates.length?`<label class="ds-label" for="ds-heat-compare">Comparar com</label><select class="ds-secondary ds-full-select" id="ds-heat-compare" onchange="chooseDossierHeatComparison(this.value)"><option value="">${dossierText(climate.reference==='Recife'?'Média de Recife':'Média da Zona Norte')}</option>${heat.candidates.map(item=>`<option value="${item.id}" ${item.id===heat.other?.id?'selected':''}>${dossierText(item.neighborhood)}</option>`).join('')}</select>`:''}<div class="ds-layer-figure"><strong>${magnitude}</strong><div><span>${difference===null?'Superfície':difference===0?'mesma referência térmica':cool?'superfície mais fresca':'superfície mais quente'}</span><small>${climate.hasReference?'vs. '+dossierText(label):'Entorno do Capibaribe'}</small></div></div>${climate.hasReference&&difference!==null?`<div class="ds-heat-scale" role="img" aria-label="Este endereço: ${magnitude} em relação a ${dossierText(label)}"><div class="ds-heat-track"><i class="ds-heat-join" style="left:${Math.min(position,50)}%;width:${Math.abs(position-50)}%"></i><b class="ds-heat-reference"></b><b class="ds-heat-address" style="left:${position}%"></b></div><div class="ds-heat-legend"><span><i></i>Este endereço</span><span><b></b>${dossierText(label)}</span></div></div>`:''}<button class="ds-link" onclick="openDossierEvidence('ambiente')">Explorar o ambiente ${dossierIcon('arrow',13)}</button></div>`;
+    }
+
+    function chooseDossierHeatComparison(id) {
+      const heat=getDossierHeatComparison(getProp(STATE.activePropId));
+      DOSSIER.heatCompareId=heat.candidates.some(item=>item.id===id)?id:null;
+      document.getElementById('ds-map-context').innerHTML=renderDossierMapContext(getProp(STATE.activePropId));
+      document.getElementById('ds-heat-compare')?.focus({preventScroll:true});
+    }
+
+    function renderDossierRainSeason() {
+      const months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+      return `<div class="ds-rain-season"><strong>Abr–Jul</strong><span>Chuvas mais intensas<br>no Recife</span></div><div class="ds-rain-calendar" role="img" aria-label="Calendário anual. Abril, maio, junho e julho: período de maior intensidade de chuva no Recife.">${months.map((month,index)=>`<span class="${index>=3&&index<=6?'is-rainy':''}" aria-hidden="true">${month}</span>`).join('')}</div>`;
+    }
+
+    function openDossierFlood() {
+      const p=getProp(STATE.activePropId), flood=getDossierFlood(p);
+      showDossierSheet('Chuva e acesso ao imóvel',`${renderDossierRainSeason()}${flood.points===null?'':dossierRows([{label:'Pontos críticos no quarteirão',value:String(flood.points)}])}<h3 class="ds-detail-title">O que conferir na visita</h3><p class="ds-copy">A rua fica transitável? A água chega à garagem? Pergunte ao porteiro e aos moradores sobre chuvas recentes.</p><h3 class="ds-detail-title">Registros em ${dossierText(p.neighborhood)}</h3>${flood.entries.length?dossierRows(flood.entries.map(item=>({label:item.label,value:item.value+' atendimentos · 2024'}))):'<p class="ds-copy">Sem categoria de alagamento ou drenagem neste recorte.</p>'}<p class="ds-note">${flood.direct?'Registros do bairro não indicam o risco de cada rua.':'Atendimentos de lona e drenagem não medem alagamentos na rua.'}</p><button class="ds-link" onclick="openSourceSheet('DEFESA_CIVIL')">Ver registros da Defesa Civil ${dossierIcon('arrow',13)}</button><a class="ds-link" href="https://acaoinverno.recife.pe.gov.br/wp-content/uploads/2026/04/PLANO-DE-CONTINGENCIA-RECIFE-2026__final.pdf#page=83" target="_blank" rel="noopener">Período de chuva · Prefeitura do Recife ${dossierIcon('arrow',13)}</a>`);
+    }
+
+    function getDossierSecurity(p) {
+      const safety=p.securitySection;
+      const neighbors=safety?.neighborsNorthToSouth?.filter(item=>Number.isFinite(item.rate)&&item.rate>=0) || [];
+      const rate=Number.isFinite(safety?.ratePer1k)&&safety.ratePer1k>=0?safety.ratePer1k:null;
+      // Só ordenar quando o próprio bairro faz parte do mesmo recorte.
+      const rank=rate!==null&&neighbors.some(item=>item.current&&item.rate===rate)?1+neighbors.filter(item=>item.rate<rate).length:null;
+      const natures=safety?.byNature?.filter(item=>Number.isFinite(item.pct)&&item.pct>=0&&item.pct<=100) || [];
+      const leading=[...natures].sort((a,b)=>b.pct-a.pct)[0];
+      return {safety,neighbors,rate,rank,natures,leading};
+    }
+
+    function renderDossierMap(p) {
+      const center = dossierCoordinates(p);
+      if (!center) return '<p class="ds-note">Localização não disponível. Confirme o endereço do anúncio.</p>';
+      const route = STATE.dailyRoutes.find(item => item.id === DOSSIER.routeId);
+      const routePoint = DOSSIER.mapLayer === 'rotas' ? route?.coords : null;
+      const aspect = 1.5;
+      const mid = routePoint ? {lat:(center.lat + routePoint.lat)/2,lng:(center.lng + routePoint.lng)/2} : center;
+      const cos = Math.cos(mid.lat * Math.PI / 180);
+      const latSpan = Math.max(.011 / DOSSIER.mapZoom, routePoint ? Math.abs(center.lat-routePoint.lat)*1.6 : 0, routePoint ? Math.abs(center.lng-routePoint.lng)*cos/aspect*1.6 : 0);
+      const lonSpan = latSpan * aspect / cos;
+      const bounds = [mid.lng-lonSpan/2,mid.lat-latSpan/2,mid.lng+lonSpan/2,mid.lat+latSpan/2];
+      const merc = lat => Math.log(Math.tan(Math.PI/4+lat*Math.PI/360));
+      const xy = point => ({x:(point.lng-bounds[0])/lonSpan*360,y:(merc(bounds[3])-merc(point.lat))/(merc(bounds[3])-merc(bounds[1]))*240});
+      const pin = xy(center), dest = routePoint ? xy(routePoint) : null;
+      const captions = {
+        rotas: routePoint ? `${computeStraightDistanceKm(p.coordinates,routePoint)} km em linha reta · ${route.label.split('·')[0].trim()}` : 'Localização do anúncio',
+        alagamento: 'Alagamento · recorte do bairro', calor:'Calor · temperatura da superfície', servicos:'Serviços · base OpenStreetMap'
+      };
+      return `<div class="ds-map-tabs" role="group" aria-label="Camada do mapa">${[['rotas','Rotas'],['alagamento','Alagamento'],['calor','Calor'],['servicos','Serviços']].map(([key,label]) => `<button data-layer="${key}" aria-pressed="${DOSSIER.mapLayer===key}" onclick="setDossierLayer('${key}')">${label}</button>`).join('')}</div>
+        <div class="ds-map">
+          <iframe title="Mapa de ${dossierText(p.neighborhood)}" tabindex="-1" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=${bounds.join('%2C')}&amp;layer=mapnik" aria-hidden="true"></iframe>
+          <svg viewBox="0 0 360 240" preserveAspectRatio="none" aria-hidden="true">${dest ? `<line x1="${pin.x}" y1="${pin.y}" x2="${dest.x}" y2="${dest.y}" stroke="#2E5A85" stroke-width="2.5" stroke-dasharray="5 4"/><circle cx="${dest.x}" cy="${dest.y}" r="6" fill="#2E5A85" stroke="white" stroke-width="2"/>` : ''}<circle cx="${pin.x}" cy="${pin.y}" r="13" fill="#F4774533"/><circle cx="${pin.x}" cy="${pin.y}" r="7" fill="#F47745" stroke="white" stroke-width="2"/></svg>
+          ${!dest ? `<div class="ds-map-controls"><button aria-label="Aproximar mapa" onclick="zoomDossierMap(1)" ${DOSSIER.mapZoom >= 3 ? 'disabled' : ''}>+</button><button aria-label="Afastar mapa" onclick="zoomDossierMap(-1)" ${DOSSIER.mapZoom <= .5 ? 'disabled' : ''}>−</button></div>` : ''}
+          <span class="ds-map-caption">${dossierText(captions[DOSSIER.mapLayer])}</span><span class="ds-map-credit">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></span>
+        </div><div id="ds-map-context">${renderDossierMapContext(p)}</div>`;
+    }
+
+    function focusDossierMap() { setDossierCategory('entorno','ds-central-map'); }
+    function setDossierLayer(layer) {
+      if (!['rotas','alagamento','calor','servicos'].includes(layer)) return;
+      const previous=DOSSIER.mapLayer;
+      if (previous===layer) return;
+      DOSSIER.mapLayer = layer;
+      const p=getProp(STATE.activePropId), context=document.getElementById('ds-map-context');
+      if (previous!=='rotas'&&layer!=='rotas'&&context) {
+        document.querySelectorAll('.ds-map-tabs button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.layer===layer)));
+        document.querySelector('.ds-map-caption').textContent={alagamento:'Alagamento · recorte do bairro',calor:'Calor · temperatura da superfície',servicos:'Serviços · base OpenStreetMap'}[layer];
+        context.innerHTML=renderDossierMapContext(p);
+      } else document.getElementById('ds-map-mount').innerHTML = renderDossierMap(p);
+      document.querySelector('.ds-map-tabs [aria-pressed="true"]').focus({preventScroll:true});
+    }
+    function zoomDossierMap(direction) {
+      DOSSIER.mapZoom = Math.max(.5,Math.min(3,DOSSIER.mapZoom+direction*.5));
+      document.getElementById('ds-map-mount').innerHTML = renderDossierMap(getProp(STATE.activePropId));
+      document.querySelector(`.ds-map-controls button[aria-label="${direction > 0 ? 'Aproximar mapa' : 'Afastar mapa'}"]`)?.focus({preventScroll:true});
+    }
+    function chooseDossierRoute(id) {
+      DOSSIER.routeId = id;
+      DOSSIER.mapLayer = 'rotas';
+      document.getElementById('ds-map-mount').innerHTML = renderDossierMap(getProp(STATE.activePropId));
+      document.getElementById('ds-route-select')?.focus({preventScroll:true});
+    }
+
+    function renderDossierSurroundings(p) {
+      const climate=getDossierClimate(p), green=getDossierGreen(p);
+      const {safety,neighbors,rate,rank,leading}=getDossierSecurity(p);
+      return `<section class="ds-section" id="ds-market"><p class="ds-eyebrow">Preço no contexto</p><h2>${p.modality==='Alugar' ? 'Mercado na região' : 'Valor na região'}</h2><div id="ds-market-chart">${renderDossierMarketChart(p)}</div><button class="ds-link" onclick="openDossierBenchmark()">Explorar amostra e recorte ${dossierIcon('arrow',13)}</button></section>
+        <section class="ds-section" id="ds-central-map"><p class="ds-eyebrow">Seu endereço no cotidiano</p><h2>Explore o entorno</h2><div id="ds-map-mount">${renderDossierMap(p)}</div></section>
+        <section class="ds-section" id="ds-environment"><p class="ds-eyebrow">Verde e conforto</p><h2>Ambiente urbano</h2>
+          <div class="ds-env-visual"><div><strong>${climate.value}</strong><span class="ds-label">${climate.delta===null?'Superfície':climate.delta<0?'Superfície mais fresca':climate.delta>0?'Superfície mais quente':'Mesma temperatura'}</span><small>${climate.hasReference?'vs. '+climate.reference:climate.delta===null?'Sem medição':'Recorte local'}</small></div><button class="ds-green-score" onclick="openDossierGreen()" aria-label="Índice verde ${green.score===null?'em levantamento':green.score+' de 100'}. Entender a nota"><strong>${green.score ?? '—'}<small>/100</small></strong><span class="ds-label">Índice verde ${dossierIcon('arrow',12)}</span><small>${green.label}</small><i aria-hidden="true"><b style="width:${green.score ?? 0}%"></b></i></button></div>
+          <div class="ds-sun-summary"><span><strong>${climate.sun}</strong><small>${dossierText(climate.face)}</small></span><button class="ds-link" onclick="openDossierSun()">Sol e sombra ${dossierIcon('arrow',13)}</button></div>
+          <button class="ds-link" onclick="openDossierEvidence('ambiente')">Explorar indicadores ${dossierIcon('arrow',13)}</button>
+        </section>
+        <section class="ds-section" id="ds-security"><p class="ds-eyebrow">Registros do bairro</p><h2>Segurança e contexto local</h2>
+          <p class="ds-map-note ds-security-period">${dossierText(p.neighborhood)} · últimos 12 meses</p>
+          <div class="ds-security-stats"><div><strong>${rate?.toLocaleString('pt-BR') ?? '—'}</strong><span>ocorrências<br>por mil moradores</span></div><div><strong>${rank===null?'—':rank+'ª'}</strong><span>${rank===null?'Comparação indisponível':'menor taxa'}</span>${rank===null?'':`<small>entre ${neighbors.length} bairros comparados</small>`}</div></div>
+          <p class="ds-security-total"><strong>${safety?.total12m?.toLocaleString('pt-BR') ?? '—'}</strong> ocorrências registradas no período</p>
+          ${leading?`<div class="ds-security-nature"><strong>${leading.pct}%</strong><span>${dossierText(leading.label)}</span></div>`:''}
+          <p class="ds-map-note">${dossierText(safety?.source || '')}</p><button class="ds-link" onclick="openDossierEvidence('bairro')">Comparar bairros e registros ${dossierIcon('arrow',13)}</button>
+        </section>`;
+    }
+
+    function renderDossierInterests(p) {
+      const interests=DOSSIER.interests[p.id] || ['Saúde','Escolas','Mercados','Transporte'];
+      return `<div class="ds-poi-grid">${interests.map(name=>`<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name+' perto de '+p.address+' '+p.city)}" target="_blank" rel="noopener"><span>${dossierText(name)}</span>${dossierIcon('arrow',13)}</a>`).join('')}</div><button class="ds-link" id="ds-add-interest" onclick="openDossierInterest()">${dossierIcon('plus',15)} Adicionar interesse</button>`;
+    }
+
+    function openDossierInterest() {
+      const interests=DOSSIER.interests[STATE.activePropId] || ['Saúde','Escolas','Mercados','Transporte'];
+      showDossierSheet('O que você quer ter por perto?',`<div class="ds-interest-options">${['Cinema','Parques','Shopping','Academias','Restaurantes','Pet shops'].filter(name=>!interests.includes(name)).map(name=>`<button class="ds-secondary" onclick="addDossierInterest('${name}')">${name} ${dossierIcon('plus',13)}</button>`).join('')}</div><form onsubmit="event.preventDefault(); addDossierInterest(new FormData(this).get('interest'))"><div class="ds-form-row"><label for="ds-interest-name">Outro interesse</label><input id="ds-interest-name" name="interest" placeholder="Livrarias, cafés..." maxlength="40" required/></div><p id="ds-interest-error" class="ds-copy" role="alert"></p><button type="submit" class="ds-primary">Adicionar ao meu entorno</button></form>`);
+    }
+
+    function addDossierInterest(value) {
+      const name=String(value || '').trim().replace(/\s+/g,' ').slice(0,40), p=getProp(STATE.activePropId);
+      if (!name) return;
+      const interests=DOSSIER.interests[p.id] || ['Saúde','Escolas','Mercados','Transporte'];
+      if (interests.some(item=>item.toLocaleLowerCase('pt-BR')===name.toLocaleLowerCase('pt-BR'))) {
+        document.getElementById('ds-interest-error').textContent='Esse interesse já está na sua lista.'; return;
+      }
+      if (interests.length>=12) { document.getElementById('ds-interest-error').textContent='Sua lista já tem 12 interesses.'; return; }
+      DOSSIER.interests[p.id]=[...interests,name];
+      document.getElementById('ds-poi-mount').innerHTML=renderDossierInterests(p);
+      closeDrawer(); document.getElementById('ds-add-interest').focus({preventScroll:true}); showToast('Interesse adicionado');
+    }
+
+    function getDossierChecks(p, priority=DOSSIER.priority) {
+      const titles={'q-bv-1':'Quantos banheiros há?','q-bv-2':'R$ 288 de IPTU por mês?','q-bv-3':'Qual é a altura em relação à rua?','q-cf-1':'Quanto é o IPTU atual?','q-cf-2':'O preço inclui móveis e reformas?','q-gr-1':'Qual é o sistema estrutural?','q-gr-2':'Quanto é o IPTU atual?','q-es-1':'O IPTU vem no condomínio?','q-es-2':'As obras afetam luz ou silêncio?','q-md-1':'Quanto é o IPTU atual?','q-md-2':'As janelas bloqueiam o ruído?'};
+      const checks=(p.visitQuestions || []).map((q,index)=>{
+        const type=/iptu|preço|valor anunciado/i.test(q.text)?'custo':/estrutura|tipologia/i.test(q.text)?'documentos':'conforto';
+        const hint=/tipologia/i.test(q.text)?'3 sinais no cadastro':/suítes.*banheiro/i.test(q.text)?`${p.suites} suítes · ${p.bathrooms} banheiro${p.bathrooms===1?'':'s'}`:/iptu/i.test(q.text)?(/sem período/i.test(q.text)?'Anúncio sem periodicidade':'Peça a guia atualizada'):/obra/i.test(q.text)?`${dossierNumber(p.worksSection?.items?.[0]?.value) ?? '—'} registros em 150 m`:/altura|andar/i.test(q.text)?`${p.floor} anunciado`:'Anúncio × registros';
+        return {key:q.id,title:titles[q.id] || visitQuestionShort(q),hint,type,index,action:'question'};
+      });
+      checks.push({key:'documentos',title:'Há cota extra ou obra aprovada?',hint:'Peça atas e balancetes',type:'documentos',action:'documentos'});
+      const works=dossierNumber(p.worksSection?.items?.[0]?.value);
+      if (works>=3 && !checks.some(item=>/obras|ruído/i.test(item.title))) checks.push({key:'obras',title:'As obras próximas afetam a rotina?',hint:`${works} registros em 150 m`,type:'conforto',action:'obras'});
+      if (p.microclimateAndCensus?.sunFace) checks.push({key:'sol',title:'O sol chega às janelas?',hint:getDossierClimate(p).sun+' · '+getDossierClimate(p).face,type:'conforto',action:'sol'});
+      return checks.map((item,index)=>({...item,order:index})).sort((a,b)=>(a.type===priority?0:1)-(b.type===priority?0:1)||a.order-b.order);
+    }
+
+    function renderDossierChecks(p) {
+      const checks=getDossierChecks(p);
+      return `<div class="ds-section-heading"><h2>Antes de<br>decidir.</h2><span class="ds-check-count"><strong>${checks.length}</strong><small>a conferir</small></span></div><p class="ds-label">O que pesa mais para você?</p><div class="ds-priorities" role="group" aria-label="Sua prioridade">${[['custo','Custo'],['conforto','Conforto'],['documentos','Documentos']].map(([key,label])=>`<button aria-pressed="${DOSSIER.priority===key}" onclick="setDossierPriority('${key}')">${label}</button>`).join('')}</div><div class="ds-check-list">${checks.slice(0,3).map(item=>`<button onclick="openDossierCheck('${item.key}')"><span><strong>${dossierText(item.title)}</strong><small>${dossierText(item.hint)}</small></span>${dossierIcon('arrow',15)}</button>`).join('')}</div><button class="ds-link" onclick="openDossierAllChecks()">Ver todas as verificações ${dossierIcon('arrow',13)}</button>`;
+    }
+
+    function setDossierPriority(priority) {
+      if (!['custo','conforto','documentos'].includes(priority)) return;
+      DOSSIER.priority=priority;
+      document.getElementById('ds-building-checks').innerHTML=renderDossierChecks(getProp(STATE.activePropId));
+      document.querySelector('.ds-priorities [aria-pressed="true"]').focus({preventScroll:true});
+    }
+
+    function openDossierAllChecks() {
+      const p=getProp(STATE.activePropId), checks=getDossierChecks(p);
+      showDossierSheet('Seu roteiro de verificação',`<div class="ds-check-list">${checks.map(item=>`<button onclick="openDossierCheck('${item.key}')"><span><strong>${dossierText(item.title)}</strong><small>${dossierText(item.hint)}</small></span>${dossierIcon('arrow',15)}</button>`).join('')}</div><button class="ds-primary" style="margin-top:16px" onclick="closeDrawer(); STATE.visitModeTab='prepare'; switchView('live-visit','${p.id}')">Preparar visita ${dossierIcon('arrow',15)}</button>`);
+    }
+
+    function openDossierCheck(key) {
+      const p=getProp(STATE.activePropId), check=getDossierChecks(p).find(item=>item.key===key);
+      if (!check) return;
+      if (check.action==='question') return openDossierQuestion(check.index);
+      if (check.action==='sol') return openDossierSun();
+      if (check.action==='obras') return openDossierEvidence('obras');
+      showDossierSheet('Peça ao condomínio',`${dossierRows([{label:'Últimas atas',value:'Cotas extras e obras aprovadas'},{label:'Balancetes',value:'Receitas, despesas e fundo de reserva'},{label:'Manutenção',value:'Laudos e serviços previstos'}])}<p class="ds-note">Documentos ainda não anexados.</p><button class="ds-primary" onclick="closeDrawer(); STATE.visitModeTab='prepare'; switchView('live-visit','${p.id}')">Levar para a visita</button>`);
+    }
+
+    function renderDossierBuilding(p) {
+      if (!p.lotConfirmed) return `<p class="ds-eyebrow">Identificação do edifício</p><h2>Primeiro, confirme o prédio.</h2><p class="ds-copy" style="margin:16px 0">Confirme o lote para abrir o cadastro e as verificações do edifício.</p><button class="ds-primary" onclick="triggerUrlDecode('${p.id}')">Confirmar prédio ${dossierIcon('arrow',15)}</button>`;
+      const items = p.buildingSection?.items || [];
+      const find = word => items.find(item => item.label.toLowerCase().includes(word))?.value;
+      const med=dossierNumber(p.itbiBuildingSection?.items?.find(item=>/mediana/i.test(item.label))?.value);
+      const reference=Number.isFinite(med)&&Number.isFinite(p.areaM2)&&p.areaM2>0?med*p.areaM2:null;
+      const annualTax=find('iptu 2026'), taxes=/ano|anual/i.test(annualTax || '')?(annualTax.match(/\d[\d.,]*/g) || []).map(parseDossierMoney).filter(Number.isFinite):[];
+      const monthlyTax=taxes.map(value=>Math.round(value/12));
+      const taxValue=monthlyTax.length?monthlyTax.map(formatBRL).join('–'):'A confirmar';
+      const transfers=dossierNumber(p.itbiBuildingSection?.items?.[0]?.value);
+      const cadastral=[['ano de construção','Ano de construção'],['pavimentos','Pavimentos'],['unidades','Unidades residenciais'],['área privativa','Área no cadastro']];
+      const isRent=p.modality==='Alugar';
+      return `<section class="ds-section" id="ds-building-checks">${renderDossierChecks(p)}</section>
+        <section class="ds-section"><p class="ds-eyebrow">Identidade cadastral</p><h2>Estrutura e cadastro</h2><div class="ds-cadastre">${cadastral.map(([word,label])=>`<div><strong>${dossierText(find(word) || '—')}</strong><span>${label}</span></div>`).join('')}</div><p class="ds-map-note">${dossierText(p.buildingSection?.source || '')}</p>${p.typologyCheck?.triggeredCount === 3 ? '<p class="ds-note">3 sinais cadastrais: confirme a estrutura antes de reformar.</p>' : ''}<button class="ds-link" onclick="openDossierEvidence('cadastro')">Abrir cadastro completo ${dossierIcon('arrow',13)}</button></section>
+        <section class="ds-section"><p class="ds-eyebrow">O valor em perspectiva</p><h2>Valor e histórico</h2><div class="ds-value-summary"><span class="ds-label">${isRent?'IPTU mensal no prédio':'Referência fiscal para '+p.areaM2+' m²'}</span><strong>${isRent?taxValue:reference===null?'A confirmar':formatBRL(reference)}${isRent&&monthlyTax.length?'<small>/mês</small>':''}</strong><p class="ds-map-note">${isRent?'Faixa das unidades · cadastro 2026':'Base do prédio · avaliação fiscal'}</p></div><ol class="ds-history">${(p.timelineEvents || []).slice(0,3).map(event=>`<li><time>${dossierText(event.year)}</time><p>${dossierText(event.title.replace(/ no ITBI/g,'').replace(/IPTU/g,'cadastro'))}</p></li>`).join('')}</ol><button class="ds-link" onclick="openDossierEvidence('historico')">Explorar valores e histórico ${dossierIcon('arrow',13)}</button>${transfers===null?'':`<p class="ds-map-note">${transfers} avaliações registradas · Prefeitura do Recife</p>`}</section>
+        <section class="ds-section" id="ds-building-works"><p class="ds-eyebrow">Mudanças na vizinhança</p><h2>Obras próximas</h2><div class="ds-finding-measure"><strong>${dossierNumber(p.worksSection?.items?.[0]?.value) ?? '—'}</strong><span>registros em 150 m</span></div><p class="ds-copy">${dossierText(p.worksSection?.summary?.split('·').slice(1).join('·').trim() || 'Licenças registradas desde 2017.')}</p><button class="ds-link" onclick="openDossierEvidence('obras')">Explorar processos ${dossierIcon('arrow',13)}</button></section>`;
+    }
+
+    function openDossierSun() {
+      const p=getProp(STATE.activePropId), climate=getDossierClimate(p);
+      if (!p.lotConfirmed) return showDossierSheet('Sol e sombra',`<p class="ds-copy">${climate.sun} · ${dossierText(climate.face)}</p><p class="ds-copy">Confirme o prédio para explorar a sombra.</p><button class="ds-primary" onclick="closeDrawer(); triggerUrlDecode('${p.id}')">Confirmar prédio</button>`);
+      showDossierSheet('Sol e sombra',`<p class="ds-copy">${climate.sun} · ${dossierText(climate.face)}</p><div class="ds-shadow"><div id="ds-shadow-mount">${renderDossierShadow(p)}</div><div class="ds-shadow-controls"><label for="ds-sun-hour"><span>Horário</span><output id="ds-sun-label">${dossierSunTime(DOSSIER.sunHour)} · 17 out 2026</output></label><input id="ds-sun-hour" type="range" min="7" max="17" step="0.25" value="${DOSSIER.sunHour}" aria-label="Horário do estudo de sombra" aria-valuetext="${dossierSunTime(DOSSIER.sunHour)}" oninput="updateDossierShadow(this.value)"/></div></div><button class="ds-link" onclick="openDossierEvidence('sombra')">Entender o estudo ${dossierIcon('arrow',13)}</button>`);
+    }
+
+    function openDossierGreen() {
+      const green=getDossierGreen(getProp(STATE.activePropId));
+      showDossierSheet('Como calculamos o verde',`<div class="ds-relative ds-green-relative"><strong>${green.score ?? '—'}<small>/100</small></strong><span>Índice verde<small>${green.label}</small></span></div>${green.parts.map(part=>`<div class="ds-score-part"><div><strong>${part.label}</strong><span>${part.value ?? '—'} ${part.unit}</span></div><b>${part.points===null?'—':part.points.toLocaleString('pt-BR',{maximumFractionDigits:1})}<small> / ${part.weight}</small></b></div>`).join('')}<p class="ds-copy">Vegetação 50% + árvores 30% + parques 20%.</p>${dossierRows([{label:'Referência para nota máxima',value:'50% de vegetação · 100 árvores · 4 parques/praças'},{label:'Recortes',value:'Vegetação e parques: 1 km · árvores: 150 m'}])}<p class="ds-map-note">Fórmula e dados do protótipo. Fontes previstas: satélite, Censo Arbóreo e parques registrados.</p>`);
+    }
+
+    function dossierSunTime(hour) {
+      const minutes=Math.round(hour*60);
+      return Math.floor(minutes/60)+'h'+(minutes%60?String(minutes%60).padStart(2,'0'):'');
+    }
+
+    function getDossierSun(p, hour=DOSSIER.sunHour) {
+      const coordinates=dossierCoordinates(p);
+      const floors=dossierNumber(p.buildingSection?.items?.find(item=>/pavimentos/i.test(item.label))?.value);
+      if (!coordinates || !floors || !Number.isFinite(hour)) return null;
+      // NOAA: posição solar aproximada em 17/10/2026 (dia 290), horário de Recife, UTC−3.
+      const gamma=2*Math.PI/365*(290-1+(hour-12)/24);
+      const decl=.006918-.399912*Math.cos(gamma)+.070257*Math.sin(gamma)-.006758*Math.cos(2*gamma)+.000907*Math.sin(2*gamma)-.002697*Math.cos(3*gamma)+.00148*Math.sin(3*gamma);
+      const equation=229.18*(.000075+.001868*Math.cos(gamma)-.032077*Math.sin(gamma)-.014615*Math.cos(2*gamma)-.040849*Math.sin(2*gamma));
+      const angle=(hour*60+equation+4*coordinates.lng+180)/4*Math.PI/180-Math.PI;
+      const lat=coordinates.lat*Math.PI/180;
+      const east=-Math.cos(decl)*Math.sin(angle);
+      const north=Math.cos(lat)*Math.sin(decl)-Math.sin(lat)*Math.cos(decl)*Math.cos(angle);
+      const up=Math.sin(lat)*Math.sin(decl)+Math.cos(lat)*Math.cos(decl)*Math.cos(angle);
+      const altitude=Math.asin(Math.max(-1,Math.min(1,up)));
+      const shadowMeters=up>0?floors*3.28/Math.tan(altitude):null;
+      const rawX=up>0?-east/up*floors*3.28*1.5:0, rawY=up>0?north/up*floors*3.28*.55:0;
+      const scale=Math.min(1,115/Math.max(1,Math.hypot(rawX,rawY)));
+      return {floors,east,north,up,altitude,shadowMeters,x:165+east*133,y:112-Math.max(0,up)*96,dx:rawX*scale,dy:rawY*scale};
+    }
+
+    function renderDossierShadow(p) {
+      const sun=getDossierSun(p);
+      if (!sun) return '<p class="ds-note">Pavimentos ou localização não disponíveis para estimar o volume.</p>';
+      const path=Array.from({length:41},(_,i)=>getDossierSun(p,7+i/4)).map((point,i)=>(i?'L':'M')+point.x.toFixed(2)+' '+point.y.toFixed(2)).join(' ');
+      const number=value=>value.toFixed(2);
+      return `<svg viewBox="0 0 330 170" role="img" aria-label="Sol e sombra às ${dossierSunTime(DOSSIER.sunHour)} em Recife. ${sun.shadowMeters===null?'Sol abaixo do horizonte.':'Sombra teórica de '+Math.round(sun.shadowMeters)+' metros.'}"><path d="M25 115h280M165 15v120" stroke="#E5DDCF" stroke-dasharray="3 4"/><path d="${path}" fill="none" stroke="#D8CCB7" stroke-dasharray="2 5"/>${sun.shadowMeters===null?'':`<polygon class="ds-solar-shadow" points="142,102 164,115 187,102 ${number(187+sun.dx)},${number(102+sun.dy)} ${number(164+sun.dx)},${number(115+sun.dy)} ${number(142+sun.dx)},${number(102+sun.dy)}" fill="#7F887044"/>`}<path d="m142 102 0-59 22-12 23 12v59l-23 13Z" fill="#F9F5ED" stroke="#BAAB94"/><path d="m164 31 0 84 23-13V43Z" fill="#DED3C1" stroke="#BAAB94"/><path d="m142 43 22 12 23-12m-23 12v60" fill="none" stroke="#BAAB94"/><circle class="ds-solar-sun" cx="${number(sun.x)}" cy="${number(sun.y)}" r="10" fill="#F47745" opacity="${sun.up>0?1:.35}"/><g font-family="Plus Jakarta Sans,sans-serif" font-size="9" fill="#746C5E"><text x="18" y="132">Oeste · tarde</text><text x="312" y="132" text-anchor="end">Leste · manhã</text><text x="18" y="158">${sun.floors} pavimentos × 3,28 m</text><text x="312" y="158" text-anchor="end">${sun.shadowMeters===null?'Sol abaixo do horizonte':'Sombra: '+Math.round(sun.shadowMeters)+' m'}</text></g></svg>`;
+    }
+
+    function updateDossierShadow(value) {
+      const hour=Number(value);
+      if (!Number.isFinite(hour)) return;
+      DOSSIER.sunHour=Math.max(7,Math.min(17,hour));
+      document.getElementById('ds-shadow-mount').innerHTML=renderDossierShadow(getProp(STATE.activePropId));
+      document.getElementById('ds-sun-label').textContent=dossierSunTime(DOSSIER.sunHour)+' · 17 out 2026';
+      document.getElementById('ds-sun-hour').setAttribute('aria-valuetext',dossierSunTime(DOSSIER.sunHour));
+    }
+
+    function showDossierSheet(title, content, keepTrigger = false) {
+      const panel = document.getElementById('drawerPanel');
+      if (!keepTrigger || !window.__dossierTrigger) window.__dossierTrigger = document.activeElement;
+      panel.classList.add('ds-sheet');
+      panel.setAttribute('role','dialog'); panel.setAttribute('aria-modal','true'); panel.setAttribute('aria-labelledby','ds-sheet-title');
+      panel.innerHTML = `<div class="sheet-handle"></div><div class="ds-sheet-head"><h2 id="ds-sheet-title">${title}</h2><button aria-label="Fechar detalhes" onclick="closeDrawer()">${dossierIcon('close')}</button></div>${content}`;
+      document.getElementById('drawerBackdrop').classList.add('open');
+      panel.querySelector('button').focus({preventScroll:true});
+    }
+
+    function dossierRows(items) {
+      return `<div class="fact-kv-list">${(items || []).map(item=>`<div class="fact-kv-row"><span class="fact-kv-label">${dossierText(item.label)}</span><span class="fact-kv-val">${dossierText(item.value)}</span></div>`).join('')}</div>`;
+    }
+
+    function openDossierCosts() {
+      const p = getProp(STATE.activePropId), finance = getDossierFinance(p);
+      showDossierSheet('A composição do mês', `<p class="ds-copy">A soma considera valores com periodicidade conhecida. O IPTU anual é dividido por 12; estimativas ficam identificadas.</p>${dossierRows(finance.entries.map(item=>({label:item.label+(item.estimated?' · estimativa':''),value:item.monthly === null ? 'Não entra na soma' : formatBRL(item.monthly)+'/mês'})))}<form onsubmit="saveDossierCosts(event)">${finance.entries.filter(item=>item.key!=='aluguel').map(item=>`<div class="ds-form-row"><label for="ds-cost-${item.key}">${item.label} (R$)</label><div class="ds-form-controls"><input id="ds-cost-${item.key}" name="${item.key}" inputmode="decimal" placeholder="Não informado" value="${item.amount ?? ''}" aria-describedby="ds-cost-help-${item.key}"/><select name="${item.key}Period" aria-label="Periodicidade de ${item.label}">${[['unknown','Período a confirmar'],['month','Por mês'],['year','Por ano']].map(([value,label])=>`<option value="${value}" ${item.period===value?'selected':''}>${label}</option>`).join('')}</select></div><small id="ds-cost-help-${item.key}">${item.key==='iptu' ? dossierText(p.iptuDeclared) : item.key==='seguro' ? 'Informe uma cotação ou uma estimativa. Campo vazio permanece pendente.' : dossierText(p.condoDeclared)}</small><label class="ds-checkbox"><input type="checkbox" name="${item.key}Estimated" ${item.estimated?'checked':''}/>Este valor é uma estimativa</label></div>`).join('')}<p class="ds-copy" id="ds-cost-error" role="alert"></p><button class="ds-primary" type="submit">Atualizar composição ${dossierIcon('check',15)}</button></form>`);
+    }
+
+    function saveDossierCosts(event) {
+      event.preventDefault();
+      const data = new FormData(event.target), overrides = {};
+      for (const key of ['condominio','iptu','seguro']) {
+        const raw = String(data.get(key) || '').trim();
+        const amount = parseDossierMoney(raw);
+        if (raw && (!Number.isFinite(amount) || amount < 0 || amount > 10000000)) {
+          document.getElementById('ds-cost-error').textContent = 'Use um valor entre zero e R$ 10 milhões, ou deixe o campo vazio.';
+          document.getElementById('ds-cost-'+key).focus(); return;
+        }
+        overrides[key] = { amount, period:data.get(key+'Period'), estimated:data.has(key+'Estimated'), source:'Informado por você' };
+      }
+      DOSSIER.expenses[STATE.activePropId] = overrides;
+      document.getElementById('dossier-financial').innerHTML = renderDossierFinance(getProp(STATE.activePropId));
+      closeDrawer(); showToast('Composição mensal atualizada');
+    }
+
+    function openDossierBenchmark(keepTrigger = false) {
+      const p=getProp(STATE.activePropId), m=getDossierMarket(p), mode=DOSSIER.benchmarkMode;
+      const title=mode==='bairros'?'Compare os bairros':mode==='imoveis'?'Compare os imóveis':m.isRent?'O aluguel no entorno':'Pedido e avaliação fiscal';
+      const modeSwitch=`<div class="ds-compare-modes" role="group" aria-label="Tipo de comparação">${[['recorte','No entorno'],['bairros','Bairros'],['imoveis','Imóveis']].map(([key,label])=>`<button id="ds-compare-${key}" aria-pressed="${mode===key}" onclick="setDossierComparison('${key}')">${label}</button>`).join('')}</div>`;
+      const radius=mode==='recorte'?`<div class="ds-filter" role="group" aria-label="Recorte de comparação">${[['Bairro','Bairro'],['500m','500 m'],['1km','1 km']].map(([value,label])=>`<button class="ds-secondary" id="ds-radius-${value}" aria-pressed="${DOSSIER.radius===value}" onclick="setDossierBenchmark('${value}',null,this.id)">${label}</button>`).join('')}</div>`:'';
+      const period=mode!=='imoveis'?`<div class="ds-filter" role="group" aria-label="Período de comparação">${[['12m','12 meses'],['24m','24 meses']].map(([value,label])=>`<button class="ds-secondary" id="ds-period-${value}" aria-pressed="${DOSSIER.period===value}" onclick="setDossierBenchmark(null,'${value}',this.id)">${label}</button>`).join('')}</div>`:'';
+      const content=mode==='bairros'?renderDossierNeighborhoodComparison(p):mode==='imoveis'?renderDossierPropertyComparison(p):`${renderDossierMarketChart(p,true)}${m.valid?`<div class="ds-sample-summary"><div><span>Faixa central · 50% dos registros</span><strong>${formatBRL(m.stats.p25)}–${formatBRL(m.stats.p75)}<small>/m²</small></strong></div><div><span>Amostra</span><strong>${m.stats.count}<small> ${m.isRent?'anúncios':'registros'}</small></strong></div></div>`:''}`;
+      showDossierSheet(title,`${modeSwitch}${radius}${period}${content}<p class="ds-map-note">${mode==='imoveis'?'Valores anunciados · mesma modalidade':m.isRent?'Anúncios de aluguel · amostra de demonstração':'Avaliações fiscais · amostra de demonstração'}</p><button class="ds-link" onclick="openSourceSheet('${m.isRent?'ALUGUEIS':'SEFAZ_ITBI'}')">Consultar a fonte ${dossierIcon('arrow',13)}</button>`,keepTrigger);
+    }
+
+    function setDossierBenchmark(radius, period, focusId) {
+      if (radius && ['Bairro','500m','1km'].includes(radius)) DOSSIER.radius = radius;
+      if (period && ['12m','24m'].includes(period)) DOSSIER.period = period;
+      const p = getProp(STATE.activePropId);
+      document.getElementById('dossier-financial').innerHTML = renderDossierFinance(p);
+      const chart = document.getElementById('ds-market-chart');
+      if (chart) chart.innerHTML = renderDossierMarketChart(p);
+      openDossierBenchmark(true);
+      document.getElementById(focusId)?.focus({preventScroll:true});
+    }
+
+    function openDossierEvidence(type) {
+      const p = getProp(STATE.activePropId);
+      const sections = { cadastro:p.buildingSection, historico:p.itbiBuildingSection, obras:p.worksSection };
+      if (sections[type]) {
+        if (!p.lotConfirmed && type !== 'obras') return triggerUrlDecode(p.id);
+        const section = sections[type];
+        return showDossierSheet({cadastro:'O cadastro do edifício',historico:'Valores e histórico do prédio',obras:'Obras no entorno'}[type], `<p class="ds-copy">${dossierText(section.summary)}</p>${dossierRows(section.items)}${type==='historico'?`${dossierRows((p.buildingSection?.items || []).filter(item=>/iptu.*cobrado/i.test(item.label)))}<ol class="ds-history">${(p.timelineEvents || []).map(event=>`<li><time>${dossierText(event.year)}</time><p>${dossierText(event.title)}</p><small>${dossierText(event.detail)}</small></li>`).join('')}</ol><p class="ds-note">Avaliação fiscal não é preço de venda.</p>`:''}<p class="ds-map-note">${dossierText(section.source)}</p><div class="ds-actions"><button class="ds-link" onclick="openSourceSheet('${section.sourceKey}')">Ver fonte</button><button class="ds-link ds-link-muted" onclick="openContestSheet('${p.id}','sec_${type}','${type==='historico'?'Histórico fiscal':type==='obras'?'Obras próximas':'Cadastro do edifício'}')">Isso está errado</button></div>`);
+      }
+      if (type === 'anuncio') return showDossierSheet('A divergência no anúncio',`<div class="ds-contrast"><div><strong>${p.suites}</strong><span>suítes declaradas</span></div><div><strong>${p.bathrooms}</strong><span>banheiros declarados</span></div></div><p class="ds-copy">As duas informações vêm do mesmo anúncio. Confirme o total de banheiros com o corretor; o cadastro não resolve essa divergência.</p><button class="ds-primary" onclick="closeDrawer(); STATE.visitModeTab='prepare'; switchView('live-visit','${p.id}')">Abrir perguntas da visita</button>`);
+      if (type === 'estrutura') return showDossierSheet('Os três sinais cadastrais',`${dossierRows(p.typologyCheck.signals.map(signal=>({label:signal.label,value:signal.detail})))}<p class="ds-copy">${dossierText(p.typologyCheck.visitQuestion || 'Os três sinais não coexistem neste cadastro.')}</p><p class="ds-note">Indício cadastral não é laudo estrutural.</p><button class="ds-link" onclick="openSourceSheet('IPTU_PREF')">Ver fonte do cadastro</button>`);
+      if (type === 'ambiente') {
+        const climate=getDossierClimate(p), green=getDossierGreen(p);
+        const density=green.trees===null?'—':(green.trees/(Math.PI*.15*.15*100)).toLocaleString('pt-BR',{maximumFractionDigits:1});
+        return showDossierSheet('Ambiente em números',`${dossierRows([{label:'Superfície',value:climate.value+' vs. '+climate.reference},{label:'Vegetação',value:green.vegetation===undefined?'A levantar':green.vegetation+'% da área em 1 km'},{label:'Árvores',value:green.trees===null?'A levantar':green.trees+' em 150 m'},{label:'Densidade de árvores',value:density+' por hectare'},{label:'Parques e praças',value:green.parks===undefined?'A levantar':green.parks+' em 1 km'},{label:'Sol',value:climate.sun+' · '+climate.face}])}<div class="ds-actions"><button class="ds-link" onclick="openDossierGreen()">Entender o índice verde ${dossierIcon('arrow',13)}</button><button class="ds-link" onclick="openDossierSun()">Sol e sombra ${dossierIcon('arrow',13)}</button></div><p class="ds-map-note">Landsat 8/9 · Censo Arbóreo · cenário de demonstração</p><p class="ds-note">Sem mapa térmico nem medição do ar. Sol e ruído: confirmar na visita.</p>`);
+      }
+      if (type === 'sombra') return showDossierSheet('Como calculamos a sombra',`${dossierRows([{label:'Data e horário',value:'17 out 2026 · horário de Recife (UTC−3)'},{label:'Altura estimada',value:'Pavimentos × 3,28 m'},{label:'Comprimento da sombra',value:'Altura ÷ tangente da elevação solar'}])}<p class="ds-note">Volume esquemático, sem vizinhos ou janelas. Não estima sol dentro do apartamento.</p><a class="ds-link" href="https://gml.noaa.gov/grad/solcalc/solareqns.PDF" target="_blank" rel="noopener">Cálculo da posição solar · NOAA ${dossierIcon('arrow',13)}</a><button class="ds-link" onclick="openSourceSheet('IPTU_PREF')">Ver referência de pavimentos</button>`);
+      if (type === 'bairro') {
+        const defense=p.civilDefenseSection;
+        const {safety,neighbors,rate,rank,natures}=getDossierSecurity(p);
+        const max=Math.max(...neighbors.map(item=>item.rate),1);
+        const colors=['#809075','#7893A3','#C2AE86'];
+        return showDossierSheet('Segurança e registros',`<p class="ds-label">${dossierText(p.neighborhood)} · últimos 12 meses</p><div class="ds-stat-pair"><div><strong>${rate?.toLocaleString('pt-BR') ?? '—'}</strong><span>ocorrências / mil moradores</span></div><div><strong>${rank===null?'—':rank+'ª menor'}</strong><span>taxa entre ${neighbors.length} bairros comparados</span></div></div><p class="ds-map-note">${safety?.total12m?.toLocaleString('pt-BR') ?? '—'} ocorrências registradas</p><h3 class="ds-detail-title">O que foi registrado</h3><div class="ds-expense-bar" role="img" aria-label="${dossierText(natures.map(item=>item.label+': '+item.pct+'%').join(', '))}">${natures.map((item,index)=>`<span style="width:${item.pct}%;background:${colors[index%3]}"></span>`).join('')}</div>${natures.map((item,index)=>`<div class="ds-nature"><span><i class="ds-dot" style="background:${colors[index%3]}"></i>${dossierText(item.label)}</span><strong>${item.pct}%</strong></div>`).join('')}<h3 class="ds-detail-title">Compare os bairros</h3><p class="ds-map-note">Ocorrências / mil moradores · norte → sul</p>${neighbors.map(item=>`<div class="neighbor-bar-row ${item.current?'is-current':''}"><span>${dossierText(item.name)}</span><div class="neighbor-bar-track"><div class="neighbor-bar-fill" style="width:${item.rate/max*100}%"></div></div><strong>${item.rate.toLocaleString('pt-BR')}</strong></div>`).join('')}<button class="ds-link" onclick="openSourceSheet('SDS_CRIME')">Fonte dos registros</button><h3 class="ds-detail-title">Defesa Civil</h3><p class="ds-map-note">${defense?.total ?? '—'} atendimentos · 2024</p><div class="ds-defense-chart">${renderDonutSvg(defense?.breakdown || [],defense?.total || 0)}<div>${(defense?.breakdown || []).map(item=>`<p class="ds-map-note"><strong>${item.value}</strong> · ${dossierText(item.label)}</p>`).join('')}</div></div><button class="ds-link" onclick="openSourceSheet('DEFESA_CIVIL')">Fonte da Defesa Civil</button>`);
+      }
+    }
+
+    function openDossierQuestion(index) {
+      const p = getProp(STATE.activePropId), q = p.visitQuestions?.[index];
+      if (!q) return;
+      showDossierSheet(visitQuestionShort(q),`<p class="ds-copy">${dossierText(q.text)}</p><p class="ds-map-note">${dossierText(q.originLabel)}</p><button class="ds-primary" onclick="closeDrawer(); STATE.visitModeTab='prepare'; switchView('live-visit','${p.id}')">Ver no roteiro de visita ${dossierIcon('arrow',15)}</button><button class="ds-link ds-link-muted" onclick="openContestSheet('${p.id}','${q.id}','Pergunta da visita')">${STATE.contestedFacts[`${p.id}_${q.id}`]?'Correção enviada':'Isso está errado'}</button>`);
+    }
+
+    function openDossierDestination() {
+      showDossierSheet('Adicionar um destino',`<p class="ds-copy">Guarde o endereço para consultar sua rotina no aplicativo de mapas.</p><form onsubmit="saveDossierDestination(event)"><div class="ds-form-row"><label for="ds-destination-name">Nome do destino</label><input id="ds-destination-name" name="name" placeholder="Trabalho, faculdade..." required maxlength="60"/></div><div class="ds-form-row"><label for="ds-destination-address">Endereço completo</label><input id="ds-destination-address" name="address" placeholder="Rua, número e cidade" required minlength="5" maxlength="180"/><small>O trajeto e o tempo são calculados no aplicativo de mapas.</small></div><button class="ds-primary" type="submit">Adicionar destino ${dossierIcon('plus',15)}</button></form>`);
+    }
+    function saveDossierDestination(event) {
+      event.preventDefault();
+      const data = new FormData(event.target), label = String(data.get('name')).trim(), address = String(data.get('address')).trim();
+      if (!label || address.length<5) return;
+      const id = 'dest-'+Date.now();
+      STATE.dailyRoutes.push({id,label,address,coords:null}); DOSSIER.routeId=id;
+      closeDrawer(); setDossierCategory('entorno','ds-central-map'); showToast('Destino adicionado');
+    }
+
+    document.addEventListener('keydown',event=>{
+      const backdrop = document.getElementById('drawerBackdrop');
+      if (STATE.currentView!=='dossier' || !backdrop?.classList.contains('open')) return;
+      if (event.key==='Escape') { event.preventDefault(); closeDrawer(); return; }
+      if (event.key!=='Tab') return;
+      const controls = [...document.getElementById('drawerPanel').querySelectorAll('button:not(:disabled),a[href],input,select,textarea')].filter(item=>item.getClientRects().length);
+      const first=controls[0], last=controls[controls.length-1];
+      if (!first) return;
+      if (event.shiftKey && document.activeElement===first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement===last) { event.preventDefault(); first.focus(); }
+    });
+
 
     function addSampleDailyRoute() {
       const exists = STATE.dailyRoutes.some(r => r.id === 'r3');
@@ -5488,6 +6125,14 @@
     function closeDrawer() {
       const bd = document.getElementById('drawerBackdrop');
       if (bd) bd.classList.remove('open');
+      const panel = document.getElementById('drawerPanel');
+      if (panel?.classList.contains('ds-sheet')) {
+        panel.classList.remove('ds-sheet');
+        panel.removeAttribute('role'); panel.removeAttribute('aria-modal'); panel.removeAttribute('aria-labelledby');
+        const target = window.__dossierTrigger?.isConnected ? window.__dossierTrigger : document.getElementById('ds-tab-' + DOSSIER.category);
+        target?.focus({ preventScroll: true });
+        window.__dossierTrigger = null;
+      }
     }
 
     function openSourceSheet(sourceKey) {
@@ -5496,6 +6141,11 @@
       if (!panel || !bd) return;
 
       const CATALOG = {
+        'ALUGUEIS': {
+          title: 'Anúncios de aluguel', agency: 'Base de demonstração do Vereda',
+          updatedAt: 'Outubro de 2026', coverage: 'Anúncios por bairro, raio e período',
+          limits: 'Valores pedidos nos anúncios, não contratos fechados.', link: ''
+        },
         'SEFAZ_ITBI': {
           title: 'ITBI e Escrituras de Transmissão',
           agency: 'Secretaria de Finanças do Recife · Portal de Dados Abertos',
@@ -5539,6 +6189,10 @@
       };
 
       const s = CATALOG[sourceKey] || CATALOG['IPTU_PREF'];
+      if (STATE.currentView === 'dossier') {
+        showDossierSheet(s.title, `<p class="ds-copy">${dossierText(s.agency)}</p>${dossierRows([{label:'Atualização',value:s.updatedAt},{label:'Cobertura',value:s.coverage},{label:'Limite conhecido',value:s.limits}])}<p class="ds-map-note">Os valores exibidos pertencem ao cenário de demonstração.</p>${s.link ? `<a class="ds-secondary" style="margin-top:16px;width:100%" href="${s.link}" target="_blank" rel="noopener">Consultar o portal da fonte ${dossierIcon('arrow',14)}</a>` : '<p class="ds-copy">Esta amostra está incorporada à demonstração; não há um portal externo associado.</p>'}`,true);
+        return;
+      }
 
       panel.innerHTML = `
         <div class="sheet-handle"></div>
@@ -5956,7 +6610,7 @@
     // =========================================================================
     // CADERNO DE DECISÃO (DOSSIÊS SALVOS)
     // =========================================================================
-    function toggleSaveProp(propId) {
+    function toggleSaveProp(propId, preserveDossier = false) {
       const idx = STATE.savedIds.indexOf(propId);
       if (idx >= 0) {
         STATE.savedIds.splice(idx, 1);
@@ -5966,7 +6620,7 @@
         showToast('Salvo no caderno de decisão');
       }
       if (STATE.currentView === 'explore') renderExplore();
-      if (STATE.currentView === 'dossier') renderDossier();
+      if (STATE.currentView === 'dossier' && !preserveDossier) renderDossier();
       if (STATE.currentView === 'saved') renderSaved();
     }
 

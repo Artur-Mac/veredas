@@ -1,13 +1,16 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { View } from "react-native";
+import { Linking, View } from "react-native";
 import { Botao } from "../componentes/Botao";
 import { Cartao, CorpoDoCartao } from "../componentes/Cartao";
 import { Icone } from "../componentes/Icone";
+import { GaleriaDoAnuncio } from "../componentes/dossie/Galeria";
 import { Cabecalho, Rolagem, Tela } from "../componentes/Tela";
 import { Texto } from "../componentes/Texto";
 import { Bloco } from "../componentes/Traco";
 import { IDS_DOSSIES, dossieOuErro } from "../dados/dossies";
+import { anuncioExemplo, eAnuncioExemplo } from "../dados/anuncioExemplo";
+import { formatarData, formatarReais } from "../dados/formatos";
 import { AVISO_LEITURA } from "../dados/textos";
 import { useAparelho } from "../estado/Aparelho";
 import { useTema } from "../tema/Tema";
@@ -60,6 +63,7 @@ export default function LendoOAnuncio() {
   const { cor } = useTema();
   const { url = "", estado } = useLocalSearchParams<{ url?: string; estado?: string }>();
   const { dados } = useAparelho();
+  const exemplo = !estado && eAnuncioExemplo(url);
   const situacao: Situacao = eSituacao(estado) ? estado : situacaoDoLink(url);
   const idDestino = destinoDoLink(url);
   const [feitas, setFeitas] = useState(ETAPAS_FEITAS[situacao]);
@@ -67,13 +71,13 @@ export default function LendoOAnuncio() {
   const confirmado = dados.lotesConfirmados[idDestino] ?? dossieOuErro(idDestino).lote.confirmado;
 
   useEffect(() => {
-    if (situacao !== "lendo") return;
+    if (situacao !== "lendo" || exemplo) return;
     const relogio = setInterval(() => setFeitas((atual) => Math.min(atual + 1, ETAPAS.length)), 700);
     return () => clearInterval(relogio);
-  }, [situacao]);
+  }, [situacao, exemplo]);
 
   useEffect(() => {
-    if (!terminou) return;
+    if (!terminou || exemplo) return;
     const saida = setTimeout(
       () =>
         router.replace(
@@ -84,7 +88,9 @@ export default function LendoOAnuncio() {
       600,
     );
     return () => clearTimeout(saida);
-  }, [terminou, confirmado, idDestino]);
+  }, [terminou, confirmado, idDestino, exemplo]);
+
+  if (exemplo) return <PreviaDoAnuncio />;
 
   const mensagem = MENSAGENS[situacao];
   const botoes: Record<Acao, ReactNode> = {
@@ -168,6 +174,66 @@ export default function LendoOAnuncio() {
             </CorpoDoCartao>
           </Cartao>
         ) : null}
+      </Rolagem>
+    </Tela>
+  );
+}
+
+function PreviaDoAnuncio() {
+  const { cor } = useTema();
+  const anuncio = anuncioExemplo;
+  const caracteristicas = [
+    { icone: "ruler-2" as const, texto: `${anuncio.area} m²` },
+    { icone: "bed" as const, texto: `${anuncio.quartos} quartos` },
+    { icone: "bath" as const, texto: `${anuncio.banheiros} banheiro` },
+    { icone: "car" as const, texto: `${anuncio.vagas} vaga` },
+  ];
+  return (
+    <Tela>
+      <Cabecalho titulo="Imóvel do anúncio" pai="/" />
+      <Rolagem style={{ width: "100%", maxWidth: 720, alignSelf: "center" }}>
+        <GaleriaDoAnuncio titulo={anuncio.endereco} fotos={anuncio.fotos} />
+        <Cartao>
+          <CorpoDoCartao style={{ gap: ESPACO[4] }}>
+            <View style={{ gap: ESPACO[2] }}>
+              <Texto tipo="apoio" cor="cor-texto-apoio">{`${anuncio.bairro} · ${anuncio.cidade}, ${anuncio.uf}`}</Texto>
+              <Texto tipo="titulo-tela" role="heading">{anuncio.endereco}</Texto>
+              <Texto tipo="apoio" cor="cor-texto-apoio">{anuncio.andar}</Texto>
+            </View>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ESPACO[3] }}>
+              {caracteristicas.map((item) => (
+                <View key={item.icone} style={{ flexDirection: "row", alignItems: "center", gap: ESPACO[1] }}>
+                  <Icone nome={item.icone} tamanho="p" />
+                  <Texto>{item.texto}</Texto>
+                </View>
+              ))}
+            </View>
+            <View style={{ gap: ESPACO[1] }}>
+              <Texto tipo="apoio" cor="cor-texto-apoio">Aluguel</Texto>
+              <Texto tipo="numero">{`${formatarReais(anuncio.aluguel)}/mês`}</Texto>
+            </View>
+            <View style={{ gap: ESPACO[2], borderTopWidth: 0.5, borderTopColor: cor("cor-linha"), paddingTop: ESPACO[3] }}>
+              {[
+                { nome: "Condomínio", valor: anuncio.condominio },
+                { nome: "IPTU no anúncio", valor: anuncio.iptu },
+              ].map((custo) => (
+                <View key={custo.nome} style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", gap: ESPACO[2] }}>
+                  <Texto cor="cor-texto-apoio">{custo.nome}</Texto>
+                  <Texto>{formatarReais(custo.valor)}</Texto>
+                </View>
+              ))}
+              <Texto tipo="apoio" cor="cor-texto-apoio">{`${anuncio.fonte} · Consulta em ${formatarData(anuncio.consultado_em)}`}</Texto>
+            </View>
+          </CorpoDoCartao>
+        </Cartao>
+        <Cartao nota>
+          <CorpoDoCartao>
+            <Texto tipo="secao" role="heading">O dossiê ainda não está disponível em São Paulo</Texto>
+            <Texto cor="cor-texto-apoio">Por enquanto, analisamos imóveis em Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena, no Recife.</Texto>
+            <Botao rotulo="Colar outro anúncio" variante="principal" onPress={() => router.dismissTo("/")} />
+            <Botao rotulo="Ver anúncio original" icone="external-link" onPress={() => void Linking.openURL(anuncio.url)} />
+          </CorpoDoCartao>
+        </Cartao>
       </Rolagem>
     </Tela>
   );

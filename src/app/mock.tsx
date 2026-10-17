@@ -8,6 +8,7 @@ import { Pressionavel } from "../componentes/Pressionavel";
 import { Cabecalho, Rolagem, Tela, TituloDeGrupo } from "../componentes/Tela";
 import { Texto } from "../componentes/Texto";
 import { IDS_DOSSIES, dossieOuErro } from "../dados/dossies";
+import { anuncioExemplo } from "../dados/anuncioExemplo";
 import { useAparelho } from "../estado/Aparelho";
 import { usePreferencias, type EstadoForcado, type PreferenciaDeTema } from "../estado/Preferencias";
 import { ESPACO } from "../tema/tokens";
@@ -134,6 +135,13 @@ export default function ControlesDoMock() {
                   : null}
               </View>
             ))}
+          </CorpoDoCartao>
+        </Cartao>
+        <TituloDeGrupo>Fotos do anúncio</TituloDeGrupo>
+        <Cartao>
+          <CorpoDoCartao>
+            <Texto cor="cor-texto-apoio">Exemplo fornecido para a galeria. Brás, São Paulo, fora da cobertura do dossiê.</Texto>
+            <Botao rotulo="Ver exemplo com fotos" icone="camera" onPress={() => router.push({ pathname: "/ler", params: { url: anuncioExemplo.url } })} />
           </CorpoDoCartao>
         </Cartao>
       </Rolagem>

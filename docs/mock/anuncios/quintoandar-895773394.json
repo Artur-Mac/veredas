@@ -1,0 +1,59 @@
+{
+  "url": "https://www.quintoandar.com.br/imovel/895773394/alugar/apartamento-2-quartos-bras-sao-paulo",
+  "fonte": "QuintoAndar",
+  "consultado_em": "2026-10-17",
+  "endereco": "Rua Martim Burchard",
+  "bairro": "Brás",
+  "cidade": "São Paulo",
+  "uf": "SP",
+  "aluguel": 3200,
+  "condominio": 480,
+  "iptu": 0,
+  "area": 62,
+  "quartos": 2,
+  "banheiros": 1,
+  "vagas": 1,
+  "andar": "12º a 15º andar",
+  "fotos": [
+    {
+      "url": "https://www.quintoandar.com.br/img/crop/square/960x960/original895773394-413.1759714123414Foto2.jpg",
+      "descricao": "Sala"
+    },
+    {
+      "url": "https://www.quintoandar.com.br/img/crop/square/960x960/original895773394-804.8328804678912Foto6.jpg",
+      "descricao": "Vista da Sala"
+    },
+    {
+      "url": "https://www.quintoandar.com.br/img/crop/square/960x960/original895773394-469.47081427915106Foto7.jpg",
+      "descricao": "Quarto 1"
+    },
+    {
+      "url": "https://www.quintoandar.com.br/img/crop/square/960x960/original895773394-952.34780569866Foto11.jpg",
+      "descricao": "Vista do Quarto 1"
+    },
+    {
+      "url": "https://www.quintoandar.com.br/img/crop/square/960x960/original895773394-54.28353430943955Foto12.jpg",
+      "descricao": "Quarto 2"
+    },
+    {
+      "url": "https://www.quintoandar.com.br/img/crop/square/960x960/original895773394-394.55321595206595Foto16.jpg",
+      "descricao": "Vista do Quarto 2"
+    },
+    {
+      "url": "https://www.quintoandar.com.br/img/crop/square/960x960/original895773394-711.0063706484731Foto17.jpg",
+      "descricao": "Banheiro"
+    },
+    {
+      "url": "https://www.quintoandar.com.br/img/crop/square/960x960/original895773394-242.67663618078018Foto21.jpg",
+      "descricao": "Cozinha"
+    },
+    {
+      "url": "https://www.quintoandar.com.br/img/crop/square/960x960/original895773394-782.1379475584441Fotos32.JPG",
+      "descricao": "Área comum"
+    },
+    {
+      "url": "https://www.quintoandar.com.br/img/crop/square/960x960/original895773394-400.17789307275933Fotozzzz2.JPG",
+      "descricao": "Sala de Jogos"
+    }
+  ]
+}

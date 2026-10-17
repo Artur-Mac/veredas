@@ -8,6 +8,7 @@ Crime por bairro ("registros da SDS-PE compilados pelo Crime Brasil", registro o
 
 | Data | Decisão |
 | --- | --- |
+| 17/10/2026 | No topo do dossiê, usar as fotos do anúncio quando estiverem disponíveis; permitir deslizar, usar botões anterior/próxima e ampliar em tela cheia. Manter o mapa acessível. Se nenhuma foto carregar, mostrar o mapa como alternativa. Reunir endereço, preço, características e custos declarados numa ficha única. O anúncio de referência do QuintoAndar no Brás fica em uma prévia própria em T2, com seus dados declarados e indicação de cobertura, sem dados municipais de Recife. |
 | 15/10/2026 | Direção visual: aplicativo de imóveis. Cabeçalho de app, mapa no topo, preço em cartão, seções que se expandem, contagens por tipo em anel. Substitui a "prancha de cadastro" do briefing inicial. |
 | 15/10/2026 | A cor identifica a categoria e nunca julga (seção 1.2). Substitui "fato não tem cor, só a origem tem". |
 | 15/10/2026 | O exemplo principal do mock é um anúncio de aluguel em Boa Viagem, com dados mock tão completos quanto os de compra (régua com quartis, N e controles). |
@@ -39,7 +40,7 @@ A primeira leitura é curta. A tela mostra o resumo de cada seção, e o detalhe
 | P8 | "Não sabemos" é um estado | Ocupa o lugar do valor, com o mesmo peso e o traço pontilhado. Nunca some nem vira mensagem de erro. | PRD, regra 7 |
 | P9 | Contestar nunca esconde | "Isso está errado" abre motivos fechados e mantém o valor visível. "Não é este prédio" reabre a confirmação do lote. | PRD, item 12; Final |
 | P10 | Fonte citada, marca não promovida | Fontes nomeadas no rodapé, em texto. Nenhum app de mapas é nomeado nem mostrado: quem escolhe é o sistema. Nenhum logo ou captura de terceiros. | PRD, regra 8; decisão de 15/10/2026 |
-| P11 | O lote é a identidade do prédio | No mapa do topo, o pino do prédio e o polígono do lote confirmado. Na lista de dossiês, o polígono. Nenhuma foto de anúncio. | PRD, "O que o produto é"; regra 4 |
+| P11 | O lote é a identidade do prédio | O mapa mantém o pino e o polígono do lote confirmado. No topo do dossiê, as fotos do anúncio podem ocupar a capa; o mapa fica a um toque e aparece como alternativa quando não há fotos. Na lista de dossiês, permanece o polígono. | Documento definitivo; decisão de 17/10/2026 |
 | P12 | Pouco texto na primeira leitura | Seções fechadas por padrão. Só "Para perguntar na visita" fica sempre aberta, porque é a ação que o dossiê prepara. | Decisão de 15/10/2026 |
 | P13 | Movimento só responde ao toque | Abrir seção, abrir fonte, confirmar lote. Nenhuma animação de entrada. | Decisão do briefing |
 
@@ -634,9 +635,8 @@ Ordem dos cartões. As linhas com etiqueta Final somem quando o seletor "Mostrar
 | Ordem | Cartão | Fase | Conteúdo | Toque |
 | --- | --- | --- | --- | --- |
 | 1 | Cabeçalho | Protótipo | Voltar, "Dossiê", compartilhar, etiqueta de fase | Compartilhar envia o link do dossiê |
-| 2 | Mapa do topo | Protótipo | Pino, lote, raio de 500 m, até 3 pontos de interesse mais próximos | "Abrir mapa" abre T5 |
-| 3 | Endereço | Protótipo | Tipo e bairro, endereço, chips de área, quartos, banheiros, vagas e andar (declarado) | "Não é este prédio" abre T3 |
-| 4 | Preço | Protótipo | Valor, custos declarados, régua com controles (seção 4.4) | Controles refazem a régua; "Ver fonte" abre T10 |
+| 2 | Capa do anúncio | Protótipo | Galeria deslizável de fotos do anúncio; sem fotos ou se falharem, mapa com pino, lote e raio de 500 m | "Abrir mapa" abre T5 |
+| 3 | Ficha do imóvel | Protótipo | Tipo, bairro, endereço, preço em destaque, características declaradas, condomínio, IPTU e régua com controles (seção 4.4) | "Não é este prédio" abre T3; controles refazem a régua; "Ver fonte" abre T10 |
 | 5 | Para perguntar na visita | Protótipo | Divergências e "não sabemos" (seção 4.16) | Cada linha leva ao fato de origem |
 | 6 | O prédio | Protótipo | Pavimentos, unidades, ano, área do lote, IPTU por unidade (área e valor cobrado) | Abrir e fechar; "Ver fonte"; "Isso está errado" |
 | 7 | Transmissões no prédio | Protótipo | Contagem e mediana da avaliação fiscal do ITBI no prédio, 2015-2026, agregada. Nunca uma transmissão isolada | Idem |

@@ -40,6 +40,11 @@
       "properties": {
         "lido_em": { "type": "string", "format": "date" },
         "observacao": { "type": "string" },
+        "imagens": {
+          "type": "array",
+          "maxItems": 10,
+          "items": { "type": "string", "format": "uri", "pattern": "^https?://" }
+        },
         "campos": {
           "type": "object",
           "propertyNames": { "enum": ["preco", "aluguel", "condominio", "iptu", "area", "quartos", "suites", "banheiros", "vagas", "andar"] },
