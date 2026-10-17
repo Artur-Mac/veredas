@@ -1,131 +1,92 @@
-# VEREDA — Housing Decision Intelligence Platform
+# VEREDA — Inteligência de Evidências para Moradia no Recife
 
-> **"Transforming fragmented property listings, municipal open data, cadastral records, and environmental context into traceable evidence, contextual interpretation, and empowering next steps."**
-
----
-
-## 🏛️ Project Overview
-
-**VEREDA** is an early-stage, mobile-first housing decision intelligence platform built for the Brazilian real estate market, developed for the **15ª Edição do Campus Mobile** (Category: *Tecnologias Urbanas*).
-
-When choosing where to live, home seekers face severe information asymmetry. Portals and classifieds only display marketing-curated highlights:
-* Street numbers are frequently omitted.
-* Recurring condominium fees, auxiliary charges, and special assessments are hidden.
-* Topographic steepness, flood history, and urban noise are not disclosed.
-* Neighboring construction permits and legal encumbrances are invisible.
-
-VEREDA bridges the gap between **finding an advertisement** and **understanding what it actually means to live in that property**.
+> **"O link do anúncio vira um dossiê de evidências."**  
+> Transformando anúncios imobiliários, cadastros municipais, bases parceiras e observação em campo em fatos rastreáveis, posição em distribuições reais e roteiros práticos de visita.
 
 ---
 
-## 🧭 The Core Mechanism
+## 📌 Fonte Única da Verdade
 
-Rather than outputting opaque, gamified scores or crawling endless listings, VEREDA operates on an evidence-first principle:
+Toda a especificação estratégica, funcional, de dados e arquitetural do projeto está consolidada no documento canônico:
+
+* **[Documento Definitivo do Projeto (`docs/VEREDA_DOCUMENTO_DEFINITIVO.md`)](./docs/VEREDA_DOCUMENTO_DEFINITIVO.md):** Master Spec 3.0 & Avaliação Executiva (Visão, Arquitetura de 3 Camadas com chave `DSQFL`, Tese de IA, Funcionalidades Decididas, Modelo de Negócios e Roteiro Campus Mobile 15ª Edição).
+
+> **Nota para Desenvolvedores e Agentes de IA:** A pasta [`ignorar/`](./ignorar/LEIA-ME.md) contém rascunhos e explorações antigas arquivadas. **Nunca utilize arquivos dentro de `ignorar/` como referência.**
+
+---
+
+## 🏛️ Visão Geral do Produto
+
+O **Vereda** é um aplicativo móvel desenvolvido para a **15ª Edição do Campus Mobile** (Categoria: *Tecnologias Urbanas*), focado no mercado imobiliário do **Recife** (cobertura inicial do protótipo: *Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena*).
+
+Quem procura apartamento para alugar ou comprar decide hoje no escuro: anúncios omitem o número do prédio, escondem obras vizinhas, contradizem áreas e não informam o contexto real do lote. O Vereda atua **após a descoberta do anúncio**:
 
 ```
-[Listing URL / Address Intake]
-       ↓
-[Entity & Building Cadastral Resolution]
-       ↓
-[Traceable Evidence Synthesis] ───→ "O que é fato verificado"
-       ↓
-[Contextual Human Interpretation] ───→ "Por que importa para sua vida"
-       ↓
-[Actionable Unknowns & Next Steps] ───→ "O que perguntar antes da visita"
+[1. Colar ou Compartilhar Link do Anúncio (T1 / T2)]
+                     │
+                     ▼
+[2. Resolução do Edifício via Lote Cadastral DSQFL (T3)]
+                     │
+                     ▼
+[3. Dossiê de Evidências, Régua de Preço e Consistência (T4 / T5)]
+                     │
+                     ▼
+[4. Roteiro de Visita, WhatsApp ao Corretor e Sensores em Campo (T6 / T7)]
 ```
+
+### Princípios Inegociáveis
+* **Posição é fato, adjetivo é veredito:** Sem notas opacas de 0 a 10, estrelas ou selos de "barato/caro". Preços e indicadores são posicionados em **réguas de distribuição** (P25, Mediana, P75).
+* **Desconhecido vira ação:** Toda divergência entre o anúncio e o cadastro oficial (ou lacuna documental) alimenta automaticamente o bloco **"Para perguntar na visita"** e a mensagem pronta de 3 linhas para o corretor no WhatsApp.
+* **Celular como instrumento de perícia:** O **Modo Visita (`T7`)** utiliza GPS (confirmando a presença física no edifício), câmera, microfone (dB) e bússola durante a vistoria presencial.
 
 ---
 
-## 📱 Interactive Mobile Prototype
+## 📱 Aplicativo (React Native + Expo SDK 57) e Protótipos
 
-A fully functional, self-contained mobile web prototype is available in this repository:
+O repositório conta com o aplicativo multiplataforma em **React Native 0.86 + Expo SDK 57** ([`src/`](./src/)) e o mock interativo em HTML ([`docs/mock/index.html`](./docs/mock/index.html)), além do protótipo web histórico preservado na raiz ([`index.html`](./index.html)).
 
-* **File:** [`index.html`](./index.html)
-* **Design Philosophy:** Editorial architecture, Swiss Grid alignment, warm tactile paper surfaces, and zero "generic blue SaaS" aesthetics.
-* **Key Flows Demonstrated:**
-  1. **Intake Terminal:** Paste real estate URLs (QuintoAndar, ZAP, Loft) or enter manual street addresses.
-  2. **Investigative Telemetry Pipeline:** Multi-step resolution with cadastral (CNEFE/IBGE), territorial (GeoSampa/SisRBC), and topographic layers.
-  3. **Candidate Building Resolution:** Resolves building identity when listings omit exact street numbers.
-  4. **Audited Monthly Outlay:** Strikethrough advertised price vs. audited total cost (`R$ 4.410` vs. `R$ 4.000 anunciado`).
-  5. **Evidence Ledger:** Findings structured by *Finding → Why It Matters → Action*, covering noise from adjacent 28-story construction, slope impact on subway walking routes, and municipal tax exemptions.
-  6. **Interactive Visit Checklist:** Dynamic field inspection points generated from document unknowns.
-  7. **1-Click WhatsApp In-Field Generator:** Auto-generates concise, courteous inquiries for real estate brokers before booking visits.
-  8. **Trade-Off Matrix:** Side-by-side comparison without arbitrary 0–10 scores, powered by narrative trade-off syntheses.
-  9. **Search Workspace ("Minha Busca"):** Active dossier monitoring and transparent discard logging.
-
-### How to Run Locally:
+### 1. Rodando o App Oficial (Expo SDK 57 — `src/`)
 ```bash
-# Simply open index.html in any modern browser:
-open index.html
-# Or serve locally:
-python3 -m http.server 8080
-# Open http://localhost:8080 in mobile emulation mode (F12)
+# Instalar dependências
+npm install
+
+# Iniciar o servidor do Expo (Android, iOS ou Web)
+npm run start
+
+# Executar verificação completa (TypeScript + ESLint + Testes Jest)
+npm run verificar
+```
+
+### 2. Rodando o Mock Clicável (`docs/mock/`)
+```bash
+python3 -m http.server 8765 --bind 127.0.0.1
+# Acesse http://127.0.0.1:8765/docs/mock/
 ```
 
 ---
 
-## 🎨 Brand Identity & Design Tokens
-
-VEREDA's visual system follows **Direction 04: Chassi Editorial com Inscrição Cartográfica** developed in Google Stitch and Pomelli:
-
-| Token | Hex | Name | Functional Purpose |
-| :--- | :--- | :--- | :--- |
-| `--color-signal-orange` | `#F47745` | **Signal Orange** | Critical discoveries, cartographic vectors, primary CTAs |
-| `--color-near-black` | `#171717` | **Near Black / Ink** | High-contrast editorial typography, rigid cadastral bounds |
-| `--color-warm-paper` | `#F2EBDD` | **Warm Paper** | Tactile, human, anti-sterile editorial substrate |
-| `--color-deep-rust` | `#B94E36` | **Deep Rust** | Density layers, hazard highlights, cadastral metadata |
-| `--color-muted-sage` | `#7F8870` | **Muted Sage** | Bioclimatic layers, green zones, verified exemptions |
-
-* **Typography:** `DM Serif Display` / `Fraunces` (Editorial Display) + `Plus Jakarta Sans` / `Inter` (Interface) + `JetBrains Mono` (Cadastral Telemetry).
-* **Wordmark:** Distinctive sharp-cut serif **VEREDA** with an orange dashed cartographic route vector (`- - - - - - - -`).
-
----
-
-## 📚 Repository Structure
+## 🗂️ Estrutura do Repositório
 
 ```
 .
-├── index.html                       # Standalone interactive mobile prototype
-├── README.md                        # Master project overview & documentation
-├── research/                        # Strategic Research Arsenal & Cross-Industry Intelligence
-│   ├── README.md                    # Master index, module guide & executive roadmap
-│   ├── 01_MASTER_RESEARCH_ATLAS_STAGE1.md # Full 40k-word Stage 1 Monograph
-│   ├── 02_DEEP_RESEARCH_ATLAS_STAGE2.md   # Full 30k-word Stage 2 Monograph
-│   ├── summaries/                   # Fast-reading executive summaries & playbooks
-│   ├── stage1_foundations/          # 9 Foundation monographs (PropTech critique, CV, GeoSampa)
-│   └── stage2_deep_dive/            # 9 Deep-dive monographs (Brazil grounding, pairwise engine)
 ├── docs/
-│   ├── VEREDA_IMPROVEMENT_ROADMAP_EPOCHS.md  # 6-Epoch comprehensive technical & UI spec
-│   ├── BRAND_IDENTITY_SPECIFICATION.md       # Full design system tokens & rules
-│   ├── CAMPUS_MOBILE_BRIEF.md                # Project brief, problem statement & team roles
-│   ├── PRD-PropSight.md                      # Product Requirements Document
-│   └── references/                           # Analytical reference briefs & PDFs
-└── assets/
-    ├── brand/                       # Google Stitch Brand Book & wordmark studies
-    └── screenshots/                 # Application screen captures & UX flows
+│   ├── VEREDA_DOCUMENTO_DEFINITIVO.md   # Especificação Canônica Unificada & Avaliação Executiva
+│   └── mock/                            # Mock HTML + JSONs dos 5 dossiês e créditos
+├── src/                                 # App React Native 0.86 + Expo SDK 57 (Expo Router)
+│   ├── app/                             # 15 telas do fluxo (T1 a T16) + painel dev (/mock)
+│   ├── componentes/                     # Componentes funcionais, régua, gráficos e mapa
+│   ├── dados/                           # Schema Zod (esquema.ts), consultas, formatos e geo
+│   └── estado/                          # Contextos e persistência local (AsyncStorage)
+├── tests/
+│   └── dominio.test.ts                  # Suíte de testes unitários de domínio e formatação
+├── index.html                           # Protótipo web histórico standalone (preservado)
+└── ignorar/                             # Arquivos legados arquivados (não utilizar)
 ```
 
 ---
 
-## 🔬 Strategic Research Arsenal
+## 👥 Equipe (Campus Mobile — 15ª Edição)
 
-The repository features an exhaustive research arsenal located in [`research/`](./research/README.md), covering over 70,000 words of cross-industry investigation, sensor proxies, Brazilian open data integration, and behavioral decision mechanics:
-
-* **[Master Atlas (Stage 1)](./research/01_MASTER_RESEARCH_ATLAS_STAGE1.md):** 105 decision mechanisms, cross-industry analogies (aviation, diagnostics, finance, dating), and Brazilian municipal GIS integration (GeoSampa, CNEFE).
-* **[Deep Research Atlas (Stage 2)](./research/02_DEEP_RESEARCH_ATLAS_STAGE2.md):** Epistemological audit, Brazilian hyper-local grounding (title deed encumbrances, water rodízio, structural legacies), revealed-preference pairwise engines, and the Anti-Listing architecture.
-* **[Executive Summaries & Playbooks](./research/summaries/):** High-level decision guides synthesized for Campus Mobile evaluations and product development sprints.
-
----
-
-## 🛡️ Scope & Methodology Statement
-
-* **No Scrapers:** In accordance with project architecture and scope, this repository **does not contain any web scrapers, crawler scripts, or automated data harvesting pipelines**.
-* **Public & Voluntary Data Focus:** All intelligence features are architected around voluntary user inputs, open municipal APIs, national census coordinates (CNEFE/IBGE), and authorized official open data repositories.
-
----
-
-## 👥 Core Team (Campus Mobile)
-
-* **Samuel:** Product Strategy & User Journey
-* **Walter:** Visual Identity, Art Direction & Presentation Design
-* **Artur:** Research, Data Validation, Architecture & Engineering Integration
+* **Samuel:** Estratégia de Produto & Jornada do Usuário
+* **Walter:** Design & Interface
+* **Artur:** Pesquisa, Engenharia de Dados & Arquitetura de Software
