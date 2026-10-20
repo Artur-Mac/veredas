@@ -29,8 +29,8 @@ const SLUG_QUE_E_A_CIDADE = "recife";
 
 /**
  * Campos que a pessoa pode mexer na revisão. Quem mexeu fica em `EstadoDoFormulario.editados` e nenhuma nova
- * leitura (página, texto colado) o sobrescreve. "A confirmar" de cada custo conta como campo à parte, para que
- * ligar a marca não impeça a leitura de preencher o valor.
+ * leitura (página, texto colado) o sobrescreve. "A confirmar" de cada custo (e o da área) conta como campo à parte,
+ * para que ligar a marca não impeça a leitura de preencher o valor.
  */
 export const CAMPOS_EDITAVEIS = [
   "nome",
@@ -54,6 +54,7 @@ export const CAMPOS_EDITAVEIS = [
   "outros",
   "outrosAConfirmar",
   "area",
+  "areaAConfirmar",
   "quartos",
   "suites",
   "banheiros",
@@ -106,6 +107,8 @@ export interface EstadoDoFormulario {
   outrosOrigem: OrigemDoValor;
 
   area: number | null;
+  /** Só a área tem "a confirmar" entre as especificações: a leitura com anomalia na área a liga (quartos, suítes, banheiros, vagas e andar não). */
+  areaAConfirmar: boolean;
   areaOrigem: OrigemDoValor;
 
   quartos: number | null;
@@ -341,11 +344,16 @@ const UNIDADES_DE_CAMPOS: readonly (readonly CampoEditavel[])[] = [["iptuValor",
 /**
  * Aplica uma mudança feita pela pessoa: marca cada campo mexido em `editados` (nenhuma leitura nova o sobrescreve) e,
  * nos campos com origem, passa a origem para "você". É por aqui que o formulário muda; reler usa `formularioDeExtracao`.
+ *
+ * A revisão não tem marca de "a confirmar" para a área. Quem digita outra área está resolvendo a dúvida, então a marca
+ * que a leitura ligou se desliga junto (e fica como a pessoa deixou: reler não a liga de novo). Se a mesma mudança traz
+ * a marca (`areaAConfirmar`), vale a que veio.
  */
 export function editarFormulario(estado: EstadoDoFormulario, mudanca: Partial<EstadoDoFormulario>): EstadoDoFormulario {
   const editados: CamposEditados = { ...estado.editados };
-  const novo: EstadoDoFormulario = { ...estado, ...mudanca };
-  const mexidos = CAMPOS_EDITAVEIS.filter((campo) => campo in mudanca);
+  const digitouAArea = "area" in mudanca && mudanca.area !== estado.area && !("areaAConfirmar" in mudanca);
+  const novo: EstadoDoFormulario = { ...estado, ...mudanca, ...(digitouAArea ? { areaAConfirmar: false } : {}) };
+  const mexidos = CAMPOS_EDITAVEIS.filter((campo) => campo in mudanca || (digitouAArea && campo === "areaAConfirmar"));
   for (const unidade of UNIDADES_DE_CAMPOS) {
     if (unidade.some((campo) => mexidos.includes(campo))) mexidos.push(...unidade.filter((campo) => !mexidos.includes(campo)));
   }
@@ -382,7 +390,8 @@ type CampoNumerico =
   | "vagas"
   | "andar";
 
-type CustoComConfirmar = "preco" | "condominio" | "seguroIncendio" | "taxaServico" | "outros";
+/** Campos que têm a marca "a confirmar" no formulário: os custos e a área (as demais especificações não têm). */
+type CampoComConfirmar = "preco" | "condominio" | "seguroIncendio" | "taxaServico" | "outros" | "area";
 
 /**
  * A pessoa fixou a modalidade e a leitura traz a outra (não nula). O preço lido é de outra modalidade (aluguel por mês
@@ -395,7 +404,9 @@ export function leituraContradizAModalidade(ext: ExtracaoAnuncio, f: Pick<Estado
 
 /**
  * Formulário de revisão a partir da extração. Regras:
- * - todo campo de custo com anomalia nasce com `aConfirmar: true`;
+ * - todo campo de custo com anomalia nasce com `aConfirmar: true`; a área com anomalia (incoerente ou outra) também.
+ *   Quartos, suítes, banheiros, vagas e andar nascem com `aConfirmar: false` mesmo com anomalia (ela continua aparecendo
+ *   em `anomaliasPendentes`);
  * - IPTU com valor e período desconhecido nasce a confirmar mesmo sem anomalia registrada;
  * - valor lido nunca vira zero: o que não foi lido fica `null`;
  * - bairro: vem escolhido pela extração (slug do Recife, ou "Fora do Recife" quando a cidade é outra); sem leitura, nada escolhido;
@@ -424,7 +435,7 @@ export function formularioDeExtracao(ext: ExtracaoAnuncio, prev?: EstadoDoFormul
     return prev ? { valor: prev[campo], origem: prev[`${campo}Origem`] } : { valor: null, origem: "voce" };
   };
 
-  const confirmarDe = (campo: CustoComConfirmar): boolean => {
+  const confirmarDe = (campo: CampoComConfirmar): boolean => {
     const chave = `${campo}AConfirmar` as const;
     const p = dela(chave);
     if (p) return p[chave];
@@ -547,6 +558,7 @@ export function formularioDeExtracao(ext: ExtracaoAnuncio, prev?: EstadoDoFormul
     outrosOrigem: prev?.outrosOrigem ?? "voce",
 
     area: area.valor,
+    areaAConfirmar: confirmarDe("area"),
     areaOrigem: area.origem,
     quartos: quartos.valor,
     quartosOrigem: quartos.origem,
@@ -630,7 +642,7 @@ export function declaradosDoFormulario(f: EstadoDoFormulario): Declarados {
       aConfirmar: f.taxaServicoAConfirmar,
     },
     outros: { valor: valorDeclarado(f.outros, f.outrosOrigem), origem: f.outrosOrigem, aConfirmar: f.outrosAConfirmar },
-    area: { valor: areaDeclarada(f.area), origem: f.areaOrigem, aConfirmar: false },
+    area: { valor: areaDeclarada(f.area), origem: f.areaOrigem, aConfirmar: f.areaAConfirmar === true },
     quartos: { valor: valorDeclarado(f.quartos, f.quartosOrigem), origem: f.quartosOrigem, aConfirmar: false },
     suites: { valor: valorDeclarado(f.suites, f.suitesOrigem), origem: f.suitesOrigem, aConfirmar: false },
     banheiros: { valor: valorDeclarado(f.banheiros, f.banheirosOrigem), origem: f.banheirosOrigem, aConfirmar: false },
@@ -747,6 +759,7 @@ export function formularioVazio(): EstadoDoFormulario {
     outrosOrigem: "voce",
 
     area: null,
+    areaAConfirmar: false,
     areaOrigem: "voce",
     quartos: null,
     quartosOrigem: "voce",
@@ -814,6 +827,7 @@ export function formularioDeAnalise(a: AnaliseV2): EstadoDoFormulario {
     outrosOrigem: d.outros.origem,
 
     area: d.area.valor,
+    areaAConfirmar: d.area.aConfirmar,
     areaOrigem: d.area.origem,
     quartos: d.quartos.valor,
     quartosOrigem: d.quartos.origem,

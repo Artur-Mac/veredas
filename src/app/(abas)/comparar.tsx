@@ -20,7 +20,7 @@ import { poligonoDoEdificio } from "../../componentes/comparar/lote";
 import { confirmarPredio, editarAnalise, useAbrirAnalise, usePrepararVisita } from "../../componentes/comparar/navegacao";
 import { PainelDeCusto, PainelDeEntorno, PainelDeEspaco } from "../../componentes/comparar/Paineis";
 import { useEdificios } from "../../componentes/comparar/useEdificios";
-import { BotaoVx, CabecalhoVx, LinkVx, PaginaVx, SegmentosVx, SuperficieVx, VazioVx } from "../../componentes/comparar/vx";
+import { BotaoVx, CabecalhoVx, LinkVx, MARGEM_DA_PAGINA_VX, PaginaVx, SegmentosVx, SuperficieVx, VazioVx } from "../../componentes/comparar/vx";
 import { Texto } from "../../componentes/Texto";
 import type { AnaliseV2, Modalidade } from "../../dados/contratos";
 import { eCoberto } from "../../dados/recife/bairros";
@@ -96,7 +96,7 @@ export default function Comparar() {
 
   return (
     <View style={{ flex: 1, backgroundColor: cor("cor-fundo") }}>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 32 }} keyboardShouldPersistTaps="handled">
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: MARGEM_DA_PAGINA_VX, paddingBottom: 32 }} keyboardShouldPersistTaps="handled">
         <PaginaVx>
           <CabecalhoVx
             sobretitulo="Lado a lado"

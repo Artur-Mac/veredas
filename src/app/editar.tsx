@@ -1,8 +1,11 @@
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
-import { Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Modal, ScrollView, StyleSheet, View } from "react-native";
 import { Botao } from "../componentes/Botao";
 import { Cartao, CorpoDoCartao } from "../componentes/Cartao";
+import { Coluna } from "../componentes/casca/Coluna";
+import { useMovimentoReduzido } from "../componentes/casca/movimento";
+import { AlvoDeToque } from "../componentes/Pressionavel";
 import { FormularioDeRevisao } from "../componentes/revisao/FormularioDeRevisao";
 import { estilosDoTema } from "../componentes/revisao/estilosDoTema";
 import { Cabecalho, Tela } from "../componentes/Tela";
@@ -50,8 +53,9 @@ export default function TelaEditar() {
 }
 
 function Editor({ existente }: { existente: AnaliseV2 | null }) {
-  const { salvar, remover } = useAnalises();
+  const { salvar, remover, erro: erroDoCaderno } = useAnalises();
   const styles = useEstilos();
+  const movimentoReduzido = useMovimentoReduzido();
 
   const [idGerado] = useState(() => `imovel-${Date.now()}`);
   const idAnalise = existente ? existente.id : idGerado;
@@ -95,7 +99,8 @@ function Editor({ existente }: { existente: AnaliseV2 | null }) {
       await salvar(validada);
       router.push("/salvos");
     } catch {
-      setErroValidacao("Verifique os campos preenchidos antes de salvar.");
+      // Caderno que não abriu: o problema não são os campos, e a mensagem do caderno diz o que fazer.
+      setErroValidacao(erroDoCaderno || "Verifique os campos preenchidos antes de salvar.");
     } finally {
       setSalvando(false);
     }
@@ -110,35 +115,39 @@ function Editor({ existente }: { existente: AnaliseV2 | null }) {
 
   return (
     <Tela>
-      <Cabecalho titulo={existente ? "Editar análise" : "Adicionar imóvel"} pai="/salvos" />
+      <Coluna>
+        <Cabecalho titulo={existente ? "Editar análise" : "Adicionar imóvel"} pai="/salvos" />
+      </Coluna>
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-        <Cartao style={styles.cartao}>
-          <CorpoDoCartao>
-            <FormularioDeRevisao estado={form} anomalias={anomalias} aoAlterar={setForm} />
+        <Coluna>
+          <Cartao style={styles.cartao}>
+            <CorpoDoCartao>
+              <FormularioDeRevisao estado={form} anomalias={anomalias} aoAlterar={setForm} />
 
-            {semBairro ? (
-              <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.dicaDoBairro}>
-                Escolha o bairro
-              </Texto>
-            ) : null}
+              {semBairro ? (
+                <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.dicaDoBairro}>
+                  Escolha o bairro
+                </Texto>
+              ) : null}
 
-            {erroValidacao ? (
-              <Texto tipo="apoio" role="alert" style={styles.textoErro}>
-                {erroValidacao}
-              </Texto>
-            ) : null}
+              {erroValidacao ? (
+                <Texto tipo="apoio" role="alert" style={styles.textoErro}>
+                  {erroValidacao}
+                </Texto>
+              ) : null}
 
-            <View style={styles.acoes}>
-              <Botao rotulo="Salvar alterações" variante="principal" desativado={salvando || semBairro} onPress={salvarAnalise} />
+              <View style={styles.acoes}>
+                <Botao rotulo="Salvar alterações" variante="principal" desativado={salvando || semBairro} onPress={salvarAnalise} />
 
-              {existente && <Botao rotulo="Excluir análise" variante="secundario" onPress={() => setConfirmarExclusao(true)} />}
-            </View>
-          </CorpoDoCartao>
-        </Cartao>
+                {existente && <Botao rotulo="Excluir análise" variante="secundario" onPress={() => setConfirmarExclusao(true)} />}
+              </View>
+            </CorpoDoCartao>
+          </Cartao>
+        </Coluna>
       </ScrollView>
 
-      {/* Modal de Confirmação de Exclusão */}
-      <Modal visible={confirmarExclusao} transparent animationType="fade">
+      {/* Modal de Confirmação de Exclusão. Com movimento reduzido, entra sem o fade. */}
+      <Modal visible={confirmarExclusao} transparent animationType={movimentoReduzido ? "none" : "fade"}>
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
             <Texto tipo="secao" style={styles.modalTitulo}>
@@ -148,7 +157,7 @@ function Editor({ existente }: { existente: AnaliseV2 | null }) {
               Esta ação removerá a análise do seu caderno local de forma permanente.
             </Texto>
             <View style={styles.modalAcoes}>
-              <Pressable
+              <AlvoDeToque
                 onPress={() => setConfirmarExclusao(false)}
                 accessibilityRole="button"
                 accessibilityLabel="Cancelar"
@@ -157,12 +166,12 @@ function Editor({ existente }: { existente: AnaliseV2 | null }) {
                 <Texto tipo="apoio" style={styles.textoCancelarModal}>
                   Cancelar
                 </Texto>
-              </Pressable>
-              <Pressable onPress={executarExclusao} accessibilityRole="button" accessibilityLabel="Sim, excluir" style={styles.btnExcluirModal}>
+              </AlvoDeToque>
+              <AlvoDeToque onPress={executarExclusao} accessibilityRole="button" accessibilityLabel="Sim, excluir" style={styles.btnExcluirModal}>
                 <Texto tipo="apoio" style={styles.textoExcluirModal}>
                   Sim, excluir
                 </Texto>
-              </Pressable>
+              </AlvoDeToque>
             </View>
           </View>
         </View>

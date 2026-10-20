@@ -1,10 +1,13 @@
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
-import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { Cartao, CorpoDoCartao } from "../../componentes/Cartao";
+import { Coluna } from "../../componentes/casca/Coluna";
+import { useFocoDoCampo } from "../../componentes/casca/foco";
 import { LeitorDePagina } from "../../componentes/leitor/LeitorDePagina";
 import { estilosDoTema } from "../../componentes/revisao/estilosDoTema";
+import { AlvoDeToque } from "../../componentes/Pressionavel";
 import { FormularioDeRevisao } from "../../componentes/revisao/FormularioDeRevisao";
 import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
@@ -55,12 +58,24 @@ function extrairTudo(
   return montarExtracao(url, leituras, new Date());
 }
 
+/**
+ * A leitura é uma aba escondida (`href: null`): o navegador a mantém montada entre uma visita e outra, e o estado dela
+ * (texto lido, formulário e o id da análise) sobreviveria ao link seguinte; salvar o segundo link regravaria a primeira
+ * análise com o mesmo id. A chave (link, texto e `n`, a marca que o Explorar põe a cada "Gerar Dossiê") recomeça a
+ * leitura do zero a cada visita.
+ */
 export default function TelaDeLeitura() {
+  const { url = "", texto = "", n = "" } = useLocalSearchParams<{ url?: string; texto?: string; n?: string }>();
+  return <LeituraDoAnuncio key={`${url}|${texto}|${n}`} />;
+}
+
+function LeituraDoAnuncio() {
   const { cor } = useTema();
   const styles = useEstilos();
   const { url: urlDaRota = "", texto: textoDaRota = "" } = useLocalSearchParams<{ url?: string; texto?: string }>();
   const url = urlDaRota.trim();
-  const { salvar } = useAnalises();
+  const { salvar, erro: erroDoCaderno } = useAnalises();
+  const focoDoTexto = useFocoDoCampo();
 
   const [idGerado] = useState(() => `imovel-${Date.now()}`);
   /** O que está no campo de texto e o que já foi lido ("Ler texto"): a leitura só muda no botão. */
@@ -188,7 +203,8 @@ export default function TelaDeLeitura() {
       await salvar(analise);
       depois();
     } catch {
-      setErroAoSalvar("Não foi possível salvar. Confira os valores digitados e tente de novo.");
+      // Caderno que não abriu: o problema não são os valores digitados, e a mensagem do caderno diz o que fazer.
+      setErroAoSalvar(erroDoCaderno || "Não foi possível salvar. Confira os valores digitados e tente de novo.");
     } finally {
       setSalvando(false);
     }
@@ -212,160 +228,164 @@ export default function TelaDeLeitura() {
   return (
     <Tela>
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-        <Pressable
-          onPress={() => router.push("/")}
-          accessibilityRole="button"
-          accessibilityLabel="Cancelar"
-          style={styles.botaoCancelar}
-        >
-          <Texto tipo="apoio" style={styles.textoCancelar}>
-            ← Cancelar
-          </Texto>
-        </Pressable>
+        <Coluna style={styles.coluna}>
+          <AlvoDeToque
+            onPress={() => router.push("/")}
+            accessibilityRole="button"
+            accessibilityLabel="Cancelar"
+            style={styles.botaoCancelar}
+          >
+            <Texto tipo="apoio" style={styles.textoCancelar}>
+              ← Cancelar
+            </Texto>
+          </AlvoDeToque>
 
-        <Cartao style={styles.cartao}>
-          <CorpoDoCartao style={styles.corpo}>
-            <View style={styles.cabecalho}>
-              <Texto tipo="apoio" style={styles.sobretitulo}>
-                Lendo o anúncio no aparelho
-              </Texto>
-              <Texto tipo="titulo-tela" role="heading" style={styles.titulo}>
-                {tituloDoCartao}
-              </Texto>
-              {url ? (
-                <Texto tipo="apoio" numberOfLines={1} style={styles.enderecoDoLink}>
-                  {url}
-                </Texto>
-              ) : null}
-            </View>
-
-            {abrePagina && paginaAberta ? (
-              <View style={styles.blocoDaPagina}>
-                <LeitorDePagina
-                  url={url}
-                  portal={portal}
-                  idNoPortal={idNoPortal}
-                  aoLer={aoLerAPagina}
-                  aoFalhar={aoFalharAPagina}
-                />
-                {!mostrarCartaoDeTexto ? <LinkDoCartao rotulo="Prefiro colar o texto" aoPressionar={() => setPediuTexto(true)} /> : null}
-              </View>
-            ) : null}
-
-            {abrePagina && !paginaAberta ? (
-              <View style={styles.linhaDeLinks}>
-                <LinkDoCartao rotulo="Ver página do anúncio" aoPressionar={() => setPaginaAberta(true)} />
-                {!mostrarCartaoDeTexto ? <LinkDoCartao rotulo="Prefiro colar o texto" aoPressionar={() => setPediuTexto(true)} /> : null}
-              </View>
-            ) : null}
-
-            <View style={styles.checklist}>
-              {linhas.map((linha, indice) => (
-                <LinhaDoChecklist key={linha.titulo} numero={indice + 1} {...linha} />
-              ))}
-            </View>
-
-            <View style={styles.rodapeDePrivacidade}>
-              <Texto tipo="apoio" style={styles.textoDePrivacidade}>
-                Só lemos campos do imóvel. Nada sobre quem anuncia.
-              </Texto>
-              <Texto tipo="apoio" style={styles.seloDePrivacidade}>
-                Privacidade local
-              </Texto>
-            </View>
-          </CorpoDoCartao>
-        </Cartao>
-
-        {mostrarCartaoDeTexto ? (
           <Cartao style={styles.cartao}>
             <CorpoDoCartao style={styles.corpo}>
-              <Texto tipo="secao" role="heading" style={styles.tituloDeSecao}>
-                Complete com o texto do anúncio
-              </Texto>
-              <Texto tipo="apoio" style={styles.descricao}>
-                {motivoDaFalha !== null
-                  ? "Não conseguimos ler esta página. Copie o texto dela e cole aqui."
-                  : "No anúncio, selecione todo o texto da página e cole aqui."}
-              </Texto>
-
-              <View style={styles.campoDeTexto}>
-                <Texto tipo="etiqueta" style={styles.rotuloDoCampo}>
-                  Texto do anúncio
+              <View style={styles.cabecalho}>
+                <Texto tipo="apoio" style={styles.sobretitulo}>
+                  Lendo o anúncio no aparelho
                 </Texto>
-                <TextInput
-                  multiline
-                  numberOfLines={6}
-                  value={textoDoCampo}
-                  onChangeText={setTextoDoCampo}
-                  placeholder="Cole aqui o texto copiado do anúncio"
-                  placeholderTextColor={cor("cor-texto-apoio")}
-                  accessibilityLabel="Texto do anúncio"
-                  style={styles.areaDeTexto}
-                />
-              </View>
-
-              <Botao rotulo="Ler texto" variante="secundario" onPress={lerTexto} />
-            </CorpoDoCartao>
-          </Cartao>
-        ) : null}
-
-        <Cartao style={styles.cartao}>
-          <CorpoDoCartao style={styles.corpo}>
-            <Texto tipo="titulo-tela" role="heading" style={styles.tituloDoFormulario}>
-              Revise antes de salvar
-            </Texto>
-            <FormularioDeRevisao estado={form} anomalias={anomaliasDaRevisao(extracao, form)} aoAlterar={setForm} />
-
-            {foraDeCobertura ? null : (
-              <View style={styles.acoes}>
-                <Botao rotulo="Encontrar o prédio" variante="principal" desativado={salvando || semBairro} onPress={encontrarOPredio} />
-                {semBairro ? (
-                  <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.dicaDoBairro}>
-                    Escolha o bairro
+                <Texto tipo="titulo-tela" role="heading" style={styles.titulo}>
+                  {tituloDoCartao}
+                </Texto>
+                {url ? (
+                  <Texto tipo="apoio" numberOfLines={1} style={styles.enderecoDoLink}>
+                    {url}
                   </Texto>
                 ) : null}
               </View>
-            )}
-            {!foraDeCobertura && erroAoSalvar ? (
-              <Texto tipo="apoio" role="alert" style={styles.erro}>
-                {erroAoSalvar}
-              </Texto>
-            ) : null}
-          </CorpoDoCartao>
-        </Cartao>
 
-        {foraDeCobertura ? (
+              {abrePagina && paginaAberta ? (
+                <View style={styles.blocoDaPagina}>
+                  <LeitorDePagina
+                    url={url}
+                    portal={portal}
+                    idNoPortal={idNoPortal}
+                    aoLer={aoLerAPagina}
+                    aoFalhar={aoFalharAPagina}
+                  />
+                  {!mostrarCartaoDeTexto ? <LinkDoCartao rotulo="Prefiro colar o texto" aoPressionar={() => setPediuTexto(true)} /> : null}
+                </View>
+              ) : null}
+
+              {abrePagina && !paginaAberta ? (
+                <View style={styles.linhaDeLinks}>
+                  <LinkDoCartao rotulo="Ver página do anúncio" aoPressionar={() => setPaginaAberta(true)} />
+                  {!mostrarCartaoDeTexto ? <LinkDoCartao rotulo="Prefiro colar o texto" aoPressionar={() => setPediuTexto(true)} /> : null}
+                </View>
+              ) : null}
+
+              <View style={styles.checklist}>
+                {linhas.map((linha, indice) => (
+                  <LinhaDoChecklist key={linha.titulo} numero={indice + 1} {...linha} />
+                ))}
+              </View>
+
+              <View style={styles.rodapeDePrivacidade}>
+                <Texto tipo="apoio" style={styles.textoDePrivacidade}>
+                  Só lemos campos do imóvel. Nada sobre quem anuncia.
+                </Texto>
+                <Texto tipo="apoio" style={styles.seloDePrivacidade}>
+                  Privacidade local
+                </Texto>
+              </View>
+            </CorpoDoCartao>
+          </Cartao>
+
+          {mostrarCartaoDeTexto ? (
+            <Cartao style={styles.cartao}>
+              <CorpoDoCartao style={styles.corpo}>
+                <Texto tipo="secao" role="heading" style={styles.tituloDeSecao}>
+                  Complete com o texto do anúncio
+                </Texto>
+                <Texto tipo="apoio" style={styles.descricao}>
+                  {motivoDaFalha !== null
+                    ? "Não conseguimos ler esta página. Copie o texto dela e cole aqui."
+                    : "No anúncio, selecione todo o texto da página e cole aqui."}
+                </Texto>
+
+                <View style={styles.campoDeTexto}>
+                  <Texto tipo="etiqueta" style={styles.rotuloDoCampo}>
+                    Texto do anúncio
+                  </Texto>
+                  <TextInput
+                    multiline
+                    numberOfLines={6}
+                    value={textoDoCampo}
+                    onChangeText={setTextoDoCampo}
+                    placeholder="Cole aqui o texto copiado do anúncio"
+                    placeholderTextColor={cor("cor-texto-apoio")}
+                    accessibilityLabel="Texto do anúncio"
+                    onFocus={focoDoTexto.aoFocar}
+                    onBlur={focoDoTexto.aoDesfocar}
+                    style={[styles.areaDeTexto, focoDoTexto.estilo]}
+                  />
+                </View>
+
+                <Botao rotulo="Ler texto" variante="secundario" onPress={lerTexto} />
+              </CorpoDoCartao>
+            </Cartao>
+          ) : null}
+
           <Cartao style={styles.cartao}>
             <CorpoDoCartao style={styles.corpo}>
-              <Texto tipo="titulo-tela" role="heading" style={styles.titulo}>
-                {tituloDeForaDeCobertura(form) ?? "Ainda não cobrimos este bairro."}
+              <Texto tipo="titulo-tela" role="heading" style={styles.tituloDoFormulario}>
+                Revise antes de salvar
               </Texto>
-              <Texto tipo="apoio" style={styles.textoDaCobertura}>
-                O Vereda está disponível para{" "}
-                <Texto tipo="apoio" style={styles.destaqueDaCobertura}>
-                  Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena
-                </Texto>
-                . A leitura deste anúncio não consumiu crédito.
-              </Texto>
+              <FormularioDeRevisao estado={form} anomalias={anomaliasDaRevisao(extracao, form)} aoAlterar={setForm} />
 
-              <View style={styles.caixaCreme}>
-                <Texto tipo="apoio" style={styles.textoDaCaixaCreme}>
-                  Nosso recorte inicial exige consolidação completa da chave cadastral junto às bases abertas do Recife.
-                </Texto>
-              </View>
-
-              <View style={styles.acoes}>
-                <Botao rotulo="Salvar no caderno" variante="principal" desativado={salvando} onPress={salvarForaDeCobertura} />
-                <Botao rotulo="Colar outro link" variante="secundario" onPress={() => router.push("/")} />
-              </View>
-              {erroAoSalvar ? (
+              {foraDeCobertura ? null : (
+                <View style={styles.acoes}>
+                  <Botao rotulo="Encontrar o prédio" variante="principal" desativado={salvando || semBairro} onPress={encontrarOPredio} />
+                  {semBairro ? (
+                    <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.dicaDoBairro}>
+                      Escolha o bairro
+                    </Texto>
+                  ) : null}
+                </View>
+              )}
+              {!foraDeCobertura && erroAoSalvar ? (
                 <Texto tipo="apoio" role="alert" style={styles.erro}>
                   {erroAoSalvar}
                 </Texto>
               ) : null}
             </CorpoDoCartao>
           </Cartao>
-        ) : null}
+
+          {foraDeCobertura ? (
+            <Cartao style={styles.cartao}>
+              <CorpoDoCartao style={styles.corpo}>
+                <Texto tipo="titulo-tela" role="heading" style={styles.titulo}>
+                  {tituloDeForaDeCobertura(form) ?? "Ainda não cobrimos este bairro."}
+                </Texto>
+                <Texto tipo="apoio" style={styles.textoDaCobertura}>
+                  O Vereda está disponível para{" "}
+                  <Texto tipo="apoio" style={styles.destaqueDaCobertura}>
+                    Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena
+                  </Texto>
+                  . A leitura deste anúncio não consumiu crédito.
+                </Texto>
+
+                <View style={styles.caixaCreme}>
+                  <Texto tipo="apoio" style={styles.textoDaCaixaCreme}>
+                    Nosso recorte inicial exige consolidação completa da chave cadastral junto às bases abertas do Recife.
+                  </Texto>
+                </View>
+
+                <View style={styles.acoes}>
+                  <Botao rotulo="Salvar no caderno" variante="principal" desativado={salvando} onPress={salvarForaDeCobertura} />
+                  <Botao rotulo="Colar outro link" variante="secundario" onPress={() => router.push("/")} />
+                </View>
+                {erroAoSalvar ? (
+                  <Texto tipo="apoio" role="alert" style={styles.erro}>
+                    {erroAoSalvar}
+                  </Texto>
+                ) : null}
+              </CorpoDoCartao>
+            </Cartao>
+          ) : null}
+        </Coluna>
       </ScrollView>
     </Tela>
   );
@@ -374,17 +394,11 @@ export default function TelaDeLeitura() {
 function LinkDoCartao({ rotulo, aoPressionar }: { rotulo: string; aoPressionar: () => void }) {
   const styles = useEstilos();
   return (
-    <Pressable
-      onPress={aoPressionar}
-      accessibilityRole="link"
-      accessibilityLabel={rotulo}
-      hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-      style={styles.link}
-    >
+    <AlvoDeToque onPress={aoPressionar} accessibilityRole="link" accessibilityLabel={rotulo} style={styles.link}>
       <Texto tipo="apoio" style={styles.textoDoLink}>
         {rotulo}
       </Texto>
-    </Pressable>
+    </AlvoDeToque>
   );
 }
 
@@ -428,10 +442,13 @@ function LinhaDoChecklist({
 // Texto pequeno em ferrugem usa "cor-barro-texto" (contraste); o laranja fica só em preenchimento, ícone e traço.
 const useEstilos = estilosDoTema((cor) =>
   StyleSheet.create({
+    // As margens laterais ficam na rolagem; a coluna (720 px no desktop) vem dentro delas.
     scroll: {
       padding: 16,
-      gap: 16,
       paddingBottom: 48,
+    },
+    coluna: {
+      gap: 16,
     },
     botaoCancelar: {
       alignSelf: "flex-start",
@@ -501,6 +518,7 @@ const useEstilos = estilosDoTema((cor) =>
     },
     link: {
       minHeight: 44,
+      minWidth: 44,
       justifyContent: "center",
       alignSelf: "flex-start",
     },

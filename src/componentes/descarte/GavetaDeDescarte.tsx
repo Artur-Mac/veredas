@@ -9,6 +9,7 @@ import {
   LIMITE_DA_OBSERVACAO,
   MOTIVOS_DE_DESCARTE,
   aplicarDescarte,
+  descarteGeraCredito,
   extratoTemDescarte,
 } from "../../dados/descarte";
 import { useAnalises } from "../../estado/Analises";
@@ -33,7 +34,7 @@ export type PropsDaGavetaDeDescarte = {
 export function GavetaDeDescarte({ analiseId, visivel, aoFechar, aoDescartar }: PropsDaGavetaDeDescarte) {
   const { cor } = useTema();
   const { lista, ativa, salvar, definirAtiva } = useAnalises();
-  const { carteira, pronto: carteiraPronta, creditarDescarte } = useCarteira();
+  const { carteira, pronto: carteiraPronta, bloqueada: carteiraBloqueada, erro: erroDaCarteira, creditarDescarte } = useCarteira();
   const { mostrarAviso } = useAviso();
   const [motivo, setMotivo] = useState<MotivoDeDescarte | null>(null);
   const [observacao, setObservacao] = useState("");
@@ -56,9 +57,16 @@ export function GavetaDeDescarte({ analiseId, visivel, aoFechar, aoDescartar }: 
 
   const analise = lista.find((a) => a.id === analiseId) ?? null;
   const jaCreditou = extratoTemDescarte(carteira.extrato, analiseId);
+  // O +1 só vale para o imóvel que usou crédito (prédio confirmado): a frase da gaveta segue a mesma regra do crédito.
+  const rendeCredito = descarteGeraCredito(carteira.extrato, analiseId);
 
   const confirmar = async () => {
     if (!analise || !motivo || travado.current) return;
+    // Carteira não lida: o extrato exposto é vazio, o descarte seria gravado sem o +1. Não descarta.
+    if (carteiraBloqueada) {
+      setErro(erroDaCarteira);
+      return;
+    }
     travado.current = true;
     setEnviando(true);
     setErro("");
@@ -98,7 +106,11 @@ export function GavetaDeDescarte({ analiseId, visivel, aoFechar, aoDescartar }: 
           Por que você descartou este imóvel?
         </Texto>
         <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 18 }}>
-          {jaCreditou ? `${nome} · O crédito deste descarte já foi concedido.` : `${nome} · Seu feedback concede +1 crédito na carteira.`}
+          {jaCreditou
+            ? `${nome} · O crédito deste descarte já foi concedido.`
+            : rendeCredito
+              ? `${nome} · Seu feedback concede +1 crédito na carteira.`
+              : `${nome} · Este imóvel não usou crédito, então o descarte não rende crédito.`}
         </Texto>
       </View>
 

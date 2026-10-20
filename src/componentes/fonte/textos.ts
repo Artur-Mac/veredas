@@ -16,13 +16,63 @@ const ROTULO_DA_CONFIANCA: Record<Confianca, string> = {
   nao_sabemos: "não sabemos",
 };
 
-/** Explicação de uma linha para cada categoria, mostrada na gaveta. */
+/**
+ * Explicação de uma linha para cada categoria, mostrada na gaveta. A de "oficial" ("sem alteração") só vale para valor
+ * copiado do registro; para mediana, faixa, moda, contagem ou mensalização, use `explicacaoDaConfianca` com o id do dado.
+ */
 export const EXPLICACAO_DA_CONFIANCA: Record<Confianca, string> = {
   oficial: "Vem de uma base pública da Prefeitura, sem alteração.",
   declarado: "Alguém informou o valor. Não há registro oficial para conferir.",
   inferencia: "Conclusão tirada de outros dados. Confirme na visita ou nos documentos.",
   nao_sabemos: "Não há dado para afirmar nada. Vira pergunta para a visita.",
 };
+
+/** Rastro do dado oficial que o Vereda calcula a partir do registro, em vez de copiá-lo. */
+export const EXPLICACAO_DO_CALCULO = "Calculado pelo Vereda a partir de uma base pública da Prefeitura (mediana, faixa ou contagem por prédio).";
+
+/**
+ * Ids de `Fato` e de `Achado` (src/dados/dossie/derivar.ts) com confiança "oficial" cujo valor é o do registro, só
+ * reformatado. O `Fato` não diz qual é qual, então a lista é explícita; um teste confere que todo dado oficial que a
+ * derivação produz está numa das duas listas.
+ */
+export const IDS_DE_DADO_COPIADO: readonly string[] = [
+  "cadastro-nome", // NMEDIFICACAO da base de Lotes
+  "cadastro-pavimentos", // qtd_pavimento da base de Lotes
+  "cadastro-chave", // DSQFL do lote
+];
+
+/** Ids de `Fato` e de `Achado` com confiança "oficial" que são medianas, faixas, modas, contagens ou valores mensalizados (÷ 12). */
+export const IDS_DE_DADO_CALCULADO: readonly string[] = [
+  "cadastro-ano", // moda do ano de construção corrigido entre as unidades
+  "cadastro-unidades", // contagem de registros de IPTU residenciais no endereço
+  "cadastro-area", // faixa das áreas por tipologia do prédio
+  "cadastro-padrao", // moda do padrão da construção
+  "iptu-faixa", // 1º a 3º quartil do IPTU anual das unidades, em valor mensal (÷ 12)
+  "ach-iptu", // mediana do IPTU anual da tipologia, em valor mensal (÷ 12)
+  "ach-obras", // contagem de licenças de obra a até 150 m em 24 meses
+  "ach-itbi", // mediana das avaliações fiscais por unidade, 36 meses
+];
+
+/**
+ * Bases da Prefeitura que o Vereda nunca copia por inteiro: o dossiê mostra a faixa, a mediana, a moda ou a contagem por
+ * prédio. Um dado oficial que vem delas e cujo id não está nas listas acima conta como calculado. As cópias do registro
+ * (nome, pavimentos e chave cadastral) vêm da base de Lotes.
+ */
+const BASES_AGREGADAS: readonly FonteDoDado[] = ["iptu_2026", "itbi", "licenciamento"];
+
+/**
+ * Explicação da confiança de um dado. Só "oficial" muda. O id do dado manda: em `IDS_DE_DADO_CALCULADO` o rastro diz que o
+ * Vereda calculou o valor; em `IDS_DE_DADO_COPIADO` vale "sem alteração". Sem id (ou com id fora das listas), decide a
+ * fonte: base agregada (IPTU 2026, ITBI, licenciamento) é cálculo; qualquer outra, ou sem fonte, mantém a explicação da
+ * categoria. A gaveta de fonte só recebe a fonte, não o id, então é esta última regra que vale na tela.
+ */
+export function explicacaoDaConfianca(confianca: Confianca, idDoDado: string | null = null, fonte: FonteDoDado | null = null): string {
+  if (confianca !== "oficial") return EXPLICACAO_DA_CONFIANCA[confianca];
+  if (idDoDado !== null && IDS_DE_DADO_CALCULADO.includes(idDoDado)) return EXPLICACAO_DO_CALCULO;
+  if (idDoDado !== null && IDS_DE_DADO_COPIADO.includes(idDoDado)) return EXPLICACAO_DA_CONFIANCA.oficial;
+  if (fonte !== null && BASES_AGREGADAS.includes(fonte)) return EXPLICACAO_DO_CALCULO;
+  return EXPLICACAO_DA_CONFIANCA.oficial;
+}
 
 /**
  * Rótulo da confiança. A categoria "declarado" muda de dono conforme a fonte: o anunciante, a própria pessoa ou as

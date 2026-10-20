@@ -5,6 +5,7 @@ import { Animated, Platform, StyleSheet } from "react-native";
 import { useTema } from "../../tema/Tema";
 import { ESPACO, RAIO, comAlfa } from "../../tema/tokens";
 import { Texto } from "../Texto";
+import { useMovimentoReduzidoRef } from "./movimento";
 
 type ContextoAviso = {
   mostrarAviso: (mensagem: string) => void;
@@ -19,6 +20,7 @@ export function ProvedorDeAviso({ children }: { children: ReactNode }) {
   const { cor } = useTema();
   const [mensagem, setMensagem] = useState("");
   const [opacidade] = useState(() => new Animated.Value(0));
+  const movimentoReduzido = useMovimentoReduzidoRef();
 
   // Desmontar a raiz (reinício do app) interrompe o aviso em andamento, sem tocar no estado de quem já saiu.
   useEffect(() => () => opacidade.stopAnimation(), [opacidade]);
@@ -28,16 +30,18 @@ export function ProvedorDeAviso({ children }: { children: ReactNode }) {
       setMensagem(texto);
       opacidade.stopAnimation();
       opacidade.setValue(0);
+      // Movimento reduzido: o aviso aparece e some de uma vez, sem o fade; a duração na tela é a mesma.
+      const reduzido = movimentoReduzido.current;
       Animated.sequence([
         Animated.timing(opacidade, {
           toValue: 1,
-          duration: 180,
+          duration: reduzido ? 0 : 180,
           useNativeDriver: Platform.OS !== "web",
         }),
         Animated.delay(2600),
         Animated.timing(opacidade, {
           toValue: 0,
-          duration: 220,
+          duration: reduzido ? 0 : 220,
           useNativeDriver: Platform.OS !== "web",
         }),
       ]).start(({ finished }) => {
@@ -45,7 +49,7 @@ export function ProvedorDeAviso({ children }: { children: ReactNode }) {
         if (finished) setMensagem("");
       });
     },
-    [opacidade],
+    [opacidade, movimentoReduzido],
   );
 
   const valor = useMemo(() => ({ mostrarAviso }), [mostrarAviso]);

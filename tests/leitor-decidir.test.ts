@@ -1,7 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from "@jest/globals";
 import React from "react";
+import { StyleSheet } from "react-native";
 import TestRenderer, { act } from "react-test-renderer";
-import { LeitorDePagina } from "../src/componentes/leitor/LeitorDePagina";
+import { AvisoDeExemplo, ROTULO_DO_LINK_PARA_EXPLORAR, TEXTO_DO_AVISO_DE_EXEMPLO } from "../src/componentes/dossie/AvisoDeExemplo";
+import { AVISO_DE_OUTRA_PAGINA, AVISO_DE_VERIFICACAO, LeitorDePagina } from "../src/componentes/leitor/LeitorDePagina";
 import {
   PADRAO_DE_TITULO_DE_VERIFICACAO,
   SCRIPT_COLETOR,
@@ -14,14 +16,48 @@ import {
   type EstadoDoLeitor,
 } from "../src/componentes/leitor/decidir";
 import { camposVazios, type CamposExtraidos, type LeituraParcial } from "../src/dados/contratos";
+import { SessaoDoApp } from "../src/estado/Sessao";
 import { TemaDoApp } from "../src/tema/Tema";
+import { CORES_CLARO } from "../src/tema/tokens";
 import fixturesEstado from "./fixtures/estado-pagina.json";
+import LayoutDoDossie from "../src/app/exemplos/[id]/_layout";
 
 type PropsDaWebView = {
   onMessage: (evento: { nativeEvent: { data: string } }) => void;
   onShouldStartLoadWithRequest: (pedido: { url: string }) => boolean;
   userAgent?: string;
 };
+
+// Aviso dos exemplos (P8): o roteador e a área segura são simulados; o layout é o de verdade.
+type GlobaisDoAviso = { __dismissTo: jest.Mock };
+jest.mock("expo-router", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const React = require("react");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { View } = require("react-native");
+  return {
+    router: { dismissTo: (...args: unknown[]) => (globalThis as unknown as GlobaisDoAviso).__dismissTo(...args) },
+    useLocalSearchParams: () => ({ id: "boa-viagem" }),
+    Redirect: () => React.createElement(View, { testID: "redirecionou" }),
+    // O `Stack` de verdade é de navegação: aqui ele só mostra o recuo de topo que as telas receberiam.
+    Stack: Object.assign(
+      () => {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { useSafeAreaInsets } = require("react-native-safe-area-context");
+        return React.createElement(View, { testID: "pilha", accessibilityLabel: `topo ${useSafeAreaInsets().top}` });
+      },
+      { Screen: () => null },
+    ),
+  };
+});
+jest.mock("react-native-safe-area-context", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const React = require("react");
+  const SafeAreaInsetsContext = React.createContext(null);
+  // Como o de verdade: lê o contexto; sem provedor, devolve o aparelho de teste (relógio de 47 pontos).
+  const useSafeAreaInsets = () => React.useContext(SafeAreaInsetsContext) ?? { top: 47, bottom: 34, left: 0, right: 0 };
+  return { SafeAreaInsetsContext, useSafeAreaInsets };
+});
 
 // A WebView real não roda no Jest: o mock guarda as props para o teste "ser a página".
 jest.mock("react-native-webview", () => ({
@@ -137,6 +173,51 @@ describe("decisão do leitor de página", () => {
     });
     it("não desfaz uma leitura que já deu certo", () => {
       expect(proximoEstado(LIDO, { tipo: "erro" })).toBe(LIDO);
+    });
+  });
+
+  describe("6. o portal abre outra página (P5)", () => {
+    const OUTRA = { outraPagina: true };
+    const RECUPERAVEL: EstadoDoLeitor = { fase: "falhou", motivo: "outra_pagina" };
+
+    it("sem dados e sem verificação, derruba carregando, verificando e a falha por tempo", () => {
+      for (const antes of [CARREGANDO, VERIFICANDO, { fase: "falhou", motivo: "tempo" } as EstadoDoLeitor]) {
+        expect(proximoEstado(antes, { tipo: "mensagem", leituras: [], verificacao: false, ...OUTRA })).toEqual(RECUPERAVEL);
+      }
+    });
+    it("leitura sem preço nem área também falha", () => {
+      expect(proximoEstado(CARREGANDO, { tipo: "mensagem", leituras: SEM_DADOS, verificacao: false, ...OUTRA })).toEqual(RECUPERAVEL);
+    });
+    it("repetir a mensagem não muda nada (mesma referência, sem novo aviso ao fluxo)", () => {
+      expect(proximoEstado(RECUPERAVEL, { tipo: "mensagem", leituras: [], verificacao: false, ...OUTRA })).toBe(RECUPERAVEL);
+    });
+    it("preço ou área que vieram do estado do anúncio ainda valem", () => {
+      expect(proximoEstado(CARREGANDO, { tipo: "mensagem", leituras: COM_PRECO, verificacao: false, ...OUTRA })).toEqual(LIDO);
+    });
+    it("o desafio do portal tem prioridade: em outra página, continua verificando", () => {
+      expect(proximoEstado(CARREGANDO, { tipo: "mensagem", leituras: [], verificacao: true, ...OUTRA })).toEqual(VERIFICANDO);
+      expect(proximoEstado(VERIFICANDO, { tipo: "mensagem", leituras: [], verificacao: true, ...OUTRA })).toBe(VERIFICANDO);
+    });
+    it("a pessoa volta ao anúncio: dados viram lido, e um desafio vira verificando", () => {
+      expect(proximoEstado(RECUPERAVEL, { tipo: "mensagem", leituras: COM_AREA, verificacao: false })).toEqual(LIDO);
+      expect(proximoEstado(RECUPERAVEL, { tipo: "mensagem", leituras: [], verificacao: true })).toEqual(VERIFICANDO);
+    });
+    it("voltar ao anúncio sem dados ainda não é leitura: segue falhado", () => {
+      expect(proximoEstado(RECUPERAVEL, { tipo: "mensagem", leituras: [], verificacao: false })).toBe(RECUPERAVEL);
+    });
+    it("falha por erro ou por verificação não é trocada por outra página", () => {
+      const porErro: EstadoDoLeitor = { fase: "falhou", motivo: "erro" };
+      const porVerificacao: EstadoDoLeitor = { fase: "falhou", motivo: "verificacao" };
+      expect(proximoEstado(porErro, { tipo: "mensagem", leituras: [], verificacao: false, ...OUTRA })).toBe(porErro);
+      expect(proximoEstado(porVerificacao, { tipo: "mensagem", leituras: [], verificacao: false, ...OUTRA })).toBe(porVerificacao);
+    });
+    it("lido não muda", () => {
+      expect(proximoEstado(LIDO, { tipo: "mensagem", leituras: [], verificacao: false, ...OUTRA })).toBe(LIDO);
+    });
+    it("os prazos não mexem na falha por outra página", () => {
+      expect(proximoEstado(RECUPERAVEL, { tipo: "prazo_20s" })).toBe(RECUPERAVEL);
+      expect(proximoEstado(RECUPERAVEL, { tipo: "prazo_120s" })).toBe(RECUPERAVEL);
+      expect(proximoEstado(RECUPERAVEL, { tipo: "erro" })).toBe(RECUPERAVEL);
     });
   });
 
@@ -317,6 +398,250 @@ describe("LeitorDePagina: prazos e mensagens", () => {
     expect(pode("javascript:alert(1)")).toBe(false);
     expect(pode("file:///etc/passwd")).toBe(false);
     expect(webView().userAgent).toBeUndefined();
+  });
+});
+
+// ——— P5: o portal abre outra página no meio da leitura ————————————————————————————————————————————
+
+describe("LeitorDePagina: o portal abre outra página (P5)", () => {
+  const URL_DO_ANUNCIO = "https://www.zapimoveis.com.br/imovel/123";
+  const URL_DA_LISTA = "https://www.zapimoveis.com.br/aluguel/apartamentos/pe+recife+casa-forte/";
+  const LD_DA_LISTA = JSON.stringify({ "@type": "Apartment", offers: { price: "7777" }, floorSize: { value: 222 } });
+  // Preço e área de OUTROS anúncios, os da lista: nada disso pode virar leitura do anúncio pedido.
+  const TEXTO_DA_LISTA = "Apartamentos para alugar\nAluguel R$ 8.888 /mês\nCondomínio R$ 1.234\n150 m²\n4 quartos";
+  const coleta = (url: string, extra: Record<string, unknown> = {}) =>
+    JSON.stringify({ url, titulo: "ZAP Imóveis", ld: [LD_DA_LISTA], estados: [], texto: TEXTO_DA_LISTA, verificacao: false, ...extra });
+  const COLETA_DO_ANUNCIO = coleta(URL_DO_ANUNCIO, { ld: [], texto: "Apartamento\nAluguel R$ 4.500 /mês\n125 m²" });
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  function montar(aoLer: (l: LeituraParcial[]) => void, aoFalhar: (m: string) => void) {
+    return React.createElement(
+      TemaDoApp,
+      null,
+      React.createElement(LeitorDePagina, { url: URL_DO_ANUNCIO, portal: "zap", idNoPortal: "123", aoLer, aoFalhar }),
+    );
+  }
+  const textoDoAviso = (arvore: TestRenderer.ReactTestRenderer, texto: string) =>
+    arvore.root.findAll((n) => String(n.type) === "Text" && n.props.children === texto);
+
+  it("lista, busca ou início: nada é lido, o aviso aparece e o fluxo recebe a falha uma vez", () => {
+    const lidos: LeituraParcial[][] = [];
+    const falhas: string[] = [];
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(montar((l) => lidos.push(l), (m) => falhas.push(m)));
+    });
+    expect(textoDoAviso(arvore, AVISO_DE_OUTRA_PAGINA)).toHaveLength(0);
+    act(() => webView().onMessage({ nativeEvent: { data: coleta(URL_DA_LISTA) } }));
+    expect(lidos).toEqual([]);
+    expect(falhas).toEqual(["outra_pagina"]);
+    expect(AVISO_DE_OUTRA_PAGINA).toBe("O portal abriu outra página. Confira o anúncio ou cole o texto.");
+    expect(textoDoAviso(arvore, AVISO_DE_OUTRA_PAGINA)).toHaveLength(1);
+    // Outra mensagem da mesma página (o coletor roda de novo 2,5 s depois): sem novo aviso ao fluxo, sem leitura.
+    act(() => webView().onMessage({ nativeEvent: { data: coleta("https://www.zapimoveis.com.br/") } }));
+    act(() => webView().onMessage({ nativeEvent: { data: coleta("https://www.zapimoveis.com.br/busca?q=casa+forte") } }));
+    act(() => jest.advanceTimersByTime(400_000));
+    expect(lidos).toEqual([]);
+    expect(falhas).toEqual(["outra_pagina"]);
+  });
+
+  it("o aviso usa ferrugem de texto pequeno, por token", () => {
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(montar(() => undefined, () => undefined));
+    });
+    act(() => webView().onMessage({ nativeEvent: { data: coleta(URL_DA_LISTA) } }));
+    const [no] = textoDoAviso(arvore, AVISO_DE_OUTRA_PAGINA);
+    const estilo = StyleSheet.flatten(no?.props.style) as { color?: string };
+    expect(estilo.color).toBe(CORES_CLARO["cor-barro-texto"]);
+  });
+
+  it("o aviso de verificação também usa o token, e o de outra página não aparece junto", () => {
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(montar(() => undefined, () => undefined));
+    });
+    act(() =>
+      webView().onMessage({ nativeEvent: { data: coleta(URL_DO_ANUNCIO, { titulo: "Just a moment...", ld: [], texto: "", verificacao: true }) } }),
+    );
+    const [no] = textoDoAviso(arvore, AVISO_DE_VERIFICACAO);
+    expect((StyleSheet.flatten(no?.props.style) as { color?: string }).color).toBe(CORES_CLARO["cor-barro-texto"]);
+    expect(textoDoAviso(arvore, AVISO_DE_OUTRA_PAGINA)).toHaveLength(0);
+  });
+
+  it("o anúncio com a palavra 'verifique' continua lido: o desafio da própria página não é outra página", () => {
+    const lidos: LeituraParcial[][] = [];
+    const falhas: string[] = [];
+    act(() => {
+      TestRenderer.create(montar((l) => lidos.push(l), (m) => falhas.push(m)));
+    });
+    act(() => webView().onMessage({ nativeEvent: { data: COLETA_DO_ANUNCIO } }));
+    expect(lidos).toHaveLength(1);
+    expect(falhas).toEqual([]);
+  });
+
+  it("na lista, estado sem o objeto com o id do anúncio não rende: nada é lido e o fluxo recebe a falha", () => {
+    const lidos: LeituraParcial[][] = [];
+    const falhas: string[] = [];
+    act(() => {
+      TestRenderer.create(montar((l) => lidos.push(l), (m) => falhas.push(m)));
+    });
+    // Estado de QuintoAndar com o objeto do anúncio de id 895799920; o leitor aqui espera o id 123 do ZAP: nada casa.
+    act(() => webView().onMessage({ nativeEvent: { data: coleta(URL_DA_LISTA, { estados: [JSON.stringify(fixturesEstado.estado)] }) } }));
+    expect(lidos).toEqual([]);
+    expect(falhas).toEqual(["outra_pagina"]);
+  });
+
+  it("a página aberta é outra, mas o estado traz o objeto com o id do anúncio: vale, só o do anúncio", () => {
+    const URL_QA = "https://www.quintoandar.com.br/imovel/895799920/alugar/apartamento-2-quartos-espinheiro-recife";
+    const lidos: LeituraParcial[][] = [];
+    const falhas: string[] = [];
+    act(() => {
+      TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(LeitorDePagina, {
+            url: URL_QA,
+            portal: "quintoandar",
+            idNoPortal: "895799920",
+            aoLer: (l: LeituraParcial[]) => lidos.push(l),
+            aoFalhar: (m: string) => falhas.push(m),
+          }),
+        ),
+      );
+    });
+    const naLista = coleta("https://www.quintoandar.com.br/alugar/imovel/recife-pe-brasil", { estados: [JSON.stringify(fixturesEstado.estado)] });
+    act(() => webView().onMessage({ nativeEvent: { data: naLista } }));
+    expect(falhas).toEqual([]);
+    expect(lidos).toHaveLength(1);
+    const lidas = lidos[0] ?? [];
+    expect(lidas.map((l) => l.campos.preco)).toEqual([2800]);
+    expect(JSON.stringify(lidas)).not.toMatch(/7777|8888|1234|222|9999/);
+  });
+
+  it("depois de outra página, a pessoa volta ao anúncio: lê e o aviso some", () => {
+    const lidos: LeituraParcial[][] = [];
+    const falhas: string[] = [];
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(montar((l) => lidos.push(l), (m) => falhas.push(m)));
+    });
+    act(() => webView().onMessage({ nativeEvent: { data: coleta(URL_DA_LISTA) } }));
+    expect(textoDoAviso(arvore, AVISO_DE_OUTRA_PAGINA)).toHaveLength(1);
+    act(() => webView().onMessage({ nativeEvent: { data: COLETA_DO_ANUNCIO } }));
+    expect(lidos).toHaveLength(1);
+    expect(lidos[0]?.some((l) => l.campos.preco === 4500)).toBe(true);
+    expect(JSON.stringify(lidos)).not.toMatch(/7777|8888/);
+    expect(textoDoAviso(arvore, AVISO_DE_OUTRA_PAGINA)).toHaveLength(0);
+    expect(falhas).toEqual(["outra_pagina"]);
+  });
+
+  it("depois da falha por tempo, uma página que não é a do anúncio troca o motivo", () => {
+    const falhas: string[] = [];
+    act(() => {
+      TestRenderer.create(montar(() => undefined, (m) => falhas.push(m)));
+    });
+    act(() => jest.advanceTimersByTime(21_000));
+    act(() => webView().onMessage({ nativeEvent: { data: coleta(URL_DA_LISTA) } }));
+    expect(falhas).toEqual(["tempo", "outra_pagina"]);
+  });
+
+  it("desafio em outra página continua sendo desafio: verifica, não falha", () => {
+    const falhas: string[] = [];
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(montar(() => undefined, (m) => falhas.push(m)));
+    });
+    act(() =>
+      webView().onMessage({ nativeEvent: { data: coleta("https://www.zapimoveis.com.br/", { titulo: "Just a moment...", ld: [], texto: "", verificacao: true }) } }),
+    );
+    expect(falhas).toEqual([]);
+    expect(textoDoAviso(arvore, AVISO_DE_VERIFICACAO)).toHaveLength(1);
+  });
+
+  it("host diferente do portal conta como outra página", () => {
+    const falhas: string[] = [];
+    act(() => {
+      TestRenderer.create(montar(() => undefined, (m) => falhas.push(m)));
+    });
+    act(() => webView().onMessage({ nativeEvent: { data: coleta("https://www.example.com/imovel/123") } }));
+    expect(falhas).toEqual(["outra_pagina"]);
+  });
+});
+
+// ——— P8: faixa de exemplo no topo de /exemplos/* ——————————————————————————————————————————————————————
+
+describe("aviso dos exemplos (P8)", () => {
+  const G = globalThis as unknown as GlobaisDoAviso;
+  beforeEach(() => {
+    G.__dismissTo = jest.fn();
+  });
+
+  const todos = (arvore: TestRenderer.ReactTestRenderer, pred: (n: TestRenderer.ReactTestInstance) => boolean) => arvore.root.findAll(pred);
+  const link = (arvore: TestRenderer.ReactTestRenderer) =>
+    todos(arvore, (n) => typeof n.type !== "string" && n.props.role === "link" && n.props.accessibilityLabel === ROTULO_DO_LINK_PARA_EXPLORAR)[0];
+
+  it("o texto é exatamente o combinado", () => {
+    expect(TEXTO_DO_AVISO_DE_EXEMPLO).toBe("Exemplo com dados de demonstração. Para dados do cadastro, cole o link de um anúncio.");
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(AvisoDeExemplo)));
+    });
+    expect(todos(arvore, (n) => String(n.type) === "Text" && n.props.children === TEXTO_DO_AVISO_DE_EXEMPLO)).toHaveLength(1);
+  });
+
+  it("o link leva ao Explorar e tem toque de pelo menos 44 por 44", () => {
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(AvisoDeExemplo)));
+    });
+    const alvo = link(arvore);
+    expect(alvo).toBeDefined();
+    act(() => alvo?.props.onPress());
+    expect(G.__dismissTo).toHaveBeenCalledTimes(1);
+    expect(G.__dismissTo).toHaveBeenCalledWith("/");
+    const estilo = StyleSheet.flatten(alvo?.props.style) as { minWidth?: number; minHeight?: number };
+    expect(estilo.minWidth).toBeGreaterThanOrEqual(44);
+    expect(estilo.minHeight).toBeGreaterThanOrEqual(44);
+  });
+
+  it("a cor de fundo e a do texto vêm dos tokens", () => {
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(AvisoDeExemplo)));
+    });
+    const faixa = todos(arvore, (n) => String(n.type) === "View" && StyleSheet.flatten(n.props.style)?.backgroundColor === CORES_CLARO["cor-nota"]);
+    expect(faixa.length).toBeGreaterThan(0);
+    const [texto] = todos(arvore, (n) => String(n.type) === "Text" && n.props.children === TEXTO_DO_AVISO_DE_EXEMPLO);
+    expect((StyleSheet.flatten(texto?.props.style) as { color?: string }).color).toBe(CORES_CLARO["cor-texto"]);
+  });
+
+  it("o layout de /exemplos/[id] põe a faixa acima da pilha, que não recua o topo de novo", () => {
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(TemaDoApp, null, React.createElement(SessaoDoApp, null, React.createElement(LayoutDoDossie))),
+      );
+    });
+    expect(todos(arvore, (n) => n.props.testID === "redirecionou")).toHaveLength(0);
+    const texto = todos(arvore, (n) => String(n.type) === "Text" && n.props.children === TEXTO_DO_AVISO_DE_EXEMPLO);
+    expect(texto).toHaveLength(1);
+    // A pilha vem depois da faixa na árvore.
+    const json = JSON.stringify(arvore.toJSON());
+    expect(json.indexOf(TEXTO_DO_AVISO_DE_EXEMPLO)).toBeGreaterThan(-1);
+    expect(json.indexOf(TEXTO_DO_AVISO_DE_EXEMPLO)).toBeLessThan(json.indexOf("pilha"));
+    // A faixa cobre os 47 pontos do relógio; a pilha enxerga topo 0.
+    const faixa = todos(arvore, (n) => String(n.type) === "View" && StyleSheet.flatten(n.props.style)?.paddingTop === 47);
+    expect(faixa.length).toBeGreaterThan(0);
+    const pilha = todos(arvore, (n) => n.props.testID === "pilha")[0];
+    expect(pilha?.props.accessibilityLabel).toBe("topo 0");
   });
 });
 

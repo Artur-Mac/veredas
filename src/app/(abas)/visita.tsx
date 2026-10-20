@@ -7,6 +7,7 @@ import { useMemo, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { ProvedorDeAviso, useAviso } from "../../componentes/casca/Aviso";
+import { Coluna } from "../../componentes/casca/Coluna";
 import { Texto } from "../../componentes/Texto";
 import { Chamada, Etapas, LinkDeAcao, Superficie } from "../../componentes/visita-v1/blocos";
 import { CartaoDoImovel } from "../../componentes/visita-v1/CartaoDoImovel";
@@ -209,7 +210,7 @@ function ConteudoDaVisita() {
     return (
       <>
         <ScrollView contentContainerStyle={{ padding: ESPACO[4], paddingBottom: ESPACO[6] + ESPACO[4] }} keyboardShouldPersistTaps="handled">
-          <View style={{ width: "100%", maxWidth: 780, alignSelf: "center" }}>
+          <Coluna>
             <View style={{ marginBottom: 4, marginHorizontal: 2 }}>
               <Chamada>Sua próxima visita</Chamada>
             </View>
@@ -233,7 +234,7 @@ function ConteudoDaVisita() {
                 onPress={() => router.push("/")}
               />
             </Superficie>
-          </View>
+          </Coluna>
         </ScrollView>
         {gavetas}
       </>
@@ -251,7 +252,7 @@ function ConteudoDaVisita() {
   return (
     <>
       <ScrollView ref={rolagem} contentContainerStyle={{ padding: ESPACO[4], paddingBottom: ESPACO[6] + ESPACO[4] }} keyboardShouldPersistTaps="handled">
-        <View style={{ width: "100%", maxWidth: 780, alignSelf: "center" }}>
+        <Coluna>
           {erro ? (
             <Texto role="alert" cor="cor-barro-texto" style={{ fontSize: 13, lineHeight: 20, marginBottom: ESPACO[3] }}>
               {erro}
@@ -300,7 +301,7 @@ function ConteudoDaVisita() {
             ) : null}
             {abaAtual !== "resumo" && concluida ? <LinkDeAcao rotulo="Ver último resumo" onPress={() => definirAba("resumo")} /> : null}
           </View>
-        </View>
+        </Coluna>
       </ScrollView>
       {gavetas}
     </>

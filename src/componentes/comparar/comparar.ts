@@ -159,6 +159,18 @@ export type ComparacaoDeCusto = {
 
 const ORDEM_DAS_PARCELAS: ParcelaDoCusto["nome"][] = ["Aluguel", "Condomínio", "IPTU", "Seguro incêndio", "Taxa de serviço", "Outros"];
 
+/** Nota de que a conta de cada coluna deixa de fora parcelas a confirmar (aluguel e compra usam o mesmo texto). */
+const NOTA_DAS_PARCELAS_A_CONFIRMAR = "A diferença usa só as parcelas conhecidas; as a confirmar ficam fora.";
+
+/** Quais parcelas ficaram fora da soma da coluna (a confirmar ou desconhecidas), como um texto comparável: nomes em ordem. */
+function chaveDasParcelasForaDaSoma(c: ReturnType<typeof custoMensal>): string {
+  return c.parcelas
+    .filter((p) => p.estado !== "conhecido")
+    .map((p) => p.nome)
+    .sort()
+    .join("|");
+}
+
 export function compararCusto(a: AnaliseV2, b: AnaliseV2): ComparacaoDeCusto {
   const aluguel = a.modalidade === "aluguel";
   const custos: Par<ReturnType<typeof custoMensal>> = [custoMensal(a), custoMensal(b)];
@@ -194,11 +206,12 @@ export function compararCusto(a: AnaliseV2, b: AnaliseV2): ComparacaoDeCusto {
     frase = `${destaque} ${legenda}`;
   }
 
+  // Aluguel: qualquer parcela a confirmar tira algo da soma que gera a diferença. Compra: a diferença é do preço, mas as
+  // despesas mensais ficam lado a lado, e só se comparam quando as duas somas deixam de fora as mesmas parcelas.
   const pendentes = colunas[0].pendentes + colunas[1].pendentes;
+  const somasComParcelasDiferentes = chaveDasParcelasForaDaSoma(custos[0]) !== chaveDasParcelasForaDaSoma(custos[1]);
   const nota =
-    aluguel && diferenca !== null && pendentes > 0
-      ? "A diferença usa só as parcelas conhecidas; as a confirmar ficam fora."
-      : null;
+    diferenca !== null && (aluguel ? pendentes > 0 : somasComParcelasDiferentes) ? NOTA_DAS_PARCELAS_A_CONFIRMAR : null;
 
   const nomes = ORDEM_DAS_PARCELAS.filter((nome) => custos.some((c) => c.parcelas.some((p) => p.nome === nome)));
   const parcelas = nomes.map((nome): LinhaDeParcela => ({

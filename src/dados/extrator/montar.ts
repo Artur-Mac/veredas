@@ -9,6 +9,7 @@ import {
   type LeituraParcial,
   type Portal,
 } from "../contratos";
+import { rotuloDoCampo } from "../anomalias";
 import { eCoberto } from "../recife/bairros";
 import { mapaNaoInformados } from "./texto";
 
@@ -49,6 +50,41 @@ function textoDoValorLido(chave: ChaveDeCampo, valor: unknown): string {
     return `R$ ${reais}${sufixo}`;
   }
   return String(valor).slice(0, 80);
+}
+
+/** Artigo de cada campo, para a frase ("A área", "O IPTU", "Os quartos"). */
+const ARTIGO_DO_CAMPO: Record<ChaveDeCampo, "o" | "a" | "os" | "as"> = {
+  modalidade: "o", tipologia: "o", bairro: "o", cidade: "a", logradouro: "a", numero: "o", nomeEdificio: "o",
+  area: "a", quartos: "os", suites: "as", banheiros: "os", vagas: "as", andar: "o", anoConstrucao: "o",
+  preco: "o", condominio: "o", iptu: "o", seguroIncendio: "o", taxaServico: "a", totalInformado: "o",
+};
+
+/**
+ * Nome dos campos que `rotuloDoCampo` (src/dados/anomalias.ts, do arquiteto) ainda não conhece e que, por isso, devolve
+ * com o nome interno ("anoConstrucao"). Só vale quando o rótulo do arquiteto é igual à chave.
+ */
+const ROTULO_QUE_FALTA: Partial<Record<ChaveDeCampo, string>> = {
+  tipologia: "tipo de imóvel",
+  cidade: "cidade",
+  anoConstrucao: "ano de construção",
+};
+
+/** "A área difere entre o link e o texto do anúncio.": o rótulo da pessoa, nunca o nome interno do campo. */
+function mensagemDeIncoerencia(campo: ChaveDeCampo, origens: ReadonlySet<"link" | "texto">): string {
+  const rotulo = rotuloDoCampo(campo);
+  const nome = rotulo === campo ? (ROTULO_QUE_FALTA[campo] ?? rotulo) : rotulo;
+  const texto = nome === nome.toUpperCase() ? nome : nome.charAt(0).toLowerCase() + nome.slice(1);
+  const artigo = ARTIGO_DO_CAMPO[campo];
+  const sujeito = `${artigo} ${texto}`;
+  const verbo = artigo === "os" || artigo === "as" ? "diferem" : "difere";
+  // Onde os valores diferentes foram lidos, como a pessoa os conhece: o link e o texto (o JSON-LD conta como texto).
+  const entre =
+    origens.has("link") && origens.has("texto")
+      ? "entre o link e o texto do anúncio"
+      : origens.has("link")
+        ? "entre duas leituras do link do anúncio"
+        : "entre duas leituras do texto do anúncio";
+  return `${sujeito.charAt(0).toUpperCase()}${sujeito.slice(1)} ${verbo} ${entre}.`;
 }
 
 export function montarExtracao(
@@ -136,7 +172,7 @@ export function montarExtracao(
   // "Dois valores não nulos diferentes geram anomalia incoerente no campo (área: diferença > 1 m²)."
   const todasAsChaves = [...CAMPOS_IDENTIFICACAO, ...CAMPOS_NUMERICOS_E_CUSTO];
   for (const chave of todasAsChaves) {
-    const valoresNaoNulos: { valor: any; metodo: string }[] = [];
+    const valoresNaoNulos: { valor: any; metodo: "url" | "texto" | "json_ld" }[] = [];
     for (const l of ordenadas) {
       const val = (l.campos as any)[chave];
       if (val !== null && val !== undefined) {
@@ -174,11 +210,12 @@ export function montarExtracao(
         if (incoerente) {
           const ultimoItem = valoresNaoNulos[valoresNaoNulos.length - 1];
           const valorLido = textoDoValorLido(chave, ultimoItem ? ultimoItem.valor : "");
+          const origens = new Set(valoresNaoNulos.map((v) => paraOrigem(v.metodo)));
           anomalias.push({
             campo: chave,
             tipo: "incoerente",
             valorLido,
-            mensagem: `O valor de ${chave} difere entre as fontes lidas.`,
+            mensagem: mensagemDeIncoerencia(chave, origens),
           });
         }
       }
@@ -197,7 +234,7 @@ export function montarExtracao(
           campo,
           tipo: "nao_informado",
           valorLido: textoOriginal,
-          mensagem: `O anúncio informa "${textoOriginal}" para ${campo}.`,
+          mensagem: `${rotuloDoCampo(campo) === campo ? (ROTULO_QUE_FALTA[campo] ?? campo) : rotuloDoCampo(campo)}: o anúncio diz "${textoOriginal}".`,
         });
       }
     }

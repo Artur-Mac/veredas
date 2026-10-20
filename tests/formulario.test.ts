@@ -20,6 +20,7 @@ import {
   type LeituraParcial,
 } from "../src/dados/contratos";
 import { tituloDaAnomalia } from "../src/dados/anomalias";
+import { derivarDossie } from "../src/dados/dossie/derivar";
 import { custoMensal } from "../src/dados/custos";
 import { extrairDaUrl } from "../src/dados/extrator/url";
 import { extrairDoTexto } from "../src/dados/extrator/texto";
@@ -1969,21 +1970,30 @@ describe("anomalias pendentes depois de salvar (H5b)", () => {
     expect(pendentes(comCondominio, formularioDeExtracao(comCondominio), "compra")).toEqual(["condominio:valor_simbolico"]);
   });
 
-  it("no cartão do Explorar a faixa de diagnóstico segue a mesma regra", () => {
+  it("no cartão do Explorar a faixa de diagnóstico segue o achado principal do dossiê, não a anomalia da leitura (T3)", async () => {
     const aluguel = extracaoDeCampos({ modalidade: "aluguel", preco: 50, condominio: 1190 });
     const analise = analiseDe(formularioDeExtracao(aluguel), aluguel);
-    const faixa = (a: AnaliseV2) => {
+    const faixa = async (a: AnaliseV2) => {
       mockLista = [a];
       let arvore!: TestRenderer.ReactTestRenderer;
       act(() => {
         arvore = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(Explorar)));
       });
+      // O cartão lê o cadastro e deriva o dossiê depois da primeira pintura.
+      await act(async () => {
+        await new Promise((r) => setTimeout(r, 30));
+      });
       mockLista = [];
       return arvore.root.findAllByType(Text).map((t) => [t.props.children].flat(3).join(""));
     };
     const titulo = tituloDaAnomalia({ campo: "preco", tipo: "valor_simbolico" });
-    expect(faixa({ ...analise, id: "cartao-aluguel" })).toContain(titulo);
-    expect(faixa({ ...analise, modalidade: "compra", id: "cartao-compra" })).not.toContain(titulo);
+    for (const a of [{ ...analise, id: "cartao-aluguel" }, { ...analise, modalidade: "compra" as const, id: "cartao-compra" }]) {
+      // Fora do Recife: sem edifício, contexto nem obras, como `carregarCadastro` monta para o dossiê.
+      const principal = derivarDossie(a, null, null, [], [], new Date()).achados.principal?.titulo ?? null;
+      const textos = await faixa(a);
+      expect(textos).not.toContain(titulo);
+      if (principal !== null) expect(textos).toContain(principal);
+    }
   });
 });
 
@@ -2287,5 +2297,123 @@ describe("tela de leitura: checklist 'Preço e custos' (H6)", () => {
     const rotulo = linhaDePreco(arvore);
     expect(rotulo).toBe("Preço e custos: Cond. R$ 1.190/mês. Não lido");
     expect(rotulo).not.toContain("4.500");
+  });
+});
+
+// ——— P2: área com anomalia nasce a confirmar ———————————————————————————————————————————————
+
+describe("área com anomalia nasce a confirmar (P2)", () => {
+  /** Link e texto trazem valores diferentes para o campo: a leitura registra anomalia `incoerente` nele. */
+  const incoerenteEm = (campo: "area" | "quartos" | "suites" | "banheiros" | "vagas" | "andar", doLink: number, doTexto: number) =>
+    montarExtracao(
+      "",
+      [leituraDe("url", { [campo]: doLink }), leituraDe("texto", { [campo]: doTexto, preco: 4500, condominio: 1190 })],
+      AGORA,
+    );
+  const comAnomaliaNaArea = (tipo: "valor_atipico" | "nao_informado" | "periodo_desconhecido", area: number | null): ExtracaoAnuncio => {
+    const base = extracaoDeCampos({ preco: 4500, condominio: 1190, area });
+    return { ...base, anomalias: [...base.anomalias, { campo: "area", tipo, valorLido: area === null ? "Consulte" : String(area), mensagem: "Mensagem sintética." }] };
+  };
+  const pendentes = (ext: ExtracaoAnuncio, form: EstadoDoFormulario) =>
+    anomaliasPendentes(ext, declaradosDoFormulario(form), form.modalidade).map((a) => `${a.campo}:${a.tipo}`);
+
+  it("área incoerente entre o link e o texto nasce a confirmar, com o valor lido guardado e a origem da leitura", () => {
+    const ext = incoerenteEm("area", 100, 152);
+    expect(ext.anomalias).toContainEqual(expect.objectContaining({ campo: "area", tipo: "incoerente" }));
+    const form = formularioDeExtracao(ext);
+    expect(form).toMatchObject({ area: 152, areaAConfirmar: true, areaOrigem: "texto" });
+    const declarados = declaradosDoFormulario(form);
+    expect(declarados.area).toEqual({ valor: 152, origem: "texto", aConfirmar: true });
+    expect(esquemaDeclarados.safeParse(declarados).success).toBe(true);
+  });
+
+  it.each(["valor_atipico", "nao_informado", "periodo_desconhecido"] as const)("anomalia '%s' na área (incoerente ou outra) também liga a marca", (tipo) => {
+    const form = formularioDeExtracao(comAnomaliaNaArea(tipo, tipo === "nao_informado" ? null : 85));
+    expect(form.areaAConfirmar).toBe(true);
+    expect(declaradosDoFormulario(form).area.aConfirmar).toBe(true);
+  });
+
+  it("área sem anomalia não nasce a confirmar, nem com os custos a confirmar", () => {
+    const ext = extracaoDeCampos({ preco: 4500, condominio: 5, area: 85 });
+    expect(ext.anomalias.some((a) => a.campo === "condominio")).toBe(true);
+    const form = formularioDeExtracao(ext);
+    expect(form).toMatchObject({ area: 85, areaAConfirmar: false, condominioAConfirmar: true });
+    expect(declaradosDoFormulario(form).area.aConfirmar).toBe(false);
+  });
+
+  const OUTRAS_ESPECIFICACOES: ["quartos" | "suites" | "banheiros" | "vagas" | "andar", number, number][] = [
+    ["quartos", 2, 3],
+    ["suites", 1, 2],
+    ["banheiros", 1, 2],
+    ["vagas", 1, 2],
+    ["andar", 3, 5],
+  ];
+
+  it.each(OUTRAS_ESPECIFICACOES)("%s com anomalia continua com aConfirmar false, mas a anomalia aparece", (campo, doLink, doTexto) => {
+    const ext = incoerenteEm(campo, doLink, doTexto);
+    expect(ext.anomalias).toContainEqual(expect.objectContaining({ campo, tipo: "incoerente" }));
+    const form = formularioDeExtracao(ext);
+    const declarados = declaradosDoFormulario(form);
+    expect(declarados[campo]).toMatchObject({ valor: doTexto, aConfirmar: false });
+    expect(declarados.area.aConfirmar).toBe(false);
+    expect(pendentes(ext, form)).toEqual([`${campo}:incoerente`]);
+    expect(anomaliasDaRevisao(ext, form).map((a) => a.campo)).toEqual([campo]);
+    expect(primeiraAnomaliaPendente(analiseDe(form, ext))).toBe(tituloDaAnomalia({ campo, tipo: "incoerente" }));
+  });
+
+  it("a anomalia da área aparece enquanto o valor é o da leitura", () => {
+    const ext = incoerenteEm("area", 100, 152);
+    const form = formularioDeExtracao(ext);
+    expect(pendentes(ext, form)).toEqual(["area:incoerente"]);
+    expect(anomaliasDaRevisao(ext, form).map((a) => a.campo)).toEqual(["area"]);
+    expect(primeiraAnomaliaPendente(analiseDe(form, ext))).toBe(tituloDaAnomalia({ campo: "area", tipo: "incoerente" }));
+  });
+
+  it("digitar outra área resolve: a marca desliga, a origem vira você e reler não a liga de novo", () => {
+    const ext = incoerenteEm("area", 100, 152);
+    const lido = formularioDeExtracao(ext);
+    const digitado = editarFormulario(lido, { area: 100 });
+    expect(digitado).toMatchObject({ area: 100, areaOrigem: "voce", areaAConfirmar: false });
+    expect(digitado.editados).toEqual({ area: true, areaAConfirmar: true });
+    expect(declaradosDoFormulario(digitado).area).toEqual({ valor: 100, origem: "voce", aConfirmar: false });
+    expect(pendentes(ext, digitado)).toEqual([]);
+    expect(primeiraAnomaliaPendente(analiseDe(digitado, ext))).toBeNull();
+    // O formulário anterior não foi mexido.
+    expect(lido).toMatchObject({ area: 152, areaAConfirmar: true });
+    // Nova leitura com a mesma anomalia: a área e a marca ficam como a pessoa deixou.
+    expect(formularioDeExtracao(ext, digitado)).toMatchObject({ area: 100, areaOrigem: "voce", areaAConfirmar: false });
+  });
+
+  it("digitar a mesma área não resolve; a marca explícita, na mesma mudança ou sozinha, vale", () => {
+    const ext = incoerenteEm("area", 100, 152);
+    const lido = formularioDeExtracao(ext);
+    expect(editarFormulario(lido, { area: 152 }).areaAConfirmar).toBe(true);
+    expect(editarFormulario(lido, { area: 100, areaAConfirmar: true }).areaAConfirmar).toBe(true);
+    const aceita = editarFormulario(lido, { areaAConfirmar: false });
+    expect(aceita).toMatchObject({ area: 152, areaOrigem: "texto", areaAConfirmar: false });
+    expect(aceita.editados).toEqual({ areaAConfirmar: true });
+    expect(formularioDeExtracao(ext, aceita).areaAConfirmar).toBe(false);
+  });
+
+  it("reler mantém ligada a marca que a leitura ligou, mesmo quando a nova leitura não tem anomalia na área", () => {
+    const lido = formularioDeExtracao(incoerenteEm("area", 100, 152));
+    const semAnomalia = extracaoDeCampos({ preco: 4500, condominio: 1190, area: 152 });
+    expect(semAnomalia.anomalias.some((a) => a.campo === "area")).toBe(false);
+    expect(formularioDeExtracao(semAnomalia, lido)).toMatchObject({ area: 152, areaAConfirmar: true });
+  });
+
+  it("a marca vai para a análise salva e volta ao reabrir; a área a confirmar não entra no preço por m²", () => {
+    const ext = incoerenteEm("area", 100, 152);
+    const form = formularioDeExtracao(ext);
+    const salva = esquemaAnaliseV2.parse({ ...analiseDe(form, ext), ...camposDaAnalise(form) });
+    expect(salva.declarados.area).toEqual({ valor: 152, origem: "texto", aConfirmar: true });
+    expect(formularioDeAnalise(salva)).toMatchObject({ area: 152, areaAConfirmar: true, areaOrigem: "texto" });
+    expect(custoMensal(salva).principal).toMatchObject({ valor: 4500, porM2: null });
+    expect(formularioVazio().areaAConfirmar).toBe(false);
+  });
+
+  it("formulário sem o campo (estado antigo) vale como área não marcada, nunca como valor indefinido", () => {
+    const antigo = { ...formularioVazio(), area: 80, areaAConfirmar: undefined as never };
+    expect(declaradosDoFormulario(antigo).area.aConfirmar).toBe(false);
   });
 });

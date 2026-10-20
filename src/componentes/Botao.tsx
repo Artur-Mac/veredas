@@ -116,10 +116,14 @@ export function Botao({
   );
 }
 
+/** Menor área de toque aceita: 44 × 44 px (o padrão do app é `TOQUE_MINIMO`). */
+const TOQUE_ABSOLUTO = 44;
+
 type PropsDoLink = {
   rotulo: string;
   onPress: () => void;
   tipo?: "corpo" | "apoio";
+  /** Altura da área de toque. Valores abaixo de 44 sobem para 44: a web ignora `hitSlop`, então a área desenhada é a que vale. */
   altura?: number;
   acessivel?: string;
 };
@@ -130,7 +134,13 @@ export function LinkDeLinha({ rotulo, onPress, tipo = "corpo", altura = TOQUE_MI
       onPress={onPress}
       accessibilityRole="link"
       accessibilityLabel={acessivel}
-      style={{ minHeight: altura, justifyContent: "center", alignSelf: "flex-start", borderRadius: RAIO.quadrado }}
+      style={{
+        minHeight: Math.max(altura, TOQUE_ABSOLUTO),
+        minWidth: TOQUE_ABSOLUTO,
+        justifyContent: "center",
+        alignSelf: "flex-start",
+        borderRadius: RAIO.quadrado,
+      }}
     >
       <Texto tipo={tipo} style={{ textDecorationLine: "underline" }}>
         {rotulo}
@@ -153,6 +163,7 @@ export function BotaoIcone({ icone, acessivel, onPress, pressionado }: PropsDoBo
       accessibilityRole="button"
       accessibilityLabel={acessivel}
       accessibilityState={pressionado === undefined ? undefined : { selected: pressionado }}
+      aria-pressed={pressionado}
       style={{
         width: TOQUE_MINIMO,
         height: TOQUE_MINIMO,

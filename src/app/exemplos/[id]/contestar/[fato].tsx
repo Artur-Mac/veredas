@@ -4,6 +4,7 @@ import { View } from "react-native";
 import { Botao } from "../../../../componentes/Botao";
 import { CaixaDeMarcar } from "../../../../componentes/Controles";
 import { Folha } from "../../../../componentes/Folha";
+import { ReguaDoItbiRetirada, reguaEDoItbi } from "../../../../componentes/fatos/Regua";
 import { LinhaDeValor, Valores } from "../../../../componentes/fatos/Valores";
 import { voltarOu } from "../../../../componentes/Tela";
 import { Texto } from "../../../../componentes/Texto";
@@ -35,6 +36,15 @@ export default function IssoEstaErrado() {
     if (secao) abrirSecao(dossie.id, secao.id);
     voltarOu(pai);
   };
+
+  // A régua do ITBI por m² saiu dos exemplos: o endereço direto dela não oferece contestar uma frase que não existe mais.
+  if ("regua" in fato && reguaEDoItbi(fato.regua)) {
+    return (
+      <Folha titulo="Isso está errado" pai={pai}>
+        <ReguaDoItbiRetirada />
+      </Folha>
+    );
+  }
 
   return (
     <Folha titulo="Isso está errado" pai={pai}>

@@ -1,11 +1,12 @@
 // Peças pequenas da aba Visita: `.vx-kicker`, `.vx-link`, `.vx-surface`, `.vx-segments`, `.vx-field` e a barra
 // `.vv-progress` de index.html (CSS 3045–3200). Só tokens de cor: dentro do painel de campo, sob `TemaEscuro`,
 // as mesmas peças saem escuras.
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { TextInput, View, type StyleProp, type TextInputProps, type ViewProps, type ViewStyle } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useTema } from "../../tema/Tema";
 import { ESPACO, RAIO, TOQUE_MINIMO, comAlfa, type TokenDeCor } from "../../tema/tokens";
+import { useFocoDoCampo } from "../casca/foco";
 import { abaPorTecla, focarElemento, teclaDoEvento, type EventoDeTecla } from "../dossie-v1/teclado";
 import { Icone } from "../Icone";
 import type { NomeIcone } from "../icones";
@@ -216,7 +217,8 @@ type PropsDoCampo = Omit<TextInputProps, "style" | "multiline" | "numberOfLines"
 /** `.vx-field`: rótulo 12/600 e campo de 14 px com a fonte da marca; o foco acende a borda cadastral. */
 export function CampoDeTexto({ rotulo, linhas = 1, onFocus, onBlur, ...resto }: PropsDoCampo) {
   const { cor } = useTema();
-  const [foco, setFoco] = useState(false);
+  // Foco: borda de 2 px em azul cadastral (o contorno do navegador está zerado em `input`).
+  const foco = useFocoDoCampo();
   const altura = linhas > 1 ? linhas * 22 + 22 : TOQUE_MINIMO;
   return (
     <View style={{ gap: 7 }}>
@@ -231,28 +233,30 @@ export function CampoDeTexto({ rotulo, linhas = 1, onFocus, onBlur, ...resto }: 
         placeholderTextColor={cor("cor-texto-apoio")}
         {...resto}
         onFocus={(e) => {
-          setFoco(true);
+          foco.aoFocar();
           onFocus?.(e);
         }}
         onBlur={(e) => {
-          setFoco(false);
+          foco.aoDesfocar();
           onBlur?.(e);
         }}
-        style={{
-          minHeight: altura,
-          paddingVertical: 11,
-          paddingHorizontal: 11,
-          borderRadius: RAIO.quadrado,
-          borderWidth: 1,
-          borderColor: foco ? cor("cor-azul-cadastral") : cor("cor-linha-forte"),
-          backgroundColor: cor("cor-papel-claro"),
-          boxShadow: foco ? `0 0 0 2px ${comAlfa(cor("cor-azul-cadastral"), 0.35)}` : undefined,
-          color: cor("cor-texto"),
-          fontFamily: "PlusJakartaSans",
-          fontSize: 14,
-          lineHeight: 22,
-          outlineWidth: 0,
-        }}
+        style={[
+          {
+            minHeight: altura,
+            paddingVertical: 11,
+            paddingHorizontal: 11,
+            borderRadius: RAIO.quadrado,
+            borderWidth: 1,
+            borderColor: cor("cor-linha-forte"),
+            backgroundColor: cor("cor-papel-claro"),
+            color: cor("cor-texto"),
+            fontFamily: "PlusJakartaSans",
+            fontSize: 14,
+            lineHeight: 22,
+            outlineWidth: 0,
+          },
+          foco.estilo,
+        ]}
       />
     </View>
   );

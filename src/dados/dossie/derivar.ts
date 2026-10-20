@@ -90,7 +90,11 @@ function quartisDe(valores: number[]): Quartis | null {
   return { n: v.length, p25: arredondar(em(0.25)), mediana: arredondar(em(0.5)), p75: arredondar(em(0.75)) };
 }
 
-/** Valor declarado que entra em conta: ausente ou "a confirmar" não entra. */
+/**
+ * Valor declarado que entra em conta: ausente ou "a confirmar" não entra. Vale também para a área: com `aConfirmar` ela
+ * não serve para casar tipologia (nem IPTU por tipologia, nem "Área não confere", nem "Área das unidades mais parecidas");
+ * quem aparece é o achado da anomalia da área.
+ */
 function conhecido(d: { valor: number | null; aConfirmar: boolean }): number | null {
   return d.aConfirmar ? null : d.valor;
 }
@@ -297,6 +301,72 @@ function descricaoDaAnomalia(a: AnaliseV2, campo: CampoDeCusto, anomalia: Anomal
   }
 }
 
+// ——— Anomalia da área ——————————————————————————————————————————————————————————————
+
+const ID_DA_PERGUNTA_DA_ANOMALIA_DE_AREA = "anomalia-area";
+
+/**
+ * Anomalia da leitura que deixa a área a confirmar. Só vale enquanto a área está marcada `aConfirmar`: o formulário a
+ * liga quando a leitura traz anomalia na área, e desliga quando a pessoa digita outro valor. Com a marca desligada a área
+ * entra em conta como qualquer outra e não há achado. Quando a leitura traz mais de uma anomalia, vale a primeira da
+ * precedência; sem nenhuma na lista, a primeira lida.
+ */
+function anomaliaDeArea(a: AnaliseV2): Anomalia | null {
+  const lidas = (a.extracao?.anomalias ?? []).filter((l) => l.campo === "area");
+  if (lidas.length === 0 || !a.declarados.area.aConfirmar) return null;
+  for (const tipo of PRECEDENCIA_DAS_ANOMALIAS) {
+    const achada = lidas.find((l) => l.tipo === tipo);
+    if (achada) return achada;
+  }
+  return lidas[0] ?? null;
+}
+
+type DescricaoDaAnomaliaDeArea = { pergunta: string; pista: string; texto: string; mensagem: string };
+
+function descricaoDaAnomaliaDeArea(a: AnaliseV2, anomalia: Anomalia): DescricaoDaAnomaliaDeArea {
+  // O valor que o anúncio traz, quando traz um: a área lida, mesmo a confirmar (ela só não entra em conta nenhuma).
+  const lida = a.declarados.area.valor ?? a.extracao?.campos.area ?? null;
+  const fora = "Fica fora da comparação com o cadastro e do preço por m² até você confirmar.";
+  switch (anomalia.tipo) {
+    case "incoerente":
+      return {
+        pergunta: lida !== null ? `Área de ${formatarArea(lida)} m² está certa?` : "Qual é a área do imóvel?",
+        pista: "Valores diferentes no anúncio",
+        texto: `O link e o texto colado trazem áreas diferentes. ${fora}`,
+        mensagem: "O anúncio traz áreas diferentes. Qual é a área privativa do imóvel?",
+      };
+    case "nao_informado":
+      return {
+        pergunta: "Qual é a área do imóvel?",
+        pista: "Não informado no anúncio",
+        texto: `O anúncio não informa a área. ${fora}`,
+        mensagem: "O anúncio não informa a área. Qual é a área privativa do imóvel?",
+      };
+    default:
+      return {
+        pergunta: lida !== null ? `Área de ${formatarArea(lida)} m² está certa?` : "Qual é a área do imóvel?",
+        pista: "Valor a confirmar",
+        texto: `O anúncio traz um valor de área que precisa de confirmação. ${fora}`,
+        mensagem: "Qual é a área privativa do imóvel?",
+      };
+  }
+}
+
+/** O título vem de `tituloDaAnomalia`, como o das anomalias de custo; só a pergunta e o texto são daqui. */
+function achadoDaAnomaliaDeArea(a: AnaliseV2, anomalia: Anomalia): Achado {
+  const d = descricaoDaAnomaliaDeArea(a, anomalia);
+  return {
+    id: "ach-anomalia-area",
+    tipo: "anomalia",
+    titulo: tituloDaAnomalia(anomalia),
+    medida: null,
+    texto: d.texto,
+    confianca: "declarado",
+    fonte: "anuncio",
+    perguntaId: ID_DA_PERGUNTA_DA_ANOMALIA_DE_AREA,
+  };
+}
+
 // ——— Achados ——————————————————————————————————————————————————————————————————————
 
 const ID_DA_PERGUNTA_DA_ANOMALIA: Record<CampoDeCusto, string> = { iptu: "anomalia-iptu", condominio: "anomalia-condominio" };
@@ -408,8 +478,10 @@ function achadosDe(
   iptuMensalDeclarado: number | null,
   posicao: Posicao | null,
 ): Achado[] {
+  const anomaliaDaArea = anomaliaDeArea(a);
   const lista: (Achado | null)[] = [
     ...anomalias.map((an) => achadoDaAnomalia(a, an)),
+    anomaliaDaArea ? achadoDaAnomaliaDeArea(a, anomaliaDaArea) : null,
     predio ? achadoDeIptu(a, predio, iptuMensalDeclarado) : null,
     predio ? achadoDeArea(a, predio) : null,
     predio ? achadoDeEstrutura(predio) : null,
@@ -511,6 +583,15 @@ function perguntasDe(
     lista.push({
       id: ID_DA_PERGUNTA_DA_ANOMALIA[campo], titulo, pista: descricao.pista,
       textoParaMensagem: descricao.mensagem, origem: "anomalia", prioridade: "custo",
+    });
+  }
+
+  const anomaliaDaArea = tem("ach-anomalia-area") ? anomaliaDeArea(a) : null;
+  if (anomaliaDaArea) {
+    const descricao = descricaoDaAnomaliaDeArea(a, anomaliaDaArea);
+    lista.push({
+      id: ID_DA_PERGUNTA_DA_ANOMALIA_DE_AREA, titulo: descricao.pergunta, pista: descricao.pista,
+      textoParaMensagem: descricao.mensagem, origem: "anomalia", prioridade: "documentos",
     });
   }
 

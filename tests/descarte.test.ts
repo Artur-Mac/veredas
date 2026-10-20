@@ -10,8 +10,11 @@ import {
   aplicarDescarte,
   creditarDescarteNaCarteira,
   dataLocal,
+  descarteDevolveuAConfirmacao,
+  descarteGeraCredito,
   descreverMovimento,
   extratoTemDescarte,
+  extratoTemDossie,
   normalizarObservacao,
   restaurarAnalise,
   rotuloDoMotivo,
@@ -46,6 +49,16 @@ function analise(id: string, mudancas: Partial<AnaliseV2> = {}): AnaliseV2 {
 const carteiraCom = (saldo: number, extrato: Carteira["extrato"] = []): Carteira => ({ saldo, extrato });
 const cota: Carteira["extrato"][number] = { em: INSTANTE, tipo: "cota_inicial", analiseId: null, delta: 3 };
 const descarteDe = (analiseId: string): Carteira["extrato"][number] => ({ em: INSTANTE, tipo: "descarte", analiseId, delta: 1 });
+/** A análise consumiu crédito: é o que dá direito ao +1 do descarte. */
+const dossieDe = (analiseId: string): Carteira["extrato"][number] => ({ em: INSTANTE, tipo: "dossie_cadastral", analiseId, delta: -1 });
+/** Análise com o prédio confirmado (o que custou o crédito) e já descartada. */
+const confirmadaEDescartada = (id: string): AnaliseV2 =>
+  aplicarDescarte(
+    analise(id, { vinculo: { estado: "confirmado", edificioId: "ed-1", dsqfl: null, confirmadoEm: INSTANTE, indiceGeradoEm: INSTANTE } }),
+    { motivo: "preco_taxas", observacao: "caro" },
+    [],
+    AGORA,
+  ).analise;
 
 describe("motivos de descarte", () => {
   it("são os quatro de index.html, uma chave de motivoDeDescarte para cada", () => {
@@ -63,7 +76,7 @@ describe("motivos de descarte", () => {
 describe("aplicarDescarte", () => {
   it("grava motivo, observação e instante, e uma análise válida", () => {
     const { analise: depois, creditar } = aplicarDescarte(
-      analise("a"), { motivo: "preco_taxas", observacao: "  Condomínio pesou.  " }, [cota], AGORA,
+      analise("a"), { motivo: "preco_taxas", observacao: "  Condomínio pesou.  " }, [dossieDe("a"), cota], AGORA,
     );
     expect(depois.descarte).toEqual({ motivo: "preco_taxas", observacao: "Condomínio pesou.", em: "2026-10-20T15:30:00.000Z" });
     expect(depois.atualizadaEm).toBe("2026-10-20T15:30:00.000Z");
@@ -93,17 +106,28 @@ describe("aplicarDescarte", () => {
     expect(cortada.length).toBeLessThanOrEqual(LIMITE_DA_OBSERVACAO);
   });
 
-  it("só cabe crédito quando o extrato ainda não tem o descarte daquela análise", () => {
+  it("só cabe crédito quando a análise consumiu crédito e o extrato ainda não tem o descarte dela", () => {
     const entrada = { motivo: "outro" as const, observacao: "" };
-    expect(aplicarDescarte(analise("a"), entrada, [cota], AGORA).creditar).toBe(true);
-    expect(aplicarDescarte(analise("a"), entrada, [descarteDe("a"), cota], AGORA).creditar).toBe(false);
-    // descarte de OUTRA análise não conta
-    expect(aplicarDescarte(analise("a"), entrada, [descarteDe("b"), cota], AGORA).creditar).toBe(true);
+    expect(aplicarDescarte(analise("a"), entrada, [dossieDe("a"), cota], AGORA).creditar).toBe(true);
+    expect(aplicarDescarte(analise("a"), entrada, [descarteDe("a"), dossieDe("a"), cota], AGORA).creditar).toBe(false);
+    // dossiê e descarte de OUTRA análise não contam para esta
+    expect(aplicarDescarte(analise("a"), entrada, [dossieDe("a"), descarteDe("b"), dossieDe("b"), cota], AGORA).creditar).toBe(true);
+    expect(aplicarDescarte(analise("a"), entrada, [descarteDe("b"), dossieDe("b"), cota], AGORA).creditar).toBe(false);
+  });
+
+  it("análise que nunca consumiu crédito é descartada normalmente, sem crédito", () => {
+    const entrada = { motivo: "outro" as const, observacao: "" };
+    for (const extrato of [[], [cota], [dossieDe("b"), cota]]) {
+      const r = aplicarDescarte(analise("a"), entrada, extrato, AGORA);
+      expect(r.creditar).toBe(false);
+      expect(r.analise.descarte).not.toBeNull();
+    }
   });
 
   it("análise já descartada volta como veio: o primeiro motivo e a primeira data ficam", () => {
-    const primeira = aplicarDescarte(analise("a"), { motivo: "preco_taxas", observacao: "um" }, [], AGORA).analise;
-    const depois = aplicarDescarte(primeira, { motivo: "outro", observacao: "dois" }, [], new Date("2026-10-21T00:00:00.000Z"));
+    const extrato = [dossieDe("a")];
+    const primeira = aplicarDescarte(analise("a"), { motivo: "preco_taxas", observacao: "um" }, extrato, AGORA).analise;
+    const depois = aplicarDescarte(primeira, { motivo: "outro", observacao: "dois" }, extrato, new Date("2026-10-21T00:00:00.000Z"));
     expect(depois.analise).toBe(primeira);
     expect(depois.analise.descarte?.motivo).toBe("preco_taxas");
     // o descarte já estava gravado, mas o crédito ainda não: a segunda tentativa pode creditar
@@ -124,36 +148,164 @@ describe("restaurarAnalise", () => {
   it("análise que não está descartada volta a mesma", () => {
     const a = analise("a");
     expect(restaurarAnalise(a, AGORA)).toBe(a);
+    // nem com o +1 no extrato: sem descarte gravado, não há o que restaurar
+    expect(restaurarAnalise(a, AGORA, [descarteDe("a"), dossieDe("a")])).toBe(a);
+  });
+
+  describe("o +1 do descarte devolveu a confirmação: o vínculo volta a pendente", () => {
+    const AMANHA = new Date("2026-10-21T09:00:00.000Z");
+
+    it("confirmado + descarte mais novo que o dossiê no extrato: vínculo pendente, descarte fora, o resto igual", () => {
+      const descartada = confirmadaEDescartada("a");
+      const volta = restaurarAnalise(descartada, AMANHA, [descarteDe("a"), dossieDe("a"), cota]);
+      expect(volta.vinculo).toEqual({ estado: "pendente" });
+      expect(volta.descarte).toBeNull();
+      expect(volta.atualizadaEm).toBe("2026-10-21T09:00:00.000Z");
+      expect({ ...volta, vinculo: descartada.vinculo, atualizadaEm: descartada.atualizadaEm, descarte: descartada.descarte }).toEqual(descartada);
+      expect(esquemaAnaliseV2.safeParse(volta).success).toBe(true);
+    });
+
+    it("sem o +1 no extrato (descarte sem crédito, ou crédito que ainda não saiu), o vínculo fica confirmado", () => {
+      const descartada = confirmadaEDescartada("a");
+      for (const extrato of [[], [cota], [dossieDe("a"), cota], [descarteDe("b"), dossieDe("b"), dossieDe("a")]]) {
+        expect(restaurarAnalise(descartada, AMANHA, extrato).vinculo).toEqual(descartada.vinculo);
+      }
+    });
+
+    it("se a pessoa pagou de novo depois do reembolso, a confirmação de agora não foi devolvida: o vínculo fica", () => {
+      const descartada = confirmadaEDescartada("a");
+      // do mais recente para o mais antigo: segundo dossiê, descarte (+1), primeiro dossiê
+      const extrato = [dossieDe("a"), descarteDe("a"), dossieDe("a"), cota];
+      expect(descarteDevolveuAConfirmacao(extrato, "a")).toBe(false);
+      expect(restaurarAnalise(descartada, AMANHA, extrato).vinculo).toEqual(descartada.vinculo);
+    });
+
+    it("só o vínculo confirmado é desfeito: pendente, pulado, não encontrado e fora de cobertura ficam como estão", () => {
+      const extrato = [descarteDe("a"), dossieDe("a"), cota];
+      const vinculos = [
+        { estado: "pendente" as const },
+        { estado: "pulado" as const, em: INSTANTE },
+        { estado: "nao_encontrado" as const, em: INSTANTE },
+        { estado: "fora_de_cobertura" as const },
+      ];
+      for (const vinculo of vinculos) {
+        const descartada = aplicarDescarte(analise("a", { vinculo }), { motivo: "outro", observacao: "" }, [], AGORA).analise;
+        const volta = restaurarAnalise(descartada, AMANHA, extrato);
+        expect(volta.vinculo).toEqual(vinculo);
+        expect(volta.descarte).toBeNull();
+      }
+    });
+
+    it("o descarte de outra análise não conta", () => {
+      const descartada = confirmadaEDescartada("a");
+      expect(restaurarAnalise(descartada, AMANHA, [descarteDe("b"), dossieDe("b"), dossieDe("a")]).vinculo).toEqual(descartada.vinculo);
+    });
+
+    it("sem o extrato, o vínculo fica como estava (quem restaura passa o extrato da carteira)", () => {
+      const descartada = confirmadaEDescartada("a");
+      expect(restaurarAnalise(descartada, AMANHA).vinculo).toEqual(descartada.vinculo);
+    });
+
+    it("não muda a análise recebida", () => {
+      const descartada = confirmadaEDescartada("a");
+      const antes = JSON.stringify(descartada);
+      restaurarAnalise(descartada, AMANHA, [descarteDe("a"), dossieDe("a")]);
+      expect(JSON.stringify(descartada)).toBe(antes);
+    });
+
+    it("descarteDevolveuAConfirmacao: precisa do descarte da análise, mais novo que o último dossiê dela", () => {
+      expect(descarteDevolveuAConfirmacao([descarteDe("a"), dossieDe("a")], "a")).toBe(true);
+      expect(descarteDevolveuAConfirmacao([dossieDe("a"), descarteDe("a"), dossieDe("a")], "a")).toBe(false);
+      expect(descarteDevolveuAConfirmacao([dossieDe("a")], "a")).toBe(false);
+      expect(descarteDevolveuAConfirmacao([], "a")).toBe(false);
+      expect(descarteDevolveuAConfirmacao([descarteDe("b"), dossieDe("a")], "a")).toBe(false);
+      // o dossiê dela já saiu no corte do extrato: o descarte é o mais recente
+      expect(descarteDevolveuAConfirmacao([descarteDe("a"), cota], "a")).toBe(true);
+    });
+  });
+
+  it("confirmar, descartar e restaurar não dá dossiê grátis: confirmar de novo custa 1 crédito, e só o primeiro descarte devolve", () => {
+    // Imita as telas: o Prédio só debita quando o vínculo ainda não está confirmado; o Descartar credita uma vez; os Salvos restauram.
+    let carteira = carteiraCom(3, [cota]);
+    let a = analise("a");
+    const confirmarPredio = () => {
+      if (a.vinculo.estado !== "confirmado") {
+        carteira = {
+          saldo: carteira.saldo - 1,
+          extrato: [{ em: INSTANTE, tipo: "dossie_cadastral", analiseId: "a", delta: -1 }, ...carteira.extrato],
+        };
+      }
+      a = { ...a, vinculo: { estado: "confirmado", edificioId: "ed-1", dsqfl: null, confirmadoEm: INSTANTE, indiceGeradoEm: INSTANTE } };
+    };
+    const descartar = () => {
+      const r = aplicarDescarte(a, { motivo: "outro", observacao: "" }, carteira.extrato, AGORA);
+      a = r.analise;
+      if (r.creditar) carteira = creditarDescarteNaCarteira(carteira, "a", AGORA);
+    };
+    const restaurar = () => {
+      a = restaurarAnalise(a, AGORA, carteira.extrato);
+    };
+
+    confirmarPredio();
+    expect(carteira.saldo).toBe(2);
+    descartar();
+    expect(carteira.saldo).toBe(3);
+    restaurar();
+    expect(a.vinculo).toEqual({ estado: "pendente" });
+    // o dossiê que a pessoa abre agora tem de ser pago: sem o -1 ela teria o dossiê de graça
+    confirmarPredio();
+    expect(carteira.saldo).toBe(2);
+    // segundo ciclo: o descarte não devolve de novo, e restaurar não pede um terceiro pagamento pelo mesmo dossiê
+    descartar();
+    expect(carteira.saldo).toBe(2);
+    restaurar();
+    expect(a.vinculo.estado).toBe("confirmado");
+    expect(a.descarte).toBeNull();
+    expect(carteira.extrato.filter((m) => m.tipo === "dossie_cadastral")).toHaveLength(2);
+    expect(carteira.extrato.filter((m) => m.tipo === "descarte")).toHaveLength(1);
   });
 });
 
 describe("creditarDescarteNaCarteira", () => {
-  it("credita +1 com uma linha 'descarte' no topo do extrato", () => {
-    const depois = creditarDescarteNaCarteira(carteiraCom(3, [cota]), "a", AGORA);
-    expect(depois.saldo).toBe(4);
+  it("credita +1 com uma linha 'descarte' no topo do extrato, para análise que consumiu crédito", () => {
+    const depois = creditarDescarteNaCarteira(carteiraCom(2, [dossieDe("a"), cota]), "a", AGORA);
+    expect(depois.saldo).toBe(3);
     expect(depois.extrato[0]).toEqual({ em: "2026-10-20T15:30:00.000Z", tipo: "descarte", analiseId: "a", delta: 1 });
-    expect(depois.extrato).toHaveLength(2);
+    expect(depois.extrato).toHaveLength(3);
     expect(esquemaCarteira.safeParse(depois).success).toBe(true);
   });
 
+  it("análise que nunca consumiu crédito não rende +1: a carteira volta a mesma", () => {
+    const sem = carteiraCom(3, [cota]);
+    expect(creditarDescarteNaCarteira(sem, "a", AGORA)).toBe(sem);
+    // o dossiê de OUTRA análise não vale para esta
+    const outra = carteiraCom(2, [dossieDe("b"), cota]);
+    expect(creditarDescarteNaCarteira(outra, "a", AGORA)).toBe(outra);
+    // recarga de teste e cota inicial não são consumo de crédito
+    const recarga = carteiraCom(6, [{ em: INSTANTE, tipo: "recarga_de_teste", analiseId: null, delta: 3 }, cota]);
+    expect(creditarDescarteNaCarteira(recarga, "a", AGORA)).toBe(recarga);
+  });
+
   it("descartar duas vezes a mesma análise credita uma vez", () => {
-    const uma = creditarDescarteNaCarteira(carteiraCom(3, [cota]), "a", AGORA);
+    const uma = creditarDescarteNaCarteira(carteiraCom(2, [dossieDe("a"), cota]), "a", AGORA);
     const duas = creditarDescarteNaCarteira(uma, "a", new Date("2026-10-21T00:00:00.000Z"));
     expect(duas).toBe(uma);
-    expect(duas.saldo).toBe(4);
+    expect(duas.saldo).toBe(3);
     expect(duas.extrato.filter((m) => m.tipo === "descarte")).toHaveLength(1);
   });
 
-  it("análises diferentes creditam uma vez cada", () => {
-    const a = creditarDescarteNaCarteira(carteiraCom(0), "a", AGORA);
+  it("análises diferentes creditam uma vez cada, cada uma com o seu dossiê", () => {
+    const a = creditarDescarteNaCarteira(carteiraCom(0, [dossieDe("b"), dossieDe("a")]), "a", AGORA);
     const b = creditarDescarteNaCarteira(a, "b", AGORA);
     expect(b.saldo).toBe(2);
     expect(extratoTemDescarte(b.extrato, "a")).toBe(true);
     expect(extratoTemDescarte(b.extrato, "c")).toBe(false);
+    // "c" nunca consumiu crédito
+    expect(creditarDescarteNaCarteira(b, "c", AGORA)).toBe(b);
   });
 
   it("descartar, restaurar e descartar de novo não credita outra vez", () => {
-    let carteira = carteiraCom(3, [cota]);
+    let carteira = carteiraCom(2, [dossieDe("a"), cota]);
     let a = analise("a");
     const descartar = () => {
       const r = aplicarDescarte(a, { motivo: "outro", observacao: "" }, carteira.extrato, AGORA);
@@ -162,11 +314,19 @@ describe("creditarDescarteNaCarteira", () => {
     };
     descartar();
     a = restaurarAnalise(a, AGORA);
-    expect(carteira.saldo).toBe(4);
+    expect(carteira.saldo).toBe(3);
     descartar();
     expect(a.descarte).not.toBeNull();
-    expect(carteira.saldo).toBe(4);
+    expect(carteira.saldo).toBe(3);
     expect(carteira.extrato.filter((m) => m.tipo === "descarte")).toHaveLength(1);
+  });
+
+  it("descarteGeraCredito e extratoTemDossie olham o extrato, por análise", () => {
+    expect(extratoTemDossie([dossieDe("a"), cota], "a")).toBe(true);
+    expect(extratoTemDossie([dossieDe("b"), descarteDe("a"), cota], "a")).toBe(false);
+    expect(descarteGeraCredito([dossieDe("a")], "a")).toBe(true);
+    expect(descarteGeraCredito([descarteDe("a"), dossieDe("a")], "a")).toBe(false);
+    expect(descarteGeraCredito([], "a")).toBe(false);
   });
 });
 
@@ -225,6 +385,11 @@ describe("creditarDescarte na carteira (provedor + armazenamento)", () => {
   it("descartar duas vezes a mesma análise credita uma vez, e o saldo gravado confere", async () => {
     await montar();
     expect(contexto.saldo).toBe(3);
+    // a análise consome 1 crédito ao confirmar o prédio; só então o descarte rende +1
+    await act(async () => {
+      await contexto.debitarDossie("a");
+    });
+    expect(contexto.saldo).toBe(2);
     let primeira = false;
     let segunda = true;
     await act(async () => {
@@ -235,43 +400,59 @@ describe("creditarDescarte na carteira (provedor + armazenamento)", () => {
     });
     expect(primeira).toBe(true);
     expect(segunda).toBe(false);
-    expect(contexto.saldo).toBe(4);
+    expect(contexto.saldo).toBe(3);
     expect(contexto.carteira.extrato.filter((m) => m.tipo === "descarte")).toHaveLength(1);
     const noDisco = await gravada();
-    expect(noDisco.saldo).toBe(4);
+    expect(noDisco.saldo).toBe(3);
     expect(noDisco.extrato.filter((m) => m.tipo === "descarte" && m.analiseId === "a")).toHaveLength(1);
   });
 
   it("dois toques quase juntos também creditam uma vez", async () => {
+    await AsyncStorage.setItem(CHAVE_CARTEIRA, JSON.stringify(carteiraCom(2, [dossieDe("a"), cota])));
     await montar();
     let resultados: boolean[] = [];
     await act(async () => {
       resultados = await Promise.all([contexto.creditarDescarte("a"), contexto.creditarDescarte("a")]);
     });
     expect(resultados.filter(Boolean)).toHaveLength(1);
-    expect(contexto.saldo).toBe(4);
+    expect(contexto.saldo).toBe(3);
   });
 
-  it("outra análise credita normalmente", async () => {
+  it("outra análise credita normalmente, cada uma com o seu dossiê", async () => {
+    await AsyncStorage.setItem(CHAVE_CARTEIRA, JSON.stringify(carteiraCom(1, [dossieDe("b"), dossieDe("a"), cota])));
     await montar();
     await act(async () => {
       await contexto.creditarDescarte("a");
       await contexto.creditarDescarte("b");
     });
-    expect(contexto.saldo).toBe(5);
+    expect(contexto.saldo).toBe(3);
+  });
+
+  it("análise sem dossiê no extrato não credita pelo provedor e não grava nada", async () => {
+    await AsyncStorage.setItem(CHAVE_CARTEIRA, JSON.stringify(carteiraCom(3, [cota])));
+    await montar();
+    const antes = await AsyncStorage.getItem(CHAVE_CARTEIRA);
+    let creditou = true;
+    await act(async () => {
+      creditou = await contexto.creditarDescarte("a");
+    });
+    expect(creditou).toBe(false);
+    expect(contexto.saldo).toBe(3);
+    expect(await AsyncStorage.getItem(CHAVE_CARTEIRA)).toBe(antes);
   });
 
   it("uma alteração pedida antes da leitura não apaga a carteira guardada", async () => {
     await AsyncStorage.setItem(
       CHAVE_CARTEIRA,
-      JSON.stringify(carteiraCom(7, [{ em: INSTANTE, tipo: "recarga_de_teste", analiseId: null, delta: 3 }])),
+      JSON.stringify(carteiraCom(7, [dossieDe("a"), { em: INSTANTE, tipo: "recarga_de_teste", analiseId: null, delta: 3 }])),
     );
     let creditou = false;
     act(() => {
       TestRenderer.create(arvoreDaCarteira());
     });
-    // a leitura do disco ainda não terminou aqui: `contexto` mostra o saldo inicial de mentira
-    expect(contexto.saldo).toBe(3);
+    // a leitura do disco ainda não terminou aqui: `contexto` não mostra saldo nenhum (nem um inicial de mentira)
+    expect(contexto.pronto).toBe(false);
+    expect(contexto.saldo).toBe(0);
     await act(async () => {
       creditou = await contexto.creditarDescarte("a");
     });

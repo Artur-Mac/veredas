@@ -6,9 +6,10 @@ import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { useAviso } from "../../componentes/casca/Aviso";
+import { FaixaDoCaderno } from "../../componentes/casca/FaixaDoCaderno";
 import { detalheDoImovel, textoDePendentes } from "../../componentes/comparar/comparar";
 import { useAbrirAnalise, usePrepararVisita } from "../../componentes/comparar/navegacao";
-import { BotaoVx, CabecalhoVx, LinkVx, PaginaVx, SegmentosVx, VazioVx } from "../../componentes/comparar/vx";
+import { BotaoVx, CabecalhoVx, LinkVx, MARGEM_DA_PAGINA_VX, PaginaVx, SegmentosVx, VazioVx } from "../../componentes/comparar/vx";
 import { GavetaDeDescarte } from "../../componentes/descarte/GavetaDeDescarte";
 import { GradeArquitetonica } from "../../componentes/GradeArquitetonica";
 import { Icone } from "../../componentes/Icone";
@@ -19,6 +20,7 @@ import { custoMensal } from "../../dados/custos";
 import { restaurarAnalise, rotuloDoMotivo } from "../../dados/descarte";
 import { formatarData, formatarReais, hojeIso } from "../../dados/formatos";
 import { useAnalises } from "../../estado/Analises";
+import { useCarteira } from "../../estado/Carteira";
 import { useTema } from "../../tema/Tema";
 import { RAIO, comAlfa } from "../../tema/tokens";
 
@@ -169,6 +171,7 @@ export default function Salvos() {
   const { cor } = useTema();
   const { lista, pronto, erro, ativa, salvar, definirAtiva } = useAnalises();
   const { mostrarAviso } = useAviso();
+  const { carteira, pronto: carteiraPronta, bloqueada: carteiraBloqueada } = useCarteira();
   const abrirAnalise = useAbrirAnalise();
   const prepararVisita = usePrepararVisita();
   const [filtro, setFiltro] = useState<Filtro>("todos");
@@ -190,10 +193,25 @@ export default function Salvos() {
     }
   };
 
+  // C2: com o extrato, restaurar desfaz a confirmação que o +1 do descarte devolveu (confirmar de novo custa 1 crédito).
+  // Sem a carteira lida, o extrato exposto é vazio e o vínculo ficaria confirmado de graça: não restaura.
+  const restaurar = (a: AnaliseV2) => {
+    if (!carteiraPronta || carteiraBloqueada) {
+      mostrarAviso("Não deu para restaurar agora: a carteira de créditos não abriu. Recarregue o app.");
+      return;
+    }
+    const restaurada = restaurarAnalise(a, new Date(), carteira.extrato);
+    const pedeConfirmar = restaurada.vinculo.estado !== a.vinculo.estado;
+    void gravar(restaurada, pedeConfirmar ? "Imóvel restaurado. Confirme o prédio de novo para abrir o dossiê." : "Imóvel restaurado");
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: cor("cor-fundo") }}>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 32 }} keyboardShouldPersistTaps="handled">
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: MARGEM_DA_PAGINA_VX, paddingBottom: 32 }} keyboardShouldPersistTaps="handled">
         <PaginaVx>
+          {/* Aviso do caderno (análises guardadas à parte): fica na tela, além do toast da abertura. */}
+          <FaixaDoCaderno style={{ marginBottom: 14 }} />
+
           <CabecalhoVx
             sobretitulo="Sua seleção"
             link={{ rotulo: "Comparar", onPress: () => router.push("/comparar") }}
@@ -257,7 +275,7 @@ export default function Salvos() {
                 <CartaoDescartado
                   key={a.id}
                   analise={a}
-                  aoRestaurar={() => void gravar(restaurarAnalise(a, new Date()), "Imóvel restaurado")}
+                  aoRestaurar={() => restaurar(a)}
                 />
               ))}
             </View>

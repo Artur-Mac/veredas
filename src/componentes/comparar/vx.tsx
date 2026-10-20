@@ -7,13 +7,20 @@ import Svg, { Path } from "react-native-svg";
 import { useTema } from "../../tema/Tema";
 import { RAIO, comAlfa, type TokenDeCor } from "../../tema/tokens";
 import { Botao } from "../Botao";
+import { Coluna } from "../casca/Coluna";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 
-/** `.vx-page`: coluna de até 780 px, centrada. */
+/**
+ * `.vx-page`: a coluna do app (720 px no desktop), centrada. As margens laterais de 16 px ficam na rolagem da tela
+ * (`MARGEM_DA_PAGINA_VX`), fora da coluna, para os cartões terem a mesma largura das demais telas.
+ */
 export function PaginaVx({ children }: { children: ReactNode }) {
-  return <View style={{ width: "100%", maxWidth: 780, alignSelf: "center", paddingHorizontal: 16, paddingTop: 12, paddingBottom: 22 }}>{children}</View>;
+  return <Coluna style={{ paddingTop: 12, paddingBottom: 22 }}>{children}</Coluna>;
 }
+
+/** Margem lateral que a rolagem de Comparar e de Salvos dá à `PaginaVx`. */
+export const MARGEM_DA_PAGINA_VX = 16;
 
 export function SetaVx({ cor = "cor-barro-texto", tamanho = 14 }: { cor?: TokenDeCor; tamanho?: number }) {
   const { cor: corDe } = useTema();

@@ -3,6 +3,7 @@ import { useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { Cartao, CorpoDoCartao } from "../../componentes/Cartao";
+import { Coluna } from "../../componentes/casca/Coluna";
 import { BuscaDePredio } from "../../componentes/predio/BuscaDePredio";
 import { CaixaDoPredio } from "../../componentes/predio/CaixaDoPredio";
 import { GavetaSemCreditos } from "../../componentes/predio/GavetaSemCreditos";
@@ -18,8 +19,7 @@ import { edificiosDoBairro, indiceDoBairro } from "../../dados/recife/indice";
 import { useAnalises } from "../../estado/Analises";
 import { useCarteira } from "../../estado/Carteira";
 import { useTema } from "../../tema/Tema";
-
-const AZUL_CADASTRAL = "#2E5A85";
+import { comAlfa } from "../../tema/tokens";
 
 export default function TelaPredio() {
   const parametros = useLocalSearchParams<{ id?: string | string[] }>();
@@ -47,7 +47,7 @@ export default function TelaPredio() {
   return (
     <Tela comAbas>
       <ScrollView contentContainerStyle={styles.rolagem} keyboardShouldPersistTaps="handled">
-        <View style={styles.coluna}>
+        <Coluna>
           {!pronto ? (
             <Texto tipo="apoio" cor="cor-texto-apoio">
               Abrindo suas análises…
@@ -60,9 +60,10 @@ export default function TelaPredio() {
               texto="O Vereda confirma o prédio em Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena."
             />
           ) : (
-            <ConfirmarPredio analise={analise} bairro={analise.bairro} aoFaltarCredito={() => setGavetaAberta(true)} />
+            // `key`: a tela fica montada entre uma análise e outra; o prédio escolhido na anterior não vale para esta.
+            <ConfirmarPredio key={analise.id} analise={analise} bairro={analise.bairro} aoFaltarCredito={() => setGavetaAberta(true)} />
           )}
-        </View>
+        </Coluna>
       </ScrollView>
       <GavetaSemCreditos
         visivel={gavetaAberta}
@@ -77,8 +78,9 @@ export default function TelaPredio() {
 }
 
 function CartaoDeAviso({ titulo, texto }: { titulo: string; texto: string }) {
+  const { cor } = useTema();
   return (
-    <Cartao style={styles.cartao}>
+    <Cartao style={[styles.cartao, { borderColor: comAlfa(cor("cor-texto"), 0.09) }]}>
       <CorpoDoCartao style={styles.corpo}>
         <Texto tipo="secao">{titulo}</Texto>
         <Texto tipo="apoio" cor="cor-texto-apoio">
@@ -92,16 +94,17 @@ function CartaoDeAviso({ titulo, texto }: { titulo: string; texto: string }) {
 
 /** Sobretítulo azul com o traço de "registro oficial" de index.html (.conf-trace.oficial) e a chave cadastral. */
 function SobretituloCadastral({ chave }: { chave: string | null }) {
+  const { cor } = useTema();
   return (
     <View style={styles.sobretitulo}>
       <View style={styles.rastro} accessibilityLabel="Cadastro imobiliário · Prefeitura do Recife">
-        <View style={styles.linhaDoRastro} />
-        <Texto tipo="apoio" style={styles.textoDoRastro}>
+        <View style={[styles.linhaDoRastro, { backgroundColor: cor("cor-azul-cadastral") }]} />
+        <Texto tipo="apoio" cor="cor-azul-cadastral" style={styles.textoDoRastro}>
           Cadastro imobiliário · Prefeitura do Recife
         </Texto>
       </View>
       {chave ? (
-        <Texto tipo="etiqueta" accessibilityLabel={`Chave cadastral ${chave}`} style={styles.chave}>
+        <Texto tipo="etiqueta" cor="cor-azul-cadastral" accessibilityLabel={`Chave cadastral ${chave}`} style={styles.chave}>
           {chave}
         </Texto>
       ) : null}
@@ -109,13 +112,18 @@ function SobretituloCadastral({ chave }: { chave: string | null }) {
   );
 }
 
+/**
+ * Área "a confirmar" (a leitura trouxe anomalia) não serve de pista: ela sozinha dá 30 a 40 pontos a qualquer prédio com
+ * tipologia parecida e sugeriria um prédio (a confirmação custa 1 crédito) sem nenhum outro sinal do anúncio.
+ */
 function entradaDeBusca(analise: AnaliseV2, bairro: SlugCoberto): EntradaDeBusca {
+  const area = analise.declarados.area;
   return {
     bairro,
     logradouro: analise.logradouro,
     numero: analise.numero,
     nomeEdificio: analise.nomeEdificio,
-    area: analise.declarados.area.valor,
+    area: area.aConfirmar ? null : area.valor,
     andar: analise.declarados.andar.valor,
     anoConstrucao: analise.extracao?.campos.anoConstrucao ?? null,
   };
@@ -126,7 +134,7 @@ type PropsDaConfirmacao = { analise: AnaliseV2; bairro: SlugCoberto; aoFaltarCre
 function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmacao) {
   const { cor } = useTema();
   const { salvar } = useAnalises();
-  const { saldo, debitarDossie } = useCarteira();
+  const { saldo, debitarDossie, bloqueada: carteiraBloqueada, erro: erroDaCarteira } = useCarteira();
 
   /** Prédio que a pessoa escolheu (vizinho, busca ou mapa). null = o primeiro da lista. */
   const [escolhidoId, setEscolhidoId] = useState<string | null>(null);
@@ -177,6 +185,7 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
   const nomeDoBairro = bairroPorSlug(bairro)?.nome ?? analise.bairroTexto;
 
   const abrirDossie = () => router.push({ pathname: "/dossie", params: { id: analise.id } });
+  const estiloDoCartao = [styles.cartao, { borderColor: comAlfa(cor("cor-texto"), 0.09) }];
 
   const escolher = (edificio: Edificio) => {
     setErro("");
@@ -203,6 +212,10 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
 
   const confirmar = async (edificio: Edificio) => {
     if (ocupado.current) return;
+    if (!jaConfirmado && carteiraBloqueada) {
+      setErro(erroDaCarteira);
+      return;
+    }
     if (!jaConfirmado && saldo <= 0) {
       aoFaltarCredito();
       return;
@@ -267,7 +280,7 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
   };
 
   const textoDeErro = erro ? (
-    <Texto tipo="apoio" style={{ color: cor("cor-barro") }} accessibilityLiveRegion="polite">
+    <Texto tipo="apoio" cor="cor-barro-texto" accessibilityLiveRegion="polite">
       {erro}
     </Texto>
   ) : null;
@@ -275,7 +288,7 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
   // Sem prédio para mostrar: índice ilegível, ou nenhum candidato e nada escolhido na busca.
   if (!atual) {
     return (
-      <Cartao style={styles.cartao}>
+      <Cartao style={estiloDoCartao}>
         <CorpoDoCartao style={styles.corpo}>
           <SobretituloCadastral chave={null} />
           {problema ? (
@@ -315,7 +328,7 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
   const chave = formatarChaveCadastral(atual.dsqfl);
 
   return (
-    <Cartao style={styles.cartao}>
+    <Cartao style={estiloDoCartao}>
       <CorpoDoCartao style={styles.corpo}>
         <SobretituloCadastral chave={chave} />
         <Texto tipo="titulo-tela" role="heading" style={styles.titulo}>
@@ -324,7 +337,7 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
         <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.paragrafo}>
           Confirmar o prédio garante que IPTU, ITBI e obras sejam deste edifício.
           {jaConfirmado ? null : (
-            <Texto tipo="apoio" style={[styles.paragrafo, { color: cor("cor-barro"), fontWeight: "700" }]}>
+            <Texto tipo="apoio" cor="cor-barro-texto" style={[styles.paragrafo, { fontWeight: "700" }]}>
               {" Usa 1 crédito."}
             </Texto>
           )}
@@ -375,14 +388,14 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
 }
 
 const styles = StyleSheet.create({
-  rolagem: { padding: 16, paddingBottom: 48, alignItems: "center" },
-  coluna: { width: "100%", maxWidth: 560 },
+  // As margens laterais ficam na rolagem; a coluna (720 px no desktop, como as demais telas) vem dentro delas.
+  rolagem: { padding: 16, paddingBottom: 48 },
+  // A cor da borda (`cor-texto` a 9%) entra pelo tema, em cada uso.
   cartao: {
     marginHorizontal: 0,
     marginBottom: 16,
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: "rgba(23, 23, 23, 0.09)",
   },
   corpo: { paddingVertical: 16, paddingHorizontal: 15, gap: 12 },
   sobretitulo: {
@@ -394,10 +407,9 @@ const styles = StyleSheet.create({
     rowGap: 4,
   },
   rastro: { flexDirection: "row", alignItems: "center", gap: 6, flexShrink: 1 },
-  linhaDoRastro: { width: 16, height: 2, backgroundColor: AZUL_CADASTRAL },
-  textoDoRastro: { color: AZUL_CADASTRAL, fontSize: 11, lineHeight: 13, fontWeight: "500", flexShrink: 1 },
+  linhaDoRastro: { width: 16, height: 2 },
+  textoDoRastro: { fontSize: 11, lineHeight: 13, fontWeight: "500", flexShrink: 1 },
   chave: {
-    color: AZUL_CADASTRAL,
     fontFamily: "JetBrainsMono",
     fontSize: 11,
     lineHeight: 14,

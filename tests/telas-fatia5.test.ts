@@ -7,13 +7,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage/jest/async-s
 import { readdirSync, readFileSync } from "fs";
 import { router } from "expo-router";
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { Platform, StyleSheet, Text } from "react-native";
 import TestRenderer, { act, type ReactTestInstance } from "react-test-renderer";
 import { ProvedorDeAviso, useAviso } from "../src/componentes/casca/Aviso";
 import { CabecalhoDoApp, rotuloDeCreditos } from "../src/componentes/casca/CabecalhoDoApp";
 import { apagarDadosDoAparelho } from "../src/componentes/casca/apagarDados";
 import { DockInferior } from "../src/componentes/casca/DockInferior";
 import { ITENS_DO_MENU } from "../src/componentes/casca/MenuRapido";
+import { RESPIRO_NO_TOPO_DA_GAVETA } from "../src/componentes/casca/Gaveta";
 import { RastroDeConfianca } from "../src/componentes/fonte/RastroDeConfianca";
 import { GavetaDeDescarte } from "../src/componentes/descarte/GavetaDeDescarte";
 import {
@@ -23,14 +24,19 @@ import {
   esquemaCarteira,
   type AnaliseV2,
   type Carteira,
+  type Edificio,
 } from "../src/dados/contratos";
-import { edificiosDoBairro, META } from "../src/dados/recife/indice";
+import { derivarDossie } from "../src/dados/dossie/derivar";
+import { primeiraAnomaliaPendente } from "../src/dados/formulario";
+import { edificiosDoBairro, indiceDoBairro, META } from "../src/dados/recife/indice";
 import { AnalisesNoAparelho, useAnalises } from "../src/estado/Analises";
 import { CarteiraNoAparelho, useCarteira } from "../src/estado/Carteira";
 import { TemaDoApp } from "../src/tema/Tema";
 import { CORES_CLARO, comAlfa } from "../src/tema/tokens";
 import Raiz from "../src/app/_layout";
 import Comparar from "../src/app/(abas)/comparar";
+import Explorar from "../src/app/(abas)/index";
+import Predio from "../src/app/(abas)/predio";
 import Salvos from "../src/app/(abas)/salvos";
 import Creditos from "../src/app/creditos";
 import SobreOsDados from "../src/app/sobre-os-dados";
@@ -39,11 +45,14 @@ jest.mock("@react-native-async-storage/async-storage", () =>
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   require("@react-native-async-storage/async-storage/jest/async-storage-mock"),
 );
+jest.mock("expo-clipboard", () => ({ getStringAsync: jest.fn(async () => "") }));
 // O que a raiz do app desenha no lugar do `Stack` de verdade (cada teste põe aqui a tela que quer ver).
 let mockConteudoDoStack: React.ReactElement | null = null;
+// Os parâmetros da rota que `useLocalSearchParams` devolve (a tela do prédio lê `id`).
+let mockParametros: Record<string, string> = {};
 jest.mock("expo-router", () => ({
   router: { push: jest.fn(), replace: jest.fn(), back: jest.fn(), dismissTo: jest.fn(), canGoBack: () => false },
-  useLocalSearchParams: () => ({}),
+  useLocalSearchParams: () => mockParametros,
   usePathname: () => "/",
   Stack: Object.assign(() => mockConteudoDoStack, { Screen: () => null }),
 }));
@@ -82,6 +91,8 @@ const descartada = (id: string, mudancas: Mudancas = {}) =>
 
 const carteiraCom = (saldo: number, extrato: Carteira["extrato"]): Carteira => ({ saldo, extrato });
 const cota: Carteira["extrato"][number] = { em: INSTANTE, tipo: "cota_inicial", analiseId: null, delta: 3 };
+/** A análise usou 1 crédito (prédio confirmado): só ela rende o +1 do descarte. */
+const pagou = (analiseId: string): Carteira["extrato"][number] => ({ em: INSTANTE, tipo: "dossie_cadastral", analiseId, delta: -1 });
 
 async function semear(analises: AnaliseV2[], carteira?: Carteira) {
   await AsyncStorage.clear();
@@ -161,6 +172,7 @@ async function montar(tela: Elemento): Promise<TestRenderer.ReactTestRenderer> {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  mockParametros = {};
 });
 
 // Desmonta o que cada teste montou (a animação do aviso termina depois e não deve atualizar árvore viva) e, no
@@ -181,7 +193,7 @@ describe("GavetaDeDescarte", () => {
   };
 
   it("mostra os quatro motivos do protótipo e só deixa descartar depois de escolher um", async () => {
-    await semear([analise("a")], carteiraCom(3, [cota]));
+    await semear([analise("a")], carteiraCom(2, [pagou("a"), cota]));
     const { tela } = abrir();
     const arvore = await montar(tela);
     const t = texto(arvore);
@@ -202,7 +214,7 @@ describe("GavetaDeDescarte", () => {
   });
 
   it("grava o descarte com a observação, credita +1, avisa e chama aoDescartar", async () => {
-    await semear([analise("a"), analise("b")], carteiraCom(3, [cota]));
+    await semear([analise("a"), analise("b")], carteiraCom(2, [pagou("a"), cota]));
     const { tela, aoFechar, aoDescartar } = abrir();
     const arvore = await montar(tela);
 
@@ -221,7 +233,7 @@ describe("GavetaDeDescarte", () => {
     expect(salvas.find((x) => x.id === "b")?.descarte).toBeNull();
 
     const carteira = await carteiraGravada();
-    expect(carteira.saldo).toBe(4);
+    expect(carteira.saldo).toBe(3);
     expect(carteira.extrato[0]).toMatchObject({ tipo: "descarte", analiseId: "a", delta: 1 });
 
     expect(temTextoExato(arvore, "+1 crédito")).toBe(true);
@@ -241,7 +253,7 @@ describe("GavetaDeDescarte", () => {
   });
 
   it("dois toques seguidos no botão creditam uma vez só", async () => {
-    await semear([analise("a")], carteiraCom(3, [cota]));
+    await semear([analise("a")], carteiraCom(2, [pagou("a"), cota]));
     const { tela, aoDescartar } = abrir();
     const arvore = await montar(tela);
     await tocar(arvore, "Planta, andar ou vaga inadequados");
@@ -252,8 +264,26 @@ describe("GavetaDeDescarte", () => {
     });
     await esperar(20);
     const carteira = await carteiraGravada();
-    expect(carteira.saldo).toBe(4);
+    expect(carteira.saldo).toBe(3);
     expect(carteira.extrato.filter((m) => m.tipo === "descarte")).toHaveLength(1);
+    expect(aoDescartar).toHaveBeenCalledTimes(1);
+  });
+
+  it("análise que não usou crédito: a gaveta diz que não rende, descarta e não credita nem avisa +1", async () => {
+    await semear([analise("a")], carteiraCom(3, [cota]));
+    const { tela, aoDescartar } = abrir();
+    const arvore = await montar(tela);
+    expect(texto(arvore)).toContain("Imóvel a · Este imóvel não usou crédito, então o descarte não rende crédito.");
+    expect(texto(arvore)).not.toContain("Seu feedback concede +1 crédito");
+    await tocar(arvore, "Outro motivo");
+    await tocar(arvore, "Descartar imóvel");
+    await esperar(20);
+
+    expect((await gravadas()).find((x) => x.id === "a")?.descarte?.motivo).toBe("outro");
+    const carteira = await carteiraGravada();
+    expect(carteira.saldo).toBe(3);
+    expect(carteira.extrato.filter((m) => m.tipo === "descarte")).toHaveLength(0);
+    expect(temTextoExato(arvore, "+1 crédito")).toBe(false);
     expect(aoDescartar).toHaveBeenCalledTimes(1);
   });
 
@@ -409,6 +439,43 @@ describe("Salvos", () => {
     expect(carteira.extrato).toEqual(extrato);
   });
 
+  it("C2 na tela: restaurar o imóvel cujo +1 devolveu a confirmação volta o prédio a pendente, sem mexer na carteira", async () => {
+    const e = edificiosDoBairro("casa-forte")[0];
+    if (!e) throw new Error("índice de Casa Forte vazio");
+    const confirmadaDescartada = descartada("des2", {
+      nome: "Confirmado e descartado",
+      vinculo: { estado: "confirmado", edificioId: e.id, dsqfl: e.dsqfl, confirmadoEm: INSTANTE, indiceGeradoEm: META.geradoEm },
+    });
+    const extrato: Carteira["extrato"] = [
+      { em: "2026-10-19T10:00:00.000Z", tipo: "descarte", analiseId: "des2", delta: 1 },
+      { em: "2026-10-18T09:00:00.000Z", tipo: "dossie_cadastral", analiseId: "des2", delta: -1 },
+      cota,
+    ];
+    await semear([...lista(), confirmadaDescartada], carteiraCom(3, extrato));
+    const arvore = await montar(React.createElement(Salvos));
+    await tocar(arvore, "Restaurar Confirmado e descartado");
+    await esperar(20);
+    const depois = (await gravadas()).find((x) => x.id === "des2");
+    expect(depois?.descarte).toBeNull();
+    expect(depois?.vinculo).toEqual({ estado: "pendente" });
+    expect(texto(arvore)).toContain("Confirme o prédio de novo");
+    const carteira = await carteiraGravada();
+    expect(carteira.saldo).toBe(3);
+    expect(carteira.extrato).toEqual(extrato);
+  });
+
+  it("com a carteira que não abriu, restaurar é recusado e nada é gravado", async () => {
+    await semear(lista());
+    await AsyncStorage.setItem(CHAVE_CARTEIRA, "{corrompido");
+    const antes = await AsyncStorage.getItem(CHAVE_ANALISES_V2);
+    const arvore = await montar(React.createElement(Salvos));
+    await tocar(arvore, "Restaurar Imóvel descartado");
+    await esperar(20);
+    expect(await AsyncStorage.getItem(CHAVE_ANALISES_V2)).toBe(antes);
+    expect(await AsyncStorage.getItem(CHAVE_CARTEIRA)).toBe("{corrompido");
+    expect(texto(arvore)).toContain("Não deu para restaurar agora");
+  });
+
   it("remover dos salvos tira o imóvel da lista e o mantém no caderno, sem trocar a análise ativa", async () => {
     await semear(lista(), carteiraCom(3, [cota]));
     await AsyncStorage.setItem("vereda-ativa-v1", "alu2");
@@ -422,7 +489,7 @@ describe("Salvos", () => {
   });
 
   it("descartar a partir do cartão abre a gaveta e depois move o imóvel para Descartados, com +1 crédito", async () => {
-    await semear(lista(), carteiraCom(3, [cota]));
+    await semear(lista(), carteiraCom(2, [pagou("alu1"), cota]));
     const arvore = await montar(React.createElement(Salvos));
     await tocar(arvore, "Descartar Casa Forte 3 quartos");
     expect(texto(arvore)).toContain("Por que você descartou este imóvel?");
@@ -430,7 +497,7 @@ describe("Salvos", () => {
     await tocar(arvore, "Descartar imóvel");
     await esperar(20);
     expect((await gravadas()).find((x) => x.id === "alu1")?.descarte?.motivo).toBe("outro");
-    expect((await carteiraGravada()).saldo).toBe(4);
+    expect((await carteiraGravada()).saldo).toBe(3);
     const t = texto(arvore);
     expect(t).not.toContain("Por que você descartou este imóvel?");
     expect(t).toContain("Descartados");
@@ -581,6 +648,32 @@ describe("Comparar", () => {
 });
 
 // ——— Créditos ————————————————————————————————————————————————————————————————————————
+
+describe("carteira que não abriu (C1 nas telas)", () => {
+  it("Créditos e o cabeçalho não mostram 0 crédito; a gaveta de descarte recusa e nada é gravado", async () => {
+    await semear([analise("a")]);
+    await AsyncStorage.setItem(CHAVE_CARTEIRA, "{corrompido");
+    const creditos = await montar(React.createElement(Creditos));
+    let t = texto(creditos);
+    expect(t).toContain("Não foi possível abrir sua carteira de créditos");
+    expect(t).not.toContain("Recarregar");
+    expect(textosDe(creditos.toJSON())).not.toContain("0");
+
+    const cabecalho = await montar(React.createElement(CabecalhoDoApp));
+    t = texto(cabecalho);
+    expect(t).toContain("— créditos");
+    expect(t).not.toContain("0 créditos");
+
+    const antes = await AsyncStorage.getItem(CHAVE_ANALISES_V2);
+    const gaveta = await montar(React.createElement(GavetaDeDescarte, { analiseId: "a", visivel: true, aoFechar: jest.fn(), aoDescartar: jest.fn() }));
+    await tocar(gaveta, "Outro motivo");
+    await tocar(gaveta, "Descartar imóvel");
+    await esperar(20);
+    expect(await AsyncStorage.getItem(CHAVE_ANALISES_V2)).toBe(antes);
+    expect(await AsyncStorage.getItem(CHAVE_CARTEIRA)).toBe("{corrompido");
+    expect(texto(gaveta)).toContain("Não foi possível abrir sua carteira de créditos");
+  });
+});
 
 describe("Créditos", () => {
   it("mostra o saldo, o extrato em palavras e a frase da versão de teste", async () => {
@@ -817,7 +910,7 @@ describe("Raiz do app", () => {
   });
 
   it("H1: o toast do descarte feito fora das telas com provedor próprio aparece (gaveta de descarte na raiz)", async () => {
-    await semear([analise("a")], carteiraCom(3, [cota]));
+    await semear([analise("a")], carteiraCom(2, [pagou("a"), cota]));
     const arvore = await montarRaiz(
       React.createElement(GavetaDeDescarte, { analiseId: "a", visivel: true, aoFechar: jest.fn(), aoDescartar: jest.fn() }),
     );
@@ -825,7 +918,7 @@ describe("Raiz do app", () => {
     await tocar(arvore, "Descartar imóvel");
     await esperar(30);
     expect(temTextoExato(arvore, "+1 crédito")).toBe(true);
-    expect((await carteiraGravada()).saldo).toBe(4);
+    expect((await carteiraGravada()).saldo).toBe(3);
   });
 
   it("as telas Salvos e Créditos não montam provedor de aviso próprio", () => {
@@ -970,11 +1063,251 @@ describe("Botões irmãos e cores por token (H3, H8)", () => {
   });
 });
 
+// ——— Explorar: foco do cartão (T1), aviso do caderno (T2), achado e área do cartão (T3) ————————————————
+
+describe("Explorar: cartão da análise", () => {
+  afterEach(() => {
+    mockConteudoDoStack = null;
+  });
+  const abrirExplorar = async (analises: AnaliseV2[]) => {
+    await semear(analises, carteiraCom(3, [cota]));
+    const arvore = await montar(React.createElement(Explorar));
+    await esperar(30); // o cartão lê o índice do bairro depois da primeira pintura
+    return arvore;
+  };
+  const hospedeiroDoCartao = (arvore: TestRenderer.ReactTestRenderer, nome: string) =>
+    arvore.root.findAll(
+      (n) => typeof n.type === "string" && typeof n.props.accessibilityLabel === "string" && n.props.accessibilityLabel.startsWith(`${nome}.`),
+    )[0] as ReactTestInstance;
+  const estiloDoTexto = (arvore: TestRenderer.ReactTestRenderer, conteudo: string) =>
+    StyleSheet.flatten(arvore.root.findAll((n) => n.type === Text && textoDoNo(n) === conteudo)[0]?.props.style) ?? {};
+
+  const indice = indiceDoBairro("casa-forte");
+  const casaForte = () => edificiosDoBairro("casa-forte");
+  const confirmadaEm = (id: string, e: Edificio, mudancas: Mudancas = {}) =>
+    analise(id, {
+      nome: `Prédio ${id}`,
+      vinculo: { estado: "confirmado", edificioId: e.id, dsqfl: e.dsqfl, confirmadoEm: INSTANTE, indiceGeradoEm: META.geradoEm },
+      ...mudancas,
+    });
+  /** O achado principal que o dossiê mostra: a mesma chamada de `derivarDossie` da tela do dossiê. */
+  const achadoDoDossie = (a: AnaliseV2, e: Edificio | null, outras: AnaliseV2[] = []) =>
+    derivarDossie(a, e, indice.contexto, indice.obras, outras, new Date()).achados.principal?.titulo ?? null;
+
+  it("T1: o anel de foco do teclado aparece inteiro: nada acima do toque do cartão corta o que passa da borda", async () => {
+    const arvore = await abrirExplorar([analise("alu1", { nome: "Imóvel alu1" })]);
+    const toque = hospedeiroDoCartao(arvore, "Imóvel alu1");
+    expect(toque).toBeDefined();
+
+    // O contêiner do cartão não recorta (é ele que cortava o anel); o topo e o próprio toque recortam os cantos por dentro.
+    const cartao = (() => {
+      for (let n = toque.parent; n; n = n.parent) if (typeof n.type === "string" && n.props.style !== undefined) return n;
+      return undefined;
+    })();
+    expect(estiloDe(cartao).overflow).not.toBe("hidden");
+    expect(estiloDe(cartao).borderRadius).toBe(18);
+    expect(estiloDe(toque).borderRadius).toBe(17);
+    expect(estiloDe(toque).overflow).toBe("hidden");
+    const topos = toque.findAll((n) => typeof n.type === "string" && StyleSheet.flatten(n.props.style)?.aspectRatio === 16 / 10);
+    expect(topos).toHaveLength(1);
+    expect(estiloDe(topos[0]).overflow).toBe("hidden");
+    expect(estiloDe(topos[0]).borderTopLeftRadius).toBe(17);
+
+    // Nenhum ancestral do toque, até a raiz, recorta o conteúdo.
+    const recortando: string[] = [];
+    for (let n = toque.parent; n; n = n.parent) {
+      if (typeof n.type === "string" && StyleSheet.flatten(n.props.style)?.overflow === "hidden") recortando.push(String(n.type));
+    }
+    expect(recortando).toEqual([]);
+  });
+
+  it("T1: com o foco vindo do teclado (web), o toque do cartão ganha o anel de 2 px em azul cadastral, por fora", async () => {
+    const arvore = await abrirExplorar([analise("alu1", { nome: "Imóvel alu1" })]);
+    const plataforma = jest.replaceProperty(Platform, "OS", "web");
+    try {
+      const alvo = { matches: (seletor: string) => seletor === ":focus-visible" };
+      await act(async () => {
+        (hospedeiroDoCartao(arvore, "Imóvel alu1").props.onFocus as (e: unknown) => void)({ target: alvo, currentTarget: alvo });
+      });
+      const com = estiloDe(hospedeiroDoCartao(arvore, "Imóvel alu1"));
+      expect(com).toMatchObject({ outlineWidth: 2, outlineStyle: "solid", outlineColor: CORES_CLARO["cor-azul-cadastral"], outlineOffset: 2 });
+      await act(async () => {
+        (hospedeiroDoCartao(arvore, "Imóvel alu1").props.onBlur as () => void)();
+      });
+      expect(estiloDe(hospedeiroDoCartao(arvore, "Imóvel alu1")).outlineWidth).toBeUndefined();
+    } finally {
+      plataforma.restore();
+    }
+  });
+
+  it("T3: o ponto ferrugem do cartão é o achado principal do dossiê (prédio confirmado, contexto e obras do bairro)", async () => {
+    const e = casaForte().find((x) => achadoDoDossie(confirmadaEm("c", x), x) !== null);
+    if (!e) throw new Error("nenhum prédio de Casa Forte gera achado");
+    const a = confirmadaEm("conf", e);
+    const esperado = achadoDoDossie(a, e);
+    expect(esperado).not.toBeNull();
+    // A leitura antiga (primeira anomalia da leitura) não tem o que mostrar aqui: o achado vem só do cadastro do prédio.
+    expect(primeiraAnomaliaPendente(a)).toBeNull();
+
+    const arvore = await abrirExplorar([a]);
+    expect(textosDe(arvore.toJSON()).filter((t) => t === esperado)).toHaveLength(1);
+    expect(estiloDoTexto(arvore, esperado as string).color).toBe(CORES_CLARO["cor-barro-texto"]);
+  });
+
+  it("T3: sem vínculo confirmado a derivação não usa o prédio: o achado do cadastro não aparece no cartão", async () => {
+    const e = casaForte().find((x) => achadoDoDossie(confirmadaEm("c", x), x) !== null);
+    if (!e) throw new Error("nenhum prédio de Casa Forte gera achado");
+    const achadoDoPredio = achadoDoDossie(confirmadaEm("c", e), e) as string;
+    const pendente = analise("pen", { nome: "Imóvel pen" });
+    expect(achadoDoDossie(pendente, null)).toBeNull();
+    const arvore = await abrirExplorar([pendente]);
+    expect(textosDe(arvore.toJSON())).not.toContain(achadoDoPredio);
+    expect(texto(arvore)).toContain("Prédio não confirmado");
+  });
+
+  it("T3: área 'a confirmar' aparece como 'Área a confirmar' na faixa de especificações, no lugar do valor", async () => {
+    const arvore = await abrirExplorar([
+      analise("conf", { nome: "Imóvel conf", declarados: { area: v(100, true) } }),
+      analise("sem", { nome: "Imóvel sem", declarados: { area: v(null, true), quartos: vazio, banheiros: vazio, vagas: vazio } }),
+      analise("ok", { nome: "Imóvel ok", declarados: { area: v(84.5) } }),
+    ]);
+    const textos = textosDe(arvore.toJSON());
+    // Duas análises com a área marcada, uma delas sem nenhuma outra especificação (a faixa aparece só por causa da área).
+    expect(textos.filter((t) => t === "Área a confirmar")).toHaveLength(2);
+    expect(textos).not.toContain("100 m²");
+    expect(textos).toContain("84,5 m²");
+  });
+
+  it("T2: o aviso da quarentena fica numa faixa creme com texto ferrugem, no topo, e continua depois do toast", async () => {
+    await AsyncStorage.clear();
+    await AsyncStorage.setItem(CHAVE_ANALISES_V2, JSON.stringify([analise("alu1", { nome: "Imóvel alu1" }), { lixo: true }]));
+    // Pela raiz do app: é lá que mora o provedor do toast, acima do provedor do caderno.
+    mockConteudoDoStack = React.createElement(Explorar);
+    let arvore!: TestRenderer.ReactTestRenderer;
+    await act(async () => {
+      arvore = TestRenderer.create(React.createElement(Raiz));
+    });
+    montadas.push(arvore);
+    await esperar(60);
+    const faixa = () => arvore.root.findAll((n) => typeof n.type === "string" && n.props.role === "note");
+    const fato = "1 análise não pôde ser aberta e foi guardada à parte. As outras continuam no seu caderno.";
+    expect(faixa()).toHaveLength(1);
+    expect(textoDoNo(faixa()[0] as ReactTestInstance)).toBe(fato);
+    expect(estiloDe(faixa()[0])).toMatchObject({
+      backgroundColor: CORES_CLARO["cor-creme"],
+      borderColor: CORES_CLARO["cor-linha"],
+      borderRadius: 13,
+    });
+    expect(estiloDoTexto(arvore, fato).color).toBe(CORES_CLARO["cor-barro-texto"]);
+    // No topo: antes do cartão de "Auditar novo anúncio".
+    expect(texto(arvore).indexOf(fato)).toBeGreaterThanOrEqual(0);
+    expect(texto(arvore).indexOf(fato)).toBeLessThan(texto(arvore).indexOf("Auditar novo anúncio"));
+    // O toast (role status) leva o mesmo texto...
+    const toast = () => arvore.root.findAll((n) => typeof n.type === "string" && n.props.role === "status" && textoDoNo(n) === fato);
+    expect(toast()).toHaveLength(1);
+    // ...e some em ~3 s; a faixa fica.
+    await esperar(3300);
+    expect(toast()).toHaveLength(0);
+    expect(faixa()).toHaveLength(1);
+    expect(textoDoNo(faixa()[0] as ReactTestInstance)).toBe(fato);
+  }, 10000);
+
+  it("T2: com várias análises na quarentena o aviso diz quantas; sem quarentena não há faixa", async () => {
+    await AsyncStorage.clear();
+    await AsyncStorage.setItem(CHAVE_ANALISES_V2, JSON.stringify([{ lixo: 1 }, { lixo: 2 }, { lixo: 3 }]));
+    const arvore = await montar(React.createElement(Explorar));
+    const faixas = arvore.root.findAll((n) => typeof n.type === "string" && n.props.role === "note");
+    expect(faixas.map(textoDoNo)).toEqual(["3 análises não puderam ser abertas e foram guardadas à parte."]);
+
+    const limpa = await abrirExplorar([analise("alu1", { nome: "Imóvel alu1" })]);
+    expect(limpa.root.findAll((n) => typeof n.type === "string" && n.props.role === "note")).toHaveLength(0);
+  });
+});
+
+describe("Salvos: aviso do caderno (T2)", () => {
+  it("mostra a faixa da quarentena no topo, antes do cabeçalho, e não a mostra sem quarentena", async () => {
+    await AsyncStorage.clear();
+    await AsyncStorage.setItem(CHAVE_ANALISES_V2, JSON.stringify([analise("alu1", { nome: "Casa Forte 3 quartos" }), { lixo: true }]));
+    const arvore = await montar(React.createElement(Salvos));
+    const faixas = arvore.root.findAll((n) => typeof n.type === "string" && n.props.role === "note");
+    const fato = "1 análise não pôde ser aberta e foi guardada à parte. As outras continuam no seu caderno.";
+    expect(faixas.map(textoDoNo)).toEqual([fato]);
+    expect(estiloDe(faixas[0])).toMatchObject({ backgroundColor: CORES_CLARO["cor-creme"], borderRadius: 13 });
+    const t = texto(arvore);
+    expect(t.indexOf(fato)).toBeLessThan(t.indexOf("Sua seleção"));
+    expect(t).toContain("Casa Forte 3 quartos");
+
+    await semear([analise("alu1", { nome: "Casa Forte 3 quartos" })], carteiraCom(3, [cota]));
+    const limpa = await montar(React.createElement(Salvos));
+    expect(limpa.root.findAll((n) => typeof n.type === "string" && n.props.role === "note")).toHaveLength(0);
+  });
+});
+
+// ——— Prédio (T4) ————————————————————————————————————————————————————————————————————————
+
+describe("Prédio: área a confirmar não vira pista (T4)", () => {
+  const edificio = edificiosDoBairro("casa-forte").find((e) => e.tipologias.length > 0);
+  const areaDoCadastro = edificio?.tipologias[0]?.area as number;
+  /** Só a área do anúncio como pista: sem rua, sem nome de edifício, sem andar, sem ano. */
+  const soComArea = (id: string, aConfirmar: boolean) =>
+    analise(id, { nome: `Imóvel ${id}`, declarados: { area: v(areaDoCadastro, aConfirmar), andar: vazio } });
+  const abrirPredio = async (a: AnaliseV2) => {
+    await semear([a], carteiraCom(3, [cota]));
+    mockParametros = { id: a.id };
+    return montar(React.createElement(Predio));
+  };
+
+  it("com a área confirmada, ela sugere um prédio do cadastro (controle)", async () => {
+    expect(edificio).toBeDefined();
+    const arvore = await abrirPredio(soComArea("nor", false));
+    expect(existe(arvore, "É este prédio")).toBe(true);
+    expect(texto(arvore)).toContain("Usa 1 crédito");
+  });
+
+  it("com a área 'a confirmar', nenhum prédio é sugerido e o crédito não é oferecido", async () => {
+    const arvore = await abrirPredio(soComArea("aco", true));
+    expect(existe(arvore, "É este prédio")).toBe(false);
+    expect(texto(arvore)).not.toContain("Usa 1 crédito");
+    expect(texto(arvore)).toContain("É este o prédio?");
+    // O caminho segue aberto: busca por endereço e "Pular por agora".
+    expect(existe(arvore, "Pular por agora")).toBe(true);
+  });
+});
+
+// ——— Gavetas de rota: respiro do primeiro título (T5) ——————————————————————————————————————————
+
+describe("Créditos e Sobre os dados: o primeiro título não fica colado na divisória (T5)", () => {
+  /** O recuo de cima do bloco que contém o texto: o primeiro ancestral com `paddingTop`. */
+  const recuoDoTitulo = (arvore: TestRenderer.ReactTestRenderer, titulo: string) => {
+    const no = arvore.root.findAll((n) => n.type === Text && textoDoNo(n) === titulo)[0];
+    for (let n = no?.parent; n; n = n.parent) {
+      const recuo = typeof n.type === "string" ? StyleSheet.flatten(n.props.style)?.paddingTop : undefined;
+      if (typeof recuo === "number") return recuo;
+    }
+    return undefined;
+  };
+
+  it("Créditos: 'Saldo disponível' começa a cerca de 13 px da divisória, como nas outras gavetas", async () => {
+    await semear([], carteiraCom(3, [cota]));
+    const arvore = await montar(React.createElement(Creditos));
+    expect(recuoDoTitulo(arvore, "Saldo disponível")).toBe(RESPIRO_NO_TOPO_DA_GAVETA);
+    expect(RESPIRO_NO_TOPO_DA_GAVETA).toBeGreaterThanOrEqual(12);
+    expect(RESPIRO_NO_TOPO_DA_GAVETA).toBeLessThanOrEqual(14);
+  });
+
+  it("Sobre os dados: 'De onde vêm os números' começa a cerca de 13 px da divisória", async () => {
+    await semear([], carteiraCom(3, [cota]));
+    const arvore = await montar(React.createElement(SobreOsDados));
+    expect(recuoDoTitulo(arvore, "De onde vêm os números")).toBe(RESPIRO_NO_TOPO_DA_GAVETA);
+  });
+});
+
 describe("Cores só por token nos arquivos desta frente", () => {
   const arquivos = [
     "src/app/_layout.tsx",
     "src/app/(abas)/index.tsx",
     "src/app/(abas)/ler.tsx",
+    "src/app/(abas)/predio.tsx",
     "src/app/(abas)/salvos.tsx",
     "src/app/(abas)/comparar.tsx",
     "src/app/editar.tsx",

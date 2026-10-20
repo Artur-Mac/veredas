@@ -19,6 +19,13 @@ import {
 import { tituloDaAnomalia } from "../src/dados/anomalias";
 import { custoMensal } from "../src/dados/custos";
 import { derivarDossie, enderecoDoImovel, ordenarPerguntas, tipologiaUnica } from "../src/dados/dossie/derivar";
+import {
+  EXPLICACAO_DA_CONFIANCA,
+  EXPLICACAO_DO_CALCULO,
+  IDS_DE_DADO_CALCULADO,
+  IDS_DE_DADO_COPIADO,
+  explicacaoDaConfianca,
+} from "../src/componentes/fonte/textos";
 
 const AGORA = new Date("2026-10-20T12:00:00.000Z");
 const INSTANTE = "2026-10-20T12:00:00.000Z";
@@ -1278,6 +1285,12 @@ function bateria(): Caso[] {
     { nome: "compra com seguro e taxa de serviço a confirmar", a: analise({
       modalidade: "compra", declarados: { preco: v(800000), area: v(100), seguroIncendio: v(40, true), taxaServico: v(90, true) },
     }), contexto: CONTEXTO },
+    { nome: "área incoerente a confirmar, prédio confirmado", a: noAlto({
+      extracao: extracaoCom([anomalia("area", "incoerente", "98")]), declarados: { area: v(98, true), iptu: iptuDe(null, "desconhecido") },
+    }), e: alto },
+    { nome: "área não informada, prédio confirmado", a: noAlto({
+      extracao: extracaoCom([anomalia("area", "nao_informado", "Consulte")]), declarados: { area: v(null, true) },
+    }), e: alto },
   ];
 }
 
@@ -1359,5 +1372,184 @@ describe("palavras proibidas da seção 1.2", () => {
     const conhecidas = visao.custo.parcelas.filter((p) => p.estado === "conhecido");
     const soma = conhecidas.reduce((total, p) => total + (p.valorMensal ?? 0), 0);
     expect(visao.custo.totalMensalConhecido).toBe(conhecidas.length ? soma : null);
+  });
+});
+
+// ——— P2: área a confirmar não casa tipologia ————————————————————————————————————————————————
+
+describe("área a confirmar não serve para casar tipologia (P2)", () => {
+  const semIptu = iptuDe(null, "desconhecido");
+  const incoerente = (valorLido: string) => extracaoCom([anomalia("area", "incoerente", valorLido)]);
+  const doCadastro = (visao: VisaoDoDossie, id: string) => visao.cadastro.find((f) => f.id === id);
+
+  it("controle: com a área conhecida, o mesmo caso gera 'IPTU no cadastro' e a área parecida", () => {
+    const { a, e } = noPredio({ extracao: incoerente("98"), declarados: { area: v(98), iptu: semIptu } });
+    const visao = derivar(a, { e });
+    expect(achadoIds(visao)).toEqual(["ach-iptu"]);
+    expect(doCadastro(visao, "cadastro-area")).toMatchObject({ rotulo: "Área das unidades mais parecidas", valor: "98 m²", confianca: "inferencia" });
+    expect(visao.especificacoes.area).toBe(98);
+  });
+
+  it("sem achado de IPTU por tipologia, mesmo com a área do anúncio igual à da tipologia", () => {
+    const { a, e } = noPredio({ extracao: incoerente("98"), declarados: { area: v(98, true), iptu: semIptu } });
+    expect(achadoIds(derivar(a, { e }))).not.toContain("ach-iptu");
+  });
+
+  it("sem 'IPTU não confere' quando o IPTU do anúncio é conhecido e a área está a confirmar", () => {
+    const conhecida = noPredio({ declarados: { area: v(98), iptu: iptuDe(150, "mes") } });
+    expect(achadoIds(derivar(conhecida.a, { e: conhecida.e }))).toContain("ach-iptu");
+    const aConfirmar = noPredio({ extracao: incoerente("98"), declarados: { area: v(98, true), iptu: iptuDe(150, "mes") } });
+    expect(achadoIds(derivar(aConfirmar.a, { e: aConfirmar.e }))).not.toContain("ach-iptu");
+  });
+
+  it("sem 'Área não confere', mesmo com a área longe de qualquer tipologia", () => {
+    const conhecida = noPredio({ declarados: { area: v(140) } });
+    expect(achadoIds(derivar(conhecida.a, { e: conhecida.e }))).toContain("ach-area");
+    const aConfirmar = noPredio({ extracao: incoerente("140"), declarados: { area: v(140, true) } });
+    const visao = derivar(aConfirmar.a, { e: aConfirmar.e });
+    expect(achadoIds(visao)).not.toContain("ach-area");
+    expect(ids(visao)).not.toContain("achado-area");
+    expect(textosDe(visao.achados).join(" ")).not.toContain("Área não confere");
+  });
+
+  it("sem o fato 'Área das unidades mais parecidas': o cadastro mostra a faixa das tipologias, nunca uma escolhida", () => {
+    const { a, e } = noPredio({ extracao: incoerente("98"), declarados: { area: v(98, true) } });
+    const visao = derivar(a, { e });
+    expect(visao.cadastro.some((f) => f.rotulo === "Área das unidades mais parecidas")).toBe(false);
+    expect(doCadastro(visao, "cadastro-area")).toEqual({
+      id: "cadastro-area", rotulo: "Área no cadastro", valor: "98 a 124,5 m²", confianca: "oficial", fonte: "iptu_2026", detalhe: "2 tipologias no prédio",
+    });
+    expect(visao.especificacoes.area).toBeNull();
+  });
+
+  it("o achado de anomalia da área entra, com o título de tituloDaAnomalia, e gera a pergunta da área", () => {
+    const { a, e } = noPredio({ extracao: incoerente("98"), declarados: { area: v(98, true), iptu: semIptu } });
+    const visao = derivar(a, { e });
+    expect(visao.achados.principal).toEqual({
+      id: "ach-anomalia-area", tipo: "anomalia", titulo: tituloDaAnomalia({ campo: "area", tipo: "incoerente" }), medida: null,
+      texto: "O link e o texto colado trazem áreas diferentes. Fica fora da comparação com o cadastro e do preço por m² até você confirmar.",
+      confianca: "declarado", fonte: "anuncio", perguntaId: "anomalia-area",
+    });
+    expect(visao.achados.principal?.titulo).toBe("Área difere entre as leituras");
+    expect(visao.perguntas.find((p) => p.id === "anomalia-area")).toEqual({
+      id: "anomalia-area", titulo: "Área de 98 m² está certa?", pista: "Valores diferentes no anúncio",
+      textoParaMensagem: "O anúncio traz áreas diferentes. Qual é a área privativa do imóvel?", origem: "anomalia", prioridade: "documentos",
+    });
+  });
+
+  it("entra também sem prédio confirmado, e para anomalia de outro tipo ou sem valor lido", () => {
+    const semPredio = analise({ extracao: incoerente("98"), declarados: { area: v(98, true) } });
+    expect(derivar(semPredio).achados.principal).toMatchObject({ id: "ach-anomalia-area", perguntaId: "anomalia-area" });
+
+    const naoInformada = analise({ extracao: extracaoCom([anomalia("area", "nao_informado", "Consulte")]), declarados: { area: v(null, true) } });
+    const visao = derivar(naoInformada);
+    expect(visao.achados.principal).toMatchObject({
+      id: "ach-anomalia-area", titulo: tituloDaAnomalia({ campo: "area", tipo: "nao_informado" }),
+      texto: "O anúncio não informa a área. Fica fora da comparação com o cadastro e do preço por m² até você confirmar.",
+    });
+    expect(visao.perguntas.find((p) => p.id === "anomalia-area")).toMatchObject({
+      titulo: "Qual é a área do imóvel?", pista: "Não informado no anúncio", prioridade: "documentos",
+    });
+
+    const outra = analise({ extracao: extracaoCom([anomalia("area", "valor_atipico", "400")]), declarados: { area: v(400, true) } });
+    expect(derivar(outra).achados.principal).toMatchObject({
+      id: "ach-anomalia-area", titulo: tituloDaAnomalia({ campo: "area", tipo: "valor_atipico" }),
+      texto: "O anúncio traz um valor de área que precisa de confirmação. Fica fora da comparação com o cadastro e do preço por m² até você confirmar.",
+    });
+    expect(derivar(outra).perguntas.find((p) => p.id === "anomalia-area")?.titulo).toBe("Área de 400 m² está certa?");
+  });
+
+  it("vem depois das anomalias de custo e antes dos achados do cadastro", () => {
+    const { a, e } = noPredio({
+      extracao: extracaoCom([anomalia("iptu", "periodo_desconhecido", "R$ 288"), anomalia("area", "incoerente", "98")]),
+      declarados: { iptu: iptuDe(288, "desconhecido", true), area: v(98, true) },
+    }, edificio({ obras150m: comObras(3, 0) }));
+    const visao = derivar(a, { e });
+    expect(achadoIds(visao)).toEqual(["ach-anomalia-iptu", "ach-anomalia-area", "ach-obras"]);
+    expect(ids(visao).indexOf("anomalia-iptu")).toBeLessThan(ids(visao).indexOf("anomalia-area"));
+  });
+
+  it("só existe com a área a confirmar e com anomalia da área na leitura", () => {
+    // Área conhecida (marca desligada, p. ex. a pessoa digitou): a anomalia da leitura não gera achado.
+    const resolvida = analise({ extracao: incoerente("98"), declarados: { area: digitado(98) } });
+    expect(achadoIds(derivar(resolvida))).not.toContain("ach-anomalia-area");
+    expect(ids(derivar(resolvida))).not.toContain("anomalia-area");
+    // Área a confirmar sem anomalia da área registrada na leitura: fica de fora da conta, sem achado nem pergunta inventados.
+    const semAnomalia = analise({ extracao: extracaoCom([]), declarados: { area: v(98, true) } });
+    expect(achadoIds(derivar(semAnomalia))).not.toContain("ach-anomalia-area");
+    expect(ids(derivar(semAnomalia))).not.toContain("anomalia-area");
+    // Sem leitura nenhuma.
+    expect(achadoIds(derivar(analise({ declarados: { area: v(98, true) } })))).toEqual([]);
+  });
+
+  it("a área a confirmar também fica fora do preço por m², da posição e das especificações", () => {
+    const a = analise({ extracao: incoerente("98"), declarados: { area: v(98, true) } });
+    const visao = derivar(a);
+    expect(visao.custo.principal.porM2).toBeNull();
+    expect(visao.especificacoes.area).toBeNull();
+  });
+});
+
+// ——— P7: o rastro "sem alteração" só vale para valor copiado do registro ————————————————————
+
+describe("rastro do dado oficial: copiado ou calculado (P7)", () => {
+  const SEM_ALTERACAO = "Vem de uma base pública da Prefeitura, sem alteração.";
+  const CALCULADO = "Calculado pelo Vereda a partir de uma base pública da Prefeitura (mediana, faixa ou contagem por prédio).";
+
+  it("os dois textos são os pedidos, e a explicação da categoria 'oficial' continua sendo a do valor copiado", () => {
+    expect(EXPLICACAO_DO_CALCULO).toBe(CALCULADO);
+    expect(EXPLICACAO_DA_CONFIANCA.oficial).toBe(SEM_ALTERACAO);
+  });
+
+  it("dado agregado (mediana, faixa, moda, contagem, ÷ 12) recebe o texto de cálculo, nunca o de 'sem alteração'", () => {
+    for (const id of IDS_DE_DADO_CALCULADO) {
+      expect([id, explicacaoDaConfianca("oficial", id)]).toEqual([id, CALCULADO]);
+    }
+    expect(IDS_DE_DADO_CALCULADO).toEqual(expect.arrayContaining(["iptu-faixa", "cadastro-ano", "cadastro-unidades", "cadastro-padrao", "cadastro-area", "ach-iptu", "ach-obras", "ach-itbi"]));
+  });
+
+  it("valor copiado do registro mantém 'sem alteração'", () => {
+    for (const id of IDS_DE_DADO_COPIADO) {
+      expect([id, explicacaoDaConfianca("oficial", id)]).toEqual([id, SEM_ALTERACAO]);
+    }
+    expect(IDS_DE_DADO_COPIADO).toEqual(expect.arrayContaining(["cadastro-nome", "cadastro-pavimentos", "cadastro-chave"]));
+  });
+
+  it("sem id, ou com id desconhecido, vale a explicação da categoria; as outras categorias não mudam, nem com id de cálculo", () => {
+    expect(explicacaoDaConfianca("oficial")).toBe(SEM_ALTERACAO);
+    expect(explicacaoDaConfianca("oficial", null)).toBe(SEM_ALTERACAO);
+    expect(explicacaoDaConfianca("oficial", "id-que-nao-existe")).toBe(SEM_ALTERACAO);
+    for (const c of ["declarado", "inferencia", "nao_sabemos"] as const) {
+      expect(explicacaoDaConfianca(c, "iptu-faixa")).toBe(EXPLICACAO_DA_CONFIANCA[c]);
+    }
+  });
+
+  it("as duas listas não se cruzam e não repetem id", () => {
+    const todos = [...IDS_DE_DADO_COPIADO, ...IDS_DE_DADO_CALCULADO];
+    expect(new Set(todos).size).toBe(todos.length);
+  });
+
+  it("todo Fato e todo Achado oficial que a derivação produz está numa das listas, e nenhum id da lista é órfão", () => {
+    const visoes = bateria().map((c) => derivar(c.a, c));
+    const oficiais = visoes.flatMap((visao) => [
+      ...visao.cadastro.filter((f) => f.confianca === "oficial").map((f) => f.id),
+      ...[visao.achados.principal, ...visao.achados.apoio].flatMap((x) => (x !== null && x.confianca === "oficial" ? [x.id] : [])),
+    ]);
+    const classificados = new Set([...IDS_DE_DADO_COPIADO, ...IDS_DE_DADO_CALCULADO]);
+    expect([...new Set(oficiais)].filter((id) => !classificados.has(id))).toEqual([]);
+    // Nenhum id da lista fica sem uso: a bateria produz todos eles como dado oficial.
+    expect([...classificados].filter((id) => !oficiais.includes(id))).toEqual([]);
+  });
+
+  it("os fatos que o texto de cálculo cobre são, de fato, agregados: o rótulo do detalhe diz moda, faixa ou contagem", () => {
+    const { a, e } = noPredio();
+    const visao = derivar(a, { e });
+    const doCadastro = (id: string) => visao.cadastro.find((f) => f.id === id);
+    expect(doCadastro("iptu-faixa")?.detalhe).toMatch(/Metade central/);
+    expect(doCadastro("cadastro-ano")?.detalhe).toMatch(/Mais frequente/);
+    expect(doCadastro("cadastro-padrao")?.detalhe).toMatch(/Mais frequente/);
+    expect(doCadastro("cadastro-unidades")?.detalhe).toMatch(/Registros de IPTU/);
+    // E os copiados não trazem detalhe de agregação.
+    for (const id of ["cadastro-nome", "cadastro-pavimentos", "cadastro-chave"]) expect(doCadastro(id)?.detalhe).toBeNull();
   });
 });

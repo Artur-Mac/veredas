@@ -26,6 +26,30 @@ const PERIODOS = [
 const LARGURA_DO_ROTULO = 72;
 const LARGURA_DO_VALOR = 128;
 
+/**
+ * Frase que vai no lugar da régua do ITBI por m². A Revisão 2.5 tirou a régua: a área do ITBI inclui área comum (66,7 m² privativos no
+ * IPTU aparecem como 109,84 m² no ITBI), então o R$/m² fiscal contra o R$/m² do anúncio fazia todo anúncio parecer caro.
+ */
+export const FRASE_DA_REGUA_DO_ITBI_RETIRADA =
+  "A comparação por m² com o ITBI foi retirada: a área do ITBI inclui área comum e não se compara com a área do anúncio.";
+
+/**
+ * A régua dos dossiês de exemplo que compara o preço por m² do anúncio com os quartis de avaliação fiscal do ITBI por m²
+ * (registro oficial, "avaliações fiscais de apartamentos"). As réguas de aluguel anunciado não entram.
+ */
+export function reguaEDoItbi(regua: Pick<DadosDaRegua, "fonte" | "universo" | "escala">): boolean {
+  return /itbi|avalia[cç][õo]es fiscais/i.test([regua.fonte.base, regua.universo, regua.escala].join(" "));
+}
+
+/** O que aparece onde a régua do ITBI estava. */
+export function ReguaDoItbiRetirada() {
+  return (
+    <Texto tipo="apoio" cor="cor-texto-apoio">
+      {FRASE_DA_REGUA_DO_ITBI_RETIRADA}
+    </Texto>
+  );
+}
+
 function Desenho({ dados, semArea }: { dados: DadosDaRegua; semArea: boolean }) {
   const { cor } = useTema();
   const [largura, setLargura] = useState(0);
@@ -112,6 +136,9 @@ export function Regua({ dossie }: { dossie: Dossie }) {
   const escolha: EscolhaDaRegua = sessao.regua[dossie.id] ?? { recorte: dados.recorte, periodo: dados.periodo_meses };
   const escolher = (mudanca: Partial<EscolhaDaRegua>) =>
     sessao.mudar((atual) => ({ regua: { ...atual.regua, [dossie.id]: { ...escolha, ...mudanca } } }));
+
+  // Nos exemplos o ITBI por m² não vira régua: nem o desenho, nem o recorte, nem o rótulo de registro oficial.
+  if (reguaEDoItbi(dados)) return <ReguaDoItbiRetirada />;
 
   const controles = (
     <View style={{ flexDirection: "row", flexWrap: "wrap", gap: ESPACO[2] }}>

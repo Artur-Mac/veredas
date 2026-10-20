@@ -12,9 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "verificar": "npm run typecheck && npm run lint && npm test",
-    "test:poc": "node scripts/poc-smoke.mjs",
-    "test:v1": "node scripts/v1-smoke.mjs",
-    "test:epoca3": "node scripts/poc-epoca3-smoke.mjs"
+    "test:v1": "node scripts/v1-smoke.mjs"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",

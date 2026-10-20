@@ -14,7 +14,8 @@ O app agora inclui um caderno local: cadastro manual ou link de referência, edi
 - [Plano por épocas e prompt de continuidade](./docs/PLANO-POC-EXECUCAO.md)
 - [Validação e limites atuais](./docs/POC-VALIDACAO.md)
 - [v1.0: escopo e viabilidade](./docs/V1-ESCOPO-E-VIABILIDADE.md) e [ordem de execução para o operário](./docs/handoff/ORDEM_DO_ARQUITETO.md)
-- Iniciar: `npm run web`; teste do fluxo com servidor ativo: `npm run test:poc` (porta padrão 8087; configure `POC_URL` para outra).
+- [Pesquisa de produto verificada (20/10/2026)](./docs/produto/pesquisa-2026-10-20/README.md): dados públicos, APIs, concorrentes, mercado, regulação, roadmap e plano estratégico
+- Iniciar: `npm run web`; teste do fluxo com servidor ativo: `npm run test:v1` (porta padrão 8087; configure `POC_URL` para outra).
 
 ## 📌 Especificação histórica
 

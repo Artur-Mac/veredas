@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pressable, StyleSheet, TextInput, View, type TextInputProps } from "react-native";
+import { StyleSheet, TextInput, View, type TextInputProps } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import {
   type Anomalia,
@@ -10,7 +10,8 @@ import {
 import { editarFormulario, type EstadoDoFormulario } from "../../dados/formulario";
 import { formatarNumero } from "../../dados/formatos";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
+import { useFocoDoCampo } from "../casca/foco";
+import { AlvoDeToque } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { estilosDoTema } from "./estilosDoTema";
 import { SeletorDeBairro } from "./SeletorDeBairro";
@@ -59,20 +60,21 @@ const CONVERSORES: Record<TipoDeNumero, { ler: (texto: string) => number | null;
 function Entrada({ style, onFocus, onBlur, ...resto }: TextInputProps) {
   const { cor } = useTema();
   const styles = useEstilos();
-  const [focado, setFocado] = useState(false);
+  // Foco: borda de 2 px em azul cadastral (o contorno do navegador está zerado em `input`).
+  const foco = useFocoDoCampo();
   return (
     <TextInput
       placeholderTextColor={cor("cor-texto-apoio")}
       {...resto}
       onFocus={(e) => {
-        setFocado(true);
+        foco.aoFocar();
         onFocus?.(e);
       }}
       onBlur={(e) => {
-        setFocado(false);
+        foco.aoDesfocar();
         onBlur?.(e);
       }}
-      style={[styles.input, focado ? styles.inputFocado : null, style]}
+      style={[styles.input, foco.focado ? styles.inputFocado : null, style, foco.estilo]}
     />
   );
 }
@@ -103,14 +105,13 @@ function CasaDeMarcar({
   const { cor } = useTema();
   const styles = useEstilos();
   return (
-    <Pressable
+    <AlvoDeToque
       accessibilityRole="checkbox"
       accessibilityLabel={rotulo}
       accessibilityState={{ checked: marcada, disabled: desabilitado }}
       aria-checked={marcada}
       disabled={desabilitado}
       onPress={aoAlternar}
-      hitSlop={{ top: 8, bottom: 8, left: 4, right: 12 }}
       style={styles.linhaConfirmar}
     >
       <View style={[styles.caixa, marcada ? styles.caixaMarcada : null]}>
@@ -123,7 +124,7 @@ function CasaDeMarcar({
       <Texto tipo="apoio" style={styles.textoConfirmar}>
         {rotulo}
       </Texto>
-    </Pressable>
+    </AlvoDeToque>
   );
 }
 
@@ -228,7 +229,7 @@ export function FormularioDeRevisao({ estado, anomalias, aoAlterar, desabilitado
           {(["aluguel", "compra"] as const).map((m) => {
             const ativo = estado.modalidade === m;
             return (
-              <Pressable
+              <AlvoDeToque
                 key={m}
                 accessibilityRole="radio"
                 accessibilityState={{ checked: ativo, disabled: desabilitado }}
@@ -240,7 +241,7 @@ export function FormularioDeRevisao({ estado, anomalias, aoAlterar, desabilitado
                 <Texto tipo="apoio" style={ativo ? styles.textoSegmentadoAtivo : styles.textoSegmentado}>
                   {m === "aluguel" ? "Alugar" : "Comprar"}
                 </Texto>
-              </Pressable>
+              </AlvoDeToque>
             );
           })}
         </View>
@@ -314,20 +315,22 @@ export function FormularioDeRevisao({ estado, anomalias, aoAlterar, desabilitado
             const rotulo = p === "mes" ? "Mês" : p === "ano" ? "Ano" : "Não sei";
             const ativo = estado.iptuPeriodo === p;
             return (
-              <Pressable
+              // A área de toque tem 44 px de altura; a pílula desenhada por dentro mantém os 30 px.
+              <AlvoDeToque
                 key={p}
                 accessibilityRole="radio"
                 accessibilityState={{ checked: ativo, disabled: desabilitado }}
                 aria-checked={ativo}
                 disabled={desabilitado}
                 onPress={() => alterar({ iptuPeriodo: p })}
-                hitSlop={{ top: 8, bottom: 8, left: 3, right: 3 }}
-                style={[styles.pilulaPeriodo, ativo ? styles.pilulaPeriodoAtiva : null]}
+                style={styles.alvoDoPeriodo}
               >
-                <Texto tipo="apoio" style={ativo ? styles.textoPeriodoAtivo : styles.textoPeriodo}>
-                  {rotulo}
-                </Texto>
-              </Pressable>
+                <View style={[styles.pilulaPeriodo, ativo ? styles.pilulaPeriodoAtiva : null]}>
+                  <Texto tipo="apoio" style={ativo ? styles.textoPeriodoAtivo : styles.textoPeriodo}>
+                    {rotulo}
+                  </Texto>
+                </View>
+              </AlvoDeToque>
             );
           })}
         </View>
@@ -527,10 +530,9 @@ const useEstilos = estilosDoTema((cor) =>
       fontWeight: "500",
       outlineWidth: 0,
     },
+    // O contorno (2 px em azul cadastral) vem de `useFocoDoCampo`; aqui só o fundo branco do protótipo.
     inputFocado: {
       backgroundColor: cor("cor-superficie"),
-      borderColor: cor("cor-acao"),
-      boxShadow: `0 0 0 3px ${comAlfa(cor("cor-acao"), 0.15)}`,
     },
     linhaDupla: {
       flexDirection: "row",
@@ -539,16 +541,17 @@ const useEstilos = estilosDoTema((cor) =>
     },
     segmentado: {
       flexDirection: "row",
-      minHeight: 46,
       backgroundColor: cor("cor-sutil"),
       borderWidth: 1,
       borderColor: cor("cor-linha"),
-      padding: 3,
+      padding: 2,
       borderRadius: 10,
       gap: 2,
     },
+    // 44 px de altura: a web ignora `hitSlop`, então a área desenhada é a que vale.
     segmentadoBtn: {
       flex: 1,
+      minHeight: 44,
       alignItems: "center",
       justifyContent: "center",
       borderRadius: 7,
@@ -596,7 +599,7 @@ const useEstilos = estilosDoTema((cor) =>
       flexDirection: "row",
       alignItems: "center",
       gap: 8,
-      minHeight: 28,
+      minHeight: 44,
       alignSelf: "flex-start",
     },
     caixa: {
@@ -617,16 +620,23 @@ const useEstilos = estilosDoTema((cor) =>
       color: cor("cor-texto-apoio"),
       fontSize: 12,
     },
+    // Sem `gap`: cada área de toque já traz 3 px de folga de cada lado, e entre as pílulas ficam os 6 px de antes.
     periodoContainer: {
       flexDirection: "row",
       flexWrap: "wrap",
       alignItems: "center",
-      gap: 6,
     },
     textoPeriodoRotulo: {
       color: cor("cor-texto-apoio"),
       fontSize: 12,
-      marginRight: 2,
+      marginRight: 5,
+    },
+    // Área de toque de 44 px; a pílula (`pilulaPeriodo`) fica desenhada por dentro, com 3 px de folga de cada lado.
+    alvoDoPeriodo: {
+      minHeight: 44,
+      minWidth: 44,
+      justifyContent: "center",
+      paddingHorizontal: 3,
     },
     pilulaPeriodo: {
       paddingHorizontal: 11,

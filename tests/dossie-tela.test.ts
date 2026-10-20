@@ -12,6 +12,7 @@ import { abaPorTecla, focarElemento } from "../src/componentes/dossie-v1/teclado
 import { GavetaDeFonte } from "../src/componentes/fonte/GavetaDeFonte";
 import {
   EXPLICACAO_DA_CONFIANCA,
+  EXPLICACAO_DO_CALCULO,
   ORDEM_DA_CONFIANCA,
   dataDaFonte,
   descreverFonte,
@@ -653,7 +654,9 @@ describe("GavetaDeFonte", () => {
     expect(t).toContain("R$ 328–R$ 371/mês");
     for (const c of ORDEM_DA_CONFIANCA) expect(t).toContain(rotuloDaConfianca(c));
     expect(t).toContain("Este dado");
-    expect(t).toContain(EXPLICACAO_DA_CONFIANCA.oficial);
+    // L2: a faixa de IPTU é calculada pelo Vereda, não copiada do registro.
+    expect(t).toContain(EXPLICACAO_DO_CALCULO);
+    expect(t).not.toContain(EXPLICACAO_DA_CONFIANCA.oficial);
     expect(t).not.toContain(EXPLICACAO_DA_CONFIANCA.declarado);
     const destacadas = arvore.root.findAll((n) => typeof n.props.accessibilityLabel === "string" && n.props.accessibilityLabel.includes("é a confiança deste dado"));
     expect(destacadas.length).toBeGreaterThan(0);

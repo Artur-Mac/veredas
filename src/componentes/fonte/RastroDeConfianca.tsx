@@ -4,7 +4,7 @@ import { useTema } from "../../tema/Tema";
 import { ESPACO, RAIO, comAlfa, type TokenDeCor } from "../../tema/tokens";
 import type { Confianca } from "../../dados/contratos";
 import { Texto } from "../Texto";
-import { EXPLICACAO_DA_CONFIANCA, ORDEM_DA_CONFIANCA, rotuloDaConfianca, type FonteDoDado } from "./textos";
+import { ORDEM_DA_CONFIANCA, explicacaoDaConfianca, rotuloDaConfianca, type FonteDoDado } from "./textos";
 
 // `.conf-trace` de index.html (linhas 2410 a 2440): um traço de 16 × 2 px antes do rótulo. A forma do traço diz a
 // confiança sem depender de cor: contínuo = oficial, tracejado = declarado, pontilhado = inferência ou não sabemos.
@@ -55,8 +55,10 @@ export function RastroDeConfianca({ confianca, fonte = null, texto }: PropsDoRas
 /**
  * As quatro categorias, na ordem de index.html, com a do dado em destaque: fundo creme, borda e rótulo em negrito.
  * As outras três ficam com a mesma cor de texto, sem apagar nada: o destaque não depende de contraste reduzido.
+ * A explicação da linha em destaque separa o dado copiado do registro ("sem alteração") do que o Vereda calculou
+ * (mediana, faixa, moda ou contagem por prédio): `explicacaoDaConfianca` decide pelo id do dado ou, sem ele, pela fonte.
  */
-export function RastroCompleto({ atual, fonte = null }: { atual: Confianca; fonte?: FonteDoDado | null }) {
+export function RastroCompleto({ atual, fonte = null, idDoDado = null }: { atual: Confianca; fonte?: FonteDoDado | null; idDoDado?: string | null }) {
   const { cor } = useTema();
   return (
     <View role="list" accessibilityLabel="Rastro de confiança" style={{ gap: ESPACO[2] }}>
@@ -106,7 +108,7 @@ export function RastroCompleto({ atual, fonte = null }: { atual: Confianca; font
             </View>
             {ativa ? (
               <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>
-                {EXPLICACAO_DA_CONFIANCA[c]}
+                {explicacaoDaConfianca(c, idDoDado, fonte)}
               </Texto>
             ) : null}
           </View>

@@ -212,6 +212,77 @@ describe("custo", () => {
     expect(c.barras[0]).toBe(1);
   });
 
+  describe("compra: a nota das parcelas a confirmar (P10)", () => {
+    const NOTA = "A diferença usa só as parcelas conhecidas; as a confirmar ficam fora.";
+    const compra = (id: string, declarados: Partial<AnaliseV2["declarados"]> = {}) =>
+      analise(id, { modalidade: "compra", declarados: { preco: v(890000), seguroIncendio: vazio, ...declarados } });
+    const todasConhecidas = compra("c0");
+    const iptuAConfirmar = compra("c1", { iptu: iptu(3240, "desconhecido", true) });
+    const condominioAConfirmar = compra("c2", { condominio: v(700, true) });
+
+    it("a mesma nota do aluguel quando as duas análises têm parcelas a confirmar diferentes", () => {
+      const aluguel = compararCusto(analise("p", { declarados: { iptu: iptu(288, "desconhecido", true) } }), casaForte);
+      expect(aluguel.nota).toBe(NOTA);
+      const c = compararCusto(iptuAConfirmar, todasConhecidas);
+      expect(c.referencia).toBe("preco_anunciado");
+      expect(c.diferenca).toBe(0);
+      expect(c.nota).toBe(NOTA);
+      expect(c.nota).toBe(aluguel.nota);
+      // Vale em qualquer ordem das colunas.
+      expect(compararCusto(todasConhecidas, iptuAConfirmar).nota).toBe(NOTA);
+    });
+
+    it("com o preço diferente também: a diferença do preço continua a mesma e a nota entra", () => {
+      const c = compararCusto(compra("c3", { preco: v(760000), iptu: iptu(2400, "desconhecido", true) }), todasConhecidas);
+      expect(c.diferenca).toBe(130000);
+      expect(c.frase).toBe("R$ 130.000 de diferença no preço anunciado.");
+      expect(c.nota).toBe(NOTA);
+      expect(c.colunas[0].mensalConhecido).toBe(1190);
+      expect(c.colunas[1].mensalConhecido).toBe(1190 + 288);
+    });
+
+    it("mesma quantidade, parcelas a confirmar diferentes: nota", () => {
+      expect(compararCusto(iptuAConfirmar, condominioAConfirmar).nota).toBe(NOTA);
+    });
+
+    it("quantidades diferentes: nota; parcela que só uma das duas tem, a confirmar, também", () => {
+      const doisA = compra("c4", { condominio: v(700, true), iptu: iptu(3240, "desconhecido", true) });
+      expect(compararCusto(doisA, iptuAConfirmar).nota).toBe(NOTA);
+      const seguroAConfirmar = compra("c5", { seguroIncendio: v(40, true) });
+      expect(compararCusto(seguroAConfirmar, todasConhecidas).nota).toBe(NOTA);
+      expect(compararCusto(seguroAConfirmar, todasConhecidas).parcelas.find((p) => p.nome === "Seguro incêndio")?.celulas)
+        .toEqual([{ texto: "A confirmar", detalhe: "O anúncio informa R$ 40" }, { texto: "—", detalhe: null }]);
+    });
+
+    it("sem nota quando as duas somas deixam de fora as mesmas parcelas, ou quando nada está a confirmar", () => {
+      expect(compararCusto(todasConhecidas, compra("c6")).nota).toBeNull();
+      expect(compararCusto(iptuAConfirmar, compra("c7", { iptu: iptu(null, "desconhecido") })).nota).toBeNull();
+      expect(compararCusto(iptuAConfirmar, compra("c8", { iptu: iptu(2400, "desconhecido", true), preco: v(760000) })).nota).toBeNull();
+      expect(compararCusto(condominioAConfirmar, compra("c9", { condominio: vazio })).nota).toBeNull();
+      // Parcela conhecida que só uma das duas tem não é "a confirmar": não gera a nota.
+      expect(compararCusto(compra("c10", { taxaServico: v(120) }), todasConhecidas).nota).toBeNull();
+    });
+
+    it("sem diferença de preço para qualificar (preço a confirmar), a nota não aparece", () => {
+      const semPreco = compra("c11", { preco: v(890000, true), iptu: iptu(3240, "desconhecido", true) });
+      const c = compararCusto(semPreco, todasConhecidas);
+      expect(c.diferenca).toBeNull();
+      expect(c.nota).toBeNull();
+    });
+
+    it("aluguel não muda: qualquer parcela a confirmar tira algo da soma, mesmo nas duas análises", () => {
+      const pendente = analise("al", { declarados: { iptu: iptu(288, "desconhecido", true) } });
+      expect(compararCusto(pendente, analise("al2", { declarados: { iptu: iptu(300, "desconhecido", true) } })).nota).toBe(NOTA);
+      expect(compararCusto(casaForte, analise("al3")).nota).toBeNull();
+    });
+
+    it("a nota não compara com adjetivo nem recomenda", () => {
+      const proibidas = /perigos|vale a pena|caro|barat|caix[aã]o|[óo]tim|ruim|arriscad|melhor|pior|recomend|menor|maior/i;
+      expect(NOTA).not.toMatch(proibidas);
+      expect(compararCusto(iptuAConfirmar, todasConhecidas).nota).not.toMatch(proibidas);
+    });
+  });
+
   it("parcela que só uma das análises tem aparece com '—' na outra", () => {
     const comTaxa = analise("t", { declarados: { taxaServico: v(120) } });
     const linha = compararCusto(comTaxa, casaForte).parcelas.find((p) => p.nome === "Taxa de serviço");

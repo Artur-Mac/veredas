@@ -1,11 +1,13 @@
 import { router, usePathname } from "expo-router";
 import React from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle, Line, Path, Polygon, Rect } from "react-native-svg";
 import { useTema } from "../../tema/Tema";
 import { TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { AlvoDeToque } from "../Pressionavel";
 import { Texto } from "../Texto";
+import { Coluna } from "./Coluna";
 
 export interface ItemDock {
   id: string;
@@ -89,48 +91,53 @@ export function DockInferior() {
         },
       ]}
     >
-      {itens.map((item) => {
-        const ativo = eAtivo(item.rota);
-        return (
-          <Pressable
-            key={item.id}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: ativo }}
-            aria-selected={ativo}
-            accessibilityLabel={item.nome}
-            onPress={() => router.push(item.rota as any)}
-            style={styles.dockItem}
-          >
-            {ativo ? <View style={[styles.tracoAtivo, { backgroundColor: cor("cor-acao") }]} /> : null}
-            {item.icone(ativo)}
-            <Texto
-              tipo="apoio"
-              style={[
-                styles.rotulo,
-                {
-                  color: ativo ? cor("cor-texto") : cor("cor-texto-apoio"),
-                  fontWeight: ativo ? "600" : "500",
-                },
-              ]}
+      {/* A faixa vai de ponta a ponta; as quatro abas ficam na coluna do app. */}
+      <Coluna style={styles.abas}>
+        {itens.map((item) => {
+          const ativo = eAtivo(item.rota);
+          return (
+            <AlvoDeToque
+              key={item.id}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: ativo }}
+              aria-selected={ativo}
+              accessibilityLabel={item.nome}
+              onPress={() => router.push(item.rota as any)}
+              style={styles.dockItem}
             >
-              {item.nome}
-            </Texto>
-          </Pressable>
-        );
-      })}
+              {ativo ? <View style={[styles.tracoAtivo, { backgroundColor: cor("cor-acao") }]} /> : null}
+              {item.icone(ativo)}
+              <Texto
+                tipo="apoio"
+                style={[
+                  styles.rotulo,
+                  {
+                    color: ativo ? cor("cor-texto") : cor("cor-texto-apoio"),
+                    fontWeight: ativo ? "600" : "500",
+                  },
+                ]}
+              >
+                {item.nome}
+              </Texto>
+            </AlvoDeToque>
+          );
+        })}
+      </Coluna>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   dock: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
     borderTopWidth: 1,
     paddingTop: 8,
     position: "relative",
     zIndex: 55,
+  },
+  abas: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
   },
   dockItem: {
     flex: 1,

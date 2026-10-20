@@ -3,7 +3,8 @@ import { TextInput, View } from "react-native";
 import type { Edificio } from "../../dados/contratos";
 import { buscarPorEndereco } from "../../dados/recife/buscar";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO } from "../../tema/tokens";
+import { ESPACO, RAIO, comAlfa } from "../../tema/tokens";
+import { useFocoDoCampo } from "../casca/foco";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { linhaDeResultado } from "./textos";
@@ -16,6 +17,7 @@ type Props = {
 /** Campo sempre visível: rua, número ou nome do prédio. Os resultados vêm de buscarPorEndereco. */
 export function BuscaDePredio({ edificios, aoEscolher }: Props) {
   const { cor } = useTema();
+  const foco = useFocoDoCampo();
   const [texto, setTexto] = useState("");
   const consulta = texto.trim();
   const resultados = useMemo(
@@ -29,22 +31,29 @@ export function BuscaDePredio({ edificios, aoEscolher }: Props) {
         value={texto}
         onChangeText={setTexto}
         placeholder="Buscar por rua, número ou nome do prédio"
-        placeholderTextColor="#A8A29E"
+        placeholderTextColor={cor("cor-texto-apoio")}
         accessibilityLabel="Buscar por rua, número ou nome do prédio"
         autoCapitalize="none"
         autoCorrect={false}
         returnKeyType="search"
-        style={{
-          minHeight: 46,
-          paddingHorizontal: 12,
-          borderRadius: 8,
-          borderWidth: 1,
-          borderColor: "rgba(23, 23, 23, 0.12)",
-          backgroundColor: cor("cor-superficie"),
-          color: cor("cor-texto"),
-          fontFamily: "PlusJakartaSans",
-          fontSize: 13,
-        }}
+        onFocus={foco.aoFocar}
+        onBlur={foco.aoDesfocar}
+        style={[
+          {
+            minHeight: 46,
+            paddingHorizontal: 12,
+            borderRadius: 8,
+            borderWidth: 1,
+            borderColor: comAlfa(cor("cor-texto"), 0.12),
+            backgroundColor: cor("cor-superficie"),
+            color: cor("cor-texto"),
+            fontFamily: "PlusJakartaSans",
+            fontSize: 13,
+            // O contorno do navegador sai; no lugar entra a borda de 2 px em azul cadastral de `useFocoDoCampo`.
+            outlineWidth: 0,
+          },
+          foco.estilo,
+        ]}
       />
       {consulta.length >= 2 ? (
         resultados.length > 0 ? (
@@ -53,7 +62,7 @@ export function BuscaDePredio({ edificios, aoEscolher }: Props) {
             style={{
               borderRadius: 11,
               borderWidth: 1,
-              borderColor: "rgba(23, 23, 23, 0.08)",
+              borderColor: comAlfa(cor("cor-texto"), 0.08),
               backgroundColor: cor("cor-creme"),
               overflow: "hidden",
             }}

@@ -354,3 +354,50 @@ Ran all test suites matching /tests\/extrator-estado.test.ts|tests\/extrator-pag
 ### Bloqueios e perguntas ao arquiteto
 - Nenhum bloqueio. Fatia 2B concluída e verificada com sucesso.
 
+
+---
+
+## Fatias 3 a 6 e correções: consolidado pelo arquiteto (20/10/2026)
+
+A partir da revisão 2.4 da ordem, o operário externo foi dispensado e o arquiteto passou a orquestrar agentes operários em ondas, cada frente com arquivos próprios e um revisor que tentava reprovar o trabalho. Este bloco substitui as seções por fatia que faltavam. As referências a `scripts/fatia0-screenshot.mjs` e `scripts/fatia2-smoke.mjs` nas seções acima são históricas: os dois foram removidos, junto com `scripts/poc-smoke.mjs`; o teste de ponta a ponta agora é `npm run test:v1`.
+
+### Ondas
+
+| Onda | O que entregou | Parecer |
+|---|---|---|
+| 1 | Correções C1–C5; script do índice do Recife; busca e tela do prédio; derivação do dossiê e mensagem ao corretor | Reprovada pelos revisores: obras repetidas inflando contagens, busca sem "EST"/"PRC", edições apagadas ao reler, IPTU zero como achado |
+| 1B | Obras sem indeferidas e sem repetição; prédios sem coordenada localizados pelo endereço do lote; seletor dos 94 bairros; verificação anti-robô só pelo título e pelo desafio | Aprovada (índice reprovado só por números errados no relatório; código conferido por recálculo independente) |
+| 2 | Tela do dossiê, visita, comparar, salvos, descarte, créditos, sobre os dados; ajustes de revisão e de índice | Aprovada, com ajustes que cruzavam frentes |
+| — | Inspeção visual do arquiteto: o ITBI mede área com parte comum (66,7 m² privativos = 109,84 m² no ITBI), o que fazia todo anúncio parecer 60% a 150% acima | Contrato mudado para valor por unidade (revisão 2.5) |
+| 3 | ITBI por unidade; dossiê e visita finos; casca, Explorar e revisão; teste de ponta a ponta | Reprovada pelo auditor final: falha de leitura do caderno fazia o próximo salvamento apagar todas as análises |
+| 3B | Caderno nunca apagado (quarentena, cópia bruta, gravação bloqueada); área contestada fora das contas; coluna no desktop, foco e toque; leitor que recusa outra página do portal; aviso nos exemplos | Aprovada pelo auditor final |
+| 3C | Carteira com o mesmo cuidado do caderno; restaurar sem dossiê grátis; foco no cartão; aviso de quarentena nas telas; exemplos sem ITBI por m²; limpeza | Aprovada pela verificação final |
+
+### Números finais (saída literal, 20/10/2026)
+
+```text
+$ npm run verificar
+Test Suites: 26 passed, 26 total
+Tests:       1147 passed, 1147 total
+
+$ POC_URL=http://localhost:8087 node scripts/v1-smoke.mjs
+Requisições para fora do servidor do app: nenhuma
+Etapas auditadas a 375×812 e 1280×900: 43. Capturas em out/v1/smoke/
+V1: compra e aluguel em Casa Forte (link, texto, anomalia de IPTU, prédio real do índice, busca por rua e número, crédito 3→2→1, fonte da Prefeitura, sem R$/m² com ITBI), abas e dossiês sem rede, Torre fora da cobertura, persistência, segunda análise e comparação de compra e de aluguel, descarte (+1 só para quem usou crédito, uma vez), menu e créditos, caderno ilegível (erro na tela, chave intacta) passaram.
+```
+
+Índice cadastral (script `scripts/dados/construir-indice-recife.mjs`, duas execuções com sha256 idêntico): Boa Viagem 1.879 prédios, Casa Forte 82, Graças 291, Espinheiro 156, Madalena 280 (2.688 no total); vínculo com lote de 99,9% a 100%; nome do edifício em 79% a 88%; Boa Viagem com 1,803 MB e o total com cerca de 2,6 MB. Registros lidos: IPTU 105.195, ITBI 143.350, Licenciamento (categoria Obra) 39.067, Lotes 114.079.
+
+### Não verificado
+
+- Celular físico e emulador: nenhum disponível nesta máquina. A tabela de aparelho da Fatia 2B segue para o humano (Expo Go, um link real de cada portal), assim como o mapeamento das chaves de ZAP, VivaReal e OLX.
+- Leitores de tela nativos (TalkBack, VoiceOver).
+- Recarregar a página sem internet na web: sem service worker, não é suportado; navegar entre telas sem internet, sim.
+
+### Incidente
+
+Um agente revisor da Onda 3B rodou `ps aux`, e a saída expôs dois tokens do language_server do Antigravity no registro da sessão. O usuário reiniciou o Antigravity em 20/10/2026, o que invalida os tokens. A partir da Onda 3C, todo prompt de agente proíbe comandos que listem processos ou variáveis de ambiente.
+
+### Pronto para revisão do arquiteto
+
+Sim, com as pendências de aparelho acima. Próximos passos em `docs/produto/pesquisa-2026-10-20/05-ROADMAP-PROXIMAS-VERSOES.md`.

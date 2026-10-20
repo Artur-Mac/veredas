@@ -4,6 +4,8 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { Cartao, CorpoDoCartao } from "../../componentes/Cartao";
 import { useAviso } from "../../componentes/casca/Aviso";
+import { Coluna } from "../../componentes/casca/Coluna";
+import { useFocoDeTeclado } from "../../componentes/casca/foco";
 import { GavetaDeDescarte } from "../../componentes/descarte/GavetaDeDescarte";
 import { AbasDoDossie, ID_DO_PAINEL, idDaAba } from "../../componentes/dossie-v1/AbasDoDossie";
 import { CaixaCreme, Corpo, LinkComSeta } from "../../componentes/dossie-v1/base";
@@ -53,7 +55,7 @@ function primeiroParametro(valor: string | string[] | undefined): string | undef
 export default function TelaDossie() {
   const parametros = useLocalSearchParams<{ id?: string | string[] }>();
   const id = primeiroParametro(parametros.id);
-  const { lista, ativa, analiseAtiva, pronto, definirAtiva } = useAnalises();
+  const { lista, ativa, analiseAtiva, pronto, erro, definirAtiva } = useAnalises();
   const analise = id ? (lista.find((a) => a.id === id) ?? null) : analiseAtiva;
   const idDaAnalise = analise?.id ?? null;
 
@@ -84,24 +86,32 @@ export default function TelaDossie() {
       ) : analise ? (
         <DossieDaAnalise key={analise.id} analise={analise} lista={lista} />
       ) : (
-        <EstadoVazio />
+        <EstadoVazio erro={erro} />
       )}
     </Tela>
   );
 }
 
-function EstadoVazio() {
+/** `erro` vem de `useAnalises()`: preenchido só quando o caderno não abriu (a lista vazia, então, não é escolha da pessoa). */
+function EstadoVazio({ erro }: { erro: string }) {
   return (
     <View style={styles.conteiner}>
-      <Cartao style={styles.cartao}>
-        <CorpoDoCartao>
-          <Texto tipo="secao">Dossiê</Texto>
-          <Texto tipo="corpo" cor="cor-texto-apoio">
-            Nenhum dossiê aberto. Cole um link em Explorar.
-          </Texto>
-          <Botao rotulo="Ir para Explorar" variante="principal" onPress={() => router.push("/")} />
-        </CorpoDoCartao>
-      </Cartao>
+      <Coluna>
+        <Cartao style={styles.cartao}>
+          <CorpoDoCartao>
+            <Texto tipo="secao">Dossiê</Texto>
+            <Texto tipo="corpo" cor="cor-texto-apoio">
+              Nenhum dossiê aberto. Cole um link em Explorar.
+            </Texto>
+            {erro ? (
+              <Texto tipo="apoio" role="alert" cor="cor-barro-texto">
+                {erro}
+              </Texto>
+            ) : null}
+            <Botao rotulo="Ir para Explorar" variante="principal" onPress={() => router.push("/")} />
+          </CorpoDoCartao>
+        </Cartao>
+      </Coluna>
     </View>
   );
 }
@@ -113,6 +123,8 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
   const [aba, setAba] = useState<AbaDoDossie>("destaques");
   const [prioridade, setPrioridade] = useState<Prioridade>("custo");
   const [gaveta, setGaveta] = useState<GavetaAberta | null>(null);
+  // O painel das abas entra na ordem de Tab (`tabIndex` 0, como em index.html): com o teclado, ele leva o anel de foco.
+  const focoDoPainel = useFocoDeTeclado();
 
   const rolagem = useRef<ScrollView>(null);
   const posicoes = useRef({ coluna: 0, painel: 0 });
@@ -202,7 +214,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
   return (
     <>
       <ScrollView ref={rolagem} contentContainerStyle={styles.rolagem} keyboardShouldPersistTaps="handled">
-        <View style={styles.coluna} onLayout={(e) => (posicoes.current.coluna = e.nativeEvent.layout.y)}>
+        <Coluna onLayout={(e) => (posicoes.current.coluna = e.nativeEvent.layout.y)}>
           {/* `.ds-overview` */}
           <View
             accessibilityLabel="Resumo do imóvel"
@@ -250,14 +262,19 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             {...PAINEL_DA_ABA(aba)}
             accessibilityLabel={aba === "destaques" ? "Destaques" : aba === "entorno" ? "Entorno" : "Edifício"}
             onLayout={(e) => (posicoes.current.painel = e.nativeEvent.layout.y)}
-            style={{
-              paddingVertical: RECUO_DO_PAINEL,
-              paddingHorizontal: 18,
-              borderRadius: 16,
-              borderWidth: 1,
-              borderColor: comAlfa(cor("cor-texto"), 0.08),
-              backgroundColor: cor("cor-superficie"),
-            }}
+            onFocus={focoDoPainel.aoFocar}
+            onBlur={focoDoPainel.aoDesfocar}
+            style={[
+              {
+                paddingVertical: RECUO_DO_PAINEL,
+                paddingHorizontal: 18,
+                borderRadius: 16,
+                borderWidth: 1,
+                borderColor: comAlfa(cor("cor-texto"), 0.08),
+                backgroundColor: cor("cor-superficie"),
+              },
+              focoDoPainel.estilo,
+            ]}
           >
             {aba === "destaques" ? (
               <Destaques
@@ -315,7 +332,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
               )}
             </View>
           </View>
-        </View>
+        </Coluna>
       </ScrollView>
 
       <GavetaDeFonte
@@ -349,10 +366,9 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
 const styles = StyleSheet.create({
   centro: { flex: 1, alignItems: "center", justifyContent: "center", padding: ESPACO[4] },
   conteiner: { flex: 1, padding: ESPACO[4], justifyContent: "center", alignItems: "center" },
-  cartao: { width: "100%", maxWidth: 480, marginHorizontal: 0 },
+  cartao: { marginHorizontal: 0 },
+  // As margens laterais ficam na rolagem; a coluna (720 px no desktop, como as demais telas) vem dentro delas.
   rolagem: { padding: ESPACO[4], paddingBottom: 48 },
-  // `#dossierContainer { max-width: 780px; margin-inline: auto }`
-  coluna: { width: "100%", maxWidth: 780, alignSelf: "center" },
   depoisDoPainel: { marginTop: 18, paddingHorizontal: 3, gap: ESPACO[2] },
   acoes: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: ESPACO[3] },
 });

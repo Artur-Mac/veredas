@@ -9,9 +9,9 @@ import { View } from "react-native";
 import { Botao } from "../componentes/Botao";
 import { apagarDadosDoAparelho } from "../componentes/casca/apagarDados";
 import { useAviso } from "../componentes/casca/Aviso";
+import { Gaveta, RESPIRO_NO_TOPO_DA_GAVETA } from "../componentes/casca/Gaveta";
 import { useReiniciarApp } from "../componentes/casca/Reinicio";
 import { RastroDeConfianca } from "../componentes/fonte/RastroDeConfianca";
-import { Folha } from "../componentes/Folha";
 import { Icone } from "../componentes/Icone";
 import { Pressionavel } from "../componentes/Pressionavel";
 import { voltarOu } from "../componentes/Tela";
@@ -224,8 +224,8 @@ function ApagarMeusDados() {
 export default function SobreOsDados() {
   const leitura = lerFontes();
   return (
-    <Folha titulo="Sobre os dados públicos" pai="/">
-      <View style={{ gap: 14 }}>
+    <Gaveta visivel titulo="Sobre os dados públicos" aoFechar={() => voltarOu("/")}>
+      <View style={{ gap: 14, paddingTop: RESPIRO_NO_TOPO_DA_GAVETA }}>
         <View style={{ gap: 6 }}>
           <Texto tipo="titulo-tela" role="heading" aria-level={2} style={{ fontSize: 18.5, lineHeight: 22, fontWeight: "500", letterSpacing: -0.37 }}>
             De onde vêm os números
@@ -301,6 +301,6 @@ export default function SobreOsDados() {
 
         <Botao rotulo="Entendido" onPress={() => voltarOu("/")} />
       </View>
-    </Folha>
+    </Gaveta>
   );
 }

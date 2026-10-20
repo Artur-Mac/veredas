@@ -3,13 +3,15 @@
 // telas do app. Nenhum texto de tela mora no cabeçalho.
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Svg, { Line, Path } from "react-native-svg";
 import { useCarteira } from "../../estado/Carteira";
 import { useTema } from "../../tema/Tema";
 import { RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
 import { desenhoDoSimbolo } from "../desenhoDaMarca";
+import { AlvoDeToque } from "../Pressionavel";
 import { Texto } from "../Texto";
+import { Coluna } from "./Coluna";
 import { MenuRapido } from "./MenuRapido";
 
 /** "1 crédito", "3 créditos". */
@@ -19,84 +21,89 @@ export function rotuloDeCreditos(saldo: number): string {
 
 export function CabecalhoDoApp() {
   const { cor } = useTema();
-  const { saldo, pronto } = useCarteira();
+  const { saldo, pronto: lida, bloqueada } = useCarteira();
+  // Carteira que não abriu (bloqueada) também não tem saldo verdadeiro: o 0 exposto é falta de leitura.
+  const pronto = lida && !bloqueada;
   const [menuAberto, setMenuAberto] = useState(false);
   // Antes de ler a carteira o saldo ainda é o inicial de mentira: melhor um traço do que um número que pode estar errado.
   const rotulo = pronto ? rotuloDeCreditos(saldo) : "— créditos";
 
   return (
     <View style={[styles.cabecalho, { backgroundColor: cor("cor-fundo"), borderBottomColor: comAlfa(cor("cor-texto"), 0.08) }]}>
-      {/* `.brand-lockup`: ninho do João-de-barro e VEREDA em Fraunces 500, com 0,18em de espaçamento. */}
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Início Vereda"
-        onPress={() => router.push("/")}
-        style={styles.marca}
-      >
-        <Svg width={24} height={24} viewBox="0 0 100 100" fill="none" aria-hidden>
-          <Path d={desenhoDoSimbolo} fill={cor("cor-acao")} fillRule="evenodd" />
-        </Svg>
-        <Texto tipo="titulo-tela" style={styles.nomeDaMarca}>
-          VEREDA
-        </Texto>
-      </Pressable>
-
-      <View style={styles.acoes}>
-        {/* `.credits-pill-btn`: o alvo de toque tem 44 px de altura; a pílula desenhada por dentro mantém os 28 px do protótipo. */}
-        <Pressable
+      {/* A faixa vai de ponta a ponta; marca e ações ficam na coluna do app, alinhadas aos cartões das telas. */}
+      <Coluna style={styles.conteudo}>
+        {/* `.brand-lockup`: ninho do João-de-barro e VEREDA em Fraunces 500, com 0,18em de espaçamento. */}
+        <AlvoDeToque
           accessibilityRole="button"
-          accessibilityLabel={pronto ? `Carteira de créditos: ${rotulo}` : "Carteira de créditos"}
-          onPress={() => router.push("/creditos")}
-          style={styles.alvoDaPilula}
+          accessibilityLabel="Início Vereda"
+          onPress={() => router.push("/")}
+          style={styles.marca}
         >
-          {({ pressed }) => (
-            <View
-              style={[
-                styles.pilula,
-                {
-                  backgroundColor: pressed ? cor("cor-superficie") : cor("cor-creme"),
-                  borderColor: comAlfa(cor("cor-texto"), 0.11),
-                },
-              ]}
-            >
-              <View style={[styles.ponto, { backgroundColor: cor("cor-acao") }]} />
-              <Texto tipo="apoio" style={styles.textoDaPilula}>
-                {rotulo}
-              </Texto>
-            </View>
-          )}
-        </Pressable>
+          <Svg width={24} height={24} viewBox="0 0 100 100" fill="none" aria-hidden>
+            <Path d={desenhoDoSimbolo} fill={cor("cor-acao")} fillRule="evenodd" />
+          </Svg>
+          <Texto tipo="titulo-tela" style={styles.nomeDaMarca}>
+            VEREDA
+          </Texto>
+        </AlvoDeToque>
 
-        {/* `.icon-only-toggle`: 36 px desenhados dentro de um alvo de 44 px. */}
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Menu de navegação"
-          accessibilityState={{ expanded: menuAberto }}
-          aria-expanded={menuAberto}
-          onPress={() => setMenuAberto((antes) => !antes)}
-          style={styles.alvoDoMenu}
-        >
-          {({ pressed }) => (
-            <View
-              style={[
-                styles.botaoDoMenu,
-                {
-                  backgroundColor: pressed || menuAberto ? cor("cor-superficie") : comAlfa(cor("cor-superficie"), 0.65),
-                  borderColor: comAlfa(cor("cor-texto"), 0.11),
-                },
-              ]}
-            >
-              <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={cor("cor-texto")} strokeWidth={1.7} strokeLinecap="round" aria-hidden>
-                <Line x1="4" y1="7" x2="20" y2="7" />
-                <Line x1="4" y1="12" x2="20" y2="12" />
-                <Line x1="4" y1="17" x2="20" y2="17" />
-              </Svg>
-            </View>
-          )}
-        </Pressable>
-      </View>
+        <View style={styles.acoes}>
+          {/* `.credits-pill-btn`: o alvo de toque tem 44 px de altura; a pílula desenhada por dentro mantém os 28 px do protótipo. */}
+          <AlvoDeToque
+            accessibilityRole="button"
+            accessibilityLabel={pronto ? `Carteira de créditos: ${rotulo}` : "Carteira de créditos"}
+            onPress={() => router.push("/creditos")}
+            style={styles.alvoDaPilula}
+          >
+            {({ pressed }) => (
+              <View
+                style={[
+                  styles.pilula,
+                  {
+                    backgroundColor: pressed ? cor("cor-superficie") : cor("cor-creme"),
+                    borderColor: comAlfa(cor("cor-texto"), 0.11),
+                  },
+                ]}
+              >
+                <View style={[styles.ponto, { backgroundColor: cor("cor-acao") }]} />
+                <Texto tipo="apoio" style={styles.textoDaPilula}>
+                  {rotulo}
+                </Texto>
+              </View>
+            )}
+          </AlvoDeToque>
 
-      <MenuRapido aberto={menuAberto} aoFechar={() => setMenuAberto(false)} saldo={pronto ? saldo : null} />
+          {/* `.icon-only-toggle`: 36 px desenhados dentro de um alvo de 44 px. */}
+          <AlvoDeToque
+            accessibilityRole="button"
+            accessibilityLabel="Menu de navegação"
+            accessibilityState={{ expanded: menuAberto }}
+            aria-expanded={menuAberto}
+            onPress={() => setMenuAberto((antes) => !antes)}
+            style={styles.alvoDoMenu}
+          >
+            {({ pressed }) => (
+              <View
+                style={[
+                  styles.botaoDoMenu,
+                  {
+                    backgroundColor: pressed || menuAberto ? cor("cor-superficie") : comAlfa(cor("cor-superficie"), 0.65),
+                    borderColor: comAlfa(cor("cor-texto"), 0.11),
+                  },
+                ]}
+              >
+                <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={cor("cor-texto")} strokeWidth={1.7} strokeLinecap="round" aria-hidden>
+                  <Line x1="4" y1="7" x2="20" y2="7" />
+                  <Line x1="4" y1="12" x2="20" y2="12" />
+                  <Line x1="4" y1="17" x2="20" y2="17" />
+                </Svg>
+              </View>
+            )}
+          </AlvoDeToque>
+        </View>
+
+        <MenuRapido aberto={menuAberto} aoFechar={() => setMenuAberto(false)} saldo={pronto ? saldo : null} />
+      </Coluna>
     </View>
   );
 }
@@ -104,14 +111,15 @@ export function CabecalhoDoApp() {
 const styles = StyleSheet.create({
   cabecalho: {
     minHeight: 56,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    zIndex: 60,
+  },
+  conteudo: {
+    minHeight: 56,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    // O menu desenha 36 px dentro de 48 px de alvo: com 10 px aqui, a borda visível fica a 16 px da lateral.
-    paddingLeft: 16,
-    paddingRight: 10,
-    borderBottomWidth: 1,
-    zIndex: 60,
   },
   marca: {
     minHeight: TOQUE_MINIMO,
@@ -127,9 +135,11 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     letterSpacing: 3.42, // 0,18em de 19 px
   },
+  // O menu desenha 36 px dentro de 48 px de alvo: com 6 px de margem negativa, a borda visível fica a 16 px da lateral.
   acoes: {
     flexDirection: "row",
     alignItems: "center",
+    marginRight: -6,
   },
   alvoDaPilula: {
     minHeight: TOQUE_MINIMO,
