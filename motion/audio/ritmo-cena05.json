@@ -1,0 +1,146 @@
+{
+  "poc": "CENA-05",
+  "duracao": 6.1,
+  "geradoEm": "2026-10-18",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 126,
+    "fase": 0.03,
+    "erroMedio": 0.08,
+    "batidas": [
+      0.03,
+      0.506,
+      0.982,
+      1.459,
+      1.935,
+      2.411,
+      2.887,
+      3.363,
+      3.84,
+      4.316,
+      4.792,
+      5.268,
+      5.744
+    ]
+  },
+  "holds": [
+    2.3,
+    6.1
+  ],
+  "sons": [
+    {
+      "t": 0.05,
+      "tipo": "whoosh",
+      "dur": 0.7,
+      "ganho": 0.45,
+      "evento": "a tinta desce",
+      "batidaMaisProxima": 0.03,
+      "desvio": 0.02
+    },
+    {
+      "t": 0.4,
+      "tipo": "pop",
+      "ganho": 0.45,
+      "evento": "a marca VEREDA entra",
+      "batidaMaisProxima": 0.506,
+      "desvio": -0.106
+    },
+    {
+      "t": 0.75,
+      "tipo": "tick",
+      "evento": "a tinta para na régua; a linha fica laranja",
+      "batidaMaisProxima": 0.982,
+      "desvio": -0.232
+    },
+    {
+      "t": 0.8,
+      "tipo": "whoosh",
+      "dur": 0.9,
+      "ganho": 0.4,
+      "evento": "a tinta escoa por baixo",
+      "batidaMaisProxima": 0.982,
+      "desvio": -0.182
+    },
+    {
+      "t": 1.1,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.3,
+      "evento": "o contorno vira o celular",
+      "batidaMaisProxima": 0.982,
+      "desvio": 0.118
+    },
+    {
+      "t": 1.5,
+      "tipo": "pop",
+      "evento": "TEMPO vira SEGUNDOS",
+      "batidaMaisProxima": 1.459,
+      "desvio": 0.041
+    },
+    {
+      "t": 2.35,
+      "tipo": "whoosh",
+      "dur": 0.5,
+      "ganho": 0.4,
+      "evento": "a marca vai ao cabeçalho; o celular ao centro",
+      "batidaMaisProxima": 2.411,
+      "desvio": -0.061
+    },
+    {
+      "t": 2.88,
+      "tipo": "click",
+      "evento": "toque em Colar link",
+      "batidaMaisProxima": 2.887,
+      "desvio": -0.007
+    },
+    {
+      "t": 2.94,
+      "tipo": "pop",
+      "ganho": 0.5,
+      "evento": "o link chega",
+      "batidaMaisProxima": 2.887,
+      "desvio": 0.053
+    },
+    {
+      "t": 4.22,
+      "tipo": "click",
+      "evento": "toque em Gerar Dossiê",
+      "batidaMaisProxima": 4.316,
+      "desvio": -0.096
+    },
+    {
+      "t": 4.44,
+      "tipo": "whoosh",
+      "dur": 0.4,
+      "ganho": 0.4,
+      "evento": "o cartão vira a barra de abas",
+      "batidaMaisProxima": 4.316,
+      "desvio": 0.124
+    },
+    {
+      "t": 4.64,
+      "tipo": "tick",
+      "ganho": 0.5,
+      "evento": "a lista do dossiê",
+      "batidaMaisProxima": 4.792,
+      "desvio": -0.152
+    },
+    {
+      "t": 5.2,
+      "tipo": "tick",
+      "evento": "Edifício",
+      "batidaMaisProxima": 5.268,
+      "desvio": -0.068
+    },
+    {
+      "t": 5.3,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.4,
+      "evento": "o celular se fecha na linha",
+      "batidaMaisProxima": 5.268,
+      "desvio": 0.032
+    }
+  ]
+}

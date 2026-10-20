@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · Cena 11 · prova, equipe e piloto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@400..800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lib/marca.css">
+<style>
+  /* base: a mesma casca das cenas 08 e 09 e do quadro de emenda (costura.html) */
+  html, body { margin: 0; background: var(--bg-obsidian); }
+  body.tela { min-height: 100vh; overflow: hidden; }
+  #c {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden; flex: none;
+    background: var(--bg-paper); color: var(--ink-primary);
+    font-family: var(--font-sans); font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  .grade {
+    position: absolute; inset: 0; background-size: 48px 48px;
+    background-image:
+      linear-gradient(to right, rgba(127, 136, 112, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(127, 136, 112, 0.09) 1px, transparent 1px);
+  }
+  svg.camada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+  .camada-div { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  .t { position: absolute; white-space: nowrap; line-height: 1.15; }
+  #debug { position: absolute; right: 16px; top: 12px; font: 500 16px/1 var(--font-mono); color: var(--ink-muted); }
+
+  /* celulares em pé (proporção de telefone): a captura inteira, em tamanho fixo, só é recortada */
+  .rev { position: absolute; overflow: hidden; }
+  .cel { position: absolute; left: 0; width: 350px; box-sizing: border-box; padding: 8px; border-radius: 46px; background: #222426; border: 2px solid #222426; box-shadow: 0 0 0 2px rgba(23,23,23,.2); }
+  .cel::before { content: ''; position: absolute; z-index: 2; left: 50%; top: 4px; width: 64px; height: 8px; margin-left: -32px; border-radius: 999px; background: #222426; }
+  .scr { position: relative; width: 330px; border-radius: 36px; overflow: hidden; background: var(--bg-paper); }
+  .scr img { position: absolute; left: 0; top: 0; width: 330px; height: 609px; display: block; }
+
+  /* textos do filme */
+  .kicker { font: 700 24px/1 var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--brand-rust); }
+  .chip { display: inline-flex; align-items: center; gap: 14px; box-sizing: border-box; padding: 0 30px 0 26px; height: 76px; border-radius: 999px; background: #FFFFFF; border: 1.5px solid var(--border-hairline); font: 600 42px/1 var(--font-sans); letter-spacing: -0.01em; color: var(--ink-primary); }
+  .chip i { display: block; width: 14px; height: 14px; border-radius: 50%; background: var(--brand-orange); flex: none; }
+  .numero { font-family: var(--font-display); font-weight: 500; font-variation-settings: 'opsz' 40; line-height: 1; letter-spacing: -0.02em; color: var(--ink-primary); }
+  .apoio { font: 500 56px/1.15 var(--font-sans); letter-spacing: -0.01em; color: var(--ink-secondary); }
+  .titulo { font-family: var(--font-display); font-weight: 500; font-variation-settings: 'opsz' 40; font-size: 88px; line-height: 1.15; letter-spacing: -0.02em; color: var(--ink-primary); }
+
+  /* estratos (os da cena 4, agora em papel): rótulos dentro de cada faixa */
+  #pilhaW { position: absolute; overflow: hidden; }
+  #pilha { position: absolute; left: 0; height: 476px; }
+  .base-nome, .base-num { position: absolute; font: 600 30px/1.05 var(--font-mono); color: var(--ink-primary); white-space: nowrap; }
+  .base-num { text-align: right; }
+
+  /* equipe: cartões tipográficos com as palavras da fala (sem nomes: a fala não diz nomes) */
+  .revC { position: absolute; overflow: hidden; }
+  .cartao { position: absolute; left: 0; box-sizing: border-box; background: #FFFFFF; border: 2px solid rgba(23, 23, 23, 0.09); border-radius: 34px; }
+  .cartao i { position: absolute; left: 38px; top: 79px; width: 14px; height: 14px; border-radius: 50%; background: var(--brand-orange); }
+  .palavra { position: absolute; left: 70px; top: 46px; font-family: var(--font-display); font-weight: 500; font-variation-settings: 'opsz' 40; font-size: 66px; line-height: 1.15; letter-spacing: -0.02em; white-space: nowrap; color: var(--ink-primary); }
+
+  /* piloto */
+  .data { font-family: var(--font-display); font-weight: 500; font-variation-settings: 'opsz' 40; font-size: 96px; line-height: 1; letter-spacing: -0.02em; color: var(--ink-primary); }
+  .sub { font: 600 56px/1.15 var(--font-sans); letter-spacing: -0.01em; color: var(--ink-secondary); }
+</style>
+</head>
+<body>
+<div id="c">
+  <div class="grade"></div>
+  <!-- a costura: a linha laranja da emenda, desenhada por desenharCostura (motion/lib/costuras.js) -->
+  <svg class="camada" id="costura" viewBox="0 0 1920 1080"></svg>
+  <svg class="camada" id="ruaS" viewBox="0 0 1920 1080"></svg>
+  <div class="camada-div" id="fones"></div>
+  <div id="pilhaW"><div id="pilha"><svg id="pilhaS" width="1000" height="476" viewBox="0 0 1000 476" style="position:absolute;left:0;top:0"></svg></div></div>
+  <div class="camada-div" id="equipe"></div>
+  <svg class="camada" id="sobre" viewBox="0 0 1920 1080"></svg>
+  <div class="camada-div" id="textos"></div>
+</div>
+
+<script type="module">
+import { clamp, lerp, sp, roundedQuad, PRESETS as P } from '../lib/motion.js';
+import { desenharCostura, COSTURAS } from '../lib/costuras.js';
+
+const Q = new URLSearchParams(location.search);
+
+// ---------------------------------------------------------------------------
+// Linha do tempo. A fala nova (gravação de 18/10/2026, cerca de 3,8 palavras/s, 13,2 s) manda e
+// cada evento cai na palavra de sentido (tempos estimados por sílaba, ±0,3 s dentro da cena):
+// A "protótipo" 0,1 · "15 telas" 1,0 a 1,4. B "cruza" 1,6 · "meio milhão" 2,0 · "registros" 2,6.
+// C "validado" 3,2 · "especialistas do mercado" 3,8 · "CIn-UFPE" 5,1 · fim da frase 5,75.
+// D "equipe de estudantes" 6,7 · "desenvolvimento" 8,25 · "inovação" 9,0.
+// E "Campus Mobile" 9,9 · "piloto" 11,0 · "rua" 11,5 · "junho de 2027" 11,9 a 13,2.
+// Nenhum movimento passa de cerca de 40 px por quadro a 30 fps (pico de uma mola crítica
+// normalizada = 0,375 · w · distância). Sai antes, entra depois.
+// ---------------------------------------------------------------------------
+const T = {
+  // A · a régua vira escada; as três telas sobem dela por recorte; "15 telas"
+  escada: 0.04, cel: [0.14, 0.30, 0.46], kick1: 0.30, num1: 0.95, lab1: 1.15,
+  // B · as telas afundam; "15 telas" sai e "mais de meio milhão de registros" entra; os estratos sobem
+  afunda: [1.72, 1.76, 1.80], achata: 2.20, sai1: 1.95, kick2: 2.10, num2: 2.12, lab2: 2.45, pilha: 2.60,
+  fio: 3.50, lote: 4.60, preenche: 5.15,   // a linha só sobe com os estratos parados (as marcas acendem alinhadas)
+  // C · validado com
+  kick3: 3.20, chip: [3.75, 5.05],
+  // D · os estratos descem; a linha em pé deita e vira a base; a equipe sobe dela
+  sai2: 5.85, desce: 5.95, deita: 6.00, estende: 7.05, titulo: 6.80, card: [8.15, 8.85],
+  // E · a base estica, desce na rua de perfil; Campus Mobile, piloto na rua, junho de 2027
+  estica: 9.55, campus: 9.95, rua: 10.35, tique: 10.85, piloto: 11.00, junho: 11.90,
+  // saída · tudo sai junto; a linha deixa a base e a rua e assenta reta (costura C11-12)
+  sai: 13.25, assenta1: 13.28, retrai: 13.30, assenta2: 13.38, sobeRua: 13.77,
+};
+const DUR = 14.3;
+const HOLDS = [5.8, 13.2, DUR];
+
+// molas (forma fechada, motion.js); todas com amortecimento crítico (zeta = d / 2 raiz de k = 1), sem overshoot
+const REVELA = { k: 21, d: 9.17 };   // o recorte de um celular cresce 629 px (39 px/quadro no pico, com o degrau subindo)
+// o recorte mira 35 px acima do topo da moldura e para nele (Math.min). Com a mola de antes (k 24) e
+// sem essa folga, a cauda deixava o topo do terceiro celular cortado até 1,67 s, no meio de "15 telas";
+// agora os três ficam inteiros em 1,10 · 1,27 · 1,40 s, antes do quadro A1 (1,45 s). Os inícios são os
+// mesmos, e até cerca de 1 s o recorte anda quase igual ao de antes.
+const REVELA_PASSA = 35;
+const AFUNDA = { k: 23.04, d: 9.6 }; // o celular desce 650 px e some (39 px/quadro no pico)
+const AFUNDA_PX = 650;
+const ESCADA = { k: 49, d: 14 };     // a régua vira escada (80 px)
+const ACHATA = { k: 196, d: 28 };    // a escada volta a ser reta depois do pico da descida das telas
+const PILHA = { k: 42, d: 13 };      // os estratos sobem e descem 478 px (36 px/quadro)
+const FIO = { k: 30, d: 11 };        // a linha sobe 560 px pelos estratos; a ponta direita recolhe 460 px
+const RECOLHE = { k: 7.6, d: 5.52 }; // a ponta esquerda recolhe 1.180 px até o cruzamento (39 px/quadro)
+const LOTE_M = { k: 36, d: 12 };     // o contorno do lote se desenha
+const POP = { k: 144, d: 24 };       // nós e pino acendem, sem passar do tamanho
+const DEITA = { k: 13.7, d: 7.4 };   // a linha deita: a ponta corre um arco de 880 px (40 px/quadro)
+const ESTENDE = { k: 25, d: 10 };    // deitada, a linha se estende 620 px até x 160 (39 px/quadro com o resto do giro)
+const CARTAO = { k: 81, d: 18 };     // um cartão sobe 174 px de baixo da base (20 px/quadro); na saída desce 244 px (27 px/quadro)
+const ESTICA = { k: 64, d: 16 };     // a base estica 120 px
+const DESCE = { k: 27, d: 10.4 };    // a ponta desce e corre pela rua (595 px de traço, 37 px/quadro)
+const TIQUE = { k: 64, d: 16 };      // o tique do marco sobe 373 px
+const PREDIO = { k: 36, d: 12 };     // os prédios sobem de trás do meio-fio (até 400 px, 30 px/quadro)
+const PREDIO_SAI = 0.52;             // s: na saída descem a própria altura em curva suave (39 px/quadro no pico)
+const ARVORE_SAI = 0.35;
+const ASSENTA1 = { k: 49, d: 14 };   // a base desce 70 px até y 930
+const ASSENTA2 = { k: 64, d: 16 };   // a ponta esquerda vai a 300
+const RETRAI = { k: 49, d: 14 };     // a ponta da rua recolhe de 1940 a 1620, rente ao meio-fio (28 px/quadro)
+const SOBE_RUA = { k: 196, d: 28 };  // a rua sobe 45 px até y 930 (8 px/quadro), depois que os prédios sumiram; para antes de DUR − 0,1 s
+// mola normalizada: chega a 1 no fim (98%) e para, para o quadro do HOLD e o da emenda ficarem exatos
+const nsp = (t, p) => clamp(sp(t, p) / 0.98);
+const t98 = (p) => { let t = 0; while (nsp(t, p) < 1) t += 0.001; return t; };
+// entrada e saída de texto: aparece depois de tIn e some a partir de tOut
+const alfa = (t, tIn, tOut = Infinity, dIn = 0.14, dOut = 0.12) => Math.min(clamp((t - tIn) / dIn), clamp((tOut + dOut - t) / dOut));
+const subida = (t, tIn, d = 16) => d * (1 - sp(t - tIn, P.type));
+const smoothT = (u, dur) => { const q = clamp(u / dur); return q * q * (3 - 2 * q); };
+
+// ---------------------------------------------------------------------------
+// Geometria
+// ---------------------------------------------------------------------------
+const Y0 = 860;                                  // a régua da cena 10 (costura C10-11)
+const ENTRADA = COSTURAS['C10-11'].linhas[0];    // M160 860 L1760 860
+const SAIDA = COSTURAS['C11-12'].linhas[0];      // M300 930 L1620 930
+const XS = 1340;                                 // o ponto onde a linha atravessa os estratos
+const YL = 300;                                  // o centro do lote
+const LFIO = Y0 - YL;                            // 560 px de linha em pé
+const LBASE = XS - 160;                          // deitada, ela vai do cruzamento a x 160
+const XJ = 1460;                                 // junho de 2027: onde a base desce na rua
+const YRUA = 975;                                // o meio-fio da rua de perfil
+const PENA = (YRUA - Y0) + (1940 - XJ);          // o traço que desce no meio-fio e corre pela rua
+const T_DEITADA = Math.max(T.deita + t98(DEITA), T.estende + t98(ESTENDE));   // a linha deitada vira a base
+
+// A · três telas reais do protótipo, na ordem do filme (dentro, fora, a visita), inteiras, num
+// celular em pé. Cada uma fica sobre um degrau da escada laranja.
+const PASTA = '../../motion-references/contact-sheets/prototipo/';
+const SCR_W = 330, SCR_H = 609;                  // a captura de 520 × 960 em tamanho fixo (não muda no tempo)
+const TELAS = [
+  { arq: 'dossie-dentro/edificio-abas.png', x: 660, degrau: 860, nome: 'Dossiê · Edifício · Antes de decidir' },
+  { arq: 'entorno/01-entorno-rolagem-01.png', x: 1055, degrau: 820, nome: 'Dossiê · Entorno · Explore o entorno' },
+  { arq: 'visita/01_visita_preparar_01.png', x: 1450, degrau: 780, nome: 'Visita · 6 pontos para conferir' },
+];
+for (const tl of TELAS) tl.H = SCR_H + 20;       // moldura de 10 px em volta da tela
+const CEL_W = 350, FOLGA = 14;                   // a moldura fica 14 px acima do degrau
+const ESC_X = [160, 1032, 1427, 1830];           // ponta esquerda, quinas da escada e ponta direita
+
+// B · estratos proporcionais ao tamanho das três bases (pesquisa de viabilidade; Defesa Civil:
+// docs/ui-ux.md 8.4). A marca de cada faixa diz o vínculo com o prédio (ui-ux 8.4):
+// ponto no IPTU (o endereço), barra curta no Licenciamento (raio de 150 m), barra larga na Defesa Civil (bairro).
+const BASES = [
+  { nome: 'IPTU 2026', n: 422776, txt: '422.776', textura: 'linhas', marca: 'ponto', w: 0 },
+  { nome: 'Licenciamento', n: 113305, txt: '113.305', textura: 'hachura', marca: 'barra', w: 110 },
+  { nome: 'Defesa Civil 2024', n: 80173, txt: '80.173', textura: 'pontos', marca: 'barra', w: 300 },
+];
+const SOMA = BASES.reduce((a, b) => a + b.n, 0);   // 616.254: "mais de meio milhão"
+const PW = { x: 820, top: 380, w: 940, h: 476 };   // janela dos estratos: o fundo é o chão (y 856)
+const S_PILHA = 450, TOPO_PILHA = PW.h - S_PILHA;  // 26 px de folga na janela
+{
+  let y = TOPO_PILHA;
+  // a linha de cada faixa (nome · marca · número) fica no alto dela: o rótulo sai do chão logo depois da borda
+  for (const b of BASES) { b.h = (S_PILHA * b.n) / SOMA; b.y = y; y += b.h; b.ry = b.y + Math.min(24, (b.h - 31.5) / 2) + 15.75; b.cy = PW.top + b.ry; }
+}
+const OFF_FORA = PW.h + 2;                          // a pilha inteira abaixo do chão
+// o lote onde a linha chega: um quadrilátero um pouco irregular, como um lote real
+const LOTE_PTS = [[XS - 102, YL - 60], [XS + 98, YL - 55], [XS + 96, YL + 61], [XS - 99, YL + 57]];
+
+// D · equipe: as duas palavras da fala, em cartões que sobem da base
+const EQUIPE = ['desenvolvimento', 'inovação'];
+const CARD = { h: 170, gap: 26, x0: 176, base: 856, pad: 108 };   // pad: o ponto e as margens em volta da palavra
+const CARTAO_PX = CARD.h + 4, CARTAO_SAI_PX = CARD.h + 74;   // na saída a base desce 70 px
+
+// E · rua de perfil: fachadas em pé sobre o meio-fio, à direita de junho de 2027
+const PREDIOS = [
+  { x: 1500, w: 96, h: 275, cols: 2 }, { x: 1646, w: 124, h: 395, cols: 3 },
+  { x: 1784, w: 88, h: 300, cols: 2 }, { x: 1884, w: 120, h: 400, cols: 3 },
+];
+const ARVORE = { x: 1621, tronco: 52, copa: 20 };
+const MARCO = { r: 7.5, topo: 476 };             // nó na quina e o tique que sobe até sob "junho de 2027"
+
+// ---------------------------------------------------------------------------
+// DOM e utilitários
+// ---------------------------------------------------------------------------
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+function el(cls, html, pai) { const e = document.createElement('div'); e.className = cls; e.innerHTML = html; pai.appendChild(e); return e; }
+function svgEl(tag, attrs, pai) { const e = document.createElementNS(NS, tag); for (const [a, v] of Object.entries(attrs)) e.setAttribute(a, v); pai.appendChild(e); return e; }
+const vis = (e, a) => { e.style.opacity = a.toFixed(3); e.style.visibility = a > 0.001 ? 'inherit' : 'hidden'; };
+const pos = (e, x, y) => { e.style.left = x.toFixed(2) + 'px'; e.style.top = y.toFixed(2) + 'px'; };
+const caixa = (e, x, y, w, h) => { e.style.left = x + 'px'; e.style.top = y + 'px'; e.style.width = w + 'px'; e.style.height = h + 'px'; };
+const attr = (e, a, v) => { if (e.getAttribute(a) !== v) e.setAttribute(a, v); };
+const f2 = (v) => (Math.round(v * 100) / 100).toString();
+
+// a linha principal: o path que desenharCostura cria (a costura de entrada, intacta no quadro 0)
+const costura = $('costura');
+const { linhas: [linha] } = desenharCostura('C10-11', costura);
+
+// polilinha → d, sem pontos repetidos nem quinas retas (no quadro da emenda o d volta ao da costura)
+function polyD(subs) {
+  let d = '';
+  for (const pts of subs) {
+    const q = [];
+    for (const p of pts) { const u = q[q.length - 1]; if (!u || Math.hypot(p[0] - u[0], p[1] - u[1]) > 0.01) q.push(p); }
+    for (let i = q.length - 2; i >= 1; i -= 1) {
+      const a = q[i - 1], b = q[i], c = q[i + 1];
+      const cruz = (b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0]);
+      const dentro = (b[0] - a[0]) * (c[0] - b[0]) + (b[1] - a[1]) * (c[1] - b[1]) >= 0;
+      if (Math.abs(cruz) < 0.01 && dentro) q.splice(i, 1);
+    }
+    if (q.length < 2) continue;
+    d += 'M' + q.map((p) => f2(p[0]) + ' ' + f2(p[1])).join(' L');
+  }
+  return d;
+}
+
+// ----- A: celulares (moldura + captura inteira, dentro de uma janela de recorte) -----
+const fones = $('fones');
+const IMGS = [];
+for (const tl of TELAS) {
+  tl.rev = el('rev', '', fones);
+  tl.cel = el('cel', '<div class="scr"></div>', tl.rev);
+  tl.cel.style.height = tl.H + 'px'; tl.cel.firstChild.style.height = SCR_H + 'px';
+  const img = document.createElement('img');
+  img.src = PASTA + tl.arq; img.width = SCR_W; img.height = SCR_H; img.alt = tl.nome; img.decoding = 'sync';
+  tl.cel.firstChild.appendChild(img);
+  IMGS.push(img);
+}
+
+// ----- B: estratos em SVG (papel, textura própria, a marca do vínculo no mesmo x) -----
+const pilhaW = $('pilhaW'), pilha = $('pilha'), pilhaS = $('pilhaS');
+caixa(pilhaW, PW.x, PW.top, PW.w, PW.h);
+pilha.style.width = PW.w + 'px';
+for (const [a, v] of [['width', PW.w], ['height', PW.h], ['viewBox', `0 0 ${PW.w} ${PW.h}`]]) pilhaS.setAttribute(a, v);
+const defs = svgEl('defs', {}, pilhaS);
+const pat = (id, w, h, corpo) => { const p = svgEl('pattern', { id, width: w, height: h, patternUnits: 'userSpaceOnUse' }, defs); p.innerHTML = corpo; };
+pat('tx-linhas', 16, 14, '<path d="M0 13.5 H16" stroke="rgba(23,23,23,0.08)" stroke-width="1"/>');
+pat('tx-hachura', 12, 12, '<path d="M-3 3 L3 -3 M0 12 L12 0 M9 15 L15 9" stroke="rgba(23,23,23,0.08)" stroke-width="1.2"/>');
+pat('tx-pontos', 12, 12, '<circle cx="6" cy="6" r="1.5" fill="rgba(23,23,23,0.14)"/>');
+const XS_L = XS - PW.x;   // o cruzamento em coordenadas da pilha
+const marcaEl = (b, x, y, pai, attrs) => b.marca === 'ponto'
+  ? svgEl('circle', { cx: x, cy: f2(y), r: 6, ...attrs }, pai)
+  : svgEl('rect', { x: f2(x - b.w / 2), y: f2(y - 4), width: b.w, height: 8, rx: 4, ...attrs }, pai);
+for (const b of BASES) {
+  svgEl('rect', { x: 0.75, y: f2(b.y), width: PW.w - 1.5, height: f2(b.h), fill: '#FAF6EE' }, pilhaS);
+  svgEl('rect', { x: 0.75, y: f2(b.y), width: PW.w - 1.5, height: f2(b.h), fill: `url(#tx-${b.textura})` }, pilhaS);
+  svgEl('rect', { x: 0.75, y: f2(b.y), width: PW.w - 1.5, height: f2(b.h), fill: 'none', stroke: '#C9BEA8', 'stroke-width': 1.5 }, pilhaS);
+  marcaEl(b, XS_L, b.ry, pilhaS, { fill: '#171717' });
+  b.nomeEl = el('base-nome', b.nome, pilha);
+  b.numEl = el('base-num', b.txt, pilha);
+}
+
+// ----- D: cartões da equipe (sobem inteiros de baixo da base; a palavra só aparece inteira) -----
+const equipe = $('equipe');
+const CARDS = EQUIPE.map((palavra) => {
+  const rev = el('revC', '', equipe);
+  const card = el('cartao', `<i></i><div class="palavra">${palavra}</div>`, rev);
+  card.style.height = CARD.h + 'px';
+  return { rev, card, itens: [...card.children] };
+});
+
+// ----- camada de cima: a linha em pé, as marcas acesas, o lote, o pino e o marco de junho -----
+const sobre = $('sobre');
+const loteFill = svgEl('path', { d: roundedQuad(LOTE_PTS, 8), fill: '#CFDBE9' }, sobre);
+const fio = svgEl('path', { fill: 'none', stroke: '#F47745', 'stroke-width': 4.2, 'stroke-linecap': 'round' }, sobre);
+const loteLinha = svgEl('path', { d: roundedQuad(LOTE_PTS, 8), fill: 'none', stroke: '#2E5A85', 'stroke-width': 4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', pathLength: 1 }, sobre);
+const ACESAS = BASES.map((b) => b.marca === 'ponto'
+  ? svgEl('circle', { cx: XS, cy: f2(b.cy), r: 0, fill: '#F47745', stroke: '#FAF6EE', 'stroke-width': 3 }, sobre)
+  : svgEl('rect', { y: f2(b.cy - 5.5), height: 11, rx: 5.5, fill: '#F47745', stroke: '#FAF6EE', 'stroke-width': 3 }, sobre));
+const pinoHalo = svgEl('circle', { cx: XS, cy: YL, r: 0, fill: 'rgba(244,119,69,0.25)' }, sobre);
+const pino = svgEl('circle', { cx: XS, cy: YL, r: 0, fill: '#F47745', stroke: '#FFFFFF', 'stroke-width': 4 }, sobre);
+const tique = svgEl('path', { fill: 'none', stroke: '#F47745', 'stroke-width': 2.5, 'stroke-linecap': 'round' }, sobre);
+const marco = svgEl('circle', { cx: XJ, cy: Y0, r: 0, fill: '#F47745', stroke: '#FAF6EE', 'stroke-width': 3 }, sobre);
+// quando a ponta da linha passa pelo meio de cada estrato, a marca acende
+const tPassa = BASES.map((b) => { let t = T.fio; while (LFIO * nsp(t - T.fio, FIO) < Y0 - b.cy && t < T.fio + 3) t += 0.002; return t; });
+const T_CHEGA = (() => { let t = T.fio; while (nsp(t - T.fio, FIO) < 1 && t < T.fio + 3) t += 0.002; return t; })();
+
+// ----- rua de perfil: os prédios sobem inteiros de trás do meio-fio (nunca uma caixa vazia) -----
+const ruaS = $('ruaS');
+const defsRua = svgEl('defs', {}, ruaS);
+svgEl('rect', { x: XJ, y: 0, width: 1920 - XJ, height: YRUA - 1 }, svgEl('clipPath', { id: 'cp-rua' }, defsRua));
+const leito = svgEl('rect', { x: XJ, y: YRUA + 2, width: 1920 - XJ, height: 1080 - YRUA, fill: '#E9E1D2' }, ruaS);
+const gRua = svgEl('g', { 'clip-path': 'url(#cp-rua)' }, ruaS);
+const PRED_EL = PREDIOS.map((p) => {
+  const g = svgEl('g', {}, gRua);
+  const corpo = svgEl('rect', { x: p.x, width: p.w, height: p.h, fill: '#FAF6EE', stroke: '#171717', 'stroke-width': 1.6 }, g);
+  const janEl = svgEl('path', { fill: 'rgba(23,23,23,0.16)' }, g);
+  const porta = svgEl('rect', { x: f2(p.x + p.w / 2 - 11), width: 22, height: 36, fill: '#625C51' }, g);
+  return { ...p, g, corpo, janEl, porta };
+});
+// janelas a partir do alto da fachada: a primeira fileira sai do chão logo depois do telhado
+function janelasD(p, topo) {
+  const passoX = p.w / p.cols, passoY = 34;
+  let d = '';
+  for (let y = topo + 22; y + 16 <= topo + p.h - 52; y += passoY) {
+    for (let c = 0; c < p.cols; c += 1) { const x = p.x + passoX * (c + 0.5) - 7; d += `M${f2(x)} ${f2(y)}h14v16h-14z`; }
+  }
+  return d;
+}
+const arvG = svgEl('g', {}, ruaS);
+const tronco = svgEl('path', { stroke: '#625C51', 'stroke-width': 4, 'stroke-linecap': 'round', fill: 'none' }, arvG);
+const copa = svgEl('circle', { cx: ARVORE.x, fill: 'rgba(127,136,112,0.55)', stroke: '#7F8870', 'stroke-width': 1.5 }, arvG);
+
+// cada prédio sobe quando a ponta da linha passa pelo meio dele
+const pontaX = (t) => XJ + PENA * nsp(t - T.rua, DESCE) - (YRUA - Y0);
+const tPena = (x) => { let t = T.rua; while (pontaX(t) < x && t < T.rua + 3) t += 0.002; return t; };
+const T_PREDIO = PREDIOS.map((p) => tPena(Math.min(p.x + p.w / 2, 1900)) - 0.05);
+const T_ARVORE = tPena(ARVORE.x) - 0.05;
+
+// ----- textos (só palavras e números da fala) -----
+const textos = $('textos');
+const kick1 = el('t kicker', 'protótipo', textos);
+const num1 = el('t numero', '15', textos);
+const lab1 = el('t apoio', 'telas', textos);
+const kick2 = el('t kicker', 'mais de', textos);
+const num2 = el('t numero', 'meio milhão', textos);
+const lab2 = el('t apoio', 'de registros', textos);
+const kick3 = el('t kicker', 'validado com', textos);
+const CHIPS = ['especialistas do mercado', 'CIn-UFPE'].map((s) => el('t chip', `<i></i>${s}`, textos));
+const titulo = el('t titulo', 'Equipe de estudantes', textos);
+const campus = el('t chip', '<i></i>Campus Mobile', textos);
+const sub = el('t sub', 'piloto na rua', textos);
+const data = el('t data', 'junho de 2027', textos);
+num1.style.fontSize = '200px';
+num2.style.fontSize = '116px';
+const dbg = Q.has('debug') ? el('', '', $('c')) : null;
+if (dbg) dbg.id = 'debug';
+
+// posições fixas (medidas uma vez, sem transform no contêiner)
+const POS = {};
+function medir() {
+  const w = (e) => e.getBoundingClientRect().width;
+  for (const b of BASES) {
+    pos(b.nomeEl, 30, b.ry - 15.75);
+    b.numEl.style.right = '30px'; b.numEl.style.top = f2(b.ry - 15.75) + 'px';
+    b.fundoNome = b.nomeEl.offsetTop + b.nomeEl.offsetHeight; b.fundoNum = b.numEl.offsetTop + b.numEl.offsetHeight;
+  }
+  // a coluna do marco de junho de 2027, centrada sobre o tique: Campus Mobile, piloto na rua, a data
+  POS.campus = XJ - w(campus) / 2; POS.sub = XJ - w(sub) / 2; POS.data = XJ - w(data) / 2;
+  // cartões: a largura sai da palavra; a janela de recorte termina na base
+  let x = CARD.x0;
+  for (const c of CARDS) {
+    c.w = Math.ceil(c.itens[1].getBoundingClientRect().width + CARD.pad);
+    c.x = x; x += c.w + CARD.gap;
+    c.card.style.width = c.w + 'px';
+    caixa(c.rev, c.x, CARD.base - CARD.h, c.w, CARD.h);
+    // cada linha do cartão: onde termina, medida do alto do cartão
+    c.fundos = c.itens.map((e) => e.offsetTop + e.offsetHeight);
+  }
+  POS.largNum2 = w(num2);
+}
+
+// ---------------------------------------------------------------------------
+// seek(t): função pura do tempo
+// ---------------------------------------------------------------------------
+// degraus da escada (A) e a régua reta (B em diante)
+const escada = (t) => nsp(t - T.escada, ESCADA) - nsp(t - T.achata, ACHATA);
+const degrauY = (i, t) => Y0 - (Y0 - TELAS[i].degrau) * escada(t);
+
+function linhaD(t) {
+  // saída: a base desce a y 930 e a ponta esquerda vai a 300; a ponta da rua recolhe a 1620 rente
+  // ao meio-fio e, quando os prédios já sumiram, a rua sobe a y 930: a reta da costura C11-12
+  const a1 = nsp(t - T.assenta1, ASSENTA1), a2 = nsp(t - T.assenta2, ASSENTA2);
+  const q = nsp(t - T.retrai, RETRAI), r = nsp(t - T.sobeRua, SOBE_RUA);
+  if (a1 >= 1 && a2 >= 1 && q >= 1 && r >= 1) return SAIDA.d;
+  const e = escada(t);
+  let x0 = lerp(160, ESC_X[0], e);
+  let xd = lerp(1760, ESC_X[3], e);
+  if (t < T_DEITADA) {
+    // B: enquanto a linha sobe pelos estratos, as duas pontas da régua recolhem até o cruzamento:
+    // fica uma linha só, em pé. Em D é ela que deita e vira a base (camada de cima, o "fio").
+    x0 = lerp(x0, XS, nsp(t - T.fio, RECOLHE));
+    xd = lerp(xd, XS, nsp(t - T.fio, FIO));
+  } else {
+    x0 = 160; xd = lerp(XS, XJ, nsp(t - T.estica, ESTICA));   // a base estica até junho de 2027
+  }
+  if (t >= T.assenta1) {
+    const yb = Y0 + (930 - Y0) * a1, yr = YRUA - (YRUA - 930) * r;
+    return polyD([[[lerp(x0, 300, a2), yb], [XJ, yb], [XJ, yr], [lerp(1940, 1620, q), yr]]]);
+  }
+  if (e <= 0 && x0 === 160 && xd === 1760) return ENTRADA.d;
+  const pts = [[x0, Y0], [ESC_X[1], Y0], [ESC_X[1], degrauY(1, t)], [ESC_X[2], degrauY(1, t)], [ESC_X[2], degrauY(2, t)], [xd, degrauY(2, t)]];
+  if (e <= 0) pts.splice(1, 4);
+  // a ponta desce no meio-fio e corre pela rua
+  const u = PENA * nsp(t - T.rua, DESCE);
+  if (u > 0.01) { pts.push([XJ, Y0 + Math.min(u, YRUA - Y0)]); if (u > YRUA - Y0) pts.push([XJ + u - (YRUA - Y0), YRUA]); }
+  return polyD([pts]);
+}
+
+function render(t) {
+  t = clamp(t, 0, DUR);
+
+  // ===== a linha principal =====================================================
+  attr(linha, 'd', linhaD(t));
+
+  // ===== A/B · celulares ========================================================
+  // a moldura e o recorte seguem o degrau; o degrau só desce depois do pico da descida da tela
+  TELAS.forEach((tl, i) => {
+    const rev = Math.min(tl.H, Math.round((tl.H + REVELA_PASSA) * nsp(t - T.cel[i], REVELA)));
+    const afunda = Math.round(AFUNDA_PX * nsp(t - T.afunda[i], AFUNDA));
+    const fundo = Math.round(degrauY(i, t) - 2);              // o recorte termina no degrau
+    const topoCel = Math.round(degrauY(i, t) - FOLGA - tl.H) + afunda;
+    const topoJan = topoCel + tl.H - rev;
+    const h = fundo - topoJan;
+    const on = rev > 0 && h > 0 && topoCel < fundo;
+    tl.rev.style.visibility = on ? 'inherit' : 'hidden';
+    if (on) { caixa(tl.rev, tl.x, topoJan, CEL_W, h); tl.cel.style.top = (topoCel - topoJan) + 'px'; }
+  });
+  // "15 telas"
+  vis(kick1, alfa(t, T.kick1, T.sai1)); pos(kick1, 114, 384 + subida(t, T.kick1, 10));
+  vis(num1, alfa(t, T.num1, T.sai1)); pos(num1, 100, 440 + subida(t, T.num1, 18));
+  vis(lab1, alfa(t, T.lab1, T.sai1)); pos(lab1, 112, 668 + subida(t, T.lab1, 14));
+
+  // ===== B · estratos, linha em pé, lote ========================================
+  const off = Math.round(OFF_FORA * (1 - nsp(t - T.pilha, PILHA)) + OFF_FORA * nsp(t - T.desce, PILHA));
+  const pilhaOn = off < OFF_FORA;
+  pilhaW.style.visibility = pilhaOn ? 'inherit' : 'hidden';
+  if (pilhaOn) {
+    pilha.style.top = off + 'px';
+    // como nos cartões: cada rótulo só aparece inteiro acima do chão (nunca sai de trás da linha)
+    for (const bs of BASES) for (const [e, fundo] of [[bs.nomeEl, bs.fundoNome], [bs.numEl, bs.fundoNum]]) vis(e, clamp((PW.h - 1 - (off + fundo)) / 10));
+  }
+
+  // a linha em pé (sobe pelos estratos) e, em D, deitada para a esquerda e estendida até x 160
+  const L = LFIO * nsp(t - T.fio, FIO) + (LBASE - LFIO) * nsp(t - T.estende, ESTENDE);
+  const fi = (Math.PI / 2) * nsp(t - T.deita, DEITA);
+  const fioOn = L > 0.5 && t < T_DEITADA;
+  fio.style.visibility = fioOn ? 'inherit' : 'hidden';
+  if (fioOn) attr(fio, 'd', `M${XS} ${Y0} L${f2(XS - L * Math.sin(fi))} ${f2(Y0 - L * Math.cos(fi))}`);
+  BASES.forEach((b, i) => {
+    const n = ACESAS[i];
+    const s = t < tPassa[i] ? 0 : sp(t - tPassa[i], POP);
+    const a = alfa(t, tPassa[i], T.sai2, 0.001, 0.12);
+    if (b.marca === 'ponto') attr(n, 'r', f2(7.5 * s));
+    else { const w = (b.w + 6) * s; attr(n, 'x', f2(XS - w / 2)); attr(n, 'width', f2(w)); }
+    vis(n, s > 0.01 ? a : 0);
+  });
+  // o contorno do lote: desenha a partir da chegada da linha
+  const lp = nsp(t - T.lote, LOTE_M), saiLote = alfa(t, T.lote, T.sai2, 0.001, 0.14);
+  vis(loteLinha, lp > 0.001 ? saiLote : 0);
+  attr(loteLinha, 'stroke-dasharray', lp >= 1 ? 'none' : `${lp.toFixed(4)} 2`);
+  vis(loteFill, 0.85 * alfa(t, T.preenche, T.sai2, 0.3, 0.14));
+  const rp = t < T_CHEGA ? 0 : sp(t - T_CHEGA, POP);
+  attr(pino, 'r', f2(10 * rp)); attr(pinoHalo, 'r', f2(22 * rp));
+  vis(pino, rp > 0.01 ? alfa(t, T_CHEGA, T.sai2, 0.001, 0.14) : 0); vis(pinoHalo, rp > 0.01 ? alfa(t, T_CHEGA, T.sai2, 0.001, 0.14) : 0);
+
+  // "mais de meio milhão de registros"; "validado com especialistas do mercado · CIn-UFPE"
+  vis(kick2, alfa(t, T.kick2, T.sai2)); pos(kick2, 114, 384 + subida(t, T.kick2, 10));
+  vis(num2, alfa(t, T.num2, T.sai2)); pos(num2, 104, 428 + subida(t, T.num2, 18));
+  vis(lab2, alfa(t, T.lab2, T.sai2)); pos(lab2, 112, 564 + subida(t, T.lab2, 14));
+  vis(kick3, alfa(t, T.kick3, T.sai2)); pos(kick3, 114, 690 + subida(t, T.kick3, 10));
+  CHIPS.forEach((c, i) => { vis(c, alfa(t, T.chip[i], T.sai2)); pos(c, 110, 726 + 94 * i + subida(t, T.chip[i], 14)); });
+
+  // ===== D · equipe =============================================================
+  vis(titulo, alfa(t, T.titulo, T.sai)); pos(titulo, CARD.x0 - 4, 498 + subida(t, T.titulo, 16));
+  // na saída a janela de recorte acompanha a base, que desce 70 px
+  const desceBase = Math.round((930 - Y0) * nsp(t - T.assenta1, ASSENTA1));
+  CARDS.forEach((c, i) => {
+    // o cartão inteiro sobe por top de baixo da base e, na saída, afunda nela
+    const off = Math.round(CARTAO_PX * (1 - nsp(t - T.card[i], CARTAO)) + CARTAO_SAI_PX * nsp(t - T.sai - 0.04 * i, CARTAO));
+    const hJan = CARD.h + desceBase;
+    const on = off < hJan;
+    c.rev.style.visibility = on ? 'inherit' : 'hidden';
+    if (!on) return;
+    c.rev.style.height = hJan + 'px';
+    c.card.style.top = off + 'px';
+    // e apaga enquanto afunda: o cartão nunca fica vazio na tela
+    c.card.style.opacity = (1 - smoothT(t - T.sai - 0.04 * i, 0.16)).toFixed(3);
+    // a palavra só aparece quando está inteira acima da base: nunca meia palavra
+    c.itens.forEach((e, k) => { const livre = hJan - 1 - (off + c.fundos[k]); vis(e, clamp(livre / 24)); });
+  });
+
+  // ===== E · Campus Mobile, piloto e rua =========================================
+  const rm = t < T.rua ? 0 : sp(t - T.rua, POP);
+  attr(marco, 'r', f2(MARCO.r * rm)); attr(marco, 'cy', String(Y0 + desceBase)); vis(marco, rm > 0.01 ? alfa(t, T.rua, T.sai) : 0);
+  const ht = (Y0 - MARCO.r - 4 - MARCO.topo) * nsp(t - T.tique, TIQUE), yt0 = Y0 + desceBase - MARCO.r - 4;
+  attr(tique, 'd', `M${XJ} ${f2(yt0)} V${f2(yt0 - ht)}`);
+  vis(tique, ht > 0.5 ? alfa(t, T.tique, T.sai) : 0);
+  vis(campus, alfa(t, T.campus, T.sai)); pos(campus, POS.campus, 172 + subida(t, T.campus, 14));
+  vis(sub, alfa(t, T.piloto, T.sai)); pos(sub, POS.sub, 262 + subida(t, T.piloto, 14));
+  vis(data, alfa(t, T.junho, T.sai)); pos(data, POS.data, 356 + subida(t, T.junho, 14));
+  vis(leito, alfa(t, T.rua + 0.5, T.sai, 0.3, 0.25));
+  PRED_EL.forEach((p, i) => {
+    const sobe = nsp(t - T_PREDIO[i], PREDIO), sai = smoothT(t - T.sai, PREDIO_SAI);
+    const topo = Math.round(YRUA - 1 - p.h * sobe + (p.h + 2) * sai);
+    const on = sobe > 0.002 && topo < YRUA - 1;
+    p.g.style.visibility = on ? 'inherit' : 'hidden';
+    if (on) {
+      attr(p.corpo, 'y', String(topo)); attr(p.janEl, 'd', janelasD(p, topo));
+      attr(p.porta, 'y', String(topo + p.h - 36));
+    }
+  });
+  const pa = nsp(t - T_ARVORE, PREDIO) * (1 - smoothT(t - T.sai, ARVORE_SAI));
+  arvG.style.visibility = pa > 0.01 ? 'inherit' : 'hidden';
+  if (pa > 0.01) {
+    const yt = YRUA - 1 - ARVORE.tronco * pa;
+    attr(tronco, 'd', `M${ARVORE.x} ${YRUA - 1} V${f2(yt)}`);
+    attr(copa, 'cy', f2(yt - ARVORE.copa * pa * 0.7)); attr(copa, 'r', f2(ARVORE.copa * pa));
+  }
+
+  if (dbg) dbg.textContent = t.toFixed(3) + ' s';
+}
+
+// ---------------------------------------------------------------------------
+// Contrato do POC (render.mjs, checar-quadros.mjs) e modo ao vivo
+// ---------------------------------------------------------------------------
+const ESTADOS = [
+  { id: 'E0', nome: 'Primeiro quadro: a régua da cena 10 (costura C10-11)', t: 0 },
+  { id: 'M1', nome: 'Meio: a régua vira escada; as telas sobem', t: 0.6 },
+  { id: 'A1', nome: '15 telas: três telas reais em celulares', t: 1.45 },
+  { id: 'M2', nome: 'Meio: as telas afundam; a régua volta reta', t: 2.05 },
+  { id: 'M2b', nome: 'Meio: os estratos sobem; meio milhão', t: 2.85 },
+  { id: 'M2c', nome: 'Meio: a linha atravessa os estratos; especialistas do mercado', t: 4.05 },
+  { id: 'M2d', nome: 'Meio: o pino no lote; o contorno se fecha', t: 4.95 },
+  { id: 'B1', nome: 'Mais de meio milhão de registros; validado com especialistas e CIn-UFPE (HOLD)', t: HOLDS[0] },
+  { id: 'M3', nome: 'Meio: os estratos descem; a linha deita', t: 6.3 },
+  { id: 'M3b', nome: 'Meio: Equipe de estudantes; a linha se estende', t: 7.2 },
+  { id: 'M3c', nome: 'Meio: desenvolvimento sobe da base', t: 8.55 },
+  { id: 'D1', nome: 'Equipe de estudantes: desenvolvimento, inovação', t: 9.6 },
+  { id: 'M4', nome: 'Meio: a base estica; Campus Mobile', t: 10.25 },
+  { id: 'M4b', nome: 'Meio: a ponta desce na rua; piloto na rua', t: 11.3 },
+  { id: 'M4c', nome: 'Meio: junho de 2027 entra', t: 12.0 },
+  { id: 'B3', nome: 'Equipe de estudantes, Campus Mobile, piloto na rua, junho de 2027 (HOLD)', t: HOLDS[1] },
+  { id: 'M5', nome: 'Saída: os textos saem; a equipe afunda na base; os prédios descem', t: 13.5 },
+  { id: 'M5b', nome: 'Saída: a rua sobe e a linha assenta', t: 13.9 },
+  { id: 'FIM', nome: 'Último quadro: a linha reta da costura C11-12', t: DUR },
+];
+const SONS = [
+  { t: T.escada, tipo: 'tick', evento: 'a régua vira escada' },
+  ...T.cel.map((tc, i) => ({ t: tc, tipo: 'whoosh', dur: 0.5, ganho: 0.3, evento: `a tela ${i + 1} sobe do degrau` })),
+  { t: T.num1, tipo: 'pop', ganho: 0.6, evento: '15 telas' },
+  { t: T.afunda[0], tipo: 'whoosh', dur: 0.7, ganho: 0.35, evento: 'as telas afundam' },
+  { t: T.num2, tipo: 'pop', ganho: 0.6, evento: 'meio milhão' },
+  { t: T.pilha, tipo: 'thump', ganho: 0.5, evento: 'os estratos sobem' },
+  { t: T.fio, tipo: 'sweep', dur: 1.0, ganho: 0.6, evento: 'a linha atravessa os estratos' },
+  ...tPassa.map((tp) => ({ t: tp, tipo: 'tick', ganho: 0.5, evento: 'a marca do estrato acende' })),
+  { t: T_CHEGA, tipo: 'pop', ganho: 0.6, evento: 'o pino no lote' },
+  { t: T.kick3, tipo: 'tick', ganho: 0.6, evento: 'validado com' },
+  ...T.chip.map((tc, i) => ({ t: tc, tipo: 'pop', ganho: 0.55, evento: `chip ${i + 1}` })),
+  { t: T.desce, tipo: 'whoosh', dur: 0.8, ganho: 0.35, evento: 'os estratos descem' },
+  { t: T.deita, tipo: 'whoosh', dur: 1.2, ganho: 0.3, evento: 'a linha deita' },
+  ...T.card.map((tc, i) => ({ t: tc + 0.15, tipo: 'pop', ganho: 0.55, evento: `${EQUIPE[i]} sobe da base` })),
+  { t: T.estica, tipo: 'tick', evento: 'a base estica' },
+  { t: T.campus, tipo: 'pop', ganho: 0.5, evento: 'Campus Mobile' },
+  { t: T.rua, tipo: 'whoosh', dur: 0.8, ganho: 0.35, evento: 'a ponta desce na rua; o nó do marco' },
+  { t: T.piloto, tipo: 'pop', ganho: 0.5, evento: 'piloto na rua' },
+  { t: T.junho, tipo: 'pop', ganho: 0.6, evento: 'junho de 2027' },
+  { t: T.sai, tipo: 'whoosh', dur: 0.6, ganho: 0.3, evento: 'a equipe, a rua e a data saem' },
+  { t: T.assenta1, tipo: 'tick', evento: 'a linha sobe e assenta' },
+].sort((a, b) => a.t - b.t);
+window.POC = {
+  id: 'CENA-11', duracao: DUR, fps: 30, estados: ESTADOS, holds: HOLDS, cliques: [], marcos: T, sons: SONS,
+  tiras: [{ nome: 'telas', t0: T.cel[0] + 0.1 }, { nome: 'afunda', t0: T.afunda[0] + 0.1 }, { nome: 'fio', t0: T.fio + 0.25 },
+    { nome: 'deita', t0: T.deita + 0.3 }, { nome: 'equipe', t0: T.card[0] + 0.1 }, { nome: 'rua', t0: T.rua + 0.05 },
+    { nome: 'saida', t0: T.sai }, { nome: 'saida2', t0: T.sobeRua - 0.1 }],
+  comparar: ESTADOS.map((e) => ({ t: e.t, nome: e.id })),
+  telas: TELAS.map((tl) => ({ arquivo: 'motion-references/contact-sheets/prototipo/' + tl.arq, nome: tl.nome })),
+  entrada: { costura: 'C10-11' }, saida: { costura: 'C11-12' },
+};
+window.seek = (t) => render(t);
+window.__pronto = (async () => {
+  await document.fonts.ready;
+  const todo = document.getElementById('c').textContent + ' ×·—–→²ºçãõéêíóúâÁÉ?“”°0123456789:+.()';
+  await Promise.all([
+    '500 200px Fraunces', '500 116px Fraunces', '500 96px Fraunces', '500 88px Fraunces', '500 66px Fraunces',
+    '500 56px "Plus Jakarta Sans"', '600 56px "Plus Jakarta Sans"', '600 42px "Plus Jakarta Sans"', '700 24px "Plus Jakarta Sans"',
+    '600 30px "JetBrains Mono"', '500 16px "JetBrains Mono"',
+  ].map((f) => document.fonts.load(f, todo)));
+  await Promise.all(IMGS.map((i) => i.decode()));
+  await document.fonts.ready;
+  medir();
+  // passa por toda a linha do tempo antes de liberar: subconjuntos de fonte e camadas carregam agora
+  for (let t = 0; t <= DUR; t += 0.25) render(t);
+  await document.fonts.ready;
+  render(0);
+  return true;
+})();
+
+if (!navigator.webdriver) {
+  document.body.classList.add('tela');
+  const c = $('c');
+  const ajusta = () => { const s = Math.min(innerWidth / 1920, innerHeight / 1080); Object.assign(c.style, { position: 'absolute', transformOrigin: '0 0', transform: `scale(${s})`, left: `${(innerWidth - 1920 * s) / 2}px`, top: `${(innerHeight - 1080 * s) / 2}px` }); };
+  addEventListener('resize', ajusta); ajusta();
+  const aoVivo = Q.has('live');
+  // ao vivo: espaço ou → leva ao próximo HOLD; o último é DUR (a passagem para a cena 12)
+  const PARADAS = HOLDS;
+  let t = 0, alvo = aoVivo ? PARADAS[0] : DUR, rodando = true, antes = null, ultimo = null;
+  const passo = (agora) => { if (antes !== null && rodando) { t += (agora - antes) / 1000; if (t >= alvo) { t = alvo; if (!aoVivo) t = 0; else rodando = false; } } antes = agora; if (t !== ultimo) { render(t); ultimo = t; } requestAnimationFrame(passo); };
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown') {
+      const base0 = rodando ? alvo : t;
+      const i = PARADAS.findIndex((h) => h > base0 + 1e-3);
+      if (aoVivo) { if (i >= 0) { alvo = PARADAS[i]; rodando = true; } } else rodando = !rodando;
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      const anteriores = PARADAS.filter((h) => h < t - 1e-3);
+      t = anteriores.length ? anteriores[anteriores.length - 1] : 0;
+      alvo = aoVivo ? (PARADAS.find((h) => h > t + 1e-3) ?? DUR) : DUR;
+      rodando = !aoVivo;
+      render(t); ultimo = t;
+      e.preventDefault();
+    } else if (e.key === 'r') { t = 0; alvo = aoVivo ? PARADAS[0] : DUR; rodando = true; }
+  });
+  window.__pronto.then(() => requestAnimationFrame(passo));
+}
+</script>
+</body>
+</html>

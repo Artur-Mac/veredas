@@ -1,0 +1,154 @@
+{
+  "poc": "POC-01",
+  "duracao": 13.4,
+  "geradoEm": "2026-10-17",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 125,
+    "fase": 0.27,
+    "erroMedio": 0.076,
+    "batidas": [
+      0.27,
+      0.75,
+      1.23,
+      1.71,
+      2.19,
+      2.67,
+      3.15,
+      3.63,
+      4.11,
+      4.59,
+      5.07,
+      5.55,
+      6.03,
+      6.51,
+      6.99,
+      7.47,
+      7.95,
+      8.43,
+      8.91,
+      9.39,
+      9.87,
+      10.35,
+      10.83,
+      11.31,
+      11.79,
+      12.27,
+      12.75,
+      13.23
+    ]
+  },
+  "holds": [
+    1,
+    4.1,
+    7.2,
+    10.2,
+    13.4
+  ],
+  "sons": [
+    {
+      "t": 1.45,
+      "tipo": "click",
+      "evento": "clique no IPTU do anúncio",
+      "batidaMaisProxima": 1.23,
+      "desvio": 0.22
+    },
+    {
+      "t": 1.49,
+      "tipo": "tick",
+      "evento": "sublinhado nasce",
+      "batidaMaisProxima": 1.71,
+      "desvio": -0.22
+    },
+    {
+      "t": 1.7,
+      "tipo": "whoosh",
+      "dur": 0.32,
+      "evento": "cartão vira registro",
+      "batidaMaisProxima": 1.71,
+      "desvio": -0.01
+    },
+    {
+      "t": 2.05,
+      "tipo": "tick",
+      "evento": "caminho desce até o IPTU oficial",
+      "batidaMaisProxima": 2.19,
+      "desvio": -0.14
+    },
+    {
+      "t": 2.45,
+      "tipo": "pop",
+      "evento": "IPTU oficial sublinhado",
+      "batidaMaisProxima": 2.67,
+      "desvio": -0.22
+    },
+    {
+      "t": 4.55,
+      "tipo": "click",
+      "evento": "clique em Cadastro oficial",
+      "batidaMaisProxima": 4.59,
+      "desvio": -0.04
+    },
+    {
+      "t": 4.78,
+      "tipo": "whoosh",
+      "dur": 0.5,
+      "evento": "registro deita e vira lote",
+      "batidaMaisProxima": 4.59,
+      "desvio": 0.19
+    },
+    {
+      "t": 4.8,
+      "tipo": "pop",
+      "evento": "pino nasce",
+      "batidaMaisProxima": 4.59,
+      "desvio": 0.21
+    },
+    {
+      "t": 5.6,
+      "tipo": "thump",
+      "evento": "prédio sobe",
+      "batidaMaisProxima": 5.55,
+      "desvio": 0.05
+    },
+    {
+      "t": 7.4,
+      "tipo": "whoosh",
+      "dur": 0.9,
+      "evento": "câmera sobe para o mapa",
+      "batidaMaisProxima": 7.47,
+      "desvio": -0.07
+    },
+    {
+      "t": 8.1,
+      "tipo": "sweep",
+      "dur": 0.95,
+      "evento": "raio de 150 m varre",
+      "batidaMaisProxima": 7.95,
+      "desvio": 0.15
+    },
+    {
+      "t": 8.85,
+      "tipo": "pop",
+      "evento": "legenda das demolições",
+      "batidaMaisProxima": 8.91,
+      "desvio": -0.06
+    },
+    {
+      "t": 10.35,
+      "tipo": "whoosh",
+      "dur": 0.45,
+      "evento": "mapa vira dossiê",
+      "batidaMaisProxima": 10.35,
+      "desvio": 0
+    },
+    {
+      "t": 12.75,
+      "tipo": "click",
+      "evento": "Preparar visita",
+      "batidaMaisProxima": 12.75,
+      "desvio": 0
+    }
+  ]
+}

@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · Cena 07 · da porta para fora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Plus+Jakarta+Sans:wght@400..800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lib/marca.css">
+<style>
+  html, body { margin: 0; background: var(--bg-obsidian); }
+  body.tela { min-height: 100vh; overflow: hidden; }
+  #c {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden; flex: none;
+    background: var(--bg-paper); color: var(--ink-primary);
+    font-family: var(--font-sans); font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  .grade {
+    position: absolute; inset: 0; background-size: 48px 48px;
+    background-image:
+      linear-gradient(to right, rgba(127, 136, 112, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(127, 136, 112, 0.09) 1px, transparent 1px);
+  }
+  svg.camada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+  canvas.camada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  .camada-div { position: absolute; inset: 0; }
+  .t { position: absolute; white-space: nowrap; line-height: 1.15; }
+  .kicker { font: 700 18px/1 var(--font-sans); letter-spacing: 0.09em; text-transform: uppercase; color: var(--brand-rust); }
+  .titulo { font: 500 46px/1.1 var(--font-display); letter-spacing: -0.025em; }
+  .apoio { font: 400 21px/1.35 var(--font-sans); color: var(--ds-muted); }
+  .apoio-s { font: 400 17px/1.4 var(--font-sans); color: var(--ds-muted); }
+  .corpo { font: 500 25px/1.3 var(--font-sans); }
+  .forte { font: 600 29px/1.2 var(--font-sans); }
+  .rotulo { font: 600 18px/1 var(--font-sans); color: var(--ds-muted); }
+  .numero-grande { font-family: var(--font-display); font-weight: 500; font-variation-settings: 'opsz' 40; letter-spacing: -0.03em; line-height: 1; }
+  .fio { position: absolute; height: 1px; background: var(--ds-line); }
+  .pilula {
+    font: 600 19px/1 var(--font-sans); color: var(--ink-primary);
+    padding: 9px 15px; border-radius: 999px; background: rgba(255, 255, 255, 0.96); border: 1px solid var(--border-hairline);
+  }
+  .cartao { position: absolute; background: #FFFFFF; border: 1px solid rgba(23, 23, 23, 0.09); box-sizing: border-box; }
+  .painel { position: absolute; background: #FFFFFF; border: 1px solid rgba(23, 23, 23, 0.09); box-sizing: border-box; overflow: hidden; }
+  .abas { position: absolute; background: #F4EEE4; border-radius: 16px; }
+  .aba { position: absolute; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 22px; color: var(--ds-muted); }
+  .trilha { position: absolute; height: 14px; border-radius: 7px; background: #EFE9DC; overflow: hidden; }
+  .trilha b { position: absolute; left: 0; top: 0; height: 14px; border-radius: 7px; background: #9E9587; }
+  .trilha.atual b { background: #171717; }
+  .raio150 { display: flex; align-items: baseline; gap: 12px; padding: 8px 20px 10px 18px; border-radius: 22px; background: rgba(255, 255, 255, 0.96); border: 1px solid var(--border-hairline); }
+  .raio150 .n { font: 500 58px/1 var(--font-display); font-variation-settings: 'opsz' 40; letter-spacing: -0.03em; color: var(--ink-primary); }
+  .raio150 .s { font: 600 19px/1 var(--font-sans); color: var(--ink-secondary); }
+  .rot-faixa { font: 600 26px/1 var(--font-sans); color: var(--ink-secondary); }
+  .rot-faixa.atual { font-weight: 700; color: var(--ink-primary); }
+  .barra-rot { font: 500 22px/1 var(--font-sans); color: var(--ink-secondary); }
+  .barra-rot.atual { font-weight: 700; color: var(--ink-primary); }
+  .barra-val { font: 600 25px/1 var(--font-sans); color: var(--ink-secondary); }
+  .barra-val.atual { font-weight: 700; color: var(--ink-primary); }
+  .ficha-t { font: 600 21px/1 var(--font-sans); }
+  .ficha-v { font: 500 17px/1 var(--font-sans); color: var(--ds-muted); }
+  #debug { position: absolute; right: 16px; top: 12px; font: 500 16px/1 var(--font-mono); color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div id="c">
+  <div class="grade"></div>
+  <svg class="camada" id="mundo" viewBox="0 0 1920 1080">
+    <defs>
+      <clipPath id="moldura"><path id="moldura-p" d="M-10 -10H1930V1090H-10Z" /></clipPath>
+      <clipPath id="revela"><path id="revela-p" d="M0 0Z" /></clipPath>
+      <!-- faixas dos bairros vizinhos (B5): as quadras dentro delas ficam mais claras -->
+      <clipPath id="zonas"><path id="zonas-p" d="M0 0Z" /></clipPath>
+      <pattern id="hachura" width="11" height="11" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="11" height="11" fill="rgba(244,119,69,0.12)" />
+        <line x1="0" y1="0" x2="0" y2="11" stroke="rgba(185,78,54,0.62)" stroke-width="3.2" />
+      </pattern>
+    </defs>
+    <g id="mapa" clip-path="url(#moldura)">
+      <g id="chao"><path id="chao-q" fill="#EADFCB" stroke="#FFFFFF" stroke-width="1" /><path id="chao-viz" fill="#F6F1E8" stroke="none" clip-path="url(#zonas)" /></g>
+      <!-- marcas do chão: ficam por baixo dos volumes (a hachura das demolições e as divisas das faixas) -->
+      <g id="chao-marcas"></g>
+      <g id="lote"></g>
+      <!-- o prédio em SVG só antes de a cidade subir (o primeiro quadro tem de ser o último da cena 6) -->
+      <g id="predio-svg"></g>
+    </g>
+  </svg>
+  <!-- os volumes da cidade num canvas: milhares de faces sem o custo do DOM do SVG (modo ao vivo) -->
+  <canvas class="camada" id="volumes" width="1920" height="1080"></canvas>
+  <svg class="camada" id="mundo2" viewBox="0 0 1920 1080">
+    <defs><clipPath id="moldura2"><path id="moldura2-p" d="M-10 -10H1930V1090H-10Z" /></clipPath></defs>
+    <g id="mapa2" clip-path="url(#moldura2)"><g id="marcas"></g></g>
+    <path id="moldura-borda" fill="none" stroke="rgba(23,23,23,0.16)" stroke-width="1.5" opacity="0" />
+    <g id="anel"></g>
+    <g id="pino"></g>
+  </svg>
+  <div class="camada-div" id="rotulos"></div>
+  <div class="camada-div" id="ui"></div>
+  <svg class="camada" id="sobre" viewBox="0 0 1920 1080"></svg>
+  <div class="camada-div" id="sobretxt"></div>
+  <svg class="camada" id="cursor-camada" viewBox="0 0 1920 1080">
+    <circle id="onda" r="0" fill="none" stroke="#F47745" stroke-width="3" opacity="0" />
+    <path id="cursor" fill="#171717" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round" />
+  </svg>
+</div>
+
+<script type="module">
+import { clamp, lerp, invLerp, smooth, sp, spring, track, swap, pending, press, project, roundedQuad, rectPts, lerpPt, PRESETS as P } from '../lib/motion.js';
+import { criarCidade, desenharChao, pintarVolumes, pintarPrisma, prisma, posicaoCamera, circuloChao, PALETAS, misturarPaleta } from '../lib/cidade.js';
+import { REGISTRO, LOTE, BAIRRO, IMOVEL } from './dados.js';
+
+// ---------------------------------------------------------------------------
+// Linha do tempo (roteiro de 18/10/2026: 53 palavras, cerca de 14,0 s a 3,8 palavras/s, uma
+// palavra a cada 0,264 s). A cena corre contínua no ritmo da fala; cada evento fica preso à
+// palavra de sentido:
+//   B1 0,00 «Da porta para fora, nós avaliamos o entorno para a sua rotina:» ("entorno" 1,85)
+//   B2 3,17 «mostramos se há alvará de obra ou demolição próximo ao imóvel,» ("alvará" 3,96)
+//   B3 6,07 «se a rua sofre com alagamentos,» ("rua" 6,60; "alagamentos" 7,39)
+//   B4 7,66 «se o apê vira uma ilha de calor,» ("ilha de calor" 8,98)
+//   B5 9,77 «como está a segurança no bairro» ("segurança" 10,56)
+//   B6 11,35 «e o custo de vida estimado em torno do local.» ("custo" 11,88; "em torno do local" 12,94)
+// Os HOLD ficam nos fins de frase (vírgulas) e são pontos de corte: o quadro fica parado
+// (TRAVA s antes de cada um, ver tempo()). Entre B5 e B6 não há vírgula, e não há HOLD. A saída
+// (o mapa encolhe até o anel) cai em «do local» e termina 0,7 s depois da fala.
+// ---------------------------------------------------------------------------
+const DUR = 14.7;
+const T = {
+  // B1 · a câmera sobe pela fachada e a cidade sobe a partir do lote; o contorno do lote engrossa
+  cam1: 0.12, revela: 0.18, lote: 0.32, barra: 1.2,
+  // B2 · obras e demolições: raio de 150 m a partir da janela (câmera, haste e varredura se sobrepõem)
+  b2: 3.17, janela: 3.27, haste: 3.42, clique0: 3.52, varre: 3.67, painel1: 3.87, pilula: 4.52,
+  // B3 · alagamento
+  b3: 6.07, cam3: 6.17, clique1: 6.4, painel2: 6.5, contorno: 6.5, interroga: 6.9,
+  // B4 · calor
+  b4: 7.66, cam4: 7.76, clique2: 7.98, painel3: 8.12,
+  // B5 · segurança no bairro: a cidade se assenta no papel enquanto a câmera sobe
+  b5: 9.62, cam5: 9.64, afunda: 9.66, clique3: 9.96, painel4: 10.0, faixas: 10.0, voo: 10.28,
+  // B6 · custo de vida: a câmera desce e a cidade sobe de novo a partir do lote
+  b6: 11.8, cam6: 11.82, clique4: 11.92, sobe6: 12.0, painel5: 12.04,
+  // saída: a cidade se assenta, o mapa encolhe e o anel vira selo vazio
+  saida: 13.3, selo: 13.36, esvazia: 14.16,
+};
+const HOLDS = [T.b2 - 0.03, T.b3 - 0.03, T.b4 - 0.03, T.b5 - 0.03, T.saida - 0.03];
+// Em cada HOLD o quadro fica parado nos últimos TRAVA s; tudo o que se move assenta exato antes de
+// PRAZO(h) (câmera, cidade, varredura e contorno com molaAte), e o quadro do HOLD é o mesmo de
+// TRAVA s antes: a cena fica parada de fato por 0,23 s em cada HOLD.
+const TRAVA = 0.15;
+const PRAZO = (h) => h - TRAVA - 0.08;
+const ESTADOS = [
+  { id: 'S0', nome: 'Lote com o pino (fim da cena 6)', t: 0 },
+  { id: 'M1', nome: 'Câmera sobe; quadras sobem', t: 0.85 },
+  { id: 'B1', nome: 'Cidade e barra Explore o entorno', t: HOLDS[0] },
+  { id: 'M2', nome: 'Toque em Obras; haste varre o raio', t: 4.1 },
+  { id: 'B2', nome: 'Obras: 4 demolições perto', t: HOLDS[1] },
+  { id: 'M3', nome: 'Painel vira ficha; toque em Alagamento', t: T.clique1 },
+  { id: 'B3', nome: 'Alagamento: rua e garagem', t: HOLDS[2] },
+  { id: 'M4', nome: 'Toque em Calor; régua entra', t: 8.3 },
+  { id: 'B4', nome: 'Calor: +6 °C', t: HOLDS[3] },
+  { id: 'M5', nome: 'Câmera sobe; a cidade se assenta', t: 10.0 },
+  { id: 'M5b', nome: 'Faixas norte → sul viram barras', t: 10.62 },
+  { id: 'M5c', nome: 'Segurança: barras assentadas', t: 11.74 },
+  { id: 'M6', nome: 'Câmera desce; toque em Custo de vida', t: 12.2 },
+  { id: 'B6', nome: 'Custo de vida e as fichas', t: HOLDS[4] },
+  { id: 'M7', nome: 'Mapa encolhe com o anel', t: 13.85 },
+  { id: 'FIM', nome: 'Anel vazio (primeiro quadro da cena 8)', t: DUR - 1 / 30 },
+];
+
+// ---------------------------------------------------------------------------
+// Câmera de mundo (project de motion.js). Começa na câmera S3 do POC-01 (CAM.lote).
+// ---------------------------------------------------------------------------
+const FOCAL = 9000;
+const CAM = {
+  lote: { cx: 820, cy: 640, s: 9.5, yaw: -0.42, pitch: 0.98 },
+  cidade: { cx: 800, cy: 704, s: 4.6, yaw: -0.34, pitch: 0.88 },
+  raio: { cx: 700, cy: 618, s: 2.2, yaw: -0.22, pitch: 0.55 },
+  rua: { cx: 830, cy: 590, s: 3.3, yaw: -0.10, pitch: 0.24 },
+  quadra: { cx: 800, cy: 600, s: 2.7, yaw: -0.10, pitch: 0.30 },
+  // o bairro a 1 px/m: a cidade já se assentou no papel, então o plano é um mapa de quadras
+  bairro: { cx: 660, cy: 712, s: 1.0, yaw: 0, pitch: 0.30 },
+  rotina: { cx: 760, cy: 650, s: 1.5, yaw: -0.16, pitch: 0.42 },
+  selo: { cx: 960, cy: 540, s: 0.40, yaw: 0, pitch: 0 },
+};
+const SUBIDA = { k: 12, d: 6.93 };   // zeta 1: a câmera sobe pela fachada, assenta em ~1,7 s
+// Mola que chega exata ao alvo num prazo (fim, contado do começo dela): até perto do prazo é a
+// mola de sempre; na janela final o resto (poucos por cento) se desfaz suave. Assim o quadro do
+// HOLD fica parado de fato, sem acelerar o movimento.
+function molaAte(u, p, fim) {
+  const f = spring(u, p.k, p.d);
+  if (!(fim < Infinity)) return f;
+  const w = Math.min(0.45, Math.max(0.12, fim * 0.5));
+  return lerp(f, 1, smooth(invLerp(fim - w, fim, u)));
+}
+// todas as outras mudanças de câmera usam P.camera (zeta 1, assenta em cerca de 1,2 s): calma.
+// O quarto valor de cada chave é o prazo para chegar (o HOLD seguinte).
+const CAM_KEYS = [[0, CAM.lote], [T.cam1, CAM.cidade, SUBIDA, PRAZO(HOLDS[0])], [T.b2, CAM.raio, P.camera, PRAZO(HOLDS[1])], [T.cam3, CAM.rua, P.camera, PRAZO(HOLDS[2])], [T.cam4, CAM.quadra, P.camera, PRAZO(HOLDS[3])], [T.cam5, CAM.bairro], [T.cam6, CAM.rotina, P.camera, PRAZO(HOLDS[4])], [T.selo, CAM.selo]];
+// A câmera é arredondada (0,05 px, 1e-5 rad e 1e-5 em log s): abaixo disso o quadro não muda, e o
+// desenho da cidade pode ser reaproveitado entre quadros iguais (o resultado continua função de t).
+const q = (v, u) => Math.round(v / u) * u;
+function trackAte(t, keys) {
+  let v = keys[0][1];
+  for (let i = 1; i < keys.length; i += 1) {
+    const [tk, alvo, p = P.camera, prazo = Infinity] = keys[i];
+    v += (alvo - keys[i - 1][1]) * molaAte(t - tk, p, prazo - tk);
+  }
+  return v;
+}
+function cameraMola(t) {
+  const out = { focal: FOCAL };
+  for (const c of ['cx', 'cy', 'yaw', 'pitch']) out[c] = trackAte(t, CAM_KEYS.map(([tk, v, p, z]) => [tk, v[c], p, z]));
+  out.cx = q(out.cx, 0.05); out.cy = q(out.cy, 0.05); out.yaw = q(out.yaw, 1e-5); out.pitch = q(out.pitch, 1e-5);
+  out.s = Math.exp(q(trackAte(t, CAM_KEYS.map(([tk, v, p, z]) => [tk, Math.log(v.s), p, z])), 1e-5));
+  return out;
+}
+// Emenda com a cena 8: ela redesenha o anel com a câmera da versão anterior desta cena em
+// t = 25,4 s (cena08.html, KEYS7 e camera7(DUR7)). A câmera final é essa mesma, calculada aqui com
+// as chaves antigas e a mesma conta, para o anel sair idêntico. A mola do selo ainda anda cerca de
+// 0,3 px por quadro no fim, então de selo + 1,04 s até DUR - 0,05 s o resto se desfaz suave, e dali
+// em diante a câmera é a final: o último quadro gravado (DUR - 1/30) e o de DUR saem iguais ao
+// primeiro da cena 8.
+const KEYS_CENA8 = [[0, CAM.lote], [0.12, CAM.cidade, SUBIDA], [4.8, CAM.raio], [12.45, CAM.rua], [14.5, CAM.quadra], [17.62, CAM.bairro], [20.05, CAM.rotina], [24.06, CAM.selo]];
+const CAM_FIM = (() => {
+  const t = 25.4, out = { focal: FOCAL };
+  for (const c of ['cx', 'cy', 'yaw', 'pitch']) out[c] = track(t, KEYS_CENA8.map(([tk, v, p]) => [tk, v[c], p]), P.camera);
+  out.cx = q(out.cx, 0.05); out.cy = q(out.cy, 0.05); out.yaw = q(out.yaw, 1e-5); out.pitch = q(out.pitch, 1e-5);
+  out.s = Math.exp(q(track(t, KEYS_CENA8.map(([tk, v, p]) => [tk, Math.log(v.s), p]), P.camera), 1e-5));
+  return out;
+})();
+const ASSENTA_FIM = [T.selo + 1.04, DUR - 0.05];
+function camera(t) {
+  const u = invLerp(ASSENTA_FIM[0], ASSENTA_FIM[1], t), fim = u * u * (3 - 2 * u);
+  if (fim >= 1) return { ...CAM_FIM };
+  const out = cameraMola(t);
+  if (fim <= 0) return out;
+  out.cx = q(lerp(out.cx, CAM_FIM.cx, fim), 0.05); out.cy = q(lerp(out.cy, CAM_FIM.cy, fim), 0.05);
+  out.yaw = q(lerp(out.yaw, CAM_FIM.yaw, fim), 1e-5); out.pitch = q(lerp(out.pitch, CAM_FIM.pitch, fim), 1e-5);
+  out.s = Math.exp(q(lerp(Math.log(out.s), Math.log(CAM_FIM.s), fim), 1e-5));
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// Cidade: a mesma grade do POC-01 em volta do lote.
+// ---------------------------------------------------------------------------
+const LOTE_PTS = [[-LOTE.fundo / 2, -LOTE.frente / 2], [LOTE.fundo / 2, -LOTE.frente / 2], [LOTE.fundo / 2, LOTE.frente / 2], [-LOTE.fundo / 2, LOTE.frente / 2]];
+const VIZINHOS = [[-20, -43, 20, -16], [-20, 16, 20, 43], [20, -43, 55, 0], [20, 0, 55, 43], [55, -43, 90, 0], [55, 0, 90, 43]];
+const PREDIO = { x0: -14, y0: -11, x1: 14, y1: 11, h: LOTE.pavimentos * 3 };
+// a janela fica na face sul, a que a câmera vê em todos os planos
+const JANELA = { y: PREDIO.y1, x0: -5, x1: 5, z0: 21, z1: 26 };
+const cidade = criarCidade({
+  semente: 327,
+  longe: false,
+  reservados: [{ x0: -20, y0: -16, x1: 20, y1: 16 }],
+  lotes: (i, j) => (i === 0 && j === 0 ? VIZINHOS.map(([x0, y0, x1, y1]) => ({ x0, y0, x1, y1 })) : null),
+  // em volta do lote a cidade fica mais baixa que o prédio, para ele continuar à vista; ao sul
+  // (entre o lote e a câmera) mais baixa ainda, como uma plateia; longe, a cidade se assenta no papel
+  teto: (x, y, d) => {
+    let h = d < 70 ? 18 : d < 220 ? 12 + 0.16 * d : 30 + 0.16 * d;
+    if (y > 30 && d < 300) h = Math.min(h, 12 + 0.1 * d);
+    return Math.max(4, h * clamp(1 - (d - 900) / 800, 0.12, 1));
+  },
+});
+// o lote vizinho ao sul (entre o lote e a câmera) fica vazio, só chão: o lote azul fica à vista.
+// Tirado depois de gerar, para a sequência do rng (e o resto da cidade) não mudar.
+cidade.edificios = cidade.edificios.filter((ed) => !(Math.abs(ed.cx) < 20 && ed.cy > 16 && ed.cy < 43));
+
+// revelação do chão a partir do lote, em metros: perto (o que a câmera vê na subida) e longe
+const RAIO_CIDADE = 1990;
+const revelaR = (t) => 590 * clamp(spring(t - T.revela, 4, 4), 0, 1) + 1400 * clamp(spring(t - 1.4, 1.2, 2.19), 0, 1);
+const TAB_R = [];
+for (let k = 0; k <= 2400; k += 1) TAB_R.push(revelaR(k / 100));
+const tRevela = (r) => { for (let k = 0; k < TAB_R.length; k += 1) if (TAB_R[k] >= r) return k / 100; return 24; };
+for (const ed of cidade.edificios) ed.t0 = tRevela(ed.r - 12) + 0.04 + 0.16 * ed.u;
+const SOBE = { k: 70, d: 15 };
+// a cidade se assenta no papel (B5 e saída) e sobe de novo a partir do lote (B6)
+const ASSENTA = { k: 120, d: 20 };   // zeta 0,91: cerca de 0,5 s
+// a onda do B6 sai do lote e chega a 700 m em 0,4 s; cada volume chega exato ao prazo do HOLD
+for (const ed of cidade.edificios) ed.t6 = T.sobe6 + 0.4 * clamp(ed.r / 700) + 0.08 * ed.u;
+const PRAZO6 = PRAZO(HOLDS[4]);
+// ?cidade=dessaturado mostra a outra paleta do módulo (a da cena 3), só para conferir
+const PALETA = PALETAS[new URLSearchParams(location.search).get('cidade')] || PALETAS.quente;
+// assentada: o topo dos volumes vai para a cor do chão, para nada saltar quando eles somem
+const PALETA_RASA = { ...PALETA, topo: PALETA.calcada, contorno: PALETA.calcada };
+const nivel = (t, ed) => {
+  const v = spring(t - ed.t0, SOBE.k, SOBE.d) *
+    (1 - spring(t - (T.afunda + 0.1 * ed.u), ASSENTA.k, ASSENTA.d) + molaAte(t - ed.t6, SOBE, PRAZO6 - ed.t6) - spring(t - (T.saida + 0.06 * ed.u), ASSENTA.k, ASSENTA.d));
+  // valores que já assentaram viram exatos: o mesmo quadro sai igual e pode ser reaproveitado
+  return v < 0.002 ? 0 : Math.abs(v - 1) < 2e-4 ? 1 : v;
+};
+const crescer = (t) => (ed) => nivel(t, ed);
+// o primeiro instante em que algum volume aparece (nível acima de 0,002)
+let T_CANVAS = 24;
+for (const ed of cidade.edificios) T_CANVAS = Math.min(T_CANVAS, ed.t0);
+while (cidade.edificios.every((ed) => nivel(T_CANVAS, ed) === 0) && T_CANVAS < 3) T_CANVAS += 1 / 240;
+// quanto a cidade está assentada (0 de pé, 1 rente ao chão), para a cor dos topos
+const rasa = (t) => clamp(sp(t - T.afunda, ASSENTA) - sp(t - T.sobe6, P.card) + sp(t - T.saida, ASSENTA));
+
+// ---------------------------------------------------------------------------
+// DOM e utilitários
+// ---------------------------------------------------------------------------
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+function el(cls, html, pai) { const e = document.createElement('div'); e.className = cls; e.innerHTML = html; pai.appendChild(e); return e; }
+const itens = [];
+function texto(pai, cls, html, x, y, tIn, tOut, o = {}) {
+  const e = el('t ' + cls, html, pai);
+  const it = { e, x, y, tIn, tOut, align: o.align || 'left', sobe: o.sobe ?? 14, durIn: o.durIn ?? 0.12 };
+  itens.push(it);
+  return it;
+}
+function posicionar(it, t) {
+  const a = swap(t, it.tIn, it.tOut, { durIn: it.durIn });
+  const aOut = clamp((it.tOut - 0.1 - t) / 0.1);
+  const dy = it.sobe * pending(t, it.tIn + 0.04, P.type) - 8 * (1 - aOut);
+  it.e.style.opacity = a.toFixed(3);
+  it.e.style.visibility = a <= 0.001 ? 'hidden' : 'visible';
+  if (a <= 0.001) return;
+  const x = it.align === 'right' ? it.x - it.e.offsetWidth : it.align === 'center' ? it.x - it.e.offsetWidth / 2 : it.x;
+  it.e.style.left = x.toFixed(1) + 'px';
+  it.e.style.top = (it.y + dy).toFixed(1) + 'px';
+}
+const vis = (e, a) => { e.style.opacity = a.toFixed(3); e.style.visibility = a > 0.001 ? 'visible' : 'hidden'; };
+const pos = (e, x, y) => { e.style.left = x.toFixed(1) + 'px'; e.style.top = y.toFixed(1) + 'px'; };
+const num = (v) => v.toFixed(1).replace('.', ',');
+const f1 = (v) => v.toFixed(1);
+
+// ---------------------------------------------------------------------------
+// Cartão do alto: a barra "Explore o entorno" do protótipo (renderDossierSurroundings, abas do
+// mapa .ds-map-tabs), com uma aba por camada da fala. A aba pressionada é sempre a do painel ao
+// lado: o cursor toca cada uma quando a camada começa.
+// ---------------------------------------------------------------------------
+const ui = $('ui');
+const CARTAO = { x: 48, y: 40, w: 960, h: 214 };
+const cartao = el('cartao', '', ui);
+Object.assign(cartao.style, { left: CARTAO.x + 'px', width: CARTAO.w + 'px', height: CARTAO.h + 'px', borderRadius: '30px' });
+const kick = el('t kicker', 'Seu endereço no cotidiano', cartao); pos(kick, 36, 30);
+const tit = el('t titulo', 'Explore o entorno', cartao); pos(tit, 34, 54);
+const abas = el('abas', '', cartao);
+const ABAS_W = CARTAO.w - 56;
+Object.assign(abas.style, { left: '28px', top: '116px', width: ABAS_W + 'px', height: '72px' });
+const CAMADAS = ['Obras', 'Alagamento', 'Calor', 'Segurança', 'Custo de vida'];
+const ABA_W = (ABAS_W - 16 - 8 * (CAMADAS.length - 1)) / CAMADAS.length;
+const abaEls = CAMADAS.map((nome, i) => { const a = el('aba', nome, abas); Object.assign(a.style, { left: (8 + i * (ABA_W + 8)).toFixed(1) + 'px', top: '8px', width: ABA_W.toFixed(1) + 'px', height: '56px' }); return a; });
+// canto superior esquerdo de cada aba no quadro (para o cursor)
+const abaTela = (i) => ({ x: CARTAO.x + 28 + 8 + i * (ABA_W + 8), y: CARTAO.y + 116 + 8 });
+// qual camada está pressionada em cada instante: nenhuma no B1; depois a de cada batida
+const TOQUES = [[-1, -1], [T.clique0, 0], [T.clique1, 1], [T.clique2, 2], [T.clique3, 3], [T.clique4, 4]];
+
+// ---------------------------------------------------------------------------
+// Painéis da camada e fichas da legenda. Uma forma por camada: abre na coluna da direita com o
+// nome da aba no alto e um número grande; quando a próxima camada começa, o corpo sai, o painel
+// encolhe no lugar até a altura da ficha e o número volta resumido à direita do nome. No fim a
+// coluna junta as cinco camadas.
+// Números demonstrativos (decisão do usuário de 18/10/2026): 4 demolições e 49 alvarás de obra em
+// 150 m, 206 em 2024 e 17,2 por mil moradores vêm de dados.js; +6 °C arredonda a variação de
+// 6,6 °C de superfície no bairro; R$ 3.900 por mês é inventado.
+// ---------------------------------------------------------------------------
+const COL = { x: 1296, w: 568 };
+const FICHA_H = 66, PASSO = 76;
+const topoPainel = (k) => 56 + PASSO * k;
+const CALOR = '+6 °C';
+const CUSTO = '3.900';
+const PAINEIS = [
+  { id: 'obras', nome: 'Obras', icone: 'anel', abre: T.painel1, fecha: T.b3, h: 404, valor: `${REGISTRO.demolicoesN} demolições perto` },
+  { id: 'agua', nome: 'Alagamento', icone: 'pontilhado', abre: T.painel2, fecha: T.b4, h: 232, valor: `${BAIRRO.defesaCivil.total} alagamentos em ${BAIRRO.defesaCivil.ano}` },
+  { id: 'calor', nome: 'Calor', icone: 'degraus', abre: T.painel3, fecha: T.b5, h: 336, valor: `${CALOR} · ilha de calor` },
+  { id: 'seg', nome: 'Segurança', icone: 'barras', abre: T.painel4, fecha: T.b6, h: 500, valor: `${BAIRRO.porMil} por mil moradores` },
+  { id: 'custo', nome: 'Custo de vida', icone: 'custo', abre: T.painel5, fecha: Infinity, h: 304, valor: null },
+];
+// régua de calor: cinco degraus de luminância de um matiz só (papel → laranja), sem a ferrugem
+// de alerta: "mais quente" não é veredito
+const DEGRAUS = ['#FBEEE5', '#F9D6C2', '#F7BA9C', '#F69A72', '#F47745'];
+const ICONES = {
+  anel: '<svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="#F47745" stroke-width="3.5"/><circle cx="18" cy="18" r="8.5" fill="none" stroke="#B94E36" stroke-width="2" stroke-dasharray="2 3"/><circle cx="18" cy="18" r="3" fill="#2E5A85"/></svg>',
+  pontilhado: '<svg width="36" height="36" viewBox="0 0 36 36"><rect x="12" y="3" width="12" height="30" rx="6" fill="none" stroke="#171717" stroke-width="3" stroke-linecap="round" stroke-dasharray="0.1 5.2"/></svg>',
+  degraus: `<svg width="36" height="36" viewBox="0 0 36 36">${DEGRAUS.map((c, i) => `<rect x="${1 + i * 7}" y="11" width="6" height="14" rx="1.5" fill="${c}"/>`).join('')}</svg>`,
+  barras: '<svg width="36" height="36" viewBox="0 0 36 36"><rect x="3" y="6" width="30" height="4" rx="2" fill="#9E9587"/><rect x="3" y="13" width="23" height="4" rx="2" fill="#9E9587"/><rect x="3" y="20" width="22" height="4" rx="2" fill="#171717"/><rect x="3" y="27" width="17" height="4" rx="2" fill="#9E9587"/></svg>',
+  // recibo: o custo do mês em volta do imóvel
+  custo: '<svg width="36" height="36" viewBox="0 0 36 36"><path d="M8 4.5H28V31.5L24.7 29.4L21.3 31.5L18 29.4L14.7 31.5L11.3 29.4L8 31.5Z" fill="#F6F2E9" stroke="#171717" stroke-width="2" stroke-linejoin="round"/><path d="M12.5 11.5H23.5M12.5 17H23.5M12.5 22.5H18.5" stroke="#9E9587" stroke-width="2" stroke-linecap="round"/><circle cx="23.5" cy="22.5" r="3" fill="#F47745"/></svg>',
+};
+for (let k = 0; k < PAINEIS.length; k += 1) {
+  const pn = PAINEIS[k];
+  pn.k = k;
+  pn.top = topoPainel(k);
+  pn.e = el('painel', '', ui);
+  pn.itens = [];
+  pn.saiConteudo = pn.fecha + 0.2;
+  // o nome da aba fica no alto do painel do começo ao fim: é o mesmo da ficha
+  pn.fichaItens = [
+    texto(pn.e, '', ICONES[pn.icone], 18, 15, pn.abre - 0.05, Infinity, { sobe: 8 }),
+    texto(pn.e, 'ficha-t', pn.nome, 70, 22, pn.abre - 0.03, Infinity, { sobe: 8 }),
+  ];
+  if (pn.valor) pn.fichaItens.push(texto(pn.e, 'ficha-v', pn.valor, COL.w - 24, 26, pn.fecha + 0.22, Infinity, { sobe: 8, align: 'right' }));
+}
+// conteúdo de cada painel (coordenadas dentro do painel; X é a margem). O nome entra junto com a
+// área e o número logo depois: nenhum painel fica branco e vazio.
+const X = 36;
+function conteudo(pn, cls, html, x, y, dt, o = {}) {
+  const it = texto(pn.e, cls, html, x, y, pn.abre + 0.02 + dt, pn.saiConteudo, o);
+  pn.itens.push(it);
+  return it;
+}
+const grande = (txt, px) => `<span class="numero-grande" style="font-size:${px}px">${txt}</span>`;
+{ // obras
+  const p = PAINEIS[0];
+  conteudo(p, '', grande(REGISTRO.demolicoesN, 150), X - 4, 76, 0.05);
+  conteudo(p, 'forte', 'demolições<br>perto', 150, 92, 0.09);
+  conteudo(p, 'apoio', 'a menos de 150 m', 150, 176, 0.13);
+  const fio = conteudo(p, 'fio', '', X, 262, 0.16); fio.e.style.width = (COL.w - 2 * X) + 'px';
+  conteudo(p, '', grande('49', 84), X - 2, 288, 0.2);
+  conteudo(p, 'corpo', 'alvarás de obra<br>em 150 m', 150, 298, 0.23);
+}
+{ // alagamento
+  const p = PAINEIS[1];
+  conteudo(p, '', grande(BAIRRO.defesaCivil.total, 120), X - 4, 72, 0.05);
+  conteudo(p, 'forte', 'alagamentos<br>no bairro', 262, 90, 0.09);
+  conteudo(p, 'apoio', `em ${BAIRRO.defesaCivil.ano}`, 262, 168, 0.13);
+}
+const REGUA = { x: X, y: 214, w: COL.w - 2 * X, h: 44, gap: 6 };
+{ // calor · a régua vai do trecho mais fresco ao mais quente do bairro, e o colchete marca os +6 °C
+  const p = PAINEIS[2];
+  conteudo(p, '', grande(CALOR.replace(' °C', '<span style="font-size:84px"> °C</span>'), 120), X - 4, 72, 0.05);
+  conteudo(p, 'forte', 'ilha de calor<br>no bairro', 280, 90, 0.09);
+  const wd = (REGUA.w - 4 * REGUA.gap) / 5;
+  const r = (i) => (i === 0 ? '10px 0 0 10px' : i === 4 ? '0 10px 10px 0' : '0');
+  for (let i = 0; i < 5; i += 1) {
+    const d = conteudo(p, '', '', REGUA.x + i * (wd + REGUA.gap), REGUA.y + 14, 0.14 + 0.05 * i, { sobe: 10 });
+    Object.assign(d.e.style, { width: wd.toFixed(1) + 'px', height: REGUA.h + 'px', background: DEGRAUS[i], borderRadius: r(i) });
+  }
+  // colchete sobre a régua: os +6 °C vão de uma ponta à outra
+  const col = conteudo(p, '', `<svg width="${REGUA.w}" height="16" viewBox="0 0 ${REGUA.w} 16"><path d="M1.5 15V3H${REGUA.w - 1.5}V15" fill="none" stroke="#171717" stroke-width="2"/></svg>`, REGUA.x, REGUA.y - 6, 0.38, { sobe: 6 });
+  col.e.style.lineHeight = '0';
+  conteudo(p, 'apoio-s', 'mais fresca', REGUA.x, REGUA.y + 66, 0.42);
+  conteudo(p, 'apoio-s', 'mais quente', REGUA.x + REGUA.w, REGUA.y + 66, 0.42, { align: 'right' });
+}
+const BARRA = { rot: X, trilha: 216, w: 236, val: COL.w - X, y0: 214, passo: 56 };
+const MAX_TAXA = Math.max(...BAIRRO.vizinhos.map((v) => v[1]));
+const BARRAS = [];
+{ // segurança · o número entra com o painel; as barras crescem quando o nome de cada bairro pousa
+  const p = PAINEIS[3];
+  conteudo(p, '', grande(BAIRRO.porMil, 120), X - 4, 72, 0.05);
+  conteudo(p, 'forte', 'ocorrências por<br>mil moradores', 262, 90, 0.09);
+  BAIRRO.vizinhos.forEach((v, i) => {
+    const tr = conteudo(p, 'trilha' + (v[0] === 'Boa Viagem' ? ' atual' : ''), '<b></b>', BARRA.trilha, BARRA.y0 + i * BARRA.passo + 8, 0.12 + 0.03 * i, { sobe: 0 });
+    tr.e.style.width = BARRA.w + 'px';
+    BARRAS.push(tr.e.firstChild);
+  });
+}
+{ // custo de vida
+  const p = PAINEIS[4];
+  conteudo(p, '', grande(`<span style="font-size:56px">R$ </span>${CUSTO}`, 120), X - 4, 72, 0.05);
+  conteudo(p, 'forte', 'custo de vida estimado', X, 206, 0.09);
+  conteudo(p, 'apoio', 'por mês, em torno do local', X, 246, 0.13);
+}
+
+// ---------------------------------------------------------------------------
+// Rótulos do mapa
+// ---------------------------------------------------------------------------
+const rotulos = $('rotulos');
+// o raio de 150 m em escala de título, legível também a 360 px
+const pilulaRaio = el('t raio150', '<span class="n">150 m</span>', rotulos);
+const pilulaAgua = el('t pilula', 'A água chega à garagem?', rotulos);
+
+// faixas norte → sul: Pina, Imbiribeira, Ibura, Boa Viagem, Jordão. Boa Viagem é a faixa
+// larga do meio, com o lote e o anel de 150 m inteiros dentro; os vizinhos são tiras estreitas.
+// Ficam no chão do mapa (sem caixas por cima): no B5 as quadras dos vizinhos clareiam, as divisas
+// entram da esquerda para a direita e o nome de cada bairro voa até a sua barra no painel.
+const FAIXA_Y = [-455, -360, -265, -170, 170, 265];
+const FAIXAS = BAIRRO.vizinhos.map((v, i) => ({ nome: v[0], taxa: v[1], y0: FAIXA_Y[i], y1: FAIXA_Y[i + 1], atual: v[0] === 'Boa Viagem' }));
+const sobretxt = $('sobretxt');
+for (const f of FAIXAS) {
+  f.rot = el('t barra-rot' + (f.atual ? ' atual' : ''), f.nome, sobretxt);
+  f.val = el('t barra-val' + (f.atual ? ' atual' : ''), num(f.taxa), sobretxt);
+}
+const X_MAPA = 1272;
+
+// rua do prédio (a oeste do lote) e entrada da garagem
+const RUA = { x0: -31, x1: -21, y0: -56, y1: 56 };
+const GARAGEM = [-21, 12];
+
+// ---------------------------------------------------------------------------
+// Camadas SVG
+// ---------------------------------------------------------------------------
+const chaoQ = $('chao-q');
+const loteG = $('lote');
+const volCtx = $('volumes').getContext('2d');
+const marcasG = $('marcas');
+const anelG = $('anel');
+const pinoG = $('pino');
+const sobre = $('sobre');
+const lineD = (a, b) => `M${f1(a[0])} ${f1(a[1])}L${f1(b[0])} ${f1(b[1])}`;
+const polyD = (pts) => 'M' + pts.map((p) => f1(p[0]) + ' ' + f1(p[1])).join('L') + 'Z';
+const polyline = (pts) => 'M' + pts.map((p) => f1(p[0]) + ' ' + f1(p[1])).join('L');
+// cápsula da rua em pontos do chão, percorrida no sentido horário a partir do alto
+function capsula(r, n = 18) {
+  const rr = (r.x1 - r.x0) / 2, cx = (r.x0 + r.x1) / 2;
+  const pts = [];
+  for (let i = 0; i <= n; i += 1) { const a = Math.PI + (Math.PI * i) / n; pts.push([cx + rr * Math.cos(a), r.y0 + rr + rr * Math.sin(a)]); }
+  for (let i = 0; i <= n; i += 1) { const a = (Math.PI * i) / n; pts.push([cx + rr * Math.cos(a), r.y1 - rr + rr * Math.sin(a)]); }
+  pts.push(pts[0]);
+  return pts;
+}
+const CAPSULA = capsula(RUA);
+function prefixo(pts, p) {
+  // a parte inicial de uma polilinha, até a fração p do comprimento
+  const L = [0];
+  for (let i = 1; i < pts.length; i += 1) L.push(L[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const alvo = L[L.length - 1] * clamp(p);
+  const out = [pts[0]];
+  for (let i = 1; i < pts.length; i += 1) {
+    if (L[i] <= alvo) { out.push(pts[i]); continue; }
+    const u = (alvo - L[i - 1]) / (L[i] - L[i - 1]);
+    out.push(lerpPt(pts[i - 1], pts[i], u));
+    break;
+  }
+  return out;
+}
+const pontoEmX = (a, b, x) => { const u = (x - a[0]) / (b[0] - a[0]); return [x, lerp(a[1], b[1], u)]; };
+
+const dbg = new URLSearchParams(location.search).has('debug') ? el('', '', $('c')) : null;
+if (dbg) dbg.id = 'debug';
+
+// ---------------------------------------------------------------------------
+// seek(t): função pura do tempo
+// ---------------------------------------------------------------------------
+// índice de cada edifício, para guardar o nível de cada um no quadro
+cidade.edificios.forEach((ed, i) => { ed.i = i; });
+const NIVEIS = new Float64Array(cidade.edificios.length);
+// O desenho da cidade é reaproveitado quando a chave (câmera arredondada e estado) é a mesma:
+// a saída é a mesma que seria calculada de novo, então o quadro continua função pura de t.
+const memo = { vol: { k: null, s: '' }, chao: { k: null, s: '' } };
+const lembra = (m, k, f) => { if (m.k !== k) { m.k = k; m.s = f(); } return m.s; };
+// escreve no DOM só quando o texto muda (o resultado é o mesmo; poupa o parse do SVG)
+const html = (e, s) => { if (e.__s !== s) { e.innerHTML = s; e.__s = s; } };
+const attr = (e, k, v) => { const c = '__' + k; if (e[c] !== v) { e.setAttribute(k, v); e[c] = v; } };
+const camKey = (c) => [c.cx, c.cy, c.s, c.yaw, c.pitch].map((v) => v.toFixed(5)).join(',');
+const retKey = (r) => [r.x0, r.y0, r.x1, r.y1].map((v) => v.toFixed(1)).join(',');
+// cursor: aparece só para cada toque (entra de baixo, toca o canto da aba fora do texto e sai)
+const CLIQUES = TOQUES.slice(1);
+const pontaAba = (i) => [abaTela(i).x + ABA_W - 13, abaTela(i).y + 47];
+// tempo de cada quadro: nos últimos TRAVA s antes de cada HOLD o quadro fica parado (tudo já
+// assentou em PRAZO(h)); o HOLD é ponto de corte e de sincronia com a voz
+function tempo(t) {
+  for (const h of HOLDS) if (t > h - TRAVA && t <= h) return h - TRAVA;
+  return t;
+}
+
+function render(t) {
+  t = tempo(clamp(t, 0, DUR));
+  const cam = camera(t);
+  const pr = (p) => project(p, cam);
+  const cp = posicaoCamera(cam);
+  // retângulos dos painéis primeiro: a cidade usa para não desenhar o que eles cobrem
+  PAINEIS.forEach((pn, k) => {
+    const keys = [[0, 0], [pn.abre, pn.h]];
+    if (pn.fecha < Infinity) keys.push([pn.fecha + 0.02, FICHA_H]);
+    const h = Math.max(0, track(t, keys, P.card));
+    pn.ret = { x: COL.x + 760 * sp(t - (T.saida + 0.03 * k), P.card), y: pn.top, h: t >= pn.abre ? h : 0 };
+  });
+  const yCartao = track(t, [[0, -300], [T.barra, CARTAO.y], [T.saida, -300]], P.card);
+
+  // --- moldura: o mapa vira um cartão que encolhe junto com o anel até o tamanho de um selo;
+  // o recorte fica redondo no anel e então se esvazia. Calculada antes da cidade: o que fica fora
+  // do recorte não é desenhado ---
+  const cLote = pr([0, 0, 0]);
+  const rAnel = 150 * cam.s * 0.96;
+  const eM = clamp(spring(t - (T.selo + 0.02), 30, 11), 0, 1);
+  const esv = 1 - clamp(spring(t - T.esvazia, 140, 23.7), 0, 1);
+  const rFim = [cLote[0] - rAnel, cLote[1] - rAnel, 2 * rAnel, 2 * rAnel];
+  const ret = [0, 0, 1920, 1080].map((v, i) => lerp(v, rFim[i], eM));
+  const raioM = lerp(0, rAnel, eM);
+  const mx = [ret[0] + ret[2] / 2, ret[1] + ret[3] / 2];
+  const retE = [mx[0] - (ret[2] / 2) * esv, mx[1] - (ret[3] / 2) * esv, ret[2] * esv, ret[3] * esv];
+  const dMoldura = eM < 0.0005 ? 'M-10 -10H1930V1090H-10Z' : roundedQuad(rectPts(...retE), raioM * esv);
+  const vista = eM < 0.0005 ? undefined : { x0: retE[0] - 4, y0: retE[1] - 4, x1: retE[0] + retE[2] + 4, y1: retE[1] + retE[3] + 4 };
+
+  // --- chão revelado a partir do lote (raio arredondado ao metro, para o desenho poder ser reaproveitado) ---
+  // passados 1.800 m a borda já está fora de todos os quadros (a 2,2 px/m o quadro vê menos de
+  // 600 m): o chão fica inteiro e sem recorte, e não muda mais (nada se mexe nos HOLD)
+  const R = revelaR(t) > 1800 ? RAIO_CIDADE + 60 : Math.round(revelaR(t));
+  attr($('revela-p'), 'd', circuloChao(0, 0, Math.min(R, RAIO_CIDADE + 60), cam, 96));
+  $('chao').setAttribute('clip-path', R < RAIO_CIDADE + 40 ? 'url(#revela)' : '');
+  const chaoD = R > 20 ? lembra(memo.chao, camKey(cam) + '|' + Math.min(R, RAIO_CIDADE + 200) + '|' + (vista ? retKey(vista) : ''),
+    () => desenharChao(cidade, cam, { filtro: (qd) => qd.r < R + 90, vista })) : '';
+  attr(chaoQ, 'd', chaoD);
+  chaoQ.setAttribute('stroke-width', clamp(0.4 + 0.25 * cam.s, 0.5, 1.4).toFixed(2));
+  chaoQ.setAttribute('fill', PALETA.calcada);
+
+  // --- faixas dos bairros (B5), no chão: as quadras dos vizinhos clareiam e as divisas entram da
+  // esquerda para a direita, de norte a sul; no B6 elas saem ---
+  const aZona = 1 - clamp((t - (T.b6 + 0.05)) / 0.3);
+  let zonas = '', divisas = '';
+  const bordaFaixa = (y) => [pr([-3000, y, 0]), pr([3000, y, 0])];
+  if (t > T.faixas && aZona > 0.001) {
+    FAIXAS.forEach((f, i) => {
+      f.w = sp(t - (T.faixas + 0.06 * i), P.card);
+      const xw = 1960 * clamp(f.w, 0, 1.02);
+      const [a0, b0] = bordaFaixa(f.y0), [a1, b1] = bordaFaixa(f.y1);
+      // os vizinhos (e o que fica ao norte de Pina e ao sul de Jordão) clareiam: só Boa Viagem fica com as quadras normais
+      const [e0, e1] = [i === 0 ? bordaFaixa(f.y0 - 3000) : [a0, b0], i === 4 ? bordaFaixa(f.y1 + 3000) : [a1, b1]];
+      if (!f.atual && xw > 1) zonas += polyD([pontoEmX(e0[0], e0[1], -20), pontoEmX(e0[0], e0[1], xw), pontoEmX(e1[0], e1[1], xw), pontoEmX(e1[0], e1[1], -20)]);
+    });
+    FAIXA_Y.forEach((y, j) => {
+      const f = FAIXAS[Math.min(j, 4)];
+      const xw = 1960 * clamp(f.w, 0, 1.02);
+      if (xw < 1) return;
+      const [a, b] = bordaFaixa(y);
+      const bv = y === -170 || y === 170;
+      divisas += `<path d="${lineD(pontoEmX(a, b, -20), pontoEmX(a, b, xw))}" stroke="${bv ? '#171717' : '#9E9587'}" stroke-width="${bv ? 3 : 1.5}" fill="none"/>`;
+    });
+  }
+  attr($('zonas-p'), 'd', zonas || 'M0 0Z');
+  attr($('chao-viz'), 'd', zonas ? chaoD : '');
+  $('chao-viz').setAttribute('opacity', aZona.toFixed(3));
+
+  // --- lote em azul cadastral (contorno de 3,5 px como no fim da cena 6, que engrossa e ganha
+  // uma borda branca para saltar à vista) e vizinhos tracejados, que somem quando a cidade sobe ---
+  const gL = sp(t - T.lote, P.card);
+  const wLote = lerp(3.5, clamp(2.5 + 0.7 * cam.s, 3, 6), gL);
+  const loteD = roundedQuad(LOTE_PTS.map(pr), clamp(1.2 * cam.s, 1, 6));
+  const aViz = 1 - invLerp(0.55, 1.15, t);
+  html(loteG, (gL > 0.001 ? `<path d="${loteD}" fill="none" stroke="#FFFFFF" stroke-width="${(wLote + 5 * gL).toFixed(2)}" stroke-linejoin="round"/>` : '') +
+    `<path d="${loteD}" fill="#CFDBE9" stroke="#2E5A85" stroke-width="${wLote.toFixed(2)}"/>` +
+    (aViz > 0.001 ? `<path d="${VIZINHOS.map(([x0, y0, x1, y1]) => polyD([[x0, y0], [x1, y0], [x1, y1], [x0, y1]].map(pr))).join('')}" fill="rgba(46,90,133,0.05)" stroke="#8FAAC4" stroke-width="1.8" stroke-dasharray="7 6" opacity="${aViz.toFixed(3)}"/>` : ''));
+
+  // --- volumes: a cidade quente sobe; o prédio do lote fica em papel (ilustrativo, sem andares,
+  // como na cena 6: o número de pavimentos não tem fonte) ---
+  const aJanela = swap(t, T.janela, Infinity, { durIn: 0.18 });
+  const predioExtra = {
+    cx: 0, cy: 0,
+    pinta: (ctx, prj) => {
+      pintarPrisma(ctx, PREDIO.x0, PREDIO.y0, PREDIO.x1, PREDIO.y1, PREDIO.h, cam, prj, { s: '#FBF8F2', n: '#FBF8F2', e: '#F1EADC', w: '#F1EADC', topo: '#FFFFFF' }, '#C9BEA8', 1.5, 0);
+      if (aJanela > 0.001 && cp[1] > JANELA.y) {
+        const j = [[JANELA.x0, JANELA.y, JANELA.z0], [JANELA.x1, JANELA.y, JANELA.z0], [JANELA.x1, JANELA.y, JANELA.z1], [JANELA.x0, JANELA.y, JANELA.z1]].map(prj);
+        ctx.globalAlpha = aJanela;
+        ctx.beginPath(); ctx.moveTo(j[0][0], j[0][1]); for (let i = 1; i < 4; i += 1) ctx.lineTo(j[i][0], j[i][1]); ctx.closePath();
+        ctx.fillStyle = '#F47745'; ctx.fill(); ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+    },
+  };
+  const ocultos = [];
+  // retângulos opacos (painéis e cartão), encolhidos para dentro numa grade de 24 px: só some o que
+  // está inteiro atrás deles, e a chave do desenho não muda com o resto de cada spring
+  const dentro = (x0, y0, x1, y1) => ({ x0: Math.ceil(x0 / 24) * 24, y0: Math.ceil(y0 / 24) * 24, x1: Math.floor(x1 / 24) * 24, y1: Math.floor(y1 / 24) * 24 });
+  for (const pn of PAINEIS) if (pn.ret && pn.ret.h > 40) ocultos.push(dentro(pn.ret.x, pn.ret.y, pn.ret.x + COL.w, pn.ret.y + pn.ret.h));
+  if (yCartao > -200) ocultos.push(dentro(CARTAO.x, yCartao, CARTAO.x + CARTAO.w, yCartao + CARTAO.h));
+  let quietos = true, uns = 0, soma = 0;
+  for (const ed of cidade.edificios) {
+    const v = nivel(t, ed);
+    NIVEIS[ed.i] = v;
+    if (v === 1) { uns += 1; soma = (soma + ed.i * 7919) % 1000003; } else if (v !== 0) quietos = false;
+  }
+  const mist = rasa(t);
+  const paleta = mist > 0.0005 ? misturarPaleta(PALETA, PALETA_RASA, mist) : PALETA;
+  // Antes de o primeiro volume subir só há o prédio, desenhado em SVG como na cena 6: o canvas
+  // (camada composta) muda o antisserrilhado do texto por cima, e o rodapé do primeiro quadro
+  // tem de sair idêntico ao último da cena 6. O canvas entra quando a cidade começa a subir.
+  const usaCanvas = t >= T_CANVAS;
+  $('volumes').style.display = usaCanvas ? '' : 'none';
+  html($('predio-svg'), usaCanvas ? '' : prisma(PREDIO.x0, PREDIO.y0, PREDIO.x1, PREDIO.y1, PREDIO.h, cam, pr, { s: '#FBF8F2', n: '#FBF8F2', e: '#F1EADC', w: '#F1EADC', topo: '#FFFFFF' }, '#C9BEA8', 1.5, 0));
+  if (!usaCanvas) memo.vol.k = undefined;
+  // pinta a cidade no canvas; com tudo assentado e a mesma chave, o canvas já tem este quadro
+  const chaveVol = quietos ? [camKey(cam), mist.toFixed(4), aJanela.toFixed(3), uns, soma, ocultos.map(retKey).join(';'), dMoldura].join('|') : null;
+  if (usaCanvas && (chaveVol === null || chaveVol !== memo.vol.k)) {
+    pintarVolumes(volCtx, cidade, cam, { paleta, crescer: (ed) => NIVEIS[ed.i], extras: [predioExtra], ocultos, vista, recorte: eM < 0.0005 ? null : new Path2D(dMoldura) });
+    memo.vol.k = chaveVol;
+  }
+
+  // --- marcas do mapa ---
+  let m = '', mChao = divisas;
+  // haste: sai da janela (face sul), encosta no chão a 150 m para o sudoeste e varre o círculo
+  const A0 = Math.PI / 2 + 0.72;
+  const W = [0, JANELA.y, (JANELA.z0 + JANELA.z1) / 2];
+  const eh = sp(t - T.haste, P.map);
+  // a varredura chega exata a uma volta antes do HOLD do B2 (e fica exata até o fim: o anel da
+  // emenda com a cena 8 é a volta inteira)
+  const varre = 2 * Math.PI * clamp(molaAte(t - T.varre, { k: 34, d: 11.6 }, PRAZO(HOLDS[1]) - T.varre), 0, 1);
+  const ang = A0 + varre;
+  const ponta = [lerp(W[0], 150 * Math.cos(ang), eh), lerp(W[1], 150 * Math.sin(ang), eh), lerp(W[2], 0, eh)];
+  const recolhe = sp(t - T.b3, P.map);
+  const pontaFinal = [lerp(ponta[0], W[0], recolhe), lerp(ponta[1], W[1], recolhe), lerp(ponta[2], W[2], recolhe)];
+  const aHaste = (t >= T.haste ? 1 : 0) * (1 - invLerp(0.85, 0.98, recolhe));
+  // anel: o raio de 150 m e a faixa de 118 a 140 m (distância das demolições, não posição). A
+  // hachura fica no chão, por baixo dos volumes; por cima só as duas bordas finas e o anel
+  const aFaixa = (1 - invLerp(T.saida, T.saida + 0.25, t)) * lerp(1, 0.42, invLerp(T.b3, T.b3 + 0.3, t));
+  let anel = '';
+  if (varre > 0.001) {
+    const n = Math.max(2, Math.ceil((varre / (2 * Math.PI)) * 180));
+    const arco = (r) => Array.from({ length: n + 1 }, (_, i) => { const a = A0 + (varre * i) / n; return pr([r * Math.cos(a), r * Math.sin(a), 0]); });
+    if (aFaixa > 0.001) {
+      const fora = arco(REGISTRO.demolicaoMax), dentro = arco(REGISTRO.demolicaoMin);
+      mChao += `<path d="${polyD([...fora, ...dentro.slice().reverse()])}" fill="url(#hachura)" opacity="${aFaixa.toFixed(3)}"/>`;
+      m += `<path d="${polyline(fora)}${polyline(dentro)}" fill="none" stroke="#B94E36" stroke-width="1.6" opacity="${(0.8 * aFaixa).toFixed(3)}"/>`;
+    }
+    const ext = arco(150);
+    const aCasca = (1 - invLerp(T.saida, T.saida + 0.35, t)) * 0.95;
+    anel = `<path d="${polyline(ext)}" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" opacity="${aCasca.toFixed(3)}"/>` +
+      `<path d="${polyline(ext)}" fill="none" stroke="#F47745" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }
+  if (aHaste > 0.001) {
+    const a = pr(W), b = pr(pontaFinal);
+    m += `<g opacity="${aHaste.toFixed(3)}"><path d="${lineD(a, b)}" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/><path d="${lineD(a, b)}" stroke="#F47745" stroke-width="4" stroke-linecap="round"/>` +
+      `<circle cx="${f1(b[0])}" cy="${f1(b[1])}" r="6" fill="#F47745" stroke="#FFFFFF" stroke-width="2.5"/></g>`;
+  }
+  // alagamento: contorno pontilhado da rua do prédio e "?" na entrada da garagem (nenhuma água).
+  // Depois do B4 os dois viram um rastro leve: traço mais fino e o "?" recolhido num ponto
+  const leve = sp(t - T.b5, P.card);
+  const pc = molaAte(t - T.contorno, { k: 40, d: 12.6 }, PRAZO(HOLDS[2]) - T.contorno);
+  const aAgua = 1 - invLerp(T.saida, T.saida + 0.2, t);
+  if (t > T.contorno && aAgua > 0.001) {
+    const pts = prefixo(CAPSULA, pc).map(pr);
+    const kw = lerp(1, 0.6, leve);
+    m += `<g opacity="${(aAgua * lerp(1, 0.7, leve)).toFixed(3)}"><path d="${polyline(pts)}" fill="none" stroke="#FFFFFF" stroke-width="${(10 * kw).toFixed(2)}" stroke-linecap="round" stroke-linejoin="round" opacity="0.92"/>` +
+      `<path d="${polyline(pts)}" fill="none" stroke="#171717" stroke-width="${(5 * kw).toFixed(2)}" stroke-linecap="round" stroke-dasharray="0.1 ${(11 * kw).toFixed(2)}"/></g>`;
+  }
+  // pino no topo do prédio, com tamanho que acompanha a câmera (14 px no lote, como na cena 6)
+  const kP = clamp(Math.pow(cam.s / 9.5, 0.3), 0.57, 1);
+  const topoP = pr([0, 0, PREDIO.h]), pinoP = pr([0, 0, PREDIO.h + 10]);
+  const eQ = molaAte(t - T.interroga, P.button, PRAZO(HOLDS[2]) - T.interroga);
+  if (eQ > 0.01 && aAgua > 0.001) {
+    const g = pr([GARAGEM[0], GARAGEM[1], 0]);
+    const rq = lerp(clamp(7.5 * cam.s, 10, 25), 5.5, leve) * eQ;
+    const aGlifo = 1 - clamp(leve * 1.8);
+    m += `<g opacity="${aAgua.toFixed(3)}"><circle cx="${f1(g[0])}" cy="${f1(g[1])}" r="${rq.toFixed(1)}" fill="${leve > 0.5 ? '#171717' : '#FFFFFF'}" stroke="#171717" stroke-width="${lerp(3, 2, leve).toFixed(2)}"/>` +
+      (aGlifo > 0.01 ? `<text x="${f1(g[0])}" y="${f1(g[1] + 0.46 * rq)}" text-anchor="middle" font-family="Fraunces" font-weight="600" font-size="${(1.32 * rq).toFixed(2)}" fill="#171717" opacity="${aGlifo.toFixed(3)}">?</text>` : '') + '</g>';
+  }
+  html($('chao-marcas'), mChao);
+  html(marcasG, m);
+  html(anelG, anel);
+
+  const aPino = 1 - invLerp(T.saida, T.saida + 0.18, t);
+  html(pinoG, aPino > 0.001 ? `<g opacity="${aPino.toFixed(3)}"><path d="${lineD(topoP, pinoP)}" stroke="#F47745" stroke-width="${(4 * kP).toFixed(2)}" stroke-linecap="round"/><circle cx="${f1(pinoP[0])}" cy="${f1(pinoP[1])}" r="${(26 * kP).toFixed(2)}" fill="rgba(244,119,69,0.25)"/><circle cx="${f1(pinoP[0])}" cy="${f1(pinoP[1])}" r="${(14 * kP).toFixed(2)}" fill="#F47745" stroke="#FFFFFF" stroke-width="${(4 * kP).toFixed(2)}"/></g>` : '');
+
+  attr($('moldura-p'), 'd', dMoldura);
+  attr($('moldura2-p'), 'd', dMoldura);
+  // a borda do cartão do mapa aparece enquanto ele encolhe e some quando ele vira o anel
+  const aBorda = invLerp(0.02, 0.2, eM) * (1 - invLerp(0.7, 0.95, eM));
+  $('moldura-borda').setAttribute('d', aBorda > 0.001 ? dMoldura : 'M0 0Z');
+  $('moldura-borda').setAttribute('opacity', aBorda.toFixed(3));
+  // no fim o anel fica vazio: nenhum resto do recorte no meio
+  const vMapa = retE[2] < 6 ? 'hidden' : 'visible';
+  $('mapa').style.visibility = vMapa; $('mapa2').style.visibility = vMapa; $('volumes').style.visibility = vMapa;
+
+  // --- cartão do alto e abas ---
+  cartao.style.top = yCartao.toFixed(1) + 'px';
+  vis(cartao, yCartao > -290 ? 1 : 0);
+  let ativa = -1, tAtiva = -10;
+  for (const [tc, i] of TOQUES) if (t >= tc) { ativa = i; tAtiva = tc; }
+  const pAtiva = clamp((t - tAtiva) / 0.12);
+  const pz = press(t, CLIQUES.map(([c]) => c));
+  const anterior = TOQUES.filter(([tc]) => tc <= t).slice(-2, -1)[0];
+  abaEls.forEach((a, i) => {
+    let fundo = 0, peso = 500;
+    if (i === ativa) { fundo = pAtiva; peso = lerp(500, 700, pAtiva); }
+    // a aba que acabou de deixar de estar ativa volta ao normal no mesmo intervalo
+    if (anterior && anterior[1] === i && i !== ativa) { fundo = 1 - pAtiva; peso = lerp(700, 500, pAtiva); }
+    const toque = i === ativa ? 0.06 * pz : 0;
+    a.style.background = `rgba(${lerp(255, 238, toque * 10).toFixed(0)},${lerp(255, 230, toque * 10).toFixed(0)},${lerp(255, 218, toque * 10).toFixed(0)},${fundo.toFixed(3)})`;
+    a.style.fontWeight = peso.toFixed(0);
+    a.style.color = fundo > 0.5 ? '#171717' : '#625C51';
+  });
+
+  // --- painéis: abrem, encolhem até a ficha e saem pela direita no fim ---
+  PAINEIS.forEach((pn) => {
+    const h = pn.ret.h;
+    const visivel = h > 0.6 && t >= pn.abre;
+    pn.e.style.visibility = visivel ? 'visible' : 'hidden';
+    if (!visivel) { for (const it of [...pn.itens, ...(pn.fichaItens || [])]) it.e.style.visibility = 'hidden'; return; }
+    Object.assign(pn.e.style, { left: pn.ret.x.toFixed(1) + 'px', top: pn.top + 'px', width: COL.w + 'px', height: h.toFixed(1) + 'px', borderRadius: Math.min(lerp(18, 28, clamp((h - FICHA_H) / 120)), h / 2).toFixed(1) + 'px' });
+    for (const it of pn.itens) posicionar(it, t);
+    for (const it of pn.fichaItens || []) posicionar(it, t);
+  });
+
+  // --- segurança: o nome de cada faixa aparece na ponta direita dela, junto do painel. Primeiro
+  // todos descem ou sobem juntos até a altura da sua linha (o espaço entre eles nunca fica menor
+  // que 56 px, então nenhum nome passa por cima de outro); depois cada um entra na linha pela
+  // esquerda, abaixo do cabeçalho, e a barra cresce quando ele pousa ---
+  const pSeg = PAINEIS[3];
+  const moY = sp(t - T.voo, P.card);
+  FAIXAS.forEach((f, i) => {
+    const tIn = T.faixas + 0.06 * i + 0.2;
+    const tX = T.voo + 0.16 + 0.05 * i;
+    const moX = sp(t - tX, P.map);
+    const a = swap(t, tIn, pSeg.saiConteudo);
+    const barra = BARRAS[i];
+    barra.style.width = (BARRA.w * (f.taxa / MAX_TAXA) * clamp(sp(t - (tX + 0.24), P.card), 0, 1.02)).toFixed(1) + 'px';
+    if (a <= 0.001) { f.rot.style.visibility = 'hidden'; f.val.style.visibility = 'hidden'; return; }
+    const yc = (f.y0 + f.y1) / 2;
+    const [ca, cb] = bordaFaixa(yc);
+    const cy = pontoEmX(ca, cb, X_MAPA - 100)[1];
+    const yb = pSeg.top + BARRA.y0 + i * BARRA.passo + 8;
+    f.rot.style.fontSize = lerp(26, 22, moX).toFixed(2) + 'px';
+    f.rot.style.fontWeight = f.atual ? '700' : lerp(600, 500, moX).toFixed(0);
+    vis(f.rot, a);
+    // no mapa o nome fica numa etiqueta de papel (as divisas passam por baixo dela); dentro do
+    // painel a etiqueta some e sobra só o texto, alinhado com a coluna dos nomes
+    f.rot.style.padding = '5px 9px';
+    f.rot.style.borderRadius = '9px';
+    f.rot.style.background = `rgba(246,241,232,${(0.96 * (1 - clamp(moX * 1.4))).toFixed(3)})`;
+    const xMapa = X_MAPA - 28 - f.rot.offsetWidth;
+    pos(f.rot, lerp(xMapa, pSeg.ret.x + BARRA.rot - 9, moX), lerp(cy - 19, yb - 9, moY) + 8 * pending(t, tIn, P.type));
+    const av = swap(t, tX + 0.36, pSeg.saiConteudo);
+    vis(f.val, av); pos(f.val, pSeg.ret.x + BARRA.val - f.val.offsetWidth, yb - 6 + 8 * pending(t, tX + 0.4, P.type));
+  });
+  html(sobre, '');
+
+  // --- rótulos ancorados no mapa ---
+  {
+    const a = pr(W), b = pr(pontaFinal);
+    // "150 m" em escala de título, à direita da haste e dentro do anel (a haste desce para a esquerda)
+    const meio = lerpPt(a, b, 0.5);
+    const aP = swap(t, T.pilula, T.b3 + 0.2);
+    vis(pilulaRaio, aP); pos(pilulaRaio, meio[0] + 24, meio[1] - 30 + 10 * pending(t, T.pilula, P.type));
+    const g = pr([GARAGEM[0], GARAGEM[1], 0]);
+    const ruaEsq = pr([RUA.x0, GARAGEM[1], 0]);
+    const aA = swap(t, T.interroga + 0.12, T.b4 + 0.2);
+    vis(pilulaAgua, aA); pos(pilulaAgua, ruaEsq[0] - 26 - pilulaAgua.offsetWidth, g[1] - 22 + 10 * pending(t, T.interroga + 0.12, P.type));
+  }
+
+  // --- cursor: só para cada toque. Entra de baixo, toca o canto inferior direito da aba (fora do
+  // texto), sai e some; nunca fica parado no quadro assentado ---
+  let cur = [1880, 1180], vc = 0, ondaP = cur, onda = 0;
+  for (const [c, i] of CLIQUES) {
+    const pt = pontaAba(i);
+    const entra = [pt[0] + 60, pt[1] + 130], sai = [pt[0] + 80, pt[1] + 150];
+    const v = swap(t, c - 0.32, c + 0.42, { delayIn: 0, durIn: 0.1, leadOut: 0, durOut: 0.14 });
+    if (v > vc) { vc = v; cur = track(t, [[c - 0.32, entra], [c - 0.29, pt], [c + 0.16, sai]], P.cursor); }
+    if (t >= c && t < c + 0.45) { onda = (t - c) / 0.45; ondaP = pt; }
+  }
+  const esc = (1 - 0.16 * pz) * lerp(0.7, 1, vc);
+  const seta = [[0, 0], [0, 38], [10.5, 29], [17, 43.5], [23.5, 40.6], [17, 26.6], [30, 26.6]];
+  const cursorEl = $('cursor');
+  cursorEl.setAttribute('d', polyD(seta.map(([x, y]) => [cur[0] + x * esc, cur[1] + y * esc])));
+  cursorEl.setAttribute('opacity', vc.toFixed(3));
+  const od = $('onda');
+  od.setAttribute('cx', f1(ondaP[0])); od.setAttribute('cy', f1(ondaP[1]));
+  od.setAttribute('r', (6 + 15 * sp(onda * 0.45, P.button)).toFixed(1));
+  od.setAttribute('opacity', (onda > 0 ? 0.8 * (1 - onda) : 0).toFixed(3));
+
+  if (dbg) dbg.textContent = `${t.toFixed(2)} s · s=${cam.s.toFixed(2)}`;
+}
+
+// ---------------------------------------------------------------------------
+// Contrato de render e modos de preview
+// ---------------------------------------------------------------------------
+const SONS = [
+  { t: T.cam1, tipo: 'whoosh', dur: 1.2, ganho: 0.6, evento: 'câmera sobe pela fachada' },
+  { t: T.lote, tipo: 'tick', ganho: 0.4, evento: 'o contorno do lote engrossa' },
+  { t: 0.5, tipo: 'thump', ganho: 0.55, evento: 'quadras sobem' },
+  { t: T.barra, tipo: 'pop', evento: 'barra Explore o entorno' },
+  { t: T.b2, tipo: 'whoosh', dur: 0.6, ganho: 0.5, evento: 'câmera abre o raio' },
+  { t: T.janela, tipo: 'pop', ganho: 0.6, evento: 'a janela acende' },
+  { t: T.haste, tipo: 'tick', evento: 'haste sai da janela' },
+  { t: T.varre, tipo: 'sweep', dur: 0.95, evento: 'raio de 150 m varre' },
+  { t: T.clique0, tipo: 'click', evento: 'toque em Obras' },
+  { t: T.painel1, tipo: 'pop', evento: 'painel Obras: 4 demolições perto' },
+  { t: T.b3, tipo: 'whoosh', dur: 0.32, ganho: 0.5, evento: 'painel vira ficha' },
+  { t: T.clique1, tipo: 'click', evento: 'toque em Alagamento' },
+  { t: T.contorno, tipo: 'tick', evento: 'contorno pontilhado da rua' },
+  { t: T.interroga, tipo: 'pop', evento: '? na garagem' },
+  { t: T.b4, tipo: 'whoosh', dur: 0.32, ganho: 0.5, evento: 'painel vira ficha' },
+  { t: T.clique2, tipo: 'click', evento: 'toque em Calor' },
+  { t: T.painel3 + 0.26, tipo: 'tick', evento: 'régua de calor' },
+  { t: T.b5, tipo: 'whoosh', dur: 0.32, ganho: 0.5, evento: 'painel vira ficha' },
+  { t: T.cam5, tipo: 'whoosh', dur: 1.0, evento: 'câmera sobe ao bairro' },
+  { t: T.afunda, tipo: 'thump', ganho: 0.4, evento: 'a cidade se assenta no papel' },
+  { t: T.clique3, tipo: 'click', evento: 'toque em Segurança' },
+  { t: T.painel4, tipo: 'pop', ganho: 0.6, evento: 'painel Segurança: 17,2 por mil' },
+  { t: T.faixas, tipo: 'tick', evento: 'faixas norte → sul' },
+  { t: T.voo, tipo: 'whoosh', dur: 0.45, ganho: 0.6, evento: 'os nomes dos bairros voam até as barras' },
+  { t: T.b6, tipo: 'whoosh', dur: 0.8, ganho: 0.5, evento: 'câmera desce' },
+  { t: T.sobe6, tipo: 'thump', ganho: 0.45, evento: 'a cidade sobe de novo a partir do lote' },
+  { t: T.clique4, tipo: 'click', evento: 'toque em Custo de vida' },
+  { t: T.painel5, tipo: 'pop', evento: 'painel Custo de vida: R$ 3.900 por mês' },
+  { t: T.saida, tipo: 'whoosh', dur: 0.9, evento: 'a cidade se assenta e o mapa encolhe' },
+  { t: T.esvazia, tipo: 'tick', ganho: 0.5, evento: 'o anel fica vazio' },
+];
+window.POC = {
+  id: 'CENA-07', variante: 'da porta para fora', duracao: DUR, fps: 30, estados: ESTADOS, holds: HOLDS,
+  cliques: CLIQUES.map(([c]) => c), marcos: T, sons: SONS,
+  tiras: [{ nome: 'subida', t0: 0.35 }, { nome: 'varredura', t0: T.varre + 0.1 }, { nome: 'assenta', t0: T.cam5 }, { nome: 'barras', t0: T.voo + 0.2 }, { nome: 'custo', t0: T.b6 + 0.2 }],
+  comparar: ESTADOS.map((e) => ({ t: e.t, nome: e.id })),
+};
+window.seek = (t) => render(t);
+window.__pronto = (async () => {
+  await document.fonts.ready;
+  const todo = document.getElementById('c').innerText + ' ?→·°–—²';
+  await Promise.all([
+    '500 46px Fraunces', '500 150px Fraunces', '500 120px Fraunces', '500 84px Fraunces', '500 58px Fraunces', '500 38px Fraunces', '600 33px Fraunces',
+    '400 21px "Plus Jakarta Sans"', '500 25px "Plus Jakarta Sans"', '600 29px "Plus Jakarta Sans"', '700 22px "Plus Jakarta Sans"', '800 22px "Plus Jakarta Sans"',
+    '500 16px "JetBrains Mono"',
+  ].map((f) => document.fonts.load(f, todo)));
+  // Passa por toda a linha do tempo uma vez antes de liberar: qualquer subconjunto de fonte
+  // que só aparece mais tarde é pedido agora, e não no meio do vídeo.
+  for (let t = 0; t <= DUR; t += 0.25) render(t);
+  await document.fonts.ready;
+  render(0);
+  return true;
+})();
+
+if (!navigator.webdriver) {
+  document.body.classList.add('tela');
+  const c = $('c');
+  const ajusta = () => { const s = Math.min(innerWidth / 1920, innerHeight / 1080); Object.assign(c.style, { position: 'absolute', transformOrigin: '0 0', transform: `scale(${s})`, left: `${(innerWidth - 1920 * s) / 2}px`, top: `${(innerHeight - 1080 * s) / 2}px` }); };
+  addEventListener('resize', ajusta); ajusta();
+  const aoVivo = new URLSearchParams(location.search).has('live');
+  // ao vivo: espaço ou → leva ao próximo HOLD; depois do último, toca a saída até o fim
+  const PARADAS = [...HOLDS, DUR];
+  let t = 0, alvo = aoVivo ? PARADAS[0] : DUR, rodando = true, antes = null, ultimo = null;
+  // parado num HOLD o quadro não muda: só desenha quando t muda
+  const passo = (agora) => { if (antes !== null && rodando) { t += (agora - antes) / 1000; if (t >= alvo) { t = alvo; if (!aoVivo) t = 0; else rodando = false; } } antes = agora; if (t !== ultimo) { render(t); ultimo = t; } requestAnimationFrame(passo); };
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown') {
+      const base = rodando ? alvo : t;
+      const i = PARADAS.findIndex((h) => h > base + 1e-3);
+      if (aoVivo) { if (i >= 0) { alvo = PARADAS[i]; rodando = true; } } else rodando = !rodando;
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      // volta para o HOLD anterior e fica parado nele
+      const anteriores = PARADAS.filter((h) => h < t - 1e-3);
+      t = anteriores.length ? anteriores[anteriores.length - 1] : 0;
+      alvo = aoVivo ? (PARADAS.find((h) => h > t + 1e-3) ?? DUR) : DUR;
+      rodando = !aoVivo;
+      render(t); ultimo = t;
+      e.preventDefault();
+    } else if (e.key === 'r') { t = 0; alvo = aoVivo ? PARADAS[0] : DUR; rodando = true; }
+  });
+  window.__pronto.then(() => requestAnimationFrame(passo));
+}
+</script>
+</body>
+</html>

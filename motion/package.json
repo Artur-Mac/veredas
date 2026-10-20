@@ -1,0 +1,5 @@
+{
+  "private": true,
+  "type": "module",
+  "description": "Motor de motion do pitch VEREDA (seek(t), Playwright, ffmpeg). Usa o playwright do package.json da raiz."
+}

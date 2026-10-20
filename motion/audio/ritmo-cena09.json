@@ -1,0 +1,341 @@
+{
+  "poc": "CENA-09",
+  "duracao": 20.3,
+  "geradoEm": "2026-10-18",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 131,
+    "fase": 0.32,
+    "erroMedio": 0.087,
+    "batidas": [
+      0.32,
+      0.778,
+      1.236,
+      1.694,
+      2.152,
+      2.61,
+      3.068,
+      3.526,
+      3.984,
+      4.442,
+      4.9,
+      5.358,
+      5.816,
+      6.274,
+      6.732,
+      7.19,
+      7.648,
+      8.106,
+      8.564,
+      9.022,
+      9.48,
+      9.938,
+      10.396,
+      10.854,
+      11.312,
+      11.77,
+      12.228,
+      12.686,
+      13.144,
+      13.602,
+      14.06,
+      14.518,
+      14.976,
+      15.435,
+      15.893,
+      16.351,
+      16.809,
+      17.267,
+      17.725,
+      18.183,
+      18.641,
+      19.099,
+      19.557,
+      20.015
+    ]
+  },
+  "holds": [
+    7.7,
+    10.8,
+    14,
+    17,
+    19,
+    20.3
+  ],
+  "sons": [
+    {
+      "t": 0.85,
+      "tipo": "click",
+      "evento": "toque em Começar visita",
+      "batidaMaisProxima": 0.778,
+      "desvio": 0.072
+    },
+    {
+      "t": 1.08,
+      "tipo": "whoosh",
+      "dur": 0.4,
+      "ganho": 0.4,
+      "evento": "a tela vira o modo no imóvel",
+      "batidaMaisProxima": 1.236,
+      "desvio": -0.156
+    },
+    {
+      "t": 2.15,
+      "tipo": "whoosh",
+      "dur": 0.9,
+      "ganho": 0.4,
+      "evento": "o celular vai para a esquerda",
+      "batidaMaisProxima": 2.152,
+      "desvio": -0.002
+    },
+    {
+      "t": 2.5,
+      "tipo": "tick",
+      "evento": "a planta começa a se desenhar",
+      "batidaMaisProxima": 2.61,
+      "desvio": -0.11
+    },
+    {
+      "t": 3.9,
+      "tipo": "tick",
+      "ganho": 0.6,
+      "evento": "a janela da sala",
+      "batidaMaisProxima": 3.984,
+      "desvio": -0.084
+    },
+    {
+      "t": 4.2,
+      "tipo": "pop",
+      "ganho": 0.5,
+      "evento": "planta ilustrativa",
+      "batidaMaisProxima": 3.984,
+      "desvio": 0.216
+    },
+    {
+      "t": 4.95,
+      "tipo": "whoosh",
+      "dur": 1.6,
+      "ganho": 0.4,
+      "evento": "zoom para fora: planta, prédio, lote",
+      "batidaMaisProxima": 4.9,
+      "desvio": 0.05
+    },
+    {
+      "t": 5.72,
+      "tipo": "tick",
+      "evento": "o anel de precisão sai do celular",
+      "batidaMaisProxima": 5.816,
+      "desvio": -0.096
+    },
+    {
+      "t": 6.3,
+      "tipo": "sweep",
+      "dur": 0.9,
+      "ganho": 0.7,
+      "evento": "o anel encolhe até o pino",
+      "batidaMaisProxima": 6.274,
+      "desvio": 0.026
+    },
+    {
+      "t": 6.85,
+      "tipo": "pop",
+      "evento": "o contorno do prédio fica contínuo",
+      "batidaMaisProxima": 6.732,
+      "desvio": 0.118
+    },
+    {
+      "t": 7.76,
+      "tipo": "whoosh",
+      "dur": 1.2,
+      "ganho": 0.4,
+      "evento": "zoom de volta à sala",
+      "batidaMaisProxima": 7.648,
+      "desvio": 0.112
+    },
+    {
+      "t": 7.78,
+      "tipo": "tick",
+      "evento": "o aro vira a bússola",
+      "batidaMaisProxima": 7.648,
+      "desvio": 0.132
+    },
+    {
+      "t": 9,
+      "tipo": "click",
+      "evento": "o cursor pega o polegar de Orientação manual",
+      "batidaMaisProxima": 9.022,
+      "desvio": -0.022
+    },
+    {
+      "t": 9.6,
+      "tipo": "pop",
+      "ganho": 0.6,
+      "evento": "a agulha assenta em 98°",
+      "batidaMaisProxima": 9.48,
+      "desvio": 0.12
+    },
+    {
+      "t": 9.6,
+      "tipo": "tick",
+      "evento": "a agulha se prolonga pela janela",
+      "batidaMaisProxima": 9.48,
+      "desvio": 0.12
+    },
+    {
+      "t": 9.85,
+      "tipo": "whoosh",
+      "dur": 0.5,
+      "ganho": 0.3,
+      "evento": "o arco da manhã a leste",
+      "batidaMaisProxima": 9.938,
+      "desvio": -0.088
+    },
+    {
+      "t": 11.15,
+      "tipo": "click",
+      "evento": "toque em Guardar orientação",
+      "batidaMaisProxima": 11.312,
+      "desvio": -0.162
+    },
+    {
+      "t": 11.37,
+      "tipo": "whoosh",
+      "dur": 0.4,
+      "ganho": 0.4,
+      "evento": "a folha vira Escute com a janela aberta",
+      "batidaMaisProxima": 11.312,
+      "desvio": 0.058
+    },
+    {
+      "t": 11.42,
+      "tipo": "pop",
+      "ganho": 0.5,
+      "evento": "toast Orientação registrada",
+      "batidaMaisProxima": 11.312,
+      "desvio": 0.108
+    },
+    {
+      "t": 11.6,
+      "tipo": "whoosh",
+      "dur": 1.1,
+      "ganho": 0.35,
+      "evento": "a onda vem da rua",
+      "batidaMaisProxima": 11.77,
+      "desvio": -0.17
+    },
+    {
+      "t": 13,
+      "tipo": "click",
+      "evento": "toque em Aberta",
+      "batidaMaisProxima": 13.144,
+      "desvio": -0.144
+    },
+    {
+      "t": 13.12,
+      "tipo": "pop",
+      "ganho": 0.5,
+      "evento": "a janela da planta abre; 58 dB",
+      "batidaMaisProxima": 13.144,
+      "desvio": -0.024
+    },
+    {
+      "t": 14.05,
+      "tipo": "tick",
+      "evento": "a onda perde amplitude",
+      "batidaMaisProxima": 14.06,
+      "desvio": -0.01
+    },
+    {
+      "t": 14.15,
+      "tipo": "whoosh",
+      "dur": 1.6,
+      "ganho": 0.45,
+      "evento": "a câmera entra pela janela",
+      "batidaMaisProxima": 14.06,
+      "desvio": 0.09
+    },
+    {
+      "t": 15.8,
+      "tipo": "thump",
+      "ganho": 0.5,
+      "evento": "a janela da cena 1 volta",
+      "batidaMaisProxima": 15.893,
+      "desvio": -0.093
+    },
+    {
+      "t": 15.4,
+      "tipo": "sweep",
+      "dur": 1.1,
+      "ganho": 0.5,
+      "evento": "a linha sobe pelo vidro",
+      "batidaMaisProxima": 15.435,
+      "desvio": -0.035
+    },
+    {
+      "t": 16.1,
+      "tipo": "tick",
+      "ganho": 0.5,
+      "evento": "promessa 1 do anúncio",
+      "batidaMaisProxima": 15.893,
+      "desvio": 0.207
+    },
+    {
+      "t": 15.965,
+      "tipo": "tick",
+      "ganho": 0.5,
+      "evento": "promessa 2 do anúncio",
+      "batidaMaisProxima": 15.893,
+      "desvio": 0.072
+    },
+    {
+      "t": 15.8,
+      "tipo": "tick",
+      "ganho": 0.5,
+      "evento": "promessa 3 do anúncio",
+      "batidaMaisProxima": 15.893,
+      "desvio": -0.093
+    },
+    {
+      "t": 15.69,
+      "tipo": "tick",
+      "ganho": 0.5,
+      "evento": "promessa 4 do anúncio",
+      "batidaMaisProxima": 15.893,
+      "desvio": -0.203
+    },
+    {
+      "t": 17.3,
+      "tipo": "sweep",
+      "dur": 1.2,
+      "ganho": 0.8,
+      "evento": "o limpador varre o vidro",
+      "batidaMaisProxima": 17.267,
+      "desvio": 0.033
+    },
+    {
+      "t": 18.12,
+      "tipo": "pop",
+      "ganho": 0.6,
+      "evento": "Sua visita, registrada.",
+      "batidaMaisProxima": 18.183,
+      "desvio": -0.063
+    },
+    {
+      "t": 19.1,
+      "tipo": "whoosh",
+      "dur": 0.8,
+      "ganho": 0.4,
+      "evento": "o papel toma o quadro",
+      "batidaMaisProxima": 19.099,
+      "desvio": 0.001
+    },
+    {
+      "t": 19.2,
+      "tipo": "tick",
+      "evento": "a linha se estica na régua",
+      "batidaMaisProxima": 19.099,
+      "desvio": 0.101
+    }
+  ]
+}

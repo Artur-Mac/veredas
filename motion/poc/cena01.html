@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · Cena 01 · o apartamento perfeito</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Plus+Jakarta+Sans:wght@400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lib/marca.css">
+<style>
+  html, body { margin: 0; background: var(--bg-obsidian); }
+  body.tela { min-height: 100vh; overflow: hidden; }
+  #c {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden; flex: none;
+    background: #F8E3C4; color: var(--ink-primary); font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased;
+  }
+  svg.camada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+  #textos { position: absolute; inset: 0; }
+  .t { position: absolute; white-space: nowrap; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 14px; padding: 15px 26px 15px 20px;
+    border-radius: 999px; background: rgba(255, 251, 243, 0.94); border: 1px solid rgba(185, 78, 54, 0.16);
+    font: 600 30px/1 var(--font-sans); color: var(--ink-primary);
+  }
+  .chip svg { width: 30px; height: 30px; color: var(--brand-rust); flex: none; }
+  .chip .aspas { color: var(--brand-rust); font-family: var(--font-display); font-weight: 500; }
+  .chip.pequeno { font-size: 21px; padding: 10px 17px 10px 13px; gap: 9px; background: rgba(255, 251, 243, 0.86); }
+  .chip.pequeno svg { width: 20px; height: 20px; }
+  /* V1: pílulas maiores, para ler a 360 px (a 4ª continua menor, como letra miúda) */
+  .chip.v1 { font-size: 40px; padding: 18px 32px 18px 24px; gap: 16px; }
+  .chip.v1 svg { width: 38px; height: 38px; }
+  .chip.v1.pequeno { font-size: 31px; padding: 13px 22px 13px 17px; gap: 12px; }
+  .chip.v1.pequeno svg { width: 29px; height: 29px; }
+  .kicker { font: 700 22px/1 var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--brand-rust); }
+  .recorte { position: absolute; overflow: hidden; }
+  .numero-v1 { font-family: var(--font-display); font-weight: 600; font-variation-settings: 'opsz' 144; letter-spacing: -0.035em; line-height: 0.86; color: var(--brand-orange); text-align: center; }
+  .numero-v2 { font-family: var(--font-sans); font-weight: 800; letter-spacing: -0.045em; line-height: 0.8; color: var(--ink-primary); }
+  .apoio { font: 500 46px/1 var(--font-sans); letter-spacing: 0.01em; }
+  .apoio-serif { font: italic 500 58px/1 var(--font-display); }
+  /* V1 (roteiro gravado de 18/10/2026): "de reais" dentro do vão, logo abaixo do número */
+  .apoio-v1 { font-family: var(--font-sans); font-weight: 500; letter-spacing: 0.01em; line-height: 1; color: #F2EBDD; text-align: center; }
+  .regua-rotulo { font: 600 22px/1 var(--font-sans); color: var(--ink-secondary); }
+  #debug { position: absolute; right: 16px; top: 12px; font: 500 16px/1 var(--font-mono); color: #8a8a8a; }
+</style>
+</head>
+<body>
+<div id="c">
+  <svg class="camada" id="cena" viewBox="0 0 1920 1080">
+    <defs>
+      <clipPath id="abaixo"><rect id="abaixo-r" x="0" y="1080" width="1920" height="0" /></clipPath>
+    </defs>
+    <g id="sala"></g>
+    <g id="sala-mono" clip-path="url(#abaixo)"></g>
+    <g id="frente"></g>
+  </svg>
+  <div id="textos"></div>
+</div>
+
+<script type="module">
+import { clamp, lerp, invLerp, smooth, sp, spring, track, swap, pending, rng, PRESETS as P } from '../lib/motion.js';
+// V1: marcos da gravação de 18/10/2026 e a regra do número, comuns com motion/lib/sala01.js (a cena 02 abre no quadro final)
+import { T01C, DUR01C, HOLD01C, ABRE_J01C, ABRE01C, LUZ01C, fim01, NUM01C, layout01C } from '../lib/sala01.js';
+
+// ---------------------------------------------------------------------------
+// Variantes: a mesma sala e a mesma sedução; muda a quebra e o clímax.
+//   ?v=1  janela: o "nascente" se põe; a câmera entra pela janela; o sol vira o número
+//   ?v=2  linha do anúncio: a linha varre a sala para o PB e vira a régua dos cinco anos
+//   ?v=3  geometria: a sala estica, as paredes caem como planta e o número se levanta
+// ---------------------------------------------------------------------------
+const V = clamp(Number(new URLSearchParams(location.search).get('v') || 1), 1, 3);
+const NOMES = { 1: 'janela', 2: 'linha do anúncio', 3: 'geometria da sala' };
+// V2 e V3 (alternativas, sem manutenção): marcas do roteiro antigo, cerca de 2,5 palavras por segundo.
+// V1 (a escolhida): roteiro gravado de 18/10/2026, 13,8 s, cada evento na sua palavra (motion/lib/sala01.js, T01C);
+// HOLDs parados no fim de "Recife." e no quadro final (o primeiro da cena 02 ?v=2)
+const DUR = V === 1 ? DUR01C : 18;
+const T = V === 1 ? T01C : { anuncio: 3.6, a1: 4.4, a2: 5.9, a3: 7.3, a4: 8.6, lar: 9.8, mas: 11.0, colapso: 12.2, numero: 14.6, apoio: 15.6 };
+const HOLDS = V === 1 ? [HOLD01C, DUR] : [3.4, 10.6, DUR];
+const LENTO = { k: 4, d: 4 };        // dolly de abertura, zeta 1
+const DOLLY = { k: 12, d: 7 };       // dolly longo, zeta 1
+const DOBRA = { k: 22, d: 7.5 };     // paredes caindo, zeta 0,8: pequeno assentamento
+
+// ---------------------------------------------------------------------------
+// Cor: quente (sedução) → sem saturação (quebra) → PB de alto contraste (choque)
+// ---------------------------------------------------------------------------
+const hex = (h, a = 1) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16), a];
+const QUENTE = {
+  piso: hex('#EFC38D'), pisoLinha: hex('#F8DDB4'), fundo: hex('#F8E3C4'), esquerda: hex('#F6B467'), direita: hex('#F9C978'), teto: hex('#FCEEDA'),
+  ceu1: hex('#FBD08F'), ceu2: hex('#FCDDA8'), ceu3: hex('#FDE9C6'), mar: hex('#F7C79E'), marLinha: hex('#FCE3C9'),
+  torreA: hex('#F4A15C'), torreB: hex('#EE8956'), torreC: hex('#E9734F'), torreTopo: hex('#FCE0B8'),
+  sol: hex('#FFB347'), halo: hex('#FFC46B', 0.35), luz: hex('#FFF4D6', 0.88), feixe: hex('#FFF1C9', 0.26), sanca: hex('#F8E2C2'), spot: hex('#FFF8EA'), torreLinha: hex('#FFFFFF'),
+  moldura: hex('#FFFFFF'), contorno: hex('#FFFFFF'), cortina: hex('#FFF8EC', 0.8), vento: hex('#FFFFFF', 0.95),
+  sofaT: hex('#F9A07A'), sofaF: hex('#F47745'), sofaL: hex('#DC683B'),
+  tapete: hex('#F2A27F'), tapeteBorda: hex('#F8C3A6'),
+  mesaT: hex('#FBD27D'), mesaF: hex('#F2B04F'), mesaL: hex('#E39A3C'),
+  rackT: hex('#FCE7C4'), rackF: hex('#F6D3A0'), rackL: hex('#E9BC85'),
+  quadro: hex('#E9734F'), quadroSol: hex('#FFC46B'), passepartout: hex('#FFF7EA'), cota: hex('#C8643A', 0.9),
+};
+const MONO = {
+  // V1 noite: tudo escuro, contorno branco, céu preto; só o número leva cor
+  1: { piso: '#141414', pisoLinha: '#2A2A2A', fundo: '#1C1C1C', esquerda: '#232323', direita: '#191919', teto: '#101010',
+       ceu1: '#0B0B0B', ceu2: '#0B0B0B', ceu3: '#0E0E0E', mar: '#121212', marLinha: '#2A2A2A', torreA: '#202020', torreB: '#1A1A1A', torreC: '#242424', torreTopo: '#2E2E2E',
+       sol: '#2A2A2A', halo: '#000000', luz: '#FFFFFF', feixe: '#FFFFFF', sanca: '#161616', spot: '#2A2A2A', torreLinha: '#3A3A3A', moldura: '#F2EBDD', contorno: '#F2EBDD', cortina: '#2A2A2A', vento: '#555555',
+       sofaT: '#3A3A3A', sofaF: '#2C2C2C', sofaL: '#222222', tapete: '#262626', tapeteBorda: '#3A3A3A', mesaT: '#404040', mesaF: '#303030', mesaL: '#262626',
+       rackT: '#3A3A3A', rackF: '#2C2C2C', rackL: '#222222', quadro: '#303030', quadroSol: '#3A3A3A', passepartout: '#262626', cota: '#555555' },
+  // V2 papel: desenho técnico, superfícies claras e contorno em tinta
+  2: { piso: '#F4F3EF', pisoLinha: '#D6D4CE', fundo: '#FFFFFF', esquerda: '#ECEBE7', direita: '#E3E2DE', teto: '#F8F7F4',
+       ceu1: '#FFFFFF', ceu2: '#FFFFFF', ceu3: '#FFFFFF', mar: '#F1F0EC', marLinha: '#CFCDC6', torreA: '#E4E3DF', torreB: '#DAD9D5', torreC: '#EEEDE9', torreTopo: '#FFFFFF',
+       sol: '#E0DFDB', halo: '#FFFFFF', luz: '#FFFFFF', feixe: '#FFFFFF', sanca: '#F2F1ED', spot: '#FFFFFF', torreLinha: '#171717', moldura: '#FFFFFF', contorno: '#171717', cortina: '#FFFFFF', vento: '#C9C7C0',
+       sofaT: '#E9E8E4', sofaF: '#DCDBD7', sofaL: '#CFCECA', tapete: '#E2E1DD', tapeteBorda: '#F2F1ED', mesaT: '#F0EFEB', mesaF: '#E2E1DD', mesaL: '#D4D3CF',
+       rackT: '#F2F1ED', rackF: '#E2E1DD', rackL: '#D4D3CF', quadro: '#CFCECA', quadroSol: '#E2E1DD', passepartout: '#FFFFFF', cota: '#9A9892' },
+  // V3 planta: chão de tinta com traço branco, como uma planta invertida
+  3: { piso: '#161616', pisoLinha: '#3A3A3A', fundo: '#1E1E1E', esquerda: '#1B1B1B', direita: '#1B1B1B', teto: '#121212',
+       ceu1: '#0D0D0D', ceu2: '#0D0D0D', ceu3: '#0D0D0D', mar: '#101010', marLinha: '#262626', torreA: '#1C1C1C', torreB: '#181818', torreC: '#202020', torreTopo: '#2A2A2A',
+       sol: '#1C1C1C', halo: '#000000', luz: '#FFFFFF', feixe: '#FFFFFF', sanca: '#141414', spot: '#262626', torreLinha: '#2A2A2A', moldura: '#F2EBDD', contorno: '#F2EBDD', cortina: '#262626', vento: '#3A3A3A',
+       sofaT: '#2A2A2A', sofaF: '#222222', sofaL: '#1C1C1C', tapete: '#202020', tapeteBorda: '#3A3A3A', mesaT: '#2E2E2E', mesaF: '#262626', mesaL: '#1F1F1F',
+       rackT: '#2E2E2E', rackF: '#262626', rackL: '#1F1F1F', quadro: '#262626', quadroSol: '#333333', passepartout: '#202020', cota: '#F2EBDD' },
+};
+const MONOH = {};
+for (const v of [1, 2, 3]) { MONOH[v] = {}; for (const [k, h] of Object.entries(MONO[v])) MONOH[v][k] = hex(h, QUENTE[k][3]); }
+for (const v of [1, 2, 3]) { MONOH[v].luz[3] = 0; MONOH[v].feixe[3] = 0; }
+MONOH[1].halo[3] = 0; MONOH[3].halo[3] = 0;
+
+function tinta(chave, dsat, k, conjunto = MONOH[V]) {
+  const q = QUENTE[chave];
+  const l = 0.299 * q[0] + 0.587 * q[1] + 0.114 * q[2];
+  const d = [lerp(q[0], l, dsat), lerp(q[1], l, dsat), lerp(q[2], l, dsat)];
+  const m = conjunto[chave];
+  const r = lerp(d[0], m[0], k), g = lerp(d[1], m[1], k), b = lerp(d[2], m[2], k), a = lerp(q[3], m[3], k);
+  return `rgba(${r.toFixed(0)},${g.toFixed(0)},${b.toFixed(0)},${a.toFixed(3)})`;
+}
+
+// ---------------------------------------------------------------------------
+// Câmera pinhole: x à direita, y para o fundo é negativo, z para cima.
+// A câmera olha para −y. Recorte no plano próximo para o que fica atrás dela.
+// ---------------------------------------------------------------------------
+function paraCamera(p, c) {
+  const dx = p[0] - c.pos[0], dy = p[1] - c.pos[1], dz = p[2] - c.pos[2];
+  const cy = Math.cos(c.yaw), sy = Math.sin(c.yaw);
+  const xr = dx * cy + dy * sy, yr = -dx * sy + dy * cy;
+  let xc = xr, yc = dz, zc = -yr;
+  const cp = Math.cos(c.pitch), spt = Math.sin(c.pitch);
+  const yc2 = yc * cp - zc * spt, zc2 = yc * spt + zc * cp;
+  const cr = Math.cos(c.roll), sr = Math.sin(c.roll);
+  return [xc * cr - yc2 * sr, xc * sr + yc2 * cr, zc2];
+}
+const PERTO = 0.06;
+const naTela = (q, c) => [960 + (c.f * q[0]) / q[2], 540 - (c.f * q[1]) / q[2]];
+function recortaPerto(poly) {
+  const out = [];
+  for (let i = 0; i < poly.length; i += 1) {
+    const a = poly[i], b = poly[(i + 1) % poly.length];
+    const ai = a[2] > PERTO, bi = b[2] > PERTO;
+    if (ai) out.push(a);
+    if (ai !== bi) { const s = (PERTO - a[2]) / (b[2] - a[2]); out.push([lerp(a[0], b[0], s), lerp(a[1], b[1], s), PERTO]); }
+  }
+  return out;
+}
+const fmt = (p) => p[0].toFixed(1) + ' ' + p[1].toFixed(1);
+function caminho(pts3, c, fechar = true) {
+  const cam = pts3.map((p) => paraCamera(p, c));
+  const rec = fechar ? recortaPerto(cam) : cam.filter((q) => q[2] > PERTO);
+  if (rec.length < (fechar ? 3 : 2)) return '';
+  return 'M' + rec.map((q) => fmt(naTela(q, c))).join('L') + (fechar ? 'Z' : '');
+}
+const profundidade = (p, c) => paraCamera(p, c)[2];
+const tela = (p, c) => naTela(paraCamera(p, c), c);
+const poly = (d, fill, stroke, sw = 2, extra = '') => d ? `<path d="${d}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" ${extra}/>` : '';
+
+// caixa com faces visíveis (as viradas para a câmera), ordenadas
+function caixa(x0, y0, z0, x1, y1, z1, cores, c, contorno, sw = 2) {
+  const faces = [
+    { pts: [[x0, y1, z1], [x1, y1, z1], [x1, y0, z1], [x0, y0, z1]], n: [0, 0, 1], cor: cores.t },
+    { pts: [[x0, y1, z0], [x1, y1, z0], [x1, y1, z1], [x0, y1, z1]], n: [0, 1, 0], cor: cores.f },
+    { pts: [[x0, y0, z0], [x1, y0, z0], [x1, y0, z1], [x0, y0, z1]], n: [0, -1, 0], cor: cores.f },
+    { pts: [[x1, y0, z0], [x1, y1, z0], [x1, y1, z1], [x1, y0, z1]], n: [1, 0, 0], cor: cores.l },
+    { pts: [[x0, y0, z0], [x0, y1, z0], [x0, y1, z1], [x0, y0, z1]], n: [-1, 0, 0], cor: cores.l },
+  ];
+  let s = '';
+  for (const f of faces) {
+    const ctr = f.pts.reduce((a, p) => [a[0] + p[0] / 4, a[1] + p[1] / 4, a[2] + p[2] / 4], [0, 0, 0]);
+    const v = [c.pos[0] - ctr[0], c.pos[1] - ctr[1], c.pos[2] - ctr[2]];
+    if (v[0] * f.n[0] + v[1] * f.n[1] + v[2] * f.n[2] <= 0) continue;
+    s += poly(caminho(f.pts, c), f.cor, contorno, sw);
+  }
+  return s;
+}
+
+// recorte de polígono num retângulo do plano xy (luz no chão)
+function recortaRet(pts, x0, x1, y0, y1) {
+  let out = pts;
+  const planos = [[(p) => p[0] - x0, 0], [(p) => x1 - p[0], 0], [(p) => p[1] - y0, 1], [(p) => y1 - p[1], 1]];
+  for (const [f] of planos) {
+    const ent = out; out = [];
+    for (let i = 0; i < ent.length; i += 1) {
+      const a = ent[i], b = ent[(i + 1) % ent.length];
+      const fa = f(a), fb = f(b);
+      if (fa >= 0) out.push(a);
+      if ((fa >= 0) !== (fb >= 0)) { const s = fa / (fa - fb); out.push([lerp(a[0], b[0], s), lerp(a[1], b[1], s), 0.004]); }
+    }
+    if (!out.length) return out;
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// Texto num plano do mundo: cada glifo com sua própria afim (aproxima a perspectiva).
+// ---------------------------------------------------------------------------
+const medidor = document.createElement('canvas').getContext('2d');
+function glifos(texto, fonte) {
+  medidor.font = fonte.replace('{px}', '100px');
+  const out = []; let x = 0;
+  for (const ch of texto) { const w = medidor.measureText(ch).width / 100; out.push({ ch, x, w }); x += w + (fonte.includes('800') ? -0.045 : -0.02); }
+  return { out, largura: x };
+}
+function textoNoPlano(texto, o, c) {
+  // o: base (mundo, meio da linha de base), X e U unitários, tam (m), fonte, cor, contorno, extrusao {vetor, camadas, cores}
+  const { out, largura } = glifos(texto, o.fonte);
+  const at = (u, v, desloc = [0, 0, 0]) => {
+    const w = [o.base[0] + (u - largura / 2) * o.tam * o.X[0] - v * o.tam * o.U[0] + desloc[0],
+               o.base[1] + (u - largura / 2) * o.tam * o.X[1] - v * o.tam * o.U[1] + desloc[1],
+               o.base[2] + (u - largura / 2) * o.tam * o.X[2] - v * o.tam * o.U[2] + desloc[2]];
+    return tela(w, c);
+  };
+  const glifo = (g, desloc, fill, extra) => {
+    const u = g.x + g.w / 2, v = -0.36;
+    const A = at(u, v, desloc), Bu = at(u + 0.01, v, desloc), Bv = at(u, v + 0.01, desloc);
+    const a = (Bu[0] - A[0]) / 0.01 / 100, b = (Bu[1] - A[1]) / 0.01 / 100, cc = (Bv[0] - A[0]) / 0.01 / 100, d = (Bv[1] - A[1]) / 0.01 / 100;
+    const e = A[0] - a * u * 100 - cc * v * 100, f = A[1] - b * u * 100 - d * v * 100;
+    return `<text x="${(g.x * 100).toFixed(2)}" y="0" transform="matrix(${a.toFixed(5)} ${b.toFixed(5)} ${cc.toFixed(5)} ${d.toFixed(5)} ${e.toFixed(2)} ${f.toFixed(2)})" fill="${fill}" ${extra}>${g.ch === ' ' ? '' : g.ch}</text>`;
+  };
+  const familia = o.fonte.split('{px}')[1].trim();
+  const peso = o.fonte.split(' ')[0];
+  const estilo = o.fonte.startsWith('italic') ? 'font-style="italic" font-weight="' + o.fonte.split(' ')[1] + '"' : `font-weight="${peso}"`;
+  let s = `<g font-family=${familia} ${estilo} font-size="100" opacity="${(o.opacidade ?? 1).toFixed(3)}">`;
+  if (o.extrusao && o.extrusao.camadas > 0) {
+    const { vetor, camadas, cores } = o.extrusao;
+    for (let k = camadas; k >= 1; k -= 1) {
+      const fr = k / camadas;
+      const cor = cores[Math.min(cores.length - 1, Math.floor((1 - fr) * cores.length))];
+      for (const g of out) if (g.ch !== ' ') s += glifo(g, [vetor[0] * fr, vetor[1] * fr, vetor[2] * fr], cor, '');
+    }
+  }
+  for (const g of out) if (g.ch !== ' ') s += glifo(g, [0, 0, 0], o.cor, o.contorno ? `stroke="${o.contorno}" stroke-width="${o.sw || 3}" vector-effect="non-scaling-stroke" paint-order="stroke"` : '');
+  return s + '</g>';
+}
+
+// ---------------------------------------------------------------------------
+// Cidade vista pela janela (esquema, nas cores da cena) e sala
+// ---------------------------------------------------------------------------
+const torres = [];
+(function cidade() {
+  const r = rng(81);
+  for (let i = 0; i < 18; i += 1) {
+    const lado = i % 2 ? 1 : -1;
+    const x = lado * (6 + r() * 26) + (r() - 0.5) * 4;
+    const w = 2.2 + r() * 3.2, prof = 2 + r() * 2;
+    const y = -52 - r() * 14;
+    const topo = 0.4 + r() * 6.5 - Math.abs(x) * 0.02;
+    torres.push({ x, w, prof, y, topo, cor: ['torreA', 'torreB', 'torreC'][i % 3] });
+  }
+  torres.sort((a, b) => a.y - b.y);
+})();
+
+function geometria(t) {
+  const amplo = sp(t - T.a1, P.map);
+  return { hw: lerp(3.05, 3.4, amplo), D: lerp(6.6, 7.3, amplo), H: 2.8, amplo };
+}
+
+// tempo do vento: corre até o "Mas" e para com desaceleração suave (velocidade contínua)
+function tempoVento(t) {
+  if (t <= T.mas) return t;
+  const tau = 0.22;
+  return T.mas + tau * (1 - Math.exp(-(t - T.mas) / tau));
+}
+
+// O sol é desenhado antes do mar, então some atrás do horizonte mesmo estando mais perto.
+const SOL_X = 2.4, SOL_Y = -38;
+function solZ(t) {
+  let z = track(t, [[0, 2.6], [T.a3, 5.4, P.map]], P.map);
+  if (V === 1) z = track(t, [[0, 2.6], [T.a3, 5.4, P.map], [T.mas, -3.0, DOLLY]], P.map);
+  return z;
+}
+
+function camera(t) {
+  // V1: a abertura para antes do HOLD de "Recife." e o yaw não respira (os HOLDs ficam parados)
+  const abre = V === 1 ? fim01(sp(t, LENTO), ABRE01C) : sp(t, LENTO);
+  let pos = [lerp(0.6, 0.05, abre), lerp(2.6, 0.55, abre), lerp(1.6, 1.42, abre)];
+  pos = [pos[0], pos[1] + 0.6 * sp(t - T.a1, P.map), pos[2]];
+  let f = 1180, roll = 0, pitch = -0.03, yaw = lerp(-0.06, 0, abre) + (V === 1 ? 0 : 0.012 * Math.sin(t * 0.35));
+  const quebra = sp(t - T.mas, P.camera);
+  if (V === 1) {
+    roll = 0.026 * quebra * (1 - sp(t - T.colapso, P.camera));
+    const g = geometria(t);
+    const entra = fim01(sp(t - T.colapso, DOLLY));
+    pos = [lerp(pos[0], 0, entra), lerp(pos[1], -g.D + 3.6, entra), lerp(pos[2], 1.25, entra)];
+    pitch = lerp(pitch, 0, entra); yaw = lerp(yaw, 0, entra);
+    // o último avanço (0,35 m) termina 0,2 s antes do fim: o quadro final fica parado
+    pos = [pos[0], pos[1] - 0.35 * smooth(invLerp(T.colapso + 1.3, DUR - 0.2, t)), pos[2]];
+  } else if (V === 2) {
+    roll = -0.038 * quebra;
+    const recua = sp(t - (T.colapso + 1.3), P.camera);
+    roll = lerp(roll, 0, recua);
+    pos = [lerp(pos[0], 0, recua), lerp(pos[1], 2.4 - 0.5 * sp(t - (T.colapso + 1.6), { k: 3, d: 3.46 }), recua), lerp(pos[2], 1.5, recua)];
+  } else {
+    f = lerp(1180, 600, quebra);
+    roll = 0.022 * quebra;
+    const sobe = sp(t - T.colapso, DOLLY);
+    f = lerp(f, 900, sobe); roll = lerp(roll, 0, sobe);
+    pos = [lerp(pos[0], 0, sobe), lerp(pos[1], 7.4, sobe), lerp(pos[2], 9.8, sobe)];
+    pitch = lerp(pitch, -0.92, sobe);
+    const heroi = sp(t - (T.numero - 1.0), DOLLY);
+    pos = [lerp(pos[0], 0.95, heroi), lerp(pos[1], 1.55, heroi), lerp(pos[2], 2.35, heroi)];
+    pitch = lerp(pitch, -0.36, heroi); yaw = lerp(yaw, -0.17, heroi); f = lerp(f, 1000, heroi);
+  }
+  return { pos, f, roll, pitch, yaw };
+}
+
+function desenharSala(t, c, dsat, k, conjunto, opts = {}) {
+  const g = geometria(t);
+  const { hw, D, H } = g;
+  const cor = (ch) => tinta(ch, dsat, k, conjunto);
+  const linha = cor('contorno');
+  const dobra = opts.dobra || 0;             // V3: 0 de pé, 1 caído
+  const achata = opts.achata || 0;            // V3: móveis viram planta
+  const sobeTeto = opts.sobeTeto || 0;
+  let s = '';
+  let feixesPorCima = '';
+
+  // lá fora: céu em faixas, mar, sol e torres (atrás da parede do fundo)
+  const fora = opts.foraOpacidade ?? 1;
+  if (fora > 0.01) {
+    s += `<g opacity="${fora.toFixed(3)}">`;
+    const yc = -80;
+    s += poly(caminho([[-120, yc, 1.6], [120, yc, 1.6], [120, yc, 80], [-120, yc, 80]], c), cor('ceu1'), 'none', 0);
+    s += poly(caminho([[-120, yc, 1.6], [120, yc, 1.6], [120, yc, 9], [-120, yc, 9]], c), cor('ceu2'), 'none', 0);
+    s += poly(caminho([[-120, yc, 1.6], [120, yc, 1.6], [120, yc, 4.2], [-120, yc, 4.2]], c), cor('ceu3'), 'none', 0);
+    const sz = solZ(t), sc = tela([SOL_X, SOL_Y, sz], c), sd = profundidade([SOL_X, SOL_Y, sz], c);
+    if (sd > PERTO) {
+      const r = (c.f * 2.3) / sd;
+      s += `<circle cx="${sc[0].toFixed(1)}" cy="${sc[1].toFixed(1)}" r="${(r * 2.6).toFixed(1)}" fill="${cor('halo')}" opacity="0.5"/>`;
+      s += `<circle cx="${sc[0].toFixed(1)}" cy="${sc[1].toFixed(1)}" r="${(r * 1.7).toFixed(1)}" fill="${cor('halo')}"/>`;
+      s += `<circle cx="${sc[0].toFixed(1)}" cy="${sc[1].toFixed(1)}" r="${r.toFixed(1)}" fill="${cor('sol')}"/>`;
+    }
+    s += poly(caminho([[-120, -79, -30], [120, -79, -30], [120, -79, 1.6], [-120, -79, 1.6]], c), cor('mar'), 'none', 0);
+    for (let i = 1; i < 6; i += 1) s += poly(caminho([[-120, -79, 1.6 - i * 0.9], [120, -79, 1.6 - i * 0.9]], c, false), 'none', cor('marLinha'), 1.4);
+    for (const tw of torres) s += caixa(tw.x - tw.w / 2, tw.y - tw.prof, -30, tw.x + tw.w / 2, tw.y, tw.topo, { t: cor('torreTopo'), f: cor(tw.cor), l: cor(tw.cor) }, c, cor('torreLinha'), 1.1);
+    s += '</g>';
+  }
+
+  // casca da sala; no V3 as paredes giram para fora em torno da aresta do chão
+  const th = dobra * Math.PI / 2;
+  const esq = (y, z) => [-hw - z * Math.sin(th), y, z * Math.cos(th)];
+  const dir = (y, z) => [hw + z * Math.sin(th), y, z * Math.cos(th)];
+  const fun = (x, z) => [x, -D - z * Math.sin(th), z * Math.cos(th)];
+  s += poly(caminho([[-hw, 0.4, 0], [hw, 0.4, 0], [hw, -D, 0], [-hw, -D, 0]], c), cor('piso'), linha, 2);
+  let lin = '';
+  for (let x = -hw + 0.6; x < hw - 0.05; x += 0.6) lin += caminho([[x, 0.4, 0.002], [x, -D, 0.002]], c, false);
+  for (let y = -0.6; y > -D + 0.05; y -= 0.6) lin += caminho([[-hw, y, 0.002], [hw, y, 0.002]], c, false);
+  s += `<path d="${lin}" fill="none" stroke="${cor('pisoLinha')}" stroke-width="1.5"/>`;
+  if (sobeTeto < 0.995) {
+    const zt = H + sobeTeto * 14;
+    let teto = poly(caminho([[-hw, 0.4, zt], [hw, 0.4, zt], [hw, -D, zt], [-hw, -D, zt]], c), cor('teto'), linha, 2);
+    // sanca: faixa rebaixada junto às paredes, como na sala da REF-10
+    const m = 0.55, zs = zt - 0.001;
+    teto += poly(caminho([[-hw + m, 0.4, zs], [hw - m, 0.4, zs], [hw - m, -D + m, zs], [-hw + m, -D + m, zs]], c), cor('sanca'), linha, 1.6);
+    for (const [x, y] of [[-1.25, -4.2], [1.25, -4.2], [-1.25, -5.9], [1.25, -5.9]]) {
+      const pc = tela([x, y, zs], c), dp = profundidade([x, y, zs], c);
+      if (dp > PERTO) teto += `<ellipse cx="${pc[0].toFixed(1)}" cy="${pc[1].toFixed(1)}" rx="${(c.f * 0.09 / dp).toFixed(1)}" ry="${(c.f * 0.035 / dp).toFixed(1)}" fill="${cor('spot')}" stroke="${linha}" stroke-width="1"/>`;
+    }
+    s += `<g opacity="${(1 - sobeTeto).toFixed(3)}">` + teto + '</g>';
+  }
+  s += poly(caminho([esq(0.4, 0), esq(-D, 0), esq(-D, H), esq(0.4, H)], c), cor('esquerda'), linha, 2);
+  s += poly(caminho([dir(0.4, 0), dir(-D, 0), dir(-D, H), dir(0.4, H)], c), cor('direita'), linha, 2);
+  // quadro na parede direita
+  s += poly(caminho([dir(-2.5, 1.05), dir(-4.2, 1.05), dir(-4.2, 2.1), dir(-2.5, 2.1)], c), cor('passepartout'), linha, 2);
+  s += poly(caminho([dir(-2.65, 1.2), dir(-4.05, 1.2), dir(-4.05, 1.95), dir(-2.65, 1.95)], c), cor('quadro'), 'none', 0);
+  const qs = []; for (let i = 0; i <= 16; i += 1) { const a = Math.PI * i / 16; qs.push(dir(-3.35 + 0.32 * Math.cos(a), 1.2 + 0.32 * Math.sin(a))); }
+  s += poly(caminho(qs, c), cor('quadroSol'), 'none', 0);
+  // parede do fundo com o vão da janela (evenodd)
+  const J = { x0: -1.85, x1: 1.85, z0: 0.25, z1: 2.5 };
+  const ext = caminho([fun(-hw, 0), fun(hw, 0), fun(hw, H), fun(-hw, H)], c);
+  const vao = caminho([fun(J.x0, J.z0), fun(J.x0, J.z1), fun(J.x1, J.z1), fun(J.x1, J.z0)], c);
+  if (ext) s += `<path d="${ext}${vao}" fill="${cor('fundo')}" fill-rule="evenodd" stroke="${linha}" stroke-width="2" stroke-linejoin="round"/>`;
+  // caixilho: moldura, montante e travessa (no V1 a moldura engrossa e as divisões saem)
+  const mold = opts.moldura || { e: 0.08, montanteX: 0, travessaZ: 1.95, divisoes: 1 };
+  const barra = (x0, z0, x1, z1) => poly(caminho([fun(x0, z0), fun(x1, z0), fun(x1, z1), fun(x0, z1)], c), cor('moldura'), linha, 1.2);
+  s += barra(J.x0 - mold.e, J.z0 - mold.e, J.x1 + mold.e, J.z0);
+  s += barra(J.x0 - mold.e, J.z1, J.x1 + mold.e, J.z1 + mold.e);
+  s += barra(J.x0 - mold.e, J.z0, J.x0, J.z1);
+  s += barra(J.x1, J.z0, J.x1 + mold.e, J.z1);
+  if (mold.divisoes > 0.01) {
+    s += `<g opacity="${mold.divisoes.toFixed(3)}">`;
+    s += barra(mold.montanteX - 0.035, J.z0, mold.montanteX + 0.035, J.z1);
+    s += barra(J.x0, mold.travessaZ - 0.03, J.x1, mold.travessaZ + 0.03);
+    s += '</g>';
+  }
+
+  // luz do sol no chão: os vidros projetados pela direção do sol
+  const sz = solZ(t);
+  const S = [SOL_X, SOL_Y, sz];
+  const W = [0, -D, 1.37];
+  const L = [W[0] - S[0], W[1] - S[1], W[2] - S[2]];
+  const intens = opts.luz ?? 1;
+  if (L[2] < -0.02 && intens > 0.01 && dobra < 0.02) {
+    const paineis = [[J.x0, mold.montanteX - 0.035, J.z0, mold.travessaZ - 0.03], [mold.montanteX + 0.035, J.x1, J.z0, mold.travessaZ - 0.03],
+                     [J.x0, mold.montanteX - 0.035, mold.travessaZ + 0.03, J.z1], [mold.montanteX + 0.035, J.x1, mold.travessaZ + 0.03, J.z1]];
+    let luz = '', feixes = '';
+    for (const [x0, x1, z0, z1] of paineis) {
+      const pts = [[x0, z0], [x1, z0], [x1, z1], [x0, z1]].map(([x, z]) => {
+        const sP = -z / L[2];
+        return [x + L[0] * sP, -D + L[1] * sP, 0.004];
+      });
+      const rec = recortaRet(pts, -hw, hw, -D, 0.4);
+      if (rec.length >= 3) luz += caminho(rec, c);
+      // feixe: do topo do vidro até a borda de lá da mancha
+      const longe = rec.length >= 3 ? rec.reduce((a, p) => (p[1] > a[1] ? p : a), rec[0]) : null;
+      if (longe) feixes += caminho([[x0, -D, z1], [x1, -D, z1], [x1 + L[0] * (-z0 / L[2]), longe[1], 0.01], [x0 + L[0] * (-z0 / L[2]), longe[1], 0.01]], c);
+    }
+    s += `<path d="${luz}" fill="${cor('luz')}" opacity="${intens.toFixed(3)}"/>`;
+    feixesPorCima = `<path d="${feixes}" fill="${cor('feixe')}" opacity="${intens.toFixed(3)}"/>`;
+  }
+
+  // cota da área no chão: linhas que abrem do centro e "75 m²" pintado
+  if (opts.cota > 0.001) {
+    const a = opts.cota;
+    const yC = -2.05;
+    const xL = lerp(0, -hw + 0.15, a), xR = lerp(0, hw - 0.15, a);
+    let cl = caminho([[xL, yC, 0.006], [xR, yC, 0.006]], c, false);
+    cl += caminho([[xL, yC - 0.14, 0.006], [xL, yC + 0.14, 0.006]], c, false) + caminho([[xR, yC - 0.14, 0.006], [xR, yC + 0.14, 0.006]], c, false);
+    if (!opts.semLinhaCota) s += `<path d="${cl}" fill="none" stroke="${cor('cota')}" stroke-width="2.5" stroke-linecap="round"/>`;
+    s += textoNoPlano('75 m²', { base: [0.1, -2.4, 0.006], X: [1, 0, 0], U: [0, -1, 0], tam: 0.42, fonte: '600 {px} Fraunces', cor: cor('cota'), opacidade: invLerp(0.35, 0.8, a) }, c);
+  }
+
+  // tapete e móveis (baixam no V3)
+  const hz = (z) => z * (1 - achata);
+  s += poly(caminho([[-1.6, -3.1, 0.008], [1.25, -3.1, 0.008], [1.25, -5.6, 0.008], [-1.6, -5.6, 0.008]], c), cor('tapete'), cor('tapeteBorda'), 3);
+  const moveis = [
+    { d: profundidade([-2.55, -4.5, 0.4], c), s: () => {
+        const so = { t: cor('sofaT'), f: cor('sofaF'), l: cor('sofaL') };
+        return caixa(-hw + 0.02, -5.7, 0.08, -hw + 0.26, -3.3, hz(0.82), so, c, linha)
+          + caixa(-hw + 0.24, -5.7, 0.08, -hw + 1.0, -3.3, hz(0.4), so, c, linha)
+          + caixa(-hw + 0.24, -5.7, 0.08, -hw + 1.0, -5.5, hz(0.58), so, c, linha)
+          + caixa(-hw + 0.24, -3.5, 0.08, -hw + 1.0, -3.3, hz(0.58), so, c, linha); } },
+    { d: profundidade([-0.3, -4.45, 0.2], c), s: () => caixa(-0.6, -4.75, 0, 0.0, -4.15, hz(0.26), { t: cor('mesaF'), f: cor('mesaL'), l: cor('mesaL') }, c, linha)
+        + caixa(-0.95, -5.0, hz(0.26), 0.35, -3.9, hz(0.34), { t: cor('mesaT'), f: cor('mesaF'), l: cor('mesaL') }, c, linha) },
+    { d: profundidade([hw - 0.3, -4.4, 0.3], c), s: () => caixa(hw - 0.48, -5.6, 0.12, hw - 0.02, -3.4, hz(0.5), { t: cor('rackT'), f: cor('rackF'), l: cor('rackL') }, c, linha) },
+  ].sort((a, b) => b.d - a.d);
+  for (const m of moveis) s += m.s();
+
+  // cortinas e vento
+  const tv = tempoVento(t);
+  // V1: o vento só começa em "super ventilado" (a abertura fica parada no HOLD de "Recife.")
+  const forca = (opts.vento ?? 1) * (V === 1 ? sp(t - T.a2, P.map) : 0.25 + 0.75 * sp(t - T.a2, P.map));
+  if (opts.cortina !== 0) {
+    for (const [x0, x1, fase] of [[J.x0 - 0.75, J.x0 + 0.05, 0], [J.x1 - 0.05, J.x1 + 0.75, 1.7]]) {
+      const pts = [[x0, -D + 0.12, H - 0.05], [x1, -D + 0.12, H - 0.05]];
+      for (let i = 0; i <= 8; i += 1) {
+        const u = 1 - i / 8;
+        const x = lerp(x0, x1, u);
+        const onda = Math.sin(tv * 2.1 + u * 5 + fase) * 0.5 + 0.5;
+        pts.push([x + 0.05 * Math.sin(tv * 1.7 + u * 3 + fase) * forca, -D + 0.12 + forca * (0.18 + 0.32 * onda), 0.06 + 0.05 * onda * forca]);
+      }
+      s += `<g opacity="${(1 - dobra).toFixed(3)}">` + poly(caminho(pts, c), cor('cortina'), linha, 1.2) + '</g>';
+    }
+  }
+  if (forca > 0.01 && dobra < 0.5) {
+    let ven = '';
+    const linhas = [[-0.55, 1.85, 0.3], [0.5, 1.6, 1.4], [-0.05, 2.15, 2.3], [0.85, 2.0, 3.6]];
+    for (const [x0, z0, ph] of linhas) {
+      const pts = [];
+      for (let i = 0; i <= 28; i += 1) {
+        const y = lerp(-D + 0.35, -2.5, i / 28);
+        const abre = (y + D) / D;
+        pts.push([x0 * (1 + 1.2 * abre) + 0.18 * Math.sin(0.8 * y + ph), y, z0 - 0.15 * abre + 0.08 * Math.sin(1.2 * y + ph * 1.7)]);
+      }
+      ven += caminho(pts, c, false);
+    }
+    const desloc = -tv * 360;
+ s += feixesPorCima; feixesPorCima = '';
+    s += `<path d="${ven}" fill="none" stroke="${cor('vento')}" stroke-width="2.6" stroke-linecap="round"  stroke-dasharray="420 700" stroke-dashoffset="${desloc.toFixed(1)}" opacity="${(0.8 * forca * (opts.ventoOpacidade ?? 1)).toFixed(3)}"/>`;
+  }
+  return s + feixesPorCima;
+}
+
+// ---------------------------------------------------------------------------
+// Textos: atributos do anúncio (citações) e o número
+// ---------------------------------------------------------------------------
+const $ = (id) => document.getElementById(id);
+const textos = $('textos');
+function el(cls, html, pai = textos) { const e = document.createElement('div'); e.className = cls; e.innerHTML = html; pai.appendChild(e); return e; }
+const ICONE = {
+  area: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>',
+  vento: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h8.5a2.5 2.5 0 1 0 -2.34 -3.24"/><path d="M3 12h15.5a2.5 2.5 0 1 1 -2.34 3.24"/><path d="M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24"/></svg>',
+  sol: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"/></svg>',
+  etiqueta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M3 6v5.172a2 2 0 0 0 .586 1.414l7.71 7.71a2.41 2.41 0 0 0 3.408 0l5.592 -5.592a2.41 2.41 0 0 0 0 -3.408l-7.71 -7.71a2 2 0 0 0 -1.414 -.586h-5.172a3 3 0 0 0 -3 3z"/></svg>',
+};
+const cita = (txt) => `<span><span class="aspas">“</span>${txt}<span class="aspas">”</span></span>`;
+// V1: as palavras do anúncio na fala gravada; V2 e V3 ficam com as do roteiro antigo
+const PALAVRAS = V === 1 ? ['75 metros quadrados', 'super ventilado', 'sol 100% nascente', 'taxa de condomínio baixinha'] : ['75 metros quadrados', 'super ventilado', '100% nascente', 'condomínio baixinho'];
+const ATRIB = [
+  { id: 'a1', t: T.a1, html: ICONE.area + cita(PALAVRAS[0]), cls: 'chip' },
+  { id: 'a2', t: T.a2, html: ICONE.vento + cita(PALAVRAS[1]), cls: 'chip' },
+  { id: 'a3', t: T.a3, html: ICONE.sol + cita(PALAVRAS[2]), cls: 'chip' },
+  { id: 'a4', t: T.a4, html: ICONE.etiqueta + cita(PALAVRAS[3]), cls: 'chip pequeno' },
+].map((a) => ({ ...a, e: el('t ' + a.cls + (V === 1 ? ' v1' : ''), a.html) }));
+const kicker = el('t kicker', 'O anúncio diz');
+
+// V1: número dentro da janela, nascendo do peitoril
+const recorte1 = el('recorte', '');
+const numero1 = el('t numero-v1', 'MILHARES', recorte1);
+const apoio1 = el('t apoio', 'de reais');
+// V1 (roteiro gravado): "de reais" dentro do vão, no mesmo recorte do número
+const apoio1v = el('t apoio-v1', 'de reais', recorte1);
+const NUM = NUM01C;
+// V2: número sobre a linha e régua de cinco anos
+const recorte2 = el('recorte', '');
+const numero2 = el('t numero-v2', 'MILHARES', recorte2);
+const apoio2 = el('t apoio-serif', 'de reais');
+const rotulosRegua = ['hoje', 'custos', 'despesas', 'reparos', 'taxas', 'depois'].map((r) => el('t regua-rotulo', r));
+for (const e of [recorte1, apoio1, apoio1v, recorte2, apoio2, ...rotulosRegua]) e.style.visibility = 'hidden';
+
+const dbg = new URLSearchParams(location.search).has('debug') ? el('', '') : null;
+if (dbg) dbg.id = 'debug';
+
+function chipEm(a, t, x, y, saida, alinhar = 'left') {
+  const vis = swap(t, a.t, saida, { durIn: 0.16 });
+  const dy = 18 * pending(t, a.t + 0.05, P.type) + 14 * (1 - clamp((saida - 0.1 - t) / 0.1));
+  const w = a.e.offsetWidth;
+  Object.assign(a.e.style, { left: (alinhar === 'right' ? x - w : x).toFixed(1) + 'px', top: (y + dy).toFixed(1) + 'px', opacity: vis.toFixed(3), visibility: vis > 0.001 ? 'visible' : 'hidden' });
+}
+
+// ---------------------------------------------------------------------------
+// seek(t)
+// ---------------------------------------------------------------------------
+const SALA = $('sala'), MONOG = $('sala-mono'), FRENTE = $('frente');
+function render(t) {
+  t = clamp(t, 0, DUR);
+  const c = camera(t);
+  const g = geometria(t);
+  const dsat = 0.72 * sp(t - T.mas, P.camera);
+  const cotaA = sp(t - (T.a1 + 0.08), P.map);
+  const luzA = V === 1 ? fim01(sp(t - 0.15, LENTO), LUZ01C) * (1 - sp(t - T.mas, P.camera)) : sp(t - 0.15, LENTO);
+  $('c').style.background = tinta('fundo', dsat, 0);
+  let frente = '';
+
+  if (V === 1) {
+    const k = fim01(sp(t - (T.colapso + 0.2), P.camera));
+    const abreJanela = fim01(sp(t - (T.colapso + ABRE_J01C), P.card));
+    const mold = { e: lerp(0.08, 0.16, abreJanela), montanteX: lerp(0, -1.85, abreJanela), travessaZ: lerp(1.95, 2.5, abreJanela), divisoes: 1 - invLerp(0.6, 1, abreJanela) };
+    SALA.innerHTML = desenharSala(t, c, dsat, k, MONOH[1], { cota: cotaA * (1 - k), moldura: mold, luz: luzA * (1 - k), ventoOpacidade: 1 - k });
+    $('c').style.background = tinta('fundo', dsat, k);
+    // número no vão da janela, subindo de trás do peitoril
+    const D = g.D;
+    const sup = tela([0, -D, 2.5], c), inf = tela([0, -D, 0.25], c), esq = tela([-1.85, -D, 1.3], c), dir = tela([1.85, -D, 1.3], c);
+    // "MILHARES" e "de reais" sobem juntos, como um bloco, de trás do peitoril, no recorte do vão
+    // ("de reais" aparece por último, em "de reais"); a regra é a de motion/lib/sala01.js (layout01C)
+    const aN = t >= T.numero - 0.05;
+    recorte1.style.visibility = aN ? 'visible' : 'hidden';
+    if (aN) {
+      Object.assign(recorte1.style, { left: esq[0].toFixed(1) + 'px', top: sup[1].toFixed(1) + 'px', width: (dir[0] - esq[0]).toFixed(1) + 'px', height: (inf[1] - sup[1]).toFixed(1) + 'px' });
+      const h = inf[1] - sup[1], w = dir[0] - esq[0];
+      numero1.style.fontSize = (h * NUM.fs).toFixed(1) + 'px';
+      apoio1v.style.fontSize = (h * NUM.ap).toFixed(1) + 'px';
+      for (const e of [numero1, apoio1v]) { e.style.width = w.toFixed(1) + 'px'; e.style.left = '0px'; }
+      const L = layout01C(h, numero1.offsetHeight, apoio1v.offsetHeight, NUM);
+      const off = (1 - fim01(sp(t - T.numero, NUM.mola))) * (L.yEsc - L.yN);
+      numero1.style.top = (L.yN + off).toFixed(1) + 'px';
+      apoio1v.style.top = (L.yA + off).toFixed(1) + 'px';
+      apoio1v.style.visibility = 'inherit';
+    } else apoio1v.style.visibility = 'hidden';
+    apoio1.style.visibility = 'hidden';
+    MONOG.innerHTML = '';
+  } else if (V === 2) {
+    // a linha do anúncio: nasce com os atributos, varre a sala e vira a régua
+    const yLinha0 = 1012;
+    const varre = clamp(spring(t - (T.colapso + 0.25), 30, 10.5), 0, 1.02);
+    const desce = sp(t - (T.colapso + 1.25), P.card);
+    let yL = lerp(yLinha0, 96, varre);
+    yL = lerp(yL, 712, desce);
+    const sala = desenharSala(t, c, dsat, 0, MONOH[2], { cota: 0, luz: luzA });
+    SALA.innerHTML = sala;
+    const passou = t > T.colapso + 0.25;
+    const yRev = passou ? (desce > 0.001 ? 0 : yL) : 1080;
+    const r = $('abaixo-r'); r.setAttribute('y', yRev.toFixed(1)); r.setAttribute('height', (1080 - yRev).toFixed(1));
+    MONOG.innerHTML = passou ? `<rect x="0" y="0" width="1920" height="1080" fill="#FFFFFF"/>` + desenharSala(t, c, 0, 1, MONOH[2], { cota: 0, luz: 0, ventoOpacidade: 0.4 }) : '';
+    const xIni = 120, compr = 1680 * sp(t - (T.a1 - 0.25), P.map);
+    const grossa = sp(t - T.colapso, P.button);
+    const corLinha = t < T.numero ? (grossa > 0.5 ? '#171717' : '#B94E36') : '#171717';
+    frente += `<line x1="${xIni}" y1="${yL.toFixed(1)}" x2="${(xIni + compr).toFixed(1)}" y2="${yL.toFixed(1)}" stroke="${corLinha}" stroke-width="${lerp(3, 7, grossa).toFixed(2)}" stroke-linecap="round"/>`;
+    // véu claro atrás do número, para o PB ficar limpo
+    const veu = sp(t - (T.colapso + 1.3), P.camera);
+    if (veu > 0.001) frente = `<rect x="0" y="0" width="1920" height="1080" fill="rgba(255,255,255,${(0.74 * veu).toFixed(3)})"/>` + frente;
+    // régua dos cinco anos: segmentos laranja entre as marcas
+    const aR = t > T.apoio - 0.05;
+    for (let i = 0; i < 6; i += 1) {
+      const x = xIni + (1680 * i) / 5;
+      const ti = T.apoio + 0.1 * i;
+      const ap = swap(t, ti, Infinity, { durIn: 0.12 });
+      if (i > 0) {
+        const seg = sp(t - (ti - 0.1), P.button);
+        if (seg > 0.001) frente += `<line x1="${(x - 336).toFixed(1)}" y1="${yL.toFixed(1)}" x2="${(x - 336 + 336 * seg).toFixed(1)}" y2="${yL.toFixed(1)}" stroke="#F47745" stroke-width="12"/>`;
+      }
+      if (aR) frente += `<line x1="${x}" y1="${(yL - 16).toFixed(1)}" x2="${x}" y2="${(yL + 22 * ap).toFixed(1)}" stroke="#171717" stroke-width="4"/>`;
+      const e = rotulosRegua[i];
+      e.style.visibility = ap > 0.001 ? 'visible' : 'hidden'; e.style.opacity = ap;
+      if (ap > 0.001) { e.style.left = (x - e.offsetWidth / 2).toFixed(1) + 'px'; e.style.top = (yL + 38).toFixed(1) + 'px'; }
+    }
+    // número sobe de trás da linha
+    const aN = t >= T.numero - 0.05;
+    recorte2.style.visibility = aN ? 'visible' : 'hidden';
+    if (aN) {
+      Object.assign(recorte2.style, { left: '0px', top: '0px', width: '1920px', height: (yL - 6).toFixed(1) + 'px' });
+      numero2.style.fontSize = '230px';
+      const sobe = pending(t, T.numero, { k: 120, d: 22 });
+      const nh = numero2.offsetHeight;
+      numero2.style.left = (960 - numero2.offsetWidth / 2).toFixed(1) + 'px';
+      numero2.style.top = (yL - 6 - nh - 24 + sobe * (nh + 40)).toFixed(1) + 'px';
+    }
+    const aA = swap(t, T.apoio + 0.55, Infinity, { durIn: 0.2 });
+    Object.assign(apoio2.style, { visibility: aA > 0.001 ? 'visible' : 'hidden', opacity: aA, color: '#171717' });
+    if (aA > 0.001) { apoio2.style.left = (960 - apoio2.offsetWidth / 2).toFixed(1) + 'px'; apoio2.style.top = (yL + 108 + 10 * pending(t, T.apoio + 0.55, P.type)).toFixed(1) + 'px'; }
+  } else {
+    // V3: estica, desmonta em planta e o número se levanta no lugar das paredes
+    const k = sp(t - (T.colapso + 0.1), P.camera);
+    const dobra = clamp(spring(t - T.colapso, DOBRA.k, DOBRA.d), 0, 1.04);
+    const achata = sp(t - (T.colapso + 0.05), P.card);
+    const sobeTeto = sp(t - T.colapso, P.button);
+    SALA.innerHTML = desenharSala(t, c, dsat, k, MONOH[3], { cota: cotaA * (1 - k), luz: luzA * (1 - k), dobra, achata, sobeTeto, foraOpacidade: 1 - invLerp(T.colapso, T.colapso + 0.35, t), vento: 1 - k });
+    $('c').style.background = tinta('fundo', dsat, k);
+    const levanta = clamp(spring(t - T.numero, 26, 8.2), 0, 1.03);
+    if (t >= T.numero - 0.05) {
+      const ph = levanta * Math.PI / 2;
+      const U = [0, -Math.cos(ph), Math.sin(ph)];
+      const N = [0, -Math.sin(ph), -Math.cos(ph)];
+      const prof = 0.9 * clamp(levanta, 0, 1);
+      frente += textoNoPlano('MILHARES', {
+        base: [0, -2.4, 0.01], X: [1, 0, 0], U, tam: 1.42, fonte: '800 {px} "Plus Jakarta Sans"', cor: '#F47745', contorno: '#FFFFFF', sw: 3,
+        extrusao: { vetor: [N[0] * prof, N[1] * prof, N[2] * prof], camadas: 40, cores: Array.from({ length: 40 }, (_, i) => { const v = Math.round(lerp(14, 58, i / 39)); return `rgb(${v},${v},${v})`; }) },
+      }, c);
+    }
+    const aA = swap(t, T.apoio + 0.2, Infinity, { durIn: 0.25 });
+    if (aA > 0.001) frente += textoNoPlano('de reais', { base: [0, -0.95, 0.012], X: [1, 0, 0], U: [0, -1, 0], tam: 0.5, fonte: 'italic 500 {px} Fraunces', cor: '#F2EBDD', opacidade: aA }, c);
+    MONOG.innerHTML = '';
+  }
+  FRENTE.innerHTML = frente;
+
+  // atributos do anúncio
+  const saidaChips = V === 2 ? T.colapso + 0.2 : T.colapso + 0.15;
+  if (V === 2) {
+    let x = 120;
+    const y = 942;
+    for (const a of ATRIB) { chipEm(a, t, x, y - (a.cls.includes('pequeno') ? -8 : 0), saidaChips); x += a.e.offsetWidth + 18; }
+    const vk = swap(t, T.anuncio, saidaChips);
+    Object.assign(kicker.style, { left: '122px', top: (896 + 12 * pending(t, T.anuncio, P.type)).toFixed(1) + 'px', opacity: vk, visibility: vk > 0.001 ? 'visible' : 'hidden' });
+  } else {
+    kicker.style.visibility = 'hidden';
+    const p1 = tela([-g.hw + 0.4, -1.1, 0], c), p2 = tela([-1.85 - 0.45, -g.D + 0.2, 2.3], c), p3 = tela([1.9, -g.D, 2.45], c);
+    // V1: pílulas maiores, um pouco mais altas, para não encostar na linha da cota no chão
+    chipEm(ATRIB[0], t, Math.max(70, p1[0] + 40), Math.min(V === 1 ? 912 : 930, p1[1] - 150), saidaChips);
+    chipEm(ATRIB[1], t, p2[0] - 30, p2[1] - 120, saidaChips, 'right');
+    chipEm(ATRIB[2], t, p3[0] + 30, p3[1] - 110, saidaChips);
+    chipEm(ATRIB[3], t, 1840, V === 1 ? 932 : 958, saidaChips, 'right');
+  }
+  for (const e of [recorte1, apoio1, apoio1v]) if (V !== 1) e.style.visibility = 'hidden';
+  for (const e of [recorte2, apoio2, ...rotulosRegua]) if (V !== 2) e.style.visibility = 'hidden';
+  if (dbg) dbg.textContent = `V${V} · ${t.toFixed(2)} s`;
+}
+
+// ---------------------------------------------------------------------------
+// Contrato de render, QA e preview
+// ---------------------------------------------------------------------------
+const ESTADOS = V === 1 ? [
+  { id: 'E1', nome: 'abertura', t: 0.0 },
+  { id: 'H1', nome: '"em Recife." (HOLD)', t: HOLD01C },
+  { id: 'A1', nome: '"75 metros quadrados"', t: T.a1 + 0.9 },
+  { id: 'A2', nome: '"super ventilado"', t: T.a2 + 0.65 },
+  { id: 'A3', nome: '"sol 100% nascente"', t: T.a3 + 1.0 },
+  { id: 'A4', nome: '"taxa de condomínio baixinha"', t: T.a4 + 1.2 },
+  { id: 'LAR', nome: '"Parece perfeito."', t: T.lar + 0.5 },
+  { id: 'Q', nome: '"Mas": quebra (meio)', t: T.mas + 0.45 },
+  { id: 'C', nome: 'colapso (meio)', t: T.colapso + 0.8 },
+  { id: 'N', nome: '"milhares de reais" (subindo)', t: T.numero + 0.4 },
+  { id: 'FIM', nome: 'quadro final (HOLD; primeiro da cena 02)', t: DUR - 1 / 30 },
+] : [
+  { id: 'E1', nome: 'abertura', t: 0.0 },
+  { id: 'E2', nome: 'encantamento', t: 3.2 },
+  { id: 'A1', nome: '75 metros quadrados', t: 5.4 },
+  { id: 'A2', nome: 'super ventilado', t: 6.9 },
+  { id: 'A3', nome: '100% nascente', t: 8.3 },
+  { id: 'A4', nome: 'condomínio baratinho', t: 9.4 },
+  { id: 'LAR', nome: 'parece o lar perfeito', t: 10.6 },
+  { id: 'Q', nome: 'quebra (meio)', t: 11.7 },
+  { id: 'C', nome: 'colapso (meio)', t: 13.0 },
+  { id: 'N', nome: 'MILHARES', t: 15.3 },
+  { id: 'FIM', nome: 'quadro final', t: DUR - 1 / 30 },
+];
+const SONS = V === 1 ? [
+  { t: 0.15, tipo: 'whoosh', dur: 1.8, ganho: 0.35, evento: 'a luz entra' },
+  { t: T.a1, tipo: 'pop', evento: '75 metros quadrados' },
+  { t: T.a2, tipo: 'pop', evento: 'super ventilado' },
+  { t: T.a2 + 0.08, tipo: 'whoosh', dur: 1.2, ganho: 0.3, evento: 'vento' },
+  { t: T.a3, tipo: 'pop', evento: 'sol 100% nascente' },
+  { t: T.a3 + 0.05, tipo: 'sweep', dur: 1.0, ganho: 0.8, evento: 'o sol sobe' },
+  { t: T.a4, tipo: 'tick', evento: 'taxa de condomínio baixinha' },
+  { t: T.mas, tipo: 'click', evento: 'Mas: o vento para' },
+  { t: T.colapso, tipo: 'whoosh', dur: 1.0, evento: 'colapso' },
+  { t: T.numero, tipo: 'thump', evento: 'milhares de reais' },
+] : [
+  { t: 0.15, tipo: 'whoosh', dur: 1.8, ganho: 0.35, evento: 'a luz entra' },
+  { t: T.a1, tipo: 'pop', evento: '75 metros quadrados' },
+  { t: T.a2, tipo: 'pop', evento: 'super ventilado' },
+  { t: T.a2 + 0.08, tipo: 'whoosh', dur: 1.4, ganho: 0.3, evento: 'vento' },
+  { t: T.a3, tipo: 'pop', evento: '100% nascente' },
+  { t: T.a3 + 0.05, tipo: 'sweep', dur: 1.1, ganho: 0.8, evento: 'o sol sobe' },
+  { t: T.a4, tipo: 'tick', evento: 'condomínio baratinho' },
+  { t: T.mas, tipo: 'click', evento: 'Mas: o vento para' },
+  { t: T.colapso, tipo: 'whoosh', dur: 1.0, evento: 'colapso' },
+  { t: T.numero, tipo: 'thump', evento: 'MILHARES' },
+  { t: T.apoio, tipo: 'tick', evento: 'de reais' },
+];
+window.POC = {
+  id: 'CENA-01', variante: NOMES[V], duracao: DUR, fps: 30, estados: ESTADOS, holds: HOLDS, cliques: [], marcos: T, sons: SONS,
+  tiras: V === 1
+    ? [{ nome: 'abertura', t0: HOLD01C - 0.3 }, { nome: 'quebra', t0: T.mas - 0.1 }, { nome: 'colapso', t0: T.colapso - 0.05 }, { nome: 'janela', t0: T.colapso + ABRE_J01C - 0.05 }, { nome: 'numero', t0: T.numero - 0.05 }, { nome: 'apoio', t0: T.numero + 0.3 }]
+    : [{ nome: 'quebra', t0: T.mas - 0.1 }, { nome: 'colapso', t0: T.colapso - 0.05 }, { nome: 'numero', t0: T.numero - 0.1 }],
+  comparar: [{ t: 3.2, nome: 'encantamento' }, { t: 9.4, nome: 'sedução' }, { t: 11.7, nome: 'quebra' }, { t: 13.0, nome: 'colapso' }, { t: 15.3, nome: 'choque' }, { t: DUR - 1 / 30, nome: 'fim' }],
+};
+window.seek = (t) => render(t);
+window.__pronto = (async () => {
+  await document.fonts.ready;
+  await Promise.all([
+    ['600 100px Fraunces', 'MILHARES75 m²'], ['italic 500 100px Fraunces', 'de reais“”'], ['500 100px Fraunces', '“”'],
+    ['800 100px "Plus Jakarta Sans"', 'MILHARES'], ['600 30px "Plus Jakarta Sans"', '75 metros quadrados super ventilado sol 100% nascente taxa de condomínio baixinha baixinho baratinho'],
+    ['600 21px "Plus Jakarta Sans"', 'taxa de condomínio baixinha baixinho“”'], ['600 40px "Plus Jakarta Sans"', '75 metros quadrados super ventilado sol 100% nascente taxa de condomínio baixinha'],
+    ['500 40px Fraunces', '“”'],
+    ['500 46px "Plus Jakarta Sans"', 'de reais'], ['700 22px "Plus Jakarta Sans"', 'O ANÚNCIO DIZ'], ['600 22px "Plus Jakarta Sans"', 'hoje custos despesas reparos taxas depois'],
+  ].map(([f, txt]) => document.fonts.load(f, txt)));
+  render(0);
+  return true;
+})();
+
+if (!navigator.webdriver) {
+  document.body.classList.add('tela');
+  const c = $('c');
+  const ajusta = () => {
+    const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+    Object.assign(c.style, { position: 'absolute', transformOrigin: '0 0', transform: `scale(${s})`, left: `${(innerWidth - 1920 * s) / 2}px`, top: `${(innerHeight - 1080 * s) / 2}px` });
+  };
+  addEventListener('resize', ajusta); ajusta();
+  const aoVivo = new URLSearchParams(location.search).has('live');
+  let t = 0, alvo = aoVivo ? HOLDS[0] : DUR, rodando = true, antes = null;
+  const passo = (agora) => {
+    if (antes !== null && rodando) { t += (agora - antes) / 1000; if (t >= alvo) { t = alvo; if (!aoVivo) t = 0; else rodando = false; } }
+    antes = agora; render(t); requestAnimationFrame(passo);
+  };
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown') {
+      const base = rodando ? alvo : t;
+      const i = HOLDS.findIndex((h) => h > base + 1e-3);
+      if (aoVivo) { if (i >= 0) { alvo = HOLDS[i]; rodando = true; } } else rodando = !rodando;
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      const ant = HOLDS.filter((h) => h < t - 1e-3);
+      t = ant.length > 1 ? ant[ant.length - 2] : 0;
+      alvo = aoVivo ? HOLDS.find((h) => h > t + 1e-3) ?? DUR : DUR;
+      rodando = !aoVivo; render(t);
+    } else if (e.key === 'r') { t = 0; alvo = aoVivo ? HOLDS[0] : DUR; rodando = true; }
+  });
+  window.__pronto.then(() => requestAnimationFrame(passo));
+}
+</script>
+</body>
+</html>

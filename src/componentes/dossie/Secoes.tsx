@@ -19,7 +19,7 @@ import { Texto } from "../Texto";
 import { Bloco, QuadradoDeCor } from "../Traco";
 
 function irParaCamada(dossie: Dossie, camada: Camada) {
-  router.navigate({ pathname: "/dossie/[id]/mapa", params: { id: dossie.id, camada } });
+  router.navigate({ pathname: "/exemplos/[id]/mapa", params: { id: dossie.id, camada } });
 }
 
 function ConteudoDeValores({ dossie, secao }: { dossie: Dossie; secao: Secao }) {
@@ -144,7 +144,7 @@ function ConteudoCusto({ dossie }: { dossie: Dossie }) {
       <RodapesPorFonte dossie={dossie} fatos={partes.map((p) => p.fato)} />
       <Botao
         rotulo="Informar meu domicílio"
-        onPress={() => router.push({ pathname: "/dossie/[id]/domicilio", params: { id: dossie.id } })}
+        onPress={() => router.push({ pathname: "/exemplos/[id]/domicilio", params: { id: dossie.id } })}
       />
     </>
   );
@@ -168,7 +168,7 @@ function UmaSecao({ dossie, id }: { dossie: Dossie; id: string }) {
         fase="prototipo"
         icone="route"
         resumo={resumoDosCaminhos}
-        onPress={() => router.push({ pathname: "/dossie/[id]/caminhos", params: { id: dossie.id } })}
+        onPress={() => router.push({ pathname: "/exemplos/[id]/caminhos", params: { id: dossie.id } })}
       />
     );
   }
@@ -177,7 +177,7 @@ function UmaSecao({ dossie, id }: { dossie: Dossie; id: string }) {
   const base = { titulo: secao.titulo, fase: secao.fase, icone: secao.icone, resumo: secao.resumo, ilustrativo: secao.ilustrativo };
   if (id === "linha_do_tempo") {
     return (
-      <SecaoLink {...base} onPress={() => router.push({ pathname: "/dossie/[id]/linha-do-tempo", params: { id: dossie.id } })} />
+      <SecaoLink {...base} onPress={() => router.push({ pathname: "/exemplos/[id]/linha-do-tempo", params: { id: dossie.id } })} />
     );
   }
   if (id === "defesa_civil") {
@@ -198,7 +198,7 @@ function UmaSecao({ dossie, id }: { dossie: Dossie; id: string }) {
         <LinkDeLinha
           rotulo="Não é este prédio"
           tipo="apoio"
-          onPress={() => router.push({ pathname: "/dossie/[id]/confirmar-lote", params: { id: dossie.id } })}
+          onPress={() => router.push({ pathname: "/exemplos/[id]/confirmar-lote", params: { id: dossie.id } })}
         />
       ) : null}
       {id === "sol" ? <Botao rotulo="Ver em 3D" icone="map" onPress={() => irParaCamada(dossie, "3d")} /> : null}

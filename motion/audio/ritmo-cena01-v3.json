@@ -1,0 +1,133 @@
+{
+  "poc": "CENA-01",
+  "duracao": 18,
+  "geradoEm": "2026-10-18",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 94,
+    "fase": 0.15,
+    "erroMedio": 0.041,
+    "batidas": [
+      0.15,
+      0.788,
+      1.427,
+      2.065,
+      2.703,
+      3.341,
+      3.98,
+      4.618,
+      5.256,
+      5.895,
+      6.533,
+      7.171,
+      7.81,
+      8.448,
+      9.086,
+      9.724,
+      10.363,
+      11.001,
+      11.639,
+      12.278,
+      12.916,
+      13.554,
+      14.193,
+      14.831,
+      15.469,
+      16.107,
+      16.746,
+      17.384
+    ]
+  },
+  "holds": [
+    3.4,
+    10.6,
+    18
+  ],
+  "sons": [
+    {
+      "t": 0.15,
+      "tipo": "whoosh",
+      "dur": 1.8,
+      "ganho": 0.35,
+      "evento": "a luz entra",
+      "batidaMaisProxima": 0.15,
+      "desvio": 0
+    },
+    {
+      "t": 4.4,
+      "tipo": "pop",
+      "evento": "75 metros quadrados",
+      "batidaMaisProxima": 4.618,
+      "desvio": -0.218
+    },
+    {
+      "t": 5.9,
+      "tipo": "pop",
+      "evento": "super ventilado",
+      "batidaMaisProxima": 5.895,
+      "desvio": 0.005
+    },
+    {
+      "t": 5.98,
+      "tipo": "whoosh",
+      "dur": 1.4,
+      "ganho": 0.3,
+      "evento": "vento",
+      "batidaMaisProxima": 5.895,
+      "desvio": 0.085
+    },
+    {
+      "t": 7.3,
+      "tipo": "pop",
+      "evento": "100% nascente",
+      "batidaMaisProxima": 7.171,
+      "desvio": 0.129
+    },
+    {
+      "t": 7.35,
+      "tipo": "sweep",
+      "dur": 1.1,
+      "ganho": 0.8,
+      "evento": "o sol sobe",
+      "batidaMaisProxima": 7.171,
+      "desvio": 0.179
+    },
+    {
+      "t": 8.6,
+      "tipo": "tick",
+      "evento": "condomínio baratinho",
+      "batidaMaisProxima": 8.448,
+      "desvio": 0.152
+    },
+    {
+      "t": 11,
+      "tipo": "click",
+      "evento": "Mas: o vento para",
+      "batidaMaisProxima": 11.001,
+      "desvio": -0.001
+    },
+    {
+      "t": 12.2,
+      "tipo": "whoosh",
+      "dur": 1,
+      "evento": "colapso",
+      "batidaMaisProxima": 12.278,
+      "desvio": -0.078
+    },
+    {
+      "t": 14.6,
+      "tipo": "thump",
+      "evento": "R$ 125 MIL",
+      "batidaMaisProxima": 14.831,
+      "desvio": -0.231
+    },
+    {
+      "t": 15.6,
+      "tipo": "tick",
+      "evento": "em cinco anos",
+      "batidaMaisProxima": 15.469,
+      "desvio": 0.131
+    }
+  ]
+}

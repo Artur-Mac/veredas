@@ -2719,17 +2719,26 @@
     .ds-back { left: 12px; } .ds-save { right: 12px; }
     .ds-save svg { width: 19px; height: 19px; }
     #view-dossier .dossier-map-link { display: inline-flex; align-items: center; gap: 6px; border-radius: 24px; }
-    .ds-property-info { padding: 17px 18px 0; }
+    .ds-property-info { padding: 14px 18px 0; }
     .ds-location { color: var(--ds-muted); font-size: 11px; margin-bottom: 5px; }
     .ds-property-info h1 { font: 500 25px/1.17 var(--font-display); letter-spacing: -.035em; text-wrap: balance; }
     .ds-address { font-size: 11px; line-height: 1.6; color: var(--ds-muted); margin-top: 7px; }
-    .ds-property-info .vereda-specs-strip { flex-wrap: wrap; gap: 7px; margin: 13px 0 16px; }
+    .ds-property-info .vereda-specs-strip { flex-wrap: wrap; gap: 7px; margin: 10px 0 12px; }
     .ds-property-info .spec-item { font-size: 11px; }
+    .ds-overview-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 0 10px; }
+    .ds-overview-facts strong { display: block; font-size: 12px; line-height: 1.5; font-weight: 600; }
+    .ds-overview-facts small { display: block; color: var(--ds-muted); font-size: 10px; line-height: 1.5; margin-top: 1px; }
     .ds-property-links { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid var(--ds-line); }
     .ds-link { padding: 10px 0; min-height: 44px; border: 0; background: none; color: var(--brand-rust); font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; text-align: left; text-decoration: none; }
     .ds-link:hover { text-decoration: underline; text-underline-offset: 3px; }
     .ds-link-muted { color: var(--ds-muted); }
-    .ds-finance { padding: 16px 18px 18px; background: linear-gradient(150deg, #FFFCF7, #F8F2E9); border-top: 1px solid var(--ds-line); }
+    .ds-finance { padding: 14px 18px; background: linear-gradient(150deg, #FFFCF7, #F8F2E9); border-top: 1px solid var(--ds-line); }
+    .ds-finance-head { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .ds-finance-head > div { min-width: 0; }
+    .ds-finance-head :is(.ds-price,.ds-total) { font-size: 27px; margin-top: 5px; white-space: nowrap; }
+    .ds-finance-head.is-purchase .ds-price { font-size: 25px; }
+    .ds-finance-head .ds-unit { margin-top: 5px; font-size: 11px; }
+    .ds-finance-extra { font-size: 10px; line-height: 1.5; color: var(--brand-rust); margin-top: 5px; }
     .ds-money-line { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
     .ds-label { display: block; color: var(--ds-muted); font-size: 11px; line-height: 1.45; }
     .ds-price { font: 600 30px/1.2 var(--font-sans); letter-spacing: -.055em; font-variant-numeric: tabular-nums; margin-top: 5px; }
@@ -2737,11 +2746,11 @@
     .ds-unit small { font-size: 10px; font-weight: 400; color: var(--ds-muted); }
     .ds-price small, .ds-total small { font: 400 11px var(--font-sans); letter-spacing: 0; color: var(--ds-muted); }
     .ds-market-link { margin: 7px 0 0; font-size: 11px; color: var(--brand-rust); font-weight: 600; background: none; border: 0; display: flex; align-items: center; gap: 7px; min-height: 36px; text-align: left; }
-    .ds-total-block { border-top: 1px solid #DDD3C3; padding-top: 15px; margin-top: 10px; }
+    .ds-total-block { margin-top: 5px; }
     .ds-total { font: 600 31px/1.2 var(--font-sans); letter-spacing: -.05em; margin-top: 4px; font-variant-numeric: tabular-nums; }
-    .ds-expense-bar { display: flex; gap: 3px; height: 9px; border-radius: 5px; overflow: hidden; margin: 16px 0 12px; }
+    .ds-expense-bar { display: flex; gap: 3px; height: 8px; border-radius: 5px; overflow: hidden; margin: 10px 0; }
     .ds-expense-bar > span { min-width: 0; }
-    .ds-expense-legend { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 11px 14px; }
+    .ds-expense-legend { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px 14px; }
     .ds-expense-legend > div { min-width: 0; }
     .ds-expense-legend dt { font-size: 10px; color: var(--ds-muted); display: flex; gap: 6px; align-items: center; }
     .ds-expense-legend dd { font-size: 12px; font-weight: 600; padding-left: 12px; margin-top: 2px; }
@@ -3026,6 +3035,7 @@
     .ds-map-credit { min-height: 22px; display: flex; align-items: center; justify-content: flex-end; gap: 3px; background: #FFFFFFF5; }
     .ds-map-caption { bottom: 31px; }
     @media (max-width: 380px) { #view-dossier .ds-property-info, #view-dossier .ds-finance, #view-dossier .ds-panel { padding-inline: 14px; } .ds-property-info h1 { font-size: 23px; } .ds-expense-legend { gap: 10px; } }
+    @media (max-width: 350px) { .ds-finance-head :is(.ds-price,.ds-total) { font-size: 23px; } .ds-finance-head.is-purchase .ds-price { font-size: 22px; } }
     @media (max-width: 600px) {
       .viewport-wrapper.is-mobile-frame:has(#view-dossier.active) { padding: 0; background: var(--bg-paper); }
       .viewport-wrapper.is-mobile-frame .app-frame:has(#view-dossier.active) { height: 100dvh; max-width: none; border: 0; border-radius: 0; box-shadow: none; }
@@ -5100,15 +5110,22 @@
       const tax = finance.entries.find(item => item.key === 'iptu');
       const pendingText = finance.pending.map(item => item.label).join(' e ');
       const positive = finance.known.filter(item => item.monthly > 0);
+      const extra = finance.isRent && Number.isFinite(p.announcedValue) ? finance.total - p.announcedValue : 0;
       return `
-        <div class="ds-money-line">
-          <div><span class="ds-label">${finance.isRent ? 'Aluguel anunciado' : 'Preço de compra anunciado'}</span><p class="ds-price">${Number.isFinite(p.announcedValue) ? formatBRL(p.announcedValue) : 'Não informado'}${finance.isRent ? '<small> /mês</small>' : ''}</p></div>
-          <div class="ds-unit">${market.unit === null ? 'Área a confirmar' : `${formatBRL(market.unit)}<small>/m²</small>`}</div>
+        <div class="ds-finance-head ${finance.isRent ? '' : 'is-purchase'}">
+          <div>
+            <span class="ds-label">${finance.isRent ? 'Aluguel anunciado' : 'Compra anunciada'}</span>
+            <p class="ds-price">${Number.isFinite(p.announcedValue) ? formatBRL(p.announcedValue) : 'Não informado'}${finance.isRent ? '<small> /mês</small>' : ''}</p>
+            <p class="ds-unit">${market.unit === null ? 'Área a confirmar' : `${formatBRL(market.unit)}<small>/m²</small>`}</p>
+          </div>
+          <div>
+            <span class="ds-label">${finance.complete ? (finance.estimated ? 'Total mensal estimado' : 'Total mensal') : (finance.isRent ? 'Total mensal conhecido' : 'Manutenção conhecida')}</span>
+            <p class="ds-total">${finance.known.length ? formatBRL(finance.total) : 'A confirmar'}${finance.known.length ? '<small> /mês</small>' : ''}</p>
+            ${extra > 0 ? `<p class="ds-finance-extra">+${formatBRL(extra)} além do aluguel</p>` : ''}
+          </div>
         </div>
         <button class="ds-market-link" onclick="openDossierBenchmark()">${dossierIcon('trend', 15)}<span>${dossierMarketSentence(market)}</span>${dossierIcon('arrow', 13)}</button>
         <div class="ds-total-block">
-          <span class="ds-label">${finance.complete ? (finance.estimated ? 'Custo mensal estimado' : 'Custo mensal') : (finance.isRent ? 'Custo mensal conhecido' : 'Manutenção mensal conhecida')}</span>
-          <p class="ds-total">${finance.known.length ? formatBRL(finance.total) : 'A confirmar'}${finance.known.length ? '<small> /mês</small>' : ''}</p>
           ${positive.length ? `<div class="ds-expense-bar" role="img" aria-label="Composição dos ${formatBRL(finance.total)} mensais conhecidos: ${positive.map(item => item.label + ' ' + formatBRL(item.monthly)).join(', ')}">${positive.map(item => `<span title="${item.label}: ${formatBRL(item.monthly)}/mês" style="width:${item.monthly / finance.total * 100}%;background:${DOSSIER_COLORS[item.key]}"></span>`).join('')}</div>` : ''}
           <dl class="ds-expense-legend">${finance.entries.map(item => `<div><dt><i class="ds-dot" style="background:${item.monthly === null ? '#C9BEA8' : DOSSIER_COLORS[item.key]}"></i>${item.label}${item.estimated ? ' estimado' : ''}</dt><dd>${item.monthly === null ? 'A confirmar' : formatBRL(item.monthly)}</dd></div>`).join('')}</dl>
           ${finance.pending.length ? `<p class="ds-pending">${pendingText} fora da soma.${tax?.monthly === null && tax?.amount !== null ? ` O anúncio informa ${formatBRL(tax.amount)}, sem periodicidade.` : ''}</p>` : ''}
@@ -5135,6 +5152,9 @@
       }
       const meta = HOME_CARD_META[p.id] || { cleanName: p.title.split('·')[0].trim(), bathrooms: p.bathrooms };
       const isSaved = STATE.savedIds.includes(p.id);
+      const climate = getDossierClimate(p);
+      const built = p.lotConfirmed ? p.buildingSection?.items?.find(item => /ano de construção/i.test(item.label))?.value : null;
+      const floors = p.lotConfirmed ? p.buildingSection?.items?.find(item => /^pavimentos$/i.test(item.label))?.value : null;
       container.innerHTML = `
         <article class="ds-overview" aria-label="Resumo do imóvel">
           <div class="ds-photo">
@@ -5153,7 +5173,8 @@
             <h1>${dossierText(meta.cleanName)}</h1>
             <p class="ds-address">${dossierText(p.address.split('·')[0].trim())} · ${dossierText(p.floor)}</p>
             ${renderSpecsStripHtml(p, meta)}
-            <div class="ds-property-links"><button class="ds-link ds-link-muted" onclick="openListingFacts('${p.id}')">Dados do anúncio ${dossierIcon('arrow', 12)}</button>${!p.lotConfirmed ? `<button class="ds-link" onclick="triggerUrlDecode('${p.id}')">Confirmar prédio</button>` : `<button class="ds-link ds-link-muted" onclick="openDossierEvidence('cadastro')">Cadastro oficial (DSQFL)</button>`}</div>
+            <div class="ds-overview-facts"><div><strong>${dossierText(climate.sun)}</strong><small>${dossierText(climate.face)} · anúncio</small></div>${built ? `<div><strong>Construído em ${dossierText(built)}</strong><small>${dossierText(floors || 'Cadastro do edifício')} · IPTU</small></div>` : ''}</div>
+            <div class="ds-property-links"><button class="ds-link ds-link-muted" onclick="openListingFacts('${p.id}')">Dados do anúncio ${dossierIcon('arrow', 12)}</button>${!p.lotConfirmed ? `<button class="ds-link" onclick="triggerUrlDecode('${p.id}')">Confirmar prédio</button>` : `<button class="ds-link ds-link-muted" onclick="openDossierEvidence('cadastro')">Cadastro oficial ${dossierIcon('arrow', 12)}</button>`}</div>
           </div>
           <div class="ds-finance" id="dossier-financial">${renderDossierFinance(p)}</div>
         </article>

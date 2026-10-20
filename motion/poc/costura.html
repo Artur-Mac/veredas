@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · quadro de emenda</title>
+<link rel="stylesheet" href="../lib/marca.css">
+<style>
+  /* quadro de referência das costuras (motion/lib/costuras.js): ?id=C02-03, C03-04, C09-10, C10-11, C11-12 */
+  html, body { margin: 0; background: var(--bg-obsidian); }
+  #c { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--bg-paper); }
+  .grade {
+    position: absolute; inset: 0; background-size: 48px 48px;
+    background-image:
+      linear-gradient(to right, rgba(127, 136, 112, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(127, 136, 112, 0.09) 1px, transparent 1px);
+  }
+  svg.camada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+</style>
+</head>
+<body>
+<div id="c">
+  <div class="grade"></div>
+  <svg class="camada" id="costura" viewBox="0 0 1920 1080"></svg>
+</div>
+<script type="module">
+import { desenharCostura } from '../lib/costuras.js';
+const id = new URLSearchParams(location.search).get('id') || 'C02-03';
+desenharCostura(id, document.getElementById('costura'));
+window.seek = () => {};
+window.POC = { id: 'COSTURA-' + id, duracao: 1 / 30, fps: 30, estados: [{ id: id, nome: 'quadro de emenda', t: 0 }], holds: [0] };
+window.__pronto = Promise.resolve();
+</script>
+</body>
+</html>

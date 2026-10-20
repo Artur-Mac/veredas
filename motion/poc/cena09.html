@@ -1,0 +1,1134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · Cena 09 · o celular vira ferramenta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@400..800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lib/marca.css">
+<style>
+  /* base e celular: as mesmas regras da cena 08 (o primeiro quadro é o último dela, pixel a pixel) */
+  html, body { margin: 0; background: var(--bg-obsidian); }
+  body.tela { min-height: 100vh; overflow: hidden; }
+  #c {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden; flex: none;
+    background: var(--bg-paper); color: var(--ink-primary);
+    font-family: var(--font-sans); font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  .grade {
+    position: absolute; inset: 0; background-size: 48px 48px;
+    background-image:
+      linear-gradient(to right, rgba(127, 136, 112, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(127, 136, 112, 0.09) 1px, transparent 1px);
+  }
+  svg.camada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+  .camada-div { position: absolute; inset: 0; }
+  .t { position: absolute; white-space: nowrap; line-height: 1.15; }
+
+  #tela { position: absolute; overflow: hidden; }
+  #moldura { position: absolute; box-sizing: border-box; border-style: solid; border-color: #222426; }
+  #pagina { position: absolute; left: 0; top: 0; background: var(--bg-paper); font-family: var(--font-sans); font-variant-numeric: tabular-nums; overflow: hidden; }
+  .pg { position: absolute; white-space: nowrap; line-height: 1.2; }
+  .pg-head { position: absolute; left: 0; right: 0; top: 0; height: 58px; background: rgba(242, 235, 221, 0.95); border-bottom: 1px solid var(--border-hairline); }
+  .pg-marca { font: 500 18px/1 var(--font-display); letter-spacing: 0.14em; font-variation-settings: 'opsz' 19; }  /* --wordmark-weight 500 e --wordmark-tracking 0.14em do :root do index.html */
+  .pg-kicker { font: 700 10.5px/1 var(--font-sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--brand-rust); }
+  .pg-link { font: 600 11.5px/1 var(--font-sans); color: var(--brand-rust); display: inline-flex; align-items: center; gap: 5px; }
+  .pg-tit { font: 500 30px/1.1 var(--font-display); letter-spacing: -0.035em; }
+  .pg-sub { font: 400 12.5px/1.3 var(--font-sans); color: var(--ds-muted); }
+  .pg-card { position: absolute; left: 12px; right: 12px; background: #FFFFFF; border: 1px solid rgba(23, 23, 23, 0.09); border-radius: 14px; box-sizing: border-box; }
+  .pg-abas { position: absolute; left: 12px; right: 12px; height: 46px; border-radius: 12px; background: #EAE2D3; border: 1px solid rgba(23, 23, 23, 0.06); box-sizing: border-box; }
+  .pg-aba { position: absolute; top: 4px; bottom: 4px; display: flex; align-items: center; justify-content: center; font: 500 12px/1 var(--font-sans); color: var(--ds-muted); border-radius: 9px; }
+  .pg-aba.on { background: #FFFFFF; color: var(--ink-primary); font-weight: 600; }
+  .pg-q-n { font: 500 11px/1 var(--font-sans); color: var(--brand-rust); }
+  .pg-q-t { font: 600 15.5px/1.2 var(--font-sans); letter-spacing: -0.025em; }
+  .pg-q-d { font: 400 10.5px/1.2 var(--font-sans); color: var(--ds-muted); }
+  .pg-dock { position: absolute; left: 0; right: 0; bottom: 0; height: 66px; background: rgba(250, 246, 238, 0.9); border-top: 1px solid rgba(23, 23, 23, 0.08); box-sizing: border-box; padding: 8px 12px 10px; display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; }
+  .pg-dock span { display: flex; flex-direction: column; align-items: center; gap: 4px; font: 500 11px/1 var(--font-sans); letter-spacing: 0.01em; color: var(--ink-muted); }
+  .pg-dock span.on { color: var(--ink-primary); font-weight: 600; }
+  .pg-dock span.on svg { color: var(--brand-orange); }
+  #debug { position: absolute; right: 16px; top: 12px; font: 500 16px/1 var(--font-mono); color: var(--ink-muted); }
+  #c .t, #c .pg { font-variant-numeric: tabular-nums; }
+
+  /* ícones como máscara CSS: dentro de zoom de layout que muda, SVG inline perde o determinismo
+     (achado da cena 05). Antes de o zoom do celular mudar, os ícones da cena 08 ficam como SVG inline */
+  .ic { display: block; flex: none; background: currentColor; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+  .pg-dock span.on .ic { color: var(--brand-orange); }
+
+  /* modo no imóvel (renderLiveVisit, field): .vv-session, .vv-clock, .vv-progress, .vv-question */
+  .vv-sessao { position: absolute; background: #F7F2E8; border-radius: 12px; }
+  .vv-relogio { font: 500 31px/1.2 var(--font-sans); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+  .vv-pequeno { font: 400 11px/1.2 var(--font-sans); color: #625C51; }
+  .vx-sec { position: absolute; display: flex; align-items: center; justify-content: center; box-sizing: border-box; background: #FFFCF7; border: 1px solid #DCD3C3; border-radius: 10px; font: 600 13px/1 var(--font-sans); color: var(--ink-primary); }
+  .vv-h2 { font: 500 23px/1.2 var(--font-display); }
+  .vv-prog { position: absolute; height: 5px; background: #EAE6DA; border-radius: 4px; }
+  .vv-check { position: absolute; width: 25px; height: 25px; box-sizing: border-box; border: 1px solid #B8AD99; border-radius: 50%; }
+  .vv-qt { font: 600 16px/1.45 var(--font-sans); letter-spacing: -0.025em; }
+  .vv-qd { font: 400 11px/1.55 var(--font-sans); color: #625C51; }
+  .vv-seta { position: absolute; color: var(--brand-rust); }
+
+  /* folha de baixo (showDossierSheet + .drawer-panel), dentro da tela do celular */
+  /* véu do .drawer-backdrop do protótipo (0,65), sem o desfoque */
+  #veu { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(13, 14, 15, 0.65); }
+  #folha { position: absolute; left: 0; background: #FFFFFF; box-sizing: border-box; border-top-style: solid; border-top-color: rgba(23, 23, 23, 0.12); overflow: hidden; }
+  #folhaZ { position: absolute; left: 0; top: 0; width: 414px; height: 520px; }
+  .sh-alca { position: absolute; width: 38px; height: 4px; border-radius: 999px; background: #DCD3C3; }
+  .sh-x { position: absolute; width: 44px; height: 44px; border-radius: 50%; background: #F5F0E8; display: flex; align-items: center; justify-content: center; color: var(--ink-primary); }
+  .sh-h { font: 500 22px/1.2 var(--font-display); letter-spacing: -0.025em; }
+  .sh-copy { font: 400 13px/1.6 var(--font-sans); color: #625C51; }
+  .sh-face { font: 500 27px/1.26 var(--font-sans); letter-spacing: -0.04em; }
+  .sh-hint { font: 400 12px/1.5 var(--font-sans); color: #625C51; }
+  .sh-rot { font: 400 11px/1.3 var(--font-sans); color: #625C51; }
+  .sh-trilho { position: absolute; height: 6px; border-radius: 3px; background: #EFE9DC; box-sizing: border-box; border: 1px solid #C9BEA8; overflow: hidden; }
+  .sh-trilho i { position: absolute; left: 0; top: 0; bottom: 0; background: #B94E36; }
+  .sh-polegar { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #B94E36; box-sizing: border-box; border: 2px solid #FFFFFF; box-shadow: 0 0 0 1px #B94E36; }
+  .sh-btn { position: absolute; display: flex; align-items: center; justify-content: center; gap: 9px; box-sizing: border-box; border-radius: 10px; background: var(--brand-orange); font: 600 13px/1 var(--font-sans); color: var(--ink-primary); }
+  .sh-num { font: 500 32px/1.26 var(--font-sans); letter-spacing: -0.04em; }
+  .sh-num small { font-size: 13px; letter-spacing: 0; }
+  .sh-seg { position: absolute; box-sizing: border-box; background: #EAE3D5; border: 1px solid #DCD3C3; border-radius: 11px; }
+  .sh-segp { position: absolute; background: #FFFFFF; border-radius: 7px; }
+  .sh-segb { position: absolute; display: flex; align-items: center; justify-content: center; font: 500 12px/1 var(--font-sans); color: #625C51; }
+  .sh-lab { font: 600 12px/1.25 var(--font-sans); }
+  .sh-sel { position: absolute; box-sizing: border-box; background: #FFFCF7; border: 1px solid #D7CDBB; border-radius: 8px; }
+
+  /* rótulos do filme */
+  .rot-janela { font: 600 26px/1 var(--font-sans); color: #4A4740; }
+  .etiqueta { font: 600 19px/1 var(--font-sans); color: var(--ink-secondary); padding: 10px 16px; border-radius: 999px; border: 1.5px dashed var(--border-strong); background: #FFFFFF; }
+  .etiqueta.grande { font-size: 40px; padding: 17px 28px; border-width: 2px; }
+  .nota { font: 400 25px/1.3 var(--font-sans); color: var(--ds-muted); }
+  .nota b { font-weight: 600; color: var(--ink-primary); }
+  .etiqueta.duas { line-height: 1.15; white-space: pre; text-align: left; }
+  .rot-mapa { font: 600 28px/1 var(--font-sans); color: #4A4740; }
+  .rot-predio { font: 600 40px/1 var(--font-sans); color: var(--ink-primary); letter-spacing: -0.01em; }
+  /* toast do protótipo (.vereda-toast), dentro da tela do app, no zoom dela */
+  #avisoZ { position: absolute; left: 0; top: 0; width: 414px; }
+  .toast-app { position: absolute; right: 24px; bottom: 24px; display: inline-flex; align-items: center; gap: 10px; background: var(--ink-primary); color: var(--bg-paper-light); border: 1px solid var(--brand-orange); padding: 12px 18px; border-radius: 10px; font: 400 12px/1.2 var(--font-mono); white-space: nowrap; }
+  .toast-app b { width: 8px; height: 8px; border-radius: 50%; background: var(--brand-orange); display: inline-block; }
+  /* as promessas do anúncio fictício da cena 01 (cena01.html, .chip), em traço tracejado de declarado */
+  #promessas { position: absolute; inset: 0; }
+  .chip { position: absolute; display: inline-flex; align-items: center; gap: 14px; padding: 15px 26px 15px 20px; border-radius: 999px; background: rgba(255, 251, 243, 0.94); border: 2px dashed #78716C; font: 600 30px/1 var(--font-sans); color: var(--ink-primary); white-space: nowrap; }
+  .chip svg { width: 30px; height: 30px; color: var(--brand-rust); flex: none; }
+  .chip .aspas { color: var(--brand-rust); font-family: var(--font-display); font-weight: 500; }
+  .chip.pequeno { font-size: 21px; padding: 10px 17px 10px 13px; gap: 9px; }
+  .chip.pequeno svg { width: 20px; height: 20px; }
+  .rodape-ficcao { font: 500 20px/1 var(--font-sans); color: #A39C8E; letter-spacing: 0.01em; }
+  .trecho { font: 500 20px/1 var(--font-sans); color: #8A8172; }
+
+  /* a sala da cena 01 (quadro final da variante 1) e o papel que a limpa */
+  #sala { position: absolute; inset: 0; overflow: hidden; }
+  #papel { position: absolute; inset: 0; background-color: var(--bg-paper); background-size: 48px 48px;
+    background-image:
+      linear-gradient(to right, rgba(127, 136, 112, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(127, 136, 112, 0.09) 1px, transparent 1px); }
+  .recorte { position: absolute; overflow: hidden; }
+  .numero-v1 { font-family: var(--font-display); font-weight: 600; font-variation-settings: 'opsz' 144; letter-spacing: -0.035em; line-height: 0.86; color: var(--brand-orange); text-align: center; white-space: nowrap; }
+  .apoio-v1 { font: 500 46px/1 var(--font-sans); letter-spacing: 0.01em; color: #F2EBDD; }
+
+  /* resumo "Sua visita, registrada." (renderLiveVisit, summary) em escala de filme, 2,4x */
+  #resumo { position: absolute; width: 900px; }
+  .rs-kicker { font: 600 24px/1 var(--font-sans); color: var(--brand-rust); text-transform: uppercase; letter-spacing: 0.07em; }
+  .rs-h1 { font: 500 82px/1.1 var(--font-display); font-variation-settings: 'opsz' 34; letter-spacing: -0.045em; margin-top: 22px; }
+  .rs-p { font: 400 31px/1.6 var(--font-sans); color: #625C51; margin-top: 18px; }
+  .rs-card { margin-top: 40px; background: #FFFFFF; border: 2px solid rgba(23, 23, 23, 0.07); border-radius: 38px; padding: 46px 43px 44px; }
+  .rs-forte { font: 600 34px/1.5 var(--font-sans); margin-top: 34px; }
+  .rs-nota { font: 400 31px/1.45 var(--font-sans); color: #625C51; margin-top: 12px; }
+</style>
+</head>
+<body>
+<div id="c">
+  <div class="grade"></div>
+  <div id="mundoW" style="position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden"><svg class="camada" id="mundo" viewBox="0 0 1920 1080"></svg></div>
+  <div class="camada-div" id="rotMundo"></div>
+  <div id="tela"><div id="pagina"></div><div id="veu"></div><div id="folha"><div id="folhaZ"></div></div><div id="avisoZ"><div class="toast-app" id="toast"><b></b><span>Orientação registrada</span></div></div></div>
+  <div id="moldura"></div>
+  <div id="sala"></div>
+  <div id="promessas"></div>
+  <div id="papel"></div>
+  <div id="resumo"></div>
+  <svg class="camada" id="sobre" viewBox="0 0 1920 1080">
+    <path id="linha" fill="none" stroke="#F47745" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+  <div class="camada-div" id="rotulos"></div>
+  <svg class="camada" id="cursor-camada" viewBox="0 0 1920 1080">
+    <circle id="onda" r="0" fill="none" stroke="#F47745" stroke-width="3" opacity="0" />
+    <path id="cursor" fill="#171717" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round" opacity="0" />
+  </svg>
+</div>
+
+<script type="module">
+import { clamp, lerp, sp, spring, track, swap, pending, press, mixColor, rgba, roundedQuad, PRESETS as P } from '../lib/motion.js';
+import { IMOVEL, ANUNCIO, LOTE } from './dados.js';
+import { salaV1 } from '../lib/sala01.js';
+
+// ---------------------------------------------------------------------------
+// Variante. Padrão: a janela da cena 01 volta SEM o número (decisão pendente do usuário), com as
+// quatro promessas do anúncio fictício da cena 1 sobre o vidro. ?eco=1 (ou ?v=eco, para o
+// render.mjs) traz "R$ 125 MIL" e "em cinco anos" como na cena 01, no lugar das promessas.
+// ---------------------------------------------------------------------------
+const Q = new URLSearchParams(location.search);
+const ECO = Q.get('eco') === '1' || Q.get('v') === 'eco';
+
+// ---------------------------------------------------------------------------
+// Linha do tempo. A fala manda (cerca de 2,5 palavras/s) e cada evento cai na palavra de sentido:
+// B1 "celular", "ferramenta", "investigação"; B2 "GPS", "confirmar", "prédio"; B3 "bússola",
+// "testar", "sol", "janela"; B4 "microfone", "medir", "barulho", "rua"; B5 "prejuízo", "começo";
+// B6 "desmascara". O B1 termina em dois-pontos e emenda no GPS: o primeiro HOLD é o do B2.
+// Nenhum movimento passa de cerca de 40 px por quadro a 30 fps.
+// ---------------------------------------------------------------------------
+const T = {
+  // B1 · toque em Começar visita; a tela vira o modo no imóvel; a planta nasce do aparelho
+  comecar: 0.85, troca: 1.08, celular: 2.15, planta: 2.5, janela: 3.9, rotJanela: 4.12, rotPlanta: 4.2,
+  // B2 · zoom de layout para fora: planta → prédio → lote. O celular fica parado (só a página rola);
+  // o anel de precisão sai da borda do celular e encolhe até o pino; o contorno do prédio fica contínuo
+  zoomOut: 4.95, rolagem: 5.1, gps: 5.3, predio: 5.55, lote: 5.75, pino: 5.75, anel: 5.72, rotLote: 6.5, encolhe: 6.3, confirma: 6.85, nota: 6.85, rotPredio: 6.9,
+  // B3 · o anel vira o aro da bússola; o cursor arrasta o polegar de "Orientação manual" até 98°
+  zoomIn: 7.76, aro: 7.78, folha: 7.8, pega: 9.0, rotManual: 9.05, solta: 9.6, extensao: 9.6, arco: 9.85, rotJanela3: 9.9, rotSol: 9.98,
+  // B4 · Guardar orientação → toast; a folha vira "Escute com a janela aberta"; a onda vem da rua; Aberta
+  guardar: 11.15, morph: 11.37, toast: 11.42, toastFim: 12.25, ruidoB: 12.32, rotDemo: 11.55, onda: 11.6, rotRuido: 11.75, aberta: 13.0, abre: 13.12,
+  // B5 · a onda vira o peitoril da janela que se abre; a câmera entra pela janela; a sala da cena 01
+  // volta; a linha sobe pela janela até o alto e as promessas do anúncio voltam ao vidro
+  aplaina: 14.05, saiCel: 14.1, portal: 14.15, peitoril: 14.15, some: 14.2, sala: 15.4, sobe: 15.4,
+  // B6 · a linha desce como um limpador; acima dela o vidro vira papel com o registro da visita
+  limpa: 17.3,
+  // saída · o resto sai; a linha fica no peitoril, que é a régua da cena 10
+  saida: 19.02,
+};
+T.arrasta = T.pega + 0.04;
+const DUR = 20.3;
+const HOLDS = [7.7, 10.8, 14.0, 17.0, 19.0, DUR];
+
+// molas (forma fechada, motion.js). w0 = raiz de k; zeta = d / (2 w0)
+const MOVE = { k: 12.25, d: 7 };     // zeta 1: o celular vai para a esquerda (B1)
+const MOVE3 = { k: 36, d: 12 };      // zeta 1: o celular desce para mostrar a folha (B3)
+const SAICEL = { k: 10.24, d: 6.4 }; // zeta 1: o celular sai pela esquerda
+const ROLA = { k: 25, d: 10 };       // zeta 1: a página rola (B2)
+const ZOUT = { k: 6.76, d: 5.2 };    // zeta 1: zoom para fora (a parede oeste entra a menos de 40 px/quadro)
+const ZIN = { k: 12.96, d: 7.2 };    // zeta 1: zoom de volta à sala (a parede oeste sai a menos de 40 px/quadro)
+const FOLHA = { k: 19.36, d: 8.8 };  // zeta 1: a folha sobe enquanto o celular desce (39 px/quadro)
+const MORPH = { k: 49, d: 14 };      // zeta 1: a folha da luz vira a do ruído
+const VOA = { k: 9, d: 6 };          // zeta 1: o anel sai do celular e vai ao pino (38 px/quadro)
+const ENC = { k: 25, d: 10 };        // zeta 1: o anel encolhe até o pino
+const ARO = { k: 49, d: 14 };        // zeta 1: o anel vai ao tamanho da bússola
+const ARR = { k: 42, d: 9.7 };       // zeta 0,75: a agulha vai a 98° e assenta (passa 2,8%)
+const EXT = { k: 49, d: 14 };        // zeta 1: a agulha se prolonga
+const ARCO = { k: 49, d: 14 };       // zeta 1: o arco da manhã se abre
+const ABRE = { k: 90, d: 15 };       // zeta 0,79: as folhas da janela abrem
+const FRENTE = { k: 7.02, d: 5.3 };  // zeta 1: a frente da onda corre da rua ao aparelho (39 px/quadro)
+const PLANO = { k: 49, d: 14 };      // zeta 1: a onda perde amplitude
+const PORTAL = { k: 6.76, d: 5.2 };  // zeta 1: o vão da janela vira o vidro da cena 01 (40 px/quadro)
+const SALA = { k: 25, d: 10 };       // zeta 1: a sala aparece em volta do vidro
+const PEIT = { k: 25, d: 10 };       // zeta 1: a onda vira o peitoril da janela que se abre
+const RODO = { k: 14.44, d: 7.6 };   // zeta 1: a linha sobe e desce pelo vidro (39 px/quadro no pico)
+const PAPEL = { k: 36, d: 12 };      // zeta 1: o papel toma o quadro
+const ESTICA = { k: 64, d: 16 };     // zeta 1: a linha se estica até a régua
+// mola normalizada: chega a 1 no fim (98%) e para, para o quadro do HOLD ficar exato
+const nsp = (t, p) => clamp(sp(t, p) / 0.98);
+
+// ---------------------------------------------------------------------------
+// Entrada: a moldura do celular no último quadro da cena 08 (cena08.html, folhaGeo), com as
+// mesmas contas, para o primeiro quadro sair idêntico.
+// ---------------------------------------------------------------------------
+const ZP = 1.046, BEZEL = 9.5, RF = [734, 78, 452, 924];
+const G08 = (() => {
+  const t = 21.9 - 1 / 30, Tz = 15.8, Tm = 18.9 + 0.75;
+  const FL = { x: 1120, y: 84, w: 736 }, ZF = 1.45, XF = (1920 - 736 * ZF) / 2, YF = 40;
+  const zz = (q) => ({ x: lerp(FL.x, XF, q), y: lerp(FL.y, YF, q), z: lerp(1, ZF, q) });
+  const g0 = zz(clamp(sp(Tm - Tz, { k: 9, d: 6 }), 0, 1));
+  const m = clamp(sp(t - Tm, { k: 36, d: 12 }), 0, 1);
+  const bz = BEZEL * clamp(sp(t - Tm, { k: 64, d: 16 }), 0, 1);
+  const R0 = [g0.x, g0.y, FL.w * g0.z, 1140 - g0.y];
+  const fora = R0.map((v, i) => lerp(v, RF[i], m));
+  return { fora, bz, raio: lerp(44, 30, m) };
+})();
+const TELA_W0 = G08.fora[2] - 2 * G08.bz;
+const PH1 = { x: 96, y: 56, z: 1.3 };                 // B1 e B2: o alto da tela à esquerda
+const PH3 = { x: 80, y: 1060 - 924 * 1.45, z: 1.45 }; // B3 e B4: a parte de baixo da tela (as folhas)
+const PH_KEYS = [[T.celular, PH1, MOVE], [T.folha, PH3, MOVE3], [T.saiCel, { ...PH3, x: -780 }, SAICEL]];
+function celular(t) {
+  const k = (f0, f) => track(t, [[0, f0], ...PH_KEYS.map(([tk, ph, p]) => [tk, f(ph), p])], P.card);
+  const fora = [k(G08.fora[0], (p) => p.x), k(G08.fora[1], (p) => p.y), k(G08.fora[2], (p) => 452 * p.z), k(G08.fora[3], (p) => 924 * p.z)];
+  const bz = k(G08.bz, (p) => BEZEL * p.z), raio = k(G08.raio, (p) => 30 * p.z);
+  const telaR = [fora[0] + bz, fora[1] + bz, fora[2] - 2 * bz, fora[3] - 2 * bz];
+  // zoom da tela do app: o da cena 08 (1,046) vezes a escala do celular
+  const zp = t <= T.celular ? ZP : ZP * (telaR[2] / TELA_W0);
+  return { fora, bz, raio, telaR, zp };
+}
+// rolagem da página do app no B2 (px do app). Com 124,8 px as bordas de cima das duas folhas caem
+// em vãos da página (entre a barra de progresso e a 1ª pergunta; entre a 1ª e a 2ª pergunta)
+const ROLAGEM = 124.8;
+const rolagem = (t) => ROLAGEM * nsp(t - T.rolagem, ROLA);
+
+// ---------------------------------------------------------------------------
+// Câmera do mundo (planta, prédio e lote, em metros: x para leste, y para o sul). O ponto de
+// referência é o centro da janela da sala, (14, −4): a câmera guarda onde ele fica na tela e a
+// escala em px/m (em log). O mundo é redesenhado em SVG a cada quadro: nada de transform.
+// No B5 a câmera acompanha o vão da janela: o centro e a altura do vão viram os do vidro da cena 01.
+// ---------------------------------------------------------------------------
+const JAN = { x: 14, y0: -5.85, y1: -2.15, yc: -4 };
+const LOGS = [[0, Math.log(90)], [T.zoomOut, Math.log(24), ZOUT], [T.zoomIn, Math.log(105), ZIN]];
+const JX = [[0, 1690], [T.zoomOut, 1626, ZOUT], [T.zoomIn, 1530, ZIN]];
+const JY = [[0, 720], [T.zoomOut, 464, ZOUT], [T.zoomIn, 540, ZIN]];
+// sala da cena 01 (variante 1) no HOLD final dela, t = 18 s; o vão da janela (o vidro) em px do quadro
+const SALA01 = salaV1(18);
+const VID = SALA01.vidro;
+const VIDQ = [VID.x0, VID.y0, VID.x1, VID.y1];
+const VC = [(VID.x0 + VID.x1) / 2, (VID.y0 + VID.y1) / 2];
+const S_VID = (VID.y1 - VID.y0) / (JAN.y1 - JAN.y0);      // px/m em que a janela da planta tem a altura do vidro
+function camMundo(t) {
+  let s = Math.exp(track(t, LOGS, P.camera)), X = track(t, JX, P.camera), Y = track(t, JY, P.camera);
+  if (t > T.portal) {
+    const p = nsp(t - T.portal, PORTAL);
+    s = lerp(s, S_VID, p); X = lerp(X, VC[0], p); Y = lerp(Y, VC[1], p);
+  }
+  return { s, X, Y };
+}
+const scr = (cam, x, y) => [cam.X + cam.s * (x - JAN.x), cam.Y + cam.s * (y - JAN.yc)];
+
+// planta ilustrativa (apartamento de 13 × 10 m no canto nordeste do prédio de 28 × 22 m da cena 7).
+// Paredes em traço simples, quebradas nos encontros para nenhuma ponta correr mais de 40 px/quadro.
+const EXT_P = [[[1, -11], [4, -11]], [[4, -11], [9, -11]], [[9, -11], [14, -11]], [[14, -11], [14, -7]], [[14, -7], [14, -5.85]], [[14, -2.15], [14, -1]],
+  [[14, -1], [10, -1]], [[10, -1], [6, -1]], [[6, -1], [3.1, -1]], [[2.1, -1], [1, -1]], [[1, -1], [1, -5]], [[1, -5], [1, -8]], [[1, -8], [1, -11]]];
+const INT_P = [[[4, -7], [5, -7]], [[5.9, -7], [9, -7]], [[9, -7], [9.4, -7]], [[10.3, -7], [14, -7]], [[9, -11], [9, -7]], [[4, -11], [4, -8]], [[4, -8], [4, -7]],
+  [[1, -8], [2.3, -8]], [[3.1, -8], [4, -8]], [[6, -5], [6, -3.6]], [[6, -1.9], [6, -1]], [[1, -5], [3, -5]], [[3.9, -5], [6, -5]]];
+// portas: dobradiça, o outro lado do vão e a ponta da folha aberta
+const PORTAS = [[[5, -7], [5.9, -7], [5, -7.9]], [[10.3, -7], [9.4, -7], [10.3, -7.9]], [[2.3, -8], [3.1, -8], [2.3, -8.8]], [[3, -5], [3.9, -5], [3, -4.1]], [[2.1, -1], [3.1, -1], [2.1, -1.9]]];
+const ORIGEM = [2, -6];          // de onde a planta se desenha: o lado do aparelho
+const V_FRENTE = 10;             // m/s da frente que desenha a planta
+const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+const molaTraco = (Lpx) => { const w = Math.min(9, 1200 / (0.368 * Lpx)); return { k: w * w, d: 2 * w }; };
+const PECAS = [...EXT_P.map((s) => ({ s, ext: true })), ...INT_P.map((s) => ({ s, ext: false }))].map(({ s, ext }) => {
+  const [a, b] = dist(s[0], ORIGEM) <= dist(s[1], ORIGEM) ? s : [s[1], s[0]];
+  return { a, b, ext, t0: T.planta + dist(a, ORIGEM) / V_FRENTE, mola: molaTraco(dist(a, b) * 90) };
+});
+const PORTAS_T = PORTAS.map(([h, a, b]) => ({ h, a, b, t0: T.planta + dist(h, ORIGEM) / V_FRENTE + 0.28 }));
+// prédio e lote da cena 7 (LOTE: 40 × 32 m, ilustrativo; prédio 28 × 22 m)
+const LOTE_PTS = [[-LOTE.fundo / 2, -LOTE.frente / 2], [LOTE.fundo / 2, -LOTE.frente / 2], [LOTE.fundo / 2, LOTE.frente / 2], [-LOTE.fundo / 2, LOTE.frente / 2]];
+const PREDIO = [[-14, -11], [14, -11], [14, 11], [-14, 11]];
+const VIZINHOS = [[-20, -43, 20, -16], [-20, 16, 20, 43], [20, -43, 55, 0], [20, 0, 55, 43], [55, -43, 90, 0], [55, 0, 90, 43]];
+// o pino do GPS é você: no meio da sala (o anel encolhe até ele e depois vira o aro da bússola ali)
+const SALA_C = [10, -4];
+
+// bússola do protótipo (openVisitLight): viewBox 110, aro r 49, agulha com ponta a 26 do centro
+const AGULHA_N = [[0, -26], [-6, 6], [0, 2], [6, 6]];
+const AGULHA_S = [[0, 26], [-6, 6], [0, 2], [6, 6]];
+const LETRAS = [['N', 0, -35], ['L', 39, 4], ['S', 0, 43], ['O', -39, 4]];
+const R_BUSS = 150;              // raio do aro na tela, na câmera do B3
+const R_ARCO = 600;              // o arco da manhã, do lado leste, fora da janela
+const angulo = (t) => track(t, [[0, 0], [T.arrasta, 98, ARR]], ARR);
+const T45 = (() => { let t = T.arrasta; while (angulo(t) < 45 && t < T.arrasta + 2) t += 0.0005; return t; })();
+
+// a régua de saída (a cena 10 começa aqui): papel com a grade e a linha laranja horizontal
+const SAIDA = { x0: 240, x1: 1680, y: 900, largura: 4.2 };
+const PH3_DIR = PH3.x + 452 * PH3.z;   // borda direita do celular no B3 e B4
+// o vão da janela da planta na câmera do B4, centrado na linha da parede; o vidro; a sala inteira
+const VAO = (() => { const c = camMundo(T.portal); const [x, y0] = scr(c, JAN.x, JAN.y0), y1 = scr(c, JAN.x, JAN.y1)[1]; return [x - 0.15 * c.s, y0, x + 0.15 * c.s, y1]; })();
+const CHEIO = [-120, -120, 2040, 1200];
+const vidroAgora = (t) => { const p = nsp(t - T.portal, PORTAL); return [0, 1, 2, 3].map((i) => VAO[i] + (VIDQ[i] - VAO[i]) * p); };
+
+// ---------------------------------------------------------------------------
+// A linha laranja do B4 em diante, em px do quadro. A onda corre da rua (direita) até o aparelho;
+// achatada, vira o peitoril da janela que se abre (a base do vão, que cresce até o vidro da cena 01);
+// no fim do B5 sobe pela janela até o alto; no B6 desce como um limpador e para no peitoril, que é
+// a régua da cena 10. A ponta esquerda nunca passa por cima do celular.
+// ---------------------------------------------------------------------------
+function linhaGeo(t, telaFora) {
+  const pf = nsp(t - T.onda, FRENTE);
+  const xOnda = Math.max(telaFora + 12, lerp(1940, PH3_DIR + 12, pf));
+  const q = nsp(t - T.peitoril, PEIT);
+  const V = vidroAgora(t);
+  let xL = lerp(xOnda, V[0], q), xR = lerp(1940, V[2], q);
+  const c1 = nsp(t - T.sobe, RODO), c2 = nsp(t - T.limpa, RODO), est = nsp(t - (T.saida + 0.18), ESTICA);
+  xL = lerp(xL, SAIDA.x0, est); xR = lerp(xR, SAIDA.x1, est);
+  // altura sem a saída (o papel do B6 segue esta) e com ela
+  const ySem = lerp(540, V[3], q) + (VID.y0 - VID.y1) * c1 + (VID.y1 - VID.y0) * c2;
+  const y = ySem + (SAIDA.y - VID.y1) * est;
+  // inclinação leve enquanto sobe e desce: a ponta esquerda vai um pouco à frente; assentada, zero
+  const dv = (t0) => (sp(t - t0 + 0.02, RODO) - sp(t - t0 - 0.02, RODO)) / 0.04;
+  const anda = (c1 > 0 && c1 < 1) || (c2 > 0 && c2 < 1);
+  const incl = anda ? (9 * (dv(T.sobe) - dv(T.limpa))) / 1.4 : 0;
+  const xm = (xL + xR) / 2, meia = Math.max(1, (xR - xL) / 2);
+  const ofs = (x) => incl * ((xm - x) / meia);
+  return { xL, xR, y, ySem, incl, yEm: (x) => y - ofs(x), ySemEm: (x) => ySem - ofs(x) };
+}
+// primeiro instante em que a linha (sem a saída) satisfaz uma condição, a partir de t0
+const quando = (t0, cond) => { let t = t0; while (!cond(linhaGeo(t, PH3_DIR).ySem) && t < t0 + 4) t += 0.005; return t; };
+
+// ---------------------------------------------------------------------------
+// DOM e utilitários
+// ---------------------------------------------------------------------------
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+function el(cls, html, pai) { const e = document.createElement('div'); e.className = cls; e.innerHTML = html; pai.appendChild(e); return e; }
+function svgEl(tag, attrs, pai) { const e = document.createElementNS(NS, tag); for (const [a, v] of Object.entries(attrs)) e.setAttribute(a, v); pai.appendChild(e); return e; }
+const vis = (e, a) => { e.style.opacity = a.toFixed(3); e.style.visibility = a > 0.001 ? 'inherit' : 'hidden'; };
+const pos = (e, x, y) => { e.style.left = x.toFixed(2) + 'px'; e.style.top = y.toFixed(2) + 'px'; };
+const caixa = (e, x, y, w, h) => { e.style.left = x.toFixed(2) + 'px'; e.style.top = y.toFixed(2) + 'px'; e.style.width = w.toFixed(2) + 'px'; e.style.height = h.toFixed(2) + 'px'; };
+const f1 = (v) => v.toFixed(1);
+const pt = (p) => f1(p[0]) + ' ' + f1(p[1]);
+const hx = (h, a = 1) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16), a];
+const attr = (e, a, v) => { if (e.getAttribute(a) !== v) e.setAttribute(a, v); };
+
+const ICONE = {
+  seta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4 10-10"/></svg>',
+  fechar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M6 18 18 6"/></svg>',
+  chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
+};
+// ícones das promessas (cena01.html, ICONE)
+const ICONE01 = {
+  area: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>',
+  vento: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h8.5a2.5 2.5 0 1 0 -2.34 -3.24"/><path d="M3 12h15.5a2.5 2.5 0 1 1 -2.34 3.24"/><path d="M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24"/></svg>',
+  sol: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"/></svg>',
+  etiqueta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M3 6v5.172a2 2 0 0 0 .586 1.414l7.71 7.71a2.41 2.41 0 0 0 3.408 0l5.592 -5.592a2.41 2.41 0 0 0 0 -3.408l-7.71 -7.71a2 2 0 0 0 -1.414 -.586h-5.172a3 3 0 0 0 -3 3z"/></svg>',
+};
+const NINHO = '<svg width="26" height="26" viewBox="0 0 100 100"><path d="M 18,80 C 7,79 2,66 2,49 C 2,24 20,4 50,3 C 79,2 97,25 97,49 C 97,68 89,80 79,80 C 64,80 34,81 18,80 Z" fill="#F47745"/><path d="M 40,58 C 35,42 40,24 53,23 C 64,22 69,40 64,57 C 59,72 45,72 40,58 Z" fill="#F5F0E6"/></svg>';
+const DOCK = {
+  busca: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7.5"/><path d="m20 20-3.8-3.8"/></svg>',
+  dossie: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>',
+  comparar: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/></svg>',
+  visita: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5 15.5 8.5"/></svg>',
+};
+// máscara a partir do mesmo desenho (traço em preto opaco)
+const mascara = (svg) => { const s = svg.replace(/currentColor/g, '#000').replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" '); return `url("data:image/svg+xml,${encodeURIComponent(s)}")`; };
+const icM = (nome, w, extra = '') => `<i class="ic${extra}" data-m="${nome}" style="width:${w}px;height:${w}px"></i>`;
+const MASCARAS = {
+  seta: mascara(ICONE.seta), check: mascara(ICONE.check), fechar: mascara(ICONE.fechar), chevron: mascara(ICONE.chevron),
+  busca: mascara(DOCK.busca), dossie: mascara(DOCK.dossie), comparar: mascara(DOCK.comparar), visita: mascara(DOCK.visita),
+  ninhoF: mascara('<svg viewBox="0 0 100 100"><path d="M 18,80 C 7,79 2,66 2,49 C 2,24 20,4 50,3 C 79,2 97,25 97,49 C 97,68 89,80 79,80 C 64,80 34,81 18,80 Z" fill="#000"/></svg>'),
+  ninhoD: mascara('<svg viewBox="0 0 100 100"><path d="M 40,58 C 35,42 40,24 53,23 C 64,22 69,40 64,57 C 59,72 45,72 40,58 Z" fill="#000"/></svg>'),
+};
+
+const END = IMOVEL.endereco;
+const Q_IPTU = `${ANUNCIO.iptu} de IPTU por mês?`, Q_BAN = 'Quantos banheiros há?', D_IPTU = 'Anúncio sem periodicidade';
+
+// ---------------------------------------------------------------------------
+// A tela do app. Começa como a cena 08 termina (Visita · Preparar) e, depois do toque em
+// "Começar visita" (startPropertyVisit), vira o modo no imóvel (renderLiveVisit, field).
+// O HTML do estado inicial é o mesmo da cena 08; os acréscimos começam escondidos.
+// ---------------------------------------------------------------------------
+const tela = $('tela'), pagina = $('pagina'), moldura = $('moldura'), veu = $('veu'), folha = $('folha'), folhaZ = $('folhaZ'), avisoZ = $('avisoZ'), toast = $('toast');
+const seta13 = ICONE.seta.replace('<svg ', '<svg width="13" height="13" ');
+const dockIc = (k) => DOCK[k].replace('<svg ', '<svg class="ic-in" ') + icM(k, 19, ' ic-m');
+pagina.innerHTML = `
+  <div class="pg-head"><div class="pg" style="left:16px;top:16px">${NINHO}<div class="ic-m" style="display:none;position:relative;width:26px;height:26px"><i class="ic" data-m="ninhoF" style="position:absolute;left:0;top:0;width:26px;height:26px;color:#F47745"></i><i class="ic" data-m="ninhoD" style="position:absolute;left:0;top:0;width:26px;height:26px;color:#F5F0E6"></i></div></div><div class="pg pg-marca" style="left:50px;top:21px">VEREDA</div></div>
+  <div class="pg pg-kicker" id="k1" style="left:16px;top:86px">Sua próxima visita</div>
+  <div class="pg pg-link" style="right:16px;top:84px">Ver dossiê ${seta13.replace('<svg ', '<svg class="ic-in" ')}${icM('seta', 13, ' ic-m')}</div>
+  <div class="pg pg-tit" id="h1" style="left:16px;top:108px">Prepare sua visita.</div>
+  <div class="pg pg-sub" id="s1" style="left:16px;top:150px">As perguntas certas, antes de sair de casa.</div>
+  <div class="pg-card" style="top:184px;height:76px">
+    <div class="pg" style="left:16px;top:18px;font:600 13.5px/1.2 var(--font-sans)">${END}</div>
+    <div class="pg pg-q-d" style="left:16px;top:42px">Boa Viagem · ${ANUNCIO.area} · 4 quartos</div>
+    <div class="pg pg-link" style="right:16px;top:30px">Trocar</div>
+  </div>
+  <div class="pg-abas" style="top:274px"><div class="pg-aba" id="abaPill" style="left:4px;right:50%;background:#FFFFFF;visibility:hidden"></div><div class="pg-aba on" id="aba1" style="left:4px;right:50%">Preparar</div><div class="pg-aba" id="aba2" style="left:50%;right:4px">No imóvel</div></div>
+  <div class="pg-card" id="cartao" style="top:334px;height:262px;border-radius:16px">
+    <div id="prep">
+    <div class="pg pg-q-n" style="left:18px;top:24px">01</div>
+    <div class="pg pg-q-t" style="left:46px;top:19px">${Q_IPTU}</div>
+    <div class="pg pg-q-d" style="left:46px;top:44px">${D_IPTU}</div>
+    <div class="pg pg-q-n" style="left:18px;top:94px">02</div>
+    <div class="pg pg-q-t" style="left:46px;top:89px">${Q_BAN}</div>
+    <div class="pg pg-q-d" style="left:46px;top:114px">3 suítes · 1 banheiro</div>
+    <div style="position:absolute;left:18px;right:18px;top:150px;height:1px;background:var(--ds-line)"></div>
+    <div class="pg" style="left:18px;top:166px;font:500 19px/1.2 var(--font-display);letter-spacing:-0.03em">Antes de marcar</div>
+    <div class="pg pg-sub" style="left:18px;top:194px;font-size:11.5px">Peça as informações que faltam e combine a visita com o corretor.</div>
+    <div class="pg pg-link" style="left:18px;top:224px">Preparar mensagem ${seta13}</div>
+    </div>
+    <div id="campo" style="position:absolute;left:0;top:0;width:390px;height:680px;visibility:hidden"></div>
+  </div>
+  <div class="pg" id="btnComecar" style="left:12px;right:12px;top:612px;height:46px;border-radius:10px;background:var(--brand-orange);display:flex;align-items:center;justify-content:center;gap:8px;font:600 13px/1 var(--font-sans);color:var(--ink-primary)">Começar visita ${ICONE.seta.replace('<svg ', '<svg width="15" height="15" ')}</div>
+  <div class="pg pg-kicker" id="k2" style="left:16px;top:86px;visibility:hidden">Durante a visita</div>
+  <div class="pg pg-tit" id="h2" style="left:16px;top:108px;visibility:hidden">Olhe de perto.</div>
+  <div class="pg pg-sub" id="s2" style="left:16px;top:150px;visibility:hidden">Confira o que importa para a sua decisão.</div>
+  <div class="pg-dock">
+    <span>${dockIc('busca')}Explorar</span>
+    <span>${dockIc('dossie')}Dossiê</span>
+    <span>${dockIc('comparar')}Comparar</span>
+    <i style="position:absolute;top:0;left:calc(12px + (100% - 24px) * 0.875 - 10px);width:20px;height:2px;border-radius:2px;background:var(--brand-orange)"></i>
+    <span class="on">${dockIc('visita')}Visita</span>
+  </div>`;
+pagina.style.zoom = ZP;
+// conteúdo do cartão no modo no imóvel (coordenadas do cartão, como o .vx-surface do protótipo):
+// as seis perguntas de getDossierChecks para o imóvel (0 de 6)
+const campo = $('campo');
+const QUESTOES = [[Q_IPTU, D_IPTU], [Q_BAN, '3 suítes · 1 banheiro'], ['Qual é a altura em relação à rua?', '1º andar anunciado'], ['Há cota extra ou obra aprovada?', 'Peça atas e balancetes'],
+  ['As obras próximas afetam a rotina?', '49 registros em 150 m'], ['O sol chega às janelas?', 'Sol da manhã · Leste / Sudeste']];
+campo.innerHTML = `
+  <div class="vv-sessao" style="left:18px;top:21px;width:354px;height:86px"></div>
+  <div class="pg vv-relogio" id="relogio" style="left:34px;top:33px">00:00</div>
+  <div class="pg vv-pequeno" style="left:34px;top:74px">Visita em andamento</div>
+  <div class="vx-sec" style="left:279px;top:40px;width:77px;height:48px">Pausar</div>
+  <div class="pg vv-h2" style="left:18px;top:129px">Seu roteiro</div>
+  <div class="pg" style="right:18px;top:137px;font:400 12px/1.2 var(--font-sans)">0 de 6</div>
+  <div class="vv-prog" style="left:18px;top:171px;width:354px"></div>
+  ${QUESTOES.map(([q, d], i) => { const y = 186 + 71.2 * i; return `
+  <div class="vv-check" style="left:27.5px;top:${(y + 22.5).toFixed(1)}px"></div>
+  <div class="pg vv-qt" style="left:74px;top:${(y + 13).toFixed(1)}px">${q}</div>
+  <div class="pg vv-qd" style="left:74px;top:${(y + 41.2).toFixed(1)}px">${d}</div>
+  <div class="vv-seta" style="right:18px;top:${(y + 28.1).toFixed(1)}px">${icM('seta', 15)}</div>`; }).join('')}`;
+const relogio = $('relogio');
+const k1 = $('k1'), h1 = $('h1'), s1 = $('s1'), k2 = $('k2'), h2 = $('h2'), s2 = $('s2'), prep = $('prep'), cartao = $('cartao'), btnComecar = $('btnComecar');
+const abaPill = $('abaPill'), aba1 = $('aba1'), aba2 = $('aba2');
+const cabecaApp = pagina.querySelector('.pg-head');
+// o que rola (tudo menos o cabeçalho e o dock, que ficam presos como no protótipo), com o topo base
+const ROLAM = [...pagina.children].filter((e) => !e.classList.contains('pg-head') && !e.classList.contains('pg-dock') && ![k2, h2, s2].includes(e)).map((e) => ({ e, top: parseFloat(e.style.top) }));
+// o que passa por baixo do cabeçalho (até 58 px) e do dock (de 799 px) some ao entrar nele: no
+// protótipo os dois são translúcidos, e o texto de baixo não pode cruzar o texto deles
+const FAIXA = [...ROLAM.filter((r) => r.e.classList.contains('pg-link') || r.e.classList.contains('pg-card') && r.e !== cartao || r.e.classList.contains('pg-abas')).map((r) => ({ e: r.e, top: r.top, h: r.e.offsetHeight || 20 }))];
+const FAIXA_CAMPO = [...campo.children].filter((e) => e.textContent.trim()).map((e) => ({ e, top: 334 + parseFloat(e.style.top) }));
+const faixaApp = (y) => Math.min(clamp((y - 42) / 16), clamp((799 - y) / 12));
+
+// folhas "Luz na janela" (openVisitLight) e "Escute com a janela aberta" (openVisitNoise).
+// A alça e o botão de fechar são as mesmas nas duas: a folha é um objeto só que troca de conteúdo.
+folhaZ.innerHTML = `
+  <div class="sh-alca" style="left:188px;top:18px"></div>
+  <div class="sh-x" style="left:352px;top:32px">${icM('fechar', 18)}</div>
+  <div id="fLuz" style="position:absolute;left:0;top:0;width:414px;height:400px">
+    <div class="pg sh-h" style="left:18px;top:40.8px">Luz na janela</div>
+    <div class="pg sh-copy" style="left:18px;top:88px">Ajuste a direção para registrar a orientação da janela.</div>
+    <svg id="bussUI" style="position:absolute;left:18px;top:127px" width="108" height="108" viewBox="0 0 110 110">
+      <circle cx="55" cy="55" r="49" fill="#F7F2E8" stroke="#DDD3C0"/>
+      <g font-family="Plus Jakarta Sans,sans-serif" font-size="10" fill="#625C51" text-anchor="middle"><text x="55" y="20">N</text><text x="94" y="59">L</text><text x="55" y="98">S</text><text x="16" y="59">O</text></g>
+      <path id="uiN" fill="#F47745"/><path id="uiS" fill="#CBBEA7"/>
+      <circle cx="55" cy="55" r="3" fill="#171717"/>
+    </svg>
+    <div class="pg sh-face" id="faceN" style="left:146px;top:152.5px">Norte</div>
+    <div class="pg sh-hint" id="hintN" style="left:146px;top:191.5px">Observe a luz ao longo do dia.</div>
+    <div class="pg sh-face" id="faceL" style="left:146px;top:152.5px;visibility:hidden">Leste</div>
+    <div class="pg sh-hint" id="hintL" style="left:146px;top:191.5px;visibility:hidden">Observe o sol da manhã.</div>
+    <div class="pg sh-rot" style="left:18px;top:245px">Orientação manual</div>
+    <div class="pg sh-rot" id="grau" style="right:18px;top:245px">0°</div>
+    <div class="sh-trilho" style="left:18px;top:278px;width:378px"><i id="trilhoI"></i></div>
+    <div class="sh-polegar" id="polegar" style="top:273px"></div>
+    <div class="sh-btn" id="btnGuardar" style="left:18px;top:319px;width:378px;height:48px"><span>Guardar orientação</span>${icM('check', 16)}</div>
+  </div>
+  <div id="fRuido" style="position:absolute;left:0;top:0;width:414px;height:490px;visibility:hidden">
+    <div class="pg sh-h" style="left:18px;top:40.8px">Escute com a janela aberta</div>
+    <div class="pg sh-copy" style="left:18px;top:88px">Compare o ruído com a janela aberta e fechada.</div>
+    <div class="pg sh-num" id="n44" style="left:18px;top:127px">44 <small>dB</small></div>
+    <div class="pg sh-rot" style="left:18px;top:172px">Janela fechada</div>
+    <div class="pg sh-num" id="n58" style="left:215px;top:127px">58 <small>dB</small></div>
+    <div class="pg sh-rot" style="left:215px;top:172px">Janela aberta</div>
+    <div class="sh-seg" style="left:18px;top:204px;width:378px;height:54px"></div>
+    <div class="sh-segp" id="segPill" style="left:23px;top:209px;width:182px;height:44px"></div>
+    <div class="sh-segp" id="segPillA" style="left:209px;top:209px;width:182px;height:44px"></div>
+    <div class="sh-segb" id="segF" style="left:23px;top:209px;width:182px;height:44px">Fechada</div>
+    <div class="sh-segb" id="segA" style="left:209px;top:209px;width:182px;height:44px">Aberta</div>
+    <div class="pg sh-rot" style="left:18px;top:274px;line-height:1.5">Exemplo de leitura · demonstração</div>
+    <div id="fRuidoB" style="position:absolute;left:0;top:0;width:414px;height:490px">
+    <div class="pg sh-lab" style="left:18px;top:307px">Como você percebeu o ambiente?</div>
+    <div class="sh-sel" style="left:18px;top:329px;width:378px;height:45px"></div>
+    <div class="pg" style="left:30px;top:342px;font:400 13px/1.6 var(--font-sans);line-height:1.4">Selecione sua percepção</div>
+    <div style="position:absolute;left:372px;top:346px;color:var(--ink-primary)">${icM('chevron', 12)}</div>
+    <div class="sh-btn" style="left:18px;top:406px;width:378px;height:48px"><span>Registrar percepção</span>${icM('check', 16)}</div>
+    </div>
+  </div>`;
+const H_LUZ = 391, H_RUIDO = 478;   // altura das folhas, em px do app
+const fLuz = $('fLuz'), fRuido = $('fRuido'), fRuidoB = $('fRuidoB');
+const faceN = $('faceN'), hintN = $('hintN'), faceL = $('faceL'), hintL = $('hintL'), grau = $('grau'), trilhoI = $('trilhoI'), polegar = $('polegar'), btnGuardar = $('btnGuardar');
+const uiN = $('uiN'), uiS = $('uiS');
+const n44 = $('n44'), n58 = $('n58'), segPill = $('segPill'), segPillA = $('segPillA'), segF = $('segF'), segA = $('segA');
+for (const e of document.querySelectorAll('[data-m]')) { const m = MASCARAS[e.dataset.m]; e.style.webkitMaskImage = m; e.style.maskImage = m; }
+const IC_IN = [...pagina.querySelectorAll('.ic-in')].concat([...pagina.querySelectorAll('.pg-head > .pg > svg')]);
+const IC_M = [...pagina.querySelectorAll('.ic-m')];
+
+// ---------------------------------------------------------------------------
+// Mundo em SVG: lote, vizinhos, prédio, planta, janela, pino, anel/bússola, prolongamento e arco
+// ---------------------------------------------------------------------------
+const mundo = $('mundo'), mundoW = $('mundoW');
+const gLote = svgEl('g', {}, mundo);
+const loteFill = svgEl('path', { fill: '#CFDBE9', 'fill-rule': 'evenodd' }, gLote);
+const vizP = svgEl('path', { fill: 'rgba(46,90,133,0.05)', stroke: '#8FAAC4', 'stroke-width': 1.8, 'stroke-dasharray': '7 6' }, gLote);
+const loteHalo = svgEl('path', { fill: 'none', stroke: '#FFFFFF', 'stroke-linejoin': 'round', 'stroke-width': 9 }, gLote);
+const loteLinha = svgEl('path', { fill: 'none', stroke: '#2E5A85', 'stroke-linejoin': 'round', 'stroke-width': 4 }, gLote);
+const predioP = svgEl('path', { fill: 'none', stroke: '#171717', 'stroke-linejoin': 'round' }, mundo);
+const gPlanta = svgEl('g', { fill: 'none', 'stroke-linecap': 'round' }, mundo);
+for (const pc of PECAS) pc.e = svgEl('path', { stroke: '#171717', pathLength: 1 }, gPlanta);
+for (const pd of PORTAS_T) { pd.folha = svgEl('path', { stroke: '#625C51', pathLength: 1 }, gPlanta); pd.arco = svgEl('path', { stroke: '#625C51', 'stroke-dasharray': '4 5' }, gPlanta); }
+const gJan = svgEl('g', { fill: 'none', 'stroke-linecap': 'round' }, mundo);
+const janVidro = svgEl('path', { fill: '#FFFFFF', stroke: 'none' }, gJan);
+const janMarcos = svgEl('path', { stroke: '#171717', 'stroke-width': 1.3 }, gJan);
+const janTopos = svgEl('path', { stroke: '#171717' }, gJan);
+const janFolhas = svgEl('path', { stroke: '#171717' }, gJan);
+const janGiro = svgEl('path', { stroke: '#625C51', 'stroke-width': 1.2, 'stroke-dasharray': '4 5' }, gJan);
+const gPino = svgEl('g', {}, mundo);
+const pinoHalo = svgEl('circle', { fill: 'rgba(244,119,69,0.25)' }, gPino);
+const pinoC = svgEl('circle', { fill: '#F47745', stroke: '#FFFFFF' }, gPino);
+const anel = svgEl('circle', { fill: 'none' }, mundo);
+const gBuss = svgEl('g', {}, mundo);
+const letrasB = LETRAS.map(([l]) => { const e = svgEl('text', { 'font-family': 'Plus Jakarta Sans, sans-serif', fill: '#625C51', 'text-anchor': 'middle' }, gBuss); e.textContent = l; return e; });
+const agN = svgEl('path', { fill: '#F47745' }, gBuss), agS = svgEl('path', { fill: '#CBBEA7' }, gBuss);
+const centroB = svgEl('circle', { fill: '#171717' }, gBuss);
+const extensao = svgEl('path', { fill: 'none', stroke: '#F47745', 'stroke-width': 4.2, 'stroke-linecap': 'round' }, mundo);
+const arcoA = svgEl('path', { fill: 'none', stroke: '#F47745', 'stroke-width': 2.6, 'stroke-dasharray': '12 10', 'stroke-linecap': 'round' }, mundo);
+const arcoB = svgEl('path', { fill: 'none', stroke: '#F47745', 'stroke-width': 2.6, 'stroke-dasharray': '12 10', 'stroke-linecap': 'round' }, mundo);
+const solM = svgEl('circle', { r: 10, fill: '#FAF6EE', stroke: '#F47745', 'stroke-width': 3.5 }, mundo);
+
+// rótulos ancorados no mundo e rótulos do filme
+const rotMundo = $('rotMundo'), rotulos = $('rotulos');
+const rotJanela = el('t rot-janela', 'janela', rotMundo);
+const rotSol = el('t rot-mapa', 'sol', rotMundo);
+const rotPredio = el('t rot-predio', 'prédio', rotMundo);
+const rotRua = el('t rot-mapa', 'rua', rotulos);
+const pilulaA = el('t etiqueta', 'planta ilustrativa', rotulos);
+const pilulaLote = el('t etiqueta', 'polígono do lote ilustrativo', rotulos);
+const pilulaSol = el('t etiqueta', 'o arco só ilustra a direção', rotulos);
+const pilulaRuido = el('t etiqueta', 'leitura de exemplo: o protótipo não mede o ruído', rotulos);
+const etiqGps = el('t etiqueta grande', 'GPS · em desenvolvimento', rotulos);
+const notaGps = el('t nota', 'Hoje, o prédio é confirmado no toque <b>“É este prédio”</b>.', rotulos);
+// ressalvas grandes, ao lado do objeto de cada batida (legíveis a 360 px)
+const etiqManual = el('t etiqueta grande', 'orientação manual', rotulos);
+const etiqSol = el('t etiqueta grande duas', 'o protótipo não\ncalcula o sol', rotulos);
+const etiqDemo = el('t etiqueta grande', 'demonstração', rotulos);
+
+// sala da cena 01: o SVG do quadro final dela, uma vez só (é estático); o número só com ?eco=1
+const sala = $('sala');
+sala.style.background = SALA01.fundo;
+sala.innerHTML = `<svg class="camada" viewBox="0 0 1920 1080">${SALA01.svg}</svg>`;
+const recorteEco = el('recorte', '', sala), numeroEco = el('t numero-v1', 'R$ 125<br>MIL', recorteEco), apoioEco = el('t apoio-v1', 'em cinco anos', sala);
+caixa(recorteEco, VID.x0, VID.y0, VID.x1 - VID.x0, VID.y1 - VID.y0);
+numeroEco.style.fontSize = SALA01.numero.fontSize.toFixed(1) + 'px';
+numeroEco.style.width = (VID.x1 - VID.x0).toFixed(1) + 'px';
+numeroEco.style.left = '0px';
+// as quatro promessas do anúncio fictício da cena 1, sobre o vidro escuro (só na versão padrão)
+const promessas = $('promessas');
+const cita = (txt) => `<span><span class="aspas">“</span>${txt}<span class="aspas">”</span></span>`;
+const PROMESSAS = [
+  { html: ICONE01.area + cita('75 metros quadrados'), x: 404, y: 300, cls: 'chip' },
+  { html: ICONE01.vento + cita('super ventilado'), x: 1066, y: 392, cls: 'chip' },
+  { html: ICONE01.sol + cita('100% nascente'), x: 520, y: 540, cls: 'chip' },
+  { html: ICONE01.etiqueta + cita('condomínio baratinho'), x: 1090, y: 660, cls: 'chip pequeno' },
+].map((p) => ({ ...p, e: el(p.cls, p.html, promessas) }));
+const rodapeFiccao = el('t rodape-ficcao', 'anúncio fictício da cena 1', promessas);
+const papel = $('papel');
+
+// resumo (renderLiveVisit, summary), recortado: cabeçalho e a nota da luz registrada
+const resumo = $('resumo');
+resumo.innerHTML = `<div class="rs-kicker">Seu registro</div><div class="rs-h1">Sua visita, registrada.</div><div class="rs-p">O que você descobriu fica aqui.</div>
+  <div class="rs-card"><div class="rs-kicker">Visita salva neste aparelho</div><div class="rs-forte">Luz na janela</div><div class="rs-nota">Leste · 98° registrados por você</div></div>`;
+const trecho = el('t trecho', 'trecho do resumo', rotulos);
+
+const dbg = Q.has('debug') ? el('', '', $('c')) : null;
+if (dbg) dbg.id = 'debug';
+
+const CURSOR = [[0, 0], [0, 38], [10.5, 29], [17, 43.5], [23.5, 40.6], [17, 26.6], [30, 26.6]];
+const polyD = (pts) => 'M' + pts.map((p) => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L') + 'Z';
+const rot = ([x, y], a) => { const c = Math.cos(a), s = Math.sin(a); return [x * c - y * s, x * s + y * c]; };
+const clock = (s) => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+
+// geometria da folha de baixo: o topo dela anda em coordenadas do quadro (não soma o movimento do
+// celular), e é guardado em px do app dentro da tela
+function folhaGeo(t, C) {
+  const zf = C.zp, telaH = C.telaR[3] / zf;
+  const sobe = nsp(t - T.folha, FOLHA), mf = nsp(t - T.morph, MORPH);
+  const hF = lerp(H_LUZ, H_RUIDO, mf);
+  const alvo = C.telaR[1] + (telaH - hF) * zf;
+  const topoTela = lerp(1080, alvo, sobe);
+  return { zf, telaH, hF, topoTela, topo: (topoTela - C.telaR[1]) / zf };
+}
+
+// ---------------------------------------------------------------------------
+// seek(t): função pura do tempo
+// ---------------------------------------------------------------------------
+function render(t) {
+  t = clamp(t, 0, DUR);
+  const C = celular(t);
+  const cam = camMundo(t);
+  const telaFora = C.fora[0] + C.fora[2];          // borda direita do celular
+
+  // ===== celular ===============================================================
+  caixa(tela, ...C.telaR); tela.style.borderRadius = C.raio.toFixed(2) + 'px'; tela.style.background = 'var(--bg-paper)';
+  pagina.style.zoom = t <= T.celular ? ZP : C.zp.toFixed(5);
+  pagina.style.width = (C.telaR[2] / C.zp).toFixed(2) + 'px'; pagina.style.height = (C.telaR[3] / C.zp).toFixed(2) + 'px';
+  caixa(moldura, ...C.fora); moldura.style.borderWidth = C.bz.toFixed(2) + 'px'; moldura.style.borderRadius = (C.raio + C.bz).toFixed(2) + 'px';
+  const celVisivel = telaFora > -4;
+  tela.style.visibility = celVisivel ? 'inherit' : 'hidden'; moldura.style.visibility = celVisivel ? 'inherit' : 'hidden';
+  // ícones: SVG inline até o zoom do celular começar a mudar; depois, máscara CSS
+  const mascarado = t > T.celular;
+  for (const e of IC_IN) e.style.display = mascarado ? 'none' : '';
+  for (const e of IC_M) e.style.display = mascarado ? 'block' : 'none';
+  // rolagem da página no B2 (o cabeçalho e o dock ficam; o resto passa por baixo do cabeçalho)
+  const R = rolagem(t);
+  for (const r of ROLAM) r.e.style.top = (r.top - R).toFixed(2) + 'px';
+  if (t > T.rolagem) for (const f of FAIXA) vis(f.e, faixaApp(f.top - R, f.h));
+  else for (const f of FAIXA) { f.e.style.opacity = ''; f.e.style.visibility = ''; }
+  cabecaApp.style.zIndex = t > T.rolagem ? '3' : '';
+
+  // toque em Começar visita e troca para o modo no imóvel (sai antes, entra depois)
+  btnComecar.style.background = rgba(mixColor(hx('#F47745'), hx('#E06332'), press(t, [T.comecar])));
+  const sai = (e) => vis(e, swap(t, -1, T.troca, { leadOut: 0.04, durOut: 0.08 }));
+  const entra = (e, dt = 0) => vis(e, swap(t, T.troca + dt, Infinity, { delayIn: 0, durIn: 0.1 }));
+  if (t < T.comecar) { for (const e of [k1, h1, s1, prep, btnComecar]) { e.style.opacity = ''; e.style.visibility = ''; } }
+  else { sai(k1); sai(h1); sai(s1); sai(prep); vis(btnComecar, swap(t, -1, T.troca, { leadOut: 0.04, durOut: 0.08 })); }
+  const posY = (e, y0, dt) => { e.style.top = (y0 - R + 6 * pending(t, T.troca + dt, P.type)).toFixed(2) + 'px'; };
+  const entraF = (e, dt, y0, h) => vis(e, swap(t, T.troca + dt, Infinity, { delayIn: 0, durIn: 0.1 }) * faixaApp(y0 - R, h));
+  entraF(k2, 0, 86, 11); posY(k2, 86, 0);
+  entraF(h2, 0.02, 108, 33); posY(h2, 108, 0.02);
+  entraF(s2, 0.04, 150, 16); posY(s2, 150, 0.04);
+  vis(campo, swap(t, T.troca, Infinity, { delayIn: 0, durIn: 0.1 }));
+  for (const f of FAIXA_CAMPO) vis(f.e, faixaApp(f.top - R, f.e.offsetHeight));
+  // o cartão cresce para baixo do dock (o .vx-surface do modo no imóvel, com as seis perguntas)
+  cartao.style.height = (t < T.troca ? 262 : lerp(262, 680, sp(t - T.troca, { k: 36, d: 12 }))).toFixed(2) + 'px';
+  // abas: a pílula branca corre de Preparar para No imóvel
+  if (t < T.troca) {
+    abaPill.style.visibility = 'hidden'; aba1.classList.add('on'); aba1.style.background = ''; aba1.style.color = ''; aba1.style.fontWeight = ''; aba2.style.color = ''; aba2.style.fontWeight = '';
+  } else {
+    const pa = sp(t - T.troca, { k: 81, d: 15 });
+    abaPill.style.visibility = 'inherit';
+    abaPill.style.left = `calc(${(4 * (1 - pa)).toFixed(3)}px + ${(50 * pa).toFixed(3)}%)`;
+    abaPill.style.right = `calc(${(50 * (1 - pa)).toFixed(3)}% + ${(4 * pa).toFixed(3)}px)`;
+    aba1.classList.remove('on'); aba1.style.background = 'transparent';
+    const q = clamp((t - T.troca) / 0.14);
+    aba1.style.color = rgba(mixColor(hx('#171717'), hx('#625C51'), q)); aba1.style.fontWeight = Math.round(lerp(600, 500, q));
+    aba2.style.color = rgba(mixColor(hx('#625C51'), hx('#171717'), q)); aba2.style.fontWeight = Math.round(lerp(500, 600, q));
+  }
+  // relógio (visitClock(visitElapsed)): começa em 00:00 no toque e corre com t; nunca chega a 02:00
+  relogio.textContent = clock(Math.max(0, Math.floor(t - T.troca)));
+
+  // ===== folha de baixo, véu e toast ===========================================
+  const F = folhaGeo(t, C), zf = F.zf;
+  const folhaVis = t > T.folha && F.topo < F.telaH;
+  folha.style.visibility = folhaVis ? 'inherit' : 'hidden';
+  if (folhaVis) {
+    caixa(folha, 0, F.topo * zf, C.telaR[2], (F.telaH - F.topo) * zf + 2);
+    folha.style.borderRadius = `${(22 * zf).toFixed(2)}px ${(22 * zf).toFixed(2)}px 0 0`;
+    folha.style.borderTopWidth = zf.toFixed(3) + 'px';
+    folhaZ.style.zoom = zf.toFixed(5);
+  }
+  vis(veu, 0.999 * clamp((t - T.folha) / 0.25));
+  // conteúdo: luz até o morph, ruído depois (a alça e o X ficam). A parte de baixo da folha do ruído
+  // entra depois que o toast sai: o toast fica sobre o branco vazio da folha, sem cruzar nada
+  vis(fLuz, swap(t, -1, T.morph, { leadOut: 0.15, durOut: 0.1 }));
+  vis(fRuido, swap(t, T.morph, Infinity, { delayIn: 0, durIn: 0.1 }));
+  vis(fRuidoB, swap(t, T.ruidoB, Infinity, { delayIn: 0, durIn: 0.12 }));
+  // toast real de saveVisitLight, no canto de baixo à direita da tela do app
+  avisoZ.style.zoom = zf.toFixed(5); avisoZ.style.height = F.telaH.toFixed(2) + 'px';
+  const aT = swap(t, T.toast, T.toastFim, { delayIn: 0, durIn: 0.1, leadOut: 0, durOut: 0.1 });
+  vis(avisoZ, aT); toast.style.bottom = (24 - 6 * pending(t, T.toast, P.type)).toFixed(2) + 'px';
+  // bússola da folha, rótulo e o controle "Orientação manual" (o cursor arrasta o polegar)
+  const th = angulo(t), thR = (th * Math.PI) / 180;
+  const ag = (pts) => 'M' + pts.map((p) => { const r = rot(p, thR); return (55 + r[0]).toFixed(2) + ' ' + (55 + r[1]).toFixed(2); }).join(' ') + 'Z';
+  uiN.setAttribute('d', ag(AGULHA_N)); uiS.setAttribute('d', ag(AGULHA_S));
+  const g = Math.max(0, Math.min(359, Math.round(th)));
+  grau.textContent = g + '°';
+  vis(faceN, swap(t, -1, T45 + 0.08)); vis(hintN, swap(t, -1, T45 + 0.08));
+  vis(faceL, swap(t, T45, Infinity)); vis(hintL, swap(t, T45, Infinity));
+  const fr = clamp(th / 359);
+  trilhoI.style.width = (378 * fr).toFixed(2) + 'px';
+  polegar.style.left = (18 + 362 * fr).toFixed(2) + 'px';
+  btnGuardar.style.background = rgba(mixColor(hx('#F47745'), hx('#E06332'), press(t, [T.guardar])));
+  // ruído: 44 dB com a janela fechada; o toque em Aberta passa o destaque (aria-current) para 58 dB
+  // (a pílula branca de cada posição é um elemento próprio e a troca é por opacidade)
+  const ab = clamp((t - (T.aberta + 0.05)) / 0.12);
+  n44.style.color = rgba(mixColor(hx('#B94E36'), hx('#171717'), ab)); n58.style.color = rgba(mixColor(hx('#171717'), hx('#B94E36'), ab));
+  vis(segPill, 1 - ab); vis(segPillA, ab);
+  segF.style.color = rgba(mixColor(hx('#171717'), hx('#625C51'), ab)); segF.style.fontWeight = Math.round(lerp(700, 500, ab));
+  segA.style.color = rgba(mixColor(hx('#625C51'), hx('#171717'), ab)); segA.style.fontWeight = Math.round(lerp(500, 700, ab));
+
+  // ===== mundo ==================================================================
+  // o mundo fica recortado por baixo do celular (a borda esquerda vai 40 px para dentro dele).
+  // Recorte por overflow: hidden, em px inteiros: com clip-path o Chromium reaproveitava pixels
+  // de quadros anteriores perto da janela (o teste de determinismo pegou)
+  const corteX = Math.max(0, Math.round(telaFora - 40));
+  mundoW.style.left = corteX + 'px'; mundoW.style.width = (1920 - corteX) + 'px';
+  mundo.style.left = -corteX + 'px';
+  const S = (x, y) => scr(cam, x, y);
+  const kw = clamp(cam.s / 90, 0.8, 1.15);
+  // a planta (vista de cima) sai antes de a sala (vista de frente) aparecer: some de 14,2 a 14,5 s
+  const aPlanta = clamp((T.some + 0.3 - t) / 0.3);
+  mundoW.style.visibility = t < T.some + 0.3 ? 'inherit' : 'hidden';
+  vis(gPlanta, aPlanta); vis(gJan, aPlanta);
+  for (const pc of PECAS) {
+    const q = t < pc.t0 ? 0 : nsp(t - pc.t0, pc.mola);
+    const a = S(...pc.a), b = S(...pc.b);
+    attr(pc.e, 'd', `M${pt(a)}L${pt(b)}`);
+    attr(pc.e, 'stroke-width', ((pc.ext ? 3 : 2) * kw).toFixed(2));
+    attr(pc.e, 'stroke-dasharray', `${q.toFixed(4)} 2`);
+    pc.e.style.visibility = q > 0.001 ? 'inherit' : 'hidden';
+  }
+  for (const pd of PORTAS_T) {
+    const q = t < pd.t0 ? 0 : nsp(t - pd.t0, { k: 81, d: 18 });
+    const h = S(...pd.h), a = S(...pd.a), b = S(...pd.b), r = dist(pd.h, pd.a) * cam.s;
+    attr(pd.folha, 'd', `M${pt(h)}L${pt(b)}`);
+    attr(pd.folha, 'stroke-width', (1.4 * kw).toFixed(2));
+    attr(pd.folha, 'stroke-dasharray', `${q.toFixed(4)} 2`);
+    pd.folha.style.visibility = q > 0.001 ? 'inherit' : 'hidden';
+    // arco de giro, do vão até a folha (o sentido vem do produto vetorial)
+    const cr = (a[0] - h[0]) * (b[1] - h[1]) - (a[1] - h[1]) * (b[0] - h[0]);
+    attr(pd.arco, 'd', `M${pt(a)}A${f1(r)} ${f1(r)} 0 0 ${cr > 0 ? 1 : 0} ${pt(b)}`);
+    attr(pd.arco, 'stroke-width', (1 * kw).toFixed(2));
+    vis(pd.arco, clamp((t - pd.t0 - 0.2) / 0.2) * 0.9);
+  }
+  // janela: marcos, topos e as duas folhas (fechadas formam a linha do vidro; abrem para fora no B4)
+  {
+    const q = t < T.janela ? 0 : nsp(t - T.janela, { k: 64, d: 16 });
+    const fi = (72 * Math.PI / 180) * nsp(t - T.abre, ABRE);
+    const w = 0.12, y0 = JAN.y0, y1 = lerp(JAN.y0, JAN.y1, q), lf = (JAN.y1 - JAN.y0) / 2;
+    attr(janVidro, 'd', q > 0.001 ? `M${pt(S(JAN.x - w, y0))}L${pt(S(JAN.x + w, y0))}L${pt(S(JAN.x + w, y1))}L${pt(S(JAN.x - w, y1))}Z` : '');
+    vis(janVidro, 1 - clamp(fi / 0.5));
+    attr(janMarcos, 'd', q > 0.001 ? `M${pt(S(JAN.x - w, y0))}L${pt(S(JAN.x - w, y1))}M${pt(S(JAN.x + w, y0))}L${pt(S(JAN.x + w, y1))}` : '');
+    attr(janMarcos, 'stroke-width', (1.3 * kw).toFixed(2));
+    const topo = (y) => `M${pt(S(JAN.x - 0.2, y))}L${pt(S(JAN.x + 0.2, y))}`;
+    attr(janTopos, 'd', q > 0.001 ? topo(JAN.y0) + (q > 0.98 ? topo(JAN.y1) : '') : '');
+    attr(janTopos, 'stroke-width', (2.4 * kw).toFixed(2));
+    // folhas: dobradiças nos topos, giram para fora (leste)
+    const e1 = [JAN.x + lf * Math.sin(fi), JAN.y0 + lf * Math.cos(fi)], e2 = [JAN.x + lf * Math.sin(fi), JAN.y1 - lf * Math.cos(fi)];
+    const fol = q < 0.999 ? `M${pt(S(JAN.x, y0))}L${pt(S(JAN.x, y1))}` : `M${pt(S(JAN.x, JAN.y0))}L${pt(S(...e1))}M${pt(S(JAN.x, JAN.y1))}L${pt(S(...e2))}`;
+    attr(janFolhas, 'd', q > 0.001 ? fol : '');
+    attr(janFolhas, 'stroke-width', (2.2 * kw).toFixed(2));
+    const rr = lf * cam.s;
+    attr(janGiro, 'd', fi > 0.01 ? `M${pt(S(JAN.x, JAN.yc))}A${f1(rr)} ${f1(rr)} 0 0 0 ${pt(S(...e1))}M${pt(S(JAN.x, JAN.yc))}A${f1(rr)} ${f1(rr)} 0 0 1 ${pt(S(...e2))}` : '');
+    vis(janGiro, clamp(fi / 0.4));
+  }
+  // prédio, lote e vizinhos: entram no zoom para fora (B2) e saem antes do zoom de volta (B3).
+  // O lote fica como na cena 7, contínuo do início ao fim; a confirmação é do prédio: o contorno
+  // dele passa de tracejado a contínuo, em tinta, com o rótulo "prédio"
+  const aB2 = (t0) => Math.min(clamp((t - t0) / 0.3), clamp((T.zoomIn + 0.1 - t) / 0.12));
+  const pr = (p) => S(p[0], p[1]);
+  const quad = (pts) => 'M' + pts.map((p) => pt(pr(p))).join('L') + 'Z';
+  const conf = sp(t - T.confirma, P.card);
+  attr(predioP, 'd', quad(PREDIO)); vis(predioP, aB2(T.predio));
+  attr(predioP, 'stroke-width', lerp(2.6, 3.6, conf).toFixed(2));
+  attr(predioP, 'stroke-dasharray', conf >= 0.999 ? 'none' : `12 ${(8 * (1 - conf)).toFixed(2)}`);
+  const loteD = roundedQuad(LOTE_PTS.map(pr), clamp(1.2 * cam.s, 1, 6));
+  attr(loteFill, 'd', loteD + quad(PREDIO)); vis(loteFill, 0.6 * aB2(T.lote + 0.12));
+  attr(vizP, 'd', VIZINHOS.map(([x0, y0, x1, y1]) => quad([[x0, y0], [x1, y0], [x1, y1], [x0, y1]])).join('')); vis(vizP, aB2(T.lote));
+  attr(loteLinha, 'd', loteD); attr(loteHalo, 'd', loteD);
+  vis(loteLinha, aB2(T.lote)); vis(loteHalo, aB2(T.lote));
+  // o grupo inteiro some junto: a caixa dele (que vai longe, com os vizinhos) não corre escondida
+  gLote.style.visibility = aB2(T.lote) > 0.001 ? 'inherit' : 'hidden';
+  // pino do GPS: você, no meio da sala; sai quando o anel vira a bússola
+  const pino = pr(SALA_C), ePino = sp(t - T.pino, P.button);
+  pinoHalo.setAttribute('cx', f1(pino[0])); pinoHalo.setAttribute('cy', f1(pino[1])); pinoHalo.setAttribute('r', (26 * ePino).toFixed(2));
+  pinoC.setAttribute('cx', f1(pino[0])); pinoC.setAttribute('cy', f1(pino[1])); pinoC.setAttribute('r', (14 * ePino).toFixed(2)); pinoC.setAttribute('stroke-width', (4 * ePino).toFixed(2));
+  vis(gPino, t > T.pino ? clamp((T.aro + 0.12 - t) / 0.12) : 0);
+  // anel: nasce na borda direita do celular, vai ao lote (o erro do GPS) e encolhe até o pino; no B3
+  // fica preso ao centro da sala (no mundo) e vira o aro da bússola do protótipo, com as letras
+  const a1 = nsp(t - T.anel, VOA), a2 = nsp(t - T.encolhe, ENC), qA = nsp(t - T.aro, ARO);
+  const nasce = [PH1.x + 452 * PH1.z, 560];
+  let cA = [lerp(nasce[0], pino[0], a1), lerp(nasce[1], pino[1], a1)];
+  let rA = lerp(150 * a1, 26, a2);
+  if (t > T.aro) { cA = pino; rA = lerp(26 / 24, R_BUSS / 105, qA) * cam.s; }
+  anel.setAttribute('cx', f1(cA[0])); anel.setAttribute('cy', f1(cA[1])); anel.setAttribute('r', Math.max(0, rA).toFixed(2));
+  anel.setAttribute('stroke', rgba(mixColor(hx('#F47745'), hx('#DDD3C0'), qA)));
+  anel.setAttribute('stroke-width', lerp(4.2, 3.06, qA).toFixed(2));
+  anel.setAttribute('fill', `rgba(247,242,232,${clamp(qA * 4).toFixed(3)})`);
+  const aBuss = clamp((T.b4Sai - t) / 0.12);
+  vis(anel, t > T.anel ? aBuss : 0);
+  // bússola: letras, agulha e centro entram com o aro (crescem com ele) e ecoam a agulha do celular
+  const kB = rA / 49;
+  const aL = t > T.aro ? Math.min(clamp((t - T.aro) / 0.15), aBuss) : 0;
+  vis(gBuss, aL);
+  if (aL > 0.001) {
+    LETRAS.forEach(([, dx, dy], i) => { const e = letrasB[i]; e.setAttribute('x', f1(cA[0] + dx * kB)); e.setAttribute('y', f1(cA[1] + dy * kB)); e.setAttribute('font-size', (10 * kB).toFixed(2)); });
+    const agW = (pts) => 'M' + pts.map((p) => { const r = rot(p, thR); return f1(cA[0] + r[0] * kB) + ' ' + f1(cA[1] + r[1] * kB); }).join('L') + 'Z';
+    agN.setAttribute('d', agW(AGULHA_N)); agS.setAttribute('d', agW(AGULHA_S));
+    centroB.setAttribute('cx', f1(cA[0])); centroB.setAttribute('cy', f1(cA[1])); centroB.setAttribute('r', (3 * kB).toFixed(2));
+  }
+  // a agulha se prolonga pela janela (direção do sol, ilustrativa) e o arco da manhã se abre a leste
+  const u = [Math.sin(thR), -Math.cos(thR)];
+  {
+    const e = nsp(t - T.extensao, EXT);
+    const r0 = rA + 4, r1 = lerp(r0, R_ARCO, e);
+    attr(extensao, 'd', `M${pt([cA[0] + u[0] * r0, cA[1] + u[1] * r0])}L${pt([cA[0] + u[0] * r1, cA[1] + u[1] * r1])}`);
+    vis(extensao, t > T.extensao && e > 0.002 ? aBuss : 0);
+    const ar = nsp(t - T.arco, ARCO);
+    const arco = (a0, a1x) => { const n = 40; let d = ''; for (let i = 0; i <= n; i += 1) { const a = ((a0 + (a1x - a0) * i / n) * Math.PI) / 180; d += (i ? 'L' : 'M') + pt([cA[0] + R_ARCO * Math.sin(a), cA[1] - R_ARCO * Math.cos(a)]); } return d; };
+    attr(arcoA, 'd', arco(98, lerp(98, 60, ar))); attr(arcoB, 'd', arco(98, lerp(98, 132, ar)));
+    vis(arcoA, t > T.arco ? 0.9 * aBuss : 0); vis(arcoB, t > T.arco ? 0.9 * aBuss : 0);
+    const eS = sp(t - (T.arco + 0.02), P.button);
+    solM.setAttribute('cx', f1(cA[0] + u[0] * R_ARCO)); solM.setAttribute('cy', f1(cA[1] + u[1] * R_ARCO)); solM.setAttribute('r', (10 * eS).toFixed(2));
+    vis(solM, t > T.arco ? aBuss : 0);
+  }
+
+  // ===== rótulos ===============================================================
+  {
+    const ancora = S(JAN.x - 0.22, JAN.y0 - 0.32);
+    const a = Math.min(Math.max(swap(t, T.rotJanela, T.zoomOut + 0.2), swap(t, T.rotJanela3, HOLDS[2] + 0.22)), aPlanta);
+    vis(rotJanela, a);
+    if (a > 0.001) pos(rotJanela, ancora[0] - rotJanela.offsetWidth, ancora[1] - 30);
+    const aSol = swap(t, T.arco + 0.12, HOLDS[1] + 0.22);
+    vis(rotSol, aSol);
+    if (aSol > 0.001) pos(rotSol, cA[0] + u[0] * R_ARCO + 20, cA[1] + u[1] * R_ARCO - 34);
+    const aPr = swap(t, T.rotPredio, HOLDS[0] + 0.22);
+    vis(rotPredio, aPr);
+    if (aPr > 0.001) { const q = pr([-13, 8.4]); pos(rotPredio, q[0], q[1] - 6 * pending(t, T.rotPredio, P.type)); }
+  }
+  const X_DIR = 1750, Y_PIL = 1016;
+  vis(pilulaA, swap(t, T.rotPlanta, HOLDS[2] + 0.22));
+  pos(pilulaA, X_DIR - pilulaA.offsetWidth, Y_PIL);
+  const xB = X_DIR - pilulaA.offsetWidth - 12;
+  vis(pilulaLote, swap(t, T.rotLote, HOLDS[0] + 0.22)); pos(pilulaLote, xB - pilulaLote.offsetWidth, Y_PIL);
+  vis(pilulaSol, swap(t, T.rotSol + 0.1, HOLDS[1] + 0.22)); pos(pilulaSol, xB - pilulaSol.offsetWidth, Y_PIL);
+  vis(pilulaRuido, swap(t, T.rotRuido, HOLDS[2] + 0.22)); pos(pilulaRuido, xB - pilulaRuido.offsetWidth, Y_PIL);
+  vis(etiqGps, swap(t, T.gps, HOLDS[0] + 0.22)); pos(etiqGps, 836, 14 + 10 * pending(t, T.gps + 0.04, P.type));
+  vis(notaGps, swap(t, T.nota, HOLDS[0] + 0.22)); pos(notaGps, 838, 100);
+  vis(etiqManual, swap(t, T.rotManual, HOLDS[1] + 0.22)); pos(etiqManual, 1110 - etiqManual.offsetWidth / 2, 296 + 8 * pending(t, T.rotManual + 0.04, P.type));
+  vis(etiqSol, swap(t, T.rotSol, HOLDS[1] + 0.22)); pos(etiqSol, 1500 - etiqSol.offsetWidth, 868 + 8 * pending(t, T.rotSol + 0.04, P.type));
+  vis(etiqDemo, swap(t, T.rotDemo, HOLDS[2] + 0.22)); pos(etiqDemo, 770, 424 + 8 * pending(t, T.rotDemo + 0.04, P.type));
+  vis(rotRua, swap(t, T.onda, HOLDS[2] + 0.22)); pos(rotRua, 1890 - rotRua.offsetWidth, 468);
+
+  // ===== linha laranja: onda do ruído → peitoril → sobe → limpador → régua =============
+  const LG = linhaGeo(t, telaFora);
+  {
+    const linha = $('linha');
+    // onda: amplitude cheia fora da janela, menor dentro com a janela fechada; achata no B5
+    const plano = nsp(t - T.aplaina, PLANO);
+    const abre = nsp(t - T.abre, ABRE);
+    const aIn = lerp(7, 21, abre), aOut = 23;
+    const xJan = scr(cam, JAN.x, 0)[0];
+    const kk = (2 * Math.PI) / 68, om = 2 * Math.PI * 1.4;
+    let d = '';
+    if (t >= T.onda && plano < 0.9999 && LG.xR - LG.xL > 1) {
+      for (let x = LG.xL; x <= LG.xR + 0.1; x += 4) {
+        const mix = clamp((x - (xJan - 16)) / 32);
+        const v = clamp((x - LG.xL) / 70), env = v * v * (3 - 2 * v);
+        const A = lerp(aIn, aOut, mix) * env * (1 - plano);
+        d += (d ? 'L' : 'M') + f1(x) + ' ' + f1(LG.yEm(x) + A * Math.sin(kk * x + om * t));
+      }
+    } else if (t >= T.onda && LG.xR - LG.xL > 1) {
+      d = `M${f1(LG.xL)} ${f1(LG.yEm(LG.xL))}L${f1(LG.xR)} ${f1(LG.yEm(LG.xR))}`;
+    }
+    linha.setAttribute('d', d);
+    linha.style.visibility = d ? 'inherit' : 'hidden';
+  }
+
+  // ===== a sala da cena 01, pelo vão da janela ===================================
+  const aS = t >= T.portal && t < T.saida + 1.15;
+  {
+    // o vão abre centrado na linha da parede, a câmera o leva ao meio do quadro e ele vira o vidro
+    // da cena 01; depois a sala aparece em volta do vidro
+    const pN = nsp(t - T.portal, PORTAL), pS = nsp(t - T.sala, SALA);
+    const ret = [0, 1, 2, 3].map((i) => VAO[i] + (VIDQ[i] - VAO[i]) * pN + (CHEIO[i] - VIDQ[i]) * pS);
+    sala.style.visibility = aS ? 'inherit' : 'hidden';
+    if (aS) sala.style.clipPath = `inset(${Math.max(0, ret[1]).toFixed(1)}px ${Math.max(0, 1920 - ret[2]).toFixed(1)}px ${Math.max(0, 1080 - ret[3]).toFixed(1)}px ${Math.max(0, ret[0]).toFixed(1)}px)`;
+    // eco (?eco=1): o número sobe de trás do peitoril como na cena 01, depois que a linha passou por
+    // cima dele; no B6 o limpador o apaga de cima para baixo
+    const nVis = ECO && aS && t >= T.ecoNum;
+    recorteEco.style.visibility = nVis ? 'inherit' : 'hidden';
+    if (nVis) {
+      const h = VID.y1 - VID.y0, nh = numeroEco.offsetHeight;
+      const sobeN = 1 - nsp(t - T.ecoNum, { k: 120, d: 22 });
+      numeroEco.style.top = (h - nh - h * 0.07 + sobeN * (nh + h * 0.1)).toFixed(1) + 'px';
+      const corte = t >= T.limpa ? clamp(LG.ySemEm(960) - VID.y0, 0, h) : 0;
+      recorteEco.style.clipPath = corte > 0 ? `inset(${corte.toFixed(1)}px 0px 0px 0px)` : 'none';
+    }
+    const aApoio = ECO && aS ? Math.min(swap(t, T.ecoApoio, Infinity, { delayIn: 0, durIn: 0.2 }), clamp((T.limpa + 0.2 - t) / 0.12)) : 0;
+    vis(apoioEco, aApoio);
+    if (aApoio > 0.001) pos(apoioEco, 960 - apoioEco.offsetWidth / 2, SALA01.apoioTop + 10 * (1 - nsp(t - T.ecoApoio, P.type)));
+  }
+
+  // ===== as promessas do anúncio (versão padrão): voltam ao vidro depois que a linha subiu por
+  // elas; no B6 o limpador as varre de cima para baixo =====
+  promessas.style.visibility = !ECO && aS ? 'inherit' : 'hidden';
+  if (!ECO && aS) {
+    for (const p of PROMESSAS) {
+      const h = p.e.offsetHeight;
+      const yLinha = LG.ySemEm(p.x + p.e.offsetWidth / 2);
+      const a = swap(t, p.tIn, Infinity, { delayIn: 0, durIn: 0.16 }) * (t >= T.limpa && yLinha > p.y + h ? 0 : 1);
+      vis(p.e, a);
+      if (a > 0.001) {
+        pos(p.e, p.x, p.y + 12 * pending(t, p.tIn + 0.03, P.type));
+        const corte = t >= T.limpa ? clamp(yLinha - p.y + 2, 0, h + 4) : 0;
+        p.e.style.clipPath = corte > 0 ? `inset(${corte.toFixed(1)}px 0px 0px 0px)` : 'none';
+      }
+    }
+    const aF = Math.min(swap(t, PROMESSAS[0].tIn, Infinity, { delayIn: 0, durIn: 0.2 }), clamp((T.fimFiccao + 0.12 - t) / 0.12));
+    vis(rodapeFiccao, aF);
+    if (aF > 0.001) pos(rodapeFiccao, 960 - rodapeFiccao.offsetWidth / 2, 1036);
+  }
+
+  // ===== B6: o papel limpa o vidro de cima para baixo; na saída toma o quadro ==========
+  {
+    const exp = nsp(t - (T.saida + 0.08), PAPEL);
+    const aP = t >= T.limpa;
+    papel.style.visibility = aP ? 'inherit' : 'hidden';
+    if (aP) {
+      // a borda de baixo do papel é a própria linha (com a inclinação dela), presa ao vidro
+      const yE = Math.min(VID.y1, Math.max(VID.y0, LG.ySemEm(VID.x0))), yD = Math.min(VID.y1, Math.max(VID.y0, LG.ySemEm(VID.x1)));
+      const x0 = lerp(VID.x0, -40, exp), x1 = lerp(VID.x1, 1960, exp), y0 = lerp(VID.y0, -40, exp);
+      const y1e = lerp(yE, 1120, exp), y1d = lerp(yD, 1120, exp);
+      papel.style.clipPath = `polygon(${f1(x0)}px ${f1(y0)}px, ${f1(x1)}px ${f1(y0)}px, ${f1(x1)}px ${f1(y1d)}px, ${f1(x0)}px ${f1(y1e)}px)`;
+    }
+    // o resumo entra quando a linha já passou por ele e sai no começo da saída; "trecho do resumo"
+    const aR = swap(t, T.resumo, HOLDS[4] + 0.22);
+    vis(resumo, aR);
+    if (aR > 0.001) pos(resumo, 960 - 450, R_TOPO + 12 * pending(t, T.resumo + 0.04, P.type));
+    const aTr = swap(t, T.trecho, HOLDS[4] + 0.22);
+    vis(trecho, aTr);
+    if (aTr > 0.001) pos(trecho, 1410 - trecho.offsetWidth, R_TRECHO + 8 * pending(t, T.trecho + 0.04, P.type));
+  }
+
+  // ===== cursor: Começar visita, o polegar de "Orientação manual", Guardar e Aberta ======
+  {
+    // alvos na geometria do celular e da folha no instante do toque
+    const naFolha = (tc, x, y) => { const Cc = celular(tc), Fc = folhaGeo(tc, Cc); return [Cc.telaR[0] + x * Fc.zf, Fc.topoTela + y * Fc.zf]; };
+    const CLIQUES = [
+      [T.comecar, [1095, 762], [130, 50], [160, 70], '#171717', 0.45],
+      [T.guardar, naFolha(T.guardar, 360, 355), [120, 50], [150, 40], '#171717', 0.2],
+      [T.aberta, naFolha(T.aberta, 360, 245), [140, 30], [150, 60], '#F47745', 0.45],
+    ];
+    let cur = [1880, 1180], vc = 0, ondaP = cur, onda = 0, ondaCor = '#F47745';
+    for (const [c, alvo, de, para, cor, dur] of CLIQUES) {
+      const entraP = [alvo[0] + de[0], alvo[1] + de[1]], saiP = [alvo[0] + para[0], alvo[1] + para[1]];
+      const v = swap(t, c - 0.32, c + 0.42, { delayIn: 0, durIn: 0.1, leadOut: 0, durOut: 0.14 });
+      if (v > vc) { vc = v; cur = track(t, [[c - 0.32, entraP], [c - 0.29, alvo], [c + 0.16, saiP]], P.cursor); }
+      if (t >= c && t < c + dur) { onda = (t - c) / dur; ondaP = alvo; ondaCor = cor; }
+    }
+    // arraste: o cursor pega o polegar do controle deslizante, leva até 98° e solta
+    const polegarTela = (tt) => { const Cc = celular(tt), Fc = folhaGeo(tt, Cc); return [Cc.telaR[0] + (26 + 362 * clamp(angulo(tt) / 359)) * Fc.zf, Fc.topoTela + 281 * Fc.zf]; };
+    const vD = swap(t, T.pega - 0.32, T.solta + 0.42, { delayIn: 0, durIn: 0.1, leadOut: 0, durOut: 0.14 });
+    let presso = press(t, [T.comecar, T.guardar, T.aberta]);
+    if (vD > vc) {
+      vc = vD;
+      const p0 = polegarTela(Math.min(t, T.pega));
+      if (t < T.pega) cur = track(t, [[T.pega - 0.32, [p0[0] + 160, p0[1] + 90]], [T.pega - 0.29, p0]], P.cursor);
+      else if (t < T.solta) cur = polegarTela(t);
+      else { const p1 = polegarTela(T.solta); cur = track(t, [[T.solta, p1], [T.solta + 0.06, [p1[0] + 150, p1[1] + 90]]], P.cursor); }
+      presso = t < T.pega ? 0 : t < T.solta ? clamp((t - T.pega) / 0.07) : 1 - sp(t - T.solta, P.button);
+    }
+    const esc = (1 - 0.16 * presso) * lerp(0.7, 1, vc);
+    const cursorEl = $('cursor');
+    cursorEl.setAttribute('d', polyD(CURSOR.map(([x, y]) => [cur[0] + x * esc, cur[1] + y * esc])));
+    cursorEl.setAttribute('opacity', vc.toFixed(3));
+    const od = $('onda');
+    od.setAttribute('cx', f1(ondaP[0])); od.setAttribute('cy', f1(ondaP[1]));
+    od.setAttribute('stroke', ondaCor);
+    od.setAttribute('r', (6 + 15 * sp(onda * 0.45, P.button)).toFixed(1));
+    od.setAttribute('opacity', (onda > 0 ? 0.8 * (1 - onda) : 0).toFixed(3));
+  }
+
+  if (dbg) dbg.textContent = `${t.toFixed(2)} s`;
+}
+
+// marcos que dependem de outros
+T.b4Sai = HOLDS[1] + 0.2;       // a bússola, o prolongamento e o arco saem no começo do B4
+// promessas: cada uma entra quando a linha, subindo, já está 20 px acima dela
+for (const p of PROMESSAS) p.tIn = quando(T.sobe, (y) => y < p.y - 20);
+T.ecoNum = quando(T.sobe, (y) => y < 225);                // o número (eco) sobe depois que a linha passou
+T.ecoApoio = T.ecoNum + 0.35;
+// o resumo e "trecho do resumo" entram quando a linha, descendo, já passou 20 px abaixo deles
+const R_TOPO = 246, R_BASE = 746, R_TRECHO = 762;
+T.resumo = quando(T.limpa, (y) => y > R_BASE + 20);
+T.trecho = quando(T.limpa, (y) => y > R_TRECHO + 22 + 20);
+// o rodapé "anúncio fictício" sai quando a última promessa foi varrida
+T.fimFiccao = quando(T.limpa, (y) => y > Math.max(...PROMESSAS.map((p) => p.y)) + 60);
+
+// ---------------------------------------------------------------------------
+// Contrato de render e modos de preview
+// ---------------------------------------------------------------------------
+const ESTADOS = [
+  { id: 'E0', nome: 'Prepare sua visita (último quadro da cena 8)', t: 0 },
+  { id: 'M1', nome: 'Toque em Começar visita', t: T.comecar + 0.05 },
+  { id: 'M1b', nome: 'Meio: o modo no imóvel entra', t: T.troca + 0.1 },
+  { id: 'M1c', nome: 'Meio: a planta nasce do aparelho', t: 3.25 },
+  { id: 'M1d', nome: 'Meio: Durante a visita · Olhe de perto. e a planta (sem HOLD, emenda no GPS)', t: 4.85 },
+  { id: 'M2', nome: 'Meio: zoom para fora, a planta cabe no prédio', t: 5.55 },
+  { id: 'M2b', nome: 'Meio: o anel sai do celular e encolhe até o pino', t: 6.45 },
+  { id: 'B2', nome: 'GPS · em desenvolvimento; o prédio contínuo (HOLD)', t: HOLDS[0] },
+  { id: 'M3', nome: 'Meio: o anel vira o aro da bússola; a folha sobe', t: 8.1 },
+  { id: 'M3b', nome: 'Meio: o cursor arrasta o polegar de Orientação manual', t: 9.3 },
+  { id: 'B3', nome: 'Leste · Observe o sol da manhã; a agulha pela janela (HOLD)', t: HOLDS[1] },
+  { id: 'M4', nome: 'Meio: Guardar orientação; toast Orientação registrada', t: 11.7 },
+  { id: 'M4b', nome: 'Meio: a onda vem da rua até o aparelho', t: 12.45 },
+  { id: 'M4c', nome: 'Meio: toque em Aberta; a janela abre', t: T.abre + 0.12 },
+  { id: 'B4', nome: '58 dB · Janela aberta · demonstração (HOLD)', t: HOLDS[2] },
+  { id: 'M5', nome: 'Meio: a onda vira o peitoril da janela que se abre', t: 14.5 },
+  { id: 'M5b', nome: 'Meio: a câmera entra pela janela', t: 15.3 },
+  { id: 'M5c', nome: 'Meio: a linha sobe pelo vidro; as promessas voltam', t: 16.1 },
+  { id: 'B5', nome: 'A janela da cena 1 volta, com as promessas do anúncio (HOLD)', t: HOLDS[3] },
+  { id: 'M6', nome: 'Meio: o limpador varre as promessas', t: 17.9 },
+  { id: 'B6', nome: 'Sua visita, registrada. (HOLD)', t: HOLDS[4] },
+  { id: 'M7', nome: 'Meio: o resto sai; a linha fica na régua', t: 19.5 },
+  { id: 'FIM', nome: 'Papel com a grade e a régua (primeiro quadro da cena 10)', t: DUR - 1 / 30 },
+];
+const SONS = [
+  { t: T.comecar, tipo: 'click', evento: 'toque em Começar visita' },
+  { t: T.troca, tipo: 'whoosh', dur: 0.4, ganho: 0.4, evento: 'a tela vira o modo no imóvel' },
+  { t: T.celular, tipo: 'whoosh', dur: 0.9, ganho: 0.4, evento: 'o celular vai para a esquerda' },
+  { t: T.planta, tipo: 'tick', evento: 'a planta começa a se desenhar' },
+  { t: T.janela, tipo: 'tick', ganho: 0.6, evento: 'a janela da sala' },
+  { t: T.rotPlanta, tipo: 'pop', ganho: 0.5, evento: 'planta ilustrativa' },
+  { t: T.zoomOut, tipo: 'whoosh', dur: 1.6, ganho: 0.4, evento: 'zoom para fora: planta, prédio, lote' },
+  { t: T.anel, tipo: 'tick', evento: 'o anel de precisão sai do celular' },
+  { t: T.encolhe, tipo: 'sweep', dur: 0.9, ganho: 0.7, evento: 'o anel encolhe até o pino' },
+  { t: T.confirma, tipo: 'pop', evento: 'o contorno do prédio fica contínuo' },
+  { t: T.zoomIn, tipo: 'whoosh', dur: 1.2, ganho: 0.4, evento: 'zoom de volta à sala' },
+  { t: T.aro, tipo: 'tick', evento: 'o aro vira a bússola' },
+  { t: T.pega, tipo: 'click', evento: 'o cursor pega o polegar de Orientação manual' },
+  { t: T.solta, tipo: 'pop', ganho: 0.6, evento: 'a agulha assenta em 98°' },
+  { t: T.extensao, tipo: 'tick', evento: 'a agulha se prolonga pela janela' },
+  { t: T.arco, tipo: 'whoosh', dur: 0.5, ganho: 0.3, evento: 'o arco da manhã a leste' },
+  { t: T.guardar, tipo: 'click', evento: 'toque em Guardar orientação' },
+  { t: T.morph, tipo: 'whoosh', dur: 0.4, ganho: 0.4, evento: 'a folha vira Escute com a janela aberta' },
+  { t: T.toast, tipo: 'pop', ganho: 0.5, evento: 'toast Orientação registrada' },
+  { t: T.onda, tipo: 'whoosh', dur: 1.1, ganho: 0.35, evento: 'a onda vem da rua' },
+  { t: T.aberta, tipo: 'click', evento: 'toque em Aberta' },
+  { t: T.abre, tipo: 'pop', ganho: 0.5, evento: 'a janela da planta abre; 58 dB' },
+  { t: T.aplaina, tipo: 'tick', evento: 'a onda perde amplitude' },
+  { t: T.portal, tipo: 'whoosh', dur: 1.6, ganho: 0.45, evento: 'a câmera entra pela janela' },
+  { t: T.sala + 0.4, tipo: 'thump', ganho: 0.5, evento: 'a janela da cena 1 volta' },
+  { t: T.sobe, tipo: 'sweep', dur: 1.1, ganho: 0.5, evento: 'a linha sobe pelo vidro' },
+  ...PROMESSAS.map((p, i) => ({ t: p.tIn, tipo: 'tick', ganho: 0.5, evento: `promessa ${i + 1} do anúncio` })),
+  { t: T.limpa, tipo: 'sweep', dur: 1.2, ganho: 0.8, evento: 'o limpador varre o vidro' },
+  { t: T.resumo, tipo: 'pop', ganho: 0.6, evento: 'Sua visita, registrada.' },
+  { t: T.saida + 0.08, tipo: 'whoosh', dur: 0.8, ganho: 0.4, evento: 'o papel toma o quadro' },
+  { t: T.saida + 0.18, tipo: 'tick', evento: 'a linha se estica na régua' },
+];
+window.POC = {
+  id: 'CENA-09', variante: ECO ? 'eco do R$ 125 MIL (para comparar)' : 'janela com as promessas do anúncio, sem o número (padrão)', duracao: DUR, fps: 30, estados: ESTADOS, holds: HOLDS,
+  cliques: [T.comecar, T.pega, T.guardar, T.aberta], arraste: { de: T.pega, ate: T.solta, angulo: [0, 98], controle: 'Orientação manual (vv-compass-range)' }, marcos: T, sons: SONS,
+  tiras: [{ nome: 'toque', t0: T.comecar - 0.02 }, { nome: 'arraste', t0: T.pega + 0.02 }, { nome: 'portal', t0: 14.5 }, { nome: 'limpador', t0: 17.6 }],
+  comparar: ESTADOS.map((e) => ({ t: e.t, nome: e.id })),
+  // a cena 10 começa aqui: papel com a grade de 48 px e a linha laranja deitada (sem marcas nem meses)
+  saida: { fundo: { cor: '#F2EBDD', grade: { passo: 48, cor: 'rgba(127,136,112,0.09)', origem: [0, 0] } }, linha: { x0: SAIDA.x0, x1: SAIDA.x1, y: SAIDA.y, largura: SAIDA.largura, cor: '#F47745', pontas: 'round' } },
+};
+window.seek = (t) => render(t);
+window.__pronto = (async () => {
+  await document.fonts.ready;
+  const todo = document.getElementById('c').textContent + ' ×·—–→²ºçãõéêíóúâÁÉ?“”°0123456789:%';
+  await Promise.all([
+    '500 30px Fraunces', '500 23px Fraunces', '500 22px Fraunces', '500 19px Fraunces', '500 18px Fraunces', '500 82px Fraunces', '600 100px Fraunces',
+    '400 12px "Plus Jakarta Sans"', '500 12px "Plus Jakarta Sans"', '600 12px "Plus Jakarta Sans"', '700 12px "Plus Jakarta Sans"', '800 12px "Plus Jakarta Sans"',
+    '400 12px "JetBrains Mono"', '500 16px "JetBrains Mono"',
+  ].map((f) => document.fonts.load(f, todo)));
+  await document.fonts.ready;
+  // passa por toda a linha do tempo antes de liberar: subconjuntos de fonte e máscaras carregam agora
+  for (let t = 0; t <= DUR; t += 0.25) render(t);
+  await document.fonts.ready;
+  render(0);
+  return true;
+})();
+
+if (!navigator.webdriver) {
+  document.body.classList.add('tela');
+  const c = $('c');
+  const ajusta = () => { const s = Math.min(innerWidth / 1920, innerHeight / 1080); Object.assign(c.style, { position: 'absolute', transformOrigin: '0 0', transform: `scale(${s})`, left: `${(innerWidth - 1920 * s) / 2}px`, top: `${(innerHeight - 1080 * s) / 2}px` }); };
+  addEventListener('resize', ajusta); ajusta();
+  const aoVivo = Q.has('live');
+  // ao vivo: espaço ou → leva ao próximo HOLD; o último é DUR (a passagem para a cena 10)
+  const PARADAS = HOLDS;
+  let t = 0, alvo = aoVivo ? PARADAS[0] : DUR, rodando = true, antes = null, ultimo = null;
+  const passo = (agora) => { if (antes !== null && rodando) { t += (agora - antes) / 1000; if (t >= alvo) { t = alvo; if (!aoVivo) t = 0; else rodando = false; } } antes = agora; if (t !== ultimo) { render(t); ultimo = t; } requestAnimationFrame(passo); };
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown') {
+      const base0 = rodando ? alvo : t;
+      const i = PARADAS.findIndex((h) => h > base0 + 1e-3);
+      if (aoVivo) { if (i >= 0) { alvo = PARADAS[i]; rodando = true; } } else rodando = !rodando;
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      const anteriores = PARADAS.filter((h) => h < t - 1e-3);
+      t = anteriores.length ? anteriores[anteriores.length - 1] : 0;
+      alvo = aoVivo ? (PARADAS.find((h) => h > t + 1e-3) ?? DUR) : DUR;
+      rodando = !aoVivo;
+      render(t); ultimo = t;
+      e.preventDefault();
+    } else if (e.key === 'r') { t = 0; alvo = aoVivo ? PARADAS[0] : DUR; rodando = true; }
+  });
+  window.__pronto.then(() => requestAnimationFrame(passo));
+}
+</script>
+</body>
+</html>

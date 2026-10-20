@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · costura 08–10</title>
+<style>
+  html, body { margin: 0; background: #171717; }
+  #c { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+  #c img { position: absolute; left: 0; top: 0; display: block; width: 1920px; height: 1080px; }
+  /* a moldura do celular desenhada aqui, igual à #moldura da cena 08 (.app-frame do protótipo) */
+  #moldura { position: absolute; box-sizing: border-box; border-style: solid; border-color: rgb(34, 36, 38); visibility: hidden; }
+</style>
+</head>
+<body>
+<div id="c">
+  <!-- embaixo, o primeiro quadro da cena 10 (costura C09-10: papel, grade e a linha de 240 a 1680 em y 900);
+       no meio, o último quadro da cena 08, recortado na tela do celular; em cima, a moldura do celular.
+       As imagens ficam sempre em 1920 x 1080, sem escala: a ponte só as recorta com clip-path. -->
+  <img id="depois" src="../assets/cena10-inicio.png" alt="">
+  <img id="antes" src="../assets/cena08-fim.png" alt="">
+  <div id="moldura"></div>
+</div>
+<script>
+  // O último quadro da cena 08 (POC.saida em cena08.html) tem só o papel, a grade, a linha laranja de
+  // 240 a 1680 em y 900 (passando atrás do celular, na altura do botão Abrir WhatsApp) e o celular,
+  // fora a fora, em [200, 40, 488, 1000], com borda de 10 px e raio 48. Fora do celular ele é igual
+  // ao primeiro quadro da cena 10. Na ponte o celular se fecha sobre a linha: a moldura encolhe na
+  // vertical até a altura da linha, a tela vai junto (recorte da imagem, sem escala), a última fatia
+  // é o laranja do botão, e a moldura, já fina, fica laranja e assenta sobre o trecho da linha que
+  // estava atrás do celular.
+  const antes = document.getElementById('antes'), moldura = document.getElementById('moldura');
+  const duracao = 1.2;
+  const CEL = { x: 200, y: 40, w: 488, h: 1000 }, BZ = 10, RAIO = 48;
+  // a linha: traço de 4,2 px com ponta redonda de 240 a 1680 em y 900 (motion/lib/costuras.js)
+  const LIN = { x: 240 - 2.1, y: 900 - 2.1, w: 688 - 240 + 2.1, h: 4.2 };
+  const T0 = 0, T1 = 1.1;                     // de 1,1 s em diante (HOLD em 1,2 s) o quadro já é a cena 10
+  const clamp = (v) => Math.max(0, Math.min(1, v));
+  // aceleração constante no primeiro quarto, velocidade constante, frenagem no último quarto:
+  // o pico de velocidade fica em 1,33 vez a média (a borda de cima anda cerca de 35 px por quadro)
+  const A = 0.25;
+  const suave = (v) => { const u = clamp(v); return u < A ? (u * u) / (2 * A * (1 - A)) : u > 1 - A ? 1 - ((1 - u) * (1 - u)) / (2 * A * (1 - A)) : (u - A / 2) / (1 - A); };
+  const lerp = (a, b, p) => a + (b - a) * p;
+  const f2 = (v) => v.toFixed(2);
+  window.seek = (t) => {
+    if (t <= T0) {
+      // o último quadro da cena 08: fora do celular ele é igual à imagem de baixo, então basta o retângulo do celular
+      antes.style.clipPath = `inset(${CEL.y}px ${1920 - CEL.x - CEL.w}px ${1080 - CEL.y - CEL.h}px ${CEL.x}px)`; antes.style.visibility = 'visible';
+      moldura.style.visibility = 'hidden';
+      return;
+    }
+    const p = suave((t - T0) / (T1 - T0));
+    const fim = p >= 1;
+    // moldura: do celular à faixa fina da linha
+    const x = lerp(CEL.x, LIN.x, p), y = lerp(CEL.y, LIN.y, p), w = lerp(CEL.w, LIN.w, p), h = lerp(CEL.h, LIN.h, p);
+    const bz = Math.min(BZ, h / 2), r = Math.min(RAIO, h / 2);
+    const laranja = clamp((p - 0.82) / 0.18);
+    Object.assign(moldura.style, { left: f2(x) + 'px', top: f2(y) + 'px', width: f2(w) + 'px', height: f2(h) + 'px', borderWidth: f2(bz) + 'px', borderRadius: f2(r) + 'px', visibility: fim ? 'hidden' : 'visible' });
+    moldura.style.borderColor = `rgb(${lerp(34, 244, laranja).toFixed(0)}, ${lerp(36, 119, laranja).toFixed(0)}, ${lerp(38, 69, laranja).toFixed(0)})`;
+    // a tela: a imagem da cena 08 recortada por dentro da moldura
+    const ti = h - 2 * bz;
+    antes.style.visibility = !fim && ti > 0.5 ? 'visible' : 'hidden';
+    antes.style.clipPath = `inset(${f2(y + bz)}px ${f2(1920 - (x + w - bz))}px ${f2(1080 - (y + h - bz))}px ${f2(x + bz)}px round ${f2(Math.max(r - bz, 0))}px)`;
+  };
+  window.POC = {
+    id: 'costura08-10', duracao, fps: 30,
+    estados: [
+      { id: 'A', nome: 'Último quadro da cena 08', t: 0 },
+      { id: 'B', nome: 'O celular começa a se fechar sobre a linha', t: 0.4 },
+      { id: 'C', nome: 'Meio: resta a faixa do botão Abrir WhatsApp', t: 0.8 },
+      { id: 'C2', nome: 'Meio: a moldura fina fica laranja sobre a linha', t: 1.0 },
+      { id: 'D', nome: 'Primeiro quadro da cena 10 (costura C09-10)', t: duracao - 1 / 30 },
+    ],
+    cliques: [], tiras: [{ nome: 'costura', t0: 0.72 }], holds: [duracao], sons: [],
+  };
+  window.__pronto = Promise.all(Array.from(document.images, (img) => img.decode()));
+  window.seek(0);
+</script>
+</body>
+</html>

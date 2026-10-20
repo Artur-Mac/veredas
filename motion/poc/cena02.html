@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · Cena 02 · o cliente do portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Plus+Jakarta+Sans:wght@400..800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lib/marca.css">
+<style>
+  html, body { margin: 0; background: var(--bg-obsidian); }
+  body.tela { min-height: 100vh; overflow: hidden; }
+  #c { position: relative; width: 1920px; height: 1080px; overflow: hidden; flex: none; font-family: var(--font-sans); color: var(--ink-primary); font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased; }
+  #fundo { position: absolute; inset: 0; }
+  #camera { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+  #mundo { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+  #mundo > * { position: absolute; }
+  #tela { position: absolute; inset: 0; }
+  .t { position: absolute; white-space: nowrap; }
+  .titulo { font: 600 70px/1.05 var(--font-display); letter-spacing: -0.025em; }
+  .titulo em { font-style: italic; font-weight: 500; }
+  .kicker { font: 700 20px/1 var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--brand-rust); }
+  .rodape { font: 400 17px/1 var(--font-sans); }
+  /* anúncio genérico de portal */
+  .card { width: 1500px; height: 820px; border-radius: 28px; background: #FFFFFF; border: 1px solid rgba(23,23,23,0.09); overflow: hidden; }
+  .card .foto { position: absolute; left: 28px; top: 28px; width: 800px; height: 764px; border-radius: 20px; overflow: hidden; background: #F8E3C4; }
+  .card .col { position: absolute; left: 870px; top: 44px; width: 590px; }
+  .card .k { font: 700 17px/1 var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+  .card .nome { font: 600 44px/1.08 var(--font-display); letter-spacing: -0.02em; margin-top: 14px; }
+  .card .chips { display: flex; gap: 10px; margin-top: 22px; }
+  .card .chip { display: inline-flex; align-items: center; gap: 8px; font: 600 21px/1 var(--font-sans); padding: 11px 16px; border-radius: 999px; background: #FAF6EE; border: 1px solid #E2D9C8; color: var(--ink-secondary); }
+  .card .chip svg { width: 22px; height: 22px; }
+  .area { position: absolute; left: 870px; top: 270px; width: 590px; height: 170px; border-radius: 18px; border: 1.5px solid #E2D9C8; background: #FAF6EE; }
+  .area .rot { position: absolute; left: 24px; top: 20px; font: 600 18px/1 var(--font-sans); color: var(--ink-muted); }
+  .area .valor { position: absolute; left: 24px; top: 58px; font: 700 76px/1 var(--font-sans); letter-spacing: -0.03em; }
+  .sol { position: absolute; left: 870px; top: 462px; display: inline-flex; align-items: center; gap: 12px; font: 600 26px/1 var(--font-sans); padding: 14px 22px 14px 16px; border-radius: 999px; background: #FFF3DA; border: 1px solid #F1D6A0; color: #8A5A12; }
+  .sol svg { width: 30px; height: 30px; }
+  .mapa { position: absolute; left: 870px; top: 548px; width: 590px; height: 244px; border-radius: 18px; overflow: hidden; border: 1px solid #E2D9C8; }
+  .selo { display: inline-flex; align-items: center; gap: 10px; font: 600 22px/1 var(--font-sans); padding: 11px 16px 11px 12px; border-radius: 12px; }
+  .selo svg { width: 24px; height: 24px; flex: none; }
+  .num { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--brand-orange); color: #171717; font: 700 21px/1 var(--font-sans); }
+  .linha-analise { width: 640px; }
+  .linha-analise .tt { font: 600 30px/1.15 var(--font-sans); }
+  .linha-analise .st { font: 400 21px/1.35 var(--font-sans); color: var(--ds-muted); margin-top: 6px; }
+  .no { border-radius: 22px; background: #FFFFFF; border: 1px solid rgba(23,23,23,0.1); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; font: 600 26px/1.1 var(--font-sans); text-align: center; }
+  .no svg { width: 44px; height: 44px; color: var(--ink-secondary); }
+  .rotulo-fluxo { font: 600 22px/1 var(--font-sans); color: var(--ink-secondary); }
+  #debug { position: absolute; right: 16px; top: 12px; font: 500 16px/1 var(--font-mono); color: #8a8a8a; }
+  /* só a V2: a costura de entrada (o quadro final da cena 01, ?v=1) e a de saída (C02-03) */
+  svg.camada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+  .recorte { position: absolute; overflow: hidden; }
+  .numero-v1 { font-family: var(--font-display); font-weight: 600; font-variation-settings: 'opsz' 144; letter-spacing: -0.035em; line-height: 0.86; color: var(--brand-orange); text-align: center; }
+  .apoio-v1 { font-family: var(--font-sans); font-weight: 500; letter-spacing: 0.01em; line-height: 1; color: #F2EBDD; text-align: center; }
+</style>
+</head>
+<body>
+<div id="c">
+  <div id="fundo"></div>
+  <div id="camera"><div id="mundo"></div></div>
+  <div id="tela"></div>
+</div>
+<script type="module">
+import { clamp, lerp, invLerp, smooth, sp, spring, track, swap, pending, rng, PRESETS as P } from '../lib/motion.js';
+import { caminho, caixa, poly, tela as tela3, profundidade, recortaRet, PERTO } from '../lib/espaco3d.js';
+import { salaV1, DUR01C, layout01C } from '../lib/sala01.js';
+import { desenharCostura, COSTURAS } from '../lib/costuras.js';
+
+// ---------------------------------------------------------------------------
+// ?v=1 ousada (a vitrine): o sistema visto de longe, o vidro, o anúncio por dentro
+// ?v=2 sóbria (o sistema e a ficha): três polos num eixo e a análise em sequência
+// ---------------------------------------------------------------------------
+const V = clamp(Number(new URLSearchParams(location.search).get('v') || 1), 1, 2);
+const NOMES = { 1: 'ousada: a vitrine', 2: 'sóbria: o sistema e a ficha' };
+const T1 = { titulo: 1.3, naoVoce: 2.6, ganham: 3.0, entra: 4.4, r1: 5.6, r2: 7.4, r3: 9.2, r4: 11.0, volta: 12.75 };
+// V2 (roteiro gravado de 18/10/2026): a cena dura o que a fala dura e corre contínua. Os tempos são os
+// da gravação (pausas medidas: a fala da cena começa em "Por quê?", 0,19 s, e "chuva." termina em 12,48 s);
+// cada imagem chega cerca de 0,1 s antes da palavra. Os HOLDs ficam nos fins de frase, parados.
+const T2 = (() => {
+  const T = {};
+  // B1 · "Por quê?" (0,19 a 0,63 s). Costura: "MILHARES" e "de reais" afundam juntos atrás do peitoril pelo
+  // mesmo recorte; a moldura de papel cresce até as bordas e empurra as cortinas para fora (a grade entra
+  // com o papel); o vão encolhe até o card "Você" e, ainda em voo, fica branco de baixo para cima (sem
+  // fade), com a linha creme do peitoril até pousar; então ganha o ícone e o nome
+  T.afunda = 0; T.afundaFim = 0.88; T.papel = 0.3; T.papelFim = 0.8; T.vao = 0.45; T.vaoFim = 2.0; T.branco = 1.25; T.pousa = 2.05;
+  T.voce = T.pousa;
+  // B2 · "Porque o cliente(1,37) dos portais(1,96) é a imobiliária(2,41)," o fio até "Você" sai logo depois
+  // do Portal (as duas pontas já estão na tela)
+  T.titulo = 1.8; T.portal = 1.85; T.fio = T.portal + 0.5; T.imob = 2.3; T.fluxo = T.imob + 0.3;
+  // B3 · "não você."(3,3 a 3,9): o card "Você" fica transparente, de fora (no lugar do X). HOLD
+  T.naoVoce = 3.25; T.h1 = 3.95;
+  // B4 · "Eles ganham por clique"(4,72). HOLD
+  T.clique = 4.6; T.h2 = 5.05;   // a parte A começa a sair em T.morph − 0,22 s
+  // B5 · "Por isso(5,27) toleram fotos(6,03) esticadas(6,28) em olho de peixe,"(até 7,54). HOLD
+  T.morph = 5.3; T.morphFim = T.morph + 0.85; T.r1 = 6.0; T.foto = 6.25; T.h3 = 7.6;
+  // B6 · "área(7,71) das garagem somadas(8,55) como quarto,"(até 9,66). HOLD
+  T.r2 = 7.65; T.vaga = 8.5; T.h4 = 9.72;
+  // B7 · "e zero aviso(9,94) de que a rua(11,4) alaga(11,9) na chuva."(até 12,48): a marca 3; o card
+  // "Você" volta a ficar opaco (é você quem mora na rua) e a água ocupa a rua do anúncio
+  T.r3 = 9.85; T.volta = 10.45; T.alaga = 10.65;
+  // saída, em "alaga na chuva", espelhando a entrada: a lista se recolhe por recorte, o anúncio se recolhe
+  // por recorte até o chão (y da linha de base), as três marcas viram pontos e o card "Você" encolhe até
+  // virar o quarto; a linha de base sai de trás do anúncio e os quatro pontos pousam nela um a um, com a
+  // mola type, no quadro de emenda C02-03 (motion/lib/costuras.js)
+  T.sai = 11.95; T.viaja = T.sai + 0.1; T.paira = T.sai + 0.95; T.recolhe = T.sai + 0.1; T.recolheFim = T.sai + 0.8;
+  T.voceSai = T.sai + 0.2; T.voceFim = T.sai + 1.1;
+  T.linha = T.sai + 0.5; T.linhaFim = T.sai + 1.3; T.pouso = T.sai + 1.0; T.entrePousos = 0.08;
+  let pt = 0; while (sp(pt, P.type) < 0.99) pt += 0.001;     // a mola type chega a 99% (e o ponto, ao chão)
+  T.pousoDur = Math.ceil(pt * 1000) / 1000;
+  T.chega = T.pouso + 3 * T.entrePousos + T.pousoDur;
+  T.dur = Math.ceil((T.chega + 0.12) * 30) / 30;   // o HOLD final é igual ao quadro 0,1 s antes
+  return T;
+})();
+const T = V === 1 ? T1 : T2;
+const DUR = V === 1 ? 14.4 : T2.dur;
+const VIAGEM = { k: 9, d: 6 };   // zeta 1: câmera longa
+
+const $ = (id) => document.getElementById(id);
+const mundo = $('mundo'), telaEl = $('tela');
+function el(cls, html, pai) { const e = document.createElement('div'); e.className = cls; e.innerHTML = html; pai.appendChild(e); return e; }
+const vis = (e, a) => { e.style.opacity = a.toFixed(3); e.style.visibility = a > 0.001 ? 'visible' : 'hidden'; };
+const pos = (e, x, y) => { e.style.left = x.toFixed(1) + 'px'; e.style.top = y.toFixed(1) + 'px'; };
+
+const ICONE = {
+  predio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>',
+  portal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M3 8h18"/><path d="M7 6h.01M10 6h.01"/></svg>',
+  voce: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0-8 0"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>',
+  lente: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h1a2 2 0 0 0 2-2a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1a2 2 0 0 0 2 2h1a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2"/><path d="M12 13m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0"/></svg>',
+  area: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>',
+  nasce: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h1m16 0h1M5.6 10.6l.7.7m12.1-.7l-.7.7M8 17a4 4 0 0 1 8 0"/><path d="M3 21h18"/><path d="M12 9V3l3 3M9 6l3-3"/></svg>',
+  poe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h1m16 0h1M5.6 10.6l.7.7m12.1-.7l-.7.7M8 17a4 4 0 0 1 8 0"/><path d="M3 21h18"/><path d="M12 3v6l3-3M9 6l3 3"/></svg>',
+  gota: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 19.4c2.6 2.1 6.4 2.1 9 0s3.3-5.7 1.6-8.5l-4.9-7.3a1.4 1.4 0 0 0-2.3 0l-4.9 7.3c-1.7 2.8-1 6.4 1.5 8.5z"/></svg>',
+  quarto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>',
+  vaga: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>',
+};
+
+// ---------------------------------------------------------------------------
+// A foto do anúncio: a sala da cena 01. Correção = só a câmera (dolly zoom),
+// a luz e as cores não mudam (regra da REF-10: corrigir não é embelezar).
+// ---------------------------------------------------------------------------
+const hx = (h) => h;
+const COR = {
+  piso: '#EFC38D', pisoLinha: '#F8DDB4', fundo: '#F8E3C4', esquerda: '#F6B467', direita: '#F9C978', teto: '#FCEEDA', sanca: '#F8E2C2',
+  ceu1: '#FBD08F', ceu2: '#FCDDA8', ceu3: '#FDE9C6', mar: '#F7C79E', marLinha: '#FCE3C9', sol: '#FFB347', halo: 'rgba(255,196,107,0.35)',
+  torreA: '#F4A15C', torreB: '#EE8956', torreC: '#E9734F', torreTopo: '#FCE0B8', luz: 'rgba(255,244,214,0.85)', feixe: 'rgba(255,241,201,0.24)',
+  sofaT: '#F9A07A', sofaF: '#F47745', sofaL: '#DC683B', tapete: '#F2A27F', tapeteBorda: '#F8C3A6', mesaT: '#FBD27D', mesaF: '#F2B04F', mesaL: '#E39A3C',
+  rackT: '#FCE7C4', rackF: '#F6D3A0', rackL: '#E9BC85', quadro: '#E9734F', quadroSol: '#FFC46B', passe: '#FFF7EA', moldura: '#FFFFFF', linha: '#FFFFFF', cortina: 'rgba(255,248,236,0.8)',
+};
+const torres = [];
+{ const r = rng(81); for (let i = 0; i < 14; i += 1) { const lado = i % 2 ? 1 : -1; torres.push({ x: lado * (5 + r() * 18), w: 2.2 + r() * 3, prof: 2 + r() * 2, y: -46 - r() * 10, topo: 0.6 + r() * 5, cor: ['torreA', 'torreB', 'torreC'][i % 3] }); } torres.sort((a, b) => a.y - b.y); }
+const HW = 3.3, D = 7.0, H = 2.8;
+// lente: f/(distância até a parede do fundo) constante, então a parede do fundo não muda de tamanho
+function cameraFoto(W, Hh, aberta) {
+  const K = 104;
+  const f = lerp(1000, 340, aberta);
+  const dist = f / K;
+  return { pos: [0, -D + dist, 1.42], f, pitch: -0.025, cx: W / 2, cy: Hh / 2 + 18, yaw: 0, roll: 0 };
+}
+function fotoSala(W, Hh, aberta) {
+  const c = cameraFoto(W, Hh, aberta);
+  const L = COR.linha;
+  let s = '';
+  const yc = -70;
+  s += poly(caminho([[-120, yc, 1.6], [120, yc, 1.6], [120, yc, 80], [-120, yc, 80]], c), COR.ceu1, 'none', 0);
+  s += poly(caminho([[-120, yc, 1.6], [120, yc, 1.6], [120, yc, 7], [-120, yc, 7]], c), COR.ceu2, 'none', 0);
+  s += poly(caminho([[-120, yc, 1.6], [120, yc, 1.6], [120, yc, 3.6], [-120, yc, 3.6]], c), COR.ceu3, 'none', 0);
+  const sc = tela3([2.2, -36, 4.4], c), sd = profundidade([2.2, -36, 4.4], c);
+  if (sd > PERTO) { const r = (c.f * 2.1) / sd; s += `<circle cx="${sc[0].toFixed(1)}" cy="${sc[1].toFixed(1)}" r="${(r * 1.7).toFixed(1)}" fill="${COR.halo}"/><circle cx="${sc[0].toFixed(1)}" cy="${sc[1].toFixed(1)}" r="${r.toFixed(1)}" fill="${COR.sol}"/>`; }
+  s += poly(caminho([[-120, -69, -30], [120, -69, -30], [120, -69, 1.6], [-120, -69, 1.6]], c), COR.mar, 'none', 0);
+  for (const tw of torres) s += caixa(tw.x - tw.w / 2, tw.y - tw.prof, -30, tw.x + tw.w / 2, tw.y, tw.topo, { t: COR.torreTopo, f: COR[tw.cor], l: COR[tw.cor] }, c, L, 1);
+  s += poly(caminho([[-HW, 2, 0], [HW, 2, 0], [HW, -D, 0], [-HW, -D, 0]], c), COR.piso, L, 2);
+  let lin = '';
+  for (let x = -HW + 0.6; x < HW - 0.05; x += 0.6) lin += caminho([[x, 2, 0.002], [x, -D, 0.002]], c, false);
+  for (let y = 1.4; y > -D + 0.05; y -= 0.6) lin += caminho([[-HW, y, 0.002], [HW, y, 0.002]], c, false);
+  s += `<path d="${lin}" fill="none" stroke="${COR.pisoLinha}" stroke-width="1.4"/>`;
+  s += poly(caminho([[-HW, 2, H], [HW, 2, H], [HW, -D, H], [-HW, -D, H]], c), COR.teto, L, 2);
+  s += poly(caminho([[-HW + 0.55, 2, H - 0.001], [HW - 0.55, 2, H - 0.001], [HW - 0.55, -D + 0.55, H - 0.001], [-HW + 0.55, -D + 0.55, H - 0.001]], c), COR.sanca, L, 1.4);
+  s += poly(caminho([[-HW, 2, 0], [-HW, -D, 0], [-HW, -D, H], [-HW, 2, H]], c), COR.esquerda, L, 2);
+  s += poly(caminho([[HW, 2, 0], [HW, -D, 0], [HW, -D, H], [HW, 2, H]], c), COR.direita, L, 2);
+  s += poly(caminho([[HW, -2.6, 1.05], [HW, -4.3, 1.05], [HW, -4.3, 2.1], [HW, -2.6, 2.1]], c), COR.passe, L, 2);
+  s += poly(caminho([[HW, -2.75, 1.2], [HW, -4.15, 1.2], [HW, -4.15, 1.95], [HW, -2.75, 1.95]], c), COR.quadro, 'none', 0);
+  const J = { x0: -1.85, x1: 1.85, z0: 0.25, z1: 2.5 };
+  const ext = caminho([[-HW, -D, 0], [HW, -D, 0], [HW, -D, H], [-HW, -D, H]], c);
+  const vao = caminho([[J.x0, -D, J.z0], [J.x0, -D, J.z1], [J.x1, -D, J.z1], [J.x1, -D, J.z0]], c);
+  s += `<path d="${ext}${vao}" fill="${COR.fundo}" fill-rule="evenodd" stroke="${L}" stroke-width="2"/>`;
+  const barra = (x0, z0, x1, z1) => poly(caminho([[x0, -D, z0], [x1, -D, z0], [x1, -D, z1], [x0, -D, z1]], c), COR.moldura, L, 1);
+  s += barra(J.x0 - 0.08, J.z0 - 0.08, J.x1 + 0.08, J.z0) + barra(J.x0 - 0.08, J.z1, J.x1 + 0.08, J.z1 + 0.08) + barra(J.x0 - 0.08, J.z0, J.x0, J.z1) + barra(J.x1, J.z0, J.x1 + 0.08, J.z1) + barra(-0.035, J.z0, 0.035, J.z1) + barra(J.x0, 1.92, J.x1, 1.98);
+  // luz do sol no chão (direção fixa)
+  const Ld = [-2.2, 34, -3.0];
+  let luz = '';
+  for (const [x0, x1, z0, z1] of [[J.x0, -0.035, J.z0, 1.92], [0.035, J.x1, J.z0, 1.92]]) {
+    const pts = [[x0, z0], [x1, z0], [x1, z1], [x0, z1]].map(([x, z]) => { const k = -z / Ld[2]; return [x + Ld[0] * k, -D + Ld[1] * k, 0.004]; });
+    const rec = recortaRet(pts, -HW, HW, -D, 2);
+    if (rec.length >= 3) luz += caminho(rec, c);
+  }
+  s += `<path d="${luz}" fill="${COR.luz}"/>`;
+  s += poly(caminho([[-1.6, -3.1, 0.008], [1.25, -3.1, 0.008], [1.25, -5.6, 0.008], [-1.6, -5.6, 0.008]], c), COR.tapete, COR.tapeteBorda, 3);
+  const so = { t: COR.sofaT, f: COR.sofaF, l: COR.sofaL };
+  const moveis = [
+    { d: profundidade([-2.6, -4.5, 0.4], c), s: () => caixa(-HW + 0.02, -5.7, 0.08, -HW + 0.26, -3.3, 0.82, so, c, L) + caixa(-HW + 0.24, -5.7, 0.08, -HW + 1.0, -3.3, 0.4, so, c, L) + caixa(-HW + 0.24, -5.7, 0.08, -HW + 1.0, -5.5, 0.58, so, c, L) + caixa(-HW + 0.24, -3.5, 0.08, -HW + 1.0, -3.3, 0.58, so, c, L) },
+    { d: profundidade([-0.3, -4.45, 0.2], c), s: () => caixa(-0.6, -4.75, 0, 0.0, -4.15, 0.26, { t: COR.mesaF, f: COR.mesaL, l: COR.mesaL }, c, L) + caixa(-0.95, -5.0, 0.26, 0.35, -3.9, 0.34, { t: COR.mesaT, f: COR.mesaF, l: COR.mesaL }, c, L) },
+    { d: profundidade([HW - 0.3, -4.4, 0.3], c), s: () => caixa(HW - 0.48, -5.6, 0.12, HW - 0.02, -3.4, 0.5, { t: COR.rackT, f: COR.rackF, l: COR.rackL }, c, L) },
+  ].sort((a, b) => b.d - a.d);
+  for (const m of moveis) s += m.s();
+  for (const [x0, x1] of [[J.x0 - 0.75, J.x0 + 0.05], [J.x1 - 0.05, J.x1 + 0.75]]) s += poly(caminho([[x0, -D + 0.12, H - 0.05], [x1, -D + 0.12, H - 0.05], [x1, -D + 0.3, 0.06], [x0, -D + 0.3, 0.06]], c), COR.cortina, L, 1.2);
+  return s;
+}
+
+// ---------------------------------------------------------------------------
+// Peças do anúncio: planta da área, bússola e mapa da rua
+// ---------------------------------------------------------------------------
+// planta: apartamento 62,5 m² (exemplo) e a vaga de 12,5 m² somada à área
+function planta(w, h, vagaSai, contorno) {
+  const ap = { x: 18, y: 14, w: w * 0.62, h: h - 28 };
+  const vg = { x: ap.x + ap.w + 10 + vagaSai * 60, y: ap.y + ap.h * 0.28, w: w * 0.19, h: ap.h * 0.72 };
+  let s = `<rect x="${ap.x}" y="${ap.y}" width="${ap.w.toFixed(1)}" height="${ap.h}" rx="6" fill="#FFFFFF" stroke="#171717" stroke-width="2"/>`;
+  s += `<path d="M${(ap.x + ap.w * 0.55).toFixed(1)} ${ap.y}V${(ap.y + ap.h * 0.62).toFixed(1)}M${ap.x} ${(ap.y + ap.h * 0.62).toFixed(1)}H${(ap.x + ap.w).toFixed(1)}" stroke="#171717" stroke-width="1.5" fill="none"/>`;
+  s += `<g opacity="${(1 - vagaSai).toFixed(3)}" transform="translate(0 ${(vagaSai * 30).toFixed(1)})"><rect x="${vg.x.toFixed(1)}" y="${vg.y.toFixed(1)}" width="${vg.w.toFixed(1)}" height="${vg.h.toFixed(1)}" rx="5" fill="url(#hachura-vaga)" stroke="#B94E36" stroke-width="2" stroke-dasharray="6 5"/>`;
+  s += `<text x="${(vg.x + vg.w / 2).toFixed(1)}" y="${(vg.y + vg.h / 2 + 7).toFixed(1)}" text-anchor="middle" font-family="Plus Jakarta Sans" font-weight="700" font-size="19" fill="#B94E36">vaga</text></g>`;
+  const cw = lerp(vg.x + vg.w + 8 - ap.x + 8, ap.w + 16, contorno);
+  s += `<rect x="${ap.x - 8}" y="${ap.y - 8}" width="${cw.toFixed(1)}" height="${ap.h + 16}" rx="10" fill="none" stroke="#F47745" stroke-width="3"/>`;
+  return s;
+}
+function bussola(r, angFachada, angSol, cores = {}) {
+  const tx = cores.texto || '#625C51';
+  let s = `<circle cx="0" cy="0" r="${r}" fill="${cores.disco || '#FFFFFF'}" stroke="${cores.aro || '#E2D9C8'}" stroke-width="2"/>`;
+  for (const [l, a] of [['N', -90], ['L', 0], ['S', 90], ['O', 180]]) {
+    const x = Math.cos(a * Math.PI / 180) * (r - 22), y = Math.sin(a * Math.PI / 180) * (r - 22) + 7;
+    s += `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-family="Plus Jakarta Sans" font-weight="700" font-size="20" fill="${tx}">${l}</text>`;
+  }
+  // fachada: a seta para onde a janela olha
+  const a = angFachada * Math.PI / 180;
+  s += `<path d="M${(-Math.sin(a) * 26).toFixed(1)} ${(Math.cos(a) * 26).toFixed(1)}L${(Math.cos(a) * (r - 44)).toFixed(1)} ${(Math.sin(a) * (r - 44)).toFixed(1)}L${(Math.sin(a) * 26).toFixed(1)} ${(-Math.cos(a) * 26).toFixed(1)}Z" fill="${cores.seta || '#171717'}"/>`;
+  const b = angSol * Math.PI / 180;
+  s += `<circle cx="${(Math.cos(b) * (r + 34)).toFixed(1)}" cy="${(Math.sin(b) * (r + 34)).toFixed(1)}" r="17" fill="#FFB347" stroke="#FFFFFF" stroke-width="3"/>`;
+  return s;
+}
+function mapaRua(w, h, alaga, chuva, cores = {}) {
+  let s = `<rect width="${w}" height="${h}" fill="${cores.terra || '#EFE7D8'}"/>`;
+  const ruas = [[0, h * 0.56, w, h * 0.56, 34], [w * 0.38, 0, w * 0.38, h, 26], [w * 0.8, 0, w * 0.8, h, 22]];
+  for (const [x1, y1, x2, y2, l] of ruas) s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#FFFFFF" stroke-width="${l}"/>`;
+  for (const [x, y, ww, hh] of [[24, 20, w * 0.3, h * 0.38], [w * 0.46, 20, w * 0.28, h * 0.38], [24, h * 0.66, w * 0.3, h * 0.3], [w * 0.46, h * 0.66, w * 0.28, h * 0.3]]) s += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${ww.toFixed(1)}" height="${hh.toFixed(1)}" rx="6" fill="${cores.quadra || '#E4D9C4'}"/>`;
+  if (alaga > 0.001) {
+    // a água ocupa a rua do prédio a partir do ponto baixo, à esquerda
+    const larg = w * alaga;
+    s += `<rect x="0" y="${(h * 0.56 - 20).toFixed(1)}" width="${larg.toFixed(1)}" height="40" fill="url(#hachura-agua)"/>`;
+    s += `<rect x="${(w * 0.38 - 16).toFixed(1)}" y="${(h * 0.56 - h * 0.35 * alaga).toFixed(1)}" width="32" height="${(h * 0.7 * alaga).toFixed(1)}" fill="url(#hachura-agua)"/>`;
+  }
+  if (chuva > 0.001) {
+    let ch = '';
+    const r = rng(9);
+    for (let i = 0; i < 40; i += 1) { const x = r() * w, y0 = ((r() * h + chuva * 900) % (h + 40)) - 20; ch += `M${x.toFixed(1)} ${y0.toFixed(1)}l-8 22`; }
+    s += `<path d="${ch}" stroke="#7895AA" stroke-width="2" stroke-linecap="round" opacity="${Math.min(1, chuva * 3).toFixed(3)}"/>`;
+  }
+  s += `<g transform="translate(${(w * 0.6).toFixed(1)} ${(h * 0.56).toFixed(1)})"><circle r="22" fill="rgba(244,119,69,0.25)"/><circle r="11" fill="#F47745" stroke="#FFFFFF" stroke-width="3"/></g>`;
+  return s;
+}
+const DEFS = `<defs>
+  <pattern id="hachura-vaga" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="9" height="9" fill="rgba(185,78,54,0.06)"/><line x1="0" y1="0" x2="0" y2="9" stroke="rgba(185,78,54,0.45)" stroke-width="3"/></pattern>
+  <pattern id="hachura-agua" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="rgba(120,149,170,0.30)"/><line x1="0" y1="0" x2="0" y2="10" stroke="rgba(120,149,170,0.85)" stroke-width="3"/></pattern>
+</defs>`;
+
+// ---------------------------------------------------------------------------
+// O anúncio genérico (sem marca, sem portal real): DOM com SVGs internos
+// ---------------------------------------------------------------------------
+// o: { semSol, mapaTop, mapaH } (só a V2: sem o selo do sol e a bússola, mapa mais alto)
+function criarCard(pai, o = {}) {
+  const card = el('card', '', pai);
+  const foto = el('foto', '<svg width="800" height="764" viewBox="0 0 800 764"></svg>', card);
+  const col = el('col', `<div class="k">Apartamento à venda · Recife</div><div class="nome">Sala ampla, sol da manhã</div>
+    <div class="chips"><span class="chip">${ICONE.quarto}2 quartos</span><span class="chip">${ICONE.vaga}1 vaga</span><span class="chip">condomínio baixo</span></div>`, card);
+  const area = el('area', `<div class="rot">Área</div><div class="valor">75 m²</div><svg class="pl" width="590" height="170" viewBox="0 0 590 170" style="position:absolute;left:0;top:0">${DEFS}</svg>`, card);
+  const sol = o.semSol ? null : el('sol', `<span class="ic">${ICONE.nasce}</span><span class="tx">Nascente</span>`, card);
+  const mapaH = o.mapaH || 244;
+  const mapa = el('mapa', `<svg width="590" height="${mapaH}" viewBox="0 0 590 ${mapaH}">${DEFS}<g class="m"></g></svg>`, card);
+  if (o.mapaTop) Object.assign(mapa.style, { top: o.mapaTop + 'px', height: mapaH + 'px' });
+  let bus = null;
+  if (!o.semSol) {
+    bus = el('', '<svg width="160" height="160" viewBox="-80 -80 160 160" style="overflow:visible"><g class="b"></g></svg>', card);
+    Object.assign(bus.style, { position: 'absolute', left: '1290px', top: '414px', width: '160px', height: '160px' });
+  }
+  return { card, bus, busG: bus && bus.querySelector('.b'), foto: foto.querySelector('svg'), area, areaValor: area.querySelector('.valor'), areaSvg: area.querySelector('.pl'), sol, solIc: sol && sol.querySelector('.ic'), solTx: sol && sol.querySelector('.tx'), mapa: mapa.querySelector('.m'), mapaH };
+}
+// estado do anúncio: 0 = como anunciado; 1 = revelado
+function atualizarCard(k, est) {
+  k.foto.innerHTML = fotoSala(800, 764, 1 - est.foto);
+  // área: a caixa mostra a planta; a vaga sai e o número corrige
+  const pl = est.planta;
+  k.areaSvg.innerHTML = DEFS + (pl > 0.001 ? `<g transform="translate(352 14)" opacity="${clamp(pl * 2).toFixed(3)}">${planta(222, 142, est.vagaSai, est.vagaSai)}</g>` : '');
+  k.areaValor.textContent = est.vagaSai > 0.5 ? '62,5 m²' : '75 m²';
+  k.areaValor.style.color = est.vagaSai > 0.5 ? '#B94E36' : '#171717';
+  // sol: o selo vira de nascente para poente (só a V1 tem o selo)
+  if (k.sol) {
+  const vira = est.sol;
+  const esc = Math.abs(Math.cos(vira * Math.PI));
+  // virada do selo por recorte, não por transform: transform animado faz o Chromium reaproveitar
+  // a rasterização de quadros anteriores e o quadro passa a depender do histórico
+  const corte = ((1 - esc) * 50).toFixed(2);
+  k.sol.style.clipPath = `inset(${corte}% 0 ${corte}% 0 round 999px)`;
+  const poente = vira > 0.5;
+  k.solIc.innerHTML = poente ? ICONE.poe : ICONE.nasce;
+  k.solTx.textContent = poente ? 'Poente' : 'Nascente';
+  Object.assign(k.sol.style, poente ? { background: '#F3EEE8', borderColor: '#D9CDBE', color: '#4A4740' } : { background: '#FFF3DA', borderColor: '#F1D6A0', color: '#8A5A12' });
+  }
+  k.mapa.innerHTML = mapaRua(590, k.mapaH, est.alaga, est.chuva);
+  // bússola: a fachada gira do leste (o que o anúncio diz) para o oeste (o que é)
+  if (k.bus) {
+    const ab = clamp((est.bussola ?? 0) * 1.0);
+    k.bus.style.opacity = ab.toFixed(3);
+    k.bus.style.visibility = ab > 0.001 ? 'visible' : 'hidden';
+    if (ab > 0.001) { const ang = lerp(0, 180, est.sol); k.busG.innerHTML = bussola(54, ang, ang); }
+  }
+}
+
+// selo de revelação (ícone + texto), usado nas duas versões
+function criarSelo(pai, icone, texto, estilo) { const s = el('t selo', `${icone}<span>${texto}</span>`, pai); Object.assign(s.style, estilo); return s; }
+
+const dbg = new URLSearchParams(location.search).has('debug') ? el('', '', $('c')) : null;
+if (dbg) dbg.id = 'debug';
+
+// ===========================================================================
+// V1 · OUSADA: a vitrine
+// ===========================================================================
+let render;
+if (V === 1) {
+  $('c').style.background = '#141414';
+  // pontilhado de fundo (REF-09, opção escura): pontos de papel sobre tinta
+  Object.assign($('fundo').style, { backgroundImage: 'radial-gradient(rgba(242,235,221,0.10) 1.6px, transparent 1.9px)', backgroundSize: '34px 34px' });
+  const sis = el('', '<svg id="sis" width="12000" height="7000" viewBox="-8000 -3500 12000 7000"></svg>', mundo);
+  Object.assign(sis.style, { left: '-8000px', top: '-3500px' });
+  const SIS = sis.querySelector('svg');
+  // portal genérico: uma tela com busca e uma grade de anúncios
+  const PORTAL = { x: -2650, y: 0, w: 1800, h: 1160 };
+  const portal = el('', '', mundo);
+  Object.assign(portal.style, { left: (PORTAL.x - PORTAL.w / 2) + 'px', top: (PORTAL.y - PORTAL.h / 2) + 'px', width: PORTAL.w + 'px', height: PORTAL.h + 'px', borderRadius: '44px', background: '#FAF6EE', border: '2px solid #E2D9C8', overflow: 'hidden' });
+  portal.innerHTML = `<div style="height:130px;background:#FFFFFF;border-bottom:2px solid #E2D9C8;display:flex;align-items:center;gap:30px;padding:0 54px">
+      <span style="width:56px;height:56px;color:#4A4740;display:inline-flex">${ICONE.portal}</span>
+      <span style="font:700 46px/1 var(--font-sans);color:#4A4740">portal de imóveis</span>
+      <span style="margin-left:auto;font:500 38px/1 var(--font-sans);color:#787266;background:#F2EBDD;border-radius:999px;padding:22px 40px">Buscar imóveis em Recife</span></div>
+    <div class="grade" style="position:absolute;left:54px;top:184px;right:54px;display:grid;grid-template-columns:repeat(3,1fr);gap:40px"></div>`;
+  const grade = portal.querySelector('.grade');
+  const r = rng(11);
+  const tons = ['#F6B467', '#F9C978', '#F2A27F', '#EFC38D', '#F4A15C', '#FBD08F'];
+  for (let i = 0; i < 6; i += 1) {
+    const d = el('', `<div style="height:270px;border-radius:26px;background:${tons[i]};position:relative;overflow:hidden">
+        <div style="position:absolute;left:14%;right:14%;bottom:0;height:${(50 + r() * 30).toFixed(0)}%;background:rgba(255,255,255,0.45);border-radius:14px 14px 0 0"></div></div>
+      <div style="height:26px;width:${(60 + r() * 30).toFixed(0)}%;margin-top:22px;border-radius:13px;background:#E2D9C8"></div>
+      <div style="height:22px;width:${(35 + r() * 25).toFixed(0)}%;margin-top:14px;border-radius:11px;background:#EDE5D6"></div>`, grade);
+    if (i === 4) { d.style.outline = '8px solid #F47745'; d.style.outlineOffset = '14px'; d.style.borderRadius = '26px'; }
+  }
+  // imobiliárias e corretores: perto do portal
+  const IMOB = { x: -4520, y: 0 };
+  const imob = el('', '', mundo);
+  Object.assign(imob.style, { left: (IMOB.x - 360) + 'px', top: (IMOB.y - 300) + 'px', width: '720px', height: '600px' });
+  imob.innerHTML = [0, 1, 2].map((i) => `<div style="position:absolute;left:${60 + i * 70}px;top:${40 + i * 90}px;width:520px;height:300px;border-radius:36px;background:${['#2A2A2A', '#333333', '#3D3D3D'][i]};border:2px solid #4A4A4A;display:flex;align-items:center;gap:30px;padding:0 44px;color:#F2EBDD">
+      ${i === 2 ? `<span style="width:84px;height:84px;display:inline-flex">${ICONE.predio}</span><span style="font:600 52px/1.1 var(--font-sans)">Imobiliária</span>` : ''}</div>`).join('');
+  // a vitrine: o anúncio atrás de um vidro, e você do lado de fora
+  const k = criarCard(mundo);
+  pos(k.card, -750, -410);
+  // camada de cima: o anúncio como foi publicado (volta a cobrir no fim)
+  const kEd = criarCard(mundo);
+  pos(kEd.card, -750, -410);
+  const vidro = el('', '', mundo);
+  Object.assign(vidro.style, { left: '-860px', top: '-520px', width: '1720px', height: '1040px', borderRadius: '44px', border: '6px solid #F2EBDD', boxSizing: 'border-box' });
+  const reflexo = el('', '<svg width="1720" height="1040" viewBox="0 0 1720 1040"><path d="M300 0L520 0L120 1040L-100 1040Z M600 0L660 0L260 1040L200 1040Z" fill="rgba(242,235,221,0.07)"/></svg>', mundo);
+  Object.assign(reflexo.style, { left: '-860px', top: '-520px', width: '1720px', height: '1040px', overflow: 'hidden', borderRadius: '44px' });
+  const voce = el('', `<span style="width:120px;height:120px;color:#F2EBDD;display:inline-flex">${ICONE.voce}</span><span style="font:600 110px/1 var(--font-display);color:#F2EBDD">você</span>`, mundo);
+  Object.assign(voce.style, { left: '-300px', top: '620px', display: 'flex', alignItems: 'center', gap: '36px' });
+  const rotPortal = el('', 'portal', mundo); Object.assign(rotPortal.style, { left: (PORTAL.x - 260) + 'px', top: '-830px', font: '600 150px/1 var(--font-display)', color: '#F2EBDD' });
+  const rotImob = el('', 'imobiliárias<br>e corretores', mundo); Object.assign(rotImob.style, { left: (IMOB.x - 420) + 'px', top: '-860px', font: '600 118px/1.02 var(--font-display)', color: '#F2EBDD' });
+  const rotAnuncio = el('', 'anúncios →', mundo); Object.assign(rotAnuncio.style, { left: '-4020px', top: '-990px', font: '700 96px/1 var(--font-sans)', color: '#F47745' });
+  const rotLead = el('', '← cliques e leads', mundo); Object.assign(rotLead.style, { left: '-4140px', top: '880px', font: '700 96px/1 var(--font-sans)', color: '#F47745' });
+  const rotPorAnuncio = el('', 'R$ por anúncio', mundo); Object.assign(rotPorAnuncio.style, { left: '-4020px', top: '-870px', font: '500 80px/1 var(--font-mono)', color: '#F2EBDD' });
+  const rotPorClique = el('', 'R$ por clique', mundo); Object.assign(rotPorClique.style, { left: '-4140px', top: '1000px', font: '500 80px/1 var(--font-mono)', color: '#F2EBDD' });
+
+  // textos de tela
+  const titulo = el('t titulo', 'O cliente do portal<br>é a imobiliária.', telaEl); titulo.style.color = '#F2EBDD';
+  const naoVoce = el('t titulo', '<em>não você.</em>', telaEl); naoVoce.style.color = '#9A948A';
+  const rod = el('t rodape', '', telaEl); rod.style.color = '#6E6A63';
+  const fecho = el('t titulo', 'Você só vê<br><em>a versão editada.</em>', telaEl); Object.assign(fecho.style, { color: '#F2EBDD', fontSize: '64px' });
+  // selos das revelações (no mundo, junto do card)
+  const sEstilo = { background: '#171717', color: '#F2EBDD', border: '1px solid #3A3A3A' };
+  const selos = [
+    criarSelo(mundo, ICONE.lente, 'lente grande angular', { ...sEstilo }),
+    criarSelo(mundo, ICONE.vaga, 'vaga somada à área', { ...sEstilo }),
+    criarSelo(mundo, ICONE.poe, 'a janela olha para o oeste', { ...sEstilo }),
+    criarSelo(mundo, ICONE.gota, 'a rua alaga com chuva forte', { ...sEstilo }),
+  ];
+  const posSelos = [[-700, -472], [128, -204], [-470, -300], [128, 396]];
+  const corretos = [
+    criarSelo(mundo, ICONE.lente, 'proporção real', { background: '#F47745', color: '#171717' }),
+  ];
+
+  // laço entre imobiliárias e portal
+  const A = [IMOB.x + 300, IMOB.y], Pp = [PORTAL.x - PORTAL.w / 2, PORTAL.y];
+  const bez = (p0, c1, c2, p1, u) => { const v = 1 - u; return [v * v * v * p0[0] + 3 * v * v * u * c1[0] + 3 * v * u * u * c2[0] + u * u * u * p1[0], v * v * v * p0[1] + 3 * v * v * u * c1[1] + 3 * v * u * u * c2[1] + u * u * u * p1[1]]; };
+  const cima = [[A[0], A[1] - 140], [A[0] + 260, -800], [Pp[0] - 260, -800], [Pp[0], Pp[1] - 160]];
+  const baixo = [[Pp[0], Pp[1] + 160], [Pp[0] - 260, 800], [A[0] + 260, 800], [A[0], A[1] + 140]];
+  const dCurva = (b) => `M${b[0][0]} ${b[0][1]}C${b[1][0]} ${b[1][1]} ${b[2][0]} ${b[2][1]} ${b[3][0]} ${b[3][1]}`;
+
+  const CAM = {
+    feed: { x: -2650, y: 60, s: 0.95 },
+    sistema: { x: -2100, y: -260, s: 0.29 },
+    vitrine: { x: 0, y: 0, s: 1.0 },
+    fim: { x: -620, y: 90, s: 0.45 },
+  };
+  const foco = { r1: { x: -330, y: 0, s: 1.12 }, r2: { x: 340, y: -60, s: 1.18 }, r3: { x: 0, y: -30, s: 1.04 }, r4: { x: 340, y: 230, s: 1.15 } };
+  const keysCam = [[0, CAM.feed], [0.05, CAM.sistema, VIAGEM], [T.entra, CAM.vitrine, VIAGEM], [T.r1, foco.r1, P.camera], [T.r2, foco.r2, P.camera], [T.r3, foco.r3, P.camera], [T.r4, foco.r4, P.camera], [T.volta + 0.25, CAM.fim, VIAGEM]];
+  function camera(t) {
+    const x = track(t, keysCam.map(([tk, v, p]) => [tk, v.x, p]), P.camera);
+    const y = track(t, keysCam.map(([tk, v, p]) => [tk, v.y, p]), P.camera);
+    const ls = track(t, keysCam.map(([tk, v, p]) => [tk, Math.log(v.s), p]), P.camera);
+    return { x, y, s: Math.exp(ls) };
+  }
+
+  render = (t) => {
+    t = clamp(t, 0, DUR);
+    const c = camera(t);
+    // câmera por zoom (layout), não por transform scale: o texto é refeito no tamanho certo a cada
+    // quadro, fica nítido e não depende de rasterização guardada de quadros anteriores
+    const cam = $('camera');
+    cam.style.left = (960 - c.x * c.s).toFixed(2) + 'px';
+    cam.style.top = (540 - c.y * c.s).toFixed(2) + 'px';
+    mundo.style.zoom = c.s.toFixed(5);
+    // fluxo: fase integra a velocidade (acelera em "ganham por anúncio e por clique")
+    const fase = 0.22 * t + 0.4 * Math.max(0, t - T.ganham) - 0.25 * Math.max(0, t - T.entra);
+      let s = '';
+    s += `<path d="${dCurva(cima)}" fill="none" stroke="#F47745" stroke-width="44" stroke-linecap="round"/>`;
+    s += `<path d="${dCurva(baixo)}" fill="none" stroke="#F47745" stroke-width="44" stroke-linecap="round"/>`;
+    for (let i = 0; i < 6; i += 1) {
+      const u = (fase + i / 6) % 1;
+      const p = bez(...cima, u);
+      s += `<rect x="${(p[0] - 110).toFixed(1)}" y="${(p[1] - 78).toFixed(1)}" width="220" height="156" rx="26" fill="#FAF6EE" stroke="#171717" stroke-width="8"/><rect x="${(p[0] - 80).toFixed(1)}" y="${(p[1] - 50).toFixed(1)}" width="160" height="62" rx="12" fill="${tons[i % 6]}"/>`;
+      const q = bez(...baixo, (fase * 1.3 + i / 6) % 1);
+      s += `<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="62" fill="#171717" stroke="#F47745" stroke-width="14"/><path d="M${(q[0] - 14).toFixed(1)} ${(q[1] - 22).toFixed(1)}l0 40l10-9l7 15l8-4l-7-15l13 0z" fill="#F2EBDD"/>`;
+    }
+    // fio fino do portal até a vitrine: uma via, tracejado
+    const xa = PORTAL.x + PORTAL.w / 2 - 300, ya = 280;
+    s += `<path d="M${xa} ${ya} C ${xa + 700} ${ya + 260}, -1500 260, -870 0" fill="none" stroke="#8A847A" stroke-width="14" stroke-dasharray="40 36" stroke-dashoffset="${(-t * 140).toFixed(1)}"/>`;
+    SIS.innerHTML = s;
+
+    // anúncio: estados revelados em sequência (camada de baixo) e a de cima volta no fim
+    const est = {
+      foto: sp(t - (T.r1 + 0.35), { k: 18, d: 8.5 }),
+      planta: sp(t - (T.r2 + 0.1), P.card), vagaSai: sp(t - (T.r2 + 0.9), P.card),
+      sol: clamp(spring(t - (T.r3 + 0.45), 40, 12), 0, 1), bussola: swap(t, T.r3 + 0.1, Infinity, { durIn: 0.2 }),
+      chuva: invLerp(T.r4 + 0.1, T.r4 + 1.6, t), alaga: sp(t - (T.r4 + 0.45), { k: 14, d: 7.5 }),
+    };
+    if (t < T.r4 + 0.1) est.chuva = 0;
+    atualizarCard(k, est);
+    atualizarCard(kEd, { foto: 0, planta: 0, vagaSai: 0, sol: 0, chuva: 0, alaga: 0 });
+    // a versão editada cobre tudo até a entrada na vitrine e volta a cobrir no fim (cortina da direita)
+    const sai = t >= T.r1 ? 1 : 0;
+    const volta = sp(t - T.volta, P.card);
+    const largura = 1500 * (1 - sai + sai * volta);
+    kEd.card.style.clipPath = `inset(0 0 0 ${(1500 - largura).toFixed(1)}px round 28px)`;
+    kEd.card.style.visibility = largura < 1 ? 'hidden' : 'visible';
+
+    for (let i = 0; i < 4; i += 1) {
+      const ti = [T.r1, T.r2, T.r3, T.r4][i] + 0.12;
+      const a = swap(t, ti, T.volta + 0.15, { durIn: 0.16 });
+      vis(selos[i], a);
+      pos(selos[i], posSelos[i][0], posSelos[i][1] + 14 * pending(t, ti, P.type));
+    }
+    const ac = swap(t, T.r1 + 1.0, T.r2, { durIn: 0.16 });
+    vis(corretos[0], ac); pos(corretos[0], -360, -472 + 10 * pending(t, T.r1 + 1.0, P.type));
+
+    const aSist = 1 - invLerp(T.entra + 0.2, T.entra + 0.9, t) + invLerp(T.volta + 0.4, T.volta + 1.0, t);
+    for (const e of [rotPortal, rotImob, rotAnuncio, rotLead]) vis(e, clamp(aSist) * swap(t, 0.6, Infinity, { durIn: 0.3 }));
+    vis(rotPorAnuncio, swap(t, T.ganham, Infinity, { durIn: 0.2 }) * clamp(aSist));
+    vis(rotPorClique, swap(t, T.ganham + 0.35, Infinity, { durIn: 0.2 }) * clamp(aSist));
+    vis(voce, swap(t, 1.6, Infinity, { durIn: 0.3 }) * clamp(aSist));
+    const aT = swap(t, T.titulo, T.entra + 0.25);
+    vis(titulo, aT); pos(titulo, 120, 96 + 16 * pending(t, T.titulo, P.type));
+    const aN = swap(t, T.naoVoce, T.entra + 0.25);
+    vis(naoVoce, aN); pos(naoVoce, 1420, 880 + 16 * pending(t, T.naoVoce, P.type));
+    const aF = swap(t, T.volta + 0.55, Infinity, { durIn: 0.25 });
+    vis(fecho, aF); pos(fecho, 120, 830 + 16 * pending(t, T.volta + 0.55, P.type));
+    vis(rod, 0.9); pos(rod, 120, 1030);
+    if (dbg) dbg.textContent = `V1 · ${t.toFixed(2)} s · s=${c.s.toFixed(3)}`;
+  };
+}
+
+// ===========================================================================
+// V2 · SÓBRIA: o sistema e a ficha
+// Roteiro gravado de 18/10/2026 (só a V2): a costura de entrada abre no quadro final da cena 01 (?v=1,
+// 13,8 s); o card "Você" fica transparente em "não você" (no lugar do X) e volta a ficar opaco na última
+// maquiagem; "R$ por clique"; o portal vira o anúncio e três marcas revelam as três maquiagens da fala
+// (fotos em olho de peixe, garagem somada como quarto, a rua que alaga); na saída, as três marcas e o card
+// "Você" viram os quatro pontos da costura C02-03. Sem avisos e sem rodapé.
+// ===========================================================================
+if (V === 2) {
+  $('c').style.background = '#F2EBDD';
+  Object.assign($('fundo').style, { backgroundSize: '48px 48px', backgroundImage: 'linear-gradient(to right, rgba(127,136,112,0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(127,136,112,0.09) 1px, transparent 1px)' });
+  // saída: o quadro de emenda C02-03 (motion/lib/costuras.js), num SVG logo acima da grade
+  const svgCost = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svgCost.setAttribute('class', 'camada'); svgCost.setAttribute('id', 'costura'); svgCost.setAttribute('viewBox', '0 0 1920 1080');
+  $('fundo').after(svgCost);
+  const COST = desenharCostura('C02-03', svgCost);
+  const REF = COSTURAS['C02-03'];
+  const [, LX0, LY, LX1] = REF.linhas[0].d.match(/M(\S+) (\S+) L(\S+) (\S+)/).map(Number);
+  const fundoEl = $('fundo');
+  // molas que precisam parar de vez antes de um HOLD: o último 1% vira o próprio fim, para o quadro do
+  // HOLD ser o estado final e nada andar depois do clique (cada HOLD = o quadro 0,1 s antes)
+  const chega = (x) => Math.min(1, x / 0.99);
+
+  const kicker = el('t kicker', 'Por quê', telaEl);
+  const titulo = el('t titulo', 'O cliente dos portais<br>é a imobiliária.', telaEl); titulo.style.fontSize = '62px';
+  const svgFluxo = el('', '<svg width="1920" height="1080" viewBox="0 0 1920 1080" style="position:absolute;left:0;top:0;overflow:visible"></svg>', telaEl);
+  Object.assign(svgFluxo.style, { left: '0', top: '0', width: '1920px', height: '1080px' });
+  const SVGF = svgFluxo.querySelector('svg');
+  // os três cards no mesmo padrão: 360 × 200, ícone e nome embaixo dele
+  const NO = { imob: [330, 650, 360, 200], portal: [930, 650, 360, 200], voce: [1600, 650, 360, 200] };
+  const noImob = el('t no', `${ICONE.predio}<span>Imobiliária<br>e corretor</span>`, telaEl);
+  const noPortal = el('t no', `${ICONE.portal}<span>Portal</span>`, telaEl);
+  const noVoce = el('t no', `${ICONE.voce}<span>Você</span>`, telaEl);
+  for (const [e, [x, y, w, h]] of [[noImob, NO.imob], [noPortal, NO.portal], [noVoce, NO.voce]]) Object.assign(e.style, { left: (x - w / 2) + 'px', top: (y - h / 2) + 'px', width: w + 'px', height: h + 'px' });
+  // rótulos a 24 px (antes 22) e "R$ por clique" a 36 px (antes 30), para ler a 360 px
+  const rotAn = el('t rotulo-fluxo', 'anúncios', telaEl);
+  const rotLd = el('t rotulo-fluxo', 'leads e cliques', telaEl);
+  const rotVit = el('t rotulo-fluxo', 'o anúncio pronto', telaEl); rotVit.style.color = '#787266';
+  for (const e of [rotAn, rotLd, rotVit]) e.style.fontSize = '24px';
+  // B4: JetBrains Mono, centrado embaixo de "leads e cliques" e abaixo dos cards
+  const rotR2 = el('t rotulo-fluxo', 'R$ por clique', telaEl); Object.assign(rotR2.style, { color: '#B94E36', font: '500 36px/1 var(--font-mono)' });
+  const Y_R2 = 770, X_MEIO = 630;
+  // a forma que nasce do nó do portal e vira o anúncio
+  const morph = el('t', '', telaEl);
+  Object.assign(morph.style, { background: '#FFFFFF', border: '1px solid rgba(23,23,23,0.1)' });
+  const caixaCard = el('t', '', telaEl);
+  Object.assign(caixaCard.style, { left: '0', top: '0', width: '1500px', height: '820px', transformOrigin: '0 0' });
+  // o anúncio sem o selo do sol (a fala nova não fala de poente): o mapa sobe e fica mais alto
+  const k = criarCard(caixaCard, { semSol: true, mapaTop: 462, mapaH: 330 });
+  pos(k.card, 0, 0);
+  const ESC = 0.66, CX = 100, CY = 250;   // o anúncio a 60% à esquerda; texto continua nítido (escala fixa, sem animar)
+  Object.assign(caixaCard.style, { transform: `translate(${CX}px, ${CY}px) scale(${ESC})` });
+  // a lista: o que o anúncio não mostra, com as palavras da fala (só o título de cada linha)
+  const kAn = el('t kicker', 'O que o anúncio não mostra', telaEl);
+  const LINHAS = [
+    { tt: 'Fotos esticadas em olho de peixe' },
+    { tt: 'Garagem somada como quarto' },
+    { tt: 'A rua alaga na chuva' },
+  ].map((l, i) => ({ ...l, e: el('t linha-analise', `<div style="display:flex;gap:18px;align-items:center"><span class="num">${i + 1}</span><div class="tt" style="font-size:36px">${l.tt}</div></div>`, telaEl) }));
+  const Y_LISTA = 312, PASSO_LISTA = 84;
+  const svgMarcas = el('', '<svg width="1920" height="1080" viewBox="0 0 1920 1080" style="position:absolute;left:0;top:0"></svg>', telaEl).querySelector('svg');
+  // marcas: canto de cima à direita da foto, da caixa da área e do mapa (perto da linha de base da saída)
+  const posMarcas = [[CX + 812 * ESC, CY + 40 * ESC], [CX + 1404 * ESC, CY + 290 * ESC], [CX + 1404 * ESC, CY + 484 * ESC]];
+  // marca i → ponto i da costura (da esquerda para a direita, sem caminhos cruzados); o card "Você" → ponto 3
+  const VOCE = 3;
+  // folga de 8 px nas caixas que se recolhem por recorte (a lista e o kicker); a posição do texto não muda
+  const FOLGA = 8;
+  for (const e of [kAn, ...LINHAS.map((l) => l.e)]) e.style.padding = `${FOLGA}px ${FOLGA}px ${FOLGA}px 0`;
+
+  // -------------------------------------------------------------------------
+  // B1 · costura com a cena 01. O primeiro quadro é o último que o render.mjs grava da cena 01 (?v=1,
+  // t = DUR01C − 1/30), redesenhado em SVG por motion/lib/sala01.js, com o número e o apoio nas mesmas
+  // regras de cena01.html (layout01C). Depois: "MILHARES" e "de reais" afundam juntos pelo vão (o mesmo
+  // recorte), o passe-partout de papel (a moldura creme) cresce até as bordas e o vão encolhe até o card "Você".
+  // -------------------------------------------------------------------------
+  const S01 = salaV1(DUR01C - 1 / 30, { curta: true });
+  const VIDR = [S01.vidro.x0, S01.vidro.y0, S01.vidro.x1, S01.vidro.y1];
+  const MOLR = [S01.moldura.x0, S01.moldura.y0, S01.moldura.x1, S01.moldura.y1];
+  const CHEIO = [-6, -6, 1926, 1086];
+  // caixa de borda do nó "Você" (.no tem 360 × 200 de conteúdo e 1 px de borda de cada lado)
+  const CARTAO = [NO.voce[0] - NO.voce[2] / 2, NO.voce[1] - NO.voce[3] / 2, NO.voce[0] + NO.voce[2] / 2 + 2, NO.voce[1] + NO.voce[3] / 2 + 2];
+  const SALA_D = `<rect width="1920" height="1080" fill="${S01.fundo}"/>${S01.svg}`;
+  // as duas cortinas (cunhas escuras sobre as barras laterais da moldura) vão para uma camada própria,
+  // acima do papel: a borda da moldura, ao crescer, as empurra para fora do quadro (nada some de uma vez)
+  const CORT = S01.svg.match(/<g opacity="1\.000"><path d="[^"]+" fill="[^"]+" stroke="[^"]+" stroke-width="1\.2"[^>]*\/><\/g>/g) || [];
+  if (CORT.length !== 2) throw new Error(`cena02: esperava 2 cortinas no quadro final da cena 01 e achei ${CORT.length}`);
+  const SALA_SEM = SALA_D.replace(CORT[0], '').replace(CORT[1], '');
+  // a cortina anda 1,25 × a borda da moldura e sai do quadro quando o papel chega às bordas
+  const EMPURRA = 1.25;
+  const s01 = el('', '<svg class="camada" viewBox="0 0 1920 1080"></svg>', $('c'));
+  s01.id = 'sala01';
+  Object.assign(s01.style, { position: 'absolute', left: '0', top: '0', width: '1920px', height: '1080px', overflow: 'hidden' });
+  const s01svg = s01.querySelector('svg');
+  const rec01 = el('recorte', '', s01), num01 = el('t numero-v1', 'MILHARES', rec01), ap01 = el('t apoio-v1', 'de reais', rec01);
+  const fx = (v) => v.toFixed(1);
+  const n2 = (v) => v.toFixed(2);
+  const ret = (r) => `M${n2(r[0])} ${n2(r[1])}H${n2(r[2])}V${n2(r[3])}H${n2(r[0])}Z`;
+  const retArred = (r, raio) => {
+    const [x0, y0, x1, y1] = r;
+    const q = Math.min(raio, (x1 - x0) / 2, (y1 - y0) / 2);
+    if (q < 0.05) return ret(r);
+    return `M${n2(x0 + q)} ${n2(y0)}H${n2(x1 - q)}A${n2(q)} ${n2(q)} 0 0 1 ${n2(x1)} ${n2(y0 + q)}V${n2(y1 - q)}A${n2(q)} ${n2(q)} 0 0 1 ${n2(x1 - q)} ${n2(y1)}H${n2(x0 + q)}A${n2(q)} ${n2(q)} 0 0 1 ${n2(x0)} ${n2(y1 - q)}V${n2(y0 + q)}A${n2(q)} ${n2(q)} 0 0 1 ${n2(x0 + q)} ${n2(y0)}Z`;
+  };
+  let svgS01 = null;   // só evita reescrever o mesmo SVG; o DOM continua função de t
+  function entrada(t) {
+    // curvas com começo e fim exatos (smoothstep): nenhuma borda passa de cerca de 40 px por quadro
+    const pp = smooth(invLerp(T.papel, T.papelFim, t));      // a moldura de papel cresce até as bordas
+    // a grade entra com o papel: na moldura (que é da cor do papel) ela começa invisível
+    fundoEl.style.opacity = t < T.papel ? '0' : pp < 1 ? pp.toFixed(3) : '1';
+    if (t >= T.pousa) {
+      s01.style.visibility = 'hidden';
+      if (svgS01 !== '') { s01svg.innerHTML = ''; svgS01 = ''; }
+      return;
+    }
+    s01.style.visibility = 'visible';
+    const a = smooth(invLerp(T.afunda, T.afundaFim, t));     // o bloco afunda (cerca de 440 px em 0,88 s: 25 px por quadro)
+    const v = smooth(invLerp(T.vao, T.vaoFim, t));           // o vão vai até o card (borda esquerda: 1.130 px em 1,55 s)
+    const bco = smooth(invLerp(T.branco, T.pousa, t));       // o branco sobe do peitoril, ainda em voo
+    const I = VIDR.map((x, i) => lerp(x, CARTAO[i], v));
+    let s;
+    if (t < T.papel) s = SALA_D;
+    else {
+      // fora da moldura continua a sala (sem as cortinas); entre a moldura e o vão aparece o papel (o
+      // #fundo, por baixo); dentro do vão, a vista da janela acompanha o vão
+      const O = MOLR.map((x, i) => lerp(x, CHEIO[i], pp));
+      s = '<defs>';
+      if (pp < 1) s += `<clipPath id="c01-fora"><path clip-rule="evenodd" d="M-40 -40H1960V1120H-40Z${ret(O)}"/></clipPath>`;
+      s += `<clipPath id="c01-vao"><path d="${retArred(I, 22 * v)}"/></clipPath></defs>`;
+      if (pp < 1) s += `<g clip-path="url(#c01-fora)">${SALA_SEM}</g>`;
+      const e = Math.max((I[2] - I[0]) / (VIDR[2] - VIDR[0]), (I[3] - I[1]) / (VIDR[3] - VIDR[1]));
+      const tx = (I[0] + I[2]) / 2 - e * (VIDR[0] + VIDR[2]) / 2, ty = (I[1] + I[3]) / 2 - e * (VIDR[1] + VIDR[3]) / 2;
+      s += `<g clip-path="url(#c01-vao)"><g transform="matrix(${e.toFixed(5)} 0 0 ${e.toFixed(5)} ${n2(tx)} ${n2(ty)})">${SALA_SEM}</g>`;
+      if (bco > 0.001) { const yb = lerp(I[3], I[1], bco); s += `<rect x="${n2(I[0] - 2)}" y="${n2(yb)}" width="${n2(I[2] - I[0] + 4)}" height="${n2(I[3] - yb + 2)}" fill="#FFFFFF"/>`; }
+      // a linha creme do peitoril fica na borda de baixo do vão até ele pousar (1 px no quadro da cena 01,
+      // 3 px em voo, some nos últimos 0,15 s)
+      const wP = lerp(1, 3, v) * (1 - smooth(invLerp(T.pousa - 0.15, T.pousa, t)));
+      if (wP > 0.01) s += `<line x1="${n2(I[0])}" y1="${n2(I[3] - wP / 2)}" x2="${n2(I[2])}" y2="${n2(I[3] - wP / 2)}" stroke="#F2EBDD" stroke-width="${wP.toFixed(2)}"/>`;
+      s += '</g>';
+      // as cortinas por cima do papel, empurradas para fora junto com a borda da moldura
+      if (pp < 1) {
+        const dl = (MOLR[0] - O[0]) * EMPURRA, dr = (O[2] - MOLR[2]) * EMPURRA;
+        s += `<g transform="translate(${n2(-dl)} 0)">${CORT[0]}</g><g transform="translate(${n2(dr)} 0)">${CORT[1]}</g>`;
+      }
+    }
+    if (s !== svgS01) { s01svg.innerHTML = s; svgS01 = s; }
+    // "MILHARES" e "de reais": recortados pelo vão, como em cena01.html (mesmos tamanhos, mesma conta de
+    // posição); afundam juntos, o apoio primeiro, por estar embaixo
+    if (a < 1) {
+      const h = VIDR[3] - VIDR[1], w = VIDR[2] - VIDR[0];
+      rec01.style.visibility = 'inherit';
+      Object.assign(rec01.style, { left: fx(I[0]) + 'px', top: fx(I[1]) + 'px', width: fx(I[2] - I[0]) + 'px', height: fx(I[3] - I[1]) + 'px' });
+      num01.style.fontSize = fx(S01.numero.fontSize) + 'px';
+      ap01.style.fontSize = fx(S01.apoio.fontSize) + 'px';
+      for (const e of [num01, ap01]) { e.style.width = fx(w) + 'px'; e.style.left = v > 0 ? fx(VIDR[0] - I[0]) + 'px' : '0px'; }
+      const L = layout01C(h, num01.offsetHeight, ap01.offsetHeight);
+      const off = Math.max(S01.numero.sobe, a) * (L.yEsc - L.yN);
+      const dy = v > 0 ? VIDR[1] - I[1] : 0;
+      num01.style.top = fx(L.yN + off + dy) + 'px';
+      ap01.style.top = fx(L.yA + off + dy) + 'px';
+    } else rec01.style.visibility = 'hidden';
+  }
+
+  const mistura = (a, b, p) => { const A = [1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16)), B = [1, 3, 5].map((i) => parseInt(b.slice(i, i + 2), 16)); return `rgb(${A.map((v, i) => Math.round(lerp(v, B[i], p))).join(',')})`; };
+  const PAIRA = 40;   // os pontos pairam 40 px acima do lugar na linha de base antes de pousar
+
+  render = (t) => {
+    t = clamp(t, 0, DUR);
+    entrada(t);
+    // parte A: três polos
+    const saiA = invLerp(T.morph - 0.15, T.morph + 0.05, t);
+    const aK = swap(t, T.titulo, T.morph);
+    vis(kicker, aK); pos(kicker, 160, 150 + 12 * pending(t, T.titulo, P.type));
+    vis(titulo, swap(t, T.titulo + 0.05, T.morph)); pos(titulo, 160, 186 + 14 * pending(t, T.titulo + 0.05, P.type));
+    const aP = swap(t, T.portal, T.morph - 0.02, { durIn: 0.16 }), aI = swap(t, T.imob, T.morph, { durIn: 0.16 });
+    vis(noImob, aI); noImob.style.top = (NO.imob[1] - NO.imob[3] / 2 + 14 * pending(t, T.imob, P.type)).toFixed(1) + 'px';
+    // a caixa do portal fica até o morph começar (sem buraco); só o conteúdo sai antes
+    vis(noPortal, t < T.morph - 0.02 ? swap(t, T.portal, Infinity, { durIn: 0.16 }) : 0);
+    for (const filho of noPortal.children) filho.style.opacity = aP.toFixed(3); noPortal.style.top = (NO.portal[1] - NO.portal[3] / 2 + 14 * pending(t, T.portal, P.type)).toFixed(1) + 'px';
+    // o card "Você" é o vão da janela que pousou: aparece inteiro em T.pousa e ganha o ícone e o nome.
+    // Em "não você" fica transparente (de fora); na última maquiagem volta a ficar opaco; na saída, o
+    // conteúdo some e um desenho igual em SVG (svgMarcas) encolhe até virar o quarto ponto
+    const opV = lerp(lerp(1, 0.28, smooth(invLerp(T.naoVoce, T.naoVoce + 0.48, t))), 1, smooth(invLerp(T.volta, T.volta + 0.4, t)));
+    // na saída a própria caixa encolhe por layout (a borda direita anda 691 px em 0,9 s: 38 px por quadro)
+    // até o quarto ponto, pairando; o conteúdo some no primeiro quarto e a cor vira ferrugem no fim
+    const mv = smooth(invLerp(T.voceSai, T.voceFim, t));
+    const qV = REF.pontos[VOCE];
+    vis(noVoce, t >= T.pousa && t < T.voceFim ? opV : 0);
+    if (t < T.voceSai) {
+      Object.assign(noVoce.style, { left: (NO.voce[0] - NO.voce[2] / 2) + 'px', top: (NO.voce[1] - NO.voce[3] / 2) + 'px', width: NO.voce[2] + 'px', height: NO.voce[3] + 'px', borderRadius: '', background: '', borderColor: '' });
+    } else {
+      const para2 = [qV.x - qV.r, qV.y - PAIRA - qV.r, 2 * qV.r - 2, 2 * qV.r - 2, qV.r];
+      const de2 = [NO.voce[0] - NO.voce[2] / 2, NO.voce[1] - NO.voce[3] / 2, NO.voce[2], NO.voce[3], 22];
+      const [vx, vy, vw, vh, vr] = de2.map((v, i) => lerp(v, para2[i], mv));
+      // a cor muda só quando a caixa já está pequena (de 55% a 85% do caminho): o meio-tom dura pouco
+      const pc = smooth(invLerp(0.55, 0.85, mv));
+      Object.assign(noVoce.style, { left: n2(vx) + 'px', top: n2(vy) + 'px', width: n2(vw) + 'px', height: n2(vh) + 'px', borderRadius: n2(vr) + 'px', background: mistura('#FFFFFF', qV.cor, pc), borderColor: `rgba(23,23,23,${(0.1 * (1 - pc)).toFixed(3)})` });
+    }
+    const aConteudo = swap(t, T.pousa, Infinity, { delayIn: 0, durIn: 0.12 }) * (1 - smooth(invLerp(T.voceSai, T.voceSai + 0.22, t)));
+    for (const filho of noVoce.children) filho.style.opacity = aConteudo.toFixed(3);
+    // setas (240 px em 0,4 s) e fio (310 px em 0,5 s) por smoothstep: até 30 e 31 px por quadro
+    const f1 = smooth(invLerp(T.fluxo, T.fluxo + 0.4, t)), fv = smooth(invLerp(T.fio, T.fio + 0.5, t));
+    const xI = NO.imob[0] + 180, xP = NO.portal[0] - 180;
+    let s = '';
+    const aF = 1 - saiA;
+    if (aF > 0.001 && t >= T.fio) {
+      s += `<g opacity="${aF.toFixed(3)}">`;
+      // divisória e via única até você: logo depois do Portal, porque as duas pontas já estão na tela
+      s += `<line x1="1340" y1="${lerp(650, 430, fv).toFixed(1)}" x2="1340" y2="${lerp(650, 870, fv).toFixed(1)}" stroke="#C9BEA8" stroke-width="2" stroke-dasharray="8 8"/>`;
+      const x0 = NO.portal[0] + 180, x1 = NO.voce[0] - 180;
+      s += `<line x1="${x0}" y1="650" x2="${lerp(x0, x1, fv).toFixed(1)}" y2="650" stroke="#9A948A" stroke-width="2" stroke-dasharray="10 10"/>`;
+      if (t >= T.fluxo) {
+        s += `<line x1="${xI}" y1="620" x2="${lerp(xI, xP, f1).toFixed(1)}" y2="620" stroke="#171717" stroke-width="4"/>`;
+        s += `<line x1="${xP}" y1="680" x2="${lerp(xP, xI, f1).toFixed(1)}" y2="680" stroke="#171717" stroke-width="4"/>`;
+        if (f1 > 0.95) s += `<path d="M${xP - 14} 610L${xP} 620L${xP - 14} 630" fill="none" stroke="#171717" stroke-width="4"/><path d="M${xI + 14} 670L${xI} 680L${xI + 14} 690" fill="none" stroke="#171717" stroke-width="4"/>`;
+      }
+      s += '</g>';
+    }
+    // a forma do portal vira o anúncio. Cresce por layout com começo e fim exatos (a borda esquerda anda
+    // 650 px em 0,85 s, menos de 40 px por quadro) e o anúncio aparece por dentro dela, recortado pela
+    // própria forma: nenhum painel vazio
+    const pm = smooth(invLerp(T.morph, T.morphFim, t));
+    const de = [NO.portal[0] - NO.portal[2] / 2, NO.portal[1] - NO.portal[3] / 2, NO.portal[2], NO.portal[3], 22];
+    const para = [CX, CY, 1500 * ESC, 820 * ESC, 28 * ESC];
+    const r = de.map((v, i) => lerp(v, para[i], pm));
+    const mostraMorph = t >= T.morph - 0.02 && t < T.morphFim + 0.05;
+    Object.assign(morph.style, { left: r[0].toFixed(2) + 'px', top: r[1].toFixed(2) + 'px', width: r[2].toFixed(2) + 'px', height: r[3].toFixed(2) + 'px', borderRadius: r[4].toFixed(2) + 'px', visibility: mostraMorph ? 'visible' : 'hidden' });
+    // o anúncio: entra 0,05 s depois de a forma começar a crescer. Na saída se recolhe por recorte até o
+    // chão (o y da linha de base), espelho da entrada: o topo desce 510 px em 0,7 s (36 px por quadro)
+    const rc = smooth(invLerp(T.recolhe, T.recolheFim, t));
+    const aCard = rc < 1 ? swap(t, T.morph, Infinity, { delayIn: 0.05, durIn: 0.16 }) : 0;
+    vis(caixaCard, aCard);
+    if (pm < 1) {
+      // o recorte é a forma, nas coordenadas do anúncio (que tem escala fixa de 0,66)
+      const lx0 = (r[0] - CX) / ESC, ly0 = (r[1] - CY) / ESC, lx1 = (r[0] + r[2] - CX) / ESC, ly1 = (r[1] + r[3] - CY) / ESC;
+      caixaCard.style.clipPath = `inset(${Math.max(0, ly0).toFixed(2)}px ${Math.max(0, 1500 - lx1).toFixed(2)}px ${Math.max(0, 820 - ly1).toFixed(2)}px ${Math.max(0, lx0).toFixed(2)}px round ${(r[4] / ESC).toFixed(2)}px)`;
+    } else if (rc > 0) {
+      const yTopo = lerp(CY, LY, rc), yBase = lerp(CY + 820 * ESC, LY, rc);
+      caixaCard.style.clipPath = `inset(${((yTopo - CY) / ESC).toFixed(2)}px 0px ${((CY + 820 * ESC - yBase) / ESC).toFixed(2)}px 0px round 28px)`;
+    } else caixaCard.style.clipPath = '';
+    SVGF.innerHTML = s;
+    vis(rotAn, swap(t, T.fluxo + 0.15, T.morph)); pos(rotAn, 630 - rotAn.offsetWidth / 2, 580);
+    vis(rotLd, swap(t, T.fluxo + 0.25, T.morph)); pos(rotLd, 630 - rotLd.offsetWidth / 2, 696);
+    vis(rotVit, swap(t, T.fio + 0.15, T.morph)); pos(rotVit, 1128, 610);
+    vis(rotR2, swap(t, T.clique, T.morph)); pos(rotR2, X_MEIO - rotR2.offsetWidth / 2, Y_R2);
+    // parte B: o anúncio e as três marcas; as molas da lente, da planta, da vaga e da água passam por
+    // chega() para pararem antes do HOLD
+    const est = {
+      foto: chega(sp(t - T.foto, P.camera)),
+      planta: chega(sp(t - (T.r2 + 0.05), P.card)), vagaSai: chega(sp(t - T.vaga, P.card)),
+      sol: 0, chuva: 0, alaga: chega(sp(t - T.alaga, P.camera)),
+    };
+    if (t > T.morph && aCard > 0.001) atualizarCard(k, est);
+    // saída, espelhando a entrada: nada sai por fade. A lista se recolhe por recorte de baixo para cima,
+    // da linha 3 à 1, depois o kicker; o número de cada marca some em 0,1 s, a marca fica ferrugem e
+    // encolhe até o ponto da costura
+    // (recorte só com valores positivos: cada texto tem 8 px de folga na própria caixa; um inset negativo
+    // deixava pixels velhos na tela, porque o Chromium não invalida o que fica fora da caixa)
+    const recolheTexto = (e, t0, dur) => {
+      if (t < t0) { e.style.clipPath = ''; return 1; }
+      const p = smooth(invLerp(t0, t0 + dur, t));
+      if (p >= 1) { e.style.clipPath = ''; return 0; }
+      e.style.clipPath = `inset(0px 0px ${(e.offsetHeight * p).toFixed(2)}px 0px)`;
+      return 1;
+    };
+    vis(kAn, swap(t, T.r1 - 0.2, Infinity) * recolheTexto(kAn, T.sai + 0.15, 0.15)); pos(kAn, 1150, 262 - FOLGA);
+    const numA = clamp((T.sai + 0.1 - t) / 0.1);
+    const corM = t < T.sai ? '#F47745' : mistura('#F47745', REF.pontos[0].cor, smooth(invLerp(T.sai + 0.05, T.sai + 0.25, t)));
+    const encolhe = smooth(invLerp(T.sai + 0.05, T.sai + 0.3, t));
+    // os pontos: viajam (smoothstep; a marca 1 anda 490 px em 0,85 s: 29 px por quadro) até pairar 40 px
+    // acima do seu lugar na linha de base; depois pousam um a um, da esquerda para a direita, 0,08 s entre
+    // eles, com a mola type (sem quique). No fim, os atributos exatos da costura C02-03
+    const viaja = smooth(invLerp(T.viaja, T.paira, t));
+    const pousa = (j) => chega(sp(t - (T.pouso + T.entrePousos * j), P.type));
+    const pontoSaida = (i) => {
+      const q = REF.pontos[i], pj = pousa(i);
+      if (viaja >= 1 && pj >= 1) return { x: q.x, y: q.y, fim: true };
+      return { x: lerp(posMarcas[i][0], q.x, viaja), y: lerp(posMarcas[i][1], q.y - PAIRA, viaja) + PAIRA * pj, fim: false };
+    };
+    // o card "Você" vira o quarto ponto (acima): chega redondo, pairando, e pousa por último
+    const pontoVoce = () => {
+      const pj = pousa(VOCE);
+      if (mv >= 1 && pj >= 1) return { x: qV.x, y: qV.y, fim: true };
+      return { x: qV.x, y: qV.y - PAIRA + PAIRA * pj, fim: false };
+    };
+    let marcasSvg = '';
+    LINHAS.forEach((l, i) => {
+      const ti = [T.r1, T.r2, T.r3][i];
+      vis(l.e, swap(t, ti, Infinity, { durIn: 0.16 }) * recolheTexto(l.e, T.sai + 0.05 * (2 - i), 0.2));
+      pos(l.e, 1150, Y_LISTA - FOLGA + i * PASSO_LISTA + 12 * pending(t, ti, P.type));
+      const am = swap(t, ti + 0.05, Infinity, { durIn: 0.12 });
+      const sc = 1 + 0.25 * (1 - sp(t - ti, P.button));
+      if (am > 0.001 && t < T.sai) {
+        marcasSvg += `<g opacity="${am.toFixed(3)}" transform="translate(${posMarcas[i][0]} ${posMarcas[i][1]}) scale(${sc.toFixed(4)})"><circle r="20" fill="${corM}"/><text y="7.5" text-anchor="middle" font-family="Plus Jakarta Sans" font-weight="700" font-size="21" fill="#171717">${i + 1}</text></g>`;
+      } else if (am > 0.001 && t < T.recolheFim) {
+        // até o anúncio terminar de se recolher, os pontos ficam por cima dele, nesta camada
+        const p = pontoSaida(i), raio = lerp(20 * sc, REF.pontos[i].r, encolhe);
+        const num = numA > 0.001 ? `<text x="${n2(p.x)}" y="${n2(p.y + 7.5)}" text-anchor="middle" font-family="Plus Jakarta Sans" font-weight="700" font-size="21" fill="#171717" opacity="${numA.toFixed(3)}">${i + 1}</text>` : '';
+        marcasSvg += `<g opacity="${am.toFixed(3)}"><circle cx="${n2(p.x)}" cy="${n2(p.y)}" r="${raio.toFixed(3)}" fill="${corM}"/>${num}</g>`;
+      }
+    });
+    svgMarcas.innerHTML = marcasSvg;
+    // a costura (abaixo da tela): a linha de base sai de trás do anúncio; os pontos das marcas entram nela
+    // quando o anúncio termina de se recolher, e o de "Você" quando chega redondo
+    const naCostura = t >= T.linha;
+    svgCost.style.visibility = naCostura ? 'visible' : 'hidden';
+    if (naCostura) {
+      for (let i = 0; i < 4; i += 1) {
+        const q = REF.pontos[i], e = COST.pontos[i];
+        const pronto = i === VOCE ? mv >= 1 : t >= T.recolheFim;
+        if (!pronto) { e.setAttribute('visibility', 'hidden'); continue; }
+        e.removeAttribute('visibility');
+        const p = i === VOCE ? pontoVoce() : pontoSaida(i);
+        e.setAttribute('cx', p.fim ? String(q.x) : n2(p.x));
+        e.setAttribute('cy', p.fim ? String(q.y) : n2(p.y));
+        e.setAttribute('r', String(q.r)); e.setAttribute('fill', q.cor);
+      }
+      // a linha de base, o chão: abre do centro para os dois lados (600 px em 0,8 s: 37,5 px por quadro)
+      const g = smooth(invLerp(T.linha, T.linhaFim, t));
+      const L = COST.linhas[0];
+      if (g <= 0) L.setAttribute('visibility', 'hidden');
+      else {
+        L.removeAttribute('visibility');
+        const meio = (LX0 + LX1) / 2, meia = (LX1 - LX0) / 2 * g;
+        L.setAttribute('d', g >= 1 ? REF.linhas[0].d : `M${n2(meio - meia)} ${LY} L${n2(meio + meia)} ${LY}`);
+      }
+    }
+    if (dbg) dbg.textContent = `V2 · ${t.toFixed(2)} s`;
+  };
+}
+
+// ---------------------------------------------------------------------------
+const ESTADOS = V === 1 ? [
+  { id: 'A0', nome: 'portal (feed)', t: 0.0 },
+  { id: 'A1', nome: 'sistema: portal e imobiliárias', t: 2.0 },
+  { id: 'A2', nome: 'não você', t: 3.6 },
+  { id: 'M', nome: 'câmera atravessa o vidro', t: 5.0 },
+  { id: 'R1', nome: 'foto: grande angular', t: 7.0 },
+  { id: 'R2', nome: 'área: vaga somada', t: 8.9 },
+  { id: 'R3', nome: 'sol: poente', t: 10.7 },
+  { id: 'R4', nome: 'rua: alagamento', t: 12.5 },
+  { id: 'FIM', nome: 'você vê a versão editada', t: DUR - 1 / 30 },
+] : [
+  { id: 'E0', nome: 'último quadro da cena 01 (?v=1)', t: 0 },
+  { id: 'C1', nome: 'MILHARES e de reais afundam atrás do peitoril', t: 0.4 },
+  { id: 'C2', nome: 'o papel cresce; o vão encolhe', t: 1.0 },
+  { id: 'C3', nome: 'o vão pousa e fica branco', t: 1.85 },
+  { id: 'B2', nome: 'três polos e o anúncio pronto', t: T.fluxo + 0.6 },
+  { id: 'B3', nome: 'não você: o card fica de fora (HOLD)', t: T.h1 },
+  { id: 'B4', nome: 'R$ por clique (HOLD)', t: T.h2 },
+  { id: 'M', nome: 'portal vira anúncio', t: T.morph + 0.2 },
+  { id: 'B5', nome: 'fotos em olho de peixe (HOLD)', t: T.h3 },
+  { id: 'B6', nome: 'garagem somada como quarto (HOLD)', t: T.h4 },
+  { id: 'B7', nome: 'a rua alaga; você volta, opaco', t: T.sai - 0.05 },
+  { id: 'S1', nome: 'a lista se recolhe; as marcas perdem o número', t: T.sai + 0.2 },
+  { id: 'S2', nome: 'o anúncio se recolhe; você encolhe até um ponto', t: T.sai + 0.55 },
+  { id: 'S3', nome: 'a linha de base; os pontos pousam um a um', t: T.pouso + 0.12 },
+  { id: 'FIM', nome: 'costura C02-03 (primeiro quadro da cena 03)', t: DUR - 1 / 30 },
+];
+const SONS = V === 1 ? [
+  { t: 0.05, tipo: 'whoosh', dur: 1.2, ganho: 0.5, evento: 'câmera abre o sistema' },
+  { t: T.titulo, tipo: 'pop', evento: 'o cliente do portal' }, { t: T.naoVoce, tipo: 'tick', evento: 'não você' },
+  { t: T.entra, tipo: 'whoosh', dur: 1.0, evento: 'atravessa o vidro' },
+  { t: T.r1, tipo: 'sweep', dur: 0.9, ganho: 0.6, evento: 'lente' }, { t: T.r2, tipo: 'pop', evento: 'área' }, { t: T.r2 + 0.9, tipo: 'tick', evento: 'vaga sai' },
+  { t: T.r3, tipo: 'pop', evento: 'sol' }, { t: T.r4, tipo: 'whoosh', dur: 1.2, ganho: 0.4, evento: 'chuva' },
+  { t: T.volta, tipo: 'whoosh', dur: 0.8, evento: 'a versão editada volta' },
+] : [
+  { t: 0.05, tipo: 'whoosh', dur: 0.7, ganho: 0.35, evento: 'o número afunda' }, { t: T.vao, tipo: 'whoosh', dur: 1.2, ganho: 0.3, evento: 'o vão encolhe até o card' },
+  { t: T.portal, tipo: 'pop', evento: 'portal' }, { t: T.imob, tipo: 'pop', evento: 'imobiliária' }, { t: T.voce, tipo: 'tick', evento: 'você' }, { t: T.naoVoce, tipo: 'click', evento: 'você fica de fora' },
+  { t: T.clique, tipo: 'tick', evento: 'R$ por clique' }, { t: T.morph, tipo: 'whoosh', dur: 0.5, evento: 'portal vira anúncio' },
+  { t: T.r1, tipo: 'tick', evento: '1' }, { t: T.r2, tipo: 'tick', evento: '2' }, { t: T.r3, tipo: 'tick', evento: '3' },
+  { t: T.viaja, tipo: 'whoosh', dur: 1.0, ganho: 0.3, evento: 'as marcas e você viram pontos' }, { t: T.linha, tipo: 'tick', evento: 'linha de base' },
+  ...[0, 1, 2, 3].map((j) => ({ t: T.pouso + T.entrePousos * j, tipo: 'tick', ganho: 0.6, evento: 'ponto ' + (j + 1) + ' pousa' })),
+];
+const HOLDS = V === 1 ? [4.2, T.r2 - 0.05, T.r3 - 0.05, T.r4 - 0.05, T.volta - 0.05, DUR] : [T.h1, T.h2, T.h3, T.h4, DUR];
+window.POC = {
+  id: 'CENA-02', variante: NOMES[V], duracao: DUR, fps: 30, estados: ESTADOS, holds: HOLDS, cliques: [], marcos: T, sons: SONS,
+  tiras: V === 1 ? [{ nome: 'vidro', t0: T.entra + 0.2 }, { nome: 'lente', t0: T.r1 + 0.3 }, { nome: 'volta', t0: T.volta }] : [{ nome: 'afunda', t0: 0 }, { nome: 'cortinas', t0: 0.25 }, { nome: 'papel', t0: 0.6 }, { nome: 'branco', t0: 1.2 }, { nome: 'pousa', t0: 1.6 }, { nome: 'fio', t0: T.fio - 0.03 }, { nome: 'naovoce', t0: T.naoVoce - 0.05 }, { nome: 'morph', t0: T.morph - 0.05 }, { nome: 'volta', t0: T.volta - 0.05 }, { nome: 'saida', t0: T.sai }, { nome: 'recolhe', t0: T.sai + 0.4 }, { nome: 'voce', t0: T.voceSai + 0.4 }, { nome: 'pouso', t0: T.pouso - 0.03 }, { nome: 'chega', t0: T.chega - 0.3 }],
+  comparar: ESTADOS.map((e) => ({ t: e.t, nome: e.id })),
+  ...(V === 2 ? { entrada: { de: 'cena01.html?v=1', t: DUR01C - 1 / 30 }, saida: { costura: 'C02-03', t: DUR - 1 / 30 } } : {}),
+};
+window.seek = (t) => render(t);
+window.__pronto = (async () => {
+  await document.fonts.ready;
+  await Promise.all([['600 70px Fraunces', 'O cliente do portal é a imobiliária. portal'], ['italic 500 70px Fraunces', 'não você. Quatro informações'], ['700 84px "Plus Jakarta Sans"', '75 m² 62,5'],
+    ['600 26px "Plus Jakarta Sans"', 'Nascente Poente lente grande angular vaga somada à área a janela olha para o oeste rua alaga'], ['400 21px "Plus Jakarta Sans"', 'O ângulo faz a sala parecer maior'], ['500 60px "JetBrains Mono"', 'R$ por anúncio clique'],
+    ['700 20px "Plus Jakarta Sans"', 'POR QUÊ O QUE A ANÁLISE MOSTRA APARTAMENTO À VENDA · RECIFE'], ['600 22px "Plus Jakarta Sans"', 'anúncios → ← leads e cliques'], ['700 96px "Plus Jakarta Sans"', '→ ←']].map(([f, txt]) => document.fonts.load(f, txt)));
+  // V2: o número e o apoio da cena 01 (costura de entrada) e o kicker novo da lista
+  if (V === 2) await Promise.all([['600 220px Fraunces', 'MILHARES'], ['500 69px "Plus Jakarta Sans"', 'de reais'], ['700 20px "Plus Jakarta Sans"', 'O QUE O ANÚNCIO NÃO MOSTRA'],
+    ['600 30px "Plus Jakarta Sans"', 'Fotos esticadas em olho de peixe Garagem somada como quarto A rua alaga na chuva'], ['600 26px "Plus Jakarta Sans"', 'Imobiliária e corretor Portal Você'], ['500 30px "JetBrains Mono"', 'R$ por clique']].map(([f, txt]) => document.fonts.load(f, txt)));
+  // Passa por toda a linha do tempo uma vez antes de liberar o render: qualquer subconjunto
+  // de fonte que só aparece mais tarde (setas, sobrescritos) é pedido agora, e não no meio do
+  // vídeo, onde trocaria a fonte de fallback pela fonte real e o quadro dependeria do histórico.
+  for (let t = 0; t <= DUR; t += 0.25) render(t);
+  await document.fonts.ready;
+  render(0);
+  return true;
+})();
+
+if (!navigator.webdriver) {
+  document.body.classList.add('tela');
+  const c = $('c');
+  const ajusta = () => { const s = Math.min(innerWidth / 1920, innerHeight / 1080); Object.assign(c.style, { position: 'absolute', transformOrigin: '0 0', transform: `scale(${s})`, left: `${(innerWidth - 1920 * s) / 2}px`, top: `${(innerHeight - 1080 * s) / 2}px` }); };
+  addEventListener('resize', ajusta); ajusta();
+  const aoVivo = new URLSearchParams(location.search).has('live');
+  let t = 0, alvo = aoVivo ? HOLDS[0] : DUR, rodando = true, antes = null;
+  const passo = (agora) => { if (antes !== null && rodando) { t += (agora - antes) / 1000; if (t >= alvo) { t = alvo; if (!aoVivo) t = 0; else rodando = false; } } antes = agora; render(t); requestAnimationFrame(passo); };
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown') { const base = rodando ? alvo : t; const i = HOLDS.findIndex((h) => h > base + 1e-3); if (aoVivo) { if (i >= 0) { alvo = HOLDS[i]; rodando = true; } } else rodando = !rodando; e.preventDefault(); }
+    else if (V === 2 && (e.key === 'ArrowLeft' || e.key === 'PageUp')) {
+      // volta ao HOLD anterior e fica parado nele, como nas cenas 05 a 09 (só na V2; a V1 fica como estava)
+      const anteriores = HOLDS.filter((h) => h < t - 1e-3);
+      t = anteriores.length ? anteriores[anteriores.length - 1] : 0;
+      alvo = aoVivo ? (HOLDS.find((h) => h > t + 1e-3) ?? DUR) : DUR;
+      rodando = !aoVivo;
+      render(t); e.preventDefault();
+    }
+    else if (e.key === 'r') { t = 0; alvo = aoVivo ? HOLDS[0] : DUR; rodando = true; }
+  });
+  window.__pronto.then(() => requestAnimationFrame(passo));
+}
+</script>
+</body>
+</html>

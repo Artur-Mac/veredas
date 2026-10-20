@@ -1,6 +1,4 @@
 import { createContext, useContext, useMemo, type ReactNode } from "react";
-import { useColorScheme } from "react-native";
-import { usePreferencias } from "../estado/Preferencias";
 import { CORES_CLARO, CORES_ESCURO, type Cores, type TokenDeCor } from "./tokens";
 
 type ValorDoTema = { escuro: boolean; cores: Cores; cor: (token: TokenDeCor) => string };
@@ -12,14 +10,13 @@ function valorDoTema(escuro: boolean): ValorDoTema {
   return { escuro, cores, cor: (token) => cores[token] };
 }
 
+/** Tema padrão da aplicação: sempre claro (substrato de papel #F2EBDD). */
 export function TemaDoApp({ children }: { children: ReactNode }) {
-  const sistema = useColorScheme();
-  const { tema } = usePreferencias();
-  const escuro = tema === "escuro" || (tema === "sistema" && sistema === "dark");
-  const valor = useMemo(() => valorDoTema(escuro), [escuro]);
+  const valor = useMemo(() => valorDoTema(false), []);
   return <ContextoDoTema.Provider value={valor}>{children}</ContextoDoTema.Provider>;
 }
 
+/** Painel escuro de campo exclusivo da visita (.field-dark-panel). */
 export function TemaEscuro({ children }: { children: ReactNode }) {
   const valor = useMemo(() => valorDoTema(true), []);
   return <ContextoDoTema.Provider value={valor}>{children}</ContextoDoTema.Provider>;

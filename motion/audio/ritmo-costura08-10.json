@@ -1,0 +1,20 @@
+{
+  "poc": "costura08-10",
+  "duracao": 1.2,
+  "geradoEm": "2026-10-18",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 80,
+    "fase": 0,
+    "erroMedio": null,
+    "batidas": [
+      0,
+      0.75
+    ]
+  },
+  "holds": [
+    1.2
+  ],
+  "sons": []
+}

@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · Cena 05 · a virada: em segundos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@400..800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lib/marca.css">
+<style>
+  html, body { margin: 0; background: var(--bg-obsidian); }
+  body.tela { min-height: 100vh; overflow: hidden; }
+  #c {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden; flex: none;
+    background: var(--bg-paper); color: var(--ink-primary);
+    font-family: var(--font-sans); font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  .grade {
+    position: absolute; inset: 0; background-size: 48px 48px;
+    background-image:
+      linear-gradient(to right, rgba(127, 136, 112, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(127, 136, 112, 0.09) 1px, transparent 1px);
+  }
+  svg.camada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+  .camada-div { position: absolute; inset: 0; }
+  .t { position: absolute; white-space: nowrap; line-height: 1.15; }
+
+  /* a aba "Edifício": o mesmo estilo do primeiro quadro da cena 6 */
+  .edificio { font: 700 34px/1 var(--font-sans); color: var(--ink-primary); letter-spacing: -0.005em; }
+
+  /* subsolo (pontilhado B: papel sobre tinta); o desenho escuro é um canvas, TEMPO fica em HTML */
+  #escuro { position: absolute; inset: 0; }
+  #escCanvas { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  .base { font: 500 22px/1 var(--font-mono); }
+  /* nome que cruza o contorno passa POR CIMA do traço: papel e grade alinhados atrás dele */
+  .base.vazado { padding: 2px 6px; margin: -2px 0 0 -6px; background-color: var(--bg-paper); background-size: 48px 48px;
+    background-image: linear-gradient(to right, rgba(127, 136, 112, 0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(127, 136, 112, 0.09) 1px, transparent 1px); }
+  .palavra { position: absolute; height: 96px; width: 900px; clip-path: inset(0px -80px 0px -80px); }
+  .letra { position: absolute; top: 0; font: 500 96px/1 var(--font-display); font-kerning: none; font-variation-settings: 'opsz' 40; letter-spacing: 0.02em; }
+
+  /* o celular: moldura do .app-frame em modo celular (borda #222426, como na cena 08) e a tela do app
+     em px do app (414 px de largura) com zoom de layout 1,046 */
+  #foneJ { position: absolute; inset: 0; }
+  #tela { position: absolute; overflow: hidden; background: var(--bg-paper); }
+  #app { position: absolute; left: 0; top: 0; width: 414px; height: 866px; }
+  .pg { position: absolute; white-space: nowrap; line-height: 1.2; }
+  .pg-head { position: absolute; left: 0; right: 0; top: 0; height: 58px; background: rgba(242, 235, 221, 0.95); border-bottom: 1px solid rgba(23, 23, 23, 0.07); box-sizing: border-box; }
+  .pg-marca { font: 500 18px/1 var(--font-display); letter-spacing: 0.14em; font-variation-settings: 'opsz' 19; }  /* --wordmark-weight 500 e --wordmark-tracking 0.14em do :root do index.html */
+  .pg-tit { font: 500 20px/1.15 var(--font-display); letter-spacing: -0.02em; }
+  .pg-sub { font: 400 11px/1.3 var(--font-sans); color: var(--ds-muted); }
+  .pg-card { position: absolute; background: #FFFFFF; border: 1px solid rgba(23, 23, 23, 0.09); box-sizing: border-box; }
+  .pg-filtro { position: absolute; display: flex; padding: 3px; gap: 2px; border-radius: 10px; background: #EAE3D5; border: 1px solid #DCD3C3; }
+  .pg-filtro span { font: 600 10.5px/1 var(--font-sans); color: var(--ds-muted); padding: 6px 9px; border-radius: 7px; }
+  .pg-filtro span.on { background: #FFFFFF; color: var(--ink-primary); }
+  .pg-loc { position: absolute; font: 600 10px/1 var(--font-sans); padding: 6px 9px; border-radius: 999px; background: rgba(255, 255, 255, 0.94); color: var(--ink-primary); }
+  .pg-olho { font: 700 10px/1 var(--font-sans); letter-spacing: 0.09em; text-transform: uppercase; color: var(--brand-rust); }
+  .pg-h2 { font: 500 23px/1.2 var(--font-display); letter-spacing: -0.025em; }
+  .pg-n { font: 500 11px/1 var(--font-mono); color: var(--brand-rust); }
+  .pg-item { font: 600 13.5px/1.2 var(--font-sans); letter-spacing: -0.015em; word-spacing: 2px; color: var(--ink-primary); }
+  .pg-sep { position: absolute; left: 16px; right: 16px; height: 1px; background: var(--ds-line); }
+  /* cartão "Auditar novo anúncio" (renderExplore, .scanner-card), em px do app */
+  .sc-tit { position: absolute; white-space: nowrap; font: 500 21px/1.15 var(--font-display); letter-spacing: -0.02em; color: var(--ink-primary); }
+  .sc-colar { position: absolute; display: flex; align-items: center; justify-content: center; gap: 5px; box-sizing: border-box; border-radius: 999px; border: 1px solid rgba(23, 23, 23, 0.10); background: #FAF8F4; white-space: nowrap; font: 600 11.5px/1 var(--font-sans); word-spacing: 1px; color: var(--ink-secondary); }
+  .sc-poco { position: absolute; box-sizing: border-box; border-radius: 12px; border: 1px solid rgba(23, 23, 23, 0.10); background: #FAF7F0; }
+  .sc-icone { position: absolute; width: 15px; height: 15px; color: var(--brand-orange); }
+  .sc-campo { position: absolute; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 500 13px/16px var(--font-sans); color: var(--ink-primary); }
+  .sc-botao { position: absolute; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box; border-radius: 12px; background: var(--brand-orange); color: #FFFFFF; white-space: nowrap; font: 600 14px/1 var(--font-sans); letter-spacing: 0.01em; }
+  /* a caixa que é o cartão (B2) e vira a barra de abas do dossiê (.ds-tabs) no B3 */
+  #caixa { position: absolute; border-style: solid; box-sizing: border-box; }
+  .sel { position: absolute; background: #FFFFFF; box-sizing: border-box; border-radius: 8px; }
+  .aba { position: absolute; display: flex; align-items: center; justify-content: center; font: 500 12px/1 var(--font-sans); color: var(--ds-muted); white-space: nowrap; }
+  /* ícones como máscara CSS sobre a cor do texto (dentro do zoom o SVG inline variava de quadro a quadro) */
+  .ic { display: block; flex: none; background: currentColor; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+  .ic-copiar { width: 12px; height: 12px; -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%221.8%22%3E%3Crect x=%229%22 y=%229%22 width=%2213%22 height=%2213%22 rx=%222%22/%3E%3Cpath d=%22M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1%22/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%221.8%22%3E%3Crect x=%229%22 y=%229%22 width=%2213%22 height=%2213%22 rx=%222%22/%3E%3Cpath d=%22M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1%22/%3E%3C/svg%3E"); }
+  .ic-link { width: 15px; height: 15px; -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%221.8%22%3E%3Cpath d=%22M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71%22/%3E%3Cpath d=%22M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71%22/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%221.8%22%3E%3Cpath d=%22M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71%22/%3E%3Cpath d=%22M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71%22/%3E%3C/svg%3E"); }
+  .ic-seta { width: 16px; height: 16px; -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222.2%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M5 12h14%22/%3E%3Cpath d=%22m12 5 7 7-7 7%22/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222.2%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M5 12h14%22/%3E%3Cpath d=%22m12 5 7 7-7 7%22/%3E%3C/svg%3E"); }
+  .ic-menu { width: 18px; height: 18px; -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%221.7%22 stroke-linecap=%22round%22%3E%3Cline x1=%224%22 y1=%227%22 x2=%2220%22 y2=%227%22/%3E%3Cline x1=%224%22 y1=%2212%22 x2=%2220%22 y2=%2212%22/%3E%3Cline x1=%224%22 y1=%2217%22 x2=%2220%22 y2=%2217%22/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%221.7%22 stroke-linecap=%22round%22%3E%3Cline x1=%224%22 y1=%227%22 x2=%2220%22 y2=%227%22/%3E%3Cline x1=%224%22 y1=%2212%22 x2=%2220%22 y2=%2212%22/%3E%3Cline x1=%224%22 y1=%2217%22 x2=%2220%22 y2=%2217%22/%3E%3C/svg%3E"); }
+  .ic-volta { width: 18px; height: 18px; -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M19 12H5%22/%3E%3Cpath d=%22m12 19-7-7 7-7%22/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M19 12H5%22/%3E%3Cpath d=%22m12 19-7-7 7-7%22/%3E%3C/svg%3E"); }
+  .ninho { display: block; width: 24px; height: 24px; background: no-repeat center / 100% 100% url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cpath d=%22M 18,80 C 7,79 2,66 2,49 C 2,24 20,4 50,3 C 79,2 97,25 97,49 C 97,68 89,80 79,80 C 64,80 34,81 18,80 Z%22 fill=%22%23F47745%22/%3E%3Cpath d=%22M 40,58 C 35,42 40,24 53,23 C 64,22 69,40 64,57 C 59,72 45,72 40,58 Z%22 fill=%22%23F5F0E6%22/%3E%3C/svg%3E"); }
+
+  .chrome-pilula { position: absolute; display: flex; align-items: center; gap: 14px; background: rgba(250, 246, 238, 0.92); border: 1px solid var(--border-hairline); border-radius: 999px; white-space: nowrap; }
+  .marca { font: 500 28px/1 var(--font-display); letter-spacing: 0.14em; font-variation-settings: 'opsz' 19; }  /* --wordmark-weight 500 e --wordmark-tracking 0.14em do :root do index.html; desenho do cabeçalho (19 px) */
+  #debug { position: absolute; right: 16px; top: 12px; font: 500 16px/1 var(--font-mono); color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div id="c">
+  <div class="grade"></div>
+  <svg class="camada" id="mundo" viewBox="0 0 1920 1080">
+    <!-- a forma da cena 6 em t = 0 (o cartão dela ainda fechado na linha), só no último quadro -->
+    <path id="forma6" />
+  </svg>
+  <svg class="camada" id="atras" viewBox="0 0 1920 1080">
+    <!-- a régua laranja passa por trás do celular -->
+    <path id="marcas" fill="none" stroke="rgba(23,23,23,0.34)" stroke-width="2" />
+    <path id="regua" fill="none" stroke="#F47745" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+  <div id="foneJ">
+    <svg class="camada" id="foneSvg" viewBox="0 0 1920 1080">
+      <!-- o contorno do anúncio levado, que cresce e vira a moldura do celular -->
+      <path id="contorno" fill="none" />
+    </svg>
+    <div id="tela"><div id="app"></div></div>
+  </div>
+  <!-- os nomes passam por cima do contorno (com papel e grade atrás) e saem antes de a tela acender -->
+  <div class="camada-div" id="nomes"></div>
+  <div class="camada-div" id="claro"></div>
+  <div class="camada-div" id="edifJ"></div>
+  <svg class="camada" id="linhas" viewBox="0 0 1920 1080">
+    <path id="sub" fill="none" stroke="#F47745" stroke-width="4" stroke-linecap="round" />
+  </svg>
+  <div id="escuro"><canvas id="escCanvas" width="1920" height="1080"></canvas></div>
+  <svg class="camada" id="toque-camada" viewBox="0 0 1920 1080">
+    <circle id="onda" r="0" fill="none" stroke="#F47745" stroke-width="3" opacity="0" />
+    <circle id="toque" r="0" fill="#171717" opacity="0" />
+  </svg>
+  <div id="chrome"></div>
+</div>
+
+<script type="module">
+import { clamp, lerp, smooth, sp, track, swap, pending, press, roundedQuad, rectPts, mixColor, rgba, PRESETS as P } from '../lib/motion.js';
+import { SUBSOLO as S, reguaPts, linhaD, marcasD, contornoD, posLetras, reguaEmX, desenharSubsolo } from '../lib/subsolo.js';
+
+// ---------------------------------------------------------------------------
+// Linha do tempo (roteiro de 18/10/2026, cerca de 3,8 palavras/s):
+//   B1 "A VEREDA faz essa investigação em segundos." de 0,1 a 2,2 s: "VEREDA" 0,3 (a tinta desce até a
+//       régua e a marca entra), "faz essa investigação" 0,6 a 1,5 (a tinta escoa; o contorno vazio vira
+//       um celular e os nomes das bases entram nele), "segundos" 1,7 (TEMPO vira SEGUNDOS só nas letras
+//       que mudam; a régua fica curta). HOLD em 2,30 s
+//   B2 "Você cola o link do anúncio no aplicativo" de 2,35 a 4,35 s: a marca vai ao cabeçalho, o celular
+//       vem ao centro e a régua entra nele; toque em "Colar link" ("cola", 2,88 s), o link chega e a
+//       linha laranja vira o sublinhado dele; toque em "Gerar Dossiê" (4,22 s)
+//   B3 "e revelamos tudo possível sobre o imóvel." de 4,4 a 6,0 s: o cartão se recolhe na barra de abas
+//       do dossiê, a lista do que o dossiê traz se enche ("tudo possível"), Edifício é selecionado e o
+//       celular se fecha na linha ("o imóvel"), que se estende até a da cena 6. HOLD no fim (6,10 s)
+// Nada passa de cerca de 40 px por quadro a 30 fps.
+// ---------------------------------------------------------------------------
+const T = {
+  luz: 0.05, pousa: 0.75, marca: 0.40, escoa: 0.80, escoaDur: 0.97,
+  regua: 1.00, reguaDur: 0.90, troca: 1.50,
+  contorno: 1.10, contornoDur: 0.78, solido: 1.66, nomesDur: 0.55, nomesFora: 1.76, tela: 1.86, app: 1.90,
+  b2: 2.35, docaDur: 0.50, move: 2.32, moveDur: 0.50, rolo: 2.35, roloDur: 0.95,
+  toque1: 2.88, cola: 2.94, sublinha: 3.02, sublinhaDur: 0.75, toque2: 4.22,
+  b3: 4.42, abre: 4.44, abreDur: 0.32, dossie: 4.52, lista: 4.64, listaPasso: 0.035,
+  edificio: 5.20, fecha: 5.30, fechaDur: 0.70, linha: 5.38, linhaDur: 0.62,
+};
+const FIM = T.fecha + T.fechaDur;   // 6,00 s: o quadro é o primeiro da cena 6
+const DUR = 6.10;
+const HOLDS = [2.30, DUR];
+
+// ---------------------------------------------------------------------------
+// Geometria (quadro de 1920 x 1080)
+// ---------------------------------------------------------------------------
+// a moldura da cena 08 (.app-frame em modo celular, 414 px de app), maior: 1,12x, para o app se ler
+// com o celular inteiro no quadro (moldura e raio na mesma escala do 1,35x de antes)
+const ZP = 1.12, BEZEL = 10, RAIO_TELA = 31.5;
+const FONE_W = 414 * ZP + 2 * BEZEL, FONE_H = 866 * ZP + 2 * BEZEL;   // 483,7 x 989,9
+// no B1 à direita (no lugar do contorno); no B2 ao centro; inteiro no quadro, com 45 px em cima e embaixo
+const FONE = { w: FONE_W, h: FONE_H, y: (1080 - FONE_H) / 2, x0: 1266.5 - FONE_W / 2, x1: 960.5 - FONE_W / 2 };
+const CARD = { x: 14, y: 74, w: 386, h: 168 };         // .scanner-card em px do app
+const UL = 87.5;                                       // o sublinhado do link, em px do cartão
+// no fecho o celular desce até o sublinhado cair em y = 540 (a linha da cena 6)
+const FONE_Y_LINHA = 540 - BEZEL - (CARD.y + UL) * ZP;
+const foneY = (t) => lerp(FONE.y, FONE_Y_LINHA, smooth(clamp((t - T.fecha) / T.fechaDur)));
+const foneX = (t) => lerp(FONE.x0, FONE.x1, smooth(clamp((t - T.move) / T.moveDur)));
+const appX = (t, x) => foneX(t) + BEZEL + x * ZP;      // px do app → quadro
+const appY = (t, y) => foneY(t) + BEZEL + y * ZP;
+const Y_UL = appY(0, CARD.y + UL);                     // o sublinhado do link no quadro, antes do fecho (236)
+const FIELD = [55, 356];                               // o campo do link, em px do cartão
+const PAL = { x: S.palavra.x, top: S.palavra.top };
+let W_SEG = 558;                                       // largura de SEGUNDOS (medida)
+const KM = 96 / 38;                                    // a marca grande: ninho de 96 px (38 px no cabeçalho)
+const MARCA_GRANDE = { x: 120, y: 150 };
+// barra de abas do dossiê (.ds-tabs) no lugar do cartão, em px do app: 386 x 54, padding e gap de 4, borda de 1
+const BAR = { x: 14, y: 85, w: 386, h: 54 };
+const SEG_W = (BAR.w - 2 - 8 - 8) / 3;
+const segX = (i) => BAR.x + 1 + 4 + i * (SEG_W + 4);
+// a linha da cena 6 em t = 0 (cena06.html: barra, de 525,75 a 1394,25, y = 540)
+const L6 = [525.75, 1394.25];
+
+// ---------------------------------------------------------------------------
+// DOM e utilitários
+// ---------------------------------------------------------------------------
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+function el(cls, html, pai) { const e = document.createElement('div'); e.className = cls; e.innerHTML = html; pai.appendChild(e); return e; }
+const vis = (e, a) => { e.style.opacity = a.toFixed(3); e.style.visibility = a > 0.001 ? 'inherit' : 'hidden'; };
+const pos = (e, x, y) => { e.style.left = x.toFixed(1) + 'px'; e.style.top = y.toFixed(1) + 'px'; };
+const caixa = (e, x, y, w, h) => { e.style.left = x.toFixed(2) + 'px'; e.style.top = y.toFixed(2) + 'px'; e.style.width = w.toFixed(2) + 'px'; e.style.height = h.toFixed(2) + 'px'; };
+const hx = (h, a = 1) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16), a];
+const INK = hx('#171717'), MUTED = hx('#625C51');
+const sm = (t, t0, dur) => smooth(clamp((t - t0) / dur));
+const f1 = (v) => v.toFixed(1);
+const polyD = (pts) => 'M' + pts.map((p) => f1(p[0]) + ' ' + f1(p[1])).join('L');
+const segD = (a, b, y) => `M${f1(a)} ${f1(y)}L${f1(b)} ${f1(y)}`;
+// cubic-bezier do CSS (x → y), para a curva de cada trecho do jellySquishBtn do protótipo
+function bezier(x1, y1, x2, y2) {
+  const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx, cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+  const X = (s) => ((ax * s + bx) * s + cx) * s, Y = (s) => ((ay * s + by) * s + cy) * s, dX = (s) => (3 * ax * s + 2 * bx) * s + cx;
+  return (x) => { let s = x; for (let i = 0; i < 8; i += 1) { const d = dX(s); if (Math.abs(d) < 1e-6) break; s -= (X(s) - x) / d; } return Y(clamp(s)); };
+}
+const EASE_JELLY = bezier(0.25, 1, 0.5, 1);
+// jellySquishBtn (index.html): 0,48 s; quadros-chave de escala x, escala y e deslocamento y (px do app)
+const JELLY = [[0, 1, 1, 0], [0.25, 0.93, 0.87, 2], [0.55, 1.04, 1.06, -1.5], [0.78, 0.985, 0.99, 0], [1, 1, 1, 0]];
+function jelly(t, t0) {
+  const u = (t - t0) / 0.48;
+  if (u <= 0 || u >= 1) return [1, 1, 0];
+  for (let i = 1; i < JELLY.length; i += 1) {
+    if (u <= JELLY[i][0]) {
+      const a = JELLY[i - 1], b = JELLY[i], k = EASE_JELLY((u - a[0]) / (b[0] - a[0]));
+      return [lerp(a[1], b[1], k), lerp(a[2], b[2], k), lerp(a[3], b[3], k)];
+    }
+  }
+  return [1, 1, 0];
+}
+
+// régua fora do #c (sem transform, nem no preview): largura fracionária de um texto numa fonte
+const regua = document.createElement('div');
+regua.style.cssText = 'position:absolute;left:-20000px;top:0;visibility:hidden;white-space:pre';
+document.body.appendChild(regua);
+function largura(txt, fonte, o = {}) {
+  regua.style.font = fonte;
+  regua.style.letterSpacing = (o.ls || 0) + 'em';
+  regua.style.fontVariationSettings = o.fvs || 'normal';
+  regua.style.fontKerning = o.kern || 'auto';
+  regua.textContent = txt;
+  return regua.getBoundingClientRect().width;
+}
+const FONTE_PALAVRA = { fonte: `${S.palavra.peso} ${S.palavra.tamanho}px Fraunces`, o: { ls: S.palavra.espacamento, fvs: `'opsz' ${S.palavra.opsz}`, kern: 'none' } };
+const medePalavra = (txt) => largura(txt, FONTE_PALAVRA.fonte, FONTE_PALAVRA.o);
+const FONTE_BASE = `${S.baseFonte.peso} ${S.baseFonte.tamanho}px ${S.baseFonte.familia}`;
+
+const ICONE = { copiar: '<i class="ic ic-copiar"></i>', link: '<i class="ic ic-link"></i>', seta: '<i class="ic ic-seta"></i>' };
+const LINK = 'https://imovel.app/recife/boa-viagem/apartamento-75m2-nascente';
+
+// ---------------------------------------------------------------------------
+// Subsolo (entrada). A cópia escura (canvas de motion/lib/subsolo.js + TEMPO em HTML) fica parada e é
+// recortada abaixo da borda da tinta; a cópia clara (tinta sobre papel) é a que se mexe, por baixo dela.
+// ---------------------------------------------------------------------------
+const escuro = $('escuro'), claro = $('claro'), canvas = $('escCanvas');
+const escPal = el('palavra', '', escuro);
+const escLetras = [...S.palavra.texto].map((ch) => { const e = el('letra', ch, escPal); e.style.color = S.palavra.cor; return e; });
+const NOMES = S.bases.map((b) => ({ ...b, e: el('t base', b.nome, $('nomes')), w22: 0, t0: 0 }));
+const palavra = el('palavra', '', claro);
+palavra.style.clipPath = 'none';
+const VELHA = S.palavra.texto, NOVA = 'SEGUNDOS';
+const LV = [...VELHA].map((ch) => ({ e: el('letra', ch, palavra), x: 0 }));
+const LN = [...NOVA].map((ch) => ({ e: el('letra', ch, palavra), x: 0 }));
+// TEMPO → SEGUNDOS: o E e o O ficam (o O desliza para o lugar dele); T, M e P sobem 24 px e somem;
+// S, G, U, N, D e o S final sobem 24 px até o lugar e aparecem, cada um depois que o lugar esvaziou
+const LEVA = 24;
+const SAEM = { 0: 0.00, 2: 0.02, 3: 0.04 };                           // índice em TEMPO → atraso
+const ENTRAM = { 0: 0.11, 2: 0.13, 3: 0.15, 4: 0.17, 5: 0.19, 7: 0.10 };   // índice em SEGUNDOS → atraso (o D espera o O passar)
+const O_DESLIZA = { k: 520, d: 46 };   // o O abre caminho depressa e sem passar do ponto (zeta 1)
+const FICAM = [[1, 1], [4, 6]];                                       // [TEMPO, SEGUNDOS]
+function bordaTinta(t, x) {
+  if (t < T.escoa) {
+    const desce = lerp(-6, 552, sm(t, T.luz, T.pousa - T.luz));
+    return Math.min(desce, reguaEmX(x) + 3);
+  }
+  const p = sm(t, T.escoa, T.escoaDur);
+  return reguaEmX(x) + 3 + 600 * p + 160 * p * (0.5 + 0.28 * Math.sin(2 * Math.PI * x / 1500 + 1.3) + 0.22 * Math.sin(2 * Math.PI * x / 560 + 4.1));
+}
+
+// ---------------------------------------------------------------------------
+// O celular e as duas telas do app (Explorar e Dossiê), em px do app
+// ---------------------------------------------------------------------------
+const foneJ = $('foneJ'), tela = $('tela'), app = $('app');
+app.style.zoom = ZP;
+const contorno = $('contorno');
+const explorar = el('', '', app); explorar.style.cssText = 'position:absolute;inset:0';
+const dossie = el('', '', app); dossie.style.cssText = 'position:absolute;inset:0';
+// a foto do cartão de "Análises Recentes": uma casa térrea com telhado, varanda e árvore (vetorial)
+function fachada() {
+  let s = '<rect width="386" height="230" fill="#FCE5BC"/><circle cx="318" cy="52" r="22" fill="#FBD08F"/>';
+  s += '<rect y="178" width="386" height="52" fill="#EFC38D"/><path d="M0 178h386" stroke="#F8DDB4" stroke-width="3"/>';
+  s += '<path d="M78 106 L178 54 L278 106 Z" fill="#E9734F"/><rect x="92" y="106" width="172" height="74" fill="#F9C978"/>';
+  s += '<rect x="112" y="122" width="38" height="30" rx="3" fill="#FCEEDA"/><rect x="206" y="122" width="38" height="30" rx="3" fill="#FCEEDA"/>';
+  s += '<rect x="162" y="128" width="32" height="52" rx="3" fill="#DC683B"/><path d="M131 122v30M225 122v30" stroke="#F6B467" stroke-width="2"/>';
+  s += '<rect x="300" y="128" width="9" height="52" fill="#B9773F"/><circle cx="304" cy="112" r="30" fill="#F2A27F"/><circle cx="286" cy="124" r="18" fill="#F2A27F"/>';
+  s += '<rect x="20" y="150" width="56" height="30" rx="4" fill="#F8DDB4"/><path d="M20 160h56M20 170h56" stroke="#EFC38D" stroke-width="2"/>';
+  return s;
+}
+// cabeçalho (top-header-minimal): ninho, VEREDA e o menu
+const headE = el('pg-head', `<div class="pg" style="left:16px;top:17px"><i class="ninho"></i></div><div class="pg pg-marca" style="left:50px;top:21px">VEREDA</div><div class="pg" style="right:16px;top:20px;color:var(--ink-primary)"><i class="ic ic-menu"></i></div>`, explorar);
+// "Análises Recentes" e um cartão de imóvel (só a foto e a pílula do bairro)
+const recentes = el('', `<div class="pg pg-tit" style="left:14px;top:266px">Análises Recentes</div>
+  <div class="pg-filtro" style="right:14px;top:263px"><span class="on">Todos</span><span>Alugar</span><span>Comprar</span></div>
+  <div class="pg-card" style="left:14px;top:306px;width:386px;height:330px;border-radius:18px;overflow:hidden">
+    <svg width="386" height="230" viewBox="0 0 386 230" style="position:absolute;left:0;top:0;display:block">${fachada()}</svg>
+    <div class="pg-loc" style="left:12px;top:12px">Casa Forte · Recife</div>
+    <div class="pg pg-tit" style="left:16px;top:246px;font-size:18px">Casa com quintal</div>
+    <div class="pg pg-sub" style="left:16px;top:274px">3 quartos · 2 vagas</div>
+  </div>`, explorar);
+recentes.style.cssText = 'position:absolute;inset:0';
+// a caixa: o cartão Auditar novo anúncio (B2) que vira a barra de abas (B3)
+
+const caixaE = el('', '', app); caixaE.id = 'caixa';
+const scan = el('', '', app); scan.style.cssText = `position:absolute;left:${CARD.x}px;top:${CARD.y}px;width:${CARD.w}px;height:${CARD.h}px`;
+const scTit = el('sc-tit', 'Auditar novo anúncio', scan);
+scTit.style.left = '16px'; scTit.style.top = (17 + (26.5 - 21 * 1.15) / 2).toFixed(3) + 'px';
+const scColar = el('sc-colar', `${ICONE.copiar}<span>Colar link</span>`, scan);
+const scPoco = el('sc-poco', '', scan); caixa(scPoco, 16, 55.5, 354, 40);
+const scIcone = el('sc-icone', ICONE.link, scan); caixa(scIcone, 30, 55.5 + 1 + (38 - 15) / 2, 15, 15);
+const scCampo = el('sc-campo', LINK, scan); caixa(scCampo, 55, 67.5, 301, 16);
+const scBotao = el('sc-botao', `<span>Gerar Dossiê</span>${ICONE.seta}`, scan);
+const BOT = [16, 107.5, 354, 44.5];
+let COLAR = [0, 17, 0, 26.5];
+// a tela do dossiê: cabeçalho com o imóvel, a barra de abas e a lista do que o dossiê traz
+const headD = el('pg-head', `<div class="pg" style="left:16px;top:20px;color:var(--ink-primary)"><i class="ic ic-volta"></i></div><div class="pg pg-tit" style="left:46px;top:9px;font-size:18px">Imóvel em análise</div><div class="pg pg-sub" style="left:46px;top:33px">Boa Viagem · Recife</div>`, dossie);
+// as pílulas e os rótulos das abas ficam numa camada acima da caixa (que vira a barra)
+const abasL = el('', '', app); abasL.style.cssText = 'position:absolute;inset:0';
+const selD = el('sel', '', abasL), selE = el('sel', '', abasL);
+for (const [e, i] of [[selD, 0], [selE, 2]]) caixa(e, segX(i), BAR.y + 5, SEG_W, 44);
+const abaD = el('aba', 'Destaques', abasL), abaN = el('aba', 'Entorno', abasL);
+const olho = el('pg pg-olho', 'O que o Vereda encontrou', dossie); pos(olho, 14, 176);
+const h2 = el('pg pg-h2', 'Além do anúncio.', dossie); pos(h2, 14, 192);
+const ITENS = ['Fotos sem distorção', 'Lote exato do prédio', 'Metragem × IPTU', 'Taxas omitidas', 'Valor das escrituras',
+  'Obras e demolições perto', 'Alagamentos na rua', 'Ilha de calor', 'Segurança no bairro', 'Custo de vida no entorno'];
+const lista = el('pg-card', '', dossie); caixa(lista, 14, 236, 386, ITENS.length * 40 + 8); lista.style.borderRadius = '16px';
+const LINHAS = ITENS.map((txt, i) => {
+  const l = el('', `<div class="pg pg-n" style="left:16px;top:14px">${String(i + 1).padStart(2, '0')}</div><div class="pg pg-item" style="left:44px;top:12px">${txt}</div>`, lista);
+  l.style.cssText = `position:absolute;left:0;right:0;top:${4 + i * 40}px;height:40px`;
+  if (i) el('pg-sep', '', l).style.top = '0px';
+  return l;
+});
+// Edifício: camada própria de quadro inteiro (é ele que vira o rótulo da cena 6)
+const edifJ = $('edifJ');
+const rotE = el('t edificio', 'Edifício', edifJ);
+
+// chrome: a marca (.brand-lockup)
+const chrome = $('chrome');
+const ninhoSvg = `<svg width="38" height="38" viewBox="0 0 100 100"><path d="M 18,80 C 7,79 2,66 2,49 C 2,24 20,4 50,3 C 79,2 97,25 97,49 C 97,68 89,80 79,80 C 64,80 34,81 18,80 Z" fill="#F47745"/><path d="M 40,58 C 35,42 40,24 53,23 C 64,22 69,40 64,57 C 59,72 45,72 40,58 Z" fill="#F5F0E6"/></svg>`;
+const logo = el('chrome-pilula', `${ninhoSvg}<span class="marca">VEREDA</span>`, chrome);
+Object.assign(logo.style, { left: '56px', top: '40px', padding: '10px 22px 10px 14px' });
+const logoSvg = logo.querySelector('svg'), logoMarca = logo.querySelector('.marca');
+const dbg = new URLSearchParams(location.search).has('debug') ? el('', '', chrome) : null;
+if (dbg) dbg.id = 'debug';
+
+// a linha da cena 6 em t = 0 e a forma fechada nela
+const forma6 = $('forma6');
+forma6.setAttribute('d', roundedQuad(rectPts(525.75, 538, 868.5, 4), 2));
+forma6.setAttribute('fill', rgba(mixColor([255, 255, 255, 1], [207, 219, 233, 1], 0)));
+forma6.setAttribute('stroke', `rgba(23,23,23,${(0.09).toFixed(3)})`);
+forma6.setAttribute('stroke-width', (2).toFixed(2));
+const reguaP = $('regua'), sub = $('sub'), marcas = $('marcas');
+const barra6 = document.createElementNS(NS, 'line');
+for (const [a, v] of Object.entries({ stroke: '#F47745', 'stroke-width': 4, 'stroke-linecap': 'round', x1: L6[0].toFixed(1), y1: (540).toFixed(1), x2: L6[1].toFixed(1), y2: (540).toFixed(1) })) barra6.setAttribute(a, v);
+$('linhas').appendChild(barra6);
+
+// ---------------------------------------------------------------------------
+// Medidas (depois das fontes)
+// ---------------------------------------------------------------------------
+function medir() {
+  const xv = posLetras(VELHA, medePalavra), xn = posLetras(NOVA, medePalavra);
+  LV.forEach((l, i) => { l.x = xv[i]; });
+  LN.forEach((l, i) => { l.x = xn[i]; });
+  W_SEG = medePalavra(NOVA);
+  for (const p of [escPal, palavra]) pos(p, PAL.x, PAL.top);
+  escLetras.forEach((e, i) => { e.style.left = xv[i].toFixed(2) + 'px'; });
+  for (const n of NOMES) n.w22 = largura(n.nome, FONTE_BASE);
+  // cada nome só sai do lugar quando a tinta já escoou abaixo dele (sem cópia dupla na borda)
+  for (const n of NOMES) {
+    let t0 = T.contorno;
+    for (let t = T.escoa; t < T.nomesFora; t += 0.01) {
+      let ok = true;
+      for (let x = n.x - 10; x <= n.x + n.w22 + 10; x += 15) if (bordaTinta(t, x) < n.y + 30) { ok = false; break; }
+      if (ok) { t0 = Math.max(T.contorno, t); break; }
+      t0 = t;
+    }
+    n.t0 = t0;
+  }
+  const wC = largura('Colar link', '600 11.5px "Plus Jakarta Sans"');
+  const wP = 11 + 12 + 5 + wC + 11 + 2;
+  COLAR = [370 - wP, 17, wP, 26.5];
+  for (const [e, i] of [[abaD, 0], [abaN, 1]]) caixa(e, segX(i), BAR.y + 5, SEG_W, 44);
+  desenharSubsolo(canvas.getContext('2d'), NOMES.map((n) => n.w22));
+}
+
+// o contorno do anúncio levado cresce até a moldura do celular (a linha do meio da borda)
+function contornoRect(t) {
+  const K = S.contorno, p = sm(t, T.contorno, T.contornoDur), b = BEZEL / 2;
+  // o celular cabe inteiro no quadro: o contorno cresce direto até a moldura (borda a menos de 20 px por quadro)
+  return { x: lerp(K.x, FONE.x0 + b, p), y: lerp(K.y, FONE.y + b, p), w: lerp(K.w, FONE.w - BEZEL, p), h: lerp(K.h, FONE.h - BEZEL, p), r: lerp(K.raio, RAIO_TELA + b, p) };
+}
+// a caixa: o cartão (B2) que se recolhe na barra de abas (B3), em px do app
+function caixaRect(t) {
+  const m = sm(t, T.abre, T.abreDur);
+  return { x: lerp(CARD.x, BAR.x, m), y: lerp(CARD.y, BAR.y, m), w: lerp(CARD.w, BAR.w, m), h: lerp(CARD.h, BAR.h, m), r: lerp(18, 12, m), m };
+}
+
+// ---------------------------------------------------------------------------
+// seek(t): função pura do tempo
+// ---------------------------------------------------------------------------
+function render(t) {
+  t = clamp(t, 0, DUR);
+  const fim = t >= FIM;
+  const fx = foneX(t), fy = foneY(t);
+
+  // ===== B1 a) a luz: a tinta desce até a régua, para, e escoa por baixo =====================
+  const yMin = Math.min(...[0, 480, 960, 1440, 1920].map((x) => bordaTinta(t, x)));
+  if (yMin < 1080) {
+    escuro.style.visibility = 'inherit';
+    const pts = [];
+    for (let x = 0; x <= 1920; x += 30) pts.push(`${x}px ${bordaTinta(t, x).toFixed(1)}px`);
+    canvas.style.clipPath = `polygon(${pts.join(',')},1920px 1090px,0px 1090px)`;
+    const e = bordaTinta(t, 0) >= 552 ? 2000 : lerp(-6, 552, sm(t, T.luz, T.pousa - T.luz));
+    escPal.style.clipPath = `inset(${clamp(e - PAL.top, 0, 96).toFixed(1)}px -80px 0px -80px)`;
+    escPal.style.visibility = e - PAL.top < 96 ? 'inherit' : 'hidden';
+  } else escuro.style.visibility = 'hidden';
+
+  // ===== a régua: do tempo (longa, com marcas) à régua curta de SEGUNDOS; no B2 entra no celular ===
+  const R = S.regua;
+  const pr = sm(t, T.regua, T.reguaDur);
+  const amp = R.onda * (1 - pr);
+  let ra = lerp(R.x0, PAL.x, pr), rb = lerp(R.x1, PAL.x + W_SEG, pr);
+  const q = sm(t, T.rolo, T.roloDur);   // B2: desliza para a direita e some atrás do celular
+  ra = lerp(ra, FONE.x1 + 40, q); rb = lerp(rb, FONE.x1 + 40 + W_SEG, q);
+  rb = Math.min(rb, fx + FONE.w - BEZEL);   // a ponta não sai do outro lado do celular (mais estreito que a régua)
+  // e sobe junto até a altura do campo do link, onde vira o sublinhado
+  const ry = lerp(R.y, Y_UL, q);
+  if (rb - ra > 0.5 && ra < FONE.x1 + 39) {
+    reguaP.setAttribute('d', amp > 0.02 ? linhaD(reguaPts(ra, rb, ry, amp, R.ondas)) : segD(ra, rb, ry));
+    reguaP.style.visibility = 'inherit';
+  } else reguaP.style.visibility = 'hidden';
+  const hm = R.marcas.altura * (1 - sm(t, T.regua + 0.5, 0.45));
+  if (hm > 0.3) { marcas.setAttribute('d', marcasD(ra, rb, R.y, amp, R.ondas, hm)); marcas.style.visibility = 'inherit'; }
+  else marcas.style.visibility = 'hidden';
+
+  // ===== o contorno vira a moldura do celular; a tela acende; o app aparece ==================
+  const fecha = sm(t, T.fecha, T.fechaDur);
+  if (fim) foneJ.style.visibility = 'hidden';
+  else {
+    foneJ.style.visibility = 'inherit';
+    // B3: o celular desce e se fecha na linha (y 540), de cima e de baixo
+    foneJ.style.clipPath = `inset(${lerp(FONE.y - 10, 538, fecha).toFixed(1)}px 0px ${lerp(1080 - (FONE.y + FONE.h + 10), 1080 - 542, fecha).toFixed(1)}px 0px)`;
+    const cr = contornoRect(t);
+    const so = sm(t, T.solido, 0.22);
+    contorno.setAttribute('d', contornoD(cr.x + (fx - FONE.x0) * (t >= T.move ? 1 : 0), cr.y + (fy - FONE.y), cr.w, cr.h, cr.r));
+    contorno.setAttribute('stroke', rgba(mixColor(hx('#78716C'), hx('#222426'), so)));
+    contorno.setAttribute('stroke-width', lerp(3, BEZEL, so).toFixed(2));
+    contorno.setAttribute('stroke-dasharray', so < 1 ? `12 ${(9 * (1 - so)).toFixed(2)}` : 'none');
+    // no fecho, a moldura some antes de virar dois tracinhos na linha
+    contorno.setAttribute('opacity', (1 - sm(t, T.fecha + 0.2, 0.3)).toFixed(3));
+    const aTela = sm(t, T.tela, 0.15);
+    vis(tela, aTela);
+    caixa(tela, fx + BEZEL, fy + BEZEL, FONE.w - 2 * BEZEL, FONE.h - 2 * BEZEL);
+    tela.style.borderRadius = RAIO_TELA + 'px';
+  }
+  const aApp = sm(t, T.app, 0.15);
+  // Explorar: cabeçalho e "Análises Recentes" saem quando o dossiê entra
+  // tudo o que é do Explorar sai junto, logo depois do toque; o dossiê entra em seguida
+  const sai = 1 - sm(t, T.b3, 0.1);
+  vis(headE, aApp * sai); vis(recentes, aApp * sai);
+  // a caixa (cartão → barra de abas)
+  const cx = caixaRect(t);
+  caixa(caixaE, cx.x, cx.y, cx.w, cx.h);
+  caixaE.style.borderRadius = cx.r.toFixed(2) + 'px';
+  caixaE.style.borderWidth = '1px';
+  caixaE.style.background = rgba(mixColor(hx('#FFFFFF'), hx('#EAE3D5'), cx.m));
+  caixaE.style.borderColor = rgba(mixColor([23, 23, 23, 0.09], hx('#DCD3C3'), cx.m));
+  vis(caixaE, aApp * (1 - sm(t, T.fecha + 0.22, 0.22)));
+  // conteúdo do cartão: sai antes de a caixa se recolher (de baixo para cima; o título por último)
+  const aBaixo = 1 - clamp((t - (T.abre - 0.02)) / 0.1), aTitulo = 1 - clamp((t - (T.abre + 0.04)) / 0.1);
+  vis(scan, aApp * aTitulo);
+  if (aApp * aTitulo > 0.001) {
+    for (const e of [scColar, scPoco, scIcone, scCampo, scBotao]) e.style.opacity = aBaixo.toFixed(3);
+    const hov1 = clamp((t - (T.toque1 - 0.12)) / 0.06) * (1 - clamp((t - (T.toque1 + 0.3)) / 0.1));
+    const pq = press(t, [T.toque1]);
+    const [cx0, cy0, cw, ch] = COLAR;
+    const w = cw * (1 + 0.07 * pq), h = ch * (1 - 0.1 * pq);
+    caixa(scColar, cx0 + cw / 2 - w / 2, cy0 + ch / 2 - h / 2, w, h);
+    scColar.style.background = rgba(mixColor(hx('#FAF8F4'), hx('#FFFFFF'), hov1));
+    scColar.style.borderColor = rgba(mixColor([23, 23, 23, 0.10], [23, 23, 23, 0.22], hov1));
+    scColar.style.color = rgba(mixColor(hx('#4A4740'), INK, hov1));
+    scCampo.style.visibility = t >= T.cola ? 'inherit' : 'hidden';
+    const hov2 = clamp((t - (T.toque2 - 0.12)) / 0.06);
+    const [jx, jy, jt] = jelly(t, T.toque2);
+    const bw = BOT[2] * jx, bh = BOT[3] * jy;
+    caixa(scBotao, BOT[0] + BOT[2] / 2 - bw / 2, BOT[1] + BOT[3] / 2 - bh / 2 + jt, bw, bh);
+    scBotao.style.background = rgba(mixColor(hx('#F47745'), hx('#E56734'), hov2));
+  }
+  // Dossiê: cabeçalho, abas e a lista ("tudo possível")
+  const aDos = sm(t, T.dossie, 0.14);
+  const aFecho = 1 - sm(t, T.fecha + 0.22, 0.22);   // o conteúdo do dossiê sai antes de o celular terminar de fechar
+  vis(headD, aDos * aFecho);
+  const aAbas = sm(t, T.abre + T.abreDur - 0.04, 0.12);
+  const selE_ = sm(t, T.edificio, 0.12);
+  const aRot = 1 - sm(t, T.linha - 0.02, 0.12);   // Destaques, Entorno e as pílulas saem antes de Edifício passar por eles
+  vis(selD, aAbas * (1 - selE_) * aRot); vis(selE, aAbas * selE_ * aRot);
+  vis(abaD, aAbas * aRot); vis(abaN, aAbas * aRot);
+  abaD.style.fontWeight = selE_ < 0.5 ? '700' : '500';
+  abaD.style.color = rgba(mixColor(INK, MUTED, selE_));
+  const aLista = sm(t, T.lista, 0.1);
+  vis(olho, aLista * aFecho); vis(h2, aLista * aFecho);
+  vis(lista, sm(t, T.lista, 0.08) * aFecho);
+  LINHAS.forEach((l, i) => { const a = sm(t, T.lista + 0.02 + i * T.listaPasso, 0.08); vis(l, a); });
+
+  // ===== Edifício: o rótulo da terceira aba; no fecho, faz o caminho até o rótulo da cena 6 ====
+  if (fim) {
+    rotE.style.fontSize = ''; rotE.style.fontWeight = ''; rotE.style.color = '';
+    pos(rotE, 960 - rotE.offsetWidth / 2, 540 - 66);
+    vis(rotE, 1);
+  } else {
+    const u = sm(t, T.linha, T.linhaDur);
+    const fsA = 12 * ZP;
+    const fsE = lerp(fsA, 34, u);
+    rotE.style.fontSize = fsE.toFixed(2) + 'px';
+    rotE.style.fontWeight = selE_ >= 0.5 ? '700' : '500';
+    rotE.style.color = rgba(mixColor(MUTED, INK, selE_));
+    const ex = appX(t, segX(2) + SEG_W / 2), ey = appY(t, BAR.y + 27);
+    // o alvo anda com a linha (que desce com o celular) e fica 49 px acima dela, como na cena 6
+    const cxE = lerp(ex, 960, u), cyE = lerp(ey, appY(t, CARD.y + UL) - 540 + (540 - 66 + 17), u);
+    pos(rotE, cxE - rotE.offsetWidth / 2, cyE - fsE / 2);
+    vis(rotE, aAbas);
+  }
+
+  // ===== a linha laranja: sublinhado do link (B2), linha sob as abas (B3), a linha da cena 6 ======
+  const gs = sm(t, T.sublinha, T.sublinhaDur);
+  const ux = appX(t, CARD.x + FIELD[0]), ux1 = appX(t, CARD.x + FIELD[1]);
+  const ul = sm(t, T.linha, T.linhaDur);
+  const a0 = lerp(ux, L6[0], ul), a1 = lerp(lerp(ux, ux1, gs), L6[1], ul);
+  // a linha anda com o celular: no fecho ele desce e ela chega a y = 540 no último quadro
+  if (!fim && t > T.sublinha && a1 - a0 > 0.5) { sub.setAttribute('d', segD(a0, a1, appY(t, CARD.y + UL))); sub.style.visibility = 'visible'; }
+  else sub.style.visibility = 'hidden';
+  barra6.style.visibility = fim ? 'visible' : 'hidden';
+  forma6.style.visibility = fim ? 'visible' : 'hidden';
+
+  // ===== os nomes das bases entram no celular ("faz essa investigação") =========================
+  const aNomes = 1 - sm(t, T.nomesFora, 0.12);
+  NOMES.forEach((n, k) => {
+    const en = sm(t, n.t0, T.nomesDur);
+    // cada nome vai para dentro da tela do celular pelo caminho mais curto (encolhe de 22 para 18 px)
+    const fs = lerp(22, 18, en);
+    const wf = n.w22 * 18 / 22, x0 = FONE.x0 + 26, x1 = FONE.x0 + FONE.w - 26;
+    const xf = wf > x1 - x0 ? (x0 + x1) / 2 - wf / 2 : clamp(n.x, x0, x1 - wf);
+    const x = lerp(n.x, xf, en), y = lerp(n.y, n.y - 70, en);
+    n.e.style.fontSize = fs.toFixed(2) + 'px';
+    n.e.style.color = rgba([23, 23, 23, lerp(0.30, 0.55, en)]);
+    pos(n.e, x, y);
+    const voando = en > 0 && en < 1 && t < T.tela + 0.1;
+    n.e.classList.toggle('vazado', voando);
+    if (voando) n.e.style.backgroundPosition = `${(-(x - 6)).toFixed(1)}px ${(-(y - 2)).toFixed(1)}px`;
+    vis(n.e, aNomes);
+  });
+
+  // ===== TEMPO → SEGUNDOS: só as letras que mudam rolam =====================================
+  const aPal = swap(t, -1, T.b2 + 0.2);
+  vis(palavra, aPal);
+  if (aPal > 0.001) {
+    palavra.style.top = (PAL.top - 6 * (1 - clamp((T.b2 + 0.1 - t) / 0.1))).toFixed(1) + 'px';
+    const pp = (d) => clamp(sp(t - (T.troca + d), P.type) / 0.985);   // assenta de vez (o HOLD fica parado)
+    LV.forEach((v, i) => {
+      if (i in SAEM) {
+        const p = pp(SAEM[i]);
+        v.e.style.left = v.x.toFixed(2) + 'px';
+        v.e.style.top = (-LEVA * p).toFixed(2) + 'px';
+        const op = 1 - clamp(p / 0.5);
+        v.e.style.opacity = op.toFixed(3); v.e.style.visibility = op > 0.001 ? 'inherit' : 'hidden';
+      } else v.e.style.visibility = 'hidden';
+    });
+    LN.forEach((n, j) => {
+      if (j in ENTRAM) {
+        const p = pp(ENTRAM[j]);
+        n.e.style.left = n.x.toFixed(2) + 'px';
+        n.e.style.top = (LEVA * (1 - p)).toFixed(2) + 'px';
+        const op = clamp((p - 0.05) / 0.45);
+        n.e.style.opacity = op.toFixed(3); n.e.style.visibility = op > 0.001 ? 'inherit' : 'hidden';
+      } else n.e.style.visibility = 'hidden';
+    });
+    for (const [i, j] of FICAM) {
+      const v = LV[i];
+      const x = lerp(v.x, LN[j].x, i === 4 ? clamp(sp(t - T.troca, O_DESLIZA) / 0.985) : pp(0));
+      v.e.style.left = x.toFixed(2) + 'px'; v.e.style.top = '0px';
+      v.e.style.opacity = '1.000'; v.e.style.visibility = 'inherit';
+    }
+    for (const l of [...LV, ...LN]) { l.e.style.color = '#171717'; }
+  }
+
+  // ===== chrome: a marca entra grande no "VEREDA" e vai ao cabeçalho no começo do B2 ===========
+  const aLogo = swap(t, T.marca, Infinity, { durIn: 0.2 });
+  vis(logo, aLogo);
+  const dk = sm(t, T.b2, T.docaDur);
+  if (dk >= 1) {
+    Object.assign(logo.style, { left: '56px', top: '40px', padding: '10px 22px 10px 14px', gap: '', background: '', borderColor: '' });
+    logoSvg.setAttribute('width', '38'); logoSvg.setAttribute('height', '38');
+    logoMarca.style.fontSize = '';
+  } else {
+    const k = lerp(KM, 1, dk);
+    const gx = MARCA_GRANDE.x - 1 - 14 * KM, gy = MARCA_GRANDE.y - 1 - 10 * KM + 10 * pending(t, T.marca + 0.04, P.type);
+    logo.style.left = lerp(gx, 56, dk).toFixed(2) + 'px';
+    logo.style.top = lerp(gy, 40, dk).toFixed(2) + 'px';
+    logo.style.padding = `${(10 * k).toFixed(2)}px ${(22 * k).toFixed(2)}px ${(10 * k).toFixed(2)}px ${(14 * k).toFixed(2)}px`;
+    logo.style.gap = (14 * k).toFixed(2) + 'px';
+    logo.style.background = `rgba(250,246,238,${(0.92 * dk).toFixed(3)})`;
+    logo.style.borderColor = `rgba(226,217,200,${dk.toFixed(3)})`;
+    logoSvg.setAttribute('width', (38 * k).toFixed(2)); logoSvg.setAttribute('height', (38 * k).toFixed(2));
+    logoMarca.style.fontSize = (28 * k).toFixed(2) + 'px';
+  }
+
+  // ===== o dedo: só nos dois toques que a fala narra (Colar link e Gerar Dossiê) =================
+  const PT1 = [appX(t, CARD.x + COLAR[0] + COLAR[2] / 2 + 8), appY(t, CARD.y + COLAR[1] + COLAR[3] / 2 + 2)];
+  const PT2 = [appX(t, CARD.x + 262), appY(t, CARD.y + BOT[1] + BOT[3] / 2 + 2)];
+  const cur = t < T.toque1 + 0.6 ? PT1 : PT2;
+  const toque = $('toque'), od = $('onda');
+  // o dedo aparece antes de cada toque e sai logo depois (não fica parado sobre o botão)
+  const aT = Math.max(swap(t, T.toque1 - 0.2, T.toque1 + 0.4, { delayIn: 0, durIn: 0.1, leadOut: 0, durOut: 0.12 }),
+    swap(t, T.toque2 - 0.25, T.toque2 + 0.42, { delayIn: 0, durIn: 0.1, leadOut: 0, durOut: 0.12 }));
+  const rT = 26 * (1 - 0.18 * press(t, [T.toque1, T.toque2]));
+  toque.setAttribute('cx', f1(cur[0])); toque.setAttribute('cy', f1(cur[1])); toque.setAttribute('r', rT.toFixed(1));
+  toque.setAttribute('opacity', (0.2 * aT).toFixed(3));
+  let uo = -1, op = PT1, cor = '#F47745';
+  if (t >= T.toque1 && t < T.toque1 + 0.45) uo = (t - T.toque1) / 0.45;
+  if (t >= T.toque2 && t < T.toque2 + 0.45) { uo = (t - T.toque2) / 0.45; op = PT2; cor = '#171717'; }   // não laranja sobre laranja
+  od.setAttribute('cx', f1(op[0])); od.setAttribute('cy', f1(op[1])); od.setAttribute('stroke', cor);
+  od.setAttribute('r', (24 + 30 * sp(Math.max(0, uo) * 0.45, P.button)).toFixed(1));
+  od.setAttribute('opacity', (uo >= 0 && uo < 1 ? 0.8 * (1 - uo) : 0).toFixed(3));
+
+  if (dbg) dbg.textContent = t.toFixed(2) + ' s';
+}
+
+// ---------------------------------------------------------------------------
+// Contrato de render e modos de preview
+// ---------------------------------------------------------------------------
+const ESTADOS = [
+  { id: 'E0', nome: 'Entrada: o subsolo escuro (último quadro da cena 4)', t: 0 },
+  { id: 'M1a', nome: 'Meio: a tinta desce; a marca entra grande ("VEREDA")', t: 0.55 },
+  { id: 'B1a', nome: 'A tinta escoa; a régua laranja', t: 1.00 },
+  { id: 'M1b', nome: 'Meio: o contorno vira o celular; os nomes entram nele', t: 1.45 },
+  { id: 'M1c', nome: 'Meio da troca TEMPO → SEGUNDOS', t: 1.76 },
+  { id: 'B1', nome: 'A marca grande, SEGUNDOS com a régua curta, o celular com o app (HOLD)', t: HOLDS[0] },
+  { id: 'M2a', nome: 'Meio: a marca vai ao cabeçalho; o celular vem ao centro', t: 2.55 },
+  { id: 'M2b', nome: 'Toque em Colar link', t: T.toque1 + 0.03 },
+  { id: 'M2c', nome: 'O link chegou; o sublinhado cresce', t: 3.40 },
+  { id: 'M2d', nome: 'Toque em Gerar Dossiê (squish e onda)', t: T.toque2 + 0.1 },
+  { id: 'M3a', nome: 'Meio: o cartão se recolhe na barra de abas', t: 4.62 },
+  { id: 'M3b', nome: 'A lista do dossiê se enche ("tudo possível")', t: 5.10 },
+  { id: 'M3c', nome: 'Edifício selecionado; o celular começa a fechar ("o imóvel")', t: 5.45 },
+  { id: 'M3d', nome: 'Meio: o celular se fecha na linha; Edifício a caminho da cena 6', t: 5.75 },
+  { id: 'FIM', nome: 'Primeiro quadro da cena 6', t: DUR - 1 / 30 },
+];
+const SONS = [
+  { t: T.luz, tipo: 'whoosh', dur: 0.7, ganho: 0.45, evento: 'a tinta desce' },
+  { t: T.marca, tipo: 'pop', ganho: 0.45, evento: 'a marca VEREDA entra' },
+  { t: T.pousa, tipo: 'tick', evento: 'a tinta para na régua; a linha fica laranja' },
+  { t: T.escoa, tipo: 'whoosh', dur: 0.9, ganho: 0.4, evento: 'a tinta escoa por baixo' },
+  { t: T.contorno, tipo: 'whoosh', dur: 0.6, ganho: 0.3, evento: 'o contorno vira o celular' },
+  { t: T.troca, tipo: 'pop', evento: 'TEMPO vira SEGUNDOS' },
+  { t: T.b2, tipo: 'whoosh', dur: 0.5, ganho: 0.4, evento: 'a marca vai ao cabeçalho; o celular ao centro' },
+  { t: T.toque1, tipo: 'click', evento: 'toque em Colar link' },
+  { t: T.cola, tipo: 'pop', ganho: 0.5, evento: 'o link chega' },
+  { t: T.toque2, tipo: 'click', evento: 'toque em Gerar Dossiê' },
+  { t: T.abre, tipo: 'whoosh', dur: 0.4, ganho: 0.4, evento: 'o cartão vira a barra de abas' },
+  { t: T.lista, tipo: 'tick', ganho: 0.5, evento: 'a lista do dossiê' },
+  { t: T.edificio, tipo: 'tick', evento: 'Edifício' },
+  { t: T.fecha, tipo: 'whoosh', dur: 0.6, ganho: 0.4, evento: 'o celular se fecha na linha' },
+];
+window.POC = {
+  id: 'CENA-05', variante: 'a virada: em segundos', duracao: DUR, fps: 30, estados: ESTADOS, holds: HOLDS,
+  cliques: [T.toque1, T.toque2], marcos: T, sons: SONS,
+  tiras: [{ nome: 'luz', t0: 0.5 }, { nome: 'troca', t0: T.troca - 0.02 }, { nome: 'colar', t0: T.toque1 - 0.1 }, { nome: 'clique', t0: T.toque2 - 0.05 }, { nome: 'fecho', t0: T.fecha + 0.2 }],
+  comparar: ESTADOS.map((e) => ({ t: e.t, nome: e.id })),
+  entrada: {
+    modulo: 'motion/lib/subsolo.js',
+    desenho: 'canvas 1920 x 1080 com desenharSubsolo(ctx, larguras dos nomes em 500 22px JetBrains Mono) e, por cima, TEMPO em HTML letra a letra (posLetras, sem kerning, opsz 40)',
+    ...JSON.parse(JSON.stringify(S)),
+  },
+  saida: { cena: 'cena06.html', t: 0, linha: { x1: L6[0], x2: L6[1], y: 540, traco: 4 }, rotulo: { texto: 'Edifício', centroX: 960, top: 474, fonte: '700 34px Plus Jakarta Sans' } },
+};
+window.seek = (t) => render(t);
+window.__pronto = (async () => {
+  await document.fonts.ready;
+  const todo = document.getElementById('c').textContent + ' TEMPOSEGUNDOS ×·—–→²ºçãõéêíóúâÁÉ?0123456789';
+  await Promise.all([
+    '500 96px Fraunces', '500 21px Fraunces', '500 18px Fraunces', '500 20px Fraunces', '500 23px Fraunces', '500 28px Fraunces',
+    '400 11px "Plus Jakarta Sans"', '500 13px "Plus Jakarta Sans"', '600 11.5px "Plus Jakarta Sans"', '600 10.5px "Plus Jakarta Sans"', '600 10px "Plus Jakarta Sans"',
+    '700 10px "Plus Jakarta Sans"', '600 13.5px "Plus Jakarta Sans"', '500 12px "Plus Jakarta Sans"', '700 12px "Plus Jakarta Sans"',
+    '600 14px "Plus Jakarta Sans"', '500 34px "Plus Jakarta Sans"', '700 34px "Plus Jakarta Sans"',
+    '500 22px "JetBrains Mono"', '500 17px "JetBrains Mono"', '500 11px "JetBrains Mono"',
+  ].map((f) => document.fonts.load(f, todo)));
+  await document.fonts.ready;
+  medir();
+  for (let t = 0; t <= DUR; t += 0.25) render(t);
+  await document.fonts.ready;
+  medir();
+  render(0);
+  return true;
+})();
+
+if (!navigator.webdriver) {
+  document.body.classList.add('tela');
+  const c = $('c');
+  const ajusta = () => { const s = Math.min(innerWidth / 1920, innerHeight / 1080); Object.assign(c.style, { position: 'absolute', transformOrigin: '0 0', transform: `scale(${s})`, left: `${(innerWidth - 1920 * s) / 2}px`, top: `${(innerHeight - 1080 * s) / 2}px` }); };
+  addEventListener('resize', ajusta); ajusta();
+  const aoVivo = new URLSearchParams(location.search).has('live');
+  // ao vivo: ENTER → HOLD → EXIT; espaço ou → leva ao próximo HOLD, ← volta ao anterior
+  const PARADAS = HOLDS;
+  let t = 0, alvo = aoVivo ? PARADAS[0] : DUR, rodando = true, antes = null, ultimo = null;
+  window.__medidas = [];
+  const passo = (agora) => {
+    if (antes !== null && rodando) { t += (agora - antes) / 1000; if (t >= alvo) { t = alvo; if (!aoVivo) t = 0; else rodando = false; } }
+    antes = agora;
+    if (t !== ultimo) { const t0 = performance.now(); render(t); window.__medidas.push(performance.now() - t0); if (window.__medidas.length > 2000) window.__medidas.shift(); ultimo = t; }
+    requestAnimationFrame(passo);
+  };
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown') {
+      const base0 = rodando ? alvo : t;
+      const i = PARADAS.findIndex((h) => h > base0 + 1e-3);
+      if (aoVivo) { if (i >= 0) { alvo = PARADAS[i]; rodando = true; } } else rodando = !rodando;
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      const anteriores = PARADAS.filter((h) => h < t - 1e-3);
+      t = anteriores.length ? anteriores[anteriores.length - 1] : 0;
+      alvo = aoVivo ? (PARADAS.find((h) => h > t + 1e-3) ?? DUR) : DUR;
+      rodando = !aoVivo;
+      render(t); ultimo = t;
+      e.preventDefault();
+    } else if (e.key === 'r') { t = 0; alvo = aoVivo ? PARADAS[0] : DUR; rodando = true; }
+  });
+  window.__estadoVivo = () => ({ t, alvo, rodando });
+  window.__pronto.then(() => requestAnimationFrame(passo));
+}
+</script>
+</body>
+</html>

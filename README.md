@@ -5,13 +5,24 @@
 
 ---
 
-## 📌 Fonte Única da Verdade
+## Prova de conceito em execução
+
+**Referência exclusiva de design e experiência:** [`index.html`](./index.html), em `/home/v/Documents/vereda/veredas/index.html`. A regra abrange interface, layout, navegação e interações, além de cores e fontes. Outros protótipos, o app existente e documentos arquivados não são referências alternativas de design ou UX.
+
+O app agora inclui um caderno local: cadastro manual ou link de referência, edição, custos mensais, comparação de dois imóveis, checklist e perguntas copiáveis. Na página inicial, use **Adicionar imóvel sem link** ou **Abrir minhas análises**. Os dossiês de referência continuam separados dos dados que você adicionar.
+
+- [Plano por épocas e prompt de continuidade](./docs/PLANO-POC-EXECUCAO.md)
+- [Validação e limites atuais](./docs/POC-VALIDACAO.md)
+- [v1.0: escopo e viabilidade](./docs/V1-ESCOPO-E-VIABILIDADE.md) e [ordem de execução para o operário](./docs/handoff/ORDEM_DO_ARQUITETO.md)
+- Iniciar: `npm run web`; teste do fluxo com servidor ativo: `npm run test:poc` (porta padrão 8087; configure `POC_URL` para outra).
+
+## 📌 Especificação histórica
 
 Toda a especificação estratégica, funcional, de dados e arquitetural do projeto está consolidada no documento canônico:
 
 * **[Documento Definitivo do Projeto (`docs/VEREDA_DOCUMENTO_DEFINITIVO.md`)](./docs/VEREDA_DOCUMENTO_DEFINITIVO.md):** Master Spec 3.0 & Avaliação Executiva (Visão, Arquitetura de 3 Camadas com chave `DSQFL`, Tese de IA, Funcionalidades Decididas, Modelo de Negócios e Roteiro Campus Mobile 15ª Edição).
 
-> **Nota para Desenvolvedores e Agentes de IA:** A pasta [`ignorar/`](./ignorar/LEIA-ME.md) contém rascunhos e explorações antigas arquivadas. **Nunca utilize arquivos dentro de `ignorar/` como referência.**
+> **Atualização de 19/10/2026:** o usuário autorizou consultar `ignorar/` como pesquisa para a prova de conceito. O plano atual está em [Plano da POC](./docs/PLANO-POC-EXECUCAO.md); ideias antigas devem ser reconciliadas com esse plano e com o código, não aplicadas automaticamente.
 
 ---
 
@@ -43,7 +54,7 @@ Quem procura apartamento para alugar ou comprar decide hoje no escuro: anúncios
 
 ## 📱 Aplicativo (React Native + Expo SDK 57) e Protótipos
 
-O repositório conta com o aplicativo multiplataforma em **React Native 0.86 + Expo SDK 57** ([`src/`](./src/)) e o mock interativo em HTML ([`docs/mock/index.html`](./docs/mock/index.html)), além do protótipo web histórico preservado na raiz ([`index.html`](./index.html)).
+O repositório conta com o aplicativo multiplataforma em **React Native 0.86 + Expo SDK 57** ([`src/`](./src/)) e o mock interativo em HTML ([`docs/mock/index.html`](./docs/mock/index.html)), além do protótipo web da raiz, referência exclusiva de design e experiência ([`index.html`](./index.html)).
 
 ### 1. Rodando o App Oficial (Expo SDK 57 — `src/`)
 ```bash

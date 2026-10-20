@@ -1,0 +1,204 @@
+{
+  "_leia": "Especificação de aceite da Camada A (arquiteto, 19/10/2026). Cada caso chama extrairDaUrl(entrada). Em `esperado`, só as chaves listadas são conferidas; chaves ausentes não importam. `campos` confere campo a campo de CamposExtraidos (null significa: tem de ser null). `cobertura` é o valor que montarExtracao(entrada, [leitura], agora) deve devolver. Casos `real: true` são URLs públicas citadas no plano; `real: false` são sintéticas. Não altere `esperado` para fazer um teste passar: corrija o extrator ou reporte no RELATORIO.",
+  "casos": [
+    {
+      "id": "vivareal-torre-venda",
+      "real": true,
+      "entrada": "https://www.vivareal.com.br/imovel/apartamento-3-quartos-torre-bairros-recife-com-garagem-80m2-venda-RS648810-id-2913218130/",
+      "esperado": {
+        "portal": "vivareal",
+        "idNoPortal": "2913218130",
+        "campos": { "modalidade": "compra", "tipologia": "apartamento", "quartos": 3, "bairro": "torre", "cidade": "recife", "area": 80, "preco": 648810, "comodidades": ["garagem"], "condominio": null, "iptu": null },
+        "cobertura": "recife_fora"
+      }
+    },
+    {
+      "id": "vivareal-espinheiro-venda",
+      "real": true,
+      "entrada": "https://www.vivareal.com.br/imovel/apartamento-1-quartos-espinheiro-bairros-recife-26m2-venda-RS192000-id-69097819/",
+      "esperado": {
+        "portal": "vivareal",
+        "idNoPortal": "69097819",
+        "campos": { "modalidade": "compra", "tipologia": "apartamento", "quartos": 1, "bairro": "espinheiro", "cidade": "recife", "area": 26, "preco": 192000, "comodidades": [] },
+        "cobertura": "coberto"
+      }
+    },
+    {
+      "id": "vivareal-varzea-com-query",
+      "real": true,
+      "entrada": "https://www.vivareal.com.br/imovel/apartamento-3-quartos-varzea-bairros-recife-com-garagem-71m2-venda-RS700000-id-2904982806/?source=showcase%2Cldp",
+      "esperado": {
+        "portal": "vivareal",
+        "idNoPortal": "2904982806",
+        "campos": { "modalidade": "compra", "quartos": 3, "bairro": "varzea", "area": 71, "preco": 700000 },
+        "cobertura": "recife_fora"
+      }
+    },
+    {
+      "id": "vivareal-boa-viagem-aluguel",
+      "real": false,
+      "entrada": "https://www.vivareal.com.br/imovel/apartamento-2-quartos-boa-viagem-bairros-recife-com-garagem-68m2-aluguel-RS3200-id-2999999901/",
+      "esperado": {
+        "portal": "vivareal",
+        "campos": { "modalidade": "aluguel", "quartos": 2, "bairro": "boa-viagem", "area": 68, "preco": 3200 },
+        "cobertura": "coberto"
+      }
+    },
+    {
+      "id": "zap-casa-forte-aluguel",
+      "real": true,
+      "entrada": "https://www.zapimoveis.com.br/imovel/aluguel-apartamento-1-quarto-com-piscina-casa-forte-recife-pe-37m2-id-2790563018/",
+      "esperado": {
+        "portal": "zap",
+        "idNoPortal": "2790563018",
+        "campos": { "modalidade": "aluguel", "tipologia": "apartamento", "quartos": 1, "bairro": "casa-forte", "cidade": "recife", "area": 37, "preco": null, "comodidades": ["piscina"] },
+        "cobertura": "coberto"
+      }
+    },
+    {
+      "id": "zap-gracas-venda-sem-area",
+      "real": false,
+      "entrada": "https://www.zapimoveis.com.br/imovel/venda-apartamento-4-quartos-com-piscina-com-churrasqueira-gracas-recife-pe-id-2799999902/",
+      "esperado": {
+        "portal": "zap",
+        "campos": { "modalidade": "compra", "quartos": 4, "bairro": "gracas", "area": null, "comodidades": ["piscina", "churrasqueira"] },
+        "cobertura": "coberto"
+      }
+    },
+    {
+      "id": "quintoandar-outra-cidade",
+      "real": true,
+      "entrada": "https://www.quintoandar.com.br/imovel/895777592/alugar/apartamento-3-quartos-piata-salvador",
+      "esperado": {
+        "portal": "quintoandar",
+        "idNoPortal": "895777592",
+        "campos": { "modalidade": "aluguel", "tipologia": "apartamento", "quartos": 3, "bairro": null, "cidade": null, "bairroTexto": "piata-salvador" },
+        "cobertura": "fora_do_recife"
+      }
+    },
+    {
+      "id": "quintoandar-compra-outra-cidade",
+      "real": true,
+      "entrada": "https://www.quintoandar.com.br/imovel/895785201/comprar/apartamento-1-quarto-aguas-claras-brasilia",
+      "esperado": {
+        "portal": "quintoandar",
+        "idNoPortal": "895785201",
+        "campos": { "modalidade": "compra", "quartos": 1, "bairro": null, "cidade": null },
+        "cobertura": "fora_do_recife"
+      }
+    },
+    {
+      "id": "quintoandar-madalena",
+      "real": false,
+      "entrada": "https://www.quintoandar.com.br/imovel/895799903/alugar/apartamento-2-quartos-madalena-recife",
+      "esperado": {
+        "portal": "quintoandar",
+        "idNoPortal": "895799903",
+        "campos": { "modalidade": "aluguel", "quartos": 2, "bairro": "madalena", "cidade": "recife" },
+        "cobertura": "coberto"
+      }
+    },
+    {
+      "id": "olx-edificio-espinheiro",
+      "real": true,
+      "entrada": "https://pe.olx.com.br/grande-recife/imoveis/apartamento-a-venda-no-condominio-do-edificio-solar-do-gayppio-espinheiro-recife-pe-1545491799",
+      "esperado": {
+        "portal": "olx",
+        "idNoPortal": "1545491799",
+        "campos": { "modalidade": "compra", "tipologia": "apartamento", "bairro": "espinheiro", "cidade": "recife", "nomeEdificio": "Solar do Gayppio", "logradouro": null },
+        "cobertura": "coberto"
+      }
+    },
+    {
+      "id": "olx-nome-curto-ambiguo",
+      "real": true,
+      "entrada": "https://pe.olx.com.br/grande-recife/imoveis/apartamento-para-vender-e-alugar-no-dona-cecy-boa-viagem-recife-pe-1545397731",
+      "esperado": {
+        "portal": "olx",
+        "idNoPortal": "1545397731",
+        "campos": { "modalidade": null, "bairro": "boa-viagem", "nomeEdificio": "Dona Cecy", "logradouro": null },
+        "cobertura": "coberto"
+      }
+    },
+    {
+      "id": "olx-rua",
+      "real": true,
+      "entrada": "https://pe.olx.com.br/grande-recife/imoveis/apartamento-a-venda-no-rua-jack-ayres-boa-viagem-recife-pe-boa-viagem-recife-pe-1545491809",
+      "esperado": {
+        "portal": "olx",
+        "idNoPortal": "1545491809",
+        "campos": { "modalidade": "compra", "bairro": "boa-viagem", "logradouro": "Rua Jack Ayres", "nomeEdificio": null },
+        "cobertura": "coberto"
+      }
+    },
+    {
+      "id": "olx-area-quartos-suite",
+      "real": true,
+      "entrada": "https://pe.olx.com.br/grande-recife/imoveis/apartamento-venda-em-boa-viagem-60-m-2-quartos-1-suite-1545460615",
+      "esperado": {
+        "portal": "olx",
+        "idNoPortal": "1545460615",
+        "campos": { "modalidade": "compra", "bairro": "boa-viagem", "area": 60, "quartos": 2, "suites": 1 },
+        "cobertura": "coberto"
+      }
+    },
+    {
+      "id": "olx-casa-forte-simples",
+      "real": true,
+      "entrada": "https://pe.olx.com.br/grande-recife/imoveis/apartamento-a-venda-casa-forte-recife-pe-1545397713",
+      "esperado": {
+        "portal": "olx",
+        "campos": { "modalidade": "compra", "bairro": "casa-forte", "nomeEdificio": null, "logradouro": null },
+        "cobertura": "coberto"
+      }
+    },
+    {
+      "id": "olx-pina-bairro-nao-e-edificio",
+      "real": true,
+      "entrada": "https://pe.olx.com.br/grande-recife/imoveis/apartamento-no-pina-em-recife-com-piscina-sauna-academia-e-vista-mar-1545538761",
+      "esperado": {
+        "portal": "olx",
+        "idNoPortal": "1545538761",
+        "campos": { "modalidade": null, "bairro": "pina", "nomeEdificio": null, "comodidades": ["piscina", "sauna", "academia", "vista-mar"] },
+        "cobertura": "recife_fora"
+      }
+    },
+    {
+      "id": "olx-boa-vista-nao-e-boa-viagem",
+      "real": true,
+      "entrada": "https://pe.olx.com.br/grande-recife/imoveis/alugo-excelente-flat-mobiliado-novo-na-boa-vista-recife-pe-1545381969",
+      "esperado": {
+        "portal": "olx",
+        "campos": { "modalidade": "aluguel", "tipologia": "flat", "bairro": "boa-vista", "comodidades": ["mobiliado"] },
+        "cobertura": "recife_fora"
+      }
+    },
+    {
+      "id": "torreao-nao-e-torre",
+      "real": false,
+      "entrada": "https://www.vivareal.com.br/imovel/apartamento-2-quartos-torreao-bairros-recife-55m2-venda-RS310000-id-2999999904/",
+      "esperado": {
+        "campos": { "bairro": "torreao" },
+        "cobertura": "recife_fora"
+      }
+    },
+    {
+      "id": "portal-desconhecido",
+      "real": false,
+      "entrada": "https://imobiliaria-exemplo.com.br/imovel/apartamento-boa-viagem-3-quartos",
+      "esperado": {
+        "portal": "outro",
+        "idNoPortal": null,
+        "campos": { "preco": null, "area": null },
+        "cobertura": "desconhecida"
+      }
+    }
+  ],
+  "invalidas": [
+    "javascript:alert(1)",
+    "file:///etc/passwd",
+    "https://usuario:senha@www.zapimoveis.com.br/imovel/1",
+    "não é um link",
+    "ftp://exemplo.com/imovel"
+  ]
+}

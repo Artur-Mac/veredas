@@ -1,0 +1,267 @@
+{
+  "_leia": "DADOS SINTETICOS, so para testar a busca de predio. Os cinco edificios, as ruas, os numeros, os nomes e as chaves foram inventados e nao vem de nenhum cadastro. Nao importe este arquivo em src/ e nao o use como se fosse o indice real.",
+  "bairro": "gracas",
+  "geradoEm": "2026-01-01T00:00:00Z",
+  "contexto": {
+    "bairro": "gracas",
+    "edificios": 5,
+    "unidades": 61,
+    "iptuAnualPorM2": null
+  },
+  "edificios": [
+    {
+      "id": "900001-100",
+      "bairro": "gracas",
+      "logradouro": "RUA DO TESTE SINTETICO",
+      "numero": "100",
+      "dsqfl": "99999900100001",
+      "nome": "Solar do Gayppio",
+      "centro": [
+        -34.9,
+        -8.04
+      ],
+      "poligono": [
+        [
+          -34.90015,
+          -8.04015
+        ],
+        [
+          -34.89985,
+          -8.04015
+        ],
+        [
+          -34.89985,
+          -8.03985
+        ],
+        [
+          -34.90015,
+          -8.03985
+        ]
+      ],
+      "unidades": 24,
+      "tipologias": [
+        {
+          "area": 65,
+          "unidades": 8,
+          "iptuAnualMediano": 1800
+        },
+        {
+          "area": 85.5,
+          "unidades": 16,
+          "iptuAnualMediano": 2400
+        }
+      ],
+      "anoConstrucao": 2008,
+      "pavimentos": 12,
+      "ate4Pavimentos": false,
+      "padrao": "Médio",
+      "iptuAnual": null,
+      "itbi": null,
+      "obras150m": {
+        "licencasDeObra": 0,
+        "relevantes24m": 0,
+        "demolicoes24m": 0,
+        "recentes": []
+      }
+    },
+    {
+      "id": "900001-250",
+      "bairro": "gracas",
+      "logradouro": "RUA DO TESTE SINTETICO",
+      "numero": "250",
+      "dsqfl": "99999900100002",
+      "nome": null,
+      "centro": [
+        -34.8993,
+        -8.0402
+      ],
+      "poligono": [
+        [
+          -34.89945,
+          -8.04035
+        ],
+        [
+          -34.89915,
+          -8.04035
+        ],
+        [
+          -34.89915,
+          -8.04005
+        ],
+        [
+          -34.89945,
+          -8.04005
+        ]
+      ],
+      "unidades": 6,
+      "tipologias": [
+        {
+          "area": 125,
+          "unidades": 3,
+          "iptuAnualMediano": 3100
+        },
+        {
+          "area": 180,
+          "unidades": 3,
+          "iptuAnualMediano": null
+        }
+      ],
+      "anoConstrucao": 1985,
+      "pavimentos": 4,
+      "ate4Pavimentos": true,
+      "padrao": "Simples",
+      "iptuAnual": null,
+      "itbi": null,
+      "obras150m": {
+        "licencasDeObra": 0,
+        "relevantes24m": 0,
+        "demolicoes24m": 0,
+        "recentes": []
+      }
+    },
+    {
+      "id": "900002-45",
+      "bairro": "gracas",
+      "logradouro": "AV SINTETICA ALFA",
+      "numero": "45",
+      "dsqfl": "99999900200001",
+      "nome": "Mar Ficticio",
+      "centro": [
+        -34.8985,
+        -8.0412
+      ],
+      "poligono": [
+        [
+          -34.89865,
+          -8.04135
+        ],
+        [
+          -34.89835,
+          -8.04135
+        ],
+        [
+          -34.89835,
+          -8.04105
+        ],
+        [
+          -34.89865,
+          -8.04105
+        ]
+      ],
+      "unidades": 21,
+      "tipologias": [
+        {
+          "area": 62.4,
+          "unidades": 20,
+          "iptuAnualMediano": 2000
+        },
+        {
+          "area": 126.5,
+          "unidades": 1,
+          "iptuAnualMediano": 5200
+        }
+      ],
+      "anoConstrucao": 2015,
+      "pavimentos": 20,
+      "ate4Pavimentos": false,
+      "padrao": "Superior",
+      "iptuAnual": null,
+      "itbi": null,
+      "obras150m": {
+        "licencasDeObra": 0,
+        "relevantes24m": 0,
+        "demolicoes24m": 0,
+        "recentes": []
+      }
+    },
+    {
+      "id": "900002-300",
+      "bairro": "gracas",
+      "logradouro": "AV SINTETICA ALFA",
+      "numero": "300",
+      "dsqfl": null,
+      "nome": "Vila Beta",
+      "centro": [
+        -34.8978,
+        -8.0415
+      ],
+      "poligono": null,
+      "unidades": 8,
+      "tipologias": [
+        {
+          "area": 90,
+          "unidades": 4,
+          "iptuAnualMediano": 2700
+        },
+        {
+          "area": 200,
+          "unidades": 4,
+          "iptuAnualMediano": 6100
+        }
+      ],
+      "anoConstrucao": 2010,
+      "pavimentos": 2,
+      "ate4Pavimentos": true,
+      "padrao": "Superior",
+      "iptuAnual": null,
+      "itbi": null,
+      "obras150m": {
+        "licencasDeObra": 0,
+        "relevantes24m": 0,
+        "demolicoes24m": 0,
+        "recentes": []
+      }
+    },
+    {
+      "id": "900003-12",
+      "bairro": "gracas",
+      "logradouro": "TRAVESSA DO EXEMPLO",
+      "numero": "12",
+      "dsqfl": "99999900300001",
+      "nome": null,
+      "centro": [
+        -34.8998,
+        -8.0395
+      ],
+      "poligono": [
+        [
+          -34.89995,
+          -8.03965
+        ],
+        [
+          -34.89965,
+          -8.03965
+        ],
+        [
+          -34.89965,
+          -8.03935
+        ],
+        [
+          -34.89995,
+          -8.03935
+        ]
+      ],
+      "unidades": 2,
+      "tipologias": [
+        {
+          "area": 60,
+          "unidades": 2,
+          "iptuAnualMediano": null
+        }
+      ],
+      "anoConstrucao": 2009,
+      "pavimentos": null,
+      "ate4Pavimentos": null,
+      "padrao": null,
+      "iptuAnual": null,
+      "itbi": null,
+      "obras150m": {
+        "licencasDeObra": 0,
+        "relevantes24m": 0,
+        "demolicoes24m": 0,
+        "recentes": []
+      }
+    }
+  ],
+  "obras": []
+}

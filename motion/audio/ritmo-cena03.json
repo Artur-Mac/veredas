@@ -1,0 +1,81 @@
+{
+  "poc": "CENA-03",
+  "duracao": 10.1,
+  "geradoEm": "2026-10-18",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 110,
+    "fase": 0.52,
+    "erroMedio": 0.043,
+    "batidas": [
+      0.52,
+      1.065,
+      1.611,
+      2.156,
+      2.702,
+      3.247,
+      3.793,
+      4.338,
+      4.884,
+      5.429,
+      5.975,
+      6.52,
+      7.065,
+      7.611,
+      8.156,
+      8.702,
+      9.247,
+      9.793
+    ]
+  },
+  "holds": [
+    3.6,
+    8.6,
+    10.1
+  ],
+  "sons": [
+    {
+      "t": 0.1,
+      "tipo": "tick",
+      "ganho": 0.5,
+      "evento": "os pontos começam a se multiplicar",
+      "batidaMaisProxima": -0.025,
+      "desvio": 0.125
+    },
+    {
+      "t": 3.8,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.3,
+      "evento": "o campo se condensa",
+      "batidaMaisProxima": 3.793,
+      "desvio": 0.007
+    },
+    {
+      "t": 5.76,
+      "tipo": "tick",
+      "evento": "a linha assinatura do contrato se ergue",
+      "batidaMaisProxima": 5.975,
+      "desvio": -0.215
+    },
+    {
+      "t": 6.4,
+      "tipo": "whoosh",
+      "dur": 1.6,
+      "ganho": 0.25,
+      "evento": "os 59 atravessam a linha",
+      "batidaMaisProxima": 6.52,
+      "desvio": -0.12
+    },
+    {
+      "t": 8.7,
+      "tipo": "whoosh",
+      "dur": 1,
+      "ganho": 0.35,
+      "evento": "os pontos se recolhem no você",
+      "batidaMaisProxima": 8.702,
+      "desvio": -0.002
+    }
+  ]
+}

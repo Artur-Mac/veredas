@@ -1,0 +1,287 @@
+{
+  "poc": "CENA-07",
+  "duracao": 14.7,
+  "geradoEm": "2026-10-18",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 122,
+    "fase": 0.12,
+    "erroMedio": 0.086,
+    "batidas": [
+      0.12,
+      0.612,
+      1.104,
+      1.595,
+      2.087,
+      2.579,
+      3.071,
+      3.563,
+      4.054,
+      4.546,
+      5.038,
+      5.53,
+      6.022,
+      6.513,
+      7.005,
+      7.497,
+      7.989,
+      8.481,
+      8.972,
+      9.464,
+      9.956,
+      10.448,
+      10.94,
+      11.431,
+      11.923,
+      12.415,
+      12.907,
+      13.399,
+      13.89,
+      14.382
+    ]
+  },
+  "holds": [
+    3.14,
+    6.04,
+    7.63,
+    9.59,
+    13.270000000000001
+  ],
+  "sons": [
+    {
+      "t": 0.12,
+      "tipo": "whoosh",
+      "dur": 1.2,
+      "ganho": 0.6,
+      "evento": "câmera sobe pela fachada",
+      "batidaMaisProxima": 0.12,
+      "desvio": 0
+    },
+    {
+      "t": 0.32,
+      "tipo": "tick",
+      "ganho": 0.4,
+      "evento": "o contorno do lote engrossa",
+      "batidaMaisProxima": 0.12,
+      "desvio": 0.2
+    },
+    {
+      "t": 0.5,
+      "tipo": "thump",
+      "ganho": 0.55,
+      "evento": "quadras sobem",
+      "batidaMaisProxima": 0.612,
+      "desvio": -0.112
+    },
+    {
+      "t": 1.2,
+      "tipo": "pop",
+      "evento": "barra Explore o entorno",
+      "batidaMaisProxima": 1.104,
+      "desvio": 0.096
+    },
+    {
+      "t": 3.17,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.5,
+      "evento": "câmera abre o raio",
+      "batidaMaisProxima": 3.071,
+      "desvio": 0.099
+    },
+    {
+      "t": 3.27,
+      "tipo": "pop",
+      "ganho": 0.6,
+      "evento": "a janela acende",
+      "batidaMaisProxima": 3.071,
+      "desvio": 0.199
+    },
+    {
+      "t": 3.42,
+      "tipo": "tick",
+      "evento": "haste sai da janela",
+      "batidaMaisProxima": 3.563,
+      "desvio": -0.143
+    },
+    {
+      "t": 3.67,
+      "tipo": "sweep",
+      "dur": 0.95,
+      "evento": "raio de 150 m varre",
+      "batidaMaisProxima": 3.563,
+      "desvio": 0.107
+    },
+    {
+      "t": 3.52,
+      "tipo": "click",
+      "evento": "toque em Obras",
+      "batidaMaisProxima": 3.563,
+      "desvio": -0.043
+    },
+    {
+      "t": 3.87,
+      "tipo": "pop",
+      "evento": "painel Obras: 4 demolições perto",
+      "batidaMaisProxima": 4.054,
+      "desvio": -0.184
+    },
+    {
+      "t": 6.07,
+      "tipo": "whoosh",
+      "dur": 0.32,
+      "ganho": 0.5,
+      "evento": "painel vira ficha",
+      "batidaMaisProxima": 6.022,
+      "desvio": 0.048
+    },
+    {
+      "t": 6.4,
+      "tipo": "click",
+      "evento": "toque em Alagamento",
+      "batidaMaisProxima": 6.513,
+      "desvio": -0.113
+    },
+    {
+      "t": 6.5,
+      "tipo": "tick",
+      "evento": "contorno pontilhado da rua",
+      "batidaMaisProxima": 6.513,
+      "desvio": -0.013
+    },
+    {
+      "t": 6.9,
+      "tipo": "pop",
+      "evento": "? na garagem",
+      "batidaMaisProxima": 7.005,
+      "desvio": -0.105
+    },
+    {
+      "t": 7.66,
+      "tipo": "whoosh",
+      "dur": 0.32,
+      "ganho": 0.5,
+      "evento": "painel vira ficha",
+      "batidaMaisProxima": 7.497,
+      "desvio": 0.163
+    },
+    {
+      "t": 7.98,
+      "tipo": "click",
+      "evento": "toque em Calor",
+      "batidaMaisProxima": 7.989,
+      "desvio": -0.009
+    },
+    {
+      "t": 8.38,
+      "tipo": "tick",
+      "evento": "régua de calor",
+      "batidaMaisProxima": 8.481,
+      "desvio": -0.101
+    },
+    {
+      "t": 9.62,
+      "tipo": "whoosh",
+      "dur": 0.32,
+      "ganho": 0.5,
+      "evento": "painel vira ficha",
+      "batidaMaisProxima": 9.464,
+      "desvio": 0.156
+    },
+    {
+      "t": 9.64,
+      "tipo": "whoosh",
+      "dur": 1,
+      "evento": "câmera sobe ao bairro",
+      "batidaMaisProxima": 9.464,
+      "desvio": 0.176
+    },
+    {
+      "t": 9.66,
+      "tipo": "thump",
+      "ganho": 0.4,
+      "evento": "a cidade se assenta no papel",
+      "batidaMaisProxima": 9.464,
+      "desvio": 0.196
+    },
+    {
+      "t": 9.96,
+      "tipo": "click",
+      "evento": "toque em Segurança",
+      "batidaMaisProxima": 9.956,
+      "desvio": 0.004
+    },
+    {
+      "t": 10,
+      "tipo": "pop",
+      "ganho": 0.6,
+      "evento": "painel Segurança: 17,2 por mil",
+      "batidaMaisProxima": 9.956,
+      "desvio": 0.044
+    },
+    {
+      "t": 10,
+      "tipo": "tick",
+      "evento": "faixas norte → sul",
+      "batidaMaisProxima": 9.956,
+      "desvio": 0.044
+    },
+    {
+      "t": 10.28,
+      "tipo": "whoosh",
+      "dur": 0.45,
+      "ganho": 0.6,
+      "evento": "os nomes dos bairros voam até as barras",
+      "batidaMaisProxima": 10.448,
+      "desvio": -0.168
+    },
+    {
+      "t": 11.8,
+      "tipo": "whoosh",
+      "dur": 0.8,
+      "ganho": 0.5,
+      "evento": "câmera desce",
+      "batidaMaisProxima": 11.923,
+      "desvio": -0.123
+    },
+    {
+      "t": 12,
+      "tipo": "thump",
+      "ganho": 0.45,
+      "evento": "a cidade sobe de novo a partir do lote",
+      "batidaMaisProxima": 11.923,
+      "desvio": 0.077
+    },
+    {
+      "t": 11.92,
+      "tipo": "click",
+      "evento": "toque em Custo de vida",
+      "batidaMaisProxima": 11.923,
+      "desvio": -0.003
+    },
+    {
+      "t": 12.04,
+      "tipo": "pop",
+      "evento": "painel Custo de vida: R$ 3.900 por mês",
+      "batidaMaisProxima": 11.923,
+      "desvio": 0.117
+    },
+    {
+      "t": 13.3,
+      "tipo": "whoosh",
+      "dur": 0.9,
+      "evento": "a cidade se assenta e o mapa encolhe",
+      "batidaMaisProxima": 13.399,
+      "desvio": -0.099
+    },
+    {
+      "t": 14.16,
+      "tipo": "tick",
+      "ganho": 0.5,
+      "evento": "o anel fica vazio",
+      "batidaMaisProxima": 14.382,
+      "desvio": -0.222
+    }
+  ]
+}

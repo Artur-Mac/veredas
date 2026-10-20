@@ -24,6 +24,7 @@ export function Segmentado<T extends string | number>({ opcoes, valor, aoMudar, 
             key={String(o.valor)}
             role="radio"
             accessibilityState={{ checked: ativo }}
+            aria-checked={ativo}
             onPress={() => aoMudar(o.valor)}
             style={{
               flexGrow: 1,
@@ -58,6 +59,7 @@ export function Alterna({ rotulo, ligado, aoMudar }: PropsDaAlterna) {
       role="switch"
       accessibilityLabel={rotulo}
       accessibilityState={{ checked: ligado }}
+      aria-checked={ligado}
       onPress={() => aoMudar(!ligado)}
       style={{ flexDirection: "row", alignItems: "center", gap: ESPACO[3], minHeight: TOQUE_MINIMO }}
     >
@@ -97,6 +99,7 @@ export function CaixaDeMarcar({ rotulo, marcada, aoMudar, radio = false }: Props
       role={radio ? "radio" : "checkbox"}
       accessibilityLabel={rotulo}
       accessibilityState={{ checked: marcada }}
+      aria-checked={marcada}
       onPress={() => aoMudar(!marcada)}
       style={{ flexDirection: "row", alignItems: "center", gap: ESPACO[3], minHeight: TOQUE_MINIMO, paddingVertical: ESPACO[2] }}
     >

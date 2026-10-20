@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · Cena 06 · da porta para dentro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@400..800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lib/marca.css">
+<style>
+  html, body { margin: 0; background: var(--bg-obsidian); }
+  body.tela { min-height: 100vh; overflow: hidden; }
+  #c {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden; flex: none;
+    background: var(--bg-paper); color: var(--ink-primary);
+    font-family: var(--font-sans); font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  .grade {
+    position: absolute; inset: 0; background-size: 48px 48px;
+    background-image:
+      linear-gradient(to right, rgba(127, 136, 112, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(127, 136, 112, 0.09) 1px, transparent 1px);
+  }
+  svg.camada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+  .abs { position: absolute; }
+  .t { position: absolute; white-space: nowrap; line-height: 1.15; }
+  #chrome { position: absolute; inset: 0; }
+
+  /* entrada: a aba "Edifício" do lado de dentro da soleira (cena 5); vira a aba ativa do celular */
+  .edificio { font: 700 34px/1 var(--font-sans); color: var(--ink-primary); letter-spacing: -0.005em; }
+
+  /* celular (moldura da cena 8: 452 x 924, borda de 9,5 px, tela com raio 30); medidas 1:1, sem zoom */
+  #fone { position: absolute; left: 0; top: 0; width: 452px; height: 924px; }
+  #fundo { position: absolute; background: var(--bg-paper); }
+  #tela { position: absolute; left: 9.5px; top: 9.5px; width: 433px; height: 905px; border-radius: 30px; overflow: hidden; }
+  #moldura { position: absolute; box-sizing: border-box; border: 0 solid #222426; }
+  .pg { position: absolute; white-space: nowrap; line-height: 1.2; }
+  .pg-head { position: absolute; left: 0; right: 0; top: 0; height: 60px; background: rgba(242, 235, 221, 0.95); border-bottom: 1px solid var(--border-hairline); box-sizing: border-box; }
+  .pg-marca { font: 500 19px/1 var(--font-display); letter-spacing: 0.14em; font-variation-settings: 'opsz' 19; }  /* --wordmark-weight 500 e --wordmark-tracking 0.14em do :root do index.html */
+  .pg-tit { font: 500 31px/1.1 var(--font-display); letter-spacing: -0.03em; }
+  .pg-sub { font: 400 14px/1.3 var(--font-sans); color: var(--ds-muted); }
+  .pg-abas { position: absolute; left: 12px; top: 152px; width: 409px; height: 48px; border-radius: 12px; background: #EAE3D5; border: 1px solid #DCD3C3; box-sizing: border-box; }
+  .pg-aba { position: absolute; top: 3px; height: 40px; width: 131px; display: flex; align-items: center; justify-content: center; font: 500 14px/1 var(--font-sans); color: var(--ds-muted); border-radius: 9px; }
+  .pg-aba.on { background: #FFFFFF; box-shadow: 0 1px 3px rgba(23, 23, 23, 0.05); }
+  .pg-card { position: absolute; left: 12px; top: 216px; width: 409px; height: 516px; background: #FFFFFF; border: 1px solid rgba(23, 23, 23, 0.09); border-radius: 20px; box-sizing: border-box; overflow: hidden; }
+  .pg-botao { position: absolute; left: 12px; top: 748px; width: 409px; height: 56px; border-radius: 14px; background: var(--brand-orange); display: flex; align-items: center; justify-content: center; gap: 10px; font: 600 17px/1 var(--font-sans); color: var(--ink-primary); }
+  .pg-botao svg { width: 18px; height: 18px; }
+  .pg-dock { position: absolute; left: 0; right: 0; bottom: 0; height: 70px; background: rgba(250, 246, 238, 0.9); border-top: 1px solid rgba(23, 23, 23, 0.08); box-sizing: border-box; padding: 9px 12px 11px; display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; }
+  .pg-dock span { display: flex; flex-direction: column; align-items: center; gap: 5px; font: 500 11.5px/1 var(--font-sans); letter-spacing: 0.01em; color: var(--ink-muted); }
+  .pg-dock span.on { color: var(--ink-primary); font-weight: 600; }
+  .pg-dock span.on svg { color: var(--brand-orange); }
+
+  /* cartão de cima do celular: troca de conteúdo cinco vezes, uma por resposta */
+  .kicker { font: 700 14px/1 var(--font-sans); letter-spacing: 0.05em; text-transform: uppercase; color: var(--brand-rust); }
+  .legenda { font: 500 36px/1.1 var(--font-display); letter-spacing: -0.025em; display: inline-flex; align-items: center; gap: 12px; }
+  .legenda.apagada { color: var(--ink-muted); }
+  .legenda svg { width: 32px; height: 32px; flex: none; }
+  .nota { font: 400 17px/1.3 var(--font-sans); color: var(--ds-muted); }
+  .chave { font: 600 20px/1.2 var(--font-sans); color: var(--ink-secondary); }
+  .rot { font: 500 18px/1 var(--font-sans); color: var(--ds-muted); }
+  .rot.oficial { color: var(--brand-cadastral); font-weight: 600; }
+  .num { font-family: var(--font-display); font-weight: 500; font-variation-settings: 'opsz' 40; letter-spacing: -0.03em; line-height: 1; }
+  .buscando { font: 500 22px/1.2 var(--font-sans); color: var(--ink-muted); }
+  .sufixo { font: 500 24px/1.2 var(--font-sans); color: var(--ink-secondary); }
+  .chip { font: 600 19px/1 var(--font-sans); color: var(--brand-rust); background: #F7EFE6; border: 1px solid #EBE1D3; padding: 11px 16px; border-radius: 999px; }
+  .foto { border-radius: 14px; overflow: hidden; }
+
+  .chrome-pilula { position: absolute; display: flex; align-items: center; gap: 14px; background: rgba(250, 246, 238, 0.92); border: 1px solid var(--border-hairline); border-radius: 999px; white-space: nowrap; }
+  .marca { font: 500 28px/1 var(--font-display); letter-spacing: 0.14em; font-variation-settings: 'opsz' 19; }  /* --wordmark-weight 500 e --wordmark-tracking 0.14em do :root do index.html; desenho do cabeçalho (19 px) */
+  #debug { position: absolute; right: 16px; top: 12px; font: 500 16px/1 var(--font-mono); color: var(--ink-muted); }
+  /* o atalho font: das classes zera font-variant-numeric; o filme usa algarismos tabulares em tudo */
+  #c .t, #c .pg { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div id="c">
+  <div class="grade"></div>
+  <svg class="camada" id="mundo" viewBox="0 0 1920 1080">
+    <!-- o cartão ainda fechado da cena 5: uma lasca branca de 4 px sob a linha (muda o antisserrilhado dela) -->
+    <path id="soleira" fill="rgba(255,255,255,1.000)" stroke="rgba(23,23,23,0.090)" stroke-width="2.00" />
+    <path id="forma" fill="#CFDBE9" stroke="#2E5A85" />
+    <path id="viz" fill="rgba(46,90,133,0.05)" stroke="#8FAAC4" stroke-width="1.8" stroke-dasharray="7 6" />
+    <g id="predio"></g>
+    <path id="haste" fill="none" stroke="#F47745" stroke-width="4" stroke-linecap="round" />
+    <g id="pino"></g>
+  </svg>
+  <div id="fone">
+    <div id="fundo"></div>
+    <div id="tela"></div>
+    <div id="moldura"></div>
+    <div id="sobre"></div>
+  </div>
+  <svg class="camada" id="linhas" viewBox="0 0 1920 1080"></svg>
+  <div id="chrome"></div>
+</div>
+
+<script type="module">
+import { clamp, lerp, invLerp, sp, spring, track, swap, pending, project, roundedQuad, lerpPt, rng, PRESETS as P } from '../lib/motion.js';
+import { caminho, caixa, poly, tela as tela3, profundidade, recortaRet, PERTO } from '../lib/espaco3d.js';
+import { prisma } from '../lib/cidade.js';
+import { IMOVEL, LOTE } from './dados.js';
+
+// ---------------------------------------------------------------------------
+// Linha do tempo. A fala (mapa da fala revisada, 47,8 a 57,1 s da gravação) tem 35 palavras
+// em 9,3 s, a cerca de 3,8 palavras por segundo. Tempos das palavras de sentido, pela contagem de
+// sílabas (0,125 s por sílaba, com uma pausa curta em cada vírgula):
+//   «Da porta para dentro,» 0,0–0,9 · «o app corrige fotos distorcidas,» 1,0–2,3 ·
+//   «descobre o lote exato do prédio,» 2,4–3,9 · «cruza se a metragem bate com o IPTU,» 4,0–5,9 ·
+//   «se há taxas omitidas» 6,0–7,0 · «e o valor real das escrituras daquele edifício.» 7,0–9,3.
+// Uma frase só: um HOLD, no fim, que é o primeiro quadro da cena 7.
+// ---------------------------------------------------------------------------
+const T = {
+  // da porta para dentro: a soleira vira o celular
+  abre: 0.18, logoSai: 0.3, abas: 0.36, rotulosAbas: 0.78,
+  // o app corrige fotos distorcidas
+  verticais: 0.62, dolly: 1.22, corrigida: 1.86,
+  // descobre o lote exato do prédio
+  desliza: 2.36, lote: 2.42, loteMundo: 2.9, exato: 3.2, sobe: 3.62,
+  // cruza se a metragem bate com o IPTU
+  metragem: 4.0, cruzando: 4.5, iptu: 5.4, dif: 5.7,
+  // se há taxas omitidas
+  taxas: 6.0, taxa: 6.22, taxaNota: 6.46,
+  // e o valor real das escrituras daquele edifício
+  escrituras: 7.1, real: 7.52, anuncio: 7.92, acima: 8.18,
+  // saída: o celular sai por recorte e o lote fica sozinho, como a cena 7 começa
+  saida: 8.86,
+};
+const SAIDA_DUR = 0.6;
+const DUR = 9.6;
+const HOLDS = [DUR];
+const ESTADOS = [
+  { id: 'E0', nome: 'Entrada: a soleira com "Edifício"', t: 0.0 },
+  { id: 'M0', nome: 'Meio: a soleira abre no celular', t: 0.42 },
+  { id: 'F1', nome: 'Foto em grande angular, a lente começa a corrigir', t: 1.3 },
+  { id: 'F2', nome: 'Foto corrigida', t: 2.25 },
+  { id: 'M1', nome: 'Meio: o celular desliza, o lote aparece', t: 2.95 },
+  { id: 'L', nome: 'Lote exato, prédio de pé', t: 3.92 },
+  { id: 'A', nome: 'Metragem: 75 m² no anúncio, 62,5 m² no IPTU', t: 5.92 },
+  { id: 'X', nome: 'Taxa omitida: +R$ 340 por mês', t: 6.98 },
+  { id: 'R', nome: 'Escrituras: R$ 381 mil contra R$ 480 mil', t: 8.75 },
+  { id: 'M2', nome: 'Meio da saída: o celular sai por recorte', t: 9.12 },
+  { id: 'FIM', nome: 'Lote com o pino, câmera CAM.lote (primeiro quadro da cena 7)', t: DUR - 1 / 30 },
+];
+
+// ---------------------------------------------------------------------------
+// Geometria (quadro de 1920 x 1080)
+// ---------------------------------------------------------------------------
+const LINHA_Y = 540;                              // a soleira que vem da cena 5
+const LINHA_X = [(1920 - 772 * 1.125) / 2, (1920 + 772 * 1.125) / 2];
+const FONE = { w: 452, h: 924, bz: 9.5, raio: 30 };
+// o celular nasce com a barra de abas na altura de "Edifício" e, enquanto abre, sobe junto até caber
+// inteiro no quadro (YF, 78 px em cima e embaixo); depois vai para a direita, como o da cena 8
+const X0 = 734, Y0 = 305.5, YF = 78, X1 = 1262, Y1 = 78;
+const SEMENTE = [508, 452, 904, 112];             // a caixa da soleira: "Edifício" e a linha laranja
+// posições dentro da tela do celular (433 x 905)
+const ABA = { cx: 12 + 1 + 273 + 65.5, cy: 152 + 1 + 3 + 20, fonte: 14 };   // centro da aba "Edifício" (dentro da borda da barra)
+const SUBLINHA = { cx: ABA.cx, y: 152 + 1 + 3 + 40 - 7, w: 34 };   // o traço laranja da aba ativa
+// molas (todas criticamente amortecidas, com pico abaixo de 40 px por quadro a 30 fps)
+const ABRE = { k: 49, d: 14 };        // lados: 226 px; borda de cima com a subida: 374 px, pico de 32 px/quadro
+const DESCE = { k: 24, d: 9.8 };      // borda de baixo: 665 px (sai do quadro a 516 px), pico de 40 px/quadro
+const PALAVRA = { k: 81, d: 18 };     // "Edifício" até a aba: 263 px, pico de 29 px/quadro
+const LINHA = { k: 30, d: 11 };       // a ponta direita da linha: 554 px, pico de 37 px/quadro
+const DESLIZA = { k: 25, d: 10 };     // o celular sobe e vai à direita: 575 px, pico de 35 px/quadro
+const SOBE = { k: 90, d: 19 };        // o prédio sobe: cerca de 330 px com a câmera perto, pico de 38 px/quadro
+
+const FOCAL = 9000;
+const CAM = {
+  chega: { cx: 640, cy: 600, s: 8.2, yaw: -0.2, pitch: 0.66, focal: FOCAL },     // o lote aparece visto mais de cima
+  meio: { cx: 720, cy: 668, s: 11, yaw: -0.42, pitch: 0.98, focal: FOCAL },      // o prédio ao lado do celular
+  deriva: { cx: 732, cy: 672, s: 11.4, yaw: -0.36, pitch: 0.98, focal: FOCAL },  // deriva lenta enquanto o celular responde
+  lote: { cx: 820, cy: 640, s: 9.5, yaw: -0.42, pitch: 0.98, focal: FOCAL },     // = POC-01 CAM.lote = cena 7 em t = 0
+};
+const DERIVA = { k: 1.2, d: 2.2 };   // zeta 1, quase uma rampa: 4,7 s depois está em 97%
+const CAM_KEYS = [[0, CAM.chega], [T.desliza + 0.2, CAM.meio], [T.metragem, CAM.deriva, DERIVA]];
+// saída: enquanto o celular sai, a câmera recua até CAM.lote por uma curva suave de duração fixa;
+// dali em diante a câmera é CAM.lote exata, a mesma da cena 7 em t = 0
+const ASSENTA_CAM = [T.saida - 0.04, T.saida + 0.56];
+function camera(t) {
+  const u = invLerp(ASSENTA_CAM[0], ASSENTA_CAM[1], t), fim = u * u * (3 - 2 * u);
+  if (fim >= 1) return { ...CAM.lote };
+  const out = {};
+  for (const c of ['cx', 'cy', 'yaw', 'pitch', 'focal']) out[c] = lerp(track(t, CAM_KEYS.map(([tk, v, q]) => [tk, v[c], q]), P.camera), CAM.lote[c], fim);
+  out.s = Math.exp(lerp(track(t, CAM_KEYS.map(([tk, v, q]) => [tk, Math.log(v.s), q]), P.camera), Math.log(CAM.lote.s), fim));
+  return out;
+}
+
+// o lote, os vizinhos e o prédio (as mesmas medidas da cena 7)
+const LOTE_PTS = [[-LOTE.fundo / 2, -LOTE.frente / 2], [LOTE.fundo / 2, -LOTE.frente / 2], [LOTE.fundo / 2, LOTE.frente / 2], [-LOTE.fundo / 2, LOTE.frente / 2]];
+const PREDIO = { x0: -14, y0: -11, x1: 14, y1: 11, h: LOTE.pavimentos * 3 };
+const vizinhos = [];
+for (const [a, b] of [[-43, -16], [16, 43]]) vizinhos.push([[-20, a], [20, a], [20, b], [-20, b]]);
+for (const [xa, xb] of [[20, 55], [55, 90]]) for (const [ya, yb] of [[-43, 0], [0, 43]]) vizinhos.push([[xa, ya], [xb, ya], [xb, yb], [xa, yb]]);
+
+// ---------------------------------------------------------------------------
+// A sala da foto (a da cena 01, fotoSala de cena02.html). A correção é só de câmera:
+// dolly zoom da lente de 340 para 1000 e as verticais endireitadas; luz e cores não mudam.
+// ---------------------------------------------------------------------------
+const COR = {
+  piso: '#EFC38D', pisoLinha: '#F8DDB4', fundo: '#F8E3C4', esquerda: '#F6B467', direita: '#F9C978', teto: '#FCEEDA', sanca: '#F8E2C2',
+  ceu1: '#FBD08F', ceu2: '#FCDDA8', ceu3: '#FDE9C6', mar: '#F7C79E', sol: '#FFB347', halo: 'rgba(255,196,107,0.35)',
+  torreA: '#F4A15C', torreB: '#EE8956', torreC: '#E9734F', torreTopo: '#FCE0B8', luz: 'rgba(255,244,214,0.85)',
+  sofaT: '#F9A07A', sofaF: '#F47745', sofaL: '#DC683B', tapete: '#F2A27F', tapeteBorda: '#F8C3A6', mesaT: '#FBD27D', mesaF: '#F2B04F', mesaL: '#E39A3C',
+  rackT: '#FCE7C4', rackF: '#F6D3A0', rackL: '#E9BC85', quadro: '#E9734F', passe: '#FFF7EA', moldura: '#FFFFFF', linha: '#FFFFFF', cortina: 'rgba(255,248,236,0.8)',
+};
+const torres = [];
+{ const r = rng(81); for (let i = 0; i < 14; i += 1) { const lado = i % 2 ? 1 : -1; torres.push({ x: lado * (5 + r() * 18), w: 2.2 + r() * 3, prof: 2 + r() * 2, y: -46 - r() * 10, topo: 0.6 + r() * 5, cor: ['torreA', 'torreB', 'torreC'][i % 3] }); } torres.sort((a, b) => a.y - b.y); }
+const HW = 3.3, DS = 7.0, HS = 2.8;
+const JAN = { x0: -1.85, x1: 1.85, z0: 0.25, z1: 2.5 };
+// lente: f/(distância até a parede do fundo) constante, então a parede do fundo não muda de tamanho.
+// aberta = 1 é a foto em grande angular, inclinada para baixo, como em anúncios; 0 é a foto corrigida.
+// A foto original tinha 848 px de largura; aqui a mesma câmera é desenhada na escala da foto.
+function cameraFoto(W, Hh, aberta) {
+  const K = 92, k = W / 848;
+  const f = lerp(1000, 340, aberta);
+  return { pos: [0, -DS + f / K, 1.42], f: f * k, pitch: lerp(0, -0.15, aberta), cx: W / 2, cy: Hh / 2 + lerp(10, 30, aberta) * k, yaw: 0, roll: 0 };
+}
+function fotoSala(c) {
+  const L = COR.linha;
+  let s = '';
+  const yc = -70;
+  s += poly(caminho([[-120, yc, 1.6], [120, yc, 1.6], [120, yc, 80], [-120, yc, 80]], c), COR.ceu1, 'none', 0);
+  s += poly(caminho([[-120, yc, 1.6], [120, yc, 1.6], [120, yc, 7], [-120, yc, 7]], c), COR.ceu2, 'none', 0);
+  s += poly(caminho([[-120, yc, 1.6], [120, yc, 1.6], [120, yc, 3.6], [-120, yc, 3.6]], c), COR.ceu3, 'none', 0);
+  const sc = tela3([2.2, -36, 4.4], c), sd = profundidade([2.2, -36, 4.4], c);
+  if (sd > PERTO) { const r = (c.f * 2.1) / sd; s += `<circle cx="${sc[0].toFixed(1)}" cy="${sc[1].toFixed(1)}" r="${(r * 1.7).toFixed(1)}" fill="${COR.halo}"/><circle cx="${sc[0].toFixed(1)}" cy="${sc[1].toFixed(1)}" r="${r.toFixed(1)}" fill="${COR.sol}"/>`; }
+  s += poly(caminho([[-120, -69, -30], [120, -69, -30], [120, -69, 1.6], [-120, -69, 1.6]], c), COR.mar, 'none', 0);
+  for (const tw of torres) s += caixa(tw.x - tw.w / 2, tw.y - tw.prof, -30, tw.x + tw.w / 2, tw.y, tw.topo, { t: COR.torreTopo, f: COR[tw.cor], l: COR[tw.cor] }, c, L, 1);
+  s += poly(caminho([[-HW, 2, 0], [HW, 2, 0], [HW, -DS, 0], [-HW, -DS, 0]], c), COR.piso, L, 1.5);
+  let lin = '';
+  for (let x = -HW + 0.6; x < HW - 0.05; x += 0.6) lin += caminho([[x, 2, 0.002], [x, -DS, 0.002]], c, false);
+  for (let y = 1.4; y > -DS + 0.05; y -= 0.6) lin += caminho([[-HW, y, 0.002], [HW, y, 0.002]], c, false);
+  s += `<path d="${lin}" fill="none" stroke="${COR.pisoLinha}" stroke-width="1"/>`;
+  s += poly(caminho([[-HW, 2, HS], [HW, 2, HS], [HW, -DS, HS], [-HW, -DS, HS]], c), COR.teto, L, 1.5);
+  s += poly(caminho([[-HW + 0.55, 2, HS - 0.001], [HW - 0.55, 2, HS - 0.001], [HW - 0.55, -DS + 0.55, HS - 0.001], [-HW + 0.55, -DS + 0.55, HS - 0.001]], c), COR.sanca, L, 1);
+  s += poly(caminho([[-HW, 2, 0], [-HW, -DS, 0], [-HW, -DS, HS], [-HW, 2, HS]], c), COR.esquerda, L, 1.5);
+  s += poly(caminho([[HW, 2, 0], [HW, -DS, 0], [HW, -DS, HS], [HW, 2, HS]], c), COR.direita, L, 1.5);
+  s += poly(caminho([[HW, -2.6, 1.05], [HW, -4.3, 1.05], [HW, -4.3, 2.1], [HW, -2.6, 2.1]], c), COR.passe, L, 1.5);
+  s += poly(caminho([[HW, -2.75, 1.2], [HW, -4.15, 1.2], [HW, -4.15, 1.95], [HW, -2.75, 1.95]], c), COR.quadro, 'none', 0);
+  const J = JAN;
+  const ext = caminho([[-HW, -DS, 0], [HW, -DS, 0], [HW, -DS, HS], [-HW, -DS, HS]], c);
+  const vao = caminho([[J.x0, -DS, J.z0], [J.x0, -DS, J.z1], [J.x1, -DS, J.z1], [J.x1, -DS, J.z0]], c);
+  s += `<path d="${ext}${vao}" fill="${COR.fundo}" fill-rule="evenodd" stroke="${L}" stroke-width="1.5"/>`;
+  const barra = (x0, z0, x1, z1) => poly(caminho([[x0, -DS, z0], [x1, -DS, z0], [x1, -DS, z1], [x0, -DS, z1]], c), COR.moldura, L, 1);
+  s += barra(J.x0 - 0.08, J.z0 - 0.08, J.x1 + 0.08, J.z0) + barra(J.x0 - 0.08, J.z1, J.x1 + 0.08, J.z1 + 0.08) + barra(J.x0 - 0.08, J.z0, J.x0, J.z1) + barra(J.x1, J.z0, J.x1 + 0.08, J.z1) + barra(-0.035, J.z0, 0.035, J.z1) + barra(J.x0, 1.92, J.x1, 1.98);
+  const Ld = [-2.2, 34, -3.0];
+  let luz = '';
+  for (const [x0, x1, z0, z1] of [[J.x0, -0.035, J.z0, 1.92], [0.035, J.x1, J.z0, 1.92]]) {
+    const pts = [[x0, z0], [x1, z0], [x1, z1], [x0, z1]].map(([x, z]) => { const k = -z / Ld[2]; return [x + Ld[0] * k, -DS + Ld[1] * k, 0.004]; });
+    const rec = recortaRet(pts, -HW, HW, -DS, 2);
+    if (rec.length >= 3) luz += caminho(rec, c);
+  }
+  s += `<path d="${luz}" fill="${COR.luz}"/>`;
+  s += poly(caminho([[-1.6, -3.1, 0.008], [1.25, -3.1, 0.008], [1.25, -5.6, 0.008], [-1.6, -5.6, 0.008]], c), COR.tapete, COR.tapeteBorda, 2);
+  const so = { t: COR.sofaT, f: COR.sofaF, l: COR.sofaL };
+  const moveis = [
+    { d: profundidade([-2.6, -4.5, 0.4], c), s: () => caixa(-HW + 0.02, -5.7, 0.08, -HW + 0.26, -3.3, 0.82, so, c, L, 1.5) + caixa(-HW + 0.24, -5.7, 0.08, -HW + 1.0, -3.3, 0.4, so, c, L, 1.5) + caixa(-HW + 0.24, -5.7, 0.08, -HW + 1.0, -5.5, 0.58, so, c, L, 1.5) + caixa(-HW + 0.24, -3.5, 0.08, -HW + 1.0, -3.3, 0.58, so, c, L, 1.5) },
+    { d: profundidade([-0.3, -4.45, 0.2], c), s: () => caixa(-0.6, -4.75, 0, 0.0, -4.15, 0.26, { t: COR.mesaF, f: COR.mesaL, l: COR.mesaL }, c, L, 1.5) + caixa(-0.95, -5.0, 0.26, 0.35, -3.9, 0.34, { t: COR.mesaT, f: COR.mesaF, l: COR.mesaL }, c, L, 1.5) },
+    { d: profundidade([HW - 0.3, -4.4, 0.3], c), s: () => caixa(HW - 0.48, -5.6, 0.12, HW - 0.02, -3.4, 0.5, { t: COR.rackT, f: COR.rackF, l: COR.rackL }, c, L, 1.5) },
+  ].sort((a, b) => b.d - a.d);
+  for (const m of moveis) s += m.s();
+  for (const [x0, x1] of [[J.x0 - 0.75, J.x0 + 0.05], [J.x1 - 0.05, J.x1 + 0.75]]) s += poly(caminho([[x0, -DS + 0.12, HS - 0.05], [x1, -DS + 0.12, HS - 0.05], [x1, -DS + 0.3, 0.06], [x0, -DS + 0.3, 0.06]], c), COR.cortina, L, 1);
+  return s;
+}
+// as verticais da sala que a correção endireita: cantos da parede do fundo e batentes da janela
+const VERTICAIS = [[-HW, -DS, 0, HS], [JAN.x0 - 0.08, -DS, JAN.z0 - 0.08, JAN.z1 + 0.08], [JAN.x1 + 0.08, -DS, JAN.z0 - 0.08, JAN.z1 + 0.08], [HW, -DS, 0, HS]];
+
+// ---------------------------------------------------------------------------
+// DOM
+// ---------------------------------------------------------------------------
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+function el(cls, html, pai) { const e = document.createElement('div'); e.className = cls; e.innerHTML = html; pai.appendChild(e); return e; }
+function svg(tag, attrs, pai) { const e = document.createElementNS(NS, tag); for (const [a, v] of Object.entries(attrs)) e.setAttribute(a, v); pai.appendChild(e); return e; }
+// 'inherit', não 'visible': um filho com visibility: visible aparece mesmo com o pai escondido
+const vis = (e, a) => { e.style.opacity = a.toFixed(3); e.style.visibility = a > 0.001 ? 'inherit' : 'hidden'; };
+const pos = (e, x, y) => { e.style.left = x.toFixed(1) + 'px'; e.style.top = y.toFixed(1) + 'px'; };
+const caixaEl = (e, x, y, w, h) => { pos(e, x, y); e.style.width = w.toFixed(1) + 'px'; e.style.height = h.toFixed(1) + 'px'; };
+const textos = [];
+function texto(pai, cls, html, x, y, tIn, tOut, o = {}) {
+  const e = el('t ' + cls, html, pai);
+  const it = { e, x, y, tIn, tOut, align: o.align || 'left', sobe: o.sobe ?? 14 };
+  textos.push(it);
+  return it;
+}
+function posicionar(it, t) {
+  const a = swap(t, it.tIn, it.tOut);
+  vis(it.e, a);
+  if (a <= 0.001) return;
+  const aOut = clamp((it.tOut - 0.1 - t) / 0.1);
+  const dy = it.sobe * pending(t, it.tIn + 0.04, P.type) - 8 * (1 - aOut);
+  const x = it.align === 'right' ? it.x - it.e.offsetWidth : it.align === 'center' ? it.x - it.e.offsetWidth / 2 : it.x;
+  pos(it.e, x, it.y + dy);
+}
+const NINHO = (n) => `<svg width="${n}" height="${n}" viewBox="0 0 100 100"><path d="M 18,80 C 7,79 2,66 2,49 C 2,24 20,4 50,3 C 79,2 97,25 97,49 C 97,68 89,80 79,80 C 64,80 34,81 18,80 Z" fill="#F47745"/><path d="M 40,58 C 35,42 40,24 53,23 C 64,22 69,40 64,57 C 59,72 45,72 40,58 Z" fill="#F5F0E6"/></svg>`;
+const ICONE_SETA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+const OK = '<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#1B5E40"/><path d="M9.5 16.5 L14 21 L22.5 11.5" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+// --- entrada: "Edifício" do lado de dentro da soleira; no celular vira a aba ativa ------------
+const fone = $('fone');
+const sobre = $('sobre');
+const palavra = el('t edificio', 'Edifício', sobre);
+const linhas = $('linhas');
+const barra = svg('line', { stroke: '#F47745', 'stroke-width': 4, 'stroke-linecap': 'round' }, linhas);
+
+// --- o celular: a tela simplificada do app (index.html: cabeçalho, título, abas, cartão, dock) ---
+const fundo = $('fundo'), telaEl = $('tela'), moldura = $('moldura');
+const ICD = (d) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+telaEl.innerHTML = `
+  <div class="pg-head"><div class="pg" id="pgNinho" style="left:17px;top:17px">${NINHO(27)}</div><div class="pg pg-marca" id="pgMarca" style="left:53px;top:22px">VEREDA</div></div>
+  <div class="pg pg-tit" id="pgTit" style="left:17px;top:80px">${IMOVEL.endereco}</div>
+  <div class="pg pg-sub" id="pgSub" style="left:17px;top:121px">${IMOVEL.bairro}</div>
+  <div class="pg-abas" id="abas"><div class="pg-aba" style="left:3px">Destaques</div><div class="pg-aba" style="left:138px">Entorno</div><div class="pg-aba on" style="left:273px"></div></div>
+  <div class="pg-card" id="cartao"></div>
+  <div class="pg-botao" id="botao">Ver dossiê completo ${ICONE_SETA}</div>
+  <div class="pg-dock">
+    <span>${ICD('<circle cx="11" cy="11" r="7.5"/><path d="m20 20-3.8-3.8"/>')}Explorar</span>
+    <span class="on">${ICD('<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/>')}Dossiê</span>
+    <span>${ICD('<rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/>')}Comparar</span>
+    <span>${ICD('<circle cx="12" cy="12" r="9"/><polygon points="15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5 15.5 8.5"/>')}Visita</span>
+    <i style="position:absolute;top:0;left:calc(12px + (100% - 24px) * 0.375 - 10px);width:20px;height:2px;border-radius:2px;background:var(--brand-orange)"></i>
+  </div>`;
+const abas = $('abas'), cartao = $('cartao'), botao = $('botao');
+// os textos de cima entram só depois que a borda de cima da moldura passou por eles (nada fatiado)
+const TOPO = [[$('pgSub'), 0.22], [$('pgTit'), 0.32], [$('pgNinho'), 0.55], [$('pgMarca'), 0.57]];
+
+// --- cartão: uma resposta por vez, na ordem da fala. Cada conteúdo sai até 0,1 s depois da troca
+// e o seguinte entra a partir de 0,08 s: o cartão nunca fica vazio por mais de um quadro ou dois ---
+const K = [24, 24];   // kicker
+const sai = (tProx) => tProx + 0.1;   // o conteúdo velho some até tProx
+const entra = (tProx) => tProx - 0.06; // e o novo aparece a partir de tProx + 0,02 s
+// 1 · fotos (a sala em grande angular; a lente corrige)
+const FW = 377, FH = 352;
+const fotoIt = texto(cartao, 'foto', `<svg width="${FW}" height="${FH}" viewBox="0 0 ${FW} ${FH}" style="display:block"><rect width="${FW}" height="${FH}" fill="${COR.fundo}"/><g class="sala"></g><g class="marcas"></g></svg>`, 16, 52, T.abre, sai(T.lote), { sobe: 0 });
+const fotoG = fotoIt.e.querySelector('.sala'), marcasG = fotoIt.e.querySelector('.marcas');
+texto(cartao, 'kicker', 'Fotos do anúncio', ...K, T.abre, sai(T.lote), { sobe: 0 });
+texto(cartao, 'legenda apagada', 'Grande angular', 24, 428, T.abre, sai(T.corrigida), { sobe: 0 });
+texto(cartao, 'legenda', `${OK}Foto corrigida`, 24, 428, entra(T.corrigida), sai(T.lote));
+// 2 · lote (mapa de cima: o lote exato entre os vizinhos)
+const MW = 377, MH = 300;
+let mapa = `<rect width="${MW}" height="${MH}" rx="14" fill="#EFE8DA"/><rect x="20" y="24" width="337" height="252" rx="10" fill="#E6DDCC"/>`;
+const LW = (337 - 4 * 9) / 3, LH = (252 - 3 * 9) / 2;
+for (let j = 0; j < 2; j += 1) for (let i = 0; i < 3; i += 1) {
+  const x = 20 + 9 + i * (LW + 9), y = 24 + 9 + j * (LH + 9);
+  const eu = i === 1 && j === 0;
+  mapa += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${LW.toFixed(1)}" height="${LH.toFixed(1)}" rx="4" fill="${eu ? '#CFDBE9' : '#FAF6EE'}" stroke="${eu ? '#2E5A85' : '#CBD6E2'}" stroke-width="${eu ? 3 : 1.5}"/>`;
+}
+const PM = [20 + 9 + LW + 9 + LW / 2, 24 + 9 + LH / 2];
+mapa += `<circle class="halo" cx="${PM[0].toFixed(1)}" cy="${PM[1].toFixed(1)}" r="0" fill="rgba(244,119,69,0.25)"/><circle class="pm" cx="${PM[0].toFixed(1)}" cy="${PM[1].toFixed(1)}" r="0" fill="#F47745" stroke="#FFFFFF" stroke-width="3"/>`;
+const mapaIt = texto(cartao, 'foto', `<svg width="${MW}" height="${MH}" viewBox="0 0 ${MW} ${MH}" style="display:block">${mapa}</svg>`, 16, 52, entra(T.lote), sai(T.metragem), { sobe: 10 });
+const mapaHalo = mapaIt.e.querySelector('.halo'), mapaPino = mapaIt.e.querySelector('.pm');
+texto(cartao, 'kicker', 'Lote do prédio', ...K, entra(T.lote), sai(T.metragem));
+texto(cartao, 'legenda', `${OK}Lote exato`, 24, 382, T.exato - 0.1, sai(T.metragem));
+texto(cartao, 'chave', 'Quadra 412 · Lote 18', 24, 438, T.exato - 0.05, sai(T.metragem));
+// 3 · metragem
+texto(cartao, 'kicker', 'Metragem', ...K, entra(T.metragem), sai(T.taxas));
+texto(cartao, 'rot', 'No anúncio', 24, 68, entra(T.metragem) + 0.02, sai(T.taxas));
+const v75 = texto(cartao, 'num', '75 m²', 24, 110, entra(T.metragem) + 0.04, sai(T.taxas)); v75.e.style.fontSize = '104px';
+texto(cartao, 'rot oficial', 'No IPTU', 24, 248, T.iptu - 0.04, sai(T.taxas));
+const v62 = texto(cartao, 'num', '62,5 m²', 24, 290, T.iptu, sai(T.taxas)); Object.assign(v62.e.style, { fontSize: '104px', color: 'var(--brand-cadastral)' });
+// enquanto a fala chega ao IPTU, o app mostra que está cruzando (sai antes de o número entrar)
+texto(cartao, 'buscando', 'Cruzando com o IPTU…', 24, 300, T.cruzando, T.iptu + 0.06);
+texto(cartao, 'chip', '12,5 m² a menos', 24, 436, T.dif, sai(T.taxas), { sobe: 8 });
+// 4 · taxas omitidas
+texto(cartao, 'kicker', 'Taxas omitidas', ...K, entra(T.taxas), sai(T.escrituras));
+const v340 = texto(cartao, 'num', '+R$ 340', 24, 152, T.taxa - 0.1, sai(T.escrituras)); Object.assign(v340.e.style, { fontSize: '92px', color: 'var(--brand-rust)' });
+texto(cartao, 'sufixo', 'por mês', 24, 266, T.taxa - 0.06, sai(T.escrituras));
+texto(cartao, 'nota', 'além do condomínio anunciado', 24, 306, T.taxaNota, sai(T.escrituras));
+// 5 · escrituras
+texto(cartao, 'kicker', 'Escrituras do edifício', ...K, entra(T.escrituras), Infinity);
+texto(cartao, 'rot oficial', 'Valor real, média', 24, 68, entra(T.escrituras) + 0.02, Infinity);
+const v381 = texto(cartao, 'num', 'R$ 381 mil', 24, 106, T.real - 0.14, Infinity); Object.assign(v381.e.style, { fontSize: '76px', color: 'var(--brand-cadastral)' });
+texto(cartao, 'rot', 'O anúncio pede', 24, 236, T.anuncio - 0.04, Infinity);
+const v480 = texto(cartao, 'num', 'R$ 480 mil', 24, 268, T.anuncio, Infinity); v480.e.style.fontSize = '60px';
+texto(cartao, 'chip', 'R$ 99 mil acima', 24, 364, T.acima, Infinity, { sobe: 8 });
+texto(cartao, 'nota', '14 escrituras desde 2015', 24, 446, T.acima + 0.06, Infinity);
+
+// --- chrome: a marca da cena 5, que sai quando o celular (com a marca dele) abre ---------------
+const chrome = $('chrome');
+const logo = el('chrome-pilula', `${NINHO(38)}<span class="marca">VEREDA</span>`, chrome);
+Object.assign(logo.style, { left: '56px', top: '40px', padding: '10px 22px 10px 14px' });
+const dbg = new URLSearchParams(location.search).has('debug') ? el('', '', chrome) : null;
+if (dbg) dbg.id = 'debug';
+
+// --- mundo: lote, vizinhos, prédio, pino --------------------------------------------------------
+const forma = $('forma');
+const viz = $('viz');
+const haste = $('haste');
+const predio = $('predio');
+const CORES_PREDIO = { s: '#FBF8F2', n: '#FBF8F2', e: '#F1EADC', w: '#F1EADC', topo: '#FFFFFF' };   // as da cena 7
+const pinoG = $('pino');
+const pinoHalo = svg('circle', { fill: 'rgba(244,119,69,0.25)' }, pinoG);
+const pinoC = svg('circle', { fill: '#F47745', stroke: '#FFFFFF' }, pinoG);
+
+const polyD = (pts) => 'M' + pts.map((p) => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L') + 'Z';
+const lineD = (a, b) => `M${a[0].toFixed(1)} ${a[1].toFixed(1)}L${b[0].toFixed(1)} ${b[1].toFixed(1)}`;
+const setLine = (e, x1, y1, x2, y2) => { e.setAttribute('x1', x1.toFixed(1)); e.setAttribute('y1', y1.toFixed(1)); e.setAttribute('x2', x2.toFixed(1)); e.setAttribute('y2', y2.toFixed(1)); };
+
+// ---------------------------------------------------------------------------
+// seek(t): função pura do tempo
+// ---------------------------------------------------------------------------
+function render(t) {
+  t = clamp(t, 0, DUR);
+  const cam = camera(t);
+  const pr = (p) => project(p, cam);
+
+  // ===== celular: nasce da caixa da soleira e depois vai para a direita ======================
+  const pA = sp(t - T.abre, ABRE);
+  const pB = sp(t - T.abre, DESCE);
+  // a subida usa a mola da abertura: a borda de cima é uma mola só, de 452 a 78
+  const sobe = (YF - Y0) * sp(t - T.abre, ABRE);
+  const X = track(t, [[0, X0], [T.desliza, X1]], DESLIZA), Y = track(t, [[0, Y0], [T.abre, YF, ABRE], [T.desliza, Y1]], DESLIZA);
+  pos(fone, X, Y);
+  // retângulo da moldura, em coordenadas do celular
+  const R = [lerp(SEMENTE[0] - X0, 0, pA), lerp(SEMENTE[1] - Y0, 0, pA), lerp(SEMENTE[2], FONE.w, pA), 0];
+  R[3] = lerp(SEMENTE[1] + SEMENTE[3] - Y0, FONE.h, pB) - R[1];
+  const bz = FONE.bz * clamp(pA * 1.4);
+  const raio = lerp(18, FONE.raio + FONE.bz, pA);
+  const aberto = pA > 0.002;
+  caixaEl(fundo, ...R); fundo.style.borderRadius = raio.toFixed(2) + 'px';
+  vis(fundo, aberto ? clamp(pA / 0.06) : 0);
+  caixaEl(moldura, ...R); moldura.style.borderRadius = raio.toFixed(2) + 'px'; moldura.style.borderWidth = bz.toFixed(2) + 'px';
+  moldura.style.visibility = aberto && bz > 0.05 ? 'inherit' : 'hidden';
+  // a tela só aparece dentro da moldura (recorte, sem escala)
+  const it = [Math.max(0, R[1] + bz - FONE.bz), Math.max(0, FONE.bz + 433 - (R[0] + R[2] - bz)), Math.max(0, FONE.bz + 905 - (R[1] + R[3] - bz)), Math.max(0, R[0] + bz - FONE.bz)];
+  telaEl.style.clipPath = `inset(${it.map((v) => v.toFixed(1) + 'px').join(' ')} round ${Math.max(0, raio - bz).toFixed(1)}px)`;
+  telaEl.style.visibility = aberto && it[0] + it[2] < 904 && it[1] + it[3] < 432 ? 'inherit' : 'hidden';
+  // saída: o celular inteiro sai por recorte, da esquerda para a direita
+  // a curva vai a 104%: a última lasca da moldura (13 px) some de uma vez, sem ficar parada na borda
+  const uS = clamp((t - T.saida) / SAIDA_DUR), wS = clamp(1.04 * uS * uS * (3 - 2 * uS));
+  fone.style.clipPath = wS > 0 ? `inset(-200px -1000px -200px ${(FONE.w * wS).toFixed(1)}px)` : 'none';
+  fone.style.visibility = wS < 0.999 ? 'inherit' : 'hidden';
+  for (const [e, t0] of TOPO) vis(e, swap(t, t0, Infinity));
+  // as abas entram quando "Edifício" e a linha já passaram pela borda delas
+  // "Destaques" e "Entorno" só depois que a ponta esquerda da linha passou por baixo deles
+  vis(abas.querySelectorAll('.pg-aba')[0], swap(t, T.rotulosAbas, Infinity));
+  vis(abas.querySelectorAll('.pg-aba')[1], swap(t, T.rotulosAbas + 0.03, Infinity));
+  abas.style.opacity = clamp((t - T.abas) / 0.12).toFixed(3);
+  abas.style.visibility = t > T.abas ? 'inherit' : 'hidden';
+
+  // "Edifício": da soleira até a aba ativa (só o tamanho da fonte muda, sem escala)
+  const pW = sp(t - T.abre, PALAVRA);
+  palavra.style.fontSize = lerp(34, ABA.fonte, pW).toFixed(2) + 'px';
+  // a palavra e a linha sobem com o celular (o caminho delas dentro dele é o mesmo de antes)
+  const cW = lerpPt([960, LINHA_Y - 66 + 17 + sobe], [X + FONE.bz + ABA.cx, Y + FONE.bz + ABA.cy], pW);
+  pos(palavra, cW[0] - palavra.offsetWidth / 2 - X, cW[1] - palavra.offsetHeight / 2 - Y);
+
+  // a linha laranja: soleira → o traço da aba ativa, sob "Edifício" (a palavra e a linha sobem juntas)
+  const pL = sp(t - T.abre, LINHA);
+  const sx = X + FONE.bz + SUBLINHA.cx, sy = Y + FONE.bz + SUBLINHA.y;
+  const L0 = [lerp(LINHA_X[0], sx - SUBLINHA.w / 2, pL), lerp(LINHA_Y + sobe, sy, pW)];
+  const L1 = [lerp(LINHA_X[1], sx + SUBLINHA.w / 2, pW), L0[1]];
+  // a linha fica fora do celular, no mesmo lugar da cena 5
+  // na saída a linha é cortada no mesmo recorte do celular (a ponta esquerda anda com a borda)
+  const borda = X + FONE.w * wS;
+  if (wS > 0) L0[0] = Math.max(L0[0], borda);
+  setLine(barra, L0[0], L0[1], Math.max(L0[0], L1[0]), L1[1]);
+  barra.style.visibility = wS > 0 && borda >= L1[0] ? 'hidden' : 'inherit';
+  barra.setAttribute('stroke-width', lerp(4, 3, pW).toFixed(2));
+
+  // a lasca branca sob a linha, como no último quadro da cena 5; o fundo do celular a cobre logo
+  const sol = $('soleira');
+  sol.setAttribute('d', pA < 0.06 ? roundedQuad([[L0[0], L0[1] - 2], [L1[0], L0[1] - 2], [L1[0], L0[1] + 2], [L0[0], L0[1] + 2]], 2) : 'M0 0');
+  sol.style.visibility = pA < 0.06 ? 'inherit' : 'hidden';
+
+  // logo da cena 5: sai quando o celular começa a abrir
+  vis(logo, swap(t, -1, T.logoSai + 0.2));
+
+  // ===== cartão: conteúdo de cada resposta =====================================================
+  for (const x of textos) posicionar(x, t);
+  // 1 · a foto: a lente corrige (dolly 340 → 1000) e as verticais endireitam
+  if (fotoIt.e.style.visibility !== 'hidden') {
+    const aberta = 1 - clamp(spring(t - T.dolly, 36, 12));
+    const c = cameraFoto(FW, FH, aberta);
+    fotoG.innerHTML = fotoSala(c);
+    const v = clamp(sp(t - T.verticais, P.card));
+    let vd = '';
+    if (v > 0.002) for (const [x, y, z0, z1] of VERTICAIS) { const a0 = tela3([x, y, z0], c), a1 = tela3([x, y, z1], c); vd += lineD(a0, lerpPt(a0, a1, v)); }
+    marcasG.innerHTML = vd ? `<path d="${vd}" stroke="#F47745" stroke-width="3.5" stroke-linecap="round" fill="none"/>` : '';
+  }
+  // 2 · o pino do mapa do celular
+  const eM = clamp(sp(t - (T.lote + 0.24), P.button), 0, 1.2);
+  mapaHalo.setAttribute('r', (18 * eM).toFixed(2)); mapaPino.setAttribute('r', (10 * eM).toFixed(2));
+
+  // ===== mundo =================================================================================
+  // o lote: entra em "lote", o contorno engrossa em "exato" e volta à espessura da cena 7 na saída
+  const aLote = clamp((t - T.loteMundo) / 0.08);
+  const sel = clamp(sp(t - T.exato, P.button)) * (1 - clamp(sp(t - T.saida, P.card)));
+  forma.setAttribute('d', aLote > 0 ? roundedQuad(LOTE_PTS.map(pr), clamp(1.2 * cam.s, 1, 6)) : 'M0 0');
+  forma.setAttribute('stroke-width', (3.5 + 2.6 * sel).toFixed(2));
+  vis(forma, aLote);
+  // lotes vizinhos tracejados: só entram na saída, quando o celular sai (a cena 7 começa com eles)
+  const aViz = invLerp(T.saida + 0.08, T.saida + 0.42, t);
+  viz.setAttribute('d', aViz > 0.001 ? vizinhos.map((v) => polyD(v.map(pr))).join('') : 'M0 0');
+  vis(viz, aViz);
+  // prédio: sobe em "prédio"; só as faces visíveis, sem faixas de andar
+  const altura = PREDIO.h * sp(t - T.sobe, SOBE);
+  const zPino = Math.max(altura + 10, 14);
+  if (altura > 0.05) {
+    predio.innerHTML = prisma(PREDIO.x0, PREDIO.y0, PREDIO.x1, PREDIO.y1, altura, cam, pr, CORES_PREDIO, '#C9BEA8', 1.5, 0);
+    predio.style.display = '';
+  } else {
+    predio.style.display = 'none';
+  }
+  // pino: nasce no lote em "exato" e sobe com o prédio
+  const ePino = clamp(sp(t - T.exato, P.button), 0, 1.2);
+  const pPino = pr([0, 0, zPino]);
+  pinoHalo.setAttribute('cx', pPino[0].toFixed(1)); pinoHalo.setAttribute('cy', pPino[1].toFixed(1)); pinoHalo.setAttribute('r', (26 * ePino).toFixed(2));
+  pinoC.setAttribute('cx', pPino[0].toFixed(1)); pinoC.setAttribute('cy', pPino[1].toFixed(1)); pinoC.setAttribute('r', (14 * ePino).toFixed(2)); pinoC.setAttribute('stroke-width', (4 * Math.min(1, ePino)).toFixed(2));
+  pinoG.style.visibility = ePino > 0.01 ? 'inherit' : 'hidden';
+  haste.setAttribute('d', lineD(pr([0, 0, Math.max(0, altura)]), pPino));
+  vis(haste, clamp(ePino));
+
+  if (dbg) dbg.textContent = t.toFixed(2) + ' s';
+  return cam;
+}
+
+// ---------------------------------------------------------------------------
+// Contrato de render e modos de preview
+// ---------------------------------------------------------------------------
+const SONS = [
+  { t: T.abre, tipo: 'whoosh', dur: 0.6, ganho: 0.5, evento: 'a soleira abre no celular' },
+  { t: T.dolly, tipo: 'whoosh', dur: 0.8, ganho: 0.4, evento: 'a lente corrige a foto' },
+  { t: T.corrigida, tipo: 'tick', evento: 'foto corrigida' },
+  { t: T.desliza, tipo: 'whoosh', dur: 0.8, evento: 'o celular vai à direita; o lote aparece' },
+  { t: T.exato, tipo: 'pop', evento: 'lote exato: o pino nasce' },
+  { t: T.sobe, tipo: 'thump', evento: 'o prédio sobe' },
+  { t: T.metragem, tipo: 'tick', evento: 'metragem: 75 m² no anúncio' },
+  { t: T.iptu, tipo: 'pop', evento: '62,5 m² no IPTU' },
+  { t: T.taxa, tipo: 'pop', evento: '+R$ 340 por mês' },
+  { t: T.real, tipo: 'pop', evento: 'R$ 381 mil nas escrituras' },
+  { t: T.saida, tipo: 'whoosh', dur: 0.6, evento: 'o celular sai por recorte' },
+];
+window.POC = {
+  id: 'CENA-06', variante: 'da porta para dentro', duracao: DUR, fps: 30, estados: ESTADOS, holds: HOLDS,
+  cliques: [], marcos: T, sons: SONS,
+  tiras: [{ nome: 'abre', t0: 0.14 }, { nome: 'foto', t0: T.corrigida - 0.2 }, { nome: 'lote', t0: T.desliza - 0.04 }, { nome: 'saida', t0: T.saida - 0.04 }],
+  comparar: ESTADOS.map((e) => ({ t: e.t, nome: e.id })),
+  camFinal: CAM.lote,
+};
+window.seek = (t) => { render(t); };
+window.__camFim = () => render(DUR);
+window.__pronto = (async () => {
+  await document.fonts.ready;
+  const amostra = 'Edifício Imóvel em análise Boa Viagem · Recife Destaques Entorno Explorar Dossiê Comparar Visita Fotos do anúncio Grande angular Foto corrigida Só a geometria muda: luz e cores iguais. Lote do prédio exato Quadra 412 18 Metragem No anúncio IPTU 75 m² 62,5 12,5 a menos Taxas omitidas +R$ 340 por mês Taxa extra de condomínio que não mostra. Escrituras edifício Valor real, média 381 mil O pede 480 99 acima VEREDA';
+  await Promise.all([
+    '500 36px Fraunces', '500 100px Fraunces', '500 31px Fraunces', '500 28px Fraunces', '500 19px Fraunces',
+    '400 14px "Plus Jakarta Sans"', '500 14px "Plus Jakarta Sans"', '600 19px "Plus Jakarta Sans"', '700 14px "Plus Jakarta Sans"', '700 34px "Plus Jakarta Sans"', '500 24px "Plus Jakarta Sans"', '400 17px "Plus Jakarta Sans"',
+    '500 16px "JetBrains Mono"',
+  ].map((f) => document.fonts.load(f, amostra)));
+  // passa por toda a linha do tempo uma vez: subconjuntos de fonte que só aparecem mais tarde
+  // são pedidos agora, e não no meio do vídeo
+  for (let t = 0; t <= DUR; t += 0.25) render(t);
+  await document.fonts.ready;
+  render(0);
+  return true;
+})();
+
+if (!navigator.webdriver) {
+  document.body.classList.add('tela');
+  const c = $('c');
+  const ajusta = () => { const s = Math.min(innerWidth / 1920, innerHeight / 1080); Object.assign(c.style, { position: 'absolute', transformOrigin: '0 0', transform: `scale(${s})`, left: `${(innerWidth - 1920 * s) / 2}px`, top: `${(innerHeight - 1080 * s) / 2}px` }); };
+  addEventListener('resize', ajusta); ajusta();
+  const aoVivo = new URLSearchParams(location.search).has('live');
+  let t = 0, alvo = aoVivo ? HOLDS[0] : DUR, rodando = true, antes = null;
+  const passo = (agora) => { if (antes !== null && rodando) { t += (agora - antes) / 1000; if (t >= alvo) { t = alvo; if (!aoVivo) t = 0; else rodando = false; } } antes = agora; render(t); requestAnimationFrame(passo); };
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown') {
+      // ao vivo: o clicker sempre leva ao próximo HOLD, mesmo no meio de uma entrada
+      const base = rodando ? alvo : t; const i = HOLDS.findIndex((h) => h > base + 1e-3);
+      if (aoVivo) { if (i >= 0) { alvo = HOLDS[i]; rodando = true; } } else rodando = !rodando;
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      // volta ao HOLD anterior, parado nele
+      const anteriores = HOLDS.filter((h) => h < t - 1e-3);
+      t = anteriores.length ? anteriores[anteriores.length - 1] : 0;
+      if (aoVivo) { alvo = t; rodando = false; } else { alvo = DUR; }
+      render(t); e.preventDefault();
+    } else if (e.key === 'r') { t = 0; alvo = aoVivo ? HOLDS[0] : DUR; rodando = true; }
+  });
+  window.__pronto.then(() => requestAnimationFrame(passo));
+}
+</script>
+</body>
+</html>

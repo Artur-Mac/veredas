@@ -1,0 +1,181 @@
+{
+  "poc": "CENA-04",
+  "duracao": 9.15,
+  "geradoEm": "2026-10-18",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 113,
+    "fase": 0.11,
+    "erroMedio": 0.067,
+    "batidas": [
+      0.11,
+      0.641,
+      1.172,
+      1.703,
+      2.234,
+      2.765,
+      3.296,
+      3.827,
+      4.358,
+      4.889,
+      5.42,
+      5.951,
+      6.482,
+      7.013,
+      7.544,
+      8.075,
+      8.606,
+      9.137
+    ]
+  },
+  "holds": [
+    4.8,
+    9.15
+  ],
+  "sons": [
+    {
+      "t": 0.1,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.35,
+      "evento": "o corte: o chão vira tinta",
+      "batidaMaisProxima": 0.11,
+      "desvio": -0.01
+    },
+    {
+      "t": 0.25,
+      "tipo": "pop",
+      "ganho": 0.35,
+      "evento": "os nomes das bases no chão",
+      "batidaMaisProxima": 0.11,
+      "desvio": 0.14
+    },
+    {
+      "t": 1.05,
+      "tipo": "tick",
+      "evento": "o prédio no chão",
+      "batidaMaisProxima": 1.172,
+      "desvio": -0.122
+    },
+    {
+      "t": 1.7,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.3,
+      "evento": "os nomes afundam",
+      "batidaMaisProxima": 1.703,
+      "desvio": -0.003
+    },
+    {
+      "t": 1.85,
+      "tipo": "whoosh",
+      "dur": 1,
+      "ganho": 0.4,
+      "evento": "a câmera desce abaixo do chão",
+      "batidaMaisProxima": 1.703,
+      "desvio": 0.147
+    },
+    {
+      "t": 2.05,
+      "tipo": "tick",
+      "ganho": 0.6,
+      "evento": "os estratos, um a um",
+      "batidaMaisProxima": 2.234,
+      "desvio": -0.184
+    },
+    {
+      "t": 3.85,
+      "tipo": "tick",
+      "ganho": 0.5,
+      "evento": "a camada dos proxies",
+      "batidaMaisProxima": 3.827,
+      "desvio": 0.023
+    },
+    {
+      "t": 4.9,
+      "tipo": "whoosh",
+      "dur": 0.9,
+      "ganho": 0.4,
+      "evento": "o ponto mergulha",
+      "batidaMaisProxima": 4.889,
+      "desvio": 0.011
+    },
+    {
+      "t": 5,
+      "tipo": "pop",
+      "ganho": 0.4,
+      "evento": "a planilha",
+      "batidaMaisProxima": 4.889,
+      "desvio": 0.111
+    },
+    {
+      "t": 5.28,
+      "tipo": "pop",
+      "ganho": 0.4,
+      "evento": "a pilha de alvarás",
+      "batidaMaisProxima": 5.42,
+      "desvio": -0.14
+    },
+    {
+      "t": 5.54,
+      "tipo": "pop",
+      "ganho": 0.4,
+      "evento": "a máscara do código de lote",
+      "batidaMaisProxima": 5.42,
+      "desvio": 0.12
+    },
+    {
+      "t": 5.95,
+      "tipo": "whoosh",
+      "dur": 0.9,
+      "ganho": 0.45,
+      "evento": "o emaranhado é puxado",
+      "batidaMaisProxima": 5.951,
+      "desvio": -0.001
+    },
+    {
+      "t": 6.05,
+      "tipo": "whoosh",
+      "dur": 0.5,
+      "ganho": 0.35,
+      "evento": "a tinta cobre o céu",
+      "batidaMaisProxima": 5.951,
+      "desvio": 0.099
+    },
+    {
+      "t": 6.8,
+      "tipo": "pop",
+      "ganho": 0.45,
+      "evento": "o anúncio na ponta da régua",
+      "batidaMaisProxima": 7.013,
+      "desvio": -0.213
+    },
+    {
+      "t": 6.95,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.35,
+      "evento": "a multidão de anúncios",
+      "batidaMaisProxima": 7.013,
+      "desvio": -0.063
+    },
+    {
+      "t": 7.9,
+      "tipo": "tick",
+      "ganho": 0.5,
+      "evento": "os proprietários",
+      "batidaMaisProxima": 8.075,
+      "desvio": -0.175
+    },
+    {
+      "t": 8.4,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.4,
+      "evento": "os anúncios são levados",
+      "batidaMaisProxima": 8.606,
+      "desvio": -0.206
+    }
+  ]
+}

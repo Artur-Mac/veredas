@@ -23,7 +23,7 @@ import { Bloco, Traco } from "../Traco";
 import { GaleriaDoAnuncio } from "./Galeria";
 
 function irParaConfirmarLote(dossie: Dossie) {
-  router.push({ pathname: "/dossie/[id]/confirmar-lote", params: { id: dossie.id } });
+  router.push({ pathname: "/exemplos/[id]/confirmar-lote", params: { id: dossie.id } });
 }
 
 export function TopoDoDossie({ dossie }: { dossie: Dossie }) {
@@ -39,7 +39,7 @@ export function TopoDoDossie({ dossie }: { dossie: Dossie }) {
       titulo={enderecoDoDossie(dossie)}
       fotos={dossie.anuncio.imagens.map((url) => ({ url, descricao: "Foto do anúncio" }))}
       alternativa={mapa}
-      aoAbrirMapa={() => router.navigate({ pathname: "/dossie/[id]/mapa", params: { id: dossie.id } })}
+      aoAbrirMapa={() => router.navigate({ pathname: "/exemplos/[id]/mapa", params: { id: dossie.id } })}
     />
   );
 }
@@ -73,7 +73,7 @@ function MapaDeContexto({ dossie, estilo }: { dossie: Dossie; estilo: { height: 
           icone="map"
           tamanhoIcone="p"
           pilula
-          onPress={() => router.navigate({ pathname: "/dossie/[id]/mapa", params: { id: dossie.id } })}
+          onPress={() => router.navigate({ pathname: "/exemplos/[id]/mapa", params: { id: dossie.id } })}
         />
       </View>
     </Mapa>

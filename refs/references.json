@@ -1,0 +1,375 @@
+{
+  "version": "2.0.0",
+  "project": "VEREDA, pitch audiovisual",
+  "updatedAt": "2026-10-17",
+  "notes": "Manifesto refeito em 17/10/2026. A versão anterior foi descartada pelo usuário e está em motion-references/_descartado-ia-anterior/refs/. Só entra aqui o que foi conferido nesta sessão; o resto fica com accessStatus not_inspected.",
+  "accessStatusVocabulary": {
+    "available_inspected": "O material principal (vídeo, imagem, arquivo) foi baixado ou assistido e decomposto em quadros nesta ou em outra sessão registrada em accessLog.",
+    "available_inspected_via_transcript_and_spec": "O material principal não foi assistido; o texto integral do post, prompt, artigo ou transcrição foi lido por uma URL de apoio.",
+    "unavailable": "Nenhuma URL respondeu. Usar só o que estiver documentado, sem inventar detalhes.",
+    "not_inspected": "Registrada, ainda sem inspeção. Uma sessão futura deve inspecionar e trocar o status."
+  },
+  "productSources": [
+    {
+      "id": "PROD-01",
+      "title": "Protótipo web VEREDA (index.html na raiz do repositório)",
+      "path": "index.html",
+      "role": "Única fonte da identidade visual do pitch: tokens de cor, fontes, componentes e telas. Indicado pelo usuário em 17/10/2026.",
+      "inspectedAt": "2026-10-17",
+      "evidenceInspected": "Variáveis CSS do :root; regras .ed-card, .ed-title-lg, .ed-kicker, .btn-scanner-primary, .ed-btn-secondary, .conf-trace, .ds-finding-*, .credits-pill-btn, .bottom-dock; esqueleto do <body> (cabeçalho, view-* e bottom-dock); dados de PROPERTIES[0] (id boa-viagem); funções renderExplore, triggerUrlDecode, renderAnalyzingLotCard, renderDossier, renderLiveVisit, openVisitMessage, openVisitLight e openVisitNoise. Referências por nome, não por linha: o arquivo continua sendo editado (houve mudança de layout no bloco financeiro do dossiê às 22:18 de 17/10/2026, sem efeito nos tokens nem nos dados). Capturas Playwright a 520x960 das telas Explorar, Lendo o anúncio, É este o prédio?, Dossiê (Destaques, Entorno, Edifício), Visita, Comparar, Créditos e a folha Converse com o corretor.",
+      "extracted": {
+        "colors": {
+          "bg-paper": "#F2EBDD",
+          "bg-paper-light": "#FAF6EE",
+          "bg-surface": "#FFFFFF",
+          "bg-subtle": "#E7DEC9",
+          "bg-ink": "#171717",
+          "bg-obsidian": "#0D0E0F",
+          "ink-primary": "#171717",
+          "ink-secondary": "#4A4740",
+          "ink-muted": "#787266",
+          "brand-orange": "#F47745",
+          "brand-rust": "#B94E36",
+          "brand-sage": "#7F8870",
+          "brand-sage-deep": "#3A5230",
+          "brand-cadastral": "#2E5A85",
+          "border-hairline": "#E2D9C8",
+          "border-strong": "#C9BEA8"
+        },
+        "fonts": {
+          "display": "Fraunces (opsz 9..144, pesos 400, 500, 600)",
+          "sans": "Plus Jakarta Sans (400 a 700)",
+          "mono": "JetBrains Mono (400 a 600)"
+        },
+        "components": ["ed-card (raio 18, borda rgba(23,23,23,.09))", "ed-kicker (Plus Jakarta 700, 11px, caixa alta, laranja)", "ed-title-lg (Fraunces 500, 22px, -0.02em)", "btn-scanner-primary (laranja, raio 12)", "conf-trace (traço + rótulo de origem: registro oficial, declarado pelo anunciante, inferência, não sabemos)", "lote em azul cadastral com vizinhos tracejados e pino laranja", "ds-finding-measure (número Fraunces 36px)", "bottom-dock com 4 abas"]
+      },
+      "dataHonesty": "Dados reais do prédio da Rua João Cardoso Aires, 327 (consultados em 15/10/2026, ver docs/ui-ux.md seção 8.4): 44 unidades, 124,81 m², 2010, padrão Superior, IPTU 2026 de R$ 3.934 a R$ 4.457 por ano, 56 avaliações ITBI com mediana de R$ 4.339/m², 49 registros de obra em 150 m desde 2018, 4 alvarás de demolição deferidos em 2026 entre 118 m e 140 m. Campos do anúncio (125 m², 4 quartos, 3 suítes, 1 banheiro, 3 vagas, condomínio R$ 1.190, IPTU R$ 288 sem período) são de um anúncio de venda real; o aluguel de R$ 4.500 é ilustrativo. Inventados no protótipo: o nome 'Ed. Costa Atlântica', a chave DSQFL 06.1780.0412.02.0327, o polígono do lote, as fotos (Unsplash) e vários indicadores de entorno (-1,8 °C, 38 árvores, renda R$ 6.840)."
+    }
+  ],
+  "references": [
+    {
+      "id": "REF-01",
+      "slug": "ravie-5-year-showreel",
+      "title": "Ravie's 5-year Showreel (Design + Animation)",
+      "creator": "Ravie (estúdio; o vídeo fecha com a assinatura RAVIE e ravie.co)",
+      "type": "Showreel de estúdio, 47 s, trabalhos de vários clientes",
+      "originalUrl": "https://www.youtube.com/watch?v=8wvjyNFF5hk",
+      "accessibleSupportingUrls": [],
+      "accessStatus": "available_inspected",
+      "accessLog": [
+        {
+          "date": "2026-10-17",
+          "url": "~/Downloads/Ravies-5-year-Showreel-SnapYT.App.mp4",
+          "method": "arquivo enviado pelo usuário; ffprobe",
+          "result": "H.264 1280x720, 24 fps, 47,3 s, áudio AAC, 10.971.803 bytes. A correspondência com a URL do YouTube não foi conferida."
+        },
+        {
+          "date": "2026-10-17",
+          "url": "~/Downloads/Ravies-5-year-Showreel-SnapYT.App.mp4",
+          "method": "ffmpeg: 1 quadro a cada 0,5 s (folha de contato), varredura a 4 quadros por segundo do vídeo inteiro, tiras a 10 qps em 9,2 s, 10,3 s e 17,9 s, cores dominantes do quadro de 18,6 s",
+          "result": "motion-references/contact-sheets/refs/REF-01/; todos os quadros olhados"
+        },
+        {
+          "date": "2026-10-17",
+          "url": "capturas enviadas pelo usuário",
+          "method": "comparação com os quadros do vídeo",
+          "result": "A cidade bate com 18,6 s e 'a distinct FORM' com cerca de 11,0 s (cópias em capturas-usuario/). A terceira captura, 'new' em meio-tom sobre preto, não está no arquivo: registrada como REF-09."
+        }
+      ],
+      "evidenceInspected": "O vídeo inteiro em quadros a cada 0,25 s, três trechos a 10 qps e as duas capturas do usuário que pertencem a ele.",
+      "notInspected": "Áudio e BPM. Cortes medidos quadro a quadro só nas tiras. Autoria de cada trabalho dentro do reel.",
+      "userNotes": "17/10/2026: o usuário gostou da cidade e dos pontilhados, que 'dão um ar mais interessante para o app'. Pediu para não misturar muita coisa: os vídeos são demonstrativos, para inspirar uma ou outra ideia.",
+      "visualTechniques": [
+        "Cidade (18,3 a 19,2 s, menos de 1 s de tela): volumes simples extrudados vistos do chão, câmera grande-angular avançando por uma rua com faixas em chevron; cada face com um tom (topo claro, laterais em dois tons); contorno branco fino em todas as arestas; um matiz só, do vermelho ao laranja e amarelo, mais branco; céu claro com grade de linhas. Sai com um giro rápido de câmera para cima.",
+        "Pontilhados: painéis de pontos em grade nas fachadas da cidade e uma linha pontilhada ligando nós numa ilustração plana de quarteirão (13,5 s).",
+        "Forma que continua entre trabalhos: a pilha de amostras de 'new hue.' (9,75 s) vira um retângulo laranja, que vira o arco de 'a distinct FORM' (10,5 a 11,75 s).",
+        "Cartão de UI com cursor clicando num menu e abrindo um documento (11,75 a 13,5 s).",
+        "Cidade plana em vetor com patinete e carro em cores chapadas (32,5 a 34,25 s).",
+        "Tipografia gigante cortada pela borda do quadro (REEL, nomes de clientes).",
+        "Ritmo de reel: um trabalho diferente a cada 0,5 a 1,5 s, com muita troca de estilo. É o oposto do que o pitch precisa."
+      ],
+      "technicalTechniques": [
+        "Câmera de rua baixa com perspectiva forte e avanço contínuo; a cidade é só volume, contorno e cor chapada, sem textura nem luz realista",
+        "Paleta medida no quadro de 18,6 s (64 x 36, cores agrupadas): #F0F0F0 (17% do quadro), #F03018, #D84818, #F07818, #D83018, #F06018",
+        "Transição por forma que sobrevive (pilha → retângulo → arco)"
+      ],
+      "constants": {
+        "resolution": "1280x720",
+        "fps": 24,
+        "durationSeconds": 47.3,
+        "cityShot": "18,3 a 19,2 s",
+        "cityPalette": [
+          "#F0F0F0",
+          "#F03018",
+          "#D84818",
+          "#F07818",
+          "#D83018",
+          "#F06018"
+        ]
+      },
+      "proposedUseInVereda": "Só a cidade, e em versão da marca: volumes com contorno branco e um matiz só, nos tons do protótipo (laranja #F47745 e #E06332 nas faces, ferrugem #B94E36 na sombra, papel #FAF6EE nos topos, céu com a grade do protótipo). Lugar: cenas de Recife e do entorno (cenas 03 e 08 do storyboard), no trecho de câmera de mundo do POC-01 (M3). O azul cadastral continua só no lote. Os pontilhados da cidade entram junto, como textura de fachada. Não usar: mármore e objetos 3D realistas, caleidoscópio, neon, arco-íris, troca de estilo a cada segundo.",
+      "appliedIn": [],
+      "analysis": {
+        "status": "analyzed",
+        "analyzedAt": "2026-10-17",
+        "analyzedBy": "sessão Claude Code de 17/10/2026 (principal)"
+      }
+    },
+    {
+      "id": "REF-02",
+      "slug": "comma-motion-graphics",
+      "title": "\"Comma\" motion graphics",
+      "creator": "seven (@seven_playstudy) (a confirmar; o arquivo não traz crédito legível)",
+      "type": "Motion gráfico monocromático, 25,5 s",
+      "originalUrl": "https://www.youtube.com/watch?v=Q_ROGVLc4TA",
+      "accessibleSupportingUrls": [],
+      "accessStatus": "available_inspected",
+      "accessLog": [
+        {
+          "date": "2026-10-17",
+          "url": "~/Downloads/Comma-motion-graphics-SnapYT.App.mp4",
+          "method": "arquivo enviado pelo usuário; ffprobe",
+          "result": "H.264 1920x1080, 24 fps, 25,5 s, áudio AAC, 2.529.783 bytes. A correspondência com a URL do YouTube não foi conferida."
+        },
+        {
+          "date": "2026-10-17",
+          "url": "~/Downloads/Comma-motion-graphics-SnapYT.App.mp4",
+          "method": "ffmpeg: 1 quadro a cada 0,5 s (51 quadros)",
+          "result": "motion-references/contact-sheets/refs/REF-02/contact_sheet.jpg; todos os quadros olhados"
+        }
+      ],
+      "evidenceInspected": "O vídeo inteiro em quadros a cada 0,5 s.",
+      "notInspected": "Áudio. Nenhum trecho foi visto quadro a quadro.",
+      "visualTechniques": [
+        "Uma vírgula atravessa o vídeo e vira objetos: vírgula, linhas, pilha de folhas, cubo com furo, disco, xícara, sol e lua, quadrado, losango, teclas de teclado, superfície curva com texto e de volta à vírgula (0 a 22 s); fecha em preto",
+        "Monocromático: cinza claro, branco e preto, com sombras suaves",
+        "Calma: cada objeto fica de 1 a 2,5 s, com uma coisa só na tela",
+        "Teclas afundando em perspectiva (15,5 a 17,5 s)"
+      ],
+      "technicalTechniques": [
+        "Objeto único que muda de forma, sem UI (o mesmo princípio da REF-07)",
+        "Pausas longas entre os morphs"
+      ],
+      "constants": {
+        "resolution": "1920x1080",
+        "fps": 24,
+        "durationSeconds": 25.5
+      },
+      "proposedUseInVereda": "Nenhum elemento visual. Serve de régua de calma: uma ideia por vez e pausas, como os HOLD do pitch ao vivo. O princípio de objeto único já vem da REF-07.",
+      "appliedIn": [],
+      "analysis": {
+        "status": "analyzed",
+        "analyzedAt": "2026-10-17",
+        "analyzedBy": "sessão Claude Code de 17/10/2026 (principal)"
+      }
+    },
+    {
+      "id": "REF-07",
+      "slug": "one-shape-ui-morph",
+      "title": "Code-based UI motion design showreel (template de prompt)",
+      "creator": "zero (@twoclipping)",
+      "publishedAt": "2026-09-24",
+      "type": "Post no X com vídeo de 14 s e template de prompt em blocos XML",
+      "originalUrl": "https://x.com/twoclipping/status/2103273003555402193",
+      "accessibleSupportingUrls": [
+        "https://jasonzhu.ai/en/prompts/claude-opus-5-5/2103273003555402193",
+        "https://api.fxtwitter.com/twoclipping/status/2103273003555402193",
+        "https://video.twimg.com/amplify_video/2103272964967804928/vid/avc1/1440x1440/DMnmDsC9z0gcgSUX.mp4"
+      ],
+      "accessStatus": "available_inspected",
+      "accessLog": [
+        { "date": "2026-10-17", "url": "https://x.com/twoclipping/status/2103273003555402193", "method": "WebFetch", "result": "HTTP 402, sem corpo" },
+        { "date": "2026-10-17", "url": "https://api.fxtwitter.com/twoclipping/status/2103273003555402193", "method": "WebFetch e curl", "result": "200, JSON com texto integral, autor, data e metadados de mídia" },
+        { "date": "2026-10-17", "url": "https://jasonzhu.ai/en/prompts/claude-opus-5-5/2103273003555402193", "method": "WebFetch e curl", "result": "200, prompt completo (2.711 caracteres), idêntico ao do post" },
+        { "date": "2026-10-17", "url": "https://api.vxtwitter.com/twoclipping/status/2103273003555402193", "method": "curl", "result": "403, desafio Cloudflare" },
+        { "date": "2026-10-17", "url": "https://video.twimg.com/amplify_video/2103272964967804928/vid/avc1/1440x1440/DMnmDsC9z0gcgSUX.mp4", "method": "curl, com autorização do usuário; salvo em ~/Videos/vereda-refs/REF-07/, fora do repositório", "result": "200, 2.702.437 bytes, SHA-256 197e843ef6c7e227…; ffprobe: H.264 1440x1440, 60 fps, 840 quadros, 14,0 s, áudio AAC" },
+        { "date": "2026-10-17", "url": "~/Videos/vereda-refs/REF-07/DMnmDsC9z0gcgSUX.mp4", "method": "ffmpeg: 1 quadro a cada 0,5 s (28 quadros), tiras a 30 fps em 1,6 s, 3,5 s e 11,5 s, detecção de corte, diferença entre quadros e onsets do áudio", "result": "Folha de contato, tiras e medidas em motion-references/contact-sheets/refs/REF-07/; todos os quadros olhados" }
+      ],
+      "evidenceInspected": "Texto integral do post e do template (blocos inputs, direction, structure, build, gotchas, start) e metadados de mídia vindos da API. O vídeo (14 s, 1440x1440, 60 fps) foi baixado e decomposto: folha de contato com 28 quadros a cada 0,5 s, três tiras a 30 fps em torno dos morphs maiores, detecção de corte, curva de movimento por quadro e tempo do áudio (motion-references/contact-sheets/refs/REF-07/medidas.txt).",
+      "notInspected": "Respostas e thread não lidos. Nem todos os morphs foram vistos quadro a quadro: só os três das tiras; os outros só a cada 0,5 s.",
+      "visualTechniques": [
+        "Uma forma, nunca corta: todo estado é o mesmo elemento mudando tamanho, raio e cor",
+        "Conteúdo troca com blur curto, com timing próprio de entrada e saída",
+        "Cursor conduz cada mudança com cliques e arrastes reais",
+        "Canvas neutro quente, componentes em preto e branco ou um único acento, uma fonte de UI",
+        "Câmera dá zoom para cada estado preencher o quadro",
+        "Proibido: easing bouncy, partículas, glow, gradiente no chrome, ícones com traço inconsistente, tempo morto",
+        "Visto no vídeo: 12 estados em 14 s, sem corte: Generate, spinner, check, mini player, player com arraste da barra, volume, toggle, seletor Day/Week/Month, cartão de gráfico com contador e tooltip, paleta de comandos com digitação, pílula 'Every frame is code' e de volta ao Generate (loop)",
+        "Visto: um pedaço do estado anterior sobrevive e faz a ponte. A barra de progresso do player vira a barra de volume (3,73 a 3,97 s); a linha selecionada da paleta vira a pílula final e mantém o texto (11,77 a 11,97 s)",
+        "Visto: ordem fixa em cada morph. O conteúdo antigo sai com blur e fade, a geometria muda, o conteúdo novo entra desfocado e foca em escada: título, subtítulo, barra, controles (1,93 a 2,17 s)",
+        "Visto: a cor também faz morph. O branco da paleta passa por cinzas até o preto da pílula (11,80 a 11,93 s)",
+        "Visto: o componente fica sempre no centro e o tamanho dele no quadro muda por estado (o toggle ocupa cerca de 1/3 da largura; o cartão do gráfico, cerca de 3/4). O cursor mantém o mesmo tamanho, então o zoom é da cena e o cursor é desenhado por cima",
+        "Visto: canvas cinza quente claro, sombra suave sob o componente, componentes pretos ou brancos. A única cor é a capa do álbum (laranja, rosa e violeta), que é conteúdo e não chrome",
+        "Visto: números rolam com blur vertical ao mudar (contador do gráfico de 79 mil a 84.320; valor do tooltip acompanha o cursor)",
+        "Visto: digitação real na paleta ('fr', 'frame') filtra a lista de 5 itens para 2 antes da seleção"
+      ],
+      "technicalTechniques": [
+        "Um HTML só; todo estilo é função do tempo dentro de seek(t); sem CSS transitions, timers ou estado entre quadros",
+        "Springs como resposta ao degrau em forma fechada; valor com vários alvos é a soma de uma spring por mudança",
+        "Indicador de abas com bordas em springs diferentes (a borda dianteira estica antes da traseira)",
+        "Arraste por manipulação direta: com o cursor pressionado o valor segue a posição; ao soltar, spring de volta",
+        "Beat grid medido com numpy, começando num downbeat; cada som de UI no pico medido",
+        "Render Playwright com 4 subquadros por quadro misturados por ffmpeg tmix (motion blur a 60 fps)",
+        "Antes do render completo, um quadro por beat para corrigir o que está fora do grid, apertado ou ilegível",
+        "Medido no vídeo: 60 fps, 840 quadros; o áudio dá 120 BPM por autocorrelação dos onsets, o que confere com o template (7 compassos de 4 tempos a 120 BPM = 14 s)",
+        "Medido: os onsets fortes caem numa grade de 0,25 s deslocada cerca de 0,08 s do início (0,58; 0,84; 1,08; 1,58 s...). Os quatro maiores picos de movimento coincidem com onsets: 1,96; 3,75 e 3,96; 7,33; 11,83 s",
+        "Medido: quase nenhum tempo parado. Os trechos sem movimento (diferença média de luma entre quadros abaixo de 0,15 em 255) somam 2,0 s de 14 s; o maior dura 0,7 s (2,38 a 3,08 s)",
+        "Visto: a mudança de geometria leva cerca de 0,17 a 0,2 s (pílula para cartão, 1,80 a 1,97 s; cartão para volume, 3,80 a 3,93 s). O morph inteiro, com saída e entrada de conteúdo, leva de 0,4 a 0,5 s",
+        "Visto: motion blur na borda da forma e no cursor nos movimentos rápidos, compatível com os 4 subquadros do template",
+        "Visto: seleção antes da ação. A linha da paleta escurece em cerca de 0,1 s, fica parada cerca de 0,15 s e só então o morph começa (11,50 a 11,77 s)"
+      ],
+      "gotchas": [
+        "Nunca usar will-change em elemento escalado pela câmera: o texto borra",
+        "Texto que troca dentro de container em morph precisa de entrada e saída próprias",
+        "Num loop, o último quadro igual ao primeiro, inclusive posição e velocidade do cursor"
+      ],
+      "constants": { "canvas": "1440x1440", "fps": 60, "subframes": 4, "bpm": 120, "bars": 7, "states": "8 a 12", "videoDurationSeconds": 14 },
+      "proposedUseInVereda": "Gramática da demonstração do produto (cena 06 do storyboard e POC-01): o cartão do anúncio vira registro, lote, mapa e dossiê sem corte. Não importamos a fonte Geist nem a paleta P&B: o VEREDA usa a marca do index.html. Do vídeo: a ponte por um pedaço que sobrevive (a barra de progresso que vira volume, a linha que vira pílula) serve para o endereço do anúncio continuar na tela enquanto o cartão vira registro, lote e dossiê. A ordem saída, geometria e entrada em escada, com cerca de 0,2 s de geometria e 0,4 a 0,5 s de morph inteiro, vira alvo de timing do POC-01.",
+      "appliedIn": ["motion/lib/motion.js", "motion/poc/poc-01.html", "docs/motion-language.md"],
+      "analysis": { "status": "analyzed", "analyzedAt": "2026-10-17", "analyzedBy": "sessão Claude Code de 17/10/2026" },
+      "revisions": [
+        { "date": "2026-10-17", "by": "sessão Claude Code de 17/10/2026 (inspeção dos vídeos)", "change": "Vídeo baixado com autorização do usuário e decomposto. accessStatus passou de available_inspected_via_transcript_and_spec para available_inspected. evidenceInspected dizia 'O vídeo não foi assistido nem baixado'; notInspected dizia 'O vídeo. Nenhuma observação de timing, câmera ou cor deste registro vem de ver o vídeo.' Ambos atualizados. Acrescentados à accessLog, à accessibleSupportingUrls, a visualTechniques, a technicalTechniques e a proposedUseInVereda os itens marcados como vistos ou medidos; nada do texto anterior foi apagado." }
+      ]
+    },
+    {
+      "id": "REF-08",
+      "slug": "motion-design-studio-workflow",
+      "title": "How to build motion design studio with Opus 5.5 (Full-course)",
+      "creator": "Movez (@0xMovez)",
+      "publishedAt": "2026-09-27",
+      "type": "Artigo longo no X (curso em 12 passos), sem vídeo",
+      "originalUrl": "https://x.com/0xMovez/status/2104216919033192746",
+      "accessibleSupportingUrls": [
+        "https://threadnavigator.com/thread/2104216919033192746/",
+        "https://api.fxtwitter.com/0xMovez/status/2104216919033192746"
+      ],
+      "accessStatus": "available_inspected_via_transcript_and_spec",
+      "accessLog": [
+        { "date": "2026-10-17", "url": "https://x.com/0xMovez/status/2104216919033192746", "method": "WebFetch", "result": "HTTP 402" },
+        { "date": "2026-10-17", "url": "https://api.fxtwitter.com/0xMovez/status/2104216919033192746", "method": "WebFetch e curl", "result": "200, JSON com o artigo completo em blocos, inclusive os de código" },
+        { "date": "2026-10-17", "url": "https://threadnavigator.com/thread/2104216919033192746/", "method": "WebFetch e curl", "result": "200, reprodução integral; trechos de código conferidos contra o JSON" },
+        { "date": "2026-10-17", "url": "https://x.com/i/article/2104196832637210624", "method": "curl", "result": "404" }
+      ],
+      "evidenceInspected": "Texto integral do artigo, inclusive spring(), track(), indicator(), swapAlpha(), rng mulberry32, render.mjs, beats.py, sfx.mjs, comandos de revisão e critérios de nota.",
+      "notInspected": "As 14 figuras do artigo (podem conter os valores numéricos dos presets Snappy, Default, Heavy e Playful), os cerca de 20 tweets embutidos e os repositórios citados.",
+      "visualTechniques": [
+        "Anti-slop: banidos título centralizado sobre gradiente, tudo entrando por fade, labels nos cantos, glow no chrome e partículas genéricas",
+        "Uma fonte display, uma de UI, um acento; algo novo na tela a cada 2 a 4 s",
+        "Pegar a gramática da referência, nunca o conteúdo",
+        "Cenas escritas contra função de layout, para reenquadrar 16:9, 1:1 e 9:16 da mesma timeline"
+      ],
+      "technicalTechniques": [
+        "Contrato seek(t); Playwright chama a função, captura cada quadro e o ffmpeg costura (rota A, sem framework)",
+        "spring(t, k = 170, d = 26) em forma fechada; caso ζ ≥ 1 tratado como crítico",
+        "track(t, keys, k, d) = v0 + Σ (vi − vi−1) · spring(t − ti, k, d)",
+        "indicator: lead = track(t, stops, 320, 30); trail = track(t, stops, 140, 22)",
+        "swapAlpha(t, tIn, tOut) = min(clamp((t − tIn − 0.08)/0.12), clamp((tOut − 0.1 − t)/0.1))",
+        "PRNG mulberry32; nunca Math.random",
+        "Preview ao vivo com requestAnimationFrame só quando !navigator.webdriver; aguardar document.fonts.ready antes de capturar",
+        "beats.py com librosa (beat_track, onset_strength, peak_pick) gera beats.json com bpm, beats, downbeats e hits",
+        "sfx.mjs sintetiza click, pop, thump e whoosh em WAV mono 48 kHz; mix final em −14 LUFS",
+        "Revisão: contact sheet (fps 2, tile 6x5), strip de 12 quadros em torno de ação rápida, teste de celular a 360 px, render duplo para comparar md5"
+      ],
+      "constants": {
+        "springDefault": { "k": 170, "d": 26 },
+        "springTitleExample": { "k": 220, "d": 22 },
+        "springGridExample": { "k": 260, "d": 20 },
+        "indicatorLead": { "k": 320, "d": 30 },
+        "indicatorTrail": { "k": 140, "d": 22 },
+        "render": "60 fps, --sub 4, libx264 CRF 16 yuv420p",
+        "animatic": "960x540",
+        "audio": "48 kHz mono 16 bits, mix −14 LUFS",
+        "sfx": { "click": "1800 Hz, 0,05 s, decaimento 90", "pop": "600 + 900t Hz, 0,15 s", "thump": "90 − 60t Hz, 0,5 s", "whoosh": "ruído, 0,35 s, amplitude 0,25" },
+        "review": "notas de 1 a 10, alvo 8+, corrigir os 3 piores, no mínimo 3 rodadas"
+      },
+      "proposedUseInVereda": "Infraestrutura: motor seek(t), biblioteca de springs, render Playwright + ffmpeg, SFX sintetizados, mapa de ritmo e o ciclo de revisão com contact sheets registrado em docs/review-log.md.",
+      "appliedIn": ["motion/lib/motion.js", "motion/render.mjs", "motion/audio/sfx.mjs", "docs/review-log.md"],
+      "analysis": { "status": "analyzed", "analyzedAt": "2026-10-17", "analyzedBy": "sessão Claude Code de 17/10/2026" }
+    },
+    {
+      "id": "REF-09",
+      "slug": "new-meio-tom",
+      "title": "Captura avulsa: \"new\" em meio-tom sobre preto",
+      "creator": "desconhecido",
+      "type": "Imagem (captura de tela de um vídeo)",
+      "originalUrl": null,
+      "accessibleSupportingUrls": [],
+      "accessStatus": "available_inspected",
+      "accessLog": [
+        {
+          "date": "2026-10-17",
+          "url": "captura enviada pelo usuário (motion-references/contact-sheets/refs/REF-09/new-meio-tom.webp)",
+          "method": "imagem olhada; procurada nos arquivos da REF-01 e da REF-02 a 4 quadros por segundo e quadro a quadro em 2,55 a 3,1 s e 9,5 a 9,85 s do showreel da Ravie",
+          "result": "Não está em nenhum dos dois arquivos. A captura tem uma barra de progresso vermelha embaixo, de player de vídeo; a origem precisa ser informada pelo usuário."
+        }
+      ],
+      "evidenceInspected": "A imagem.",
+      "notInspected": "O vídeo de origem e o movimento: só existe o quadro parado.",
+      "userNotes": "Faz parte dos 'pontilhados' de que o usuário gostou.",
+      "visualTechniques": [
+        "Palavra gigante em sans geométrica creme, cortada pelas margens",
+        "Fundo preto com manchas orgânicas preenchidas por meio-tom de pontos brancos, com furos circulares",
+        "Dois tons e uma textura; nenhuma outra cor"
+      ],
+      "technicalTechniques": [
+        "Meio-tom de pontos como textura de fundo, atrás da tipografia"
+      ],
+      "constants": {},
+      "proposedUseInVereda": "Textura de pontos nas cenas de tipografia cinética e de dados espalhados (cenas 01, 03, 04, 05, 10 e 11 do storyboard), nos tokens da marca: pontos de papel #F2EBDD sobre tinta #171717, ou ferrugem #B94E36 sobre papel. Uma textura por cena: nas cenas do produto continua a grade do protótipo.",
+      "appliedIn": [],
+      "analysis": {
+        "status": "analyzed",
+        "analyzedAt": "2026-10-17",
+        "analyzedBy": "sessão Claude Code de 17/10/2026 (principal)"
+      }
+    },
+    {
+      "id": "REF-10",
+      "slug": "sala-par-de-fotos",
+      "title": "Par de fotos da mesma sala (ativo para o ajuste de imagem distorcida)",
+      "creator": "desconhecido; enviado pelo usuário",
+      "type": "Ativo de conteúdo: duas fotos da mesma sala de estar, mesma arrumação",
+      "originalUrl": null,
+      "accessibleSupportingUrls": [],
+      "accessStatus": "available_inspected",
+      "accessLog": [
+        {
+          "date": "2026-10-17",
+          "url": "fotos enviadas pelo usuário (motion-references/contact-sheets/refs/REF-10/foto-a.png e foto-b.webp)",
+          "method": "ffprobe, busca de metadados, comparação lado a lado com grade, recorte das janelas e brilho médio",
+          "result": "Nenhum metadado embutido (sem EXIF, GPS ou câmera). Comparações em comparacao_grade.jpg e comparacao_janela.jpg."
+        }
+      ],
+      "evidenceInspected": "As duas imagens inteiras, lado a lado na mesma altura com grade de 10 x 10, e o recorte da porta da varanda nas duas.",
+      "notInspected": "De onde vem cada foto, qual é a do anúncio, se a B foi editada ou gerada a partir da A e quem tem os direitos das imagens.",
+      "userNotes": "17/10/2026: 'adicione também no seu arsenal para talvez usarmos essas fotos para exemplificar nosso poder de ajustar imagem distorcida'.",
+      "visualTechniques": [
+        "Foto A (530 x 724): mais escura, lente mais aberta, verticais convergindo (parede esquerda e batente da porta à direita inclinados); a parede do fundo ocupa cerca de 36% da largura do quadro, então a sala parece mais comprida",
+        "Foto B (1086 x 1448, cerca de duas vezes a resolução da A): verticais retas, luz mais clara e quente, cerca de 30% mais clara (luma média 154 contra 118, de 255); a parede do fundo ocupa cerca de 43% da largura",
+        "Mesma sala e mesma arrumação nas duas: sofá cinza, mesa redonda de vidro, duas cadeiras, parede amarela, sanca curva, luminária dourada no canto",
+        "A vista da varanda difere: na A o céu está estourado e um prédio aparece à esquerda; na B o céu está limpo, com horizonte, verde e um prédio à direita. A B não é só a A com a geometria corrigida."
+      ],
+      "technicalTechniques": [
+        "Diferenças medíveis para uma animação: inclinação das verticais, fração da largura ocupada pela parede do fundo, brilho médio"
+      ],
+      "constants": {
+        "fotoA": "530x724, luma média 118,1",
+        "fotoB": "1086x1448, luma média 153,9",
+        "paredeDoFundo": "A cerca de 36% da largura; B cerca de 43%"
+      },
+      "proposedUseInVereda": "Cena 02 (o problema: a foto do anúncio faz a sala parecer outra) e, se o recurso existir, cena 07 (a correção). Regras de uso na seção 8 de docs/reference-analysis.md.",
+      "risks": [
+        "O protótipo (index.html) não tem correção de distorção. Nenhuma das fotos pode aparecer como resultado do VEREDA sem a etiqueta 'simulação' ou 'em desenvolvimento'.",
+        "A B é mais clara e mais bonita que a A. Se for a foto 'corrigida', a correção também maquiou a foto: o contrário da promessa do VEREDA.",
+        "A vista da janela muda de uma para a outra; se a B saiu de um editor ou de IA, ela pode ter detalhes inventados.",
+        "Sala de um imóvel real: confirmar o direito de uso com quem fotografou e com o anunciante ou proprietário, e não mostrar nada que identifique o prédio."
+      ],
+      "appliedIn": [],
+      "analysis": {
+        "status": "analyzed",
+        "analyzedAt": "2026-10-17",
+        "analyzedBy": "sessão Claude Code de 17/10/2026 (principal)"
+      }
+    }
+  ]
+}

@@ -1,0 +1,273 @@
+{
+  "poc": "CENA-11",
+  "duracao": 14.3,
+  "geradoEm": "2026-10-18",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 125,
+    "fase": 0.27,
+    "erroMedio": 0.061,
+    "batidas": [
+      0.27,
+      0.75,
+      1.23,
+      1.71,
+      2.19,
+      2.67,
+      3.15,
+      3.63,
+      4.11,
+      4.59,
+      5.07,
+      5.55,
+      6.03,
+      6.51,
+      6.99,
+      7.47,
+      7.95,
+      8.43,
+      8.91,
+      9.39,
+      9.87,
+      10.35,
+      10.83,
+      11.31,
+      11.79,
+      12.27,
+      12.75,
+      13.23,
+      13.71,
+      14.19
+    ]
+  },
+  "holds": [
+    5.8,
+    13.2,
+    14.3
+  ],
+  "sons": [
+    {
+      "t": 0.04,
+      "tipo": "tick",
+      "evento": "a régua vira escada",
+      "batidaMaisProxima": 0.27,
+      "desvio": -0.23
+    },
+    {
+      "t": 0.14,
+      "tipo": "whoosh",
+      "dur": 0.5,
+      "ganho": 0.3,
+      "evento": "a tela 1 sobe do degrau",
+      "batidaMaisProxima": 0.27,
+      "desvio": -0.13
+    },
+    {
+      "t": 0.3,
+      "tipo": "whoosh",
+      "dur": 0.5,
+      "ganho": 0.3,
+      "evento": "a tela 2 sobe do degrau",
+      "batidaMaisProxima": 0.27,
+      "desvio": 0.03
+    },
+    {
+      "t": 0.46,
+      "tipo": "whoosh",
+      "dur": 0.5,
+      "ganho": 0.3,
+      "evento": "a tela 3 sobe do degrau",
+      "batidaMaisProxima": 0.27,
+      "desvio": 0.19
+    },
+    {
+      "t": 0.95,
+      "tipo": "pop",
+      "ganho": 0.6,
+      "evento": "15 telas",
+      "batidaMaisProxima": 0.75,
+      "desvio": 0.2
+    },
+    {
+      "t": 1.72,
+      "tipo": "whoosh",
+      "dur": 0.7,
+      "ganho": 0.35,
+      "evento": "as telas afundam",
+      "batidaMaisProxima": 1.71,
+      "desvio": 0.01
+    },
+    {
+      "t": 2.12,
+      "tipo": "pop",
+      "ganho": 0.6,
+      "evento": "meio milhão",
+      "batidaMaisProxima": 2.19,
+      "desvio": -0.07
+    },
+    {
+      "t": 2.6,
+      "tipo": "thump",
+      "ganho": 0.5,
+      "evento": "os estratos sobem",
+      "batidaMaisProxima": 2.67,
+      "desvio": -0.07
+    },
+    {
+      "t": 3.2,
+      "tipo": "tick",
+      "ganho": 0.6,
+      "evento": "validado com",
+      "batidaMaisProxima": 3.15,
+      "desvio": 0.05
+    },
+    {
+      "t": 3.5,
+      "tipo": "sweep",
+      "dur": 1,
+      "ganho": 0.6,
+      "evento": "a linha atravessa os estratos",
+      "batidaMaisProxima": 3.63,
+      "desvio": -0.13
+    },
+    {
+      "t": 3.572,
+      "tipo": "tick",
+      "ganho": 0.5,
+      "evento": "a marca do estrato acende",
+      "batidaMaisProxima": 3.63,
+      "desvio": -0.058
+    },
+    {
+      "t": 3.644,
+      "tipo": "tick",
+      "ganho": 0.5,
+      "evento": "a marca do estrato acende",
+      "batidaMaisProxima": 3.63,
+      "desvio": 0.014
+    },
+    {
+      "t": 3.75,
+      "tipo": "pop",
+      "ganho": 0.55,
+      "evento": "chip 1",
+      "batidaMaisProxima": 3.63,
+      "desvio": 0.12
+    },
+    {
+      "t": 3.97,
+      "tipo": "tick",
+      "ganho": 0.5,
+      "evento": "a marca do estrato acende",
+      "batidaMaisProxima": 4.11,
+      "desvio": -0.14
+    },
+    {
+      "t": 4.574,
+      "tipo": "pop",
+      "ganho": 0.6,
+      "evento": "o pino no lote",
+      "batidaMaisProxima": 4.59,
+      "desvio": -0.016
+    },
+    {
+      "t": 5.05,
+      "tipo": "pop",
+      "ganho": 0.55,
+      "evento": "chip 2",
+      "batidaMaisProxima": 5.07,
+      "desvio": -0.02
+    },
+    {
+      "t": 5.95,
+      "tipo": "whoosh",
+      "dur": 0.8,
+      "ganho": 0.35,
+      "evento": "os estratos descem",
+      "batidaMaisProxima": 6.03,
+      "desvio": -0.08
+    },
+    {
+      "t": 6,
+      "tipo": "whoosh",
+      "dur": 1.2,
+      "ganho": 0.3,
+      "evento": "a linha deita",
+      "batidaMaisProxima": 6.03,
+      "desvio": -0.03
+    },
+    {
+      "t": 8.3,
+      "tipo": "pop",
+      "ganho": 0.55,
+      "evento": "desenvolvimento sobe da base",
+      "batidaMaisProxima": 8.43,
+      "desvio": -0.13
+    },
+    {
+      "t": 9,
+      "tipo": "pop",
+      "ganho": 0.55,
+      "evento": "inovação sobe da base",
+      "batidaMaisProxima": 8.91,
+      "desvio": 0.09
+    },
+    {
+      "t": 9.55,
+      "tipo": "tick",
+      "evento": "a base estica",
+      "batidaMaisProxima": 9.39,
+      "desvio": 0.16
+    },
+    {
+      "t": 9.95,
+      "tipo": "pop",
+      "ganho": 0.5,
+      "evento": "Campus Mobile",
+      "batidaMaisProxima": 9.87,
+      "desvio": 0.08
+    },
+    {
+      "t": 10.35,
+      "tipo": "whoosh",
+      "dur": 0.8,
+      "ganho": 0.35,
+      "evento": "a ponta desce na rua; o nó do marco",
+      "batidaMaisProxima": 10.35,
+      "desvio": 0
+    },
+    {
+      "t": 11,
+      "tipo": "pop",
+      "ganho": 0.5,
+      "evento": "piloto na rua",
+      "batidaMaisProxima": 10.83,
+      "desvio": 0.17
+    },
+    {
+      "t": 11.9,
+      "tipo": "pop",
+      "ganho": 0.6,
+      "evento": "junho de 2027",
+      "batidaMaisProxima": 11.79,
+      "desvio": 0.11
+    },
+    {
+      "t": 13.25,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.3,
+      "evento": "a equipe, a rua e a data saem",
+      "batidaMaisProxima": 13.23,
+      "desvio": 0.02
+    },
+    {
+      "t": 13.28,
+      "tipo": "tick",
+      "evento": "a linha sobe e assenta",
+      "batidaMaisProxima": 13.23,
+      "desvio": 0.05
+    }
+  ]
+}

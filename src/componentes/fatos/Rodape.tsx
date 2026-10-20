@@ -63,13 +63,13 @@ export function Rodape({ dossie, fatos, recorte = null, escalasExtras = [], trac
         <LinkDeLinha
           rotulo="Ver fonte"
           altura={40}
-          onPress={() => router.push({ pathname: "/dossie/[id]/fonte/[fato]", params: { id: dossie.id, fato: principal.id } })}
+          onPress={() => router.push({ pathname: "/exemplos/[id]/fonte/[fato]", params: { id: dossie.id, fato: principal.id } })}
         />
         <LinkDeLinha
           rotulo="Isso está errado"
           altura={40}
           onPress={() =>
-            router.push({ pathname: "/dossie/[id]/contestar/[fato]", params: { id: dossie.id, fato: principal.id } })
+            router.push({ pathname: "/exemplos/[id]/contestar/[fato]", params: { id: dossie.id, fato: principal.id } })
           }
         />
       </View>

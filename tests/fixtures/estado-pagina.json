@@ -1,0 +1,71 @@
+{
+  "_leia": "Aceite da Fatia 2B (arquiteto, 19/10/2026). Estado de página sintético com a MESMA estrutura do __NEXT_DATA__ do QuintoAndar, conferida numa página pública em 19/10/2026 (caminho props.pageProps.initialState.house.houseInfo, id do anúncio em houseInfo.id). Valores e rua são inventados. O ramo `houses` imita outros anúncios da página e o ramo `login` imita a conta de quem está logado no portal: nada deles pode aparecer no resultado. Cada caso chama extrairDoEstado(estado, portal, idNoPortal).",
+  "estado": {
+    "props": {
+      "pageProps": {
+        "initialState": {
+          "login": { "user": { "nome": "Conta de teste", "phone": { "areaCode": "81", "number": "900000000" }, "address": { "street": "Rua da Conta Logada" } } },
+          "houses": { "lista": [ { "id": "895799921", "rentPrice": 9999, "condoPrice": 1, "iptu": 1, "area": 300, "bedrooms": 5, "address": { "street": "Rua do Vizinho", "neighborhood": "Boa Viagem" } } ] },
+          "house": {
+            "houseInfo": {
+              "id": "895799920",
+              "displayId": "3099920",
+              "bedrooms": 2,
+              "bathrooms": 2,
+              "iptu": 95,
+              "area": 78,
+              "rentPrice": 2800,
+              "condoPrice": 650,
+              "iptuType": "Normal",
+              "totalCost": 3707,
+              "parkingSpaces": 1,
+              "address": { "street": "Rua Projetada C", "neighborhood": "Espinheiro", "city": "Recife" },
+              "forRent": true,
+              "salePrice": 0,
+              "tenantServiceFee": 120,
+              "insurance": 42,
+              "listings": [ { "imovelId": "895799920" } ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "casos": [
+    {
+      "id": "quintoandar-objeto-do-anuncio",
+      "portal": "quintoandar",
+      "idNoPortal": "895799920",
+      "esperado": {
+        "metodo": "json_ld",
+        "campos": {
+          "modalidade": "aluguel", "preco": 2800, "condominio": 650,
+          "iptu": { "valor": 95, "periodo": "mes" },
+          "seguroIncendio": 42, "taxaServico": 120, "totalInformado": 3707,
+          "area": 78, "quartos": 2, "banheiros": 2, "vagas": 1,
+          "logradouro": "Rua Projetada C", "bairroTexto": "Espinheiro", "bairro": "espinheiro", "cidade": "recife"
+        },
+        "valoresProibidos": [9999, 300, 5, "Rua do Vizinho", "Rua da Conta Logada", "900000000", "Conta de teste"]
+      }
+    },
+    {
+      "id": "id-numerico-tambem-casa",
+      "portal": "quintoandar",
+      "idNoPortal": "895799920",
+      "_nota": "O teste deve rodar também com houseInfo.id trocado pelo número 895799920: a comparação é por texto.",
+      "esperado": { "campos": { "preco": 2800 } }
+    },
+    {
+      "id": "anuncio-nao-encontrado",
+      "portal": "quintoandar",
+      "idNoPortal": "123456789",
+      "esperado": { "resultado": null }
+    },
+    {
+      "id": "sem-id-no-link",
+      "portal": "outro",
+      "idNoPortal": null,
+      "esperado": { "resultado": null }
+    }
+  ]
+}

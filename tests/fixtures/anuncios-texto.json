@@ -1,0 +1,117 @@
+{
+  "_leia": "Especificação de aceite das Camadas B e C (arquiteto, 19/10/2026). Cada caso chama extrairDoTexto(entrada, portal) e depois montarExtracao(url, leituras, agora), onde leituras = [extrairDaUrl(url) se url não vazia, extrairDoTexto(...)]. `campos` confere CamposExtraidos depois da mescla e da auditoria. `anomalias` lista pares campo/tipo que TÊM de existir (outras podem existir). `semAnomalia` lista campos que NÃO podem ter anomalia. Textos são sintéticos, no formato visível dos portais; nenhum endereço com número real.",
+  "casos": [
+    {
+      "id": "zap-like-iptu-sem-periodo",
+      "portal": "zap",
+      "url": "https://www.zapimoveis.com.br/imovel/aluguel-apartamento-3-quartos-com-garagem-boa-viagem-recife-pe-125m2-id-2799999910/",
+      "entrada": "Apartamento com 3 quartos para alugar, 125 m²\nRua Projetada A - Boa Viagem, Recife - PE\nAluguel\nR$ 4.500 /mês\nCondomínio\nR$ 1.190\nIPTU\nR$ 288\n125 m²\n3 quartos\n3 suítes\n1 banheiro\n3 vagas\n1º andar",
+      "esperado": {
+        "campos": {
+          "modalidade": "aluguel", "preco": 4500, "condominio": 1190,
+          "iptu": { "valor": 288, "periodo": "desconhecido" },
+          "area": 125, "quartos": 3, "suites": 3, "banheiros": 1, "vagas": 3, "andar": 1,
+          "logradouro": "Rua Projetada A", "bairro": "boa-viagem"
+        },
+        "anomalias": [{ "campo": "iptu", "tipo": "periodo_desconhecido" }],
+        "semAnomalia": ["preco", "condominio", "area"],
+        "metodos": ["url", "texto"]
+      }
+    },
+    {
+      "id": "quintoandar-like-total-confere",
+      "portal": "quintoandar",
+      "url": "https://www.quintoandar.com.br/imovel/895799911/alugar/apartamento-2-quartos-espinheiro-recife",
+      "entrada": "Aluguel R$ 2.800\nCondomínio R$ 650\nIPTU R$ 95\nSeguro incêndio R$ 42\nTaxa de serviço R$ 120\nTotal R$ 3.707\n78 m²\n2 quartos\n1 banheiro\n1 vaga\nAndar 7",
+      "esperado": {
+        "campos": {
+          "preco": 2800, "condominio": 650, "iptu": { "valor": 95, "periodo": "mes" },
+          "seguroIncendio": 42, "taxaServico": 120, "totalInformado": 3707,
+          "area": 78, "quartos": 2, "banheiros": 1, "vagas": 1, "andar": 7, "bairro": "espinheiro"
+        },
+        "semAnomalia": ["iptu", "condominio", "preco"]
+      }
+    },
+    {
+      "id": "olx-like-placeholders-alto-padrao",
+      "portal": "olx",
+      "url": "",
+      "entrada": "Venda\nR$ 2.900.250\nCondomínio R$ 100\nIPTU R$ 100\nÁrea útil 152m²\n4 quartos\nApartamento no Pina com vista mar",
+      "esperado": {
+        "campos": { "modalidade": "compra", "preco": 2900250, "condominio": 100, "iptu": { "valor": 100, "periodo": "desconhecido" }, "area": 152, "quartos": 4, "bairro": "pina" },
+        "anomalias": [
+          { "campo": "condominio", "tipo": "valor_atipico" },
+          { "campo": "condominio", "tipo": "valor_repetido" },
+          { "campo": "iptu", "tipo": "valor_repetido" },
+          { "campo": "iptu", "tipo": "periodo_desconhecido" }
+        ],
+        "metodos": ["texto"]
+      }
+    },
+    {
+      "id": "nao-informado-e-iptu-simbolico",
+      "portal": "olx",
+      "url": "",
+      "entrada": "Valor de venda R$ 450.000\nCondomínio: Não informado\nIPTU: R$ 1\n60 m² · 2 quartos · 1 suíte\nBoa Viagem, Recife",
+      "esperado": {
+        "campos": { "preco": 450000, "condominio": null, "iptu": null, "area": 60, "quartos": 2, "suites": 1, "bairro": "boa-viagem" },
+        "anomalias": [
+          { "campo": "condominio", "tipo": "nao_informado" },
+          { "campo": "iptu", "tipo": "valor_simbolico" }
+        ],
+        "lacunasContem": ["condominio", "iptu"]
+      }
+    },
+    {
+      "id": "iptu-anual-explicito",
+      "portal": "vivareal",
+      "url": "",
+      "entrada": "Apartamento à venda nas Graças\nR$ 890.000\nCondomínio R$ 980/mês\nIPTU R$ 3.240/ano\n110 m² · 3 quartos · 2 vagas\nConstruído em 2008",
+      "esperado": {
+        "campos": { "preco": 890000, "condominio": 980, "iptu": { "valor": 3240, "periodo": "ano" }, "area": 110, "quartos": 3, "vagas": 2, "anoConstrucao": 2008, "bairro": "gracas" },
+        "semAnomalia": ["iptu", "condominio"]
+      }
+    },
+    {
+      "id": "texto-diverge-da-url",
+      "portal": "vivareal",
+      "url": "https://www.vivareal.com.br/imovel/apartamento-3-quartos-madalena-bairros-recife-80m2-venda-RS500000-id-2999999912/",
+      "entrada": "Apartamento com 3 quartos à venda, 85 m²\nR$ 500.000\nCondomínio R$ 700",
+      "esperado": {
+        "campos": { "area": 85, "preco": 500000, "condominio": 700, "bairro": "madalena" },
+        "anomalias": [{ "campo": "area", "tipo": "incoerente" }],
+        "semAnomalia": ["preco"],
+        "origemDosCampos": { "area": "texto", "bairro": "link" }
+      }
+    },
+    {
+      "id": "html-json-ld",
+      "portal": "outro",
+      "url": "",
+      "entrada": "<html><head><script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"Apartment\",\"floorSize\":{\"@type\":\"QuantitativeValue\",\"value\":\"80\",\"unitCode\":\"MTK\"},\"numberOfRooms\":3,\"address\":{\"@type\":\"PostalAddress\",\"streetAddress\":\"Rua Projetada B\",\"addressLocality\":\"Recife\",\"addressRegion\":\"PE\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"648810\",\"priceCurrency\":\"BRL\"}}</script></head><body><p>Condomínio R$ 850</p></body></html>",
+      "esperado": {
+        "campos": { "area": 80, "quartos": 3, "preco": 648810, "logradouro": "Rua Projetada B", "cidade": "recife", "condominio": 850 },
+        "metodos": ["json_ld", "texto"]
+      }
+    },
+    {
+      "id": "json-ld-quebrado-nao-derruba",
+      "portal": "outro",
+      "url": "",
+      "entrada": "<script type=\"application/ld+json\">{\"@type\":\"Apartment\", \"floorSize\": </script><p>Aluguel R$ 1.900 Condomínio R$ 400 IPTU R$ 60/mês 45 m²</p>",
+      "esperado": {
+        "campos": { "preco": 1900, "condominio": 400, "iptu": { "valor": 60, "periodo": "mes" }, "area": 45, "modalidade": "aluguel" },
+        "metodos": ["texto"]
+      }
+    },
+    {
+      "id": "texto-vazio",
+      "portal": "zap",
+      "url": "",
+      "entrada": "   ",
+      "esperado": {
+        "campos": { "preco": null, "condominio": null, "iptu": null, "area": null }
+      }
+    }
+  ]
+}

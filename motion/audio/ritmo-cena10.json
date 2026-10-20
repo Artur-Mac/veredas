@@ -1,0 +1,290 @@
+{
+  "poc": "CENA-10",
+  "duracao": 19.85,
+  "geradoEm": "2026-10-18",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 131,
+    "fase": 0.32,
+    "erroMedio": 0.032,
+    "batidas": [
+      0.32,
+      0.778,
+      1.236,
+      1.694,
+      2.152,
+      2.61,
+      3.068,
+      3.526,
+      3.984,
+      4.442,
+      4.9,
+      5.358,
+      5.816,
+      6.274,
+      6.732,
+      7.19,
+      7.648,
+      8.106,
+      8.564,
+      9.022,
+      9.48,
+      9.938,
+      10.396,
+      10.854,
+      11.312,
+      11.77,
+      12.228,
+      12.686,
+      13.144,
+      13.602,
+      14.06,
+      14.518,
+      14.976,
+      15.435,
+      15.893,
+      16.351,
+      16.809,
+      17.267,
+      17.725,
+      18.183,
+      18.641,
+      19.099,
+      19.557
+    ]
+  },
+  "holds": [
+    6.2,
+    9.8,
+    13.85,
+    16.7,
+    19.08,
+    19.85
+  ],
+  "sons": [
+    {
+      "t": 0.15,
+      "tipo": "tick",
+      "ganho": 0.6,
+      "evento": "os meses entram na régua",
+      "batidaMaisProxima": 0.32,
+      "desvio": -0.17
+    },
+    {
+      "t": 0.42,
+      "tipo": "tick",
+      "evento": "doze cobranças se desenham",
+      "batidaMaisProxima": 0.32,
+      "desvio": 0.1
+    },
+    {
+      "t": 1.15,
+      "tipo": "sweep",
+      "dur": 0.6,
+      "ganho": 0.5,
+      "evento": "pay-per-use: as cobranças são recortadas",
+      "batidaMaisProxima": 1.236,
+      "desvio": -0.086
+    },
+    {
+      "t": 1.7,
+      "tipo": "pop",
+      "ganho": 0.6,
+      "evento": "sobra um ponto laranja",
+      "batidaMaisProxima": 1.694,
+      "desvio": 0.006
+    },
+    {
+      "t": 2.15,
+      "tipo": "whoosh",
+      "dur": 0.8,
+      "ganho": 0.35,
+      "evento": "o ponto sobe",
+      "batidaMaisProxima": 2.152,
+      "desvio": -0.002
+    },
+    {
+      "t": 2.95,
+      "tipo": "pop",
+      "ganho": 0.6,
+      "evento": "o ponto vira a pílula 3 créditos",
+      "batidaMaisProxima": 3.068,
+      "desvio": -0.118
+    },
+    {
+      "t": 3.52,
+      "tipo": "click",
+      "evento": "toque na pílula",
+      "batidaMaisProxima": 3.526,
+      "desvio": -0.006
+    },
+    {
+      "t": 3.62,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.4,
+      "evento": "a pílula se abre na carteira de créditos",
+      "batidaMaisProxima": 3.526,
+      "desvio": 0.094
+    },
+    {
+      "t": 4.08,
+      "tipo": "tick",
+      "evento": "realce em Pacote de 3 dossiês",
+      "batidaMaisProxima": 3.984,
+      "desvio": 0.096
+    },
+    {
+      "t": 4.7,
+      "tipo": "pop",
+      "ganho": 0.5,
+      "evento": "a fatia do pacote",
+      "batidaMaisProxima": 4.9,
+      "desvio": -0.2
+    },
+    {
+      "t": 5.1,
+      "tipo": "sweep",
+      "dur": 0.9,
+      "ganho": 0.5,
+      "evento": "a barra do custo de um erro cresce",
+      "batidaMaisProxima": 4.9,
+      "desvio": 0.2
+    },
+    {
+      "t": 5.45,
+      "tipo": "thump",
+      "ganho": 0.5,
+      "evento": "MILHARES de reais",
+      "batidaMaisProxima": 5.358,
+      "desvio": 0.092
+    },
+    {
+      "t": 7.02,
+      "tipo": "tick",
+      "evento": "realce em Confirmar o lote (+1)",
+      "batidaMaisProxima": 7.19,
+      "desvio": -0.17
+    },
+    {
+      "t": 7.85,
+      "tipo": "pop",
+      "evento": "+1 crédito adicionado · Lote confirmado em Espinheiro",
+      "batidaMaisProxima": 7.648,
+      "desvio": 0.202
+    },
+    {
+      "t": 7.95,
+      "tipo": "tick",
+      "ganho": 0.6,
+      "evento": "a linha nova no extrato",
+      "batidaMaisProxima": 8.106,
+      "desvio": -0.156
+    },
+    {
+      "t": 8.1,
+      "tipo": "tick",
+      "ganho": 0.6,
+      "evento": "o saldo vai a 4",
+      "batidaMaisProxima": 8.106,
+      "desvio": -0.006
+    },
+    {
+      "t": 8.55,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.4,
+      "evento": "a folha se fecha no dado novo",
+      "batidaMaisProxima": 8.564,
+      "desvio": -0.014
+    },
+    {
+      "t": 9.08,
+      "tipo": "sweep",
+      "dur": 0.5,
+      "ganho": 0.45,
+      "evento": "a base nasce em volta do dado novo",
+      "batidaMaisProxima": 9.022,
+      "desvio": 0.058
+    },
+    {
+      "t": 12.28,
+      "tipo": "tick",
+      "evento": "linha da camada de dados para bancos",
+      "batidaMaisProxima": 12.228,
+      "desvio": 0.052
+    },
+    {
+      "t": 12.55,
+      "tipo": "tick",
+      "evento": "linha da camada de dados para seguradoras",
+      "batidaMaisProxima": 12.686,
+      "desvio": -0.136
+    },
+    {
+      "t": 13.14,
+      "tipo": "tick",
+      "evento": "linha da camada de dados para imobiliárias",
+      "batidaMaisProxima": 13.144,
+      "desvio": -0.004
+    },
+    {
+      "t": 13.95,
+      "tipo": "pop",
+      "ganho": 0.6,
+      "evento": "os 83 pontos voltam",
+      "batidaMaisProxima": 14.06,
+      "desvio": -0.11
+    },
+    {
+      "t": 14.61,
+      "tipo": "sweep",
+      "dur": 0.9,
+      "ganho": 0.6,
+      "evento": "74 pontos acendem em laranja, em ordem de leitura",
+      "batidaMaisProxima": 14.518,
+      "desvio": 0.092
+    },
+    {
+      "t": 16.85,
+      "tipo": "whoosh",
+      "dur": 0.8,
+      "ganho": 0.35,
+      "evento": "os pontos condensam na base",
+      "batidaMaisProxima": 16.809,
+      "desvio": 0.041
+    },
+    {
+      "t": 17.25,
+      "tipo": "tick",
+      "evento": "as marcas de 1 a 5",
+      "batidaMaisProxima": 17.267,
+      "desvio": -0.017
+    },
+    {
+      "t": 17.3,
+      "tipo": "sweep",
+      "dur": 1.25,
+      "ganho": 0.6,
+      "evento": "a linha laranja corre até 4,7",
+      "batidaMaisProxima": 17.267,
+      "desvio": 0.033
+    },
+    {
+      "t": 18.5,
+      "tipo": "pop",
+      "ganho": 0.6,
+      "evento": "o nó no 4,7",
+      "batidaMaisProxima": 18.641,
+      "desvio": -0.141
+    },
+    {
+      "t": 19.25,
+      "tipo": "tick",
+      "evento": "a régua se estende na linha do tempo",
+      "batidaMaisProxima": 19.099,
+      "desvio": 0.151
+    }
+  ]
+}

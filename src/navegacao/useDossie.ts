@@ -5,6 +5,6 @@ export const ContextoDoDossie = createContext<Dossie | null>(null);
 
 export function useDossie(): Dossie {
   const dossie = useContext(ContextoDoDossie);
-  if (!dossie) throw new Error("useDossie fora de dossie/[id]/_layout");
+  if (!dossie) throw new Error("useDossie fora de exemplos/[id]/_layout");
   return dossie;
 }

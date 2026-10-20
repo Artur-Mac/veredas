@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.1.0",
+  "project": "VEREDA — Inteligência Proprietária & Perícia Imobiliária",
+  "description": "Biblioteca central e reutilizável de referências de motion design para o pitch e materiais audiovisuais do VEREDA.",
+  "references": [
+    {
+      "id": "REF-01",
+      "slug": "ravie-5-year-showreel",
+      "title": "Ravie's 5-year Showreel (Design + Animation)",
+      "creator": "Ravie & Co.",
+      "type": "Studio Showreel / Kinetic & 3D Motion",
+      "originalUrl": "https://www.youtube.com/watch?v=8wvjyNFF5hk",
+      "accessibleSupportingUrl": "https://ravie.co",
+      "accessStatus": "available_inspected",
+      "evidenceInspected": "Vídeo completo de 47s baixado em resolução 640x360, decomposto em 47 frames individuais com ffmpeg, contact sheet gerado e analisado. Momentos identificados: 0:10-0:12 (lettering 'new hue' e dot matrix), 0:13-0:15 (card UI 'Briefs *' com cursor clicando e abrindo documento), 0:19-0:21 (cidade 3D isométrica monocromática terracota/laranja com avenida e prédios geométricos), 0:34 (cidade vetorial flat 'Every city has a heartbeat').",
+      "visualTechniques": [
+        "Monochromatic/warm-toned stylized 3D city avenue",
+        "Floating minimalist UI card with hover highlight and crisp document unfold",
+        "Kinetic editorial typography paired with monospaced data accents",
+        "Halftone dot matrix and technical crosshair alignment marks"
+      ],
+      "technicalTechniques": [
+        "Snappy ease-out transitions",
+        "Depth-of-field and orthographic perspective shifts",
+        "Dynamic micro-interactions driven by minimalist cursor",
+        "Contrast-driven Swiss editorial layout"
+      ],
+      "proposedUseInVereda": "Cena da cidade/território urbano periciado (Recife e bairros mapeados), cenas de destaque de features do app (Vistoria, Laudo, Matrícula) e letterings de impacto com grid pontilhado de prancheta técnica."
+    },
+    {
+      "id": "REF-02",
+      "slug": "comma-motion-graphics",
+      "title": "\"Comma\" motion graphics",
+      "creator": "seven (@seven_playstudy)",
+      "type": "Monochromatic Geometric Motion / Micro-interactions",
+      "originalUrl": "https://www.youtube.com/watch?v=Q_ROGVLc4TA",
+      "accessibleSupportingUrl": "https://www.behance.net/seven_work",
+      "accessStatus": "available_inspected",
+      "evidenceInspected": "Vídeo de 25s baixado e decomposto em 25 frames individuais com ffmpeg. Análise de montagem 5x5: ciclo de pontuação, xícara de café estilizada, teclas mecânicas de teclado afundando sob digitação, ritmo calmo com pausas deliberadas.",
+      "visualTechniques": [
+        "Monochromatic black & white & neutral gray palette",
+        "Generous negative space and editorial breathing room",
+        "Mechanical tactile animations (key presses, stamps, geometric unfolds)",
+        "Minimal punctuation metaphors"
+      ],
+      "technicalTechniques": [
+        "Controlled physical damping without exaggerated elastic bounce",
+        "Restrained temporal pacing (calm cadence between rapid micro-interactions)",
+        "High-contrast geometric precision"
+      ],
+      "proposedUseInVereda": "Base de sobriedade jurídica e pericial: ritmo pausado, transições mecânicas para dados cadastrais e selos oficiais, evitando excessos de animação comercial espalhafatosa (anti-AI-slop)."
+    },
+    {
+      "id": "REF-07",
+      "slug": "one-shape-ui-morph",
+      "title": "Code-based UI motion design showreel (One-Shape UI Morph)",
+      "creator": "zero (@twoclipping)",
+      "type": "Code-based UI Motion / Single Shape Morphing",
+      "originalUrl": "https://x.com/twoclipping/status/2103273003555402193",
+      "accessibleSupportingUrl": "https://jasonzhu.ai/en/prompts/claude-opus-5-5/2103273003555402193",
+      "accessStatus": "available_inspected_via_transcript_and_spec",
+      "evidenceInspected": "Transcrição integral pública da especificação XML no JasonZhu.AI, prompt original de 2.711 caracteres, metadados do vídeo MP4 (720x720, 14s, 1.2M visualizações), regras de build e gotchas inspecionados diretamente.",
+      "visualTechniques": [
+        "One shape, never cut: a single container continuously morphs width, height, border-radius, background and position across states",
+        "Content swaps with timed opacity/blur so outgoing and incoming text never collide",
+        "Cursor-driven storytelling with direct manipulation (clicks, drags, scrubs)",
+        "Zero template looks: no particle bursts, no glows, no chromatic gradients, pure functional clarity"
+      ],
+      "technicalTechniques": [
+        "window.seek(t) pure function of time rendering contract",
+        "Closed-form step response spring physics: f(t) = 1 - exp(-zeta * w0 * t) * (cos(wd * t) + (zeta * w0 / wd) * sin(wd * t))",
+        "Multi-target additive tracking: track(t, keys) sums independent springs per state transition",
+        "Differential dual-edge springs for stretching tabs and toggles",
+        "Direct manipulation tracking during cursor hold, spring recovery on release",
+        "Strict prohibition of will-change on scaled elements to avoid font blur",
+        "Playwright headless browser subframe capture (4x) blended with ffmpeg tmix for motion blur at 60fps"
+      ],
+      "proposedUseInVereda": "Demonstração central do produto VEREDA: o container de busca se transforma sem cortes em card de imóvel, que se expande para confronto de área (110 m² vs 92 m²), se desdobra em certidão do IPTU/DSQFL, se projeta no lote periciado, abre o mapa de 150m e culmina no Dossiê Definitivo."
+    },
+    {
+      "id": "REF-08",
+      "slug": "motion-design-studio-workflow",
+      "title": "Motion Design Studio Workflow with Claude Opus 5.5",
+      "creator": "Movez (@0xMovez)",
+      "type": "Studio Architecture / Deterministic Pipeline / Review Loop",
+      "originalUrl": "https://x.com/0xMovez/status/2104216919033192746",
+      "accessibleSupportingUrl": "https://threadnavigator.com/thread/2104216919033192746/",
+      "accessStatus": "available_inspected_via_transcript_and_spec",
+      "evidenceInspected": "Artigo completo de 12 etapas inspecionado via Thread Navigator, scripts de renderização Playwright/ffmpeg, analisador de áudio librosa/numpy, sintetizador de SFX wav em Node, especificação de regras de estúdio e loop de crítica automatizado com contact sheets.",
+      "visualTechniques": [
+        "Editorial and architectural graphic design hierarchy",
+        "Multi-reference hybrid language (combining UI morph with kinetic type and real assets)",
+        "Every 2 to 4 seconds a new visual payoff appears",
+        "Contact sheet review loop (scoring 1-10 on hook, readability, motion, variety, brand accuracy)"
+      ],
+      "technicalTechniques": [
+        "Headless browser pipes PNG stream directly into ffmpeg stdin (-f image2pipe -c:v libx264 -crf 16 -pix_fmt yuv420p)",
+        "Deterministic PRNG with mulberry32 seeded noise (zero Math.random)",
+        "Beat grid detection (librosa onset peaks and downbeats written to beats.json)",
+        "Procedural sound synthesis (click, pop, thump, whoosh) triggered on beat peaks",
+        "Multi-session production protocol with formal review_log.md and documented gates"
+      ],
+      "proposedUseInVereda": "Infraestrutura de renderização do projeto: pipeline headless determinístico, loop de revisão visual com contact sheets automatizados, biblioteca matemática de molas puras e registro formal de QA em docs/review-log.md."
+    }
+  ]
+}

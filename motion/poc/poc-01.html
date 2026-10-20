@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · POC-01 · uma forma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lib/marca.css">
+<style>
+  html, body { margin: 0; background: var(--bg-obsidian); }
+  body.tela { display: grid; place-items: center; min-height: 100vh; overflow: hidden; }
+  #c {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden; flex: none;
+    background: var(--bg-paper); color: var(--ink-primary);
+    font-family: var(--font-sans); font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  .grade {
+    position: absolute; inset: 0;
+    background-size: 48px 48px;
+    background-image:
+      linear-gradient(to right, rgba(127, 136, 112, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(127, 136, 112, 0.09) 1px, transparent 1px);
+  }
+  svg.camada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+  #conteudo, #rotulos, #chrome { position: absolute; inset: 0; }
+  .t { position: absolute; white-space: nowrap; line-height: 1.15; }
+
+  .kicker { font: 700 20px/1 var(--font-sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--brand-rust); }
+  .titulo { font: 500 64px/1.08 var(--font-display); letter-spacing: -0.02em; }
+  .titulo-m { font: 500 52px/1.1 var(--font-display); letter-spacing: -0.02em; }
+  .titulo-s { font: 500 34px/1.15 var(--font-display); letter-spacing: -0.015em; }
+  .apoio { font: 400 22px/1.35 var(--font-sans); color: var(--ds-muted); }
+  .apoio-s { font: 400 18px/1.35 var(--font-sans); color: var(--ds-muted); }
+  .corpo { font: 500 26px/1.3 var(--font-sans); }
+  .forte { font: 600 30px/1.2 var(--font-sans); }
+  .valor { font: 700 72px/1 var(--font-sans); letter-spacing: -0.02em; }
+  .preco { font: 700 72px/1 var(--font-sans); letter-spacing: -0.02em; }
+  .link { font: 600 24px/1 var(--font-sans); color: var(--brand-rust); }
+  .pilula {
+    font: 500 18px/1 var(--font-sans); color: var(--ink-secondary);
+    padding: 8px 14px; border-radius: 999px; border: 1px solid var(--border-hairline); background: var(--bg-paper-light);
+  }
+  .rastro { display: inline-flex; align-items: center; gap: 12px; }
+  .rastro i { display: inline-block; width: 30px; height: 3px; flex: none; }
+  .oficial i { background: var(--brand-cadastral); }
+  .declarado i { background: repeating-linear-gradient(90deg, var(--ink-primary) 0 7px, transparent 7px 12px); }
+  .specs { display: inline-flex; align-items: center; gap: 16px; font: 500 24px/1 var(--font-sans); color: var(--ink-secondary); }
+  .specs span { display: inline-flex; align-items: center; gap: 9px; }
+  .specs b { width: 5px; height: 5px; border-radius: 50%; background: var(--border-strong); }
+  .specs svg { width: 24px; height: 24px; }
+  .fio { position: absolute; height: 1px; background: var(--ds-line); }
+  .num { font: 600 20px/1 var(--font-mono); color: var(--brand-rust); }
+  .foto { position: absolute; overflow: hidden; background-size: cover; background-position: center 30%; }
+  .chip-foto {
+    position: absolute; font: 600 18px/1 var(--font-sans); color: #FFFFFF;
+    background: rgba(23, 23, 23, 0.62); padding: 9px 13px; border-radius: 9px; white-space: nowrap;
+  }
+  .botao {
+    position: absolute; display: flex; align-items: center; justify-content: center; gap: 12px;
+    font: 700 26px/1 var(--font-sans); color: var(--ink-primary); border-radius: 18px;
+  }
+  .botao svg { width: 26px; height: 26px; }
+  .realce { position: absolute; border-radius: 14px; }
+  .chrome-pilula {
+    position: absolute; display: flex; align-items: center; gap: 14px;
+    background: rgba(250, 246, 238, 0.92); border: 1px solid var(--border-hairline); border-radius: 999px;
+  }
+  .marca { font: 600 28px/1 var(--font-display); letter-spacing: 0.18em; }
+  .painel { position: absolute; background: #FFFFFF; border: 1px solid rgba(23, 23, 23, 0.09); border-radius: 28px; }
+  .numero-grande { font-family: var(--font-display); font-weight: 500; font-variation-settings: 'opsz' 40; letter-spacing: -0.03em; line-height: 1; }
+  #cena { position: absolute; inset: 0; transform-origin: 960px 540px; }
+  #debug { position: absolute; right: 16px; top: 12px; font: 500 16px/1 var(--font-mono); color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div id="c">
+  <div id="cena">
+  <div class="grade"></div>
+  <svg class="camada" id="mundo" viewBox="0 0 1920 1080">
+    <defs>
+      <clipPath id="moldura"><path id="moldura-p" /></clipPath>
+      <radialGradient id="suave">
+        <stop offset="0.82" stop-color="#fff" />
+        <stop offset="1" stop-color="#000" />
+      </radialGradient>
+      <mask id="revela" maskUnits="userSpaceOnUse" x="-4000" y="-4000" width="9920" height="9080">
+        <circle id="revela-c" fill="url(#suave)" cx="960" cy="540" r="0" />
+      </mask>
+      <pattern id="hachura" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="10" height="10" fill="rgba(244,119,69,0.10)" />
+        <line x1="0" y1="0" x2="0" y2="10" stroke="rgba(244,119,69,0.55)" stroke-width="3" />
+      </pattern>
+    </defs>
+    <path id="dossie-base" fill="#FFFFFF" stroke="rgba(23,23,23,0.09)" stroke-width="1.5" opacity="0" />
+    <g clip-path="url(#moldura)">
+      <g id="chao" mask="url(#revela)"></g>
+      <path id="forma" />
+      <g id="anel"></g>
+      <g id="caminho"></g>
+      <g id="predio"></g>
+      <g id="pino"></g>
+    </g>
+    <path id="moldura-borda" fill="none" stroke="rgba(23,23,23,0.12)" stroke-width="1.5" opacity="0" />
+  </svg>
+  <div id="conteudo"></div>
+  <div id="rotulos"></div>
+  <svg class="camada" id="cursor-camada" viewBox="0 0 1920 1080">
+    <circle id="onda" r="0" fill="none" stroke="#F47745" stroke-width="3" opacity="0" />
+    <g id="cursor">
+      <path d="M0 0 L0 38 L10.5 29 L17 43.5 L23.5 40.6 L17 26.6 L30 26.6 Z" fill="#171717" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round" />
+    </g>
+  </svg>
+  </div>
+  <div id="chrome"></div>
+</div>
+
+<script type="module">
+import { clamp, lerp, invLerp, sp, spring, track, swap, pending, press, project, mixCam, roundedQuad, rectPts, lerpPt, rng, PRESETS as P } from '../lib/motion.js';
+import { IMOVEL, ANUNCIO, REGISTRO, LOTE } from './dados.js';
+
+// ---------------------------------------------------------------------------
+// Linha do tempo (segundos). Cada estado tem ENTER, HOLD e EXIT; os HOLD
+// alimentam o modo ao vivo (?live), onde a fala do apresentador manda.
+// ---------------------------------------------------------------------------
+const DUR = 13.4;
+const T = {
+  hover: 1.0, clique1: 1.45, m1: 1.7, s2: 2.15,
+  vaiLink: 3.7, clique2: 4.55, m2: 4.78, revela: 4.8, pino: 5.5, sobe: 5.6, rotLote: 6.15,
+  m3: 7.4, raio: 7.75, varre: 8.1, rotMapa: 8.85,
+  m4: 10.35, m4b: 10.85, dossie: 11.15, volta: 11.85, clique3: 12.75,
+};
+const HOLDS = [1.0, 4.1, 7.2, 10.2, DUR];
+
+const ESTADOS = [
+  { id: 'S1', nome: 'Cartão do anúncio', t: 0.9 },
+  { id: 'M1', nome: 'Meio do morph cartão → registro', t: 1.95 },
+  { id: 'S2', nome: 'Registro oficial (IPTU, área, ITBI)', t: 3.9 },
+  { id: 'M2', nome: 'Meio do morph registro → lote', t: 5.12 },
+  { id: 'S3', nome: 'Lote em 2.5D', t: 7.0 },
+  { id: 'M3', nome: 'Meio do morph lote → mapa', t: 8.05 },
+  { id: 'S4', nome: 'Raio de 150 m e obras', t: 10.0 },
+  { id: 'M4', nome: 'Meio do morph mapa → dossiê', t: 10.8 },
+  { id: 'S5', nome: 'Dossiê', t: 12.4 },
+  { id: 'FIM', nome: 'Quadro final', t: DUR - 1 / 30 },
+];
+
+const SWEEP = { k: 34, d: 11.6 };
+const DERIVA = { k: 3, d: 3.46 };   // deriva lenta da câmera de tela, zeta 1
+
+// ---------------------------------------------------------------------------
+// Geometria dos estados de tela (px, quadro 1920x1080)
+// ---------------------------------------------------------------------------
+const CARD1 = [280, 210, 1360, 660, 36];
+const CARD2 = [360, 150, 1200, 780, 36];
+const DOSSIE = [210, 140, 1500, 800, 36];
+const CAPA = [228, 158, 600, 764, 24];
+const TELA = [0, 0, 1920, 1080, 0];
+
+const FOCAL = 9000;
+const CAM = {
+  plano: { cx: 960, cy: 540, s: 27, yaw: 0, pitch: 0, focal: FOCAL },
+  lote: { cx: 820, cy: 640, s: 9.5, yaw: -0.42, pitch: 0.98, focal: FOCAL },
+  mapa: { cx: 800, cy: 560, s: 2.35, yaw: -0.16, pitch: 0.62, focal: FOCAL },
+  dossie: { cx: 528, cy: 540, s: 1.8, yaw: 0, pitch: 0, focal: FOCAL },
+};
+const CAM_KEYS = [[0, CAM.plano], [T.m2, CAM.lote], [T.m3, CAM.mapa], [T.m4, CAM.dossie]];
+function camera(t) {
+  const campos = ['cx', 'cy', 's', 'yaw', 'pitch', 'focal'];
+  const out = {};
+  for (const c of campos) out[c] = track(t, CAM_KEYS.map(([tk, v]) => [tk, v[c]]), P.camera);
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// Cidade em esquema: quadras e lotes em metros (x leste, y sul), origem no
+// centro do lote. Não é o traçado real de Boa Viagem e a tela diz isso.
+// ---------------------------------------------------------------------------
+const LOTE_PTS = [[-LOTE.fundo / 2, -LOTE.frente / 2], [LOTE.fundo / 2, -LOTE.frente / 2], [LOTE.fundo / 2, LOTE.frente / 2], [-LOTE.fundo / 2, LOTE.frente / 2]];
+const quadras = [];
+const divisas = [];
+const vizinhos = [];
+(function cidade() {
+  const r = rng(327);
+  for (let i = -5; i <= 5; i += 1) {
+    for (let j = -6; j <= 5; j += 1) {
+      const x0 = 122 * i - 20 + (i >= 2 ? 12 : 0) - (i <= -3 ? 6 : 0);
+      const y0 = 98 * j - 43;
+      const q = [[x0, y0], [x0 + 110, y0], [x0 + 110, y0 + 86], [x0, y0 + 86]];
+      quadras.push(q);
+      const perto = Math.hypot(x0 + 55, y0 + 43) < 320;
+      if (i === 0 && j === 0) continue;
+      if (!perto) continue;
+      for (const [ya, yb] of [[y0, y0 + 43], [y0 + 43, y0 + 86]]) {
+        let x = x0;
+        while (x < x0 + 104) {
+          const w = Math.min(x0 + 110 - x, 16 + r() * 18);
+          if (x + w < x0 + 110 - 6) divisas.push([[x + w, ya], [x + w, yb]]);
+          x += w;
+        }
+      }
+      divisas.push([[x0, y0 + 43], [x0 + 110, y0 + 43]]);
+    }
+  }
+  // quadra do lote: coluna oeste (o lote no meio) e quatro lotes a leste
+  for (const [a, b] of [[-43, -16], [16, 43]]) vizinhos.push([[-20, a], [20, a], [20, b], [-20, b]]);
+  for (const [xa, xb] of [[20, 55], [55, 90]]) for (const [ya, yb] of [[-43, 0], [0, 43]]) vizinhos.push([[xa, ya], [xb, ya], [xb, yb], [xa, yb]]);
+})();
+
+// ---------------------------------------------------------------------------
+// DOM
+// ---------------------------------------------------------------------------
+const $ = (id) => document.getElementById(id);
+const conteudo = $('conteudo');
+const rotulos = $('rotulos');
+const textos = [];
+function el(cls, html, parent = conteudo) {
+  const e = document.createElement('div');
+  e.className = cls;
+  e.innerHTML = html;
+  parent.appendChild(e);
+  return e;
+}
+function texto(cls, html, x, y, tIn, tOut, o = {}) {
+  const e = el('t ' + cls, html, o.parent || conteudo);
+  const item = { e, x, y, tIn, tOut, align: o.align || 'left', sobe: o.sobe ?? 16 };
+  textos.push(item);
+  return item;
+}
+const icone = {
+  area: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>',
+  quarto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>',
+  banho: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/><line x1="10" y1="5" x2="8" y2="7"/><line x1="2" y1="12" x2="22" y2="12"/></svg>',
+  vaga: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>',
+  seta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>',
+};
+const rastro = (tipo, txt) => `<span class="rastro ${tipo}"><i></i><span>${txt}</span></span>`;
+
+// S1 · cartão do anúncio --------------------------------------------------
+const foto = el('foto', '');
+foto.style.backgroundImage = `url("${IMOVEL.foto}")`;
+const chipFoto = el('chip-foto', 'foto do anúncio · ilustrativa', foto);
+chipFoto.style.left = '22px'; chipFoto.style.top = '22px';
+const chipMapa = el('chip-foto', '1/5', foto);
+chipMapa.style.left = '22px'; chipMapa.style.bottom = '22px';
+
+const OUT1 = T.clique1 + 0.4;
+const X1 = 854, XR1 = 1584;
+texto('apoio', IMOVEL.bairro, X1, 262, -1, OUT1);
+texto('titulo-m', IMOVEL.endereco, X1, 296, -1, OUT1 + 0.02);
+texto('specs', `<span>${icone.area}${ANUNCIO.area}</span><b></b><span>${icone.quarto}${ANUNCIO.quartos}</span><b></b><span>${icone.banho}${ANUNCIO.banheiros}</span><b></b><span>${icone.vaga}${ANUNCIO.vagas}</span>`, X1, 384, -1, OUT1 + 0.03);
+const fio1 = texto('fio', '', X1, 440, -1, OUT1 + 0.03); fio1.e.style.width = (XR1 - X1) + 'px';
+texto('apoio', 'Aluguel anunciado', X1, 470, -1, OUT1 + 0.04);
+texto('preco', `${ANUNCIO.aluguel}<span class="apoio" style="font-size:26px;margin-left:8px">/mês</span><span class="pilula" style="margin-left:22px;vertical-align:14px">ilustrativo</span>`, X1, 506, -1, OUT1 + 0.04);
+texto('apoio', 'Condomínio', X1, 622, -1, OUT1 + 0.05);
+texto('corpo', `${rastro('declarado', ANUNCIO.condominio)}`, XR1, 620, -1, OUT1 + 0.05, { align: 'right' });
+const fio2 = texto('fio', '', X1, 670, -1, OUT1 + 0.05); fio2.e.style.width = (XR1 - X1) + 'px';
+texto('apoio', 'IPTU no anúncio', X1, 694, -1, OUT1 - 0.02);
+const fio3 = texto('fio', '', X1, 742, -1, OUT1 + 0.06); fio3.e.style.width = (XR1 - X1) + 'px';
+texto('apoio-s', rastro('declarado', `declarado pelo anunciante · lido em ${ANUNCIO.lidoEm}`), X1, 784, -1, OUT1 + 0.06);
+const realce = el('realce', '');
+
+// Elemento compartilhado: o valor do IPTU declarado viaja do cartão para o registro.
+const iptuValor = el('t valor', ANUNCIO.iptu);
+const iptuNota = el('t apoio', ANUNCIO.iptuNota);
+const iptuPonto = el('t apoio', '·');
+const iptuRastro = el('t rastro declarado', '<i></i>');
+
+// S2 · registro oficial ---------------------------------------------------
+const X2 = 424, XR2 = 1496;
+const OUT2 = T.m2 + 0.06;
+let k = 0;
+const st = () => T.s2 + 0.05 * k++;
+texto('kicker', 'O que o Vereda encontrou', X2, 214, st(), OUT2);
+texto('titulo', 'Além do anúncio.', X2, 244, st(), OUT2 + 0.01);
+texto('apoio', rastro('declarado', 'IPTU no anúncio'), X2, 358, st(), OUT2 + 0.02);
+texto('apoio', rastro('oficial', 'IPTU 2026 cobrado no prédio, por ano'), X2, 502, st(), OUT2 + 0.03);
+texto('valor', REGISTRO.iptuAno, X2, 538, st(), OUT2 + 0.03);
+texto('apoio', `o mesmo que ${REGISTRO.iptuMes}`, X2, 622, st(), OUT2 + 0.04);
+const fio4 = texto('fio', '', X2, 680, st(), OUT2 + 0.04); fio4.e.style.width = (XR2 - X2) + 'px';
+texto('apoio', rastro('oficial', 'Área'), X2, 704, st(), OUT2 + 0.05);
+texto('forte', `${REGISTRO.areaIptu} no IPTU`, X2, 740, T.s2 + 0.05 * (k - 1), OUT2 + 0.05);
+texto('apoio', `${ANUNCIO.area} no anúncio`, X2, 782, T.s2 + 0.05 * (k - 1) + 0.03, OUT2 + 0.05);
+texto('apoio', rastro('oficial', 'Transmissões no prédio'), 980, 704, st(), OUT2 + 0.06);
+texto('forte', REGISTRO.itbiMediana, 980, 740, T.s2 + 0.05 * (k - 1), OUT2 + 0.06);
+texto('apoio', REGISTRO.itbiN, 980, 782, T.s2 + 0.05 * (k - 1) + 0.03, OUT2 + 0.06);
+texto('apoio-s', `registro oficial · Prefeitura do Recife · consultado em ${REGISTRO.consultado}`, X2, 872, st(), OUT2 + 0.07);
+const link = texto('link', `Cadastro oficial →`, XR2, 868, st(), OUT2 - 0.02, { align: 'right' });
+const linkSub = el('fio', '');
+
+// S3 · lote ---------------------------------------------------------------
+const rotLote = [];
+const OUT3 = T.m3 + 0.05;
+const painelLote = texto('painel', '', 0, 0, T.rotLote - 0.06, OUT3 + 0.04, { parent: rotulos, sobe: 10 });
+painelLote.e.style.width = '560px'; painelLote.e.style.height = '250px';
+rotLote.push(texto('apoio', rastro('oficial', 'ESIG · Prefeitura do Recife'), 0, 0, T.rotLote, OUT3, { parent: rotulos }));
+rotLote.push(texto('titulo-m', 'Lote do prédio', 0, 0, T.rotLote + 0.06, OUT3, { parent: rotulos }));
+rotLote.push(texto('corpo', `${REGISTRO.unidades} · ${REGISTRO.ano} · ${REGISTRO.padrao}`, 0, 0, T.rotLote + 0.12, OUT3, { parent: rotulos }));
+rotLote.push(texto('apoio-s', 'IPTU 2026 · polígono e altura ilustrativos', 0, 0, T.rotLote + 0.16, OUT3, { parent: rotulos }));
+
+// S4 · mapa ---------------------------------------------------------------
+const OUT4 = T.m4 + 0.05;
+const XM = 1262;
+const rotMapa = [];
+const painelMapa = texto('painel', '', XM - 42, 244, T.rotMapa - 0.06, OUT4 + 0.04, { parent: rotulos, sobe: 10 });
+painelMapa.e.style.width = '640px'; painelMapa.e.style.height = '520px';
+rotMapa.push(texto('apoio', rastro('oficial', 'Licenciamento Urbanístico · Prefeitura do Recife'), XM, 282, T.rotMapa, OUT4, { parent: rotulos }));
+rotMapa.push(texto('', `<span class="numero-grande" style="font-size:150px">${REGISTRO.demolicoesN}</span>`, XM - 4, 336, T.rotMapa + 0.06, OUT4, { parent: rotulos }));
+rotMapa.push(texto('forte', 'alvarás de demolição<br>deferidos em 2026', XM + 120, 352, T.rotMapa + 0.1, OUT4, { parent: rotulos }));
+rotMapa.push(texto('apoio', `entre ${REGISTRO.demolicaoMin} m e ${REGISTRO.demolicaoMax} m do prédio`, XM + 120, 436, T.rotMapa + 0.14, OUT4, { parent: rotulos }));
+const fio5 = texto('fio', '', XM, 530, T.rotMapa + 0.18, OUT4, { parent: rotulos }); fio5.e.style.width = '500px';
+rotMapa.push(texto('', `<span class="numero-grande" style="font-size:64px">49</span>`, XM, 562, T.rotMapa + 0.22, OUT4, { parent: rotulos }));
+rotMapa.push(texto('corpo', 'registros de obra em 150 m<br>desde 2018', XM + 96, 562, T.rotMapa + 0.25, OUT4, { parent: rotulos }));
+rotMapa.push(texto('apoio-s', 'A faixa marca a distância das demolições,<br>não a posição de cada uma.', XM, 672, T.rotMapa + 0.3, OUT4, { parent: rotulos }));
+const pilulaRaio = el('t pilula', '150 m em linha reta', rotulos);
+
+// S5 · dossiê -------------------------------------------------------------
+const X5 = 880, XR5 = 1650;
+let q = 0;
+const s5 = () => T.dossie + 0.055 * q++;
+texto('kicker', 'Dossiê · Boa Viagem', X5, 196, s5(), Infinity);
+texto('titulo-m', IMOVEL.endereco, X5, 226, s5(), Infinity);
+texto('apoio', `Aluguel · ${ANUNCIO.area} · 4 quartos · anúncio lido em ${ANUNCIO.lidoEm}`, X5, 300, s5(), Infinity);
+texto('titulo-s', 'Para perguntar na visita', X5, 368, s5(), Infinity);
+texto('num', '01', X5, 432, s5(), Infinity);
+texto('forte', 'R$ 288 de IPTU por mês?', X5 + 48, 424, T.dossie + 0.055 * (q - 1), Infinity);
+texto('apoio', `Anúncio sem período · IPTU 2026: ${REGISTRO.iptuAno}/ano`, X5 + 48, 464, T.dossie + 0.055 * (q - 1) + 0.03, Infinity);
+texto('num', '02', X5, 522, s5(), Infinity);
+texto('forte', 'Quantos banheiros há?', X5 + 48, 514, T.dossie + 0.055 * (q - 1), Infinity);
+texto('apoio', '3 suítes e 1 banheiro no anúncio', X5 + 48, 554, T.dossie + 0.055 * (q - 1) + 0.03, Infinity);
+const fio6 = texto('fio', '', X5, 610, s5(), Infinity); fio6.e.style.width = (XR5 - X5) + 'px';
+texto('corpo', rastro('oficial', `${REGISTRO.areaIptu} no IPTU · ${ANUNCIO.area} no anúncio`), X5, 634, s5(), Infinity);
+texto('corpo', rastro('oficial', `${REGISTRO.itbiN.replace(' desde 2015', '')} · ${REGISTRO.itbiMediana}`), X5, 680, s5(), Infinity);
+texto('corpo', rastro('oficial', '4 demolições deferidas em 2026 a menos de 150 m'), X5, 726, s5(), Infinity);
+texto('apoio-s', `registro oficial · Prefeitura do Recife · consultado em ${REGISTRO.consultado}`, X5, 778, s5(), Infinity);
+const botao = el('botao', `Preparar visita ${icone.seta}`);
+const BOTAO = [X5, 832, XR5 - X5, 76];
+const tBotao = T.dossie + 0.055 * q++;
+
+// Chrome: marca e procedência dos dados -----------------------------------
+const chrome = $('chrome');
+const ninho = `<svg width="38" height="38" viewBox="0 0 100 100"><path d="M 18,80 C 7,79 2,66 2,49 C 2,24 20,4 50,3 C 79,2 97,25 97,49 C 97,68 89,80 79,80 C 64,80 34,81 18,80 Z" fill="#F47745"/><path d="M 40,58 C 35,42 40,24 53,23 C 64,22 69,40 64,57 C 59,72 45,72 40,58 Z" fill="#F5F0E6"/></svg>`;
+const logo = el('chrome-pilula', `${ninho}<span class="marca">VEREDA</span>`, chrome);
+Object.assign(logo.style, { left: '56px', top: '40px', padding: '10px 22px 10px 14px' });
+const rodape = el('chrome-pilula apoio-s', 'Protótipo VEREDA · Rua João Cardoso Aires, 327, Boa Viagem · IPTU 2026, ITBI 2015–2026 e Licenciamento Urbanístico consultados em 15/10/2026 · foto, lote, altura e quadras ilustrativos', chrome);
+Object.assign(rodape.style, { left: '56px', bottom: '34px', padding: '10px 20px' });
+
+const dbg = new URLSearchParams(location.search).has('debug') ? el('', '', chrome) : null;
+if (dbg) dbg.id = 'debug';
+
+// medidas do elemento compartilhado
+// Largura em px do quadro de 1920: divide pela escala real do palco (no preview ele é
+// reduzido para caber na janela; no render a escala é 1).
+function largura(e, px) {
+  e.style.fontSize = px + 'px';
+  return e.getBoundingClientRect().width / ($('c').getBoundingClientRect().width / 1920);
+}
+
+// ---------------------------------------------------------------------------
+// Desenho
+// ---------------------------------------------------------------------------
+const NS = 'http://www.w3.org/2000/svg';
+function svg(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const [a, v] of Object.entries(attrs)) e.setAttribute(a, v);
+  parent.appendChild(e);
+  return e;
+}
+const chao = $('chao');
+const chaoBase = svg('path', { fill: '#FAF6EE' }, chao);
+const chaoQuadras = svg('path', { fill: '#E9E1D2', stroke: '#E0D6C4', 'stroke-width': 1 }, chao);
+const chaoDivisas = svg('path', { fill: 'none', stroke: '#D8CDB8', 'stroke-width': 1.2 }, chao);
+const chaoVizinhos = svg('path', { fill: 'rgba(46,90,133,0.05)', stroke: '#8FAAC4', 'stroke-width': 1.8, 'stroke-dasharray': '7 6' }, chao);
+const forma = $('forma');
+const anel = $('anel');
+const faixa = svg('path', { fill: 'url(#hachura)' }, anel);
+const aro = svg('path', { fill: 'none', stroke: '#F47745', 'stroke-width': 3.5, 'stroke-linecap': 'round' }, anel);
+const predio = $('predio');
+const faces = [0, 1, 2, 3].map(() => svg('path', { 'stroke-linejoin': 'round' }, predio));
+const andares = [0, 1, 2, 3].map(() => svg('path', { fill: 'none', stroke: 'rgba(23,23,23,0.10)', 'stroke-width': 1 }, predio));
+const teto = svg('path', { fill: '#FFFFFF', stroke: '#C9BEA8', 'stroke-width': 1.5, 'stroke-linejoin': 'round' }, predio);
+const caminho = svg('path', { fill: 'none', stroke: '#F47745', 'stroke-width': 4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, $('caminho'));
+const caminhoMundo = svg('path', { fill: 'none', stroke: '#F47745', 'stroke-width': 4, 'stroke-linecap': 'round' }, $('caminho'));
+const pinoG = $('pino');
+const pinoHalo = svg('circle', { r: 26, fill: 'rgba(244,119,69,0.25)' }, pinoG);
+const pinoC = svg('circle', { r: 14, fill: '#F47745', stroke: '#FFFFFF', 'stroke-width': 4 }, pinoG);
+
+const polyD = (pts) => 'M' + pts.map((p) => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L') + 'Z';
+const lineD = (a, b) => `M${a[0].toFixed(1)} ${a[1].toFixed(1)}L${b[0].toFixed(1)} ${b[1].toFixed(1)}`;
+const rectTrack = (t, keys, p = P.card) => track(t, keys, p);
+const roundRectD = ([x, y, w, h, r]) => roundedQuad(rectPts(x, y, w, h), Math.max(0, r));
+
+function posicionar(item, t, extraAlpha = 1) {
+  const a = swap(t, item.tIn, item.tOut) * extraAlpha;
+  const aOut = clamp((item.tOut - 0.1 - t) / 0.1);
+  const dy = item.sobe * pending(t, item.tIn + 0.04, P.type) - 10 * (1 - aOut);
+  item.e.style.opacity = a.toFixed(3);
+  item.e.style.visibility = a <= 0.001 ? 'hidden' : 'visible';
+  const x = item.align === 'right' ? item.x - item.e.offsetWidth : item.x;
+  item.e.style.left = x.toFixed(1) + 'px';
+  item.e.style.top = (item.y + dy).toFixed(1) + 'px';
+}
+
+// ---------------------------------------------------------------------------
+// seek(t): função pura do tempo
+// ---------------------------------------------------------------------------
+function render(t) {
+  t = clamp(t, 0, DUR);
+  // Mede o texto sem o zoom do quadro anterior: getBoundingClientRect inclui transforms,
+  // e herdar o zoom anterior tornava o quadro dependente do histórico.
+  $('cena').style.transform = 'none';
+  const cam = camera(t);
+  const pr = (pt) => project(pt, cam);
+
+  // --- forma única: cartão (S1) → registro (S2) → lote (S3) ---
+  const card = rectTrack(t, [[0, CARD1], [T.m1, CARD2]]);
+  const pm = sp(t - T.m2, P.map);
+  const lotePx = LOTE_PTS.map(pr);
+  const cantos = rectPts(card[0], card[1], card[2], card[3]).map((c, i) => lerpPt(c, lotePx[i], pm));
+  forma.setAttribute('d', roundedQuad(cantos, lerp(card[4], 5, pm)));
+  forma.setAttribute('fill', `rgba(${lerp(255, 207, pm).toFixed(0)},${lerp(255, 219, pm).toFixed(0)},${lerp(255, 233, pm).toFixed(0)},1)`);
+  forma.setAttribute('stroke', pm < 0.5 ? `rgba(23,23,23,${lerp(0.09, 0, pm * 2).toFixed(3)})` : `rgba(46,90,133,${lerp(0, 1, pm * 2 - 1).toFixed(3)})`);
+  forma.setAttribute('stroke-width', lerp(1.5, 3.5, pm).toFixed(2));
+
+  // foto: ocupa o painel esquerdo e se recolhe no morph 1 (spring de botão, sem sobrar lasca).
+  // A imagem nunca muda de tamanho desenhado: o recolhimento é um recorte. Se o tamanho
+  // mudasse, o Chromium baixaria a qualidade por alguns ms de relógio e o quadro dependeria
+  // da ordem do render (pego pelo teste de determinismo em 17/10/2026).
+  const pc = sp(t - T.m1, P.button);
+  const corte = 500 * pc;
+  const deriva = 22 + 10 * sp(t, DERIVA);
+  Object.assign(foto.style, {
+    left: (card[0] + 18).toFixed(1) + 'px', top: (card[1] + 18).toFixed(1) + 'px',
+    width: '500px', height: '624px', backgroundPosition: `center ${deriva.toFixed(2)}%`,
+    clipPath: `inset(0 ${corte.toFixed(1)}px 0 0 round 24px)`, visibility: corte > 494 ? 'hidden' : 'visible',
+  });
+  const aChip = swap(t, -1, OUT1 - 0.1);
+  chipFoto.style.opacity = aChip; chipMapa.style.opacity = aChip;
+
+  for (const item of textos) posicionar(item, t);
+
+  // realce da linha do IPTU (hover e clique)
+  const aRealce = clamp((t - T.hover) / 0.15) * swap(t, -1, OUT1 - 0.05) * (0.6 + 0.4 * press(t, [T.clique1]) + 0.4 * clamp((t - T.clique1) / 0.1));
+  Object.assign(realce.style, { left: (X1 - 18) + 'px', top: '680px', width: (XR1 - X1 + 36) + 'px', height: '58px', background: `rgba(244,119,69,${(0.10 * aRealce).toFixed(3)})` });
+
+  // valor compartilhado R$ 288: linha do cartão → número grande do registro.
+  // Tamanho e peso mudam pelo layout (font-size, font-weight), nunca por scale().
+  const pv = sp(t - T.m1, P.card);
+  const vOut = swap(t, -1, OUT2 + 0.02);
+  const fs = lerp(26, 72, pv);
+  iptuValor.style.fontWeight = lerp(600, 700, pv).toFixed(0);
+  const w288 = largura(iptuValor, fs);
+  const wNota1 = largura(iptuNota, 22);
+  const wPonto = largura(iptuPonto, 22);
+  largura(iptuNota, lerp(22, 26, pv));
+  const w288s1 = w288 * (26 / fs);
+  const xs1 = XR1 - wNota1 - wPonto - 20 - w288s1;
+  const vx = lerp(xs1, X2, pv), vy = lerp(692, 394, pv);
+  const visV = vOut > 0.001 ? 'visible' : 'hidden';
+  Object.assign(iptuValor.style, { left: vx + 'px', top: vy + 'px', opacity: vOut, visibility: visV });
+  const nx = vx + w288 + lerp(wPonto + 20, 22, pv), ny = vy + lerp(2, 38, pv);
+  Object.assign(iptuNota.style, { left: nx + 'px', top: ny + 'px', opacity: vOut, visibility: visV });
+  const aPonto = swap(t, -1, T.m1 + 0.05);
+  Object.assign(iptuPonto.style, { left: (vx + w288 + 10) + 'px', top: ny + 'px', opacity: aPonto });
+  const aRastro = swap(t, -1, T.m1 + 0.05);
+  Object.assign(iptuRastro.style, { left: (xs1 - 48) + 'px', top: '706px', opacity: aRastro });
+
+  // --- caminho VEREDA, parte de tela: sublinha o IPTU declarado, desce até o
+  // IPTU oficial e sublinha os dois (o cruzamento). No morph 2 fecha num ponto.
+  const yU = vy + fs * 0.98 + 6;
+  const xL = vx, xR = vx + w288;
+  const xB = X2 - 32;
+  const wOf = textos.find((it) => it.e.textContent === REGISTRO.iptuAno).e.offsetWidth;
+  const yO = 538 + 72 * 0.98 + 6;
+  const d0 = sp(t - (T.clique1 + 0.03), P.button);
+  const e1 = sp(t - (T.s2 - 0.1), P.button);
+  const e2 = sp(t - (T.s2 + 0.08), P.card);
+  const e3 = sp(t - (T.s2 + 0.3), P.card);
+  const P1 = [lerp(xL, xB, e1), yU];
+  const P2 = [P1[0], lerp(yU, yO, e2)];
+  const P3 = [lerp(P2[0], X2 + wOf, e3), P2[1]];
+  let pts = [[lerp(xL, xR, d0), yU], P1, P2, P3];
+  // fecha no centro do cartão, que é o centro do lote na câmera inicial: o pino nasce ali
+  const Q = [CARD2[0] + CARD2[2] / 2, CARD2[1] + CARD2[3] / 2];
+  const fecha = sp(t - (T.m2 - 0.12), P.button);
+  pts = pts.map((pt) => lerpPt(pt, Q, fecha));
+  const aTela = (t < T.clique1 ? 0 : clamp((t - T.clique1) / 0.04)) * (1 - invLerp(0.9, 0.99, fecha));
+  caminho.setAttribute('d', 'M' + pts.map((pt) => pt[0].toFixed(1) + ' ' + pt[1].toFixed(1)).join('L'));
+  caminho.setAttribute('opacity', aTela.toFixed(3));
+
+  // parte de mundo: haste do pino e, no morph 3, o raio de 150 m
+  const pw = sp(t - (T.m2 + 0.1), P.map);
+  const altura = LOTE.pavimentos * 3 * sp(t - T.sobe, P.type);
+  const zPino = Math.max(altura + 10, 14);
+  const pr2 = sp(t - T.raio, P.map);
+  const topo = [0, -150 * pr2, zPino * (1 - pr2)];
+  caminhoMundo.setAttribute('d', lineD(pr([0, 0, 0]), pr(topo)));
+  caminhoMundo.setAttribute('opacity', invLerp(0.8, 0.98, pw).toFixed(3));
+
+  // sublinhado de hover do link do cadastro
+  const wl = link.e.offsetWidth;
+  const hl = sp(t - (T.vaiLink + 0.3), P.button) * swap(t, -1, OUT2);
+  Object.assign(linkSub.style, { left: (XR2 - wl) + 'px', top: '900px', width: (wl * hl).toFixed(1) + 'px', height: '2px', background: '#B94E36', opacity: hl > 0.01 ? 1 : 0 });
+
+  // --- chão revelado a partir do lote ---
+  const centro = pr([0, 0, 0]);
+  const rRev = 2800 * sp(t - T.revela, P.camera);
+  const rc = $('revela-c');
+  rc.setAttribute('cx', centro[0].toFixed(1)); rc.setAttribute('cy', centro[1].toFixed(1)); rc.setAttribute('r', rRev.toFixed(1));
+  chao.style.display = rRev < 1 ? 'none' : '';
+  if (rRev >= 1) {
+    chaoBase.setAttribute('d', polyD([[-760, -700], [760, -700], [760, 560], [-760, 560]].map(pr)));
+    chaoQuadras.setAttribute('d', quadras.map((qd) => roundedQuad(qd.map(pr), 6 * cam.s / 2.4)).join(''));
+    chaoDivisas.setAttribute('d', divisas.map(([p1, p2]) => lineD(pr(p1), pr(p2))).join(''));
+    chaoVizinhos.setAttribute('d', vizinhos.map((v) => polyD(v.map(pr))).join(''));
+  }
+
+  // --- prédio (ilustrativo): sobe do lote ---
+  if (altura > 0.05) {
+    predio.style.display = '';
+    const pe = [[-14, -11], [14, -11], [14, 11], [-14, 11]];
+    const lados = [0, 1, 2, 3].map((i) => {
+      const p1 = pe[i], p2 = pe[(i + 1) % 4];
+      const quad = [[...p1, 0], [...p2, 0], [...p2, altura], [...p1, altura]];
+      const meio = [(p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2];
+      const c = Math.cos(cam.yaw), s = Math.sin(cam.yaw);
+      const prof = (meio[0] * s + meio[1] * c);
+      return { quad, prof, i };
+    }).sort((u, v) => u.prof - v.prof);
+    lados.forEach((ld, n) => {
+      faces[n].setAttribute('d', polyD(ld.quad.map(pr)));
+      faces[n].setAttribute('fill', ld.i % 2 ? '#F1EADC' : '#FBF8F2');
+      faces[n].setAttribute('stroke', '#C9BEA8');
+      faces[n].setAttribute('stroke-width', 1.5);
+      const linhas = [];
+      for (let f = 1; f < LOTE.pavimentos; f += 1) {
+        const z = (altura * f) / LOTE.pavimentos;
+        linhas.push(lineD(pr([...ld.quad[0].slice(0, 2), z]), pr([...ld.quad[1].slice(0, 2), z])));
+      }
+      andares[n].setAttribute('d', linhas.join(''));
+    });
+    teto.setAttribute('d', polyD(pe.map((p) => pr([...p, altura]))));
+  } else {
+    predio.style.display = 'none';
+  }
+
+  // --- pino: nasce onde o caminho se fecha e voa até o lote ---
+  const noLote = lerpPt(pr([0, 0, zPino]), pr([0, 0, 0]), pr2);
+  const pPino = lerpPt(Q, noLote, pw);
+  const ePino = sp(t - (T.m2 + 0.02), P.button);
+  pinoG.setAttribute('transform', `translate(${pPino[0].toFixed(1)} ${pPino[1].toFixed(1)}) scale(${Math.max(0, ePino).toFixed(3)})`);
+  pinoG.setAttribute('opacity', (ePino > 0.01 ? 1 : 0).toString());
+
+  // --- raio de 150 m: o caminho varre o círculo; faixa das demolições ---
+  const varre = 2 * Math.PI * clamp(spring(t - T.varre, SWEEP.k, SWEEP.d), 0, 1);
+  if (varre > 0.001) {
+    const n = Math.max(2, Math.ceil((varre / (2 * Math.PI)) * 160));
+    const arco = (r) => Array.from({ length: n + 1 }, (_, i) => {
+      const ang = -Math.PI / 2 + (varre * i) / n;
+      return pr([r * Math.cos(ang), r * Math.sin(ang), 0]);
+    });
+    const ext = arco(150);
+    aro.setAttribute('d', 'M' + ext.map((p) => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L'));
+    const fora = arco(REGISTRO.demolicaoMax), dentro = arco(REGISTRO.demolicaoMin).reverse();
+    faixa.setAttribute('d', polyD([...fora, ...dentro]));
+    anel.style.display = '';
+  } else {
+    anel.style.display = 'none';
+  }
+
+  // --- rótulos ancorados no mundo ---
+  const topoPredio = pr([14, -11, altura]);
+  const xl = Math.max(topoPredio[0] + 120, 1180), yl = 330;
+  painelLote.x = xl - 40; painelLote.y = yl - 40; posicionar(painelLote, t);
+  rotLote.forEach((item, i) => { item.x = xl; item.y = yl + [0, 40, 112, 158][i]; posicionar(item, t); });
+  const meioRaio = pr([0, -75, 0]);
+  const aRaio = swap(t, T.rotMapa - 0.1, Infinity);
+  Object.assign(pilulaRaio.style, { left: (meioRaio[0] + 22).toFixed(1) + 'px', top: (meioRaio[1] - 20).toFixed(1) + 'px', opacity: aRaio, visibility: aRaio > 0.001 ? 'visible' : 'hidden' });
+
+  // --- moldura: tela inteira → cartão do dossiê → capa do dossiê ---
+  const mold = rectTrack(t, [[0, TELA], [T.m4, DOSSIE], [T.m4b, CAPA]]);
+  $('moldura-p').setAttribute('d', roundRectD(mold));
+  const aMold = invLerp(T.m4 + 0.05, T.m4 + 0.3, t);
+  const borda = $('moldura-borda');
+  borda.setAttribute('d', roundRectD(mold));
+  borda.setAttribute('opacity', aMold.toFixed(3));
+  const base5 = $('dossie-base');
+  base5.setAttribute('d', roundRectD(DOSSIE));
+  base5.setAttribute('opacity', invLerp(T.m4 + 0.2, T.m4 + 0.35, t).toFixed(3));
+
+  // botão do dossiê
+  const aB = swap(t, tBotao, Infinity);
+  const pB = press(t, [T.clique3]);
+  Object.assign(botao.style, {
+    left: BOTAO[0] + 'px', top: (BOTAO[1] + 16 * pending(t, tBotao + 0.04, P.type)) + 'px', width: BOTAO[2] + 'px', height: BOTAO[3] + 'px',
+    opacity: aB, visibility: aB > 0.001 ? 'visible' : 'hidden',
+    background: pB > 0.02 || t > T.clique3 ? '#E06332' : '#F47745',
+  });
+
+  // --- cursor ---
+  const alvoIptu = [xs1 + w288s1 - 6, 728];
+  const alvoLink = [XR2 - 10, 900];
+  const alvoBotao = [BOTAO[0] + BOTAO[2] * 0.73, BOTAO[1] + 50];
+  const cur = track(t, [
+    [0, [1880, 1170]], [0.15, alvoIptu], [T.m1 + 0.1, [1300, 830]], [T.vaiLink, alvoLink],
+    [T.m2 + 0.4, [1880, 1170]], [T.volta, alvoBotao],
+  ], P.cursor);
+  const vis = Math.max(swap(t, 0.0, T.m2 + 0.3, { delayIn: 0.05, durIn: 0.1, leadOut: 0, durOut: 0.15 }), swap(t, T.volta - 0.1, Infinity, { delayIn: 0.05, durIn: 0.1 }));
+  const esc = (1 - 0.16 * press(t, [T.clique1, T.clique2, T.clique3])) * lerp(0.7, 1, vis);
+  const cursor = $('cursor');
+  cursor.setAttribute('transform', `translate(${cur[0].toFixed(1)} ${cur[1].toFixed(1)}) scale(${esc.toFixed(3)})`);
+  cursor.setAttribute('opacity', vis.toFixed(3));
+  let onda = 0, ondaP = cur;
+  for (const c of [T.clique1, T.clique2, T.clique3]) if (t >= c && t < c + 0.45) { onda = (t - c) / 0.45; ondaP = cur; }
+  const od = $('onda');
+  od.setAttribute('cx', ondaP[0].toFixed(1)); od.setAttribute('cy', ondaP[1].toFixed(1));
+  od.setAttribute('r', (8 + 30 * sp(onda * 0.45, P.button)).toFixed(1));
+  od.setAttribute('opacity', (onda > 0 ? 0.8 * (1 - onda) : 0).toFixed(3));
+
+  // câmera de tela: só depois que a foto saiu (a imagem nunca é escalada)
+  const zoom = track(t, [[0, 1.0], [T.s2, 1.022, DERIVA], [T.m2 - 0.1, 1.0, P.camera]]);
+  $('cena').style.transform = `scale(${zoom.toFixed(5)})`;
+
+  if (dbg) dbg.textContent = t.toFixed(2) + ' s';
+}
+
+// ---------------------------------------------------------------------------
+// Contrato de render e modos de preview
+// ---------------------------------------------------------------------------
+// Sons presos aos eventos da linha do tempo (motion/audio/sfx.mjs sintetiza).
+const SONS = [
+  { t: T.clique1, tipo: 'click', evento: 'clique no IPTU do anúncio' },
+  { t: T.clique1 + 0.04, tipo: 'tick', evento: 'sublinhado nasce' },
+  { t: T.m1, tipo: 'whoosh', dur: 0.32, evento: 'cartão vira registro' },
+  { t: T.s2 - 0.1, tipo: 'tick', evento: 'caminho desce até o IPTU oficial' },
+  { t: T.s2 + 0.3, tipo: 'pop', evento: 'IPTU oficial sublinhado' },
+  { t: T.clique2, tipo: 'click', evento: 'clique em Cadastro oficial' },
+  { t: T.m2, tipo: 'whoosh', dur: 0.5, evento: 'registro deita e vira lote' },
+  { t: T.m2 + 0.02, tipo: 'pop', evento: 'pino nasce' },
+  { t: T.sobe, tipo: 'thump', evento: 'prédio sobe' },
+  { t: T.m3, tipo: 'whoosh', dur: 0.9, evento: 'câmera sobe para o mapa' },
+  { t: T.varre, tipo: 'sweep', dur: 0.95, evento: 'raio de 150 m varre' },
+  { t: T.rotMapa, tipo: 'pop', evento: 'legenda das demolições' },
+  { t: T.m4, tipo: 'whoosh', dur: 0.45, evento: 'mapa vira dossiê' },
+  { t: T.clique3, tipo: 'click', evento: 'Preparar visita' },
+];
+window.POC = { id: 'POC-01', duracao: DUR, fps: 30, estados: ESTADOS, holds: HOLDS, cliques: [T.clique1, T.clique2, T.clique3], marcos: T, sons: SONS };
+window.seek = (t) => render(t);
+window.__pronto = (async () => {
+  await document.fonts.ready;
+  await Promise.all(['500 64px Fraunces', '600 28px Fraunces', '700 72px "Plus Jakarta Sans"', '400 22px "Plus Jakarta Sans"', '500 26px "Plus Jakarta Sans"', '600 30px "Plus Jakarta Sans"', '600 20px "JetBrains Mono"'].map((f) => document.fonts.load(f)));
+  const img = new Image();
+  img.src = IMOVEL.foto;
+  try { await img.decode(); } catch { console.warn('foto não carregou'); }
+  render(0);
+  return true;
+})();
+
+if (!navigator.webdriver) {
+  document.body.classList.add('tela');
+  const c = $('c');
+  const ajusta = () => {
+    const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+    Object.assign(c.style, { position: 'absolute', transformOrigin: '0 0', transform: `scale(${s})`, left: `${(innerWidth - 1920 * s) / 2}px`, top: `${(innerHeight - 1080 * s) / 2}px` });
+  };
+  addEventListener('resize', ajusta); ajusta();
+  const aoVivo = new URLSearchParams(location.search).has('live');
+  let t = 0, alvo = aoVivo ? HOLDS[0] : DUR, rodando = true, antes = null;
+  const passo = (agora) => {
+    if (antes !== null && rodando) {
+      t += (agora - antes) / 1000;
+      if (t >= alvo) { t = alvo; if (!aoVivo) { t = 0; } else rodando = false; }
+    }
+    antes = agora;
+    render(t);
+    requestAnimationFrame(passo);
+  };
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown') {
+      // ao vivo: o clicker sempre leva ao próximo HOLD, mesmo no meio de uma entrada
+      const base = rodando ? alvo : t;
+      const i = HOLDS.findIndex((h) => h > base + 1e-3);
+      if (aoVivo) { if (i >= 0) { alvo = HOLDS[i]; rodando = true; } } else rodando = !rodando;
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      const anteriores = HOLDS.filter((h) => h < t - 1e-3);
+      t = anteriores.length > 1 ? anteriores[anteriores.length - 2] : 0;
+      alvo = aoVivo ? HOLDS.find((h) => h > t + 1e-3) ?? DUR : DUR;
+      rodando = !aoVivo;
+      if (aoVivo) { render(t); }
+    } else if (e.key === 'r') { t = 0; alvo = aoVivo ? HOLDS[0] : DUR; rodando = true; }
+  });
+  window.__pronto.then(() => requestAnimationFrame(passo));
+}
+</script>
+</body>
+</html>

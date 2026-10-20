@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · Cena 03 · quem descobre tarde demais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@400..800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lib/marca.css">
+<style>
+  /* casca das cenas 05 a 09: o quadro #c de 1920 × 1080 com a grade de 48 px */
+  html, body { margin: 0; background: var(--bg-obsidian); }
+  body.tela { min-height: 100vh; overflow: hidden; }
+  #c {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden; flex: none;
+    background: var(--bg-paper); color: var(--ink-primary);
+    font-family: var(--font-sans); font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  .grade {
+    position: absolute; inset: 0; background-size: 48px 48px;
+    background-image:
+      linear-gradient(to right, rgba(127, 136, 112, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(127, 136, 112, 0.09) 1px, transparent 1px);
+  }
+  svg.camada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+  .camada-div { position: absolute; inset: 0; }
+  /* a sombra transparente alarga a área repintada: a ponta de glifos como p e ç não fica na tela quando o texto some */
+  .t { position: absolute; white-space: nowrap; line-height: 1.15; text-shadow: 0 0 6px transparent; }
+
+  /* textos do filme: só palavras e números da fala */
+  .numero { font-family: var(--font-display); font-weight: 500; font-variation-settings: 'opsz' 40; letter-spacing: -0.035em; line-height: 1; font-size: 210px; }
+  .apoio { font: 600 58px/1 var(--font-sans); letter-spacing: -0.012em; color: var(--ink-secondary); }
+  .apoio-s { font: 500 66px/1 var(--font-display); letter-spacing: -0.02em; color: var(--brand-rust); }
+  .rot-linha { font: 600 54px/1 var(--font-sans); letter-spacing: -0.012em; color: var(--ink-primary); }
+  #debug { position: absolute; right: 16px; top: 12px; font: 500 16px/1 var(--font-mono); color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div id="c">
+  <div class="grade"></div>
+  <!-- costura C02-03 (linha de base e quatro pontos) e a linha "assinatura do contrato" -->
+  <svg class="camada" id="base" viewBox="0 0 1920 1080"></svg>
+  <!-- pessoas como pontos: o campo (B1) e os 83 (B2 em diante) -->
+  <svg class="camada" id="gente" viewBox="0 0 1920 1080">
+    <defs>
+      <clipPath id="antes"><rect x="-200" y="-200" width="1160" height="1480" /></clipPath>
+      <clipPath id="depois"><rect x="960" y="-200" width="1200" height="1480" /></clipPath>
+    </defs>
+    <path id="campo" fill="#171717" />
+    <g id="pontos"></g>
+  </svg>
+  <!-- costura C03-04: a linha do chão e o ponto "você" -->
+  <svg class="camada" id="saida" viewBox="0 0 1920 1080"></svg>
+  <div class="camada-div" id="rotulos"></div>
+</div>
+
+<script type="module">
+import { clamp, lerp, sp, swap, pending, rng, PRESETS as P } from '../lib/motion.js';
+import { desenharCostura, COSTURAS } from '../lib/costuras.js';
+
+// ---------------------------------------------------------------------------
+// Fala (docs/mapa-fala-revisada.md, cena 03, cerca de 9,5 s na gravação; aqui 10,1 s):
+// «Não à toa, 93% dos brasileiros possuem dificuldade na compra de imóveis. Ouvimos 83 pessoas que
+// se mudaram recentemente: mais de 70% só descobriram problemas graves no prédio e na vizinhança
+// depois de assinar o contrato.»
+// Tempo de cada palavra de sentido, por sílaba falada (cerca de 9,7 sílabas/s, com as pausas de
+// "imóveis." e de "recentemente:"): "noventa e três por cento" 0,51 · "brasileiros" 1,34 ·
+// "dificuldade" 2,17 · pausa 3,41 a 3,86 · "oitenta e três" 4,17 · "pessoas" 4,69 · pausa 6,03 a
+// 6,33 · "mais de" 6,33 · "setenta por cento" 6,54 · "só descobriram problemas graves" 7,16 ·
+// "no prédio e na vizinhança" 8,19 · "depois de assinar o contrato" 9,12 a 10,15.
+// HOLDs: o fim de "imóveis." (3,6), o quadro parado do B3 antes de "depois de" (8,6) e a emenda C03-04.
+// O quadro de 5,15 a 5,25 s (os 83 na grade da cena 10) também fica parado: serve de sincronia na pausa
+// de "recentemente:", se a montagem precisar, sem ser uma parada do modo ao vivo.
+// ---------------------------------------------------------------------------
+const T = {
+  // B1 · os quatro pontos se multiplicam num campo; "93%" e as palavras da fala
+  onda: 0.1, n93: 0.42, dos: 1.25, dific: 2.08,
+  // B2 · o campo se condensa nas 83 pessoas ouvidas
+  saiB1: 3.85, condensa: 3.8, n83: 4.12, ouvidas: 4.6,
+  // B3 · a grade desliza; a linha "assinatura do contrato" se ergue; "mais de 70%"; só os 59 a atravessam
+  desliza: 5.3, ergue: 5.76, rotLinha: 5.95, anda: 6.4, mais: 6.22, setenta: 6.42,
+  // saída · os textos saem, a linha desce ao chão, o chão sobe à linha da cena 4 e os 83 viram um só: você
+  saida: 8.85, recolhe: 8.68, junta: 8.7, chao: 8.72,
+};
+const DUR = 10.1;
+const HOLDS = [3.6, 8.6, DUR];
+
+// molas (forma fechada, motion.js). w0 = raiz de k; zeta = d / (2 w0); nsp chega a 1 em 5,83 / w0
+const ANDA = { k: 16.81, d: 8.2 };   // zeta 1: a travessia (até 766 px, pico de 39 px/quadro; 98% em 1,42 s)
+const ERGUE = { k: 64, d: 16 };      // zeta 1: a linha se ergue (98% em 0,73 s)
+const DESLIZA = { k: 64, d: 16 };    // zeta 1: a grade desliza 312 px para a esquerda da linha (pico de 31 px/quadro)
+const RECOLHE = { k: 144, d: 24 };   // zeta 1: a linha "assinatura do contrato" desce ao chão (98% em 0,49 s)
+const JUNTA = { k: 27.04, d: 10.4 }; // zeta 1: os 83 se recolhem num só (até 580 px, 98% em 1,12 s, pico de 37 px/quadro)
+const CHAO = { k: 25, d: 10 };       // zeta 1: o chão sobe 220 px e se estende às bordas (98% em 1,17 s)
+// mola normalizada: chega a 1 no fim (98%) e para, para o quadro do HOLD e da emenda ficarem exatos
+const nsp = (t, p) => clamp(sp(t, p) / 0.98);
+
+// ---------------------------------------------------------------------------
+// Tudo em px do quadro. A linha de base da costura C02-03 vai de 360 a 1560 em y = 760; os 83 pontos
+// (raio 11, o dos pontos da costura) ficam numa grade de 12 colunas sobre ela. No B2 a grade é a que a
+// cena 10 traz de volta (x = 696 + 48·coluna, y = 740 − 48·fileira, índice = fileira·12 + coluna,
+// fileira 0 embaixo). No B3 ela desliza para a esquerda da linha "assinatura do contrato" (x = 960);
+// só os 59 atravessam e formam um bloco de 9 colunas à direita; os 24 ficam onde estão, em tinta.
+// ---------------------------------------------------------------------------
+const BASE_Y = 760, LX = 960;
+const SP = 48, R = 11;
+const X_B2 = 696;                    // primeira coluna no B2 (a grade da cena 10)
+const X0 = 384;                      // primeira coluna depois do deslize (48 px da linha na última)
+const X_BLOCO = 1150;                // primeira coluna do bloco dos 59
+const Y_LINHA = 420;                 // topo da linha "assinatura do contrato"
+const SLOTS = [];
+for (let k = 0; k < 7; k += 1) for (let c = 0; c < 12; c += 1) if (SLOTS.length < 83) SLOTS.push({ c, k, y: 740 - SP * k });
+// os 59 que descobriram tarde (71,1% de 83), espalhados na grade com rng
+const TARDE = new Set();
+{
+  const r = rng(303), idx = SLOTS.map((_, i) => i);
+  for (let i = idx.length - 1; i > 0; i -= 1) { const j = Math.floor(r() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+  idx.slice(0, 59).forEach((i) => TARDE.add(i));
+}
+// o bloco dos 59 à direita da linha: 9 colunas, 6 fileiras cheias e 5 em cima. Cada coluna do bloco
+// recebe os pontos das colunas da grade na ordem, e dentro dela a ordem das fileiras (pouco sobe ou desce)
+const BLOCO = [];
+for (let c = 0; c < 9; c += 1) for (let k = 0; k < 7; k += 1) if (k < 6 || c < 5) BLOCO.push({ x: X_BLOCO + SP * c, y: 740 - SP * k, c });
+{
+  const q = SLOTS.map((s, i) => ({ s, i })).filter((o) => TARDE.has(o.i)).sort((a, b) => a.s.c - b.s.c || a.s.k - b.s.k);
+  let n = 0;
+  for (let c = 0; c < 9; c += 1) {
+    const vagas = BLOCO.filter((b) => b.c === c);
+    const vem = q.slice(n, n + vagas.length).sort((a, b) => a.s.k - b.s.k);
+    vem.forEach((o, j) => { o.s.bloco = vagas[j]; });
+    n += vagas.length;
+  }
+}
+// partida de cada ponto na travessia: a coluna mais perto da linha vai primeiro
+{
+  const r = rng(1983);
+  SLOTS.forEach((s) => { s.tAnda = T.anda + (11 - s.c) * 0.045 + (r() - 0.5) * 0.06; });
+}
+
+// campo de pontos pequenos (B1): grade com tremor, de onde os quatro pontos se multiplicam
+const SEMENTES = COSTURAS['C02-03'].pontos.map((q) => [q.x, q.y]);
+const SEMENTE_FIM = SEMENTES.map(([x]) => [x, 738]);
+const CAMPO = [];
+{
+  const r = rng(93);
+  for (let y = 358; y <= 740; y += 20) for (let x = 312; x <= 1608; x += 20) {
+    const p = { x: x + (r() - 0.5) * 10, y: y + (r() - 0.5) * 10, r: 3.1 + r() * 1.3, u: r() };
+    if (SEMENTE_FIM.some(([sx, sy]) => Math.hypot(p.x - sx, p.y - sy) < 16)) continue;
+    const d = Math.min(...SEMENTES.map(([sx, sy]) => Math.hypot(p.x - sx, p.y - sy)));
+    // os mais perto de cada semente nascem juntos; depois a onda anda a 340 px/s
+    p.t0 = T.onda + 0.2 + Math.max(0, d - 40) / 340 + 0.07 * p.u * clamp((d - 40) / 80);
+    CAMPO.push(p);
+  }
+}
+// condensação (B2): cada vaga da grade toma o ponto do campo mais perto; o resto some para dentro
+const CENTRO_G = [X_B2 + SP * 5.5, 740 - SP * 3];
+const SOME = { k: 140, d: 23.7 };    // zeta 1: o ponto do campo que sobra some (abaixo de 0,08 px em 0,55 s)
+{
+  const livre = new Set(CAMPO.map((_, i) => i));
+  const r = rng(830);
+  SLOTS.forEach((s) => {
+    const sx = X_B2 + SP * s.c;
+    let best = -1, bd = 1e9;
+    for (const i of livre) { const d = Math.hypot(CAMPO[i].x - sx, CAMPO[i].y - s.y); if (d < bd) { bd = d; best = i; } }
+    livre.delete(best);
+    CAMPO[best].vaga = s;
+    s.de = CAMPO[best];
+    s.tVaga = T.condensa + 0.22 + 0.4 * r();
+  });
+  let dmax = 0;
+  for (const p of CAMPO) dmax = Math.max(dmax, Math.hypot(p.x - CENTRO_G[0], p.y - CENTRO_G[1]));
+  for (const p of CAMPO) if (!p.vaga) p.tSome = T.condensa + 0.75 * (1 - Math.hypot(p.x - CENTRO_G[0], p.y - CENTRO_G[1]) / dmax) + 0.04 * p.u;
+}
+
+// ---------------------------------------------------------------------------
+// Saída: o chão (a linha de base) sobe de y = 760 a y = 540 e se estende às bordas; a linha
+// "assinatura do contrato" desce até ele; os 83 se recolhem no "você", um dos 24 em tinta (quem ainda
+// não assinou), sentado na linha: o primeiro quadro da cena 4.
+// ---------------------------------------------------------------------------
+const V_FIM = COSTURAS['C03-04'].pontos[0];
+const D_CHAO = COSTURAS['C03-04'].linhas[0].d;
+const yChao = (g) => lerp(BASE_Y, 540, g);
+const PONTOS = SLOTS.map((s, i) => ({ i, s, tarde: TARDE.has(i) }));
+// o "você": o ponto em tinta mais perto do lugar onde ele vai ficar
+const VOCE = PONTOS.filter((p) => !p.tarde).sort((a, b) => Math.hypot(X0 + SP * a.s.c - 960, a.s.y - 600) - Math.hypot(X0 + SP * b.s.c - 960, b.s.y - 600))[0];
+{
+  // a forma se contrai inteira: os mais longe do "você" saem um pouco antes, para todos chegarem juntos
+  const r = rng(5959);
+  const ondeB3 = (p) => (p.tarde ? [p.s.bloco.x, p.s.bloco.y] : [X0 + SP * p.s.c, p.s.y]);
+  const dist = (p) => Math.hypot(ondeB3(p)[0] - 960, ondeB3(p)[1] - 600);
+  const dmax = Math.max(...PONTOS.map(dist));
+  for (const p of PONTOS) p.tJ = p === VOCE ? T.junta : T.junta + 0.04 + 0.1 * (1 - dist(p) / dmax) + 0.02 * r();
+}
+
+// ---------------------------------------------------------------------------
+// DOM e utilitários
+// ---------------------------------------------------------------------------
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+const f1 = (v) => v.toFixed(1);
+const ptS = (p) => f1(p[0]) + ' ' + f1(p[1]);
+const polyD = (pts) => 'M' + pts.map(ptS).join('L');
+function svgEl(tag, attrs, pai) { const e = document.createElementNS(NS, tag); for (const [a, v] of Object.entries(attrs)) e.setAttribute(a, v); pai.appendChild(e); return e; }
+function el(cls, html, pai) { const e = document.createElement('div'); e.className = cls; e.innerHTML = html; pai.appendChild(e); return e; }
+const vis = (e, a) => { e.style.opacity = a.toFixed(3); e.style.visibility = a > 0.001 ? 'inherit' : 'hidden'; };
+const pos = (e, x, y) => { e.style.left = x.toFixed(2) + 'px'; e.style.top = y.toFixed(2) + 'px'; };
+const attr = (e, k, v) => { const c = '__' + k; if (e[c] !== v) { e.setAttribute(k, v); e[c] = v; } };
+const mostra = (e, on) => { const v = on ? 'visible' : 'hidden'; if (e.__v !== v) { e.setAttribute('visibility', v); e.__v = v; } };
+const hx = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+const mix = (a, b, p) => { const A = hx(a), B = hx(b); return '#' + A.map((v, i) => Math.round(lerp(v, B[i], p)).toString(16).padStart(2, '0')).join(''); };
+const TINTA = '#171717', FERRUGEM = '#B94E36';
+
+// costuras: a entrada (linha de base e quatro pontos) e a saída (linha do chão e o ponto "você")
+const base = $('base'), saidaSvg = $('saida');
+const C1 = desenharCostura('C02-03', base);
+const linhaBase = C1.linhas[0], sementes = C1.pontos;
+// a linha "assinatura do contrato"
+const folha = svgEl('path', { fill: 'none', stroke: TINTA, 'stroke-width': '3', 'stroke-linecap': 'round' }, base);
+mostra(folha, false);
+// os 83 pontos: um círculo em tinta e, para os 59, um em ferrugem recortado do lado de lá da linha
+const pontosG = $('pontos');
+for (const p of PONTOS) {
+  p.eT = svgEl('circle', { r: '0', fill: TINTA }, pontosG);
+  if (p.tarde) p.eF = svgEl('circle', { r: '0', fill: FERRUGEM, 'clip-path': 'url(#depois)' }, pontosG);
+  mostra(p.eT, false); if (p.eF) mostra(p.eF, false);
+}
+const C2 = desenharCostura('C03-04', saidaSvg);
+const linhaChao = C2.linhas[0], pontoVoce = C2.pontos[0];
+const campoEl = $('campo');
+
+// textos: só os números e as palavras da fala
+const rot = $('rotulos');
+const t93 = el('t numero', '93%', rot);
+const tDos = el('t apoio', 'dos brasileiros possuem', rot);
+const tDific = el('t apoio', 'dificuldade na compra de imóveis', rot);
+const t83 = el('t numero', '83', rot);
+const tPessoas = el('t apoio', 'pessoas', rot);
+const tOuvidas = el('t apoio', 'ouvidas', rot);
+const tMais = el('t apoio-s', 'mais de', rot);
+const t70 = el('t numero', '70%', rot); t70.style.color = 'var(--brand-rust)';
+const tLinha = el('t rot-linha', 'assinatura do contrato', rot);
+const TEXTOS = [t93, tDos, tDific, t83, tPessoas, tOuvidas, tMais, t70, tLinha];
+for (const e of TEXTOS) vis(e, 0);
+const dbg = new URLSearchParams(location.search).has('debug') ? el('', '', $('c')) : null;
+if (dbg) dbg.id = 'debug';
+
+// medidas de texto (sem transform no contêiner)
+let M = null;
+function medir() {
+  M = {};
+  for (const [k, e] of Object.entries({ t93, tDos, tDific, t83, tPessoas, tOuvidas, tMais, t70, tLinha })) M[k] = e.offsetWidth;
+}
+
+// posição de entrada de um texto (sobe 10 px com a mola de texto) e opacidade por swap
+function texto(e, t, tIn, tOut, x, y, o = {}) {
+  const a = swap(t, tIn, tOut, { durIn: 0.16, ...o });
+  vis(e, a);
+  if (a > 0.001) pos(e, x, y + 10 * pending(t, tIn + 0.04, P.type));
+}
+
+// posição de um dos 83 até a saída (B2 e B3): do campo à vaga, o deslize e, para os 59, a travessia
+function posGrade(t, p) {
+  const s = p.s;
+  const v = nsp(t - s.tVaga, P.card);
+  let x = lerp(s.de.x, X_B2 + SP * s.c, v) + (X0 - X_B2) * nsp(t - T.desliza, DESLIZA);
+  let y = lerp(s.de.y, s.y, v);
+  const rr = lerp(s.de.r, R, v);
+  if (p.tarde) {
+    const e = nsp(t - s.tAnda, ANDA);
+    // anda entre as fileiras (meia fileira acima) para não passar por cima dos que ficam
+    const sobe = Math.min(1, e / 0.06, (1 - e) / 0.15);
+    const u = clamp((e - 0.7) / 0.3);
+    x = lerp(x, s.bloco.x, e);
+    y = lerp(y, s.bloco.y, u * u * (3 - 2 * u)) - 24 * Math.max(0, sobe);
+  }
+  return [x, y, rr];
+}
+
+// ---------------------------------------------------------------------------
+// seek(t): função pura do tempo
+// ---------------------------------------------------------------------------
+function render(t) {
+  t = clamp(t, 0, DUR);
+  if (!M) medir();
+  // o último quadro (e DUR) é a emenda C03-04 exata; todas as molas da saída chegam a 1 antes dele
+  const fim = t >= DUR - 1 / 30 - 1e-6;
+  const g = nsp(t - T.chao, CHAO);
+  const saindo = t >= T.recolhe;
+
+  // ===== B1: os quatro pontos se multiplicam num campo ==========================================
+  {
+    // as sementes encolhem até o tamanho do campo, viram tinta e sobem para a fila de baixo do campo
+    const q = nsp(t - T.onda, { k: 36, d: 12 });
+    const some = 1 - nsp(t - (T.condensa + 0.45), { k: 60, d: 15.5 });
+    sementes.forEach((e, i) => {
+      if (t <= 0) { attr(e, 'cx', String(SEMENTES[i][0])); attr(e, 'cy', String(SEMENTES[i][1])); attr(e, 'r', '11'); attr(e, 'fill', '#B94E36'); mostra(e, true); return; }
+      const rr = lerp(11, 3.8, q) * some;
+      mostra(e, rr > 0.05);
+      attr(e, 'cy', f1(lerp(SEMENTES[i][1], SEMENTE_FIM[i][1], q)));
+      attr(e, 'r', rr.toFixed(2));
+      attr(e, 'fill', mix('#B94E36', TINTA, clamp(q * 1.6)));
+    });
+    // o campo: cada ponto aparece quando a onda chega (mola de botão) e, na condensação, some para
+    // dentro (os que viram as 83 vagas passam para os círculos da grade)
+    let d = '';
+    if (t > T.onda && t < T.condensa + 1.6) {
+      for (const p of CAMPO) {
+        if (t < p.t0) continue;
+        if (p.vaga && t >= T.condensa) continue;
+        let rr = p.r * sp(t - p.t0, P.button), x = p.x, y = p.y;
+        if (!p.vaga && t > p.tSome) {
+          const s = sp(t - p.tSome, SOME);
+          rr *= Math.max(0, 1 - s);
+          x = lerp(p.x, CENTRO_G[0], 0.22 * s); y = lerp(p.y, CENTRO_G[1], 0.22 * s);
+        }
+        // o que já sumiu fica como um ponto sem área (não pinta nada): a caixa do campo encolhe com a
+        // deriva, sem saltar quando um ponto da borda some
+        if (rr < 0.08) { if (t >= T.condensa) d += `M${f1(x)} ${f1(y)}h0`; continue; }
+        d += `M${f1(x - rr)} ${f1(y)}a${rr.toFixed(2)} ${rr.toFixed(2)} 0 1 0 ${(2 * rr).toFixed(2)} 0a${rr.toFixed(2)} ${rr.toFixed(2)} 0 1 0 ${(-2 * rr).toFixed(2)} 0`;
+      }
+    }
+    attr(campoEl, 'd', d);
+    // "93%" e, ao lado, "dos brasileiros" / "dificuldade na compra de imóveis", centrados sobre o campo
+    const larg = M.t93 + 30 + Math.max(M.tDos, M.tDific);
+    const x0 = Math.round(960 - larg / 2);
+    texto(t93, t, T.n93, T.saiB1, x0, 108);
+    texto(tDos, t, T.dos, T.saiB1 + 0.03, x0 + M.t93 + 30, 146);
+    texto(tDific, t, T.dific, T.saiB1 + 0.03, x0 + M.t93 + 30, 220);
+  }
+
+  // ===== B2 e B3: textos =========================================================================
+  {
+    // o bloco do "83" fica alinhado à borda esquerda da grade e desliza com ela no B3
+    const xg = X_B2 - R - 7 + (X0 - X_B2) * nsp(t - T.desliza, DESLIZA);
+    texto(t83, t, T.n83, T.saida, xg, 108);
+    // "pessoas" / "ouvidas" ao lado do número, como as duas linhas do "93%"
+    texto(tPessoas, t, T.ouvidas, T.saida, xg + M.t83 + 30, 146);
+    texto(tOuvidas, t, T.ouvidas + 0.08, T.saida, xg + M.t83 + 30, 220);
+    // "mais de 70%" sobre o bloco dos 59, alinhado pela direita com ele
+    const x70 = X_BLOCO + SP * 8 + R + 6 - M.t70;
+    texto(tMais, t, T.mais, T.saida + 0.03, x70 - 22 - M.tMais, 194);
+    texto(t70, t, T.setenta, T.saida + 0.03, x70, 108);
+    // "assinatura do contrato" no pé da linha, embaixo do chão
+    texto(tLinha, t, T.rotLinha, T.saida, LX - M.tLinha / 2, BASE_Y + 22);
+  }
+
+  // ===== a linha "assinatura do contrato": se ergue no B3 e, na saída, desce até o chão ============
+  {
+    const yc = yChao(g);
+    const L = (BASE_Y - Y_LINHA) * nsp(t - T.ergue, ERGUE) * (1 - nsp(t - T.recolhe - 0.07, RECOLHE));
+    mostra(folha, L > 0.5 && !fim);
+    if (L > 0.5) attr(folha, 'd', polyD([[LX, yc], [LX, yc - L]]));
+  }
+
+  // ===== o chão: a linha de base da costura C02-03; na saída, a linha do chão da C03-04 ==========
+  {
+    if (t <= 0) attr(linhaBase, 'd', COSTURAS['C02-03'].linhas[0].d);
+    mostra(linhaBase, !saindo);
+    mostra(linhaChao, saindo);
+    if (fim || g >= 1) { attr(linhaChao, 'd', D_CHAO); attr(linhaChao, 'stroke-width', '3'); }
+    else if (saindo) {
+      attr(linhaChao, 'd', polyD([[lerp(360, -20, g), yChao(g)], [lerp(1560, 1940, g), yChao(g)]]));
+      attr(linhaChao, 'stroke-width', lerp(2, 3, g).toFixed(2));
+    }
+  }
+
+  // ===== pessoas =================================================================================
+  // o "você" vai ao meio do chão (sentado na linha) e cresce ao raio da emenda; os outros vão a ele,
+  // encolhem para dentro dele e somem. A altura de cada ponto é medida a partir do chão, que sobe: ninguém
+  // passa para baixo da linha
+  const jV = nsp(t - VOCE.tJ, JUNTA);
+  const rV = lerp(R, V_FIM.r, jV);
+  const yc = yChao(g);
+  const pV = posGrade(t, VOCE);
+  const xV = lerp(pV[0], 960, jV), hV = lerp(BASE_Y - pV[1], V_FIM.r, jV);
+  const centroV = [xV, yc - hV];
+  mostra(pontosG, t >= T.condensa && !fim);
+  for (const p of PONTOS) {
+    if (t < T.condensa || fim) { mostra(p.eT, false); if (p.eF) mostra(p.eF, false); continue; }
+    if (p === VOCE && saindo) { mostra(p.eT, false); continue; }
+    let [x, y, rr] = posGrade(t, p);
+    const j = p === VOCE ? 0 : nsp(t - p.tJ, JUNTA);
+    if (j >= 1) { mostra(p.eT, false); if (p.eF) mostra(p.eF, false); continue; }
+    // encolhem enquanto se juntam: muitos pontos pequenos correndo para um só, sem virar mancha
+    // e, no último trecho, se apagam para dentro dele (a forma que se contrai não vira mancha)
+    let op = 1;
+    if (saindo) {
+      x = lerp(x, xV, j); y = yc - lerp(BASE_Y - y, hV, j); rr = lerp(rr, 3.5, Math.min(1, j * 1.25));
+      const u = clamp((j - 0.78) / 0.2); op = 1 - u * u * (3 - 2 * u);
+      if (op < 0.01) { mostra(p.eT, false); if (p.eF) mostra(p.eF, false); continue; }
+    }
+    const f = (e) => { attr(e, 'cx', f1(x)); attr(e, 'cy', f1(y)); attr(e, 'r', rr.toFixed(2)); attr(e, 'opacity', op.toFixed(3)); };
+    if (!p.eF) { mostra(p.eT, true); f(p.eT); attr(p.eT, 'clip-path', 'none'); continue; }
+    f(p.eF);
+    if (saindo) {
+      // na saída, o ferrugem é inteiro (os 59 já passaram da linha) e some por baixo do "você"
+      attr(p.eF, 'clip-path', 'none'); mostra(p.eF, true); mostra(p.eT, false);
+    } else {
+      // a cor só muda na travessia: antes de andar o ponto é tinta inteiro (no B2 a grade está
+      // centrada em x = 960, e no deslize ela passa da linha para a esquerda)
+      const anda = t >= p.s.tAnda;
+      f(p.eT); mostra(p.eT, true);
+      mostra(p.eF, anda); attr(p.eF, 'fill', FERRUGEM);
+      attr(p.eF, 'clip-path', 'url(#depois)'); attr(p.eT, 'clip-path', anda ? 'url(#antes)' : 'none');
+    }
+  }
+  // o "você": o círculo da costura C03-04, por cima da linha
+  if (fim) {
+    attr(pontoVoce, 'cx', String(V_FIM.x)); attr(pontoVoce, 'cy', String(V_FIM.y)); attr(pontoVoce, 'r', String(V_FIM.r));
+    mostra(pontoVoce, true);
+  } else {
+    mostra(pontoVoce, saindo);
+    if (saindo) {
+      const ok = jV >= 1 && g >= 1;
+      attr(pontoVoce, 'cx', ok ? String(V_FIM.x) : f1(centroV[0]));
+      attr(pontoVoce, 'cy', ok ? String(V_FIM.y) : f1(centroV[1]));
+      attr(pontoVoce, 'r', ok ? String(V_FIM.r) : rV.toFixed(2));
+    }
+  }
+
+  if (dbg) dbg.textContent = `${t.toFixed(2)} s`;
+}
+
+// ---------------------------------------------------------------------------
+// Contrato de render e modos de preview
+// ---------------------------------------------------------------------------
+const ESTADOS = [
+  { id: 'E0', nome: 'Quatro pontos na linha de base (último quadro da cena 2)', t: 0 },
+  { id: 'M1', nome: 'Meio: os pontos se multiplicam; 93%', t: 1.0 },
+  { id: 'B1', nome: '93% dos brasileiros · dificuldade na compra de imóveis (HOLD)', t: HOLDS[0] },
+  { id: 'M2', nome: 'Meio: o campo se condensa', t: 4.2 },
+  { id: 'B2', nome: '83 pessoas ouvidas', t: 5.25 },
+  { id: 'M3', nome: 'Meio: a grade desliza; a linha se ergue', t: 5.95 },
+  { id: 'M3b', nome: 'Meio: mais de 70%; os 59 atravessam a linha', t: 7.1 },
+  { id: 'B3', nome: '24 | 59 · mais de 70% · assinatura do contrato (HOLD)', t: HOLDS[1] },
+  { id: 'M4', nome: 'Meio: a linha desce; o chão sobe; os pontos se recolhem', t: 9.0 },
+  { id: 'M4b', nome: 'Meio: os pontos viram um só', t: 9.45 },
+  { id: 'FIM', nome: 'Linha do chão e o ponto você (primeiro quadro da cena 4)', t: DUR - 1 / 30 },
+];
+const SONS = [
+  { t: T.onda, tipo: 'tick', ganho: 0.5, evento: 'os pontos começam a se multiplicar' },
+  { t: T.condensa, tipo: 'whoosh', dur: 0.6, ganho: 0.3, evento: 'o campo se condensa' },
+  { t: T.ergue, tipo: 'tick', evento: 'a linha assinatura do contrato se ergue' },
+  { t: T.anda, tipo: 'whoosh', dur: 1.6, ganho: 0.25, evento: 'os 59 atravessam a linha' },
+  { t: T.junta, tipo: 'whoosh', dur: 1.0, ganho: 0.35, evento: 'os pontos se recolhem no você' },
+];
+window.POC = {
+  id: 'CENA-03', duracao: DUR, fps: 30, estados: ESTADOS, holds: HOLDS, cliques: [], marcos: T, sons: SONS,
+  tiras: [{ nome: 'multiplica', t0: 0.3 }, { nome: 'condensa', t0: T.condensa + 0.1 }, { nome: 'linha', t0: T.desliza + 0.3 }, { nome: 'travessia', t0: 6.9 }, { nome: 'saida', t0: T.recolhe - 0.05 }, { nome: 'junta', t0: 9.4 }],
+  comparar: ESTADOS.map((e) => ({ t: e.t, nome: e.id })),
+  entrada: { costura: 'C02-03' },
+  saida: { costura: 'C03-04' },
+  // a grade dos 83 pontos, para a cena 10 trazê-la de volta no mesmo lugar (B2: x0 = 696). No B3 a grade
+  // desliza para x0 = 384; os 24 ficam ali e os 59 vão para o bloco de 9 colunas que começa em x = 1150
+  grade83: { raio: R, passo: SP, colunas: 12, linhaDeBase: BASE_Y, x0B2: X_B2, x0Antes: X0, x0Bloco: X_BLOCO, vagas: SLOTS.map((s, i) => ({ k: i, coluna: s.c, fileira: s.k, x: X_B2 + SP * s.c, y: s.y, tarde: TARDE.has(i), xB3: s.bloco ? s.bloco.x : X0 + SP * s.c, yB3: s.bloco ? s.bloco.y : s.y })) },
+};
+window.seek = (t) => render(t);
+window.__pronto = (async () => {
+  await document.fonts.ready;
+  const todo = document.getElementById('c').textContent + ' ×·—–→%0123456789:/';
+  await Promise.all([
+    '500 210px Fraunces', '500 66px Fraunces',
+    '600 54px "Plus Jakarta Sans"', '600 58px "Plus Jakarta Sans"',
+  ].map((f) => document.fonts.load(f, todo)));
+  await document.fonts.ready;
+  medir();
+  for (let t = 0; t <= DUR; t += 0.25) render(t);
+  await document.fonts.ready;
+  render(0);
+  return true;
+})();
+
+if (!navigator.webdriver) {
+  document.body.classList.add('tela');
+  const c = $('c');
+  const ajusta = () => { const s = Math.min(innerWidth / 1920, innerHeight / 1080); Object.assign(c.style, { position: 'absolute', transformOrigin: '0 0', transform: `scale(${s})`, left: `${(innerWidth - 1920 * s) / 2}px`, top: `${(innerHeight - 1080 * s) / 2}px` }); };
+  addEventListener('resize', ajusta); ajusta();
+  const aoVivo = new URLSearchParams(location.search).has('live');
+  // ao vivo: espaço ou → leva ao próximo HOLD; o último é DUR (a passagem para a cena 4)
+  const PARADAS = HOLDS;
+  let t = 0, alvo = aoVivo ? PARADAS[0] : DUR, rodando = true, antes = null, ultimo = null;
+  const passo = (agora) => { if (antes !== null && rodando) { t += (agora - antes) / 1000; if (t >= alvo) { t = alvo; if (!aoVivo) t = 0; else rodando = false; } } antes = agora; if (t !== ultimo) { render(t); ultimo = t; } requestAnimationFrame(passo); };
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown') {
+      const base0 = rodando ? alvo : t;
+      const i = PARADAS.findIndex((h) => h > base0 + 1e-3);
+      if (aoVivo) { if (i >= 0) { alvo = PARADAS[i]; rodando = true; } } else rodando = !rodando;
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      const anteriores = PARADAS.filter((h) => h < t - 1e-3);
+      t = anteriores.length ? anteriores[anteriores.length - 1] : 0;
+      alvo = aoVivo ? (PARADAS.find((h) => h > t + 1e-3) ?? DUR) : DUR;
+      rodando = !aoVivo;
+      render(t); ultimo = t;
+      e.preventDefault();
+    } else if (e.key === 'r') { t = 0; alvo = aoVivo ? PARADAS[0] : DUR; rodando = true; }
+  });
+  window.__pronto.then(() => requestAnimationFrame(passo));
+}
+</script>
+</body>
+</html>

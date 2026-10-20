@@ -1,0 +1,78 @@
+{
+  "fonte": "docs/pitch-original-locked.md",
+  "regra": "trechos literais; a concatenação reconstrói o pitch inteiro",
+  "cenas": [
+    {
+      "cena": 1,
+      "titulo": "O apartamento perfeito",
+      "trecho": "Imagine que você acabou de encontrar este apartamento no Recife. O anúncio diz: \"75 metros quadrados, super ventilado, 100% nascente, condomínio baratinho\". Parece o lar perfeito. Mas, se assinarem esse contrato hoje, vocês acabaram de cair em uma armadilha financeira de R$ 125 mil nos próximos cinco anos.",
+      "palavras": 48
+    },
+    {
+      "cena": 2,
+      "titulo": "O portal não está do seu lado",
+      "trecho": "Por quê? Porque o cliente dos grandes portais imobiliários é a imobiliária, não você. Eles ganham por anúncio e por clique. Por isso, o mercado tolera que fotos esticadas em lente olho de peixe façam uma sala parecer gigante, que a vaga de garagem seja somada como área de quarto, que um apartamento poente seja vendido como nascente e que ninguém avise que aquela rua trava quando chove muito.",
+      "palavras": 69
+    },
+    {
+      "cena": 3,
+      "titulo": "Quem descobre tarde demais",
+      "trecho": "Não por acaso, 93% dos brasileiros relatam dificuldade para comprar um imóvel. Quando ouvimos 83 pessoas que se mudaram recentemente no Recife, mais de 70% só descobriram problemas graves depois de assinar o contrato. E o arrependimento não para na porta do apartamento: as pessoas descobrem tarde demais que se mudaram para um bolsão de calor, para o lado de uma demolição barulhenta ou uma quadra insegura, sem praças e cara de viver a pé.",
+      "palavras": 75
+    },
+    {
+      "cena": 4,
+      "titulo": "Os dados existem, mas estão enterrados",
+      "trecho": "Os dados que evitam essa cilada são públicos, mas estão enterrados em cadastros técnicos que ninguém consegue cruzar sozinho. Hoje, para se proteger, você precisaria descobrir o número do lote na marra, baixar planilhas, caçar alvarás de obras e checar mapas. Fazer essa investigação leva semanas — tempo suficiente para outra pessoa levar o imóvel no seu lugar.",
+      "palavras": 58
+    },
+    {
+      "cena": 5,
+      "titulo": "A virada: em segundos",
+      "trecho": "A VEREDA faz essa investigação em segundos.\nVocê cola o link do anúncio no aplicativo e revelamos o que os documentos oficiais dizem sobre o imóvel e o que o entorno espera de você.",
+      "palavras": 34
+    },
+    {
+      "cena": 6,
+      "titulo": "Da porta para dentro",
+      "trecho": "Da porta para dentro, nossa solução lê o anúncio, corrige a distorção das fotos para revelar a proporção real dos cômodos e descobre o lote exato do prédio. Na hora, cruzamos os registros da prefeitura para mostrar se a metragem anunciada bate com a área do IPTU, se existem taxas omitidas e por quanto os apartamentos daquele prédio foram realmente negociados nas escrituras dos últimos dez anos.",
+      "palavras": 67
+    },
+    {
+      "cena": 7,
+      "titulo": "Da porta para fora",
+      "trecho": "Da porta para fora, nós lemos o entorno para a sua rotina: mostramos se há alvará de obra ou demolição aprovado a menos de 150 metros da sua janela, se a rua sofre com alagamentos, se a quadra vira uma ilha de calor, como está a segurança no bairro e o custo real do que você resolve a pé.",
+      "palavras": 59
+    },
+    {
+      "cena": 8,
+      "titulo": "Tirar a maquiagem e negociar",
+      "trecho": "Em vez de inventar uma nota, a VEREDA  remove a maquiagem dos anúncios e separa as informações mais importantes —  aumentando seu poder de negociação. Com um toque, o app monta uma mensagem direta para você perguntar sobre os pontos ainda não revelados para o corretor no WhatsAp.",
+      "palavras": 48
+    },
+    {
+      "cena": 9,
+      "titulo": "O celular vira ferramenta",
+      "trecho": "E, na visita presencial, o seu celular vira ferramenta de investigação: usa o GPS para confirmar o prédio, a bússola para testar o sol na janela e o microfone para medir o barulho da rua. Aquele prejuízo lá do começo? Você desmascara em dois minutos.",
+      "palavras": 45
+    },
+    {
+      "cena": 10,
+      "titulo": "Modelo e validação",
+      "trecho": "Como ninguém muda de casa todo mês, nós não cobramos assinatura mensal. Você começa com créditos e ganha novos ao colaborar em campo confirmando dados ou compra dossiês avulsos quando está prestes a fechar negócio. Na nossa validação, 89% dos entrevistados toparam colaborar em troca de créditos, e o app teve nota de utilidade de 4,73 de 5.",
+      "palavras": 58
+    },
+    {
+      "cena": 11,
+      "titulo": "Prova, equipe e piloto",
+      "trecho": "Tudo isso já está validado com profissionais da área, e empreendedores parceiros do centro de informática,  telas funcionais, cruzando mais de meio milhão de registros da cidade com alta precisão na identificação. Somos três profissionais e universitários — Samuel em produto, Matheus em design e Artur em dados e engenharia. Com a Campus, vamos colocar o piloto na rua até junho de 2027.",
+      "palavras": 63
+    },
+    {
+      "cena": 12,
+      "titulo": "A verdade antes da decisão",
+      "trecho": "Afinal, uma boa foto serve para conquistar o seu clique. Decidir onde morar exige saber a verdade.",
+      "palavras": 17
+    }
+  ]
+}

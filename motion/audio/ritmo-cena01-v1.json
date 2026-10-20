@@ -1,0 +1,125 @@
+{
+  "poc": "CENA-01",
+  "duracao": 13.8,
+  "geradoEm": "2026-10-18",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 123,
+    "fase": 0.15,
+    "erroMedio": 0.035,
+    "batidas": [
+      0.15,
+      0.638,
+      1.126,
+      1.613,
+      2.101,
+      2.589,
+      3.077,
+      3.565,
+      4.052,
+      4.54,
+      5.028,
+      5.516,
+      6.004,
+      6.491,
+      6.979,
+      7.467,
+      7.955,
+      8.443,
+      8.93,
+      9.418,
+      9.906,
+      10.394,
+      10.882,
+      11.37,
+      11.857,
+      12.345,
+      12.833,
+      13.321
+    ]
+  },
+  "holds": [
+    2.95,
+    13.8
+  ],
+  "sons": [
+    {
+      "t": 0.15,
+      "tipo": "whoosh",
+      "dur": 1.8,
+      "ganho": 0.35,
+      "evento": "a luz entra",
+      "batidaMaisProxima": 0.15,
+      "desvio": 0
+    },
+    {
+      "t": 3.5,
+      "tipo": "pop",
+      "evento": "75 metros quadrados",
+      "batidaMaisProxima": 3.565,
+      "desvio": -0.065
+    },
+    {
+      "t": 4.95,
+      "tipo": "pop",
+      "evento": "super ventilado",
+      "batidaMaisProxima": 5.028,
+      "desvio": -0.078
+    },
+    {
+      "t": 5.03,
+      "tipo": "whoosh",
+      "dur": 1.2,
+      "ganho": 0.3,
+      "evento": "vento",
+      "batidaMaisProxima": 5.028,
+      "desvio": 0.002
+    },
+    {
+      "t": 5.7,
+      "tipo": "pop",
+      "evento": "sol 100% nascente",
+      "batidaMaisProxima": 5.516,
+      "desvio": 0.184
+    },
+    {
+      "t": 5.75,
+      "tipo": "sweep",
+      "dur": 1,
+      "ganho": 0.8,
+      "evento": "o sol sobe",
+      "batidaMaisProxima": 5.516,
+      "desvio": 0.234
+    },
+    {
+      "t": 7,
+      "tipo": "tick",
+      "evento": "taxa de condomínio baixinha",
+      "batidaMaisProxima": 6.979,
+      "desvio": 0.021
+    },
+    {
+      "t": 9.9,
+      "tipo": "click",
+      "evento": "Mas: o vento para",
+      "batidaMaisProxima": 9.906,
+      "desvio": -0.006
+    },
+    {
+      "t": 10.75,
+      "tipo": "whoosh",
+      "dur": 1,
+      "evento": "colapso",
+      "batidaMaisProxima": 10.882,
+      "desvio": -0.132
+    },
+    {
+      "t": 12.3,
+      "tipo": "thump",
+      "evento": "milhares de reais",
+      "batidaMaisProxima": 12.345,
+      "desvio": -0.045
+    }
+  ]
+}

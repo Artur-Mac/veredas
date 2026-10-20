@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · Cena 10 · modelo e validação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@400..800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lib/marca.css">
+<style>
+  /* casca das cenas 05 a 09: o primeiro quadro é a costura C09-10, pixel a pixel */
+  html, body { margin: 0; background: var(--bg-obsidian); }
+  body.tela { min-height: 100vh; overflow: hidden; }
+  #c {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden; flex: none;
+    background: var(--bg-paper); color: var(--ink-primary);
+    font-family: var(--font-sans); font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  .grade {
+    position: absolute; inset: 0; background-size: 48px 48px;
+    background-image:
+      linear-gradient(to right, rgba(127, 136, 112, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(127, 136, 112, 0.09) 1px, transparent 1px);
+  }
+  svg.camada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+  .camada-div { position: absolute; inset: 0; }
+  /* a sombra transparente alarga a área de tinta do texto que o Chromium repinta: sem ela, a ponta do
+     j de "jan" (que passa da caixa do glifo) ficava na tela em t = 0 depois de outro quadro */
+  .t { position: absolute; white-space: nowrap; line-height: 1.15; text-shadow: 0 0 6px rgba(0, 0, 0, 0); }
+  .t .alvo { position: relative; display: inline-block; }
+  .t .sub { position: absolute; left: 0; bottom: -4px; height: 4.2px; width: 0; border-radius: 2.1px; background: #F47745; }
+
+  /* textos do filme (só palavras e números da fala) */
+  .mes { font: 500 26px/1 var(--font-sans); color: #625C51; }
+  .frase { font: 500 124px/1 var(--font-display); letter-spacing: -0.03em; color: var(--ink-primary); }
+  .frase2 { font: 500 64px/1.2 var(--font-display); letter-spacing: -0.02em; color: #4A4740; }
+  .legenda-f { font: 500 76px/1.24 var(--font-display); letter-spacing: -0.025em; color: var(--ink-primary); }
+  /* o eco do MILHARES da cena 01 (Fraunces 600, caixa alta), aqui em tinta: o laranja é o pacote */
+  .milhares { font-family: var(--font-display); font-weight: 600; font-variation-settings: 'opsz' 144; letter-spacing: -0.035em; line-height: 0.86; font-size: 172px; color: var(--ink-primary); }
+  .reais { font: 500 52px/1.2 var(--font-sans); color: #4A4740; }
+  .rot-fr { font: 500 54px/1.15 var(--font-display); letter-spacing: -0.02em; color: #F47745; }
+  .rot-erro { font: 500 54px/1.15 var(--font-display); letter-spacing: -0.02em; color: #B94E36; }
+  .comprador { font: 500 66px/1.1 var(--font-display); letter-spacing: -0.025em; color: var(--ink-primary); }
+  .rot-camada { font: 500 54px/1.15 var(--font-display); letter-spacing: -0.02em; color: #4A4740; }
+  .numero { font-family: var(--font-display); font-weight: 500; font-variation-settings: 'opsz' 40; letter-spacing: -0.03em; line-height: 1; color: var(--ink-primary); }
+  .legenda { font: 500 46px/1.2 var(--font-sans); color: #4A4740; }
+  .fonte { font: 500 34px/1.2 var(--font-sans); color: #625C51; }
+  .rot-regua { font: 600 26px/1 var(--font-mono); color: #625C51; }
+  /* toast do protótipo (.vereda-toast + showToast), a 2x */
+  .toast { display: inline-flex; align-items: center; gap: 20px; box-sizing: border-box; background: #171717; color: #FAF6EE; border: 2px solid #F47745; padding: 24px 36px; border-radius: 20px; font: 500 24px/1.2 var(--font-mono); }
+  .toast i { display: inline-block; flex: none; width: 16px; height: 16px; border-radius: 50%; background: #F47745; }
+
+  /* a forma única: ponto → pílula "3 créditos" → folha da carteira → ponto da base */
+  #forma { position: absolute; overflow: hidden; box-sizing: border-box; }
+  #pilT { position: absolute; font: 600 34.5px/1 var(--font-sans); white-space: nowrap; color: var(--ink-primary); }
+  #folhaPos { position: absolute; left: 0; top: 0; width: 731px; height: 1044px; }
+
+  /* openCreditsSheet (index.html), em px do app, com zoom de layout fixo de 1,7.
+     O reset * { margin: 0; padding: 0 } e o corpo de 15 px / 1,5 do protótipo valem aqui dentro. */
+  #folha { position: relative; width: 430px; zoom: 1.7; font-family: var(--font-sans); font-size: 15px; line-height: 1.5; color: #171717; -webkit-font-smoothing: antialiased; }
+  #folha * { box-sizing: border-box; margin: 0; padding: 0; }
+  #folha .painel { display: flex; flex-direction: column; gap: 18px; padding: 18px 18px 24px; }
+  #folha .sheet-handle { width: 38px; height: 4px; border-radius: 999px; background: #DCD3C3; margin: 0 auto 10px; }
+  #folha .ed-kicker { font-family: var(--font-sans); font-size: 11px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--brand-orange); display: inline-flex; align-items: center; gap: 5px; }
+  #folha .ed-btn-secondary { background: #FAF8F4; color: var(--ink-primary); border: 1px solid rgba(23, 23, 23, 0.12); border-radius: 11px; padding: 4px 8px; font-family: var(--font-sans); font-size: 11.5px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px; line-height: normal; }
+  #folha .ed-title-md { font-family: var(--font-display); font-size: 18.5px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; color: var(--ink-primary); }
+  #folha .ed-cream-box { background: #F7EFE6; border: 1px solid #EBE1D3; border-radius: 13px; padding: 13px 14px; }
+  #folha .ed-btn-ink { background: var(--ink-primary); color: #FAF8F4; border: 1px solid var(--ink-primary); border-radius: 11px; padding: 11.5px 15px; font-family: var(--font-sans); font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; line-height: normal; }
+  #folha .linha { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #FAF7F0; border-radius: 8px; font-size: 12px; margin-bottom: 6px; }
+  #folha .linha .d { font-weight: 600; color: #171717; }
+  #folha .linha .dt { color: #78716C; font-size: 11px; margin-left: 6px; }
+  #folha .linha strong { font-variant-numeric: tabular-nums; }
+  #folha .alvo { position: relative; display: inline-block; }
+  #folha .sub { position: absolute; left: 0; bottom: -1.5px; height: 2.5px; width: 0; border-radius: 2px; background: #F47745; }
+</style>
+</head>
+<body>
+<div id="c">
+  <div class="grade"></div>
+  <svg class="camada" id="costura" viewBox="0 0 1920 1080"></svg>
+  <div class="camada-div" id="textos"></div>
+  <div id="forma"><div id="pilT">3 créditos</div><div id="folhaPos"><div id="folha"></div></div></div>
+  <svg class="camada" id="frente" viewBox="0 0 1920 1080"></svg>
+  <div class="camada-div" id="rotulos"></div>
+  <svg class="camada" id="cursor-camada" viewBox="0 0 1920 1080">
+    <circle id="onda" r="0" fill="none" stroke="#F47745" stroke-width="3" opacity="0" />
+    <path id="cursor" fill="#171717" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round" opacity="0" />
+  </svg>
+</div>
+
+<script type="module">
+import { clamp, lerp, sp, smooth, swap, press, mixColor, rgba, rng, PRESETS as P } from '../lib/motion.js';
+import { desenharCostura } from '../lib/costuras.js';
+
+const Q = new URLSearchParams(location.search);
+
+// ---------------------------------------------------------------------------
+// Linha do tempo (roteiro de 18/10/2026, docs/mapa-fala-revisada.md). A fala corre a cerca de 8
+// sílabas por segundo; as pausas da gravação marcam o fim da 1ª frase (≈ 6,1 s) e da 2ª (≈ 9,5 s).
+// Cada evento cai na palavra de sentido. Os HOLD ficam nos fins de frase (e um no fim da oração do
+// 89%) e o quadro de cada um fica parado desde 0,1 s antes. Toda saída de texto é um esmaecer de
+// 0,1 s que TERMINA no tempo "sai…".
+// ---------------------------------------------------------------------------
+const H1 = 6.2;     // «… uma fração do custo de um erro.»
+const H2 = 9.8;     // «… e mantém nossa base viva;»
+const H3 = 13.85;   // «… para bancos, seguradoras e imobiliárias.»
+const H4a = 16.7;   // «… 89% aceitaram colaborar por créditos»
+const H4 = 19.08;   // «… ficou em 4,7 de 5.»
+const T = {
+  // 1ª frase · «Nosso modelo é pay-per-use com teste grátis:
+  meses: 0.15, barras: 0.42, frase: 1.08, cortes: 1.15, frase2: 1.55, subGratis: 1.75, conta: 1.7,
+  //   você compra dossiês avulsos ou em pacotes
+  sai1: 2.3, saiFrase: 2.62, retrai: 2.25, sobe: 2.15, legA: 2.72, subA: 3.08, legB: 3.45, subB: 3.69,
+  pilula: 2.95, textoPil: 3.31, toque: 3.52, abre: 3.62, realcePac: 4.08, saiA: 5.0,
+  //   que correspondem a uma fração do custo de um erro.»
+  fatia: 4.7, fracao: 5.02, barra: 5.1, custo: 5.38, milhares: 5.45, reais: 5.55,
+  // 2ª frase · «Quem valida dados em campo ganha créditos e mantém nossa base viva;»
+  sai2: H1 + 0.12, leg1: 6.52, realceC: 7.02, subL1: 7.41, leg2: 7.67, subL2: 7.8, toast: 7.85, nova: 7.95, saldo4: 8.1,
+  sai3: 8.55, leg3: 8.8, subL3: 9.0, base: 9.08,
+  // 3ª frase · «e, numa segunda fase, licenciamos essa camada de dados para bancos, seguradoras e imobiliárias.»
+  sai4: H2 + 0.12, kicker: 10.06, camada: 11.5, comp: [12.28, 12.55, 13.14],
+  // 4ª frase · «Nos testes reais, 89% aceitaram colaborar por créditos
+  sai5: H3 + 0.12, pontos: 13.95, base83: 13.95, fonte: 14.05, n89: 14.61, acende: 14.61, leg89: 15.53,
+  //   e a utilidade percebida ficou em 4,7 de 5.»
+  sai6: H4a + 0.12, condensa: 16.85, legU: 17.5, marcas: 17.25, corre: 17.3, n47: 18.08, no: 18.5, de5: 18.7,
+  // saída · a régua se estende e vira a linha do tempo da cena 11
+  sai7: H4 + 0.12, saiM: H4 + 0.02, estende: H4 + 0.17,
+};
+// a folha vazia se fecha em 0,6 s, num movimento só: o retângulo vira um círculo de 260 px e segue,
+// sem parar, até o círculo branco de r = 11; só então passa ao laranja, em 0,08 s (2 a 3 quadros)
+const FECHA = { dur: 0.6, ra: 0.08, rd: 0.1 };
+T.fecha = T.sai3; T.tinta = T.fecha + FECHA.dur; T.fechou = T.tinta + 0.08;
+// perfis de velocidade (rampas em cosseno): cada um fica abaixo de 40 px por quadro
+const SOBE = { dur: 0.85, ra: 0.2, rd: 0.3 };      // o ponto sobe 620 px até a pílula: 34 px/quadro
+const RECOLHE = { dur: 0.5, ra: 0.1, rd: 0.15 };   // a régua encolhe 351 px e some: 31 px/quadro
+const CRESCE = { dur: 0.9, ra: 0.1, rd: 0.3 };     // a barra do erro cresce 816 px: 39 px/quadro
+const SOBE_L = { dur: 0.3, ra: 0.06, rd: 0.12 };   // cada linha da 2ª fase sobe 186 px: 30 px/quadro
+const CORRE = { dur: 1.25, ra: 0.25, rd: 0.35 };   // a linha corre 1128 px até 4,7: 40 px/quadro
+const ESTENDE = { dur: 0.55, ra: 0.12, rd: 0.2 };  // a régua vira a linha do tempo: 23 px/quadro
+const ENTRA_C = { dur: 0.8, ra: 0.2, rd: 0.3 };    // o cursor entra (608 px): 37 px/quadro
+const DUR = Math.round((T.estende + ESTENDE.dur + 0.05) * 1000) / 1000;
+const HOLDS = [H1, H2, H3, H4a, H4, DUR];
+
+// molas (forma fechada, motion.js); mola(w0) tem amortecimento crítico. nsp chega a 1 em 98% e para,
+// para os quadros de HOLD e de emenda ficarem exatos.
+const mola = (w0) => ({ k: w0 * w0, d: 2 * w0 });
+const nsp = (t, p) => clamp(sp(t, p) / 0.98);
+function perfil(t, { dur, ra, rd }) {
+  if (t <= 0) return 0;
+  if (t >= dur) return 1;
+  const v = 1 / (dur - (ra + rd) / 2);
+  if (t < ra) return v * (t / 2 - (ra / (2 * Math.PI)) * Math.sin((Math.PI * t) / ra));
+  const s1 = v * (ra / 2 + (dur - rd - ra));
+  if (t < dur - rd) return v * (ra / 2 + (t - ra));
+  const u = t - (dur - rd);
+  return s1 + v * (u / 2 + (rd / (2 * Math.PI)) * Math.sin((Math.PI * u) / rd));
+}
+// entrada de texto: quanto falta para chegar (1 = longe, 0 = no lugar), exato em 0 depois de 0,22 s
+const entra = (t, t0, d = 0.22) => 1 - smooth(clamp((t - t0) / d));
+
+// ---------------------------------------------------------------------------
+// Geometria (px do quadro de 1920 × 1080)
+// ---------------------------------------------------------------------------
+const ENTRADA = { x0: 240, x1: 1680, y: 900 };       // costura C09-10
+const SAIDA = { x0: 160, x1: 1760, y: 860 };         // costura C10-11
+const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+const MES_X = (i) => 300 + 120 * i;                  // centro de cada mês na régua de 240 a 1680
+const MUDA = 5;                                       // o mês em que se usa (jun): sobra um ponto só
+const BARRA = { w: 16, h: 72, base: 898, rx: 3 };     // cobrança mensal: barra em tinta sobre a régua
+const ORDEM_CORTE = [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11];
+// pílula .credits-pill-btn a 3x (padding 5/10, ponto 6, gap 6, borda 1) com altura fixa de 84
+const PIL = { y: 458, h: 84 };
+// folha openCreditsSheet a 1,7x, à direita e presa no alto; o pé (botão Fechar) fica fora do quadro.
+const FOLHA = { x: 1100, y: 56, w: 731, h: 1044, raio: 38 };
+const PIL_CX = FOLHA.x + FOLHA.w / 2;                // a pílula nasce no meio da folha que vai abrir
+const LEG = { x: 200, y: 340, linha: 76 * 1.24 };    // legendas da fala, à esquerda da folha
+// "uma fração do custo de um erro": a barra do erro (ferrugem) e a fatia do pacote (laranja), à esquerda
+const ERRO = { x0: 200, x1: 1016, y: 600, h: 72 };
+const FATIA = { x0: 1020, x1: 1040 };
+// a base de dados: uma placa com 29 × 5 pontos; a carteira se fecha no ponto P0, o dado novo
+const PLACA = { x0: 480, x1: 1440, y0: 580, y1: 780, raio: 24, colunas: 29, fileiras: 5, passo: 32, px0: 512, py0: 612, r: 4.5 };
+const P0 = { c: 22, f: 2 };
+P0.x = PLACA.px0 + PLACA.passo * P0.c; P0.y = PLACA.py0 + PLACA.passo * P0.f;   // (1216, 676)
+const COMPRADORES = [{ nome: 'bancos', x: 520 }, { nome: 'seguradoras', x: 960 }, { nome: 'imobiliárias', x: 1400 }];
+const COMP = { yTexto: 300, yTopo: 394 };
+// grade dos 83 pontos (a da cena 3): 12 colunas, passo de 48 px, raio 11, x = 696 + 48·coluna,
+// y = 740 − 48·fileira, sobre a linha de base em tinta (2 px) em y = 760, de 360 a 1560 (costura
+// C02-03). Índice k = fileira·12 + coluna, fileira 0 embaixo; 7 fileiras, a última com 11 pontos.
+const GRADE = { colunas: 12, total: 83, passo: 48, r: 11, cx: 960, cy: 596, y0: 740, yBase: 760, x0: 360, x1: 1560 };
+const gx = (k) => GRADE.cx + ((k % GRADE.colunas) - 5.5) * GRADE.passo;
+const gy = (k) => GRADE.y0 - Math.floor(k / GRADE.colunas) * GRADE.passo;
+// 74 de 83 (89,2%) acendem numa ordem neutra, de leitura, a partir de baixo: k = 0 a 73
+const ACENDER = (() => {
+  const acendem = Array.from({ length: 74 }, (_, k) => k);
+  const quando = new Map(acendem.map((k) => [k, T.acende + 0.012 * k]));
+  return { acendem, quando };
+})();
+// régua de 1 a 5: a própria linha de base, com cinco marcas
+const REGUA = { x1: GRADE.x0, x5: GRADE.x1, y: GRADE.yBase };
+const xr = (v) => REGUA.x1 + ((v - 1) * (REGUA.x5 - REGUA.x1)) / 4;
+const NOTA = 4.7, X_NOTA = xr(NOTA);
+
+// ---------------------------------------------------------------------------
+// DOM e utilitários
+// ---------------------------------------------------------------------------
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+function el(cls, html, pai) { const e = document.createElement('div'); e.className = cls; e.innerHTML = html; pai.appendChild(e); return e; }
+function svgEl(tag, attrs, pai, antes = null) { const e = document.createElementNS(NS, tag); for (const [a, v] of Object.entries(attrs)) e.setAttribute(a, v); pai.insertBefore(e, antes); return e; }
+const vis = (e, a) => { e.style.opacity = a.toFixed(3); e.style.visibility = a > 0.001 ? 'inherit' : 'hidden'; };
+// textos do filme: fora de cena saem do layout (display: none)
+const visT = (e, a) => { e.style.opacity = a.toFixed(3); e.style.display = a > 0.001 ? '' : 'none'; };
+const svis = (e, on) => { e.style.visibility = on ? 'inherit' : 'hidden'; };
+const pos = (e, x, y) => { e.style.left = x.toFixed(2) + 'px'; e.style.top = y.toFixed(2) + 'px'; };
+const f2 = (v) => v.toFixed(2);
+const hx = (h, a = 1) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16), a];
+const attr = (e, a, v) => { if (e.getAttribute(a) !== v) e.setAttribute(a, v); };
+const TINTA = hx('#171717'), LARANJA = hx('#F47745'), BRANCO = hx('#FFFFFF');
+
+// camada da costura (abaixo da forma): a linha laranja da C09-10 e, por baixo dela, a base em tinta,
+// as marcas da régua de 1 a 5, as barras de cobrança, a barra do erro, a placa da base e as linhas
+// da 2ª fase
+const costura = $('costura');
+const { linhas: [linha] } = desenharCostura('C09-10', costura);
+const D_ENTRADA = linha.getAttribute('d');
+const baseP = svgEl('path', { fill: 'none', stroke: '#171717', 'stroke-width': 2, 'stroke-linecap': 'round' }, costura, linha);
+const marcas = [1, 2, 3, 4, 5].map(() => svgEl('rect', { fill: '#171717', width: 3 }, costura, linha));
+const barras = MESES.map(() => svgEl('rect', { fill: '#171717' }, costura, linha));
+const erroR = svgEl('rect', { fill: '#B94E36', rx: 3 }, costura, linha);
+const fatiaR = svgEl('rect', { fill: '#F47745', rx: 3 }, costura, linha);
+const placaR = svgEl('rect', { x: PLACA.x0, y: PLACA.y0, width: PLACA.x1 - PLACA.x0, height: PLACA.y1 - PLACA.y0, rx: PLACA.raio, fill: '#FAF6EE', stroke: '#E2D9C8', 'stroke-width': 2 }, costura, linha);
+// pontos da base: azul do lote vizinho (registro), laranja onde alguém já validou em campo
+const sorteio = rng(1010);
+const PLACA_PTS = [];
+for (let f = 0; f < PLACA.fileiras; f += 1) for (let c = 0; c < PLACA.colunas; c += 1) {
+  const laranja = sorteio() < 0.2;
+  if (c === P0.c && f === P0.f) continue;
+  const x = PLACA.px0 + PLACA.passo * c, y = PLACA.py0 + PLACA.passo * f;
+  PLACA_PTS.push({ x, y, d: Math.hypot(x - P0.x, y - P0.y), e: svgEl('circle', { cx: x, cy: y, r: 0, fill: laranja ? '#F47745' : '#8FAAC4' }, costura, linha) });
+}
+const linhasComp = COMPRADORES.map(() => svgEl('path', { fill: 'none', stroke: '#F47745', 'stroke-width': 4.2, 'stroke-linecap': 'round' }, costura, linha));
+for (const e of [baseP, ...marcas, ...barras, erroR, fatiaR, placaR, ...PLACA_PTS.map((p) => p.e), ...linhasComp]) svis(e, false);
+
+// camada da frente: o ponto que sobra (vira o ponto da pílula), o dado novo, os 83 pontos e o nó do 4,7
+const frente = $('frente');
+const conta = svgEl('rect', { fill: '#171717' }, frente);
+const novoP = svgEl('circle', { cx: P0.x, cy: P0.y, fill: '#F47745' }, frente);
+const pontos = Array.from({ length: GRADE.total }, () => svgEl('circle', { fill: '#171717' }, frente));
+const no = svgEl('circle', { fill: '#F47745', stroke: '#F2EBDD', 'stroke-width': 3 }, frente);
+for (const e of [conta, novoP, ...pontos, no]) svis(e, false);
+
+// textos do filme: só palavras e números da fala (MILHARES de reais é o eco da cena 01)
+const textos = $('textos');
+const meses = MESES.map((m) => el('t mes', m, textos));
+const frase = el('t frase', 'pay-per-use', textos);
+const frase2 = el('t frase2', 'com <span class="alvo">teste grátis<i class="sub"></i></span>', textos);
+const legA = el('t legenda-f', 'dossiês <span class="alvo">avulsos<i class="sub"></i></span>', textos);
+const legB = el('t legenda-f', 'ou em <span class="alvo">pacotes<i class="sub"></i></span>', textos);
+const milhares = el('t milhares', 'MILHARES', textos);
+const reais = el('t reais', 'de reais', textos);
+const rotErro = el('t rot-erro', 'custo de um erro', textos);
+const rotFr = el('t rot-fr', 'uma fração', textos);
+const leg1 = el('t legenda-f', 'valida dados <span class="alvo">em campo<i class="sub"></i></span>', textos);
+const leg2 = el('t legenda-f', '<span class="alvo">ganha créditos<i class="sub"></i></span>', textos);
+const leg3 = el('t legenda-f', 'mantém nossa <span class="alvo">base viva<i class="sub"></i></span>', textos);
+const kicker = el('t legenda-f', 'numa segunda fase', textos);
+const rotCamada = el('t rot-camada', 'camada de dados', textos);
+const rotComp = COMPRADORES.map((c) => el('t comprador', c.nome, textos));
+const n89 = el('t numero', '89%', textos); n89.style.fontSize = '210px';
+const leg89 = el('t legenda', 'aceitaram colaborar por créditos', textos);
+const fonte = el('t fonte', 'testes com 83 pessoas', textos);
+const n47 = el('t numero', '4,7', textos); n47.style.fontSize = '230px';
+const de5 = el('t numero', 'de 5', textos); de5.style.fontSize = '100px';
+const legU = el('t legenda', 'utilidade percebida', textos);
+const rotR = [1, 2, 3, 4, 5].map((v) => el('t rot-regua', String(v), textos));
+const subG = frase2.querySelector('.sub'), subA = legA.querySelector('.sub'), subB = legB.querySelector('.sub');
+const subL1 = leg1.querySelector('.sub'), subL2 = leg2.querySelector('.sub'), subL3 = leg3.querySelector('.sub');
+const rotulos = $('rotulos');
+// toast real de awardCredit: showToast(`+1 crédito adicionado · ${reasonText}`)
+const toast = el('t toast', '<i></i><span>+1 crédito adicionado · Lote confirmado em Espinheiro</span>', rotulos);
+const TEXTOS = [...meses, frase, frase2, legA, legB, milhares, reais, rotErro, rotFr, leg1, leg2, leg3, kicker, rotCamada, ...rotComp, n89, leg89, fonte, n47, de5, legU, ...rotR, toast];
+for (const e of TEXTOS) visT(e, 0);
+
+// a forma e o conteúdo dela
+const forma = $('forma'), pilT = $('pilT'), folhaPos = $('folhaPos'), folha = $('folha');
+// extrato do protótipo (STATE.creditsLedger), do mais novo para o mais antigo: a linha nova de
+// awardCredit entra no topo (unshift) e o "Pacote de 3 dossiês" fica à vista sem rolar
+const EXTRATO = [
+  ['Dossiê Espinheiro', '22 mar', '−1'], ['Dossiê Graças', '21 mar', '−1'], ['Pacote de 3 dossiês', '21 mar', '+3'],
+  ['Relato pós-visita em Casa Forte', '20 mar', '+1'], ['Dossiê Casa Forte', '19 mar', '−1'], ['Lote confirmado em Boa Viagem', '18 mar', '+1'],
+  ['Dossiê Boa Viagem', '18 mar', '−1'], ['Cadastro inicial', '18 mar', '+2'],
+];
+const corDelta = (d) => (d.startsWith('+') ? '#1B5E40' : '#78716C');
+const linhaHTML = ([d, dt, delta], id = '') => `<div class="linha"${id ? ` id="${id}"` : ''}><div>${d === 'Pacote de 3 dossiês' ? `<span class="d alvo">${d}<i class="sub" id="sub2"></i></span>` : `<span class="d">${d}</span>`}<span class="dt">${dt}</span></div><strong style="color:${corDelta(delta)}">${delta}</strong></div>`;
+folha.innerHTML = `<div class="painel">
+  <div class="sheet-handle"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+    <span class="ed-kicker">Carteira de créditos</span>
+    <span class="ed-btn-secondary">✕</span>
+  </div>
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;">
+    <div>
+      <h3 class="ed-title-md">Saldo disponível</h3>
+      <p style="font-size:12px;color:#57534E;">Cada dossiê gerado consome 1 crédito</p>
+    </div>
+    <div style="position:relative;font-family:var(--font-display);font-size:28px;font-weight:500;color:var(--brand-orange);font-variant-numeric:tabular-nums;"><span id="saldo3">3</span><span id="saldo4" style="position:absolute;left:0;top:0;visibility:hidden">4</span></div>
+  </div>
+  <div class="ed-cream-box" style="margin-bottom:14px;">
+    <div style="font-size:12px;font-weight:700;color:#9A3C1E;margin-bottom:4px;">Como ganhar créditos (+1 por ação):</div>
+    <div style="font-size:12.5px;color:#44403C;line-height:1.45;display:flex;flex-direction:column;gap:4px;">
+      <div>• <span class="alvo">Confirmar o lote de um prédio não identificado (<strong>+1</strong>)<i class="sub" id="subC"></i></span></div>
+      <div>• Relato rápido pós-visita no local (<strong>+1</strong>)</div>
+      <div>• Informar o motivo ao descartar um dossiê (<strong>+1</strong>)</div>
+    </div>
+  </div>
+  <div style="font-size:12px;font-weight:700;color:#171717;margin-bottom:8px;">Extrato de uso e contribuições:</div>
+  <div style="position:relative;height:220px;overflow:hidden;margin-bottom:14px;">
+    <div id="rolo" style="position:absolute;left:0;right:0;top:0;">
+      <div id="novaW" style="height:0;overflow:hidden;">${linhaHTML(['Lote confirmado em Espinheiro', 'Agora', '+1'], 'nova')}</div>
+      ${EXTRATO.map((l) => linhaHTML(l)).join('')}
+    </div>
+  </div>
+  <div class="ed-btn-ink">Fechar</div>
+</div>`;
+const subC = $('subC'), sub2 = $('sub2'), rolo = $('rolo'), novaW = $('novaW'), nova = $('nova'), saldo3 = $('saldo3'), saldo4 = $('saldo4');
+vis(forma, 0);
+
+const CURSOR = [[0, 0], [0, 38], [10.5, 29], [17, 43.5], [23.5, 40.6], [17, 26.6], [30, 26.6]];
+const polyD = (pts) => 'M' + pts.map((p) => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L') + 'Z';
+const cursorEl = $('cursor'), ondaEl = $('onda');
+
+// medidas (sem transform no contêiner): largura da pílula
+const medidas = () => {
+  const wTxt = pilT.offsetWidth;
+  const w = Math.round(3 + 30 + 18 + 18 + wTxt + 30 + 3);
+  const x = Math.round(PIL_CX - w / 2);
+  return { x, w, dx: x + 42, dy: PIL.y + 42 };
+};
+
+// o ponto que sobra: a barra de jun vira o ponto laranja e sobe até o ponto da pílula
+function pontoMuda(t, M) {
+  const g = nsp(t - (T.barras + 0.045 * MUDA), mola(12));
+  const m = nsp(t - T.conta, mola(12));
+  const s = perfil(t - T.sobe, SOBE);
+  let w = lerp(BARRA.w, 24, m), h = lerp(BARRA.h * g, 24, m);
+  let cx = MES_X(MUDA), cy = lerp(BARRA.base - (BARRA.h * g) / 2, ENTRADA.y, m);
+  cx = lerp(cx, M.dx, s); cy = lerp(cy, M.dy, s);
+  w = lerp(w, 18, s); h = lerp(h, 18, s);   // 6 px do app a 3x
+  return { cx, cy, w, h, m, s };
+}
+
+// a janela da folha ao abrir: os lados chegam primeiro, o topo depois e o pé por último. Fica em px
+// inteiros (recorte por overflow: hidden, como na cena 09)
+function janelaAbre(t, M) {
+  const eH = nsp(t - T.abre, mola(13.5)), eT = nsp(t - T.abre, mola(7.5)), eB = nsp(t - T.abre, mola(5.5));
+  return {
+    l: Math.round(lerp(M.x, FOLHA.x, eH)), r: Math.round(lerp(M.x + M.w, FOLHA.x + FOLHA.w, eH)),
+    t: Math.round(lerp(PIL.y, FOLHA.y, eT)), b: Math.round(lerp(PIL.y + PIL.h, FOLHA.y + FOLHA.h, eB)), eT,
+  };
+}
+// cada bloco da folha (alça, título, saldo, caixa, cada linha do extrato) só aparece quando a janela já
+// o contém inteiro: nenhum pedaço de frase aparece cortado pela borda dela. Medido uma vez, depois das
+// fontes, em px do quadro; o tempo de cada bloco é procurado na própria função da janela.
+let BLOCOS = null;
+// o rótulo da pílula (o ponto e "3 créditos") fica na janela que cresce até o primeiro bloco da folha entrar
+let T_B0 = T.abre + 0.25;
+function medirBlocos(M) {
+  const s = $('c').getBoundingClientRect().width / 1920;
+  const fp = folhaPos.getBoundingClientRect();
+  const rel = (r) => ({ x0: FOLHA.x + (r.left - fp.left) / s, y0: FOLHA.y + (r.top - fp.top) / s, x1: FOLHA.x + (r.right - fp.left) / s, y1: FOLHA.y + (r.bottom - fp.top) / s });
+  const painel = folha.firstElementChild, lista = rolo.parentElement, rl = rel(lista.getBoundingClientRect());
+  const els = [];
+  for (const e of painel.children) if (e !== lista) els.push({ e, r: rel(e.getBoundingClientRect()) });
+  for (const e of rolo.children) {
+    if (e === novaW) continue;
+    const r = rel(e.getBoundingClientRect());
+    // linhas abaixo da lista na abertura ficam escondidas pelo recorte dela
+    if (r.y0 >= rl.y1) { els.push({ e, r: null, sempre: true }); continue; }
+    els.push({ e, r: { x0: r.x0, y0: Math.max(r.y0, rl.y0), x1: r.x1, y1: Math.min(r.y1, rl.y1) } });
+  }
+  BLOCOS = els.map(({ e, r, sempre }) => {
+    let tIn = sempre ? T.abre : Infinity;
+    if (r) for (let t = T.abre; t < T.abre + 3; t += 1 / 300) {
+      const J = janelaAbre(t, M);
+      if (J.l <= r.x0 - 1 && J.r >= r.x1 + 1 && J.t <= r.y0 - 1 && J.b >= r.y1 + 1) { tIn = Math.max(T.abre + 0.2, t); break; }
+    }
+    return { e, tIn, sempre };
+  });
+  T_B0 = Math.min(...BLOCOS.filter((b) => !b.sempre).map((b) => b.tIn));
+}
+
+// ---------------------------------------------------------------------------
+// seek(t): função pura do tempo
+// ---------------------------------------------------------------------------
+function render(t) {
+  t = clamp(t, 0, DUR);
+  const M = medidas();
+  const texto = (e, tIn, tOut, x, y, dy = 10) => {
+    const a = swap(t, tIn, tOut, { delayIn: 0, durIn: 0.14, leadOut: 0, durOut: 0.1 });
+    visT(e, a);
+    if (a > 0.001) pos(e, x(e), y + dy * entra(t, tIn));
+    return a;
+  };
+  const esq = (x) => () => x, dir = (x) => (e) => x - e.offsetWidth, centro = (x = 960) => (e) => x - e.offsetWidth / 2;
+  // sublinhado: corre a no máximo 34 px por quadro, em perfil de velocidade (chega exato em 1)
+  const sub = (e, t0) => { const W = e.parentElement.offsetWidth; e.style.width = (100 * perfil(t - t0, { dur: Math.max(0.45, W / 1020 + 0.15), ra: 0.1, rd: 0.2 })).toFixed(2) + '%'; };
+
+  // ===== 1ª frase, a · a régua de doze meses, as cobranças recortadas e o ponto que sobra ==========
+  meses.forEach((e, i) => {
+    const t0 = T.meses + 0.03 * i;
+    const a = swap(t, t0, T.sai1, { delayIn: 0, durIn: 0.15, leadOut: 0, durOut: 0.1 });
+    visT(e, a);
+    if (a > 0.001) pos(e, MES_X(i) - e.offsetWidth / 2, 930 + 8 * entra(t, t0));
+  });
+  ORDEM_CORTE.forEach((i, j) => {
+    const g = nsp(t - (T.barras + 0.045 * i), mola(12));
+    const c = nsp(t - (T.cortes + 0.055 * j), mola(20));
+    const h = BARRA.h * g * (1 - c);
+    const b = barras[i];
+    svis(b, h > 0.05);
+    if (h > 0.05) { attr(b, 'x', f2(MES_X(i) - BARRA.w / 2)); attr(b, 'y', f2(BARRA.base - h)); attr(b, 'width', String(BARRA.w)); attr(b, 'height', f2(h)); attr(b, 'rx', String(Math.min(BARRA.rx, h / 2).toFixed(2))); }
+  });
+  texto(frase, T.frase, T.saiFrase, centro(), 330, 12);
+  texto(frase2, T.frase2, T.saiFrase, centro(), 490, 10);
+  sub(subG, T.subGratis);
+  const PM = pontoMuda(t, M);
+  {
+    const a = t < T.abre ? 1 : swap(t, -1, T_B0, { leadOut: 0, durOut: 0.08 });
+    const on = PM.h > 0.05 && a > 0.001;
+    svis(conta, on);
+    if (on) {
+      attr(conta, 'x', f2(PM.cx - PM.w / 2)); attr(conta, 'y', f2(PM.cy - PM.h / 2)); attr(conta, 'width', f2(PM.w)); attr(conta, 'height', f2(PM.h));
+      attr(conta, 'rx', f2(lerp(BARRA.rx, Math.min(PM.w, PM.h) / 2, PM.m))); attr(conta, 'fill', rgba(mixColor(TINTA, LARANJA, PM.m))); conta.style.opacity = a.toFixed(3);
+    }
+  }
+
+  // ===== a linha laranja: régua (1ª frase) → encolhe e some → corre até 4,7 → se estende =========
+  {
+    let d = '', op = 1;
+    if (t < T.retrai) d = D_ENTRADA;
+    else if (t < T.retrai + RECOLHE.dur) {
+      // as pontas recolhem rumo ao ponto que sobe, e a régua some (o ponto leva a história adiante)
+      const p = perfil(t - T.retrai, RECOLHE);
+      const x0 = lerp(ENTRADA.x0, MES_X(MUDA), 0.45 * p), x1 = lerp(ENTRADA.x1, MES_X(MUDA), 0.45 * p);
+      d = `M${f2(x0)} ${ENTRADA.y}L${f2(x1)} ${ENTRADA.y}`; op = 1 - smooth(p);
+    } else if (t >= T.corre) {
+      const c = perfil(t - T.corre, CORRE);
+      const e = perfil(t - T.estende, ESTENDE);
+      const x0 = lerp(REGUA.x1, SAIDA.x0, e), x1 = lerp(lerp(REGUA.x1, X_NOTA, c), SAIDA.x1, e), y = lerp(REGUA.y, SAIDA.y, e);
+      if (e >= 1) d = `M${SAIDA.x0} ${SAIDA.y} L${SAIDA.x1} ${SAIDA.y}`;
+      else if (x1 - x0 > 1) d = `M${f2(x0)} ${f2(y)}L${f2(x1)} ${f2(y)}`;
+    }
+    attr(linha, 'd', d || D_ENTRADA);
+    linha.style.opacity = op < 1 ? op.toFixed(3) : '';
+    svis(linha, !!d && op > 0.001);
+  }
+
+  // ===== a pílula "3 créditos" e a folha da carteira (1ª e 2ª frases) =============================
+  // um objeto só: o ponto vira a pílula, a pílula se abre na folha (o conteúdo fica no lugar, e cada
+  // bloco só aparece quando a forma já o contém) e a folha vazia se fecha no ponto novo da base
+  {
+    const fr = { l: FOLHA.x, t: FOLHA.y, r: FOLHA.x + FOLHA.w, b: FOLHA.y + FOLHA.h };
+    const sq = { l: P0.x - 130, t: P0.y - 130, r: P0.x + 130, b: P0.y + 130 };
+    const pc = { l: P0.x - 11, t: P0.y - 11, r: P0.x + 11, b: P0.y + 11 };
+    const mixR = (a, b, q) => ({ l: lerp(a.l, b.l, q), t: lerp(a.t, b.t, q), r: lerp(a.r, b.r, q), b: lerp(a.b, b.b, q) });
+    let R = null, raio = 0, fundo = hx('#FAF7F0'), borda = 3, bordaA = 0.11, aConteudo = 0, aPil = 0;
+    const pp = press(t, [T.toque]);
+    if (t >= T.pilula && t < T.abre) {
+      // o corpo da pílula nasce em volta do ponto (preso a ele) e se estende para a direita
+      const a = nsp(t - T.pilula, mola(12)), b = nsp(t - (T.pilula + 0.15), mola(16));
+      const rr = (PIL.h / 2) * a;
+      R = { l: PM.cx - rr, t: PM.cy - rr, r: PM.cx - rr + 2 * rr + (M.w - PIL.h) * b, b: PM.cy + rr };
+      raio = rr;
+      fundo = mixColor(hx('#FAF7F0'), BRANCO, pp); bordaA = 0.11 + 0.13 * pp; borda = 3 * a;
+      aPil = swap(t, T.textoPil, T_B0, { delayIn: 0, durIn: 0.12, leadOut: 0, durOut: 0.08 });
+    } else if (t >= T.abre && t < T.fecha) {
+      const J = janelaAbre(t, M);
+      R = J;
+      raio = lerp(PIL.h / 2, FOLHA.raio, J.eT);
+      fundo = mixColor(mixColor(hx('#FAF7F0'), BRANCO, pp), BRANCO, J.eT); borda = lerp(3, 1.7, J.eT); bordaA = lerp(0.11 + 0.13 * pp, 0.12, J.eT);
+      aConteudo = swap(t, -1, T.sai3, { leadOut: 0, durOut: 0.12 });
+      aPil = swap(t, T.textoPil, T_B0, { delayIn: 0, durIn: 0.12, leadOut: 0, durOut: 0.08 });
+    } else if (t >= T.fecha && t < T.fechou) {
+      // vazia e branca, num movimento só: o caminho vai da folha ao círculo de 260 px e dele ao de r = 11,
+      // percorrido pela borda direita (a que anda mais: 485 + 119 px) em velocidade quase constante
+      const u = perfil(t - T.fecha, FECHA);
+      const dA = fr.r - sq.r, dB = sq.r - pc.r, k = u * (dA + dB);
+      const e1 = clamp(k / dA), e2 = clamp((k - dA) / dB);
+      R = mixR(mixR(fr, sq, e1), pc, e2);
+      raio = lerp(FOLHA.raio, 130, e1);
+      const c = clamp((t - T.tinta) / 0.08);
+      fundo = mixColor(BRANCO, LARANJA, c);
+      borda = 1.7 * (1 - c); bordaA = 0.12;
+    }
+    if (R) {
+      const l = Math.round(R.l), tp = Math.round(R.t), w = Math.max(1, Math.round(R.r) - l), h = Math.max(1, Math.round(R.b) - tp);
+      forma.style.left = l + 'px'; forma.style.top = tp + 'px'; forma.style.width = w + 'px'; forma.style.height = h + 'px';
+      forma.style.borderRadius = f2(Math.min(raio, w / 2, h / 2)) + 'px';
+      forma.style.background = rgba(fundo);
+      forma.style.boxShadow = borda > 0.01 ? `inset 0 0 0 ${f2(borda)}px rgba(23,23,23,${bordaA.toFixed(3)})` : 'none';
+      vis(forma, 1);
+      // conteúdos presos ao quadro (não andam com a forma)
+      vis(pilT, aPil);
+      if (aPil > 0.001) pos(pilT, M.x + 69 - l, PIL.y + (PIL.h - pilT.offsetHeight) / 2 + 1 - tp);
+      vis(folhaPos, aConteudo);
+      if (aConteudo > 0.001) { folhaPos.style.left = (FOLHA.x - l) + 'px'; folhaPos.style.top = (FOLHA.y - tp) + 'px'; }
+    } else vis(forma, 0);
+    if (BLOCOS) for (const b of BLOCOS) b.e.style.opacity = clamp((t - b.tIn) / 0.12).toFixed(3);
+
+    // conteúdo da folha: o pacote (1ª frase), o lote confirmado, a linha nova do extrato e o saldo (2ª)
+    sub2.style.width = (100 * nsp(t - T.realcePac, mola(8))).toFixed(2) + '%'; vis(sub2, t > T.realcePac ? clamp((T.sai2 - t) / 0.1) : 0);
+    subC.style.width = (100 * nsp(t - T.realceC, mola(6))).toFixed(2) + '%'; vis(subC, t > T.realceC ? 1 : 0);
+    novaW.style.height = (40 * nsp(t - T.nova, mola(14))).toFixed(3) + 'px';
+    vis(nova, swap(t, T.nova + 0.08, Infinity, { delayIn: 0, durIn: 0.1 }));
+    vis(saldo3, swap(t, -1, T.saldo4, { leadOut: 0, durOut: 0.08 }));
+    vis(saldo4, swap(t, T.saldo4, Infinity, { delayIn: 0, durIn: 0.1 }));
+    saldo4.style.top = (4 * entra(t, T.saldo4)).toFixed(2) + 'px';
+  }
+
+  // ===== 1ª frase, b · «você compra dossiês avulsos ou em pacotes» =================================
+  texto(legA, T.legA, T.saiA, esq(LEG.x), LEG.y);
+  texto(legB, T.legB, T.saiA, esq(LEG.x), LEG.y + LEG.linha);
+  sub(subA, T.subA); sub(subB, T.subB);
+
+  // ===== 1ª frase, c · «que correspondem a uma fração do custo de um erro» =========================
+  {
+    const sai = clamp((T.sai2 - t) / 0.1);
+    const g = nsp(t - T.fatia, mola(14)) * sai;
+    svis(fatiaR, g > 0.001);
+    if (g > 0.001) { const h = ERRO.h * nsp(t - T.fatia, mola(14)); attr(fatiaR, 'x', String(FATIA.x0)); attr(fatiaR, 'width', String(FATIA.x1 - FATIA.x0)); attr(fatiaR, 'y', f2(ERRO.y + ERRO.h - h)); attr(fatiaR, 'height', f2(h)); fatiaR.style.opacity = sai.toFixed(3); }
+    const e = perfil(t - T.barra, CRESCE);
+    const x0 = lerp(ERRO.x1, ERRO.x0, e);
+    const on = e > 0 && ERRO.x1 - x0 > 1 && sai > 0.001;
+    svis(erroR, on);
+    if (on) { attr(erroR, 'x', f2(x0)); attr(erroR, 'width', f2(ERRO.x1 - x0)); attr(erroR, 'y', String(ERRO.y)); attr(erroR, 'height', String(ERRO.h)); erroR.style.opacity = sai.toFixed(3); }
+  }
+  texto(rotFr, T.fracao, T.sai2, dir(FATIA.x1), ERRO.y + ERRO.h + 22);
+  texto(rotErro, T.custo, T.sai2, esq(ERRO.x0), ERRO.y + ERRO.h + 22);
+  texto(milhares, T.milhares, T.sai2, esq(ERRO.x0 - 6), 310, 14);
+  texto(reais, T.reais, T.sai2, esq(ERRO.x0), 496);
+
+  // ===== 2ª frase · «Quem valida dados em campo ganha créditos e mantém nossa base viva» ============
+  texto(leg1, T.leg1, T.sai3, esq(LEG.x), LEG.y);
+  texto(leg2, T.leg2, T.sai3, esq(LEG.x), LEG.y + LEG.linha);
+  sub(subL1, T.subL1); sub(subL2, T.subL2);
+  {
+    const at = swap(t, T.toast, T.sai3, { delayIn: 0, durIn: 0.12, leadOut: 0, durOut: 0.1 });
+    visT(toast, at); if (at > 0.001) pos(toast, LEG.x, LEG.y + 2 * LEG.linha + 46 + 10 * entra(t, T.toast));
+  }
+  texto(leg3, T.leg3, T.sai4, esq(LEG.x), LEG.y);
+  sub(subL3, T.subL3);
+  // a base: a placa e os pontos dela nascem em volta do dado novo (a folha fechada)
+  {
+    const sai = clamp((T.sai5 - t) / 0.1);
+    const aP = clamp((t - T.base) / 0.2) * sai;
+    svis(placaR, aP > 0.001); if (aP > 0.001) placaR.style.opacity = aP.toFixed(3);
+    for (const p of PLACA_PTS) {
+      const r = PLACA.r * nsp(t - (T.base + p.d / 3600), mola(18)) * sai;
+      svis(p.e, r > 0.05); if (r > 0.05) attr(p.e, 'r', f2(r));
+    }
+    const rN = t < T.fechou ? 0 : lerp(11, 8, nsp(t - T.fechou, mola(16))) * sai;
+    svis(novoP, rN > 0.05); if (rN > 0.05) attr(novoP, 'r', f2(rN));
+  }
+
+  // ===== 3ª frase · «e, numa segunda fase, licenciamos essa camada de dados para …» =================
+  texto(kicker, T.kicker, T.sai5, centro(), 104);
+  texto(rotCamada, T.camada, T.sai5, centro(), PLACA.y1 + 22);
+  COMPRADORES.forEach((c, i) => {
+    const sai = clamp((T.sai5 - t) / 0.1);
+    const s = perfil(t - T.comp[i], SOBE_L);
+    const y1 = lerp(PLACA.y0 - 2, COMP.yTopo, s);
+    const on = s > 0 && PLACA.y0 - 2 - y1 > 1 && sai > 0.001;
+    svis(linhasComp[i], on);
+    if (on) { attr(linhasComp[i], 'd', `M${c.x} ${PLACA.y0 - 2}L${c.x} ${f2(y1)}`); linhasComp[i].style.opacity = sai.toFixed(3); }
+    texto(rotComp[i], T.comp[i] + 0.15, T.sai5, centro(c.x), COMP.yTexto);
+  });
+
+  // ===== 4ª frase · os 83 pontos; 74 acendem em ordem de leitura; condensam na régua de 1 a 5 ======
+  {
+    for (let k = 0; k < GRADE.total; k += 1) {
+      const e = pontos[k];
+      const dk = Math.hypot(gx(k) - GRADE.cx, gy(k) - GRADE.cy);
+      let r = GRADE.r * sp(t - (T.pontos + dk / 1600), P.button);
+      // as fileiras descem até a base (a de baixo primeiro) e se fundem nela
+      const fil = Math.floor(k / GRADE.colunas);
+      const q = nsp(t - (T.condensa + 0.05 * fil), mola(7));
+      const cy = lerp(gy(k), GRADE.yBase - 1, q);
+      r *= 1 - clamp((q - 0.55) / 0.45);
+      const on = r > 0.05 && t < T.condensa + 1.5;
+      svis(e, on);
+      if (on) {
+        const tk = ACENDER.quando.get(k);
+        const acc = tk === undefined ? 0 : clamp((t - tk) / 0.12);
+        attr(e, 'cx', f2(gx(k))); attr(e, 'cy', f2(cy)); attr(e, 'r', f2(r)); attr(e, 'fill', rgba(mixColor(TINTA, LARANJA, acc)));
+      }
+    }
+    // linha de base em tinta: nasce com os pontos e vira a régua de 1 a 5
+    const meia = ((GRADE.x1 - GRADE.x0) / 2) * nsp(t - T.base83, mola(5));
+    const aB = 1 - clamp((t - T.saiM) / 0.15);
+    const onB = t >= T.base83 && meia > 1 && aB > 0.001;
+    svis(baseP, onB);
+    if (onB) { attr(baseP, 'd', `M${f2(960 - meia)} ${GRADE.yBase}L${f2(960 + meia)} ${GRADE.yBase}`); baseP.style.opacity = aB.toFixed(3); }
+    // cinco marcas, sem estrelas
+    for (let v = 1; v <= 5; v += 1) {
+      const m = marcas[v - 1];
+      const hM = 24 * nsp(t - (T.marcas + 0.05 * (v - 1)), mola(12)) * (1 - nsp(t - T.saiM, mola(20)));
+      svis(m, hM > 0.05);
+      if (hM > 0.05) { attr(m, 'x', f2(xr(v) - 1.5)); attr(m, 'y', f2(GRADE.yBase - hM)); attr(m, 'height', f2(hM)); }
+      const rt = rotR[v - 1];
+      const a = swap(t, T.marcas + 0.05 * (v - 1), T.sai7, { delayIn: 0.06, durIn: 0.14, leadOut: 0, durOut: 0.1 });
+      visT(rt, a); if (a > 0.001) pos(rt, xr(v) - rt.offsetWidth / 2, REGUA.y + 26);
+    }
+    // o nó laranja no 4,7
+    const rN = 10 * nsp(t - T.no, mola(14)) * (1 - nsp(t - T.saiM, mola(20)));
+    svis(no, rN > 0.05);
+    if (rN > 0.05) { attr(no, 'cx', f2(X_NOTA)); attr(no, 'cy', String(REGUA.y)); attr(no, 'r', f2(rN)); }
+  }
+  texto(n89, T.n89, T.sai6, centro(), 74, 14);
+  texto(leg89, T.leg89, T.sai6, centro(), 312);
+  texto(fonte, T.fonte, T.sai6, centro(), GRADE.yBase + 34, 0);
+  // "4,7" termina logo antes de onde a linha laranja para; "de 5" fica centrado sobre a marca do 5
+  texto(n47, T.n47, T.sai7, (e) => X_NOTA - 44 - e.offsetWidth, 471, 14);
+  texto(de5, T.de5, T.sai7, centro(xr(5)), 587, 10);
+  texto(legU, T.legU, T.sai7, esq(REGUA.x1), 590);
+
+  // ===== cursor: entra de fora do quadro, toca a pílula e some =================================
+  {
+    const alvo = [M.x + M.w - 24, PIL.y + 62];
+    const ent = [1720, 1110], tEnt = T.toque - ENTRA_C.dur - 0.02;
+    const sai = [alvo[0] + 60, alvo[1] + 50];
+    const ch = perfil(t - tEnt, ENTRA_C), sd = sp(t - (T.toque + 0.16), P.cursor);
+    const cur = [ent[0] + (alvo[0] - ent[0]) * ch + (sai[0] - alvo[0]) * sd, ent[1] + (alvo[1] - ent[1]) * ch + (sai[1] - alvo[1]) * sd];
+    const v = t < tEnt ? 0 : swap(t, -1, T.toque + 0.42, { leadOut: 0, durOut: 0.15 });
+    const esc = 1 - 0.16 * press(t, [T.toque]);
+    cursorEl.setAttribute('d', polyD(CURSOR.map(([x, y]) => [cur[0] + x * esc, cur[1] + y * esc])));
+    cursorEl.setAttribute('opacity', v.toFixed(3));
+    // anel do clique: de 8 a 38 px, some em 0,45 s (motion-language, seção 5)
+    const o = t >= T.toque && t < T.toque + 0.45 ? (t - T.toque) / 0.45 : 0;
+    ondaEl.setAttribute('cx', f2(alvo[0])); ondaEl.setAttribute('cy', f2(alvo[1]));
+    ondaEl.setAttribute('r', (8 + 30 * Math.min(1, sp(o * 0.45, P.button))).toFixed(1));
+    ondaEl.setAttribute('opacity', (o > 0 ? 0.8 * (1 - o) : 0).toFixed(3));
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Contrato de render e modos de preview
+// ---------------------------------------------------------------------------
+const ESTADOS = [
+  { id: 'E0', nome: 'Papel e a linha laranja deitada (costura C09-10)', t: 0 },
+  { id: 'M1', nome: 'Meio: doze cobranças, uma por mês (Nosso modelo é)', t: 0.95 },
+  { id: 'M1b', nome: 'Meio: pay-per-use; as cobranças são recortadas', t: 1.5 },
+  { id: 'M1c', nome: 'Meio: com teste grátis; sobra um ponto em jun', t: 2.1 },
+  { id: 'M1d', nome: 'Meio: o ponto sobe; dossiês avulsos', t: 2.85 },
+  { id: 'M1e', nome: 'Meio: toque na pílula 3 créditos', t: T.toque + 0.02 },
+  { id: 'M1f', nome: 'Meio: ou em pacotes; realce em Pacote de 3 dossiês', t: 4.3 },
+  { id: 'M1g', nome: 'Meio: uma fração; a barra do erro cresce', t: 5.45 },
+  { id: 'H1', nome: 'MILHARES de reais · custo de um erro · uma fração (HOLD)', t: H1 },
+  { id: 'M2', nome: 'Meio: valida dados em campo; realce em Confirmar o lote (+1)', t: 7.5 },
+  { id: 'M2b', nome: 'Meio: ganha créditos; toast +1, linha nova e saldo 4', t: 8.35 },
+  { id: 'M2c', nome: 'Meio: a folha se fecha no dado novo', t: 8.85 },
+  { id: 'H2', nome: 'mantém nossa base viva: a placa da base (HOLD)', t: H2 },
+  { id: 'M3', nome: 'Meio: numa segunda fase', t: 10.8 },
+  { id: 'M3b', nome: 'Meio: camada de dados → bancos', t: 12.45 },
+  { id: 'H3', nome: 'camada de dados → bancos, seguradoras e imobiliárias (HOLD)', t: H3 },
+  { id: 'M4', nome: 'Meio: os 83 pontos voltam (Nos testes reais)', t: 14.3 },
+  { id: 'M4b', nome: 'Meio: 74 acendem em laranja; 89%', t: 15.0 },
+  { id: 'H4a', nome: '89% · aceitaram colaborar por créditos (HOLD)', t: H4a },
+  { id: 'M5', nome: 'Meio: os pontos condensam; utilidade percebida', t: 17.35 },
+  { id: 'M5b', nome: 'Meio: as marcas de 1 a 5; a linha corre', t: 18.0 },
+  { id: 'H4', nome: '4,7 de 5 · utilidade percebida (HOLD)', t: H4 },
+  { id: 'M6', nome: 'Meio: a régua se estende', t: T.estende + 0.25 },
+  { id: 'FIM', nome: 'Só a linha laranja de 160 a 1760 em y 860 (costura C10-11)', t: DUR - 1 / 30 },
+];
+const SONS = [
+  { t: T.meses, tipo: 'tick', ganho: 0.6, evento: 'os meses entram na régua' },
+  { t: T.barras, tipo: 'tick', evento: 'doze cobranças se desenham' },
+  { t: T.cortes, tipo: 'sweep', dur: 0.6, ganho: 0.5, evento: 'pay-per-use: as cobranças são recortadas' },
+  { t: T.conta, tipo: 'pop', ganho: 0.6, evento: 'sobra um ponto laranja' },
+  { t: T.sobe, tipo: 'whoosh', dur: 0.8, ganho: 0.35, evento: 'o ponto sobe' },
+  { t: T.pilula, tipo: 'pop', ganho: 0.6, evento: 'o ponto vira a pílula 3 créditos' },
+  { t: T.toque, tipo: 'click', evento: 'toque na pílula' },
+  { t: T.abre, tipo: 'whoosh', dur: 0.6, ganho: 0.4, evento: 'a pílula se abre na carteira de créditos' },
+  { t: T.realcePac, tipo: 'tick', evento: 'realce em Pacote de 3 dossiês' },
+  { t: T.fatia, tipo: 'pop', ganho: 0.5, evento: 'a fatia do pacote' },
+  { t: T.barra, tipo: 'sweep', dur: 0.9, ganho: 0.5, evento: 'a barra do custo de um erro cresce' },
+  { t: T.milhares, tipo: 'thump', ganho: 0.5, evento: 'MILHARES de reais' },
+  { t: T.realceC, tipo: 'tick', evento: 'realce em Confirmar o lote (+1)' },
+  { t: T.toast, tipo: 'pop', evento: '+1 crédito adicionado · Lote confirmado em Espinheiro' },
+  { t: T.nova, tipo: 'tick', ganho: 0.6, evento: 'a linha nova no extrato' },
+  { t: T.saldo4, tipo: 'tick', ganho: 0.6, evento: 'o saldo vai a 4' },
+  { t: T.fecha, tipo: 'whoosh', dur: 0.6, ganho: 0.4, evento: 'a folha se fecha no dado novo' },
+  { t: T.base, tipo: 'sweep', dur: 0.5, ganho: 0.45, evento: 'a base nasce em volta do dado novo' },
+  ...T.comp.map((c, i) => ({ t: c, tipo: 'tick', evento: `linha da camada de dados para ${COMPRADORES[i].nome}` })),
+  { t: T.pontos, tipo: 'pop', ganho: 0.6, evento: 'os 83 pontos voltam' },
+  { t: T.acende, tipo: 'sweep', dur: 0.9, ganho: 0.6, evento: '74 pontos acendem em laranja, em ordem de leitura' },
+  { t: T.condensa, tipo: 'whoosh', dur: 0.8, ganho: 0.35, evento: 'os pontos condensam na base' },
+  { t: T.marcas, tipo: 'tick', evento: 'as marcas de 1 a 5' },
+  { t: T.corre, tipo: 'sweep', dur: 1.25, ganho: 0.6, evento: 'a linha laranja corre até 4,7' },
+  { t: T.no, tipo: 'pop', ganho: 0.6, evento: 'o nó no 4,7' },
+  { t: T.estende, tipo: 'tick', evento: 'a régua se estende na linha do tempo' },
+];
+window.POC = {
+  id: 'CENA-10', duracao: DUR, fps: 30, estados: ESTADOS, holds: HOLDS,
+  cliques: [T.toque], marcos: T, sons: SONS,
+  tiras: [{ nome: 'pilula', t0: T.pilula - 0.1 }, { nome: 'abre', t0: T.abre + 0.05 }, { nome: 'barra', t0: T.barra + 0.1 }, { nome: 'sai1', t0: H1 - 0.02 }, { nome: 'toast', t0: T.toast - 0.05 }, { nome: 'fecha', t0: T.fecha - 0.02 }, { nome: 'base', t0: T.tinta - 0.1 }, { nome: 'comp', t0: T.comp[0] - 0.05 }, { nome: 'sai3', t0: H3 - 0.02 }, { nome: 'condensa', t0: T.condensa + 0.1 }, { nome: 'saida', t0: T.sai7 }],
+  comparar: ESTADOS.map((e) => ({ t: e.t, nome: e.id })),
+  grade83: { ...GRADE, ordem: 'k = fileira × 12 + coluna; fileira 0 embaixo; 7 fileiras, a última com 11', acendem: ACENDER.acendem.length, ordemAcende: 'leitura a partir de baixo: k = 0 a 73', kAcesos: ACENDER.acendem },
+  fonte: 'tela: "testes com 83 pessoas". Origem: docs/PESQUISA_QUANTITATIVA_UFPE_83.md, pergunta 10 (62,7% + 26,5% = 89,2%, 74 de 83) e pergunta 9 (4,73, dito 4,7); coleta de 02 a 12/10/2026. MILHARES de reais é o eco da cena 01; a barra e a fatia são demonstrativas (sem preço)',
+  entrada: { costura: 'C09-10' },
+  // a cena 11 começa aqui: papel com a grade de 48 px e só a linha laranja
+  saida: { costura: 'C10-11', fundo: { cor: '#F2EBDD', grade: { passo: 48, cor: 'rgba(127,136,112,0.09)', origem: [0, 0] } }, linha: { x0: SAIDA.x0, x1: SAIDA.x1, y: SAIDA.y, largura: 4.2, cor: '#F47745', pontas: 'round' } },
+};
+window.seek = (t) => render(t);
+window.__pronto = (async () => {
+  await document.fonts.ready;
+  const todo = document.getElementById('c').textContent + ' ×·—–→²ºçãõéêíóúâÁÉ?“”°0123456789:%,+−✕•/';
+  await Promise.all([
+    '500 124px Fraunces', '500 230px Fraunces', '500 210px Fraunces', '500 100px Fraunces', '500 76px Fraunces', '500 66px Fraunces', '500 64px Fraunces', '500 54px Fraunces', '600 172px Fraunces', '500 31px Fraunces', '500 48px Fraunces',
+    '400 12px "Plus Jakarta Sans"', '500 12px "Plus Jakarta Sans"', '600 12px "Plus Jakarta Sans"', '700 12px "Plus Jakarta Sans"', '500 52px "Plus Jakarta Sans"', '500 46px "Plus Jakarta Sans"', '500 34px "Plus Jakarta Sans"',
+    '500 24px "JetBrains Mono"', '600 26px "JetBrains Mono"',
+  ].map((f) => document.fonts.load(f, todo)));
+  await document.fonts.ready;
+  // a folha no estado de quando abre (sem a linha nova): mede os blocos dela
+  render(T.abre);
+  medirBlocos(medidas());
+  // passa por toda a linha do tempo antes de liberar: subconjuntos de fonte carregam agora
+  for (let t = 0; t <= DUR; t += 0.25) render(t);
+  await document.fonts.ready;
+  render(0);
+  return true;
+})();
+
+if (!navigator.webdriver) {
+  document.body.classList.add('tela');
+  const c = $('c');
+  const ajusta = () => { const s = Math.min(innerWidth / 1920, innerHeight / 1080); Object.assign(c.style, { position: 'absolute', transformOrigin: '0 0', transform: `scale(${s})`, left: `${(innerWidth - 1920 * s) / 2}px`, top: `${(innerHeight - 1080 * s) / 2}px` }); };
+  addEventListener('resize', ajusta); ajusta();
+  const aoVivo = Q.has('live');
+  // ao vivo: espaço ou → leva ao próximo HOLD; o último é DUR (a passagem para a cena 11)
+  const PARADAS = HOLDS;
+  let t = 0, alvo = aoVivo ? PARADAS[0] : DUR, rodando = true, antes = null, ultimo = null;
+  const passo = (agora) => { if (antes !== null && rodando) { t += (agora - antes) / 1000; if (t >= alvo) { t = alvo; if (!aoVivo) t = 0; else rodando = false; } } antes = agora; if (t !== ultimo) { render(t); ultimo = t; } requestAnimationFrame(passo); };
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown') {
+      const base0 = rodando ? alvo : t;
+      const i = PARADAS.findIndex((h) => h > base0 + 1e-3);
+      if (aoVivo) { if (i >= 0) { alvo = PARADAS[i]; rodando = true; } } else rodando = !rodando;
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      const anteriores = PARADAS.filter((h) => h < t - 1e-3);
+      t = anteriores.length ? anteriores[anteriores.length - 1] : 0;
+      alvo = aoVivo ? (PARADAS.find((h) => h > t + 1e-3) ?? DUR) : DUR;
+      rodando = !aoVivo;
+      render(t); ultimo = t;
+      e.preventDefault();
+    } else if (e.key === 'r') { t = 0; alvo = aoVivo ? PARADAS[0] : DUR; rodando = true; }
+  });
+  window.__pronto.then(() => requestAnimationFrame(passo));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · Cena 04 · os dados existem, mas estão espalhados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@400..800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lib/marca.css">
+<style>
+  html, body { margin: 0; background: var(--bg-obsidian); }
+  body.tela { min-height: 100vh; overflow: hidden; }
+  #c {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden; flex: none;
+    background: var(--bg-paper); color: var(--ink-primary);
+    font-family: var(--font-sans); font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* a mesma grade de 48 px das cenas 05 a 09 e de costura.html */
+  .grade {
+    position: absolute; inset: 0; background-size: 48px 48px;
+    background-image:
+      linear-gradient(to right, rgba(127, 136, 112, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(127, 136, 112, 0.09) 1px, transparent 1px);
+  }
+  svg.camada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+  .camada-div { position: absolute; inset: 0; }
+  .t { position: absolute; white-space: nowrap; line-height: 1.15; }
+  #cv, #multi { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+
+  /* nomes das bases: no chão (tinta sobre papel) e nos estratos (papel sobre tinta) */
+  #ceu { position: absolute; left: 0; top: 0; width: 1920px; overflow: hidden; }
+  .nome-ceu { position: absolute; white-space: nowrap; font: 500 24px/1 var(--font-mono); color: var(--ink-primary); }
+  .nome-estrato { position: absolute; white-space: nowrap; font: 500 28px/1 var(--font-mono); color: rgba(242, 235, 221, 0.86); }
+  .rotulo { position: absolute; white-space: nowrap; font: 500 16px/1 var(--font-mono); color: rgba(242, 235, 221, 0.62); }
+  /* máscara do código de lote: só algarismos tentados ao acaso (rng), que nunca fecham um código */
+  .mascara { position: absolute; white-space: pre; font: 600 40px/1 var(--font-mono); }
+  /* planilha: só cabeçalhos de campo, sem linhas de dado */
+  .plan { position: absolute; }
+  .plan table { border-collapse: collapse; font: 500 17px/1 var(--font-mono); color: rgba(242, 235, 221, 0.88); }
+  .plan th { padding: 9px 12px; border: 1.5px solid rgba(242, 235, 221, 0.38); font-weight: 500; text-align: left; white-space: nowrap; }
+  .plan td { height: 22px; padding: 0; border: 1.5px solid rgba(242, 235, 221, 0.20); }
+
+  /* miniatura do anúncio da cena 2 (mesma gramática: .card, chips, área, selo de sol) */
+  .anuncio { position: absolute; box-sizing: border-box; width: 544px; height: 364px; border-radius: 32px; background: #FFFFFF; border: 1px solid rgba(23, 23, 23, 0.09); overflow: hidden; }
+  .anuncio .foto { position: absolute; left: 14px; top: 14px; width: 300px; height: 334px; border-radius: 20px; overflow: hidden; background: #F8E3C4; }
+  .anuncio .col { position: absolute; left: 334px; top: 26px; width: 196px; }
+  .anuncio .k { font: 700 11px/1.2 var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+  .anuncio .nome { font: 600 27px/1.08 var(--font-display); letter-spacing: -0.02em; margin-top: 9px; color: var(--ink-primary); }
+  .anuncio .chips { display: flex; gap: 6px; margin-top: 12px; }
+  .anuncio .chip { display: inline-flex; align-items: center; font: 600 12.5px/1 var(--font-sans); padding: 6px 9px; border-radius: 999px; background: #FAF6EE; border: 1px solid #E2D9C8; color: var(--ink-secondary); white-space: nowrap; }
+  .anuncio .area { margin-top: 14px; height: 82px; border-radius: 12px; border: 1.5px solid #E2D9C8; background: #FAF6EE; position: relative; }
+  .anuncio .area .rot { position: absolute; left: 12px; top: 11px; font: 600 12px/1 var(--font-sans); color: var(--ink-muted); }
+  .anuncio .area .valor { position: absolute; left: 12px; top: 32px; font: 700 40px/1 var(--font-sans); letter-spacing: -0.03em; color: var(--ink-primary); }
+  .anuncio .sol { display: inline-flex; align-items: center; gap: 7px; margin-top: 14px; font: 600 15px/1 var(--font-sans); padding: 8px 13px 8px 10px; border-radius: 999px; background: #FFF3DA; border: 1px solid #F1D6A0; color: #8A5A12; }
+  .anuncio .sol svg { width: 18px; height: 18px; }
+
+  /* o desenho escuro da saída (subsolo.js), igual ao da cena 05 em t = 0 */
+  #fim { position: absolute; inset: 0; }
+  #fimC { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  .palavra { position: absolute; height: 96px; width: 900px; clip-path: inset(0px -80px 0px -80px); }
+  .letra { position: absolute; top: 0; font: 500 96px/1 var(--font-display); font-kerning: none; font-variation-settings: 'opsz' 40; letter-spacing: 0.02em; }
+  .base { font: 500 22px/1 var(--font-mono); }
+  #debug { position: absolute; right: 16px; top: 12px; font: 500 16px/1 var(--font-mono); color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div id="c">
+  <div class="grade" id="grade"></div>
+  <svg class="camada" id="costura" viewBox="0 0 1920 1080"></svg>
+  <canvas id="cv" width="1920" height="1080"></canvas>
+  <svg class="camada" id="mundo" viewBox="0 0 1920 1080">
+    <defs><clipPath id="cpPredio"><rect id="cpPredioR" x="0" y="0" width="0" height="0" /></clipPath></defs>
+    <path id="prumo" fill="none" stroke-width="2" stroke-dasharray="6 9" />
+    <g id="glifos"></g>
+    <path id="predio" fill="none" stroke="#171717" stroke-width="2.5" stroke-linejoin="round" clip-path="url(#cpPredio)" />
+    <g id="pilha"></g>
+    <g id="trilha"></g>
+  </svg>
+  <div id="ceu"></div>
+  <div class="camada-div" id="textos"></div>
+  <canvas id="multi" width="1920" height="1080"></canvas>
+  <div class="camada-div" id="cartaoJ"></div>
+  <svg class="camada" id="pontos" viewBox="0 0 1920 1080">
+    <circle id="cinza" r="12" fill="#8C877E" />
+    <circle id="voce" r="12" fill="#171717" />
+  </svg>
+  <div id="fim"><canvas id="fimC" width="1920" height="1080"></canvas></div>
+</div>
+
+<script type="module">
+import { clamp, lerp, smooth, sp, swap, pending, press, rng, mixColor, rgba, PRESETS as P } from '../lib/motion.js';
+import { SUBSOLO as S, ondaY, reguaPts, linhaD, marcasD, MARCAS_U, contornoD, posLetras, desenharSubsolo, pontilhadoD, livresDosNomes } from '../lib/subsolo.js';
+import { desenharCostura } from '../lib/costuras.js';
+import { caminho, caixa, poly, tela as tela3, profundidade, recortaRet, PERTO } from '../lib/espaco3d.js';
+
+// ---------------------------------------------------------------------------
+// Linha do tempo (roteiro de 18/10/2026, cerca de 3,8 palavras/s; cada evento preso à palavra de sentido):
+//   B1 "Dados que evitam essas ciladas existem, mas estão espalhados em dezenas de plataformas e mapas
+//       da prefeitura." de 0,15 a 4,75 s: "Dados" 0,15 (o corte e os nomes no chão), "ciladas" 1,1 (o
+//       prédio), "espalhados" 2,2 (os nomes afundam e a câmera desce), "dezenas de plataformas" 2,8
+//       (os estratos de cima para baixo, cada um com o prédio num x diferente), "mapas da prefeitura"
+//       3,8 (ESIG e a camada dos proxies). HOLD em 4,80 s
+//   B2 "Investigar tudo isso sozinho leva tempo," de 4,9 a 6,7 s: "Investigar" 4,90 (o ponto mergulha e
+//       se enrosca entre os estratos; lampejos da planilha, da pilha de alvarás e da máscara do lote),
+//       "leva tempo" 6,1 a 6,7 (o emaranhado é puxado e vira a régua do tempo; a tinta cobre o céu; TEMPO)
+//   B3 "são milhares de anúncios com proprietários pressionando em cada um deles." de 6,8 a 9,1 s:
+//       "milhares de anúncios" 7,0 (o anúncio na ponta da régua e a multidão de miniaturas em volta),
+//       "proprietários pressionando" 7,9 a 8,6 (um ponto cinza aperta cada anúncio), "em cada um deles"
+//       8,7 (os anúncios são levados; fica o contorno vazio). HOLD no fim (9,15 s)
+// Nada passa de cerca de 40 px por quadro a 30 fps.
+// ---------------------------------------------------------------------------
+const T = {
+  corte: 0.10, corteDur: 0.70,
+  ceu: 0.25, ceuPasso: 0.09, predio: 1.05,
+  afunda: 1.70, afundaPasso: 0.06, afundaDur: 0.45,
+  desce: 1.85, desceDur: 2.40,
+  estratos: 2.05, estratoPasso: 0.30, estratoDur: 0.45, glifoAtraso: 0.28,
+  prumo: 2.15, prumoDur: 2.15,
+  b2: 4.86, mergulho: 4.90, emaranhadoDur: 1.12,
+  planilha: 5.00, pilha: 5.28, mascara: 5.54, tenta: 5.64, passoMasc: 0.045,
+  sai: 6.12, puxa: 5.95, puxaAtraso: 0.12, puxaDurX: 0.80, puxaDurY: 0.90,
+  camSobe: 5.95, camSobeDur: 0.90, meiotom: 5.95, meiotomDur: 0.90,
+  tinta: 6.05, tintaDur: 0.50, tempo: 6.38, estica: 6.90, esticaDur: 0.90,
+  cartao: 6.80, multidao: 6.95, multidaoDur: 0.55, donos: 7.90, donosDur: 0.30, aperta: 8.18,
+  leva: 8.40, levaDur: 0.28, levaCartao: 8.30, levaCartaoDur: 0.70, nomesFim: 8.50, chega: 8.55,
+};
+const FIM = 9.02;      // a partir daqui o quadro é o de motion/lib/subsolo.js (= cena05.html em t = 0)
+const DUR = 9.15;
+const HOLDS = [4.80, DUR];
+
+// ---------------------------------------------------------------------------
+// Geometria. Mundo com o chão em y = 540 (o da costura C03-04); a câmera desce 390 px e o chão
+// fica em y = 150 na tela; tela = mundo − camY. Tudo que é do mundo anda junto com a câmera.
+// Sete estratos de 116 px, de 128 em 128: as seis bases e a camada dos proxies.
+// ---------------------------------------------------------------------------
+const GW = 540, CAM = 390;
+const PAPEL = [242, 235, 221], TINTA = [23, 23, 23];
+const tom = (a) => rgba([...mixColor(TINTA, PAPEL, a), 1]);   // papel com alfa a sobre a tinta, opaco
+const NB = S.bases.length;                                       // 7
+const BANDA = (b) => [556 + 128 * b + 6, 556 + 128 * b + 122];   // estrato b no mundo [y0, y1]
+const BASES = S.bases.map((b) => b.nome);                        // de cima para baixo (subsolo.js)
+const NOME_X = 96, NOME_DY = 14;                                 // nome do estrato: margem esquerda
+// o mesmo prédio, num x diferente em cada camada; o prédio de verdade está no chão, em x 1004 a 1076
+const GLIFO_X = [1240, 880, 1300, 940, 1420, 1130, 1520];
+const PREDIO = { x: 1004, w: 72, h: 92 };
+const PRUMO_X = PREDIO.x + PREDIO.w / 2;
+// lampejos do B2 (mundo), todos à direita do prumo: a planilha no IPTU, a pilha no Licenciamento,
+// a máscara do código de lote no ESIG
+const PLAN = { x: 1300, y: 584 };
+const PILHA = { x: 1380, y: 846, w: 190, h: 76, rot: [1380, 822] };
+const MASC = { x: 1200, y: 1244, rot: [1200, 1220] };
+// a régua da saída (subsolo.js): o emaranhado é puxado para [XT0, XH]; depois a ponta esquerda estica
+const R = S.regua, K = S.contorno;
+const yR = (x) => ondaY((x - R.x0) / (R.x1 - R.x0), R.y, R.onda, R.ondas);
+const XT0 = 600, XH = 994;
+const REGUA_PTS = reguaPts(R.x0, R.x1, R.y, R.onda, R.ondas);   // os mesmos 73 pontos do desenho da saída
+
+// ---------------------------------------------------------------------------
+// DOM e utilitários
+// ---------------------------------------------------------------------------
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+function el(cls, html, pai) { const e = document.createElement('div'); e.className = cls; e.innerHTML = html; pai.appendChild(e); return e; }
+function sv(tag, attrs, pai) { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); pai.appendChild(e); return e; }
+const vis = (e, a) => { e.style.opacity = a.toFixed(3); e.style.visibility = a > 0.001 ? 'inherit' : 'hidden'; };
+const pos = (e, x, y) => { e.style.left = x.toFixed(1) + 'px'; e.style.top = y.toFixed(1) + 'px'; };
+const sm = (t, t0, dur) => smooth(clamp((t - t0) / dur));
+const ss = (p) => { const q = clamp(p); return q * q * q * (q * (q * 6 - 15) + 10); };   // smootherstep: começa e para sem tranco
+const f1 = (v) => v.toFixed(1), f2 = (v) => v.toFixed(2);
+const polyD = (pts) => (pts.length < 2 ? 'M0 0' : 'M' + pts.map((p) => f1(p[0]) + ' ' + f1(p[1])).join('L'));
+// velocidade em trapézio: acelera em a, anda reto, freia em a (fração do tempo); devolve 0..1
+function trapezio(u, a = 0.22) {
+  const q = clamp(u), v = 1 / (1 - a);
+  if (q < a) return (v * q * q) / (2 * a);
+  if (q > 1 - a) { const r = 1 - q; return 1 - (v * r * r) / (2 * a); }
+  return v * (q - a / 2);
+}
+
+// régua fora do #c (sem transform): largura fracionária de um texto (a mesma da cena 05)
+const regua = document.createElement('div');
+regua.style.cssText = 'position:absolute;left:-20000px;top:0;visibility:hidden;white-space:pre';
+document.body.appendChild(regua);
+function largura(txt, fonte, o = {}) {
+  regua.style.font = fonte;
+  regua.style.letterSpacing = (o.ls || 0) + 'em';
+  regua.style.fontVariationSettings = o.fvs || 'normal';
+  regua.style.fontKerning = o.kern || 'auto';
+  regua.textContent = txt;
+  return regua.getBoundingClientRect().width;
+}
+const FONTE_PALAVRA = { fonte: `${S.palavra.peso} ${S.palavra.tamanho}px Fraunces`, o: { ls: S.palavra.espacamento, fvs: `'opsz' ${S.palavra.opsz}`, kern: 'none' } };
+const medePalavra = (txt) => largura(txt, FONTE_PALAVRA.fonte, FONTE_PALAVRA.o);
+const FONTE_BASE = `${S.baseFonte.peso} ${S.baseFonte.tamanho}px ${S.baseFonte.familia}`;
+
+// ---------------------------------------------------------------------------
+// Entrada: a costura C03-04 (papel, grade, chão em tinta e o ponto "você"), logo acima da grade
+// ---------------------------------------------------------------------------
+const costura = desenharCostura('C03-04', $('costura'));
+const CHAO_D0 = costura.linhas[0].getAttribute('d');
+
+// ---------------------------------------------------------------------------
+// Meio-tom: a mesma malha hexagonal de 14 px do pontilhado da saída, ancorada no mundo. Cada estrato
+// tem o seu desenho (raio por ponto), que aparece com o corte; no B2 os raios passam para o campo de
+// manchas da saída.
+// ---------------------------------------------------------------------------
+const LIMITES_LOTE = (() => { const r = rng(77), xs = []; for (let x = -20; x < 1960; x += 90 + r() * 70) xs.push(x); return xs; })();
+function padrao(b, x, y, j, c) {
+  const [y0, y1] = BANDA(b), cy = (y0 + y1) / 2;
+  switch (b) {
+    case 0: return j % 3 === 0 ? 1.9 : 0;                                   // IPTU: linhas de cadastro
+    case 1: return j % 2 === 0 && c % 5 < 3 ? 1.8 : 0;                      // ITBI: traços, um por transmissão
+    case 2: { const d = (((x + y * 1.15) % 56) + 56) % 56; return d < 13 ? 2.2 : 0; }   // Licenciamento: hachura
+    case 3: return (j % 4 === 0 && c % 4 === 0) || (j % 4 === 2 && c % 4 === 2) ? 3.0 : 0;   // Defesa Civil: pontos esparsos
+    case 4: return 1.05;                                                    // SDS-PE: grão fino
+    case 5: {                                                               // ESIG: divisas de lotes
+      let dmin = 99; for (const bx of LIMITES_LOTE) dmin = Math.min(dmin, Math.abs(x - bx));
+      return dmin < 7 || Math.abs(y - (cy + 10)) < 6.07 ? 1.9 : 0;
+    }
+    case 6: {                                                               // proxies: ondas (alagamento, calor, verde)
+      const w = 9 * Math.sin(x / 41);
+      for (const k of [-30, 0, 30]) if (Math.abs(y - (cy + k) - w) < 6.2) return 1.7;
+      return 0;
+    }
+    default: return 0;
+  }
+}
+// campo da saída: o mesmo cálculo de pontilhadoD (subsolo.js), ponto a ponto
+function campoFinal(larguras) {
+  const Pt = S.pontilhado, r = rng(Pt.semente);
+  const manchas = Pt.manchas.map(([cx, cy, rx, ry]) => ({ cx, cy, rx, ry, f: [r() * 6.283, r() * 6.283, r() * 6.283], a: [0.18 + r() * 0.12, 0.10 + r() * 0.08, 0.06 + r() * 0.05] }));
+  const livres = [...Pt.livres, ...livresDosNomes(larguras)];
+  const dist = (x, y, [x0, y0, x1, y1]) => Math.hypot(Math.max(x0 - x, 0, x - x1), Math.max(y0 - y, 0, y - y1));
+  return (x, y) => {
+    let f = 0;
+    for (const m of manchas) {
+      const ux = (x - m.cx) / m.rx, uy = (y - m.cy) / m.ry, ang = Math.atan2(uy, ux);
+      const borda = 1 + m.a[0] * Math.sin(2 * ang + m.f[0]) + m.a[1] * Math.sin(3 * ang + m.f[1]) + m.a[2] * Math.sin(5 * ang + m.f[2]);
+      f = Math.max(f, 1 - smooth(clamp((Math.hypot(ux, uy) / borda - 0.62) / 0.42)));
+    }
+    for (const z of livres) f *= smooth(clamp(dist(x, y, z) / 40));
+    const rr = Pt.rMax * Math.pow(f, 0.85);
+    return rr < 0.45 ? 0 : rr;
+  };
+}
+const MALHA = [];
+function prepararMalha(larguras) {
+  MALHA.length = 0;
+  const passo = S.pontilhado.passo, dy = passo * 0.866;
+  const rf = campoFinal(larguras);
+  for (let j = 0, y = passo / 2; y < 1480; j += 1, y += dy) {
+    for (let c = 0, x = j % 2 ? passo / 2 : 0; x < 1920 + passo; c += 1, x += passo) {
+      let b = -1;
+      for (let k = 0; k < NB; k += 1) { const [y0, y1] = BANDA(k); if (y >= y0 && y <= y1) b = k; }
+      const rs = b >= 0 ? padrao(b, x, y, j, c) : 0;
+      const f = y < 1080 + passo ? rf(x, y) : 0;
+      if (rs > 0 || f > 0) MALHA.push({ x, y, b, rs, rf: f });
+    }
+  }
+}
+let PONT_FINAL = null;   // Path2D exato do pontilhado da saída
+
+// ---------------------------------------------------------------------------
+// O caminho do ponto: uma trocoide irregular que desce do chão e dá voltas sobre si mesma entre os
+// estratos de cima (o emaranhado), reamostrada de 6 em 6 px. Fica entre x 600 e 1000: à direita dos
+// nomes e à esquerda do prumo e dos lampejos.
+// ---------------------------------------------------------------------------
+function emaranhadoEm(u) {
+  const w = 2 * Math.PI * 2.8 * u + 0.35 * Math.sin(3.1 * u);
+  const r = 44 + 12 * Math.sin(4.3 * u + 0.6);
+  const env = smooth(clamp(u / 0.08));   // a volta começa depois de o ponto entrar no chão
+  return [960 - 250 * u + env * r * Math.sin(w), 528 + 360 * u + env * r * (1 - Math.cos(w))];
+}
+const AMOSTRA = 6;
+const TRILHA = (() => {
+  const denso = [];
+  for (let i = 0; i <= 2400; i += 1) denso.push(emaranhadoEm(i / 2400));
+  const acum = [0];
+  for (let i = 1; i < denso.length; i += 1) acum.push(acum[i - 1] + Math.hypot(denso[i][0] - denso[i - 1][0], denso[i][1] - denso[i - 1][1]));
+  const L = acum[acum.length - 1];
+  const em = (s) => {
+    let lo = 0, hi = acum.length - 1;
+    while (hi - lo > 1) { const m = (lo + hi) >> 1; if (acum[m] <= s) lo = m; else hi = m; }
+    const u = (s - acum[lo]) / Math.max(1e-9, acum[hi] - acum[lo]);
+    return [lerp(denso[lo][0], denso[hi][0], u), lerp(denso[lo][1], denso[hi][1], u)];
+  };
+  const pts = [];
+  for (let s = 0; s < L; s += AMOSTRA) pts.push({ s, p: em(s) });
+  pts.push({ s: L, p: em(L) });
+  // a trilha começa no chão (abaixo da linha); o halo, um pouco mais fundo, nunca toca o papel
+  const iChao = pts.findIndex((q) => q.p[1] > GW + 2);
+  const iHalo = pts.findIndex((q) => q.p[1] > GW + 10);
+  const s0 = pts[iChao].s;
+  for (const q of pts) { const u = clamp((q.s - s0) / (L - s0)); q.u = u; q.alvo = [lerp(XT0, XH, u), yR(lerp(XT0, XH, u))]; }
+  return { pts, L, em, iChao, iHalo };
+})();
+const arcoPonto = (t) => (t < T.mergulho ? 0 : TRILHA.L * trapezio((t - T.mergulho) / T.emaranhadoDur));
+
+// ---------------------------------------------------------------------------
+// Máscara do código de lote (__.____.____.__.____): algarismos tentados um a um com rng; a tentativa
+// do segundo grupo falha e ele volta a "_". Nunca passa de 5 dos 16 algarismos: não fecha um código.
+// ---------------------------------------------------------------------------
+const MASC_TXT = '__.____.____.__.____';
+const SLOT_CHAR = [0, 1, 3, 4, 5, 6, 8, 9, 10, 11, 13, 14, 16, 17, 18, 19];
+const GRUPO = [[0, 1], [2, 3, 4, 5], [6, 7, 8, 9], [10, 11], [12, 13, 14, 15]];
+const PASSOS = (() => {
+  const r = rng(404), d = () => Math.floor(r() * 10);
+  const poe = (slot) => ({ tipo: 'poe', slot, dig: d() });
+  return [poe(0), poe(1), poe(2), poe(3), { tipo: 'tenta', slot: 4 }, { tipo: 'erro', grupo: 1 }, { tipo: 'erro', grupo: 1 }, { tipo: 'erro', grupo: 1 }, { tipo: 'limpa', grupo: 1 }];
+})();
+const ESTADOS_MASC = (() => {
+  const out = [], dig = Array(16).fill(null);
+  for (const p of PASSOS) {
+    let erro = -1;
+    if (p.tipo === 'poe') dig[p.slot] = p.dig;
+    if (p.tipo === 'erro') erro = p.grupo;
+    if (p.tipo === 'limpa') for (const s of GRUPO[p.grupo]) dig[s] = null;
+    out.push({ dig: dig.slice(), erro });
+  }
+  return out;
+})();
+const hashDig = (k, sub) => Math.floor(rng(7919 * k + 31 * sub + 5)() * 10);
+function mascaraEm(t) {
+  const tm = Math.min(t, T.sai);
+  const kf = (tm - T.tenta) / T.passoMasc, k = Math.floor(kf), sub = Math.floor((kf - k) * 3);
+  const vazio = { dig: Array(16).fill(null), erro: -1 };
+  const chars = MASC_TXT.split('').map((ch) => ({ ch, cor: tom(0.42) }));
+  const poe = (st) => st.dig.forEach((v, s) => { if (v !== null) chars[SLOT_CHAR[s]] = { ch: String(v), cor: tom(0.95) }; });
+  if (k < 0) return chars;
+  if (k >= PASSOS.length) { poe(ESTADOS_MASC[PASSOS.length - 1]); return chars; }
+  const p = PASSOS[k];
+  if (p.tipo === 'poe' || p.tipo === 'tenta') {
+    poe(k > 0 ? ESTADOS_MASC[k - 1] : vazio);
+    chars[SLOT_CHAR[p.slot]] = { ch: String(hashDig(k, sub)), cor: tom(0.58) };   // o algarismo sendo tentado
+  } else {
+    poe(ESTADOS_MASC[k]);
+    if (p.tipo === 'erro') {
+      let kt = k; while (kt > 0 && PASSOS[kt].tipo !== 'tenta') kt -= 1;
+      chars[SLOT_CHAR[PASSOS[kt].slot]] = { ch: String(hashDig(kt, 3)), cor: '#B94E36' };
+      for (const s of GRUPO[p.grupo]) if (chars[SLOT_CHAR[s]].ch !== '_') chars[SLOT_CHAR[s]].cor = '#B94E36';
+    }
+  }
+  return chars;
+}
+
+// ---------------------------------------------------------------------------
+// A foto do anúncio da cena 02: a sala vetorial (copiada de cena02.html), como publicada
+// (lente aberta). Desenhada uma vez; o cartão só anda por left.
+// ---------------------------------------------------------------------------
+const COR = {
+  piso: '#EFC38D', pisoLinha: '#F8DDB4', fundo: '#F8E3C4', esquerda: '#F6B467', direita: '#F9C978', teto: '#FCEEDA', sanca: '#F8E2C2',
+  ceu1: '#FBD08F', ceu2: '#FCDDA8', ceu3: '#FDE9C6', mar: '#F7C79E', sol: '#FFB347', halo: 'rgba(255,196,107,0.35)',
+  torreA: '#F4A15C', torreB: '#EE8956', torreC: '#E9734F', torreTopo: '#FCE0B8', luz: 'rgba(255,244,214,0.85)',
+  sofaT: '#F9A07A', sofaF: '#F47745', sofaL: '#DC683B', tapete: '#F2A27F', tapeteBorda: '#F8C3A6', mesaT: '#FBD27D', mesaF: '#F2B04F', mesaL: '#E39A3C',
+  rackT: '#FCE7C4', rackF: '#F6D3A0', rackL: '#E9BC85', quadro: '#E9734F', passe: '#FFF7EA', moldura: '#FFFFFF', linha: '#FFFFFF', cortina: 'rgba(255,248,236,0.8)',
+};
+const torres = [];
+{ const r = rng(81); for (let i = 0; i < 14; i += 1) { const lado = i % 2 ? 1 : -1; torres.push({ x: lado * (5 + r() * 18), w: 2.2 + r() * 3, prof: 2 + r() * 2, y: -46 - r() * 10, topo: 0.6 + r() * 5, cor: ['torreA', 'torreB', 'torreC'][i % 3] }); } torres.sort((a, b) => a.y - b.y); }
+const HW = 3.3, DP = 7.0, HP = 2.8;
+function fotoSala(W, Hh, aberta) {
+  const f = lerp(1000, 340, aberta);
+  const c = { pos: [0, -DP + f / 104, 1.42], f, pitch: -0.025, cx: W / 2, cy: Hh / 2 + 18, yaw: 0, roll: 0 };
+  const L = COR.linha;
+  let s = '';
+  const yc = -70;
+  s += poly(caminho([[-120, yc, 1.6], [120, yc, 1.6], [120, yc, 80], [-120, yc, 80]], c), COR.ceu1, 'none', 0);
+  s += poly(caminho([[-120, yc, 1.6], [120, yc, 1.6], [120, yc, 7], [-120, yc, 7]], c), COR.ceu2, 'none', 0);
+  s += poly(caminho([[-120, yc, 1.6], [120, yc, 1.6], [120, yc, 3.6], [-120, yc, 3.6]], c), COR.ceu3, 'none', 0);
+  const sc = tela3([2.2, -36, 4.4], c), sd = profundidade([2.2, -36, 4.4], c);
+  if (sd > PERTO) { const r = (c.f * 2.1) / sd; s += `<circle cx="${f1(sc[0])}" cy="${f1(sc[1])}" r="${f1(r * 1.7)}" fill="${COR.halo}"/><circle cx="${f1(sc[0])}" cy="${f1(sc[1])}" r="${f1(r)}" fill="${COR.sol}"/>`; }
+  s += poly(caminho([[-120, -69, -30], [120, -69, -30], [120, -69, 1.6], [-120, -69, 1.6]], c), COR.mar, 'none', 0);
+  for (const tw of torres) s += caixa(tw.x - tw.w / 2, tw.y - tw.prof, -30, tw.x + tw.w / 2, tw.y, tw.topo, { t: COR.torreTopo, f: COR[tw.cor], l: COR[tw.cor] }, c, L, 1);
+  s += poly(caminho([[-HW, 2, 0], [HW, 2, 0], [HW, -DP, 0], [-HW, -DP, 0]], c), COR.piso, L, 2);
+  let lin = '';
+  for (let x = -HW + 0.6; x < HW - 0.05; x += 0.6) lin += caminho([[x, 2, 0.002], [x, -DP, 0.002]], c, false);
+  for (let y = 1.4; y > -DP + 0.05; y -= 0.6) lin += caminho([[-HW, y, 0.002], [HW, y, 0.002]], c, false);
+  s += `<path d="${lin}" fill="none" stroke="${COR.pisoLinha}" stroke-width="1.4"/>`;
+  s += poly(caminho([[-HW, 2, HP], [HW, 2, HP], [HW, -DP, HP], [-HW, -DP, HP]], c), COR.teto, L, 2);
+  s += poly(caminho([[-HW + 0.55, 2, HP - 0.001], [HW - 0.55, 2, HP - 0.001], [HW - 0.55, -DP + 0.55, HP - 0.001], [-HW + 0.55, -DP + 0.55, HP - 0.001]], c), COR.sanca, L, 1.4);
+  s += poly(caminho([[-HW, 2, 0], [-HW, -DP, 0], [-HW, -DP, HP], [-HW, 2, HP]], c), COR.esquerda, L, 2);
+  s += poly(caminho([[HW, 2, 0], [HW, -DP, 0], [HW, -DP, HP], [HW, 2, HP]], c), COR.direita, L, 2);
+  s += poly(caminho([[HW, -2.6, 1.05], [HW, -4.3, 1.05], [HW, -4.3, 2.1], [HW, -2.6, 2.1]], c), COR.passe, L, 2);
+  s += poly(caminho([[HW, -2.75, 1.2], [HW, -4.15, 1.2], [HW, -4.15, 1.95], [HW, -2.75, 1.95]], c), COR.quadro, 'none', 0);
+  const J = { x0: -1.85, x1: 1.85, z0: 0.25, z1: 2.5 };
+  const ext = caminho([[-HW, -DP, 0], [HW, -DP, 0], [HW, -DP, HP], [-HW, -DP, HP]], c);
+  const vao = caminho([[J.x0, -DP, J.z0], [J.x0, -DP, J.z1], [J.x1, -DP, J.z1], [J.x1, -DP, J.z0]], c);
+  s += `<path d="${ext}${vao}" fill="${COR.fundo}" fill-rule="evenodd" stroke="${L}" stroke-width="2"/>`;
+  const barra = (x0, z0, x1, z1) => poly(caminho([[x0, -DP, z0], [x1, -DP, z0], [x1, -DP, z1], [x0, -DP, z1]], c), COR.moldura, L, 1);
+  s += barra(J.x0 - 0.08, J.z0 - 0.08, J.x1 + 0.08, J.z0) + barra(J.x0 - 0.08, J.z1, J.x1 + 0.08, J.z1 + 0.08) + barra(J.x0 - 0.08, J.z0, J.x0, J.z1) + barra(J.x1, J.z0, J.x1 + 0.08, J.z1) + barra(-0.035, J.z0, 0.035, J.z1) + barra(J.x0, 1.92, J.x1, 1.98);
+  const Ld = [-2.2, 34, -3.0];
+  let luz = '';
+  for (const [x0, x1, z0, z1] of [[J.x0, -0.035, J.z0, 1.92], [0.035, J.x1, J.z0, 1.92]]) {
+    const pts = [[x0, z0], [x1, z0], [x1, z1], [x0, z1]].map(([x, z]) => { const k = -z / Ld[2]; return [x + Ld[0] * k, -DP + Ld[1] * k, 0.004]; });
+    const rec = recortaRet(pts, -HW, HW, -DP, 2);
+    if (rec.length >= 3) luz += caminho(rec, c);
+  }
+  s += `<path d="${luz}" fill="${COR.luz}"/>`;
+  s += poly(caminho([[-1.6, -3.1, 0.008], [1.25, -3.1, 0.008], [1.25, -5.6, 0.008], [-1.6, -5.6, 0.008]], c), COR.tapete, COR.tapeteBorda, 3);
+  const so = { t: COR.sofaT, f: COR.sofaF, l: COR.sofaL };
+  const moveis = [
+    { d: profundidade([-2.6, -4.5, 0.4], c), s: () => caixa(-HW + 0.02, -5.7, 0.08, -HW + 0.26, -3.3, 0.82, so, c, L) + caixa(-HW + 0.24, -5.7, 0.08, -HW + 1.0, -3.3, 0.4, so, c, L) + caixa(-HW + 0.24, -5.7, 0.08, -HW + 1.0, -5.5, 0.58, so, c, L) + caixa(-HW + 0.24, -3.5, 0.08, -HW + 1.0, -3.3, 0.58, so, c, L) },
+    { d: profundidade([-0.3, -4.45, 0.2], c), s: () => caixa(-0.6, -4.75, 0, 0.0, -4.15, 0.26, { t: COR.mesaF, f: COR.mesaL, l: COR.mesaL }, c, L) + caixa(-0.95, -5.0, 0.26, 0.35, -3.9, 0.34, { t: COR.mesaT, f: COR.mesaF, l: COR.mesaL }, c, L) },
+    { d: profundidade([HW - 0.3, -4.4, 0.3], c), s: () => caixa(HW - 0.48, -5.6, 0.12, HW - 0.02, -3.4, 0.5, { t: COR.rackT, f: COR.rackF, l: COR.rackL }, c, L) },
+  ].sort((a, b) => b.d - a.d);
+  for (const m of moveis) s += m.s();
+  for (const [x0, x1] of [[J.x0 - 0.75, J.x0 + 0.05], [J.x1 - 0.05, J.x1 + 0.75]]) s += poly(caminho([[x0, -DP + 0.12, HP - 0.05], [x1, -DP + 0.12, HP - 0.05], [x1, -DP + 0.3, 0.06], [x0, -DP + 0.3, 0.06]], c), COR.cortina, L, 1.2);
+  return s;
+}
+const ICONE_NASCE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h1m16 0h1M5.6 10.6l.7.7m12.1-.7l-.7.7M8 17a4 4 0 0 1 8 0"/><path d="M3 21h18"/><path d="M12 9V3l3 3M9 6l3-3"/></svg>';
+
+// ---------------------------------------------------------------------------
+// Peças da cena
+// ---------------------------------------------------------------------------
+const cv = $('cv'), ctx = cv.getContext('2d');
+const mundo = $('mundo'), textos = $('textos'), ceu = $('ceu');
+// nomes das seis bases públicas no chão (os proxies não estão no chão: só existem calculados, embaixo)
+const NCEU = BASES.slice(0, 6).map((n) => ({ e: el('nome-ceu', n, ceu), x: 0, w: 0 }));
+// nomes nos estratos (margem esquerda): as seis bases e a camada dos proxies
+const NEST = BASES.map((n) => ({ e: el('nome-estrato', n, textos), w: 0 }));
+const NFIM = S.bases.map((b) => ({ ...b, w22: 0 }));
+// lampejos
+const rotMasc = el('rotulo', 'número do lote', textos);
+const masc = el('mascara', '', textos);
+const MASC_SPANS = MASC_TXT.split('').map((ch) => { const s = document.createElement('span'); s.textContent = ch; masc.appendChild(s); return s; });
+const plan = el('plan', `<table><tr><th>logradouro</th><th>número</th><th>bairro</th><th>área construída</th><th>ano</th></tr>${'<tr><td></td><td></td><td></td><td></td><td></td></tr>'.repeat(2)}</table>`, textos);
+const rotPilha = el('rotulo', 'alvarás de obras', textos);
+const pilhaG = $('pilha');
+const FOLHAS = [0, 1, 2, 3].map(() => {
+  const g = sv('g', {}, pilhaG);
+  return { g, r: sv('rect', { width: PILHA.w, height: PILHA.h, rx: 6, fill: '#171717', stroke: tom(0.55), 'stroke-width': 2 }, g), l: sv('path', { fill: 'none', stroke: tom(0.26), 'stroke-width': 2 }, g) };
+});
+// glifos do prédio nos estratos e o prédio no chão
+const glifosG = $('glifos');
+function predioD(x, yBase, w, h, jan) {
+  let d = `M${f1(x)} ${f1(yBase)}V${f1(yBase - h)}H${f1(x + w)}V${f1(yBase)}`;
+  const [nc, nl, lado] = jan;
+  const gx = (w - nc * lado) / (nc + 1), gy = (h - nl * lado) / (nl + 1.4);
+  for (let i = 0; i < nc; i += 1) for (let k = 0; k < nl; k += 1) {
+    const wx = x + gx + i * (lado + gx), wy = yBase - h + gy + k * (lado + gy);
+    d += `M${f1(wx)} ${f1(wy)}h${lado}v${lado}h${-lado}Z`;
+  }
+  return d;
+}
+const GLIFOS = GLIFO_X.map(() => { const e = sv('path', { fill: 'none', stroke: tom(0.92), 'stroke-width': 2.2, 'stroke-linejoin': 'round' }, mundo); mundo.insertBefore(e, glifosG); return e; });
+const predio = $('predio'), cpPredio = $('cpPredioR'), prumo = $('prumo');
+prumo.setAttribute('stroke', tom(0.5));
+// a trilha em pedaços (halo de tinta + linha): o halo do pedaço de cima corta o de baixo nos cruzamentos
+const PEDACO = 24;
+const NPED = Math.ceil(TRILHA.pts.length / PEDACO) + 1;
+const PEDACOS = Array.from({ length: NPED }, () => ({
+  h: sv('path', { fill: 'none', stroke: '#171717', 'stroke-width': 13, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, mundo),
+  l: sv('path', { fill: 'none', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, mundo),
+}));
+const esconde = (e) => { e.style.display = 'none'; };
+const mostra = (e) => { e.style.display = ''; e.style.visibility = 'inherit'; };
+const CONTORNO = new Path2D(contornoD(K.x, K.y, K.w, K.h, K.raio));
+const voce = $('voce'), cinza = $('cinza');
+cinza.setAttribute('r', '9');
+// o anúncio da cena 02, na ponta da régua
+const cartaoJ = $('cartaoJ');
+const anuncio = el('anuncio', `<div class="foto"><svg width="300" height="334" viewBox="0 0 800 764" preserveAspectRatio="xMidYMid slice">${fotoSala(800, 764, 1)}</svg></div>
+  <div class="col"><div class="k">À venda · Recife</div><div class="nome">Sala ampla, sol da manhã</div>
+  <div class="chips"><span class="chip">2 quartos</span><span class="chip">1 vaga</span></div>
+  <div class="area"><div class="rot">Área</div><div class="valor">75 m²</div></div>
+  <span class="sol">${ICONE_NASCE}<span>Nascente</span></span></div>`, cartaoJ);
+const CARTAO = { x: K.x - 2, y: K.y - 2 };   // o cartão cobre o contorno tracejado com 2 px de folga
+// a saída: o canvas de subsolo.js e TEMPO em HTML, letra a letra (como a cena 05 em t = 0)
+const fim = $('fim'), fimC = $('fimC');
+const fimPal = el('palavra', '', fim);
+const fimLetras = [...S.palavra.texto].map((ch) => { const e = el('letra', ch, fimPal); e.style.color = S.palavra.cor; return e; });
+const CLIP_FIM = `polygon(${Array.from({ length: 65 }, (_, k) => `${k * 30}px -6.0px`).join(',')},1920px 1090px,0px 1090px)`;
+const dbg = new URLSearchParams(location.search).has('debug') ? el('', '', $('c')) : null;
+if (dbg) dbg.id = 'debug';
+
+// ---------------------------------------------------------------------------
+// B3 · a multidão de anúncios: miniaturas numa grade (canvas) em volta do anúncio da ponta da régua,
+// fora da faixa da palavra e da régua; entram em onda a partir do anúncio, cada uma recebe um ponto
+// cinza que a aperta e, em "cada um deles", é levada para a direita e some.
+// ---------------------------------------------------------------------------
+const mctx = $('multi').getContext('2d');
+const MW = 116, MH = 78, MPX = 132, MPY = 92;
+const FOTOS = ['#F8E3C4', '#F6B467', '#F9C978', '#EFC38D', '#F2A27F', '#FCDDA8'];
+const MULTI = (() => {
+  const r = rng(4242), out = [];
+  const livre = (x, y) => (x < 1010 && y + MH > 236 && y < 650)                             // palavra, régua e manchas
+    || (x + MW > CARTAO.x - 22 && x < CARTAO.x + 544 + 40 && y + MH > CARTAO.y - 22 && y < CARTAO.y + 364 + 22);   // anúncio e o seu ponto
+  const cx0 = CARTAO.x + 272, cy0 = CARTAO.y + 182;
+  for (let j = 0; j < 12; j += 1) for (let i = 0; i < 15; i += 1) {
+    const x = -22 + i * MPX + (j % 2 ? MPX / 2 : 0), y = -16 + j * MPY;
+    if (x > 1930 || livre(x, y)) { r(); r(); r(); continue; }
+    const d = Math.hypot(x + MW / 2 - cx0, y + MH / 2 - cy0);
+    out.push({ x, y, d, cor: FOTOS[Math.floor(r() * FOTOS.length)], tIn: 0, tDono: T.donos + T.donosDur * r(), tLeva: T.leva + 0.30 * r(), l2: 0.45 + 0.4 * r() });
+  }
+  const dMax = Math.max(...out.map((m) => m.d));
+  for (const m of out) m.tIn = T.multidao + T.multidaoDur * (m.d / dMax);
+  return out;
+})();
+const MINI_FUNDO = rgba([...mixColor(TINTA, PAPEL, 0.10), 1]), MINI_BORDA = rgba([...PAPEL, 0.16]), MINI_LINHA = rgba([...PAPEL, 0.30]);
+function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+function desenharMultidao(t) {
+  mctx.clearRect(0, 0, 1920, 1080);
+  if (t < T.multidao || t > T.leva + 0.30 + T.levaDur + 0.02) { $('multi').style.visibility = 'hidden'; return; }
+  $('multi').style.visibility = 'inherit';
+  for (const m of MULTI) {
+    const aIn = clamp((t - m.tIn) / 0.12);
+    const ul = sm(t, m.tLeva, T.levaDur);
+    const a = aIn * (1 - ul);
+    if (a <= 0.002) continue;
+    const ap = press(t, [m.tDono + 0.24]);
+    const x = m.x + 60 * ul - 10 * ap, y = m.y + 6 * pending(t, m.tIn, P.type);
+    mctx.globalAlpha = a;
+    rr(mctx, x, y, MW, MH, 10); mctx.fillStyle = MINI_FUNDO; mctx.fill(); mctx.lineWidth = 1.5; mctx.strokeStyle = MINI_BORDA; mctx.stroke();
+    rr(mctx, x + 6, y + 6, 48, MH - 12, 6); mctx.fillStyle = m.cor; mctx.globalAlpha = a * 0.42; mctx.fill();
+    mctx.globalAlpha = a; mctx.fillStyle = MINI_LINHA;
+    mctx.fillRect(x + 62, y + 16, 44, 5); mctx.fillRect(x + 62, y + 29, 44 * m.l2, 5); mctx.fillRect(x + 62, y + 50, 30, 9);
+    // o ponto cinza do proprietário, na borda direita
+    const rd = 9 * clamp(sp(t - m.tDono, P.button), 0, 1.06);
+    if (rd > 0.3) { mctx.beginPath(); mctx.arc(m.x + MW + 11 + 60 * ul - 10 * ap, m.y + MH / 2, rd, 0, 6.2832); mctx.fillStyle = '#A39D92'; mctx.fill(); }
+  }
+  mctx.globalAlpha = 1;
+}
+
+// ---------------------------------------------------------------------------
+// Medidas (depois das fontes)
+// ---------------------------------------------------------------------------
+let PLAN_W = 520, PLAN_H = 80, PLAN_CAB = 36, MASC_W = 480;
+function medir() {
+  // nomes no chão: três à esquerda do ponto (x 960), três à direita do prédio
+  for (const n of NCEU) n.w = largura(n.e.textContent, '500 24px "JetBrains Mono"');
+  let x = 924 - (NCEU[0].w + NCEU[1].w + NCEU[2].w + 2 * 40);
+  for (let i = 0; i < 3; i += 1) { NCEU[i].x = x; x += NCEU[i].w + 40; }
+  x = 1112;
+  for (let i = 3; i < 6; i += 1) { NCEU[i].x = x; x += NCEU[i].w + 40; }
+  for (const n of NEST) n.w = largura(n.e.textContent, '500 28px "JetBrains Mono"');
+  for (const n of NFIM) n.w22 = largura(n.nome, FONTE_BASE);
+  PLAN_W = plan.firstChild.offsetWidth; PLAN_H = plan.firstChild.offsetHeight; PLAN_CAB = plan.querySelector('tr').offsetHeight;
+  MASC_W = largura(MASC_TXT, '600 40px "JetBrains Mono"');
+  const xv = posLetras(S.palavra.texto, medePalavra);
+  pos(fimPal, S.palavra.x, S.palavra.top);
+  fimLetras.forEach((e, i) => { e.style.left = xv[i].toFixed(2) + 'px'; });
+  const larg = NFIM.map((n) => n.w22);
+  desenharSubsolo(fimC.getContext('2d'), larg);
+  prepararMalha(larg);
+  PONT_FINAL = new Path2D(pontilhadoD(S.pontilhado, livresDosNomes(larg)));
+}
+
+// ---------------------------------------------------------------------------
+// Estado contínuo
+// ---------------------------------------------------------------------------
+const chegaRegua = (x) => T.puxa + T.puxaAtraso * (1 - clamp((x - XT0) / (XH - XT0))) + T.puxaDurY;
+const PUXA_FIM = T.puxa + T.puxaAtraso + T.puxaDurY;
+const xEsq = (t) => lerp(XT0, R.x0, sm(t, T.estica, T.esticaDur));
+// a câmera desce em "espalhados" e volta em "leva tempo", junto com a puxada (mesma curva: o
+// emaranhado converge para a linha do chão sem vaivém na tela)
+const camY = (t) => CAM * ss((t - T.desce) / T.desceDur) * (1 - ss((t - T.camSobe) / T.camSobeDur));
+const frente = (b, t) => { const [y0, y1] = BANDA(b); return lerp(y0 - 30, y1 + 30, sm(t, T.estratos + b * T.estratoPasso, T.estratoDur)); };
+const aSai = (t) => 1 - sm(t, T.sai, 0.22);   // o que sai em "leva tempo" (lampejos e nomes dos estratos)
+const aGlifo = (t) => 1 - sm(t, T.b2 + 0.02, 0.2);   // prédio repetido e prumo saem quando o ponto mergulha
+function zonas(t) {
+  const z = [];
+  const a4 = aSai(t);
+  const aE = (b) => clamp((frente(b, t) - BANDA(b)[0] - 8) / 30) * a4;
+  NEST.forEach((n, b) => { const y = BANDA(b)[0] + NOME_DY; z.push([NOME_X - 14, y - 12, NOME_X + n.w + 14, y + 28 + 12, aE(b)]); });
+  GLIFO_X.forEach((x, b) => {
+    const cy = (BANDA(b)[0] + BANDA(b)[1]) / 2;
+    z.push([x - 28, cy - 34, x + 28, cy + 34, clamp((t - (T.estratos + b * T.estratoPasso + T.glifoAtraso)) / 0.16) * aGlifo(t)]);
+  });
+  z.push([MASC.rot[0] - 14, MASC.rot[1] - 10, MASC.x + MASC_W + 14, MASC.y + 40 + 12, (t >= T.mascara ? 1 : 0) * a4]);
+  z.push([PLAN.x - 14, PLAN.y - 12, PLAN.x + PLAN_W + 14, PLAN.y + PLAN_H + 12, (t >= T.planilha ? 1 : 0) * a4]);
+  z.push([PILHA.rot[0] - 14, PILHA.rot[1] - 10, PILHA.x + PILHA.w + 3 * 62 + 14, PILHA.y + PILHA.h + 12, (t >= T.pilha ? 1 : 0) * a4]);
+  return z.filter((q) => q[4] > 0.001);
+}
+const distRet = (x, y, q) => Math.hypot(Math.max(q[0] - x, 0, x - q[2]), Math.max(q[1] - y, 0, y - q[3]));
+
+// ---------------------------------------------------------------------------
+// A régua, as marcas, o contorno e os nomes no canvas, na mesma ordem e com os mesmos traços de
+// desenharSubsolo (subsolo.js). Quando a régua chega ao contorno e os nomes terminam de entrar, o
+// canvas fica igual ao desenho da saída, pixel a pixel, e a troca para #fimC não muda nada.
+// ---------------------------------------------------------------------------
+function desenharTarde(t, cam, xPonta, escuro, pronta) {
+  const F = S.baseFonte;
+  ctx.save();
+  if (cam !== 0) ctx.translate(0, -cam);
+  let dm = '';
+  for (const u of MARCAS_U) {
+    const x = R.x0 + (R.x1 - R.x0) * u;
+    let h = 0;
+    if (x >= XT0 && x < XH) h = R.marcas.altura * sm(t, chegaRegua(x) + 0.02, 0.22);
+    else if (x < XT0) h = pronta ? R.marcas.altura * clamp((x - xEsq(t) - 4) / 10) : 0;
+    else h = pronta ? R.marcas.altura * clamp((xPonta - x - 4) / 10) : 0;
+    if (h > 0.3) dm += marcasD(R.x0, R.x1, R.y, R.onda, R.ondas, h, [u]);
+  }
+  ctx.lineCap = 'butt';
+  ctx.strokeStyle = R.marcas.cor; ctx.lineWidth = R.marcas.traco;
+  if (dm) ctx.stroke(new Path2D(dm));
+  if (!pronta) { ctx.restore(); return; }   // antes disso a régua ainda é a trilha em SVG
+  const x0 = xEsq(t);
+  const pr = REGUA_PTS.filter((q) => q[0] > x0 && q[0] < xPonta);
+  if (x0 > R.x0) pr.unshift([x0, yR(x0)]); else pr.unshift(REGUA_PTS[0]);
+  pr.push(xPonta >= R.x1 ? REGUA_PTS[REGUA_PTS.length - 1] : [xPonta, yR(xPonta)]);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.strokeStyle = escuro ? R.cor : tom(0.62); ctx.lineWidth = R.traco;
+  ctx.stroke(new Path2D(linhaD(pr)));
+  ctx.lineCap = 'butt';
+  if (t >= T.levaCartao + 0.02) {
+    ctx.strokeStyle = K.cor; ctx.lineWidth = K.traco; ctx.setLineDash(K.tracejado);
+    ctx.stroke(CONTORNO);
+    ctx.setLineDash([]);
+  }
+  if (t >= T.nomesFim) {
+    ctx.font = `${F.peso} ${F.tamanho}px ${F.familia}`;
+    ctx.textBaseline = 'alphabetic';
+    S.bases.forEach((b, i) => {
+      const a = clamp((t - (T.nomesFim + 0.03 * i)) / 0.3);
+      if (a <= 0) return;
+      ctx.fillStyle = a >= 1 ? S.baseCor : `rgba(${PAPEL.join(',')},${(0.26 * a).toFixed(4)})`;
+      const m = ctx.measureText(b.nome);
+      const asc = m.fontBoundingBoxAscent, desc = m.fontBoundingBoxDescent;
+      ctx.fillText(b.nome, b.x, b.y + (F.tamanho - (asc + desc)) / 2 + asc);
+    });
+  }
+  ctx.restore();
+}
+
+// ---------------------------------------------------------------------------
+// seek(t): função pura do tempo
+// ---------------------------------------------------------------------------
+const CAMADAS = ['cv', 'mundo', 'ceu', 'textos', 'multi', 'cartaoJ', 'pontos', 'costura'];
+function render(t) {
+  t = clamp(t, 0, DUR);
+  const fimQ = t >= FIM;
+  const cam = camY(t);
+  const gS = GW - cam;                                   // linha do chão na tela
+  const a4 = aSai(t);
+  const reguaPronta = t >= PUXA_FIM + 0.02;   // a régua passa a ser desenhada no canvas
+  const xPonta = lerp(XH, R.x1, sm(t, T.chega, 0.36));
+
+  // ===== saída: o quadro de subsolo.js, exato ===============================================
+  vis(fimC, fimQ ? 1 : 0);
+  if (fimQ) {
+    fimC.style.opacity = ''; fimC.style.visibility = 'inherit';
+    fimC.style.clipPath = CLIP_FIM;
+    fim.style.visibility = 'inherit'; fim.style.opacity = '';
+    fimPal.style.left = S.palavra.x.toFixed(1) + 'px'; fimPal.style.top = S.palavra.top.toFixed(1) + 'px';
+    fimPal.style.opacity = ''; fimPal.style.visibility = 'inherit';
+    fimPal.style.clipPath = 'inset(0.0px -80px 0px -80px)';
+    for (const id of CAMADAS) $(id).style.visibility = 'hidden';
+    if (dbg) dbg.textContent = t.toFixed(2) + ' s';
+    return;
+  }
+  for (const id of CAMADAS) $(id).style.visibility = 'inherit';
+
+  // ===== grade e chão (costura) andam com a câmera ============================================
+  $('grade').style.backgroundPosition = cam > 1e-6 ? `0px ${f2(-cam)}px` : '';
+  costura.linhas[0].setAttribute('d', cam > 1e-6 ? `M-20 ${f2(gS)} L1940 ${f2(gS)}` : CHAO_D0);
+  costura.pontos[0].style.visibility = t > 0 ? 'hidden' : 'inherit';
+
+  // ===== tinta: corte (o chão vira tinta para baixo, com os estratos), depois cobre o céu =======
+  const corte = t >= T.corte ? lerp(gS, 1090, sm(t, T.corte, T.corteDur)) : gS;
+  const sobe = t >= T.tinta ? lerp(gS, -10, ss((t - T.tinta) / T.tintaDur)) : gS;
+  ctx.clearRect(0, 0, 1920, 1080);
+  const tintaTopo = Math.min(sobe, gS), tintaBase = t >= T.corte + T.corteDur ? 1090 : corte;
+  if (tintaBase - tintaTopo > 0.01) {
+    cv.style.visibility = 'inherit';
+    ctx.fillStyle = '#171717';
+    ctx.fillRect(0, tintaTopo, 1920, tintaBase - tintaTopo);
+    const pm = sm(t, T.meiotom, T.meiotomDur);
+    ctx.save();
+    ctx.beginPath(); ctx.rect(0, tintaTopo, 1920, tintaBase - tintaTopo); ctx.clip();
+    ctx.fillStyle = `rgba(${PAPEL.join(',')},0.40)`;
+    if (pm >= 1) { if (cam !== 0) ctx.translate(0, -cam); ctx.fill(PONT_FINAL); }
+    else {
+      const zs = zonas(t);
+      ctx.beginPath();
+      const y0 = cam - 8, y1 = cam + 1088;
+      for (const p of MALHA) {
+        if (p.y < y0 || p.y > y1) continue;
+        const rs = p.b >= 0 ? p.rs : 0;
+        let r = pm > 0 ? lerp(rs, p.rf, pm) : rs;
+        if (r < 0.45) continue;
+        for (const q of zs) { r *= 1 - q[4] * (1 - smooth(clamp(distRet(p.x, p.y, q) / 26))); if (r < 0.45) break; }
+        if (r < 0.45) continue;
+        const ys = p.y - cam;
+        ctx.moveTo(p.x + r, ys); ctx.arc(p.x, ys, r, 0, 6.283185307179586);
+      }
+      ctx.fill();
+    }
+    ctx.restore();
+    if (t >= T.puxa) desenharTarde(t, cam, xPonta, sobe <= -10, reguaPronta);
+  } else cv.style.visibility = 'hidden';
+
+  // ===== B1 · os nomes no chão (públicos), que afundam em "espalhados" =========================
+  const hCeu = Math.floor(gS - 1.5);
+  const aCeu = t >= T.ceu && t < T.afunda + 5 * T.afundaPasso + T.afundaDur + 0.05;
+  ceu.style.visibility = aCeu ? 'inherit' : 'hidden';
+  if (aCeu) {
+    ceu.style.height = hCeu + 'px';
+    NCEU.forEach((n, i) => {
+      const t0 = T.ceu + i * T.ceuPasso;
+      const desce = 44 * sm(t, T.afunda + i * T.afundaPasso, T.afundaDur);
+      pos(n.e, n.x, 508 - cam + desce + 8 * pending(t, t0, P.type));
+      vis(n.e, clamp((t - t0) / 0.14));
+    });
+  }
+
+  // ===== B1 · estratos: nomes revelados de cima para baixo ======================================
+  NEST.forEach((n, b) => {
+    const y = BANDA(b)[0] + NOME_DY;
+    const mostra = clamp(frente(b, t) - y, 0, 32);
+    if (mostra <= 0 || a4 <= 0.001) { vis(n.e, 0); return; }
+    pos(n.e, NOME_X, y - cam);
+    n.e.style.clipPath = mostra < 32 ? `inset(0px 0px ${f1(32 - mostra)}px 0px)` : 'none';
+    vis(n.e, a4);
+  });
+
+  // ===== B1 · o prédio no chão, o mesmo prédio em cada estrato e o prumo ======================
+  const hP = PREDIO.h * ss((t - T.predio) / 0.45);
+  if (hP > 0.3 && t < T.tinta + T.tintaDur) {
+    predio.setAttribute('d', predioD(PREDIO.x, GW - cam, PREDIO.w, PREDIO.h, [3, 4, 10]));
+    cpPredio.setAttribute('x', PREDIO.x - 4); cpPredio.setAttribute('width', PREDIO.w + 8);
+    cpPredio.setAttribute('y', f2(GW - cam - hP - 2)); cpPredio.setAttribute('height', f2(hP + 0.5));
+    predio.style.visibility = 'inherit';
+  } else predio.style.visibility = 'hidden';
+  const ag = aGlifo(t);
+  GLIFO_X.forEach((x, b) => {
+    const t0 = T.estratos + b * T.estratoPasso + T.glifoAtraso;
+    const a = clamp((t - t0) / 0.16) * ag;
+    if (a <= 0.001) { esconde(GLIFOS[b]); return; }
+    GLIFOS[b].style.display = '';
+    const cy = (BANDA(b)[0] + BANDA(b)[1]) / 2 - cam;
+    GLIFOS[b].setAttribute('d', predioD(x - 17, cy + 22 + 6 * pending(t, t0, P.type), 34, 44, [2, 3, 6]));
+    vis(GLIFOS[b], a);
+  });
+  {
+    const yb = lerp(GW + 2, BANDA(NB - 1)[1], ss((t - T.prumo) / T.prumoDur));
+    if (t >= T.prumo && yb - (GW + 2) > 1 && ag > 0.001) { prumo.setAttribute('d', `M${PRUMO_X} ${f2(GW + 2 - cam)}V${f2(yb - cam)}`); vis(prumo, ag); }
+    else prumo.style.visibility = 'hidden';
+  }
+
+  // ===== B2 · lampejos: planilha, pilha de alvarás, máscara do código de lote ==================
+  // lampejos: entram por opacidade (um corte de 500 px passaria do limite de 40 px por quadro);
+  // só as linhas da planilha se desdobram para baixo
+  const aPl = swap(t, T.planilha, Infinity, { delayIn: 0, durIn: 0.12 }) * a4;
+  vis(plan, aPl);
+  if (aPl > 0.001) {
+    pos(plan, PLAN.x, PLAN.y - cam);
+    const linhas = sm(t, T.planilha + 0.08, 0.24);
+    plan.style.clipPath = linhas < 1 ? `inset(0px 0px ${f1((PLAN_H - PLAN_CAB) * (1 - linhas))}px 0px)` : 'none';
+  }
+  const aPi = swap(t, T.pilha, Infinity, { delayIn: 0, durIn: 0.1 }) * a4;
+  vis(rotPilha, aPi); pilhaG.style.visibility = aPi > 0.001 ? 'inherit' : 'hidden'; pilhaG.style.opacity = aPi.toFixed(3);
+  if (aPi > 0.001) {
+    pos(rotPilha, PILHA.rot[0], PILHA.rot[1] - cam);
+    const ab = sm(t, T.pilha + 0.05, 0.3);
+    FOLHAS.forEach((f, k) => {
+      const x = PILHA.x + lerp(6 * k, 62 * k, ab), y = PILHA.y - cam;
+      f.r.setAttribute('x', f2(x)); f.r.setAttribute('y', f2(y));
+      f.l.setAttribute('d', `M${f1(x + 14)} ${f1(y + 20)}h46M${f1(x + 14)} ${f1(y + 36)}h${PILHA.w - 28}M${f1(x + 14)} ${f1(y + 50)}h${PILHA.w - 28}M${f1(x + 14)} ${f1(y + 63)}h${PILHA.w - 60}`);
+    });
+  }
+  const aM = swap(t, T.mascara, Infinity, { delayIn: 0, durIn: 0.12 }) * a4;
+  vis(rotMasc, aM); vis(masc, aM);
+  if (aM > 0.001) {
+    pos(rotMasc, MASC.rot[0], MASC.rot[1] - cam);
+    pos(masc, MASC.x, MASC.y - cam);
+    const chars = mascaraEm(t);
+    chars.forEach((c, i) => { if (MASC_SPANS[i].textContent !== c.ch) MASC_SPANS[i].textContent = c.ch; MASC_SPANS[i].style.color = c.cor; });
+  }
+
+  // ===== a trilha: o emaranhado (B2), puxado até a régua no chão ("leva tempo") ================
+  const sD = arcoPonto(t);
+  const pts = TRILHA.pts;
+  const aHalo = 1 - sm(t, T.puxa + 0.05, 0.45);
+  const corLinha = tom(lerp(0.9, 0.62, sm(t, T.puxa, 0.9)));   // papel 0,62 sobre tinta: a cor da régua da saída
+  let cabeca = null, pCab = 0;
+  if (!reguaPronta && t >= T.mergulho && sD > pts[TRILHA.iChao].s) {
+    const nV = pts.findIndex((q) => q.s > sD);
+    const fimI = nV < 0 ? pts.length : nV;
+    const P0 = [];
+    for (let i = 0; i < fimI; i += 1) P0.push(pts[i]);
+    const ultimo = { s: sD, p: TRILHA.em(sD), u: clamp((sD - pts[TRILHA.iChao].s) / (TRILHA.L - pts[TRILHA.iChao].s)) };
+    ultimo.alvo = [lerp(XT0, XH, ultimo.u), yR(lerp(XT0, XH, ultimo.u))];
+    P0.push(ultimo);
+    // a puxada: cada ponto vai ao seu x na régua (a cabeça primeiro) e sobe até a linha do chão na mesma
+    // curva da câmera, que volta ao mesmo tempo
+    const tela = P0.map((q) => {
+      const at = T.puxaAtraso * (1 - q.u);
+      const kx = sm(t, T.puxa + at, T.puxaDurX), ky = ss((t - (T.puxa + at)) / T.puxaDurY);
+      return [lerp(q.p[0], q.alvo[0], kx), lerp(q.p[1], q.alvo[1], ky) - cam];
+    });
+    cabeca = tela[tela.length - 1];
+    pCab = ss((t - T.puxa) / T.puxaDurY);
+    PEDACOS.forEach((pd, c) => {
+      const a = c * PEDACO, b = Math.min(tela.length - 1, (c + 1) * PEDACO);
+      if (a >= tela.length - 1 || b <= TRILHA.iChao) { esconde(pd.h); esconde(pd.l); return; }
+      const ia = Math.max(a, TRILHA.iChao), ih = Math.max(a, TRILHA.iHalo);
+      if (aHalo > 0.001 && b > ih) { pd.h.setAttribute('d', polyD(tela.slice(ih, b + 1))); mostra(pd.h); pd.h.setAttribute('opacity', aHalo.toFixed(3)); }
+      else esconde(pd.h);
+      pd.l.setAttribute('d', polyD(tela.slice(Math.max(TRILHA.iChao, ia - 2), b + 1)));
+      pd.l.setAttribute('stroke', corLinha);
+      mostra(pd.l);
+    });
+  } else {
+    PEDACOS.forEach((pd) => { esconde(pd.h); esconde(pd.l); });
+  }
+  // ===== TEMPO (anda com o mundo: fica sempre acima da régua) ================================
+  const aSem = swap(t, T.tempo, Infinity, { delayIn: 0, durIn: 0.3 });
+  fim.style.visibility = aSem > 0.001 ? 'inherit' : 'hidden';
+  fimC.style.visibility = 'hidden';
+  if (aSem > 0.001) {
+    fimPal.style.left = S.palavra.x.toFixed(1) + 'px';
+    fimPal.style.top = f1(S.palavra.top + 6 * pending(t, T.tempo, P.type) - cam) + 'px';
+    vis(fimPal, aSem);
+  }
+
+  // ===== B3 · o anúncio na ponta da régua e a multidão em volta; os proprietários; levados =====
+  desenharMultidao(t);
+  // o anúncio é levado pela borda direita do seu lugar: sai deslizando por baixo dela e deixa o
+  // contorno vazio aparecer da esquerda para a direita (sem transparência sobre o tracejado)
+  const lc = trapezio((t - T.levaCartao) / T.levaCartaoDur, 0.25);
+  const dxC = 548 * lc;
+  if (t >= T.cartao && dxC < 546) {
+    anuncio.style.visibility = 'inherit'; anuncio.style.opacity = '1';
+    pos(anuncio, CARTAO.x + dxC, CARTAO.y);
+    const ab = sm(t, T.cartao, 0.36);
+    const corta = Math.max(0, dxC);
+    anuncio.style.clipPath = ab < 1 ? `inset(${f1(50 * (1 - ab))}% 0px ${f1(50 * (1 - ab))}% 0px round 32px)` : corta > 0.05 ? `inset(0px ${f2(corta)}px 0px 0px round 32px)` : 'none';
+  } else anuncio.style.visibility = 'hidden';
+  // o ponto cinza do proprietário deste anúncio: puxa o cartão e some
+  const rC = 9 * clamp(sp(t - (T.donos + 0.15), P.button), 0, 1.06) * (1 - sm(t, T.levaCartao + 0.12, 0.25));
+  if (rC > 0.3) { cinza.setAttribute('cx', f2(CARTAO.x + 544 + 13 + Math.max(0, dxC))); cinza.setAttribute('cy', f2(GW - 12)); cinza.setAttribute('r', f2(rC)); cinza.style.visibility = 'inherit'; }
+  else cinza.style.visibility = 'hidden';
+
+  // ===== o ponto "você" ======================================================================
+  {
+    let x = 960, y = 528 - cam, r = 12;
+    if (cabeca) {
+      x = cabeca[0]; y = cabeca[1] - 12 * pCab;
+    } else if (reguaPronta) {
+      // na ponta da régua; quando o anúncio é levado, encolhe até virar a ponta dela no contorno vazio
+      const e = sm(t, T.chega, 0.36);
+      r = 12 * (1 - e);
+      x = lerp(XH, R.x1, e); y = lerp(yR(XH) - 12, R.y, e) - cam;
+    } else if (t >= T.mergulho) {
+      const p = TRILHA.em(sD); x = p[0]; y = p[1] - cam;
+    }
+    const a = tintaBase - tintaTopo > 0.01 ? smooth(clamp((y + 12 - tintaTopo) / 24)) : 0;
+    if (r > 0.2) {
+      voce.setAttribute('cx', f2(x)); voce.setAttribute('cy', f2(y)); voce.setAttribute('r', f2(r));
+      voce.setAttribute('fill', rgba([...mixColor(TINTA, PAPEL, a), 1]));
+      voce.style.visibility = t > 0 ? 'inherit' : 'hidden';
+    } else voce.style.visibility = 'hidden';
+  }
+
+  if (dbg) dbg.textContent = t.toFixed(2) + ' s';
+}
+
+// ---------------------------------------------------------------------------
+// Contrato de render e modos de preview
+// ---------------------------------------------------------------------------
+const ESTADOS = [
+  { id: 'E0', nome: 'Entrada: costura C03-04 (chão em tinta e o ponto "você")', t: 0 },
+  { id: 'M1a', nome: 'Meio: o corte, o chão vira tinta com os estratos ("Dados")', t: 0.45 },
+  { id: 'M1b', nome: 'Os nomes das bases e o prédio no chão ("existem")', t: 1.50 },
+  { id: 'M1c', nome: 'Meio: os nomes afundam; a câmera desce ("espalhados")', t: 2.20 },
+  { id: 'M1d', nome: 'Meio: estratos de cima para baixo ("dezenas de plataformas")', t: 3.20 },
+  { id: 'M1e', nome: 'Meio: ESIG e a camada dos proxies ("mapas da prefeitura")', t: 4.10 },
+  { id: 'B1', nome: 'Sete camadas, o prédio num x diferente em cada uma, o prumo (HOLD)', t: HOLDS[0] },
+  { id: 'M2a', nome: 'Meio: o ponto mergulha; a planilha', t: 5.15 },
+  { id: 'M2b', nome: 'Meio: o emaranhado; a pilha de alvarás e a máscara do lote', t: 5.75 },
+  { id: 'M2c', nome: 'Meio: o emaranhado é puxado; a tinta cobre o céu', t: 6.30 },
+  { id: 'M2d', nome: 'TEMPO sobre a régua ("leva tempo")', t: 6.75 },
+  { id: 'M3a', nome: 'Meio: o anúncio e a multidão de miniaturas ("milhares de anúncios")', t: 7.30 },
+  { id: 'M3b', nome: 'A multidão inteira, a régua esticada', t: 7.75 },
+  { id: 'M3c', nome: 'Um ponto cinza aperta cada anúncio ("proprietários pressionando")', t: 8.30 },
+  { id: 'M3d', nome: 'Meio: os anúncios são levados ("em cada um deles")', t: 8.65 },
+  { id: 'FIM', nome: 'Último quadro = cena05.html em t = 0 (HOLD)', t: DUR - 1 / 30 },
+];
+const SONS = [
+  { t: T.corte, tipo: 'whoosh', dur: 0.6, ganho: 0.35, evento: 'o corte: o chão vira tinta' },
+  { t: T.ceu, tipo: 'pop', ganho: 0.35, evento: 'os nomes das bases no chão' },
+  { t: T.predio, tipo: 'tick', evento: 'o prédio no chão' },
+  { t: T.afunda, tipo: 'whoosh', dur: 0.6, ganho: 0.3, evento: 'os nomes afundam' },
+  { t: T.desce, tipo: 'whoosh', dur: 1.0, ganho: 0.4, evento: 'a câmera desce abaixo do chão' },
+  { t: T.estratos, tipo: 'tick', ganho: 0.6, evento: 'os estratos, um a um' },
+  { t: T.estratos + 6 * T.estratoPasso, tipo: 'tick', ganho: 0.5, evento: 'a camada dos proxies' },
+  { t: T.mergulho, tipo: 'whoosh', dur: 0.9, ganho: 0.4, evento: 'o ponto mergulha' },
+  { t: T.planilha, tipo: 'pop', ganho: 0.4, evento: 'a planilha' },
+  { t: T.pilha, tipo: 'pop', ganho: 0.4, evento: 'a pilha de alvarás' },
+  { t: T.mascara, tipo: 'pop', ganho: 0.4, evento: 'a máscara do código de lote' },
+  { t: T.puxa, tipo: 'whoosh', dur: 0.9, ganho: 0.45, evento: 'o emaranhado é puxado' },
+  { t: T.tinta, tipo: 'whoosh', dur: 0.5, ganho: 0.35, evento: 'a tinta cobre o céu' },
+  { t: T.cartao, tipo: 'pop', ganho: 0.45, evento: 'o anúncio na ponta da régua' },
+  { t: T.multidao, tipo: 'whoosh', dur: 0.6, ganho: 0.35, evento: 'a multidão de anúncios' },
+  { t: T.donos, tipo: 'tick', ganho: 0.5, evento: 'os proprietários' },
+  { t: T.leva, tipo: 'whoosh', dur: 0.6, ganho: 0.4, evento: 'os anúncios são levados' },
+];
+window.POC = {
+  id: 'CENA-04', variante: 'subsolo de cadastro', duracao: DUR, fps: 30, estados: ESTADOS, holds: HOLDS,
+  cliques: [], marcos: T, sons: SONS,
+  tiras: [{ nome: 'corte', t0: T.corte + 0.05 }, { nome: 'afunda', t0: T.afunda + 0.1 }, { nome: 'mergulho', t0: T.mergulho + 0.2 },
+    { nome: 'puxa', t0: T.puxa + 0.1 }, { nome: 'multidao', t0: T.multidao + 0.05 }, { nome: 'leva', t0: T.leva }, { nome: 'fim', t0: FIM - 0.25 }],
+  comparar: ESTADOS.map((e) => ({ t: e.t, nome: e.id })),
+  entrada: { costura: 'C03-04', modulo: 'motion/lib/costuras.js', referencia: 'motion/poc/costura.html?id=C03-04' },
+  saida: { cena: 'cena05.html', t: 0, modulo: 'motion/lib/subsolo.js', aPartirDe: FIM },
+};
+window.seek = (t) => render(t);
+window.__pronto = (async () => {
+  await document.fonts.ready;
+  const todo = document.getElementById('c').textContent + ' TEMPO_0123456789.·–²/';
+  await Promise.all([
+    '500 96px Fraunces', '600 27px Fraunces',
+    '700 11px "Plus Jakarta Sans"', '600 12.5px "Plus Jakarta Sans"', '600 12px "Plus Jakarta Sans"',
+    '700 40px "Plus Jakarta Sans"', '600 15px "Plus Jakarta Sans"',
+    '500 22px "JetBrains Mono"', '500 24px "JetBrains Mono"', '500 28px "JetBrains Mono"', '500 17px "JetBrains Mono"',
+    '500 16px "JetBrains Mono"', '600 40px "JetBrains Mono"',
+  ].map((f) => document.fonts.load(f, todo)));
+  await document.fonts.ready;
+  medir();
+  for (let t = 0; t <= DUR; t += 0.25) render(t);
+  await document.fonts.ready;
+  medir();
+  render(0);
+  return true;
+})();
+
+if (!navigator.webdriver) {
+  document.body.classList.add('tela');
+  const c = $('c');
+  const ajusta = () => { const s = Math.min(innerWidth / 1920, innerHeight / 1080); Object.assign(c.style, { position: 'absolute', transformOrigin: '0 0', transform: `scale(${s})`, left: `${(innerWidth - 1920 * s) / 2}px`, top: `${(innerHeight - 1080 * s) / 2}px` }); };
+  addEventListener('resize', ajusta); ajusta();
+  const aoVivo = new URLSearchParams(location.search).has('live');
+  // ao vivo: ENTER → HOLD → EXIT; espaço ou → leva ao próximo HOLD, ← volta ao anterior
+  const PARADAS = HOLDS;
+  let t = 0, alvo = aoVivo ? PARADAS[0] : DUR, rodando = true, antes = null, ultimo = null;
+  window.__medidas = [];
+  const passo = (agora) => {
+    if (antes !== null && rodando) { t += (agora - antes) / 1000; if (t >= alvo) { t = alvo; if (!aoVivo) t = 0; else rodando = false; } }
+    antes = agora;
+    if (t !== ultimo) { const t0 = performance.now(); render(t); window.__medidas.push(performance.now() - t0); if (window.__medidas.length > 2000) window.__medidas.shift(); ultimo = t; }
+    requestAnimationFrame(passo);
+  };
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown') {
+      const base0 = rodando ? alvo : t;
+      const i = PARADAS.findIndex((h) => h > base0 + 1e-3);
+      if (aoVivo) { if (i >= 0) { alvo = PARADAS[i]; rodando = true; } } else rodando = !rodando;
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      const anteriores = PARADAS.filter((h) => h < t - 1e-3);
+      t = anteriores.length ? anteriores[anteriores.length - 1] : 0;
+      alvo = aoVivo ? (PARADAS.find((h) => h > t + 1e-3) ?? DUR) : DUR;
+      rodando = !aoVivo;
+      render(t); ultimo = t;
+      e.preventDefault();
+    } else if (e.key === 'r') { t = 0; alvo = aoVivo ? PARADAS[0] : DUR; rodando = true; }
+  });
+  window.__estadoVivo = () => ({ t, alvo, rodando });
+  window.__pronto.then(() => requestAnimationFrame(passo));
+}
+</script>
+</body>
+</html>

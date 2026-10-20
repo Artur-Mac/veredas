@@ -1,0 +1,1 @@
+Este diretório guarda o material gerado por uma sessão anterior e descartado pelo usuário em 17/10/2026. Nada aqui é referência válida: paleta, fontes, dados (110 m² vs 92 m², 'SEGURO', '6 min a pé') e notas de QA estavam errados. Pode ser apagado.

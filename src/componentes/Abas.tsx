@@ -75,9 +75,9 @@ export function AbasForaDoDossie({ idDossie }: { idDossie: string }) {
       atual="dossie"
       aoEscolher={(aba) => {
         if (aba === "meus") router.dismissTo("/");
-        else if (aba === "dossie") router.dismissTo({ pathname: "/dossie/[id]", params: { id: idDossie } });
-        else if (aba === "mapa") router.dismissTo({ pathname: "/dossie/[id]/mapa", params: { id: idDossie } });
-        else router.dismissTo({ pathname: "/dossie/[id]/visita", params: { id: idDossie } });
+        else if (aba === "dossie") router.dismissTo({ pathname: "/exemplos/[id]", params: { id: idDossie } });
+        else if (aba === "mapa") router.dismissTo({ pathname: "/exemplos/[id]/mapa", params: { id: idDossie } });
+        else router.dismissTo({ pathname: "/exemplos/[id]/visita", params: { id: idDossie } });
       }}
     />
   );

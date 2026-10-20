@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · Cena 12 · a verdade antes da decisão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@400..800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lib/marca.css">
+<style>
+  /* base: a mesma casca das cenas 05 a 09 (o primeiro quadro é a costura C11-12, pixel a pixel) */
+  html, body { margin: 0; background: var(--bg-obsidian); }
+  body.tela { min-height: 100vh; overflow: hidden; }
+  #c {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden; flex: none;
+    background: var(--bg-paper); color: var(--ink-primary);
+    font-family: var(--font-sans); font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  .grade {
+    position: absolute; inset: 0; background-size: 48px 48px;
+    background-image:
+      linear-gradient(to right, rgba(127, 136, 112, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(127, 136, 112, 0.09) 1px, transparent 1px);
+  }
+  svg.camada { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+  .t { position: absolute; white-space: nowrap; line-height: 1.15; }
+  #debug { position: absolute; right: 16px; top: 12px; font: 500 16px/1 var(--font-mono); color: var(--ink-muted); }
+
+  /* textos do mundo: dentro de um contêiner com zoom de layout (a câmera), nunca transform */
+  #textosPos { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+  #textos { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  /* a marca: .brand-wordmark-arch do index.html com os valores do :root (--wordmark-weight 500,
+     --wordmark-tracking 0,14em), opsz fixo em 19 como no cabeçalho do app; tinta */
+  .marca { position: absolute; white-space: nowrap; font-family: var(--font-display); font-weight: 500; letter-spacing: 0.14em; line-height: 1; color: var(--ink-primary); font-variation-settings: 'opsz' 19; }
+  .marca span { position: relative; }
+</style>
+</head>
+<body>
+<div id="c">
+  <div class="grade" id="grade"></div>
+  <svg class="camada" id="cena" viewBox="0 0 1920 1080"></svg>
+  <div id="textosPos"><div id="textos"></div></div>
+</div>
+
+<script type="module">
+import { clamp, lerp, sp, smooth, swap, pending, rng, PRESETS as P } from '../lib/motion.js';
+import { desenharCostura } from '../lib/costuras.js';
+import { salaQuente, FUNDO_QUENTE, T_ENCANTO } from '../lib/cena12-sala.js';
+
+const Q = new URLSearchParams(location.search);
+
+// ---------------------------------------------------------------------------
+// Linha do tempo. A fala nova (gravação de 18/10/2026, cerca de 3,8 palavras por segundo, 2,9 s) manda:
+// B1 “Eles possuem o marketing.” (0 a 1,2 s): a linha da costura vira a moldura, que sobe com a foto
+//   bonita da sala; as quatro aspas do anúncio (as palavras da cena 01) entram conforme a foto aparece;
+//   o vento assenta e o HOLD.
+// B2 “Com a VEREDA, você tem as provas.” (1,45 a 2,9 s): a máscara descasca a foto a partir da janela
+//   em "Com a VEREDA"; as cinco linhas do filme (as provas) ficam paradas no papel (inventário) e, depois
+//   de "provas", cada uma vai como corpo rígido até a ponta do seu trecho e desenrola no contorno do
+//   ninho; o ninho se enche; o ninho encolhe e anda até o lockup horizontal; "VEREDA" entra no
+//   silêncio, com a câmera parada. Do ninho ao lockup, nada mudou nesta rodada.
+// Todo ponto de todo caminho SVG fica abaixo de cerca de 40 px por quadro a 30 fps; o ninho a caminho
+// do lockup, abaixo de 20 px por quadro.
+// ---------------------------------------------------------------------------
+const H1 = 1.4;                             // HOLD do B1: a foto inteira, as aspas e o vento já parados
+const T = {
+  // B1
+  desenha: 0.03, durDesenho: 1.0,           // a moldura sobe da linha: o lado de cima vai de y 930 a y 188
+  vento: 0.55,                              // depois disto o vento perde velocidade em linha reta
+  // B2 (o resto dos marcos sai das medidas, mais abaixo)
+  descasca: H1 + 0.07,                      // a máscara descasca a sala a partir da janela
+};
+const RIG = 0.36;       // s: cada linha vai, como corpo rígido, até a ponta do seu trecho
+const DES = 0.36;       // s: e desenrola ao longo do contorno (tracejado que anda)
+const ENCHE = 0.28;     // s: o laranja sobe dentro do contorno
+const ANDA = 0.84;      // s: o ninho encolhe e anda para a esquerda até o lockup
+const BEAT = 0.82;      // s: inventário, as cinco linhas inteiras e paradas
+
+// molas (forma fechada, motion.js); nsp chega a 1 no 98% e para, para os HOLDs ficarem exatos
+const RECUA = { k: 49, d: 14 };       // zeta 1: recuo 1,025 → 1,0 durante o enchimento (assenta em 0,83 s)
+const JANELA = { k: 49, d: 14 };      // zeta 1: a janela encolhe até a abertura (cantos a 13 px/quadro no pico)
+const nsp = (t, p) => clamp(sp(t, p) / 0.98);
+
+// ---------------------------------------------------------------------------
+// Câmera de tela: zoom em torno do centro do quadro, no máximo 1,025 (motion-language). O SVG é
+// redesenhado com ela (cada ponto passa por S); os textos ficam num contêiner com `zoom` de layout.
+// Em t = 0 vale exatamente 1.
+// ---------------------------------------------------------------------------
+const ZMAX = 1.025;
+let Z = 1;
+const S = (p) => [960 + Z * (p[0] - 960), 540 + Z * (p[1] - 540)];
+
+// ---------------------------------------------------------------------------
+// A moldura da foto: nasce da linha da costura C11-12 (y 930, x 300 a 1620): o lado de cima sobe e
+// leva a foto junto (742 px em 1 s, 37 px/quadro no pico). Raio 36. A foto é a sala da cena 01 em
+// escala 0,6875 dentro dela. meiaMoldura (a linha subindo pelos lados) só desenha o contorno fechado
+// que, no B2, descasca com a foto.
+// ---------------------------------------------------------------------------
+const FR = { x0: 300, y0: 188, x1: 1620, y1: 930, r: 36 };
+const LARG = FR.x1 - FR.x0, ALT = FR.y1 - FR.y0;
+const SUBIDA = ALT - FR.r, ARCO_C = (Math.PI * FR.r) / 2, TOPO = LARG / 2 - FR.r;
+const LTOT = SUBIDA + ARCO_C + TOPO;          // caminho de cada ponta: 1.386,5 px (38,5 px/quadro no pico)
+const K = LARG / 1920;                        // a sala da cena 01 dentro da moldura
+const fotoProj = (p) => S([FR.x0 + K * p[0], FR.y0 + K * p[1]]);
+
+// pontos de meia moldura, do centro de baixo até a ponta (lado −1 esquerda, +1 direita)
+function meiaMoldura(d, lado) {
+  const xs = lado < 0 ? FR.x0 : FR.x1;
+  const pts = [[960, FR.y1]];
+  const h = clamp(d, 0, SUBIDA), r = Math.min(FR.r, h);
+  const cx = xs - lado * r, cy = FR.y1 - r;
+  pts.push([cx, FR.y1]);
+  if (r > 0.01) for (let j = 1; j <= 10; j += 1) { const f = (j / 10) * (Math.PI / 2); pts.push([cx + lado * r * Math.sin(f), cy + r * Math.cos(f)]); }
+  if (h > r) pts.push([xs, FR.y1 - h]);
+  if (d > SUBIDA) {
+    const a = Math.min(Math.PI / 2, (d - SUBIDA) / FR.r);
+    const ccx = xs - lado * FR.r, ccy = FR.y0 + FR.r;
+    const n = Math.max(1, Math.ceil((12 * a) / (Math.PI / 2)));
+    for (let j = 1; j <= n; j += 1) { const f = (a * j) / n; pts.push([ccx + lado * FR.r * Math.cos(f), ccy - FR.r * Math.sin(f)]); }
+    if (d > SUBIDA + ARCO_C) pts.push([ccx - lado * Math.min(TOPO, d - SUBIDA - ARCO_C), FR.y0]);
+  }
+  return pts;
+}
+const MOLDURA_FECHADA = (() => { const e = meiaMoldura(LTOT, -1), d = meiaMoldura(LTOT, 1); return [...e.reverse(), ...d.slice(1)]; })();
+
+// ---------------------------------------------------------------------------
+// Geometria auxiliar
+// ---------------------------------------------------------------------------
+const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+const comprimento = (pts) => pts.reduce((s, p, i) => (i ? s + dist(p, pts[i - 1]) : 0), 0);
+function reamostra(pts, n, fechado) {
+  const P0 = fechado ? [...pts, pts[0]] : pts;
+  const cum = [0];
+  for (let i = 1; i < P0.length; i += 1) cum.push(cum[i - 1] + dist(P0[i], P0[i - 1]));
+  const L = cum[cum.length - 1], out = [];
+  const m = fechado ? n : n - 1;
+  let j = 0;
+  for (let i = 0; i < n; i += 1) {
+    const s = (L * i) / m;
+    while (j < cum.length - 2 && cum[j + 1] < s) j += 1;
+    const f = (s - cum[j]) / Math.max(1e-9, cum[j + 1] - cum[j]);
+    out.push([lerp(P0[j][0], P0[j + 1][0], f), lerp(P0[j][1], P0[j + 1][1], f)]);
+  }
+  return out;
+}
+const bez = (a, b, c, d, t) => { const u = 1 - t; return [u * u * u * a[0] + 3 * u * u * t * b[0] + 3 * u * t * t * c[0] + t * t * t * d[0], u * u * u * a[1] + 3 * u * u * t * b[1] + 3 * u * t * t * c[1] + t * t * t * d[1]]; };
+function aPartirDe(pts, alvo) { let k = 0, best = Infinity; pts.forEach((p, i) => { const d = dist(p, alvo); if (d < best) { best = d; k = i; } }); return [...pts.slice(k), ...pts.slice(0, k)]; }
+
+// caminhos do joao-barro-icon (index.html, .brand-lockup), em unidades do viewBox 100. O contorno de
+// fora tem cinco curvas; cada uma é o trecho de uma das cinco linhas do filme.
+const NINHO_EXT = [[[18, 80], [7, 79], [2, 66], [2, 49]], [[2, 49], [2, 24], [20, 4], [50, 3]], [[50, 3], [79, 2], [97, 25], [97, 49]], [[97, 49], [97, 68], [89, 80], [79, 80]], [[79, 80], [64, 80], [34, 81], [18, 80]]];
+const NINHO_ABERTURA = [[[40, 58], [35, 42], [40, 24], [53, 23]], [[53, 23], [64, 22], [69, 40], [64, 57]], [[64, 57], [59, 72], [45, 72], [40, 58]]];
+const naCaixa = (cx) => ([u, v]) => [cx.x + (u * cx.s) / 100, cx.y + (v * cx.s) / 100];
+const f1 = (v) => v.toFixed(1);
+const pt = (p) => f1(p[0]) + ' ' + f1(p[1]);
+const iconeTela = (segs, cx) => { const nW = naCaixa(cx); const q = (p) => pt(S(nW(p))); let d = 'M' + q(segs[0][0]); for (const s of segs) d += 'C' + q(s[1]) + ' ' + q(s[2]) + ' ' + q(s[3]); return d + 'Z'; };
+const polyD = (pts, fechar) => 'M' + pts.map((p) => pt(S(p))).join('L') + (fechar ? 'Z' : '');
+
+// a sala congelada e a janela dela (o desenho no papel, por baixo da foto), em coordenadas do mundo
+const PARA = 0.6;   // s: depois de T.vento, a velocidade do vento cai em linha reta até zero
+// a sala congela no mesmo instante da versão anterior (T_ENCANTO + 3,88 s): a janela, o ninho e as
+// linhas nascem no mesmo lugar, e do ninho ao lockup os quadros são os mesmos de antes
+const SALA_T0 = 3.88 - (T.vento + PARA / 2);
+const tSala = (t) => { if (t <= T.vento) return T_ENCANTO + SALA_T0 + t; const u = clamp((t - T.vento) / PARA); return T_ENCANTO + SALA_T0 + T.vento + PARA * (u - (u * u) / 2); };
+const JAN = salaQuente({ tr: tSala(T.vento + 10), proj: (p) => [FR.x0 + K * p[0], FR.y0 + K * p[1]], esc: K }).vidro;
+const JAN_C = [(JAN[0] + JAN[2]) / 2, (JAN[1] + JAN[3]) / 2];
+const JAN_TRAVESSA = (2.5 - 1.95) / (2.5 - 0.25);   // a travessa do caixilho da cena 01, a 24,4% do alto do vidro
+
+// o ninho nasce em volta da janela (a abertura no lugar do vidro) e depois vai para o lockup
+const S0 = 210;
+const NIN0 = { s: S0, x: JAN_C[0] - 0.525 * S0, y: JAN_C[1] - 0.46 * S0 };
+const W0 = naCaixa(NIN0);
+const F_MARCA = 104;                          // corpo de "VEREDA" no fim
+const NIN1 = { s: 1.263 * F_MARCA };          // .brand-lockup: ícone 24 px para texto de 19 px (1,26em)
+const VAO = 0.579 * F_MARCA;                  // e vão de 11 px (0,58em)
+
+// abertura e janela, amostradas a partir do ponto de baixo, no mesmo sentido
+const ABERT_DENSO = (() => { const o = []; for (const s of NINHO_ABERTURA) for (let j = 0; j < 240; j += 1) o.push(bez(...s, j / 240)); return o; })();
+const ABERT_PTS = reamostra(aPartirDe(ABERT_DENSO, [52, 68.8]).map(W0), 240, true);
+const JAN_PTS = (() => { const [x0, y0, x1, y1] = JAN, cx = (x0 + x1) / 2; return reamostra([[cx, y1], [x0, y1], [x0, y0], [x1, y0], [x1, y1]], 240, true); })();
+// eixos da abertura (para onde vão a cruz e o peitoril da janela)
+const ABERT_EIXO = (() => {
+  const pts = ABERT_DENSO.map(W0);
+  const alto = pts.reduce((a, p) => (p[1] < a[1] ? p : a)), baixo = pts.reduce((a, p) => (p[1] > a[1] ? p : a));
+  const yT = alto[1] + JAN_TRAVESSA * (baixo[1] - alto[1]);
+  const nivel = pts.filter((p) => Math.abs(p[1] - yT) < 1.2);
+  const esq = nivel.reduce((a, p) => (p[0] < a[0] ? p : a)), dir = nivel.reduce((a, p) => (p[0] > a[0] ? p : a));
+  return { alto, baixo, esq: [esq[0], yT], dir: [dir[0], yT] };
+})();
+
+// ---------------------------------------------------------------------------
+// As cinco linhas do filme, versões simples das cenas 06 a 09. Cada uma tem a forma (da cauda até a
+// ponta que puxa, com a ponta em 0,0), o trecho do ninho em que entra (uma das cinco curvas do ícone,
+// a partir de uma das pontas dela) e o deslocamento do inventário: no papel, por baixo da foto, ela
+// está na posição de chegada mais esse deslocamento. Cada canto do ninho recebe uma linha só, todas no
+// mesmo sentido (anti-horário na tela): a frente de uma chega onde a ponta da seguinte entrou. O sentido
+// e a ponta de entrada de cada uma são os de menor caminho até o trecho, chegando por fora do ninho,
+// sem meia-volta e sem cruzar outra linha.
+// ---------------------------------------------------------------------------
+// a onda chega de baixo à esquerda, subindo 30°, até o canto de baixo à direita do ninho
+const onda = (() => { const p = []; const span = 214, e = [Math.cos(Math.PI / 6), -Math.sin(Math.PI / 6)], n = [-e[1], e[0]]; for (let x = span; x >= 0; x -= 2) { const u = clamp(x / 46), w = clamp((span - x) / 46); const y = 13 * smooth(u) * smooth(w) * Math.sin((2 * Math.PI * x) / 68); p.push([-x * e[0] + y * n[0], -x * e[1] + y * n[1]]); } return p; })();
+const arco = (() => { const r = 230, aL = (231 * Math.PI) / 180, var0 = (68 * Math.PI) / 180; const c = [-r * Math.cos(aL), -r * Math.sin(aL)]; const p = []; for (let j = 60; j >= 0; j -= 1) { const a = aL + (var0 * j) / 60; p.push([c[0] + r * Math.cos(a), c[1] + r * Math.sin(a)]); } return p; })();
+const LOTE_A = [70, -20], LOTE_B = [52, 35];   // o lote fica à direita e abaixo da ponta; a última aresta sobe para a esquerda
+const lote = [[0, 0], LOTE_A, [LOTE_A[0] + LOTE_B[0], LOTE_A[1] + LOTE_B[1]], LOTE_B, [0, 0]];
+const AG = 200, AG_ANG = (35 * Math.PI) / 180;
+const LINHAS = [
+  // a divisória do dossiê (cena 08): reta, entra pelo canto de baixo à esquerda e corre pela base
+  { nome: 'divisória', forma: [[-270, 0], [0, 0]], seg: 4, entra: 'fim', inv: [55, 175], cor: '#F47745', larg: 4.2, atraso: 0 },
+  // a agulha da bússola com o ponto e o sol (cena 09): aponta para a janela e entra pela esquerda, descendo
+  { nome: 'agulha', forma: [[-AG * Math.cos(AG_ANG), -AG * Math.sin(AG_ANG)], [0, 0]], seg: 0, entra: 'fim', inv: [-115, 25], cor: '#F47745', larg: 4.2, atraso: 0.02 },
+  // o arco do raio de 150 m em volta da janela (cena 07): entra pelo alto, indo para a esquerda
+  { nome: 'arco do raio', forma: arco, seg: 1, entra: 'fim', inv: [-122, -52], cor: '#F47745', larg: 3.2, atraso: 0.04 },
+  // o contorno do lote, azul cadastral (cenas 06 e 07): entra pelo lado direito, subindo
+  { nome: 'contorno do lote', forma: lote, seg: 2, entra: 'fim', inv: [160, -120], cor: '#2E5A85', larg: 4.5, atraso: 0.03 },
+  // a onda do ruído (cena 09): entra pelo canto de baixo à direita, subindo pela curva
+  { nome: 'onda', forma: onda, seg: 3, entra: 'fim', inv: [150, 120], cor: '#F47745', larg: 4.2, atraso: 0.01 },
+];
+for (const ln of LINHAS) {
+  const s = NINHO_EXT[ln.seg];
+  const denso = []; for (let j = 0; j <= 80; j += 1) denso.push(W0(bez(...s, j / 80)));
+  ln.trecho = ln.entra === 'ini' ? denso : denso.reverse();          // do ponto de entrada ao outro
+  ln.chega = ln.trecho[0];                                            // a ponta da linha vai até aqui
+  ln.L = comprimento(ln.forma); ln.Ls = comprimento(ln.trecho);
+}
+
+// ---------------------------------------------------------------------------
+// A máscara orgânica: um raio de base comum R(t), que acelera em 0,15 s e corre a 980 px/s, vezes
+// (1 + 0,12 n(θ, t)), com n feito de três harmônicos baixos (1, 2 e 3) de fase tirada de rng e deriva
+// lenta; o atraso por direção é suave e vai de 0 a 0,06 s. Nenhum Math.random; tudo função de t.
+// Pico de cada ponto da borda: 980 × 1,12 + a deriva ≈ 1.160 px/s (38,7 px/quadro).
+// ---------------------------------------------------------------------------
+const PC = [1000, 520];                      // o meio da foto (o vidro da janela): a máscara abre daqui
+const rB = rng(1212);
+const HARM = [[1, 0.35], [2, 0.4], [3, 0.25]].map(([k, a]) => ({ k, a, fase: 2 * Math.PI * rB(), w: 0.3 + 0.4 * rB() }));
+const FASE_ATRASO = 2 * Math.PI * rB(), FASE_DOBRA = 2 * Math.PI * rB();
+const V_BORDA = 980, RAMPA = 0.15;
+const Rbase = (tau) => { if (tau <= 0) return 0; if (tau < RAMPA) { const u = tau / RAMPA; return V_BORDA * RAMPA * (u * u * u - (u * u * u * u) / 2); } return V_BORDA * (tau - RAMPA / 2); };
+function raioBorda(t, th) {
+  let n = 0; for (const h of HARM) n += h.a * Math.sin(h.k * th + h.fase + h.w * (t - T.descasca));
+  const atraso = 0.03 * (1 + Math.sin(th + FASE_ATRASO));
+  return Rbase(t - T.descasca - atraso) * (1 + 0.12 * n);
+}
+const N_BORDA = 180;
+// extra > 0: a borda de dentro da faixa do verso da foto (a dobra fica do lado do papel, sobre ele)
+function bordaPts(t, extra = 0) {
+  const out = [];
+  for (let j = 0; j < N_BORDA; j += 1) {
+    const th = (2 * Math.PI * j) / N_BORDA, r = raioBorda(t, th);
+    const w = extra ? Math.min(extra * (1 + 0.23 * Math.sin(2 * th + FASE_DOBRA)), 0.35 * r) : 0;
+    out.push([PC[0] + (r - w) * Math.cos(th), PC[1] + (r - w) * Math.sin(th)]);
+  }
+  return out;
+}
+const DOBRA = 13;   // px: a faixa do verso da foto que se enrola na borda (10 a 16 px)
+// dentro da máscara; com folga, já depois da dobra (o papel por baixo está à vista)
+const dentro = (t, p, folga = 0) => dist(p, PC) < raioBorda(t, Math.atan2(p[1] - PC[1], p[0] - PC[0])) - folga;
+
+// a linha da moldura descasca com a foto: no B2 ela é o contorno fechado inteiro, tracejado só nos
+// trechos fora da máscara (os cortes na borda saem por bissecção). Sem clip-path na linha: o recorte por
+// clipPath deixava pixels de quadros anteriores na borda do traço, no teste de determinismo. Como a
+// geometria não muda, a caixa do caminho também não pula quando um resto da linha some.
+const MOLDURA_DENSA = reamostra(MOLDURA_FECHADA, 900, true);
+const D_MOLDURA_DENSA = () => polyD(MOLDURA_DENSA, true);
+function molduraTraco(t) {
+  const P0 = MOLDURA_DENSA, n = P0.length, fora = P0.map((p) => !dentro(t, p));
+  if (fora.every(Boolean)) return null;            // a máscara ainda não chegou à moldura
+  if (!fora.some(Boolean)) return '';              // a moldura já descascou toda
+  // fração do caminho onde a borda corta o segmento entre o ponto i e o seguinte
+  const corte = (i) => { const a = P0[i], b = P0[(i + 1) % n], dentroA = !fora[i]; let lo = 0, hi = 1; for (let k = 0; k < 14; k += 1) { const m = (lo + hi) / 2, q = [lerp(a[0], b[0], m), lerp(a[1], b[1], m)]; if (dentro(t, q) === dentroA) lo = m; else hi = m; } return (i + (lo + hi) / 2) / n; };
+  const k0 = fora.indexOf(false);
+  const trechos = [];
+  let ini = null;
+  for (let s = 0; s < n; s += 1) {
+    const i = (k0 + s) % n, j = (i + 1) % n;
+    if (!fora[i] && fora[j]) ini = corte(i);
+    else if (fora[i] && !fora[j] && ini !== null) { let fim = corte(i); if (fim < ini) fim += 1; trechos.push([ini, fim]); ini = null; }
+  }
+  if (!trechos.length) return '';
+  // tracejado de período 1 (pathLength 1): traço, vão, traço, vão... começando no primeiro trecho
+  const arr = [];
+  for (let k = 0; k < trechos.length; k += 1) { const [a, b] = trechos[k], prox = k + 1 < trechos.length ? trechos[k + 1][0] : trechos[0][0] + 1; arr.push(b - a, prox - b); }
+  return { dash: arr.map((v) => Math.max(0, v).toFixed(5)).join(' '), offset: (-trechos[0][0]).toFixed(5) };
+}
+
+// marcos que dependem das medidas
+T.semFoto = (() => { const borda = reamostra(MOLDURA_FECHADA, 160, true); let t = T.descasca; while (t < T.descasca + 3 && !borda.every((p) => dentro(t, p, 1.3 * DOBRA))) t += 1 / 240; return +(t + 1 / 30).toFixed(3); })();   // a foto e a dobra já saíram da moldura
+// inventário: quando as cinco linhas (com o ponto, o sol e o lote) e a janela já estão inteiras no papel
+T.inventario = (() => {
+  const pts = [];
+  for (const ln of LINHAS) for (const p of reamostra(ln.forma, 40, false)) pts.push([p[0] + ln.chega[0] + ln.inv[0], p[1] + ln.chega[1] + ln.inv[1]]);
+  const ag = LINHAS[1]; for (const q of [ag.forma[0], ag.forma[1]]) for (const [dx, dy] of [[-14, 0], [14, 0], [0, -14], [0, 14]]) pts.push([q[0] + ag.chega[0] + ag.inv[0] + dx, q[1] + ag.chega[1] + ag.inv[1] + dy]);
+  for (const p of JAN_PTS) pts.push(p);
+  let t = T.descasca; while (t < T.descasca + 3 && !pts.every((p) => dentro(t, p, 1.3 * DOBRA))) t += 1 / 240;
+  return +t.toFixed(3);
+})();
+T.junta = +Math.max(T.semFoto - 0.1, T.inventario + BEAT).toFixed(3);   // começa o corpo rígido
+T.janela = +(T.junta - 0.1).toFixed(3);                                  // a janela começa a encolher antes
+for (const ln of LINHAS) { ln.tR = T.junta + ln.atraso; ln.tD = ln.tR + RIG; }
+T.desenrolado = +Math.max(...LINHAS.map((ln) => ln.tD + DES)).toFixed(3);
+T.enche = +(T.desenrolado + 0.02).toFixed(3);
+T.recua = T.enche;
+T.ninho = +(T.enche + ENCHE + 0.02).toFixed(3);
+T.vereda = +Math.max(T.ninho + ANDA + 0.05, T.recua + 0.86).toFixed(3);
+const DUR = +(T.vereda + 1.0).toFixed(2);
+const HOLDS = [H1, DUR];
+// a câmera aproxima de 1,0 para 1,025 enquanto a máscara descasca (de "Com a VEREDA" até as linhas
+// partirem para o ninho) e recua no enchimento, como antes; zeta 1, assenta antes de T.junta
+T.deriva = T.descasca;
+const DERIVA = (() => { const w = 5.834 / (T.junta - T.deriva - 0.02); return { k: w * w, d: 2 * w }; })();
+const zoomCam = (t) => 1 + (ZMAX - 1) * (nsp(t - T.deriva, DERIVA) - nsp(t - T.recua, RECUA));
+
+// ---------------------------------------------------------------------------
+// DOM
+// ---------------------------------------------------------------------------
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+function svgEl(tag, attrs, pai) { const e = document.createElementNS(NS, tag); for (const [a, v] of Object.entries(attrs)) e.setAttribute(a, v); pai.appendChild(e); return e; }
+function el(cls, html, pai) { const e = document.createElement('div'); e.className = cls; e.innerHTML = html; pai.appendChild(e); return e; }
+const attr = (e, a, v) => { if (e.getAttribute(a) !== v) e.setAttribute(a, v); };
+const vis = (e, a) => { e.style.opacity = a.toFixed(3); e.style.visibility = a > 0.001 ? 'inherit' : 'hidden'; };
+const svgVis = (e, a) => { attr(e, 'opacity', a.toFixed(3)); e.style.visibility = a > 0.001 ? 'inherit' : 'hidden'; };
+const mostra = (e, v) => { e.style.visibility = v ? 'inherit' : 'hidden'; };
+const rrect = (x0, y0, x1, y1, r) => `M${f1(x0 + r)} ${f1(y0)}H${f1(x1 - r)}A${f1(r)} ${f1(r)} 0 0 1 ${f1(x1)} ${f1(y0 + r)}V${f1(y1 - r)}A${f1(r)} ${f1(r)} 0 0 1 ${f1(x1 - r)} ${f1(y1)}H${f1(x0 + r)}A${f1(r)} ${f1(r)} 0 0 1 ${f1(x0)} ${f1(y1 - r)}V${f1(y0 + r)}A${f1(r)} ${f1(r)} 0 0 1 ${f1(x0 + r)} ${f1(y0)}Z`;
+const GR = 'M-60 -60H1980V1140H-60Z';
+
+const cena = $('cena'), grade = $('grade');
+const defs = svgEl('defs', {}, cena);
+const cpMoldura = svgEl('clipPath', { id: 'cpMoldura', clipPathUnits: 'userSpaceOnUse' }, defs);
+const cpMolduraP = svgEl('path', {}, cpMoldura);
+const cpFoto = svgEl('clipPath', { id: 'cpFoto', clipPathUnits: 'userSpaceOnUse' }, defs);
+const cpFotoP = svgEl('path', { 'clip-rule': 'evenodd' }, cpFoto);
+const cpEnche = svgEl('clipPath', { id: 'cpEnche', clipPathUnits: 'userSpaceOnUse' }, defs);
+const cpEncheR = svgEl('rect', { x: -50, width: 2020 }, cpEnche);
+
+// camadas, de baixo para cima: o laranja do ninho; no papel, a janela, as linhas e os trechos do
+// contorno; a foto; a linha da moldura (que descasca com a foto)
+const gEnche = svgEl('g', { 'clip-path': 'url(#cpEnche)' }, cena);
+const encheP = svgEl('path', { fill: '#F47745' }, gEnche);
+const gPapel = svgEl('g', { fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, cena);
+const janela = svgEl('path', { fill: '#F5F0E6', stroke: '#171717', 'stroke-linejoin': 'round' }, gPapel);
+const janelaCruz = svgEl('path', { stroke: '#171717' }, gPapel);
+const janelaPeitoril = svgEl('path', { stroke: '#171717' }, gPapel);
+const loteFill = svgEl('path', { fill: 'rgba(207,219,233,0.6)', stroke: 'none' }, gPapel);
+for (const ln of LINHAS) {
+  if (ln.nome === 'contorno do lote') ln.halo = svgEl('path', { stroke: '#FFFFFF', pathLength: 1 }, gPapel);
+  ln.e = svgEl('path', { stroke: ln.cor, pathLength: 1 }, gPapel);
+  ln.s = svgEl('path', { stroke: '#F47745', pathLength: 1 }, gPapel);   // o trecho dela no contorno
+}
+const agulhaOrigem = svgEl('circle', { fill: '#171717' }, gPapel);
+const agulhaSol = svgEl('circle', { fill: '#FAF6EE', stroke: '#F47745' }, gPapel);
+const gFotoA = svgEl('g', { 'clip-path': 'url(#cpMoldura)' }, cena);
+const gFotoB = svgEl('g', { 'clip-path': 'url(#cpFoto)' }, gFotoA);
+const fotoFundo = svgEl('rect', { fill: FUNDO_QUENTE }, gFotoB);
+const gSala = svgEl('g', {}, gFotoB);
+const gAspas = svgEl('g', {}, gFotoB);
+// o verso da foto que se enrola na borda, por cima do papel: faixa chapada no tom da foto
+// escurecido, sem gradiente (fica dentro da moldura, fora do recorte da foto)
+const dobra = svgEl('path', { fill: '#DDB487', stroke: '#C99B6C', 'stroke-linejoin': 'round', 'fill-rule': 'evenodd' }, gFotoA);
+// a parte de dentro do rolo, um tom chapado mais claro (3,5 px): é o que faz a faixa ler como dobra
+const rolo = svgEl('path', { fill: '#EACB9F', stroke: 'none', 'fill-rule': 'evenodd' }, gFotoA);
+// a costura C11-12: a linha laranja desenha a moldura e, no B2, descasca com a foto
+const { linhas: [linha] } = desenharCostura('C11-12', cena);
+const gLinha = svgEl('g', {}, cena);
+gLinha.appendChild(linha);
+const D_COSTURA = linha.getAttribute('d'), W_COSTURA = linha.getAttribute('stroke-width');
+
+// as quatro aspas do anúncio (as palavras da fala da cena 01), na pílula da cena 01 (.chip e
+// .chip.pequeno), em SVG para descascarem junto com a foto
+const ICONES = {
+  area: '<path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/>',
+  vento: '<path d="M5 8h8.5a2.5 2.5 0 1 0 -2.34 -3.24"/><path d="M3 12h15.5a2.5 2.5 0 1 1 -2.34 3.24"/><path d="M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24"/>',
+  sol: '<path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"/>',
+  etiqueta: '<path d="M7.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M3 6v5.172a2 2 0 0 0 .586 1.414l7.71 7.71a2.41 2.41 0 0 0 3.408 0l5.592 -5.592a2.41 2.41 0 0 0 0 -3.408l-7.71 -7.71a2 2 0 0 0 -1.414 -.586h-5.172a3 3 0 0 0 -3 3z"/>',
+};
+const GRANDE = { fs: 34, padL: 22, padR: 28, padV: 16, icone: 32, gap: 15, fundo: 'rgba(255,251,243,0.94)' };
+const PEQUENA = { fs: 25, padL: 15, padR: 19, padV: 11, icone: 23, gap: 10, fundo: 'rgba(255,251,243,0.86)' };
+const ASPAS = [
+  { txt: '75 metros quadrados', icone: 'area', estilo: GRANDE, x: 349, y: 826, alinhar: 'esq' },
+  { txt: 'super ventilado', icone: 'vento', estilo: GRANDE, x: 730, y: 383, alinhar: 'dir' },
+  // um pouco à esquerda do lugar da cena 01, para não encostar no canto do quadro da parede
+  { txt: 'sol 100% nascente', icone: 'sol', estilo: GRANDE, x: 1030, y: 368, alinhar: 'esq' },
+  { txt: 'taxa de condomínio baixinha', icone: 'etiqueta', estilo: PEQUENA, x: 1572, y: 842, alinhar: 'dir' },
+].map((a, i) => {
+  const g = svgEl('g', {}, gAspas);
+  const fundo = svgEl('rect', { fill: a.estilo.fundo, stroke: 'rgba(185,78,54,0.16)' }, g);
+  // ícone num <svg> aninhado de viewBox 24: muda por x, y, width e height (viewport), sem transform
+  const ic = svgEl('svg', { viewBox: '0 0 24 24', overflow: 'visible', fill: 'none', stroke: '#B94E36', 'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
+  ic.innerHTML = ICONES[a.icone];
+  const tx = svgEl('text', { 'font-family': 'Plus Jakarta Sans', 'font-weight': 600, fill: '#171717' }, g);
+  const q = (c) => `<tspan font-family="Fraunces" font-weight="500" fill="#B94E36">${c}</tspan>`;
+  tx.innerHTML = `${q('“')}${a.txt}${q('”')}`;
+  return { ...a, g, fundo, ic, tx };
+});
+// cada aspa entra quando a foto que sobe já passou 10 px acima da pílula
+const topoFoto = (t) => FR.y1 - ALT * smooth((t - T.desenha) / T.durDesenho);
+T.aspas = ASPAS.map((a) => { let t = T.desenha; while (topoFoto(t) > a.y - 10) t += 1 / 240; a.t = +(t - 0.04).toFixed(3); return a.t; });
+
+// textos do mundo (no contêiner da câmera): a marca
+const textosPos = $('textosPos'), textos = $('textos');
+const marca = el('marca', [...'VEREDA'].map((c) => `<span>${c}</span>`).join(''), textos);
+const letras = [...marca.children];
+marca.style.fontSize = F_MARCA + 'px';
+
+const dbg = Q.has('debug') ? el('', '', $('c')) : null;
+if (dbg) dbg.id = 'debug';
+
+// a moldura que sobe: retângulo de raio 36 (ou h/2, quando ainda baixo) com o lado de baixo na costura
+function molduraSobe(h, inset = 0) {
+  const r = Math.min(FR.r, h / 2);
+  const a = S([FR.x0, FR.y1 - h]), b = S([FR.x1, FR.y1]);
+  return rrect(a[0] + inset, a[1] + inset, b[0] - inset, b[1] - inset, Math.max(0, r * Z - inset));
+}
+
+// medidas tomadas sem zoom (em __pronto, antes do primeiro quadro)
+const MED = { pronto: false };
+function medir() {
+  const ctx = document.createElement('canvas').getContext('2d');
+  ctx.font = '600 100px "Plus Jakarta Sans"';
+  const m = ctx.measureText('Hg');
+  MED.base = (100 - (m.fontBoundingBoxAscent + m.fontBoundingBoxDescent)) / 2 + m.fontBoundingBoxAscent;
+  for (const a of ASPAS) {
+    attr(a.tx, 'font-size', String(a.estilo.fs)); a.largTexto = a.tx.getComputedTextLength();
+    // caixa da pílula no mundo e o instante em que a borda da máscara encosta nela: dali a pílula
+    // desliza 26 px para fora, junto com a borda, enquanto apaga
+    const e = a.estilo, w = 2 + e.padL + e.icone + e.gap + a.largTexto + e.padR, h = 2 + 2 * e.padV + e.fs;
+    const x0 = a.alinhar === 'dir' ? a.x - w : a.x;
+    a.caixa = [x0, a.y, w, h];
+    const cxp = [x0 + w / 2, a.y + h / 2], dd = dist(cxp, PC);
+    a.fora = [(cxp[0] - PC[0]) / dd, (cxp[1] - PC[1]) / dd];
+    const borda = reamostra([[x0, a.y], [x0 + w, a.y], [x0 + w, a.y + h], [x0, a.y + h]], 64, true);
+    let tt = T.descasca; while (tt < T.semFoto && !borda.some((q) => dentro(tt, q))) tt += 1 / 240;
+    a.toque = tt;
+    T['toque' + (ASPAS.indexOf(a) + 1)] = +tt.toFixed(3);
+  }
+  textos.style.zoom = '1';
+  MED.marcaW = marca.offsetWidth;
+  // lockup horizontal centrado: ícone, vão e texto (sem o espaçamento depois do último A)
+  const largTexto = MED.marcaW - 0.14 * F_MARCA;
+  const total = NIN1.s + VAO + largTexto;
+  NIN1.x = 960 - total / 2; NIN1.y = 540 - NIN1.s / 2;
+  MED.marcaX = NIN1.x + NIN1.s + VAO; MED.marcaY = 540 - F_MARCA / 2;
+  MED.pronto = true;
+}
+
+// ---------------------------------------------------------------------------
+// seek(t): função pura do tempo
+// ---------------------------------------------------------------------------
+function render(t) {
+  t = clamp(t, 0, DUR);
+  Z = zoomCam(t);
+
+  // ===== câmera: grade (layout), textos (zoom de layout), SVG redesenhado ========================
+  if (Z === 1) { grade.style.backgroundSize = ''; grade.style.backgroundPosition = ''; }
+  else { grade.style.backgroundSize = `${(48 * Z).toFixed(4)}px ${(48 * Z).toFixed(4)}px`; grade.style.backgroundPosition = `${(960 * (1 - Z)).toFixed(3)}px ${(540 * (1 - Z)).toFixed(3)}px`; }
+  textosPos.style.left = (960 * (1 - Z)).toFixed(3) + 'px'; textosPos.style.top = (540 * (1 - Z)).toFixed(3) + 'px';
+  textos.style.zoom = Z.toFixed(5);
+
+  const b2 = t >= T.descasca;
+  const borda = b2 ? bordaPts(t) : null;
+  const dBorda = b2 ? polyD(borda, true) : '';
+
+  // ===== a linha da moldura: nasce da costura, fecha no alto e, no B2, descasca com a foto =========
+  let topoRevela = FR.y1;
+  if (t <= T.desenha) {
+    // quadro da emenda: exatamente a costura C11-12
+    attr(linha, 'd', D_COSTURA); attr(linha, 'stroke-width', W_COSTURA); linha.removeAttribute('stroke-linejoin');
+    linha.removeAttribute('pathLength'); linha.removeAttribute('stroke-dasharray'); linha.removeAttribute('stroke-dashoffset');
+    mostra(linha, true);
+  } else {
+    const hM = ALT * smooth((t - T.desenha) / T.durDesenho);
+    topoRevela = FR.y1 - hM;
+    attr(linha, 'd', molduraSobe(hM));
+    attr(linha, 'stroke-width', (4.2 * Z).toFixed(3)); attr(linha, 'stroke-linejoin', 'round');
+    const tr = b2 ? molduraTraco(t) : null;
+    if (tr) { attr(linha, 'd', D_MOLDURA_DENSA()); attr(linha, 'pathLength', '1'); attr(linha, 'stroke-dasharray', tr.dash); attr(linha, 'stroke-dashoffset', tr.offset); }
+    else { linha.removeAttribute('pathLength'); linha.removeAttribute('stroke-dasharray'); linha.removeAttribute('stroke-dashoffset'); }
+    mostra(linha, t < T.semFoto && tr !== '');
+  }
+
+  // ===== a foto: a sala quente e as aspas, recortadas pela moldura ==============================
+  const fotoVis = t > T.desenha && t < T.semFoto;
+  mostra(gFotoA, fotoVis);
+  if (fotoVis) {
+    const a0 = S([FR.x0, FR.y0]), a1 = S([FR.x1, FR.y1]), rr = (FR.r - 2.1) * Z, mi = 2.1 * Z;
+    attr(cpMolduraP, 'd', rrect(a0[0] + mi, a0[1] + mi, a1[0] - mi, a1[1] - mi, rr));
+    attr(fotoFundo, 'x', f1(a0[0])); attr(fotoFundo, 'y', f1(a0[1])); attr(fotoFundo, 'width', f1(a1[0] - a0[0])); attr(fotoFundo, 'height', f1(a1[1] - a0[1]));
+    if (!b2) {
+      // B1: a foto sobe com o lado de cima da moldura (o mesmo retângulo, 2,1 px para dentro)
+      const hM = FR.y1 - topoRevela;
+      attr(cpFotoP, 'd', hM > 5 ? molduraSobe(hM, 2.1 * Z) : 'M0 0Z');
+      attr(dobra, 'd', ''); attr(rolo, 'd', '');
+    } else {
+      // B2: a foto fica fora da máscara (par-ímpar: o quadro todo menos a borda orgânica); na borda,
+      // o verso da foto que se enrola, numa faixa de 10 a 16 px
+      attr(cpFotoP, 'd', GR + dBorda);
+      const dentroDobra = bordaPts(t, DOBRA), meioDobra = bordaPts(t, DOBRA - 3.5);
+      attr(dobra, 'd', dBorda + polyD(dentroDobra, true));
+      attr(rolo, 'd', polyD(meioDobra, true) + polyD(dentroDobra, true));
+      attr(dobra, 'stroke-width', (1.4 * Z).toFixed(2));
+    }
+    gSala.innerHTML = salaQuente({ tr: tSala(t), proj: fotoProj, esc: K * Z }).svg;
+    // aspas: entram como na cena 01 (sobem 18 px e acendem); quando a borda encosta, deslizam 26 px
+    // para fora junto com ela e apagam em 0,2 s
+    for (const a of ASPAS) {
+      const e = a.estilo;
+      const u = clamp((t - a.toque) / 0.2), sai = smooth(u);
+      const v = Math.min(swap(t, a.t, Infinity, { durIn: 0.16 }), 1 - sai);
+      svgVis(a.g, v);
+      if (v <= 0.001) continue;
+      const [x0, y0, w, h] = a.caixa;
+      const o = S([x0 + 26 * sai * a.fora[0], y0 + 18 * pending(t, a.t + 0.05, P.type) + 26 * sai * a.fora[1]]);
+      attr(a.fundo, 'x', f1(o[0] + 0.5 * Z)); attr(a.fundo, 'y', f1(o[1] + 0.5 * Z));
+      attr(a.fundo, 'width', f1((w - 1) * Z)); attr(a.fundo, 'height', f1((h - 1) * Z));
+      attr(a.fundo, 'rx', f1(((h - 1) / 2) * Z)); attr(a.fundo, 'stroke-width', Z.toFixed(3));
+      const ix = o[0] + (1 + e.padL) * Z, iy = o[1] + ((h - e.icone) / 2) * Z;
+      attr(a.ic, 'x', ix.toFixed(2)); attr(a.ic, 'y', iy.toFixed(2));
+      attr(a.ic, 'width', (e.icone * Z).toFixed(3)); attr(a.ic, 'height', (e.icone * Z).toFixed(3));
+      attr(a.tx, 'font-size', (e.fs * Z).toFixed(3));
+      attr(a.tx, 'x', (o[0] + (1 + e.padL + e.icone + e.gap) * Z).toFixed(2));
+      attr(a.tx, 'y', (o[1] + (1 + e.padV + (MED.base * e.fs) / 100) * Z).toFixed(2));
+    }
+  } else gSala.innerHTML = '';
+
+  // ===== o papel por baixo: a janela e as cinco linhas do filme ==================================
+  mostra(gPapel, b2 && t < T.ninho + 0.001);
+  // o ninho a caminho do lockup (depois do enchimento): caixa interpolada, nunca transform
+  const anda = smooth((t - T.ninho) / ANDA);
+  const caixa = { s: lerp(NIN0.s, NIN1.s, anda), x: lerp(NIN0.x, NIN1.x, anda), y: lerp(NIN0.y, NIN1.y, anda) };
+  const cJ = nsp(t - T.janela, JANELA);
+  if (b2) {
+    // a janela encolhe até a abertura; a cruz e o peitoril encolhem com ela, com as pontas indo para
+    // os eixos da abertura, e só apagam entre cJ 0,5 e 0,7
+    const pJ = JAN_PTS.map((p, i) => [lerp(p[0], ABERT_PTS[i][0], cJ), lerp(p[1], ABERT_PTS[i][1], cJ)]);
+    attr(janela, 'd', cJ >= 1 ? iconeTela(NINHO_ABERTURA, NIN0) : polyD(pJ, true));
+    attr(janela, 'stroke-width', (2.5 * Z).toFixed(2));
+    attr(janela, 'stroke-opacity', (1 - smooth((t - T.enche) / ENCHE)).toFixed(3));
+    const [x0, y0, x1, y1] = JAN, xm = (x0 + x1) / 2, yt = y0 + JAN_TRAVESSA * (y1 - y0);
+    const L = (a, b) => [lerp(a[0], b[0], cJ), lerp(a[1], b[1], cJ)];
+    const E = ABERT_EIXO;
+    attr(janelaCruz, 'd', 'M' + pt(S(L([xm, y0], E.alto))) + 'L' + pt(S(L([xm, y1], E.baixo))) + 'M' + pt(S(L([x0, yt], E.esq))) + 'L' + pt(S(L([x1, yt], E.dir))));
+    attr(janelaCruz, 'stroke-width', (1.6 * Z).toFixed(2));
+    attr(janelaPeitoril, 'd', 'M' + pt(S(L([x0 - 16, y1 + 9], [E.baixo[0] - 34, E.baixo[1] + 8]))) + 'L' + pt(S(L([x1 + 16, y1 + 9], [E.baixo[0] + 34, E.baixo[1] + 8]))));
+    attr(janelaPeitoril, 'stroke-width', (2.5 * Z).toFixed(2));
+    const aD = 1 - clamp((cJ - 0.5) / 0.2);
+    svgVis(janelaCruz, aD); svgVis(janelaPeitoril, aD);
+
+    // as linhas: paradas no inventário; depois corpo rígido até a ponta do trecho; depois desenrolam:
+    // a cauda corre pela própria linha até a ponta e a frente corre pelo trecho do contorno, as duas
+    // por deslocamento do tracejado (pathLength 1), sem interpolar uma forma na outra
+    const fimEnche = smooth((t - (T.enche + ENCHE - 0.1)) / 0.14);   // o traço some para dentro do laranja
+    for (const ln of LINHAS) {
+      const r = smooth((t - ln.tR) / RIG), q = smooth((t - ln.tD) / DES);
+      const ox = ln.chega[0] + ln.inv[0] * (1 - r), oy = ln.chega[1] + ln.inv[1] * (1 - r);
+      const pts = ln.forma.map((p) => [p[0] + ox, p[1] + oy]);
+      ln.agora = pts;
+      const dL = polyD(pts, false), wL = (ln.larg * Z).toFixed(2);
+      attr(ln.e, 'd', dL); attr(ln.e, 'stroke-width', wL);
+      attr(ln.e, 'stroke-dasharray', `${(1 - q).toFixed(4)} 2`); attr(ln.e, 'stroke-dashoffset', (-q).toFixed(4));
+      mostra(ln.e, q < 0.999);
+      if (ln.halo) { attr(ln.halo, 'd', dL); attr(ln.halo, 'stroke-width', (9 * Z).toFixed(2)); attr(ln.halo, 'stroke-dasharray', `${(1 - q).toFixed(4)} 2`); attr(ln.halo, 'stroke-dashoffset', (-q).toFixed(4)); mostra(ln.halo, q < 0.999); }
+      attr(ln.s, 'd', polyD(ln.trecho, false));
+      attr(ln.s, 'stroke-width', (4.2 * Z * (1 - fimEnche)).toFixed(3));
+      attr(ln.s, 'stroke-dasharray', `${q.toFixed(4)} 2`);
+      mostra(ln.s, q > 0.004 && fimEnche < 1);
+    }
+    // o lote perde o preenchimento enquanto anda; a agulha guarda o ponto e o sol até desenrolar
+    const lt = LINHAS[3], ag = LINHAS[1];
+    attr(loteFill, 'd', polyD(lt.agora.slice(0, 4), true));
+    svgVis(loteFill, 1 - smooth((t - lt.tR) / RIG));
+    // o ponto acompanha a cauda que corre pela agulha; o sol fica na ponta; os dois encolhem no começo
+    const qa = smooth((t - ag.tD) / (0.3 * DES)), qc = smooth((t - ag.tD) / DES);
+    const o0 = S([lerp(ag.agora[0][0], ag.agora[1][0], qc), lerp(ag.agora[0][1], ag.agora[1][1], qc)]), o1 = S(ag.agora[1]);
+    attr(agulhaOrigem, 'cx', f1(o0[0])); attr(agulhaOrigem, 'cy', f1(o0[1])); attr(agulhaOrigem, 'r', (5 * Z * (1 - qa)).toFixed(2));
+    attr(agulhaSol, 'cx', f1(o1[0])); attr(agulhaSol, 'cy', f1(o1[1])); attr(agulhaSol, 'r', (11 * Z * (1 - qa)).toFixed(2)); attr(agulhaSol, 'stroke-width', (3.5 * Z * (1 - qa)).toFixed(2));
+    mostra(agulhaOrigem, qa < 0.999); mostra(agulhaSol, qa < 0.999);
+  }
+
+  // ===== o ninho se enche de laranja, de baixo para cima; depois encolhe e anda até o lockup =======
+  const e = smooth((t - T.enche) / ENCHE);
+  mostra(gEnche, e > 0.001);
+  {
+    // o recorte sobe do pé ao alto do ninho de origem e para ali (acima de todo o ninho que anda até o lockup)
+    const yW = lerp(NIN0.y + 0.81 * NIN0.s + 3, NIN0.y + 0.02 * NIN0.s - 6, e);
+    const y = S([0, yW])[1];
+    attr(cpEncheR, 'y', f1(y)); attr(cpEncheR, 'height', f1(1140 - y));
+    if (e > 0.001) attr(encheP, 'd', iconeTela(NINHO_EXT, caixa));
+  }
+  // depois do enchimento, a abertura vai junto com o ninho
+  if (t >= T.ninho) { mostra(gPapel, true); for (const ln of LINHAS) { mostra(ln.e, false); mostra(ln.s, false); if (ln.halo) mostra(ln.halo, false); } mostra(loteFill, false); mostra(agulhaOrigem, false); mostra(agulhaSol, false); mostra(janelaCruz, false); mostra(janelaPeitoril, false); attr(janela, 'd', iconeTela(NINHO_ABERTURA, caixa)); attr(janela, 'stroke-opacity', '0.000'); }
+
+  // ===== a marca ================================================================================
+  {
+    marca.style.left = MED.marcaX.toFixed(2) + 'px'; marca.style.top = MED.marcaY.toFixed(2) + 'px';
+    let alguma = 0;
+    letras.forEach((l, i) => {
+      const t0 = T.vereda + 0.055 * i;
+      const a = swap(t, t0, Infinity, { delayIn: 0, durIn: 0.28 });
+      l.style.opacity = a.toFixed(3);
+      l.style.top = (12 * pending(t, t0, P.type)).toFixed(2) + 'px';
+      alguma = Math.max(alguma, a);
+    });
+    marca.style.visibility = alguma > 0.001 ? 'inherit' : 'hidden';
+  }
+
+  if (dbg) dbg.textContent = `${t.toFixed(2)} s · zoom ${Z.toFixed(4)}`;
+}
+
+// ---------------------------------------------------------------------------
+// Contrato de render e modos de preview
+// ---------------------------------------------------------------------------
+const r2 = (x) => +x.toFixed(3);
+const ESTADOS = [
+  { id: 'E0', nome: 'Costura C11-12: a linha laranja deitada (último quadro da cena 11)', t: 0 },
+  { id: 'M1', nome: 'Meio: a moldura sobe da linha com a foto; as primeiras aspas', t: 0.4 },
+  { id: 'M1b', nome: 'Meio: a moldura quase no alto; as aspas de cima entram', t: 0.8 },
+  { id: 'B1', nome: 'Eles possuem o marketing: a foto bonita e as quatro aspas (HOLD)', t: H1 },
+  { id: 'M2', nome: 'Meio: a máscara descasca a sala a partir da janela', t: r2(T.descasca + 0.32) },
+  { id: 'M2b', nome: 'Meio: a foto quase toda descascada; as linhas no papel', t: r2(T.inventario + 0.05) },
+  { id: 'M2c', nome: 'Inventário: as cinco linhas do filme e a janela', t: r2(T.junta - 0.02) },
+  { id: 'M3', nome: 'Meio: as linhas vão até as pontas dos trechos; a janela encolhe', t: r2(T.junta + 0.2) },
+  { id: 'M3b', nome: 'Meio: as linhas desenrolam no contorno do ninho', t: r2(T.junta + RIG + 0.2) },
+  { id: 'M3c', nome: 'O contorno do ninho e a abertura', t: r2(T.desenrolado) },
+  { id: 'M4', nome: 'Meio: o ninho se enche de laranja; a câmera recua', t: r2(T.enche + 0.16) },
+  { id: 'M4b', nome: 'Meio: o ninho encolhe e anda até o lockup', t: r2(T.ninho + 0.42) },
+  { id: 'M5', nome: 'Meio: VEREDA entra, com a câmera parada', t: r2(T.vereda + 0.2) },
+  { id: 'FIM', nome: 'A marca parada sobre o papel (HOLD final)', t: DUR },
+];
+const SONS = [
+  { t: T.desenha, tipo: 'whoosh', dur: 0.9, ganho: 0.3, evento: 'a moldura sobe com a foto' },
+  ...T.aspas.map((ta, i) => ({ t: ta + 0.08, tipo: 'pop', ganho: 0.3, evento: `aspa: ${ASPAS[i].txt}` })),
+  { t: T.descasca, tipo: 'whoosh', dur: 1.0, ganho: 0.35, evento: 'a máscara descasca a foto' },
+  { t: T.junta, tipo: 'tick', ganho: 0.6, evento: 'as linhas vão até o contorno' },
+  { t: T.junta + RIG, tipo: 'sweep', dur: 0.5, ganho: 0.5, evento: 'as linhas desenrolam no ninho' },
+  { t: T.enche, tipo: 'thump', ganho: 0.35, evento: 'o ninho se enche' },
+];
+window.POC = {
+  id: 'CENA-12', duracao: DUR, fps: 30, estados: ESTADOS, holds: HOLDS, cliques: [], marcos: T, sons: SONS,
+  tiras: [{ nome: 'moldura', t0: 0.0 }, { nome: 'aspas', t0: 0.42 }, { nome: 'descasca', t0: T.descasca + 0.1 }, { nome: 'junta', t0: T.junta + 0.05 }, { nome: 'desenrola', t0: T.junta + RIG }, { nome: 'ninho', t0: T.ninho + 0.2 }, { nome: 'vereda', t0: T.vereda - 0.05 }],
+  comparar: ESTADOS.map((e) => ({ t: e.t, nome: e.id })),
+  entrada: { costura: 'C11-12', t: 0 },
+};
+window.seek = (t) => render(t);
+window.__pronto = (async () => {
+  await document.fonts.ready;
+  await Promise.all([
+    ['600 34px "Plus Jakarta Sans"', ASPAS.map((a) => a.txt).join(' ')], ['600 25px "Plus Jakarta Sans"', ASPAS.map((a) => a.txt).join(' ')],
+    ['500 34px Fraunces', '“”'], ['500 25px Fraunces', '“”'], ['500 104px Fraunces', 'VEREDA'], ['500 16px "JetBrains Mono"', '0123456789.s zom'],
+  ].map(([f, txt]) => document.fonts.load(f, txt)));
+  await document.fonts.ready;
+  medir();
+  // passa por toda a linha do tempo antes de liberar: subconjuntos de fonte e caminhos ficam prontos
+  for (let t = 0; t <= DUR; t += 0.25) render(t);
+  await document.fonts.ready;
+  render(0);
+  return true;
+})();
+
+if (!navigator.webdriver) {
+  document.body.classList.add('tela');
+  const c = $('c');
+  const ajusta = () => { const s = Math.min(innerWidth / 1920, innerHeight / 1080); Object.assign(c.style, { position: 'absolute', transformOrigin: '0 0', transform: `scale(${s})`, left: `${(innerWidth - 1920 * s) / 2}px`, top: `${(innerHeight - 1080 * s) / 2}px` }); };
+  addEventListener('resize', ajusta); ajusta();
+  const aoVivo = Q.has('live');
+  // ao vivo: espaço ou → leva ao próximo HOLD; o último (DUR) é a marca parada durante as perguntas
+  const PARADAS = HOLDS;
+  let t = 0, alvo = aoVivo ? PARADAS[0] : DUR, rodando = true, antes = null, ultimo = null;
+  const passo = (agora) => { if (antes !== null && rodando) { t += (agora - antes) / 1000; if (t >= alvo) { t = alvo; if (!aoVivo) t = 0; else rodando = false; } } antes = agora; if (t !== ultimo) { render(t); ultimo = t; } requestAnimationFrame(passo); };
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown') {
+      const base0 = rodando ? alvo : t;
+      const i = PARADAS.findIndex((h) => h > base0 + 1e-3);
+      if (aoVivo) { if (i >= 0) { alvo = PARADAS[i]; rodando = true; } } else rodando = !rodando;
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      const anteriores = PARADAS.filter((h) => h < t - 1e-3);
+      t = anteriores.length ? anteriores[anteriores.length - 1] : 0;
+      alvo = aoVivo ? (PARADAS.find((h) => h > t + 1e-3) ?? DUR) : DUR;
+      rodando = !aoVivo;
+      render(t); ultimo = t;
+      e.preventDefault();
+    } else if (e.key === 'r') { t = 0; alvo = aoVivo ? PARADAS[0] : DUR; rodando = true; }
+  });
+  window.__pronto.then(() => requestAnimationFrame(passo));
+}
+</script>
+</body>
+</html>

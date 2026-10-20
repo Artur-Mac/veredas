@@ -1,0 +1,181 @@
+{
+  "poc": "CENA-02",
+  "duracao": 13.7,
+  "geradoEm": "2026-10-18",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 124,
+    "fase": 0.45,
+    "erroMedio": 0.042,
+    "batidas": [
+      0.45,
+      0.934,
+      1.418,
+      1.902,
+      2.385,
+      2.869,
+      3.353,
+      3.837,
+      4.321,
+      4.805,
+      5.289,
+      5.773,
+      6.256,
+      6.74,
+      7.224,
+      7.708,
+      8.192,
+      8.676,
+      9.16,
+      9.644,
+      10.127,
+      10.611,
+      11.095,
+      11.579,
+      12.063,
+      12.547,
+      13.031,
+      13.515
+    ]
+  },
+  "holds": [
+    3.95,
+    5.05,
+    7.6,
+    9.72,
+    13.7
+  ],
+  "sons": [
+    {
+      "t": 0.05,
+      "tipo": "whoosh",
+      "dur": 0.7,
+      "ganho": 0.35,
+      "evento": "o número afunda",
+      "batidaMaisProxima": -0.034,
+      "desvio": 0.084
+    },
+    {
+      "t": 0.45,
+      "tipo": "whoosh",
+      "dur": 1.2,
+      "ganho": 0.3,
+      "evento": "o vão encolhe até o card",
+      "batidaMaisProxima": 0.45,
+      "desvio": 0
+    },
+    {
+      "t": 1.85,
+      "tipo": "pop",
+      "evento": "portal",
+      "batidaMaisProxima": 1.902,
+      "desvio": -0.052
+    },
+    {
+      "t": 2.3,
+      "tipo": "pop",
+      "evento": "imobiliária",
+      "batidaMaisProxima": 2.385,
+      "desvio": -0.085
+    },
+    {
+      "t": 2.05,
+      "tipo": "tick",
+      "evento": "você",
+      "batidaMaisProxima": 1.902,
+      "desvio": 0.148
+    },
+    {
+      "t": 3.25,
+      "tipo": "click",
+      "evento": "você fica de fora",
+      "batidaMaisProxima": 3.353,
+      "desvio": -0.103
+    },
+    {
+      "t": 4.6,
+      "tipo": "tick",
+      "evento": "R$ por clique",
+      "batidaMaisProxima": 4.805,
+      "desvio": -0.205
+    },
+    {
+      "t": 5.3,
+      "tipo": "whoosh",
+      "dur": 0.5,
+      "evento": "portal vira anúncio",
+      "batidaMaisProxima": 5.289,
+      "desvio": 0.011
+    },
+    {
+      "t": 6,
+      "tipo": "tick",
+      "evento": "1",
+      "batidaMaisProxima": 5.773,
+      "desvio": 0.227
+    },
+    {
+      "t": 7.65,
+      "tipo": "tick",
+      "evento": "2",
+      "batidaMaisProxima": 7.708,
+      "desvio": -0.058
+    },
+    {
+      "t": 9.85,
+      "tipo": "tick",
+      "evento": "3",
+      "batidaMaisProxima": 9.644,
+      "desvio": 0.206
+    },
+    {
+      "t": 12.05,
+      "tipo": "whoosh",
+      "dur": 1,
+      "ganho": 0.3,
+      "evento": "as marcas e você viram pontos",
+      "batidaMaisProxima": 12.063,
+      "desvio": -0.013
+    },
+    {
+      "t": 12.45,
+      "tipo": "tick",
+      "evento": "linha de base",
+      "batidaMaisProxima": 12.547,
+      "desvio": -0.097
+    },
+    {
+      "t": 12.95,
+      "tipo": "tick",
+      "ganho": 0.6,
+      "evento": "ponto 1 pousa",
+      "batidaMaisProxima": 13.031,
+      "desvio": -0.081
+    },
+    {
+      "t": 13.03,
+      "tipo": "tick",
+      "ganho": 0.6,
+      "evento": "ponto 2 pousa",
+      "batidaMaisProxima": 13.031,
+      "desvio": -0.001
+    },
+    {
+      "t": 13.11,
+      "tipo": "tick",
+      "ganho": 0.6,
+      "evento": "ponto 3 pousa",
+      "batidaMaisProxima": 13.031,
+      "desvio": 0.079
+    },
+    {
+      "t": 13.19,
+      "tipo": "tick",
+      "ganho": 0.6,
+      "evento": "ponto 4 pousa",
+      "batidaMaisProxima": 13.031,
+      "desvio": 0.159
+    }
+  ]
+}

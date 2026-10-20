@@ -1,0 +1,195 @@
+{
+  "poc": "CENA-08",
+  "duracao": 12.7,
+  "geradoEm": "2026-10-18",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 106,
+    "fase": 0.17,
+    "erroMedio": 0.065,
+    "batidas": [
+      0.17,
+      0.736,
+      1.302,
+      1.868,
+      2.434,
+      3,
+      3.566,
+      4.132,
+      4.698,
+      5.264,
+      5.83,
+      6.396,
+      6.962,
+      7.528,
+      8.095,
+      8.661,
+      9.227,
+      9.793,
+      10.359,
+      10.925,
+      11.491,
+      12.057,
+      12.623
+    ]
+  },
+  "holds": [
+    6.4,
+    9.75,
+    12.7
+  ],
+  "sons": [
+    {
+      "t": 0.28,
+      "tipo": "tick",
+      "ganho": 0.5,
+      "evento": "o anel vazio se abre no alto",
+      "batidaMaisProxima": 0.17,
+      "desvio": 0.11
+    },
+    {
+      "t": 0.6,
+      "tipo": "whoosh",
+      "dur": 0.9,
+      "ganho": 0.4,
+      "evento": "a linha atravessa o quadro",
+      "batidaMaisProxima": 0.736,
+      "desvio": -0.136
+    },
+    {
+      "t": 0.72,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.5,
+      "evento": "o cartão do anúncio desce sobre a linha",
+      "batidaMaisProxima": 0.736,
+      "desvio": -0.016
+    },
+    {
+      "t": 1.42,
+      "tipo": "tick",
+      "evento": "o tracejado do declarado se desenha",
+      "batidaMaisProxima": 1.302,
+      "desvio": 0.118
+    },
+    {
+      "t": 1.95,
+      "tipo": "whoosh",
+      "dur": 0.8,
+      "evento": "o cartão se fecha no celular",
+      "batidaMaisProxima": 1.868,
+      "desvio": 0.082
+    },
+    {
+      "t": 2.55,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.4,
+      "evento": "a folha do anúncio desce: o dossiê",
+      "batidaMaisProxima": 2.434,
+      "desvio": 0.116
+    },
+    {
+      "t": 3.22,
+      "tipo": "tick",
+      "evento": "75 m² riscado",
+      "batidaMaisProxima": 3,
+      "desvio": 0.22
+    },
+    {
+      "t": 3.32,
+      "tipo": "pop",
+      "evento": "62,5 m² no IPTU",
+      "batidaMaisProxima": 3.566,
+      "desvio": -0.246
+    },
+    {
+      "t": 3.62,
+      "tipo": "tick",
+      "ganho": 0.5,
+      "evento": "+R$ 340 de taxa por mês",
+      "batidaMaisProxima": 3.566,
+      "desvio": 0.054
+    },
+    {
+      "t": 4.3,
+      "tipo": "pop",
+      "evento": "R$ 99 mil acima das escrituras",
+      "batidaMaisProxima": 4.132,
+      "desvio": 0.168
+    },
+    {
+      "t": 6.85,
+      "tipo": "click",
+      "evento": "toque em Preparar mensagem",
+      "batidaMaisProxima": 6.962,
+      "desvio": -0.112
+    },
+    {
+      "t": 6.97,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.45,
+      "evento": "a folha da mensagem sobe",
+      "batidaMaisProxima": 6.962,
+      "desvio": 0.008
+    },
+    {
+      "t": 7.72,
+      "tipo": "pop",
+      "ganho": 0.5,
+      "evento": "pergunta 1",
+      "batidaMaisProxima": 7.528,
+      "desvio": 0.192
+    },
+    {
+      "t": 8.15,
+      "tipo": "pop",
+      "ganho": 0.5,
+      "evento": "pergunta 2",
+      "batidaMaisProxima": 8.095,
+      "desvio": 0.055
+    },
+    {
+      "t": 8.58,
+      "tipo": "pop",
+      "ganho": 0.5,
+      "evento": "pergunta 3",
+      "batidaMaisProxima": 8.661,
+      "desvio": -0.081
+    },
+    {
+      "t": 8.95,
+      "tipo": "tick",
+      "evento": "Abrir WhatsApp se acende",
+      "batidaMaisProxima": 9.227,
+      "desvio": -0.277
+    },
+    {
+      "t": 9.8,
+      "tipo": "whoosh",
+      "dur": 0.9,
+      "ganho": 0.4,
+      "evento": "o celular vai para a esquerda",
+      "batidaMaisProxima": 9.793,
+      "desvio": 0.007
+    },
+    {
+      "t": 10.62,
+      "tipo": "thump",
+      "evento": "MILHARES",
+      "batidaMaisProxima": 10.359,
+      "desvio": 0.261
+    },
+    {
+      "t": 11.45,
+      "tipo": "whoosh",
+      "dur": 0.8,
+      "ganho": 0.5,
+      "evento": "a linha varre MILHARES de reais",
+      "batidaMaisProxima": 11.491,
+      "desvio": -0.041
+    }
+  ]
+}

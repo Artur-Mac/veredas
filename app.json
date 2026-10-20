@@ -5,8 +5,8 @@
     "version": "0.1.0",
     "orientation": "portrait",
     "scheme": "vereda",
-    "userInterfaceStyle": "automatic",
-    "backgroundColor": "#F3F4F2",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#F2EBDD",
     "android": {
       "package": "br.vereda.prototipo",
       "predictiveBackGestureEnabled": false
@@ -25,10 +25,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#F3F4F2",
-          "dark": {
-            "backgroundColor": "#14181B"
-          }
+          "backgroundColor": "#F2EBDD"
         }
       ],
       [

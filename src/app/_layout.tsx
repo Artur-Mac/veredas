@@ -8,11 +8,15 @@ import { PreferenciasDoMock, usePreferencias } from "../estado/Preferencias";
 import { SessaoDoApp } from "../estado/Sessao";
 import { OPCOES_DA_FOLHA } from "../navegacao/opcoes";
 import { TemaDoApp, useTema } from "../tema/Tema";
+import { ProvedorDeAviso } from "../componentes/casca/Aviso";
+import { ReinicioDoApp } from "../componentes/casca/Reinicio";
+import { AnalisesNoAparelho } from "../estado/Analises";
+import { CarteiraNoAparelho } from "../estado/Carteira";
 import { FONTES } from "../tema/tokens";
 
 void SplashScreen.preventAutoHideAsync();
 
-export const unstable_settings = { anchor: "index" };
+export const unstable_settings = { initialRouteName: "(abas)" };
 
 function Pilha() {
   const [fontesProntas, erroDeFonte] = useFonts(FONTES);
@@ -32,28 +36,40 @@ function Pilha() {
     <>
       <StatusBar style={escuro ? "light" : "dark"} />
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: cor("cor-fundo") } }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="ler" />
-        <Stack.Screen name="comparar" />
-        <Stack.Screen name="sobre-os-dados" />
-        <Stack.Screen name="mock" />
+        <Stack.Screen name="(abas)" />
+        <Stack.Screen name="exemplos/[id]" />
+        <Stack.Screen name="editar" />
+        <Stack.Screen name="analise" />
+        <Stack.Screen name="sobre-os-dados" options={OPCOES_DA_FOLHA} />
         <Stack.Screen name="creditos" options={OPCOES_DA_FOLHA} />
-        <Stack.Screen name="dossie/[id]" />
+        <Stack.Screen name="mock" />
       </Stack>
     </>
   );
 }
 
+/**
+ * Raiz. O tema e o aviso (toast) não guardam nada e ficam fora do reinício; tudo o que lê o armazenamento fica dentro
+ * dele, para "Apagar meus dados deste aparelho" poder remontar os provedores já com o armazenamento vazio.
+ */
 export default function Raiz() {
   return (
-    <PreferenciasDoMock>
-      <TemaDoApp>
-        <DadosNoAparelho>
-          <SessaoDoApp>
-            <Pilha />
-          </SessaoDoApp>
-        </DadosNoAparelho>
-      </TemaDoApp>
-    </PreferenciasDoMock>
+    <TemaDoApp>
+      <ProvedorDeAviso>
+        <ReinicioDoApp>
+          <PreferenciasDoMock>
+            <DadosNoAparelho>
+              <CarteiraNoAparelho>
+                <AnalisesNoAparelho>
+                  <SessaoDoApp>
+                    <Pilha />
+                  </SessaoDoApp>
+                </AnalisesNoAparelho>
+              </CarteiraNoAparelho>
+            </DadosNoAparelho>
+          </PreferenciasDoMock>
+        </ReinicioDoApp>
+      </ProvedorDeAviso>
+    </TemaDoApp>
   );
 }

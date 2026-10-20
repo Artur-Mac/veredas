@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEREDA · palco do pitch</title>
+<link rel="stylesheet" href="lib/marca.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: #171717; color: #F2EBDD; }
+  body { min-height: 100vh; display: grid; place-items: center; font-family: var(--font-sans), sans-serif; }
+  main { width: min(96vw, calc((100vh - 104px) * 16 / 9)); min-width: 280px; }
+  #quadro { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: #171717; }
+  #quadro video { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; object-fit: contain; }
+  #quadro video.ativo { opacity: 1; z-index: 1; }
+  .barra { min-height: 64px; display: flex; align-items: center; gap: 10px; padding: 12px 0; }
+  .marca { margin-right: auto; font: 500 23px/1 var(--font-display), serif; letter-spacing: .14em; }
+  .estado { color: #F2EBDD; opacity: .8; font-size: 14px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  button { min-height: 40px; border: 1px solid #716D65; border-radius: 999px; background: transparent; color: #F2EBDD; font: 600 14px/1 var(--font-sans), sans-serif; padding: 0 15px; cursor: pointer; }
+  button:hover, button:focus-visible { border-color: #F47745; outline-color: #F47745; }
+  button.principal { background: #F47745; border-color: #F47745; color: #171717; }
+  .ajuda { position: absolute; left: -10000px; }
+  @media (max-width: 620px) { .barra { flex-wrap: wrap; justify-content: center; } .marca { margin-right: 0; } .estado { width: 100%; order: 2; text-align: center; } }
+</style>
+</head>
+<body>
+<main>
+  <div id="quadro" aria-label="Filme do pitch VEREDA"></div>
+  <div class="barra">
+    <span class="marca">VEREDA</span>
+    <span class="estado" id="estado" role="status" aria-live="polite">Carregando a primeira cena…</span>
+    <button id="anterior" type="button">Anterior</button>
+    <button class="principal" id="avancar" type="button">Avançar</button>
+    <button id="reiniciar" type="button">Recomeçar</button>
+    <button id="tela-cheia" type="button">Tela cheia</button>
+  </div>
+  <p class="ajuda">Espaço ou seta para a direita avança; seta para a esquerda volta; R recomeça; F ativa a tela cheia.</p>
+</main>
+<script>
+  // Filmes individuais já renderizados. HOLD final: sempre no último quadro gravado.
+  // As emendas marcadas como auto mantêm a continuidade sem pedir outro clique.
+  const cenas = [
+    // Roteiro de 18/10/2026 (docs/mapa-fala-revisada.md); a cena 09 saiu e a costura08-10 a substitui.
+    { id: '01', arq: '/out/cena01-v1-com-som.mp4', dur: 13.8, holds: [2.95, 13.8], auto: true },
+    { id: '02', arq: '/out/cena02-v2-com-som.mp4', dur: 13.7, holds: [3.95, 5.05, 7.6, 9.72, 13.7], auto: true },
+    { id: '03', arq: '/out/cena03-com-som.mp4', dur: 10.1, holds: [3.6, 8.6, 10.1], auto: true },
+    { id: '04', arq: '/out/cena04-com-som.mp4', dur: 9.15, holds: [4.8, 9.15], auto: true },
+    { id: '05', arq: '/out/cena05-com-som.mp4', dur: 6.1, holds: [2.3, 6.1], auto: true },
+    { id: '06', arq: '/out/cena06-com-som.mp4', dur: 9.6, holds: [9.6], auto: true },
+    { id: '07', arq: '/out/cena07-com-som.mp4', dur: 14.7, holds: [3.14, 6.04, 7.63, 9.59, 13.27, 14.7], auto: true },
+    { id: '08', arq: '/out/cena08-com-som.mp4', dur: 12.7, holds: [6.4, 9.75, 12.7], auto: true },
+    { id: '08-10', arq: '/out/costura08-10-com-som.mp4', dur: 1.2, holds: [1.2], auto: true },
+    { id: '10', arq: '/out/cena10-com-som.mp4', dur: 19.85, holds: [6.2, 9.8, 13.85, 16.7, 19.08, 19.85], auto: true },
+    { id: '11', arq: '/out/cena11-com-som.mp4', dur: 14.3, holds: [5.8, 13.2, 14.3], auto: true },
+    { id: '12', arq: '/out/cena12-com-som.mp4', dur: 5.87, holds: [1.4, 5.87] },
+  ];
+  const quadro = document.getElementById('quadro');
+  const estado = document.getElementById('estado');
+  const botao = document.getElementById('avancar');
+  let indice = 0, ativo = null, seguinte = null, prontoSeguinte = null;
+  let parado = -1, alvo = -1, tocando = false, trocando = false;
+  const cena = () => cenas[indice];
+  const ultimoQuadro = (c) => c.dur - 1 / 30;
+  const alvoTempo = (c, i) => i === c.holds.length - 1 ? ultimoQuadro(c) : c.holds[i];
+  const esperar = (v, evento) => new Promise((resolve, reject) => {
+    const limpar = () => { v.removeEventListener(evento, ok); v.removeEventListener('error', falha); };
+    const ok = () => { limpar(); resolve(); };
+    const falha = () => { limpar(); reject(new Error('Não foi possível abrir ' + v.src)); };
+    v.addEventListener(evento, ok, { once: true }); v.addEventListener('error', falha, { once: true });
+  });
+  async function criarVideo(c) {
+    const v = document.createElement('video');
+    v.preload = 'auto'; v.playsInline = true; v.src = c.arq;
+    v.addEventListener('timeupdate', verificarParada);
+    quadro.appendChild(v);
+    await esperar(v, 'loadeddata');
+    return v;
+  }
+  function prepararProxima() {
+    if (indice + 1 >= cenas.length) { seguinte = null; prontoSeguinte = null; return; }
+    prontoSeguinte = criarVideo(cenas[indice + 1]).then((v) => { seguinte = v; return v; });
+    prontoSeguinte.catch((e) => { estado.textContent = e.message; });
+  }
+  function atualizar() {
+    if (!ativo) return;
+    const movimento = tocando ? 'em movimento' : 'em pausa';
+    estado.textContent = `Cena ${cena().id} · ${movimento}`;
+    botao.textContent = indice === cenas.length - 1 && parado === cena().holds.length - 1 ? 'Fim' : tocando ? 'Pausar' : 'Avançar';
+    botao.disabled = indice === cenas.length - 1 && parado === cena().holds.length - 1;
+  }
+  async function trocarPara(n, iniciar = false, noFim = false) {
+    if (trocando || n < 0 || n >= cenas.length) return;
+    trocando = true;
+    try {
+      const novo = n === indice + 1 && prontoSeguinte ? await prontoSeguinte : await criarVideo(cenas[n]);
+      ativo?.pause();
+      const velho = ativo;
+      indice = n; ativo = novo; seguinte = null; prontoSeguinte = null;
+      parado = noFim ? cena().holds.length - 1 : -1; alvo = -1; tocando = false;
+      if (noFim) { const evento = esperar(ativo, 'seeked'); ativo.currentTime = ultimoQuadro(cena()); await evento; }
+      ativo.classList.add('ativo');
+      velho?.remove();
+      prepararProxima();
+      atualizar();
+      if (iniciar) {
+        alvo = 0;
+        try { await ativo.play(); tocando = true; atualizar(); }
+        catch { estado.textContent = 'Clique em Avançar para permitir a reprodução.'; }
+      }
+    } catch (e) { estado.textContent = e.message; }
+    finally { trocando = false; }
+  }
+  async function avancar() {
+    if (trocando || !ativo) return;
+    if (tocando) { ativo.pause(); tocando = false; atualizar(); return; }
+    if (parado >= cena().holds.length - 1) { await trocarPara(indice + 1, true); return; }
+    alvo = Math.max(parado + 1, alvo);
+    try { await ativo.play(); tocando = true; atualizar(); }
+    catch (e) { estado.textContent = 'Clique em Avançar para permitir a reprodução.'; }
+  }
+  function verificarParada() {
+    if (!tocando || !ativo || alvo < 0) return;
+    if (ativo.currentTime + 1 / 60 < alvoTempo(cena(), alvo)) return;
+    ativo.pause();
+    ativo.currentTime = alvoTempo(cena(), alvo);
+    tocando = false; parado = alvo; atualizar();
+    if (parado === cena().holds.length - 1 && cena().auto) void trocarPara(indice + 1, true);
+  }
+  function vigiar() {
+    verificarParada();
+    requestAnimationFrame(vigiar);
+  }
+  async function voltar() {
+    if (trocando || !ativo) return;
+    ativo.pause(); tocando = false;
+    if (ativo.currentTime < 0.12 && indice > 0) { await trocarPara(indice - 1, false, true); return; }
+    const t = ativo.currentTime;
+    const anterior = cena().holds.findLastIndex((h) => h < t - 0.12);
+    parado = anterior; alvo = -1;
+    ativo.currentTime = anterior < 0 ? 0 : alvoTempo(cena(), anterior);
+    atualizar();
+  }
+  document.getElementById('anterior').addEventListener('click', voltar);
+  botao.addEventListener('click', avancar);
+  document.getElementById('reiniciar').addEventListener('click', () => { if (indice === 0) { ativo.pause(); ativo.currentTime = 0; parado = -1; alvo = -1; tocando = false; atualizar(); } else void trocarPara(0); });
+  document.getElementById('tela-cheia').addEventListener('click', () => { if (document.fullscreenElement) document.exitFullscreen(); else quadro.requestFullscreen(); });
+  addEventListener('keydown', (e) => {
+    if (['Space', 'ArrowRight', 'PageDown'].includes(e.code)) { e.preventDefault(); void avancar(); }
+    else if (['ArrowLeft', 'PageUp'].includes(e.code)) { e.preventDefault(); void voltar(); }
+    else if (e.code === 'KeyR') { e.preventDefault(); document.getElementById('reiniciar').click(); }
+    else if (e.code === 'KeyF') { e.preventDefault(); document.getElementById('tela-cheia').click(); }
+  });
+  // O relógio de apresentação é só do preview; os filmes continuam renderizados por seek(t).
+  if (!navigator.webdriver) requestAnimationFrame(vigiar);
+  void trocarPara(0);
+  window.__palco = () => ({ indice, parado, alvo, tocando, pronto: !!ativo, t: ativo?.currentTime ?? 0, arquivo: cena().arq });
+</script>
+</body>
+</html>

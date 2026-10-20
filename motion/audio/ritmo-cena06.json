@@ -1,0 +1,120 @@
+{
+  "poc": "CENA-06",
+  "duracao": 9.6,
+  "geradoEm": "2026-10-18",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 111,
+    "fase": 0.19,
+    "erroMedio": 0.023,
+    "batidas": [
+      0.19,
+      0.731,
+      1.271,
+      1.812,
+      2.352,
+      2.893,
+      3.433,
+      3.974,
+      4.514,
+      5.055,
+      5.595,
+      6.136,
+      6.676,
+      7.217,
+      7.758,
+      8.298,
+      8.839,
+      9.379
+    ]
+  },
+  "holds": [
+    9.6
+  ],
+  "sons": [
+    {
+      "t": 0.18,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "ganho": 0.5,
+      "evento": "a soleira abre no celular",
+      "batidaMaisProxima": 0.19,
+      "desvio": -0.01
+    },
+    {
+      "t": 1.22,
+      "tipo": "whoosh",
+      "dur": 0.8,
+      "ganho": 0.4,
+      "evento": "a lente corrige a foto",
+      "batidaMaisProxima": 1.271,
+      "desvio": -0.051
+    },
+    {
+      "t": 1.86,
+      "tipo": "tick",
+      "evento": "foto corrigida",
+      "batidaMaisProxima": 1.812,
+      "desvio": 0.048
+    },
+    {
+      "t": 2.36,
+      "tipo": "whoosh",
+      "dur": 0.8,
+      "evento": "o celular vai à direita; o lote aparece",
+      "batidaMaisProxima": 2.352,
+      "desvio": 0.008
+    },
+    {
+      "t": 3.2,
+      "tipo": "pop",
+      "evento": "lote exato: o pino nasce",
+      "batidaMaisProxima": 3.433,
+      "desvio": -0.233
+    },
+    {
+      "t": 3.62,
+      "tipo": "thump",
+      "evento": "o prédio sobe",
+      "batidaMaisProxima": 3.433,
+      "desvio": 0.187
+    },
+    {
+      "t": 4,
+      "tipo": "tick",
+      "evento": "metragem: 75 m² no anúncio",
+      "batidaMaisProxima": 3.974,
+      "desvio": 0.026
+    },
+    {
+      "t": 5.4,
+      "tipo": "pop",
+      "evento": "62,5 m² no IPTU",
+      "batidaMaisProxima": 5.595,
+      "desvio": -0.195
+    },
+    {
+      "t": 6.22,
+      "tipo": "pop",
+      "evento": "+R$ 340 por mês",
+      "batidaMaisProxima": 6.136,
+      "desvio": 0.084
+    },
+    {
+      "t": 7.52,
+      "tipo": "pop",
+      "evento": "R$ 381 mil nas escrituras",
+      "batidaMaisProxima": 7.758,
+      "desvio": -0.238
+    },
+    {
+      "t": 8.86,
+      "tipo": "whoosh",
+      "dur": 0.6,
+      "evento": "o celular sai por recorte",
+      "batidaMaisProxima": 8.839,
+      "desvio": 0.021
+    }
+  ]
+}

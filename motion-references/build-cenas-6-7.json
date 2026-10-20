@@ -1,0 +1,767 @@
+[
+ {
+  "cena": 6,
+  "construcao": {
+   "arquivo": "/home/v/Documents/vereda/veredas/motion/poc/cena06.html",
+   "duracao": 27.9,
+   "modulosCriados": [],
+   "estados": [
+    "E0 · Entrada: a linha laranja da soleira · 0,00 s",
+    "M0 · Meio: o cartão abre a partir da linha · 0,20 s",
+    "B1a · Leitura: duas etapas marcadas, 50% · 1,85 s",
+    "B1 · Leitura: quatro etapas, 100% · 3,60 s",
+    "M1 · Meio: cartão à esquerda, painel abre por recorte · 4,15 s",
+    "B2a · Simulação: meio do dolly da lente · 5,85 s",
+    "B2 · Simulação assentada (HOLD) · 8,30 s",
+    "M2 · Meio do morph cartão → lote · 8,82 s",
+    "B3a · É este o prédio? · cursor no botão · 10,10 s",
+    "B3 · Lote confirmado, prédio de pé (HOLD) · 11,70 s",
+    "M3 · Meio: lote vai à esquerda, painel troca · 12,45 s",
+    "B4 · Área: 125 m² × 124,81 m² (HOLD) · 18,70 s",
+    "M4 · Meio da troca para o IPTU: só o colchete · 19,04 s",
+    "B5 · IPTU: R$ 288 vira pergunta (HOLD) · 21,10 s",
+    "M5 · Meio da troca para o ITBI: colchete vira sublinhado · 21,50 s",
+    "B6 · ITBI: 56 avaliações (HOLD) · 25,80 s",
+    "M6 · Meio da saída: painel sai, câmera sobe · 26,45 s",
+    "FIM · Lote com o pino sozinho, câmera CAM.lote · 27,87 s"
+   ],
+   "rodadas": [
+    {
+     "passo": "pass-1",
+     "problemas": [
+      "As marcas do cartão de leitura (os ✓, os tracejados sob os campos e o fio do rodapé) ficavam na tela depois que o cartão virava lote, até o último quadro. O motivo: um filho com visibility: visible aparece mesmo com o pai escondido. As linhas das etapas também sumiam num corte seco em 8,5 s.",
+      "O rótulo \"polígono e altura ilustrativos\" ficava cortado pelo painel no B3 e encostado nele no B4–B6. A linha de fonte passava da borda do painel no B4 e no B5, e \"período não informado\" encostava na borda.",
+      "A borda suave da máscara do chão (raio de 640 px) aparecia atrás do painel como uma vinheta, com cara de brilho fora da marca. A porta do prédio estava escura demais e a soleira, comprida demais."
+     ],
+     "correcoes": [
+      "Função vis() e as marcas internas passaram a usar visibility: inherit. As etapas e o fio do rodapé saem com a mesma opacidade (swap) do conteúdo do cartão.",
+      "O rótulo ilustrativo ficou embaixo do canto da frente do lote, longe do painel. As fontes do B4 foram para duas linhas. R$ 288 passou a 104 px e a nota do período a 24 px.",
+      "O chão agora se revela por inteiro (raio de 2800 px, borda fora do quadro) e só se recolhe na saída. A porta passou a #625C51, com a soleira laranja do tamanho dela. O painel começa a fechar assim que o conteúdo sai."
+     ],
+     "notas": "A leitura ficou fiel ao T2, com o endereço como título, sem o aluguel e sem a linha da chave. A simulação mostra bem as verticais inclinadas que endireitam com a grade. B4, B5 e B6 ficaram claros. O quadro final já bate com o S3 do POC-01."
+    },
+    {
+     "passo": "pass-2",
+     "problemas": [
+      "Em cerca de 4,0 s o painel da simulação abria por cima da borda direita do cartão, que ainda deslizava para a esquerda.",
+      "A fonte do B5 ainda passava da borda do painel (\"…15/10/2C\").",
+      "Havia tempo morto nas trocas. No morph para o lote, o cartão ficava branco e vazio por cerca de 0,2 s e o painel vazio por cerca de 0,5 s. Nas trocas B4→B5 e B5→B6, o painel mostrava só o colchete por cerca de 0,3 s. Além disso, a mediana em 40 px ficava ilegível a 360 px."
+     ],
+     "correcoes": [
+      "O painel da simulação passou a abrir em 4,02 s, quando o cartão já liberou a área.",
+      "A fonte do B5 foi para duas linhas.",
+      "Timeline mais justa: o morph do lote começa em 8,6 s e o painel do T3 entra em 8,98 s; o cabeçalho do B4 em 12,12 s; as linhas do B5 em 18,98 e 19,14 s; as do B6 em 21,38 e 21,54 s. A mediana virou número em Fraunces 76 px, com \"mediana de\" ao lado, lida de REGISTRO.itbiMediana."
+     ],
+     "notas": "Os fantasmas sumiram, nada passa mais da borda do painel e nenhum texto se sobrepõe nas tiras (abre, morph-lote, clique, troca-iptu). O cursor encosta no botão à direita do texto e não cobre o que se lê."
+    },
+    {
+     "passo": "pass-3",
+     "problemas": [
+      "A 360 px, o cartão de leitura do B1 fica pequeno demais, porque o app está em 2x. Os números-chave reaparecem grandes no B4 e no B5.",
+      "O morph cartão → lote tem 0,3 a 0,4 s de forma vazia (cartão azul e painel branco). Isso vem da regra de sair antes e entrar depois.",
+      "Na saída, a vinheta suave do chão encolhendo durava cerca de 1,3 s. O estado M1 era marcado antes de o painel abrir."
+     ],
+     "correcoes": [
+      "Cartão mantido em 2x para ficar fiel ao protótipo. O B1 não tem HOLD (registrado nas pendências).",
+      "Aceito como morph: a forma se mexe o tempo todo e nenhum quadro fica parado vazio.",
+      "A máscara de saída passou a usar a mola da câmera (cerca de 1 s) e M1 foi para 4,15 s."
+     ],
+     "notas": "A 360 px, 125 m², 124,81 m², R$ 288, R$ 3.934 a R$ 4.457, 56, R$ 4.339/m² e a pergunta ficam legíveis."
+    },
+    {
+     "passo": "pass-4",
+     "problemas": [
+      "Em DUR = 27,6 s, a câmera final ainda ficava 0,9 px fora de CAM.lote (cx 819,1)."
+     ],
+     "correcoes": [
+      "DUR passou a 27,9 s e a câmera de saída parte em 26,05 s. O resíduo ficou em 0,17 px, com pitch em 0,9801 e s em 9,4995."
+     ],
+     "notas": "A grade de 0,5 s não tem corte seco nem fade de tela inteira, e cada HOLD está assentado."
+    },
+    {
+     "passo": "pass-5",
+     "problemas": [],
+     "correcoes": [],
+     "notas": "Rodada final de verificação: a folha de contato, a grade, as tiras e a prévia de 360 px confirmam as correções. O teste de determinismo deu \"igual\" byte a byte nos 18 tempos. O verificar-pitch confirma o texto travado intacto, com 69 citações de 69 literais."
+    }
+   ],
+   "determinismo": "t = 0,000 a 27,867 s: todos os 18 tempos \\\"igual\\\". Saída: \\\"Determinismo confirmado: o quadro só depende de t.\\\"",
+   "honestidade": [
+    "Título: o endereço \"Rua João Cardoso Aires, 327\", nunca \"Edifício Costa Atlântica\". O cartão real não usa foto de banco: a única imagem é a sala vetorial dentro da simulação.",
+    "Leitura (T2): a etapa 1 mostra só o condomínio real, \"Condomínio R$ 1.190/mês\", sem o aluguel de R$ 4.500. A etapa 4 é só \"Cruzando com a base do Recife\", sem a linha da chave DSQFL inventada. Os campos declarados ganham sublinhado tracejado e a anotação \"declarado pelo anunciante · lido em 15/10/2026\".",
+    "A correção de foto não existe no protótipo. O painel traz o selo grande \"simulação / recurso em desenvolvimento · sala ilustrativa\", a pílula \"lente corrigida · simulação\" e a nota \"Só a geometria muda: a luz e as cores ficam iguais.\" O dolly de 340 para 1000 e as verticais endireitadas mexem só na câmera.",
+    "Lote (T3) sem o rótulo \"ESIG · Prefeitura do Recife\" e sem a chave DSQFL. A ficha mostra só \"44 unidades · construído em 2010 · padrão Superior\" (sem \"12 pavimentos\"), com o traço oficial \"IPTU 2026 · Prefeitura do Recife · consultado em 15/10/2026\". O rótulo \"polígono e altura ilustrativos\" fica preso ao lote até o último quadro.",
+    "Área: o tracejado de \"125 m²\" fica contínuo, sem selo verde e sem cor de veredito. Ao lado, só a conta \"Confere: diferença de 0,19 m².\" (125 − 124,81). Fonte: IPTU 2026 consultado em 15/10/2026 e anúncio lido em 15/10/2026.",
+    "IPTU: \"R$ 288 · período não informado\" continua tracejado e o tracejado vira a caixa da pergunta real do protótipo, \"O IPTU de R$ 288 é mensal?\", com \"declarado vs. registro oficial\". O valor oficial é \"R$ 3.934 a R$ 4.457 / por ano · R$ 328 a R$ 371 por mês\".",
+    "ITBI: 56 avaliações desde 2015 (o \"52 transmissões\" do protótipo não entra), 56 traços em azul, \"mediana de R$ 4.339/m²\", a nota \"Avaliação fiscal não é preço de venda.\" e a fonte \"ITBI 2015–2026 · Prefeitura do Recife · consultado em 15/10/2026\". A palavra \"escritura\" e \"preço negociado\" não aparecem em lugar nenhum.",
+    "Rodapé fixo: \"Protótipo VEREDA · Rua João Cardoso Aires, 327, Boa Viagem · anúncio lido, IPTU 2026 e ITBI 2015–2026 consultados em 15/10/2026 · sala, polígono, altura e quadras ilustrativos\".",
+    "A porta na fachada e as quadras em esquema são ilustrativas: o rodapé e o rótulo do lote cobrem as duas."
+   ],
+   "pendencias": [
+    "Não editei docs/review-log.md porque a tarefa proíbe editar docs/*. O AGENTS.md pede essa entrada; as rodadas acima precisam ser registradas lá por quem é dono do arquivo.",
+    "Legibilidade do B1 a 360 px: o cartão de leitura, fiel ao protótipo em 2x, fica pequeno no teste. O B1 não tem HOLD e os números-chave reaparecem grandes no B4 e no B5. Se a equipe quiser, dá para ampliar o cartão para 2,25x.",
+    "holds tem 6 entradas: os 5 HOLD do storyboard (B2 8,3 s; B3 11,7 s; B4 18,7 s; B5 21,1 s; B6 25,8 s) mais DUR (27,9 s). O sexto é o fim da saída, para o modo ?live chegar à passagem para a cena 7.",
+    "Na tela do T3 ficaram os dois botões secundários da captura (\"Não é este (ver vizinho)\" e \"Pular por agora\"). No protótipo, \"Pular por agora\" só aparece em aluguel, e o anúncio real é de venda. Conferir com a equipe.",
+    "\"Confere: diferença de 0,19 m².\" é texto do filme, conta direta entre 125 e 124,81 (área privativa no IPTU). Confirmar com a equipe se o anúncio declara área privativa.",
+    "A cena 05 ainda não existe em motion/poc/. A entrada (linha laranja horizontal em y = 540, centrada, com 772 px) precisa casar com o último quadro da cena 5.",
+    "Saída para a cena 7: câmera final igual a CAM.lote = {cx 820, cy 640, s 9,5, yaw −0,42, pitch 0,98, focal 9000}, exportada em window.POC.camFinal, com resíduo menor que 0,2 px. O chão está recolhido e sobram o lote azul, o prédio, a porta com a soleira laranja, o pino com a haste e o rótulo ilustrativo.",
+    "Os sons só existem como eventos em window.POC.sons; não foram sintetizados nem ouvidos.",
+    "Nenhum vídeo foi renderizado e nada foi commitado."
+   ],
+   "passoFinal": "/home/v/Documents/vereda/veredas/motion-references/contact-sheets/cena06/pass-5"
+  },
+  "critica": {
+   "problemas": [
+    {
+     "gravidade": "alta",
+     "tempo": "10,6 s → 27,9 s (todos os HOLD de B3 a B6 e o quadro FIM que passa para a cena 7)",
+     "descricao": "O prédio parece transparente, como raio X. As linhas de andar das faces de trás aparecem por cima das faces da frente: a face oeste ganha uma trama diagonal e a face sul um 'L' de linhas. A causa está no código: os quatro paths `faces` são criados primeiro e os quatro `andares` depois, então todas as linhas de andar, inclusive as das faces escondidas, ficam acima de todas as faces. Na ampliação de B3_t11_700.png isso fica claro. O defeito dura cerca de 17 s e fica no quadro de passagem para a cena 7.",
+     "sugestao": "Desenhar cada linha de andar logo depois da sua face, na ordem de profundidade (um <g> por lado com face e andares juntos), ou desenhar linhas só nas duas faces visíveis. Conferir no quadro FIM em tamanho cheio."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "0,067 → 0,30 s (tira_abre 02 a 09)",
+     "descricao": "Na abertura, a linha laranja sobe de y = 540 até a barra (y = 208) por cima do conteúdo que já aparece: passa por 'Área e quartos' e 'Preço e condomínio' e depois risca 'Rua João Cardoso Aires, 327' e 'Boa Viagem · Recife'. A camada #linhas fica acima do #cartao. São cerca de 7 quadros em que o endereço real parece riscado, e riscar quer dizer 'falso' justamente no filme em que o tracejado marca o que é declarado.",
+     "sugestao": "Fazer o recorte do conteúdo abrir a partir da linha, com a borda de cima do clip-path presa na posição da linha, para o texto só aparecer abaixo dela. Outra saída: a linha chega à posição da barra antes de o conteúdo aparecer."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "8,58 → 9,05 s; 12,0 s; 26,0 s",
+     "descricao": "Há buracos na troca B2 → B3. O cartão fica vazio (só a barra laranja) de 8,5 a 8,6 s. Depois, de 8,65 a cerca de 9,05 s, o painel da direita é uma caixa branca vazia que muda de tamanho de SIM para PT3, enquanto o cartão vira o lote: são duas formas vazias na tela bem na fala 'e descobre o lote exato'. O mesmo acontece em 12,0 s (PT3 → PCZ) e em 26,0 s (o painel sai vazio).",
+     "sugestao": "Em 8,6 s, fechar o painel por recorte e reabri-lo já com 'É este o prédio?', ou adiantar T.t3 para cerca de 8,72 s para o texto entrar enquanto a caixa chega. Manter cada caixa vazia abaixo de 0,15 s."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "4,0 → 8,6 s (B2, HOLD 8,3 s)",
+     "descricao": "O HOLD mostra só a sala corrigida. Sem ver o antes, ninguém lê 'revelar a proporção real dos cômodos': o antes em grande angular só aparece por cerca de 1 s (4,1 a 5,2 s), enquanto o selo e a grade ainda entram. E a pílula 'grande angular, como no anúncio' fica até 6,9 s, quando a lente já está 58% corrigida em 5,85 s e cerca de 90% em 6,3 s: o rótulo diz uma coisa e a imagem mostra outra.",
+     "sugestao": "Deixar no HOLD um contorno fino tracejado (ferrugem) das paredes e verticais da versão grande angular por cima da corrigida, ou dividir a tela em antes e depois. Trocar a pílula no meio do dolly, por volta de 5,6 s."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "4,3 → 6,9 s",
+     "descricao": "A pílula 'grande angular, como no anúncio' dá a entender que a sala é a foto do anúncio real da Rua João Cardoso Aires, 327, ou que esse anúncio usa grande angular, e nada no repositório confirma isso. A sala é a vetorial da cena 1.",
+     "sugestao": "Trocar por 'grande angular, como em anúncios' ou 'lente de anúncio · ilustrativa'."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "9,2 → 12,0 s (B3 e HOLD 11,7 s)",
+     "descricao": "O botão 'Pular por agora' só existe em aluguel no index.html (`${isRent ? ... 'Pular por agora' ...}`). Este anúncio é de venda: o protótipo mostra só 'Não é este (ver vizinho)', ocupando a largura toda. Nesse ponto a tela não é fiel ao produto.",
+     "sugestao": "Tirar 'Pular por agora' e fazer 'Não é este (ver vizinho)' ocupar os 612 px da largura."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "26,0 → 27,9 s (saída)",
+     "descricao": "O storyboard pede: 'a câmera sobe pela fachada: a porta do prédio é a última coisa do lado de dentro'. A câmera só se recentra de CAM.ancora para CAM.lote (s 8,6 → 9,5, pitch 1,08 → 0,98) enquanto o chão é recolhido por máscara. A porta é um retângulo escuro de cerca de 16 × 40 px, e a soleira laranja fica deslocada para fora dela; ninguém percebe a porta.",
+     "sugestao": "Na saída, fazer a câmera subir ou inclinar ao longo da fachada, com a porta e a soleira laranja legíveis num quadro, e só então assentar em CAM.lote. Combinar com a entrada da cena 7. Alinhar a soleira com a porta (mesmo x da face, mesma largura ±2,2)."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "B1, B2, B3, B6 (preview_360px)",
+     "descricao": "A 360 px os números-chave de B4 a B6 se leem, mas os rótulos de honestidade não: 'Avaliação fiscal não é preço de venda.' (22 px, cinza sobre bege), 'polígono e altura ilustrativos' (20 px), 'recurso em desenvolvimento · sala ilustrativa' (22 px) e o rodapé. Em B1 também não se leem 'R$ 1.190/mês' nem '125 m² · 4 quartos · 3 vagas'.",
+     "sugestao": "Subir a nota do ITBI para 30 px ou mais, em tinta, a pílula 'ilustrativos' para 26 px ou mais e a linha de baixo do selo para 26 px ou mais. Em B1, ampliar o cartão para cerca de 2,25x ou dar destaque ao campo que acabou de ser lido."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "13,4 → 19,0 s (B4, HOLD 18,7 s)",
+     "descricao": "'Confere: diferença de 0,19 m².' é veredito escrito pelo filme (o AGENTS.md diz 'sem nota, selo ou veredito'). A frase também supõe que o anúncio declara área privativa. O protótipo chama 124,81 de 'Área privativa no IPTU', mas o dados.js diz 'área construída das unidades no IPTU 2026'.",
+     "sugestao": "Mostrar só 'Diferença de 0,19 m²' e deixar o tracejado que vira contínuo fazer o papel do 'confere'. Pedir à equipe que confirme o tipo de área do anúncio e do IPTU antes de usar 'privativa'."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "21,4 → 27,9 s",
+     "descricao": "O tempo não acompanha a fala. B6 tem 16 palavras (cerca de 6,4 s) e recebe 4,6 s até o painel sair em 26,0 s. B3 (7 palavras, cerca de 2,8 s) recebe 3,4 s e B5 (4 palavras, cerca de 1,6 s) recebe 2,4 s. Na versão corrida, o painel do ITBI some enquanto ainda se diz 'nas escrituras dos últimos dez anos'.",
+     "sugestao": "Passar cerca de 0,6 s de B3 e 0,7 s de B5 para B6: B5 de 19,0 a 20,7 s, B6 a partir de 20,7 s, saida em 27,0 s (DUR cerca de 28,9 s), ou levar o HOLD de B6 para cerca de 26,8 s."
+    },
+    {
+     "gravidade": "baixa",
+     "tempo": "8,85 → 9,6 s e 26,1 → 26,9 s",
+     "descricao": "A máscara do chão usa radialGradient ('suave'), e a borda difusa larga aparece como vinheta ou brilho em volta do lote ao revelar e ao recolher (dá para ver em grade_t9_000 e em M6). O AGENTS.md proíbe gradiente e glow.",
+     "sugestao": "Usar uma máscara de borda dura (círculo ou retângulo arredondado), ou revelar as quadras uma a uma com atraso a partir do lote."
+    },
+    {
+     "gravidade": "baixa",
+     "tempo": "21,40 → 21,65 s (M5)",
+     "descricao": "Na troca para o ITBI, o colchete é interpolado ponto a ponto até o sublinhado da mediana e no caminho vira um traço diagonal em 'Z' atravessando o painel vazio. Parece um rabisco.",
+     "sugestao": "Recolher o colchete com stroke-dasharray e desenhar o sublinhado da esquerda para a direita, ou interpolar primeiro em y e depois em x."
+    },
+    {
+     "gravidade": "baixa",
+     "tempo": "0,3 → 8,6 s (B1 e B2)",
+     "descricao": "O <br> forçado em 'Nada sobre quem<br>anuncia.' deixa 'quem' a cerca de 15 px de 'Privacidade local', e a linha se lê como 'Nada sobre quem Privacidade local'.",
+     "sugestao": "Quebrar como 'Só lemos campos do imóvel.<br>Nada sobre quem anuncia.' ou alinhar 'Privacidade local' à segunda linha."
+    },
+    {
+     "gravidade": "baixa",
+     "tempo": "4,02 → 4,45 s",
+     "descricao": "A sala ilustrativa aparece no painel cerca de 0,4 s antes do selo 'simulação' (o selo entra em 4,35 s com 0,08 s de atraso). Em M1 (4,15 s), a sala aparece sem rótulo, só com o rodapé ilegível.",
+     "sugestao": "Fazer o selo entrar junto com a abertura do painel (tIn ≤ T.sim)."
+    },
+    {
+     "gravidade": "baixa",
+     "tempo": "0,0 s (E0)",
+     "descricao": "A entrada é só uma linha laranja de 772 px sobre o papel vazio. Nada remete à soleira da cena 5 com 'Edifício' de um lado e 'Entorno' do outro, nem à câmera atravessando para dentro.",
+     "sugestao": "Manter 'Edifício' acima da linha por alguns quadros e sair com ele antes de o cartão abrir. Ajustar quando a cena 5 existir."
+    },
+    {
+     "gravidade": "baixa",
+     "tempo": "21,5 → 26,0 s (B6)",
+     "descricao": "A mediana oficial (R$ 4.339/m²) fica sublinhada em laranja, a cor da VEREDA. O código de cores do filme pede azul cadastral para registro oficial.",
+     "sugestao": "Fazer o colchete terminar em azul ou recolhê-lo, e sublinhar a mediana em #2E5A85."
+    }
+   ],
+   "honestidade": [
+    "O botão 'Pular por agora' só existe em aluguel no index.html (isRent); o imóvel real é de venda. A tela mostra um estado do protótipo que não vale para este anúncio.",
+    "A pílula 'grande angular, como no anúncio' sugere que a sala é a foto do anúncio real, ou que o anúncio real usa grande angular, sem fonte. A sala é a vetorial da cena 1.",
+    "'Confere: diferença de 0,19 m².' é veredito escrito pelo filme (o AGENTS.md proíbe veredito) e supõe que o anúncio declara área privativa. Há divergência no repositório: o rótulo do protótipo diz 'Área privativa no IPTU' e o dados.js diz 'área construída das unidades no IPTU 2026'. A equipe precisa confirmar.",
+    "O prédio é desenhado com exatamente 12 faixas de andar (LOTE.pavimentos), o mesmo '12 pavimentos' da lista NAO_USAR_COMO_REAL. O rótulo 'polígono e altura ilustrativos' cobre, mas o número dá para contar.",
+    "A sala ilustrativa aparece sem o selo 'simulação' entre 4,02 e cerca de 4,45 s.",
+    "Rótulos de honestidade ilegíveis a 360 px: 'Avaliação fiscal não é preço de venda.', 'polígono e altura ilustrativos', 'recurso em desenvolvimento · sala ilustrativa' e o rodapé de procedência.",
+    "Ficaram de fora, como deviam: 'Edifício Costa Atlântica', a chave DSQFL, ESIG, 'escritura', 'preço negociado', '52 transmissões', o aluguel de R$ 4.500 e '12 pavimentos' em texto. Cada painel tem fonte e 'consultado em 15/10/2026'.",
+    "Atenção da equipe: a nota 'Avaliação fiscal não é preço de venda.' contradiz de propósito a fala 'realmente negociados nas escrituras'. O storyboard decidiu assim, mas a banca pode perguntar."
+   ],
+   "fidelidadeStoryboard": [
+    "Saída: o storyboard pede 'a câmera sobe pela fachada: a porta do prédio é a última coisa do lado de dentro'. A câmera só se recentra em CAM.lote, e a porta (cerca de 16 × 40 px, soleira desalinhada) não chega a ser vista.",
+    "B3: o storyboard diz 'O painel fecha'. O painel não fecha: a foto sai por recorte e sobra uma caixa branca vazia que muda de tamanho até 'É este o prédio?' (cerca de 0,45 s de buraco).",
+    "B2: 'revelar a proporção real dos cômodos' não se lê no HOLD, que mostra só o depois. O antes em grande angular aparece por cerca de 1 s, e a pílula 'grande angular' fica além do dolly.",
+    "B6: a fala de 16 palavras (cerca de 6,4 s) recebe 4,6 s antes de o painel sair. B3 e B5 têm tempo de sobra.",
+    "Entrada: 'a câmera atravessa a soleira para Edifício' virou uma linha laranja solta, sem 'Edifício'. Depende da cena 5, que ainda não existe.",
+    "B3: a tela traz o botão 'Pular por agora', que no protótipo não aparece para anúncio de venda."
+   ],
+   "notas": {
+    "clareza": 6.5,
+    "movimento": 6,
+    "marca": 8,
+    "legibilidade360": 5.5,
+    "honestidade": 7,
+    "produtoCrivel": 7
+   },
+   "resumo": "Rodada 'critica' renderizada (motion-references/contact-sheets/cena06/critica/). Determinismo confirmado nos 18 estados e verificar-pitch diz 'Texto travado intacto' (69 de 69 citações literais). A cena segue a ordem da fala, as telas reais estão fiéis ao index.html (etapas com as cores de .extract-step-row, eyebrow em ferrugem, 'É este o prédio?', 'Além do anúncio.', 'O IPTU de R$ 288 é mensal?') e os dados vêm do dados.js com fonte e data. A câmera assenta em todos os HOLD e o cursor não cobre texto. Pontos fracos, do mais grave ao menos: (1) o prédio aparece em raio X, com as linhas de andar das faces de trás por cima das da frente, de 10,6 s até o quadro FIM que passa para a cena 7; (2) na abertura, a linha laranja risca o endereço e as etapas por cerca de 7 quadros; (3) caixas brancas vazias em 8,6–9,05 s, 12,0 s e 26,0 s; (4) o HOLD de B2 não mostra o antes, e a pílula 'grande angular' fica além do dolly; (5) 'Pular por agora' só existe em aluguel, e 'como no anúncio' e 'Confere:' afirmam mais do que o repositório sustenta; (6) a saída não sobe pela fachada nem mostra a porta; (7) a 360 px os rótulos de honestidade e a nota do ITBI ficam ilegíveis; (8) B6 tem menos tempo que a fala; e a máscara do chão com borda em gradiente parece vinheta. As três primeiras correções devem ser a ordem de desenho do prédio, a linha da abertura e os buracos do painel. Arquivo criticado: /home/v/Documents/vereda/veredas/motion/poc/cena06.html (não editado)."
+  },
+  "final": {
+   "arquivo": "/home/v/Documents/vereda/veredas/motion/poc/cena06.html",
+   "duracao": 29.7,
+   "modulosCriados": [],
+   "estados": [
+    "E0 · Entrada: a soleira com \"Edifício\" · 0,00 s",
+    "M0 · Meio: o cartão abre a partir da linha · 0,42 s",
+    "B1a · Leitura: duas etapas marcadas, 50% · 2,10 s",
+    "B1 · Leitura: quatro etapas, 100% · 3,80 s",
+    "M1 · Meio: cartão à esquerda, painel abre por recorte · 4,36 s",
+    "B2a · Simulação: meio do dolly da lente · 5,88 s",
+    "B2 · Simulação com o contorno da grande angular (HOLD) · 8,55 s",
+    "M2 · Meio: painel fechou, cartão vira lote, T3 abre · 8,95 s",
+    "B3a · É este o prédio? · cursor no botão · 9,95 s",
+    "B3 · Lote confirmado, prédio de pé (HOLD) · 11,38 s",
+    "M3 · Meio: lote vai à esquerda, painel do cruzamento abre · 11,80 s",
+    "B4 · Área: 125 m² × 124,81 m² (HOLD) · 18,98 s",
+    "M4 · Meio da troca para o IPTU · 19,12 s",
+    "B5 · IPTU: R$ 288 vira pergunta (HOLD) · 20,58 s",
+    "M5 · Meio da troca para o ITBI: o colchete se recolhe · 20,70 s",
+    "B6 · ITBI: 56 avaliações (HOLD) · 26,98 s",
+    "M6 · Meio da saída: painel sai, câmera desce até a porta · 27,40 s",
+    "P · A porta: a última coisa do lado de dentro · 27,92 s",
+    "M7 · Meio da subida pela fachada · 28,35 s",
+    "FIM · Lote com o pino, câmera CAM.lote (primeiro quadro da cena 7) · 29,67 s"
+   ],
+   "rodadas": [
+    {
+     "passo": "pass-1",
+     "problemas": [
+      "As marcas do cartão de leitura (os ✓, os tracejados sob os campos e o fio do rodapé) ficavam na tela depois que o cartão virava lote, até o último quadro. O motivo: um filho com visibility: visible aparece mesmo com o pai escondido. As linhas das etapas também sumiam num corte seco em 8,5 s.",
+      "O rótulo \"polígono e altura ilustrativos\" ficava cortado pelo painel no B3 e encostado nele no B4 a B6. A linha de fonte passava da borda do painel no B4 e no B5.",
+      "A borda suave da máscara do chão aparecia atrás do painel como uma vinheta. A porta do prédio estava escura demais e a soleira, comprida demais."
+     ],
+     "correcoes": [
+      "vis() e as marcas internas passaram a usar visibility: inherit. As etapas e o fio do rodapé saem com a mesma opacidade do conteúdo do cartão.",
+      "O rótulo ilustrativo foi para baixo do canto da frente do lote. As fontes do B4 foram para duas linhas.",
+      "O chão passou a se revelar por inteiro. A porta ficou em #625C51, com a soleira do tamanho dela."
+     ],
+     "notas": "Leitura fiel ao T2, com o endereço como título, sem o aluguel e sem a linha da chave. B4, B5 e B6 ficaram claros."
+    },
+    {
+     "passo": "pass-2",
+     "problemas": [
+      "Em cerca de 4,0 s o painel da simulação abria por cima da borda direita do cartão, que ainda deslizava.",
+      "A fonte do B5 passava da borda do painel.",
+      "Havia tempo morto nas trocas: cartão branco e vazio no morph, painel vazio por cerca de 0,5 s, e só o colchete por cerca de 0,3 s nas trocas B4→B5 e B5→B6."
+     ],
+     "correcoes": [
+      "O painel da simulação passou a abrir depois que o cartão liberou a área.",
+      "A fonte do B5 foi para duas linhas.",
+      "A linha do tempo ficou mais justa, e a mediana virou número em Fraunces 76 px."
+     ],
+     "notas": "Os fantasmas sumiram e nada passa da borda do painel."
+    },
+    {
+     "passo": "pass-3",
+     "problemas": [
+      "A 360 px o cartão do B1 ficava pequeno demais.",
+      "O morph cartão → lote tinha de 0,3 a 0,4 s de forma vazia.",
+      "Na saída, a vinheta do chão encolhendo durava cerca de 1,3 s."
+     ],
+     "correcoes": [
+      "O cartão foi mantido em 2x (anotado nas pendências).",
+      "Aceito como morph.",
+      "A máscara de saída passou a usar a mola da câmera."
+     ],
+     "notas": "Os números-chave de B4 e B5 ficam legíveis a 360 px."
+    },
+    {
+     "passo": "pass-4",
+     "problemas": [
+      "A câmera final ficava 0,9 px fora de CAM.lote."
+     ],
+     "correcoes": [
+      "DUR passou a 27,9 s, com resíduo de 0,17 px."
+     ],
+     "notas": "Sem corte seco na grade de 0,5 s."
+    },
+    {
+     "passo": "pass-5",
+     "problemas": [],
+     "correcoes": [],
+     "notas": "Verificação da versão que foi para a crítica. Mais tarde a crítica independente apontou os problemas tratados em pass-final-1."
+    },
+    {
+     "passo": "pass-final-1",
+     "problemas": [
+      "Os recortes dos painéis deixavam uma fresta branca na tela por cerca de 0,1 s no fim de cada fechamento: a SIM em 8,85–8,9 s, o T3 em 11,8 s e o painel do cruzamento em 27,4 s. A causa é a cauda da spring.",
+      "A subida da porta até CAM.lote era rápida demais: o zoom de 26 para 9,5 px/m acontecia quase todo entre 28,0 e 28,4 s e parecia um puxão.",
+      "Em 12,0 s o painel do cruzamento mostrava só o cabeçalho por cerca de 0,3 s antes das linhas do B4. Antes do QA eu também tinha visto e corrigido três coisas: a legenda do contorno passava da borda do painel; os vizinhos tracejados apareciam no papel, fora do círculo do chão; e o recolhimento do chão deixava um disco cinza parado por cerca de 0,8 s."
+     ],
+     "correcoes": [
+      "O recorte agora termina pela cauda da spring: fecha em sp/0,9 (cerca de 0,22 s) e abre em sp/0,97. O painel some quando sobram menos de 3 px.",
+      "CAM.porta passou para s 22 e pitch 1,2, com a porta no centro. A subida usa {k 34, d 11,66}, de zeta 1. DUR passou a 29,7 s e o resíduo final ficou abaixo de 0,12 px.",
+      "As linhas do B4 foram para 11,86 s, o colchete para 12,06 s e a segunda linha para 12,2 s. A legenda virou \"tracejado: antes da correção\". Os vizinhos só entram depois que o círculo do chão passa de 100 m. O chão se recolhe com {k 90, d 19}, em cerca de 0,5 s."
+     ],
+     "notas": "Rodada das correções da crítica. (1) O prédio é desenhado com prisma() de cidade.js, só com as faces visíveis, sem raio X e sem faixas de andar. (2) A abertura só mostra conteúdo abaixo da linha, que nunca risca o texto, e o cabeçalho entra depois que a linha chega. (3) Cada painel abre e fecha por recorte com o conteúdo dentro: \"O painel fecha\" no B3, sem caixa vazia. (4) No HOLD do B2, o contorno tracejado em ferrugem da grande angular fica sobre a sala corrigida, e a pílula troca no meio do dolly. (5) \"como em anúncios\", sem \"Pular por agora\", \"Diferença de 0,19 m²\" e \"Área no IPTU 2026\". (6) A saída desce até a porta, a porta fecha e a câmera sobe pela fachada até CAM.lote. (7) Fontes maiores: nota do ITBI em 30 px tinta, pílula ilustrativa em 26 px e selo em 26 px, além do cartão do B1 em 2,25x por zoom de layout. (8) Tempo pela fala: B6 com 6,4 s. Também: máscara de borda dura, colchete que se recolhe, sublinhado azul na mediana, quebra \"Só lemos campos do imóvel. / Nada sobre quem anuncia.\", selo junto com a sala e \"Edifício\" no E0."
+    },
+    {
+     "passo": "pass-final-2",
+     "problemas": [
+      "Nas trocas B4→B5 (19,1 s) e B5→B6 (20,7 s), o corpo do painel fica vazio por cerca de 0,04 a 0,1 s, só com o cabeçalho e o colchete.",
+      "Na subida, o chão se recolhe para dentro do lote como um disco por cerca de 0,4 s (28,0–28,4 s).",
+      "No corte para a cena 7, o primeiro quadro dela tem 11 faixas de andar (prisma com LOTE.pavimentos), e este FIM não tem nenhuma."
+     ],
+     "correcoes": [],
+     "notas": "Os três problemas foram aceitos, não corrigidos. O primeiro respeita \"sai antes, entra depois\" e dura de 1 a 3 quadros. O segundo é o inverso exato da revelação da cena 7. O terceiro depende da cena 7, que não é minha (está nas pendências). Olhei a folha de contato, a grade de 0,5 s, as quatro tiras (abre, morph-lote, troca-itbi, porta) e a prévia de 360 px, além de B2 e FIM em tamanho cheio. Não há fresta, caixa vazia longa, texto sobreposto nem corte seco. O cursor não cobre o que se lê, e a câmera assenta em cada HOLD. O FIM é igual ao S0 da cena 7: lote, vizinhos tracejados, prédio, pino com haste sobre o teto e o mesmo rodapé no mesmo lugar, sem a marca. A única diferença são as faixas de andar."
+    }
+   ],
+   "determinismo": "20 tempos, de 0,000 a 29,667 s. 17 deram \\\"igual\\\" e 3 deram \\\"ruído\\\", que a ferramenta aceita: 3,800 s (110 px, diferença máx. 2), 4,360 s (34 px, máx. 1) e 8,550 s (34 px, máx. 1). Saída: \\\"Determinismo confirmado: o quadro só depende de t.\\\" O verificar-pitch diz \\\"Texto travado intacto. 69 citações no storyboard, 69 literais.\\\"",
+   "honestidade": [
+    "Prédio: desenhado com prisma() da cena 7, só com as faces visíveis e sem nenhuma faixa de andar. O número \"12 pavimentos\" (LOTE.pavimentos, que está em NAO_USAR_COMO_REAL) não dá mais para contar. A altura continua ilustrativa, com o rótulo \"polígono e altura ilustrativos\" em 26 px.",
+    "Simulação: o selo \"simulação / recurso em desenvolvimento · sala ilustrativa\" entra junto com a abertura do painel, então a sala nunca aparece sem rótulo. A pílula \"grande angular, como em anúncios\" não diz mais \"como no anúncio\" e troca para \"lente corrigida · simulação\" no meio do dolly. O contorno tracejado tem a legenda \"tracejado: antes da correção\", e a nota diz \"Só a geometria muda: a luz e as cores ficam iguais.\"",
+    "T3: sem \"Pular por agora\", que no index.html só existe em aluguel. \"Não é este (ver vizinho)\" ocupa os 612 px, como no protótipo para venda. Sem ESIG e sem chave DSQFL. A ficha traz \"44 unidades · construído em 2010 · padrão Superior\" com \"IPTU 2026 · Prefeitura do Recife · consultado em 15/10/2026\".",
+    "Área: o rótulo virou \"Área no IPTU 2026\", sem \"privativa\", por causa da divergência entre o protótipo e o dados.js. A frase virou \"Diferença de 0,19 m²\", sem o \"Confere:\" de veredito. O tracejado que fica contínuo faz esse papel, sem selo nem cor de veredito.",
+    "IPTU: \"R$ 288 · período não informado\" continua tracejado e vira a pergunta real \"O IPTU de R$ 288 é mensal?\". O valor oficial é R$ 3.934 a R$ 4.457 por ano (R$ 328 a R$ 371 por mês), com a fonte.",
+    "ITBI: 56 avaliações desde 2015 e mediana de R$ 4.339/m², sublinhada em azul cadastral (registro oficial), não em laranja. A nota \"Avaliação fiscal não é preço de venda.\" tem 30 px, em tinta. A fonte é ITBI 2015–2026, consultado em 15/10/2026. Nenhuma tela traz \"escritura\", \"preço negociado\" ou \"52 transmissões\".",
+    "Título do cartão: o endereço, nunca \"Edifício Costa Atlântica\". Sem o aluguel de R$ 4.500. Os campos declarados ficam tracejados, com \"declarado pelo anunciante · lido em 15/10/2026\".",
+    "A porta é ilustrativa: fica no centro da fachada sul e é coberta pelo rótulo e pelos rodapés. Na saída ela fecha, e o último quadro não tem nada que a cena 7 não tenha.",
+    "Rodapés: \"Protótipo VEREDA · Rua João Cardoso Aires, 327, Boa Viagem · anúncio lido, IPTU 2026 e ITBI 2015–2026 consultados em 15/10/2026 · sala, polígono, altura e quadras ilustrativos\". Na saída entra o da cena 7: \"... · polígono do lote, altura do prédio e quadras ilustrativos\"."
+   ],
+   "pendencias": [
+    "Não editei docs/review-log.md porque a tarefa proíbe editar docs/*. As rodadas pass-final-1 e pass-final-2 precisam ser registradas lá por quem é dono do arquivo.",
+    "Cena 7 (não é minha): o S0 dela desenha 11 faixas de andar com prisma(..., LOTE.pavimentos). Esta cena tirou as faixas por honestidade, então elas aparecem no corte. Basta a cena 7 passar 0 no último argumento de prisma para casar. Fora isso, o FIM é igual ao S0 dela: CAM.lote com resíduo menor que 0,12 px, lote, vizinhos tracejados, pino com haste sobre o teto e rodapé idêntico.",
+    "A cena 5 ainda não existe. A entrada agora é a linha laranja em y = 540, de x = 525,75 a 1394,25 (868 px, a largura do cartão em 2,25x), com \"Edifício\" em Plus Jakarta 700 34 px centrado em y ≈ 474. \"Edifício\" sai entre 0,12 e 0,22 s.",
+    "A equipe precisa confirmar o tipo de área: o protótipo diz \"Área privativa no IPTU\" (124,81 m²) e o dados.js diz \"área construída das unidades no IPTU 2026\". A tela usa \"Área no IPTU 2026\" e \"Diferença de 0,19 m²\".",
+    "A nota \"Avaliação fiscal não é preço de venda.\" contradiz de propósito a fala \"realmente negociados nas escrituras\", como o storyboard decidiu. A banca pode perguntar.",
+    "A cena dura 29,7 s, contra 27 s estimados: 0,3 s de entrada, 26,8 s de fala e 2,6 s de saída (descida até a porta, porta fecha, subida pela fachada e cerca de 1 s quase parado em CAM.lote).",
+    "A 360 px os números-chave, o selo, a nota do ITBI e o rótulo ilustrativo se leem. O rodapé (17 a 18 px) e os detalhes das etapas do B1 continuam pequenos.",
+    "Determinismo: 3 dos 20 tempos deram \"ruído\" (até 110 px, diferença máxima de 2/255), dentro do que a ferramenta aceita. É provável que venha da rasterização parcial do texto do cartão com zoom de layout. A versão anterior dava \"igual\" em todos.",
+    "holds tem 6 entradas: os 5 HOLD do storyboard (8,55 / 11,38 / 18,98 / 20,58 / 26,98 s) mais DUR, para o modo ?live chegar à passagem para a cena 7.",
+    "Os sons só existem como eventos em window.POC.sons; não foram sintetizados nem ouvidos. Nenhum vídeo foi renderizado e nada foi commitado."
+   ],
+   "passoFinal": "/home/v/Documents/vereda/veredas/motion-references/contact-sheets/cena06/pass-final-2"
+  }
+ },
+ {
+  "cena": 7,
+  "construcao": {
+   "arquivo": "/home/v/Documents/vereda/veredas/motion/poc/cena07.html",
+   "duracao": 25.4,
+   "modulosCriados": [
+    "/home/v/Documents/vereda/veredas/motion/lib/cidade.js — cidade estilizada da REF-01 na marca, desenhada em SVG com project() de motion.js. criarCidade({semente, reservados, lotes, teto, longe}) gera com rng as quadras (mesma grade do POC-01) e os volumes (torre sobre embasamento com coroa, lâmina, baixo, caixa-d'água; faixas de andar e painel de pontos nas fachadas). desenharChao() desenha as calçadas; desenharVolumes() pinta em ordem de pintor e descarta faces de costas, com crescer(ed) para as quadras subirem, extras (o prédio do lote na ordem certa), destaque e ocultos (não desenha o que um painel cobre). Também exporta prisma(), circuloChao() e posicaoCamera(). Paletas PALETAS.quente (faces #F47745/#E06332/#B94E36, topo #FAF6EE, contorno branco) e PALETAS.dessaturado (papel/tinta/ferrugem, para a cena 3), mais misturarPaleta(a, b, p). Na cena, ?cidade=dessaturado mostra a segunda paleta."
+   ],
+   "estados": [
+    "S0 · Lote com o pino (fim da cena 6, CAM.lote do POC-01) · 0,00 s",
+    "M1 · Câmera sobe; quadras sobem a partir do lote · 0,85 s",
+    "B1 · Cidade quente + barra 'Explore o entorno' (HOLD) · 4,77 s",
+    "M2 · Haste sai da janela e varre o raio de 150 m · 6,15 s",
+    "B2 · Raio de 150 m, faixa de 118 a 140 m, painel 4 / 49 (HOLD) · 11,97 s",
+    "M3 · Painel vira a ficha 'Obras · 150 m'; toque em Alagamento · 12,36 s",
+    "B3 · Contorno pontilhado da rua, '?' na garagem, 206 atendimentos (HOLD) · 14,37 s",
+    "M4 · Toque em Calor; régua entra · 14,98 s",
+    "B4 · Régua de 5 degraus, 6,6 °C, superfície e não ar (HOLD) · 17,57 s",
+    "M5 · Câmera no bairro; faixas norte → sul · 18,60 s",
+    "M5b · Faixas viram barras · 19,06 s",
+    "B5 · Segurança: barras reais, 2.165 ocorrências (HOLD) · 19,97 s",
+    "M6 · Câmera desce; Serviços · 20,85 s",
+    "B6 · Linha reta até 'Seu destino · exemplo'; mapa da rotina com as fichas (HOLD) · 23,97 s",
+    "M7 · Mapa encolhe junto com o anel · 24,55 s",
+    "FIM · Anel de 150 m vazio, com cerca de 120 px, no centro (primeiro quadro da cena 8) · 25,37 s"
+   ],
+   "rodadas": [
+    {
+     "passo": "pass-1",
+     "problemas": [
+      "Cidade com dois níveis de detalhe: lotes miúdos perto do prédio e quadras de volume único logo depois. Criava um degrau visível e torres-palito em excesso; o prédio do lote sumia atrás dos vizinhos altos",
+      "B5: as faixas em voo passavam por cima do texto do painel de segurança, o rótulo 'Pina' caía embaixo do cartão do alto e o contorno escuro das faixas poluía o mapa",
+      "B2: a haste saía da face oeste do prédio, que a câmera não vê, e a pílula '150 m em linha reta' encostava no traço. Na saída, o recorte circular do mapa não deixava claro que o mapa encolhia como um cartão"
+     ],
+     "correcoes": [
+      "cidade.js: anel do meio com a mesma divisão de lotes, torres mais largas e mais raras, faces com menos de 1 px puladas (custo do quadro do bairro caiu); teto de altura em volta do lote, plateia baixa ao sul e cidade que se assenta no papel ao longe",
+      "B5: câmera do bairro assenta antes das faixas (spring crítica k=45); o texto do painel só entra depois que as barras pousam; faixas recortadas fora do cartão; véu de papel nos vizinhos e Boa Viagem limpa com contorno em tinta, que viram barras #C9BEA8 e tinta",
+      "Moldura do mapa virou um retângulo arredondado que encolhe até o anel e fica redondo nele, com borda fina; pílulas ancoradas com saída depois do ENTER seguinte; 'faixas dos bairros em esquema · norte → sul' na linha do rodapé"
+     ],
+     "notas": "Paleta e cartão real corretos desde a primeira rodada. Faltava hierarquia: a cidade competia com os dados."
+    },
+    {
+     "passo": "pass-2",
+     "problemas": [
+      "Borda da cidade no plano do bairro (0,48 px/m) virava ruído de volumes de uma quadra só, com recorte duro",
+      "O prédio ficava encoberto pelo vizinho ao sul, a janela de onde sai o raio não aparecia e o '?' da garagem ficava por baixo da linha da rota",
+      "Painel Rotas com 'Seu destino' repetido; 'quadras ilustrativas' sumia antes de o mapa esvaziar; o cursor saía por cima do mapa"
+     ],
+     "correcoes": [
+      "createCidade com longe:false: a borda fica só com calçadas e a cidade se dissolve no papel",
+      "Vizinho ao sul no mesmo quarteirão com 6 m de altura; janela laranja na face sul (a que a câmera vê); o '?' é desenhado depois da linha reta",
+      "Painel Rotas enxuto ('Seu destino · exemplo', 'em linha reta', 'Abrir rota', nota e etiqueta); 'quadras ilustrativas' fica até o mapa sumir; o cursor sai para baixo, longe do mapa"
+     ],
+     "notas": "Determinismo já passava aqui (todos os quadros iguais)."
+    },
+    {
+     "passo": "pass-3",
+     "problemas": [
+      "A haste apontava para o norte e passava por trás do prédio",
+      "Em B1 o prédio ficava pequeno demais no quadro e o lote azul quase não aparecia",
+      "A paleta dessaturada do módulo ainda não tinha sido testada"
+     ],
+     "correcoes": [
+      "A haste desce para o sudoeste (A0 = π/2 + 0,72) e a varredura começa nela",
+      "Câmera da cidade a 3,8 px/m",
+      "?cidade=dessaturado testado (papel, tinta e contorno 0,6 px): funciona para a cena 3"
+     ],
+     "notas": "A saída foi conferida quadro a quadro de 24,8 a 25,4 s: o mapa encolhe, fica redondo no anel e esvazia, e o anel termina vazio."
+    },
+    {
+     "passo": "pass-4",
+     "problemas": [
+      "A pílula '150 m em linha reta' caía sobre a faixa hachurada das demolições",
+      "Os valores das barras (22,4 etc.) ficam pequenos a 360 px; os números-chave (4, 49, 206, 6,6 °C, 2.165) seguem legíveis",
+      "Quadro de B5 denso no centro (cidade a 0,48 px/m)"
+     ],
+     "correcoes": [
+      "A pílula foi para a direita da haste, dentro do anel",
+      "Mantido: as barras levam o número ao lado, como o protótipo, e o destaque de leitura é o 2.165",
+      "Mantido de propósito: a vista do bairro é textura; o painel e as barras carregam a informação"
+     ],
+     "notas": "Ajuste fino; nada estrutural."
+    },
+    {
+     "passo": "pass-5",
+     "problemas": [
+      "Nenhum problema novo na folha de contato, na grade de 0,5 s, nas tiras (subida, varredura, ficha, barras) nem no teste de 360 px"
+     ],
+     "correcoes": [],
+     "notas": "Rodada final. Depois dela o determinismo foi rodado de novo e passou com todos os quadros iguais."
+    }
+   ],
+   "determinismo": "t = 0,000 a 25,367 s: os 16 estados 'igual'. Determinismo confirmado: o quadro só depende de t. Fala: Texto travado intacto, 69 citações no storyboard, 69 literais.",
+   "honestidade": [
+    "Quadras: a pílula 'quadras ilustrativas' fica na tela do primeiro quadro em que a cidade aparece até o mapa esvaziar. O rodapé diz 'polígono do lote, altura do prédio e quadras ilustrativos'",
+    "Obras: '49 registros de obra em 150 m desde 2018' (não 2017) e '4 alvarás de demolição deferidos em 2026 · entre 118 m e 140 m do prédio' viram uma faixa hachurada, sem pinos, com a nota 'A faixa marca a distância das demolições, não a posição de cada uma.'. Fonte: Licenciamento Urbanístico, consultado em 15/10/2026",
+    "Alagamento: nenhuma água desenhada. Só o contorno pontilhado da rua do prédio, o '?' na garagem, 'A água chega à garagem?', 'Defesa Civil 2024 · 206 atendimentos em Boa Viagem', 'Os atendimentos não medem alagamento na rua.' e 'Confira a rua e a entrada da garagem.' (texto do protótipo). Ficha 'Alagamento · a conferir'",
+    "Calor: só a amplitude real de 6,6 °C, numa régua de 5 degraus de luminância dentro do painel e fora do mapa, sem gradiente. Leva 'variação da temperatura de superfície no bairro', 'superfície, não ar · Landsat 8 e 9' e 'consultado em 14/10/2026' (a data real do dado). O prédio não vai na régua; −1,8 °C e índice verde ficam fora",
+    "Segurança: taxas reais de BAIRRO.vizinhos em ordem norte → sul, Boa Viagem em tinta, vizinhos em #C9BEA8, sem verde ou vermelho e sem '2ª menor'. Mostra '2.165 ocorrências em Boa Viagem · out/2025 a set/2026' e a fonte SDS-PE / Crime Brasil · Censo 2022. As faixas do mapa são marcadas como 'faixas dos bairros em esquema · norte → sul'",
+    "A pé: chips Saúde, Escolas, Mercados e Transporte; linha reta tracejada laranja até 'Seu destino · exemplo · em linha reta'; nota 'O trajeto e o tempo são calculados no aplicativo de mapas.' e etiqueta tracejada 'custo a pé · em desenvolvimento'. Nenhum minuto, custo ou km (os 7,9 e 9,9 km do protótipo ficam fora)",
+    "Prédio e lote: o prédio fica em papel (ilustrativo), o lote em azul cadastral; nada de 'Edifício Costa Atlântica', DSQFL ou '12 pavimentos' na tela. A janela laranja é só a origem do raio, não um dado",
+    "Barra 'Explore o entorno' com os chips 'Rotas · Alagamento · Calor · Serviços' exatamente como no protótipo (kicker 'Seu endereço no cotidiano'). Nenhuma camada aparece pressionada antes do primeiro toque do cursor"
+   ],
+   "pendencias": [
+    "Não registrei as rodadas em docs/review-log.md: esta tarefa proíbe editar docs/*. As cinco rodadas estão aqui e precisam ser passadas para o log por quem pode editar o arquivo",
+    "Costura com a cena 6: o S0 usa CAM.lote do POC-01 com o lote, os vizinhos tracejados, o prédio e o pino, sem o chão revelado e sem o painel 'Lote do prédio'. A cena 6 precisa terminar exatamente nesse quadro",
+    "Costura com a cena 8: o quadro final é o anel de 150 m vazio, com cerca de 120 px (raio de 60 px), centrado em (960, 540) no papel com grade. A cena 8 deve começar daí",
+    "Desempenho no preview ao vivo: no plano do bairro o seek leva de 50 a 65 ms, então o rAF pode perder quadros entre 18 e 20 s. O render quadro a quadro não é afetado",
+    "A cena dura 25,4 s, contra 24 s estimados no storyboard: a fala de B2 (19 palavras) pede cerca de 7 s de HOLD",
+    "A 360 px os números-chave (4, 49, 206, 6,6 °C, 2.165) são legíveis; os valores das barras dos bairros ficam pequenos",
+    "O destino de exemplo é uma posição escolhida no esquema (rotulada 'exemplo'). As faixas dos bairros são esquemáticas, não geografia real",
+    "Os sons foram declarados em window.POC.sons e não foram ouvidos. Nenhum vídeo foi renderizado e nada foi commitado"
+   ],
+   "passoFinal": "/home/v/Documents/vereda/veredas/motion-references/contact-sheets/cena07/pass-5"
+  },
+  "critica": {
+   "problemas": [
+    {
+     "gravidade": "alta",
+     "tempo": "0,00 s (S0, costura com a cena 6)",
+     "descricao": "O primeiro quadro não é o último quadro da cena 6. Comparei com motion-references/contact-sheets/cena06/critica/FIM_t27_867.png. A câmera e o prisma batem, mas o resto não: a cena 6 termina com a pílula do logo VEREDA, a porta do prédio (retângulo escuro com soleira laranja), o pino sem haste, o contorno do lote mais grosso (cerca de 6 px), a pílula 'polígono e altura ilustrativos' e outro rodapé ('anúncio lido, IPTU 2026 e ITBI 2015–2026 consultados em 15/10/2026 · sala, polígono, altura e quadras ilustrativos', em y≈1028). A cena 7 começa sem logo, sem porta e sem a pílula, com haste longa no pino, os seis vizinhos tracejados já visíveis e outro rodapé (y≈1043). Na troca de arquivo isso vira corte seco. A porta, que o storyboard chama de 'a última coisa do lado de dentro', some.",
+     "sugestao": "Reproduzir o FIM da cena 6 exatamente em t=0: porta, pino curto, contorno de 6 px, pílula de ilustrativo, logo e rodapé da cena 6. Nos primeiros 0,3 a 0,6 s, trocar esses elementos com swap (sai antes, entra depois): o rodapé troca de texto, os vizinhos tracejados entram e a haste do pino cresce. Ou combinar com o construtor da cena 6 um estado final comum e exportá-lo."
+    },
+    {
+     "gravidade": "alta",
+     "tempo": "4,77 s (B1) e 11,97 s (B2); 19,97 s (B5) e 23,97 s (B6)",
+     "descricao": "O lote azul cadastral, que deveria 'saltar aos olhos' (storyboard B1; reference-analysis seção 6), quase não aparece. No B1 o vizinho ao sul (volume de papel) cobre a borda sul do lote e o prédio cobre o resto: sobra uma lasca azul de poucos px, e a 360 px o lote e o prédio somem no mar laranja. Do B3 em diante o '?' da garagem (círculo de raio fixo de 25 px) e o pino (14 px fixos) não acompanham a escala da câmera. No B5 o pino cobre o glifo '?' e forma um borrão no centro do anel; no B6, o 'mapa da rotina', o '?' fica sobre o lote e o prédio e o ponto de partida da linha reta fica escondido.",
+     "sugestao": "Rebaixar ou tirar o volume ao sul do lote (ou deixá-lo só no chão) e usar o contorno do lote com 5 a 6 px, como na cena 6. Escalar o '?' e o pino com cam.s, com limites mínimo e máximo, ou recolher o '?' (e o pontilhado) para um ponto pequeno depois do B4, mantendo o rastro leve que o storyboard pede. No B5 e no B6, afastar o '?' do pino."
+    },
+    {
+     "gravidade": "alta",
+     "tempo": "17,6 a 20,0 s (M5, M5b, B5)",
+     "descricao": "O plano do bairro é o pior momento da cena. (1) A borda da cidade aparece: à direita (x>1300) e no alto (y<250) sobra uma escada de quadras vazias, com cara de cenário inacabado. (2) A 0,48 px/m os volumes viram traços de 1 a 3 px, uma textura de ruído e não uma cidade. (3) No meio do morph as faixas são retângulos translúcidos cinza que passam por cima do mapa, do anel e do painel; a faixa de Boa Viagem vira uma caixa cinza-tinta sobre o pino. (4) O zoom de 2,7 para 0,48 px/m (5,6×) com k=45 faz cerca de 72% do caminho em 0,38 s, um chicote que contradiz o tom 'calmo' e o preset camera (k=30). (5) O painel de 604 px fica branco e vazio de 18,85 a cerca de 19,45 s.",
+     "sugestao": "Subir menos (s em torno de 0,9 a 1,1) ou, abaixo de 1 px/m, trocar os volumes por quadras chapadas em #FAF6EE/#E9E1D2 com uma máscara de borda suave (clip-path redondo, sem gradiente) que esconda o fim da cidade. Usar P.camera ou k≤30. Desenhar as faixas como tiras opacas em papel ou tinta, sem véu translúcido, e fazer o morph por recorte (clip-path) até a trilha. Pôr o título 'Segurança e registros' no painel antes das barras chegarem, para ele não ficar vazio."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "19,97 s (B5, HOLD)",
+     "descricao": "No HOLD da segurança as faixas já saíram do mapa e viraram barras, mas a pílula 'faixas dos bairros em esquema · norte → sul' continua no rodapé. O rótulo descreve uma coisa que não está mais na tela, e no mapa não sobra nada que diga onde fica Boa Viagem.",
+     "sugestao": "Deixar a faixa de Boa Viagem no mapa só com contorno em tinta durante o B5 (e as outras com traço leve), ou tirar a pílula quando a última faixa pousar."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "12,30 a 14,37 s (M3, B3) e 14,66 a 17,57 s (M4, B4)",
+     "descricao": "No clique em Alagamento (12,3 s) a ponta do cursor e a onda de 8 a 38 px caem em cima do 'o' final de 'Alagamento', contra a regra 'nunca cobre o texto'. Depois o cursor fica parado no meio do mapa durante os dois HOLD, em (510, 310) no B3 e (720, 310) no B4, encostado na hachura. É ruído no quadro assentado.",
+     "sugestao": "Encostar a ponta no canto inferior direito da aba, fora do texto, e depois do clique levar o cursor para a borda do cartão (abaixo da aba) ou tirá-lo com a regra de saída (some em 0,15 s quando a câmera vira cinema)."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "20,66 a 21,57 s (B6, Serviços)",
+     "descricao": "O painel 'O que você quer por perto?' com Saúde, Escolas, Mercados e Transporte fica legível cerca de 0,8 s antes de encolher para ficha. É o 'filtro rápido' que o storyboard aponta como risco ('cada uma tem HOLD e uma ideia só').",
+     "sugestao": "Dar ao painel de Serviços de 1,5 a 2 s inteiro, puxando o clique em Rotas para depois de 'resolve', ou juntar os chips ao painel de Rotas, acima do destino, num estado só."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "6,75 a 12,2 s (B2)",
+     "descricao": "O número da fala de B2 ('a menos de 150 metros') só aparece na pílula '150 m em linha reta' de 19 px e no corpo 'registros de obra em 150 m'. A 360 px nenhum dos dois é legível. Os números grandes do painel são o 4 e o 49.",
+     "sugestao": "Pôr um rótulo '150 m' grande (Fraunces 44 a 56 px, ou a própria pílula em escala de título) no anel, junto à ponta da haste, ou fazer de '150 m' o título do painel de obras."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "18,2 s e 24,1 a 24,4 s (modo ao vivo)",
+     "descricao": "Medi o seek(t) no Chromium headless: 69,5 ms em 18,2 s, 55,6 ms em 24,1 s e 75,8 ms em 24,4 s. O construtor só citou 18 a 20 s, mas a saída também passa de 50 ms. O pitch é ao vivo (?live, página-palco), então o zoom ao bairro e o encolhimento final cairiam para 13 a 18 fps justamente nos movimentos maiores.",
+     "sugestao": "Abaixo de 1 px/m, desenhar só as quadras chapadas (sem prismas) ou um <path> único por paleta. Gerar o SVG da cidade assentada uma vez e reaproveitá-lo enquanto crescer() já vale 1 (memoizar por câmera arredondada continua determinístico)."
+    },
+    {
+     "gravidade": "media",
+     "tempo": "14,86 a 17,6 s (B4)",
+     "descricao": "Na camada de calor, o traço azul cadastral ('rastro oficial') acompanha 'Calor · temperatura da superfície'. Só que os 6,6 °C são inferência da pesquisa de viabilidade inv5 (docs/mock/dossies/boa-viagem.json marca o fato com rotulo 'inferencia'), não registro oficial. Pela marca, o azul cadastral significa registro oficial. Além disso, a régua termina em ferrugem #B94E36, a cor de 'problema/alerta', o que aproxima 'mais quente' de um veredito. No protótipo, 'Calor · temperatura da superfície' é a legenda da camada no mapa, não uma linha de fonte.",
+     "sugestao": "Usar traço neutro em tinta e uma fonte explícita ('estimativa por satélite · Landsat 8 e 9 · pesquisa da equipe'). Fazer a régua em degraus de luminância de um matiz só, sem a ferrugem, por exemplo papel → laranja ou papel → tinta."
+    },
+    {
+     "gravidade": "baixa",
+     "tempo": "0,40 a 0,65 s (M1)",
+     "descricao": "Texto sobreposto: a pílula 'quadras ilustrativas' sobe de y=1100 até 972 passando por baixo da pílula do rodapé (y=1022). Em 0,58 s as descendentes de 'quadras ilustrativas' ficam cortadas pelo rodapé (tira_subida_07).",
+     "sugestao": "Fazer a legenda entrar por swap (opacidade com deslocamento de 10 a 14 px) já acima do rodapé, ou entrar pela esquerda, sem cruzar o rodapé."
+    },
+    {
+     "gravidade": "baixa",
+     "tempo": "25,37 s (FIM, costura com a cena 8)",
+     "descricao": "No centro do anel 'vazio' sobra um ponto branco de 1 a 2 px, resto do recorte do mapa (retE ainda maior que 0 e visibility só desliga abaixo de 2 px). A cena 8 pede o anel vazio.",
+     "sugestao": "Esconder #mapa quando esv < 0,02 (ou retE[2] < 6), ou zerar a opacidade do mapa no último trecho de esvazia."
+    },
+    {
+     "gravidade": "baixa",
+     "tempo": "19,4 a 20,0 s (B5)",
+     "descricao": "As barras dos vizinhos usam #C9BEA8. No index.html, .neighbor-bar-fill é #9E9587 (#C9BEA8 é --border-strong). O construtor diz 'como no protótipo', mas não está.",
+     "sugestao": "Trocar o preenchimento dos vizinhos para #9E9587 e manter Boa Viagem em #171717 e a trilha em #EFE9DC."
+    },
+    {
+     "gravidade": "baixa",
+     "tempo": "1,45 a 12,3 s e 17,65 a 20,46 s",
+     "descricao": "Durante B1, B2 e B5 nenhuma aba de 'Explore o entorno' está pressionada. No protótipo sempre há uma (aria-pressed; 'rotas' é o padrão em DOSSIER.mapLayer), então esse é um estado que a tela real não tem.",
+     "sugestao": "Começar com 'Rotas' pressionada como no protótipo e manter pressionada a última camada tocada durante o B5. Se a decisão de não pressionar ficar, registrá-la no review-log como desvio consciente."
+    },
+    {
+     "gravidade": "baixa",
+     "tempo": "21,9 a 24,0 s (B6)",
+     "descricao": "A etiqueta tracejada 'custo a pé · em desenvolvimento' fica a cerca de 3 px da nota 'O trajeto e o tempo...'; parece colada. O painel acaba 20 px abaixo dela.",
+     "sugestao": "Abrir de 16 a 20 px entre a nota e a etiqueta e aumentar o painel de Rotas (h ≈ 310)."
+    },
+    {
+     "gravidade": "baixa",
+     "tempo": "5,75 a 24,0 s",
+     "descricao": "O anel e a hachura de 118 a 140 m ficam por cima dos volumes, como um adesivo sobre telhados e fachadas. No B2 a hachura ferrugem sobre as faces laranja suja a leitura da faixa, e em alguns pontos parece pintada nos prédios.",
+     "sugestao": "Desenhar a hachura no chão, antes dos volumes, e deixar por cima só o traço do anel (laranja com contorno branco). Ou baixar a opacidade da hachura onde ela cruza volumes."
+    },
+    {
+     "gravidade": "baixa",
+     "tempo": "4,8 a 7,0 s, 17,6 a 19,6 s e 20,0 a 22,5 s",
+     "descricao": "Os ENTER de B2 (cerca de 2,2 s), B5 (cerca de 2 s) e B6 (cerca de 2,5 s) passam do limite de 0,3 a 1,2 s da tarefa. Os painéis abrem vazios por 0,3 a 0,6 s (6,4; 14,9; 18,9; 20,7; 21,75 s).",
+     "sugestao": "Encurtar a sequência câmera → haste → varredura → painel, sobrepondo a câmera e a varredura. Pôr no painel um título curto (kicker) assim que ele ganha área."
+    }
+   ],
+   "honestidade": [
+    "Calor: o traço azul de 'registro oficial' fica ao lado de 'Calor · temperatura da superfície', mas os 6,6 °C são inferência de satélite da pesquisa inv5 (rotulo 'inferencia' em docs/mock/dossies/boa-viagem.json). O número e a data ('consultado em 14/10/2026') estão certos; o rótulo de origem, não.",
+    "Calor: o painel é uma composição do filme no estilo do protótipo. A tela real de calor mostra −1,8 °C (inventado), e o dado real de 6,6 °C não está em nenhuma tela do index.html. Nada no quadro indica que essa tela é uma composição do filme ou que o dado vem da pesquisa da equipe.",
+    "Segurança no HOLD (19,97 s): a pílula 'faixas dos bairros em esquema · norte → sul' continua na tela depois que as faixas saíram do mapa. O rótulo descreve uma coisa que não está mais lá. Não inventa dado, mas confunde.",
+    "Barras dos vizinhos em #C9BEA8, descritas pelo construtor como 'como no protótipo'. O protótipo usa #9E9587.",
+    "Nenhum dado inventado encontrado. Conferi '49 registros de obra em 150 m desde 2018', '4 alvarás ... entre 118 m e 140 m', '206' (Defesa Civil 2024, consultado em 15/10/2026), 6,6 °C (consultado em 14/10/2026), 2.165, out/2025 a set/2026 e as taxas 22,4 · 17,4 · 18,0 · 17,2 · 12,8 contra dados.js e boa-viagem.json; está tudo certo. Não há '2ª menor', minutos, km, −1,8 °C, DSQFL nem 'Edifício Costa Atlântica'. 'quadras ilustrativas', 'Seu destino · exemplo' e 'custo a pé · em desenvolvimento' aparecem quando devem."
+   ],
+   "fidelidadeStoryboard": [
+    "Entrada: 'Da cena 6: o lote com o pino; a câmera sobe pela fachada'. O S0 não reproduz o FIM da cena 6 (sem porta, sem logo, pino e rodapé diferentes, vizinhos tracejados que a cena 6 não tem), então a costura vira corte.",
+    "B1: 'com o lote azul' e, pela seção 6 do reference-analysis, 'é ele que salta aos olhos'. Na prática o lote fica escondido pelo vizinho ao sul e pelo prédio, e some a 360 px.",
+    "B2: a pílula '150 m em linha reta' existe, mas tem 19 px; o número da fala não se lê a 360 px.",
+    "B5: 'A câmera sobe ao bairro' virou um zoom de 5,6× em cerca de 0,4 s, com a borda da cidade à mostra. O tom pedido é 'espacial, cinematográfico e calmo'.",
+    "B6: 'O cursor toca Serviços (chips ...)'. O painel de Serviços fica legível cerca de 0,8 s, o 'filtro rápido' que o campo de risco do storyboard quer evitar.",
+    "B3 a B6: 'cada camada deixa uma marca leve no mapa'. O '?' e o pontilhado da rua não são leves nas escalas menores: o '?' de tamanho fixo cobre o lote e o prédio no B5 e no B6."
+   ],
+   "notas": {
+    "clareza": 6.5,
+    "movimento": 6,
+    "marca": 7.5,
+    "legibilidade360": 6,
+    "honestidade": 8,
+    "produtoCrivel": 7
+   },
+   "resumo": "A cena 7 tem os dados certos e boa disciplina de fonte. A fala está intacta (verificar-pitch: 69/69 citações literais) e o determinismo passou (\"Determinismo confirmado\", porta 4197). Ainda não está pronta para ser a cena prioritária do filme. Rodei uma rodada nova em /home/v/Documents/vereda/veredas/motion-references/contact-sheets/cena07/critica; os quadros extras de 0,05 a 24,8 s estão em /tmp/claude-1000/-home-v-Documents-vereda-veredas/3c86dde4-66ab-459b-8f71-a9da31adc548/scratchpad/q/. Os três piores problemas: (1) a costura com a cena 6 não bate, porque o S0 não tem porta, logo, pino curto, pílula de ilustrativo nem o rodapé do FIM_t27_867 da cena 6, e a troca vira corte; (2) o lote azul cadastral nunca salta aos olhos: o vizinho ao sul e o prédio o cobrem no B1 e no B2, e o '?' e o pino de tamanho fixo o enterram no B5 e no B6, onde o pino cobre o '?'; (3) o plano do bairro (17,6 a 20 s) mostra a borda da cidade em escada de quadras vazias, a cidade vira ruído a 0,48 px/m, as faixas passam como caixas cinza translúcidas e o zoom de 5,6× acontece em cerca de 0,4 s. Problemas médios: o cursor cobre o 'o' de Alagamento no clique e fica parado no mapa durante dois HOLD; o painel de Serviços fica legível cerca de 0,8 s; '150 m' é ilegível a 360 px; a pílula 'faixas ... em esquema' fica sem faixas no HOLD do B5; o seek leva de 55 a 76 ms também na saída (24,1 a 24,4 s), o que trava o modo ao vivo; e o calor usa o traço azul de registro oficial para um dado de inferência, com a régua terminando em ferrugem. Detalhes menores: a pílula 'quadras ilustrativas' passa por baixo do rodapé em 0,4 a 0,65 s; sobra um ponto branco de 1 a 2 px no anel final; as barras usam #C9BEA8 em vez de #9E9587; nenhuma aba fica pressionada em estados que o protótipo não tem; a etiqueta 'custo a pé' fica colada à nota. Os quadros assentados do B2, B3, B4 e B6 estão bem compostos: painéis fiéis ao protótipo, números grandes legíveis (4, 49, 206, 6,6 °C, 2.165) e a câmera assenta em todos os HOLD. Não editei o HTML nem os docs."
+  },
+  "final": {
+   "arquivo": "/home/v/Documents/vereda/veredas/motion/poc/cena07.html",
+   "duracao": 25.4,
+   "modulosCriados": [
+    "/home/v/Documents/vereda/veredas/motion/lib/cidade.js: módulo meu, atualizado nesta rodada. desenharVolumes() agora roda sobre uma varredura comum, varrerVolumes(). Ela também alimenta duas funções novas, pintarVolumes(ctx, cidade, cam, o) e pintarPrisma(ctx, ...). As duas pintam a mesma cidade num canvas 2D e aceitam o.recorte (um Path2D, para o recorte do mapa) e extras com ex.pinta(ctx, pr, cam). A saída em SVG de desenharVolumes ficou byte a byte igual à anterior: comparei com 3 câmeras (4,6, 1,5 e 0,48 px/m). prisma() e circuloChao(), que a cena 6 importa, não mudaram. Continuam criarCidade, desenharChao, PALETAS (quente e dessaturado), misturarPaleta e posicaoCamera."
+   ],
+   "estados": [
+    "S0 · Lote com o pino (fim da cena 6) · 0,00 s",
+    "M1 · Câmera sobe; quadras sobem · 0,85 s",
+    "B1 · Cidade e barra Explore o entorno (HOLD) · 4,77 s",
+    "M2 · Haste varre o raio de 150 m · 5,75 s",
+    "B2 · Raio de 150 m e obras (HOLD) · 11,97 s",
+    "M3 · Painel vira ficha; toque em Alagamento · 12,36 s",
+    "B3 · Alagamento: rua e garagem (HOLD) · 14,37 s",
+    "M4 · Toque em Calor; régua entra · 14,98 s",
+    "B4 · Calor: régua de superfície (HOLD) · 17,57 s",
+    "M5 · Câmera sobe; a cidade se assenta · 17,90 s",
+    "M5b · Faixas norte → sul viram barras · 18,70 s",
+    "B5 · Segurança no bairro (HOLD) · 19,97 s",
+    "M6 · Câmera desce; Serviços · 20,70 s",
+    "M6b · Serviços assentado · 21,60 s",
+    "B6 · Mapa da rotina com as fichas (HOLD) · 23,97 s",
+    "M7 · Mapa encolhe com o anel · 24,55 s",
+    "FIM · Anel vazio (primeiro quadro da cena 8) · 25,37 s"
+   ],
+   "rodadas": [
+    {
+     "passo": "pass-1",
+     "problemas": [
+      "A cidade tinha dois níveis de detalhe: lotes miúdos perto do prédio e quadras de volume único logo depois. Isso criava um degrau visível e torres-palito em excesso, e o prédio do lote sumia atrás dos vizinhos altos",
+      "No B5 as faixas em voo passavam por cima do texto do painel de segurança, o rótulo 'Pina' caía embaixo do cartão do alto e o contorno escuro das faixas poluía o mapa",
+      "No B2 a haste saía da face oeste do prédio, que a câmera não vê, e a pílula '150 m em linha reta' encostava no traço. Na saída, o recorte circular não deixava claro que o mapa encolhia como um cartão"
+     ],
+     "correcoes": [
+      "cidade.js: o anel do meio ganhou a mesma divisão de lotes, com torres mais largas e mais raras, e faces com menos de 1 px deixaram de ser desenhadas. Entrou um teto de altura em volta do lote",
+      "B5: a câmera do bairro passou a assentar antes das faixas, o texto do painel só entra depois que as barras pousam e as faixas foram recortadas fora do cartão",
+      "A moldura do mapa virou um retângulo arredondado que encolhe até o anel"
+     ],
+     "notas": "Paleta e cartão real já estavam corretos. Faltava hierarquia: a cidade competia com os dados."
+    },
+    {
+     "passo": "pass-2",
+     "problemas": [
+      "Na borda da cidade, no plano do bairro, sobrava ruído de volumes de uma quadra só, com recorte duro",
+      "O prédio ficava encoberto pelo vizinho ao sul e o '?' da garagem ficava por baixo da linha da rota",
+      "O painel Rotas repetia 'Seu destino' e o cursor saía por cima do mapa"
+     ],
+     "correcoes": [
+      "Opção longe:false: a borda da cidade fica só com as calçadas",
+      "Vizinho ao sul baixo, janela laranja na face sul e o '?' desenhado depois da linha",
+      "Painel Rotas enxuto e cursor saindo para baixo"
+     ],
+     "notas": "O determinismo já passava."
+    },
+    {
+     "passo": "pass-3",
+     "problemas": [
+      "A haste apontava para o norte, por trás do prédio",
+      "No B1 o prédio ficava pequeno demais",
+      "A paleta dessaturada ainda não tinha sido testada"
+     ],
+     "correcoes": [
+      "A haste desce para o sudoeste",
+      "Câmera da cidade a 3,8 px/m",
+      "Testei ?cidade=dessaturado"
+     ],
+     "notas": "Conferi a saída quadro a quadro."
+    },
+    {
+     "passo": "pass-4",
+     "problemas": [
+      "A pílula '150 m' caía sobre a hachura",
+      "Os valores das barras ficavam pequenos a 360 px",
+      "O quadro do B5 ficava denso"
+     ],
+     "correcoes": [
+      "A pílula foi para a direita da haste",
+      "Os valores das barras ficaram como estavam",
+      "O B5 também ficou como estava"
+     ],
+     "notas": "Ajuste fino."
+    },
+    {
+     "passo": "pass-5",
+     "problemas": [
+      "Nenhum problema novo"
+     ],
+     "correcoes": [],
+     "notas": "Rodada final da versão anterior. A crítica independente veio depois dela."
+    },
+    {
+     "passo": "pass-final-1",
+     "problemas": [
+      "Os nomes dos bairros voavam do lado esquerdo do mapa até o painel e cruzavam o anel e o pino. 'Boa Viagem' passava sobre o pino em 18,9 s, e 'Pina' entrava no painel por cima do subtítulo 'Ocorrências / mil moradores'",
+      "Ao norte de Pina e ao sul de Jordão as quadras tinham o mesmo tom de Boa Viagem, então a faixa de Boa Viagem não se destacava no HOLD",
+      "Quando a cidade se assentava (17,7 a 18,0 s), os contornos brancos dos topos viravam uma trama de linhas sobre o mapa"
+     ],
+     "correcoes": [
+      "Os nomes passaram para a ponta direita de cada faixa, junto do painel, e o salto ficou em duas fases. Primeiro todos sobem ou descem juntos até a altura da sua linha (a distância entre eles nunca fica abaixo de 56 px). Depois cada um entra na linha pela esquerda, abaixo do cabeçalho",
+      "O tom claro passou a cobrir também o que fica ao norte de Pina e ao sul de Jordão. Só Boa Viagem fica com as quadras normais e as divisas em tinta",
+      "Na paleta assentada o contorno também vai para a cor da calçada, e a cidade some no papel sem trama"
+     ],
+     "notas": "Primeira rodada depois das correções da crítica. Altas: (1) a costura com a cena 6 bate. O diretor da cena 6 passou a terminar no meu S0, eu tirei as faixas de andar do prédio (a cena 6 não as tem) e o prédio fica em SVG até a cidade subir. O diff contra o FIM atual da cena 6 dá 635 px acima de 24 níveis, só em bordas sub-pixel: o resto de menos de 0,2 px da câmera da cena 6 e a fase dos tracejados. O rodapé ficou idêntico. (2) Lote à vista: o vizinho ao sul ficou vazio, o contorno engrossa de 3,5 para 5,7 px com borda branca e a câmera do B1 vai a 4,6 px/m. O pino escala com a câmera (14 px no lote, mínimo de 8 px). O '?' vai de 25 a 10 px conforme a câmera e, depois do B4, recolhe num ponto de 5,5 px, com o pontilhado mais leve. (3) Bairro: a câmera vai a 1 px/m com P.camera e a cidade se assenta no papel enquanto sobe. As faixas ficam no chão, sem caixas translúcidas, e o cabeçalho do painel entra com ele. A cidade foi para um canvas e o seek máximo caiu de 237 ms para 14 a 20 ms. Médias: o cursor só aparece em cada toque, com a ponta no canto inferior direito da aba e uma onda de no máximo 21 px. Serviços fica cerca de 1,6 s inteiro na tela. '150 m' aparece em Fraunces 58 px. No calor, o traço de pontos em tinta marca a estimativa da pesquisa da equipe, a régua vai de papel a laranja e há a etiqueta 'composição do filme · fora do protótipo'. Baixas: Rotas pressionada desde o início e Calor mantida no B5; barras em #9E9587; 20 px entre a nota e a etiqueta 'custo a pé'; hachura no chão com bordas finas por cima; legenda que não cruza o rodapé; anel final sem resto do recorte; painéis vazios por no máximo 0,1 s. Antes do QA corrigi também a etiqueta 'composição do filme', que caía sobre o cabeçalho do painel de calor e foi para uma linha própria."
+    },
+    {
+     "passo": "pass-final-2",
+     "problemas": [
+      "Enquanto os nomes convergiam (18,5 a 18,85 s), as divisas das faixas passavam por dentro do texto: a linha cinza cortava 'Pina' e a de tinta encostava em 'Ibura'",
+      "O ENTER do B5 ainda tinha cerca de 1,9 s até as barras pousarem (corrigido junto com esta rodada, antes de renderizar)",
+      "O teste de determinismo passou a mostrar 'ruído' de 1 a 26 px, com diferença máxima de 3 níveis, na borda de pílulas do DOM. É a rasterização parcial do Chromium desde que a cidade virou canvas"
+     ],
+     "correcoes": [
+      "Cada nome ganhou uma etiqueta de papel no mapa, com as divisas por baixo. Ela se apaga quando o nome entra no painel, e o texto fica alinhado na coluna dos nomes",
+      "Faixas a partir de 18,0 s, salto vertical em 18,5 s, entrada lateral em escada de 0,05 s e 2.165 a partir de 19,1 s. As barras pousam por volta de 19,2 s",
+      "O ruído não foi corrigido: verifiquei que é antisserrilhado (o mesmo t depois de 0 s e depois de 23,97 s dá 0 px diferentes em 11,97 s) e o teste o aceita como ruído"
+     ],
+     "notas": "A rodada pedida. As tiras de assentar e de barras ficaram limpas, e a 360 px os números-chave (4, 49, 150 m, 206, 6,6 °C, 2.165) e o lote azul do B1 se leem."
+    },
+    {
+     "passo": "pass-final-3",
+     "problemas": [
+      "Nenhum problema novo na folha de contato, na grade de 0,5 s, nas tiras (subida, varredura, assenta, barras) nem no teste de 360 px"
+     ],
+     "correcoes": [],
+     "notas": "Rodada de verificação depois da correção da pass-final-2. Rodei de novo o determinismo, o diff da costura com a cena 6 (635 px de borda sub-pixel, rodapé idêntico) e o modo ao vivo num Chromium sem webdriver: mediana de 16,7 ms por quadro, alguns quadros de 50 a 67 ms nas trocas e nenhum erro."
+    }
+   ],
+   "determinismo": "t = 0,000 a 25,367 s: 5 estados 'igual' e 12 'ruído' (de 1 a 26 px, diferença máxima de 3 níveis, que é antisserrilhado de rasterização parcial). Determinismo confirmado: o quadro só depende de t. Fala: Texto travado intacto, 69 citações no storyboard, 69 literais.",
+   "honestidade": [
+    "Calor: o traço azul de registro oficial saiu. 'Calor · temperatura da superfície' ficou como rótulo simples e a fonte aparece com um traço de pontos em tinta: 'estimativa da pesquisa da equipe' e 'células de 100 m do bairro · consultado em 14/10/2026'. Ficaram 'superfície, não ar · Landsat 8 e 9' e a etiqueta tracejada 'composição do filme · fora do protótipo', porque a tela real de calor do protótipo mostra −1,8 °C inventado. A régua tem 5 degraus de luminância de papel a laranja, sem a ferrugem de alerta. Só a amplitude de 6,6 °C vai para a tela; o prédio não vai na régua e −1,8 °C e o índice verde ficam fora",
+    "Segurança: as faixas continuam no mapa durante o HOLD do B5, com Boa Viagem em quadras normais e divisas em tinta e os vizinhos clareados. Assim a pílula 'faixas dos bairros em esquema · norte → sul' descreve o que está na tela. Boa Viagem é desenhada mais larga que os vizinhos para conter o anel de 150 m; isso é esquema, não geografia, e a pílula diz isso. Barras dos vizinhos em #9E9587 e Boa Viagem em #171717 sobre trilha #EFE9DC, como .neighbor-bar-fill do index.html. Sem verde, vermelho ou '2ª menor'. Na tela: 2.165 ocorrências, out/2025 a set/2026, SDS-PE / Crime Brasil · Censo 2022, consultado em 15/10/2026",
+    "Obras: o número da fala vira o rótulo '150 m em linha reta' em 58 px, junto da haste. Painel: '4 · alvarás de demolição deferidos em 2026 · entre 118 m e 140 m do prédio' e '49 · registros de obra em 150 m desde 2018', com a fonte Licenciamento consultada em 15/10/2026. A faixa de 118 a 140 m é hachura no chão, sem pinos, com a nota 'A faixa marca a distância das demolições, não a posição de cada uma.'",
+    "Alagamento: nenhuma água desenhada, só o contorno pontilhado da rua e o '?' na garagem com 'A água chega à garagem?'. Na tela: 206 atendimentos da Defesa Civil 2024, 'Os atendimentos não medem alagamento na rua.' e 'Confira a rua e a entrada da garagem.'. Depois do B4 a marca vira um ponto pequeno, um rastro leve que não cobre o lote nem o pino",
+    "A pé: a linha reta tracejada sai do pino até 'Seu destino · exemplo · em linha reta', com 'O trajeto e o tempo são calculados no aplicativo de mapas.' e 'custo a pé · em desenvolvimento'. Nenhum minuto, custo ou km",
+    "Prédio e lote: o prédio fica em papel e sem faixas de andar, porque o número de pavimentos não tem fonte (igual à cena 6). Na tela nada de 'Edifício Costa Atlântica', DSQFL ou '12 pavimentos'. 'quadras ilustrativas' fica do primeiro volume até o mapa esvaziar, e o rodapé diz 'polígono do lote, altura do prédio e quadras ilustrativos'",
+    "Abas: 'Rotas' fica pressionada desde o início, como DOSSIER.mapLayer = 'rotas' no protótipo, e a última camada tocada continua pressionada no B5. Nenhum estado sem aba pressionada"
+   ],
+   "pendencias": [
+    "Não registrei as rodadas em docs/review-log.md porque a tarefa proíbe editar docs/*. As rodadas pass-final-1, -2 e -3 estão aqui e alguém com acesso precisa passá-las para o log",
+    "Costura com a cena 6: conferi contra o cena06.html como está agora (modificado às 03:01, DUR 29,7). O diretor da cena 6 já termina no meu S0. Se ele mudar o fim de novo, o diff precisa ser refeito",
+    "A partir de cerca de 0,4 s, quando o primeiro volume sobe, a cidade passa a ser um canvas, e o Chromium troca o antisserrilhado do texto que fica por cima de LCD para tons de cinza. O rodapé fica um pouco mais fino nesse instante, com a câmera em movimento. O primeiro quadro é idêntico ao da cena 6 porque o canvas só entra depois",
+    "Costura com a cena 8: o quadro final é o anel de 150 m vazio, com cerca de 120 px (raio de 57,6 px), centrado em (960, 540) sobre o papel com grade, sem resto do recorte",
+    "Duração de 25,4 s contra 24 s estimados no storyboard: a fala do B2 (19 palavras) pede cerca de 7 s",
+    "ENTERs: o do B2 tem cerca de 1,4 s (câmera, haste e varredura sobrepostas) e o do B5 cerca de 1,6 s (câmera, cidade assentando, faixas e salto dos nomes). O B6 tem dois toques, como pede o storyboard. Os painéis ficam vazios por no máximo 0,1 s",
+    "Determinismo: 12 dos 17 estados mostram ruído de rasterização (de 1 a 26 px, no máximo 3 níveis), que o teste aceita. Antes do canvas todos davam 'igual'",
+    "Modo ao vivo: seek de no máximo 20 ms em toda a linha do tempo e rAF com mediana de 16,7 ms. Sobram alguns quadros de 50 a 67 ms nas trocas de HOLD",
+    "Os sons foram declarados em window.POC.sons e não foram ouvidos. Nenhum vídeo foi renderizado e nada foi commitado"
+   ],
+   "passoFinal": "/home/v/Documents/vereda/veredas/motion-references/contact-sheets/cena07/pass-final-3"
+  }
+ }
+]

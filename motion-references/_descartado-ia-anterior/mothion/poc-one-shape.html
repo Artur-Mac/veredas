@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>VEREDA — One-Shape UI Morph Proof of Concept</title>
+  <style>
+    @font-face {
+      font-family: 'Archivo';
+      src: url('../docs/mock/fontes/Archivo-Regular.ttf') format('truetype');
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: 'Archivo';
+      src: url('../docs/mock/fontes/Archivo-Medium.ttf') format('truetype');
+      font-weight: 500;
+    }
+    @font-face {
+      font-family: 'Archivo';
+      src: url('../docs/mock/fontes/Archivo-SemiBold.ttf') format('truetype');
+      font-weight: 600;
+    }
+    @font-face {
+      font-family: 'Archivo';
+      src: url('../docs/mock/fontes/Archivo-Bold.ttf') format('truetype');
+      font-weight: 700;
+    }
+    @font-face {
+      font-family: 'Archivo Condensed';
+      src: url('../docs/mock/fontes/ArchivoCondensed-ExtraBold.ttf') format('truetype');
+      font-weight: 800;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #E8EAE6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: 'Archivo', -apple-system, sans-serif;
+    }
+    #stage-container {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+      background: #F3F4F2;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      width: 1920px;
+      height: 1080px;
+    }
+  </style>
+</head>
+<body>
+  <div id="stage-container">
+    <canvas id="c" width="1920" height="1080"></canvas>
+  </div>
+
+  <script>
+    const W = 1920, H = 1080;
+    const DUR = 12.0; // 12 segundos de prova de conceito
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+
+    // =========================================================================
+    // 1. FÍSICA MATEMÁTICA: CLOSED-FORM STEP-RESPONSE SPRINGS & TRACKING
+    // =========================================================================
+    function clamp(x, a = 0, b = 1) {
+      return Math.min(b, Math.max(a, x));
+    }
+
+    // Mola fechada: resposta analítica ao degrau de 0 para 1
+    function spring(t, k = 170, d = 24) {
+      if (t <= 0) return 0;
+      const w0 = Math.sqrt(k);
+      const z = d / (2 * w0);
+      if (z < 1) {
+        const wd = w0 * Math.sqrt(1 - z * z);
+        return 1 - Math.exp(-z * w0 * t) * (Math.cos(wd * t) + ((z * w0) / wd) * Math.sin(wd * t));
+      }
+      return 1 - Math.exp(-w0 * t) * (1 + w0 * t);
+    }
+
+    // Multi-target tracking aditivo contínuo
+    function track(t, keys, k = 170, d = 24) {
+      if (!keys || keys.length === 0) return 0;
+      let val = keys[0][1];
+      for (let i = 1; i < keys.length; i++) {
+        if (t >= keys[i][0]) {
+          val += (keys[i][1] - keys[i - 1][1]) * spring(t - keys[i][0], k, d);
+        }
+      }
+      return val;
+    }
+
+    // Controle de opacidade e troca de texto sem colisão
+    function swapAlpha(t, tIn, tOut, ease = 0.14) {
+      if (t < tIn - 0.05 || t > tOut + 0.05) return 0;
+      const enter = clamp((t - tIn) / ease);
+      const exit = clamp((tOut - t) / ease);
+      return Math.min(enter, exit);
+    }
+
+    // =========================================================================
+    // 2. TIMELINE E CHAVES DO CONTAINER PRINCIPAL (ONE-SHAPE)
+    // =========================================================================
+    const keyX = [
+      [0.0, 580],
+      [2.2, 460],
+      [5.0, 500],
+      [7.6, 420],
+      [10.0, 360]
+    ];
+    const keyY = [
+      [0.0, 220],
+      [2.2, 180],
+      [5.0, 200],
+      [7.6, 150],
+      [10.0, 130]
+    ];
+    const keyW = [
+      [0.0, 760],
+      [2.2, 1000],
+      [5.0, 920],
+      [7.6, 1080],
+      [10.0, 1200]
+    ];
+    const keyH = [
+      [0.0, 540],
+      [2.2, 600],
+      [5.0, 560],
+      [7.6, 640],
+      [10.0, 680]
+    ];
+    const keyRadius = [
+      [0.0, 16],
+      [2.2, 12],
+      [5.0, 8],
+      [7.6, 16],
+      [10.0, 16]
+    ];
+
+    // Câmera
+    const keyCamZoom = [
+      [0.0, 1.0],
+      [1.6, 1.03],
+      [2.4, 1.0],
+      [4.2, 1.04],
+      [5.2, 1.01],
+      [7.6, 0.98],
+      [10.0, 1.0]
+    ];
+
+    // Cursor narrativo
+    const keyCursorX = [
+      [0.0, 1450],
+      [0.6, 1220],
+      [1.4, 1140],  // Paira sobre a discrepância (-18 m²)
+      [2.0, 1140],  // Clique em t=1.8
+      [2.8, 920],   // Desliza para o DSQFL
+      [4.2, 920],   // Clique no DSQFL
+      [5.4, 1650],  // Recua durante projeção 2.5D
+      [7.8, 940],   // Reaparece sobre o pino de Boa Viagem
+      [9.0, 1180],  // Move para a caminhabilidade
+      [10.4, 1420], // Pousa no selo pericial
+      [12.0, 1420]
+    ];
+    const keyCursorY = [
+      [0.0, 880],
+      [0.6, 640],
+      [1.4, 500],
+      [2.0, 500],
+      [2.8, 380],
+      [4.2, 380],
+      [5.4, 920],
+      [7.8, 480],
+      [9.0, 480],
+      [10.4, 210],
+      [12.0, 210]
+    ];
+    const keyCursorClick = [
+      [0.0, 0],
+      [1.75, 1],
+      [2.0, 0],
+      [4.15, 1],
+      [4.4, 0],
+      [10.6, 1],
+      [10.9, 0]
+    ];
+
+    // =========================================================================
+    // 3. DESENHO DOS COMPONENTES E ESTADOS
+    // =========================================================================
+
+    function drawTechnicalBackground(t) {
+      ctx.fillStyle = '#F3F4F2';
+      ctx.fillRect(0, 0, W, H);
+
+      // Grid pontilhado suave (60px)
+      ctx.fillStyle = 'rgba(124, 132, 136, 0.22)';
+      for (let x = 60; x < W; x += 60) {
+        for (let y = 60; y < H; y += 60) {
+          ctx.beginPath();
+          ctx.arc(x, y, 1.25, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // Linhas métricas sutis
+      ctx.strokeStyle = 'rgba(124, 132, 136, 0.35)';
+      ctx.lineWidth = 1;
+      
+      // Top left crosshair
+      ctx.beginPath();
+      ctx.moveTo(40, 50); ctx.lineTo(60, 50);
+      ctx.moveTo(50, 40); ctx.lineTo(50, 60);
+      ctx.stroke();
+
+      // Top right crosshair
+      ctx.beginPath();
+      ctx.moveTo(W - 60, 50); ctx.lineTo(W - 40, 50);
+      ctx.moveTo(W - 50, 40); ctx.lineTo(W - 50, 60);
+      ctx.stroke();
+
+      // Marca d'água técnica
+      ctx.font = '500 12px "Archivo", sans-serif';
+      ctx.fillStyle = 'rgba(99, 107, 111, 0.5)';
+      ctx.textAlign = 'left';
+      ctx.fillText('RECIFE / PE · 08°07\'35" S  34°54\'11" W · SISTEMA CARTOGRÁFICO PCR · DATUM SIRGAS 2000', 60, H - 35);
+
+      ctx.textAlign = 'right';
+      ctx.fillText(`PROVA DE CONCEITO · FRAME TIMING: ${t.toFixed(2)}s / ${DUR.toFixed(1)}s · ONE-SHAPE ENGINE`, W - 60, H - 35);
+    }
+
+    function drawVeredaSymbol(x, y, scale = 1.0, color = '#8C3D1D') {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(scale, scale);
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      const p = new Path2D("M 18,80 C 7,79 2,66 2,49 C 2,24 20,4 50,3 C 79,2 97,25 97,49 C 97,68 89,80 79,80 C 64,80 34,81 18,80 Z M 40,58 C 35,42 40,24 53,23 C 64,22 69,40 64,57 C 59,72 45,72 40,58 Z");
+      ctx.fill(p, "evenodd");
+      ctx.restore();
+    }
+
+    // ESTADO 1: Card Resumo do Imóvel
+    function drawState1_PropertyCard(x, y, w, h, alpha, t) {
+      if (alpha <= 0.001) return;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+
+      const photoW = w * 0.46;
+      const photoH = h - 32;
+
+      // Foto com renderização arquitetônica estilizada
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(x + 16, y + 16, photoW, photoH, [12, 4, 4, 12]);
+      ctx.clip();
+
+      const skyGrad = ctx.createLinearGradient(x + 16, y + 16, x + 16, y + photoH);
+      skyGrad.addColorStop(0, '#7FA6CE');
+      skyGrad.addColorStop(0.55, '#ECEAE4');
+      skyGrad.addColorStop(1, '#8A7A60');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(x + 16, y + 16, photoW, photoH);
+
+      // Fachada do Edifício Costa Atlântica
+      ctx.fillStyle = '#22292D';
+      ctx.fillRect(x + 60, y + 80, photoW - 100, photoH);
+      ctx.fillStyle = '#FFFFFF';
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 3; c++) {
+          ctx.fillRect(x + 75 + c * 50, y + 105 + r * 42, 28, 20);
+        }
+      }
+
+      // Badge de anúncio
+      ctx.fillStyle = 'rgba(34, 41, 45, 0.88)';
+      ctx.beginPath();
+      ctx.roundRect(x + 32, y + 32, 140, 26, 4);
+      ctx.fill();
+      ctx.font = '700 11px "Archivo", sans-serif';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.textAlign = 'center';
+      ctx.fillText('ANÚNCIO ATIVO · PORTAL', x + 102, y + 49);
+      ctx.restore();
+
+      // Painel direito com dados
+      const contentX = x + photoW + 36;
+      let currY = y + 46;
+
+      ctx.fillStyle = 'rgba(140, 61, 29, 0.12)';
+      ctx.beginPath();
+      ctx.roundRect(contentX, currY, 96, 24, 4);
+      ctx.fill();
+      ctx.font = '700 11px "Archivo", sans-serif';
+      ctx.fillStyle = '#8C3D1D';
+      ctx.textAlign = 'left';
+      ctx.fillText('BOA VIAGEM', contentX + 12, currY + 16);
+
+      ctx.font = '600 12px "Archivo", sans-serif';
+      ctx.fillStyle = '#636B6F';
+      ctx.fillText('RECIFE / PE', contentX + 108, currY + 16);
+
+      currY += 46;
+      ctx.font = '800 30px "Archivo Condensed", sans-serif';
+      ctx.fillStyle = '#22292D';
+      ctx.fillText('Ed. Costa Atlântica', contentX, currY);
+
+      currY += 24;
+      ctx.font = '500 14px "Archivo", sans-serif';
+      ctx.fillStyle = '#636B6F';
+      ctx.fillText('Rua João Cardoso Aires, 327 · Apto 802', contentX, currY);
+
+      currY += 28;
+      ctx.strokeStyle = '#E2E5E2';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(contentX, currY);
+      ctx.lineTo(x + w - 32, currY);
+      ctx.stroke();
+
+      currY += 38;
+      ctx.font = '800 26px "Archivo", sans-serif';
+      ctx.fillStyle = '#22292D';
+      ctx.fillText('R$ 4.500 /mês', contentX, currY);
+
+      ctx.font = '500 14px "Archivo", sans-serif';
+      ctx.fillStyle = '#636B6F';
+      ctx.fillText('Condomínio: R$ 850 · IPTU anual: R$ 4.560', contentX, currY + 22);
+
+      currY += 65;
+      ctx.fillStyle = '#F6EEE8';
+      ctx.beginPath();
+      ctx.roundRect(contentX, currY, w - photoW - 68, 92, 8);
+      ctx.fill();
+      ctx.strokeStyle = '#D1B1A5';
+      ctx.stroke();
+
+      ctx.font = '600 12px "Archivo", sans-serif';
+      ctx.fillStyle = '#8C3D1D';
+      ctx.fillText('ÁREA DECLARADA NO ANÚNCIO: 110 m²', contentX + 16, currY + 26);
+
+      // Badge de discrepância onde o cursor clica
+      const clickPulse = t >= 1.7 && t <= 2.1 ? (Math.sin((t - 1.7) * Math.PI * 5) * 4) : 0;
+      ctx.fillStyle = '#8C3D1D';
+      ctx.beginPath();
+      ctx.roundRect(contentX + 16, currY + 40 - clickPulse/2, 260 + clickPulse, 34 + clickPulse, 6);
+      ctx.fill();
+
+      ctx.font = '700 12px "Archivo", sans-serif';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillText('⚠️ AUDITORIA: -18 m² / R$ 125 MIL SOBREPREÇO', contentX + 24, currY + 62);
+
+      ctx.restore();
+    }
+
+    // ESTADO 2: Ficha Oficial / IPTU / DSQFL
+    function drawState2_OfficialRecord(x, y, w, h, alpha, t) {
+      if (alpha <= 0.001) return;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+
+      let currY = y + 42;
+      ctx.font = '700 12px "Archivo", sans-serif';
+      ctx.fillStyle = '#8C3D1D';
+      ctx.textAlign = 'left';
+      ctx.fillText('PREFEITURA DA CIDADE DO RECIFE · CADASTRO IMOBILIÁRIO OFICIAL', x + 40, currY);
+
+      ctx.font = '800 28px "Archivo Condensed", sans-serif';
+      ctx.fillStyle = '#22292D';
+      ctx.fillText('Extrato de IPTU & Confrontação Cadastral', x + 40, currY + 36);
+
+      const dsqflY = currY + 58;
+      const dsqflHover = t >= 4.0 && t <= 4.5 ? 1.0 : 0.0;
+      ctx.fillStyle = dsqflHover ? '#1F2427' : '#22292D';
+      ctx.beginPath();
+      ctx.roundRect(x + 40, dsqflY, 340, 36, 6);
+      ctx.fill();
+
+      ctx.font = '600 13px "Archivo", monospace';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillText('DSQFL: 06.1780.0412.02.0327  [CONFIRMADO]', x + 54, dsqflY + 23);
+
+      const colY = dsqflY + 68;
+      const colW = (w - 80 - 32) / 3;
+
+      // Coluna 1: Área Real
+      ctx.fillStyle = '#F3F4F2';
+      ctx.beginPath();
+      ctx.roundRect(x + 40, colY, colW, 220, 8);
+      ctx.fill();
+      ctx.strokeStyle = '#E2E5E2';
+      ctx.stroke();
+
+      ctx.font = '700 12px "Archivo", sans-serif';
+      ctx.fillStyle = '#636B6F';
+      ctx.fillText('ÁREA TRIBUTADA REAL', x + 58, colY + 32);
+
+      ctx.font = '800 48px "Archivo Condensed", sans-serif';
+      ctx.fillStyle = '#8C3D1D';
+      ctx.fillText('92 m²', x + 58, colY + 88);
+
+      ctx.font = '500 13px "Archivo", sans-serif';
+      ctx.fillStyle = '#22292D';
+      ctx.fillText('Base de cálculo do IPTU', x + 58, colY + 120);
+      ctx.fillText('e ITBI na Prefeitura do Recife.', x + 58, colY + 140);
+
+      // Coluna 2: Anúncio
+      ctx.fillStyle = '#F3F4F2';
+      ctx.beginPath();
+      ctx.roundRect(x + 40 + colW + 16, colY, colW, 220, 8);
+      ctx.fill();
+      ctx.strokeStyle = '#E2E5E2';
+      ctx.stroke();
+
+      ctx.font = '700 12px "Archivo", sans-serif';
+      ctx.fillStyle = '#636B6F';
+      ctx.fillText('ÁREA NO ANÚNCIO', x + 58 + colW + 16, colY + 32);
+
+      ctx.font = '800 48px "Archivo Condensed", sans-serif';
+      ctx.fillStyle = '#636B6F';
+      ctx.fillText('110 m²', x + 58 + colW + 16, colY + 88);
+
+      ctx.font = '600 13px "Archivo", sans-serif';
+      ctx.fillStyle = '#8C3D1D';
+      ctx.fillText('Diferença: -18 m²', x + 58 + colW + 16, colY + 120);
+      ctx.fillText('Não averbada na planta.', x + 58 + colW + 16, colY + 140);
+
+      // Coluna 3: Sobrepreço
+      ctx.fillStyle = '#F6EEE8';
+      ctx.beginPath();
+      ctx.roundRect(x + 40 + (colW + 16) * 2, colY, colW, 220, 8);
+      ctx.fill();
+      ctx.strokeStyle = '#D1B1A5';
+      ctx.stroke();
+
+      ctx.font = '700 12px "Archivo", sans-serif';
+      ctx.fillStyle = '#8C3D1D';
+      ctx.fillText('SOBREPREÇO ESTIMADO', x + 58 + (colW + 16) * 2, colY + 32);
+
+      ctx.font = '800 44px "Archivo Condensed", sans-serif';
+      ctx.fillStyle = '#22292D';
+      ctx.fillText('R$ 125 MIL', x + 58 + (colW + 16) * 2, colY + 88);
+
+      ctx.font = '600 13px "Archivo", sans-serif';
+      ctx.fillStyle = '#8C3D1D';
+      ctx.fillText('Poder de barganha real', x + 58 + (colW + 16) * 2, colY + 120);
+      ctx.fillText('para a mesa de negociação.', x + 58 + (colW + 16) * 2, colY + 140);
+
+      const footY = colY + 240;
+      ctx.strokeStyle = '#E2E5E2';
+      ctx.beginPath();
+      ctx.moveTo(x + 40, footY);
+      ctx.lineTo(x + w - 40, footY);
+      ctx.stroke();
+
+      ctx.font = '500 13px "Archivo", sans-serif';
+      ctx.fillStyle = '#22292D';
+      ctx.fillText('Habite-se Concedido: 1984 · Situação Fiscal: Regular · Inscrição Imobiliária: 4.1284.092', x + 40, footY + 26);
+
+      ctx.restore();
+    }
+
+    // ESTADO 3: Lote e Projeção Isométrica 2.5D
+    function drawState3_LotProjection(x, y, w, h, alpha, t) {
+      if (alpha <= 0.001) return;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+
+      let currY = y + 40;
+      ctx.font = '700 12px "Archivo", sans-serif';
+      ctx.fillStyle = '#8C3D1D';
+      ctx.textAlign = 'left';
+      ctx.fillText('CADASTRO GEORREFERENCIADO · SISTEMA CARTOGRÁFICO DO RECIFE', x + 40, currY);
+
+      ctx.font = '800 28px "Archivo Condensed", sans-serif';
+      ctx.fillStyle = '#22292D';
+      ctx.fillText('Projeção e Confrontações do Lote 0327', x + 40, currY + 34);
+
+      // Progresso suave de elevação 2.5D
+      const lotProgress = clamp((t - 5.0) / 0.7);
+
+      const isoCenterX = x + w * 0.5;
+      const isoCenterY = y + h * 0.56;
+
+      ctx.save();
+      ctx.translate(isoCenterX, isoCenterY);
+
+      // Plano da Quadra Isométrica
+      ctx.fillStyle = '#ECEAE4';
+      ctx.beginPath();
+      ctx.moveTo(0, -140 * lotProgress);
+      ctx.lineTo(260, 0);
+      ctx.lineTo(0, 140 * lotProgress);
+      ctx.lineTo(-260, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#7C8488';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Polígono do Lote do Edifício
+      ctx.fillStyle = 'rgba(140, 61, 29, 0.18)';
+      ctx.beginPath();
+      ctx.moveTo(0, -70 * lotProgress);
+      ctx.lineTo(140, 0);
+      ctx.lineTo(0, 70 * lotProgress);
+      ctx.lineTo(-140, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#8C3D1D';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Projeção vertical da torre (volumetria em arame)
+      const towerHeight = 115 * lotProgress;
+      ctx.fillStyle = 'rgba(46, 90, 133, 0.25)';
+      ctx.beginPath();
+      ctx.moveTo(-60, -towerHeight);
+      ctx.lineTo(60, -towerHeight - 30 * lotProgress);
+      ctx.lineTo(60, -30 * lotProgress);
+      ctx.lineTo(-60, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#2E5A85';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(60, -towerHeight - 30 * lotProgress);
+      ctx.lineTo(120, -towerHeight - 5 * lotProgress);
+      ctx.lineTo(120, -5 * lotProgress);
+      ctx.lineTo(60, -30 * lotProgress);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Cotas métricas
+      ctx.font = '600 13px "Archivo", sans-serif';
+      ctx.fillStyle = '#8C3D1D';
+      ctx.textAlign = 'center';
+      ctx.fillText('Testada Frontal: 15,00 m', -100, 50 * lotProgress);
+      ctx.fillText('Profundidade: 40,00 m (600 m² de terreno)', 100, 50 * lotProgress);
+
+      ctx.restore();
+
+      // Painel inferior de dados urbanísticos
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.beginPath();
+      ctx.roundRect(x + 40, y + h - 80, w - 80, 48, 6);
+      ctx.fill();
+      ctx.strokeStyle = '#E2E5E2';
+      ctx.stroke();
+
+      ctx.font = '500 13px "Archivo", sans-serif';
+      ctx.fillStyle = '#22292D';
+      ctx.fillText('Zoneamento: ZEU-1 (Zona de Estruturação Urbana) · Coeficiente de Aproveitamento: 4.0 · Afastamento: 5,00m', x + 56, y + h - 50);
+
+      ctx.restore();
+    }
+
+    // ESTADO 4: Mapa do Bairro (Recife) & Raio de 150m
+    function drawState4_NeighborhoodMap(x, y, w, h, alpha, t) {
+      if (alpha <= 0.001) return;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(x + 16, y + 16, w - 32, h - 32, 12);
+      ctx.clip();
+
+      ctx.fillStyle = '#ECEAE4';
+      ctx.fillRect(x + 16, y + 16, w - 32, h - 32);
+
+      // Faixa de Praia & Mar de Boa Viagem (lado direito)
+      const beachX = x + w * 0.72;
+      ctx.fillStyle = '#F1E8D6';
+      ctx.fillRect(beachX - 30, y + 16, 30, h - 32);
+
+      ctx.fillStyle = '#D3E3E8';
+      ctx.fillRect(beachX, y + 16, w - beachX, h - 32);
+
+      // Ondas e arrecifes naturais estilizados
+      ctx.strokeStyle = 'rgba(79, 179, 174, 0.4)';
+      ctx.lineWidth = 3;
+      for (let oy = y + 40; oy < y + h; oy += 60) {
+        ctx.beginPath();
+        ctx.moveTo(beachX + 30, oy);
+        ctx.bezierCurveTo(beachX + 60, oy - 15, beachX + 90, oy + 15, beachX + 120, oy);
+        ctx.stroke();
+      }
+
+      ctx.font = '700 11px "Archivo", sans-serif';
+      ctx.fillStyle = '#1F7F7A';
+      ctx.textAlign = 'center';
+      ctx.fillText('PRAIA DE BOA VIAGEM', beachX + 80, y + 45);
+
+      // Malha Viária de Boa Viagem
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 14;
+      ctx.lineCap = 'round';
+
+      // Av. Conselheiro Aguiar
+      ctx.beginPath();
+      ctx.moveTo(x + w * 0.40, y + 16);
+      ctx.lineTo(x + w * 0.40, y + h - 16);
+      ctx.stroke();
+
+      // Av. Boa Viagem
+      ctx.beginPath();
+      ctx.moveTo(beachX - 40, y + 16);
+      ctx.lineTo(beachX - 40, y + h - 16);
+      ctx.stroke();
+
+      const pinY = y + h * 0.52;
+      const pinX = x + w * 0.40;
+
+      for (let offset = -140; offset <= 140; offset += 70) {
+        ctx.beginPath();
+        ctx.moveTo(x + 16, pinY + offset);
+        ctx.lineTo(beachX - 40, pinY + offset);
+        ctx.stroke();
+      }
+
+      // ROTA DE CAMINHABILIDADE ATÉ A PRAIA (THE VEREDA PATH)
+      ctx.strokeStyle = '#8C3D1D';
+      ctx.lineWidth = 3.5;
+      ctx.setLineDash([8, 6]);
+      ctx.beginPath();
+      ctx.moveTo(pinX, pinY);
+      ctx.lineTo(beachX - 40, pinY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Badge de Caminhabilidade
+      ctx.fillStyle = '#8C3D1D';
+      ctx.beginPath();
+      ctx.roundRect((pinX + beachX - 40) / 2 - 60, pinY - 32, 120, 24, 4);
+      ctx.fill();
+      ctx.font = '700 11px "Archivo", sans-serif';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.textAlign = 'center';
+      ctx.fillText('420m · 6 min a pé', (pinX + beachX - 40) / 2, pinY - 16);
+
+      // Raio de 150m (Anel de Investigação)
+      const radiusProgress = clamp((t - 7.7) / 0.8);
+      const radiusPx = 140 * radiusProgress;
+
+      ctx.fillStyle = 'rgba(140, 61, 29, 0.08)';
+      ctx.beginPath();
+      ctx.arc(pinX, pinY, radiusPx, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = '#8C3D1D';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Pino do Edifício
+      ctx.fillStyle = '#8C3D1D';
+      ctx.beginPath();
+      ctx.arc(pinX, pinY, 9, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(pinX, pinY, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Tag sobre o pino
+      ctx.fillStyle = 'rgba(34, 41, 45, 0.9)';
+      ctx.beginPath();
+      ctx.roundRect(pinX - 110, pinY - 54, 220, 32, 6);
+      ctx.fill();
+      ctx.font = '700 12px "Archivo", sans-serif';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillText('Ed. Costa Atlântica · Lote 0327', pinX, pinY - 34);
+
+      // Card Flutuante de Análise Perimetral
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.beginPath();
+      ctx.roundRect(x + 36, y + 36, 320, 100, 8);
+      ctx.fill();
+      ctx.strokeStyle = '#E2E5E2';
+      ctx.stroke();
+
+      ctx.font = '700 12px "Archivo", sans-serif';
+      ctx.fillStyle = '#8C3D1D';
+      ctx.textAlign = 'left';
+      ctx.fillText('AUDITORIA DE PERÍMETRO (150m)', x + 50, y + 62);
+
+      ctx.font = '500 13px "Archivo", sans-serif';
+      ctx.fillStyle = '#22292D';
+      ctx.fillText('• Alagamento histórico: 0 ocorrências', x + 50, y + 84);
+      ctx.fillText('• Distância até a orla: 420m (6 min a pé)', x + 50, y + 104);
+      ctx.fillText('• Iluminação pública LED: 100% ativa', x + 50, y + 124);
+
+      ctx.restore();
+      ctx.restore();
+    }
+
+    // ESTADO 5: Dossiê Pericial Final Completo
+    function drawState5_FinalDossier(x, y, w, h, alpha, t) {
+      if (alpha <= 0.001) return;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+
+      let currY = y + 42;
+
+      ctx.font = '700 12px "Archivo", sans-serif';
+      ctx.fillStyle = '#8C3D1D';
+      ctx.textAlign = 'left';
+      ctx.fillText('DOCUMENTO DEFINITIVO · RELATÓRIO DE PERÍCIA IMOBILIÁRIA', x + 40, currY);
+
+      ctx.font = '800 34px "Archivo Condensed", sans-serif';
+      ctx.fillStyle = '#22292D';
+      ctx.fillText('Dossiê Pericial VEREDA — Ed. Costa Atlântica', x + 40, currY + 40);
+
+      // Símbolo Vereda no topo direito
+      drawVeredaSymbol(x + w - 120, y + 26, 0.8, '#8C3D1D');
+
+      // Selo de Certificação Digital
+      ctx.fillStyle = '#22292D';
+      ctx.beginPath();
+      ctx.roundRect(x + 40, currY + 58, 460, 28, 4);
+      ctx.fill();
+      ctx.font = '600 11px "Archivo", monospace';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillText('CERTIFICAÇÃO CADASTRAL: PCR-2026-REC-0617800412-V', x + 54, currY + 76);
+
+      // Os 4 Pilares da Auditoria
+      const colW = (w - 80 - 48) / 4;
+      const pilY = currY + 110;
+
+      const pilares = [
+        {
+          num: '01',
+          titulo: 'PILAR FÍSICO',
+          destaque: '92 m²',
+          sub: 'Área Real Auditada',
+          cor: '#8C3D1D',
+          desc: '18 m² a menos que o anúncio. Sem habite-se para mezanino.'
+        },
+        {
+          num: '02',
+          titulo: 'PILAR JURÍDICO',
+          destaque: 'REGULAR',
+          sub: 'Habite-se 1984',
+          cor: '#2E5A85',
+          desc: 'Matrícula no 1º RGI sem gravame impeditivo ou hipoteca ativa.'
+        },
+        {
+          num: '03',
+          titulo: 'PILAR URBANO',
+          destaque: 'SEGURO',
+          sub: 'Raio de 150m',
+          cor: '#1F7F7A',
+          desc: 'Fora de manchas de maré alta e sem histórico de alagamento.'
+        },
+        {
+          num: '04',
+          titulo: 'PILAR FINANCEIRO',
+          destaque: 'R$ 125 MIL',
+          sub: 'Margem Negocial',
+          cor: '#8C3D1D',
+          desc: 'Fundamento técnico para rebaixar o valor de proposta.'
+        }
+      ];
+
+      for (let i = 0; i < 4; i++) {
+        const px = x + 40 + i * (colW + 16);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.roundRect(px, pilY, colW, 290, 8);
+        ctx.fill();
+        ctx.strokeStyle = '#E2E5E2';
+        ctx.stroke();
+
+        ctx.fillStyle = pilares[i].cor;
+        ctx.fillRect(px, pilY, colW, 4);
+
+        ctx.font = '700 11px "Archivo", sans-serif';
+        ctx.fillStyle = pilares[i].cor;
+        ctx.fillText(pilares[i].num + ' · ' + pilares[i].titulo, px + 20, pilY + 32);
+
+        ctx.font = '800 38px "Archivo Condensed", sans-serif';
+        ctx.fillStyle = '#22292D';
+        ctx.fillText(pilares[i].destaque, px + 20, pilY + 80);
+
+        ctx.font = '600 13px "Archivo", sans-serif';
+        ctx.fillStyle = '#636B6F';
+        ctx.fillText(pilares[i].sub, px + 20, pilY + 108);
+
+        ctx.font = '400 13px "Archivo", sans-serif';
+        ctx.fillStyle = '#22292D';
+        ctx.fillText(pilares[i].desc, px + 20, pilY + 144, colW - 38);
+      }
+
+      // Rodapé
+      const footY = pilY + 318;
+      ctx.fillStyle = 'rgba(140, 61, 29, 0.08)';
+      ctx.beginPath();
+      ctx.roundRect(x + 40, footY, w - 80, 56, 8);
+      ctx.fill();
+
+      ctx.font = '700 13px "Archivo", sans-serif';
+      ctx.fillStyle = '#8C3D1D';
+      ctx.fillText('VEREDA — A inteligência proprietária que devolve o poder de negociação ao comprador e locatário.', x + 60, footY + 34);
+
+      ctx.restore();
+    }
+
+    // Desenha o Cursor
+    function drawCursor(cx, cy, clickProgress) {
+      ctx.save();
+      ctx.translate(cx, cy);
+
+      const scale = 1.0 - clickProgress * 0.15;
+      ctx.scale(scale, scale);
+
+      ctx.shadowColor = 'rgba(0,0,0,0.3)';
+      ctx.shadowBlur = 12;
+      ctx.shadowOffsetX = 3;
+      ctx.shadowOffsetY = 6;
+
+      ctx.fillStyle = '#14181B';
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 1.5;
+
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, 22);
+      ctx.lineTo(6, 17);
+      ctx.lineTo(13, 26);
+      ctx.lineTo(17, 23);
+      ctx.lineTo(10, 14);
+      ctx.lineTo(18, 14);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    // =========================================================================
+    // 4. FUNÇÃO PURA PRINCIPAL: SEEK(T)
+    // =========================================================================
+    function draw(t) {
+      drawTechnicalBackground(t);
+
+      const camZoom = track(t, keyCamZoom, 90, 18);
+      ctx.save();
+      ctx.translate(W / 2, H / 2);
+      ctx.scale(camZoom, camZoom);
+      ctx.translate(-W / 2, -H / 2);
+
+      const cx = track(t, keyX, 170, 24);
+      const cy = track(t, keyY, 170, 24);
+      const cw = track(t, keyW, 170, 24);
+      const ch = track(t, keyH, 170, 24);
+      const cr = track(t, keyRadius, 170, 24);
+
+      ctx.save();
+      ctx.shadowColor = 'rgba(20, 24, 27, 0.08)';
+      ctx.shadowBlur = 32;
+      ctx.shadowOffsetY = 16;
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.roundRect(cx, cy, cw, ch, cr);
+      ctx.fill();
+
+      ctx.strokeStyle = '#E2E5E2';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.restore();
+
+      const a1 = swapAlpha(t, 0.0, 2.3, 0.15);
+      const a2 = swapAlpha(t, 2.3, 5.1, 0.15);
+      const a3 = swapAlpha(t, 5.1, 7.7, 0.15);
+      const a4 = swapAlpha(t, 7.7, 10.1, 0.15);
+      const a5 = swapAlpha(t, 10.1, 12.0, 0.15);
+
+      drawState1_PropertyCard(cx, cy, cw, ch, a1, t);
+      drawState2_OfficialRecord(cx, cy, cw, ch, a2, t);
+      drawState3_LotProjection(cx, cy, cw, ch, a3, t);
+      drawState4_NeighborhoodMap(cx, cy, cw, ch, a4, t);
+      drawState5_FinalDossier(cx, cy, cw, ch, a5, t);
+
+      const curX = track(t, keyCursorX, 280, 30);
+      const curY = track(t, keyCursorY, 280, 30);
+      const curClick = track(t, keyCursorClick, 320, 26);
+      drawCursor(curX, curY, curClick);
+
+      ctx.restore();
+    }
+
+    window.seek = (t) => {
+      draw(t);
+      return true;
+    };
+
+    if (!navigator.webdriver) {
+      const t0 = performance.now();
+      function loop() {
+        const t = ((performance.now() - t0) / 1000) % DUR;
+        draw(t);
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+    }
+  </script>
+</body>
+</html>

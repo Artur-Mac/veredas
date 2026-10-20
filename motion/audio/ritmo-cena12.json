@@ -1,0 +1,108 @@
+{
+  "poc": "CENA-12",
+  "duracao": 5.87,
+  "geradoEm": "2026-10-18",
+  "trilha": null,
+  "observacao": "Nenhuma trilha licenciada foi fornecida. Sons sintetizados por motion/audio/sfx.mjs, presos aos eventos. A grade abaixo é uma sugestão de andamento; quando houver trilha, gere beats.json (motion/audio/beats.py) e realinhe só as transições curtas. Os HOLD do modo ao vivo não seguem grade: duram o quanto o apresentador falar.",
+  "gradeSugerida": {
+    "bpm": 125,
+    "fase": 0.03,
+    "erroMedio": 0,
+    "batidas": [
+      0.03,
+      0.51,
+      0.99,
+      1.47,
+      1.95,
+      2.43,
+      2.91,
+      3.39,
+      3.87,
+      4.35,
+      4.83,
+      5.31,
+      5.79
+    ]
+  },
+  "holds": [
+    1.4,
+    5.87
+  ],
+  "sons": [
+    {
+      "t": 0.03,
+      "tipo": "whoosh",
+      "dur": 0.9,
+      "ganho": 0.3,
+      "evento": "a moldura sobe com a foto",
+      "batidaMaisProxima": 0.03,
+      "desvio": 0
+    },
+    {
+      "t": 0.32,
+      "tipo": "pop",
+      "ganho": 0.3,
+      "evento": "aspa: 75 metros quadrados",
+      "batidaMaisProxima": 0.51,
+      "desvio": -0.19
+    },
+    {
+      "t": 0.745,
+      "tipo": "pop",
+      "ganho": 0.3,
+      "evento": "aspa: super ventilado",
+      "batidaMaisProxima": 0.51,
+      "desvio": 0.235
+    },
+    {
+      "t": 0.762,
+      "tipo": "pop",
+      "ganho": 0.3,
+      "evento": "aspa: sol 100% nascente",
+      "batidaMaisProxima": 0.99,
+      "desvio": -0.228
+    },
+    {
+      "t": 0.299,
+      "tipo": "pop",
+      "ganho": 0.3,
+      "evento": "aspa: taxa de condomínio baixinha",
+      "batidaMaisProxima": 0.51,
+      "desvio": -0.211
+    },
+    {
+      "t": 1.47,
+      "tipo": "whoosh",
+      "dur": 1,
+      "ganho": 0.35,
+      "evento": "a máscara descasca a foto",
+      "batidaMaisProxima": 1.47,
+      "desvio": 0
+    },
+    {
+      "t": 2.898,
+      "tipo": "tick",
+      "ganho": 0.6,
+      "evento": "as linhas vão até o contorno",
+      "batidaMaisProxima": 2.91,
+      "desvio": -0.012
+    },
+    {
+      "t": 3.258,
+      "tipo": "sweep",
+      "dur": 0.5,
+      "ganho": 0.5,
+      "evento": "as linhas desenrolam no ninho",
+      "batidaMaisProxima": 3.39,
+      "desvio": -0.132
+    },
+    {
+      "t": 3.678,
+      "tipo": "thump",
+      "ganho": 0.35,
+      "evento": "o ninho se enche",
+      "batidaMaisProxima": 3.87,
+      "desvio": -0.192
+    }
+  ]
+}
