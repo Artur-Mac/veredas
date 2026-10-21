@@ -242,6 +242,12 @@ async function esperarSaldo(page, esperado) {
 
 const valorDoCampo = (page, nome) => page.getByRole("textbox", { name: nome, exact: true }).inputValue();
 
+/** A leitura de um link abre o formulário enxuto (preço, condomínio e IPTU); o resto fica atrás do link. */
+async function abrirTodosOsCampos(page) {
+  assert.equal(await page.getByRole("textbox", { name: "Rua", exact: true }).count(), 0, "formulário enxuto sem a rua");
+  await page.getByRole("button", { name: /^Ver todos os campos/ }).click();
+}
+
 // ——— Passos que se repetem (editor e Comparar) ——————————————————————————————————————————————
 
 /**
@@ -556,6 +562,7 @@ try {
     await page.getByRole("button", { name: "Ler texto", exact: true }).click();
     await esperarTexto(page, ANOMALIA_IPTU);
     await esperarTexto(page, "R$ 690.000 · Cond. R$ 780/mês · IPTU R$ 154 · período não informado");
+    await abrirTodosOsCampos(page);
     assert.equal(await valorDoCampo(page, "Rua"), "Estrada do Encanamento");
     assert.equal(await valorDoCampo(page, "Preço de venda (R$)"), "690.000");
     assert.equal(await valorDoCampo(page, "Condomínio (R$ por mês)"), "780");
@@ -677,6 +684,7 @@ try {
     );
     // A cobertura é a do link (Casa Forte): o texto colado fala de outro bairro e não a muda.
     await esperarTexto(page, "Casa Forte · com cadastro");
+    await abrirTodosOsCampos(page);
     assert.equal(await valorDoCampo(page, "Rua"), dadosDoAluguel.logradouro);
     assert.equal(await valorDoCampo(page, "Aluguel (R$ por mês)"), reais(dadosDoAluguel.preco));
     assert.equal(await valorDoCampo(page, "Condomínio (R$ por mês)"), reais(dadosDoAluguel.condominio));

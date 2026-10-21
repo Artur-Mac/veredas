@@ -1,8 +1,24 @@
 /**
  * Títulos da página de verificação do portal (o desafio da Cloudflare). Só o título conta: "verifique" e "captcha"
  * aparecem em anúncios comuns ("verifique a disponibilidade"), e um anúncio inteiro não pode ser descartado por isso.
+ * "Attention Required!" não entra: é o título da página de bloqueio, que não tem verificação a completar.
  */
-export const PADRAO_DE_TITULO_DE_VERIFICACAO = /just a moment|um momento|attention required|verify you are human/i;
+export const PADRAO_DE_TITULO_DE_VERIFICACAO = /just a moment|um momento|verify you are human/i;
+
+/**
+ * Página de bloqueio do portal (Cloudflare "Sorry, you have been blocked", "Access denied"). Diferente do desafio, a
+ * pessoa não tem o que fazer nela dentro do app: o portal recusa a página para apps de terceiros.
+ */
+export const PADRAO_DE_BLOQUEIO =
+  /attention required|access denied|acesso negado|you have been blocked|why have i been blocked|you are unable to access|request blocked|error 1020|403 forbidden/i;
+
+/** O texto da página de bloqueio é curto; o padrão só olha o começo, para não pegar frases soltas de um anúncio. */
+const INICIO_DO_TEXTO = 2000;
+
+/** Calculado no app, sobre a coleta já validada (título e texto). Só decide quando a página não rendeu dados. */
+export function paginaBloqueada(titulo: string, texto: string): boolean {
+  return PADRAO_DE_BLOQUEIO.test(titulo) || PADRAO_DE_BLOQUEIO.test(texto.slice(0, INICIO_DO_TEXTO));
+}
 
 /** O desafio também se denuncia por iframe ou script carregado de `challenges.cloudflare.com`. */
 export const SELETOR_DE_DESAFIO = 'iframe[src*="challenges.cloudflare.com"], script[src*="challenges.cloudflare.com"]';

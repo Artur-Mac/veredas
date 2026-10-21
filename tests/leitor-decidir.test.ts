@@ -8,6 +8,7 @@ import {
   PADRAO_DE_TITULO_DE_VERIFICACAO,
   SCRIPT_COLETOR,
   SELETOR_DE_DESAFIO,
+  paginaBloqueada,
 } from "../src/componentes/leitor/coletor";
 import {
   ESTADO_INICIAL_DO_LEITOR,
@@ -75,6 +76,17 @@ function leitura(campos: Partial<CamposExtraidos>): LeituraParcial {
 const COM_PRECO = [leitura({ preco: 4500 })];
 const COM_AREA = [leitura({ area: 125 })];
 const SEM_DADOS = [leitura({ quartos: 3 })];
+
+/** Texto da página de bloqueio da Cloudflare, como a WebView do celular mostrou ao abrir um anúncio do ZAP. */
+const TEXTO_DO_BLOQUEIO = [
+  "Sorry, you have been blocked",
+  "You are unable to access zapimoveis.com.br",
+  "Why have I been blocked?",
+  "This website is using a security service to protect itself from online attacks. The action you just performed triggered the security solution.",
+  "What can I do to resolve this?",
+  "You can email the site owner to let them know you were blocked.",
+  "Performance & security by Cloudflare",
+].join("\n");
 
 const CARREGANDO: EstadoDoLeitor = { fase: "carregando" };
 const VERIFICANDO: EstadoDoLeitor = { fase: "verificando" };
@@ -682,7 +694,7 @@ function rodarColetor(pagina: PaginaFalsa): { verificacao: boolean; titulo: stri
 describe("verificação do coletor (K3)", () => {
   const ANUNCIO = "Apartamento para alugar\nAluguel R$ 4.500 /mês\nVerifique a disponibilidade com o corretor.";
 
-  it.each(["Just a moment...", "Um momento…", "Attention Required! | Cloudflare", "Verify you are human"])(
+  it.each(["Just a moment...", "Um momento…", "Verify you are human"])(
     "título de desafio: %s",
     (titulo) => {
       const mensagens = rodarColetor({ titulo, texto: "" });
@@ -690,6 +702,12 @@ describe("verificação do coletor (K3)", () => {
       expect(mensagens.every((m) => m.verificacao)).toBe(true);
     },
   );
+
+  it("a página de bloqueio ('Attention Required!') não é verificação: não há desafio a completar", () => {
+    const mensagens = rodarColetor({ titulo: "Attention Required! | Cloudflare", texto: TEXTO_DO_BLOQUEIO });
+    expect(mensagens.length).toBeGreaterThan(0);
+    expect(mensagens.every((m) => m.verificacao === false)).toBe(true);
+  });
 
   it("iframe ou script de challenges.cloudflare.com é verificação, mesmo com título comum", () => {
     const mensagens = rodarColetor({ titulo: "Apartamento · ZAP Imóveis", texto: ANUNCIO, comDesafioDaCloudflare: true });
@@ -847,5 +865,104 @@ describe('botão "Mapear chaves" do modo de inspeção (K7)', () => {
     } finally {
       global.__DEV__ = antes;
     }
+  });
+});
+
+// ——— Bloqueio do portal: a página "Sorry, you have been blocked" da Cloudflare (ZAP, VivaReal e OLX no celular) ———————
+
+describe("bloqueio do portal", () => {
+  const ANUNCIO = "Apartamento para alugar\nAluguel R$ 4.500 /mês\nCondomínio R$ 1.190\n125 m²\n3 quartos";
+
+  describe("classificação da página", () => {
+    it("a página de bloqueio da Cloudflare é bloqueio, pelo título e pelo texto", () => {
+      expect(paginaBloqueada("Attention Required! | Cloudflare", TEXTO_DO_BLOQUEIO)).toBe(true);
+      expect(paginaBloqueada("", TEXTO_DO_BLOQUEIO)).toBe(true);
+      expect(paginaBloqueada("Access denied", "")).toBe(true);
+      expect(paginaBloqueada("", "Error 1020\nAccess denied\nThis website is using a security service")).toBe(true);
+      expect(paginaBloqueada("403 Forbidden", "")).toBe(true);
+    });
+
+    it("o desafio ('Just a moment...') e o anúncio não são bloqueio", () => {
+      expect(paginaBloqueada("Just a moment...", "Verify you are human by completing the action below.")).toBe(false);
+      expect(paginaBloqueada("Apartamento · ZAP Imóveis", ANUNCIO)).toBe(false);
+    });
+
+    it("uma frase solta lá no fim de um anúncio longo não derruba a leitura", () => {
+      const longo = `${ANUNCIO}\n${"Descrição do imóvel. ".repeat(150)}\nAcesso negado a animais na piscina.`;
+      expect(paginaBloqueada("Apartamento · ZAP Imóveis", longo)).toBe(false);
+    });
+  });
+
+  describe("decisão", () => {
+    const BLOQUEIO = { bloqueio: true } as const;
+    const FALHOU_POR_BLOQUEIO: EstadoDoLeitor = { fase: "falhou", motivo: "bloqueio" };
+
+    it("bloqueio sem dados falha na hora, de carregando, verificando e das falhas recuperáveis", () => {
+      const antes: EstadoDoLeitor[] = [CARREGANDO, VERIFICANDO, { fase: "falhou", motivo: "tempo" }, { fase: "falhou", motivo: "outra_pagina" }];
+      for (const estado of antes) {
+        expect(proximoEstado(estado, { tipo: "mensagem", leituras: [], verificacao: false, ...BLOQUEIO })).toEqual(FALHOU_POR_BLOQUEIO);
+      }
+    });
+
+    it("vale antes da verificação: a página de bloqueio com o script da Cloudflare não pede desafio", () => {
+      expect(proximoEstado(CARREGANDO, { tipo: "mensagem", leituras: [], verificacao: true, ...BLOQUEIO })).toEqual(FALHOU_POR_BLOQUEIO);
+    });
+
+    it("se a página trouxe preço ou área, é leitura, não bloqueio", () => {
+      expect(proximoEstado(CARREGANDO, { tipo: "mensagem", leituras: COM_PRECO, verificacao: false, ...BLOQUEIO })).toEqual(LIDO);
+    });
+
+    it("falha por erro ou por verificação não vira bloqueio, e o bloqueio não muda com os prazos", () => {
+      const porErro: EstadoDoLeitor = { fase: "falhou", motivo: "erro" };
+      expect(proximoEstado(porErro, { tipo: "mensagem", leituras: [], verificacao: false, ...BLOQUEIO })).toBe(porErro);
+      expect(proximoEstado(FALHOU_POR_BLOQUEIO, { tipo: "prazo_20s" })).toBe(FALHOU_POR_BLOQUEIO);
+      expect(proximoEstado(FALHOU_POR_BLOQUEIO, { tipo: "prazo_120s" })).toBe(FALHOU_POR_BLOQUEIO);
+      expect(proximoEstado(FALHOU_POR_BLOQUEIO, { tipo: "mensagem", leituras: [], verificacao: true })).toBe(FALHOU_POR_BLOQUEIO);
+    });
+  });
+
+  describe("componente", () => {
+    const URL_DO_ANUNCIO = "https://www.zapimoveis.com.br/imovel/aluguel-apartamento-3-quartos-boa-viagem-recife-pe-125m2-id-123/";
+    const COLETA_DE_BLOQUEIO = JSON.stringify({
+      url: URL_DO_ANUNCIO,
+      titulo: "Attention Required! | Cloudflare",
+      ld: [],
+      estados: [],
+      texto: TEXTO_DO_BLOQUEIO,
+      verificacao: false,
+    });
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it("a página de bloqueio falha por 'bloqueio' na hora, sem pedir verificação nem esperar prazo", () => {
+      const falhas: string[] = [];
+      let arvore!: TestRenderer.ReactTestRenderer;
+      act(() => {
+        arvore = TestRenderer.create(
+          React.createElement(
+            TemaDoApp,
+            null,
+            React.createElement(LeitorDePagina, {
+              url: URL_DO_ANUNCIO,
+              portal: "zap",
+              idNoPortal: "123",
+              aoLer: () => undefined,
+              aoFalhar: (m: string) => falhas.push(m),
+            }),
+          ),
+        );
+      });
+      act(() => jest.advanceTimersByTime(2000));
+      act(() => webView().onMessage({ nativeEvent: { data: COLETA_DE_BLOQUEIO } }));
+      expect(falhas).toEqual(["bloqueio"]);
+      expect(JSON.stringify(arvore.toJSON())).not.toContain(AVISO_DE_VERIFICACAO);
+      act(() => jest.advanceTimersByTime(300_000));
+      expect(falhas).toEqual(["bloqueio"]);
+    });
   });
 });

@@ -2,7 +2,7 @@
 // Nenhum temporizador, ref ou callback mora aqui.
 import type { LeituraParcial } from "../../dados/contratos";
 
-export type MotivoDaFalha = "tempo" | "verificacao" | "erro" | "outra_pagina";
+export type MotivoDaFalha = "tempo" | "verificacao" | "erro" | "outra_pagina" | "bloqueio";
 
 export type EstadoDoLeitor =
   | { fase: "carregando" }
@@ -14,9 +14,9 @@ export type EventoDoLeitor =
   /**
    * Uma coleta validada da página, já passada por `lerPagina`. `outraPagina`: a coleta não veio do anúncio pedido
    * (host diferente, caminho sem o id do anúncio, lista ou busca); nesse caso `leituras` só traz o que o estado do
-   * anúncio (objeto com o id) rendeu.
+   * anúncio (objeto com o id) rendeu. `bloqueio`: a página é a de bloqueio do portal ("Sorry, you have been blocked").
    */
-  | { tipo: "mensagem"; leituras: LeituraParcial[]; verificacao: boolean; outraPagina?: boolean }
+  | { tipo: "mensagem"; leituras: LeituraParcial[]; verificacao: boolean; outraPagina?: boolean; bloqueio?: boolean }
   | { tipo: "prazo_20s" }
   | { tipo: "prazo_120s" }
   | { tipo: "erro" };
@@ -37,6 +37,9 @@ function falhaRecuperavel(estado: EstadoDoLeitor): boolean {
  * Regras:
  * - mensagem que rende preço ou área → `lido`, mesmo com `verificacao` (a palavra "verifique" aparece em anúncios);
  *   vale também depois de uma falha, porque a página continua à vista da pessoa;
+ * - mensagem com `bloqueio` e sem dados → `falhou` por `bloqueio`, na hora, de qualquer fase que não seja outra falha
+ *   definitiva (erro, verificação): não há desafio a completar nem motivo para esperar os prazos. Vale antes da
+ *   verificação, porque a página de bloqueio também pode trazer o script da Cloudflare;
  * - mensagem com `verificacao` e sem dados → `verificando`, a partir de `carregando` e também de `falhou` por tempo
  *   ou por outra página: o desafio pode aparecer depois dos 20 s, e a página continua à vista da pessoa. Falha por
  *   verificação ou por erro não volta;
@@ -52,6 +55,11 @@ export function proximoEstado(estado: EstadoDoLeitor, evento: EventoDoLeitor): E
   switch (evento.tipo) {
     case "mensagem":
       if (rendeDados(evento.leituras)) return { fase: "lido" };
+      if (evento.bloqueio) {
+        return estado.fase === "carregando" || estado.fase === "verificando" || falhaRecuperavel(estado)
+          ? { fase: "falhou", motivo: "bloqueio" }
+          : estado;
+      }
       if (evento.verificacao) {
         return estado.fase === "carregando" || falhaRecuperavel(estado) ? { fase: "verificando" } : estado;
       }

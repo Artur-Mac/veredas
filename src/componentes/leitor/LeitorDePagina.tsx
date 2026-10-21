@@ -7,7 +7,7 @@ import { DOMINIOS_DOS_PORTAIS, coletaEhDoAnuncio, esquemaColetaDaPagina, lerPagi
 import { useTema } from "../../tema/Tema";
 import { comAlfa } from "../../tema/tokens";
 import { Texto } from "../Texto";
-import { SCRIPT_COLETOR } from "./coletor";
+import { SCRIPT_COLETOR, paginaBloqueada } from "./coletor";
 import {
   ESTADO_INICIAL_DO_LEITOR,
   proximoEstado,
@@ -140,6 +140,7 @@ export function LeitorDePagina({ url, portal, idNoPortal, aoLer, aoFalhar }: Lei
       leituras: lerPagina(coleta, portal, idNoPortal, url),
       verificacao: coleta.verificacao,
       outraPagina: !coletaEhDoAnuncio(coleta, portal, idNoPortal, url),
+      bloqueio: paginaBloqueada(coleta.titulo, coleta.texto),
     });
   };
 
