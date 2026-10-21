@@ -1,7 +1,7 @@
 // Sobre os dados (modal). Referência: `openAboutDataSheet`, index.html 6282–6324.
 // Para cada fonte do `meta.json` do índice cadastral: nome, órgão, licença, datas, registros lidos e colunas usadas;
 // a atribuição exigida pela licença ODbL; e o que o Vereda ainda não cobre. Nada aqui é escrito à mão sobre as
-// bases: tudo vem de META.fontes.
+// bases: tudo vem de META.fontes e, desde a v1.1, de META.fontesDaRua (Prefeitura e IBGE, com a citação do IBGE).
 import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
@@ -16,16 +16,18 @@ import { Icone } from "../componentes/Icone";
 import { Pressionavel } from "../componentes/Pressionavel";
 import { voltarOu } from "../componentes/Tela";
 import { Texto } from "../componentes/Texto";
-import type { Confianca, MetaDoIndice } from "../dados/contratos";
+import type { Confianca, FonteDaRua, MetaDoIndice } from "../dados/contratos";
 import { formatarData, formatarNumero } from "../dados/formatos";
 import { BAIRROS_COBERTOS, bairroPorSlug } from "../dados/recife/bairros";
 import { META } from "../dados/recife/indice";
 import { useTema } from "../tema/Tema";
 import { RAIO, TOQUE_MINIMO, comAlfa } from "../tema/tokens";
 
-type Fonte = MetaDoIndice["fontes"][number];
+type Fonte = MetaDoIndice["fontes"][number] | FonteDaRua;
 
 const ATRIBUICAO = "Contém dados da Prefeitura do Recife, disponibilizados sob a Open Database License (ODbL).";
+/** v1.1: as bases do IBGE não nomeiam licença; o IBGE pede que a fonte seja citada. */
+const ATRIBUICAO_DO_IBGE = "Contém dados do IBGE: CNEFE 2022 e Censo Demográfico 2022 (entorno dos domicílios, malha de setores e Amostra por área de ponderação).";
 
 /** Quatro origens de informação de `.conf-trace` (index.html 2410–2440): a forma do traço diz a origem sem depender de cor. */
 const ORIGENS: { confianca: Confianca; texto: string }[] = [
@@ -51,9 +53,9 @@ function nomesDosCobertos(): string {
 /** Só a data, como foi gravada ("2026-10-20T16:17:16Z" → "20/10/2026"). */
 const diaGravado = (iso: string | null) => (iso ? formatarData(iso.slice(0, 10)) : "Não informado");
 
-function lerFontes(): { fontes: Fonte[] } | { erro: string } {
+function lerFontes(): { fontes: Fonte[]; fontesDaRua: FonteDaRua[] } | { erro: string } {
   try {
-    return { fontes: META.fontes };
+    return { fontes: META.fontes, fontesDaRua: META.fontesDaRua ?? [] };
   } catch {
     return { erro: "Não deu para ler o registro das fontes deste aparelho. Os dados do índice não foram alterados." };
   }
@@ -104,20 +106,23 @@ function CartaoDaFonte({ fonte }: { fonte: Fonte }) {
         </Texto>
       </View>
       <View style={{ gap: 3 }}>
-        <Fato rotulo="Licença" valor={fonte.licenca} />
+        <Fato rotulo="Licença" valor={fonte.licenca === "Citar o IBGE" ? "Sem licença nomeada; citar o IBGE" : fonte.licenca} />
         <Fato rotulo="Modificado em" valor={diaGravado(fonte.modificadoEm)} numerico={fonte.modificadoEm !== null} />
+        {"periodo" in fonte && fonte.periodo ? (
+          <Fato rotulo="Período" valor={`${diaGravado(fonte.periodo.de)} a ${diaGravado(fonte.periodo.ate)}`} numerico />
+        ) : null}
         <Fato rotulo="Consultado em" valor={diaGravado(fonte.consultadoEm)} numerico />
         <Fato rotulo="Registros lidos" valor={formatarNumero(fonte.registrosLidos)} numerico />
         <Fato rotulo="Colunas usadas" valor={fonte.colunasUsadas.join(", ")} />
       </View>
       <Pressionavel
         role="link"
-        accessibilityLabel={`Abrir ${fonte.nome} no portal de dados abertos`}
+        accessibilityLabel={`Abrir ${fonte.nome} no ${fonte.licenca === "Citar o IBGE" ? "servidor do IBGE" : "portal de dados abertos"}`}
         onPress={() => void WebBrowser.openBrowserAsync(fonte.url)}
         style={{ flexDirection: "row", alignItems: "center", gap: 6, minHeight: 44, alignSelf: "flex-start" }}
       >
         <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 12, lineHeight: 16, fontWeight: "600" }}>
-          Abrir no portal de dados abertos
+          {fonte.licenca === "Citar o IBGE" ? "Abrir no servidor do IBGE" : "Abrir no portal de dados abertos"}
         </Texto>
         <Icone nome="external-link" tamanho="p" cor="cor-barro-texto" />
       </Pressionavel>
@@ -231,7 +236,7 @@ export default function SobreOsDados() {
             De onde vêm os números
           </Texto>
           <Texto style={{ fontSize: 13, lineHeight: 19 }}>
-            {`O Vereda cruza ${"fontes" in leitura ? leitura.fontes.length : "as"} bases abertas do Recife com o anúncio lido no aparelho. Nossa regra central é: `}
+            {`O Vereda cruza ${"fontes" in leitura ? leitura.fontes.length + leitura.fontesDaRua.length : "as"} bases abertas ${"fontes" in leitura && leitura.fontesDaRua.length > 0 ? "do Recife e do IBGE" : "do Recife"} com o anúncio lido no aparelho. Nossa regra central é: `}
             <Texto style={{ fontSize: 13, fontWeight: "700" }}>posição é fato, adjetivo é veredito</Texto>.
           </Texto>
         </View>
@@ -267,9 +272,25 @@ export default function SobreOsDados() {
           )}
         </View>
 
+        {"fontes" in leitura && leitura.fontesDaRua.length > 0 ? (
+          <View style={{ gap: 8 }}>
+            <Texto tipo="secao" role="heading" aria-level={3} style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>
+              Fontes da seção A rua
+            </Texto>
+            {leitura.fontesDaRua.map((f) => (
+              <CartaoDaFonte key={f.chave} fonte={f} />
+            ))}
+          </View>
+        ) : null}
+
         <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
           {ATRIBUICAO}
         </Texto>
+        {"fontes" in leitura && leitura.fontesDaRua.some((f) => f.licenca === "Citar o IBGE") ? (
+          <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
+            {ATRIBUICAO_DO_IBGE}
+          </Texto>
+        ) : null}
 
         <View style={{ gap: 8 }}>
           <Texto tipo="secao" role="heading" aria-level={3} style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>

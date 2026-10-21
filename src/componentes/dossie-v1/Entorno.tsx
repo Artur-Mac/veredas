@@ -7,6 +7,7 @@ import { RastroDeConfianca } from "../fonte/RastroDeConfianca";
 import { nomeCurtoDaFonte, rotuloDaConfianca } from "../fonte/textos";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
+import { ARua, type RespostaDaDefesaCivil } from "./ARua";
 import { CartaoSemPredio } from "./CartaoSemPredio";
 import { LinhaDeObraNumerada } from "./MapaDoLote";
 import { Corpo, LinkComSeta, Nota, Numero, NumeroEditorial, Secao, Seta, Sobretitulo, Titulo2 } from "./base";
@@ -23,7 +24,7 @@ import {
   valorDaPosicao,
 } from "./textos";
 
-export type SecaoDoEntorno = "obras" | "preco" | "contexto";
+export type SecaoDoEntorno = "obras" | "rua" | "preco" | "contexto";
 
 type Props = {
   visao: VisaoDoDossie;
@@ -37,6 +38,8 @@ type Props = {
   aoAbrirMapa: () => void;
   aoConfirmarPredio: () => void;
   aoMedirSecao: (secao: SecaoDoEntorno, y: number) => void;
+  /** v1.1: a resposta da pessoa sobre os atendimentos da Defesa Civil na rua (null desfaz). */
+  aoResponderDefesaCivil: (resposta: RespostaDaDefesaCivil) => void;
 };
 
 /** Barra bala (`.ds-bullet`, index.html 5284 a 5290): o preenchimento é o imóvel; o traço escuro, a mediana. */
@@ -219,9 +222,10 @@ function ContextoDoBairroSecao({ contexto, aoAbrirFonte }: { contexto: ContextoD
   );
 }
 
-/** Aba Entorno: obras recentes, o preço no contexto e o contexto do bairro. */
+/** Aba Entorno: obras recentes, a rua (v1.1, com prédio confirmado), o preço no contexto e o contexto do bairro. */
 export function Entorno({
   visao, edificio, contexto, nomeDoBairro, coberto, vinculoConfirmado, aoAbrirFonte, aoAbrirMapa, aoConfirmarPredio, aoMedirSecao,
+  aoResponderDefesaCivil,
 }: Props) {
   const aluguel = visao.custo.principal.rotulo === "Aluguel anunciado";
   return (
@@ -237,6 +241,11 @@ export function Entorno({
           </View>
         )}
       </Secao>
+      {visao.rua ? (
+        <Secao aoMedir={(y) => aoMedirSecao("rua", y)}>
+          <ARua rua={visao.rua} aoAbrirFonte={aoAbrirFonte} aoResponderDefesaCivil={aoResponderDefesaCivil} />
+        </Secao>
+      ) : null}
       <Secao aoMedir={(y) => aoMedirSecao("preco", y)}>
         <Sobretitulo>Preço no contexto</Sobretitulo>
         <Titulo2>{aluguel ? "Aluguel por m²" : "Preço e avaliação fiscal"}</Titulo2>

@@ -23,6 +23,7 @@ import { custoMensal } from "../custos";
 import { formatarNumero, formatarReais } from "../formatos";
 import { bairroPorSlug, eCoberto } from "../recife/bairros";
 import { formatarChaveCadastral, formatarEndereco } from "../recife/endereco";
+import { analisarRua, type EntradaDaRua } from "./rua";
 
 type TipologiaDoPredio = Edificio["tipologias"][number];
 type CampoDeCusto = "iptu" | "condominio";
@@ -508,6 +509,7 @@ function perguntasDe(
   anomalias: AnomaliaDeCusto[],
   achados: Achado[],
   custo: VisaoDoDossie["custo"],
+  daRua: readonly Pergunta[] = [],
 ): Pergunta[] {
   const lista: Pergunta[] = [];
   const d = a.declarados;
@@ -618,6 +620,9 @@ function perguntasDe(
       textoParaMensagem: "Há obras próximas ao prédio que afetem a rotina dos moradores?", origem: "achado", prioridade: "conforto",
     });
   }
+
+  // v1.1: as perguntas da seção "A rua" (som, drenagem, iluminação, travessia, coleta e Defesa Civil), antes das padrão.
+  lista.push(...daRua);
 
   lista.push(
     {
@@ -804,6 +809,8 @@ export function enderecoDoImovel(a: Pick<AnaliseV2, "logradouro" | "numero">, pr
  * `prioridade` é o filtro Custo / Conforto / Documentos da tela (não faz parte da análise); sem ela, as
  * perguntas saem na ordem da derivação, com a de endereço em primeiro. `agora` fica na assinatura para que
  * regras futuras dependentes de tempo não mudem os chamadores; hoje nenhuma regra o usa.
+ * `rua` (v1.1) é a camada "A rua" do índice do bairro com as fontes do meta.json: com ela, a visão ganha `rua` (os fatos
+ * da seção, ou null sem prédio confirmado) e o roteiro ganha as perguntas da rua. Sem o argumento, a visão é a da v1.0.
  */
 export function derivarDossie(
   a: AnaliseV2,
@@ -813,6 +820,7 @@ export function derivarDossie(
   outras: AnaliseV2[],
   agora: Date,
   prioridade: Prioridade | null = null,
+  rua?: EntradaDaRua | null,
 ): VisaoDoDossie {
   void agora;
   void contexto;
@@ -832,7 +840,8 @@ export function derivarDossie(
   const posicao = posicaoDe(a, c.principal.porM2, predio, outras);
   const anomalias = anomaliasDeCusto(a);
   const todos = achadosDe(a, predio, anomalias, iptuMensalDeclarado, posicao);
-  const perguntas = ordenarPerguntas(perguntasDe(a, predio, anomalias, todos, custo), prioridade);
+  const daRua = rua ? analisarRua(a, predio, rua, predio ? formatarEndereco(predio.logradouro, null) : undefined) : null;
+  const perguntas = ordenarPerguntas(perguntasDe(a, predio, anomalias, todos, custo, daRua?.perguntas ?? []), prioridade);
   const obras = predio ? obrasProximas(predio, obrasDoBairro) : null;
 
   const d = a.declarados;
@@ -856,5 +865,6 @@ export function derivarDossie(
     cadastro: predio ? cadastroDe(a, predio) : [semPredio(a)],
     historico: predio && obras ? historicoDe(predio, obras) : [],
     obras,
+    ...(rua !== undefined ? { rua: daRua?.visao ?? null } : {}),
   };
 }

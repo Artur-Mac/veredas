@@ -1,10 +1,20 @@
 // Textos da gaveta de fonte (Fatia 4). Funções puras: recebem a meta do índice e devolvem o que a gaveta mostra.
 // Nada aqui lê armazenamento nem relógio. Os nomes, o órgão, a licença, as datas e as colunas vêm de `META.fontes`
 // (src/dados/recife/indice/meta.json); este arquivo só acrescenta o nome curto, o recorte e os rótulos de confiança.
-import type { ChaveDeFonte, Confianca, MetaDoIndice } from "../../dados/contratos";
+import type { ChaveDeFonte, ChaveDeFonteDaRua, Confianca, MetaDoIndice } from "../../dados/contratos";
 
-/** Quem trouxe o dado: uma base da Prefeitura, o anúncio, a própria pessoa ou a média das análises dela. */
-export type FonteDoDado = ChaveDeFonte | "anuncio" | "voce" | "suas_analises";
+/** Quem trouxe o dado: uma base da Prefeitura ou do IBGE, o anúncio, a própria pessoa ou a média das análises dela. */
+export type FonteDoDado = ChaveDeFonte | ChaveDeFonteDaRua | "anuncio" | "voce" | "suas_analises";
+
+/** As bases da seção "A rua" (v1.1); as três do IBGE não nomeiam licença e pedem a citação da fonte. */
+const FONTES_DA_RUA: readonly ChaveDeFonteDaRua[] = [
+  "licenciamento_ambiental", "central_156", "iluminacao", "coleta", "sinistros", "defesa_civil", "cnefe", "censo_entorno", "censo_amostra",
+];
+const FONTES_DO_IBGE: readonly FonteDoDado[] = ["cnefe", "censo_entorno", "censo_amostra"];
+
+export function eFonteDaRua(fonte: FonteDoDado): fonte is ChaveDeFonteDaRua {
+  return (FONTES_DA_RUA as readonly string[]).includes(fonte);
+}
 
 /** As quatro linhas de confiança de index.html (`.conf-trace`, linhas 2410 a 2440), na ordem de index.html. */
 export const ORDEM_DA_CONFIANCA: readonly Confianca[] = ["oficial", "declarado", "inferencia", "nao_sabemos"];
@@ -29,6 +39,10 @@ export const EXPLICACAO_DA_CONFIANCA: Record<Confianca, string> = {
 
 /** Rastro do dado oficial que o Vereda calcula a partir do registro, em vez de copiá-lo. */
 export const EXPLICACAO_DO_CALCULO = "Calculado pelo Vereda a partir de uma base pública da Prefeitura (mediana, faixa ou contagem por prédio).";
+
+/** v1.1: as contagens da seção "A rua" (a até 150 m do prédio ou na rua dele) e os percentuais do Censo. */
+export const EXPLICACAO_DO_CALCULO_DA_RUA = "Calculado pelo Vereda a partir de uma base pública da Prefeitura (contagem a até 150 m do prédio ou na rua dele).";
+export const EXPLICACAO_DO_CALCULO_DO_IBGE = "Calculado pelo Vereda a partir de uma base pública do IBGE (percentual do setor censitário ou da área de ponderação).";
 
 /**
  * Ids de `Fato` e de `Achado` (src/dados/dossie/derivar.ts) com confiança "oficial" cujo valor é o do registro, só
@@ -68,6 +82,8 @@ const BASES_AGREGADAS: readonly FonteDoDado[] = ["iptu_2026", "itbi", "licenciam
  */
 export function explicacaoDaConfianca(confianca: Confianca, idDoDado: string | null = null, fonte: FonteDoDado | null = null): string {
   if (confianca !== "oficial") return EXPLICACAO_DA_CONFIANCA[confianca];
+  if (fonte !== null && FONTES_DO_IBGE.includes(fonte)) return EXPLICACAO_DO_CALCULO_DO_IBGE;
+  if (fonte !== null && eFonteDaRua(fonte)) return EXPLICACAO_DO_CALCULO_DA_RUA;
   if (idDoDado !== null && IDS_DE_DADO_CALCULADO.includes(idDoDado)) return EXPLICACAO_DO_CALCULO;
   if (idDoDado !== null && IDS_DE_DADO_COPIADO.includes(idDoDado)) return EXPLICACAO_DA_CONFIANCA.oficial;
   if (fonte !== null && BASES_AGREGADAS.includes(fonte)) return EXPLICACAO_DO_CALCULO;
@@ -84,22 +100,44 @@ export function rotuloDaConfianca(confianca: Confianca, fonte: FonteDoDado | nul
   return ROTULO_DA_CONFIANCA[confianca];
 }
 
-const NOME_CURTO: Record<ChaveDeFonte, string> = {
+const NOME_CURTO: Record<ChaveDeFonte | ChaveDeFonteDaRua, string> = {
   iptu_2026: "IPTU 2026",
   itbi: "ITBI 2016 a 2026",
   licenciamento: "Licenciamento de obras",
   lotes: "Lotes",
   bairros: "Bairros e RPAs",
+  licenciamento_ambiental: "Licenciamento Ambiental",
+  central_156: "Central 156 da Emlurb",
+  iluminacao: "Iluminação pública",
+  coleta: "Roteiro da coleta",
+  sinistros: "Sinistros da CTTU",
+  defesa_civil: "Defesa Civil",
+  cnefe: "Endereços do IBGE (CNEFE)",
+  censo_entorno: "Entorno do Censo",
+  censo_amostra: "Amostra do Censo",
 };
 
 /** O que cada base contribui para o dossiê, conforme as regras do índice (Fatia 3 da ordem). */
-const RECORTE: Record<ChaveDeFonte, string> = {
+const RECORTE: Record<ChaveDeFonte | ChaveDeFonteDaRua, string> = {
   iptu_2026: "Unidades residenciais do tipo apartamento, agrupadas por rua e número do edifício.",
   itbi: "Transmissões de apartamentos, ligadas ao edifício pela rua e pelo número. Vale o valor da avaliação de cada unidade nos últimos 36 meses. É avaliação fiscal, não preço de mercado.",
   licenciamento:
     "Licenças da categoria Obra, a até 150 m do edifício. Contam construção, acréscimo de área e demolição dos últimos 24 meses.",
   lotes: "Lote que contém o ponto central do edifício: chave cadastral, pavimentos, nome e contorno.",
   bairros: "Limites oficiais dos bairros do Recife.",
+  licenciamento_ambiental:
+    "Processos com licença de utilização sonora (LUSE) no histórico do lote, um local por lote, a até 150 m do prédio. Vale a situação vigente ou expirada na data da base.",
+  central_156:
+    "Pedidos de drenagem, lâmpada apagada e entulho nos 12 meses mais recentes publicados, a até 150 m do prédio. Sem coordenada, o endereço do pedido vira ponto pelo CNEFE. Tempo até o atendimento pela mediana dos atendidos.",
+  iluminacao: "Pontos de iluminação pública marcados como desativados no cadastro de 2025, a até 150 m do prédio.",
+  coleta: "Trechos do roteiro da coleta domiciliar casados com a rua do prédio pelo nome, com o CNEFE.",
+  sinistros:
+    "Chamados de sinistro com vítima de 2022 a 2024, postos no mapa pelo CNEFE (rua e número ou cruzamento), a até 150 m do prédio.",
+  defesa_civil:
+    "Atendimentos de 2014 a 2024 na rua do prédio, no mesmo bairro. A publicação esconde o número do imóvel, então o prédio só é confirmado por você.",
+  cnefe: "Endereços do Censo 2022 usados para pôr no mapa o que só tem endereço e para achar o setor do prédio. O complemento não é lido.",
+  censo_entorno: "Domicílios do setor censitário do prédio em face de quadra com ponto de ônibus, calçada, obstáculo, rampa e árvores.",
+  censo_amostra: "Domicílios alugados na área de ponderação do setor do prédio, pela Tabela 1.1 da Amostra do Censo 2022.",
 };
 
 /** Nome curto da fonte para linhas de uma linha: "IPTU 2026", "anúncio", "você", "suas análises". */
@@ -130,7 +168,7 @@ export function orgaoCurto(orgao: string): string {
 
 export type DescricaoDeBase = {
   tipo: "base";
-  chave: ChaveDeFonte;
+  chave: ChaveDeFonte | ChaveDeFonteDaRua;
   /** "IPTU 2026 · Prefeitura do Recife · ODbL". */
   titulo: string;
   /** Nome completo da base, como no meta.json. */
@@ -156,7 +194,7 @@ export type DescricaoDaFonte = DescricaoDeBase | DescricaoDeOrigem;
  * Descreve a fonte para a gaveta. Devolve `null` só quando a base não está no meta.json: a gaveta então avisa, em vez de
  * inventar nome, órgão ou data.
  */
-export function descreverFonte(fonte: FonteDoDado, meta: Pick<MetaDoIndice, "fontes">): DescricaoDaFonte | null {
+export function descreverFonte(fonte: FonteDoDado, meta: Pick<MetaDoIndice, "fontes"> & Partial<Pick<MetaDoIndice, "fontesDaRua">>): DescricaoDaFonte | null {
   switch (fonte) {
     case "anuncio":
       return {
@@ -177,6 +215,24 @@ export function descreverFonte(fonte: FonteDoDado, meta: Pick<MetaDoIndice, "fon
         texto: "Calculado com os valores por m² das suas outras análises de aluguel no mesmo bairro, como os anúncios informaram.",
       };
     default: {
+      if (eFonteDaRua(fonte)) {
+        const daRua = meta.fontesDaRua?.find((f) => f.chave === fonte);
+        if (!daRua) return null;
+        const ibge = daRua.licenca === "Citar o IBGE";
+        return {
+          tipo: "base",
+          chave: fonte,
+          titulo: ibge ? `${NOME_CURTO[fonte]} · IBGE` : `${NOME_CURTO[fonte]} · ${orgaoCurto(daRua.orgao)} · ${daRua.licenca}`,
+          subtitulo: daRua.nome,
+          orgao: daRua.orgao,
+          licenca: ibge ? "Sem licença nomeada; o IBGE pede a citação da fonte" : daRua.licenca,
+          modificadoEm: dataDaFonte(daRua.modificadoEm),
+          consultadoEm: dataDaFonte(daRua.consultadoEm),
+          recorte: RECORTE[fonte],
+          colunas: daRua.colunasUsadas,
+          url: daRua.url,
+        };
+      }
       const base = meta.fontes.find((f) => f.chave === fonte);
       if (!base) return null;
       return {

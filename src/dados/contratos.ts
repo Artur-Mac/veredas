@@ -177,6 +177,13 @@ export const esquemaAnaliseV2 = z.strictObject({
   visita: esquemaVisita,
   salva: z.boolean(),
   descarte: z.strictObject({ motivo: motivoDeDescarte, observacao: z.string().max(400), em: instante }).nullable(),
+  /**
+   * v1.1: respostas da pessoa na seção "A rua". A Defesa Civil não publica o número do imóvel, então só a pessoa (com o
+   * síndico ou o corretor) sabe se um atendimento da rua foi neste prédio. Ausente nas análises anteriores à v1.1.
+   */
+  confirmacoesDaRua: z.strictObject({
+    defesaCivil: z.strictObject({ resposta: z.enum(["neste_predio", "outro_endereco"]), em: instante }).nullable(),
+  }).optional(),
 });
 
 /** Chave de armazenamento local da v2. A v1 ("vereda-analises-v1") só é lida para migrar e nunca apagada. */
@@ -197,6 +204,108 @@ export const esquemaCarteira = z.strictObject({
 // ——— Índice cadastral do Recife (gerado por scripts/dados/construir-indice-recife.mjs) ————————
 
 const quartis = z.strictObject({ n: z.number().int().min(1), p25: z.number(), mediana: z.number(), p75: z.number() });
+
+// ——— A rua (v1.1, revisão 2.6 da ordem): campos novos e opcionais, gerados por scripts/dados/rua/ ——————————
+// Um índice sem estes campos (v1.0) continua válido; o app só mostra a seção "A rua" quando eles existem.
+
+/** Bases da v1.1. As da Prefeitura são ODbL; as do IBGE não nomeiam licença e pedem a citação da fonte. */
+export const chaveDeFonteDaRua = z.enum([
+  "licenciamento_ambiental", "central_156", "iluminacao", "coleta", "sinistros", "defesa_civil", "cnefe", "censo_entorno", "censo_amostra",
+]);
+
+/** Categorias da ocorrência da Defesa Civil, como as lê `categoriaDaOcorrencia` (scripts/dados/rua/nucleo.mjs). */
+export const categoriaDaOcorrencia = z.enum([
+  "danos_ou_risco", "alagamento", "desabamento", "incendio", "arvore", "deslizamento", "outra", "nao_informada",
+]);
+
+const quantidade = z.number().int().min(0);
+/** Mediana de dias da demanda até "ATENDIDA"; null quando nenhum pedido da categoria foi atendido. */
+const diasAteAtender = z.number().int().min(0).nullable();
+
+/**
+ * Em cada edifício (`Edificio.rua`), numa tupla porque Boa Viagem tem 1.879 edifícios e o arquivo, teto de 2 MB (como
+ * objeto com nomes, a camada passava dele). Use `lerRuaDoEdificio` (src/dados/dossie/rua.ts), que devolve os nomes:
+ * 0. setor: índice em `IndiceDoBairro.rua.setores` (setor censitário do endereço no CNEFE 2022), ou null;
+ * 1–6. pedidos ao 156 a até 150 m na janela de 12 meses da fonte e a mediana de dias de cada categoria: drenagem, dias,
+ *      lâmpada apagada, dias, entulho, dias;
+ * 7–8. sinistros de trânsito com vítima a até 150 m no período da fonte, e quantos deles com pedestre atropelado.
+ */
+export const esquemaRuaDoEdificio = z.tuple([
+  z.number().int().min(0).nullable(),
+  quantidade, diasAteAtender,
+  quantidade, diasAteAtender,
+  quantidade, diasAteAtender,
+  quantidade,
+  quantidade,
+]);
+
+/** Contagem do Censo: null quando o IBGE suprimiu o valor ("X") ou o setor ficou fora da pesquisa. Nunca 0 por ausência. */
+const contagemDoCenso = z.number().int().min(0).nullable();
+
+/** Em cada bairro (`IndiceDoBairro.rua`): o que vários edifícios compartilham. */
+export const esquemaRuaDoBairro = z.strictObject({
+  /** Setores dos edifícios do bairro, em ordem de código. Contagens de domicílios em face de quadra com o item (Censo 2022, entorno). */
+  setores: z.array(z.strictObject({
+    codigo: z.string().regex(/^\d{15}$/),
+    areaDePonderacao: z.string().regex(/^\d{10}$/).nullable(),
+    domicilios: contagemDoCenso,
+    onibus: contagemDoCenso,
+    calcada: contagemDoCenso,
+    obstaculo: contagemDoCenso,
+    rampa: contagemDoCenso,
+    /** Cinco ou mais árvores na face. */
+    arvores: contagemDoCenso,
+  })),
+  /** Tabela 1.1 da Amostra do Censo 2022 por área de ponderação, com os bairros (slug) que mais pesam nela. */
+  areasDePonderacao: z.array(z.strictObject({
+    codigo: z.string().regex(/^\d{10}$/),
+    domicilios: z.number().int().min(1),
+    alugados: z.number().int().min(0),
+    bairros: z.array(z.string().max(40)).max(4),
+  })),
+  /** Locais com licença de som (LUSE) a até 150 m de algum edifício, um por lote. O app mede a distância de cada prédio. */
+  luse: z.array(z.strictObject({ centro: coordenada, vigente: z.boolean(), ultimaEntrada: z.string().regex(/^\d{4}-\d{2}$/).nullable() })),
+  /** Pontos de iluminação pública desativados a até 150 m de algum edifício. */
+  iluminacaoDesativada: z.array(coordenada),
+  /** Por `Código Logradouro` do IPTU (o começo do id do edifício). `ruaCasada` false: a rua não foi achada no CNEFE. */
+  logradouros: z.record(z.string().regex(/^\d+$/), z.strictObject({
+    ruaCasada: z.boolean(),
+    /** Roteiros distintos da coleta domiciliar que passam pela rua (turno, horário e dias, já formatados). */
+    coleta: z.array(z.strictObject({
+      turno: z.string().max(20).nullable(),
+      intervalo: z.string().max(40).nullable(),
+      frequencia: z.string().max(60).nullable(),
+    })).max(6),
+    /**
+     * Atendimentos da Defesa Civil na rua, no bairro, 2014 a 2024. O número do imóvel vem mascarado na publicação: não se
+     * sabe o prédio, e o dossiê pede a confirmação da pessoa. null quando a rua não foi casada.
+     */
+    defesaCivil: z.strictObject({
+      atendimentos: z.number().int().min(0),
+      /** A rua como a Defesa Civil a escreve, para a pessoa reconhecer. */
+      grafia: z.string().max(120).nullable(),
+      porAno: z.array(z.tuple([z.number().int().min(2014).max(2024), z.number().int().min(1)])),
+      ocorrencias: z.array(z.tuple([categoriaDaOcorrencia, z.number().int().min(1)])),
+    }).nullable(),
+  })),
+});
+
+/** Uma base da v1.1 no meta.json (`fontesDaRua`). */
+export const esquemaFonteDaRua = z.strictObject({
+  chave: chaveDeFonteDaRua,
+  nome: z.string(),
+  orgao: z.string(),
+  licenca: z.enum(["ODbL", "Citar o IBGE"]),
+  url: z.string().url(),
+  recursos: z.array(z.string()).min(1),
+  modificadoEm: z.string().nullable(),
+  consultadoEm: z.string(),
+  registrosLidos: z.number().int().min(0),
+  /** Lista branca efetivamente lida. Nunca CNPJ, razão social, inscrição mercantil nem complemento de endereço. */
+  colunasUsadas: z.array(z.string()).min(1),
+  /** Período que o dado cobre (AAAA-MM-DD), mostrado junto do fato; null quando vale a data da base. */
+  periodo: z.strictObject({ de: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), ate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/) }).nullable(),
+});
 
 /**
  * Licença de obra relevante para quem mora ao lado: construção nova, acréscimo de área ou demolição.
@@ -274,6 +383,8 @@ export const esquemaEdificio = z.strictObject({
     /** Até 10 das relevantes em 24 meses, mais recentes primeiro: [índice em IndiceDoBairro.obras, distância em m]. */
     recentes: z.array(z.tuple([z.number().int().min(0), z.number().int().min(0).max(150)])).max(10),
   }),
+  /** v1.1: setor do Censo, pedidos ao 156 e sinistros perto do prédio. Ausente em índice da v1.0. */
+  rua: esquemaRuaDoEdificio.optional(),
 });
 
 export const esquemaContextoDoBairro = z.strictObject({
@@ -291,6 +402,8 @@ export const esquemaIndiceDoBairro = z.strictObject({
   edificios: z.array(esquemaEdificio),
   /** Obras relevantes referidas por algum edifício do bairro, sem repetição. */
   obras: z.array(esquemaObra),
+  /** v1.1: setores, áreas de ponderação, LUSE, iluminação desativada, coleta e Defesa Civil. Ausente em índice da v1.0. */
+  rua: esquemaRuaDoBairro.optional(),
 });
 
 export const chaveDeFonte = z.enum(["iptu_2026", "itbi", "licenciamento", "lotes", "bairros"]);
@@ -310,6 +423,8 @@ export const esquemaMetaDoIndice = z.strictObject({
     /** Lista branca efetivamente pedida à API (parâmetro `fields`). Nenhuma coluna pessoal. */
     colunasUsadas: z.array(z.string()).min(1),
   })).min(1),
+  /** v1.1: as bases da seção "A rua", com licença própria (ODbL ou citação do IBGE). Ausente em índice da v1.0. */
+  fontesDaRua: z.array(esquemaFonteDaRua).optional(),
 });
 
 /** Saída da busca de prédio candidato (T3). */
@@ -411,6 +526,42 @@ export type VisaoDoDossie = {
   cadastro: Fato[];
   historico: { quando: string; texto: string }[];
   obras: ObrasProximas | null;
+  /** v1.1: presente quando o chamador passa os dados da rua a `derivarDossie`; null sem prédio confirmado ou sem a camada. */
+  rua?: VisaoDaRua | null;
+};
+
+/** Uma linha da seção "A rua": sempre com a fonte e a data (ou o período) do dado. */
+export type FatoDaRua = {
+  /** Estável: "rua-luse", "rua-156-drenagem", "rua-censo-onibus"... */
+  id: string;
+  rotulo: string;
+  /** Já formatado ("3", "18%", "Manhã", "A confirmar"). */
+  valor: string;
+  detalhe: string | null;
+  confianca: Confianca;
+  fonte: ChaveDeFonteDaRua | "voce";
+  /** Data ou período do dado, sempre na tela: "base de 19/10/2026", "31/01/2025 a 30/01/2026", "2022 a 2024", "Censo 2022". */
+  data: string;
+};
+
+export type GrupoDaRua = {
+  id: "som" | "zeladoria" | "iluminacao" | "coleta" | "transito" | "defesa_civil" | "entorno" | "moradia";
+  titulo: string;
+  fatos: FatoDaRua[];
+  /** Ressalva curta do grupo ("O 156 mede quem pede, não a condição da rua."). */
+  nota: string | null;
+};
+
+export type VisaoDaRua = {
+  grupos: GrupoDaRua[];
+  /** Atendimentos da Defesa Civil na rua, que pedem a confirmação da pessoa; null sem atendimento ou sem rua casada. */
+  defesaCivil: {
+    rua: string;
+    atendimentos: number;
+    /** "2019, 2021 e 2023". */
+    anos: string;
+    resposta: "neste_predio" | "outro_endereco" | null;
+  } | null;
 };
 
 /** `obras150m` com os índices já resolvidos contra `IndiceDoBairro.obras`. */
@@ -447,6 +598,11 @@ export type IndiceDoBairro = z.infer<typeof esquemaIndiceDoBairro>;
 export type MetaDoIndice = z.infer<typeof esquemaMetaDoIndice>;
 export type Candidato = z.infer<typeof esquemaCandidato>;
 export type Quartis = z.infer<typeof quartis>;
+export type ChaveDeFonteDaRua = z.infer<typeof chaveDeFonteDaRua>;
+export type CategoriaDaOcorrencia = z.infer<typeof categoriaDaOcorrencia>;
+export type RuaDoEdificio = z.infer<typeof esquemaRuaDoEdificio>;
+export type RuaDoBairro = z.infer<typeof esquemaRuaDoBairro>;
+export type FonteDaRua = z.infer<typeof esquemaFonteDaRua>;
 
 /** Campos vazios: ponto de partida de todo extrator. */
 export function camposVazios(): CamposExtraidos {

@@ -21,6 +21,7 @@ import type { AbaDoDossie } from "../../componentes/dossie-v1/textos";
 import { GavetaDeFonte, type PedidoDeFonte } from "../../componentes/fonte/GavetaDeFonte";
 import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
+import type { RespostaDaDefesaCivil } from "../../componentes/dossie-v1/ARua";
 import type { AnaliseV2, Pergunta, Prioridade } from "../../dados/contratos";
 import { derivarDossie } from "../../dados/dossie/derivar";
 import { bairroPorSlug, eCoberto } from "../../dados/recife/bairros";
@@ -135,7 +136,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
   const cadastro = useMemo(() => carregarCadastro(analise), [analise]);
   const outras = useMemo(() => lista.filter((x) => x.id !== analise.id), [lista, analise.id]);
   const visao = useMemo(
-    () => derivarDossie(analise, cadastro.edificio, cadastro.contexto, cadastro.obras, outras, new Date(), prioridade),
+    () => derivarDossie(analise, cadastro.edificio, cadastro.contexto, cadastro.obras, outras, new Date(), prioridade, cadastro.rua),
     [analise, cadastro, outras, prioridade],
   );
 
@@ -198,6 +199,24 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     }
     router.push("/visita");
   }, [analise.id, definirAtiva, mostrarAviso]);
+
+  // v1.1: a Defesa Civil não publica o número do imóvel; a resposta da pessoa fica na análise (null desfaz).
+  const responderDefesaCivil = useCallback(
+    async (resposta: RespostaDaDefesaCivil) => {
+      const agora = new Date().toISOString();
+      try {
+        await salvar({
+          ...analise,
+          confirmacoesDaRua: { ...analise.confirmacoesDaRua, defesaCivil: resposta ? { resposta, em: agora } : null },
+          atualizadaEm: agora,
+        });
+        mostrarAviso(resposta === null ? "Resposta desfeita" : "Resposta guardada no caderno");
+      } catch {
+        mostrarAviso("Não foi possível salvar. Tente de novo.");
+      }
+    },
+    [analise, salvar, mostrarAviso],
+  );
 
   const alternarSalvo = useCallback(async () => {
     try {
@@ -299,6 +318,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                 aoAbrirMapa={() => setGaveta({ tipo: "mapa" })}
                 aoConfirmarPredio={confirmarPredio}
                 aoMedirSecao={medirSecao}
+                aoResponderDefesaCivil={(resposta) => void responderDefesaCivil(resposta)}
               />
             ) : (
               <EdificioDoDossie

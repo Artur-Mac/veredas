@@ -22,6 +22,7 @@ import {
   type Visita,
 } from "../src/dados/contratos";
 import { derivarDossie } from "../src/dados/dossie/derivar";
+import { entradaDaRua } from "../src/componentes/dossie-v1/cadastro";
 import { formatarEndereco } from "../src/dados/recife/endereco";
 import { mensagemParaCorretor } from "../src/dados/mensagem";
 import { contextoDoBairro, edificiosDoBairro, indiceDoBairro } from "../src/dados/recife/indice";
@@ -224,8 +225,10 @@ describe("roteiro de perguntas: a mesma montagem do dossiê", () => {
     const a = analise({ vinculo: confirmada() });
     const perguntas = perguntasDaVisita(a, [], agora);
     expect(perguntas.some((p) => p.id === "lacuna-endereco")).toBe(false);
-    const dossie = derivarDossie(a, primeiro, contextoDoBairro("casa-forte"), indiceDoBairro("casa-forte").obras, [], agora);
+    // v1.1: a Visita monta como o dossiê, com a camada "A rua" do índice (e as perguntas da rua).
+    const dossie = derivarDossie(a, primeiro, contextoDoBairro("casa-forte"), indiceDoBairro("casa-forte").obras, [], agora, null, entradaDaRua(indiceDoBairro("casa-forte")));
     expect(perguntas).toEqual(dossie.perguntas);
+    expect(perguntas.some((p) => p.id.startsWith("rua-"))).toBe(true);
   });
 
   it("vínculo para um edifício que não está no índice não derruba a tela nem inventa dado", () => {

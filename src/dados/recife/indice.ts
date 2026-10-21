@@ -17,6 +17,7 @@ import {
   type Edificio,
   type IndiceDoBairro,
   type MetaDoIndice,
+  type RuaDoBairro,
 } from "../contratos";
 import { BAIRROS_COBERTOS, type SlugCoberto } from "./bairros";
 
@@ -95,6 +96,16 @@ export function checarIndiceRaso(slug: SlugCoberto, dados: unknown): IndiceDoBai
     if (typeof dados.geradoEm !== "string") problemas.push({ path: ["geradoEm"], message: "esperado texto" });
     if (!ehObjeto(dados.contexto)) problemas.push({ path: ["contexto"], message: "esperado objeto" });
     if (!Array.isArray(dados.obras)) problemas.push({ path: ["obras"], message: "esperado lista" });
+    // v1.1: a camada "A rua" é opcional; presente, tem de ser objeto com as listas do contrato.
+    if (dados.rua !== undefined) {
+      if (!ehObjeto(dados.rua)) problemas.push({ path: ["rua"], message: "esperado objeto" });
+      else {
+        for (const campo of ["setores", "areasDePonderacao", "luse", "iluminacaoDesativada"] as const) {
+          if (!Array.isArray(dados.rua[campo])) problemas.push({ path: ["rua", campo], message: "esperado lista" });
+        }
+        if (!ehObjeto(dados.rua.logradouros)) problemas.push({ path: ["rua", "logradouros"], message: "esperado objeto" });
+      }
+    }
     if (!Array.isArray(dados.edificios)) {
       problemas.push({ path: ["edificios"], message: "esperado lista" });
     } else if (dados.edificios.length > 0) {
@@ -145,6 +156,11 @@ export function contextoDoBairro(slug: SlugCoberto): ContextoDoBairro {
   return carregar(slug).indice.contexto;
 }
 
+/** v1.1: a camada "A rua" do bairro (setores, LUSE, iluminação, coleta, Defesa Civil), ou null num índice da v1.0. */
+export function ruaDoBairro(slug: SlugCoberto): RuaDoBairro | null {
+  return carregar(slug).indice.rua ?? null;
+}
+
 /**
  * Acha um edifício pelo `id` (`${Código Logradouro}-${numero}`). Sem `bairro`, procura nos cinco, começando pelos
  * que já estão em memória; com `bairro`, só nele. Devolve null quando o id não está no índice. Um bairro inválido
@@ -176,5 +192,9 @@ export const META: MetaDoIndice = {
   },
   get fontes() {
     return carregarMeta().fontes;
+  },
+  /** v1.1: as bases da seção "A rua"; ausente num índice da v1.0. */
+  get fontesDaRua() {
+    return carregarMeta().fontesDaRua;
   },
 };

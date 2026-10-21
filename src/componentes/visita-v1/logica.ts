@@ -2,8 +2,10 @@
 // dados. As telas e o hook `useVisita` só chamam estas funções. Valor desconhecido nunca vira zero.
 import type { AnaliseV2, ContextoDoBairro, Edificio, Obra, Pergunta, Visita } from "../../dados/contratos";
 import { derivarDossie, enderecoDoImovel } from "../../dados/dossie/derivar";
+import type { EntradaDaRua } from "../../dados/dossie/rua";
 import { eCoberto, bairroPorSlug } from "../../dados/recife/bairros";
 import { contextoDoBairro, edificioPorId, indiceDoBairro } from "../../dados/recife/indice";
+import { entradaDaRua } from "../dossie-v1/cadastro";
 import type { Poligono } from "../mapa/geometria";
 
 // ——— Limites do contrato (esquemaVisita) ————————————————————————————————————————
@@ -29,25 +31,29 @@ export function predioDaAnalise(a: AnaliseV2): Edificio | null {
 
 /**
  * As perguntas da visita são as do dossiê, na mesma montagem da tela dele: edifício só com vínculo confirmado,
- * contexto e obras do índice do bairro. As perguntas próprias já vêm no fim (derivarDossie as acrescenta).
+ * contexto, obras e a camada "A rua" do índice do bairro. As perguntas próprias já vêm no fim (derivarDossie as acrescenta).
  */
 export function perguntasDaVisita(a: AnaliseV2, todas: readonly AnaliseV2[], agora: Date): Pergunta[] {
   let predio: Edificio | null = null;
   let contexto: ContextoDoBairro | null = null;
   let obras: Obra[] = [];
+  let rua: EntradaDaRua | null = null;
   if (eCoberto(a.bairro)) {
     try {
       contexto = contextoDoBairro(a.bairro);
-      obras = indiceDoBairro(a.bairro).obras;
+      const indice = indiceDoBairro(a.bairro);
+      obras = indice.obras;
+      rua = entradaDaRua(indice);
       if (a.vinculo.estado === "confirmado") predio = edificioPorId(a.vinculo.edificioId, a.bairro);
     } catch {
       predio = null;
       contexto = null;
       obras = [];
+      rua = null;
     }
   }
   const outras = todas.filter((x) => x.id !== a.id && x.descarte === null);
-  return derivarDossie(a, predio, contexto, obras, outras, agora).perguntas;
+  return derivarDossie(a, predio, contexto, obras, outras, agora, null, rua).perguntas;
 }
 
 /** Contorno do lote no plano local (longitude reduzida pelo cosseno da latitude, norte para cima). */

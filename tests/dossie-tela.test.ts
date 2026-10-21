@@ -19,7 +19,7 @@ import {
   orgaoCurto,
   rotuloDaConfianca,
 } from "../src/componentes/fonte/textos";
-import { carregarCadastro } from "../src/componentes/dossie-v1/cadastro";
+import { carregarCadastro, entradaDaRua } from "../src/componentes/dossie-v1/cadastro";
 import { montarCenaDoLote, poligonoDoLote } from "../src/componentes/dossie-v1/mapa";
 import {
   anomaliaResolvida,
@@ -811,7 +811,8 @@ describe("tela do dossiê", () => {
   describe("com prédio confirmado (edifício real de Casa Forte)", () => {
     const e = edificioRealDeCasaForte();
     const a = analise({ id: "confirmada", nome: "Apartamento de teste", vinculo: confirmadoEm(e.id) });
-    const visao = derivarDossie(a, e, indiceDoBairro("casa-forte").contexto, indiceDoBairro("casa-forte").obras, [], AGORA, "custo");
+    // A tela passa a camada "A rua" do índice (v1.1): as perguntas da rua entram no roteiro.
+    const visao = derivarDossie(a, e, indiceDoBairro("casa-forte").contexto, indiceDoBairro("casa-forte").obras, [], AGORA, "custo", entradaDaRua(indiceDoBairro("casa-forte")));
 
     it("mostra o topo, o título, o lote confirmado, os fatos curtos e os links", () => {
       prepararEstado([a], "confirmada");
@@ -938,7 +939,7 @@ describe("tela do dossiê", () => {
       expect(t).toContain("Chave cadastral");
       expect(t).toContain("Ver todas as verificações");
       // As três primeiras perguntas são as da prioridade escolhida, com a de endereço sempre à frente.
-      const antes = derivarDossie(a, e, null, [], [], AGORA, "custo").perguntas.slice(0, 3);
+      const antes = derivarDossie(a, e, null, [], [], AGORA, "custo", entradaDaRua(indiceDoBairro("casa-forte"))).perguntas.slice(0, 3);
       for (const p of antes) expect(t).toContain(p.titulo);
     });
 
@@ -948,7 +949,7 @@ describe("tela do dossiê", () => {
       tocar(arvore, "Edifício");
       tocar(arvore, "Conforto");
       const t = todosOsTextos(arvore);
-      const conforto = derivarDossie(a, e, null, [], [], AGORA, "conforto").perguntas.slice(0, 3);
+      const conforto = derivarDossie(a, e, null, [], [], AGORA, "conforto", entradaDaRua(indiceDoBairro("casa-forte"))).perguntas.slice(0, 3);
       for (const p of conforto) expect(t).toContain(p.titulo);
     });
 
@@ -1315,7 +1316,7 @@ describe("tela do dossiê", () => {
     expect(carregarCadastro(desconhecido)).toMatchObject({ edificio: null, falhou: false });
     expect(carregarCadastro(desconhecido).contexto?.bairro).toBe("casa-forte");
     const fora = analise({ bairro: "torre", bairroTexto: "Torre", vinculo: { estado: "fora_de_cobertura" } });
-    expect(carregarCadastro(fora)).toEqual({ edificio: null, contexto: null, obras: [], vizinhos: [], falhou: false });
+    expect(carregarCadastro(fora)).toEqual({ edificio: null, contexto: null, obras: [], vizinhos: [], rua: null, falhou: false });
   });
 
   it("índice ilegível vira 'falhou' em vez de derrubar a tela", () => {
@@ -1328,7 +1329,7 @@ describe("tela do dossiê", () => {
       }));
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { carregarCadastro: carregar } = require("../src/componentes/dossie-v1/cadastro") as typeof import("../src/componentes/dossie-v1/cadastro");
-      expect(carregar(analise())).toEqual({ edificio: null, contexto: null, obras: [], vizinhos: [], falhou: true });
+      expect(carregar(analise())).toEqual({ edificio: null, contexto: null, obras: [], vizinhos: [], rua: null, falhou: true });
     });
     jest.dontMock("../src/dados/recife/indice");
   });

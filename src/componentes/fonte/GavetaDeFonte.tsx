@@ -29,10 +29,12 @@ type Props = {
   /** Id do `Fato` ou do `Achado`, quando a tela o tem (ver `PedidoDeFonte`). */
   idDoDado?: string | null;
   /** Só para teste: quando ausente, vale o `META` do índice. */
-  meta?: Pick<MetaDoIndice, "fontes">;
+  meta?: Pick<MetaDoIndice, "fontes"> & Partial<Pick<MetaDoIndice, "fontesDaRua">>;
 };
 
-function descricaoOuErro(fonte: FonteDoDado, meta: Pick<MetaDoIndice, "fontes">): { descricao: DescricaoDaFonte | null; erro: boolean } {
+type MetaDaGaveta = Pick<MetaDoIndice, "fontes"> & Partial<Pick<MetaDoIndice, "fontesDaRua">>;
+
+function descricaoOuErro(fonte: FonteDoDado, meta: MetaDaGaveta): { descricao: DescricaoDaFonte | null; erro: boolean } {
   try {
     return { descricao: descreverFonte(fonte, meta), erro: false };
   } catch {
@@ -40,9 +42,9 @@ function descricaoOuErro(fonte: FonteDoDado, meta: Pick<MetaDoIndice, "fontes">)
   }
 }
 
-function lerMeta(): Pick<MetaDoIndice, "fontes"> | null {
+function lerMeta(): MetaDaGaveta | null {
   try {
-    return { fontes: META.fontes };
+    return { fontes: META.fontes, fontesDaRua: META.fontesDaRua };
   } catch {
     return null;
   }

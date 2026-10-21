@@ -2,7 +2,11 @@
 /**
  * Constrói o índice cadastral dos cinco bairros cobertos do Recife.
  *
- * Uso: node scripts/dados/construir-indice-recife.mjs [--sem-lotes]
+ * Uso: node scripts/dados/construir-indice-recife.mjs [--sem-lotes] [--sem-rua]
+ *
+ * As camadas "A rua" (v1.1: geocodificador pelo CNEFE do IBGE, Censo 2022, LUSE, Central 156, iluminação, coleta,
+ * sinistros e Defesa Civil) moram em scripts/dados/rua/ e entram em cada edifício (`rua`), em cada bairro (`rua`) e no
+ * meta.json (`fontesDaRua`). Ver a revisão 2.6 da ordem do arquiteto.
  *
  * Lê só dados abertos da Prefeitura do Recife (CKAN, licença ODbL), sempre com lista branca de colunas
  * (`fields`), e grava em src/dados/recife/indice/ um JSON por bairro mais o meta.json, no formato de
@@ -34,8 +38,11 @@ import readline from "node:readline";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { fileURLToPath } from "node:url";
+import { dsqflsDaLuse, lerLicenciamentoAmbiental, montarARua } from "./rua/camadas.mjs";
 
 const SEM_LOTES = process.argv.includes("--sem-lotes");
+/** Sem as camadas "A rua" da v1.1 (CNEFE, Censo, LUSE, 156, iluminação, coleta, CTTU e Defesa Civil). */
+const SEM_RUA = process.argv.includes("--sem-rua");
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const DIR_CACHE = path.join(RAIZ, ".cache", "dados-recife");
@@ -1696,6 +1703,10 @@ async function main() {
   const itbiAnos = await lerItbi(metas);
   console.log("\nLicenciamento");
   const licenciamento = await lerLicenciamento();
+  // Ferramentas do cliente CKAN e do cache, emprestadas às camadas "A rua" (scripts/dados/rua/camadas.mjs).
+  const ferramentas = { lerTabela, metadadosDoRecurso, chamarCkan, comTentativas, ErroPermanente, gravarAtomico, lerJson, DIR_CACHE, mil };
+  // Lido antes dos Lotes: os locais com licença de som sem coordenada usam o centro do lote.
+  const ambiental = SEM_RUA ? null : await lerLicenciamentoAmbiental(ferramentas);
   const caminhoLotes = SEM_LOTES ? null : await garantirArquivoDeLotes(metas.get(RECURSO_LOTES));
 
   const relatorio = novoRelatorio();
@@ -1747,6 +1758,7 @@ async function main() {
   if (!SEM_LOTES) {
     console.log("\nLotes (uma passada pelo GeoJSON)");
     const pedidos = dsqflsSemCoordenada(licenciamento.registros);
+    if (ambiental) for (const d of dsqflsDaLuse(ambiental)) pedidos.add(d);
     const numerosPedidos = new Set();
     for (const e of todos) if (e.centro === null) numerosPedidos.add(chaveDeNumero(Number(e.numero), e.bairro));
     const lotes = await passarPelosLotes(caminhoLotes, todos, pedidos, numerosPedidos);
@@ -1818,7 +1830,18 @@ async function main() {
     );
   }
 
-  // 4. ITBI e obras, por bairro; escrita.
+  // 4. A rua (v1.1): acrescenta `rua` a cada edifício; devolve o `rua` de cada bairro e as fontes do meta.json.
+  const rua = SEM_RUA
+    ? null
+    : await montarARua({
+        edificiosPorBairro,
+        geradoEm,
+        centroPorDsqfl,
+        ambiental,
+        f: ferramentas,
+      });
+
+  // 5. ITBI e obras, por bairro; escrita.
   console.log("\nITBI e obras");
   const itbiPorBairro = indexarItbi(itbiAnos, limiar36m, geradoEmData, relatorio);
   const processos = prepararProcessos(licenciamento.registros, centroPorDsqfl, geradoEmData, relatorio);
@@ -1869,6 +1892,7 @@ async function main() {
       },
       edificios,
       obras,
+      ...(rua ? { rua: rua.porBairro[slug] } : {}),
     };
     const conteudo = JSON.stringify(indice);
     gravarAtomico(path.join(DIR_SAIDA, `${slug}.json`), conteudo);
@@ -1901,12 +1925,18 @@ async function main() {
       fonte("lotes", "Lotes (base cartográfica da área urbana)", [RECURSO_LOTES], contagens.lotes, COLUNAS_LOTES),
       fonte("bairros", "Bairros e RPAs do Recife", [RECURSO_BAIRROS], contagens.bairros, CAMPOS_BAIRROS),
     ],
+    ...(rua ? { fontesDaRua: rua.fontes } : {}),
   };
   const conteudoMeta = JSON.stringify(meta);
   gravarAtomico(path.join(DIR_SAIDA, "meta.json"), conteudoMeta);
   arquivos.push({ nome: "meta.json", bytes: Buffer.byteLength(conteudoMeta) });
 
   imprimirRelatorio({ relatorio, contagens, geradoEm, arquivos, meta });
+  if (rua) {
+    console.log("\n9. A rua (v1.1)");
+    for (const texto of rua.relatorio) console.log(texto);
+    for (const f of rua.fontes) console.log(`  ${f.chave.padEnd(24)} ${mil(f.registrosLidos).padStart(8)}  modificadoEm ${f.modificadoEm}  licença ${f.licenca}`);
+  }
 }
 
 main().catch((erro) => {
