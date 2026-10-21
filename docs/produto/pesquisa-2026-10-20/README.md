@@ -13,6 +13,7 @@ Seis documentos de produto feitos a partir de uma pesquisa na internet com verif
 | 05 | [Roadmap das próximas versões](05-ROADMAP-PROXIMAS-VERSOES.md) | v1.1, v1.2 e v2, em ordem e com condição de pronto |
 | 06 | [Plano estratégico](06-PLANO-ESTRATEGICO.md) | Tese, público, receita, vantagem, riscos, marcos e decisões da equipe |
 | 07 | [Leitura do link no celular](07-LEITURA-DO-LINK-NO-CELULAR.md) | O bloqueio dos portais na WebView, o que o app faz hoje e os caminhos para ler sem formulário |
+| 08 | [Compartilhar para o Vereda](08-COMPARTILHAR-PARA-O-VEREDA.md) | A página do Safari e o trecho do menu de seleção chegam à revisão sem copiar; como gerar o build de desenvolvimento e testar |
 | — | [Anexo: pesquisa verificada (JSON)](anexo-pesquisa-verificada.json) | Todos os itens, com trechos e URLs |
 
 ## Método

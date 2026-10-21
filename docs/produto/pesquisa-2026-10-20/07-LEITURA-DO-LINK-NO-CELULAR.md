@@ -41,6 +41,8 @@ Verificação: tipos e lint limpos, 1.160 testes (3 falhas são da camada "rua" 
 | 3 | **Extensão de navegador no computador** | 1 | Baixo; loja do Chrome com taxa única | Publicação na loja | Resolve a web, mas a busca de imóvel é sobretudo no celular. |
 | 4 | **Parceria de dados** com o grupo dos portais ou com sistemas de imobiliárias que já enviam os anúncios aos portais | 0 | Negociação | Contrato | Única forma de ler sem gesto nenhum. Condições a verificar. |
 
+**Atualização, 20/10/2026:** o item 1 está no código, à espera do build e do teste no aparelho. Ver [08](08-COMPARTILHAR-PARA-O-VEREDA.md).
+
 Recomendação: manter o caminho de hoje na v1.0 e fazer o item 1 na v1.1, junto com o primeiro build próprio do app, que a publicação nas lojas exige de qualquer forma. O item 2 entra quando o teste mostrar quanta gente procura pelo app do portal.
 
 ## Revisão com a pesquisa de viabilidade do usuário (20/10/2026)
@@ -54,7 +56,7 @@ O usuário trouxe uma pesquisa sobre a viabilidade técnica e jurídica da leitu
 | User agent nativo, sem troca | Já era assim | Um teste confere. |
 | `mixedContentMode="always"` | Não | Abre a página a conteúdo sem HTTPS, e o desafio não precisa disso. |
 | Filtrar telefone, e-mail e CRECI antes da leitura | **Feito** | `dados/extrator/privacidade.ts`, dentro de `extrairDoTexto`: vale para colar, copiar, compartilhar e a página. Testes conferem que preço, área, CEP e ano ficam intactos. |
-| Extensão do Safari com pré-processamento | Em andamento | Sessão própria, numa branch separada. |
+| Extensão do Safari com pré-processamento | No código | Ver [08](08-COMPARTILHAR-PARA-O-VEREDA.md): falta o build próprio e o teste no aparelho. |
 | Leitura do texto livre por modelo de linguagem | Depois | Pega o nome do prédio escondido na descrição e as contradições, mas custa por anúncio e tira o texto do aparelho. Com o filtro de dados pessoais pronto, o risco cai. Candidato à v1.2. |
 | Análise jurídica (LDA, LPI, LGPD) | Registro, não parecer | Reforça o que o produto já faz: leitura de um anúncio por vez, no aparelho, só campos do imóvel, nunca contornar proteção. A frase "descaracteriza qualquer infração" vai além do que a pesquisa sustenta: os termos de uso continuam sendo um contrato. O parecer segue pendente. |
 
