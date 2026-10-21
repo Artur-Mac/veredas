@@ -38,14 +38,13 @@ import { TemaDoApp } from "../src/tema/Tema";
 
 const mockIr = jest.fn();
 const mockNavegar = jest.fn();
-const mockTrocar = jest.fn();
 let mockParametros: Record<string, string> = {};
 let mockCaminho = "/";
 jest.mock("expo-router", () => ({
   router: {
     push: (...args: unknown[]) => mockIr(...args),
     navigate: (...args: unknown[]) => mockNavegar(...args),
-    replace: (...args: unknown[]) => mockTrocar(...args),
+    replace: () => undefined,
     canGoBack: () => false,
     back: () => undefined,
   },
@@ -425,7 +424,6 @@ describe("recebedor do compartilhamento (raiz)", () => {
   beforeEach(() => {
     esquecerCompartilhamento();
     mockNavegar.mockClear();
-    mockTrocar.mockClear();
     mockLimpar.mockClear();
     mockFecharNavegador.mockClear();
     mockCaminho = "/";
@@ -448,8 +446,8 @@ describe("recebedor do compartilhamento (raiz)", () => {
     receber(compartilharDoSafari(PAGINA_ZAP));
     expect(mockLimpar).toHaveBeenCalledTimes(1);
     expect(mockFecharNavegador).toHaveBeenCalledTimes(1);
-    expect(mockTrocar).toHaveBeenCalledTimes(1);
-    const destino = mockTrocar.mock.calls[0]![0] as { pathname: string; params: Record<string, string> };
+    expect(mockNavegar).toHaveBeenCalledTimes(1);
+    const destino = mockNavegar.mock.calls[0]![0] as { pathname: string; params: Record<string, string> };
     expect(destino.pathname).toBe("/ler");
     expect(destino.params).toMatchObject({ origem: "compartilhado", url: URL_ZAP });
     expect(coletaDoId(destino.params.coleta!)?.texto).toBe(TEXTO_ZAP);
@@ -469,8 +467,8 @@ describe("recebedor do compartilhamento (raiz)", () => {
   it("nada do anúncio: avisa, não abre a leitura e sai da espera", () => {
     mockCaminho = "/receber";
     receber(compartilharNoAndroid("Reunião às 9h na sala 3, levar o crachá e o caderno"));
-    expect(mockNavegar).not.toHaveBeenCalled();
-    expect(mockTrocar).toHaveBeenCalledWith("/");
+    expect(mockNavegar).toHaveBeenCalledTimes(1);
+    expect(mockNavegar).toHaveBeenCalledWith("/");
     expect(mockLimpar).toHaveBeenCalledTimes(1);
     expect(AVISO_NADA_DO_ANUNCIO).toContain("Ler no Vereda");
   });

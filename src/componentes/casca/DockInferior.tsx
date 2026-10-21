@@ -22,7 +22,7 @@ export function DockInferior() {
   const { cor } = useTema();
 
   const eAtivo = (rota: string) => {
-    if (rota === "/" && (rotaAtual === "/" || rotaAtual === "/index" || rotaAtual.startsWith("/ler") || rotaAtual.startsWith("/predio"))) {
+    if (rota === "/" && (rotaAtual === "/" || rotaAtual === "/index" || rotaAtual.startsWith("/ler") || rotaAtual.startsWith("/predio") || rotaAtual.startsWith("/receber"))) {
       return true;
     }
     if (rota === "/dossie" && rotaAtual.startsWith("/dossie")) return true;

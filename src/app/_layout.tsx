@@ -45,7 +45,6 @@ function Pilha() {
         <Stack.Screen name="sobre-os-dados" options={OPCOES_DA_FOLHA} />
         <Stack.Screen name="creditos" options={OPCOES_DA_FOLHA} />
         <Stack.Screen name="mock" />
-        <Stack.Screen name="receber" />
       </Stack>
       <RecebedorDeCompartilhamento />
     </>

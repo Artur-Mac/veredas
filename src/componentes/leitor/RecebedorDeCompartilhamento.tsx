@@ -31,19 +31,17 @@ export function RecebedorDeCompartilhamento() {
     // No iOS, o anúncio pode ter sido compartilhado da aba do Safari aberta pelo próprio Vereda: ela sai da frente.
     if (Platform.OS === "ios") WebBrowser.dismissBrowser().catch(() => undefined);
 
-    const naEspera = caminho === "/receber";
     if (recebido === null) {
       mostrarAviso(AVISO_NADA_DO_ANUNCIO);
-      if (naEspera) router.replace("/");
+      // A espera (aba escondida, como a leitura) não tem o que mostrar: volta ao Explorar.
+      if (caminho === "/receber") router.navigate("/");
       return;
     }
     if (recebido.url) registrarLinkAberto(recebido.url, agora);
-    const destino = {
-      pathname: "/ler" as const,
+    router.navigate({
+      pathname: "/ler",
       params: parametrosDaLeitura(recebido, String(agora), recebido.coleta ? guardarColeta(recebido.coleta) : null),
-    };
-    if (naEspera) router.replace(destino);
-    else router.navigate(destino);
+    });
   }, [hasShareIntent, shareIntent, resetShareIntent, mostrarAviso, caminho]);
 
   return null;

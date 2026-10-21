@@ -4,9 +4,9 @@
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { Botao } from "../componentes/Botao";
-import { Tela } from "../componentes/Tela";
-import { Texto } from "../componentes/Texto";
+import { Botao } from "../../componentes/Botao";
+import { Tela } from "../../componentes/Tela";
+import { Texto } from "../../componentes/Texto";
 
 /** Tempo para a extensão entregar a página. A leitura costuma chegar em menos de um segundo. */
 const ESPERA_MS = 6000;
