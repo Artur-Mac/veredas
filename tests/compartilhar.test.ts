@@ -525,6 +525,32 @@ describe("tela de leitura com o anúncio compartilhado", () => {
     expect(mockPaginasAbertas).toBe(1);
   });
 
+  it("link do portal que bloqueia, da espera à leitura: cai direto no cartão 'Abra o anúncio no navegador'", () => {
+    // O app do portal e o Chrome mandam só o link; no iOS ele passa pela espera (/receber), no Android vai direto.
+    mockNavegar.mockClear();
+    mockCaminho = "/receber";
+    mockContexto = { hasShareIntent: true, shareIntent: compartilharNoAndroid(URL_ZAP), resetShareIntent: () => undefined };
+    act(() => {
+      TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(RecebedorDeCompartilhamento)));
+    });
+    mockContexto = { hasShareIntent: false, shareIntent: {}, resetShareIntent: () => undefined };
+    expect(mockNavegar).toHaveBeenCalledTimes(1);
+    const destino = mockNavegar.mock.calls[0]![0] as { pathname: string; params: Record<string, string> };
+    expect(destino.pathname).toBe("/ler");
+
+    mockBloquear = true;
+    mockModuloNativo = {};
+    const arvore = abrir(destino.params);
+    const tela = textos(arvore);
+    expect(mockPaginasAbertas).toBe(1);
+    expect(tela).toContain("Abra o anúncio no navegador");
+    expect(tela).toContain("Abrir no navegador");
+    expect(tela).toContain("toque em Compartilhar e escolha Ler no Vereda");
+    // Nada do recebimento fica entre o link e o cartão: nem aviso de leitura, nem a espera.
+    expect(tela).not.toContain("Lemos");
+    expect(tela).not.toContain("Abrindo o anúncio");
+  });
+
   it("coleta que já saiu da memória: volta ao caminho do link", () => {
     abrir({ origem: "compartilhado", n: "4", url: URL_ZAP, coleta: "c999" });
     expect(mockPaginasAbertas).toBe(1);
