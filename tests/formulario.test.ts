@@ -990,6 +990,10 @@ describe("tela de leitura (K1 e K2)", () => {
       .accessibilityState.disabled;
   const campo = (arvore: TestRenderer.ReactTestRenderer, rotulo: string) =>
     arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLabel === rotulo && typeof n.props.onChangeText === "function")[0];
+  const verTodosOsCampos = (arvore: TestRenderer.ReactTestRenderer) =>
+    arvore.root.findAll(
+      (n) => typeof n.type !== "string" && typeof n.props.onPress === "function" && String(n.props.accessibilityLabel ?? "").startsWith("Ver todos os campos"),
+    )[0];
   const escolherBairro = (arvore: TestRenderer.ReactTestRenderer, rotulo: string) => {
     act(() => arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLabel === "Bairro" && n.props.onPress)[0]?.props.onPress());
     act(() =>
@@ -1068,6 +1072,9 @@ describe("tela de leitura (K1 e K2)", () => {
 
   it("'Ler texto' depois de a pessoa editar não desfaz nenhum campo editado", async () => {
     const arvore = abrir({ url: URL_CASA_FORTE });
+    // A leitura de um link abre o formulário enxuto: endereço e especificações ficam atrás de "Ver todos os campos".
+    expect(campo(arvore, "Rua")).toBeUndefined();
+    act(() => verTodosOsCampos(arvore)?.props.onPress());
     act(() => campo(arvore, "Rua")?.props.onChangeText("Rua Que Eu Digitei"));
     act(() => campo(arvore, "Número")?.props.onChangeText("12"));
     act(() => campo(arvore, "Edifício")?.props.onChangeText("Edifício Que Eu Digitei"));
@@ -2028,6 +2035,33 @@ describe("campos de custo vazios (H5c)", () => {
     }
     const compra = abrir({ ...formularioVazio(), modalidade: "compra" });
     expect(entrada(compra, "Preço de venda (R$)")?.props.placeholder).toBe("Não informado");
+  });
+
+  it("modo essencial (leitura de um link): só preço, condomínio e IPTU; o resto atrás de 'Ver todos os campos'", () => {
+    let arvore!: TestRenderer.ReactTestRenderer;
+    const anomalias = [{ campo: "area", tipo: "incoerente", mensagem: "A área difere entre o link e o texto do anúncio." }] as unknown as ExtracaoAnuncio["anomalias"];
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(FormularioDeRevisao, { estado: formularioVazio(), anomalias, aoAlterar: () => undefined, essencial: true }),
+        ),
+      );
+    });
+    const rotulos = () =>
+      arvore.root
+        .findAll((n) => typeof n.type !== "string" && typeof n.props.onChangeText === "function" && typeof n.props.accessibilityLabel === "string")
+        .map((n) => n.props.accessibilityLabel as string)
+        .filter((r, i, todos) => todos.indexOf(r) === i);
+    expect(rotulos()).toEqual(["Aluguel (R$ por mês)", "Condomínio (R$ por mês)", "IPTU (R$)"]);
+    // O aviso de um campo recolhido não some: o link conta quantos há.
+    const link = arvore.root.findAll(
+      (n) => typeof n.type !== "string" && typeof n.props.onPress === "function" && String(n.props.accessibilityLabel ?? "").startsWith("Ver todos os campos"),
+    )[0];
+    expect(link?.props.accessibilityLabel).toBe("Ver todos os campos, 1 aviso");
+    act(() => link?.props.onPress());
+    expect(rotulos()).toEqual(expect.arrayContaining(["Nome da análise", "Rua", "Número", "Edifício", ...CAMPOS, "Área (m²)", "Quartos", "Andar"]));
   });
 
   it("valor lido aparece e zero digitado pela pessoa continua zero", () => {

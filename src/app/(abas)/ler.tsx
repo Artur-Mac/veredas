@@ -1,6 +1,8 @@
+import * as Clipboard from "expo-clipboard";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useMemo, useRef, useState } from "react";
-import { Platform, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import * as WebBrowser from "expo-web-browser";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { AppState, Linking, Platform, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { Cartao, CorpoDoCartao } from "../../componentes/Cartao";
 import { Coluna } from "../../componentes/casca/Coluna";
@@ -13,6 +15,7 @@ import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
 import { type AnaliseV2, type ExtracaoAnuncio, type LeituraParcial, type Portal } from "../../dados/contratos";
 import { extrairDaUrl, extrairDoTexto, montarExtracao } from "../../dados/extrator";
+import { textoDoAnuncioCopiado } from "../../dados/extrator/copiado";
 import { formatarNumero } from "../../dados/formatos";
 import {
   anomaliasDaRevisao,
@@ -42,6 +45,12 @@ const VISITA_VAZIA: AnaliseV2["visita"] = {
   segundos: 0,
   concluidaEm: null,
 };
+
+const AVISO_DE_TEXTO_LIDO = "Lemos o texto que você copiou. Confira os números abaixo.";
+const AVISO_SEM_COPIA = "Não conseguimos ler o que você copiou. Toque e segure o campo abaixo e escolha Colar.";
+const AVISO_NAO_E_ANUNCIO =
+  "O que você copiou não parece o anúncio. No navegador, selecione o trecho com o preço, copie e toque em Colar o que copiei.";
+const AVISO_SEM_NAVEGADOR = "Não conseguimos abrir o navegador. Abra o link nele, copie o texto do anúncio e cole abaixo.";
 
 /** Todas as leituras juntas: link, página (celular) e o texto colado que já foi lido. */
 function extrairTudo(
@@ -89,6 +98,12 @@ function LeituraDoAnuncio() {
   const [erroAoSalvar, setErroAoSalvar] = useState("");
   /** Depois da primeira leitura bem-sucedida, a página reaberta é só para a pessoa ver. */
   const jaLeuAPagina = useRef(false);
+  /** Resultado da última leitura do que a pessoa copiou (lido, vazio ou não é anúncio). */
+  const [avisoDaCopia, setAvisoDaCopia] = useState("");
+  /** A pessoa foi ao navegador copiar o anúncio: na volta, o app lê a área de transferência uma vez. */
+  const esperandoACopia = useRef(false);
+  /** Aba do Safari aberta por cima do app (iOS): a volta é o fim de `openBrowserAsync`, não a mudança de AppState. */
+  const abaPorCima = useRef(false);
 
   const leituraDaUrl = useMemo(() => {
     if (!url) return null;
@@ -121,13 +136,82 @@ function LeituraDoAnuncio() {
     if (jaLeuAPagina.current) return;
     setMotivoDaFalha(motivo);
     setPediuTexto(true);
+    // A página de bloqueio não tem nada para a pessoa fazer: sai da tela e dá lugar ao navegador.
+    if (motivo === "bloqueio") setPaginaAberta(false);
   };
 
-  const lerTexto = () => {
-    setTextoLido(textoDoCampo);
-    setForm((anterior) =>
-      formularioDeExtracao(extrairTudo(url, leituraDaUrl, portal, leiturasDaPagina, textoDoCampo), anterior),
-    );
+  const lerTexto = (texto: string) => {
+    setTextoLido(texto);
+    setForm((anterior) => formularioDeExtracao(extrairTudo(url, leituraDaUrl, portal, leiturasDaPagina, texto), anterior));
+  };
+
+  /** Lê a área de transferência. Só o que parece anúncio entra no campo; o resto é descartado sem aparecer. */
+  const lerCopiado = async () => {
+    let copiado = "";
+    try {
+      copiado = await Clipboard.getStringAsync();
+    } catch {
+      copiado = "";
+    }
+    if (!copiado.trim()) {
+      setAvisoDaCopia(AVISO_SEM_COPIA);
+      return;
+    }
+    const texto = textoDoAnuncioCopiado(copiado, url);
+    if (texto === null) {
+      setAvisoDaCopia(AVISO_NAO_E_ANUNCIO);
+      return;
+    }
+    setTextoDoCampo(texto);
+    lerTexto(texto);
+    setAvisoDaCopia(AVISO_DE_TEXTO_LIDO);
+  };
+
+  const voltouDoNavegador = () => {
+    if (!esperandoACopia.current) return;
+    esperandoACopia.current = false;
+    void lerCopiado();
+  };
+  // O ouvinte do AppState é montado uma vez; a ref aponta sempre para a versão desta renderização.
+  const voltouDoNavegadorRef = useRef(voltouDoNavegador);
+  useEffect(() => {
+    voltouDoNavegadorRef.current = voltouDoNavegador;
+  });
+
+  useEffect(() => {
+    if (Platform.OS === "web") return;
+    let espera: ReturnType<typeof setTimeout> | undefined;
+    const assinatura = AppState.addEventListener("change", (estado) => {
+      if (estado !== "active" || abaPorCima.current) return;
+      // No Android 10 ou mais novo, a área de transferência só é entregue ao app com foco, que chega logo depois.
+      espera = setTimeout(() => voltouDoNavegadorRef.current(), 500);
+    });
+    return () => {
+      assinatura.remove();
+      if (espera) clearTimeout(espera);
+    };
+  }, []);
+
+  /** O portal que bloqueia a página no app abre no navegador do aparelho (Safari ou Chrome), sem disfarce nenhum. */
+  const abrirNoNavegador = async () => {
+    setAvisoDaCopia("");
+    esperandoACopia.current = true;
+    abaPorCima.current = Platform.OS === "ios";
+    try {
+      await WebBrowser.openBrowserAsync(url);
+      if (abaPorCima.current) {
+        abaPorCima.current = false;
+        voltouDoNavegador();
+      }
+    } catch {
+      abaPorCima.current = false;
+      try {
+        await Linking.openURL(url);
+      } catch {
+        esperandoACopia.current = false;
+        setAvisoDaCopia(AVISO_SEM_NAVEGADOR);
+      }
+    }
   };
 
   // ——— Checklist: reflete só o que a extração trouxe ———————————————————————————
@@ -224,6 +308,9 @@ function LeituraDoAnuncio() {
   const foraDeCobertura = coberturaEscolhida === "recife_fora" || coberturaEscolhida === "fora_do_recife";
   const semBairro = coberturaEscolhida === "desconhecida";
   const mostrarCartaoDeTexto = !noCelular || pediuTexto;
+  const bloqueado = motivoDaFalha === "bloqueio";
+  /** No celular, quando a página não pôde ser lida, o caminho principal é o navegador do aparelho. */
+  const ofereceNavegador = noCelular && leituraDaUrl !== null && motivoDaFalha !== null;
 
   return (
     <Tela>
@@ -269,7 +356,7 @@ function LeituraDoAnuncio() {
                 </View>
               ) : null}
 
-              {abrePagina && !paginaAberta ? (
+              {abrePagina && !paginaAberta && !bloqueado ? (
                 <View style={styles.linhaDeLinks}>
                   <LinkDoCartao rotulo="Ver página do anúncio" aoPressionar={() => setPaginaAberta(true)} />
                   {!mostrarCartaoDeTexto ? <LinkDoCartao rotulo="Prefiro colar o texto" aoPressionar={() => setPediuTexto(true)} /> : null}
@@ -297,13 +384,29 @@ function LeituraDoAnuncio() {
             <Cartao style={styles.cartao}>
               <CorpoDoCartao style={styles.corpo}>
                 <Texto tipo="secao" role="heading" style={styles.tituloDeSecao}>
-                  Complete com o texto do anúncio
+                  {bloqueado ? "Abra o anúncio no navegador" : "Complete com o texto do anúncio"}
                 </Texto>
                 <Texto tipo="apoio" style={styles.descricao}>
-                  {motivoDaFalha !== null
-                    ? "Não conseguimos ler esta página. Copie o texto dela e cole aqui."
-                    : "No anúncio, selecione todo o texto da página e cole aqui."}
+                  {bloqueado
+                    ? `${portal === "outro" ? "Este site" : nomeDoPortal(portal)} não deixa outros apps abrirem a página, mas o navegador do celular abre. Lá, selecione o trecho com preço, condomínio e IPTU, copie e volte: o Vereda lê sozinho o que você copiou.`
+                    : ofereceNavegador
+                      ? "Não conseguimos ler esta página aqui. Abra no navegador, copie o trecho com preço, condomínio e IPTU e volte: o Vereda lê sozinho o que você copiou."
+                      : Platform.OS === "web"
+                        ? "O navegador não deixa o Vereda abrir a página do portal, então preço, condomínio e IPTU vêm do texto: no anúncio, selecione todo o texto da página e cole aqui. No celular, o app tenta ler a página sozinho."
+                        : "No anúncio, selecione todo o texto da página e cole aqui."}
                 </Texto>
+
+                {ofereceNavegador ? (
+                  <Botao rotulo="Abrir no navegador" variante="principal" icone="external-link" onPress={() => void abrirNoNavegador()} />
+                ) : null}
+                {noCelular ? (
+                  <Botao rotulo="Colar o que copiei" variante="secundario" icone="clipboard" onPress={() => void lerCopiado()} />
+                ) : null}
+                {avisoDaCopia ? (
+                  <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.avisoDaCopia}>
+                    {avisoDaCopia}
+                  </Texto>
+                ) : null}
 
                 <View style={styles.campoDeTexto}>
                   <Texto tipo="etiqueta" style={styles.rotuloDoCampo}>
@@ -323,7 +426,7 @@ function LeituraDoAnuncio() {
                   />
                 </View>
 
-                <Botao rotulo="Ler texto" variante="secundario" onPress={lerTexto} />
+                <Botao rotulo="Ler texto" variante="secundario" onPress={() => lerTexto(textoDoCampo)} />
               </CorpoDoCartao>
             </Cartao>
           ) : null}
@@ -333,7 +436,7 @@ function LeituraDoAnuncio() {
               <Texto tipo="titulo-tela" role="heading" style={styles.tituloDoFormulario}>
                 Revise antes de salvar
               </Texto>
-              <FormularioDeRevisao estado={form} anomalias={anomaliasDaRevisao(extracao, form)} aoAlterar={setForm} />
+              <FormularioDeRevisao essencial estado={form} anomalias={anomaliasDaRevisao(extracao, form)} aoAlterar={setForm} />
 
               {foraDeCobertura ? null : (
                 <View style={styles.acoes}>
@@ -612,6 +715,12 @@ const useEstilos = estilosDoTema((cor) =>
       color: cor("cor-texto-apoio"),
       fontSize: 13,
       lineHeight: 18,
+    },
+    avisoDaCopia: {
+      color: cor("cor-texto"),
+      fontSize: 12.5,
+      lineHeight: 17,
+      fontWeight: "600",
     },
     campoDeTexto: {
       gap: 5,

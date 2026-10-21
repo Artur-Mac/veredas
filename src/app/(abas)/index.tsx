@@ -52,9 +52,12 @@ export default function ExplorarT1() {
         setUrlInput(texto.trim());
         setErroUrl("");
       } else {
+        setErroUrl("Não há nada copiado. Copie o endereço do anúncio e toque de novo, ou cole direto no campo.");
         inputRef.current?.focus();
       }
     } catch {
+      // Firefox e permissão negada no Chrome recusam a leitura; sem aviso, o botão parecia não funcionar.
+      setErroUrl("O navegador não deixou o Vereda ler o que você copiou. Cole o link direto no campo (Ctrl+V; no celular, toque e segure o campo e escolha Colar).");
       inputRef.current?.focus();
     }
   };

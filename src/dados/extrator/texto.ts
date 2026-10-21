@@ -6,6 +6,7 @@ import {
   type Portal,
 } from "../contratos";
 import { encontrarBairroNoTexto } from "./bairro";
+import { semDadosPessoais } from "./privacidade";
 
 /** Mapa auxiliar em memória para guardar textos de "Não informado" ou similares sem sujar o contrato Zod. */
 export const mapaNaoInformados = new WeakMap<LeituraParcial, Map<ChaveDeCampo, string>>();
@@ -150,8 +151,8 @@ export function extrairDoTexto(conteudo: string, portal: Portal): LeituraParcial
     leituras.push(leituraJsonLd);
   }
 
-  // 2. Camada B: Texto
-  const textoLimpo = limparHtml(conteudo);
+  // 2. Camada B: Texto, sem o contato de quem anuncia (o JSON-LD acima só rende campos da lista do imóvel)
+  const textoLimpo = semDadosPessoais(limparHtml(conteudo));
   const campos = camposVazios();
   const naoInformados = new Map<ChaveDeCampo, string>();
 

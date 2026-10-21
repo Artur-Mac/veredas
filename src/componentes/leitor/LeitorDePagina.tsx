@@ -7,7 +7,7 @@ import { DOMINIOS_DOS_PORTAIS, coletaEhDoAnuncio, esquemaColetaDaPagina, lerPagi
 import { useTema } from "../../tema/Tema";
 import { comAlfa } from "../../tema/tokens";
 import { Texto } from "../Texto";
-import { SCRIPT_COLETOR } from "./coletor";
+import { SCRIPT_COLETOR, paginaBloqueada } from "./coletor";
 import {
   ESTADO_INICIAL_DO_LEITOR,
   proximoEstado,
@@ -26,6 +26,12 @@ export interface LeitorDePaginaProps {
   aoLer: (leituras: LeituraParcial[]) => void;
   aoFalhar: (motivo: MotivoDaFalha) => void;
 }
+
+/**
+ * Origens que a WebView aceita carregar. `about:srcdoc` é o quadro interno que o desafio da Cloudflare cria no iOS;
+ * sem ele na lista, a biblioteca recusa o quadro (e tenta abri-lo fora do app), e o desafio nunca termina.
+ */
+export const ORIGENS_DA_WEBVIEW = ["https://*", "http://*", "about:blank", "about:srcdoc"];
 
 const PRAZO_DA_PAGINA_MS = 20_000;
 const PRAZO_DA_VERIFICACAO_MS = 120_000;
@@ -140,12 +146,19 @@ export function LeitorDePagina({ url, portal, idNoPortal, aoLer, aoFalhar }: Lei
       leituras: lerPagina(coleta, portal, idNoPortal, url),
       verificacao: coleta.verificacao,
       outraPagina: !coletaEhDoAnuncio(coleta, portal, idNoPortal, url),
+      bloqueio: paginaBloqueada(coleta.titulo, coleta.texto),
     });
   };
 
   const hostDoLink = hostDe(url);
 
-  const permitirNavegacao = (pedido: string): boolean => {
+  /**
+   * A página do anúncio (quadro principal) só navega no portal e no desafio. Quadros internos (o iOS os pergunta
+   * também; o Android, não) carregam como num navegador comum: o desafio da Cloudflare roda num deles, e eles não
+   * tiram a pessoa da página.
+   */
+  const permitirNavegacao = (pedido: string, quadroPrincipal = true): boolean => {
+    if (!quadroPrincipal && (pedido === "about:blank" || pedido === "about:srcdoc")) return true;
     let analisado: URL;
     try {
       analisado = new URL(pedido);
@@ -153,6 +166,7 @@ export function LeitorDePagina({ url, portal, idNoPortal, aoLer, aoFalhar }: Lei
       return false;
     }
     if (analisado.protocol !== "https:" && analisado.protocol !== "http:") return false;
+    if (!quadroPrincipal) return true;
     const host = analisado.hostname.toLowerCase();
     if (host === "challenges.cloudflare.com") return true;
     const permitidos = DOMINIOS_DOS_PORTAIS[portal];
@@ -184,9 +198,12 @@ export function LeitorDePagina({ url, portal, idNoPortal, aoLer, aoFalhar }: Lei
           injectedJavaScript={SCRIPT_COLETOR}
           onMessage={tratarMensagem}
           onError={() => despachar({ tipo: "erro" })}
-          onShouldStartLoadWithRequest={(pedido) => permitirNavegacao(pedido.url)}
+          originWhitelist={ORIGENS_DA_WEBVIEW}
+          onShouldStartLoadWithRequest={(pedido) => permitirNavegacao(pedido.url, pedido.isTopFrame !== false)}
           setSupportMultipleWindows={false}
-          thirdPartyCookiesEnabled={false}
+          // Cookies de terceiros como no Chrome (o padrão do Android): o desafio guarda a prova num deles. Ficam só
+          // nesta WebView, separados do navegador da pessoa, e o app não os lê.
+          thirdPartyCookiesEnabled
           sharedCookiesEnabled={false}
           allowsInlineMediaPlayback={false}
           mediaPlaybackRequiresUserAction

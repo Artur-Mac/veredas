@@ -24,6 +24,7 @@ Objetivo: o dossiê passa a responder sobre a rua e o deslocamento, com dado ofi
 | 7 | **Alagamento**: ponto crítico catalogado a 150 m e situação da obra; cota do terreno como pergunta | ESIG/COP, curvas de nível | Não declarada | Baixo | Só depois de autorização da Prefeitura; a data de 2022 aparece junto do fato |
 | 8 | **Pendências da v1.0**: tabela da leitura automática nos quatro portais num celular de verdade e mapeamento das chaves de ZAP, VivaReal e OLX | Teste em aparelho | — | Baixo | Tabela preenchida pelo humano com o que foi observado |
 | 9 | **Textos para a demonstração do Campus**: "portal de anúncios" no lugar dos nomes dos portais | Regulamento, item 11.20(iv) | — | Baixo | Nenhum nome ou logo de portal na ficha, no vídeo e nas telas mostradas |
+| 10 | **Compartilhar para o Vereda**: extensão do Safari que lê a página aberta (iOS) e "Processar texto" no menu de seleção (Android), porque ZAP, VivaReal e OLX bloqueiam a WebView | Build próprio do app | — | Médio | Do anúncio no navegador ao formulário preenchido em dois ou três toques, sem copiar; ver [07](07-LEITURA-DO-LINK-NO-CELULAR.md) |
 
 **Uma carta resolve três itens.** Os itens 6 e 7 e a zona da LPUOS dependem de autorização de órgãos do Recife (Prefeitura via EMPREL/ESIG, e Grande Recife). Um pedido formal, explicando o uso educacional com atribuição, vale a pena antes de novembro.
 

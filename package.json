@@ -55,6 +55,13 @@
     "testMatch": [
       "**/tests/**/*.test.ts"
     ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/.claude/"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/.claude/"
+    ],
     "moduleNameMapper": {
       "^zod$": "<rootDir>/node_modules/zod"
     },

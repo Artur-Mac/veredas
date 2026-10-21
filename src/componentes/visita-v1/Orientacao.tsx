@@ -43,7 +43,9 @@ function Bussola({ graus }: { graus: number | null }) {
         O
       </TextoSvg>
       {o ? (
-        <G rotation={o.graus} origin="55, 55">
+        // Rotação em torno do centro pelo atributo do próprio SVG: `rotation` com `origin` vira `transform-origin`, que a
+        // web não aceita como atributo.
+        <G transform={`rotate(${o.graus} 55 55)`}>
           <Path d="M55 29 49 61 55 57 61 61Z" fill={cor("cor-acao")} />
           <Path d="M55 81 49 61 55 57 61 61Z" fill={cor("cor-traco")} />
         </G>

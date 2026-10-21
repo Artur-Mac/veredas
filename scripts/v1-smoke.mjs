@@ -9,7 +9,8 @@
 // O que percorre (os números são os da ordem do arquiteto, Fatia 6, adaptados):
 //   a) link de compra do ZAP em Casa Forte + texto do anúncio, anomalia de IPTU, "Encontrar o prédio", prédio real do
 //      índice (Estrada do Encanamento, 719), "É este prédio", crédito 3 para 2, dossiê com a fonte "Prefeitura do Recife"
-//      e sem R$/m² comparado ao ITBI;
+//      e sem R$/m² comparado ao ITBI; na aba Entorno, a seção "A rua" (v1.1) com fonte e data em cada linha e a gaveta
+//      da Central 156;
 //   a2) ALUGUEL: link `zap-casa-forte-aluguel` + texto `zap-like-iptu-sem-periodo` (as duas fixtures, lidas na hora),
 //      anomalia de IPTU visível, prédio achado pela busca de rua e número com o primeiro edifício de
 //      `src/dados/recife/indice/casa-forte.json` (lido na hora), confirmação (crédito 2 para 1) e dossiê com um fato da
@@ -241,6 +242,12 @@ async function esperarSaldo(page, esperado) {
 }
 
 const valorDoCampo = (page, nome) => page.getByRole("textbox", { name: nome, exact: true }).inputValue();
+
+/** A leitura de um link abre o formulário enxuto (preço, condomínio e IPTU); o resto fica atrás do link. */
+async function abrirTodosOsCampos(page) {
+  assert.equal(await page.getByRole("textbox", { name: "Rua", exact: true }).count(), 0, "formulário enxuto sem a rua");
+  await page.getByRole("button", { name: /^Ver todos os campos/ }).click();
+}
 
 // ——— Passos que se repetem (editor e Comparar) ——————————————————————————————————————————————
 
@@ -556,6 +563,7 @@ try {
     await page.getByRole("button", { name: "Ler texto", exact: true }).click();
     await esperarTexto(page, ANOMALIA_IPTU);
     await esperarTexto(page, "R$ 690.000 · Cond. R$ 780/mês · IPTU R$ 154 · período não informado");
+    await abrirTodosOsCampos(page);
     assert.equal(await valorDoCampo(page, "Rua"), "Estrada do Encanamento");
     assert.equal(await valorDoCampo(page, "Preço de venda (R$)"), "690.000");
     assert.equal(await valorDoCampo(page, "Condomínio (R$ por mês)"), "780");
@@ -629,7 +637,25 @@ try {
     await page.getByRole("tab", { name: "Entorno", exact: true }).click();
     await esperarTexto(page, "Preço e avaliação fiscal");
     await semPorM2ComITBI("Entorno");
+    // v1.1: a seção "A rua" do prédio confirmado, com a fonte e a data em cada linha (revisão 2.6 da ordem).
+    await esperarTexto(page, "O que os registros dizem da rua");
+    const fontesDaRua = (await metaDoIndice()).fontesDaRua ?? [];
+    const p156 = fontesDaRua.find((f) => f.chave === "central_156")?.periodo;
+    assert(p156, "meta.json sem o período da Central 156");
+    await esperarTexto(page, `registro oficial · Central 156 da Emlurb · ${diaBr(p156.de)} a ${diaBr(p156.ate)}`);
+    await esperarTexto(page, "registro oficial · Entorno do Censo · Censo 2022");
+    await esperarTexto(page, "registro oficial · Sinistros da CTTU · 2022 a 2024");
+    await esperarTexto(page, "A publicação esconde o número do imóvel.");
     await etapa(page, "dossie-entorno");
+    // Um toque numa linha da rua abre a gaveta da base, com a licença e as datas do meta.json.
+    await page.getByRole("button", { name: /^Pedidos de lâmpada apagada: / }).click();
+    await page.getByRole("dialog", { name: "Central 156 da Emlurb · Prefeitura do Recife · ODbL" }).waitFor();
+    const gavetaDaRua = await page.getByRole("dialog").last().innerText();
+    const f156 = fontesDaRua.find((f) => f.chave === "central_156");
+    assert.match(gavetaDaRua, new RegExp(`Base modificada em\\s+${diaBr(f156.modificadoEm)}`), "data de modificação da Central 156 do meta.json");
+    await etapa(page, "dossie-fonte-rua");
+    await page.keyboard.press("Escape");
+    await esperar(async () => (await page.getByRole("dialog").count()) === 0, "Esc fecha a gaveta da fonte da rua");
     await page.getByRole("tab", { name: "Edifício", exact: true }).click();
     await esperar(async () => (await page.getByRole("tab", { name: "Edifício", exact: true }).getAttribute("aria-selected")) === "true", "aba Edifício");
     await etapa(page, "dossie-edificio");
@@ -677,6 +703,7 @@ try {
     );
     // A cobertura é a do link (Casa Forte): o texto colado fala de outro bairro e não a muda.
     await esperarTexto(page, "Casa Forte · com cadastro");
+    await abrirTodosOsCampos(page);
     assert.equal(await valorDoCampo(page, "Rua"), dadosDoAluguel.logradouro);
     assert.equal(await valorDoCampo(page, "Aluguel (R$ por mês)"), reais(dadosDoAluguel.preco));
     assert.equal(await valorDoCampo(page, "Condomínio (R$ por mês)"), reais(dadosDoAluguel.condominio));

@@ -12,6 +12,7 @@ Seis documentos de produto feitos a partir de uma pesquisa na internet com verif
 | 04 | [Mercado, regulação, modelo de negócio e fomento](04-MERCADO-REGULACAO-E-FOMENTO.md) | Tamanho do público, limites legais, âncoras de preço, editais com prazo |
 | 05 | [Roadmap das próximas versões](05-ROADMAP-PROXIMAS-VERSOES.md) | v1.1, v1.2 e v2, em ordem e com condição de pronto |
 | 06 | [Plano estratégico](06-PLANO-ESTRATEGICO.md) | Tese, público, receita, vantagem, riscos, marcos e decisões da equipe |
+| 07 | [Leitura do link no celular](07-LEITURA-DO-LINK-NO-CELULAR.md) | O bloqueio dos portais na WebView, o que o app faz hoje e os caminhos para ler sem formulário |
 | — | [Anexo: pesquisa verificada (JSON)](anexo-pesquisa-verificada.json) | Todos os itens, com trechos e URLs |
 
 ## Método
