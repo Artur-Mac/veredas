@@ -1,5 +1,6 @@
 import * as Clipboard from "expo-clipboard";
 import { router, useLocalSearchParams } from "expo-router";
+import { ShareIntentModule } from "expo-share-intent";
 import * as WebBrowser from "expo-web-browser";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AppState, Linking, Platform, ScrollView, StyleSheet, TextInput, View } from "react-native";
@@ -7,6 +8,7 @@ import { Botao } from "../../componentes/Botao";
 import { Cartao, CorpoDoCartao } from "../../componentes/Cartao";
 import { Coluna } from "../../componentes/casca/Coluna";
 import { useFocoDoCampo } from "../../componentes/casca/foco";
+import { rendeDados } from "../../componentes/leitor/decidir";
 import { LeitorDePagina } from "../../componentes/leitor/LeitorDePagina";
 import { estilosDoTema } from "../../componentes/revisao/estilosDoTema";
 import { AlvoDeToque } from "../../componentes/Pressionavel";
@@ -16,6 +18,7 @@ import { Texto } from "../../componentes/Texto";
 import { type AnaliseV2, type ExtracaoAnuncio, type LeituraParcial, type Portal } from "../../dados/contratos";
 import { extrairDaUrl, extrairDoTexto, montarExtracao } from "../../dados/extrator";
 import { textoDoAnuncioCopiado } from "../../dados/extrator/copiado";
+import { lerPagina } from "../../dados/extrator/pagina";
 import { formatarNumero } from "../../dados/formatos";
 import {
   anomaliasDaRevisao,
@@ -32,6 +35,7 @@ import {
   type EstadoDoFormulario,
 } from "../../dados/formulario";
 import { useAnalises } from "../../estado/Analises";
+import { coletaDoId, recebeuDesde, registrarLinkAberto } from "../../estado/compartilhamento";
 import { useTema } from "../../tema/Tema";
 import { comAlfa } from "../../tema/tokens";
 
@@ -51,6 +55,39 @@ const AVISO_SEM_COPIA = "Não conseguimos ler o que você copiou. Toque e segure
 const AVISO_NAO_E_ANUNCIO =
   "O que você copiou não parece o anúncio. No navegador, selecione o trecho com o preço, copie e toque em Colar o que copiei.";
 const AVISO_SEM_NAVEGADOR = "Não conseguimos abrir o navegador. Abra o link nele, copie o texto do anúncio e cole abaixo.";
+const AVISO_DA_PAGINA_COMPARTILHADA = "Lemos a página que você compartilhou. Confira os números abaixo.";
+const AVISO_DO_TRECHO_RECEBIDO = "Lemos o trecho que você escolheu. Confira os números abaixo.";
+const AVISO_DA_PAGINA_SEM_PRECO =
+  "A página que você compartilhou não trouxe preço nem área. No navegador, selecione o trecho com o preço, copie e toque em Colar o que copiei.";
+
+/**
+ * Como o anúncio volta do navegador sem copiar, no build próprio do app (plugins/compartilhar): no iOS pela folha de
+ * compartilhar do Safari, no Android pelo menu de seleção de texto. No Expo Go e na web o módulo não existe e fica só a
+ * área de transferência.
+ */
+function instrucaoNoNavegador(): string | null {
+  if (ShareIntentModule == null) return null;
+  if (Platform.OS === "ios") {
+    return "Lá, toque em Compartilhar e escolha Ler no Vereda. Se preferir, copie o trecho com preço, condomínio e IPTU e volte: o Vereda lê sozinho o que você copiou.";
+  }
+  if (Platform.OS === "android") {
+    return "Lá, selecione o trecho com preço, condomínio e IPTU e toque em Ler no Vereda, no menu da seleção. Se preferir, copie o trecho e volte: o Vereda lê sozinho o que você copiou.";
+  }
+  return null;
+}
+
+/**
+ * A página que a pessoa compartilhou do Safari, lida como a coleta da WebView; null quando não veio página. Sem
+ * `urlPedida`: o link já é o da própria página, e o atalho "mesmo caminho do link pedido" leria uma lista ou uma busca
+ * compartilhada como se fosse o anúncio.
+ */
+function leiturasDaPaginaCompartilhada(idDaColeta: string, url: string): LeituraParcial[] | null {
+  const coleta = idDaColeta ? coletaDoId(idDaColeta) : null;
+  if (coleta === null) return null;
+  const lida = url ? extrairDaUrl(url) : null;
+  const doLink = lida !== null && !("erro" in lida) ? lida : null;
+  return lerPagina(coleta, doLink?.portal ?? "outro", doLink?.idNoPortal ?? null);
+}
 
 /** Todas as leituras juntas: link, página (celular) e o texto colado que já foi lido. */
 function extrairTudo(
@@ -70,8 +107,8 @@ function extrairTudo(
 /**
  * A leitura é uma aba escondida (`href: null`): o navegador a mantém montada entre uma visita e outra, e o estado dela
  * (texto lido, formulário e o id da análise) sobreviveria ao link seguinte; salvar o segundo link regravaria a primeira
- * análise com o mesmo id. A chave (link, texto e `n`, a marca que o Explorar põe a cada "Gerar Dossiê") recomeça a
- * leitura do zero a cada visita.
+ * análise com o mesmo id. A chave (link, texto e `n`, a marca que o Explorar põe a cada "Gerar Dossiê" e o
+ * `RecebedorDeCompartilhamento` a cada anúncio recebido) recomeça a leitura do zero a cada visita.
  */
 export default function TelaDeLeitura() {
   const { url = "", texto = "", n = "" } = useLocalSearchParams<{ url?: string; texto?: string; n?: string }>();
@@ -81,29 +118,50 @@ export default function TelaDeLeitura() {
 function LeituraDoAnuncio() {
   const { cor } = useTema();
   const styles = useEstilos();
-  const { url: urlDaRota = "", texto: textoDaRota = "" } = useLocalSearchParams<{ url?: string; texto?: string }>();
+  const {
+    url: urlDaRota = "",
+    texto: textoDaRota = "",
+    coleta: idDaColeta = "",
+    origem = "",
+  } = useLocalSearchParams<{ url?: string; texto?: string; coleta?: string; origem?: string }>();
   const url = urlDaRota.trim();
   const { salvar, erro: erroDoCaderno } = useAnalises();
   const focoDoTexto = useFocoDoCampo();
+
+  // Anúncio recebido por compartilhamento (`RecebedorDeCompartilhamento`): a página do Safari e o trecho escolhido no
+  // menu de seleção já chegam lidos, e a WebView não precisa abrir (nos portais que bloqueiam, nem abriria).
+  const compartilhado = origem === "compartilhado";
+  const [daPagina] = useState(() => (compartilhado ? leiturasDaPaginaCompartilhada(idDaColeta, url) : null));
+  const paginaRendeu = daPagina !== null && rendeDados(daPagina);
+  const trechoRecebido = compartilhado && textoDaRota.trim() !== "";
+  const avisoDoRecebido = paginaRendeu
+    ? AVISO_DA_PAGINA_COMPARTILHADA
+    : trechoRecebido
+      ? AVISO_DO_TRECHO_RECEBIDO
+      : daPagina !== null
+        ? AVISO_DA_PAGINA_SEM_PRECO
+        : "";
 
   const [idGerado] = useState(() => `imovel-${Date.now()}`);
   /** O que está no campo de texto e o que já foi lido ("Ler texto"): a leitura só muda no botão. */
   const [textoDoCampo, setTextoDoCampo] = useState(textoDaRota);
   const [textoLido, setTextoLido] = useState(textoDaRota);
-  const [leiturasDaPagina, setLeiturasDaPagina] = useState<LeituraParcial[]>([]);
-  const [paginaAberta, setPaginaAberta] = useState(true);
+  const [leiturasDaPagina, setLeiturasDaPagina] = useState<LeituraParcial[]>(daPagina ?? []);
+  const [paginaAberta, setPaginaAberta] = useState(daPagina === null && !trechoRecebido);
   const [motivoDaFalha, setMotivoDaFalha] = useState<string | null>(null);
-  const [pediuTexto, setPediuTexto] = useState(false);
+  const [pediuTexto, setPediuTexto] = useState(trechoRecebido || (daPagina !== null && !paginaRendeu));
   const [salvando, setSalvando] = useState(false);
   const [erroAoSalvar, setErroAoSalvar] = useState("");
   /** Depois da primeira leitura bem-sucedida, a página reaberta é só para a pessoa ver. */
-  const jaLeuAPagina = useRef(false);
+  const jaLeuAPagina = useRef(paginaRendeu);
   /** Resultado da última leitura do que a pessoa copiou (lido, vazio ou não é anúncio). */
   const [avisoDaCopia, setAvisoDaCopia] = useState("");
   /** A pessoa foi ao navegador copiar o anúncio: na volta, o app lê a área de transferência uma vez. */
   const esperandoACopia = useRef(false);
   /** Aba do Safari aberta por cima do app (iOS): a volta é o fim de `openBrowserAsync`, não a mudança de AppState. */
   const abaPorCima = useRef(false);
+  /** Quando a pessoa foi ao navegador; o anúncio que chegar por compartilhamento depois disso dispensa a cópia. */
+  const abriuONavegadorEm = useRef(0);
 
   const leituraDaUrl = useMemo(() => {
     if (!url) return null;
@@ -170,6 +228,8 @@ function LeituraDoAnuncio() {
   const voltouDoNavegador = () => {
     if (!esperandoACopia.current) return;
     esperandoACopia.current = false;
+    // O anúncio já voltou por "Ler no Vereda": ler a área de transferência por cima dele pediria permissão à toa (iOS).
+    if (recebeuDesde(abriuONavegadorEm.current)) return;
     void lerCopiado();
   };
   // O ouvinte do AppState é montado uma vez; a ref aponta sempre para a versão desta renderização.
@@ -197,6 +257,9 @@ function LeituraDoAnuncio() {
     setAvisoDaCopia("");
     esperandoACopia.current = true;
     abaPorCima.current = Platform.OS === "ios";
+    // O trecho escolhido no menu de seleção (Android) volta sem link: o recebedor junta este.
+    abriuONavegadorEm.current = Date.now();
+    registrarLinkAberto(url, abriuONavegadorEm.current);
     try {
       await WebBrowser.openBrowserAsync(url);
       if (abaPorCima.current) {
@@ -311,6 +374,7 @@ function LeituraDoAnuncio() {
   const bloqueado = motivoDaFalha === "bloqueio";
   /** No celular, quando a página não pôde ser lida, o caminho principal é o navegador do aparelho. */
   const ofereceNavegador = noCelular && leituraDaUrl !== null && motivoDaFalha !== null;
+  const instrucao = instrucaoNoNavegador();
 
   return (
     <Tela>
@@ -342,6 +406,12 @@ function LeituraDoAnuncio() {
                   </Texto>
                 ) : null}
               </View>
+
+              {avisoDoRecebido ? (
+                <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.avisoDaCopia}>
+                  {avisoDoRecebido}
+                </Texto>
+              ) : null}
 
               {abrePagina && paginaAberta ? (
                 <View style={styles.blocoDaPagina}>
@@ -388,9 +458,11 @@ function LeituraDoAnuncio() {
                 </Texto>
                 <Texto tipo="apoio" style={styles.descricao}>
                   {bloqueado
-                    ? `${portal === "outro" ? "Este site" : nomeDoPortal(portal)} não deixa outros apps abrirem a página, mas o navegador do celular abre. Lá, selecione o trecho com preço, condomínio e IPTU, copie e volte: o Vereda lê sozinho o que você copiou.`
+                    ? `${portal === "outro" ? "Este site" : nomeDoPortal(portal)} não deixa outros apps abrirem a página, mas o navegador do celular abre. ${instrucao ?? "Lá, selecione o trecho com preço, condomínio e IPTU, copie e volte: o Vereda lê sozinho o que você copiou."}`
                     : ofereceNavegador
-                      ? "Não conseguimos ler esta página aqui. Abra no navegador, copie o trecho com preço, condomínio e IPTU e volte: o Vereda lê sozinho o que você copiou."
+                      ? instrucao
+                        ? `Não conseguimos ler esta página aqui. Abra no navegador. ${instrucao}`
+                        : "Não conseguimos ler esta página aqui. Abra no navegador, copie o trecho com preço, condomínio e IPTU e volte: o Vereda lê sozinho o que você copiou."
                       : Platform.OS === "web"
                         ? "O navegador não deixa o Vereda abrir a página do portal, então preço, condomínio e IPTU vêm do texto: no anúncio, selecione todo o texto da página e cole aqui. No celular, o app tenta ler a página sozinho."
                         : "No anúncio, selecione todo o texto da página e cole aqui."}
