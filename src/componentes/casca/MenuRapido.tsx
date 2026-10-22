@@ -19,6 +19,7 @@ export const ITENS_DO_MENU: readonly ItemDoMenu[] = [
   { rotulo: "Dossiês de exemplo", rota: "/exemplos/boa-viagem" },
   { rotulo: "Carteira de créditos", rota: "/creditos", mostraSaldo: true },
   { rotulo: "Sobre os dados", rota: "/sobre-os-dados" },
+  { rotulo: "Cópia do meu caderno", rota: "/dados-do-caderno" },
 ];
 
 type Props = {
@@ -109,6 +110,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   rotuloDoItem: {
+    flexShrink: 1,
     fontSize: 13,
     lineHeight: 18,
     fontWeight: "500",

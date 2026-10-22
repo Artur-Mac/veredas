@@ -1,0 +1,101 @@
+{
+  "fonte": "https://www.granderecife.pe.gov.br/gtfs/gtfs.zip",
+  "consultado_em": "2026-10-22T00:14:23.020992+00:00",
+  "licenca": "não confirmada; não habilitar no app",
+  "integracao": "não realizada",
+  "sha256": "5243ae9b92097b1b9f9c02c28694773fc1c730064656018571299d3f4192676a",
+  "bytes_zip": 37870056,
+  "bytes_expandidos_declarados": 246153932,
+  "arquivos": {
+    "agency.txt": 2241,
+    "calendar.txt": 47363,
+    "calendar_dates.txt": 32,
+    "fare_attributes.txt": 484,
+    "fare_rules.txt": 4596,
+    "feed_info.txt": 314,
+    "routes.txt": 42180,
+    "shapes.txt": 32214280,
+    "stops.txt": 949282,
+    "stop_times.txt": 205778272,
+    "transfers.txt": 665,
+    "trips.txt": 7114223
+  },
+  "tabelas": {
+    "agency.txt": {
+      "linhas": 11,
+      "campos": [
+        "agency_id",
+        "agency_name",
+        "agency_url",
+        "agency_timezone",
+        "agency_lang",
+        "agency_phone",
+        "agency_fare_url",
+        "agency_email"
+      ]
+    },
+    "feed_info.txt": {
+      "linhas": 1,
+      "campos": [
+        "feed_publisher_name",
+        "feed_publisher_url",
+        "feed_lang",
+        "feed_start_date",
+        "feed_end_date",
+        "feed_version",
+        "feed_contact_email",
+        "feed_contact_url"
+      ],
+      "vigencia": [
+        {
+          "feed_start_date": "20200501",
+          "feed_end_date": "20271016",
+          "feed_version": "v2026.10.16"
+        }
+      ]
+    },
+    "routes.txt": {
+      "linhas": 400,
+      "campos": [
+        "route_id",
+        "agency_id",
+        "route_short_name",
+        "route_long_name",
+        "route_type",
+        "route_url"
+      ]
+    },
+    "stops.txt": {
+      "linhas": 7217,
+      "campos": [
+        "stop_id",
+        "stop_name",
+        "stop_lat",
+        "stop_lon",
+        "stop_url",
+        "location_type",
+        "parent_station"
+      ]
+    },
+    "calendar.txt": {
+      "linhas": 1143,
+      "campos": [
+        "service_id",
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday",
+        "start_date",
+        "end_date"
+      ]
+    },
+    "calendar_dates.txt": {
+      "linhas": 0,
+      "campos": []
+    }
+  },
+  "resultado": "metadados lidos; horários, calendário completo e licença ainda não validados"
+}

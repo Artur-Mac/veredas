@@ -20,15 +20,10 @@ import {
   type RuaDoBairro,
 } from "../contratos";
 import { BAIRROS_COBERTOS, type SlugCoberto } from "./bairros";
+import { CARREGADORES_DO_INDICE, LER_META_PUBLICADA } from "./publicacaoGerada";
 
-const ARQUIVOS: Record<SlugCoberto, () => unknown> = {
-  "boa-viagem": () => require("./indice/boa-viagem.json") as unknown,
-  "casa-forte": () => require("./indice/casa-forte.json") as unknown,
-  gracas: () => require("./indice/gracas.json") as unknown,
-  espinheiro: () => require("./indice/espinheiro.json") as unknown,
-  madalena: () => require("./indice/madalena.json") as unknown,
-};
-const ARQUIVO_META = () => require("./indice/meta.json") as unknown;
+const ARQUIVOS: Record<SlugCoberto, () => unknown> = CARREGADORES_DO_INDICE;
+const ARQUIVO_META = LER_META_PUBLICADA;
 
 type Carregado = { indice: IndiceDoBairro; porId: Map<string, Edificio> };
 /** Um problema de formato, no mesmo feitio dos `issues` do Zod (que são aceitos como estão). */
@@ -162,7 +157,7 @@ export function ruaDoBairro(slug: SlugCoberto): RuaDoBairro | null {
 }
 
 /**
- * Acha um edifício pelo `id` (`${Código Logradouro}-${numero}`). Sem `bairro`, procura nos cinco, começando pelos
+ * Acha um edifício pelo `id` (`${Código Logradouro}-${numero}`). Sem `bairro`, procura nas partições habilitadas, começando pelas
  * que já estão em memória; com `bairro`, só nele. Devolve null quando o id não está no índice. Um bairro inválido
  * não esconde um id achado em outro; só lança quando o id não apareceu em nenhum e algum arquivo falhou.
  */

@@ -357,17 +357,23 @@ export function extrairDoTexto(conteudo: string, portal: Portal): LeituraParcial
   }
 
   // Logradouro: trecho que começa com Rua, R., Avenida, Av., Travessa, Tv., Estrada, Praça, Largo, Alameda
-  // até " - ", "," ou fim de linha; ", 123" logo depois vira numero.
-  const matchLog = /\b((?:Rua|R\.|Avenida|Av\.|Travessa|Tv\.|Estrada|Praça|Praca|Largo|Alameda)\s+[^,\n-]+?)(?:\s*-\s*|,\s*|\n|$)/i.exec(textoLimpo);
-  if (matchLog && matchLog[1]) {
-    campos.logradouro = matchLog[1].trim();
-    // Verifica se há número logo após o fim do match
-    const restoDepois = textoLimpo.slice(matchLog.index + matchLog[1].length);
+  // até " - ", "," ou fim de linha; ", 123" logo depois vira numero. A rua costuma aparecer mais de uma vez (a trilha do
+  // portal traz só o nome; a "Localização", o nome e o número): vale a primeira ocorrência com número, senão a primeira.
+  const padraoLog = /\b((?:Rua|R\.|Avenida|Av\.|Travessa|Tv\.|Estrada|Praça|Praca|Largo|Alameda)\s+[^,\n-]+?)(?:\s*-\s*|,\s*|\n|$)/gi;
+  let primeiraRua: string | null = null;
+  for (const matchLog of textoLimpo.matchAll(padraoLog)) {
+    const rua = matchLog[1]?.trim();
+    if (!rua) continue;
+    primeiraRua ??= rua;
+    const restoDepois = textoLimpo.slice((matchLog.index ?? 0) + (matchLog[1]?.length ?? 0));
     const matchNum = /^,\s*([0-9]+[a-zA-Z]?)\b/.exec(restoDepois);
     if (matchNum && matchNum[1]) {
+      campos.logradouro = rua;
       campos.numero = matchNum[1];
+      break;
     }
   }
+  if (campos.logradouro === null && primeiraRua) campos.logradouro = primeiraRua;
 
   // Bairro no texto
   const resBairro = encontrarBairroNoTexto(textoLimpo);

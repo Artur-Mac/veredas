@@ -238,7 +238,7 @@ describe("roteiro de perguntas: a mesma montagem do dossiê", () => {
   });
 
   it("bairro fora da cobertura: só as perguntas que dispensam o índice", () => {
-    const fora = analise({ bairro: "pina", bairroTexto: "Pina", vinculo: { estado: "fora_de_cobertura" } });
+    const fora = analise({ bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" } });
     const ids = perguntasDaVisita(fora, [], agora).map((p) => p.id);
     expect(ids).toEqual(expect.arrayContaining(["padrao-documentos", "padrao-agua", "padrao-ruido", "padrao-sol"]));
     expect(ids).not.toContain("lacuna-endereco");
@@ -425,6 +425,7 @@ describe("a tela Visita", () => {
     const sugerida = mensagemParaCorretor(a, perguntasDaVisita(a, [a], new Date()));
     const campo = achar(arvore, (i) => typeof i.props.onChangeText === "function" && i.props.accessibilityLabel === "Mensagem para agendar");
     expect(campo.props.value).toBe(sugerida);
+    expect(sugerida.endsWith("\n\nMensagem preparada com o VEREDA.")).toBe(true);
     expect(sugerida.startsWith("Olá! Vi o anúncio Apartamento sintético de 3 quartos (https://anuncio.invalid/sintetico-1).")).toBe(true);
 
     await tocar(arvore, porTexto("Copiar mensagem"));
@@ -433,9 +434,13 @@ describe("a tela Visita", () => {
 
     const abrir = jest.spyOn(Linking, "openURL").mockResolvedValue(true);
     await digitar(arvore, "Mensagem para agendar", "Texto editado pela pessoa");
+    await tocar(arvore, porTexto("Copiar mensagem"));
+    expect(setStringAsync).toHaveBeenLastCalledWith("Texto editado pela pessoa");
     await tocar(arvore, porTexto("Abrir no WhatsApp"));
     expect(abrir).toHaveBeenCalledWith(`https://wa.me/?text=${encodeURIComponent("Texto editado pela pessoa")}`);
     expect(todoOTexto(arvore)).toContain("Nada é enviado pelo Vereda");
+    await tocar(arvore, porTexto("Voltar ao texto sugerido"));
+    expect(achar(arvore, (i) => i.props.accessibilityLabel === "Mensagem para agendar").props.value).toBe(sugerida);
     // Nada foi gravado na análise por causa da mensagem.
     expect((await gravadas())[0]?.visita).toEqual(VISITA_VAZIA);
   });

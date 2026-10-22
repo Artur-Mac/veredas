@@ -21,6 +21,10 @@ const COMODIDADES_VALIDAS = [
   "playground",
 ] as const;
 
+/** Tipos de anúncio que não são moradia, como o ZAP, o VivaReal e a OLX os escrevem no link ("loja-salao", "ponto-comercial"). */
+const TIPO_COMERCIAL =
+  /\b(loja|salao|sala-comercial|sala|ponto-comercial|conjunto-comercial|consultorio|galpao|deposito|armazem|terreno|lote|predio-inteiro|hotel|pousada|box)\b/;
+
 export function extrairDaUrl(url: string): LeituraParcial | { erro: "url_invalida" } {
   if (!urlValida(url)) {
     return { erro: "url_invalida" };
@@ -142,6 +146,9 @@ export function extrairDaUrl(url: string): LeituraParcial | { erro: "url_invalid
   const tipologiaMatch = /\b(apartamento|cobertura|flat|kitnet|casa)\b/.exec(slug);
   if (tipologiaMatch) {
     campos.tipologia = tipologiaMatch[1] as Tipologia;
+  } else if (TIPO_COMERCIAL.test(slug)) {
+    // Loja, sala, galpão, terreno: não é moradia, e o cadastro do Vereda só localiza prédios de apartamentos.
+    campos.tipologia = "outro";
   }
 
   // Quartos: (\d+)-quartos?

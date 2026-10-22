@@ -669,7 +669,7 @@ export async function montarARua({ edificiosPorBairro, geradoEm, centroPorDsqfl,
       contar(resumo.grafias, a.rua);
     }
   }
-  linha(`  Defesa Civil 2014 a 2024: ${f.mil(dcLidos)} linhas; ${f.mil(dcNosBairros)} nos 5 bairros -> ${textoDoMapa(viasDc)}`);
+  linha(`  Defesa Civil 2014 a 2024: ${f.mil(dcLidos)} linhas; ${f.mil(dcNosBairros)} nos ${bairros.length} bairros -> ${textoDoMapa(viasDc)}`);
 
   // 9. Por bairro e por edifício.
   const porBairro = {};

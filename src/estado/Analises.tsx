@@ -17,6 +17,8 @@ import {
   type AnaliseV2,
 } from "../dados/contratos";
 import { migrarAnaliseV1 } from "../dados/migracao";
+import type { RevisaoDaImportacao } from "../dados/backup";
+import { registrarAlteracaoDoAnuncio } from "../dados/historicoDoAnuncio";
 import {
   acrescentarNaQuarentena,
   gravarJson,
@@ -190,14 +192,17 @@ interface ContextoAnalises {
    */
   erro: string;
   /**
-   * Aviso que não bloqueia nada: "N análises não puderam ser abertas e foram guardadas à parte". Vazio quando não há
-   * o que avisar. Continua preenchido até a próxima abertura do app.
+   * Avisos não bloqueantes: itens guardados à parte ou falha ao lembrar a seleção.
+   * O aviso da seleção some quando a preferência volta a ser gravada.
    */
   aviso: string;
   /** `true` quando salvar e remover estão bloqueados porque a leitura do caderno falhou. */
   bloqueada: boolean;
   definirAtiva: (id: string | null) => Promise<void>;
+  /** Salva campos legados; complementos existentes são preservados. Para editá-los, use atualizar sobre o estado atual. */
   salvar: (a: AnaliseV2) => Promise<void>;
+  atualizar: (id: string, mudar: (a: AnaliseV2) => AnaliseV2) => Promise<void>;
+  importar: (revisao: RevisaoDaImportacao) => Promise<void>;
   remover: (id: string) => Promise<void>;
   /** Lê o caderno de novo (depois de uma falha de leitura, por exemplo). Entra na mesma fila das gravações. */
   recarregar: () => Promise<void>;
@@ -214,10 +219,26 @@ export function AnalisesNoAparelho({ children }: { children: ReactNode }) {
   const [pronto, setPronto] = useState(false);
   const [erro, setErro] = useState("");
   const [aviso, setAviso] = useState("");
+  const [avisoDaSelecao, setAvisoDaSelecao] = useState("");
+  const ativaAtual = useRef<string | null>(null);
   const atual = useRef<AnaliseV2[]>([]);
   const fila = useRef<Promise<void>>(Promise.resolve());
   const carga = useRef<EstadoDaCarga>("carregando");
   const iniciou = useRef(false);
+
+  // Preferência recuperável: sua falha nunca invalida conteúdo já persistido.
+  // Chamada dentro da mesma fila da lista para manter a ordem entre gravações e seleção.
+  const selecionar = useCallback(async (id: string | null) => {
+    ativaAtual.current = id;
+    setAtiva(id);
+    try {
+      if (id) await AsyncStorage.setItem(CHAVE_ATIVA, id);
+      else await AsyncStorage.removeItem(CHAVE_ATIVA);
+      setAvisoDaSelecao("");
+    } catch {
+      setAvisoDaSelecao("Seu caderno está salvo. Não foi possível lembrar a seleção neste aparelho; ao reabrir, confira o imóvel aberto.");
+    }
+  }, []);
 
   const abrirCaderno = useCallback(async (): Promise<void> => {
     carga.current = "carregando";
@@ -227,7 +248,9 @@ export function AnalisesNoAparelho({ children }: { children: ReactNode }) {
       carga.current = "bloqueada";
       atual.current = [];
       setLista([]);
+      ativaAtual.current = null;
       setAtiva(null);
+      setAvisoDaSelecao("");
       setAviso("");
       setErro(mensagemDeBloqueio(resultado));
       setPronto(true);
@@ -244,11 +267,17 @@ export function AnalisesNoAparelho({ children }: { children: ReactNode }) {
     atual.current = carregadas;
     carga.current = "ok";
     setLista(carregadas);
-    setAtiva(idAtivo && carregadas.some((a) => a.id === idAtivo) ? idAtivo : (carregadas[0]?.id ?? null));
+    const selecionada = idAtivo && carregadas.some((a) => a.id === idAtivo) ? idAtivo : (carregadas[0]?.id ?? null);
+    if (selecionada !== idAtivo) await selecionar(selecionada);
+    else {
+      ativaAtual.current = selecionada;
+      setAtiva(selecionada);
+      setAvisoDaSelecao("");
+    }
     setErro("");
     setAviso(avisoDaQuarentena(resultado.quarentenadas, carregadas.length));
     setPronto(true);
-  }, []);
+  }, [selecionar]);
 
   useEffect(() => {
     // A carga é a primeira tarefa da fila: salvar e remover só rodam depois dela terminar (e conferem o resultado).
@@ -259,8 +288,9 @@ export function AnalisesNoAparelho({ children }: { children: ReactNode }) {
 
   // A mensagem fica no contexto (`aviso`) para as telas; o toast é o que aparece mesmo sem nenhuma delas mostrá-la.
   useEffect(() => {
-    if (aviso) mostrarAviso(aviso);
-  }, [aviso, mostrarAviso]);
+    const mensagem = [aviso, avisoDaSelecao].filter(Boolean).join(" ");
+    if (mensagem) mostrarAviso(mensagem);
+  }, [aviso, avisoDaSelecao, mostrarAviso]);
 
   const recarregar = useCallback((): Promise<void> => {
     const tarefa = fila.current.then(abrirCaderno);
@@ -268,7 +298,7 @@ export function AnalisesNoAparelho({ children }: { children: ReactNode }) {
     return tarefa;
   }, [abrirCaderno]);
 
-  const alterar = useCallback((fn: (lista: AnaliseV2[]) => AnaliseV2[]) => {
+  const alterar = useCallback((fn: (lista: AnaliseV2[]) => AnaliseV2[], escolher: (lista: AnaliseV2[]) => string | null) => {
     const tarefa = fila.current.then(async () => {
       // Antes de cada gravação: a carga terminou com sucesso? Se não, a chave do caderno não foi lida e gravar por cima
       // apagaria o que há nela.
@@ -280,51 +310,63 @@ export function AnalisesNoAparelho({ children }: { children: ReactNode }) {
       await gravarJson(CHAVE_ANALISES_V2, validadas);
       atual.current = validadas;
       setLista(validadas);
+      await selecionar(escolher(validadas));
     });
     fila.current = tarefa.catch(() => {});
     return tarefa;
-  }, []);
+  }, [selecionar]);
 
   const salvar = useCallback(
     async (a: AnaliseV2): Promise<void> => {
       const validada = esquemaAnaliseV2.parse(a);
-      await alterar((anterior) => [
-        validada,
-        ...anterior.filter((x) => x.id !== validada.id),
-      ]);
-      setAtiva(validada.id);
-      await AsyncStorage.setItem(CHAVE_ATIVA, validada.id);
+      await alterar((anterior) => {
+        // Telas antigas de visita/editam a análise inteira. Complementos têm escrita própria
+        // (`atualizar`) e não podem ser apagados por um espelho anterior dessas telas.
+        const existente = anterior.find(x => x.id === validada.id);
+        const nova = existente?.caderno ? { ...validada, caderno: existente.caderno } : validada;
+        return [registrarAlteracaoDoAnuncio(existente, nova, new Date().toISOString()), ...anterior.filter(x => x.id !== validada.id)];
+      }, () => validada.id);
     },
     [alterar],
   );
 
   const remover = useCallback(
     async (id: string): Promise<void> => {
-      await alterar((anterior) => anterior.filter((x) => x.id !== id));
-      if (ativa === id) {
-        const restante = atual.current.filter((x) => x.id !== id);
-        const novoId = restante[0]?.id ?? null;
-        setAtiva(novoId);
-        if (novoId) {
-          await AsyncStorage.setItem(CHAVE_ATIVA, novoId);
-        } else {
-          await AsyncStorage.removeItem(CHAVE_ATIVA);
-        }
-      }
+      await alterar(
+        (anterior) => anterior.filter((x) => x.id !== id),
+        (restante) => ativaAtual.current === null || restante.some((a) => a.id === ativaAtual.current) ? ativaAtual.current : (restante[0]?.id ?? null),
+      );
     },
-    [alterar, ativa],
+    [alterar],
   );
 
-  const definirAtiva = useCallback(async (id: string | null): Promise<void> => {
-    setAtiva(id);
-    // Com o caderno bloqueado (ou ainda abrindo), o ponteiro guardado não é tocado: ele não foi lido com sucesso.
-    if (carga.current !== "ok") return;
-    if (id) {
-      await AsyncStorage.setItem(CHAVE_ATIVA, id);
-    } else {
-      await AsyncStorage.removeItem(CHAVE_ATIVA);
-    }
-  }, []);
+  const atualizar = useCallback(async (id: string, mudar: (a: AnaliseV2) => AnaliseV2) => {
+    await alterar(anterior => {
+      const alvo = anterior.find(a => a.id === id);
+      if (!alvo) throw new Error("Esta análise não está mais no caderno.");
+      const nova = mudar(alvo);
+      if (nova.id !== id) throw new Error("A edição não pode trocar a identidade da análise.");
+      return anterior.map(a => a.id === id ? registrarAlteracaoDoAnuncio(alvo, nova, new Date().toISOString()) : a);
+    }, () => ativaAtual.current);
+  }, [alterar]);
+
+  const importar = useCallback(async (revisao: RevisaoDaImportacao) => {
+    await alterar(anterior => {
+      if (JSON.stringify(anterior) !== revisao.base) throw new Error("O caderno mudou. Revise a importação novamente.");
+      return revisao.lista;
+    }, novas => ativaAtual.current && novas.some(a => a.id === ativaAtual.current) ? ativaAtual.current : novas[0]?.id ?? null);
+  }, [alterar]);
+
+  const definirAtiva = useCallback((id: string | null): Promise<void> => {
+    const tarefa = fila.current.then(async () => {
+      // Caderno bloqueado: nem memória nem preferência são alteradas.
+      if (carga.current !== "ok") return;
+      const existente = id === null || atual.current.some((a) => a.id === id);
+      await selecionar(existente ? id : (atual.current[0]?.id ?? null));
+    });
+    fila.current = tarefa.catch(() => {});
+    return tarefa;
+  }, [selecionar]);
 
   const analiseAtiva = lista.find((a) => a.id === ativa) ?? null;
 
@@ -336,10 +378,12 @@ export function AnalisesNoAparelho({ children }: { children: ReactNode }) {
         analiseAtiva,
         pronto,
         erro,
-        aviso,
+        aviso: [aviso, avisoDaSelecao].filter(Boolean).join(" "),
         bloqueada: erro !== "",
         definirAtiva,
         salvar,
+        atualizar,
+        importar,
         remover,
         recarregar,
       }}

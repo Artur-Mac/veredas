@@ -7,6 +7,8 @@
 
 ## Prova de conceito em execução
 
+**Plano vigente da próxima rodada ampla (Recife):** [15 épocas, catálogo de funcionalidades e instruções para execução](./docs/plano-recife/README.md). Consolida e resolve conflitos dos planos anteriores; o [prompt da IA operária](./docs/plano-recife/08-PROMPT-OPERARIA.md) começa pela conferência do código atual. As seções históricas abaixo não certificam funcionalidades ou sensores como entregues.
+
 **Referência exclusiva de design e experiência:** [`index.html`](./index.html), em `/home/v/Documents/vereda/veredas/index.html`. A regra abrange interface, layout, navegação e interações, além de cores e fontes. Outros protótipos, o app existente e documentos arquivados não são referências alternativas de design ou UX.
 
 O app agora inclui um caderno local: cadastro manual ou link de referência, edição, custos mensais, comparação de dois imóveis, checklist e perguntas copiáveis. Na página inicial, use **Adicionar imóvel sem link** ou **Abrir minhas análises**. Os dossiês de referência continuam separados dos dados que você adicionar.

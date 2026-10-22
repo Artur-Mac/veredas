@@ -26,6 +26,7 @@ import type { AnaliseV2, Modalidade } from "../../dados/contratos";
 import { eCoberto } from "../../dados/recife/bairros";
 import { useAnalises } from "../../estado/Analises";
 import { useTema } from "../../tema/Tema";
+import { ComparacaoDeTres } from "../../componentes/comparar/Tres";
 
 const MODALIDADES: readonly { valor: Modalidade; rotulo: string }[] = [
   { valor: "aluguel", rotulo: "Alugar" },
@@ -57,6 +58,8 @@ export default function Comparar() {
   const [topico, setTopico] = useState<Topico>("custo");
   const [trocando, setTrocando] = useState<0 | 1 | null>(null);
   const [escolhendoVisita, setEscolhendoVisita] = useState(false);
+  const [terceiroId, setTerceiroId] = useState<string | null>(null);
+  const [tresAberto, setTresAberto] = useState(false);
 
   // Um link novo (`?id=` ou `?ids=`) vale mais que as escolhas antigas, mesmo com a aba já aberta antes.
   const chaveDoLink = doLink.join(",");
@@ -81,6 +84,7 @@ export default function Comparar() {
   const comparacao = a && b ? comparar(a, b, [ea, eb]) : null;
 
   const naModalidade = elegiveis(lista, modalidade);
+  const modoTres = tresAberto && naModalidade.some(a => a.id === terceiroId && !ids.includes(a.id));
   const outraModalidade: Modalidade = modalidade === "aluguel" ? "compra" : "aluguel";
   const nasDuasModalidadesTemPar = elegiveis(lista, outraModalidade).length >= 2;
 
@@ -121,6 +125,7 @@ export default function Comparar() {
             </SuperficieVx>
           ) : par && comparacao ? (
             <View style={{ marginTop: 17 }}>
+              {!modoTres ? <>
               <View style={{ flexDirection: "row", gap: 12 }}>
                 {([0, 1] as const).map((i) => {
                   const edificio = i === 0 ? ea : eb;
@@ -157,7 +162,9 @@ export default function Comparar() {
                 </View>
               </View>
 
+              </> : null}
               <View style={{ marginTop: 18 }}>
+                <ComparacaoDeTres par={par} candidatas={naModalidade} id={terceiroId} aoEscolher={setTerceiroId} aoAlternar={setTresAberto} />
                 <BotaoVx rotulo="Escolher para visitar" onPress={() => setEscolhendoVisita(true)} />
               </View>
             </View>

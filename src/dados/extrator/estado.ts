@@ -158,12 +158,30 @@ export function extrairDoEstado(
   const condo = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["condoPrice", "condoFee", "monthlyCondoFee"]));
   campos.condominio = condo;
 
+  // ZAP e VivaReal com Next.js App Router (2026): `prices.rental` ou `prices.sale`, cada um com `value`,
+  // `condominium` e `iptu` (anual, como o `yearly_iptu` que o próprio portal registra). Zero é "isento" ou ausência.
+  const precos = objetoAnuncio["prices"];
+  if (precos && typeof precos === "object" && !Array.isArray(precos)) {
+    const { rental, sale } = precos as Record<string, unknown>;
+    const ehObjeto = (v: unknown): v is Record<string, unknown> => !!v && typeof v === "object" && !Array.isArray(v);
+    const bloco = ehObjeto(rental) ? rental : ehObjeto(sale) ? sale : null;
+    if (bloco) {
+      campos.modalidade = ehObjeto(rental) ? "aluguel" : "compra";
+      campos.preco = extrairNumero(bloco["value"]) ?? campos.preco;
+      campos.condominio = extrairNumero(bloco["condominium"]) ?? campos.condominio;
+      const iptuAnual = extrairNumero(bloco["iptu"]);
+      if (iptuAnual !== null) campos.iptu = { valor: iptuAnual, periodo: "ano" };
+    }
+  }
+
   // IPTU
   const yearlyIptu = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["yearlyIptu"]));
   const monthlyIptu = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["monthlyIptu"]));
   const iptuGen = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["iptu"]));
 
-  if (yearlyIptu !== null) {
+  if (campos.iptu !== null) {
+    // já veio de `prices` (formato novo do ZAP e do VivaReal)
+  } else if (yearlyIptu !== null) {
     campos.iptu = { valor: yearlyIptu, periodo: "ano" };
   } else if (monthlyIptu !== null) {
     campos.iptu = { valor: monthlyIptu, periodo: "mes" };
@@ -186,16 +204,18 @@ export function extrairDoEstado(
   }
 
   // Quartos, Suítes, Banheiros, Vagas, Andar
-  const bedrooms = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["bedrooms"]));
+  // No formato novo do ZAP e do VivaReal vêm em lista ("bedrooms": [1]); vale o primeiro, como na área.
+  const primeiro = (v: unknown): unknown => (Array.isArray(v) ? v[0] : v);
+  const bedrooms = extrairNumero(primeiro(buscarChaveInsensivel(objetoAnuncio, ["bedrooms"])));
   if (bedrooms !== null) campos.quartos = Math.round(bedrooms);
 
-  const suites = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["suites"]));
+  const suites = extrairNumero(primeiro(buscarChaveInsensivel(objetoAnuncio, ["suites"])));
   if (suites !== null) campos.suites = Math.round(suites);
 
-  const bathrooms = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["bathrooms"]));
+  const bathrooms = extrairNumero(primeiro(buscarChaveInsensivel(objetoAnuncio, ["bathrooms"])));
   if (bathrooms !== null) campos.banheiros = Math.round(bathrooms);
 
-  const parking = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["parkingSpaces"]));
+  const parking = extrairNumero(primeiro(buscarChaveInsensivel(objetoAnuncio, ["parkingSpaces"])));
   if (parking !== null) campos.vagas = Math.round(parking);
 
   const floor = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["floor", "unitFloor"]));

@@ -9,7 +9,7 @@
         "portal": "vivareal",
         "idNoPortal": "2913218130",
         "campos": { "modalidade": "compra", "tipologia": "apartamento", "quartos": 3, "bairro": "torre", "cidade": "recife", "area": 80, "preco": 648810, "comodidades": ["garagem"], "condominio": null, "iptu": null },
-        "cobertura": "recife_fora"
+        "cobertura": "coberto"
       }
     },
     {
@@ -31,7 +31,7 @@
         "portal": "vivareal",
         "idNoPortal": "2904982806",
         "campos": { "modalidade": "compra", "quartos": 3, "bairro": "varzea", "area": 71, "preco": 700000 },
-        "cobertura": "recife_fora"
+        "cobertura": "coberto"
       }
     },
     {
@@ -160,7 +160,7 @@
         "portal": "olx",
         "idNoPortal": "1545538761",
         "campos": { "modalidade": null, "bairro": "pina", "nomeEdificio": null, "comodidades": ["piscina", "sauna", "academia", "vista-mar"] },
-        "cobertura": "recife_fora"
+        "cobertura": "coberto"
       }
     },
     {
@@ -170,7 +170,7 @@
       "esperado": {
         "portal": "olx",
         "campos": { "modalidade": "aluguel", "tipologia": "flat", "bairro": "boa-vista", "comodidades": ["mobiliado"] },
-        "cobertura": "recife_fora"
+        "cobertura": "coberto"
       }
     },
     {
@@ -179,7 +179,7 @@
       "entrada": "https://www.vivareal.com.br/imovel/apartamento-2-quartos-torreao-bairros-recife-55m2-venda-RS310000-id-2999999904/",
       "esperado": {
         "campos": { "bairro": "torreao" },
-        "cobertura": "recife_fora"
+        "cobertura": "coberto"
       }
     },
     {
@@ -192,6 +192,30 @@
         "campos": { "preco": null, "area": null },
         "cobertura": "desconhecida"
       }
+    },
+    {
+      "id": "vivareal-cabanga-venda",
+      "real": false,
+      "entrada": "https://www.vivareal.com.br/imovel/apartamento-3-quartos-cabanga-bairros-recife-com-garagem-80m2-venda-RS648810-id-2913218130/",
+      "esperado": {
+        "portal": "vivareal",
+        "idNoPortal": "2913218130",
+        "campos": {
+          "modalidade": "compra",
+          "tipologia": "apartamento",
+          "quartos": 3,
+          "bairro": "cabanga",
+          "cidade": "recife",
+          "area": 80,
+          "preco": 648810,
+          "comodidades": [
+            "garagem"
+          ],
+          "condominio": null,
+          "iptu": null
+        },
+        "cobertura": "recife_fora"
+      }
     }
   ],
   "invalidas": [
@@ -200,5 +224,6 @@
     "https://usuario:senha@www.zapimoveis.com.br/imovel/1",
     "não é um link",
     "ftp://exemplo.com/imovel"
-  ]
+  ],
+  "_atualizacao_municipal": "21/10/2026: A cobertura passou a usar 72 partições locais validadas, incluindo Torre, Pina, Várzea e Boa Vista. O caso sintético Cabanga preserva o aceite de bairro sem registros elegíveis. Demais expectativas de extração permanecem."
 }

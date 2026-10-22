@@ -8,6 +8,8 @@ import { z } from "zod";
 import { CHAVE_ANALISES_V2, esquemaAnaliseV2, type AnaliseV2 } from "../src/dados/contratos";
 import { esquemaAnalise } from "../src/dados/analise";
 import { migrarAnaliseV1 } from "../src/dados/migracao";
+import { cadernoVazio } from "../src/dados/caderno";
+import { planejarImportacao } from "../src/dados/backup";
 import {
   AnalisesNoAparelho,
   CHAVE_ANALISES_V1,
@@ -28,9 +30,10 @@ type FnSimulada = {
   mockImplementation: (fn: (chave: string, ...resto: unknown[]) => Promise<unknown>) => unknown;
   getMockImplementation: () => ((chave: string, ...resto: unknown[]) => Promise<unknown>) | undefined;
 };
-const simulado = AsyncStorage as unknown as { getItem: FnSimulada; setItem: FnSimulada };
+const simulado = AsyncStorage as unknown as { getItem: FnSimulada; setItem: FnSimulada; removeItem: FnSimulada };
 const leituraOriginal = simulado.getItem.getMockImplementation()!;
 const gravacaoOriginal = simulado.setItem.getMockImplementation()!;
+const remocaoOriginal = simulado.removeItem.getMockImplementation()!;
 
 function falharLeituraDe(chave: string) {
   simulado.getItem.mockImplementation(async (k, ...resto) => {
@@ -47,6 +50,7 @@ function falharGravacaoDe(chave: string) {
 const restaurarArmazenamento = () => {
   simulado.getItem.mockImplementation(leituraOriginal);
   simulado.setItem.mockImplementation(gravacaoOriginal);
+  simulado.removeItem.mockImplementation(remocaoOriginal);
 };
 
 const INSTANTE = "2026-10-20T12:00:00.000Z";
@@ -406,6 +410,39 @@ describe("AnalisesNoAparelho: o caderno nunca é apagado por uma carga que falho
   });
   afterEach(restaurarArmazenamento);
 
+  it("edições complementares concorrentes usam a lista atual e visita antiga não as apaga", async () => {
+    const a = analise("a");
+    await AsyncStorage.setItem(CHAVE_ANALISES_V2, JSON.stringify([a]));
+    const arvore = await montar();
+    await act(async () => {
+      await Promise.all([
+        contexto.atualizar("a", x => ({ ...x, caderno: { ...(x.caderno ?? cadernoVazio()), decisao: "visitado" } })),
+        contexto.atualizar("a", x => ({ ...x, caderno: { ...(x.caderno ?? cadernoVazio()), diario: [{ id: "d1", em: INSTANTE, texto: "Anotação preservada" }] } })),
+      ]);
+      await contexto.salvar({ ...a, visita: { ...a.visita, notas: "Espelho de visita antigo" } });
+    });
+    expect(contexto.lista[0]?.caderno).toMatchObject({ decisao: "visitado", diario: [{ texto: "Anotação preservada" }] });
+    expect(contexto.lista[0]?.visita.notas).toBe("Espelho de visita antigo");
+    await act(async () => arvore.unmount());
+  });
+
+  it("importação revisada é atômica e recusa revisão antiga se o caderno mudou", async () => {
+    await AsyncStorage.setItem(CHAVE_ANALISES_V2, JSON.stringify([analise("a")]));
+    const arvore = await montar();
+    const revisao = planejarImportacao(contexto.lista, [analise("b")]);
+    await act(async () => { await contexto.salvar(analise("c")); });
+    expect(await rejeicaoDe(contexto.importar(revisao))).toContain("caderno mudou");
+    expect(contexto.lista.map(x => x.id)).toEqual(["c", "a"]);
+    const atual = planejarImportacao(contexto.lista, [analise("b")]);
+    falharGravacaoDe(CHAVE_ANALISES_V2);
+    expect(await rejeicaoDe(contexto.importar(atual))).not.toBeNull();
+    expect(contexto.lista.map(x => x.id)).toEqual(["c", "a"]);
+    restaurarArmazenamento();
+    await act(async () => { await contexto.importar(atual); });
+    expect(contexto.lista.map(x => x.id)).toEqual(["c", "a", "b"]);
+    await act(async () => arvore.unmount());
+  });
+
   it("item inválido entre válidos: abre os válidos, avisa quantas ficaram de fora e salvar não apaga a quarentena", async () => {
     const ruim = itemRuim("ruim");
     await AsyncStorage.setItem(CHAVE_ANALISES_V2, JSON.stringify([analise("a"), ruim, analise("b")]));
@@ -541,6 +578,103 @@ describe("AnalisesNoAparelho: o caderno nunca é apagado por uma carga que falho
     });
     expect(await guardado(CHAVE_ANALISES_V1)).toBe(textoV1);
     expect(await lerLista(CHAVE_QUARENTENA)).toEqual([ruim]);
+  });
+
+  it("falha só na seleção ativa não rejeita conteúdo já salvo; reabrir recupera a análise", async () => {
+    await montar();
+    falharGravacaoDe(CHAVE_ATIVA);
+    expect(await rejeicaoDe(contexto.salvar(analise("nova")))).toBeNull();
+    expect(contexto.lista.map((a) => a.id)).toEqual(["nova"]);
+    expect(contexto.ativa).toBe("nova");
+    expect(contexto.aviso).toContain("seleção");
+    expect((await lerLista(CHAVE_ANALISES_V2)).map((a) => (a as AnaliseV2).id)).toEqual(["nova"]);
+    await act(async () => { await contexto.recarregar(); });
+    expect(contexto.ativa).toBe("nova");
+    expect(contexto.bloqueada).toBe(false);
+    restaurarArmazenamento();
+    await act(async () => { await contexto.salvar(analise("nova")); });
+    expect(contexto.lista).toHaveLength(1);
+    expect(await guardado(CHAVE_ATIVA)).toBe("nova");
+  });
+
+  it("falha da lista rejeita sem alterar memória nem seleção e a fila continua utilizável", async () => {
+    await AsyncStorage.setItem(CHAVE_ANALISES_V2, JSON.stringify([analise("a")]));
+    await montar();
+    falharGravacaoDe(CHAVE_ANALISES_V2);
+    expect(await rejeicaoDe(contexto.salvar(analise("b")))).not.toBeNull();
+    expect(contexto.lista.map((a) => a.id)).toEqual(["a"]);
+    expect(contexto.ativa).toBe("a");
+    restaurarArmazenamento();
+    await act(async () => { await contexto.salvar(analise("b")); });
+    expect(contexto.lista.map((a) => a.id)).toEqual(["b", "a"]);
+  });
+
+  it("remover a ativa preserva exclusão e fallback mesmo se falhar a preferência", async () => {
+    await AsyncStorage.setItem(CHAVE_ANALISES_V2, JSON.stringify([analise("a"), analise("b")]));
+    await AsyncStorage.setItem(CHAVE_ATIVA, "a");
+    await montar();
+    falharGravacaoDe(CHAVE_ATIVA);
+    expect(await rejeicaoDe(contexto.remover("a"))).toBeNull();
+    expect(contexto.ativa).toBe("b");
+    await act(async () => { await contexto.recarregar(); });
+    expect(contexto.lista.map((a) => a.id)).toEqual(["b"]);
+    expect(contexto.ativa).toBe("b");
+  });
+
+  it("salvamentos e seleção concorrentes aguardam inclusive a preferência, na ordem solicitada", async () => {
+    await montar();
+    let liberar!: () => void;
+    const pausa = new Promise<void>((r) => { liberar = r; });
+    simulado.setItem.mockImplementation(async (k, ...resto) => {
+      if (k === CHAVE_ATIVA && resto[0] === "a") await pausa;
+      return gravacaoOriginal(k, ...resto);
+    });
+    let terminou = false;
+    await act(async () => {
+      const a = contexto.salvar(analise("a"));
+      const b = contexto.salvar(analise("b")).then(() => { terminou = true; });
+      const selecao = contexto.definirAtiva("a");
+      await new Promise((r) => setTimeout(r, 0));
+      expect(terminou).toBe(false);
+      liberar();
+      await Promise.all([a, b, selecao]);
+    });
+    expect(contexto.lista.map((a) => a.id)).toEqual(["b", "a"]);
+    expect(contexto.ativa).toBe("a");
+    expect(await guardado(CHAVE_ATIVA)).toBe("a");
+  });
+
+  it("falha ao remover ponteiro da última análise não rejeita a exclusão; reabertura fica vazia", async () => {
+    await AsyncStorage.setItem(CHAVE_ANALISES_V2, JSON.stringify([analise("a")]));
+    await AsyncStorage.setItem(CHAVE_ATIVA, "a");
+    await montar();
+    simulado.removeItem.mockImplementation(async (k, ...resto) => {
+      if (k === CHAVE_ATIVA) throw new Error("falha de preferência");
+      return remocaoOriginal(k, ...resto);
+    });
+    expect(await rejeicaoDe(contexto.remover("a"))).toBeNull();
+    expect(contexto.lista).toEqual([]);
+    expect(contexto.ativa).toBeNull();
+    expect(contexto.aviso).toContain("seleção");
+    await act(async () => { await contexto.recarregar(); });
+    expect(contexto.ativa).toBeNull();
+    expect(contexto.bloqueada).toBe(false);
+    restaurarArmazenamento();
+    await act(async () => { await contexto.recarregar(); });
+    expect(await guardado(CHAVE_ATIVA)).toBeNull();
+  });
+
+  it("ponteiro inválido é reparado e seleção pedida para item inexistente não entra no contexto", async () => {
+    await AsyncStorage.setItem(CHAVE_ANALISES_V2, JSON.stringify([analise("a")]));
+    await AsyncStorage.setItem(CHAVE_ATIVA, "removida");
+    await montar();
+    expect(contexto.ativa).toBe("a");
+    expect(await guardado(CHAVE_ATIVA)).toBe("a");
+    await act(async () => { await contexto.definirAtiva("inexistente"); });
+    expect(contexto.ativa).toBe("a");
+    await act(async () => { await contexto.remover("a"); });
+    expect(contexto.ativa).toBeNull();
+    expect(await guardado(CHAVE_ATIVA)).toBeNull();
   });
 
   it("caderno saudável: sem aviso, sem erro, salvar e remover funcionam e o ponteiro da análise ativa é lembrado", async () => {

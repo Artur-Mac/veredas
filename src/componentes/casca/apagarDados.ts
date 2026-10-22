@@ -3,6 +3,7 @@
 // o que apagar fora daqui.
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { esquecerCompartilhamento } from "../../estado/compartilhamento";
+import { apagarMidiaPessoal } from "../../plataforma/midia";
 
 /** Toda chave que o app grava começa assim ("vereda-analises-v2", "vereda-carteira-v1", "vereda-ativa-v1", …). */
 export const PREFIXO_DAS_CHAVES = "vereda-";
@@ -13,5 +14,6 @@ export async function apagarDadosDoAparelho(): Promise<number> {
   esquecerCompartilhamento();
   const chaves = (await AsyncStorage.getAllKeys()).filter((chave) => chave.startsWith(PREFIXO_DAS_CHAVES));
   if (chaves.length > 0) await AsyncStorage.multiRemove(chaves);
+  await apagarMidiaPessoal();
   return chaves.length;
 }

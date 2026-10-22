@@ -1,3 +1,4 @@
+import { avisoDeValoresPendentes } from "../../dados/custos";
 import { useState } from "react";
 import { View } from "react-native";
 import Svg, { Path } from "react-native-svg";
@@ -107,22 +108,17 @@ export function BlocoDeCusto({ custo, area, posicao, aoAbrirPosicao, aoAjustar }
       }}
     >
       <View style={{ flexDirection: "row", gap: 12 }}>
-        <ValorGrande
-          rotulo={custo.principal.rotulo}
-          texto={principal}
-          sufixo={aluguel && custo.principal.valor !== null ? "/mês" : undefined}
-          apoio={{ texto: precoPorM2(custo, area) }}
-          aoMedir={setLargura}
-          largura={largura}
-        />
-        <ValorGrande
-          rotulo={rotuloDoTotal(custo)}
-          texto={total}
-          sufixo={custo.totalMensalConhecido !== null ? "/mês" : undefined}
-          apoio={alem !== null ? { texto: `+${formatarReais(alem)} além do aluguel`, ferrugem: true } : null}
-          aoMedir={() => undefined}
-          largura={largura}
-        />
+        {(aluguel ? ["mensal", "principal"] : ["principal", "mensal"]).map((tipo) => (
+          <ValorGrande
+            key={tipo}
+            rotulo={tipo === "mensal" ? rotuloDoTotal(custo) : custo.principal.rotulo}
+            texto={tipo === "mensal" ? total : principal}
+            sufixo={tipo === "mensal" ? (custo.totalMensalConhecido !== null ? "/mês" : undefined) : (aluguel && custo.principal.valor !== null ? "/mês" : undefined)}
+            apoio={tipo === "mensal" ? (alem !== null ? { texto: `+${formatarReais(alem)} além do aluguel`, ferrugem: true } : null) : { texto: precoPorM2(custo, area) }}
+            aoMedir={tipo === "principal" ? setLargura : () => undefined}
+            largura={largura}
+          />
+        ))}
       </View>
 
       {posicao ? (
@@ -177,6 +173,7 @@ export function BlocoDeCusto({ custo, area, posicao, aoAbrirPosicao, aoAjustar }
       </View>
 
       <View style={{ gap: 4, marginTop: 6 }}>
+        {avisoDeValoresPendentes(custo) ? <Nota>{avisoDeValoresPendentes(custo)}</Nota> : null}
         {custo.notaForaDaSoma ? <Nota>{custo.notaForaDaSoma}</Nota> : null}
         {notas.map((n) => (
           <Nota key={n}>{n}</Nota>

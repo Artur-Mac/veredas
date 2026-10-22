@@ -177,26 +177,23 @@ export function PainelDeCusto({ custo, rotulos, aoAjustar }: PropsDoPainelDeCust
         textos={[moeda(a.valorDaBarra, sufixo), moeda(b.valorDaBarra, sufixo)]}
         barras={custo.barras}
       />
-      <LinhaDeDois
-        primeira
-        rotulo={custo.rotuloDoPrincipal}
-        colunas={rotulos}
-        celulas={[
-          { texto: moeda(a.principal, aluguel ? "/mês" : ""), detalhe: null },
-          { texto: moeda(b.principal, aluguel ? "/mês" : ""), detalhe: null },
-        ]}
-        tamanho={18}
-      />
-      <LinhaDeDois
-        chave
-        rotulo={custo.rotuloDoMensal}
-        colunas={rotulos}
-        celulas={[
-          { texto: moeda(a.mensalConhecido, "/mês"), detalhe: a.textoDePendentes },
-          { texto: moeda(b.mensalConhecido, "/mês"), detalhe: b.textoDePendentes },
-        ]}
-        tamanho={18}
-      />
+      {(aluguel ? ["mensal", "principal"] : ["principal", "mensal"]).map((tipo, i) => (
+        <LinhaDeDois
+          key={tipo}
+          primeira={i === 0}
+          chave={tipo === "mensal"}
+          rotulo={tipo === "mensal" ? custo.rotuloDoMensal : custo.rotuloDoPrincipal}
+          colunas={rotulos}
+          celulas={tipo === "mensal" ? [
+            { texto: moeda(a.mensalConhecido, "/mês"), detalhe: a.textoDePendentes },
+            { texto: moeda(b.mensalConhecido, "/mês"), detalhe: b.textoDePendentes },
+          ] : [
+            { texto: moeda(a.principal, aluguel ? "/mês" : ""), detalhe: null },
+            { texto: moeda(b.principal, aluguel ? "/mês" : ""), detalhe: null },
+          ]}
+          tamanho={18}
+        />
+      ))}
       {custo.parcelas.map((p) => (
         <LinhaDeDois key={p.nome} rotulo={p.nome} colunas={rotulos} celulas={p.celulas} />
       ))}

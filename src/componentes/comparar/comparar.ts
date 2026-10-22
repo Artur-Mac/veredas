@@ -2,7 +2,7 @@
 // Custos só via `custoMensal` (src/dados/custos.ts): nada aqui soma parcelas por conta própria.
 // Nenhuma frase compara com adjetivo nem recomenda; a tela mostra fatos lado a lado.
 import type { AnaliseV2, Edificio, Modalidade, OrigemDoValor, ParcelaDoCusto } from "../../dados/contratos";
-import { custoMensal, quemInforma } from "../../dados/custos";
+import { custoMensal, quemInforma, ROTULO_MENSAL_CONHECIDO, avisoDeValoresPendentes } from "../../dados/custos";
 import { formatarNumero, formatarReais } from "../../dados/formatos";
 import { nomeDoBairro } from "../../dados/formulario";
 import { enderecoEmCaixaDeTitulo } from "../predio/textos";
@@ -140,7 +140,7 @@ export type LinhaDeParcela = { nome: ParcelaDoCusto["nome"]; celulas: Par<Celula
 export type ComparacaoDeCusto = {
   referencia: "custo_mensal_conhecido" | "preco_anunciado";
   rotuloDoPrincipal: "Aluguel anunciado" | "Preço anunciado";
-  rotuloDoMensal: "Custo mensal conhecido" | "Despesas mensais conhecidas";
+  rotuloDoMensal: typeof ROTULO_MENSAL_CONHECIDO;
   colunas: Par<ColunaDeCusto>;
   /** 0 a 1, na mesma escala (o maior valor conhecido ocupa a barra inteira); null sem valor conhecido. */
   barras: Par<number | null>;
@@ -179,7 +179,7 @@ export function compararCusto(a: AnaliseV2, b: AnaliseV2): ComparacaoDeCusto {
     mensalConhecido: c.totalMensalConhecido,
     valorDaBarra: aluguel ? c.totalMensalConhecido : c.principal.valor,
     pendentes: c.pendentes,
-    textoDePendentes: textoDePendentes(c.pendentes),
+    textoDePendentes: [avisoDeValoresPendentes(c), textoDePendentes(c.pendentes)].filter(Boolean).join(" · "),
     porM2: c.principal.porM2,
   })) as Par<ColunaDeCusto>;
 
@@ -225,7 +225,7 @@ export function compararCusto(a: AnaliseV2, b: AnaliseV2): ComparacaoDeCusto {
   return {
     referencia,
     rotuloDoPrincipal: aluguel ? "Aluguel anunciado" : "Preço anunciado",
-    rotuloDoMensal: aluguel ? "Custo mensal conhecido" : "Despesas mensais conhecidas",
+    rotuloDoMensal: ROTULO_MENSAL_CONHECIDO,
     colunas,
     barras: barras(valores),
     diferenca,

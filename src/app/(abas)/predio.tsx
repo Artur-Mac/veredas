@@ -4,17 +4,18 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { Cartao, CorpoDoCartao } from "../../componentes/Cartao";
 import { Coluna } from "../../componentes/casca/Coluna";
+import { AlternativasDePredio } from "../../componentes/predio/AlternativasDePredio";
 import { BuscaDePredio } from "../../componentes/predio/BuscaDePredio";
 import { CaixaDoPredio } from "../../componentes/predio/CaixaDoPredio";
 import { GavetaSemCreditos } from "../../componentes/predio/GavetaSemCreditos";
 import { MapaDoPredio } from "../../componentes/predio/MapaDoPredio";
 import { PERCURSO_INICIAL, aposEscolha, proximoDoPercurso, type Percurso } from "../../componentes/predio/percurso";
-import { formatarChaveCadastral, mensagemSemCandidatos } from "../../componentes/predio/textos";
+import { avisoDeTipologia, formatarChaveCadastral, mensagemSemCandidatos } from "../../componentes/predio/textos";
 import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
 import type { AnaliseV2, Edificio } from "../../dados/contratos";
 import { bairroPorSlug, eCoberto, type SlugCoberto } from "../../dados/recife/bairros";
-import { buscarCandidatos, type EntradaDeBusca } from "../../dados/recife/buscar";
+import { buscarCandidatosDetalhados, type EntradaDeBusca } from "../../dados/recife/buscar";
 import { edificiosDoBairro, indiceDoBairro } from "../../dados/recife/indice";
 import { useAnalises } from "../../estado/Analises";
 import { useCarteira } from "../../estado/Carteira";
@@ -117,7 +118,8 @@ function SobretituloCadastral({ chave }: { chave: string | null }) {
  * tipologia parecida e sugeriria um prédio (a confirmação custa 1 crédito) sem nenhum outro sinal do anúncio.
  */
 function entradaDeBusca(analise: AnaliseV2, bairro: SlugCoberto): EntradaDeBusca {
-  const area = analise.declarados.area;
+  // Loja, sala ou casa: a área casaria com apartamentos parecidos, que não são o imóvel. Rua, número e nome valem.
+  const area = avisoDeTipologia(analise.tipologia) ? { valor: null, aConfirmar: true } : analise.declarados.area;
   return {
     bairro,
     logradouro: analise.logradouro,
@@ -158,10 +160,14 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
   const { edificios, problema } = indice;
   const porId = useMemo(() => new Map(edificios.map((e) => [e.id, e])), [edificios]);
 
-  const candidatos = useMemo(
-    () => buscarCandidatos(entradaDeBusca(analise, bairro), edificios),
+  const resultado = useMemo(
+    () => buscarCandidatosDetalhados(entradaDeBusca(analise, bairro), edificios),
     [analise, bairro, edificios],
   );
+
+  const candidatos = resultado.candidatos;
+  const [mostrarAlternativas, setMostrarAlternativas] = useState(false);
+  const soPistasGerais = !candidatos.some((c) => c.pistas.some((p) => p === "nome" || p === "rua"));
 
   const vinculo = analise.vinculo;
   const jaConfirmado = vinculo.estado === "confirmado";
@@ -174,7 +180,7 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
     return antes ? [antes, ...sugeridos.filter((e) => e.id !== antes.id)] : sugeridos;
   }, [candidatos, porId, idConfirmado]);
 
-  const atual = (escolhidoId ? porId.get(escolhidoId) : undefined) ?? ordem[0] ?? null;
+  const atual = (escolhidoId ? porId.get(escolhidoId) : undefined) ?? (jaConfirmado || !soPistasGerais ? ordem[0] : null) ?? null;
   const naLista = atual !== null && ordem.some((e) => e.id === atual.id);
   const candidato = atual ? candidatos.find((c) => c.edificioId === atual.id) : undefined;
   const eOConfirmado = atual !== null && atual.id === idConfirmado;
@@ -285,6 +291,25 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
     </Texto>
   ) : null;
 
+  const alternativas = resultado.totalCompativeis > 0 ? (
+    <View style={{ gap: 8 }}>
+      <Texto tipo="apoio" cor="cor-texto-apoio">
+        {`${resultado.totalCompativeis} ${resultado.totalCompativeis === 1 ? "prédio compatível" : "prédios compatíveis"} com as informações disponíveis.`}
+        {resultado.resultadosLimitados ? ` Até ${candidatos.length} sugestões exibidas; refine pelo endereço ou nome.` : ""}
+      </Texto>
+      <Botao
+        rotulo={mostrarAlternativas ? "Ocultar sugestões" : "Examinar sugestões"}
+        expandido={mostrarAlternativas}
+        variante="secundario"
+        desativado={trabalhando}
+        onPress={() => setMostrarAlternativas((v) => !v)}
+      />
+      {mostrarAlternativas ? (
+        <AlternativasDePredio resultado={resultado} porId={porId} atualId={atual?.id ?? null} aoEscolher={escolher} desativado={trabalhando} />
+      ) : null}
+    </View>
+  ) : null;
+
   // Sem prédio para mostrar: índice ilegível, ou nenhum candidato e nada escolhido na busca.
   if (!atual) {
     return (
@@ -306,19 +331,25 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
           ) : (
             <>
               <Texto tipo="titulo-tela" role="heading" style={styles.titulo}>
-                É este o prédio?
+                {avisoDeTipologia(analise.tipologia)
+                  ? "Este tipo de imóvel não está no cadastro de prédios"
+                  : soPistasGerais ? "Precisamos de mais uma informação para localizar o prédio" : "É este o prédio?"}
               </Texto>
               <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.paragrafo}>
-                {mensagemSemCandidatos(analise.logradouro, analise.numero)}
+                {avisoDeTipologia(analise.tipologia) ??
+                  (resultado.totalCompativeis > 0
+                  ? "Área e ano podem coincidir em vários prédios. Informe a rua e o número ou o nome do edifício. Você também pode continuar sem identificar."
+                  : mensagemSemCandidatos(analise.logradouro, analise.numero))}
               </Texto>
               <BuscaDePredio edificios={edificios} aoEscolher={escolher} />
+              {alternativas}
             </>
           )}
           {textoDeErro}
           {jaConfirmado ? (
             <Botao rotulo="Ver dossiê" variante="principal" onPress={abrirDossie} />
           ) : (
-            <Botao rotulo={rotuloDeSeguir} variante="secundario" desativado={trabalhando} onPress={() => void seguirSemPredio()} />
+            <Botao rotulo="Continuar sem identificar" variante="secundario" desativado={trabalhando} onPress={() => void seguirSemPredio()} />
           )}
         </CorpoDoCartao>
       </Cartao>
@@ -335,7 +366,7 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
           É este o prédio?
         </Texto>
         <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.paragrafo}>
-          Confirmar o prédio garante que IPTU, ITBI e obras sejam deste edifício.
+          Vou usar este prédio para consultar o cadastro. Confira o endereço antes de confirmar.
           {jaConfirmado ? null : (
             <Texto tipo="apoio" cor="cor-barro-texto" style={[styles.paragrafo, { fontWeight: "700" }]}>
               {" Usa 1 crédito."}
@@ -345,6 +376,7 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
 
         <BuscaDePredio edificios={edificios} aoEscolher={escolher} />
 
+        {alternativas}
         <MapaDoPredio selecionado={atual} outros={edificios} aoEscolher={escolher} />
 
         <CaixaDoPredio edificio={atual} motivos={motivos} />

@@ -5,13 +5,14 @@ import { gunzipSync } from "zlib";
 import { esquemaFonteDaRua, esquemaMetaDoIndice, esquemaRuaDoBairro, type IndiceDoBairro, type MetaDoIndice } from "../src/dados/contratos";
 import { lerRuaDoEdificio } from "../src/dados/dossie/rua";
 import { distanciaMetros } from "../src/dados/geo";
+import { DIRETORIO_DO_INDICE } from "../src/dados/recife/publicacaoGerada";
 import { BAIRROS_COBERTOS, type SlugCoberto } from "../src/dados/recife/bairros";
 import { validarIndiceCompleto } from "../src/dados/recife/indice";
 
 // Camada "A rua" (v1.1) nos arquivos gerados por scripts/dados/construir-indice-recife.mjs com scripts/dados/rua/.
 // Dado real (Prefeitura do Recife, ODbL; IBGE, citar a fonte): nada aqui é fixture inventada. Ver a revisão 2.6 da ordem.
 
-const DIR_INDICE = join(__dirname, "..", "src", "dados", "recife", "indice");
+const DIR_INDICE = join(__dirname, "..", "src", "dados", "recife", DIRETORIO_DO_INDICE);
 const DIR_CACHE = join(__dirname, "..", ".cache", "dados-recife");
 const CAMADAS = join(__dirname, "..", "scripts", "dados", "rua", "camadas.mjs");
 

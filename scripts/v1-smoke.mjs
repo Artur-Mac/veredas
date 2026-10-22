@@ -19,7 +19,7 @@
 //      entre Explorar, dossiês, abas do dossiê, Comparar, Visita e o cadastro oficial, tudo com o índice local. A recarga
 //      de página sem rede NÃO é testada: na web o HTML e o bundle vêm do servidor e o app não registra service worker, então
 //      ela não é suportada. O que se recarrega é o dossiê com toda requisição para fora do servidor do app abortada;
-//   c) link `vivareal-torre-venda`: "Ainda não cobrimos Torre." e salvar no caderno;
+//   c) link `vivareal-cabanga-venda`: "Ainda não cobrimos Cabanga." e salvar no caderno;
 //   d) recarregar: análises, vínculos e saldo persistem; filtro Todos/Alugar/Comprar;
 //   e) "Adicionar imóvel sem link" (segunda análise de compra) e Comparar as duas de compra;
 //   e2) "Adicionar imóvel sem link" (segunda análise de ALUGUEL) e Comparar as duas de aluguel;
@@ -82,11 +82,11 @@ const ERRO_DO_CADERNO = "Não foi possível abrir seu caderno neste aparelho. Na
 /** Texto que não é JSON, no lugar do caderno (chave `vereda-analises-v2`). */
 const CADERNO_CORROMPIDO = '[{"versao":2,"id":"imovel-1","nome":"Apartamento Jardim","declarados":{"preco":';
 
-/** O link do imóvel de Torre é o do caso `vivareal-torre-venda` da fixture, lido na hora. */
-async function linkDeTorre() {
+/** O link do imóvel de Cabanga é o do caso `vivareal-cabanga-venda` da fixture, lido na hora. */
+async function linkDeCabanga() {
   const fixture = JSON.parse(await readFile(path.resolve("tests/fixtures/anuncios-url.json"), "utf8"));
-  const caso = fixture.casos.find((c) => c.id === "vivareal-torre-venda");
-  assert(caso && typeof caso.entrada === "string", "caso vivareal-torre-venda não encontrado em tests/fixtures/anuncios-url.json");
+  const caso = fixture.casos.find((c) => c.id === "vivareal-cabanga-venda");
+  assert(caso && typeof caso.entrada === "string", "caso vivareal-cabanga-venda não encontrado em tests/fixtures/anuncios-url.json");
   return caso.entrada;
 }
 
@@ -106,9 +106,16 @@ async function casoDoTextoDeAluguel() {
   return caso;
 }
 
+async function diretorioDoIndice() {
+  const texto = await readFile(path.resolve("src/dados/recife/publicacaoGerada.ts"), "utf8");
+  const diretorio = /export const DIRETORIO_DO_INDICE = "([a-z0-9/-]+)"/.exec(texto)?.[1];
+  assert(diretorio && !diretorio.includes(".."), "catálogo local de índice inválido");
+  return diretorio;
+}
+
 /** O primeiro edifício de `casa-forte.json`, lido na hora: o prédio que a busca por rua e número tem de achar. */
 async function primeiroEdificioDeCasaForte() {
-  const indice = JSON.parse(await readFile(path.resolve("src/dados/recife/indice/casa-forte.json"), "utf8"));
+  const indice = JSON.parse(await readFile(path.resolve(`src/dados/recife/${await diretorioDoIndice()}/casa-forte.json`), "utf8"));
   const edificio = indice.edificios[0];
   assert(edificio && edificio.logradouro && edificio.numero && /^\d{14}$/.test(edificio.dsqfl), "primeiro edifício de casa-forte.json sem logradouro, número ou chave cadastral");
   return edificio;
@@ -122,7 +129,7 @@ const semAcento = (t) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLo
 
 /** O `meta.json` do índice cadastral, de onde as gavetas de fonte tiram as datas. */
 async function metaDoIndice() {
-  return JSON.parse(await readFile(path.resolve("src/dados/recife/indice/meta.json"), "utf8"));
+  return JSON.parse(await readFile(path.resolve(`src/dados/recife/${await diretorioDoIndice()}/meta.json`), "utf8"));
 }
 
 /** "2026-10-20T16:17:16Z" ou "2026-10-03" → "20/10/2026". */
@@ -450,6 +457,40 @@ async function etapa(page, nome) {
   console.log(`  etapa ${prefixo} ${nome}: ${total === 0 ? "sem problemas" : `${total} problema(s)`}`);
 }
 
+/** Ampliação de texto aproximada na web: layout refluído, sem zoom da imagem. Não substitui Dynamic Type. */
+async function conferir360(page, nome) {
+  await page.setViewportSize({ width: 360, height: 812 });
+  await pausa(200);
+  await auditar(page, `${nome} @360`);
+  await page.screenshot({ path: path.join(pastaDeCapturas, `${nome}-360.png`) });
+  await page.evaluate(() => {
+    const textos = [...document.querySelectorAll('[dir="auto"], input')].map((el) => {
+      const cs = getComputedStyle(el);
+      return [el, parseFloat(cs.fontSize), parseFloat(cs.lineHeight)];
+    });
+    for (const [el, tamanho, linha] of textos) {
+      el.dataset.estiloAntesDoTexto = el.style.cssText;
+      el.style.fontSize = `${tamanho * 2}px`;
+      if (Number.isFinite(linha)) el.style.lineHeight = `${linha * 2}px`;
+    }
+  });
+  await pausa(200);
+  await page.screenshot({ path: path.join(pastaDeCapturas, `${nome}-texto-200-360.png`), fullPage: true });
+  await auditar(page, `${nome}-texto-200 @360`);
+  const detalhe = nome.includes("sem-endereco")
+    ? page.getByRole("button", { name: "Continuar sem identificar", exact: true })
+    : page.getByText("Mensal conhecido", { exact: true }).first();
+  await detalhe.evaluate((el) => el.scrollIntoView({ block: "center" }));
+  await page.screenshot({ path: path.join(pastaDeCapturas, `${nome}-detalhe-texto-200-360.png`) });
+  await page.evaluate(() => {
+    for (const el of document.querySelectorAll('[data-estilo-antes-do-texto]')) {
+      el.style.cssText = el.dataset.estiloAntesDoTexto;
+      delete el.dataset.estiloAntesDoTexto;
+    }
+  });
+  await page.setViewportSize(MOBILE);
+}
+
 /**
  * O auditor precisa conseguir reprovar. Monta na página um controle dentro de controle, um botão sem nome, um radio sem
  * aria-checked, uma aba sem aria-selected e uma caixa mais larga que a tela; confere que cada um foi apontado e desmonta tudo.
@@ -717,7 +758,7 @@ try {
 
     await page.getByRole("button", { name: "Encontrar o prédio", exact: true }).click();
     await esperarRota(page, "/predio");
-    await esperarTexto(page, "É este o prédio?");
+    await esperarTexto(page, "Precisamos de mais uma informação");
     // T4: o link (37 m²) e o texto (125 m²) discordam da área, que fica a confirmar e não entra na busca de candidatos.
     // Com a rua do anúncio (Rua Projetada A) fora do cadastro, nada é sugerido nem cobrado: a pessoa busca por rua e número.
     await esperarTexto(page, "Não achamos Rua Projetada A no cadastro");
@@ -854,20 +895,20 @@ try {
 
     // ——— c) fora de cobertura ————————————————————————————————————————————————————————
 
-    console.log("c) Torre: fora da cobertura");
+    console.log("c) Cabanga: fora da cobertura");
     await page.getByRole("tab", { name: "Explorar", exact: true }).click();
     await esperarRota(page, "/");
-    await page.getByRole("textbox", { name: "Link do anúncio do imóvel" }).fill(await linkDeTorre());
+    await page.getByRole("textbox", { name: "Link do anúncio do imóvel" }).fill(await linkDeCabanga());
     await page.getByRole("button", { name: "Gerar Dossiê", exact: true }).click();
     await esperarRota(page, "/ler");
-    await esperarTexto(page, "Ainda não cobrimos Torre.");
+    await esperarTexto(page, "Ainda não cobrimos Cabanga.");
     await esperarTexto(page, "A leitura deste anúncio não consumiu crédito.");
     assert.equal(await saldoDoCabecalho(page), 1, "fora da cobertura não gasta crédito");
-    await etapa(page, "ler-torre-fora-de-cobertura");
+    await etapa(page, "ler-cabanga-fora-de-cobertura");
     await page.getByRole("button", { name: "Salvar no caderno", exact: true }).click();
     await esperarRota(page, "/");
     await esperarTexto(page, "Análises Recentes");
-    await esperar(async () => (await page.getByRole("button", { name: /Torre/ }).count()) > 0, "cartão de Torre no Explorar");
+    await esperar(async () => (await page.getByRole("button", { name: /Cabanga/ }).count()) > 0, "cartão de Cabanga no Explorar");
     await etapa(page, "explorar-tres-analises");
 
     // ——— d) recarregar ——————————————————————————————————————————————————————————————————
@@ -879,7 +920,7 @@ try {
     const cartaoDoAluguel = () => page.getByRole("button", { name: new RegExp(`^${NOME_ALUGUEL_CASA_FORTE}\\.`) });
     await esperar(async () => (await cartaoDaCompra().count()) === 1, "cartão da compra de Casa Forte depois da recarga");
     await esperar(async () => (await cartaoDoAluguel().count()) === 1, "cartão do aluguel de Casa Forte depois da recarga");
-    await esperar(async () => (await page.getByRole("button", { name: /Torre/ }).count()) >= 1, "cartão de Torre depois da recarga");
+    await esperar(async () => (await page.getByRole("button", { name: /Cabanga/ }).count()) >= 1, "cartão de Cabanga depois da recarga");
     const textoAposRecarga = await textoVisivel(page);
     assert.match(textoAposRecarga, /Prédio confirmado · \d{4}/, "o vínculo confirmado persistiu");
     assert.match(textoAposRecarga, /Estrada do Encanamento, 719/);
@@ -887,10 +928,10 @@ try {
     // O aluguel também: prédio escolhido na busca, custo conhecido e o que falta confirmar.
     assert(semAcento(textoAposRecarga).includes(`${ruaDoPredio}, ${predio.numero}`), "o cartão do aluguel mostra o endereço do prédio escolhido na busca");
     if (predio.anoConstrucao) assert.match(textoAposRecarga, new RegExp(`Prédio confirmado · ${predio.anoConstrucao}`), "ano do prédio do aluguel no cartão");
-    assert(textoAposRecarga.includes(`Anúncio: R$ ${reais(dadosDoAluguel.preco)}/mês`), "cartão do aluguel: anúncio");
-    assert(textoAposRecarga.includes(`Total conhecido: R$ ${reais(dadosDoAluguel.preco + dadosDoAluguel.condominio)}/mês`), "cartão do aluguel: total conhecido sem o IPTU sem período");
+    assert(textoAposRecarga.includes(`Aluguel anunciado: R$ ${reais(dadosDoAluguel.preco)}/mês`), "cartão do aluguel: anúncio");
+    assert(textoAposRecarga.includes(`Mensal conhecido: R$ ${reais(dadosDoAluguel.preco + dadosDoAluguel.condominio)}/mês`), "cartão do aluguel: total conhecido sem o IPTU sem período");
     assert(textoAposRecarga.includes(`+R$ ${reais(dadosDoAluguel.condominio)} além do aluguel`), "cartão do aluguel: além do aluguel");
-    assert(textoAposRecarga.includes("2 a confirmar"), "cartão do aluguel: IPTU e seguro incêndio a confirmar");
+    assert(textoAposRecarga.includes("+ valores a confirmar"), "cartão do aluguel: IPTU e seguro incêndio a confirmar");
     assert.equal(await saldoDoCabecalho(page), 1, "o saldo persistiu");
     // Estados expostos ao leitor de tela: aba do dock e filtro (radio) marcados.
     assert.equal(await page.getByRole("tab", { name: "Explorar", exact: true }).getAttribute("aria-selected"), "true");
@@ -899,11 +940,11 @@ try {
     await page.getByRole("radio", { name: "Alugar", exact: true }).click();
     await esperar(async () => (await cartaoDoAluguel().count()) === 1, "filtro Alugar mostra o aluguel");
     assert.equal(await cartaoDaCompra().count(), 0, "filtro Alugar esconde a compra");
-    assert.equal(await page.getByRole("button", { name: /Torre/ }).count(), 0, "filtro Alugar esconde Torre");
+    assert.equal(await page.getByRole("button", { name: /Cabanga/ }).count(), 0, "filtro Alugar esconde Cabanga");
     assert.equal(await page.getByRole("radio", { name: "Alugar", exact: true }).isChecked(), true);
     assert.equal(await page.getByRole("radio", { name: "Todos", exact: true }).isChecked(), false);
     await page.getByRole("radio", { name: "Comprar", exact: true }).click();
-    await esperar(async () => (await page.getByRole("button", { name: /Torre/ }).count()) >= 1, "filtro Comprar mostra Torre");
+    await esperar(async () => (await page.getByRole("button", { name: /Cabanga/ }).count()) >= 1, "filtro Comprar mostra Cabanga");
     assert.equal(await cartaoDaCompra().count(), 1, "filtro Comprar mostra a compra de Casa Forte");
     assert.equal(await cartaoDoAluguel().count(), 0, "filtro Comprar esconde o aluguel");
     await page.getByRole("radio", { name: "Todos", exact: true }).click();
@@ -938,11 +979,11 @@ try {
 
     // Compra: a diferença é do preço anunciado; o preço nunca entra nas despesas mensais (só condomínio e IPTU conhecidos).
     await esperarTexto(page, "de diferença no preço anunciado");
-    await esperarTexto(page, "Despesas mensais conhecidas");
+    await esperarTexto(page, "Mensal conhecido");
     const custoComparado = await textoVisivel(page);
     assert.match(custoComparado, /R\$ 150\.000\nde diferença no preço anunciado/, "540.000 contra 690.000");
     assert.match(custoComparado, /1 parcela a confirmar/, "o IPTU sem periodicidade da compra de Casa Forte fica a confirmar");
-    assert.match(custoComparado, /Despesas mensais conhecidas\nR\$ 780\/mês/, "Casa Forte: só o condomínio entra (IPTU sem período fica fora)");
+    assert.match(custoComparado, /Mensal conhecido\nR\$ 780\/mês/, "Casa Forte: só o condomínio entra (IPTU sem período fica fora)");
     assert.match(custoComparado, /R\$ 770\/mês/, "Boa Viagem: condomínio 650 + IPTU 120 por mês");
     await etapa(page, "comparar-custo");
     await page.getByRole("tab", { name: "Espaço", exact: true }).click();
@@ -980,7 +1021,7 @@ try {
     const conhecidoDeCasaForte = dadosDoAluguel.preco + dadosDoAluguel.condominio;
     const conhecidoDaManual = manual.preco + manual.condominio + manual.iptu + manual.seguro;
     await esperarTexto(page, "de diferença no custo mensal conhecido");
-    await esperarTexto(page, "Custo mensal conhecido");
+    await esperarTexto(page, "Mensal conhecido");
     const custoDoAluguel = await textoVisivel(page);
     assert(
       custoDoAluguel.includes(`R$ ${reais(conhecidoDeCasaForte - conhecidoDaManual)}\nde diferença no custo mensal conhecido`),
@@ -1196,6 +1237,73 @@ try {
     }
     paginaEmUso = page;
 
+    // ——— Lote A: ambiguidade, custo e estados estreitos —————————————————————————————
+    console.log("g3) lote A: área sem endereço, alternativas e semântica de custo");
+    const modelo = await page.evaluate(() => JSON.parse(localStorage.getItem("vereda-analises-v2")).find((a) => a.modalidade === "aluguel"));
+    assert(modelo, "o percurso anterior criou uma análise de aluguel");
+    const contextoLote = await browser.newContext({ viewport: MOBILE, locale: "pt-BR" });
+    try {
+      rastrearRede(contextoLote);
+      const pagina = await contextoLote.newPage();
+      pagina.setDefaultTimeout(20_000);
+      rastrearErros(pagina);
+      paginaEmUso = pagina;
+      await pagina.goto(`${base}/`, { waitUntil: "load", timeout: 120_000 });
+      await pagina.getByRole("button", { name: "Colar link", exact: true }).waitFor();
+      const v = (valor) => ({ valor, origem: "voce", aConfirmar: false });
+      const fixture = {
+        ...modelo, id: "lote-a-visual", nome: "Apartamento com nome longo para conferir custos e localização em Boa Viagem",
+        bairro: "boa-viagem", bairroTexto: "Boa Viagem", logradouro: null, numero: null, nomeEdificio: null,
+        extracao: null, vinculo: { estado: "pendente" }, salva: true, descarte: null,
+        declarados: { ...modelo.declarados, preco: v(2500), condominio: v(600), area: v(70), andar: v(null),
+          iptu: { ...v(null), periodo: "desconhecido" }, seguroIncendio: v(null), taxaServico: v(null), outros: v(null) },
+      };
+      await pagina.evaluate((analises) => {
+        localStorage.setItem("vereda-analises-v2", JSON.stringify(analises));
+        localStorage.setItem("vereda-ativa-v1", analises[0].id);
+      }, [fixture, { ...fixture, id: "lote-a-outro", nome: "Segunda opção de aluguel" }]);
+      await pagina.goto(`${base}/predio?id=${fixture.id}`, { waitUntil: "load" });
+      await esperarTexto(pagina, "Precisamos de mais uma informação");
+      assert.equal(await pagina.getByRole("button", { name: "É este prédio", exact: true }).count(), 0);
+      await etapa(pagina, "lote-a-area-sem-endereco");
+      await conferir360(pagina, "lote-a-area-sem-endereco");
+      await pagina.getByRole("button", { name: "Examinar sugestões", exact: true }).click();
+      await esperarTexto(pagina, "Mostrando 8");
+      await etapa(pagina, "lote-a-alternativas");
+      await pagina.getByRole("button", { name: /^Examinar (?!sugestões)/ }).first().click();
+      await pagina.getByRole("button", { name: "Ocultar sugestões", exact: true }).click();
+      await esperarTexto(pagina, "Confira o endereço antes de confirmar");
+      assert.equal(await saldoDoCabecalho(pagina), 3, "examinar e escolher não usa crédito");
+      await etapa(pagina, "lote-a-escolha-explicita");
+      await pagina.setViewportSize({ width: 360, height: 812 });
+      const busca = pagina.getByRole("textbox", { name: "Buscar por rua, número ou nome do prédio", exact: true });
+      await busca.fill("Rua inexistente para testar");
+      await esperarTexto(pagina, "Nenhum prédio com esse endereço ou nome");
+      await pagina.screenshot({ path: path.join(pastaDeCapturas, "lote-a-busca-focada-360.png") });
+      await busca.fill("");
+      await pagina.keyboard.press("Tab");
+      await pagina.getByRole("button", { name: "É este prédio", exact: true }).dblclick();
+      await esperarRota(pagina, "/dossie");
+      assert.equal(await saldoDoCabecalho(pagina), 2, "confirmação deliberada com toque duplo cobra uma vez");
+      await esperarTexto(pagina, "Mensal conhecido");
+      for (const texto of ["R$ 3.100", "Aluguel anunciado", "R$ 2.500", "+ valores a confirmar"]) await esperarTexto(pagina, texto);
+      await etapa(pagina, "lote-a-dossie-custo");
+      await conferir360(pagina, "lote-a-dossie-custo");
+      await pagina.goto(`${base}/salvos`, { waitUntil: "load" });
+      await esperarTexto(pagina, "R$ 3.100");
+      await esperarTexto(pagina, "+ valores a confirmar");
+      await etapa(pagina, "lote-a-salvos-custo");
+      await conferir360(pagina, "lote-a-salvos-custo");
+      await pagina.goto(`${base}/comparar`, { waitUntil: "load" });
+      await esperarTexto(pagina, "Mensal conhecido");
+      await esperarTexto(pagina, "R$ 3.100/mês");
+      await etapa(pagina, "lote-a-comparar-custo");
+      await conferir360(pagina, "lote-a-comparar-custo");
+    } finally {
+      await contextoLote.close();
+    }
+    paginaEmUso = page;
+
     // ——— h) e i) ————————————————————————————————————————————————————————————————————————
 
     console.log("h) conferência final");
@@ -1222,7 +1330,7 @@ try {
   console.log(`Etapas auditadas a 375×812 e 1280×900: ${numeroDaEtapa}. Capturas em ${path.relative(process.cwd(), pastaDeCapturas)}/`);
   console.log(
     "\nV1: compra e aluguel em Casa Forte (link, texto, anomalia de IPTU, prédio real do índice, busca por rua e número, " +
-      "crédito 3→2→1, fonte da Prefeitura, sem R$/m² com ITBI), abas e dossiês sem rede, Torre fora da cobertura, persistência, " +
+      "crédito 3→2→1, fonte da Prefeitura, sem R$/m² com ITBI), abas e dossiês sem rede, Cabanga fora da cobertura, persistência, " +
       "segunda análise e comparação de compra e de aluguel, descarte (+1 só para quem usou crédito, uma vez), menu e créditos, " +
       "caderno ilegível (erro na tela, chave intacta) passaram.",
   );

@@ -1,0 +1,228 @@
+{
+  "main": {
+    "id": "39292ae72b735b80",
+    "type": "split",
+    "children": [
+      {
+        "id": "b581ac3ca665fdcf",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "56955b719aaa02c9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "AVALIACAO_CRITICA_ESTADO_ATUAL_E_OPORTUNIDADES.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "AVALIACAO_CRITICA_ESTADO_ATUAL_E_OPORTUNIDADES"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "62ba54ac030f23a5",
+    "type": "split",
+    "children": [
+      {
+        "id": "461f64bef59d7273",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "360d94bbbd3528c5",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "01b862198e5aa291",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "6ee399cf684621fd",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "0af8aff860caec4a",
+    "type": "split",
+    "children": [
+      {
+        "id": "a286f338a22b73c1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0337030c41fd2526",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "AVALIACAO_CRITICA_ESTADO_ATUAL_E_OPORTUNIDADES.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "94a0a7454eb9bd7d",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "AVALIACAO_CRITICA_ESTADO_ATUAL_E_OPORTUNIDADES.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "5f1200b02a5fea90",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "450e49dff720bb59",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "ace60c3324cb6d3f",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "AVALIACAO_CRITICA_ESTADO_ATUAL_E_OPORTUNIDADES.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "56955b719aaa02c9",
+  "lastOpenFiles": [
+    "plano-recife/execucoes/EP14.md",
+    "plano-recife/execucoes/EP13.md",
+    "plano-recife/execucoes/EP12.md",
+    "plano-recife/execucoes/EP11.md",
+    "plano-recife/execucoes/EP10.md",
+    "plano-recife/execucoes/EP09.md",
+    "plano-recife/execucoes/EP08.md",
+    "plano-recife/execucoes/EP07.md",
+    "plano-recife/execucoes/EP06.md",
+    "plano-recife/execucoes/EP05.md",
+    "plano-recife/execucoes/EP04.md",
+    "plano-recife/execucoes/EP03.md",
+    "plano-recife/execucoes/EP02.md",
+    "plano-recife/execucoes/EP01.md",
+    "plano-recife/execucoes/PRONTIDAO-2026-10-21.md",
+    "plano-recife/execucoes/desempenho-local.json",
+    "plano-recife/execucoes/municipal-validacao.json",
+    "plano-recife/execucoes/gtfs-inspecao.json",
+    "plano-recife/execucoes/CONTINUIDADE-2026-10-21.md",
+    "plano-recife/execucoes/EP00.md",
+    "plano-recife/execucoes",
+    "plano-recife/10-CNPJ-E-OCORRENCIAS-DO-EDIFICIO.md",
+    "plano-recife/evidencias/validacao.json",
+    "plano-recife/evidencias/validar_plano.py",
+    "plano-recife/evidencias",
+    "plano-recife/09-DECISOES-E-FONTES.md",
+    "plano-recife/08-PROMPT-OPERARIA.md",
+    "plano-recife/07-QUALIDADE-E-ACEITE.md",
+    "plano-recife/06-EPOCAS-10-A-14.md",
+    "plano-recife/05-EPOCAS-05-A-09.md",
+    "plano-recife/04-EPOCAS-00-A-04.md",
+    "plano-recife/03-ARQUITETURA-E-DADOS.md",
+    "plano-recife/02-EXPERIENCIA-E-CONTRATOS.md",
+    "plano-recife"
+  ]
+}

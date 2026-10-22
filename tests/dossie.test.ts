@@ -688,7 +688,7 @@ describe("perguntas", () => {
   });
 
   it("endereço completo no bairro não coberto ou sem bairro continua sem a pergunta", () => {
-    expect(ids(derivar(analise({ bairro: "boa-vista", bairroTexto: "Boa Vista", logradouro: null, numero: null, vinculo: { estado: "fora_de_cobertura" } }))))
+    expect(ids(derivar(analise({ bairro: "cabanga", bairroTexto: "Cabanga", logradouro: null, numero: null, vinculo: { estado: "fora_de_cobertura" } }))))
       .not.toContain("lacuna-endereco");
     expect(ids(derivar(analise({ bairro: null, bairroTexto: "", logradouro: null, numero: null })))).not.toContain("lacuna-endereco");
   });
@@ -696,7 +696,7 @@ describe("perguntas", () => {
   it("sem lacuna-endereco quando o prédio está confirmado, o bairro não é coberto ou não há bairro", () => {
     const { a, e } = noPredio();
     expect(ids(derivar(a, { e }))).not.toContain("lacuna-endereco");
-    expect(ids(derivar(analise({ bairro: "boa-vista", bairroTexto: "Boa Vista", vinculo: { estado: "fora_de_cobertura" } })))).not.toContain("lacuna-endereco");
+    expect(ids(derivar(analise({ bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" } })))).not.toContain("lacuna-endereco");
     expect(ids(derivar(analise({ bairro: null, bairroTexto: "" })))).not.toContain("lacuna-endereco");
   });
 
@@ -1040,7 +1040,7 @@ describe("cadastro", () => {
     expect(pendente.loteConfirmado).toBe(false);
     expect(pendente.obras).toBeNull();
     expect(pendente.historico).toEqual([]);
-    const fora = derivar(analise({ bairro: "boa-vista", bairroTexto: "Boa Vista", vinculo: { estado: "fora_de_cobertura" } }));
+    const fora = derivar(analise({ bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" } }));
     expect(fora.cadastro).toHaveLength(1);
     expect(fora.cadastro[0]).toMatchObject({ rotulo: "Prédio não confirmado", valor: "Fora da área com cadastro", confianca: "nao_sabemos" });
   });
@@ -1246,7 +1246,7 @@ function bateria(): Caso[] {
       preco: v(700000, true), condominio: v(900, true), iptu: iptuDe(2400, "ano", true), area: v(70, true),
     } }), contexto: CONTEXTO },
     { nome: "fora de cobertura", a: analise({
-      bairro: "boa-vista", bairroTexto: "Boa Vista", vinculo: { estado: "fora_de_cobertura" }, extracao: extracaoCom([], "recife_fora"),
+      bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" }, extracao: extracaoCom([], "recife_fora"),
     }) },
     { nome: "fora do Recife, sem bairro", a: analise({
       bairro: null, bairroTexto: "Bairro Novo", logradouro: "Rua do Sol", numero: "55", extracao: extracaoCom([], "fora_do_recife", "olinda"),

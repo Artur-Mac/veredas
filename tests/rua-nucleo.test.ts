@@ -199,7 +199,7 @@ describe("CNEFE: o complemento nunca sai da leitura", () => {
     const indices = Object.fromEntries(n.COLUNAS_DO_CNEFE.map((c) => [c, CABECALHO.indexOf(c)]));
     const lido = n.lerEnderecoDoCnefe(linha, indices);
     expect(lido).toEqual({
-      bairro: "alfa sintetico", tipo: "RUA", titulo: "", nome: "SINTETICA", numero: 719, lon: -34.9, lat: -8.03, setor: "261160605000077", especie: 1,
+      bairro: "alfa sintetico", tipo: "RUA", titulo: "", nome: "SINTETICA", numero: 719, lon: -34.9, lat: -8.03, setor: "261160605000077", especie: 1, nivelGeo: 2,
     });
     const texto = JSON.stringify(lido);
     for (const proibido of ["APARTAMENTO", "1203", "BLOCO", "PADARIA", "999000111", "50000000"]) expect(texto).not.toContain(proibido);

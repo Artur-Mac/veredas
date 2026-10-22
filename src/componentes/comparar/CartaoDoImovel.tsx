@@ -72,7 +72,7 @@ export function CartaoDoImovel({ indice, analise, poligono, resumo, aoTrocar, ao
             borderBottomColor: cor("cor-linha"),
           }}
         >
-          <Texto tipo="secao" numberOfLines={2} style={{ flex: 1, fontSize: 13, lineHeight: 17, fontWeight: "600" }}>
+          <Texto tipo="secao" style={{ flex: 1, fontSize: 13, lineHeight: 17, fontWeight: "600" }}>
             {analise.nome}
           </Texto>
           <Icone nome="chevron-down" tamanho="p" cor="cor-texto-apoio" />

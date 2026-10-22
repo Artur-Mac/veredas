@@ -622,7 +622,7 @@ describe("Comparar", () => {
     expect(t).toContain("Compra B");
     expect(t).toContain("R$ 130.000");
     expect(t).toContain("de diferença no preço anunciado.");
-    expect(t).toContain("Despesas mensais conhecidas");
+    expect(t).toContain("Mensal conhecido");
     expect(t).not.toContain("Casa Forte 3 quartos");
   });
 
@@ -742,10 +742,10 @@ describe("Sobre os dados", () => {
     const arvore = await montar(React.createElement(SobreOsDados));
     const t = texto(arvore);
     expect(t).toContain("O que ainda não cobrimos");
-    for (const item of ["Aluguel de mercado", "Segurança por bairro", "Alagamento por endereço", "Fotos dos anúncios", "Bairros fora dos cinco"]) {
+    for (const item of ["Aluguel de mercado", "Segurança por bairro", "Alagamento por endereço", "Fotos dos anúncios", "Cobertura por bairro e camada"]) {
       expect(t).toContain(item);
     }
-    expect(t).toContain("Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena");
+    expect(t).toContain("72 bairros do Recife");
   });
 });
 
@@ -834,8 +834,8 @@ describe("Cabeçalho do app (H2)", () => {
     await tocar(arvore, "Menu de navegação");
     expect(hospedeiro(arvore, "Menu de navegação")?.props.accessibilityState).toMatchObject({ expanded: true });
     const rotulos = itensDoMenu(arvore).map((n) => textoDoNo(n).replace(/\s+/g, " ").trim());
-    expect(rotulos).toEqual(["Início", "Minhas análises", "Dossiês de exemplo", "Carteira de créditos 7", "Sobre os dados"]);
-    expect(ITENS_DO_MENU.map((i) => i.rota)).toEqual(["/", "/salvos", "/exemplos/boa-viagem", "/creditos", "/sobre-os-dados"]);
+    expect(rotulos).toEqual(["Início", "Minhas análises", "Dossiês de exemplo", "Carteira de créditos 7", "Sobre os dados", "Cópia do meu caderno"]);
+    expect(ITENS_DO_MENU.map((i) => i.rota)).toEqual(["/", "/salvos", "/exemplos/boa-viagem", "/creditos", "/sobre-os-dados", "/dados-do-caderno"]);
 
     for (const [i, item] of ITENS_DO_MENU.entries()) {
       jest.clearAllMocks();
@@ -1257,20 +1257,70 @@ describe("Prédio: área a confirmar não vira pista (T4)", () => {
     return montar(React.createElement(Predio));
   };
 
-  it("com a área confirmada, ela sugere um prédio do cadastro (controle)", async () => {
+  it("só área não oferece confirmação direta e permite examinar alternativas sem cobrar", async () => {
     expect(edificio).toBeDefined();
     const arvore = await abrirPredio(soComArea("nor", false));
+    expect(existe(arvore, "É este prédio")).toBe(false);
+    expect(texto(arvore)).toContain("Precisamos de mais uma informação");
+    expect(texto(arvore)).not.toContain("Usa 1 crédito");
+    await tocar(arvore, "Examinar sugestões");
+    expect(texto(arvore)).toContain("compatív");
+    const alternativa = arvore.root.findAll((n) => typeof n.props.onPress === "function" && n.props.accessibilityLabel?.startsWith("Examinar ") && !n.props.accessibilityLabel.startsWith("Examinar sugestões"))[0];
+    expect(alternativa).toBeDefined();
+    await act(async () => { alternativa!.props.onPress(); });
     expect(existe(arvore, "É este prédio")).toBe(true);
-    expect(texto(arvore)).toContain("Usa 1 crédito");
+    expect(texto(arvore)).toContain("Confira o endereço antes de confirmar");
+    expect(texto(arvore)).not.toContain("garante");
+    expect((await carteiraGravada()).saldo).toBe(3);
+  });
+
+  it("saldo zero permite buscar e escolher, mas confirmação pede créditos sem gravar vínculo", async () => {
+    const a = analise("sem-creditos", { logradouro: edificio!.logradouro, numero: edificio!.numero });
+    await semear([a], carteiraCom(0, [cota, pagou("um"), pagou("dois"), pagou("tres")]));
+    mockParametros = { id: a.id };
+    const arvore = await montar(React.createElement(Predio));
+    expect(existe(arvore, "É este prédio")).toBe(true);
+    await tocar(arvore, "É este prédio");
+    expect((await carteiraGravada()).saldo).toBe(0);
+    expect((await gravadas())[0]?.vinculo.estado).toBe("pendente");
+    expect(texto(arvore)).toContain("créditos");
   });
 
   it("com a área 'a confirmar', nenhum prédio é sugerido e o crédito não é oferecido", async () => {
     const arvore = await abrirPredio(soComArea("aco", true));
     expect(existe(arvore, "É este prédio")).toBe(false);
     expect(texto(arvore)).not.toContain("Usa 1 crédito");
-    expect(texto(arvore)).toContain("É este o prédio?");
-    // O caminho segue aberto: busca por endereço e "Pular por agora".
-    expect(existe(arvore, "Pular por agora")).toBe(true);
+    expect(texto(arvore)).toContain("Precisamos de mais uma informação");
+    expect(existe(arvore, "Continuar sem identificar")).toBe(true);
+    await tocar(arvore, "Continuar sem identificar");
+    expect((await gravadas())[0]?.vinculo.estado).toBe("pulado");
+    expect((await carteiraGravada()).saldo).toBe(3);
+  });
+});
+
+// ——— Lote A: custos nas superfícies de decisão ———————————————————————————————
+
+describe("Lote A: custo mensal com a mesma semântica", () => {
+  it.each(["salvos", "explorar", "comparar"])("%s mostra mensal 3.100, anunciado 2.500 e pendências; edição atualiza a soma", async (superficie) => {
+    const a = analise("lote-a", { nome: "Apartamento de teste com nome longo para comparar custos", declarados: { preco: v(2500), condominio: v(600), iptu: iptu(null, "desconhecido"), seguroIncendio: vazio } });
+    await semear([a, analise("lote-b")], carteiraCom(3, [cota]));
+    let estado!: ReturnType<typeof useAnalises>;
+    const Sonda = () => {
+      estado = useAnalises();
+      return React.createElement(superficie === "salvos" ? Salvos : superficie === "explorar" ? Explorar : Comparar);
+    };
+    const arvore = await montar(React.createElement(Sonda));
+    let t = texto(arvore);
+    expect(t).toContain("Mensal conhecido");
+    expect(t).toContain("R$ 3.100");
+    expect(t).toContain("Aluguel anunciado");
+    expect(t).toContain("R$ 2.500");
+    expect(t).toContain("+ valores a confirmar");
+    expect(t).not.toContain("Total conhecido");
+    await act(async () => { await estado.salvar({ ...a, declarados: { ...a.declarados, condominio: v(800) } }); });
+    t = texto(arvore);
+    expect(t).toContain("R$ 3.300");
+    expect(t).not.toContain("R$ 3.100");
   });
 });
 

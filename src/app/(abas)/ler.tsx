@@ -10,6 +10,7 @@ import { Coluna } from "../../componentes/casca/Coluna";
 import { useFocoDoCampo } from "../../componentes/casca/foco";
 import { rendeDados } from "../../componentes/leitor/decidir";
 import { LeitorDePagina } from "../../componentes/leitor/LeitorDePagina";
+import { avisoDeTipologia } from "../../componentes/predio/textos";
 import { estilosDoTema } from "../../componentes/revisao/estilosDoTema";
 import { AlvoDeToque } from "../../componentes/Pressionavel";
 import { FormularioDeRevisao } from "../../componentes/revisao/FormularioDeRevisao";
@@ -297,14 +298,17 @@ function LeituraDoAnuncio() {
   // Aluguel com "/mês", IPTU com o período, e nada de preço que o formulário deixou de fora (outra modalidade).
   const { precoLido, partes: partesDoPreco } = resumoDePrecoECustos(extracao, form);
 
+  // A rua e o número lidos da página aparecem aqui: o formulário enxuto não mostra o endereço.
+  const enderecoLido = c.logradouro ? `${c.logradouro}${c.numero ? `, ${c.numero}` : ""} · ` : "";
   const detalheDaCobertura =
-    extracao.cobertura === "coberto"
+    enderecoLido +
+    (extracao.cobertura === "coberto"
       ? `${nomeDoImovel ?? "Bairro"} · com cadastro`
       : extracao.cobertura === "recife_fora"
         ? `${nomeDoImovel ?? "Bairro"} · ainda sem cadastro`
         : extracao.cobertura === "fora_do_recife"
           ? "Fora do Recife"
-          : "Bairro a confirmar";
+          : "Bairro a confirmar");
 
   const linhas = [
     { lida: reconhecido, titulo: "Link reconhecido", detalhe: detalheDoLink },
@@ -318,7 +322,7 @@ function LeituraDoAnuncio() {
       titulo: "Preço e custos",
       detalhe: partesDoPreco.length > 0 ? partesDoPreco.join(" · ") : "Cole o texto do anúncio para ler condomínio e IPTU",
     },
-    { lida: extracao.cobertura !== "desconhecida", titulo: "Bairro e cobertura", detalhe: detalheDaCobertura },
+    { lida: extracao.cobertura !== "desconhecida", titulo: c.logradouro ? "Endereço e cobertura" : "Bairro e cobertura", detalhe: detalheDaCobertura },
   ];
 
   // ——— Salvar ——————————————————————————————————————————————————————————————————
@@ -438,6 +442,12 @@ function LeituraDoAnuncio() {
                   <LinhaDoChecklist key={linha.titulo} numero={indice + 1} {...linha} />
                 ))}
               </View>
+
+              {avisoDeTipologia(form.tipologia) ? (
+                <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.avisoDaCopia}>
+                  {avisoDeTipologia(form.tipologia)}
+                </Texto>
+              ) : null}
 
               <View style={styles.rodapeDePrivacidade}>
                 <Texto tipo="apoio" style={styles.textoDePrivacidade}>

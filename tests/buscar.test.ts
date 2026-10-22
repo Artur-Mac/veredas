@@ -4,7 +4,9 @@ import { join } from "node:path";
 import React from "react";
 import TestRenderer, { act, type ReactTestInstance } from "react-test-renderer";
 import { esquemaCandidato, esquemaIndiceDoBairro, type AnaliseV2, type Edificio } from "../src/dados/contratos";
-import { buscarCandidatos, buscarPorEndereco, normalizar, type EntradaDeBusca } from "../src/dados/recife/buscar";
+import { buscarCandidatos, buscarCandidatosDetalhados, buscarPorEndereco, enderecoSemFecho, normalizar, type EntradaDeBusca } from "../src/dados/recife/buscar";
+import { DIRETORIO_DO_INDICE } from "../src/dados/recife/publicacaoGerada";
+import { edificiosDoBairro } from "../src/dados/recife/indice";
 import { MapaDoPredio } from "../src/componentes/predio/MapaDoPredio";
 import {
   PERCURSO_INICIAL,
@@ -203,6 +205,22 @@ describe("buscarCandidatos: andar, sinal e ordem", () => {
     expect(r.slice(1).every((c) => c.pontos === 50)).toBe(true);
   });
 
+  it("informa total antes do corte e pistas estruturadas sem mudar a API anterior", () => {
+    const muitos = Array.from({ length: 12 }, (_, i) => clone(SOLAR, `900200-${String(i + 1).padStart(2, "0")}`, { logradouro: "RUA DAS CLONES", numero: String(i + 1) }));
+    const entrada = com({ logradouro: "Rua das Clones", numero: "7" });
+    const r = buscarCandidatosDetalhados(entrada, muitos);
+    expect(r.totalCompativeis).toBe(12);
+    expect(r.resultadosLimitados).toBe(true);
+    expect(r.candidatos).toHaveLength(8);
+    expect(r.candidatos[0]?.pistas).toEqual(["rua", "numero"]);
+    expect(r.candidatos.slice(1).every((c) => c.pistas.join() === "rua")).toBe(true);
+    expect(r.candidatos.map(({ pistas, ...c }) => c)).toEqual(buscarCandidatos(entrada, muitos));
+    expect(buscarCandidatosDetalhados(vazio, muitos)).toEqual({ candidatos: [], totalCompativeis: 0, resultadosLimitados: false });
+    const area = buscarCandidatosDetalhados(com({ area: SOLAR.tipologias[0]!.area }), [SOLAR]);
+    expect(area.candidatos[0]?.pistas).toEqual(["area"]);
+    expect(area.resultadosLimitados).toBe(false);
+  });
+
   it("cada candidato passa em esquemaCandidato", () => {
     const todos = buscarCandidatos(
       com({ nomeEdificio: "Solar do Gayppio", logradouro: "Rua do Teste Sintetico", numero: "100", area: 85.5, anoConstrucao: 2008 }),
@@ -393,10 +411,10 @@ describe("mensagem da tela quando não há candidatos", () => {
 
   it("com rua no anúncio, diz que não achou o endereço e manda conferir ou buscar", () => {
     expect(mensagemSemCandidatos("RUA TELES JUNIOR", "331")).toBe(
-      "Não achamos Rua Teles Junior, 331 no cadastro destes cinco bairros. Confira o endereço com o corretor ou busque abaixo.",
+      "Não achamos Rua Teles Junior, 331 no cadastro disponível para o Recife. Confira o endereço com o corretor ou busque abaixo.",
     );
     expect(mensagemSemCandidatos("Estrada do Encanamento", null)).toBe(
-      "Não achamos Estrada do Encanamento no cadastro destes cinco bairros. Confira o endereço com o corretor ou busque abaixo.",
+      "Não achamos Estrada do Encanamento no cadastro disponível para o Recife. Confira o endereço com o corretor ou busque abaixo.",
     );
   });
 
@@ -670,7 +688,7 @@ describe("projeção local do mapa", () => {
 // com a fixture sintética, de modo que o teste não depende do índice gerado nem o toca.
 describe("indice.ts com JSON simulado", () => {
   const virtual = { virtual: true } as const;
-  const caminho = (nome: string) => `../src/dados/recife/indice/${nome}.json`;
+  const caminho = (nome: string) => `../src/dados/recife/${DIRETORIO_DO_INDICE}/${nome}.json`;
   const doBairro = (slug: string) => ({
     ...indiceBruto,
     bairro: slug,
@@ -823,13 +841,13 @@ describe("tela do prédio, de ponta a ponta", () => {
       });
     });
   }
-  const caminhoDoJson = (slug: string) => `../src/dados/recife/indice/${slug}.json`;
+  const caminhoDoJson = (slug: string) => `../src/dados/recife/${DIRETORIO_DO_INDICE}/${slug}.json`;
 
   it("sem candidatos e com rua no anúncio: só a mensagem de endereço não achado", () => {
     abrir(analiseDe({ logradouro: "RUA QUE NAO EXISTE", numero: "999" }), (tela) => {
       const texto = tela.texto();
       expect(texto).toContain(
-        "Não achamos Rua Que Nao Existe, 999 no cadastro destes cinco bairros. Confira o endereço com o corretor ou busque abaixo.",
+        "Não achamos Rua Que Nao Existe, 999 no cadastro disponível para o Recife. Confira o endereço com o corretor ou busque abaixo.",
       );
       expect(texto).not.toContain("Sem o endereço não dá para saber");
       expect(tela.botoes()).not.toContain(rotuloVizinho);
@@ -894,5 +912,19 @@ describe("tela do prédio, de ponta a ponta", () => {
       tela.tocar(rotuloVizinho);
       expect(tela.texto().split("\n")).toContain("Mar Ficticio");
     });
+  });
+});
+
+describe("busca com o endereço colado do anúncio", () => {
+  const ed = edificiosDoBairro("gracas");
+  it.each([
+    "Rua Esmeraldino Bandeira, 411 - Graças, Recife - PE",
+    "Rua Esmeraldino Bandeira, 411, Graças, Recife, PE, 52011-000",
+    "Esmeraldino Bandeira 411 - Gracas",
+  ])("%s acha o 411", (texto) => {
+    expect(buscarPorEndereco(texto, ed)[0]).toMatchObject({ logradouro: "RUA ESMERALDINO BANDEIRA", numero: "411" });
+  });
+  it("tirar o fecho não apaga rua com nome de bairro no meio", () => {
+    expect(enderecoSemFecho("Rua das Graças, 100 - Graças, Recife - PE")).toBe("Rua das Graças  100");
   });
 });

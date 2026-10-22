@@ -92,7 +92,7 @@ export function Botao({
       <Texto
         tipo={tipo}
         cor={corDoTexto}
-        style={variante === "texto" ? { textDecorationLine: "underline" } : principal ? TEXTO_PRINCIPAL : undefined}
+        style={[{ flexShrink: 1, textAlign: "center" }, variante === "texto" ? { textDecorationLine: "underline" } : principal ? TEXTO_PRINCIPAL : undefined]}
       >
         {rotulo}
       </Texto>

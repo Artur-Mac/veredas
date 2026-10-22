@@ -1,3 +1,4 @@
+import * as Clipboard from "expo-clipboard";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { WebView, type WebViewMessageEvent } from "react-native-webview";
@@ -8,6 +9,7 @@ import { useTema } from "../../tema/Tema";
 import { comAlfa } from "../../tema/tokens";
 import { Texto } from "../Texto";
 import { SCRIPT_COLETOR, paginaBloqueada } from "./coletor";
+import { resumoDaColeta } from "./diagnostico";
 import {
   ESTADO_INICIAL_DO_LEITOR,
   proximoEstado,
@@ -124,6 +126,10 @@ export function LeitorDePagina({ url, portal, idNoPortal, aoLer, aoFalhar }: Lei
     webViewRef.current?.injectJavaScript(SCRIPT_COLETOR);
   };
 
+  // Diagnóstico (só em desenvolvimento): o resumo da última coleta, para copiar quando a página abre e nada é lido.
+  const [diagnostico, definirDiagnostico] = useState("");
+  const numeroDaColeta = useRef(0);
+
   const tratarMensagem = (evento: WebViewMessageEvent) => {
     let bruto: unknown;
     try {
@@ -138,15 +144,22 @@ export function LeitorDePagina({ url, portal, idNoPortal, aoLer, aoFalhar }: Lei
       mapearNaProximaMensagem.current = false;
       mapearChaves(coleta.estados, portal, idNoPortal);
     }
+    const leituras = lerPagina(coleta, portal, idNoPortal, url);
+    const doAnuncio = coletaEhDoAnuncio(coleta, portal, idNoPortal, url);
+    const bloqueio = paginaBloqueada(coleta.titulo, coleta.texto);
+    if (__DEV__) {
+      numeroDaColeta.current += 1;
+      definirDiagnostico(resumoDaColeta(coleta, leituras, { numero: numeroDaColeta.current, doAnuncio, bloqueio }));
+    }
     if (estadoRef.current.fase === "lido") return;
     // A página pode ter redirecionado para outro lugar do portal (lista, busca, início). Aí `lerPagina` só devolve o
     // que o estado do anúncio rendeu, e o leitor avisa em vez de esperar até o prazo.
     despachar({
       tipo: "mensagem",
-      leituras: lerPagina(coleta, portal, idNoPortal, url),
+      leituras,
       verificacao: coleta.verificacao,
-      outraPagina: !coletaEhDoAnuncio(coleta, portal, idNoPortal, url),
-      bloqueio: paginaBloqueada(coleta.titulo, coleta.texto),
+      outraPagina: !doAnuncio,
+      bloqueio,
     });
   };
 
@@ -224,6 +237,25 @@ export function LeitorDePagina({ url, portal, idNoPortal, aoLer, aoFalhar }: Lei
           </Texto>
         </Pressable>
       ) : null}
+      {__DEV__ ? (
+        <View style={styles.diagnostico}>
+          <Texto tipo="apoio" style={styles.textoDoDiagnostico}>
+            {diagnostico || "Diagnóstico: nenhuma coleta chegou da página ainda."}
+          </Texto>
+          {diagnostico ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Copiar diagnóstico"
+              onPress={() => void Clipboard.setStringAsync(diagnostico)}
+              style={styles.botaoDeInspecao}
+            >
+              <Texto tipo="apoio" cor="cor-azul-cadastral" style={styles.textoDeInspecao}>
+                Copiar diagnóstico
+              </Texto>
+            </Pressable>
+          ) : null}
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -274,6 +306,14 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     minHeight: 44,
     justifyContent: "center",
+  },
+  diagnostico: {
+    gap: 2,
+  },
+  textoDoDiagnostico: {
+    fontFamily: "JetBrainsMono",
+    fontSize: 10.5,
+    lineHeight: 14,
   },
   textoDeInspecao: {
     fontWeight: "600",

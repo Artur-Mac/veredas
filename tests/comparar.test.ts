@@ -151,7 +151,7 @@ describe("custo", () => {
     const c = compararCusto(pendente, casaForte);
     expect(c.colunas[0].mensalConhecido).toBe(4500 + 1190);
     expect(c.colunas[0].pendentes).toBe(2);
-    expect(c.colunas[0].textoDePendentes).toBe("2 parcelas a confirmar");
+    expect(c.colunas[0].textoDePendentes).toBe("+ valores a confirmar · 2 parcelas a confirmar");
     expect(c.colunas[1].textoDePendentes).toBe("Nenhuma parcela a confirmar");
     expect(c.diferenca).toBe(6020 - 5690);
     expect(c.nota).toBe("A diferença usa só as parcelas conhecidas; as a confirmar ficam fora.");
@@ -201,7 +201,7 @@ describe("custo", () => {
     const c = compararCusto(compraA, compraB);
     expect(c.referencia).toBe("preco_anunciado");
     expect(c.rotuloDoPrincipal).toBe("Preço anunciado");
-    expect(c.rotuloDoMensal).toBe("Despesas mensais conhecidas");
+    expect(c.rotuloDoMensal).toBe("Mensal conhecido");
     expect(c.colunas[0].valorDaBarra).toBe(890000);
     expect(c.colunas[0].mensalConhecido).toBe(1190 + 270);
     expect(c.colunas[1].mensalConhecido).toBe(700 + 200);

@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
   conteudo: {
     minHeight: 56,
     flexDirection: "row",
+    flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "space-between",
   },

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Constrói o índice cadastral dos cinco bairros cobertos do Recife.
+ * Constrói o índice cadastral: cinco bairros históricos ou 94 partições em staging com --todos-bairros.
  *
  * Uso: node scripts/dados/construir-indice-recife.mjs [--sem-lotes] [--sem-rua]
  *
@@ -39,14 +39,17 @@ import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { fileURLToPath } from "node:url";
 import { dsqflsDaLuse, lerLicenciamentoAmbiental, montarARua } from "./rua/camadas.mjs";
+import { planejarPaginas } from "./paginacao.mjs";
 
 const SEM_LOTES = process.argv.includes("--sem-lotes");
 /** Sem as camadas "A rua" da v1.1 (CNEFE, Censo, LUSE, 156, iluminação, coleta, CTTU e Defesa Civil). */
 const SEM_RUA = process.argv.includes("--sem-rua");
+/** Expansão municipal sempre em staging; nunca substitui o índice habilitado no app. */
+const TODOS_BAIRROS = process.argv.includes("--todos-bairros");
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const DIR_CACHE = path.join(RAIZ, ".cache", "dados-recife");
-const DIR_SAIDA = path.join(RAIZ, "src", "dados", "recife", "indice");
+const DIR_SAIDA = TODOS_BAIRROS ? path.join(DIR_CACHE, "indice-municipal-staging") : path.join(RAIZ, "src", "dados", "recife", "indice");
 
 // ——— Constantes —————————————————————————————————————————————————————————————————
 
@@ -57,7 +60,14 @@ const TEMPO_LIMITE_MS = 30_000;
 const CONCORRENCIA = 6;
 const LIMITE_PEDIDO = 500;
 
-const BAIRROS_COBERTOS = ["boa-viagem", "casa-forte", "gracas", "espinheiro", "madalena"];
+const BAIRROS_INICIAIS = ["boa-viagem", "casa-forte", "gracas", "espinheiro", "madalena"];
+const bairrosMunicipais = TODOS_BAIRROS ? JSON.parse(fs.readFileSync(path.join(DIR_CACHE, "bairros.json"), "utf8")).registros : [];
+if (TODOS_BAIRROS && (bairrosMunicipais.length !== 94 || bairrosMunicipais.some(b => typeof b.Bairro !== "string"))) {
+  throw new Error("A expansão exige o cache oficial validado dos 94 bairros.");
+}
+const slugDoBairro = nome => dobrar(nome).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const BAIRROS_COBERTOS = TODOS_BAIRROS ? [...new Set([...BAIRROS_INICIAIS, ...bairrosMunicipais.map(b => slugDoBairro(b.Bairro))])] : BAIRROS_INICIAIS;
+if (TODOS_BAIRROS && BAIRROS_COBERTOS.length !== 94) throw new Error("Slugs municipais inconsistentes; expansão cancelada.");
 
 // Cópia de GRAFIAS_NO_CADASTRO de src/dados/recife/bairros.ts (arquivo .ts do arquiteto, que o Node 20 não
 // importa). Valores exatos da coluna `bairro` do IPTU 2026 e do ITBI; o filtro da API é exato. Se mudar lá,
@@ -69,6 +79,13 @@ const GRAFIAS_NO_CADASTRO = {
   espinheiro: ["Espinheiro"],
   madalena: ["Madalena"],
 };
+for (const b of bairrosMunicipais) {
+  const slug = slugDoBairro(b.Bairro);
+  if (!GRAFIAS_NO_CADASTRO[slug]) {
+    const preposicoes = b.Bairro.replace(/\b(Do|Da|Dos|Das|De|E)\b/g, palavra => palavra.toLowerCase());
+    GRAFIAS_NO_CADASTRO[slug] = [...new Set([b.Bairro, preposicoes])];
+  }
+}
 
 /** Grafia do bairro (sem acento, minúscula) → slug. Serve ao IPTU, ao ITBI e ao endereço do lote. */
 const bairroDaGrafia = new Map();
@@ -519,7 +536,7 @@ function capitalizar(minusculo) {
 function normalizarNomeEdificio(bruto) {
   if (typeof bruto !== "string") return null;
   let t = limpar(bruto);
-  const prefixo = /^(edificio|edif|edf)(?:\.\s*|\s+|$)/.exec(dobrar(t));
+  const prefixo = /^(edificio|edif|edf)(?:[.\s/:\-]+|$)/.exec(dobrar(t));
   if (prefixo) t = t.slice(prefixo[0].length);
   t = t.replace(/^[\s\-–.,:;]+|[\s\-–.,:;]+$/g, "");
   if ((t.match(/\p{L}/gu) ?? []).length < 2) return null;
@@ -647,10 +664,7 @@ async function lerTabela({ recurso, fields, filters = null, arquivo, rotulo }) {
   if (primeira.total_was_estimated) throw new Error(`${rotulo}: o portal só estimou o total`);
   if (!Number.isInteger(total) || !Number.isInteger(limite) || limite <= 0) throw new Error(`${rotulo}: resposta sem total ou limite`);
 
-  const offsets = [];
-  for (let off = 0; off < total; off += limite) offsets.push(off);
-  const paginas = new Array(offsets.length);
-  paginas[0] = primeira.records;
+  const { offsets, paginas } = planejarPaginas(total, limite, primeira.records);
   let proximo = 1;
   let prontas = 1;
 
@@ -1513,10 +1527,10 @@ function imprimirRelatorio({ relatorio, contagens, geradoEm, arquivos, meta }) {
   for (const slug of BAIRROS_COBERTOS) {
     const g = relatorio.porBairro[slug];
     const ref = REFERENCIA_C7[slug];
-    const desvio = ((g.iptuLidos - ref.iptu) / ref.iptu) * 100;
+    const desvio = ref ? ((g.iptuLidos - ref.iptu) / ref.iptu) * 100 : null;
     const porGrafia = g.grafias.map((x) => `"${x.grafia}" ${mil(x.lidos)}/${mil(x.total)}`).join(" + ");
-    console.log(`  ${slug.padEnd(11)} ${mil(g.iptuLidos).padStart(7)} lidos = total API ${mil(g.iptuTotal)} (${porGrafia}); C7 ${mil(ref.iptu)}, diferença ${desvio.toFixed(2)}%`);
-    if (Math.abs(desvio) > 5) aviso(`${slug}: registros de IPTU fora de 5% da tabela C7`);
+    console.log(`  ${slug.padEnd(11)} ${mil(g.iptuLidos).padStart(7)} lidos = total API ${mil(g.iptuTotal)} (${porGrafia}); ${ref ? `C7 ${mil(ref.iptu)}, diferença ${desvio.toFixed(2)}%` : "sem referência histórica C7"}`);
+    if (desvio !== null && Math.abs(desvio) > 5) aviso(`${slug}: registros de IPTU fora de 5% da tabela C7`);
   }
 
   console.log("\n3. Edifícios (2+ registros residenciais de apartamento no mesmo Código Logradouro + número)");
@@ -1526,9 +1540,9 @@ function imprimirRelatorio({ relatorio, contagens, geradoEm, arquivos, meta }) {
     const i = relatorio.iptu[slug];
     const b = relatorio.porBairro[slug];
     const ref = REFERENCIA_C7[slug];
-    const desvio = ((b.edificios - ref.edificios) / ref.edificios) * 100;
+    const desvio = ref ? ((b.edificios - ref.edificios) / ref.edificios) * 100 : null;
     console.log(
-      `  ${slug.padEnd(11)} antes ${String(b.antes).padStart(5)} -> depois ${String(b.edificios).padStart(5)} (C7 ${ref.edificios}, diferença ${desvio >= 0 ? "+" : ""}${desvio.toFixed(2)}%)`,
+      `  ${slug.padEnd(11)} antes ${String(b.antes).padStart(5)} -> depois ${String(b.edificios).padStart(5)} (${ref ? `C7 ${ref.edificios}, diferença ${desvio >= 0 ? "+" : ""}${desvio.toFixed(2)}%` : "sem referência histórica C7"})`,
     );
     if (i.gruposSemCoordenada + i.gruposComCoordenadaParcial + i.gruposComTodasAsCoordenadas !== i.gruposComDoisOuMais) {
       throw new Error(`${slug}: as contagens de coordenada dos grupos não somam os ${i.gruposComDoisOuMais} grupos de 2+ registros`);
@@ -1547,7 +1561,7 @@ function imprimirRelatorio({ relatorio, contagens, geradoEm, arquivos, meta }) {
       console.log(`              ruas renomeadas casadas por prefixo (rua do IPTU ~ rua do lote: edifícios): ${pares.map(([par, n]) => `${par}: ${n}`).join("; ")}`);
     }
     if (b.antes - b.antesNoFinal !== 0) aviso(`${slug}: ${b.antes - b.antesNoFinal} edifícios da regra antiga ficaram de fora`);
-    if (Math.abs(desvio) > 5 && desvio < 0) aviso(`${slug}: edifícios abaixo de 95% da tabela C7`);
+    if (desvio !== null && Math.abs(desvio) > 5 && desvio < 0) aviso(`${slug}: edifícios abaixo de 95% da tabela C7`);
     if (b.semArea || b.iptuInvalido || b.mais60) {
       console.log(
         `              unidades sem área ${b.semArea}; unidades com IPTU ausente ou zero (fora dos quartis) ${b.iptuInvalido}; edifícios com mais de 60 tipologias ${b.mais60}`,
@@ -1557,7 +1571,7 @@ function imprimirRelatorio({ relatorio, contagens, geradoEm, arquivos, meta }) {
 
   const totalDosBairros = (campo, origem) => BAIRROS_COBERTOS.reduce((t, slug) => t + (origem === "iptu" ? relatorio.iptu[slug][campo] : relatorio.porBairro[slug][campo]), 0);
   console.log(
-    `  TOTAL (5 bairros): antes ${mil(totalDosBairros("antes"))} -> depois ${mil(totalDosBairros("edificios"))} edifícios; grupos com 2+ registros ${mil(totalDosBairros("gruposComDoisOuMais", "iptu"))} = ${mil(totalDosBairros("gruposComTodasAsCoordenadas", "iptu"))} com coordenada em todos + ${totalDosBairros("gruposComCoordenadaParcial", "iptu")} com coordenada parcial + ${totalDosBairros("semCoordenada")} sem nenhuma coordenada`,
+    `  TOTAL (${BAIRROS_COBERTOS.length} bairros): antes ${mil(totalDosBairros("antes"))} -> depois ${mil(totalDosBairros("edificios"))} edifícios; grupos com 2+ registros ${mil(totalDosBairros("gruposComDoisOuMais", "iptu"))} = ${mil(totalDosBairros("gruposComTodasAsCoordenadas", "iptu"))} com coordenada em todos + ${totalDosBairros("gruposComCoordenadaParcial", "iptu")} com coordenada parcial + ${totalDosBairros("semCoordenada")} sem nenhuma coordenada`,
   );
   console.log(
     `  TOTAL dos ${totalDosBairros("semCoordenada")} sem nenhuma coordenada: recuperados ${totalDosBairros("recuperados")} (${totalDosBairros("recuperadosExato")} por rua igual + ${totalDosBairros("recuperadosPrefixo")} por rua renomeada), descartados ${totalDosBairros("descartados")} (ambíguos ${totalDosBairros("ambiguos")}, dos quais ${totalDosBairros("ambiguosPrefixo")} só pelo prefixo)`,
@@ -1568,7 +1582,7 @@ function imprimirRelatorio({ relatorio, contagens, geradoEm, arquivos, meta }) {
     for (const slug of BAIRROS_COBERTOS) for (const [k, v] of relatorio.iptu[slug][campo]) total.set(k, (total.get(k) ?? 0) + v);
     return ordenarPorContagem(total).slice(0, 12).map(([k, v]) => `"${k}" ${mil(v)}`).join("; ");
   };
-  console.log(`  valores de "tipo de uso do imóvel" (5 bairros): ${somar("usosDistintos")}`);
+  console.log(`  valores de "tipo de uso do imóvel" (${BAIRROS_COBERTOS.length} bairros): ${somar("usosDistintos")}`);
   console.log(`  valores de "Tipo de Construção" usados (residencial, apartamento): ${somar("tiposDeConstrucao")}`);
   console.log(`  valores de "Tipo de Empreendimento" usados: ${somar("tiposDeEmpreendimento")}`);
 
@@ -1630,7 +1644,7 @@ function imprimirRelatorio({ relatorio, contagens, geradoEm, arquivos, meta }) {
   }
 
   console.log("\n6. ITBI");
-  console.log(`  valores distintos de bairro que casam com os 5 bairros (e quantas linhas): ${ordenarPorContagem(relatorio.itbi.bairrosDistintos).map(([v, c]) => `"${v}" ${mil(c)}`).join("; ")}`);
+  console.log(`  valores distintos de bairro que casam com os ${BAIRROS_COBERTOS.length} bairros (e quantas linhas): ${ordenarPorContagem(relatorio.itbi.bairrosDistintos).map(([v, c]) => `"${v}" ${mil(c)}`).join("; ")}`);
   console.log(`  valores distintos de tipo_imovel nessas linhas (e quantas): ${ordenarPorContagem(relatorio.itbi.tiposDistintos).map(([v, c]) => `"${v}" ${mil(c)}`).join("; ")}`);
   console.log(`  usados: bairro ${[...relatorio.itbi.bairroUsados].sort().map((v) => `"${v}"`).join(", ")}; tipo_imovel ${[...relatorio.itbi.apartamentoUsados].sort().map((v) => `"${v}"`).join(", ")}`);
   console.log("  vínculo ITBI x edifício por ano = transações de apartamento ligadas a um edifício do índice / transações de apartamento com número e data");
@@ -1673,12 +1687,16 @@ function imprimirRelatorio({ relatorio, contagens, geradoEm, arquivos, meta }) {
 // ——— Principal ——————————————————————————————————————————————————————————————————
 
 async function main() {
+  const catalogoAtual = path.join(RAIZ, "src/dados/recife/publicacaoGerada.ts");
+  if (!TODOS_BAIRROS && fs.existsSync(catalogoAtual) && fs.readFileSync(catalogoAtual, "utf8").includes("indice-municipal/")) {
+    throw new Error("Há uma versão municipal ativa. Use --todos-bairros, audite o staging e execute ativar-indice-municipal.mjs para atualizar o índice local.");
+  }
   console.log(`Índice cadastral do Recife (${SEM_LOTES ? "sem Lotes" : "completo"})`);
   fs.mkdirSync(DIR_CACHE, { recursive: true });
   fs.mkdirSync(DIR_SAIDA, { recursive: true });
 
   // Carimbo estável: nasce na primeira execução e fica no cache, para a segunda gerar arquivos idênticos.
-  const arquivoCarimbo = path.join(DIR_CACHE, "geradoEm.txt");
+  const arquivoCarimbo = path.join(DIR_CACHE, TODOS_BAIRROS ? "geradoEm-municipal.txt" : "geradoEm.txt");
   if (!fs.existsSync(arquivoCarimbo)) gravarAtomico(arquivoCarimbo, `${new Date().toISOString().slice(0, 19)}Z`);
   const geradoEm = fs.readFileSync(arquivoCarimbo, "utf-8").trim();
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(geradoEm)) throw new Error(`Carimbo inválido em ${arquivoCarimbo}`);

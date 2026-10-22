@@ -17,6 +17,7 @@ import { Entorno, type SecaoDoEntorno } from "../../componentes/dossie-v1/Entorn
 import { GavetaDaPergunta, GavetaDoAnuncio, GavetaDoCadastro, GavetaDoMapa, GavetaDoRoteiro } from "../../componentes/dossie-v1/Gavetas";
 import { InfoDoImovel } from "../../componentes/dossie-v1/InfoDoImovel";
 import { TopoDoDossie } from "../../componentes/dossie-v1/Topo";
+import { ServicosDeEntorno } from "../../componentes/caderno/Servicos";
 import type { AbaDoDossie } from "../../componentes/dossie-v1/textos";
 import { GavetaDeFonte, type PedidoDeFonte } from "../../componentes/fonte/GavetaDeFonte";
 import { Tela } from "../../componentes/Tela";
@@ -340,6 +341,10 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
 
           {/* `.ds-after-panel`: a ação principal e os dois links. */}
           <View style={styles.depoisDoPainel}>
+            {aba === "entorno" ? <ServicosDeEntorno centro={predio?.centro ?? (analise.caderno?.localizacaoDaVisita ? [analise.caderno.localizacaoDaVisita.longitude, analise.caderno.localizacaoDaVisita.latitude] : null)} referenciaDaVisita={!predio ? analise.caderno?.localizacaoDaVisita : undefined} /> : null}
+            {aba === "destaques" ? <LinkComSeta rotulo="Orçamento e cenários" onPress={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "orcamento" } })} /> : null}
+            {aba === "edificio" ? <LinkComSeta rotulo="Documentos e CNPJ do edifício" onPress={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "edificio" } })} /> : null}
+            <LinkComSeta rotulo="Observações e histórico de visitas" onPress={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "campo" } })} />
             <Botao rotulo="Preparar visita" variante="principal" seta onPress={() => void prepararVisita()} />
             <View style={styles.acoes}>
               <LinkComSeta rotulo="Comparar imóveis" onPress={() => router.push("/comparar")} discreto seta={false} />

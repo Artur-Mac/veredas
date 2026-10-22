@@ -335,6 +335,7 @@ export function lerEnderecoDoCnefe(colunas, indices) {
     lat: posicao.lat,
     setor: setor.length === 15 ? setor : null,
     especie: Number(v("COD_ESPECIE")) || null,
+    nivelGeo: /^[1-6]$/.test(v("NV_GEO_COORD")) ? Number(v("NV_GEO_COORD")) : null,
   };
 }
 

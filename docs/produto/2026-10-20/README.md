@@ -1,5 +1,8 @@
 # VEREDA — Dossiê de evolução de produto
 
+> Nova rodada: [refinamento de 21/10 — dados urbanos, conectividade, público, monetização e dependências](../refinamento-2026-10-21/README.md), com análise exploratória local e backlog executável.
+
+> Atualização: a [avaliação do app e plano executável de melhorias](../melhorias-2026-10-20/README.md) compara a implementação atual com o protótipo, registra testes e detalha tarefas para execução.
 **Versão:** 1.0 · **Data:** 20/10/2026 · **Status:** proposta para decisão, não compromisso de entrega  
 **Escopo:** evolução da prova de conceito para um produto de apoio à decisão de moradia no Recife.
 

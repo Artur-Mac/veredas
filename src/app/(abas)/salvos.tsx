@@ -7,7 +7,7 @@ import { ScrollView, View } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { useAviso } from "../../componentes/casca/Aviso";
 import { FaixaDoCaderno } from "../../componentes/casca/FaixaDoCaderno";
-import { detalheDoImovel, textoDePendentes } from "../../componentes/comparar/comparar";
+import { detalheDoImovel } from "../../componentes/comparar/comparar";
 import { useAbrirAnalise, usePrepararVisita } from "../../componentes/comparar/navegacao";
 import { BotaoVx, CabecalhoVx, LinkVx, MARGEM_DA_PAGINA_VX, PaginaVx, SegmentosVx, VazioVx } from "../../componentes/comparar/vx";
 import { GavetaDeDescarte } from "../../componentes/descarte/GavetaDeDescarte";
@@ -16,7 +16,7 @@ import { Icone } from "../../componentes/Icone";
 import { Pressionavel } from "../../componentes/Pressionavel";
 import { Texto } from "../../componentes/Texto";
 import type { AnaliseV2, Modalidade } from "../../dados/contratos";
-import { custoMensal } from "../../dados/custos";
+import { custoMensal, ROTULO_MENSAL_CONHECIDO, avisoDeValoresPendentes } from "../../dados/custos";
 import { restaurarAnalise, rotuloDoMotivo } from "../../dados/descarte";
 import { formatarData, formatarReais, hojeIso } from "../../dados/formatos";
 import { useAnalises } from "../../estado/Analises";
@@ -61,7 +61,7 @@ function ImovelDoCartao({ analise, aoAbrir }: { analise: AnaliseV2; aoAbrir: () 
     >
       <Miniatura />
       <View style={{ flex: 1, minWidth: 0 }}>
-        <Texto numberOfLines={2} style={{ fontSize: 14, lineHeight: 20, fontWeight: "600" }}>
+        <Texto style={{ fontSize: 14, lineHeight: 20, fontWeight: "600" }}>
           {analise.nome}
         </Texto>
         {detalhe ? (
@@ -87,7 +87,7 @@ function CartaoSalvo({ analise, aoAbrir, aoRemover, aoPrepararVisita, aoDescarta
   const { cor } = useTema();
   const custo = custoMensal(analise);
   const aluguel = analise.modalidade === "aluguel";
-  const valor = custo.principal.valor;
+  const valor = aluguel ? custo.totalMensalConhecido : custo.principal.valor;
   return (
     <View
       style={{
@@ -121,9 +121,16 @@ function CartaoSalvo({ analise, aoAbrir, aoRemover, aoPrepararVisita, aoDescarta
         ) : null}
       </View>
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 17 }}>
-        {custo.principal.rotulo}
-        {custo.pendentes > 0 ? ` · ${textoDePendentes(custo.pendentes)}` : ""}
+        {aluguel ? ROTULO_MENSAL_CONHECIDO : custo.principal.rotulo}
       </Texto>
+      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 18, marginTop: 4 }}>
+        {aluguel
+          ? `${custo.principal.rotulo}: ${custo.principal.valor === null ? "A confirmar" : `${formatarReais(custo.principal.valor)}/mês`}`
+          : `${ROTULO_MENSAL_CONHECIDO}: ${custo.totalMensalConhecido === null ? "A confirmar" : `${formatarReais(custo.totalMensalConhecido)}/mês`}`}
+      </Texto>
+      {avisoDeValoresPendentes(custo) ? (
+        <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 11, lineHeight: 17 }}>{avisoDeValoresPendentes(custo)}</Texto>
+      ) : null}
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12, marginTop: 6 }}>
         <LinkVx rotulo="Preparar visita" tamanho={12} onPress={aoPrepararVisita} acessivel={`Preparar visita de ${analise.nome}`} />
         <LinkVx rotulo="Descartar" seta={false} cor="cor-texto-apoio" tamanho={12} onPress={aoDescartar} acessivel={`Descartar ${analise.nome}`} />

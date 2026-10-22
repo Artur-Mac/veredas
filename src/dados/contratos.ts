@@ -2,6 +2,7 @@
 // tipos; não altera campos, nomes ou regras daqui sem ordem em docs/handoff/ORDEM_DO_ARQUITETO.md.
 // O formato v1 do caderno continua em ./analise.ts e só é lido para migração.
 import { z } from "zod";
+import { esquemaCaderno } from "./caderno";
 import { BAIRROS_COBERTOS } from "./recife/bairros";
 
 // ——— Vocabulário ———————————————————————————————————————————————————————————————
@@ -157,6 +158,8 @@ export const esquemaVisita = z.strictObject({
 export const motivoDeDescarte = z.enum(["preco_taxas", "ruido_entorno", "planta_andar_vaga", "outro"]);
 
 export const esquemaAnaliseV2 = z.strictObject({
+  /** Extensão opcional e versionada: originais sem caderno mantêm representação e semântica. */
+  caderno: esquemaCaderno.optional(),
   versao: z.literal(2),
   id: z.string().regex(/^[a-z0-9-]{1,60}$/),
   criadaEm: instante,

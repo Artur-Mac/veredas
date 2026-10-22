@@ -654,9 +654,9 @@ describe("seletor de bairro e cobertura (K2)", () => {
     expect(casaForte).toMatchObject({ bairro: "casa-forte", bairroTexto: "Casa Forte" });
     expect(coberturaDoFormulario(casaForte)).toBe("coberto");
 
-    const torre = formularioDaUrl("vivareal-torre-venda");
-    expect(torre).toMatchObject({ bairro: "torre", bairroTexto: "Torre" });
-    expect(coberturaDoFormulario(torre)).toBe("recife_fora");
+    const cabanga = formularioDaUrl("vivareal-cabanga-venda");
+    expect(cabanga).toMatchObject({ bairro: "cabanga", bairroTexto: "Cabanga" });
+    expect(coberturaDoFormulario(cabanga)).toBe("recife_fora");
 
     const piata = formularioDaUrl("quintoandar-outra-cidade");
     expect(piata.bairro).toBe(FORA_DO_RECIFE);
@@ -670,7 +670,7 @@ describe("seletor de bairro e cobertura (K2)", () => {
   });
 
   it("o slug escolhido decide a cobertura, não o que a leitura achou", () => {
-    const lido = formularioDaUrl("vivareal-torre-venda");
+    const lido = formularioDaUrl("vivareal-cabanga-venda");
     expect(coberturaDoFormulario(lido)).toBe("recife_fora");
     expect(coberturaDoFormulario(editarFormulario(lido, { bairro: "casa-forte", bairroTexto: "Casa Forte" }))).toBe("coberto");
     expect(coberturaDoFormulario(editarFormulario(lido, { bairro: FORA_DO_RECIFE, bairroTexto: "" }))).toBe("fora_do_recife");
@@ -681,7 +681,7 @@ describe("seletor de bairro e cobertura (K2)", () => {
   it("cobertura para cada tipo de escolha", () => {
     expect(coberturaDoFormulario({ bairro: "boa-viagem" })).toBe("coberto");
     expect(coberturaDoFormulario({ bairro: "gracas" })).toBe("coberto");
-    expect(coberturaDoFormulario({ bairro: "boa-vista" })).toBe("recife_fora");
+    expect(coberturaDoFormulario({ bairro: "cabanga" })).toBe("recife_fora");
     expect(coberturaDoFormulario({ bairro: FORA_DO_RECIFE })).toBe("fora_do_recife");
     expect(coberturaDoFormulario({ bairro: null })).toBe("desconhecida");
     expect(coberturaDoFormulario({ bairro: "bairro-que-nao-existe" })).toBe("desconhecida");
@@ -690,7 +690,7 @@ describe("seletor de bairro e cobertura (K2)", () => {
   it("formulário montado à mão, sem `bairro`, vale o bairro que o texto nomeia", () => {
     expect(coberturaDoFormulario({ bairroTexto: "Casa Forte" })).toBe("coberto");
     expect(coberturaDoFormulario({ bairroTexto: "graças" })).toBe("coberto");
-    expect(coberturaDoFormulario({ bairroTexto: "Torre" })).toBe("recife_fora");
+    expect(coberturaDoFormulario({ bairroTexto: "Cabanga" })).toBe("recife_fora");
     expect(coberturaDoFormulario({ bairroTexto: "Piedade" })).toBe("desconhecida");
     expect(coberturaDoFormulario({ bairroTexto: "" })).toBe("desconhecida");
     expect(coberturaDoFormulario({})).toBe("desconhecida");
@@ -698,8 +698,8 @@ describe("seletor de bairro e cobertura (K2)", () => {
   });
 
   it("textos do cartão de fora de cobertura", () => {
-    expect(tituloDeForaDeCobertura({ bairro: "torre" })).toBe("Ainda não cobrimos Torre.");
-    expect(tituloDeForaDeCobertura({ bairro: "boa-vista" })).toBe("Ainda não cobrimos Boa Vista.");
+    expect(tituloDeForaDeCobertura({ bairro: "cabanga" })).toBe("Ainda não cobrimos Cabanga.");
+    expect(tituloDeForaDeCobertura({ bairro: "cabanga" })).toBe("Ainda não cobrimos Cabanga.");
     expect(tituloDeForaDeCobertura({ bairro: FORA_DO_RECIFE })).toBe("Ainda não cobrimos esta cidade.");
     expect(tituloDeForaDeCobertura({ bairro: "casa-forte" })).toBeNull();
     expect(tituloDeForaDeCobertura({ bairro: null })).toBeNull();
@@ -811,9 +811,9 @@ describe("destino do cartão do Explorar (K8)", () => {
     expect(destinoDaAnalise({ bairro: "casa-forte", vinculo: confirmado })).toBe("dossie");
     expect(destinoDaAnalise({ bairro: "casa-forte", vinculo: { estado: "pulado", em: "2026-10-20T12:00:00.000Z" } })).toBe("dossie");
     expect(destinoDaAnalise({ bairro: "casa-forte", vinculo: { estado: "nao_encontrado", em: "2026-10-20T12:00:00.000Z" } })).toBe("dossie");
-    expect(destinoDaAnalise({ bairro: "torre", vinculo: { estado: "pendente" } })).toBe("dossie");
+    expect(destinoDaAnalise({ bairro: "cabanga", vinculo: { estado: "pendente" } })).toBe("dossie");
     expect(destinoDaAnalise({ bairro: null, vinculo: { estado: "pendente" } })).toBe("dossie");
-    expect(destinoDaAnalise({ bairro: "torre", vinculo: { estado: "fora_de_cobertura" } })).toBe("dossie");
+    expect(destinoDaAnalise({ bairro: "cabanga", vinculo: { estado: "fora_de_cobertura" } })).toBe("dossie");
   });
 });
 
@@ -951,7 +951,7 @@ describe("tela de leitura (K1 e K2)", () => {
   const URL_CASA_FORTE =
     "https://www.zapimoveis.com.br/imovel/aluguel-apartamento-1-quarto-com-piscina-casa-forte-recife-pe-37m2-id-2790563018/";
   const URL_TORRE =
-    "https://www.vivareal.com.br/imovel/apartamento-3-quartos-torre-bairros-recife-com-garagem-80m2-venda-RS648810-id-2913218130/";
+    "https://www.vivareal.com.br/imovel/apartamento-3-quartos-cabanga-bairros-recife-com-garagem-80m2-venda-RS648810-id-2913218130/";
   const URL_OUTRO_SITE = "https://imobiliaria-exemplo.com.br/imovel/apartamento-3-quartos";
 
   const sistema = Platform.OS;
@@ -1008,9 +1008,9 @@ describe("tela de leitura (K1 e K2)", () => {
     expect(tela(arvore)).not.toContain("Escolha o bairro");
   });
 
-  it("outro bairro do Recife: cartão 'Ainda não cobrimos Torre.' no lugar do botão principal", () => {
+  it("outro bairro do Recife: cartão 'Ainda não cobrimos Cabanga.' no lugar do botão principal", () => {
     const arvore = abrir({ url: URL_TORRE });
-    expect(tela(arvore)).toContain("Ainda não cobrimos Torre.");
+    expect(tela(arvore)).toContain("Ainda não cobrimos Cabanga.");
     expect(botao(arvore, "Encontrar o prédio")).toBeUndefined();
     expect(botao(arvore, "Salvar no caderno")).toBeDefined();
     expect(botao(arvore, "Colar outro link")).toBeDefined();
@@ -1038,8 +1038,8 @@ describe("tela de leitura (K1 e K2)", () => {
     expect(tela(arvore)).not.toContain("Escolha o bairro");
     expect(arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLiveRegion === "polite")).toHaveLength(0);
 
-    escolherBairro(arvore, "Boa Vista");
-    expect(tela(arvore)).toContain("Ainda não cobrimos Boa Vista.");
+    escolherBairro(arvore, "Cabanga");
+    expect(tela(arvore)).toContain("Ainda não cobrimos Cabanga.");
     expect(botao(arvore, "Encontrar o prédio")).toBeUndefined();
 
     escolherBairro(arvore, "Fora do Recife");
@@ -1062,7 +1062,7 @@ describe("tela de leitura (K1 e K2)", () => {
   it("'Salvar no caderno' fora de cobertura grava vínculo fora_de_cobertura; fora do Recife não grava bairro", async () => {
     const arvore = abrir({ url: URL_TORRE });
     await act(async () => botao(arvore, "Salvar no caderno")?.props.onPress());
-    expect(mockSalvar.mock.calls[0]?.[0]).toMatchObject({ bairro: "torre", bairroTexto: "Torre", vinculo: { estado: "fora_de_cobertura" } });
+    expect(mockSalvar.mock.calls[0]?.[0]).toMatchObject({ bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" } });
 
     mockSalvar.mockClear();
     escolherBairro(arvore, "Fora do Recife");
@@ -1159,9 +1159,9 @@ describe("Explorar: o que o cartão abre (K8)", () => {
 
   it("as demais abrem /dossie?id= e definem a análise ativa antes", async () => {
     const arvore = abrirExplorar([
-      analiseDoCartao("fora-1", "Imóvel de fora", "torre", { estado: "fora_de_cobertura" }),
+      analiseDoCartao("fora-1", "Imóvel de fora", "cabanga", { estado: "fora_de_cobertura" }),
       analiseDoCartao("pulado-1", "Imóvel pulado", "casa-forte", { estado: "pulado", em: "2026-10-20T12:00:00.000Z" }),
-      analiseDoCartao("pendente-fora", "Pendente em outro bairro", "boa-vista", { estado: "pendente" }),
+      analiseDoCartao("pendente-fora", "Pendente em outro bairro", "cabanga", { estado: "pendente" }),
     ]);
     for (const [nome, id] of [
       ["Imóvel de fora", "fora-1"],
@@ -1519,7 +1519,7 @@ describe("slugDoBairroPorTexto (R5)", () => {
     for (const texto of ["bairro-do-recife", "Bairro do Recife", "recife-antigo", "Recife Antigo", "RECIFE ANTIGO", "Recife (bairro)"]) {
       expect(slugDoBairroPorTexto(texto)).toBe("recife");
     }
-    expect(coberturaDoFormulario({ bairroTexto: "Recife Antigo" })).toBe("recife_fora");
+    expect(coberturaDoFormulario({ bairroTexto: "Recife Antigo" })).toBe("coberto");
   });
 
   it("os demais bairros seguem casando por nome, slug e alias, sem acento e sem caixa", () => {
@@ -1528,7 +1528,7 @@ describe("slugDoBairroPorTexto (R5)", () => {
     expect(slugDoBairroPorTexto("GRAÇAS")).toBe("gracas");
     expect(slugDoBairroPorTexto("Poço da Panela")).toBe("poco");
     expect(slugDoBairroPorTexto("poco-da-panela")).toBe("poco");
-    expect(slugDoBairroPorTexto("Boa Vista")).toBe("boa-vista");
+    expect(slugDoBairroPorTexto("Cabanga")).toBe("cabanga");
     expect(slugDoBairroPorTexto("Piedade")).toBeNull();
     expect(slugDoBairroPorTexto("")).toBeNull();
     expect(slugDoBairroPorTexto("   ")).toBeNull();
@@ -1604,13 +1604,13 @@ describe("tela de edição (R6)", () => {
     expect(textosDe(arvore.root)).toContain("Adicionar imóvel");
   });
 
-  it("análise nova sem bairro escolhido: salvar desativado e a dica 'Escolha o bairro'", async () => {
+  it("análise nova pode ser salva sem bairro e avisa que está incompleta", async () => {
     const arvore = abrirEditar();
-    expect(desativado(arvore, "Salvar alterações")).toBe(true);
-    const dica = arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLiveRegion === "polite" && textosDe(n) === "Escolha o bairro");
+    expect(desativado(arvore, "Salvar alterações")).toBe(false);
+    const dica = arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLiveRegion === "polite" && textosDe(n).includes("salvar incompleto"));
     expect(dica.length).toBeGreaterThan(0);
     await act(async () => botao(arvore, "Salvar alterações")?.props.onPress());
-    expect(mockSalvar).not.toHaveBeenCalled();
+    expect(mockSalvar).toHaveBeenCalledWith(expect.objectContaining({ bairro: null, nomeEdificio: null }));
     escolherBairro(arvore, "Casa Forte");
     expect(desativado(arvore, "Salvar alterações")).toBe(false);
     expect(arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLiveRegion === "polite")).toHaveLength(0);
@@ -1619,7 +1619,7 @@ describe("tela de edição (R6)", () => {
   it("a cobertura vem do bairro escolhido: coberto fica pendente; outro bairro e fora do Recife, fora de cobertura", async () => {
     const casos = [
       ["Graças", { bairro: "gracas", bairroTexto: "Graças", vinculo: { estado: "pendente" } }],
-      ["Torre", { bairro: "torre", bairroTexto: "Torre", vinculo: { estado: "fora_de_cobertura" } }],
+      ["Cabanga", { bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" } }],
       ["Fora do Recife", { bairro: null, bairroTexto: "", vinculo: { estado: "fora_de_cobertura" } }],
     ] as const;
     for (const [rotulo, esperado] of casos) {
@@ -1686,8 +1686,8 @@ describe("tela de edição (R6)", () => {
 
     mockSalvar.mockClear();
     const foraDeCobertura = abrirEditar({ id: "salva-3" }, [existente]);
-    escolherBairro(foraDeCobertura, "Torre");
-    expect(await salvar(foraDeCobertura)).toMatchObject({ bairro: "torre", vinculo: { estado: "fora_de_cobertura" } });
+    escolherBairro(foraDeCobertura, "Cabanga");
+    expect(await salvar(foraDeCobertura)).toMatchObject({ bairro: "cabanga", vinculo: { estado: "fora_de_cobertura" } });
   });
 
   it("análise de fora do Recife abre com 'Fora do Recife' e o texto lido guardado", async () => {
@@ -1759,7 +1759,7 @@ describe("tela de edição (R6)", () => {
     expect(f).toMatchObject({ bairro: "casa-forte", bairroTexto: "Casa Forte", editados: {}, preco: 4500, condominio: 1190 });
     expect(declaradosDoFormulario(f)).toEqual(salvaX.declarados);
     expect(vinculoDoFormulario(f, null)).toEqual({ estado: "pendente" });
-    expect(vinculoDoFormulario({ bairro: "torre" }, salvaX)).toEqual({ estado: "fora_de_cobertura" });
+    expect(vinculoDoFormulario({ bairro: "cabanga" }, salvaX)).toEqual({ estado: "fora_de_cobertura" });
     expect(vinculoDoFormulario({ bairro: null }, null)).toEqual({ estado: "fora_de_cobertura" });
   });
 });
@@ -1881,15 +1881,15 @@ describe("formularioDeAnalise: bairro de uma análise salva sem slug (H5a)", () 
     expect(abre(semSlug("Boa Viagem", fora))).toEqual({ bairro: "boa-viagem", bairroTexto: "Boa Viagem" });
     expect(abre(semSlug("boa-viagem", fora))).toEqual({ bairro: "boa-viagem", bairroTexto: "Boa Viagem" });
     expect(abre(semSlug("GRAÇAS", fora))).toEqual({ bairro: "gracas", bairroTexto: "Graças" });
-    expect(abre(semSlug("Torre", fora))).toEqual({ bairro: "torre", bairroTexto: "Torre" });
+    expect(abre(semSlug("Cabanga", fora))).toEqual({ bairro: "cabanga", bairroTexto: "Cabanga" });
     expect(abre(semSlug("Recife Antigo", fora))).toEqual({ bairro: "recife", bairroTexto: "Recife (bairro)" });
-    // Daí a cobertura sai do bairro: Boa Viagem é coberto, Torre não.
+    // Daí a cobertura sai do bairro: Boa Viagem é coberto, Cabanga não.
     expect(coberturaDoFormulario(formularioDeAnalise(semSlug("Boa Viagem", fora)))).toBe("coberto");
-    expect(coberturaDoFormulario(formularioDeAnalise(semSlug("Torre", fora)))).toBe("recife_fora");
+    expect(coberturaDoFormulario(formularioDeAnalise(semSlug("Cabanga", fora)))).toBe("recife_fora");
   });
 
   it("o slug guardado continua mandando", () => {
-    expect(abre({ ...semSlug("Torre"), bairro: "casa-forte" })).toEqual({ bairro: "casa-forte", bairroTexto: "Casa Forte" });
+    expect(abre({ ...semSlug("Cabanga"), bairro: "casa-forte" })).toEqual({ bairro: "casa-forte", bairroTexto: "Casa Forte" });
   });
 
   it("texto que não é bairro do Recife continua 'Fora do Recife', com o texto guardado", () => {

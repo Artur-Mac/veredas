@@ -5,6 +5,7 @@
 // `aliases` são grafias de slug vistas em portais; o bairro "Recife" (centro antigo) só casa por alias,
 // porque "recife" nas URLs quase sempre é a cidade.
 
+import { BAIRROS_HABILITADOS, GRAFIAS_HABILITADAS } from "./publicacaoGerada";
 export type Bairro = { slug: string; nome: string; rpa: number; aliases?: readonly string[] };
 
 export const BAIRROS_DO_RECIFE: readonly Bairro[] = [
@@ -104,8 +105,8 @@ export const BAIRROS_DO_RECIFE: readonly Bairro[] = [
   { slug: "zumbi", nome: "Zumbi", rpa: 4 },
 ];
 
-/** Os 5 bairros com índice cadastral na v1.0. Ordem de exibição. */
-export const BAIRROS_COBERTOS = ["boa-viagem", "casa-forte", "gracas", "espinheiro", "madalena"] as const;
+/** Partições habilitadas após validação. Bairros sem índice continuam aceitos no caderno. */
+export const BAIRROS_COBERTOS = BAIRROS_HABILITADOS;
 export type SlugCoberto = (typeof BAIRROS_COBERTOS)[number];
 
 /**
@@ -113,13 +114,7 @@ export type SlugCoberto = (typeof BAIRROS_COBERTOS)[number];
  * então consulte cada grafia. Conferido em 2026-10-20: IPTU tem "Gracas" (11.327) e "Graças" (46); ITBI 2026,
  * "Gracas" (387) e "Graças" (39). Não há variantes em caixa alta nessas duas bases.
  */
-export const GRAFIAS_NO_CADASTRO: Record<SlugCoberto, readonly string[]> = {
-  "boa-viagem": ["Boa Viagem"],
-  "casa-forte": ["Casa Forte"],
-  gracas: ["Gracas", "Graças"],
-  espinheiro: ["Espinheiro"],
-  madalena: ["Madalena"],
-};
+export const GRAFIAS_NO_CADASTRO: Record<SlugCoberto, readonly string[]> = GRAFIAS_HABILITADAS;
 
 export function eCoberto(slug: string | null | undefined): slug is SlugCoberto {
   return BAIRROS_COBERTOS.some((b) => b === slug);

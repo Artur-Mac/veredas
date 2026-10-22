@@ -19,6 +19,56 @@ const SELETOR_DE_DESAFIO = 'iframe[src*="challenges.cloudflare.com"], script[src
  * Tudo o que ela usa chega pelos parâmetros, para o código poder ser copiado para fora deste arquivo.
  */
 function coletarPagina(documento, janela, padraoDeVerificacao, seletorDeDesafio) {
+  function objetoDoAnuncioNoNext(documento, janela, href) {
+    try {
+      var partes = janela.__next_f || [];
+      var texto = '';
+      for (var p = 0; p < partes.length && texto.length < 8 * 1024 * 1024; p++) {
+        if (partes[p] && typeof partes[p][1] === 'string') texto += partes[p][1];
+      }
+      // Depois de montar a página, o Next esvazia self.__next_f; os pedaços continuam nos <script> que o chamam.
+      if (!texto) {
+        var scripts = documento.querySelectorAll('script');
+        for (var q = 0; q < scripts.length && texto.length < 8 * 1024 * 1024; q++) {
+          var codigoDoScript = scripts[q].textContent || '';
+          var abre = codigoDoScript.indexOf('self.__next_f.push(');
+          if (abre < 0) continue;
+          try {
+            var pedaco = JSON.parse(codigoDoScript.slice(abre + 19, codigoDoScript.lastIndexOf(')')));
+            if (pedaco && typeof pedaco[1] === 'string') texto += pedaco[1];
+          } catch (e) {}
+        }
+      }
+      var codigo = /id-(\d+)/.exec(href || '');
+      var inicio = codigo ? texto.indexOf('{"id":"' + codigo[1] + '"') : -1;
+      if (inicio < 0) {
+        var chave = texto.indexOf('"listing":{');
+        if (chave >= 0) inicio = chave + 10;
+      }
+      if (!texto || inicio < 0) return null;
+      var nivel = 0, emTexto = false, escapado = false;
+      for (var j = inicio; j < texto.length && j - inicio < 3 * 1024 * 1024; j++) {
+        var c = texto.charAt(j);
+        if (emTexto) {
+          if (escapado) escapado = false;
+          else if (c === '\\') escapado = true;
+          else if (c === '"') emTexto = false;
+          continue;
+        }
+        if (c === '"') emTexto = true;
+        else if (c === '{') nivel++;
+        else if (c === '}') {
+          nivel--;
+          if (nivel === 0) {
+            var anuncio = JSON.parse(texto.slice(inicio, j + 1));
+            delete anuncio.advertiser;
+            return JSON.stringify({ listing: anuncio });
+          }
+        }
+      }
+    } catch (e) {}
+    return null;
+  }
   var titulo = (documento.title || "").slice(0, 300);
   var url = ((janela.location && janela.location.href) || "").slice(0, 2000);
 
@@ -40,13 +90,23 @@ function coletarPagina(documento, janela, padraoDeVerificacao, seletorDeDesafio)
     var dataJson = initialData.getAttribute("data-json") || "";
     if (dataJson && dataJson.length <= 3 * 1024 * 1024) estados.push(dataJson);
   }
-  if (janela.__INITIAL_STATE__ && estados.length < 3) {
+  // Next.js com App Router (o ZAP desde 2026): o objeto do anúncio sai de self.__next_f, sem o anunciante.
+  var doNext = objetoDoAnuncioNoNext(documento, janela, url);
+  if (doNext && estados.length < 3) estados.push(doNext);
+  var globais = ["__INITIAL_STATE__", "__NUXT__", "__APOLLO_STATE__"];
+  for (var g = 0; g < globais.length && estados.length < 3; g++) {
+    if (!janela[globais[g]]) continue;
     try {
-      var textoDoEstado = JSON.stringify(janela.__INITIAL_STATE__);
+      var textoDoEstado = JSON.stringify(janela[globais[g]]);
       if (textoDoEstado && textoDoEstado.length <= 3 * 1024 * 1024) estados.push(textoDoEstado);
     } catch (e) {
       // estado com referência circular: fica de fora
     }
+  }
+  var nuxtData = documento.getElementById("__NUXT_DATA__");
+  if (nuxtData && estados.length < 3) {
+    var textoDoNuxt = nuxtData.innerText || nuxtData.textContent || "";
+    if (textoDoNuxt && textoDoNuxt.length <= 3 * 1024 * 1024) estados.push(textoDoNuxt);
   }
 
   var principal = documento.querySelector("main") || documento.body;

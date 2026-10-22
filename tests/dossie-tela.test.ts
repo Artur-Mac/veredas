@@ -276,13 +276,13 @@ describe("custo", () => {
     expect(segmentosDaBarra(visao.custo.parcelas)).toEqual([{ nome: "Aluguel", valor: 4500 }, { nome: "Condomínio", valor: 1190 }]);
   });
 
-  it("rótulo do total: 'Total mensal' só quando nada ficou de fora", () => {
+  it("rótulo mensal é consistente mesmo com parcelas ausentes", () => {
     const completo = derivar(analise());
-    expect(rotuloDoTotal(completo.custo)).toBe("Total mensal");
+    expect(rotuloDoTotal(completo.custo)).toBe("Mensal conhecido");
     const incompleto = derivar(analise({ declarados: { seguroIncendio: vazio } }));
-    expect(rotuloDoTotal(incompleto.custo)).toBe("Total mensal conhecido");
+    expect(rotuloDoTotal(incompleto.custo)).toBe("Mensal conhecido");
     const compra = derivar(analise({ modalidade: "compra", declarados: { seguroIncendio: vazio, preco: v(900000) } }));
-    expect(rotuloDoTotal(compra.custo)).toBe("Total mensal");
+    expect(rotuloDoTotal(compra.custo)).toBe("Mensal conhecido");
     const compraComFalta = derivar(analise({ modalidade: "compra", declarados: { condominio: vazio, preco: v(900000) } }));
     expect(rotuloDoTotal(compraComFalta.custo)).toBe("Mensal conhecido");
   });
@@ -446,10 +446,10 @@ describe("cadastro, valor e histórico", () => {
   it("sem prédio: o cartão diz o que fazer, conforme a cobertura e o vínculo", () => {
     const pendente = derivar(analise());
     expect(textosSemPredio(pendente, true, false)).toMatchObject({ titulo: "Confirme o prédio para ver o cadastro", podeConfirmar: true });
-    const fora = derivar(analise({ bairro: "torre", bairroTexto: "Torre", vinculo: { estado: "fora_de_cobertura" } }));
+    const fora = derivar(analise({ bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" } }));
     const t = textosSemPredio(fora, false, false);
     expect(t).toMatchObject({ titulo: "Fora da área com cadastro", podeConfirmar: false });
-    expect(t.texto).toContain("Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena");
+    expect(t.texto).toContain("72 bairros do Recife");
     const sumiu = derivar(analise({ vinculo: confirmadoEm("99001-100") }));
     expect(textosSemPredio(sumiu, true, true)).toMatchObject({ titulo: "Prédio confirmado não encontrado no índice atual", podeConfirmar: true });
   });
@@ -835,12 +835,24 @@ describe("tela do dossiê", () => {
       expect(t).not.toContain("Confirmar prédio");
     });
 
+    it("lote A: aluguel 2.500 + condomínio 600 destaca mensal 3.100 com pendências", () => {
+      const a = analise({ declarados: { preco: v(2500), condominio: v(600), iptu: { ...vazio, periodo: "desconhecido" }, seguroIncendio: vazio } });
+      prepararEstado([a], a.id);
+      const t = todosOsTextos(abrirTela());
+      expect(t).toContain("Mensal conhecido");
+      expect(t).toContain("R$ 3.100");
+      expect(t).toContain("Aluguel anunciado");
+      expect(t).toContain("R$ 2.500");
+      expect(t).toContain("+ valores a confirmar");
+      expect(t.indexOf("Mensal conhecido")).toBeLessThan(t.indexOf("Aluguel anunciado"));
+    });
+
     it("o custo vem de custoMensal: principal, total conhecido, além do aluguel e a nota do que ficou de fora", () => {
       const comPendencia = analise({ id: "confirmada", vinculo: confirmadoEm(e.id), declarados: { iptu: { ...v(288), periodo: "desconhecido" }, seguroIncendio: vazio } });
       prepararEstado([comPendencia], "confirmada");
       const t = todosOsTextos(abrirTela());
       expect(t).toContain("Aluguel anunciado");
-      expect(t).toContain("Total mensal conhecido");
+      expect(t).toContain("Mensal conhecido");
       expect(t).toContain("R$ 5.690");
       expect(t).toContain("+R$ 1.190 além do aluguel");
       expect(t).toContain("IPTU e Seguro incêndio fora da soma.");
@@ -1215,12 +1227,12 @@ describe("tela do dossiê", () => {
     });
 
     it("fora da área com cadastro: sem link para confirmar e sem dado de cadastro", () => {
-      const fora = analise({ id: "fora", nome: "Em Torre", bairro: "torre", bairroTexto: "Torre", vinculo: { estado: "fora_de_cobertura" } });
+      const fora = analise({ id: "fora", nome: "Em Cabanga", bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" } });
       prepararEstado([fora], "fora");
       const arvore = abrirTela();
       const t = todosOsTextos(arvore);
       expect(t).toContain("Fora da área com cadastro");
-      expect(t).toContain("Torre · Recife");
+      expect(t).toContain("Cabanga · Recife");
       expect(arvore.root.findAll((n) => n.props.accessibilityLabel === "Confirmar prédio")).toHaveLength(0);
       tocar(arvore, "Entorno");
       expect(todosOsTextos(arvore)).toContain("Fora da área com cadastro");
@@ -1315,7 +1327,7 @@ describe("tela do dossiê", () => {
     const desconhecido = analise({ vinculo: confirmadoEm("id-que-nao-existe") });
     expect(carregarCadastro(desconhecido)).toMatchObject({ edificio: null, falhou: false });
     expect(carregarCadastro(desconhecido).contexto?.bairro).toBe("casa-forte");
-    const fora = analise({ bairro: "torre", bairroTexto: "Torre", vinculo: { estado: "fora_de_cobertura" } });
+    const fora = analise({ bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" } });
     expect(carregarCadastro(fora)).toEqual({ edificio: null, contexto: null, obras: [], vizinhos: [], rua: null, falhou: false });
   });
 

@@ -136,6 +136,7 @@ const O_QUE_SERA_APAGADO: { titulo: string; texto: string }[] = [
   { titulo: "Seus créditos", texto: "o saldo e o extrato da carteira." },
   { titulo: "Suas visitas", texto: "o roteiro, as respostas, as notas, o ruído e o tempo de cada visita." },
   { titulo: "Suas preferências", texto: "o que o app lembra sobre como você o usa." },
+  { titulo: "Suas fotos e registros", texto: "fotos próprias, rascunhos, documentos registrados, cenários e diário deste aparelho." },
 ];
 
 /**
@@ -158,7 +159,7 @@ function ApagarMeusDados() {
     try {
       await apagarDadosDoAparelho();
     } catch {
-      definirErro("Não deu para apagar agora. Nada foi alterado. Tente de novo.");
+      definirErro("Não foi possível concluir a exclusão de todos os dados. Alguns itens podem já ter sido removidos. Tente novamente para concluir.");
       definirApagando(false);
       return;
     }
@@ -227,6 +228,7 @@ function ApagarMeusDados() {
 }
 
 export default function SobreOsDados() {
+  const [mostrarBairros, definirMostrarBairros] = useState(false);
   const leitura = lerFontes();
   return (
     <Gaveta visivel titulo="Sobre os dados públicos" aoFechar={() => voltarOu("/")}>
@@ -309,11 +311,13 @@ export default function SobreOsDados() {
             ))}
             <View style={{ gap: 1 }}>
               <Texto tipo="secao" style={{ fontSize: 12.5, lineHeight: 18, fontWeight: "600" }}>
-                Bairros fora dos cinco
+                Cobertura por bairro e camada
               </Texto>
               <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 17 }}>
-                {`O cadastro cobre ${nomesDosCobertos()}. Nos demais bairros, o Vereda lê o anúncio, mas não tem cadastro do prédio.`}
+                {`Cadastro ampliado em revisão: ${BAIRROS_COBERTOS.length} bairros do Recife. Confira endereço e lote antes de reconhecer um prédio. As camadas de rua têm cobertura própria. Nos demais locais, você pode manter os dados do anúncio e suas observações.`}
               </Texto>
+              <Botao rotulo={mostrarBairros ? "Ocultar bairros com índice cadastral" : "Ver bairros com índice cadastral"} onPress={() => definirMostrarBairros(!mostrarBairros)} />
+              {mostrarBairros ? <Texto tipo="apoio">{nomesDosCobertos()}</Texto> : null}
             </View>
           </CaixaCreme>
         </View>

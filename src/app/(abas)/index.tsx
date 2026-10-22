@@ -17,7 +17,7 @@ import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
 import { type AnaliseV2, type Edificio } from "../../dados/contratos";
 import { enderecoDoDossie } from "../../dados/consultas";
-import { custoMensal } from "../../dados/custos";
+import { custoMensal, ROTULO_MENSAL_CONHECIDO, avisoDeValoresPendentes } from "../../dados/custos";
 import { derivarDossie } from "../../dados/dossie/derivar";
 import { IDS_DOSSIES, dossieOuErro } from "../../dados/dossies";
 import { formatarReais } from "../../dados/formatos";
@@ -409,7 +409,7 @@ function CartaoDaAnalise({
         onPress={aoAbrir}
         style={styles.areaDoCartao}
         accessibilityRole="button"
-        accessibilityLabel={`${a.nome}. ${rotuloDoBairro}. ${custo.pendentes > 0 ? `${custo.pendentes} a confirmar.` : ""}`}
+        accessibilityLabel={`${a.nome}. ${rotuloDoBairro}. ${ROTULO_MENSAL_CONHECIDO}: ${mensalConhecido}. ${custo.principal.rotulo}: ${anunciado}. ${avisoDeValoresPendentes(custo) ?? ""}`}
       >
         <View style={styles.cardTopo}>
           <GradeArquitetonica />
@@ -437,15 +437,11 @@ function CartaoDaAnalise({
           {/* `.photo-price-bar` */}
           <View style={styles.photoPriceBar}>
             <View style={styles.grupoDePreco}>
-              <Texto tipo="apoio" style={styles.precoLinha}>
-                {aluguel
-                  ? `Anúncio: ${anunciado}${custo.principal.valor !== null ? "/mês" : ""}`
-                  : `Preço: ${anunciado}`}
+              <Texto tipo="apoio" style={aluguel ? styles.precoDestaque : styles.precoLinha}>
+                {`${ROTULO_MENSAL_CONHECIDO}: ${mensalConhecido}${custo.totalMensalConhecido !== null ? "/mês" : ""}`}
               </Texto>
-              <Texto tipo="apoio" style={styles.precoDestaque}>
-                {aluguel
-                  ? `Total conhecido: ${mensalConhecido}${custo.totalMensalConhecido !== null ? "/mês" : ""}`
-                  : `Mensal conhecido: ${mensalConhecido}`}
+              <Texto tipo="apoio" style={aluguel ? styles.precoLinha : styles.precoDestaque}>
+                {`${custo.principal.rotulo}: ${anunciado}${aluguel && custo.principal.valor !== null ? "/mês" : ""}`}
               </Texto>
             </View>
             {alem !== null || custo.pendentes > 0 ? (
@@ -460,7 +456,7 @@ function CartaoDaAnalise({
                 {custo.pendentes > 0 ? (
                   <View style={styles.etiquetaAlerta}>
                     <Texto tipo="apoio" style={styles.textoEtiquetaAlerta}>
-                      {`${custo.pendentes} a confirmar`}
+                      {avisoDeValoresPendentes(custo)}
                     </Texto>
                   </View>
                 ) : null}
