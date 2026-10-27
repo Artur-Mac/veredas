@@ -1,6 +1,6 @@
 # Instruções para agentes: motion do pitch VEREDA
 
-Vale para quem trabalha em `motion/`, `refs/`, `motion-references/` e nos docs de motion (`docs/motion-language.md`, `docs/storyboard.md`, `docs/ui-state-spec.md`, `docs/reference-analysis.md`, `docs/review-log.md`). Reescrito em 17/10/2026; a versão anterior estava errada (paleta e fontes que não são da marca) e foi arquivada em `motion-references/_descartado-ia-anterior/AGENTS.md`.
+Vale para quem trabalha em `motion/`, `refs/`, `motion-references/` e nos docs de motion (`docs/pitch/motion-language.md`, `docs/pitch/storyboard.md`, `docs/pitch/ui-state-spec.md`, `docs/pitch/reference-analysis.md`, `docs/pitch/review-log.md`). Reescrito em 17/10/2026; a versão anterior estava errada (paleta e fontes que não são da marca) e foi arquivada em `motion-references/_descartado-ia-anterior/AGENTS.md`.
 
 ## Marca
 
@@ -14,13 +14,13 @@ Vale para quem trabalha em `motion/`, `refs/`, `motion-references/` e nos docs d
 - Big numbers impactantes, interligados de uma cena para a outra. Os números da fala aparecem exatamente como ditos (93%, 83, mais de 70%, 89%, 4,7 de 5, 15 telas, mais de meio milhão, junho de 2027).
 - Sem nota, selo ou veredito de julgamento sobre o imóvel.
 - A cena 01 usa uma extensão quente da paleta (amarelos e cremes derivados do laranja e do papel), pedida pelo usuário. O acento do choque continua sendo o laranja `#F47745` da marca.
-- Regras antigas (até 17/10/2026, antes da decisão acima): só dados reais com origem e data; o ilustrativo dito na tela. Ficam como histórico em `docs/review-log.md`.
+- Regras antigas (até 17/10/2026, antes da decisão acima): só dados reais com origem e data; o ilustrativo dito na tela. Ficam como histórico em `docs/pitch/review-log.md`.
 
 ## Narração (travada)
 
-- **Roteiro vigente: `docs/pitch-revisado-2026-10-18.md`** (entre `PITCH-REVISAO:INICIO` e `PITCH-REVISAO:FIM`), enviado pelo usuário com a gravação de referência de 120 s. É imutável: não reescreva, resuma, reordene, corrija nem acrescente falas, nem para caber no tempo da animação. Se um conceito visual pedir outra fala, mude o conceito.
-- O tempo de cada parágrafo na gravação está em `docs/mapa-fala-revisada.md`. Cada cena dura o que a fala dela dura e prende os eventos às palavras de sentido; a montagem final com a voz vem depois.
-- O roteiro anterior está em `docs/pitch-original-locked.md`, com o storyboard e `node motion/tools/verificar-pitch.mjs`, que continuam valendo para aquele texto. A cena 09 (visita) saiu da fala nova e fica guardada como peça separada.
+- **Roteiro vigente: `docs/pitch/pitch-revisado-2026-10-18.md`** (entre `PITCH-REVISAO:INICIO` e `PITCH-REVISAO:FIM`), enviado pelo usuário com a gravação de referência de 120 s. É imutável: não reescreva, resuma, reordene, corrija nem acrescente falas, nem para caber no tempo da animação. Se um conceito visual pedir outra fala, mude o conceito.
+- O tempo de cada parágrafo na gravação está em `docs/pitch/mapa-fala-revisada.md`. Cada cena dura o que a fala dela dura e prende os eventos às palavras de sentido; a montagem final com a voz vem depois.
+- O roteiro anterior está em `docs/pitch/pitch-original-locked.md`, com o storyboard e `node motion/tools/verificar-pitch.mjs`, que continuam valendo para aquele texto. A cena 09 (visita) saiu da fala nova e fica guardada como peça separada.
 
 ## Render
 
@@ -43,5 +43,5 @@ Uma animação não está pronta porque compilou. Para cada mudança:
 
 1. `node motion/render.mjs qa --passo pass-N`.
 2. Abra e olhe a folha de contato, a grade de 0,5 s, as tiras e o teste de 360 px.
-3. Registre problemas, correções e notas em `docs/review-log.md`.
+3. Registre problemas, correções e notas em `docs/pitch/review-log.md`.
 4. Faça pelo menos duas rodadas e corrija os três piores problemas de cada uma.

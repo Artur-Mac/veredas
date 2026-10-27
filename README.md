@@ -13,10 +13,10 @@
 
 O app agora inclui um caderno local: cadastro manual ou link de referência, edição, custos mensais, comparação de dois imóveis, checklist e perguntas copiáveis. Na página inicial, use **Adicionar imóvel sem link** ou **Abrir minhas análises**. Os dossiês de referência continuam separados dos dados que você adicionar.
 
-- [Plano por épocas e prompt de continuidade](./docs/PLANO-POC-EXECUCAO.md)
-- [Validação e limites atuais](./docs/POC-VALIDACAO.md)
-- [v1.0: escopo e viabilidade](./docs/V1-ESCOPO-E-VIABILIDADE.md) e [ordem de execução para o operário](./docs/handoff/ORDEM_DO_ARQUITETO.md)
-- [Pesquisa de produto verificada (20/10/2026)](./docs/produto/pesquisa-2026-10-20/README.md): dados públicos, APIs, concorrentes, mercado, regulação, roadmap e plano estratégico
+- [Plano Canônico da v1.0 (15 épocas e arquitetura)](./docs/plano-recife/README.md)
+- [Pesquisa de Produto Verificada](./docs/produto/pesquisa-2026-10-20/README.md) e [Refinamento Executável](./docs/produto/refinamento-2026-10-21/README.md)
+- [Pesquisa Extensiva de KPIs e Inteligência Territorial](./docs/produto/pesquisa-extensiva-kpis-indicadores-insights-vereda.md)
+- [Roteiro Oficial do Pitch e Storyboard](./docs/pitch/pitch-revisado-2026-10-18.md)
 - Iniciar: `npm run web`; teste do fluxo com servidor ativo: `npm run test:v1` (porta padrão 8087; configure `POC_URL` para outra).
 
 ## 📌 Especificação histórica
@@ -25,7 +25,7 @@ Toda a especificação estratégica, funcional, de dados e arquitetural do proje
 
 * **[Documento Definitivo do Projeto (`docs/VEREDA_DOCUMENTO_DEFINITIVO.md`)](./docs/VEREDA_DOCUMENTO_DEFINITIVO.md):** Master Spec 3.0 & Avaliação Executiva (Visão, Arquitetura de 3 Camadas com chave `DSQFL`, Tese de IA, Funcionalidades Decididas, Modelo de Negócios e Roteiro Campus Mobile 15ª Edição).
 
-> **Atualização de 19/10/2026:** o usuário autorizou consultar `ignorar/` como pesquisa para a prova de conceito. O plano atual está em [Plano da POC](./docs/PLANO-POC-EXECUCAO.md); ideias antigas devem ser reconciliadas com esse plano e com o código, não aplicadas automaticamente.
+> Documentos intermediários e planos superados de fases anteriores estão arquivados em [`ignorar/`](./ignorar/LEIA-ME.md). O plano canônico atual é o [Plano de 15 Épocas do Recife](./docs/plano-recife/README.md).
 
 ---
 

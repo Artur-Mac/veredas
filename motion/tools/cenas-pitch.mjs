@@ -6,7 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const pitch = readFileSync(path.join(RAIZ, 'docs/pitch-original-locked.md'), 'utf8').match(/<!-- PITCH:INICIO -->\n([\s\S]*?)\n<!-- PITCH:FIM -->/)[1];
+const pitch = readFileSync(path.join(RAIZ, 'docs/pitch/pitch-original-locked.md'), 'utf8').match(/<!-- PITCH:INICIO -->\n([\s\S]*?)\n<!-- PITCH:FIM -->/)[1];
 const par = pitch.split('\n');
 // cortes dentro do parágrafo 9: o fim da cena 08 é o fim da frase do WhatsAp
 const corte9 = par[8].indexOf(' E, na visita presencial');
@@ -29,6 +29,6 @@ const rec = [CENAS[0], CENAS[1], CENAS[2], CENAS[3], CENAS[4], CENAS[5], CENAS[6
   + '\n' + CENAS[7].trecho + ' ' + CENAS[8].trecho + '\n' + [CENAS[9], CENAS[10], CENAS[11]].map((c) => c.trecho).join('\n');
 if (rec !== pitch) { console.error('A divisão não reconstrói o pitch. Nada foi escrito.'); process.exit(1); }
 for (const c of CENAS) c.palavras = c.trecho.split(/\s+/).filter(Boolean).length;
-writeFileSync(path.join(RAIZ, 'motion/tools/cenas-pitch.json'), JSON.stringify({ fonte: 'docs/pitch-original-locked.md', regra: 'trechos literais; a concatenação reconstrói o pitch inteiro', cenas: CENAS }, null, 2) + '\n');
+writeFileSync(path.join(RAIZ, 'motion/tools/cenas-pitch.json'), JSON.stringify({ fonte: 'docs/pitch/pitch-original-locked.md', regra: 'trechos literais; a concatenação reconstrói o pitch inteiro', cenas: CENAS }, null, 2) + '\n');
 console.log('Cobertura conferida: os 12 trechos reconstroem o pitch caractere por caractere.');
 for (const c of CENAS) console.log(`cena ${String(c.cena).padStart(2)}  ${String(c.palavras).padStart(3)} palavras  ~${Math.round(c.palavras / 2.5)} s  ${c.titulo}`);
