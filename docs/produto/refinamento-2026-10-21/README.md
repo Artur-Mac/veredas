@@ -27,6 +27,8 @@ Fundamentação e fontes de cada conclusão estão nos documentos abaixo. Proxim
 
 ## Documentos para leitura e execução
 
+Para a síntese ampliada de evolução comprovada, KPIs, pesquisa de público, inovação e estratégia, consulte a [pesquisa extensiva de KPIs e oportunidades do VEREDA](../pesquisa-extensiva-kpis-indicadores-insights-vereda.md).
+
 | Documento | Conteúdo |
 |---|---|
 | [01 — Dados públicos e proxies](01-DADOS-PUBLICOS-E-PROXIES.md) | Correções de premissas, EDA realizada, cruzamentos, limites e experimentos de dados |

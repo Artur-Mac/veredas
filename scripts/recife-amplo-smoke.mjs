@@ -250,6 +250,22 @@ try {
     await pagina.getByText(/Inspeção apresentada com vínculo confirmado: não informada/).last().waitFor();
     await foto("comparacao-documentos-ausentes", pagina.getByText(/Inspeção apresentada com vínculo confirmado: não informada/).last());
 
+    await pagina.getByRole("button", { name: /Comparar pelas minhas prioridades/ }).click();
+    await pagina.getByRole("button", { name: "Ver Rotina primeiro", exact: true }).click();
+    await pagina.getByText("1. Rotina", { exact: true }).waitFor();
+    const destinosDaRotina=pagina.getByRole("button",{name:/^Comparar destino /});
+    await destinosDaRotina.last().click();
+    await pagina.getByText(/m em linha reta ao mesmo destino/).first().waitFor();
+    await foto("prioridades-rotina",pagina.getByText("1. Rotina",{exact:true}));
+    await pagina.getByRole("button", { name: /Comparar pelas minhas prioridades/ }).click();
+    await pagina.getByRole("button", { name: /Comparáveis do meu caderno/ }).click();
+    await pagina.getByText(/registros compatíveis após filtros/).waitFor();
+    await pagina.getByRole("textbox",{name:"Área mínima declarada dos comparáveis, em m²",exact:true}).fill("100");
+    await pagina.getByRole("textbox",{name:"Área máxima declarada dos comparáveis, em m²",exact:true}).fill("50");
+    await pagina.getByText(/Informe áreas positivas/).waitFor();
+    await foto("comparaveis-filtro",pagina.getByText(/Informe áreas positivas/));
+    await pagina.getByRole("button", { name: /Comparáveis do meu caderno/ }).click();
+
     await pagina.evaluate(() => {
       const lista = JSON.parse(localStorage.getItem("vereda-analises-v2"));
       const a = lista.find(a => a.id === "a");
@@ -260,6 +276,9 @@ try {
     await pagina.getByText("Inspeção: não informada · Emissão: não informada", { exact: true }).waitFor();
     await foto("documento-datas-ausentes", pagina.getByText("Inspeção: não informada · Emissão: não informada", { exact: true }));
 
+    await pagina.getByRole("button", { name: /Linha do tempo do imóvel/ }).click();
+    await pagina.getByText(/Eventos do índice atual e registros pessoais/).waitFor();
+    await foto("cronologia-publica",pagina.getByText(/Eventos do índice atual e registros pessoais/));
     await ir("/editar");
     const nome = pagina.getByRole("textbox", { name: "Nome da análise", exact: true });
     await nome.fill("Rascunho de teste sem bairro");

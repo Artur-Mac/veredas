@@ -27,6 +27,8 @@ import { eCoberto } from "../../dados/recife/bairros";
 import { useAnalises } from "../../estado/Analises";
 import { useTema } from "../../tema/Tema";
 import { ComparacaoDeTres } from "../../componentes/comparar/Tres";
+import { PrioridadesPessoais } from "../../componentes/comparar/Prioridades";
+import { ComparaveisPessoais } from "../../componentes/comparar/ComparaveisPessoais";
 
 const MODALIDADES: readonly { valor: Modalidade; rotulo: string }[] = [
   { valor: "aluguel", rotulo: "Alugar" },
@@ -165,6 +167,8 @@ export default function Comparar() {
               </> : null}
               <View style={{ marginTop: 18 }}>
                 <ComparacaoDeTres par={par} candidatas={naModalidade} id={terceiroId} aoEscolher={setTerceiroId} aoAlternar={setTresAberto} />
+                <PrioridadesPessoais analises={modoTres ? [...par, naModalidade.find(a => a.id === terceiroId)!] : par} />
+                <ComparaveisPessoais key={par[0].id} lista={lista} referencia={par[0]} />
                 <BotaoVx rotulo="Escolher para visitar" onPress={() => setEscolhendoVisita(true)} />
               </View>
             </View>

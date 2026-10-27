@@ -14,6 +14,9 @@ import { avisoDeTipologia } from "../../componentes/predio/textos";
 import { estilosDoTema } from "../../componentes/revisao/estilosDoTema";
 import { AlvoDeToque } from "../../componentes/Pressionavel";
 import { FormularioDeRevisao } from "../../componentes/revisao/FormularioDeRevisao";
+import { LeituraDeImagem } from "../../componentes/leitor/LeituraDeImagem";
+import { arquivoDaExtensao } from "../../dados/arquivoDaExtensao";
+import { BAIRROS_COBERTOS } from "../../dados/recife/bairros";
 import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
 import { type AnaliseV2, type ExtracaoAnuncio, type LeituraParcial, type Portal } from "../../dados/contratos";
@@ -121,12 +124,16 @@ function LeituraDoAnuncio() {
   const styles = useEstilos();
   const {
     url: urlDaRota = "",
-    texto: textoDaRota = "",
+    texto: textoDiretoDaRota = "",
     coleta: idDaColeta = "",
     origem = "",
-  } = useLocalSearchParams<{ url?: string; texto?: string; coleta?: string; origem?: string }>();
-  const url = urlDaRota.trim();
-  const { salvar, erro: erroDoCaderno } = useAnalises();
+    arquivoExtensao = "",
+  } = useLocalSearchParams<{ url?: string; texto?: string; coleta?: string; origem?: string; arquivoExtensao?: string }>();
+  const recebidoDaExtensao = arquivoDaExtensao(arquivoExtensao);
+  const textoDaRota = recebidoDaExtensao?.texto ?? textoDiretoDaRota;
+  const idImportacao = recebidoDaExtensao?.id ?? "";
+  const url = (recebidoDaExtensao?.url ?? urlDaRota).trim();
+  const { salvar, lista, erro: erroDoCaderno } = useAnalises();
   const focoDoTexto = useFocoDoCampo();
 
   // Anúncio recebido por compartilhamento (`RecebedorDeCompartilhamento`): a página do Safari e o trecho escolhido no
@@ -143,7 +150,7 @@ function LeituraDoAnuncio() {
         ? AVISO_DA_PAGINA_SEM_PRECO
         : "";
 
-  const [idGerado] = useState(() => `imovel-${Date.now()}`);
+  const [idGerado] = useState(() => /^ext-[a-f0-9]{40}$/.test(idImportacao) ? idImportacao : `imovel-${Date.now()}`);
   /** O que está no campo de texto e o que já foi lido ("Ler texto"): a leitura só muda no botão. */
   const [textoDoCampo, setTextoDoCampo] = useState(textoDaRota);
   const [textoLido, setTextoLido] = useState(textoDaRota);
@@ -347,6 +354,9 @@ function LeituraDoAnuncio() {
 
   const salvarEIr = async (vinculo: AnaliseV2["vinculo"], depois: () => void) => {
     if (salvando) return;
+    if (idGerado.startsWith("ext-") && lista.some(a => a.id === idGerado)) {
+      setErroAoSalvar("Este arquivo já está no seu caderno. Abra a análise salva para editar; nenhuma cópia foi sobrescrita."); return;
+    }
     setSalvando(true);
     setErroAoSalvar("");
     try {
@@ -395,6 +405,8 @@ function LeituraDoAnuncio() {
             </Texto>
           </AlvoDeToque>
 
+          {arquivoExtensao && !recebidoDaExtensao ? <Texto role="alert">O arquivo da extensão não está aberto nesta sessão. Selecione-o novamente no início; nenhum texto privado foi colocado no endereço da página.</Texto> : null}
+          <LeituraDeImagem aoRevisar={texto => { setTextoDoCampo(texto); setPediuTexto(true); setAvisoDaCopia("Texto da imagem na revisão. Confira e toque em Ler texto para propor os campos."); }} />
           <Cartao style={styles.cartao}>
             <CorpoDoCartao style={styles.corpo}>
               <View style={styles.cabecalho}>
@@ -547,7 +559,7 @@ function LeituraDoAnuncio() {
                 <Texto tipo="apoio" style={styles.textoDaCobertura}>
                   O Vereda está disponível para{" "}
                   <Texto tipo="apoio" style={styles.destaqueDaCobertura}>
-                    Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena
+                    {BAIRROS_COBERTOS.length} bairros do Recife com índice cadastral em revisão
                   </Texto>
                   . A leitura deste anúncio não consumiu crédito.
                 </Texto>

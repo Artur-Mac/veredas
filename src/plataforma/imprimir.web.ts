@@ -1,4 +1,4 @@
-export function imprimirResumo(html: string): void {
+export async function imprimirResumo(html: string): Promise<void> {
   const janela = window.open("", "_blank");
   if (!janela) throw new Error("Permita abrir a janela de impressão ou copie o resumo.");
   janela.opener = null;
@@ -11,5 +11,6 @@ export function imprimirResumo(html: string): void {
     try { janela.document.fonts.add(fonte); } catch { /* Fonte de reserva. */ }
   }
   janela.focus();
-  void janela.document.fonts.ready.then(() => { if (!janela.closed) janela.print(); });
+  await janela.document.fonts.ready;
+  if (!janela.closed) janela.print();
 }

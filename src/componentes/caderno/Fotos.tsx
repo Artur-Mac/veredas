@@ -6,6 +6,7 @@ import { abrirFoto, guardarFoto, liberarFoto } from "../../plataforma/midia";
 import { Botao } from "../Botao";
 import { Texto } from "../Texto";
 import { GrupoLocal } from "./blocos";
+import { moverFoto, retirarFoto } from "../../dados/galeria";
 
 function FotoGuardada({ chave }: { chave: string }) {
   const [uri, setUri] = useState<string | null>(null);
@@ -20,6 +21,7 @@ function FotoGuardada({ chave }: { chave: string }) {
 export function FotosPessoais({ caderno, salvar }: { caderno: Caderno; salvar: (mudar: (c: Caderno) => Caderno) => Promise<boolean> }) {
   const [aviso, setAviso] = useState("");
   const [ocupado, setOcupado] = useState(false);
+  const [retirando, setRetirando] = useState<string | null>(null);
   const trava = useRef(false);
   const adicionar = async () => {
     if (trava.current) return;
@@ -42,7 +44,13 @@ export function FotosPessoais({ caderno, salvar }: { caderno: Caderno; salvar: (
     <Botao rotulo="Escolher uma foto própria" onPress={() => void adicionar()} desativado={ocupado} />
     {(caderno.fotos ?? []).map((f, i) => <View key={f.id} style={{ gap: 6 }}>
       <Texto tipo="apoio">{i === 0 ? "Capa" : `Foto ${i + 1}`}</Texto><FotoGuardada chave={f.chave} />
-      {i > 0 ? <Botao rotulo="Usar como capa" onPress={() => { void salvar(c => ({ ...c, fotos: [f, ...(c.fotos ?? []).filter(x => x.id !== f.id)] })); }} /> : null}
+      {i > 0 ? <><Botao rotulo="Usar como capa" acessivel={`Usar foto ${i + 1} como capa`} onPress={() => { void salvar(c => moverFoto(c, f.id, "capa")); }} />
+        <Botao rotulo="Mover antes" acessivel={`Mover foto ${i + 1} antes`} onPress={() => { void salvar(c => moverFoto(c, f.id, "antes")); }} /></> : null}
+      {i < (caderno.fotos?.length ?? 0) - 1 ? <Botao rotulo="Mover depois" acessivel={`Mover foto ${i + 1} depois`} onPress={() => { void salvar(c => moverFoto(c, f.id, "depois")); }} /> : null}
+      <Botao rotulo="Retirar desta análise" acessivel={`Retirar foto ${i + 1} desta análise`} onPress={() => setRetirando(f.id)} />
+      {retirando === f.id ? <><Texto>Retirar esta foto da análise? Arquivos e referências em outras cópias ficam preservados. A limpeza completa de arquivos ocorre em Apagar meus dados.</Texto>
+        <Botao rotulo="Confirmar retirada da foto" onPress={() => { void salvar(c => retirarFoto(c, f.id)).then(ok => { if (ok) setRetirando(null); }); }} />
+        <Botao rotulo="Manter foto" onPress={() => setRetirando(null)} /></> : null}
     </View>)}
     {aviso ? <Texto role="status">{aviso}</Texto> : null}
   </GrupoLocal>;

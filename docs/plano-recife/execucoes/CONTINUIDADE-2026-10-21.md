@@ -28,4 +28,19 @@ Autorização: usuário pediu executar todas as épocas e validar sem relatório
 
 ## Resultados incrementais
 
-Em execução. Somente capacidades realmente implementadas e testadas serão marcadas como concluídas. Não atribuir alterações anteriores a esta execução.
+Atualização de auditoria em 22/10/2026: **execução ampla parcial**. O baseline abaixo permanece histórico; não representa conclusão de todas as épocas. Resultados reproduzidos e correções recentes: [auditoria consolidada](AUDITORIA-2026-10-22.md). Escopo efetivo por capacidade: [matriz F01–F80](PRONTIDAO-2026-10-21.md), com registros EP01–EP14 parciais.
+
+### Código local efetivamente acrescentado
+
+- `src/estado/rascunho.ts` e editor: recuperação, ID estável, preservação de rascunho futuro e salvamento incompleto.
+- `src/dados/caderno.ts`, `backup.ts`, `Analises.tsx` e `dados-do-caderno`: complemento opcional da v2, atualização na fila atual e restauração revisada/idempotente. `salvar` preserva o caderno mais recente; alterações de complementos usam `atualizar` e restauração usa `importar`.
+- `src/plataforma/` e painéis `src/componentes/caderno/`: fotos/PDF privados, cópia web com arquivos/checksums, documentos, CNPJ/ocorrências manuais, observações, múltiplas visitas, destinos privados, diário/correções e resumo/PDF selecionado. Nativo não está certificado por teste web.
+- `orcamento.ts`, `historicoDoAnuncio.ts`, comparação de três: hipóteses financeiras locais, histórico deliberado e comparação progressiva; preço de compra separado de recorrentes.
+- Pipeline municipal: 94 partições geradas em staging; 72 / 7.206 edifícios no catálogo experimental local; 22 partições retidas. Arquivos imutáveis e reversão local disponíveis. Camada CNEFE: 5.661 pontos históricos de categorias amplas, nível 1.
+- `protocoloDeSincronizacao.ts` e `economiaDaOferta.ts` são modelos internos locais, não conta, servidor ou cobrança reais. GTFS é inspeção exploratória; não habilita horários.
+
+### Validação e limites
+
+A auditoria atual reproduziu `npm run verificar` (41 suítes/1.330 testes), smoke v1 (50 etapas) e smoke ampliado (51 capturas/zero erros de navegador). Capturas alteradas foram de fato abertas; veja a lista específica no relatório. Artefatos duráveis: `execucoes/auditoria-2026-10-22/`.
+
+Não foram feitos testes em aparelho, estudo com usuários, auditoria de campo das novas associações ou ativação de integrações/infraestrutura. Existem funções locais ainda não implementadas, além das dependências externas. Não classificar épocas 01–14 como integralmente concluídas. Código anterior e o EP00 de outro executor foram preservados.

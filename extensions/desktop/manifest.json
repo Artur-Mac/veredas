@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "VEREDA · Revisar anúncio",
+  "version": "0.1.0",
+  "description": "Copia somente a página acionada para revisão local no VEREDA.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "clipboardWrite"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Revisar anúncio no VEREDA"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; connect-src 'none'"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+V"
+      },
+      "description": "Revisar anúncio no VEREDA"
+    }
+  }
+}

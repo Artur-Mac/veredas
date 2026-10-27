@@ -76,3 +76,13 @@ A navegação principal atual tem Explorar, Dossiê, Comparar e Visita, com Salv
 ## Critério de término da versão ampla
 
 Todos os IDs F01–F80 possuem destino, implementação verificável ou dependência registrada; os fluxos locais essenciais funcionam ponta a ponta; as camadas habilitadas têm evidência auditável; as capacidades condicionais não são anunciadas como prontas. A época 14 entrega uma lista separada de funções a manter, juntar, melhorar, ocultar ou cortar, sem apagar histórico pessoal. Não reduzir previamente o portfólio só porque a utilidade ainda é hipótese.
+
+
+## Auditoria de execução em 22/10/2026
+
+O plano permanece parcialmente implementado. A conclusão do baseline EP00 não encerra as épocas seguintes. Consulte a [auditoria com correções e validação](execucoes/AUDITORIA-2026-10-22.md), o [registro consolidado](execucoes/CONTINUIDADE-2026-10-21.md) e a [prontidão das 80 capacidades](execucoes/PRONTIDAO-2026-10-21.md). Os estados de partida e a especificação 1.0 acima foram preservados como histórico.
+
+
+## Continuação e fechamento da auditoria — 22/10/2026
+
+Foram implementadas e verificadas novas capacidades locais, com OCR web, despesas detalhadas, finanças documentais citadas, cronologia, prioridades/rotina, comparáveis pessoais, fotos e lembretes. Consulte o [registro final desta rodada](execucoes/FINALIZACAO-2026-10-22.md) e a [matriz atual de F01–F80](execucoes/PRONTIDAO-2026-10-22-FINAL.md). As épocas completas continuam parciais onde houver trabalho ou validação restante; os registros anteriores permanecem históricos. **Código nativo e extensão ainda têm aceites físicos/manuais pendentes; integrações externas não foram ativadas.**

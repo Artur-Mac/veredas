@@ -47,7 +47,9 @@
           "microphonePermission": "O Vereda usa o microfone para medir o ruído durante a visita."
         }
       ],
-      "./plugins/compartilhar"
+      "./plugins/compartilhar",
+      "expo-sharing",
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true

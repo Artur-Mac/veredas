@@ -52,9 +52,9 @@ export default function DetalhesDaAnalise() {
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 16, paddingBottom: 64 }}><Coluna>
         {!pronto ? <Texto>Abrindo caderno…</Texto> : !analise ? <Texto>Análise não encontrada. Volte ao caderno para escolher um imóvel.</Texto> : <>
           <Texto tipo="apoio" style={{ marginBottom: 16 }}>{analise.nome}</Texto>
-          {secao === "orcamento" ? <OrcamentoPessoal analise={analise} salvar={salvar} /> :
-            secao === "edificio" ? <DocumentosDoEdificio analise={analise} salvar={salvar} levarParaVisita={levarParaVisita} /> :
-              secao === "campo" ? <RegistrosPessoais analise={analise} salvar={salvar} novaVisita={novaVisita} /> : <Texto>Seção não encontrada.</Texto>}
+          {secao === "orcamento" ? <OrcamentoPessoal key={analise.id} analise={analise} salvar={salvar} /> :
+            secao === "edificio" ? <DocumentosDoEdificio key={analise.id} analise={analise} salvar={salvar} levarParaVisita={levarParaVisita} /> :
+              secao === "campo" ? <RegistrosPessoais key={analise.id} analise={analise} salvar={salvar} novaVisita={novaVisita} /> : <Texto>Seção não encontrada.</Texto>}
         </>}
         {aviso ? <Texto role="status" accessibilityLiveRegion="polite" style={{ marginVertical: 16 }}>{aviso}</Texto> : null}
       </Coluna></ScrollView>

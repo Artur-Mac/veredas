@@ -15,6 +15,7 @@ import { AlvoDeToque, Pressionavel } from "../../componentes/Pressionavel";
 import { estilosDoTema } from "../../componentes/revisao/estilosDoTema";
 import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
+import { ImportarExtensao } from "../../componentes/leitor/ImportarExtensao";
 import { type AnaliseV2, type Edificio } from "../../dados/contratos";
 import { enderecoDoDossie } from "../../dados/consultas";
 import { custoMensal, ROTULO_MENSAL_CONHECIDO, avisoDeValoresPendentes } from "../../dados/custos";
@@ -175,6 +176,7 @@ export default function ExplorarT1() {
             </CorpoDoCartao>
           </Cartao>
 
+          <ImportarExtensao />
           {/* `.saved-section-header` */}
           <View style={styles.secaoHeader}>
             <Texto tipo="titulo-tela" role="heading" style={[styles.secaoTitulo, styles.secaoTituloQueEncolhe]}>

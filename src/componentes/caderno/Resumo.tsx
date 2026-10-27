@@ -1,6 +1,5 @@
 import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
-import { Platform } from "react-native";
 import type { AnaliseV2 } from "../../dados/contratos";
 import { htmlDoResumo, resumoCompartilhavel } from "../../dados/resumo";
 import { imprimirResumo } from "../../plataforma/imprimir";
@@ -16,7 +15,7 @@ export function ResumoSelecionavel({ analise }: { analise: AnaliseV2 }) {
     <EscolhaLocal rotulo="Incluir suas notas da visita atual?" valor={notas} opcoes={[{ valor: "nao", rotulo: "Não" }, { valor: "sim", rotulo: "Sim, incluir" }]} aoEscolher={setNotas} />
     <Texto selectable>{texto}</Texto>
     <Botao rotulo="Copiar resumo selecionado" onPress={() => { void Clipboard.setStringAsync(texto).then(() => setAviso("Resumo copiado. Você escolhe onde compartilhar.")).catch(() => setAviso("Não foi possível copiar.")); }} />
-    {Platform.OS === "web" ? <Botao rotulo="Imprimir ou salvar PDF" onPress={() => { try { imprimirResumo(htmlDoResumo(texto)); } catch (e) { setAviso(e instanceof Error ? e.message : "Não foi possível preparar o PDF."); } }} /> : null}
+    <Botao rotulo="Imprimir ou salvar PDF" onPress={() => { void imprimirResumo(htmlDoResumo(texto)).catch(e => setAviso(e instanceof Error ? e.message : "Não foi possível preparar o PDF.")); }} />
     {aviso ? <Texto role="status">{aviso}</Texto> : null}
   </GrupoLocal>;
 }

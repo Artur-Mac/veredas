@@ -7,6 +7,8 @@ import { Texto } from "../Texto";
 import { CampoLocal, EscolhaLocal, GrupoLocal } from "./blocos";
 import { FotosPessoais } from "./Fotos";
 import { HistoricoPessoal } from "./Historico";
+import { InfraestruturaEExperiencia } from "./Complementos";
+import { LembretesPessoais } from "./Lembretes";
 import { RotinaPessoal } from "./Rotina";
 import { edificioPorId } from "../../dados/recife/indice";
 import { eCoberto } from "../../dados/recife/bairros";
@@ -47,6 +49,8 @@ export function RegistrosPessoais({ analise, salvar, novaVisita }: Props) {
     <FotosPessoais caderno={c} salvar={salvar} />
     <ResumoSelecionavel analise={analise} />
     <HistoricoPessoal caderno={c} salvar={salvar} />
+    <InfraestruturaEExperiencia caderno={c} salvar={salvar} />
+    <LembretesPessoais caderno={c} salvar={salvar} />
     <RotinaPessoal caderno={c} centro={centro} salvar={salvar} />
     <GrupoLocal titulo="Referência de localização da visita" apoio="Use durante a visita. GPS não confirma prédio, unidade ou andar. A posição fica privada neste aparelho.">
       {c.localizacaoDaVisita ? <Texto tipo="apoio">Posição registrada em {new Date(c.localizacaoDaVisita.em).toLocaleString("pt-BR")}. Precisão horizontal informada: {c.localizacaoDaVisita.precisaoM === null ? "não disponível" : `aproximadamente ${Math.round(c.localizacaoDaVisita.precisaoM)} m`}.</Texto> : null}

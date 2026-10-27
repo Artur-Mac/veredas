@@ -40,15 +40,24 @@ export function horizonte(a: AnaliseV2, c: Caderno["cenarios"][number]) {
   esquemaCenario.parse(c);
   const custo = custoMensal(a);
   const mensal = custo.totalMensalConhecido === null ? null : Math.round(custo.totalMensalConhecido * 100);
-  const extras = c.extrasMensaisCentavos;
-  const despesas = c.despesasIniciaisCentavos;
-  const caucao = c.caucaoCentavos;
+  // Itens detalhados substituem os agregados somente neste cenário. Os campos
+  // antigos continuam no arquivo, para reversão e leitura do caderno anterior.
+  const total = (categoria: "inicial" | "mensal" | "reembolsavel", horizonte: boolean) => {
+    const itens = c.itens!.filter(i => i.categoria === categoria);
+    const conhecidos = itens.filter(i => i.valorCentavos !== null);
+    return conhecidos.length ? centavosSeguros(conhecidos.reduce((s, i) => s + i.valorCentavos! * (horizonte && categoria === "mensal" ? Math.min(i.duracaoMeses ?? c.meses, c.meses) : 1), 0)) : null;
+  };
+  const detalhado = c.itens !== undefined && c.usarItens !== false;
+  const extras = detalhado ? total("mensal", true) : c.extrasMensaisCentavos === null ? null : c.extrasMensaisCentavos * c.meses;
+  const despesas = detalhado ? total("inicial", false) : c.despesasIniciaisCentavos;
+  const caucao = detalhado ? total("reembolsavel", false) : c.caucaoCentavos;
+  const itensCompletos = !detalhado || (["inicial", "mensal", "reembolsavel"] as const).every(t => c.itens!.some(i => i.categoria === t) && c.itens!.filter(i => i.categoria === t).every(i => i.valorCentavos !== null));
   return {
     mensalConhecidoCentavos: mensal,
     despesaConhecidaCentavos: mensal === null && extras === null && despesas === null ? null :
-      (mensal ?? 0) * c.meses + (extras ?? 0) * c.meses + (despesas ?? 0),
-    caixaInicialConhecidoCentavos: despesas === null && caucao === null ? null : (despesas ?? 0) + (caucao ?? 0),
-    completo: custo.parcelas.every(p => p.estado === "conhecido") && mensal !== null && extras !== null && despesas !== null && caucao !== null,
+      centavosSeguros((mensal ?? 0) * c.meses + (extras ?? 0) + (despesas ?? 0)),
+    caixaInicialConhecidoCentavos: despesas === null && caucao === null ? null : centavosSeguros((despesas ?? 0) + (caucao ?? 0)),
+    completo: itensCompletos && custo.parcelas.every(p => p.estado === "conhecido") && mensal !== null && extras !== null && despesas !== null && caucao !== null,
     caucaoCentavos: caucao,
   };
 }

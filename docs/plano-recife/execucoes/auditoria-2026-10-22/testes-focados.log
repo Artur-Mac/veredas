@@ -1,0 +1,12 @@
+
+> vereda@0.1.0 test
+> jest --runInBand tests/midia-nativa-integridade.test.ts tests/caderno-amplo.test.ts
+
+PASS tests/midia-nativa-integridade.test.ts
+PASS tests/caderno-amplo.test.ts
+
+Test Suites: 2 passed, 2 total
+Tests:       18 passed, 18 total
+Snapshots:   0 total
+Time:        1.221 s
+Ran all test suites matching /tests\/midia-nativa-integridade.test.ts|tests\/caderno-amplo.test.ts/i.

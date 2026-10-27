@@ -40,6 +40,11 @@ export const esquemaCenario = z.strictObject({
   id, nome: z.string().trim().min(1).max(100), meses: z.number().int().min(1).max(600),
   despesasIniciaisCentavos: centavos, caucaoCentavos: centavos,
   extrasMensaisCentavos: centavos, registradoEm: instante,
+  usarItens: z.boolean().optional(),
+  itens: z.array(z.strictObject({ id, titulo: z.string().trim().min(1).max(120),
+    categoria: z.enum(["inicial", "mensal", "reembolsavel"]), valorCentavos: centavos,
+    duracaoMeses: z.number().int().min(1).max(600).nullable(), fonte: z.string().trim().min(1).max(300),
+  })).max(50).optional(),
 });
 export const esquemaSessaoVisita = z.strictObject({
   id, arquivadaEm: instante, concluidaEm: instante.nullable(),
@@ -53,6 +58,26 @@ export const esquemaSessaoVisita = z.strictObject({
 });
 export const esquemaCaderno = z.strictObject({
   versao: z.literal(1),
+  lembretes: z.array(z.strictObject({ id, titulo: z.string().trim().min(1).max(160), em: instante,
+    fuso: z.string().trim().min(1).max(100).refine(v => { try { new Intl.DateTimeFormat("pt-BR", { timeZone: v }).format(); return true; } catch { return false; } }), notificar: z.boolean(), estado: z.enum(["ativo", "concluido", "cancelado"]) })).max(100)
+    .refine(a => new Set(a.map(r => r.id)).size === a.length, "Lembretes repetidos").optional(),
+  perfilDomestico: z.strictObject({ ocupantes: z.number().int().min(1).max(30).nullable(), orcamentoCentavos: centavos,
+    consumos: z.array(z.strictObject({ id, assunto: z.enum(["agua", "energia", "transporte", "outro"]),
+      unidade: z.enum(["m3", "kwh", "viagem", "mes"]), quantidade: z.number().min(0).max(1e6).nullable(), tarifaCentavos: centavos,
+      fonte: z.string().trim().min(1).max(300), referenciaEm: data })).max(30),
+  }).optional(),
+  balancetes: z.array(z.strictObject({ id, documentoId: id.nullable(), periodo: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
+    receitasCentavos: centavos, despesasCentavos: centavos, reservaCentavos: centavos, inadimplenciaCentavos: centavos,
+    fonte: z.string().trim().min(1).max(300), pagina: z.number().int().min(1).max(10000).nullable(), registradoEm: instante,
+    evidencias: z.array(z.strictObject({ campo: z.enum(["receitasCentavos", "despesasCentavos", "reservaCentavos", "inadimplenciaCentavos"]),
+      centavos: z.number().int().min(0).max(1e12), trecho: z.string().min(1).max(6000), pagina: z.number().int().min(1).max(10000).nullable(), documentoId: id })).max(4).optional(),
+  })).max(100).optional(),
+  infraestrutura: z.array(z.strictObject({ id, assunto: z.enum(["cisterna", "reservatorio", "bomba", "rodizio"]),
+    estado: z.enum(["sim", "nao", "nao_sabemos"]), relato: z.string().max(2000), fonte: z.string().trim().min(1).max(300),
+    observadoEm: data, registradoEm: instante })).max(200).optional(),
+  expectativas: z.array(z.strictObject({ id, assunto: z.string().trim().min(1).max(100), esperado: z.string().trim().min(1).max(2000), em: instante,
+    experiencias: z.array(z.strictObject({ em: instante, observadoEm: z.iso.date(), texto: z.string().trim().min(1).max(2000) })).max(100),
+  })).max(100).optional(),
   historicoDoAnuncio: z.array(z.strictObject({
     id, em: instante, origem: z.enum(["edicao", "nova_extracao"]),
     alteracoes: z.array(z.strictObject({ campo: z.string().max(80), antes: z.string().max(4000), depois: z.string().max(4000) })).min(1).max(30),

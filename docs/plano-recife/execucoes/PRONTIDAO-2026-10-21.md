@@ -30,7 +30,7 @@ O index raiz, pitch, motion e diagnósticos históricos foram preservados. Consu
 | F22 | Entrada, mudança, instalação, garantias e caixa imobilizado | Núcleo local verificado | Despesas iniciais separadas de caução reembolsável e caixa inicial. Sem catálogo detalhado por item de mudança/garantia. |
 | F23 | Horizonte e cenários editáveis de custo | Núcleo local verificado | Cenários nomeados, meses e hipóteses persistentes; recálculo usa valores atuais sem sobrescrever anúncio. |
 | F24 | Perfil da casa, orçamento e cenários água/energia/transporte | Parcial | Extras mensais manuais disponíveis. Perfil domiciliar, orçamento máximo e tarifas datadas de água/energia/transporte não implementados. |
-| F25 | Simulação de financiamento Price | Núcleo local testado | Price em centavos e taxa efetiva; teste de zero/limites/valor de referência. Não inclui CET/proposta bancária real; UI de compra exige ampliação da QA visual. |
+| F25 | Simulação de financiamento Price | Núcleo local testado | Price em centavos e taxa efetiva; teste de zero/limites/valor de referência. Não inclui CET/proposta bancária real; UI de compra conferida na auditoria de 22/10, incluindo última parcela e invalidação de resultado antigo. CET/proposta bancária não implementados. |
 | F26 | Comparar comprar × alugar por cenários | Núcleo local testado | Simulação separa saldo devedor, patrimônio e investimento com hipóteses explícitas. Não é recomendação; validação com usuários pendente. |
 | F27 | Distribuições e histórico de valores fiscais ITBI | Existente revalidado | Derivações fiscais preservadas; testes de ITBI/cadastro, sem apresentar valor tributário como preço de mercado. |
 | F28 | Comparáveis pessoais e mercado anunciado autorizado | Parcial existente | Comparação pessoal preservada. Dataset autorizado de anúncios, filtros de comparáveis e janela de mercado não implementados. |
@@ -86,3 +86,5 @@ O index raiz, pitch, motion e diagnósticos históricos foram preservados. Consu
 | F78 | API/agregados institucionais e B2G | Não implementado | Nenhuma API ou infraestrutura remota criada. Faltam piloto/contrato/schema agregado e revisão de redistribuição. |
 | F79 | Pesquisa, métricas de utilidade e custo por caso | Preparação parcial | Baseline técnico e desempenho coletados. Não houve recrutamento, entrevistas ou métricas de demanda; percentuais antigos não reautenticados. |
 | F80 | Desempenho, acessibilidade, operação e lapidação | Parcial verificado | Suíte, smoke, capturas/PDF e benchmark local. Dispositivos, leitor de tela, memória e campo pendentes; 500 análises excedem meta inicial de 1s nesta medição. |
+
+Atualização de 22/10/2026: [auditoria](AUDITORIA-2026-10-22.md) corrigiu integridade de cópia nativa, saldo residual/precisão financeira e datas ausentes. A validação web de compra foi ampliada; os demais limites desta matriz permanecem.

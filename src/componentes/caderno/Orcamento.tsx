@@ -3,11 +3,13 @@ import { View } from "react-native";
 import type { AnaliseV2 } from "../../dados/contratos";
 import { cadernoVazio, esquemaCenario, type Caderno } from "../../dados/caderno";
 import { custoMensal } from "../../dados/custos";
-import { formatarReais } from "../../dados/formatos";
+import { formatarReais, formatarCentavos } from "../../dados/formatos";
 import { comprarOuAlugar, horizonte, price, taxaMensalEfetiva } from "../../dados/orcamento";
 import { Botao } from "../Botao";
 import { Texto } from "../Texto";
 import { CampoLocal, centavosDaEntrada, GrupoLocal } from "./blocos";
+import { PerfilDomestico } from "./Complementos";
+import { EditarCenario } from "./EditarCenario";
 
 type Props = { analise: AnaliseV2; salvar: (mudar: (c: Caderno) => Caderno) => Promise<boolean> };
 export function OrcamentoPessoal({ analise, salvar }: Props) {
@@ -71,14 +73,19 @@ export function OrcamentoPessoal({ analise, salvar }: Props) {
     <Texto tipo="titulo-tela">Seu orçamento.</Texto>
     <Texto tipo="secao">Mensal conhecido: {custo.totalMensalConhecido === null ? "A confirmar" : formatarReais(custo.totalMensalConhecido)}</Texto>
     <Texto tipo="apoio">{custo.notaForaDaSoma ?? "Parcelas recorrentes informadas."} Preço de aquisição permanece separado.</Texto>
+    <PerfilDomestico caderno={caderno} salvar={salvar} />
     {caderno.cenarios.map(c => {
-      const h = horizonte(analise, c);
+      let h: ReturnType<typeof horizonte>;
+      try { h = horizonte(analise, c); }
+      catch { return <View key={c.id} style={{ gap: 6 }}><Texto tipo="secao">{c.nome}</Texto><Texto role="alert">As hipóteses excedem a precisão monetária. Edite os valores ou o horizonte; nenhum total foi presumido.</Texto><EditarCenario cenario={c} salvar={salvar} /></View>; }
       return <View key={c.id} style={{ gap: 6, marginVertical: 10 }}>
         <Texto tipo="secao">{c.nome} · {c.meses} meses</Texto>
-        <Texto>Despesa conhecida no horizonte: {h.despesaConhecidaCentavos === null ? "A confirmar" : formatarReais(h.despesaConhecidaCentavos / 100)}</Texto>
-        <Texto>Caixa inicial informado: {h.caixaInicialConhecidoCentavos === null ? "A confirmar" : formatarReais(h.caixaInicialConhecidoCentavos / 100)}</Texto>
-        <Texto tipo="apoio">Caução reembolsável: {h.caucaoCentavos === null ? "A confirmar" : formatarReais(h.caucaoCentavos / 100)}. Não entra como despesa definitiva.</Texto>
+        <Texto>Despesa conhecida no horizonte: {h.despesaConhecidaCentavos === null ? "A confirmar" : formatarCentavos(h.despesaConhecidaCentavos)}</Texto>
+        <Texto>Caixa inicial informado: {h.caixaInicialConhecidoCentavos === null ? "A confirmar" : formatarCentavos(h.caixaInicialConhecidoCentavos)}</Texto>
+        <Texto tipo="apoio">Caução reembolsável: {h.caucaoCentavos === null ? "A confirmar" : formatarCentavos(h.caucaoCentavos)}. Não entra como despesa definitiva.</Texto>
         <Texto tipo="apoio">{h.completo ? "Entradas deste cenário preenchidas." : "Cenário parcial: há valores a confirmar."} Calculado com o mensal conhecido atual; hipóteses do cenário não alteram o anúncio.</Texto>
+        <Texto tipo="apoio">Cálculo por {c.itens && c.usarItens !== false ? "itens detalhados, com duração de cada extra" : "totais informados"}.</Texto>
+        <EditarCenario cenario={c} salvar={salvar} />
       </View>;
     })}
     <GrupoLocal titulo="Novo cenário de permanência" apoio="Separe despesas de entrada do valor reembolsável. Digite zero quando souber que não há custo.">
@@ -94,9 +101,9 @@ export function OrcamentoPessoal({ analise, salvar }: Props) {
       <CampoLocal rotulo="Taxa anual efetiva em %" value={taxa} onChangeText={setTaxa} keyboardType="decimal-pad" />
       <CampoLocal rotulo="Prazo do financiamento em meses" value={prazo} onChangeText={setPrazo} keyboardType="number-pad" />
       <Botao rotulo="Calcular parcela simulada" onPress={simular} />
-      {resultado ? <><Texto>Parcela simulada: {formatarReais(resultado.parcelaCentavos / 100)}</Texto>
-        <Texto>Última parcela ajustada ao saldo: {formatarReais(resultado.parcelaFinalCentavos / 100)}</Texto>
-        <Texto>Juros no prazo: {formatarReais(resultado.jurosCentavos / 100)}</Texto><Texto tipo="apoio">{resultado.excluidos}</Texto></> : null}
+      {resultado ? <><Texto>Parcela simulada: {formatarCentavos(resultado.parcelaCentavos)}</Texto>
+        <Texto>Última parcela ajustada ao saldo: {formatarCentavos(resultado.parcelaFinalCentavos)}</Texto>
+        <Texto>Juros no prazo: {formatarCentavos(resultado.jurosCentavos)}</Texto><Texto tipo="apoio">{resultado.excluidos}</Texto></> : null}
     </GrupoLocal> : null}
     {analise.modalidade === "compra" ? <GrupoLocal titulo="Cenário comprar × alugar" apoio="Usa entrada, taxa e prazo preenchidos no simulador, e o horizonte em meses. Confirme custos recorrentes antes de calcular. Não é recomendação financeira.">
       <CampoLocal rotulo="Aluguel equivalente mensal em R$ (com encargos)" value={aluguel} onChangeText={setAluguel} keyboardType="decimal-pad" />
@@ -106,9 +113,9 @@ export function OrcamentoPessoal({ analise, salvar }: Props) {
       <CampoLocal rotulo="Custo hipotético de venda em % do imóvel" value={venda} onChangeText={setVenda} keyboardType="decimal-pad" />
       <Botao rotulo="Calcular cenário comprar e alugar" onPress={comparar} />
       {comparacao ? <>
-        <Texto>Compra — patrimônio líquido estimado no horizonte: {formatarReais(comparacao.patrimonioCompraCentavos / 100)}</Texto>
-        <Texto>Compra — saldo devedor estimado: {formatarReais(comparacao.saldoDevedorCentavos / 100)}</Texto>
-        <Texto>Aluguel — investimento estimado no horizonte: {formatarReais(comparacao.investimentoAluguelCentavos / 100)}</Texto>
+        <Texto>Compra — patrimônio líquido estimado no horizonte: {formatarCentavos(comparacao.patrimonioCompraCentavos)}</Texto>
+        <Texto>Compra — saldo devedor estimado: {formatarCentavos(comparacao.saldoDevedorCentavos)}</Texto>
+        <Texto>Aluguel — investimento estimado no horizonte: {formatarCentavos(comparacao.investimentoAluguelCentavos)}</Texto>
         <Texto tipo="apoio">Diferenças mensais de caixa são investidas no cenário com menor desembolso. Hipóteses nominais constantes; inflação, reajustes, seguros e custos não preenchidos não são inferidos. Altere as hipóteses para avaliar sensibilidade.</Texto>
       </> : null}
     </GrupoLocal> : null}

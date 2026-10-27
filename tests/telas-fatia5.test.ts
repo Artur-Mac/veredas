@@ -7,6 +7,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage/jest/async-s
 import { readdirSync, readFileSync } from "fs";
 import { router } from "expo-router";
 import React from "react";
+// Este ensaio de exclusão usa sistema sem avisos agendados; o adaptador nativo tem testes próprios.
+jest.mock("expo-notifications/build/getAllScheduledNotificationsAsync", () => ({ getAllScheduledNotificationsAsync: jest.fn(async () => []) }));
 import { Platform, StyleSheet, Text } from "react-native";
 import TestRenderer, { act, type ReactTestInstance } from "react-test-renderer";
 import { ProvedorDeAviso, useAviso } from "../src/componentes/casca/Aviso";

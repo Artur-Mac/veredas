@@ -8,6 +8,8 @@ import { Botao } from "../Botao";
 import { Texto } from "../Texto";
 import { CampoLocal, EscolhaLocal, GrupoLocal } from "./blocos";
 import { OcorrenciasDoEdificio } from "./Ocorrencias";
+import { ComplementosDoEdificio } from "./Complementos";
+import { LeituraDeImagem } from "../leitor/LeituraDeImagem";
 import { abrirDocumento, selecionarDocumento, type ArquivoDoDocumento } from "../../plataforma/documento";
 
 const TIPOS: { valor: DocumentoPessoal["tipo"]; rotulo: string }[] = [
@@ -60,6 +62,7 @@ export function DocumentosDoEdificio({ analise, salvar, levarParaVisita }: Props
     <Texto tipo="titulo-tela">Documentos e edifício.</Texto>
     <Texto>{ultimo ? `Última inspeção apresentada: ${formatarData(ultimo.inspecaoEm)} · ${ultimo.titulo}` : "Nenhum laudo com data de inspeção e vínculo confirmado foi apresentado."}</Texto>
     <Texto tipo="apoio">Data de emissão e ART/RRT não substituem a data/escopo da inspeção. Documentos apresentados não certificam a condição atual do prédio.</Texto>
+    <ComplementosDoEdificio analise={analise} salvar={salvar} />
     {c.documentos.map(d => <View key={d.id} style={{ gap: 4, marginVertical: 10 }}>
       <Texto tipo="secao">{d.titulo}</Texto>
       <Texto tipo="apoio">{TIPOS.find(t => t.valor === d.tipo)?.rotulo} · {d.vinculo === "confirmado" ? "Vínculo confirmado por você" : "Vínculo a revisar"}</Texto>
@@ -76,7 +79,11 @@ export function DocumentosDoEdificio({ analise, salvar, levarParaVisita }: Props
         void levarParaVisita(`propria-doc-${d.id.slice(-25)}`, `Pode esclarecer a data, o escopo e as pendências do documento ${d.titulo}?`.slice(0, 240));
       }} /> : null}
     </View>)}
-    <GrupoLocal titulo="Registrar documento apresentado" apoio="Registre metadados e trechos. Você pode escolher um PDF privado de até 20 MB. Não há consulta externa ou leitura automática.">
+    <GrupoLocal titulo="Registrar documento apresentado" apoio="Registre metadados e trechos. Você pode escolher um PDF privado de até 20 MB. Não há consulta externa; anexar o PDF não preenche os campos automaticamente.">
+      <LeituraDeImagem contexto="documento" aoRevisar={texto => {
+        if (texto.length > 6000) { setErro("Selecione no texto extraído um trecho de até 6.000 caracteres antes de usá-lo. Nenhum trecho foi cortado automaticamente."); return; }
+        setTrecho(texto); setErro("Trecho da imagem na revisão. Confira com a página original e informe documento, origem e página antes de guardar.");
+      }} />
       <Botao rotulo={arquivo ? "Trocar PDF escolhido" : "Escolher PDF deste aparelho"} desativado={anexando} onPress={() => {
         setAnexando(true); void selecionarDocumento().then(v => { if (v) setArquivo(v); })
           .catch(e => setErro(e instanceof Error ? e.message : "Não foi possível guardar o PDF."))

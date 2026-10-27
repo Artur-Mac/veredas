@@ -19,6 +19,7 @@ import {
 import { migrarAnaliseV1 } from "../dados/migracao";
 import type { RevisaoDaImportacao } from "../dados/backup";
 import { registrarAlteracaoDoAnuncio } from "../dados/historicoDoAnuncio";
+import { reconciliarLembretes } from "../plataforma/lembretes";
 import {
   acrescentarNaQuarentena,
   gravarJson,
@@ -369,6 +370,7 @@ export function AnalisesNoAparelho({ children }: { children: ReactNode }) {
   }, [selecionar]);
 
   const analiseAtiva = lista.find((a) => a.id === ativa) ?? null;
+  useEffect(() => { if (pronto && !erro) void reconciliarLembretes(lista); }, [lista, pronto, erro]);
 
   return (
     <Contexto.Provider
