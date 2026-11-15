@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
+import publicacaoDeCamadas from "./publicar-camadas.cjs";
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const cache = path.join(raiz, ".cache/dados-recife");
 const pasta = path.join(raiz, "src/dados/recife");
@@ -13,10 +14,14 @@ if (process.argv.includes("--reverter")) {
   if (!fs.existsSync(anterior)) throw new Error("Não há versão anterior registrada.");
   const texto = fs.readFileSync(anterior, "utf8");
   for (const m of texto.matchAll(/require\("(.+?\.json)"\)/g)) if (!fs.existsSync(path.resolve(pasta, m[1]))) throw new Error("Arquivo da versão anterior não encontrado.");
+  for (const m of texto.matchAll(/"recife\/(indice-municipal\/.+?\.json)"/g)) if (!fs.existsSync(path.resolve(pasta, m[1]))) throw new Error("Arquivo da versão anterior não encontrado.");
   fs.writeFileSync(registro + ".tmp", texto); fs.renameSync(registro + ".tmp", registro);
+  publicacaoDeCamadas.publicarCamadas();
   console.log("Índice local anterior reativado; caderno não foi alterado.");
 } else {
-  const auditoria = JSON.parse(fs.readFileSync(path.join(raiz, "docs/plano-recife/execucoes/municipal-validacao.json"), "utf8"));
+  // VE02: o caminho da auditoria pode vir de VEREDA_AUDITORIA_MUNICIPAL (padrão: a auditoria histórica em docs/plano-recife).
+  const caminhoDaAuditoria = process.env.VEREDA_AUDITORIA_MUNICIPAL ?? path.join(raiz, "docs/plano-recife/execucoes/municipal-validacao.json");
+  const auditoria = JSON.parse(fs.readFileSync(caminhoDaAuditoria, "utf8"));
   if (auditoria.particoes.length !== 94 || auditoria.colisoesEntreBairros.length) throw new Error("Auditoria municipal incompleta ou com colisões.");
   const staging = path.join(cache, "indice-municipal-staging");
   for (const p of auditoria.particoes) {
@@ -60,17 +65,24 @@ if (process.argv.includes("--reverter")) {
   gravarUmaVez("meta.json", metadados);
   gravarUmaVez("cobertura.json", JSON.stringify({ versao: 1, geradoEm: meta.geradoEm, bairroNaoHabilitadoPermiteCaderno: true,
     nota: "Controle geométrico não é probabilidade de identificação nem validação física do edifício.", bairros: coberturas }, null, 2) + "\n");
+  // VE02: antes de trocar o catálogo, relê cada partição gravada e confere com o hash auditado. Uma escrita interrompida
+  // ou corrompida para aqui, com o catálogo ainda apontando para a versão anterior.
+  for (const p of habilitadas) {
+    if (hash(fs.readFileSync(path.join(destino, p.bairro + ".json"))) !== p.sha256) throw new Error(`Partição ${p.bairro} gravada não confere; catálogo preservado.`);
+  }
   const nomes = habilitadas.map(p => p.bairro);
   const grafias = Object.fromEntries(coberturas.filter(c => nomes.includes(c.bairro)).map(c => [c.bairro, c.grafias]));
   const texto = `// Gerado pelo ativador local; todos os arquivos foram validados antes desta troca atômica.\n` +
     `export const DIRETORIO_DO_INDICE = ${JSON.stringify(diretorio)};\n` +
     `export const BAIRROS_HABILITADOS = ${JSON.stringify(nomes)} as const;\n` +
     `export const GRAFIAS_HABILITADAS = ${JSON.stringify(grafias)};\n` +
-    `export const CARREGADORES_DO_INDICE = {\n${nomes.map(b => `  ${JSON.stringify(b)}: () => require(${JSON.stringify(`./${diretorio}/${b}.json`)}) as unknown,`).join("\n")}\n};\n` +
+    // D036: caminhos, não require(); os arquivos saem do bundle e são publicados por scripts/dados/publicar-camadas.cjs.
+    `export const ARQUIVOS_DO_INDICE = {\n${nomes.map(b => `  ${JSON.stringify(b)}: ${JSON.stringify(`recife/${diretorio}/${b}.json`)},`).join("\n")}\n};\n` +
     `export const LER_META_PUBLICADA = () => require(${JSON.stringify(`./${diretorio}/meta.json`)}) as unknown;\n`;
   // O catálogo é a única troca de autoridade; arquivos da versão anterior ficam preservados.
   if (fs.existsSync(registro) && fs.readFileSync(registro, "utf8") !== texto) fs.copyFileSync(registro, anterior);
   fs.writeFileSync(registro + ".tmp", texto); fs.renameSync(registro + ".tmp", registro);
+  publicacaoDeCamadas.publicarCamadas();
   console.log(JSON.stringify({ versao: idVersao, bairrosHabilitados: nomes.length, edificios: habilitadas.reduce((s, p) => s + p.edificios, 0),
     mantidosSemIndice: coberturas.filter(c => c.estado !== "habilitado").map(c => ({ bairro: c.bairro, motivo: c.estado })) }, null, 2));
 }

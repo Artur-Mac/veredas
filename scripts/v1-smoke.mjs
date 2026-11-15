@@ -1130,8 +1130,11 @@ try {
     await page.keyboard.press("Escape");
     await esperar(() => new URL(page.url()).pathname !== "/creditos", "Esc fecha a carteira (menu)");
 
+    // Os dossiês de exemplo saíram do menu (14/11/2026); a tela antiga continua aberta pelo endereço, como referência.
     await page.getByRole("button", { name: "Menu de navegação", exact: true }).click();
-    await page.getByRole("menuitem", { name: "Dossiês de exemplo", exact: true }).click();
+    assert.equal(await page.getByRole("menuitem", { name: "Dossiês de exemplo", exact: true }).count(), 0, "o menu não leva mais ao layout antigo");
+    await page.keyboard.press("Escape");
+    await page.goto(new URL("/exemplos/boa-viagem", page.url()).href);
     await esperarRota(page, "/exemplos/boa-viagem");
     await page.getByRole("heading").first().waitFor();
     const secoesComEstado = await page.evaluate(

@@ -697,7 +697,9 @@ export function lerSinistro(r) {
 
 // ——— Defesa Civil ————————————————————————————————————————————————————————————————
 
-const MESES = new Set(["janeiro", "fevereiro", "marco", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"]);
+// "maro": a publicação de 2020 e 2022 perde o "ç" de "Março" (VE02). Sem esta grafia, todas as linhas de março desses
+// anos eram lidas como alinhadas e descartadas em silêncio (10.577 em 2020 e 11.322 em 2022).
+const MESES = new Set(["janeiro", "fevereiro", "marco", "maro", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"]);
 
 function anoDe(...valores) {
   for (const v of valores) {
@@ -727,7 +729,22 @@ export function lerAtendimentoDaDefesaCivil(r) {
     bairro: limpar(r.Bairro),
     rua: rua.slice(0, 120),
     ocorrencia: limpar(deslocada ? r.Data : r.Ocorrencia),
+    // Tipo_da_Acao fica na própria coluna mesmo nas linhas deslocadas (conferido em 2019, 2020 e 2022). Vazio → null.
+    acao: limpar(r.Tipo_da_Acao) || null,
   };
+}
+
+/**
+ * Classe da ação da Defesa Civil (VE02): "comunitaria" para ações de alcance comunitário que não são vistoria nem
+ * resposta a risco no endereço (porta a porta, atendimento social, distribuição de donativos, ações educativas,
+ * encaminhamento a parceiros); "atendimento" para todo o resto, inclusive tipo vazio ou desconhecido. Regra conservadora:
+ * na dúvida, a linha continua contando como atendimento.
+ */
+export function classeDaAcao(texto) {
+  const t = dobrar(texto);
+  if (t === "") return "atendimento";
+  if (/porta.{0,3}porta|atendimento social|distribui|educativ|palestra|capacita|simulado|encaminhamentos? (aos|a) parceiros/.test(t)) return "comunitaria";
+  return "atendimento";
 }
 
 /** Categoria da ocorrência da Defesa Civil, tolerando a acentuação perdida da publicação ("Imveis com Danos"). */

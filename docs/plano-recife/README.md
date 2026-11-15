@@ -1,5 +1,7 @@
 # VEREDA Recife — Plano técnico definitivo por épocas
 
+**Execution update — 14 November 2026:** use the [Official Application and Evaluation Plan](../aplicacao/VEREDA-APPLICATION-PLAN.md) for the new research-driven programme. Its VE00–VE17 sequence supersedes conflicting priorities below. This October plan and its F01–F80 catalogue remain implementation history and a preservation checklist; historical EP completion does not complete a VE epoch.
+
 **Versão 1.0 · 21/10/2026 · Plano canônico para a versão ampla de experimentação.**
 
 **Adendo 1.1:** [CNPJ e ocorrências do edifício](10-CNPJ-E-OCORRENCIAS-DO-EDIFICIO.md), detalhando obras, questões construtivas, documentos estruturais, trabalhistas e ruído. Aprofunda capacidades existentes, sem mudar a contagem ou iniciar implementação.

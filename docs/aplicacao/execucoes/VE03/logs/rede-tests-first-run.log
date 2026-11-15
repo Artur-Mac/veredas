@@ -1,0 +1,148 @@
+TAP version 13
+# Subtest: leitor PBF
+    # Subtest: lê nós densos (pulando denseinfo), tags de nó e vias com referências delta
+    ok 1 - lê nós densos (pulando denseinfo), tags de nó e vias com referências delta
+      ---
+      duration_ms: 3.807119
+      type: 'test'
+      ...
+    1..1
+ok 1 - leitor PBF
+  ---
+  duration_ms: 4.570529
+  type: 'suite'
+  ...
+# Subtest: permissão a pé e barreiras
+    # Subtest: proíbe autoestrada, obra, foot=no e privado; foot=yes vence access=private; clientes é restrito
+    ok 1 - proíbe autoestrada, obra, foot=no e privado; foot=yes vence access=private; clientes é restrito
+      ---
+      duration_ms: 0.198437
+      type: 'test'
+      ...
+    # Subtest: portão privado e muro bloqueiam; portão com foot=yes não
+    ok 2 - portão privado e muro bloqueiam; portão com foot=yes não
+      ---
+      duration_ms: 0.122323
+      type: 'test'
+      ...
+    1..2
+ok 2 - permissão a pé e barreiras
+  ---
+  duration_ms: 0.496403
+  type: 'suite'
+  ...
+# Subtest: grafo e rotas
+    # Subtest: via privada e autoestrada ficam fora; mão única não restringe a pé
+    ok 1 - via privada e autoestrada ficam fora; mão única não restringe a pé
+      ---
+      duration_ms: 0.679109
+      type: 'test'
+      ...
+    # Subtest: escada: rota padrão usa a escada; cenário sem escadas faz a volta longa
+    ok 2 - escada: rota padrão usa a escada; cenário sem escadas faz a volta longa
+      ---
+      duration_ms: 0.359363
+      type: 'test'
+      ...
+    # Subtest: viaduto sem nó comum não se liga à via de baixo; componente isolado não tem rota
+    ok 3 - viaduto sem nó comum não se liga à via de baixo; componente isolado não tem rota
+      ---
+      duration_ms: 0.225949
+      type: 'test'
+      ...
+    # Subtest: portão privado no meio da via corta a passagem; com foot=yes, passa
+    ok 4 - portão privado no meio da via corta a passagem; com foot=yes, passa
+      ---
+      duration_ms: 0.409147
+      type: 'test'
+      ...
+    # Subtest: pista dupla: atravessar exige a faixa (footway=crossing) e conta via principal
+    ok 5 - pista dupla: atravessar exige a faixa (footway=crossing) e conta via principal
+      ---
+      duration_ms: 0.327201
+      type: 'test'
+      ...
+    # Subtest: cliente/restrito só entra quando pedido
+    ok 6 - cliente/restrito só entra quando pedido
+      ---
+      duration_ms: 0.233433
+      type: 'test'
+      ...
+    # Subtest: rota a partir de um ponto sobre a aresta soma as pontas
+    not ok 7 - rota a partir de um ponto sobre a aresta soma as pontas
+      ---
+      duration_ms: 0.822742
+      type: 'test'
+      location: '/home/v/Documents/vereda/veredas/scripts/dados/rede/testes/rede.test.mjs:178:3'
+      failureType: 'testCodeFailure'
+      error: 'esperava ~150 m, deu 182.07097652388666'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (file:///home/v/Documents/vereda/veredas/scripts/dados/rede/testes/rede.test.mjs:184:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: versão da rede: igual para entradas iguais; muda com extrato, regras ou correções
+    ok 8 - versão da rede: igual para entradas iguais; muda com extrato, regras ou correções
+      ---
+      duration_ms: 0.436358
+      type: 'test'
+      ...
+    1..8
+not ok 3 - grafo e rotas
+  ---
+  duration_ms: 4.331214
+  type: 'suite'
+  location: '/home/v/Documents/vereda/veredas/scripts/dados/rede/testes/rede.test.mjs:115:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: frentes e entradas
+    # Subtest: esquina: a frente do código cadastral é a principal e a outra rua fica como frente adicional
+    ok 1 - esquina: a frente do código cadastral é a principal e a outra rua fica como frente adicional
+      ---
+      duration_ms: 0.924715
+      type: 'test'
+      ...
+    # Subtest: canal: a rua do outro lado da água é recusada, nunca escolhida; a ligação não cruza o canal
+    ok 2 - canal: a rua do outro lado da água é recusada, nunca escolhida; a ligação não cruza o canal
+      ---
+      duration_ms: 0.337761
+      type: 'test'
+      ...
+    # Subtest: correção revisada substitui o candidato, guarda a origem e não toca o centroide
+    ok 3 - correção revisada substitui o candidato, guarda a origem e não toca o centroide
+      ---
+      duration_ms: 0.172277
+      type: 'test'
+      ...
+    # Subtest: distância ao contorno: 0 dentro, metros fora
+    ok 4 - distância ao contorno: 0 dentro, metros fora
+      ---
+      duration_ms: 0.121231
+      type: 'test'
+      ...
+    1..4
+ok 4 - frentes e entradas
+  ---
+  duration_ms: 1.692895
+  type: 'suite'
+  ...
+1..4
+# tests 15
+# suites 4
+# pass 14
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 78.814184

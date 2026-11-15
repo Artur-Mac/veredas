@@ -1,0 +1,168 @@
+{
+  "metodo": "Triagem de perfis na base, sem vistoria física. Isolamento considera somente volumes altos da amostra preparada. Centros são médias dos vértices; não alimentam o cálculo de sombra.",
+  "volumesUnicos": 45060,
+  "torresProximas": {
+    "a": {
+      "id": "pav-223192-0",
+      "dsqfl": "11381095010897",
+      "pavimentos": 17,
+      "associacaoValidada": true,
+      "centro": [
+        -34.90303275,
+        -8.034366166666667
+      ],
+      "componentes": 1
+    },
+    "b": {
+      "id": "pav-223193-0",
+      "dsqfl": "11381095060609",
+      "pavimentos": 17,
+      "associacaoValidada": true,
+      "centro": [
+        -34.903404,
+        -8.034310131578948
+      ],
+      "componentes": 1
+    },
+    "distanciaEntreCentrosM": 41
+  },
+  "torreAfastadaDeOutrasAltas": {
+    "volume": {
+      "id": "pav-223184-0",
+      "dsqfl": "31405120020580",
+      "pavimentos": 23,
+      "associacaoValidada": true,
+      "centro": [
+        -34.90549247540984,
+        -8.033442590163935
+      ],
+      "componentes": 1
+    },
+    "vizinhoAltoMaisProximoNoRecorteM": 123
+  },
+  "volumesDeAlturasDistintasMesmoLote": [
+    {
+      "id": "pav-15837-0",
+      "dsqfl": "11381095021115",
+      "pavimentos": 1,
+      "associacaoValidada": false,
+      "centro": [
+        -34.90420183333333,
+        -8.035382
+      ],
+      "componentes": 1
+    },
+    {
+      "id": "pav-33750-0",
+      "dsqfl": "11381095021115",
+      "pavimentos": null,
+      "associacaoValidada": true,
+      "centro": [
+        -34.9038162,
+        -8.0353174
+      ],
+      "componentes": 1
+    },
+    {
+      "id": "pav-36644-0",
+      "dsqfl": "11381095021115",
+      "pavimentos": null,
+      "associacaoValidada": true,
+      "centro": [
+        -34.904222,
+        -8.035526999999998
+      ],
+      "componentes": 1
+    },
+    {
+      "id": "pav-223200-0",
+      "dsqfl": "11381095021115",
+      "pavimentos": 37,
+      "associacaoValidada": true,
+      "centro": [
+        -34.90391715625,
+        -8.0352106875
+      ],
+      "componentes": 1
+    },
+    {
+      "id": "pav-225781-0",
+      "dsqfl": "11381095021115",
+      "pavimentos": null,
+      "associacaoValidada": true,
+      "centro": [
+        -34.903963162162164,
+        -8.035081351351351
+      ],
+      "componentes": 1
+    }
+  ],
+  "multiplosVolumesMesmoLote": [
+    {
+      "id": "pav-15837-0",
+      "dsqfl": "11381095021115",
+      "pavimentos": 1,
+      "associacaoValidada": false,
+      "centro": [
+        -34.90420183333333,
+        -8.035382
+      ],
+      "componentes": 1
+    },
+    {
+      "id": "pav-33750-0",
+      "dsqfl": "11381095021115",
+      "pavimentos": null,
+      "associacaoValidada": true,
+      "centro": [
+        -34.9038162,
+        -8.0353174
+      ],
+      "componentes": 1
+    },
+    {
+      "id": "pav-36644-0",
+      "dsqfl": "11381095021115",
+      "pavimentos": null,
+      "associacaoValidada": true,
+      "centro": [
+        -34.904222,
+        -8.035526999999998
+      ],
+      "componentes": 1
+    },
+    {
+      "id": "pav-223200-0",
+      "dsqfl": "11381095021115",
+      "pavimentos": 37,
+      "associacaoValidada": true,
+      "centro": [
+        -34.90391715625,
+        -8.0352106875
+      ],
+      "componentes": 1
+    },
+    {
+      "id": "pav-225781-0",
+      "dsqfl": "11381095021115",
+      "pavimentos": null,
+      "associacaoValidada": true,
+      "centro": [
+        -34.903963162162164,
+        -8.035081351351351
+      ],
+      "componentes": 1
+    }
+  ],
+  "alturaAusente": {
+    "id": "pav-33671-0",
+    "dsqfl": "31405200020480",
+    "pavimentos": null,
+    "associacaoValidada": true,
+    "centro": [
+      -34.905969299999995,
+      -8.0346902
+    ],
+    "componentes": 1
+  }
+}

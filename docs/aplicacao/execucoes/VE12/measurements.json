@@ -1,0 +1,192 @@
+{
+ "epoch": "VE12",
+ "date": "2026-11-14",
+ "status": "partial",
+ "outcome": "iterate",
+ "reason": "Engineering acceptance of the core journey holds in all five areas (20 dossiers, 10 comparisons, rent and purchase, complete and incomplete data, later-update path, backup/restore) with zero invariant violations; customer validation (G-USER) and native-device measurement were not performed, so the pilot is NOT validated.",
+ "e2e": {
+  "areas": 5,
+  "dossiers": 20,
+  "comparisons": {
+   "boa-viagem": {
+    "aluguel": {
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": true,
+     "ondeProcurar": true
+    },
+    "compra": {
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": false,
+     "ondeProcurar": true
+    }
+   },
+   "casa-forte": {
+    "aluguel": {
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": true,
+     "ondeProcurar": true
+    },
+    "compra": {
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": false,
+     "ondeProcurar": true
+    }
+   },
+   "gracas": {
+    "aluguel": {
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": true,
+     "ondeProcurar": true
+    },
+    "compra": {
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": false,
+     "ondeProcurar": true
+    }
+   },
+   "espinheiro": {
+    "aluguel": {
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": true,
+     "ondeProcurar": true
+    },
+    "compra": {
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": false,
+     "ondeProcurar": true
+    }
+   },
+   "madalena": {
+    "aluguel": {
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": true,
+     "ondeProcurar": true
+    },
+    "compra": {
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": false,
+     "ondeProcurar": true
+    }
+   }
+  },
+  "page_errors": 0,
+  "external_requests": 0,
+  "invariant_violations": 0,
+  "capability_presence_per_area_of_4": {
+   "boa-viagem": {
+    "achados": 4,
+    "memoria": 4,
+    "memoriaMudou": 1,
+    "negociacao": 4,
+    "diaADia": 4,
+    "seAlagar": 1,
+    "noite": 4,
+    "sol": 2,
+    "barulho": 4
+   },
+   "casa-forte": {
+    "achados": 4,
+    "memoria": 4,
+    "memoriaMudou": 1,
+    "negociacao": 4,
+    "diaADia": 4,
+    "seAlagar": 0,
+    "noite": 4,
+    "sol": 4,
+    "barulho": 1
+   },
+   "gracas": {
+    "achados": 4,
+    "memoria": 4,
+    "memoriaMudou": 1,
+    "negociacao": 4,
+    "diaADia": 4,
+    "seAlagar": 0,
+    "noite": 4,
+    "sol": 4,
+    "barulho": 2
+   },
+   "espinheiro": {
+    "achados": 4,
+    "memoria": 4,
+    "memoriaMudou": 1,
+    "negociacao": 4,
+    "diaADia": 4,
+    "seAlagar": 1,
+    "noite": 4,
+    "sol": 3,
+    "barulho": 2
+   },
+   "madalena": {
+    "achados": 4,
+    "memoria": 4,
+    "memoriaMudou": 1,
+    "negociacao": 4,
+    "diaADia": 4,
+    "seAlagar": 0,
+    "noite": 4,
+    "sol": 3,
+    "barulho": 4
+   }
+  },
+  "ms_to_dossier": {
+   "min": 913,
+   "median": 969,
+   "max": 1685
+  },
+  "ms_to_rotina_complete": {
+   "min": 1925,
+   "median": 2145,
+   "max": 2501
+  },
+  "environment": "Expo web dev server, desktop Chromium, 375×812"
+ },
+ "production_web_build": {
+  "bundle_bytes": 30078802,
+  "bundle_gzip_bytes": 7361766,
+  "data_json_bytes": 28410000,
+  "largest": {
+   "solar_cutouts": 15420000,
+   "municipal_index": 7490000,
+   "timetable": 3160000
+  },
+  "startup_ms_median_cpu1x": 712,
+  "startup_ms_median_cpu4x": 1969,
+  "heap_mb": 45,
+  "note": "served locally; network time not included; CPU throttling is not a device measurement"
+ },
+ "backup_restore": "Jest round trip with VE05–VE11 fields (snapshot, destinations, visit questions) and an older notebook",
+ "tests": {
+  "jest": "65/65 suites, 1553/1553",
+  "node": "81/81",
+  "typecheck": "0 errors",
+  "lint": "0 errors, 5 pre-existing warnings",
+  "v1_smoke": "50/50"
+ },
+ "not_done": [
+  "G-USER moderated round (no participants)",
+  "native device latency/memory",
+  "larger text and keyboard pass beyond existing smoke",
+  "publication refresh cost on a real schedule"
+ ]
+}

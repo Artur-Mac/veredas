@@ -1,0 +1,1 @@
+{"displayFieldName":"","fieldAliases":{"MN":"MN","MX":"MX","N":"N"},"fields":[{"name":"MN","type":"esriFieldTypeDate","alias":"MN","length":8},{"name":"MX","type":"esriFieldTypeDate","alias":"MX","length":8},{"name":"N","type":"esriFieldTypeInteger","alias":"N"}],"features":[{"attributes":{"MN":1689588172000,"MX":1772138271000,"N":7808}}]}

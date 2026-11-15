@@ -289,6 +289,8 @@ export const esquemaRuaDoBairro = z.strictObject({
       grafia: z.string().max(120).nullable(),
       porAno: z.array(z.tuple([z.number().int().min(2014).max(2024), z.number().int().min(1)])),
       ocorrencias: z.array(z.tuple([categoriaDaOcorrencia, z.number().int().min(1)])),
+      /** VE02: ações comunitárias (porta a porta, atendimento social, donativos), fora de `atendimentos`. Ausente em índices anteriores. */
+      acoesComunitarias: z.number().int().min(0).optional(),
     }).nullable(),
   })),
 });

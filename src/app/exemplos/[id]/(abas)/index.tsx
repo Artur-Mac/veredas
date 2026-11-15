@@ -4,6 +4,7 @@ import { useCallback, useRef } from "react";
 import { Share, View, type ScrollView } from "react-native";
 import { Botao, BotaoIcone } from "../../../../componentes/Botao";
 import { SecoesDoDossie } from "../../../../componentes/dossie/Secoes";
+import { CartaoSolExemplo } from "../../../../componentes/sol/CartaoSolExemplo";
 import { CartaoDoAnuncio, CartaoVisita, TopoDoDossie } from "../../../../componentes/dossie/Topo";
 import { AreaDeBotoes, Cabecalho, Rolagem, Tela } from "../../../../componentes/Tela";
 import { secaoDoFato } from "../../../../dados/consultas";
@@ -61,6 +62,7 @@ export default function TelaDoDossie() {
           <CartaoDoAnuncio dossie={dossie} />
         </View>
         <CartaoVisita dossie={dossie} aoAbrirFato={abrirFato} />
+        <CartaoSolExemplo dossie={dossie} />
         <SecoesDoDossie dossie={dossie} aoMedir={medir} />
         <AreaDeBotoes>
           <Botao

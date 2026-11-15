@@ -20,9 +20,12 @@ import {
   type RuaDoBairro,
 } from "../contratos";
 import { BAIRROS_COBERTOS, type SlugCoberto } from "./bairros";
-import { CARREGADORES_DO_INDICE, LER_META_PUBLICADA } from "./publicacaoGerada";
+import { lerCamada } from "../camadas";
+import { ARQUIVOS_DO_INDICE, LER_META_PUBLICADA } from "./publicacaoGerada";
 
-const ARQUIVOS: Record<SlugCoberto, () => unknown> = CARREGADORES_DO_INDICE;
+// D036: o arquivo de cada bairro fica fora do bundle; a tela espera por ele (`arquivoDoIndice`) antes de ler. O meta.json,
+// pequeno, continua no bundle.
+const ARQUIVOS: Record<SlugCoberto, string> = ARQUIVOS_DO_INDICE;
 const ARQUIVO_META = LER_META_PUBLICADA;
 
 type Carregado = { indice: IndiceDoBairro; porId: Map<string, Edificio> };
@@ -120,9 +123,9 @@ export function checarIndiceRaso(slug: SlugCoberto, dados: unknown): IndiceDoBai
 function carregar(slug: SlugCoberto): Carregado {
   const guardado = emMemoria.get(slug);
   if (guardado) return guardado;
-  const leitor = ARQUIVOS[slug];
-  if (!leitor) throw new Error(`Bairro sem índice cadastral: ${String(slug)}`);
-  const indice = checarIndiceRaso(slug, leitor());
+  const arquivo = ARQUIVOS[slug];
+  if (!arquivo) throw new Error(`Bairro sem índice cadastral: ${String(slug)}`);
+  const indice = checarIndiceRaso(slug, lerCamada(arquivo));
   const carregado = { indice, porId: indexarPorId(slug, indice.edificios) };
   emMemoria.set(slug, carregado);
   return carregado;
@@ -135,6 +138,11 @@ function carregarMeta(): MetaDoIndice {
   if (!resultado.success) throw new Error(descreverFalha("meta.json", resultado.error.issues));
   metaEmMemoria = resultado.data;
   return metaEmMemoria;
+}
+
+/** O arquivo de camada do índice do bairro (para `garantirCamadas`), ou null fora dos bairros habilitados. */
+export function arquivoDoIndice(slug: string | null | undefined): string | null {
+  return slug ? ((ARQUIVOS as Record<string, string | undefined>)[slug] ?? null) : null;
 }
 
 /** O índice inteiro do bairro (edifícios, contexto e obras). Checa o formato no primeiro acesso. */

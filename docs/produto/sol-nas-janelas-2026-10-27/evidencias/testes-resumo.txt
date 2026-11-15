@@ -1,0 +1,15 @@
+SUÍTE GERAL
+
+Test Suites: 53 passed, 53 total
+Tests:       1414 passed, 1414 total
+Snapshots:   0 total
+Time:        50.387 s, estimated 99 s
+Ran all test suites.
+
+FUNCIONALIDADE APÓS ÚLTIMAS CORREÇÕES
+
+Test Suites: 2 passed, 2 total
+Tests:       42 passed, 42 total
+Snapshots:   0 total
+Time:        2.652 s
+Ran all test suites matching /sol-janelas|sol-interface/i.

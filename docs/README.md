@@ -1,5 +1,7 @@
 # Índice da Documentação — VEREDA
 
+**Current research-to-product execution programme (14 November 2026): [VEREDA Official Application and Evaluation Plan](aplicacao/VEREDA-APPLICATION-PLAN.md).** This English programme defines VE00–VE17, the application of all 217 collected PDFs, acquisition and evaluation gates, and the [reusable implementation prompt](aplicacao/EXECUTION-PROMPT.md). It supersedes conflicting historical execution priorities for this programme; existing implementation and historical evidence remain preserved. See the [epoch tracker](aplicacao/EPOCH-TRACKER.md) for actual execution status.
+
 Este diretório concentra toda a documentação ativa, canônica e de alto valor do **VEREDA**. Documentos intermediários, relatórios de handoff operacionais e planos de épocas passadas foram organizados no arquivo morto [`../ignorar/`](../ignorar/LEIA-ME.md).
 
 ---
@@ -25,10 +27,22 @@ Este diretório concentra toda a documentação ativa, canônica e de alto valor
 
 ---
 
-## 🔬 3. Produto, Dados Públicos e Inteligência Territorial (`produto/`)
+## 🧭 2B. Pivô Pós-11/11/2026, Benchmarks de 14/11 e Pasta Isolada de Negócio
 
-* **[Pesquisa Extensiva de KPIs e Inteligência Territorial](./produto/pesquisa-extensiva-kpis-indicadores-insights-vereda.md)**  
-  Pesquisa aprofundada com novos indicadores periciais (Terrenos de Marinha SPU, Azimute Solar Nascente/Poente, Bloqueio de Alísios, Cota HAND, Câmera Forense YOLOv8, DuckDB Spatial e repositórios open-source).
+> **Para rodar skills de startup sem puxar contexto do app (`src/`, GeoJSONs, PDFs e docs de outubro):** use a pasta irmã isolada **[`vereda-negocio/`](../../vereda-negocio/README.md)** na raiz pai (`/home/v/Documents/vereda/vereda-negocio/`).
+
+* **[Estado Real da Aplicação (`VE00–VE15`)](./aplicacao/EPOCH-TRACKER.md)** e **[Runbook (`VE16`)](./aplicacao/RUNBOOK-ATUALIZACAO.md)** — Controle de execução, decisões `D001–D039`, split de payload (`D036`) e rejeição do ML de alagamento (`VE14`).
+* **[Parecer Técnico Integrado](./dados/literatura/parecer-tecnico-integrado.md)** e **[Regras do CRIVO](./dados/crivo/CRIVO.md)** — Base do pivô para **Comparação como centro**, evidência com fonte/data, zero score e auditoria de 217 PDFs + validação (`validacao-defesa-civil-gtfs.md`).
+* **[Mapeamento Criativo de Concorrentes e Dados (14/11/2026)](./produto/mapeamento-criativo-concorrentes-e-dados-2026-11-14.md)** — 9 concorrentes globais de contexto/decisão, 12 novas fontes de alto impacto (Censo 2022 aluguel pago & FCU, OSRM, TJPE, AVCB, PVGIS, CVM, CPRH, Ideb/QEdu) e 9 oportunidades de feature.
+* **[Benchmark de Portais Imobiliários (14/11/2026)](./produto/benchmark-portais-imobiliarios-2026-11-14.md)** — Posicionamento pós-anúncio frente a QuintoAndar, Viva Real, OLX, ZAP, Zillow e Homes.com (separação Pedido × ITBI Fiscal × Locação Contratada).
+* **[Benchmark de Conectividade (14/11/2026)](./produto/benchmark-conectividade-recife-2026-11-14.md)** — Teste Anatel Mosaico (48/48 no mesmo intervalo 5G), nPerf, links de fibra por endereço e estratégia pragmática offline por cômodo.
+* **[Benchmark Google Earth (14/11/2026)](./produto/benchmark-google-earth-2026-11-14.md)** — Por que não pagar licença externa e seguir com bases 3D abertas locais (Edificações 3D, EMLURB, PE3D, eSIG).
+* **[Fontes Prioritárias de Recife/PE (14/11/2026)](./produto/fontes-prioritarias-recife-2026-11-14.md)** — Fontes testadas e arquivadas em `docs/dados/raw/fontes-prioritarias-2026-11-14/` (Calçadas, CONVIVA, EMLURB resíduos, IEPs, ANEEL DEC/FEC, APAC/COP, maré REMO, drenagem eSIG, Ideb/CNES).
+
+## 🔬 3. Produto, Dados Públicos e Inteligência Territorial (`produto/` — Base Histórica de Outubro)
+
+* **[Pesquisa Extensiva de KPIs, Indicadores e Estratégia (22/10/2026)](./produto/pesquisa-extensiva-kpis-indicadores-insights-vereda.md)**  
+  Tese de produto, métrica North Star (`CDAC`), guardrails anti-score/LGPD e 7 hipóteses de monetização e risco.
 * **[Pesquisa de Produto Verificada (20/10/2026)](./produto/pesquisa-2026-10-20/README.md)**  
   Auditoria factual de 109 itens com fontes confirmadas sobre dados públicos municipais/estaduais, APIs pagas, fornecedores, concorrentes diretos e regulação imobiliária.
 * **[Refinamento de Produto e Backlog Executável (21/10/2026)](./produto/refinamento-2026-10-21/README.md)**  

@@ -17,6 +17,7 @@ import {
   type AnaliseV2,
 } from "../dados/contratos";
 import { migrarAnaliseV1 } from "../dados/migracao";
+import { migrarJanelasLegadas } from "../dados/sol/janelas";
 import type { RevisaoDaImportacao } from "../dados/backup";
 import { registrarAlteracaoDoAnuncio } from "../dados/historicoDoAnuncio";
 import { reconciliarLembretes } from "../plataforma/lembretes";
@@ -109,7 +110,7 @@ export async function carregarAnalises(agora: Date = new Date()): Promise<Result
       const invalidos: unknown[] = [];
       for (const item of v2.valor as unknown[]) {
         const lido = esquemaAnaliseV2.safeParse(item);
-        if (lido.success) lista.push(lido.data);
+        if (lido.success) lista.push(migrarJanelasLegadas(lido.data));
         else invalidos.push(item);
       }
       if (!(await guardarNaQuarentena(invalidos, agora))) {

@@ -1,0 +1,125 @@
+{
+	"metadados":{
+		"cabecalho": {
+			"titulo": "Diário Oficial",
+			"descricao": "O Diário Oficial é um jornal oficial dos órgãos públicos municipais. O governo do Recife precisa tornar público suas ações, decisões, resoluções ou qualquer outro assunto de interesse da sociedade. Esse dicionário contém o formato dos arquivos referentes aos Diários Oficiais publicados a partir do ano de 2017.",
+			"categoria_vcge": "",
+			"fonte_dados": "http://dados.recife.pe.gov.br",
+			"licenca": "Open Database License (ODbL)",
+			"responsavel_dados": "Secretária de Governo",
+			"responsavel_disponibilizar": "EMPREL",
+			"frequencia_atualizacao": "Mensal",
+			"endereco_dataset": "http://dados.recife.pe.gov.br/dataset/diario-oficial",
+			"status": "ativo",
+			"endereco_dataset_substituto": "",
+			"granularidade": "Caderno por Ano",
+			"etiquetas": "Diário Oficial, Edição, Ordinária, Extraordinária, Extra, Suplementar, Caderno, Seção, Matéria, Conteúdo, Título, Ações, Decisões, Resoluções"
+		},
+		"recursos": [
+			{ 
+				"identificador": "https://dados.recife.pe.gov.br/dataset/diario-oficial/resource/fb65802b-ba52-47bb-9df4-ce5406c7a845",
+				"titulo": "Diário Oficial 2026",
+				"formato": "csv",
+				"descricao": "Dados do Diário Oficial no ano 2026"
+			},
+			{ 
+				"identificador": "https://dados.recife.pe.gov.br/dataset/diario-oficial/resource/06708c01-80b7-4814-a774-4e7a7418c8ac",
+				"titulo": "Diário Oficial 2025",
+				"formato": "csv",
+				"descricao": "Dados do Diário Oficial no ano 2025"
+			},
+			{ 
+				"identificador": "https://dados.recife.pe.gov.br/dataset/diario-oficial/resource/49e49892-8598-49c1-8630-6e61b16299e7",
+				"titulo": "Diário Oficial 2024",
+				"formato": "csv",
+				"descricao": "Dados do Diário Oficial no ano 2024"
+			},
+			{ 
+				"identificador": "https://dados.recife.pe.gov.br/dataset/diario-oficial/resource/e3e0a453-4075-44d1-9d58-3f952f7f6a23",
+				"titulo": "Diário Oficial 2023",
+				"formato": "csv",
+				"descricao": "Dados do Diário Oficial no ano 2023"
+			},
+			{ 
+				"identificador": "https://dados.recife.pe.gov.br/dataset/diario-oficial/resource/ceeedc40-3b52-42ad-b958-ffba048b8843",
+				"titulo": "Diário Oficial 2022",
+				"formato": "csv",
+				"descricao": "Dados do Diário Oficial no ano 2022"
+			},
+			{ 
+				"identificador": "https://dados.recife.pe.gov.br/dataset/diario-oficial/resource/53e4b83a-e7ea-4a5b-bab9-39a0c76926ac",
+				"titulo": "Diário Oficial 2021",
+				"formato": "csv",
+				"descricao": "Dados do Diário Oficial no ano 2021"
+			},
+			{ 
+				"identificador": "https://dados.recife.pe.gov.br/dataset/diario-oficial/resource/081b4049-bfe5-4872-b4c2-fa2e12780442",
+				"titulo": "Diário Oficial 2020",
+				"formato": "csv",
+				"descricao": "Dados do Diário Oficial no ano 2020"
+			},
+			{ 
+				"identificador": "https://dados.recife.pe.gov.br/dataset/diario-oficial/resource/dad55da6-d905-4d6a-a9e8-2c8d157c428e",
+				"titulo": "Diário Oficial 2019",
+				"formato": "csv",
+				"descricao": "Dados do Diário Oficial no ano 2019"
+			},
+			{ 
+				"identificador": "https://dados.recife.pe.gov.br/dataset/diario-oficial/resource/0939e31d-75fe-497e-a966-01dfcb157756",
+				"titulo": "Diário Oficial 2018",
+				"formato": "csv",
+				"descricao": "Dados do Diário Oficial no ano 2018"
+			},
+			{ 
+				"identificador": "https://dados.recife.pe.gov.br/dataset/diario-oficial/resource/33018403-f6f7-4773-b257-b7e95fccba31",
+				"titulo": "Diário Oficial 2017",
+				"formato": "csv",
+				"descricao": "Dados do Diário Oficial no ano 2017"
+			}
+		],
+		"campos": [
+			{
+				"codigo": "id",
+				"descricao": "Identificação da linha composta pelo ano da edição e por um número sequencial da mesma",
+				"tipo": "Num",
+				"tamanho": 8,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "dataEdicao",
+				"descricao": "Data da Edição do Diário Oficial no formato 'dd/mm/aaaa hh:mm:ss'",
+				"tipo": "Char",
+				"tamanho": 19,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "ano",
+				"descricao": "Ano da Edição do Diário Oficial no formato 'aaaa'",
+				"tipo": "Num",
+				"tamanho": 4,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "nome",
+				"descricao": "Nome descritivo do documento do Diário Oficial contendo o número e a data da edição",
+				"tipo": "Char",
+				"tamanho": 80,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "file",
+				"descricao": "Nome do arquivo do Diário Oficial no formato PDF",
+				"tipo": "Char",
+				"tamanho": 80,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "download",
+				"descricao": "Link para download do arquivo referente ao Diário Oficial no formato PDF",
+				"tipo": "Char",
+				"tamanho": 80,
+				"valores_permitidos": ""
+			}
+		]
+	}
+}

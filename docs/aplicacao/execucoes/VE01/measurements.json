@@ -1,0 +1,155 @@
+{
+ "epoch": "VE01",
+ "run_date": "2026-11-14",
+ "status": "verified",
+ "outcome": "adopt",
+ "customer_validation": "pending (no participants; G-USER not run)",
+ "checkout": {
+  "head": "5d90b642493a85bbcecf8079aaffb3902797f905",
+  "base_state": "VE00 baseline (39 pre-existing dirty tracked files preserved)"
+ },
+ "environment": {
+  "jest_node": "v18.19.1",
+  "browser_node": "v22.23.3",
+  "browser": "Playwright Chromium 1248 headless, Expo web dev server :8087",
+  "native": "not_run"
+ },
+ "code_versions_sha256": {
+  "src/dados/decisao.ts": "18f6008205e3ddc0feba8a13b1e70964afe0868c9067a5a029eff9594bd0aad6",
+  "src/componentes/comparar/Decisao.tsx": "babd2d2934d0ada2e3dc16197b5b3c250a44ffdfadb3f622cfcc41699e92fb02",
+  "tests/decisao.test.ts": "847a7237568f11af3703336ecf4bc78e18d387f524d1714716dd24aa25856761"
+ },
+ "evaluation_sets": {
+  "g_compare": "docs/aplicacao/evaluation-sets/g-compare.json (v1, sha256 2d496353…)",
+  "labels_v1_sha256": "9f654895b7a46c51c7c02521ffaa29db6fcfa86cdd4d5494ff76eaa58869d286",
+  "labels_v1_1_sha256": "3aad3b5b1a1432db8b78b6b7b53d30f004a654d92001db930dd0d29754b55a00"
+ },
+ "engineering": {
+  "typecheck_errors": 0,
+  "lint": {
+   "errors": 0,
+   "warnings": 5,
+   "new_warnings": 0
+  },
+  "jest": {
+   "suites": "54/54",
+   "tests": "1450/1450",
+   "new_tests": 36,
+   "seconds": 73
+  },
+  "g_compare": {
+   "pairs": 20,
+   "first_run_matches": 18,
+   "first_run_mismatches": [
+    "GC02 threshold",
+    "GC04 threshold"
+   ],
+   "adjudication": "both label errors (threshold undefined on a tie); labels revised to v1.1 with original values kept",
+   "final_matches": 20,
+   "unit": "pairs whose known monthly totals, pending counts, cost difference, definiteness, threshold, visit-first, question field/target and horizon all equal the hand labels"
+  },
+  "invariant_tests": {
+   "count": 12,
+   "first_run_failures": 1,
+   "failure_cause": "test expectation arithmetic wrong; exposed a code defect (bounded-pending gap stated as exact), code fixed"
+  },
+  "screen_tests_added": 2,
+  "screen_test_defects_found": [
+   "area 17.5 rendered as 18",
+   "support line duplicated the first difference",
+   "implausible fire-insurance threshold presented as decisive",
+   "duplicate accessible name 'Espaço' (priority vs topic tab)",
+   "legacy panel text 'não escolhe um vencedor' contradicting the brief"
+  ],
+  "v1_smoke_web": {
+   "result": "pass",
+   "audited_steps": 50,
+   "automated_findings": 0,
+   "external_requests": 0
+  },
+  "decisao_test_file": {
+   "tests": 33,
+   "g_compare_tests": 21,
+   "invariant_tests": 12
+  }
+ },
+ "rendered": {
+  "pairs_checked": [
+   "GC03",
+   "GC08",
+   "GC10",
+   "GC02",
+   "GC16",
+   "GC20"
+  ],
+  "horizontal_overflow_px": {
+   "GC03@375": 0,
+   "GC08@375": 0,
+   "GC10@375": 0,
+   "GC02@375": 0,
+   "GC16@375": 0,
+   "GC20@375": 0,
+   "GC08@360": 0,
+   "GC16@360": 0,
+   "GC08@1280": 0,
+   "GC16@1280": 0
+  },
+  "brief_kicker_top_px_at_375x812": [
+   301
+  ],
+  "headline_bottom_px_at_375x812": [
+   425,
+   455
+  ],
+  "time_tradeoff_text": "São 5h20 por mês: cada hora poupada sai por R$ 33,75. Você decide quanto vale.",
+  "question_persisted": true,
+  "question_visible_in_visit": {
+   "preparar_top3": false,
+   "no_imovel_tab": true,
+   "roteiro_completo": true,
+   "position": "13 of 13"
+  },
+  "offline_after_load": {
+   "resumoPresente": true,
+   "externas": 0
+  },
+  "external_requests": 0,
+  "page_errors": 0,
+  "console_errors": 0
+ },
+ "operating": {
+  "timings_desktop_dev_web": {
+   "ambiente": "Expo web dev server, headless Chromium, this desktop; not the target device",
+   "aberturaMorna": {
+    "n": 30,
+    "p50": 734,
+    "p95": 801,
+    "unidade": "ms, page.goto(/comparar?ids) until 'Para decidir' visible"
+   },
+   "trocaDePrioridade": {
+    "n": 30,
+    "p50": 49,
+    "p95": 64,
+    "unidade": "ms, click until heading/aria-checked updated (includes Playwright round trips)"
+   },
+   "aberturaFria": {
+    "n": 5,
+    "p50": 1084,
+    "p95": 1090,
+    "unidade": "ms, new browser context (empty cache) until 'Para decidir'"
+   }
+  },
+  "target_device": "not_run",
+  "added_payload": "no new data files; ~0.7k lines of TS"
+ },
+ "customer": {
+  "participants": 0,
+  "method": "expert review of rendered states only"
+ },
+ "not_run": [
+  "G-USER participant study",
+  "native Android/iOS",
+  "target-device performance",
+  "keyboard-only and large-text checks on the new controls"
+ ]
+}

@@ -9,7 +9,7 @@
 
 **Plano vigente da próxima rodada ampla (Recife):** [15 épocas, catálogo de funcionalidades e instruções para execução](./docs/plano-recife/README.md). Consolida e resolve conflitos dos planos anteriores; o [prompt da IA operária](./docs/plano-recife/08-PROMPT-OPERARIA.md) começa pela conferência do código atual. As seções históricas abaixo não certificam funcionalidades ou sensores como entregues.
 
-**Referência exclusiva de design e experiência:** [`index.html`](./index.html), em `/home/v/Documents/vereda/veredas/index.html`. A regra abrange interface, layout, navegação e interações, além de cores e fontes. Outros protótipos, o app existente e documentos arquivados não são referências alternativas de design ou UX.
+**Referência histórica de design:** [`ignorar/prototipo-demonstrativo-legado/index.html`](./ignorar/prototipo-demonstrativo-legado/index.html). O protótipo web demonstrativo foi arquivado na pasta de cold storage (`ignorar/`), mantendo a raiz limpa e focada no aplicativo oficial em [`src/`](./src/).
 
 O app agora inclui um caderno local: cadastro manual ou link de referência, edição, custos mensais, comparação de dois imóveis, checklist e perguntas copiáveis. Na página inicial, use **Adicionar imóvel sem link** ou **Abrir minhas análises**. Os dossiês de referência continuam separados dos dados que você adicionar.
 
@@ -57,7 +57,7 @@ Quem procura apartamento para alugar ou comprar decide hoje no escuro: anúncios
 
 ## 📱 Aplicativo (React Native + Expo SDK 57) e Protótipos
 
-O repositório conta com o aplicativo multiplataforma em **React Native 0.86 + Expo SDK 57** ([`src/`](./src/)) e o mock interativo em HTML ([`docs/mock/index.html`](./docs/mock/index.html)), além do protótipo web da raiz, referência exclusiva de design e experiência ([`index.html`](./index.html)).
+O repositório conta com o aplicativo multiplataforma em **React Native 0.86 + Expo SDK 57** ([`src/`](./src/)), além do protótipo histórico demonstrativo arquivado em cold storage ([`ignorar/prototipo-demonstrativo-legado/index.html`](./ignorar/prototipo-demonstrativo-legado/index.html)).
 
 ### 1. Rodando o App Oficial (Expo SDK 57 — `src/`)
 ```bash

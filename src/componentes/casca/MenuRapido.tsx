@@ -12,11 +12,13 @@ import { useFocoDeTeclado } from "./foco";
 
 export type ItemDoMenu = { rotulo: string; rota: Href; mostraSaldo?: boolean };
 
-/** As telas do app que o menu abre, na ordem em que aparecem. */
+/**
+ * As telas do app que o menu abre, na ordem em que aparecem. Os "Dossiês de exemplo" (/exemplos/*, layout antigo com
+ * dados ilustrativos) saíram em 14/11/2026: o caminho principal abre só o dossiê atual (/dossie).
+ */
 export const ITENS_DO_MENU: readonly ItemDoMenu[] = [
   { rotulo: "Início", rota: "/" },
   { rotulo: "Minhas análises", rota: "/salvos" },
-  { rotulo: "Dossiês de exemplo", rota: "/exemplos/boa-viagem" },
   { rotulo: "Carteira de créditos", rota: "/creditos", mostraSaldo: true },
   { rotulo: "Sobre os dados", rota: "/sobre-os-dados" },
   { rotulo: "Cópia do meu caderno", rota: "/dados-do-caderno" },

@@ -1,0 +1,24 @@
+{
+  "fonte": "ZAP Imóveis — listagens de apartamentos à venda (https://www.zapimoveis.com.br/venda/apartamentos/pe+recife++<bairro>/), páginas 1 e 2 por bairro, coletado via navegador (browse + Vivaldi)",
+  "consultado_em": "2026-11-14",
+  "metodologia": "Preço e área lidos do cartão do anúncio (h2 + corpo do card). Filtros: anúncios cujo card declara o bairro alvo; área >= 20 m²; preço >= R$ 100.000; preço/m² entre R$ 1.200 e R$ 30.000. 'A partir de' (na planta) usa a menor planta anunciada. Amostra = primeiras 2 páginas por bairro (~22-36 anúncios), não a totalidade.",
+  "limitacoes": [
+    "Preço de anúncio, não de negociação (mesma natureza do FipeZAP)",
+    "Amostra pequena e ordenada por ranking do portal; mediana é estimativa",
+    "Página 2 pode repetir anúncios da página 1 (dedupe não aplicado em texto, mas cartões repetidos produzem o mesmo preço/m² e distorcem pouco a mediana)"
+  ],
+  "resumo": {
+    "Boa Viagem": { "total_anuncios": 7547, "amostra": 30, "mediana_m2": 8195, "media_m2": 8511, "min_m2": 4478, "max_m2": 17391 },
+    "Casa Forte": { "total_anuncios": 669, "amostra": 23, "mediana_m2": 9853, "media_m2": 10151, "min_m2": 7759, "max_m2": 13784 },
+    "Graças": { "total_anuncios": 727, "amostra": 31, "mediana_m2": 8947, "media_m2": 8599, "min_m2": 3297, "max_m2": 15909 },
+    "Espinheiro": { "total_anuncios": 633, "amostra": 26, "mediana_m2": 7541, "media_m2": 7862, "min_m2": 4167, "max_m2": 13438 },
+    "Madalena": { "total_anuncios": 1166, "amostra": 29, "mediana_m2": 8625, "media_m2": 8573, "min_m2": 5132, "max_m2": 13706 },
+    "Casa Amarela": { "total_anuncios": 829, "amostra": 27, "mediana_m2": 8065, "media_m2": 8334, "min_m2": 6944, "max_m2": 10369 },
+    "Pina": { "total_anuncios": 885, "amostra": 32, "mediana_m2": 10552, "media_m2": 10476, "min_m2": 5455, "max_m2": 15897 },
+    "Imbiribeira": { "total_anuncios": 555, "amostra": 28, "mediana_m2": 7709, "media_m2": 7750, "min_m2": 4839, "max_m2": 11835 },
+    "Torre": { "total_anuncios": 623, "amostra": 22, "mediana_m2": 8447, "media_m2": 7867, "min_m2": 3590, "max_m2": 11786 },
+    "Aflitos": { "total_anuncios": 276, "amostra": 24, "mediana_m2": 7104, "media_m2": 7343, "min_m2": 3474, "max_m2": 10781 },
+    "Boa Vista": { "total_anuncios": 507, "amostra": 26, "mediana_m2": 8926, "media_m2": 9364, "min_m2": 2821, "max_m2": 15789 },
+    "Ilha do Retiro": { "total_anuncios": 241, "amostra": 36, "mediana_m2": 9018, "media_m2": 8880, "min_m2": 4600, "max_m2": 16296 }
+  }
+}

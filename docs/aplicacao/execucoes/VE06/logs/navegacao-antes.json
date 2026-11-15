@@ -1,0 +1,34 @@
+{
+ "rotulo": "antes",
+ "fluxos": {
+  "recente": {
+   "url": "/dossie",
+   "layoutAprovado": true,
+   "avisoDeExemplo": false,
+   "titulo": "VEREDA 3 créditos Auditar novo anúncio Colar link Gerar Dossiê Adicionar imóvel sem link + Importar anúncio da extensão Escolha o arquivo preparado pela extensão VEREDA. Os campos serão propostos para revisão; não salva nem confirma prédio automaticamente. Aná"
+  },
+  "salvos": {
+   "url": "/dossie",
+   "layoutAprovado": true,
+   "avisoDeExemplo": false,
+   "titulo": "VEREDA 3 créditos Abrir mapa Boa Viagem · Recife Lote confirmado ✓ Apartamento em Boa Viagem (teste) Rua Barao de Beberibe, 232 70 m² 2 qtos Construído em 1966 2 pavimentos R$ 33–R$ 37/mês IPTU 2026 no prédio Dados do anúncio Cadastro oficial Mensal conhecido "
+  },
+  "exemploNoInicio": {
+   "exposto": false
+  },
+  "exemploNoMenu": {
+   "url": "/exemplos/boa-viagem",
+   "layoutAprovado": false,
+   "avisoDeExemplo": true,
+   "titulo": "Exemplo com dados de demonstração. Para dados do cadastro, cole o link de um anúncio. Explorar Dossiê 500 m em linha reta ilustrativo Abrir mapa Aluguel, Boa Viagem Rua João Cardoso Aires, 327 R$ 4.500/mês ilustrativo 125 m² 4 quartos 3 suítes 1 banheiro 3 vag"
+  }
+ },
+ "erros": [],
+ "analisesDepois": [
+  {
+   "id": "bv",
+   "nome": "Apartamento em Boa Viagem (teste)",
+   "salva": true
+  }
+ ]
+}

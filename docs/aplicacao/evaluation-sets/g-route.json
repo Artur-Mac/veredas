@@ -1,0 +1,640 @@
+{
+ "set": "G-ROUTE",
+ "version": 1,
+ "created": "2026-11-14",
+ "created_by": "VE03 rodar-rede.mjs",
+ "origem": "6 prédios de G-BUILDING por bairro; destinos: parada GTFS v2026.10.26 mais próxima, praça/parque oficial mais próximo, e o destino mais próximo (300 m–3 km) do outro lado de um corpo d'água oficial",
+ "label_status": "routes unreviewed by a person; automated checks only",
+ "rotas": [
+  {
+   "id": "GR01",
+   "area": "boa-viagem",
+   "tipo": "parada",
+   "origem": {
+    "predio": "8060-695",
+    "estrato": "far_centroid",
+    "split": "test",
+    "centro": [
+     -34.910699,
+     -8.146843
+    ]
+   },
+   "destino": {
+    "id": "parada:010246",
+    "nome": "010246",
+    "lon": -34.913158333297375,
+    "lat": -8.146608334253543
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR02",
+   "area": "boa-viagem",
+   "tipo": "praca",
+   "origem": {
+    "predio": "31852-313",
+    "estrato": "far_centroid",
+    "split": "test",
+    "centro": [
+     -34.9084,
+     -8.139079
+    ]
+   },
+   "destino": {
+    "id": "praca:335",
+    "nome": "PARQUE",
+    "lon": -34.904327253215406,
+    "lat": -8.141225860555595
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR03",
+   "area": "boa-viagem",
+   "tipo": "travessia_de_agua",
+   "origem": {
+    "predio": "50326-22",
+    "estrato": "multi_front",
+    "split": "dev",
+    "centro": [
+     -34.895693,
+     -8.110002
+    ]
+   },
+   "destino": {
+    "id": "parada:010158",
+    "nome": "010158",
+    "lon": -34.90249999996525,
+    "lat": -8.11211111201997
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR04",
+   "area": "boa-viagem",
+   "tipo": "parada",
+   "origem": {
+    "predio": "45810-1929",
+    "estrato": "multi_front",
+    "split": "test",
+    "centro": [
+     -34.893663,
+     -8.115995
+    ]
+   },
+   "destino": {
+    "id": "parada:010101",
+    "nome": "010101",
+    "lon": -34.894799999966146,
+    "lat": -8.116591667577037
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR05",
+   "area": "boa-viagem",
+   "tipo": "praca",
+   "origem": {
+    "predio": "13676-126",
+    "estrato": "sparse",
+    "split": "dev",
+    "centro": [
+     -34.912771,
+     -8.134358
+    ]
+   },
+   "destino": {
+    "id": "praca:450",
+    "nome": "PRAÇA",
+    "lon": -34.91697097340886,
+    "lat": -8.133621312104165
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR06",
+   "area": "boa-viagem",
+   "tipo": "travessia_de_agua",
+   "origem": {
+    "predio": "43044-508",
+    "estrato": "sparse",
+    "split": "dev",
+    "centro": [
+     -34.905988,
+     -8.135529
+    ]
+   },
+   "destino": {
+    "id": "parada:010209",
+    "nome": "010209",
+    "lon": -34.909247222186714,
+    "lat": -8.135808334249992
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR07",
+   "area": "casa-forte",
+   "tipo": "parada",
+   "origem": {
+    "predio": "19526-934",
+    "estrato": "far_centroid",
+    "split": "dev",
+    "centro": [
+     -34.917234,
+     -8.037082
+    ]
+   },
+   "destino": {
+    "id": "parada:100088",
+    "nome": "100088",
+    "lon": -34.91669722218689,
+    "lat": -8.03781111376529
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR08",
+   "area": "casa-forte",
+   "tipo": "praca",
+   "origem": {
+    "predio": "42544-210",
+    "estrato": "far_centroid",
+    "split": "test",
+    "centro": [
+     -34.920883,
+     -8.030978
+    ]
+   },
+   "destino": {
+    "id": "praca:156",
+    "nome": "PRAÇA",
+    "lon": -34.918940090225234,
+    "lat": -8.03386951720235
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR09",
+   "area": "casa-forte",
+   "tipo": "travessia_de_agua",
+   "origem": {
+    "predio": "16535-40",
+    "estrato": "multi_front",
+    "split": "dev",
+    "centro": [
+     -34.915418,
+     -8.035544
+    ]
+   },
+   "destino": {
+    "id": "parada:180423",
+    "nome": "180423",
+    "lon": -34.90871666663102,
+    "lat": -8.041455556441502
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR10",
+   "area": "casa-forte",
+   "tipo": "parada",
+   "origem": {
+    "predio": "35220-22",
+    "estrato": "multi_front",
+    "split": "dev",
+    "centro": [
+     -34.916054,
+     -8.035212
+    ]
+   },
+   "destino": {
+    "id": "parada:100208",
+    "nome": "100208",
+    "lon": -34.913727777741514,
+    "lat": -8.03434444532809
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR11",
+   "area": "casa-forte",
+   "tipo": "praca",
+   "origem": {
+    "predio": "2453-151",
+    "estrato": "sparse",
+    "split": "test",
+    "centro": [
+     -34.91513,
+     -8.035734
+    ]
+   },
+   "destino": {
+    "id": "praca:5",
+    "nome": "PRAÇA",
+    "lon": -34.91429501037124,
+    "lat": -8.0370868316936
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR12",
+   "area": "casa-forte",
+   "tipo": "travessia_de_agua",
+   "origem": {
+    "predio": "2453-210",
+    "estrato": "sparse",
+    "split": "test",
+    "centro": [
+     -34.915233,
+     -8.035178
+    ]
+   },
+   "destino": {
+    "id": "parada:180423",
+    "nome": "180423",
+    "lon": -34.90871666663102,
+    "lat": -8.041455556441502
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR13",
+   "area": "gracas",
+   "tipo": "parada",
+   "origem": {
+    "predio": "59382-327",
+    "estrato": "far_centroid",
+    "split": "test",
+    "centro": [
+     -34.897328,
+     -8.048835
+    ]
+   },
+   "destino": {
+    "id": "parada:100172",
+    "nome": "100172",
+    "lon": -34.897502777743476,
+    "lat": -8.050102778666528
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR14",
+   "area": "gracas",
+   "tipo": "praca",
+   "origem": {
+    "predio": "50849-194",
+    "estrato": "far_centroid",
+    "split": "dev",
+    "centro": [
+     -34.90069,
+     -8.050321
+    ]
+   },
+   "destino": {
+    "id": "praca:149",
+    "nome": "PRAÇA",
+    "lon": -34.8989356293693,
+    "lat": -8.048136416977005
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR15",
+   "area": "gracas",
+   "tipo": "travessia_de_agua",
+   "origem": {
+    "predio": "73300-100",
+    "estrato": "multi_front",
+    "split": "test",
+    "centro": [
+     -34.903401,
+     -8.049447
+    ]
+   },
+   "destino": {
+    "id": "parada:180376",
+    "nome": "180376",
+    "lon": -34.904797222187064,
+    "lat": -8.047016667554415
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR16",
+   "area": "gracas",
+   "tipo": "parada",
+   "origem": {
+    "predio": "25879-10",
+    "estrato": "multi_front",
+    "split": "test",
+    "centro": [
+     -34.897975,
+     -8.044453
+    ]
+   },
+   "destino": {
+    "id": "parada:100176",
+    "nome": "100176",
+    "lon": -34.89807499996562,
+    "lat": -8.043794445331164
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR17",
+   "area": "gracas",
+   "tipo": "praca",
+   "origem": {
+    "predio": "25879-673",
+    "estrato": "sparse",
+    "split": "test",
+    "centro": [
+     -34.901443,
+     -8.039467
+    ]
+   },
+   "destino": {
+    "id": "praca:151",
+    "nome": "PRAÇA",
+    "lon": -34.9005523858968,
+    "lat": -8.04162186891431
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR18",
+   "area": "gracas",
+   "tipo": "travessia_de_agua",
+   "origem": {
+    "predio": "43400-345",
+    "estrato": "sparse",
+    "split": "test",
+    "centro": [
+     -34.89998,
+     -8.037985
+    ]
+   },
+   "destino": {
+    "id": "praca:238",
+    "nome": "PRACA",
+    "lon": -34.90477036478522,
+    "lat": -8.044541918752143
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR19",
+   "area": "espinheiro",
+   "tipo": "parada",
+   "origem": {
+    "predio": "29238-593",
+    "estrato": "far_centroid",
+    "split": "test",
+    "centro": [
+     -34.893752,
+     -8.046711
+    ]
+   },
+   "destino": {
+    "id": "parada:100191",
+    "nome": "100191",
+    "lon": -34.893836110626566,
+    "lat": -8.045252734076028
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR20",
+   "area": "espinheiro",
+   "tipo": "praca",
+   "origem": {
+    "predio": "29238-625",
+    "estrato": "far_centroid",
+    "split": "test",
+    "centro": [
+     -34.893967,
+     -8.046824
+    ]
+   },
+   "destino": {
+    "id": "praca:449",
+    "nome": "PRAÇA",
+    "lon": -34.89308925104253,
+    "lat": -8.04951440873967
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR21",
+   "area": "espinheiro",
+   "tipo": "travessia_de_agua",
+   "origem": {
+    "predio": "12661-231",
+    "estrato": "multi_front",
+    "split": "test",
+    "centro": [
+     -34.894987,
+     -8.047838
+    ]
+   },
+   "destino": {
+    "id": "parada:180186",
+    "nome": "180186",
+    "lon": -34.893652374640055,
+    "lat": -8.050193806199642
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR22",
+   "area": "espinheiro",
+   "tipo": "parada",
+   "origem": {
+    "predio": "29238-663",
+    "estrato": "multi_front",
+    "split": "test",
+    "centro": [
+     -34.894513,
+     -8.046928
+    ]
+   },
+   "destino": {
+    "id": "parada:100184",
+    "nome": "100184",
+    "lon": -34.896219444411315,
+    "lat": -8.047152780441083
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR23",
+   "area": "espinheiro",
+   "tipo": "praca",
+   "origem": {
+    "predio": "2410-171",
+    "estrato": "sparse",
+    "split": "dev",
+    "centro": [
+     -34.890732,
+     -8.039548
+    ]
+   },
+   "destino": {
+    "id": "praca:235",
+    "nome": "PRAÇA",
+    "lon": -34.89143375372822,
+    "lat": -8.037276546108446
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR24",
+   "area": "espinheiro",
+   "tipo": "travessia_de_agua",
+   "origem": {
+    "predio": "29238-233",
+    "estrato": "sparse",
+    "split": "test",
+    "centro": [
+     -34.89235,
+     -8.043749
+    ]
+   },
+   "destino": {
+    "id": "parada:180124",
+    "nome": "180124",
+    "lon": -34.89004999996657,
+    "lat": -8.046213889776395
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR25",
+   "area": "madalena",
+   "tipo": "parada",
+   "origem": {
+    "predio": "10910-341",
+    "estrato": "far_centroid",
+    "split": "dev",
+    "centro": [
+     -34.902889,
+     -8.059597
+    ]
+   },
+   "destino": {
+    "id": "parada:180315",
+    "nome": "180315",
+    "lon": -34.903116666631725,
+    "lat": -8.058825000891561
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR26",
+   "area": "madalena",
+   "tipo": "praca",
+   "origem": {
+    "predio": "19259-300",
+    "estrato": "far_centroid",
+    "split": "test",
+    "centro": [
+     -34.904965,
+     -8.055368
+    ]
+   },
+   "destino": {
+    "id": "praca:352",
+    "nome": "PRAÇA",
+    "lon": -34.90378930246299,
+    "lat": -8.05632439331053
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR27",
+   "area": "madalena",
+   "tipo": "travessia_de_agua",
+   "origem": {
+    "predio": "28894-37",
+    "estrato": "multi_front",
+    "split": "dev",
+    "centro": [
+     -34.908634,
+     -8.05887
+    ]
+   },
+   "destino": {
+    "id": "parada:060038",
+    "nome": "060038",
+    "lon": -34.9109666666308,
+    "lat": -8.060363889780934
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR28",
+   "area": "madalena",
+   "tipo": "parada",
+   "origem": {
+    "predio": "56839-651",
+    "estrato": "multi_front",
+    "split": "test",
+    "centro": [
+     -34.908578,
+     -8.051175
+    ]
+   },
+   "destino": {
+    "id": "parada:180427",
+    "nome": "180427",
+    "lon": -34.908477777742185,
+    "lat": -8.051891667555967
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR29",
+   "area": "madalena",
+   "tipo": "praca",
+   "origem": {
+    "predio": "37265-50",
+    "estrato": "sparse",
+    "split": "test",
+    "centro": [
+     -34.90903,
+     -8.058078
+    ]
+   },
+   "destino": {
+    "id": "praca:458",
+    "nome": "PRAÇA",
+    "lon": -34.90886557279881,
+    "lat": -8.05735298087826
+   },
+   "rotulo": "nao_revisado"
+  },
+  {
+   "id": "GR30",
+   "area": "madalena",
+   "tipo": "travessia_de_agua",
+   "origem": {
+    "predio": "10910-939",
+    "estrato": "sparse",
+    "split": "dev",
+    "centro": [
+     -34.907463,
+     -8.0584
+    ]
+   },
+   "destino": {
+    "id": "parada:060262",
+    "nome": "060262",
+    "lon": -34.910358211817595,
+    "lat": -8.060127804856046
+   },
+   "rotulo": "nao_revisado"
+  }
+ ]
+}

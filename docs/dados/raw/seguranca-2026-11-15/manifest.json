@@ -1,0 +1,54 @@
+{
+  "created_at": "2026-11-15",
+  "purpose": "VEREDA: verify feasibility of bairro-level Roubo a Transeunte series for Recife; municipal control totals",
+  "files": [
+    {
+      "file": "Microdados_de_CVP_-_Disponível_janeiro_de_2014_a_outubro_de_2026.xlsx",
+      "url": "https://www.sds.pe.gov.br/images/ESTAT%C3%8DSTICAS/GACE/Microdados_de_CVP_-_Dispon%C3%ADvel_janeiro_de_2014_a_outubro_de_2026.xlsx",
+      "consulted_at": "2026-11-15T01:16:00-03:00",
+      "sha256": "8762f57eee14520b245ef9ded525443d573b2b83170c7e62993ead8d5710f9cc",
+      "bytes": 4483602,
+      "note": "SDS-PE/GGACE. Linked from https://www.sds.pe.gov.br/estatisticas/indicadores-criminais/crimes-contra-o-patrimonio. Sheet 'microdados cvp', 175,953 rows, columns DATA, ANO, MUNICÍPIO, REGIÃO GEOGRÁFICA, TOTAL. Daily counts by município. NO natureza/tipo column, NO bairro. Recife 2025 total = 16,733; Recife Jan-Oct 2026 = 7,953. Untrusted download."
+    },
+    {
+      "file": "CVP_ANUAL_POR_MUNICÍPIO.pdf",
+      "url": "https://www.sds.pe.gov.br/images/indicadores/CVP/CVP_ANUAL_POR_MUNIC%C3%8DPIO.pdf",
+      "consulted_at": "2026-11-15T01:16:00-03:00",
+      "sha256": "b740e7b0a638fb5fd53901bf7fdae220accde282f0e5234db1566b98b702e28f",
+      "bytes": 534889,
+      "note": "GACE table 'EVOLUÇÃO ANUAL DOS NÚMEROS DE OCORRÊNCIAS DE CVP EM PERNAMBUCO POR MUNICÍPIO – JANEIRO DE 2011 A DEZEMBRO DE 2025'. Recife 2025 = 16.752; PE 2025 = 39.491 (differs slightly from xlsx: 16,733 / 39,429)."
+    },
+    {
+      "file": "CVP_MENSAL_POR_MUNICÍPIO.pdf",
+      "url": "https://www.sds.pe.gov.br/images/indicadores/CVP/CVP_MENSAL_POR_MUNIC%C3%8DPIO.pdf",
+      "consulted_at": "2026-11-15T01:16:00-03:00",
+      "sha256": "7e1ef82dbb04ae7a070190c0815229ab53df53e2f9435684ffd3557683eae898",
+      "bytes": 260428,
+      "note": "GGACE table 'NÚMEROS DE OCORRÊNCIAS DE CVP EM PERNAMBUCO POR MUNICÍPIO – JANEIRO A OUTUBRO DE 2026'. Recife Jan-Oct 2026 = 7.957; PE = 22.468."
+    },
+    {
+      "file": "CVP_ANUAL.pdf",
+      "url": "https://www.sds.pe.gov.br/images/indicadores/CVP/CVP_ANUAL.pdf",
+      "consulted_at": "2026-11-15T01:16:00-03:00",
+      "sha256": "8b180cd9dd9641072c4cdb9595abdd763e75ba2c378adfc79d75de6169d73264",
+      "bytes": 195735,
+      "note": "GACE 'EVOLUÇÃO ANUAL ... CVP EM PERNAMBUCO POR REGIÃO – JAN 2011 A DEZ 2025'. Mostly image; text not extracted."
+    },
+    {
+      "file": "powerbi-cvp-recife-2025-screenshot.jpg",
+      "url": "https://app.powerbi.com/view?r=eyJrIjoiNTQ4Y2Y1ZDgtYWJmYi00ODZjLWJhNmYtNDg0NDMxNWYwNjNiIiwidCI6Ijk3ZjdhNzBhLTQwMTEtNDU0NC04MDRmLWQwNjcxZmMyYWFlOSIsImMiOjl9",
+      "consulted_at": "2026-11-15T01:19:00-03:00",
+      "sha256": "e5d631e4a1ceb8b018a8fdb1fecb13404916b39590e0866a48b5edecb5c68798",
+      "bytes": 53125,
+      "note": "Screenshot of SDS-PE public Power BI 'ESTATÍSTICAS CRIMINAIS DE PERNAMBUCO', page 'CRIMES VIOLENTOS CONTRA O PATRIMÔNIO' (5 of 10), Período 1/1/2025-12/31/2025, cross-filtered on RECIFE. CVP 16,733; Roubo a Transeunte 10,230; Roubo de Veículo 3,620; Outros Roubos 1,353; Estab. Comercial/Serviços 1,114; Roubo a Ônibus 229; Residência 142; Carga 45. Panel data extraction date 05/11/2026 (Infopol)."
+    },
+    {
+      "file": "powerbi-cvp-recife-2026jan-out-screenshot.jpg",
+      "url": "https://app.powerbi.com/view?r=eyJrIjoiNTQ4Y2Y1ZDgtYWJmYi00ODZjLWJhNmYtNDg0NDMxNWYwNjNiIiwidCI6Ijk3ZjdhNzBhLTQwMTEtNDU0NC04MDRmLWQwNjcxZmMyYWFlOSIsImMiOjl9",
+      "consulted_at": "2026-11-15T01:18:00-03:00",
+      "sha256": "bde41d2c066ad7b551557e877e809575588aab9d0b97b97cdb06677d2eda19bf",
+      "bytes": 50561,
+      "note": "Same panel, Período 1/1/2026-10/31/2026, RECIFE: CVP 7,957; Roubo a Transeunte 4,390; Veículo 2,190; Outros 731; Estab. 388; Ônibus 170; Residência 63; Carga 25."
+    }
+  ]
+}

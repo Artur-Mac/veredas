@@ -17,13 +17,14 @@ import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
 import { ImportarExtensao } from "../../componentes/leitor/ImportarExtensao";
 import { type AnaliseV2, type Edificio } from "../../dados/contratos";
-import { enderecoDoDossie } from "../../dados/consultas";
 import { custoMensal, ROTULO_MENSAL_CONHECIDO, avisoDeValoresPendentes } from "../../dados/custos";
 import { derivarDossie } from "../../dados/dossie/derivar";
-import { IDS_DOSSIES, dossieOuErro } from "../../dados/dossies";
 import { formatarReais } from "../../dados/formatos";
 import { destinoDaAnalise, nomeDoBairro, rotuloDoBairroNoCartao, textoEhACidade } from "../../dados/formulario";
 import { formatarEndereco } from "../../dados/recife/endereco";
+import { eCoberto } from "../../dados/recife/bairros";
+import { arquivoDoIndice } from "../../dados/recife/indice";
+import { garantirCamadas } from "../../dados/camadas";
 import { useAnalises } from "../../estado/Analises";
 import { useTema } from "../../tema/Tema";
 import { comAlfa } from "../../tema/tokens";
@@ -241,38 +242,8 @@ export default function ExplorarT1() {
                 </Cartao>
               )}
 
-              <Texto tipo="titulo-tela" role="heading" style={[styles.secaoTitulo, styles.tituloDosExemplos]}>
-                Dossiês de exemplo
-              </Texto>
-
-              <View style={styles.listaDeExemplos}>
-                {IDS_DOSSIES.map((id) => {
-                  const ex = dossieOuErro(id);
-                  return (
-                    <Pressionavel
-                      key={id}
-                      accessibilityRole="button"
-                      accessibilityLabel={`Exemplo: ${enderecoDoDossie(ex)}, ${ex.bairro}`}
-                      onPress={() => router.push({ pathname: "/exemplos/[id]", params: { id } })}
-                      style={styles.cardExemplo}
-                    >
-                      <View style={styles.textosDoExemplo}>
-                        <Texto tipo="etiqueta" numberOfLines={1} style={styles.enderecoDoExemplo}>
-                          {enderecoDoDossie(ex)}
-                        </Texto>
-                        <Texto tipo="apoio" style={styles.bairroDoExemplo}>
-                          {`${ex.bairro} · Recife`}
-                        </Texto>
-                      </View>
-                      <View style={styles.tagExemplo}>
-                        <Texto tipo="apoio" style={styles.textoTagExemplo}>
-                          Exemplo
-                        </Texto>
-                      </View>
-                    </Pressionavel>
-                  );
-                })}
-              </View>
+              {/* VE06 (navegação): os "Dossiês de exemplo" (/exemplos/*) usam o layout antigo e dados ilustrativos; saíram do
+                  caminho principal. As telas ficam como referência histórica, abertas só pelo endereço. */}
             </View>
           )}
         </Coluna>
@@ -356,12 +327,26 @@ const SEM_LEITURA: LeituraDoCartao = { lote: null, achado: null };
 function useLeituraDoCartao(a: AnaliseV2, lista: AnaliseV2[]): LeituraDoCartao {
   const [leitura, definirLeitura] = useState<LeituraDoCartao>(SEM_LEITURA);
   useEffect(() => {
+    let ativo = true;
+    // D036: o índice do bairro fica fora do bundle. Sem ele (ex.: sem rede), o cartão fica sem lote e sem achado.
+    const arquivo = eCoberto(a.bairro) ? arquivoDoIndice(a.bairro) : null;
     const agendado = setTimeout(() => {
-      const cadastro = carregarCadastro(a);
-      const outras = lista.filter((x) => x.id !== a.id);
-      definirLeitura({ lote: loteDoEdificio(a, cadastro.edificio), achado: achadoPrincipalDoCartao(a, cadastro, outras) });
+      void garantirCamadas(arquivo ? [arquivo] : []).then(
+        () => {
+          if (!ativo) return;
+          const cadastro = carregarCadastro(a);
+          const outras = lista.filter((x) => x.id !== a.id);
+          definirLeitura({ lote: loteDoEdificio(a, cadastro.edificio), achado: achadoPrincipalDoCartao(a, cadastro, outras) });
+        },
+        () => {
+          if (ativo) definirLeitura(SEM_LEITURA);
+        },
+      );
     }, 0);
-    return () => clearTimeout(agendado);
+    return () => {
+      ativo = false;
+      clearTimeout(agendado);
+    };
   }, [a, lista]);
   return leitura;
 }
@@ -945,51 +930,6 @@ const useEstilos = estilosDoTema((cor) => {
       color: cor("cor-texto-apoio"),
       fontSize: 13,
       lineHeight: 19,
-    },
-    tituloDosExemplos: {
-      marginTop: 12,
-      paddingHorizontal: 2,
-    },
-    listaDeExemplos: {
-      gap: 10,
-    },
-    cardExemplo: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      gap: 10,
-      minHeight: 56,
-      backgroundColor: cor("cor-superficie"),
-      paddingVertical: 12,
-      paddingHorizontal: 14,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: bordaDoCartao,
-    },
-    textosDoExemplo: {
-      flex: 1,
-      minWidth: 0,
-    },
-    enderecoDoExemplo: {
-      color: cor("cor-texto"),
-      fontWeight: "600",
-    },
-    bairroDoExemplo: {
-      color: cor("cor-texto-apoio"),
-    },
-    tagExemplo: {
-      paddingHorizontal: 9,
-      paddingVertical: 3,
-      backgroundColor: cor("cor-creme"),
-      borderRadius: 999,
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
-    },
-    textoTagExemplo: {
-      fontSize: 11,
-      lineHeight: 15,
-      color: cor("cor-texto-apoio"),
-      fontWeight: "600",
     },
   });
 });

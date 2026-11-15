@@ -293,6 +293,9 @@ export default function SobreOsDados() {
             {ATRIBUICAO_DO_IBGE}
           </Texto>
         ) : null}
+        <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
+          Sínteses cruzadas e custos de referência usam bases abertas oficiais sem parcerias comerciais: USGS Landsat 8/9 ST_B10 (Domínio Público), Copernicus DEM GLO-30 (CC-BY 4.0 ESA), Secretaria de Saúde do Recife / SINAN (ODbL), Grande Recife / CBTU (GTFS), IBGE Censo 2022 Renda por Setor, Banco Central (SGS 20774) e ANEEL Tarifas Homologadas.
+        </Texto>
 
         <View style={{ gap: 8 }}>
           <Texto tipo="secao" role="heading" aria-level={3} style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>

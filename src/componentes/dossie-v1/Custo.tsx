@@ -71,6 +71,8 @@ function IconeDeTendencia({ cor }: { cor: TokenDeCor }) {
   );
 }
 
+import type { CustoPorPartes } from "../../dados/custoPorPartes";
+
 type Props = {
   custo: VisaoDoDossie["custo"];
   /** Área conhecida do anúncio: só para dizer o que falta quando o R$/m² não pode ser calculado. */
@@ -78,6 +80,10 @@ type Props = {
   posicao: Posicao | null;
   aoAbrirPosicao: () => void;
   aoAjustar: () => void;
+  /** Camada 2 opcional: estimativas de rotina parametrizadas pelo perfil único do aparelho (`T14`), nunca somadas ao mensal oficial. */
+  partes?: CustoPorPartes | null;
+  perfilConfigurado?: boolean;
+  aoAbrirPerfilDomicilio?: () => void;
 };
 
 /**
@@ -85,7 +91,16 @@ type Props = {
  * "+R$ Z além do aluguel", barra segmentada, legenda com "A confirmar" e a nota do que ficou fora da soma. O fundo
  * degradê do protótipo vira o creme chapado do app.
  */
-export function BlocoDeCusto({ custo, area, posicao, aoAbrirPosicao, aoAjustar }: Props) {
+export function BlocoDeCusto({
+  custo,
+  area,
+  posicao,
+  aoAbrirPosicao,
+  aoAjustar,
+  partes = null,
+  perfilConfigurado = false,
+  aoAbrirPerfilDomicilio,
+}: Props) {
   const { cor } = useTema();
   const [largura, setLargura] = useState(147);
   const aluguel = custo.principal.rotulo === "Aluguel anunciado";
@@ -178,10 +193,114 @@ export function BlocoDeCusto({ custo, area, posicao, aoAbrirPosicao, aoAjustar }
         {notas.map((n) => (
           <Nota key={n}>{n}</Nota>
         ))}
+        {partes?.referenciaIptuDoPredio ? <Nota>{partes.referenciaIptuDoPredio.nota}</Nota> : null}
+        {partes?.comparacaoComTetoPessoal ? <Nota>{partes.comparacaoComTetoPessoal}</Nota> : null}
         {!aluguel ? <Nota>Preço de compra e financiamento não entram nesta soma.</Nota> : null}
       </View>
 
-      <LinkComSeta rotulo="Ver composição e ajustar valores" onPress={aoAjustar} estilo={{ marginTop: ESPACO[1] }} />
+      {partes ? (
+        <View
+          style={{
+            marginTop: 10,
+            paddingTop: 10,
+            borderTopWidth: 1,
+            borderTopColor: cor("cor-linha"),
+            gap: 8,
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
+            <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 10.5, lineHeight: 14, fontWeight: "700", letterSpacing: 0.5, textTransform: "uppercase" }}>
+              {perfilConfigurado ? "Sua rotina neste endereço (à parte)" : "Estimativa de rotina padrão (à parte)"}
+            </Texto>
+          </View>
+
+          {partes.fatiasDaRotina.some((f) => f.valorMensalReais > 0) ? (
+            <View style={{ flexDirection: "row", gap: 3, height: 6, borderRadius: 4, overflow: "hidden" }}>
+              {partes.fatiasDaRotina
+                .filter((f) => f.valorMensalReais > 0)
+                .map((f) => (
+                  <View
+                    key={f.id}
+                    style={{
+                      flexGrow: f.valorMensalReais,
+                      flexBasis: 0,
+                      minWidth: 0,
+                      backgroundColor: cor(f.id === "energia" ? "cor-azul-cadastral" : "cor-salvia-escura"),
+                      opacity: 0.72,
+                    }}
+                  />
+                ))}
+            </View>
+          ) : null}
+
+          <View style={{ gap: 6 }}>
+            {partes.fatiasDaRotina.map((f) => (
+              <View key={f.id} style={{ gap: 1 }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                  <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600", flex: 1 }}>
+                    {f.rotulo}
+                  </Texto>
+                  <Texto tipo="numero" style={{ fontSize: 12, lineHeight: 17, fontWeight: "600" }}>
+                    {f.valorMensalReais > 0 ? `~${formatarReais(f.valorMensalReais)}/mês` : "Sem gasto direto"}
+                  </Texto>
+                </View>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                  {f.explicacaoHumana}
+                </Texto>
+              </View>
+            ))}
+
+            {partes.simulacaoCompra && partes.simulacaoCompra.prestacaoPriceReais > 0 ? (
+              <View style={{ marginTop: 2, paddingTop: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 2 }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                  <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600", flex: 1 }}>
+                    {`Simulação Price (${partes.simulacaoCompra.entradaPct}% entrada · ${partes.simulacaoCompra.prazoAnos} anos)`}
+                  </Texto>
+                  <Texto tipo="numero" style={{ fontSize: 12, lineHeight: 17, fontWeight: "600" }}>
+                    {`~${formatarReais(partes.simulacaoCompra.prestacaoPriceReais)}/mês`}
+                  </Texto>
+                </View>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                  {`Entrada de ${formatarReais(partes.simulacaoCompra.entradaReais)} · ${partes.simulacaoCompra.fonteCurta}. Não substitui proposta do banco.`}
+                </Texto>
+              </View>
+            ) : null}
+
+            {partes.alertaMarinha ? (
+              <View
+                style={{
+                  marginTop: 4,
+                  padding: 10,
+                  borderRadius: 9,
+                  backgroundColor: cor("cor-superficie"),
+                  borderWidth: 1,
+                  borderColor: cor("cor-linha"),
+                  gap: 3,
+                }}
+              >
+                <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700" }}>
+                  {partes.alertaMarinha.titulo}
+                </Texto>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16 }}>
+                  {partes.alertaMarinha.explicacaoHumana}
+                </Texto>
+              </View>
+            ) : null}
+          </View>
+
+          <Nota>Estimativas pessoais não entram no mensal conhecido do imóvel.</Nota>
+        </View>
+      ) : null}
+
+      <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: ESPACO[1] }}>
+        <LinkComSeta rotulo="Ver composição e ajustar valores" onPress={aoAjustar} />
+        {aoAbrirPerfilDomicilio ? (
+          <LinkComSeta
+            rotulo={perfilConfigurado ? "Ajustar perfil da casa" : "Personalizar perfil da casa"}
+            onPress={aoAbrirPerfilDomicilio}
+          />
+        ) : null}
+      </View>
     </View>
   );
 }

@@ -1,0 +1,303 @@
+TAP version 13
+# Subtest: coleta CKAN: HTTP 200 não é sucesso
+    # Subtest: duas páginas completas → valida, com hash do bruto
+    ok 1 - duas páginas completas → valida, com hash do bruto
+      ---
+      duration_ms: 23.968218
+      type: 'test'
+      ...
+    # Subtest: 200 com HTML de erro → falhou (corpo_nao_e_dados), não vazio
+    ok 2 - 200 com HTML de erro → falhou (corpo_nao_e_dados), não vazio
+      ---
+      duration_ms: 2.26949
+      type: 'test'
+      ...
+    # Subtest: 200 com JSON de falha do CKAN → falhou
+    ok 3 - 200 com JSON de falha do CKAN → falhou
+      ---
+      duration_ms: 1.864651
+      type: 'test'
+      ...
+    # Subtest: 403 → falhou (acesso_negado), nunca conjunto vazio
+    ok 4 - 403 → falhou (acesso_negado), nunca conjunto vazio
+      ---
+      duration_ms: 1.900158
+      type: 'test'
+      ...
+    # Subtest: 429 persistente → falhou (limite_de_taxa); 429 uma vez com Retry-After → nova tentativa e valida
+    ok 5 - 429 persistente → falhou (limite_de_taxa); 429 uma vez com Retry-After → nova tentativa e valida
+      ---
+      duration_ms: 9.587738
+      type: 'test'
+      ...
+    # Subtest: total 0 legítimo → vazia
+    ok 6 - total 0 legítimo → vazia
+      ---
+      duration_ms: 1.524485
+      type: 'test'
+      ...
+    # Subtest: página repetida → parcial (pagina_repetida), sem registros duplicados
+    ok 7 - página repetida → parcial (pagina_repetida), sem registros duplicados
+      ---
+      duration_ms: 2.657747
+      type: 'test'
+      ...
+    # Subtest: próxima página vazia antes do total → parcial (pagina_faltando)
+    ok 8 - próxima página vazia antes do total → parcial (pagina_faltando)
+      ---
+      duration_ms: 2.569941
+      type: 'test'
+      ...
+    # Subtest: página curta no meio → parcial
+    ok 9 - página curta no meio → parcial
+      ---
+      duration_ms: 2.539612
+      type: 'test'
+      ...
+    # Subtest: orçamento de requisições esgotado → parcial (orcamento_esgotado)
+    ok 10 - orçamento de requisições esgotado → parcial (orcamento_esgotado)
+      ---
+      duration_ms: 1.678669
+      type: 'test'
+      ...
+    # Subtest: lerPaginaCkan recusa login, HTML e JSON sem total
+    ok 11 - lerPaginaCkan recusa login, HTML e JSON sem total
+      ---
+      duration_ms: 0.148943
+      type: 'test'
+      ...
+    1..11
+ok 1 - coleta CKAN: HTTP 200 não é sucesso
+  ---
+  duration_ms: 55.478618
+  type: 'suite'
+  ...
+# Subtest: Defesa Civil: colunas deslocadas e datas
+    # Subtest: detecta alinhada, deslocada e março sem cedilha pelo conteúdo
+    ok 1 - detecta alinhada, deslocada e março sem cedilha pelo conteúdo
+      ---
+      duration_ms: 0.578969
+      type: 'test'
+      ...
+    # Subtest: layout desconhecido, data inválida e rua só com máscara vão para a quarentena
+    ok 2 - layout desconhecido, data inválida e rua só com máscara vão para a quarentena
+      ---
+      duration_ms: 0.196563
+      type: 'test'
+      ...
+    # Subtest: data administrativa nunca vira tempo do evento; número mascarado não aparece
+    ok 3 - data administrativa nunca vira tempo do evento; número mascarado não aparece
+      ---
+      duration_ms: 4.677253
+      type: 'test'
+      ...
+    # Subtest: mesma entrada e versão → mesma saída, byte a byte
+    ok 4 - mesma entrada e versão → mesma saída, byte a byte
+      ---
+      duration_ms: 0.590241
+      type: 'test'
+      ...
+    # Subtest: tudo em quarentena → falhou, nunca cobertura completa
+    ok 5 - tudo em quarentena → falhou, nunca cobertura completa
+      ---
+      duration_ms: 0.204808
+      type: 'test'
+      ...
+    1..5
+ok 2 - Defesa Civil: colunas deslocadas e datas
+  ---
+  duration_ms: 6.417086
+  type: 'suite'
+  ...
+# Subtest: OSM: caixas, seletores, coordenadas e categorias
+    # Subtest: caixas dos cinco bairros vêm dos polígonos oficiais e ficam no Recife (não perto de −8,8)
+    ok 1 - caixas dos cinco bairros vêm dos polígonos oficiais e ficam no Recife (não perto de −8,8)
+      ---
+      duration_ms: 0.736298
+      type: 'test'
+      ...
+    # Subtest: caixa antiga do coletor 10, lat/lon trocados e UTM são recusados
+    ok 2 - caixa antiga do coletor 10, lat/lon trocados e UTM são recusados
+      ---
+      duration_ms: 0.360975
+      type: 'test'
+      ...
+    # Subtest: seletor Overpass válido, com valores exatos e escapados
+    not ok 3 - seletor Overpass válido, com valores exatos e escapados
+      ---
+      duration_ms: 0.707133
+      type: 'test'
+      location: '/home/v/Documents/vereda/veredas/scripts/dados/observacoes/testes/pipeline.test.mjs:172:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        The input did not match the regular expression /^\[out:json\]\[timeout:60\];\(nwr\["amenity"\][^;]+;nwr\["shop"\][^;]+;\);out center tags;$/. Input:
+        
+        '[out:json][timeout:60];(nwr["amenity"~"^(pharmacy)$"](-8.05,-34.91,-8.04,-34.9);nwr["shop"~"^(supermarket)$"](-8.05,-34.91,-8.04,-34.9););out center tags;'
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+      actual: '[out:json][timeout:60];(nwr["amenity"~"^(pharmacy)$"](-8.05,-34.91,-8.04,-34.9);nwr["shop"~"^(supermarket)$"](-8.05,-34.91,-8.04,-34.9););out center tags;'
+      operator: 'match'
+      stack: |-
+        TestContext.<anonymous> (file:///home/v/Documents/vereda/veredas/scripts/dados/observacoes/testes/pipeline.test.mjs:177:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: coordenadas: ok, UTM (CRS errado), lat/lon trocados, fora da região
+    ok 4 - coordenadas: ok, UTM (CRS errado), lat/lon trocados, fora da região
+      ---
+      duration_ms: 0.122182
+      type: 'test'
+      ...
+    # Subtest: todas as categorias com erro → falhou; algumas → parcial; nenhuma com elemento → vazia
+    ok 5 - todas as categorias com erro → falhou; algumas → parcial; nenhuma com elemento → vazia
+      ---
+      duration_ms: 0.131781
+      type: 'test'
+      ...
+    # Subtest: os coletores 10 e 12 usam o construtor testado, sem caixas perto de −8,8 nem todosPois fora de escopo
+    ok 6 - os coletores 10 e 12 usam o construtor testado, sem caixas perto de −8,8 nem todosPois fora de escopo
+      ---
+      duration_ms: 0.212744
+      type: 'test'
+      ...
+    1..6
+not ok 3 - OSM: caixas, seletores, coordenadas e categorias
+  ---
+  duration_ms: 2.466183
+  type: 'suite'
+  location: '/home/v/Documents/vereda/veredas/scripts/dados/observacoes/testes/pipeline.test.mjs:157:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Geofabrik: listagem HTML
+    # Subtest: lista datados, exige .md5 e respeita a data limite
+    ok 1 - lista datados, exige .md5 e respeita a data limite
+      ---
+      duration_ms: 5.78159
+      type: 'test'
+      ...
+    # Subtest: página de erro (texto, sem HTML de listagem) → null, não lista vazia
+    ok 2 - página de erro (texto, sem HTML de listagem) → null, não lista vazia
+      ---
+      duration_ms: 0.160244
+      type: 'test'
+      ...
+    # Subtest: página da região: data dos dados e tamanho do -latest
+    not ok 3 - página da região: data dos dados e tamanho do -latest
+      ---
+      duration_ms: 0.794619
+      type: 'test'
+      location: '/home/v/Documents/vereda/veredas/scripts/dados/observacoes/testes/pipeline.test.mjs:220:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly deep-equal:
+        + actual - expected
+        
+          {
+            dadosAte: '2026-11-13T21:22:20Z',
+        +   tamanhoDoLatestMB: null
+        -   tamanhoDoLatestMB: 424
+          }
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        dadosAte: '2026-11-13T21:22:20Z'
+        tamanhoDoLatestMB: 424
+      actual:
+        dadosAte: '2026-11-13T21:22:20Z'
+        tamanhoDoLatestMB: ~
+      operator: 'deepStrictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///home/v/Documents/vereda/veredas/scripts/dados/observacoes/testes/pipeline.test.mjs:222:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    1..3
+not ok 4 - Geofabrik: listagem HTML
+  ---
+  duration_ms: 6.856411
+  type: 'suite'
+  location: '/home/v/Documents/vereda/veredas/scripts/dados/observacoes/testes/pipeline.test.mjs:206:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: GTFS: snapshot do feed
+    # Subtest: versão, contagens e recusa do deslocamento de −0,75
+    ok 1 - versão, contagens e recusa do deslocamento de −0,75
+      ---
+      duration_ms: 110.141406
+      type: 'test'
+      ...
+    1..1
+ok 5 - GTFS: snapshot do feed
+  ---
+  duration_ms: 110.249931
+  type: 'suite'
+  ...
+# Subtest: publicação: versões imutáveis e ponteiro atômico
+    # Subtest: prepara, confere e ativa; reexecução com o mesmo conteúdo é idempotente
+    ok 1 - prepara, confere e ativa; reexecução com o mesmo conteúdo é idempotente
+      ---
+      duration_ms: 4.266372
+      type: 'test'
+      ...
+    # Subtest: escrita interrompida: nenhuma versão nova, ponteiro intacto, pasta temporária removida
+    ok 2 - escrita interrompida: nenhuma versão nova, ponteiro intacto, pasta temporária removida
+      ---
+      duration_ms: 0.9901
+      type: 'test'
+      ...
+    # Subtest: resto temporário de um processo morto nunca é lido como versão
+    ok 3 - resto temporário de um processo morto nunca é lido como versão
+      ---
+      duration_ms: 0.215389
+      type: 'test'
+      ...
+    # Subtest: hash errado: ativação recusada, versão anterior continua ativa
+    ok 4 - hash errado: ativação recusada, versão anterior continua ativa
+      ---
+      duration_ms: 0.823935
+      type: 'test'
+      ...
+    # Subtest: versão parcial exige motivo explícito; queda de cobertura acima de 20% é recusada
+    ok 5 - versão parcial exige motivo explícito; queda de cobertura acima de 20% é recusada
+      ---
+      duration_ms: 1.643892
+      type: 'test'
+      ...
+    # Subtest: todas as fontes falharam: publicação bloqueada; reverter volta à versão anterior conferida
+    ok 6 - todas as fontes falharam: publicação bloqueada; reverter volta à versão anterior conferida
+      ---
+      duration_ms: 0.620098
+      type: 'test'
+      ...
+    1..6
+ok 6 - publicação: versões imutáveis e ponteiro atômico
+  ---
+  duration_ms: 9.982357
+  type: 'suite'
+  ...
+1..6
+# tests 32
+# suites 6
+# pass 30
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 378.818921

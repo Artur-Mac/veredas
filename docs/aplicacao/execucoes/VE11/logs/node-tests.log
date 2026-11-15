@@ -1,0 +1,587 @@
+TAP version 13
+# Subtest: tipo: rua alagada × imóvel alagado (com a acentuação perdida da fonte)
+ok 1 - tipo: rua alagada × imóvel alagado (com a acentuação perdida da fonte)
+  ---
+  duration_ms: 1.517941
+  type: 'test'
+  ...
+# Subtest: colunas deslocadas: a data vem de 'Mês' (inclusive com o nome estragado); sem data → null
+ok 2 - colunas deslocadas: a data vem de 'Mês' (inclusive com o nome estragado); sem data → null
+  ---
+  duration_ms: 0.410129
+  type: 'test'
+  ...
+# Subtest: boletins duplicados viram uma observação com repetições; data incerta não entra em episódio
+ok 3 - boletins duplicados viram uma observação com repetições; data incerta não entra em episódio
+  ---
+  duration_ms: 2.679516
+  type: 'test'
+  ...
+# Subtest: modo e hora nunca são inventados; lugar nomeado tem outra precisão
+ok 4 - modo e hora nunca são inventados; lugar nomeado tem outra precisão
+  ---
+  duration_ms: 0.268039
+  type: 'test'
+  ...
+# Subtest: mesmo nome em dois bairros: liga pelo bairro do registro; fora dos dois, não liga
+ok 5 - mesmo nome em dois bairros: liga pelo bairro do registro; fora dos dois, não liga
+  ---
+  duration_ms: 1.945492
+  type: 'test'
+  ...
+# Subtest: arestas sobre a rua: as da própria rua entram; a travessa perpendicular que a toca não
+ok 6 - arestas sobre a rua: as da própria rua entram; a travessa perpendicular que a toca não
+  ---
+  duration_ms: 0.465183
+  type: 'test'
+  ...
+# Subtest: rua longa recortada: só o trecho dentro do bairro fecha
+ok 7 - rua longa recortada: só o trecho dentro do bairro fecha
+  ---
+  duration_ms: 0.264823
+  type: 'test'
+  ...
+# Subtest: caminho com gargalo: sem o trecho alagado, o explorador acha o desvio pela rua de cima
+ok 8 - caminho com gargalo: sem o trecho alagado, o explorador acha o desvio pela rua de cima
+  ---
+  duration_ms: 0.635566
+  type: 'test'
+  ...
+# Subtest: catálogo: categoria, fechados, entradas
+    # Subtest: categoria pela etiqueta; escola e igreja não viram mercado
+    ok 1 - categoria pela etiqueta; escola e igreja não viram mercado
+      ---
+      duration_ms: 0.768579
+      type: 'test'
+      ...
+    # Subtest: local fechado sai, com a categoria que tinha
+    ok 2 - local fechado sai, com a categoria que tinha
+      ---
+      duration_ms: 0.455955
+      type: 'test'
+      ...
+    # Subtest: entrada de serviço, emergência ou saída não serve como entrada pública
+    ok 3 - entrada de serviço, emergência ou saída não serve como entrada pública
+      ---
+      duration_ms: 0.224756
+      type: 'test'
+      ...
+    1..3
+ok 9 - catálogo: categoria, fechados, entradas
+  ---
+  duration_ms: 2.427017
+  type: 'suite'
+  ...
+# Subtest: catálogo: fusão de duplicatas
+    # Subtest: nó e contorno do mesmo estabelecimento (mesmo nome, 20 m) viram um local, com as duas fontes
+    ok 1 - nó e contorno do mesmo estabelecimento (mesmo nome, 20 m) viram um local, com as duas fontes
+      ---
+      duration_ms: 7.598031
+      type: 'test'
+      ...
+    # Subtest: mesma rede, endereços diferentes (300 m): dois locais
+    ok 2 - mesma rede, endereços diferentes (300 m): dois locais
+      ---
+      duration_ms: 0.316561
+      type: 'test'
+      ...
+    # Subtest: nomes diferentes lado a lado (8 m): dois locais; sem nome a até 25 m: funde
+    ok 3 - nomes diferentes lado a lado (8 m): dois locais; sem nome a até 25 m: funde
+      ---
+      duration_ms: 0.418866
+      type: 'test'
+      ...
+    # Subtest: horário ausente continua ausente (nunca inventado)
+    ok 4 - horário ausente continua ausente (nunca inventado)
+      ---
+      duration_ms: 0.208055
+      type: 'test'
+      ...
+    # Subtest: entrada mapeada de uma cópia substitui os pontos do contorno
+    ok 5 - entrada mapeada de uma cópia substitui os pontos do contorno
+      ---
+      duration_ms: 0.314267
+      type: 'test'
+      ...
+    1..5
+ok 10 - catálogo: fusão de duplicatas
+  ---
+  duration_ms: 9.27272
+  type: 'suite'
+  ...
+# Subtest: alcance: plano B independente e cadeia de recados
+    # Subtest: o segundo mais próximo depende da mesma ponte; o plano B independente é o do outro lado
+    ok 1 - o segundo mais próximo depende da mesma ponte; o plano B independente é o do outro lado
+      ---
+      duration_ms: 3.348855
+      type: 'test'
+      ...
+    # Subtest: sem ponte no caminho, o plano B é o segundo mais próximo; sem ninguém além da ponte, não há plano B
+    ok 2 - sem ponte no caminho, o plano B é o segundo mais próximo; sem ninguém além da ponte, não há plano B
+      ---
+      duration_ms: 0.784299
+      type: 'test'
+      ...
+    # Subtest: limite de distância: nada além dele
+    ok 3 - limite de distância: nada além dele
+      ---
+      duration_ms: 0.268279
+      type: 'test'
+      ...
+    # Subtest: cadeia casa → mercado → farmácia → casa nunca é maior que duas idas e aqui economiza
+    ok 4 - cadeia casa → mercado → farmácia → casa nunca é maior que duas idas e aqui economiza
+      ---
+      duration_ms: 0.577787
+      type: 'test'
+      ...
+    1..4
+ok 11 - alcance: plano B independente e cadeia de recados
+  ---
+  duration_ms: 5.284761
+  type: 'suite'
+  ...
+# Subtest: de uma rua lateral para a outra, cruzando a via principal: 1
+ok 12 - de uma rua lateral para a outra, cruzando a via principal: 1
+  ---
+  duration_ms: 0.770712
+  type: 'test'
+  ...
+# Subtest: andar ao longo da via principal: 0
+ok 13 - andar ao longo da via principal: 0
+  ---
+  duration_ms: 0.143823
+  type: 'test'
+  ...
+# Subtest: virar da lateral para andar na via principal: 0
+ok 14 - virar da lateral para andar na via principal: 0
+  ---
+  duration_ms: 1.465682
+  type: 'test'
+  ...
+# Subtest: faixa mapeada que toca a via principal: 1
+ok 15 - faixa mapeada que toca a via principal: 1
+  ---
+  duration_ms: 0.147059
+  type: 'test'
+  ...
+# Subtest: coleta CKAN: HTTP 200 não é sucesso
+    # Subtest: duas páginas completas → valida, com hash do bruto
+    ok 1 - duas páginas completas → valida, com hash do bruto
+      ---
+      duration_ms: 29.366478
+      type: 'test'
+      ...
+    # Subtest: 200 com HTML de erro → falhou (corpo_nao_e_dados), não vazio
+    ok 2 - 200 com HTML de erro → falhou (corpo_nao_e_dados), não vazio
+      ---
+      duration_ms: 3.552683
+      type: 'test'
+      ...
+    # Subtest: 200 com JSON de falha do CKAN → falhou
+    ok 3 - 200 com JSON de falha do CKAN → falhou
+      ---
+      duration_ms: 3.189254
+      type: 'test'
+      ...
+    # Subtest: 403 → falhou (acesso_negado), nunca conjunto vazio
+    ok 4 - 403 → falhou (acesso_negado), nunca conjunto vazio
+      ---
+      duration_ms: 3.295746
+      type: 'test'
+      ...
+    # Subtest: 429 persistente → falhou (limite_de_taxa); 429 uma vez com Retry-After → nova tentativa e valida
+    ok 5 - 429 persistente → falhou (limite_de_taxa); 429 uma vez com Retry-After → nova tentativa e valida
+      ---
+      duration_ms: 12.648357
+      type: 'test'
+      ...
+    # Subtest: total 0 legítimo → vazia
+    ok 6 - total 0 legítimo → vazia
+      ---
+      duration_ms: 1.926927
+      type: 'test'
+      ...
+    # Subtest: página repetida → parcial (pagina_repetida), sem registros duplicados
+    ok 7 - página repetida → parcial (pagina_repetida), sem registros duplicados
+      ---
+      duration_ms: 3.752803
+      type: 'test'
+      ...
+    # Subtest: próxima página vazia antes do total → parcial (pagina_faltando)
+    ok 8 - próxima página vazia antes do total → parcial (pagina_faltando)
+      ---
+      duration_ms: 5.506762
+      type: 'test'
+      ...
+    # Subtest: página curta no meio → parcial
+    ok 9 - página curta no meio → parcial
+      ---
+      duration_ms: 4.522073
+      type: 'test'
+      ...
+    # Subtest: orçamento de requisições esgotado → parcial (orcamento_esgotado)
+    ok 10 - orçamento de requisições esgotado → parcial (orcamento_esgotado)
+      ---
+      duration_ms: 2.890156
+      type: 'test'
+      ...
+    # Subtest: pede só a lista branca de campos; sem lista, recusa começar
+    ok 11 - pede só a lista branca de campos; sem lista, recusa começar
+      ---
+      duration_ms: 3.441872
+      type: 'test'
+      ...
+    # Subtest: lerPaginaCkan recusa login, HTML e JSON sem total
+    ok 12 - lerPaginaCkan recusa login, HTML e JSON sem total
+      ---
+      duration_ms: 0.154984
+      type: 'test'
+      ...
+    1..12
+ok 16 - coleta CKAN: HTTP 200 não é sucesso
+  ---
+  duration_ms: 80.328585
+  type: 'suite'
+  ...
+# Subtest: Defesa Civil: colunas deslocadas e datas
+    # Subtest: detecta alinhada, deslocada e março sem cedilha pelo conteúdo
+    ok 1 - detecta alinhada, deslocada e março sem cedilha pelo conteúdo
+      ---
+      duration_ms: 0.553029
+      type: 'test'
+      ...
+    # Subtest: layout desconhecido, data inválida e rua só com máscara vão para a quarentena
+    ok 2 - layout desconhecido, data inválida e rua só com máscara vão para a quarentena
+      ---
+      duration_ms: 0.217583
+      type: 'test'
+      ...
+    # Subtest: data administrativa nunca vira tempo do evento; número mascarado não aparece
+    ok 3 - data administrativa nunca vira tempo do evento; número mascarado não aparece
+      ---
+      duration_ms: 5.489519
+      type: 'test'
+      ...
+    # Subtest: mesma entrada e versão → mesma saída, byte a byte
+    ok 4 - mesma entrada e versão → mesma saída, byte a byte
+      ---
+      duration_ms: 0.982164
+      type: 'test'
+      ...
+    # Subtest: tudo em quarentena → falhou, nunca cobertura completa
+    ok 5 - tudo em quarentena → falhou, nunca cobertura completa
+      ---
+      duration_ms: 0.346658
+      type: 'test'
+      ...
+    1..5
+ok 17 - Defesa Civil: colunas deslocadas e datas
+  ---
+  duration_ms: 7.849088
+  type: 'suite'
+  ...
+# Subtest: OSM: caixas, seletores, coordenadas e categorias
+    # Subtest: caixas dos cinco bairros vêm dos polígonos oficiais e ficam no Recife (não perto de −8,8)
+    ok 1 - caixas dos cinco bairros vêm dos polígonos oficiais e ficam no Recife (não perto de −8,8)
+      ---
+      duration_ms: 0.931037
+      type: 'test'
+      ...
+    # Subtest: caixa antiga do coletor 10, lat/lon trocados e UTM são recusados
+    ok 2 - caixa antiga do coletor 10, lat/lon trocados e UTM são recusados
+      ---
+      duration_ms: 0.251757
+      type: 'test'
+      ...
+    # Subtest: seletor Overpass válido, com valores exatos e escapados
+    ok 3 - seletor Overpass válido, com valores exatos e escapados
+      ---
+      duration_ms: 0.372276
+      type: 'test'
+      ...
+    # Subtest: coordenadas: ok, UTM (CRS errado), lat/lon trocados, fora da região
+    ok 4 - coordenadas: ok, UTM (CRS errado), lat/lon trocados, fora da região
+      ---
+      duration_ms: 0.14201
+      type: 'test'
+      ...
+    # Subtest: todas as categorias com erro → falhou; algumas → parcial; nenhuma com elemento → vazia
+    ok 5 - todas as categorias com erro → falhou; algumas → parcial; nenhuma com elemento → vazia
+      ---
+      duration_ms: 0.164422
+      type: 'test'
+      ...
+    # Subtest: os coletores 10 e 12 usam o construtor testado, sem caixas perto de −8,8 nem todosPois fora de escopo
+    ok 6 - os coletores 10 e 12 usam o construtor testado, sem caixas perto de −8,8 nem todosPois fora de escopo
+      ---
+      duration_ms: 0.257428
+      type: 'test'
+      ...
+    1..6
+ok 18 - OSM: caixas, seletores, coordenadas e categorias
+  ---
+  duration_ms: 2.327587
+  type: 'suite'
+  ...
+# Subtest: Geofabrik: listagem HTML
+    # Subtest: lista datados, exige .md5 e respeita a data limite
+    ok 1 - lista datados, exige .md5 e respeita a data limite
+      ---
+      duration_ms: 6.271093
+      type: 'test'
+      ...
+    # Subtest: página de erro (texto, sem HTML de listagem) → null, não lista vazia
+    ok 2 - página de erro (texto, sem HTML de listagem) → null, não lista vazia
+      ---
+      duration_ms: 0.273389
+      type: 'test'
+      ...
+    # Subtest: página da região: data dos dados e tamanho do -latest
+    ok 3 - página da região: data dos dados e tamanho do -latest
+      ---
+      duration_ms: 0.354333
+      type: 'test'
+      ...
+    1..3
+ok 19 - Geofabrik: listagem HTML
+  ---
+  duration_ms: 7.099656
+  type: 'suite'
+  ...
+# Subtest: GTFS: snapshot do feed
+    # Subtest: versão, contagens e recusa do deslocamento de −0,75
+    ok 1 - versão, contagens e recusa do deslocamento de −0,75
+      ---
+      duration_ms: 140.791895
+      type: 'test'
+      ...
+    1..1
+ok 20 - GTFS: snapshot do feed
+  ---
+  duration_ms: 140.921441
+  type: 'suite'
+  ...
+# Subtest: publicação: versões imutáveis e ponteiro atômico
+    # Subtest: prepara, confere e ativa; reexecução com o mesmo conteúdo é idempotente
+    ok 1 - prepara, confere e ativa; reexecução com o mesmo conteúdo é idempotente
+      ---
+      duration_ms: 4.629597
+      type: 'test'
+      ...
+    # Subtest: escrita interrompida: nenhuma versão nova, ponteiro intacto, pasta temporária removida
+    ok 2 - escrita interrompida: nenhuma versão nova, ponteiro intacto, pasta temporária removida
+      ---
+      duration_ms: 1.204215
+      type: 'test'
+      ...
+    # Subtest: resto temporário de um processo morto nunca é lido como versão
+    ok 3 - resto temporário de um processo morto nunca é lido como versão
+      ---
+      duration_ms: 0.234265
+      type: 'test'
+      ...
+    # Subtest: hash errado: ativação recusada, versão anterior continua ativa
+    ok 4 - hash errado: ativação recusada, versão anterior continua ativa
+      ---
+      duration_ms: 1.344161
+      type: 'test'
+      ...
+    # Subtest: versão parcial exige motivo explícito; queda de cobertura acima de 20% é recusada
+    ok 5 - versão parcial exige motivo explícito; queda de cobertura acima de 20% é recusada
+      ---
+      duration_ms: 2.292361
+      type: 'test'
+      ...
+    # Subtest: todas as fontes falharam: publicação bloqueada; reverter volta à versão anterior conferida
+    ok 6 - todas as fontes falharam: publicação bloqueada; reverter volta à versão anterior conferida
+      ---
+      duration_ms: 0.647398
+      type: 'test'
+      ...
+    1..6
+ok 21 - publicação: versões imutáveis e ponteiro atômico
+  ---
+  duration_ms: 12.146103
+  type: 'suite'
+  ...
+# Subtest: leitor PBF
+    # Subtest: lê nós densos (pulando denseinfo), tags de nó e vias com referências delta
+    ok 1 - lê nós densos (pulando denseinfo), tags de nó e vias com referências delta
+      ---
+      duration_ms: 6.668407
+      type: 'test'
+      ...
+    1..1
+ok 22 - leitor PBF
+  ---
+  duration_ms: 7.801477
+  type: 'suite'
+  ...
+# Subtest: permissão a pé e barreiras
+    # Subtest: proíbe autoestrada, obra, foot=no e privado; foot=yes vence access=private; clientes é restrito
+    ok 1 - proíbe autoestrada, obra, foot=no e privado; foot=yes vence access=private; clientes é restrito
+      ---
+      duration_ms: 0.25275
+      type: 'test'
+      ...
+    # Subtest: portão privado e muro bloqueiam; portão com foot=yes não
+    ok 2 - portão privado e muro bloqueiam; portão com foot=yes não
+      ---
+      duration_ms: 0.156908
+      type: 'test'
+      ...
+    1..2
+ok 23 - permissão a pé e barreiras
+  ---
+  duration_ms: 0.661536
+  type: 'suite'
+  ...
+# Subtest: grafo e rotas
+    # Subtest: via privada e autoestrada ficam fora; mão única não restringe a pé
+    ok 1 - via privada e autoestrada ficam fora; mão única não restringe a pé
+      ---
+      duration_ms: 0.865823
+      type: 'test'
+      ...
+    # Subtest: escada: rota padrão usa a escada; cenário sem escadas faz a volta longa
+    ok 2 - escada: rota padrão usa a escada; cenário sem escadas faz a volta longa
+      ---
+      duration_ms: 0.513034
+      type: 'test'
+      ...
+    # Subtest: viaduto sem nó comum não se liga à via de baixo; componente isolado não tem rota
+    ok 3 - viaduto sem nó comum não se liga à via de baixo; componente isolado não tem rota
+      ---
+      duration_ms: 0.257449
+      type: 'test'
+      ...
+    # Subtest: portão privado no meio da via corta a passagem; com foot=yes, passa
+    ok 4 - portão privado no meio da via corta a passagem; com foot=yes, passa
+      ---
+      duration_ms: 0.506701
+      type: 'test'
+      ...
+    # Subtest: pista dupla: atravessar exige a faixa (footway=crossing) e conta via principal
+    ok 5 - pista dupla: atravessar exige a faixa (footway=crossing) e conta via principal
+      ---
+      duration_ms: 0.361636
+      type: 'test'
+      ...
+    # Subtest: cliente/restrito só entra quando pedido
+    ok 6 - cliente/restrito só entra quando pedido
+      ---
+      duration_ms: 0.254323
+      type: 'test'
+      ...
+    # Subtest: rota a partir de um ponto sobre a aresta soma as pontas
+    ok 7 - rota a partir de um ponto sobre a aresta soma as pontas
+      ---
+      duration_ms: 1.198024
+      type: 'test'
+      ...
+    # Subtest: versão da rede: igual para entradas iguais; muda com extrato, regras ou correções
+    ok 8 - versão da rede: igual para entradas iguais; muda com extrato, regras ou correções
+      ---
+      duration_ms: 1.58562
+      type: 'test'
+      ...
+    1..8
+ok 24 - grafo e rotas
+  ---
+  duration_ms: 5.950795
+  type: 'suite'
+  ...
+# Subtest: frentes e entradas
+    # Subtest: esquina: a frente do código cadastral é a principal e a outra rua fica como frente adicional
+    ok 1 - esquina: a frente do código cadastral é a principal e a outra rua fica como frente adicional
+      ---
+      duration_ms: 1.133631
+      type: 'test'
+      ...
+    # Subtest: canal: a rua do outro lado da água é recusada, nunca escolhida; a ligação não cruza o canal
+    ok 2 - canal: a rua do outro lado da água é recusada, nunca escolhida; a ligação não cruza o canal
+      ---
+      duration_ms: 0.384991
+      type: 'test'
+      ...
+    # Subtest: correção revisada substitui o candidato, guarda a origem e não toca o centroide
+    ok 3 - correção revisada substitui o candidato, guarda a origem e não toca o centroide
+      ---
+      duration_ms: 0.197064
+      type: 'test'
+      ...
+    # Subtest: distância ao contorno: 0 dentro, metros fora
+    ok 4 - distância ao contorno: 0 dentro, metros fora
+      ---
+      duration_ms: 0.128674
+      type: 'test'
+      ...
+    1..4
+ok 25 - frentes e entradas
+  ---
+  duration_ms: 2.025915
+  type: 'suite'
+  ...
+# Subtest: raio atravessa um quadrado à frente
+ok 26 - raio atravessa um quadrado à frente
+  ---
+  duration_ms: 1.91737
+  type: 'test'
+  ...
+# Subtest: raio para trás não pega o quadrado
+ok 27 - raio para trás não pega o quadrado
+  ---
+  duration_ms: 0.175062
+  type: 'test'
+  ...
+# Subtest: furo divide o intervalo
+ok 28 - furo divide o intervalo
+  ---
+  duration_ms: 0.318505
+  type: 'test'
+  ...
+# Subtest: origem dentro do volume começa em 0
+ok 29 - origem dentro do volume começa em 0
+  ---
+  duration_ms: 0.24283
+  type: 'test'
+  ...
+# Subtest: segundos GTFS aceitam horários depois de 24h e recusam lixo
+ok 30 - segundos GTFS aceitam horários depois de 24h e recusam lixo
+  ---
+  duration_ms: 0.952738
+  type: 'test'
+  ...
+# Subtest: CSV com aspas e vírgula dentro do campo
+ok 31 - CSV com aspas e vírgula dentro do campo
+  ---
+  duration_ms: 0.461095
+  type: 'test'
+  ...
+# Subtest: compactação: padrões, perfis, dwell, bandeiras e descartes com motivo
+ok 32 - compactação: padrões, perfis, dwell, bandeiras e descartes com motivo
+  ---
+  duration_ms: 3.12456
+  type: 'test'
+  ...
+# Subtest: exceções: serviço só de calendar_dates entra; feriado troca DUT por DOM no aparelho
+ok 33 - exceções: serviço só de calendar_dates entra; feriado troca DUT por DOM no aparelho
+  ---
+  duration_ms: 1.161856
+  type: 'test'
+  ...
+# Subtest: nome de parada pode ser trocado (código → rua) sem mudar o id
+ok 34 - nome de parada pode ser trocado (código → rua) sem mudar o id
+  ---
+  duration_ms: 0.485611
+  type: 'test'
+  ...
+1..34
+# tests 81
+# suites 13
+# pass 81
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 501.749086

@@ -1,0 +1,154 @@
+{
+  "fontesEm": "2026-03-02",
+  "licenca": "ODbL",
+  "fontes": [
+    "https://dados.recife.pe.gov.br/dataset/area-urbana/resource/76280b81-d3d3-4719-b686-8adb58e57b7f",
+    "https://dados.recife.pe.gov.br/dataset/area-urbana/resource/319077bd-4ec7-4e06-8544-c36a5077b47a"
+  ],
+  "sha256": {
+    "edificacoes-lotes.geojson": "4dd4a4fdc69e2253acc344eba31dd9ab4571374a018188e4a39140092a8f78e3",
+    "edificacoes-pavimentos.geojson": "a4236670211bfbd2e8f219dd9672c0cca8b56e73e30135f44dc77873acc4304c"
+  },
+  "contagens": {
+    "edificacoes_lotes_lidas": 74013,
+    "chave_lotes_invalida": 3,
+    "pavimentos_lidos": 230356,
+    "chave_pavimentos_invalida": 11680,
+    "associacao_ambigua_ou_distante": 2200,
+    "aneis_invalidos": 20
+  },
+  "classes": {
+    "1_Pavimento": 132376,
+    "2_Pavimento_Parcial": 21122,
+    "Telheiro": 34692,
+    "2_Pavimento": 21726,
+    "3_Pavimento_Parcial": 3040,
+    "Acima_04_Pav_Parcial": 1005,
+    "3_Pavimento": 3988,
+    "Telheiro_Parcial": 79,
+    "4_Pavimento": 1763,
+    "4_Pavimento_Parcial": 413,
+    "Guarita": 1377,
+    "Quiosque": 41,
+    "Acima_04_Pav": 2755,
+    "Base_de_Predio": 1505,
+    "Construção": 2110,
+    "Construção_Parcial_Acima_04_Pav": 98,
+    "Construção_Parcial_2_Pav": 146,
+    "Construção_Parcial_3_Pav": 36,
+    "Construção_Parcial_4_Pav": 10,
+    "Construção_2_Pav": 341,
+    "Construção_3_Pav": 40,
+    "Construção_Acima_04_Pav": 87,
+    "Fundação": 119,
+    "Marquise": 798,
+    "Ruína": 679,
+    "Construção_4_Pav": 10
+  },
+  "amostraAssociacoes": [
+    {
+      "dsqfl": "61835361030409",
+      "classe": "Acima_04_Pav",
+      "pavimentosGeometria": 13,
+      "pavimentosLote": 13
+    },
+    {
+      "dsqfl": "61835361010007",
+      "classe": "Acima_04_Pav",
+      "pavimentosGeometria": 7,
+      "pavimentosLote": 7
+    },
+    {
+      "dsqfl": "61835361010050",
+      "classe": "Acima_04_Pav",
+      "pavimentosGeometria": 6,
+      "pavimentosLote": 6
+    },
+    {
+      "dsqfl": "61835325030547",
+      "classe": "Acima_04_Pav",
+      "pavimentosGeometria": 14,
+      "pavimentosLote": 16
+    },
+    {
+      "dsqfl": "61835325010130",
+      "classe": "Acima_04_Pav",
+      "pavimentosGeometria": 12,
+      "pavimentosLote": 13
+    },
+    {
+      "dsqfl": "61835310020192",
+      "classe": "Acima_04_Pav",
+      "pavimentosGeometria": 11,
+      "pavimentosLote": 12
+    },
+    {
+      "dsqfl": "61835310010100",
+      "classe": "Acima_04_Pav",
+      "pavimentosGeometria": 13,
+      "pavimentosLote": 14
+    },
+    {
+      "dsqfl": "61835300010370",
+      "classe": "Acima_04_Pav",
+      "pavimentosGeometria": 7,
+      "pavimentosLote": 8
+    },
+    {
+      "dsqfl": "61835300040234",
+      "classe": "Acima_04_Pav",
+      "pavimentosGeometria": 15,
+      "pavimentosLote": 16
+    },
+    {
+      "dsqfl": "61835300030160",
+      "classe": "Acima_04_Pav",
+      "pavimentosGeometria": 13,
+      "pavimentosLote": 14
+    },
+    {
+      "dsqfl": "61835300030135",
+      "classe": "Acima_04_Pav",
+      "pavimentosGeometria": 17,
+      "pavimentosLote": 20
+    },
+    {
+      "dsqfl": "61835275030067",
+      "classe": "Acima_04_Pav",
+      "pavimentosGeometria": 7,
+      "pavimentosLote": 8
+    }
+  ],
+  "bairros": {
+    "gracas": {
+      "volumes": 8868,
+      "bytes": 2420497,
+      "associacoesValidadas": 2080
+    },
+    "torre": {
+      "volumes": 8545,
+      "bytes": 1983688,
+      "associacoesValidadas": 1392
+    },
+    "casa-forte": {
+      "volumes": 8041,
+      "bytes": 1837655,
+      "associacoesValidadas": 1128
+    },
+    "boa-viagem": {
+      "volumes": 23062,
+      "bytes": 5942870,
+      "associacoesValidadas": 5600
+    },
+    "madalena": {
+      "volumes": 15701,
+      "bytes": 3371676,
+      "associacoesValidadas": 2108
+    },
+    "espinheiro": {
+      "volumes": 7810,
+      "bytes": 1851623,
+      "associacoesValidadas": 1226
+    }
+  }
+}

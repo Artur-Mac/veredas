@@ -8,6 +8,7 @@ import { CampoLocal, EscolhaLocal, GrupoLocal } from "./blocos";
 import { FotosPessoais } from "./Fotos";
 import { HistoricoPessoal } from "./Historico";
 import { InfraestruturaEExperiencia } from "./Complementos";
+import { ConectividadeNoLocal } from "./Conectividade";
 import { LembretesPessoais } from "./Lembretes";
 import { RotinaPessoal } from "./Rotina";
 import { edificioPorId } from "../../dados/recife/indice";
@@ -50,6 +51,7 @@ export function RegistrosPessoais({ analise, salvar, novaVisita }: Props) {
     <ResumoSelecionavel analise={analise} />
     <HistoricoPessoal caderno={c} salvar={salvar} />
     <InfraestruturaEExperiencia caderno={c} salvar={salvar} />
+    <ConectividadeNoLocal caderno={c} salvar={salvar} />
     <LembretesPessoais caderno={c} salvar={salvar} />
     <RotinaPessoal caderno={c} centro={centro} salvar={salvar} />
     <GrupoLocal titulo="Referência de localização da visita" apoio="Use durante a visita. GPS não confirma prédio, unidade ou andar. A posição fica privada neste aparelho.">

@@ -1,13 +1,14 @@
 // Lógica do Comparar (Fatia 5). Pura: recebe duas análises v2 e devolve o que a tela mostra, já formatado.
 // Custos só via `custoMensal` (src/dados/custos.ts): nada aqui soma parcelas por conta própria.
-// Nenhuma frase compara com adjetivo nem recomenda; a tela mostra fatos lado a lado.
+// Os painéis mostram fatos lado a lado, sem adjetivo. A recomendação dependente da prioridade da pessoa (quem visitar
+// primeiro, com motivo) vive em src/dados/decisao.ts (VE01, decisão D010), não aqui.
 import type { AnaliseV2, Edificio, Modalidade, OrigemDoValor, ParcelaDoCusto } from "../../dados/contratos";
 import { custoMensal, quemInforma, ROTULO_MENSAL_CONHECIDO, avisoDeValoresPendentes } from "../../dados/custos";
 import { formatarNumero, formatarReais } from "../../dados/formatos";
 import { nomeDoBairro } from "../../dados/formulario";
 import { enderecoEmCaixaDeTitulo } from "../predio/textos";
 
-export type Topico = "custo" | "espaco" | "entorno";
+export type Topico = "custo" | "espaco" | "entorno" | "rotina";
 export type Par<T> = [T, T];
 
 // ——— Quem entra na comparação ——————————————————————————————————————————————————————

@@ -1,0 +1,281 @@
+{
+ "executadoEm": "2026-11-14T21:33:01Z",
+ "versao": "2b075cb5126e8585",
+ "publicacao": {
+  "versao": "89283db2e17638c3",
+  "ativa": "89283db2e17638c3",
+  "anterior": "dc1f878a75d154b2"
+ },
+ "fontes": [
+  {
+   "fonte": "defesa_civil_2014",
+   "sha256": "cdfbecd14617b04b5d4f559e87d66d5700d75d9dea770fb0e367e3ed4965912a",
+   "linhas": 57655,
+   "comData": false
+  },
+  {
+   "fonte": "defesa_civil_2015",
+   "sha256": "42bd0df950aa56a1ace9e105811b5a5101e749ee52c4bf31a0b4b096528a7448",
+   "linhas": 81389,
+   "comData": false
+  },
+  {
+   "fonte": "defesa_civil_2016",
+   "sha256": "21d81da76d9f78abbf6ea9d6ef87ded905a9d68e7b2801b9aa66e939cf3dfc84",
+   "linhas": 92495,
+   "comData": false
+  },
+  {
+   "fonte": "defesa_civil_2017",
+   "sha256": "0706a1113214b9549bfac199ef251322c988c799d74dea1dbdc10b2090b84de5",
+   "linhas": 86325,
+   "comData": false
+  },
+  {
+   "fonte": "defesa_civil_2018",
+   "sha256": "f5e43981e9cba62a1eb68d9ef8932eca41055e8dbff0cbedbacad859eef2168c",
+   "linhas": 89705,
+   "comData": false
+  },
+  {
+   "fonte": "defesa_civil_2019",
+   "sha256": "0f709d7e8a01c309f1c0f68c55080db0e4d192783de3b6976f910fa67dc0cac5",
+   "linhas": 89955,
+   "comData": false
+  },
+  {
+   "fonte": "defesa_civil_2020",
+   "sha256": "db81debe724873de1dc13ffc205b18a37b8e2c04fafac179fb0abad2ad97a9a1",
+   "linhas": 70122,
+   "comData": true
+  },
+  {
+   "fonte": "defesa_civil_2021",
+   "sha256": "68af57fb42bddff96a9cac3eed643e4e01281d74b9d10287a4335846d2034965",
+   "linhas": 64855,
+   "comData": true
+  },
+  {
+   "fonte": "defesa_civil_2022",
+   "sha256": "4ebd38a0b61128da77c17a3945d1934d8e2e3bfa555fff8acee88011f4e4297f",
+   "linhas": 90425,
+   "comData": true
+  },
+  {
+   "fonte": "defesa_civil_2023",
+   "sha256": "19818bdd7382a21620509bbb5c7593263d60075ca64043b00a8a1e8bb9ba6346",
+   "linhas": 83164,
+   "comData": true
+  },
+  {
+   "fonte": "defesa_civil_2024",
+   "sha256": "2b4154e2ffaf8ee13aceaa81be063ee9f5e980d170a43e6b9db7388d27ec3014",
+   "linhas": 80173,
+   "comData": true
+  }
+ ],
+ "registros": {
+  "total": 1645,
+  "porTipo": {
+   "imovel_alagado": 921,
+   "via_alagada": 724
+  },
+  "porPrecisaoDaData": {
+   "ano": 919,
+   "dia": 726
+  },
+  "porPrecisaoDoLocal": {
+   "rua": 1551,
+   "lugar_nomeado": 94
+  }
+ },
+ "observacoes": {
+  "total": 763,
+  "comRepeticao": 103,
+  "porTipo": {
+   "imovel_alagado": 369,
+   "via_alagada": 394
+  }
+ },
+ "episodios": {
+  "total": 31,
+  "maiores": [
+   [
+    "E2022-06-03",
+    129
+   ],
+   [
+    "E2022-06-13",
+    38
+   ],
+   [
+    "E2022-05-28",
+    32
+   ],
+   [
+    "E2024-06-25",
+    28
+   ],
+   [
+    "E2024-06-15",
+    28
+   ],
+   [
+    "E2024-02-16",
+    20
+   ],
+   [
+    "E2023-07-07",
+    17
+   ],
+   [
+    "E2023-06-30",
+    17
+   ]
+  ]
+ },
+ "vinculo": {
+  "porMetodo": {
+   "nome_e_bairro": 175,
+   "sem_correspondencia": 136,
+   "lugar_sem_geometria": 35,
+   "ambiguo": 8,
+   "nome_fora_do_bairro": 32,
+   "nome_e_bairro_sem_aresta": 1,
+   "tunel_no_bairro": 7
+  },
+  "ligadasARede": 182,
+  "ruasLongas": 88
+ },
+ "piloto": {
+  "boa-viagem": {
+   "predios": 1761,
+   "comCenario": 175,
+   "porCategoria": {
+    "mercado": 97,
+    "farmacia": 95,
+    "transporte": 1
+   },
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 60,
+   "outroLocal": 133,
+   "comparados": 642,
+   "imateriais": 449,
+   "ruaPropria": 28
+  },
+  "casa-forte": {
+   "predios": 78,
+   "comCenario": 1,
+   "porCategoria": {},
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 0,
+   "outroLocal": 0,
+   "ruaPropria": 1
+  },
+  "gracas": {
+   "predios": 285,
+   "comCenario": 0,
+   "porCategoria": {},
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 0,
+   "outroLocal": 0,
+   "comparados": 9,
+   "imateriais": 9
+  },
+  "espinheiro": {
+   "predios": 151,
+   "comCenario": 12,
+   "porCategoria": {
+    "farmacia": 1
+   },
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 0,
+   "outroLocal": 1,
+   "ruaPropria": 11,
+   "comparados": 21,
+   "imateriais": 20
+  },
+  "madalena": {
+   "predios": 241,
+   "comCenario": 26,
+   "porCategoria": {
+    "mercado": 50
+   },
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 0,
+   "outroLocal": 50,
+   "comparados": 84,
+   "imateriais": 34,
+   "ruaPropria": 1
+  }
+ },
+ "exemplos": [
+  {
+   "area": "boa-viagem",
+   "predio": "10537-232",
+   "categoria": "mercado",
+   "data": "2023-06-30",
+   "rua": "Avenida Barao de Souza Leao",
+   "antesMin": 6.4,
+   "depoisMin": 13.3,
+   "mesmoLocal": true
+  },
+  {
+   "area": "boa-viagem",
+   "predio": "10537-260",
+   "categoria": "mercado",
+   "data": "2023-06-30",
+   "rua": "Avenida Barao de Souza Leao",
+   "antesMin": 6.4,
+   "depoisMin": 13.3,
+   "mesmoLocal": true
+  },
+  {
+   "area": "espinheiro",
+   "predio": "52833-76",
+   "categoria": "farmacia",
+   "data": "2023-05-24",
+   "rua": "Avenida Gov. Agamenon Magalhaes",
+   "antesMin": 3,
+   "depoisMin": 6,
+   "mesmoLocal": false
+  },
+  {
+   "area": "madalena",
+   "predio": "10910-341",
+   "categoria": "mercado",
+   "data": "2024-06-25",
+   "rua": "Tunel da Madalena",
+   "antesMin": 9.1,
+   "depoisMin": 14.4,
+   "mesmoLocal": false
+  },
+  {
+   "area": "madalena",
+   "predio": "10910-341",
+   "categoria": "mercado",
+   "data": "2024-06-15",
+   "rua": "Tunel da Madalena",
+   "antesMin": 9.1,
+   "depoisMin": 14.4,
+   "mesmoLocal": false
+  }
+ ],
+ "gRain": {
+  "casos": 38,
+  "episodios": 9,
+  "reservados": [
+   "E2024-02-27",
+   "E2024-06-25"
+  ]
+ },
+ "bytes": {
+  "boa-viagem": 19784,
+  "casa-forte": 459,
+  "gracas": 264,
+  "espinheiro": 1038,
+  "madalena": 5735
+ },
+ "ms": 34830,
+ "memoriaPicoMB": 401
+}

@@ -1,0 +1,40 @@
+{
+ "pares": 34,
+ "porTipo": {
+  "supermercado": 8,
+  "mercado_publico": 9,
+  "feira": 11,
+  "parada": 6
+ },
+ "porEstado": {
+  "sem_alternativa_util": 158,
+  "ganho_pequeno": 22,
+  "inconclusivo": 24
+ },
+ "porEstadoSemArvores": {
+  "prefere_curto_ou_igual": 143,
+  "prefere_alternativa": 55,
+  "troca": 6
+ },
+ "sensivelAArvores": 3,
+ "sensivelAoLado": 14,
+ "arvores": {
+  "total": 259575,
+  "comCopa": 11488,
+  "comAltura": 12390,
+  "porOrigem": {
+   "Arborizacao": 635,
+   "ARB2007": 36002,
+   "Aplicativo": 1351,
+   "Inventario": 6881
+  },
+  "noEntorno": 44869,
+  "noEntornoComCopa": 7439,
+  "noEntornoComAltura": 7777
+ },
+ "linhasDoRoteiro": 15,
+ "casosDecisivos": 46,
+ "trechosDistintos": 64,
+ "ms": 146215
+}
+146.50 s 1804948 KB

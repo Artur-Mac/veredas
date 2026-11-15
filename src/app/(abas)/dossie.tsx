@@ -22,11 +22,25 @@ import type { AbaDoDossie } from "../../componentes/dossie-v1/textos";
 import { GavetaDeFonte, type PedidoDeFonte } from "../../componentes/fonte/GavetaDeFonte";
 import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
+import { CartaoSol } from "../../componentes/sol/CartaoSol";
+import { SolNasFachadas } from "../../componentes/dossie-v1/SolNasFachadas";
+import { LadoDoBarulho } from "../../componentes/dossie-v1/Noite";
+import { DesdeQueSalvou } from "../../componentes/dossie-v1/DesdeQueSalvou";
+import { PrepararNegociacao } from "../../componentes/dossie-v1/Negociacao";
+import { EsperaDasCamadas } from "../../componentes/EsperaDasCamadas";
+import { cadernoVazio } from "../../dados/caderno";
+import { adiantarCamadas } from "../../dados/camadas";
+import { camadasDoBairro, camadasParaDepois } from "../../dados/camadasDasTelas";
+import type { Instantaneo } from "../../dados/memoria";
+import { retratoDoDossie } from "../../dados/memoriaDoDossie";
+import { adicionarPropria } from "../../componentes/visita-v1/logica";
 import type { RespostaDaDefesaCivil } from "../../componentes/dossie-v1/ARua";
 import type { AnaliseV2, Pergunta, Prioridade } from "../../dados/contratos";
+import { derivarCustoPorPartes } from "../../dados/custoPorPartes";
 import { derivarDossie } from "../../dados/dossie/derivar";
 import { bairroPorSlug, eCoberto } from "../../dados/recife/bairros";
 import { useAnalises } from "../../estado/Analises";
+import { usePerfilDomicilio } from "../../estado/PerfilDomicilio";
 import { useTema } from "../../tema/Tema";
 import { ESPACO, comAlfa } from "../../tema/tokens";
 
@@ -86,7 +100,15 @@ export default function TelaDossie() {
           </Texto>
         </View>
       ) : analise ? (
-        <DossieDaAnalise key={analise.id} analise={analise} lista={lista} />
+        // D036: os dados do bairro ficam fora do bundle; o dossiê só desenha com eles em memória.
+        <EsperaDasCamadas
+          key={analise.id}
+          caminhos={camadasDoBairro(analise.bairro)}
+          carregando={`Carregando os dados de ${bairroPorSlug(analise.bairro)?.nome ?? "do bairro"}…`}
+          oQue={`os dados de ${bairroPorSlug(analise.bairro)?.nome ?? "deste bairro"}`}
+        >
+          <DossieDaAnalise analise={analise} lista={lista} />
+        </EsperaDasCamadas>
       ) : (
         <EstadoVazio erro={erro} />
       )}
@@ -120,7 +142,8 @@ function EstadoVazio({ erro }: { erro: string }) {
 
 function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: AnaliseV2[] }) {
   const { cor } = useTema();
-  const { salvar, definirAtiva } = useAnalises();
+  const { salvar, definirAtiva, atualizar } = useAnalises();
+  const { perfil: perfilDomicilio } = usePerfilDomicilio();
   const { mostrarAviso } = useAviso();
   const [aba, setAba] = useState<AbaDoDossie>("destaques");
   const [prioridade, setPrioridade] = useState<Prioridade>("custo");
@@ -135,6 +158,11 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
 
   // O índice do bairro valida no primeiro acesso e fica em memória; a leitura é uma busca em mapa.
   const cadastro = useMemo(() => carregarCadastro(analise), [analise]);
+  // Com o dossiê na tela, guarda no aparelho o que a aba Edifício e o Comparar vão pedir (reabrir sem rede).
+  useEffect(() => {
+    const t = setTimeout(() => adiantarCamadas(camadasParaDepois(analise.bairro)), 1500);
+    return () => clearTimeout(t);
+  }, [analise.bairro]);
   const outras = useMemo(() => lista.filter((x) => x.id !== analise.id), [lista, analise.id]);
   const visao = useMemo(
     () => derivarDossie(analise, cadastro.edificio, cadastro.contexto, cadastro.obras, outras, new Date(), prioridade, cadastro.rua),
@@ -145,6 +173,10 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
   const vinculoConfirmado = analise.vinculo.estado === "confirmado";
   const nomeDoBairro = bairroPorSlug(analise.bairro)?.nome ?? (analise.bairroTexto.trim() || "Bairro");
   const predio = visao.loteConfirmado ? cadastro.edificio : null;
+  const partesDeCusto = useMemo(
+    () => derivarCustoPorPartes(analise, predio, perfilDomicilio),
+    [analise, predio, perfilDomicilio],
+  );
 
   const fechar = useCallback(() => setGaveta(null), []);
 
@@ -189,6 +221,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
 
   const confirmarPredio = useCallback(() => router.push({ pathname: "/predio", params: { id: analise.id } }), [analise.id]);
   const verComposicao = useCallback(() => router.push({ pathname: "/editar", params: { id: analise.id } }), [analise.id]);
+  const abrirPerfilDomicilio = useCallback(() => router.push("/perfil-domicilio"), []);
 
   const prepararVisita = useCallback(async () => {
     setGaveta(null);
@@ -200,6 +233,22 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     }
     router.push("/visita");
   }, [analise.id, definirAtiva, mostrarAviso]);
+
+  // VE07: leva uma conferência (ex.: o sol num lado do prédio) para o roteiro da visita desta análise.
+  const levarParaVisita = useCallback(
+    async (texto: string) => {
+      const visita = adicionarPropria(analise.visita, texto);
+      if (!visita) return false;
+      try {
+        await salvar({ ...analise, visita, atualizadaEm: new Date().toISOString() });
+        return true;
+      } catch {
+        mostrarAviso("Não foi possível salvar. Tente de novo.");
+        return false;
+      }
+    },
+    [analise, salvar, mostrarAviso],
+  );
 
   // v1.1: a Defesa Civil não publica o número do imóvel; a resposta da pessoa fica na análise (null desfaz).
   const responderDefesaCivil = useCallback(
@@ -221,12 +270,27 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
 
   const alternarSalvo = useCallback(async () => {
     try {
-      await salvar({ ...analise, salva: !analise.salva, atualizadaEm: new Date().toISOString() });
+      const em = new Date().toISOString();
+      // VE09: salvar é uma ação deliberada; se ainda não há retrato, guarda o que o dossiê mostra agora. `atualizar`
+      // edita a análise guardada (o `salvar` preserva o caderno existente de propósito).
+      await atualizar(analise.id, (a) => ({
+        ...a, salva: !a.salva, atualizadaEm: em,
+        ...(!a.salva && !a.caderno?.memoria ? { caderno: { ...(a.caderno ?? cadernoVazio()), memoria: retratoDoDossie(a, predio, em) } } : {}),
+      }));
       mostrarAviso(analise.salva ? "Removido dos salvos" : "Salvo no caderno");
     } catch {
       mostrarAviso("Não foi possível salvar. Tente de novo.");
     }
-  }, [analise, salvar, mostrarAviso]);
+  }, [analise, atualizar, mostrarAviso, predio]);
+
+  const guardarRetrato = useCallback(async (retrato: Instantaneo) => {
+    try {
+      await atualizar(analise.id, (a) => ({ ...a, atualizadaEm: retrato.em, caderno: { ...(a.caderno ?? cadernoVazio()), memoria: retrato } }));
+      mostrarAviso("Guardado como visto hoje");
+    } catch {
+      mostrarAviso("Não foi possível salvar. Tente de novo.");
+    }
+  }, [analise.id, atualizar, mostrarAviso]);
 
   const gavetaDeFonte = gaveta?.tipo === "fonte" ? gaveta.pedido : null;
   const perguntaAberta = gaveta?.tipo === "pergunta" ? gaveta.pergunta : null;
@@ -261,7 +325,16 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
               aoAbrirCadastro={() => setGaveta({ tipo: "cadastro" })}
               aoAbrirFonte={abrirFonte}
             />
-            <BlocoDeCusto custo={visao.custo} area={visao.especificacoes.area} posicao={visao.posicao} aoAbrirPosicao={() => irPara("entorno", "preco")} aoAjustar={verComposicao} />
+            <BlocoDeCusto
+              custo={visao.custo}
+              area={visao.especificacoes.area}
+              posicao={visao.posicao}
+              aoAbrirPosicao={() => irPara("entorno", "preco")}
+              aoAjustar={verComposicao}
+              partes={partesDeCusto}
+              perfilConfigurado={perfilDomicilio.configurado}
+              aoAbrirPerfilDomicilio={abrirPerfilDomicilio}
+            />
           </View>
 
           {cadastro.falhou ? (
@@ -273,6 +346,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             </CaixaCreme>
           ) : null}
 
+          <View style={{ marginTop: 16 }}><CartaoSol analise={analise} /></View>
           <AbasDoDossie atual={aba} aoEscolher={escolherAba} />
 
           <View
@@ -296,6 +370,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
               focoDoPainel.estilo,
             ]}
           >
+            {aba === "destaques" ? <DesdeQueSalvou analise={analise} predio={predio} aoGuardarRetrato={guardarRetrato} /> : null}
             {aba === "destaques" ? (
               <Destaques
                 visao={visao}
@@ -311,6 +386,10 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
               <Entorno
                 visao={visao}
                 edificio={predio}
+                vizinhos={cadastro.vizinhos}
+                orientacaoJanelaGraus={analise.visita.orientacaoGraus}
+                slugBairro={analise.bairro}
+                ruaDoBairro={cadastro.rua?.bairro ?? null}
                 contexto={cadastro.contexto}
                 nomeDoBairro={nomeDoBairro}
                 coberto={coberto}
@@ -342,7 +421,10 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
           {/* `.ds-after-panel`: a ação principal e os dois links. */}
           <View style={styles.depoisDoPainel}>
             {aba === "entorno" ? <ServicosDeEntorno centro={predio?.centro ?? (analise.caderno?.localizacaoDaVisita ? [analise.caderno.localizacaoDaVisita.longitude, analise.caderno.localizacaoDaVisita.latitude] : null)} referenciaDaVisita={!predio ? analise.caderno?.localizacaoDaVisita : undefined} /> : null}
+            {aba === "destaques" ? <PrepararNegociacao analise={analise} visao={visao} lista={lista} /> : null}
             {aba === "destaques" ? <LinkComSeta rotulo="Orçamento e cenários" onPress={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "orcamento" } })} /> : null}
+            {aba === "edificio" ? <SolNasFachadas analise={analise} predio={predio} aoLevarParaVisita={levarParaVisita} /> : null}
+            {aba === "edificio" ? <LadoDoBarulho bairro={predio?.bairro ?? null} predioId={predio?.id ?? null} aoLevarParaVisita={levarParaVisita} /> : null}
             {aba === "edificio" ? <LinkComSeta rotulo="Documentos e CNPJ do edifício" onPress={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "edificio" } })} /> : null}
             <LinkComSeta rotulo="Observações e histórico de visitas" onPress={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "campo" } })} />
             <Botao rotulo="Preparar visita" variante="principal" seta onPress={() => void prepararVisita()} />

@@ -1,0 +1,173 @@
+{
+ "epoch": "VE16",
+ "date": "2026-11-15",
+ "status": "partial",
+ "outcome": "adopt (update operations) / iterate (review economics)",
+ "reason": "Two byte-identical full cycles, a real interruption, three verified rollbacks and one roll-forward, a coverage-qualified Torre expansion with a held-out set (12/12) and no change for any pilot building. Not met: evidence that human review effort is sustainable — no review sheet has been worked, so review minutes per cycle are unmeasured; no business-model price to compare cost against.",
+ "cycle_runner": "scripts/dados/ciclo.mjs (records in docs/aplicacao/execucoes/VE16/ciclos/)",
+ "cycles": {
+  "c1-reproducao": {
+   "kind": "offline re-run, code as found",
+   "s": 849.2,
+   "result": "complete; walk network, transit, night byte-identical; essentials and rain files changed with 0 buildings changed (run-time timestamps) and essentials rewrote its own version folder in place"
+  },
+  "c2-ao-vivo": {
+   "kind": "live acquisition after fixes",
+   "s": 607.5,
+   "requests": "Defesa Civil probe 2 (CKAN), Geofabrik 2 (listing + region page), municipal places 3 sources (CKAN datastore, budget 3 each)",
+   "result": "complete; 0 buildings changed in any pilot layer; sun labels changed (script hash), content identical"
+  },
+  "c3-reproducao": {
+   "kind": "offline, cache off",
+   "s": 521.6,
+   "result": "byte-identical to c2: same 5 publication versions, 0 generated modules changed, 99/99 app layer files identical"
+  },
+  "c4-com-cache": {
+   "kind": "cached",
+   "s": 0.17,
+   "result": "8/8 steps skipped"
+  },
+  "c5-torre-interrompido": {
+   "kind": "expansion with interruption (invalid)",
+   "s": 219.8,
+   "result": "runner defect: SIGKILL reached only /usr/bin/time; the transit pipeline finished as an orphan and activated. Fixed (process group). Reverted in 118 ms, equal to restore point"
+  },
+  "c6-torre-interrompido": {
+   "kind": "expansion with real interruption at transit+8 s",
+   "s": 201.2,
+   "result": "transit pointer and module unchanged, no leftover temp folder, state check clean; intermediate app state: Torre has day-to-day only, pilot unchanged"
+  },
+  "c7-torre-retomada": {
+   "kind": "resume",
+   "s": 559.5,
+   "result": "complete; all finished steps re-ran because the cache-key formula changed between c6 and c7"
+  },
+  "c8-procura-cache-frio": {
+   "kind": "where-to-look, cold per-area cache",
+   "s": 223.8,
+   "result": "same output version 861400f8acc86b7e"
+  },
+  "c9-procura-so-torre": {
+   "kind": "where-to-look, only Torre missing from cache",
+   "s": 10.4,
+   "result": "same output version; 5 areas from cache, Torre computed"
+  },
+  "c10-com-cache": {
+   "kind": "full re-run with Torre (code fingerprint changed)",
+   "s": 298.1,
+   "result": "byte-identical: 0 generated modules changed, 104/104 files, same versions"
+  },
+  "c11-com-cache": {
+   "kind": "cached",
+   "s": 0.18,
+   "result": "8/8 steps skipped"
+  }
+ },
+ "step_seconds_reference_full_offline_c3": {
+  "observacoes": 30,
+  "rede": 69,
+  "destinos": 111,
+  "transito": 27,
+  "chuva": 34,
+  "noite": 21,
+  "procura": 215,
+  "sol": 15,
+  "total": 522
+ },
+ "peak_memory_mb_max": 1354,
+ "rollback": {
+  "c5_revert_ms": 118,
+  "c7_revert_ms": 122,
+  "c7_reapply_ms": 127,
+  "refused_when_restore_point_mismatched": "c1 revert refused: essentials file in restore point had been rewritten in place (defect, fixed)"
+ },
+ "defects_found_and_fixed": [
+  "Run-time timestamps (geradoEm) in essentials and rain payloads made every run a new version with identical data; now the date of the newest source datum",
+  "Essentials rewrote files inside an existing version folder, breaking restore points; version folders are now immutable (scripts/dados/imutavel.mjs) and the essentials format bumped to 3",
+  "Replayed municipal sources were stamped with the run time as retrieval time; the archive date is kept, and a live failure that falls back to the archive says so",
+  "Four pipelines rewrote review sheets unconditionally; sheets with human answers are now kept and the regenerated sheet goes beside them (scripts/dados/folhas.mjs, 4 tests); G-RAIN selection frozen once created",
+  "The cycle runner's interruption killed only the timing wrapper; now the whole process group",
+  "Cache keys included pointer annotations (restore time); now active versions only",
+  "Where-to-look per-area cache keyed on whole file text was invalidated by header changes; now keyed on the per-building data it reads",
+  "tests/camadas.test.ts hard-coded a layer version path that left the manifest after a publication; now read from the generated module",
+  "Screen texts named 'cinco bairros do piloto' and a stale five-area list for building confirmation; now derived from published coverage (src/dados/recife/coberturaDasCamadas.ts) and the enabled index"
+ ],
+ "data_age_at_c2": {
+  "osm_extract": "nordeste-261113 (data to 2026-11-13T21:22Z) = newest dated extract",
+  "defesa_civil_2024": "live count 80,173 = archive; 1,000/1,000 sampled rows identical",
+  "municipal_places": "fetched live 2026-11-15T02:01Z",
+  "gtfs": "v2026.10.26 pinned (snapshot 2026-11-11); not re-probed by the cycle",
+  "building_index": "generated 2026-10-22; outside the cycle",
+  "solar_sources": "published 2026-03-02"
+ },
+ "expansion": {
+  "area": "torre",
+  "buildings_in_index": 137,
+  "coverage": {
+   "walk_link_strong": "127/137 (92.7%; pilot 93.6%)",
+   "osm_address_agreement": "10/10 (median 8 m)",
+   "walk_routes": "137/137, 0 impossible, 0 suspicious; detour median 1.40, p90 3.73",
+   "day_to_day": "137 packages (127 network, 10 straight-line); within 10 min: market 123, pharmacy 102, square 127, transport 127; plan B 127",
+   "routine_transit": "127 buildings; held-out G-TRANSIT-TORRE 12/12 verified against raw GTFS by the independent VE05 checker",
+   "night_return": "127 buildings, all with a stop with night arrivals; 95 with a main road within 80 m",
+   "rain": "127 analysed, 0 with a material change (no Torre street record moves a daily route ≥3 min)",
+   "sun_facades": "cut-out added (1.98 MB, loaded on demand)",
+   "where_to_look": "+13 Torre streets (274 total)"
+  },
+  "pilot_buildings_changed": 0,
+  "added_bytes_excluding_existing_index": 2070979,
+  "render": {
+   "script": "docs/aplicacao/execucoes/VE16/scripts/ve16-render-torre.mjs",
+   "widths": [
+    375,
+    360
+   ],
+   "external_requests": 0,
+   "page_errors": 0,
+   "result": "Torre dossier shows A pé a partir da entrada, Voltando à noite, Sol nas fachadas; Compare Rotina computes Torre vs Madalena; 'cinco bairros' text gone"
+  }
+ },
+ "incremental": {
+  "full_offline_s": 521.6,
+  "cached_s": 0.17,
+  "where_to_look_full_s": 223.8,
+  "where_to_look_one_new_area_s": 10.4,
+  "limits": "code fingerprint is global (any script edit re-runs every step); raw files fingerprinted by size + mtime"
+ },
+ "remote_services": "none introduced (no measured bottleneck: largest step 215 s on one laptop)",
+ "economics": {
+  "money_spent_reais": 0,
+  "machine_minutes_full_cycle": 8.7,
+  "machine_seconds_per_building_full_cycle": 0.18,
+  "human_review_minutes": 0,
+  "unreviewed_rows_waiting": {
+   "g-building": 50,
+   "g-poi": 44,
+   "g-rain": 38,
+   "g-transit": 20,
+   "g-transit-torre": 12,
+   "g-noite-observacao": 15,
+   "g-shade-observacao": 80
+  },
+  "per_useful_decision": "not measurable (no participants)"
+ },
+ "regression": {
+  "jest": {
+   "suites": 68,
+   "tests": 1571,
+   "failed": 0
+  },
+  "pipeline_node_tests": {
+   "tests": 90,
+   "failed": 0
+  },
+  "typecheck_errors": 0,
+  "lint_errors": 0,
+  "smoke": {
+   "steps": 50,
+   "external_requests": 0,
+   "result": "pass"
+  }
+ },
+ "storage_note": "old app version folders are kept for rollback (transit ~3 MB per version); they are not published to the bundle"
+}

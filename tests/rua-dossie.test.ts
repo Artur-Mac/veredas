@@ -220,6 +220,19 @@ describe("A rua: Defesa Civil só com a confirmação da pessoa", () => {
     expect(perguntas.find((p) => p.id === "rua-defesa-civil")).toMatchObject({ prioridade: "documentos", pista: "3 atendimentos na rua, 2014 a 2024" });
   });
 
+  it("ações comunitárias ficam fora da contagem e são ditas no detalhe; sem elas, nada muda (VE02)", () => {
+    const comCampanha: RuaDoBairro = {
+      ...RUA_SINTETICA,
+      logradouros: { "99001": { ...RUA_SINTETICA.logradouros["99001"]!, defesaCivil: { ...RUA_SINTETICA.logradouros["99001"]!.defesaCivil!, acoesComunitarias: 712 } } },
+    };
+    const { visao } = analisar(analise(confirmada(e)), e, { bairro: comCampanha, fontes: FONTES });
+    expect(fato(visao, "rua-defesa-civil").valor).toBe("3");
+    expect(fato(visao, "rua-defesa-civil").detalhe).toContain("Fora da conta: 712 ações comunitárias da Defesa Civil (porta a porta, atendimento social, donativos).");
+    expect(visao.defesaCivil?.atendimentos).toBe(3);
+    const so = analisar(analise(confirmada(e)), e).visao;
+    expect(fato(so, "rua-defesa-civil").detalhe).not.toContain("Fora da conta");
+  });
+
   it("'Foi neste prédio': o fato aparece como declarado por você, com a data da resposta", () => {
     const a = analise({ ...confirmada(e), confirmacoesDaRua: { defesaCivil: { resposta: "neste_predio", em: "2026-10-21T10:00:00.000Z" } } });
     const { visao, perguntas } = analisar(a, e);

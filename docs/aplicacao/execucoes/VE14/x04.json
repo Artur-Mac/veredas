@@ -1,0 +1,152 @@
+{
+ "preregistro": "docs/aplicacao/execucoes/VE14/preregistro.md",
+ "publicacaoChuva": "89283db2e17638c3",
+ "ruasNoUniverso": 9037,
+ "positivosTreino_2022_2023": 14,
+ "positivosTeste_2024": 17,
+ "pedidosDeDrenagem": 8141,
+ "pesos": {
+  "ordem": [
+   "registros_anteriores",
+   "distancia_agua_m",
+   "superficie_m",
+   "pedidos_drenagem_50m"
+  ],
+  "w": [
+   0.473,
+   -2.18,
+   -4.565,
+   0.22
+  ],
+  "b": -4.59
+ },
+ "temporal": {
+  "B1_registros_anteriores": {
+   "p@20": 0.25,
+   "acertos@20": 5,
+   "p@50": 0.16,
+   "acertos@50": 8,
+   "p@100": 0.09,
+   "acertos@100": 9,
+   "recall50": 0.471
+  },
+  "B2_perto_da_agua": {
+   "p@20": 0,
+   "acertos@20": 0,
+   "p@50": 0,
+   "acertos@50": 0,
+   "p@100": 0,
+   "acertos@100": 0,
+   "recall50": 0
+  },
+  "B3_superficie_baixa": {
+   "p@20": 0,
+   "acertos@20": 0,
+   "p@50": 0,
+   "acertos@50": 0,
+   "p@100": 0,
+   "acertos@100": 0,
+   "recall50": 0
+  },
+  "B4_pedidos_de_drenagem": {
+   "p@20": 0,
+   "acertos@20": 0,
+   "p@50": 0,
+   "acertos@50": 0,
+   "p@100": 0.01,
+   "acertos@100": 1,
+   "recall50": 0
+  },
+  "M1_logistica": {
+   "p@20": 0.25,
+   "acertos@20": 5,
+   "p@50": 0.14,
+   "acertos@50": 7,
+   "p@100": 0.09,
+   "acertos@100": 9,
+   "recall50": 0.412
+  }
+ },
+ "espacial": {
+  "treino_A_teste_B": {
+   "positivos": 10,
+   "B1_registros_anteriores": {
+    "p@20": 0.15,
+    "acertos@20": 3,
+    "p@50": 0.12,
+    "acertos@50": 6,
+    "recall50": 0.6
+   },
+   "B2_perto_da_agua": {
+    "p@20": 0,
+    "acertos@20": 0,
+    "p@50": 0,
+    "acertos@50": 0,
+    "recall50": 0
+   },
+   "B3_superficie_baixa": {
+    "p@20": 0,
+    "acertos@20": 0,
+    "p@50": 0,
+    "acertos@50": 0,
+    "recall50": 0
+   },
+   "B4_pedidos_de_drenagem": {
+    "p@20": 0,
+    "acertos@20": 0,
+    "p@50": 0,
+    "acertos@50": 0,
+    "recall50": 0
+   },
+   "M1_logistica": {
+    "p@20": 0.15,
+    "acertos@20": 3,
+    "p@50": 0.08,
+    "acertos@50": 4,
+    "recall50": 0.4
+   }
+  },
+  "treino_B_teste_A": {
+   "positivos": 7,
+   "B1_registros_anteriores": {
+    "p@20": 0.15,
+    "acertos@20": 3,
+    "p@50": 0.06,
+    "acertos@50": 3,
+    "recall50": 0.429
+   },
+   "B2_perto_da_agua": {
+    "p@20": 0,
+    "acertos@20": 0,
+    "p@50": 0,
+    "acertos@50": 0,
+    "recall50": 0
+   },
+   "B3_superficie_baixa": {
+    "p@20": 0,
+    "acertos@20": 0,
+    "p@50": 0,
+    "acertos@50": 0,
+    "recall50": 0
+   },
+   "B4_pedidos_de_drenagem": {
+    "p@20": 0,
+    "acertos@20": 0,
+    "p@50": 0.04,
+    "acertos@50": 2,
+    "recall50": 0.286
+   },
+   "M1_logistica": {
+    "p@20": 0.1,
+    "acertos@20": 2,
+    "p@50": 0.04,
+    "acertos@50": 2,
+    "recall50": 0.286
+   }
+  }
+ },
+ "melhorBase": "B1_registros_anteriores",
+ "decisao": "rejeitar M1; manter B1_registros_anteriores como regra de prioridade de revisão",
+ "ms": 45811,
+ "memoriaPicoMB": 336
+}

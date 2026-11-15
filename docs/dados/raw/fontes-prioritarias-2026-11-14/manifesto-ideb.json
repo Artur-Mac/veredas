@@ -1,0 +1,38 @@
+{
+  "coletado_em_utc": "2026-11-15T00:53:04.386890+00:00",
+  "arquivos": [
+    {
+      "arquivo": "ideb-2025-anos-iniciais-recife.json",
+      "fonte": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados/2005-2025",
+      "recurso": "https://download.inep.gov.br/ideb/resultados/divulgacao_anos_iniciais_escolas_2025.zip",
+      "modo": "recorte da planilha XLSX no município 2611606, com seleção de campos",
+      "registros": 309,
+      "com_nota_2025": 200,
+      "cruzamento_tabela_municipal_2023": 217,
+      "sha256": "79e830b97184c9291d981a96cb1f2db2ab56bfdb1e12b580b83031a4cefd194e",
+      "sha256_zip_inep": "6addade230d4e6419abee5d1f5177f26abaf7f6d80e7f986a08faac931b35080"
+    },
+    {
+      "arquivo": "ideb-2025-anos-finais-recife.json",
+      "fonte": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados/2005-2025",
+      "recurso": "https://download.inep.gov.br/ideb/resultados/divulgacao_anos_finais_escolas_2025.zip",
+      "modo": "recorte da planilha XLSX no município 2611606, com seleção de campos",
+      "registros": 192,
+      "com_nota_2025": 122,
+      "cruzamento_tabela_municipal_2023": 41,
+      "sha256": "a909be231612e38d33058e79d06c832d8bd81dc08edd87d87892b2fe13d00f2b",
+      "sha256_zip_inep": "4115b81a02f05c908b27eab838e99978b8970b0fcadbf803ee3e69f296ccbc2d"
+    },
+    {
+      "arquivo": "ideb-2025-ensino-medio-recife.json",
+      "fonte": "https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/ideb/resultados/2005-2025",
+      "recurso": "https://download.inep.gov.br/ideb/resultados/divulgacao_ensino_medio_escolas_2025.zip",
+      "modo": "recorte da planilha XLSX no município 2611606, com seleção de campos",
+      "registros": 122,
+      "com_nota_2025": 96,
+      "cruzamento_tabela_municipal_2023": 0,
+      "sha256": "70d1d1227b5447df64bcc7c9cf994c3e7bc0d87012f6add0628822b37f0ee015",
+      "sha256_zip_inep": "85e923b3bcc5b2799b176abb8a611e03716d119b269e6cf3288e07959d29c299"
+    }
+  ]
+}

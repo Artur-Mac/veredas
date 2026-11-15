@@ -1,0 +1,134 @@
+{
+ "publicacaoChuva": "89283db2e17638c3",
+ "observacoesDeVia": 394,
+ "contagem": {
+  "porMetodoV1": {
+   "nome_e_bairro": 175,
+   "sem_correspondencia": 136,
+   "lugar_sem_geometria": 35,
+   "ambiguo": 8,
+   "nome_fora_do_bairro": 32,
+   "nome_e_bairro_sem_aresta": 1,
+   "tunel_no_bairro": 7
+  },
+  "porDecisaoV2": {
+   "ja_ligado_v1": 183,
+   "nao_e_rua:curso_dagua": 11,
+   "nao_e_rua:lugar_nomeado": 39,
+   "sem_candidato": 117,
+   "candidato_unico": 37,
+   "candidatos_varios": 3,
+   "auto_regra_v2": 4
+  }
+ },
+ "ligadasV1": 183,
+ "autoV2": 4,
+ "candidatos": 40,
+ "gruposParaRevisar": 34,
+ "comImpactoNoPiloto": 4,
+ "orcamentos": [
+  {
+   "revisoes": 3,
+   "ordenada": 845,
+   "uniforme": 90
+  },
+  {
+   "revisoes": 5,
+   "ordenada": 922,
+   "uniforme": 150.8
+  },
+  {
+   "revisoes": 10,
+   "ordenada": 922,
+   "uniforme": 303.8
+  }
+ ],
+ "exemplosAuto": [
+  [
+   "Avenida Mascarenhas de Moraes Em Frente Ao Aeroporto",
+   "Imbiribeira",
+   45870
+  ],
+  [
+   "Av.Liberdade Em Frente Ao Presidio",
+   "Tejipio",
+   38768
+  ],
+  [
+   "Avenida Dantas Barreto (Proximo A Praca Sergio Loreto)",
+   "Sao Jose",
+   19054
+  ],
+  [
+   "Avenida Mascarenhas de Moraes (Proximo Ao Aeroporto)",
+   "Imbiribeira",
+   45870
+  ]
+ ],
+ "topoDaFila": [
+  [
+   "Praca Min. Salgado Filho",
+   "Imbiribeira",
+   "Praça Ministro Salgado Filho (bairro_vizinho)",
+   4,
+   233,
+   932
+  ],
+  [
+   "Avenida Santos Dumont",
+   "Espinheiro",
+   "Avenida Santos Dumont (bairro_vizinho)",
+   1,
+   329,
+   329
+  ],
+  [
+   "Avenida Nrte Miguel Arraes de Alencar",
+   "Encruzilhada",
+   "Avenida Norte Miguel Arraes de Alencar (digitacao)",
+   1,
+   283,
+   283
+  ],
+  [
+   "Rua Cantora Clara Nunes",
+   "Torre",
+   "Rua Cantora Clara Nunes (bairro_vizinho)",
+   1,
+   77,
+   77
+  ],
+  [
+   "Rua Jubiata",
+   "Areias",
+   "Rua Jupiatá (digitacao)",
+   1,
+   0,
+   0
+  ],
+  [
+   "Rua Jose Ponciano N",
+   "Jardim Sao Paulo",
+   "Rua José Ponciano (digitacao)",
+   1,
+   0,
+   0
+  ],
+  [
+   "Rua Jose Austregesilo N",
+   "Arruda",
+   "Rua José Austregésilo (digitacao)",
+   1,
+   0,
+   0
+  ],
+  [
+   "Rua Maria Cristina Tasso de Souza",
+   "Campina do Barreto",
+   "Rua Maria Cristina Tasso de Souza (bairro_vizinho)",
+   1,
+   0,
+   0
+  ]
+ ]
+}

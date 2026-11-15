@@ -1,0 +1,145 @@
+{
+  "artigos": [
+    {
+      "titulo": "Learning Real Estate Automated Valuation Models from Heterogeneous Data Sources",
+      "ano": "2019",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/1909.00704v1",
+      "tema": "ruido-aviacao"
+    },
+    {
+      "titulo": "A Decentralised Real Estate Transfer Verification Based on Self-Sovereign Identity and Smart Contracts",
+      "ano": "2022",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/2207.04459v1",
+      "tema": "ruido-aviacao"
+    },
+    {
+      "titulo": "JENGA: Exploiting Counter-Based RowHammer Countermeasures to Break Real-Time Predictability",
+      "ano": "2026",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/2609.01077v1",
+      "tema": "ruido-aviacao"
+    },
+    {
+      "titulo": "Identifying Real Estate Opportunities using Machine Learning",
+      "ano": "2018",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/1809.04933v2",
+      "tema": "ruido-aviacao"
+    },
+    {
+      "titulo": "Vision-based Real Estate Price Estimation",
+      "ano": "2017",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/1707.05489v3",
+      "tema": "ruido-aviacao"
+    },
+    {
+      "titulo": "Light pollution and the concentration of anthropogenic photons in the terrestrial atmosphere",
+      "ano": "2022",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/2210.14131v1",
+      "tema": "ruido-urbano-saude"
+    },
+    {
+      "titulo": "Urban Mobility",
+      "ano": "2022",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/2211.00355v1",
+      "tema": "ruido-urbano-saude"
+    },
+    {
+      "titulo": "Mapping Urban Villages in China: Progress and Challenges",
+      "ano": "2025",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/2503.14195v1",
+      "tema": "ruido-urbano-saude"
+    },
+    {
+      "titulo": "SONYC: A System for the Monitoring, Analysis and Mitigation of Urban Noise Pollution",
+      "ano": "2018",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/1805.00889v2",
+      "tema": "ruido-urbano-saude"
+    },
+    {
+      "titulo": "Self-supervised learning unveils change in urban housing from street-level images",
+      "ano": "2023",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/2309.11354v2",
+      "tema": "ruido-urbano-saude"
+    },
+    {
+      "titulo": "Learning Real Estate Automated Valuation Models from Heterogeneous Data Sources",
+      "ano": "2019",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/1909.00704v1",
+      "tema": "fotogrametria-imovel"
+    },
+    {
+      "titulo": "A Decentralised Real Estate Transfer Verification Based on Self-Sovereign Identity and Smart Contracts",
+      "ano": "2022",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/2207.04459v1",
+      "tema": "fotogrametria-imovel"
+    },
+    {
+      "titulo": "JENGA: Exploiting Counter-Based RowHammer Countermeasures to Break Real-Time Predictability",
+      "ano": "2026",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/2609.01077v1",
+      "tema": "fotogrametria-imovel"
+    },
+    {
+      "titulo": "Identifying Real Estate Opportunities using Machine Learning",
+      "ano": "2018",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/1809.04933v2",
+      "tema": "fotogrametria-imovel"
+    },
+    {
+      "titulo": "Uncertainty Quantification Framework for Aerial and UAV Photogrammetry through Error Propagation",
+      "ano": "2025",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/2507.13486v2",
+      "tema": "fotogrametria-imovel"
+    },
+    {
+      "titulo": "Fisheye lens distortion correction",
+      "ano": "2020",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/2010.10295v1",
+      "tema": "fisheye-desdistorcao"
+    },
+    {
+      "titulo": "Optical diode effect in the room-temperature multiferroic BiFeO$_3",
+      "ano": "2015",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/1505.00033v1",
+      "tema": "fisheye-desdistorcao"
+    },
+    {
+      "titulo": "FisheyeEX: Polar Outpainting for Extending the FoV of Fisheye Lens",
+      "ano": "2022",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/2206.05844v1",
+      "tema": "fisheye-desdistorcao"
+    },
+    {
+      "titulo": "Electromagnetic modes of Maxwell fisheye lens",
+      "ano": "1996",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/atom-ph/9604006v1",
+      "tema": "fisheye-desdistorcao"
+    },
+    {
+      "titulo": "Shear-selected clusters from the Deep Lens Survey",
+      "ano": "2003",
+      "fonte": "arxiv",
+      "url": "http://arxiv.org/abs/astro-ph/0303381v1",
+      "tema": "fisheye-desdistorcao"
+    }
+  ],
+  "total_encontrado": 180
+}

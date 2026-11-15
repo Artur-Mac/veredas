@@ -1,0 +1,215 @@
+{
+ "epoch": "VE00",
+ "run_date": "2026-11-14",
+ "status": "verified",
+ "outcome": "adopt",
+ "checkout": {
+  "head": "5d90b642493a85bbcecf8079aaffb3902797f905",
+  "dirty_tracked_files_before": 39,
+  "dirty_tracked_files_after": 39,
+  "tracked_files_changed_by_ve00": 0
+ },
+ "environment": {
+  "platform": "web (Expo dev server, headless Chromium 1248)",
+  "machine": "Linux x86_64, 12 cores, 23 GiB",
+  "node": [
+   "v18.19.1 (jest/tsc/eslint)",
+   "v22.23.3 (expo/playwright)"
+  ],
+  "native": "not_run"
+ },
+ "source_versions": {
+  "index_directory": "indice-municipal/91b71d239c1847cf",
+  "index_generated": "2026-10-22T00:30:36Z",
+  "index_partitions_sha256_concat": "569d9d0c7d7edec0166625cf705c8fd3b24284b94e11a1a4d17f1fa0ee8d4e0f",
+  "street_network_sha256": "154ebe0adc920bd12ec013e1fe110df94f6d2717764dfec9b7ccfc639e426ace",
+  "cnefe_input_sha256": "424040817d90431893dd555d456e3909a7bcc2f96e613cad7249092bebdc2eb6",
+  "gtfs_raw": {
+   "version": "v2026.10.26",
+   "sha256": "e1d834d9cf0165690ad0ac5c6aa01fb8b5b7dc38bb611f999cadb01512313fd5"
+  },
+  "gtfs_publication_cache": {
+   "version": "v2026.10.16",
+   "sha256": "5243ae9b92097b1b9f9c02c28694773fc1c730064656018571299d3f4192676a"
+  },
+  "g_building_sha256": "b613cd149542c60688dafa85b8aa09c85b6e6a8130dfe4f38239c6fca32cec62",
+  "g_compare_sha256": "2d496353b2ca6e5f0c607b8b89497083863e09a48182761c9110cb753f8a12e1"
+ },
+ "engineering": {
+  "typecheck": {
+   "errors": 0
+  },
+  "lint": {
+   "errors": 0,
+   "warnings": 5
+  },
+  "jest": {
+   "suites_passed": 53,
+   "suites_total": 53,
+   "tests_passed": 1414,
+   "tests_total": 1414
+  },
+  "v1_smoke_web": {
+   "result": "pass",
+   "audited_steps": 50,
+   "widths_px": [
+    375,
+    1280
+   ],
+   "automated_findings": 0,
+   "external_requests": 0
+  },
+  "pilot_journey_web": {
+   "areas_passed": 5,
+   "areas_total": 5,
+   "auto_suggested_building": 5,
+   "reload_analyses_persisted": 5,
+   "reload_links_persisted": 5,
+   "external_requests": 0,
+   "page_errors": 0,
+   "console_errors": 0,
+   "horizontal_overflow_screens_375px": 0
+  }
+ },
+ "data_validity": {
+  "buildings_total": 7206,
+  "neighbourhoods_enabled": 72,
+  "manifest_partitions": 94,
+  "manifest_states": {
+   "habilitado": 72,
+   "sem_registros_elegiveis": 21,
+   "revisao_geometrica_pendente": 1
+  },
+  "partition_checksum_mismatches": 0,
+  "pilot": {
+   "buildings": 2688,
+   "street_code_in_official_network": 2688,
+   "centroid_within_50m_of_own_street": 2622,
+   "streets_with_flood_category_2014_2024": 7,
+   "buildings_with_drainage_156_within_150m": 2515,
+   "buildings_with_injury_collision_within_150m": 2588,
+   "buildings_with_pedestrian_collision_within_150m": 772,
+   "buildings_with_itbi_unit_quartiles": 1319,
+   "buildings_itbi_and_single_typology": 630,
+   "buildings_with_cnefe_point_within_300m": 2594
+  },
+  "pilot_by_area": {
+   "boa-viagem": {
+    "buildings": 1879,
+    "within_50m": 1850,
+    "median_street_distance_m": 24.7,
+    "solar": true
+   },
+   "casa-forte": {
+    "buildings": 82,
+    "within_50m": 70,
+    "median_street_distance_m": 26.7,
+    "solar": true
+   },
+   "gracas": {
+    "buildings": 291,
+    "within_50m": 281,
+    "median_street_distance_m": 26.2,
+    "solar": true
+   },
+   "espinheiro": {
+    "buildings": 156,
+    "within_50m": 150,
+    "median_street_distance_m": 26.9,
+    "solar": true
+   },
+   "madalena": {
+    "buildings": 280,
+    "within_50m": 271,
+    "median_street_distance_m": 24.3,
+    "solar": false
+   }
+  },
+  "defesa_civil_pilot_flood_rows_2020_2024": 20,
+  "defesa_civil_max_rows_one_date": [
+   "2022-06-08",
+   12
+  ],
+  "defesa_civil_years_with_shifted_columns": [
+   "2020",
+   "2022"
+  ],
+  "gtfs_daily_label_overstatement": {
+   "median_ratio_to_weekday": 2.42,
+   "p10_p90": [
+    2.01,
+    7.24
+   ],
+   "corridor_stops": 4316,
+   "corridor_stops_zero_weekday": 146,
+   "unit": "summed stop events / weekday stop events, weekday 2026-11-11"
+  },
+  "gtfs_stops_in_recife_after_minus_075_shift": 0,
+  "google_maps": {
+   "searches": 100,
+   "http_200": 100,
+   "entities": 0
+  },
+  "zap_pilot_sample_cards": 139
+ },
+ "customer_usefulness": {
+  "participants": 0,
+  "method": "expert walkthrough of rendered states only",
+  "finding": "no decision brief; first cost conclusion below the fold at 375 px",
+  "g_user": "not_run"
+ },
+ "operating": {
+  "desktop_dev_web_ms": {
+   "first_load_to_ready": 1143,
+   "dossier_after_confirm": [
+    227,
+    217,
+    213,
+    194,
+    196
+   ],
+   "reload_to_tabs": 814
+  },
+  "target_device_p95_ms": "not_run",
+  "index_directory_bytes_on_disk": "7.3 MB (du)",
+  "check_runtimes_s": {
+   "typecheck": 9,
+   "lint": 23,
+   "jest": 101,
+   "v1_smoke": 106,
+   "pilot_journey": 30
+  },
+  "external_spend": 0,
+  "network_downloads": [
+   {
+    "file": ".cache/dados-recife/trechos-de-logradouros.geojson",
+    "bytes": 14527751,
+    "http": 200,
+    "sha256_matches_prior_audit": true
+   }
+  ]
+ },
+ "evaluation_sets": {
+  "G-BUILDING": {
+   "n": 50,
+   "dev": 18,
+   "test": 32,
+   "labels": "unlabeled"
+  },
+  "G-COMPARE": {
+   "pairs": 20,
+   "rent": 10,
+   "purchase": 10,
+   "listing_values": "synthetic",
+   "labels": "unlabeled"
+  }
+ },
+ "not_run": [
+  "native_android_ios",
+  "target_device_performance",
+  "offline_cold_reload_web",
+  "municipal_staging_audit",
+  "sol_smoke",
+  "customer_study"
+ ]
+}

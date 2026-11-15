@@ -11,11 +11,15 @@ import { cadernoVazio, esquemaCaderno, type Caderno } from "../dados/caderno";
 import { useAnalises } from "../estado/Analises";
 import { prepararOutraVisita } from "../dados/sessoes";
 import { perguntasDaVisita } from "../componentes/visita-v1/logica";
+import { AvisoDasCamadas, useCamadas } from "../componentes/EsperaDasCamadas";
+import { camadasDoBairro } from "../dados/camadasDasTelas";
 
 export default function DetalhesDaAnalise() {
   const { id, secao } = useLocalSearchParams<{ id?: string; secao?: string }>();
   const { lista, pronto, atualizar } = useAnalises();
   const analise = lista.find(a => a.id === id);
+  // D036: registros, cronologia e a próxima visita leem o índice do bairro, fora do bundle.
+  const camadas = useCamadas(camadasDoBairro(analise?.bairro));
   const [aviso, setAviso] = useState("");
   const trava = useRef(false);
   const salvar = async (mudar: (c: Caderno) => Caderno): Promise<boolean> => {
@@ -50,7 +54,8 @@ export default function DetalhesDaAnalise() {
   return <Tela><Coluna><Cabecalho titulo={titulo} pai="/dossie" /></Coluna>
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 16, paddingBottom: 64 }}><Coluna>
-        {!pronto ? <Texto>Abrindo caderno…</Texto> : !analise ? <Texto>Análise não encontrada. Volte ao caderno para escolher um imóvel.</Texto> : <>
+        {!pronto ? <Texto>Abrindo caderno…</Texto> : !analise ? <Texto>Análise não encontrada. Volte ao caderno para escolher um imóvel.</Texto> :
+          camadas.estado !== "pronta" ? <AvisoDasCamadas estado={camadas.estado} tentarDeNovo={camadas.tentarDeNovo} /> : <>
           <Texto tipo="apoio" style={{ marginBottom: 16 }}>{analise.nome}</Texto>
           {secao === "orcamento" ? <OrcamentoPessoal key={analise.id} analise={analise} salvar={salvar} /> :
             secao === "edificio" ? <DocumentosDoEdificio key={analise.id} analise={analise} salvar={salvar} levarParaVisita={levarParaVisita} /> :

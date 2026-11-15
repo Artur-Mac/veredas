@@ -1,0 +1,27 @@
+{
+  "gracas": {
+    "volumes": 8868,
+    "bytes": 2420497,
+    "associacoesValidadas": 2080
+  },
+  "casa-forte": {
+    "volumes": 8041,
+    "bytes": 1837655,
+    "associacoesValidadas": 1128
+  },
+  "boa-viagem": {
+    "volumes": 23062,
+    "bytes": 5942870,
+    "associacoesValidadas": 5600
+  },
+  "madalena": {
+    "volumes": 15701,
+    "bytes": 3371676,
+    "associacoesValidadas": 2108
+  },
+  "espinheiro": {
+    "volumes": 7810,
+    "bytes": 1851623,
+    "associacoesValidadas": 1226
+  }
+}

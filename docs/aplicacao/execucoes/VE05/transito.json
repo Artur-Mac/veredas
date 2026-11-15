@@ -1,0 +1,158 @@
+{
+ "executadoEm": "2026-11-14T20:39:20Z",
+ "versao": "df3b25344af0934b",
+ "publicacao": {
+  "versao": "d0a1adbf5b49ec7a",
+  "ativa": "d0a1adbf5b49ec7a",
+  "anterior": "94ee64f6afa22001"
+ },
+ "feed": {
+  "versao": "v2026.10.26",
+  "inicio": "20200501",
+  "fim": "20271026",
+  "fuso": "America/Recife",
+  "publicador": "Grande Recife Consórcio de Transporte Metropolitano",
+  "sha256": "e1d834d9cf0165690ad0ac5c6aa01fb8b5b7dc38bb611f999cadb01512313fd5"
+ },
+ "contagens": {
+  "viagens": 87678,
+  "padroes": 1216,
+  "rotas": 8417,
+  "paradas": 7208,
+  "servicos": 1143,
+  "excecoes": 1137
+ },
+ "descartes": {
+  "semServico": 0,
+  "semViagem": 0,
+  "paradaDesconhecida": 0,
+  "horarioFaltando": 0,
+  "tempoVoltando": 0,
+  "curta": 0
+ },
+ "paradas": {
+  "total": 7208,
+  "comNome": 477,
+  "noRecife": 2822,
+  "ruaAte15m": 2664,
+  "ruaAte40m": 2791,
+  "semRuaA40m": 31,
+  "ligadasARede": 5376
+ },
+ "baldeacoes": {
+  "pares": 23358,
+  "pelaRede": 19623,
+  "estimadas": 3735,
+  "fatorDeDesvio": 1.19,
+  "amostrasDoFator": 31162
+ },
+ "acessos": {
+  "boa-viagem": {
+   "rede": 1761,
+   "linhaReta": 118,
+   "semParadaA1km": 0,
+   "medianaParadasGuardadas": 9
+  },
+  "casa-forte": {
+   "rede": 78,
+   "linhaReta": 4,
+   "semParadaA1km": 0,
+   "medianaParadasGuardadas": 12
+  },
+  "gracas": {
+   "rede": 285,
+   "linhaReta": 6,
+   "semParadaA1km": 0,
+   "medianaParadasGuardadas": 16
+  },
+  "espinheiro": {
+   "rede": 151,
+   "linhaReta": 5,
+   "semParadaA1km": 0,
+   "medianaParadasGuardadas": 21
+  },
+  "madalena": {
+   "rede": 241,
+   "linhaReta": 39,
+   "semParadaA1km": 0,
+   "medianaParadasGuardadas": 15
+  }
+ },
+ "servicosAtivos": {
+  "2026-11-17": 395,
+  "2026-11-21": 383,
+  "2026-11-22": 362,
+  "2026-11-02": 364
+ },
+ "partidasTotais": {
+  "2026-11-17": 1367391,
+  "2026-11-21": 936616,
+  "2026-11-22": 692994,
+  "2026-11-02": 697654
+ },
+ "correcaoDoCorredor": {
+  "antigaMaior180": 2907,
+  "utilMaior180": 1730,
+  "saemComDiaUtil": 1177,
+  "entramComDiaUtil": 0,
+  "antigaSemServicoUtil": 25,
+  "razaoMediana": 2.22
+ },
+ "checagens": [
+  {
+   "nome": "um_feed_por_execucao",
+   "ok": true,
+   "detalhe": "v2026.10.26 sha256 e1d834d9cf01…"
+  },
+  {
+   "nome": "fuso_unico_da_agencia",
+   "ok": true,
+   "detalhe": "America/Recife"
+  },
+  {
+   "nome": "viagens_descartadas",
+   "ok": true,
+   "detalhe": "{\"semServico\":0,\"semViagem\":0,\"paradaDesconhecida\":0,\"horarioFaltando\":0,\"tempoVoltando\":0,\"curta\":0}"
+  },
+  {
+   "nome": "horarios_apos_24h_preservados",
+   "ok": true,
+   "detalhe": "viagens do dia de serviço que passam da meia-noite"
+  },
+  {
+   "nome": "feriado_2026_11_02_troca_servicos",
+   "ok": true,
+   "detalhe": "364 serviços ativos em 02/11 (segunda, feriado) vs 395 em 09/11 (segunda comum)"
+  },
+  {
+   "nome": "paradas_do_recife_perto_de_rua_oficial",
+   "ok": true,
+   "detalhe": "2791 de 2822 a até 40 m de um logradouro oficial (2664 a até 15 m; mediana 7 m)"
+  },
+  {
+   "nome": "paradas_na_rede_de_caminhada",
+   "ok": true,
+   "detalhe": "5376 de 7208 ligadas à rede publicada do VE03 a até 60 m"
+  }
+ ],
+ "bytes": {
+  "grade": 2880517,
+  "gradeGzip": 755850,
+  "acessos": {
+   "boa-viagem": 149469,
+   "casa-forte": 9667,
+   "gracas": 46998,
+   "espinheiro": 30615,
+   "madalena": 36401
+  }
+ },
+ "tempos": {
+  "leitura": 17726,
+  "compactacao": 4618,
+  "rede": 730,
+  "baldeacoes": 353,
+  "acessos": 1186,
+  "publicacao": 439
+ },
+ "memoriaPicoMB": 1362
+}

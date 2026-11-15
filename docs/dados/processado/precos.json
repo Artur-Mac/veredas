@@ -1,0 +1,37 @@
+{
+  "Boa Viagem": {
+    "locacao_m2": null,
+    "venda_m2": null,
+    "ultima_data": null,
+    "linhas_bairros": 0,
+    "fonte": "FipeZAP, xlsx mensal (Recife agregado), 68 linhas"
+  },
+  "Casa Forte": {
+    "locacao_m2": null,
+    "venda_m2": null,
+    "ultima_data": null,
+    "linhas_bairros": 0,
+    "fonte": "FipeZAP, xlsx mensal (Recife agregado), 68 linhas"
+  },
+  "Graças": {
+    "locacao_m2": null,
+    "venda_m2": null,
+    "ultima_data": null,
+    "linhas_bairros": 0,
+    "fonte": "FipeZAP, xlsx mensal (Recife agregado), 68 linhas"
+  },
+  "Espinheiro": {
+    "locacao_m2": null,
+    "venda_m2": null,
+    "ultima_data": null,
+    "linhas_bairros": 0,
+    "fonte": "FipeZAP, xlsx mensal (Recife agregado), 68 linhas"
+  },
+  "Madalena": {
+    "locacao_m2": null,
+    "venda_m2": null,
+    "ultima_data": null,
+    "linhas_bairros": 0,
+    "fonte": "FipeZAP, xlsx mensal (Recife agregado), 68 linhas"
+  }
+}

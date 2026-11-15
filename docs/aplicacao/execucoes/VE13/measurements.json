@@ -1,0 +1,46 @@
+{
+ "epoch": "VE13",
+ "date": "2026-11-14",
+ "status": "partial",
+ "outcome": "iterate",
+ "reason": "Bottleneck chosen from pilot evidence; deterministic rules v2 and a ranked review queue built and tested; G-EXTRACT v1 created but unreviewed; the model ablation (text model/VLM) was not run because it needs an external model service, credentials and explicit authorization to send record text out.",
+ "bottleneck": "Defesa Civil street-flood records not linked to an official street (VE06: 211 of 394 observations)",
+ "rules_v2": {
+  "already_linked_v1": 183,
+  "auto_linked_v2": 4,
+  "classified_not_a_street": 50,
+  "candidates_for_review": 40,
+  "review_groups": 34,
+  "groups_with_pilot_impact": 4,
+  "no_candidate": 117
+ },
+ "review_allocation": {
+  "metric": "pilot strong-link buildings within 1 km of the candidate street, summed over reviewed groups (upper bound: assumes the candidate is confirmed)",
+  "budgets": [
+   {
+    "revisoes": 3,
+    "ordenada": 845,
+    "uniforme": 90
+   },
+   {
+    "revisoes": 5,
+    "ordenada": 922,
+    "uniforme": 150.8
+   },
+   {
+    "revisoes": 10,
+    "ordenada": 922,
+    "uniforme": 303.8
+   }
+  ]
+ },
+ "model_ablation": {
+  "run": false,
+  "why": "needs an external model API, credentials and authorization to send record text; not available or authorized"
+ },
+ "tests": {
+  "node": "86/86 (5 new)",
+  "lint": "0 errors"
+ },
+ "app_changes": "none (review first; avoids colliding with the concurrent payload-split session)"
+}

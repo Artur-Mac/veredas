@@ -1,6 +1,7 @@
 // Comparar (T5). Referência: `renderCompare`, index.html 5964–5989; CSS `.vx-*` e `.vc-*` a partir da linha 3045.
 // Duas análises não descartadas da mesma modalidade, lado a lado: Custo, Espaço e Entorno. Custos só por
-// `custoMensal`; o Entorno vem do índice cadastral quando o prédio está confirmado. Nenhuma frase de recomendação.
+// `custoMensal`; o Entorno vem do índice cadastral quando o prédio está confirmado. No topo, o resumo da decisão (VE01):
+// quem visitar primeiro segundo a prioridade escolhida, até três diferenças e a pergunta que pode mudar a escolha.
 import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -19,12 +20,22 @@ import { GavetaDeEscolha, type OpcaoDeEscolha } from "../../componentes/comparar
 import { poligonoDoEdificio } from "../../componentes/comparar/lote";
 import { confirmarPredio, editarAnalise, useAbrirAnalise, usePrepararVisita } from "../../componentes/comparar/navegacao";
 import { PainelDeCusto, PainelDeEntorno, PainelDeEspaco } from "../../componentes/comparar/Paineis";
+import { PainelDeRotina } from "../../componentes/comparar/Rotina";
 import { useEdificios } from "../../componentes/comparar/useEdificios";
+import { EsperaDasCamadas } from "../../componentes/EsperaDasCamadas";
+import { camadasDaRotina, camadasDasAnalises } from "../../dados/camadasDasTelas";
+import { ResumoDaDecisao } from "../../componentes/comparar/Decisao";
+import { adicionarPropria } from "../../componentes/visita-v1/logica";
+import { projetarDecisao, type PrioridadeDaDecisao } from "../../dados/decisao";
+import { aplicarResposta, efeitoDaResposta } from "../../dados/resposta";
+import { essenciaisDoPredio } from "../../dados/recife/essenciais";
 import { BotaoVx, CabecalhoVx, LinkVx, MARGEM_DA_PAGINA_VX, PaginaVx, SegmentosVx, SuperficieVx, VazioVx } from "../../componentes/comparar/vx";
 import { Texto } from "../../componentes/Texto";
 import type { AnaliseV2, Modalidade } from "../../dados/contratos";
+import { derivarCustoPorPartes } from "../../dados/custoPorPartes";
 import { eCoberto } from "../../dados/recife/bairros";
 import { useAnalises } from "../../estado/Analises";
+import { usePerfilDomicilio } from "../../estado/PerfilDomicilio";
 import { useTema } from "../../tema/Tema";
 import { ComparacaoDeTres } from "../../componentes/comparar/Tres";
 import { PrioridadesPessoais } from "../../componentes/comparar/Prioridades";
@@ -39,6 +50,7 @@ const TOPICOS: readonly { valor: Topico; rotulo: string }[] = [
   { valor: "custo", rotulo: "Custo" },
   { valor: "espaco", rotulo: "Espaço" },
   { valor: "entorno", rotulo: "Entorno" },
+  { valor: "rotina", rotulo: "Rotina" },
 ];
 
 /** O bairro tem cadastro e o prédio ainda não foi confirmado. */
@@ -46,9 +58,23 @@ function faltaConfirmar(a: AnaliseV2): boolean {
   return eCoberto(a.bairro) && a.vinculo.estado !== "confirmado";
 }
 
+/** D036: o Comparar lê o índice e o dia a dia a pé de cada bairro do caderno, fora do bundle; espera por eles. */
 export default function Comparar() {
+  const { lista } = useAnalises();
   const { cor } = useTema();
-  const { lista, pronto, erro } = useAnalises();
+  return (
+    <View style={{ flex: 1, backgroundColor: cor("cor-fundo") }}>
+      <EsperaDasCamadas caminhos={camadasDasAnalises(lista)} carregando="Carregando os dados dos seus imóveis…" oQue="os dados dos bairros dos seus imóveis">
+        <CompararComDados />
+      </EsperaDasCamadas>
+    </View>
+  );
+}
+
+function CompararComDados() {
+  const { cor } = useTema();
+  const { lista, pronto, erro, atualizar } = useAnalises();
+  const { perfil: perfilDomicilio } = usePerfilDomicilio();
   const abrirAnalise = useAbrirAnalise();
   const prepararVisita = usePrepararVisita();
   const { ids: idsDoLink, id: idDoLink } = useLocalSearchParams<{ ids?: string; id?: string }>();
@@ -62,6 +88,9 @@ export default function Comparar() {
   const [escolhendoVisita, setEscolhendoVisita] = useState(false);
   const [terceiroId, setTerceiroId] = useState<string | null>(null);
   const [tresAberto, setTresAberto] = useState(false);
+  const [prioridade, setPrioridade] = useState<PrioridadeDaDecisao>("custo");
+  // VE15: a frase do efeito da resposta, presa ao par (gravar a análise remonta o resumo; outro par não a herda).
+  const [efeitoDaUltimaResposta, setEfeitoDaUltimaResposta] = useState<{ par: string; texto: string } | null>(null);
 
   // Um link novo (`?id=` ou `?ids=`) vale mais que as escolhas antigas, mesmo com a aba já aberta antes.
   const chaveDoLink = doLink.join(",");
@@ -84,6 +113,14 @@ export default function Comparar() {
   const ea = (a && doIndice?.get(a.id)) || null;
   const eb = (b && doIndice?.get(b.id)) || null;
   const comparacao = a && b ? comparar(a, b, [ea, eb]) : null;
+  const decisao = a && b && comparacao
+    ? projetarDecisao(a, b, [ea, eb], comparacao.rotulos, prioridade, [
+        ea ? essenciaisDoPredio(ea.bairro, ea.id)?.predio ?? null : null,
+        eb ? essenciaisDoPredio(eb.bairro, eb.id)?.predio ?? null : null,
+      ])
+    : null;
+  const partesDoPar: Par<ReturnType<typeof derivarCustoPorPartes>> | null = a && b
+    ? [derivarCustoPorPartes(a, ea, perfilDomicilio), derivarCustoPorPartes(b, eb, perfilDomicilio)] : null;
 
   const naModalidade = elegiveis(lista, modalidade);
   const modoTres = tresAberto && naModalidade.some(a => a.id === terceiroId && !ids.includes(a.id));
@@ -128,6 +165,44 @@ export default function Comparar() {
           ) : par && comparacao ? (
             <View style={{ marginTop: 17 }}>
               {!modoTres ? <>
+              {decisao?.estado === "pronta" ? (
+                <View style={{ marginTop: -17, marginBottom: 16 }}>
+                  <ResumoDaDecisao
+                    projecao={decisao}
+                    aoMudarPrioridade={(v) => {
+                      setEfeitoDaUltimaResposta(null);
+                      setPrioridade(v);
+                    }}
+                    efeito={efeitoDaUltimaResposta?.par === `${par[0].id}|${par[1].id}` ? efeitoDaUltimaResposta.texto : null}
+                    aoLevarParaVisita={async (alvo, texto) => {
+                      let coube = false;
+                      await atualizar(par[alvo].id, (x) => {
+                        const visita = adicionarPropria(x.visita, texto);
+                        if (!visita) return x;
+                        coube = true;
+                        return { ...x, visita };
+                      });
+                      return coube;
+                    }}
+                    aoPrepararVisita={(alvo) => void prepararVisita(par[alvo].id)}
+                    aoResponder={async (alvo, campo, valor, periodo) => {
+                      // Refaz a projeção com o valor antes de gravar, para dizer se a ordem mudou.
+                      const em = new Date().toISOString();
+                      const nova = aplicarResposta(par[alvo], campo, valor, periodo, em);
+                      if (!nova) return null;
+                      const novoPar: [AnaliseV2, AnaliseV2] = alvo === 0 ? [nova, par[1]] : [par[0], nova];
+                      const depois = projetarDecisao(novoPar[0], novoPar[1], [ea, eb], comparacao.rotulos, prioridade, [
+                        ea ? essenciaisDoPredio(ea.bairro, ea.id)?.predio ?? null : null,
+                        eb ? essenciaisDoPredio(eb.bairro, eb.id)?.predio ?? null : null,
+                      ]);
+                      await atualizar(par[alvo].id, (x) => aplicarResposta(x, campo, valor, periodo, em) ?? x);
+                      const frase = efeitoDaResposta(decisao, depois);
+                      setEfeitoDaUltimaResposta({ par: `${par[0].id}|${par[1].id}`, texto: frase });
+                      return frase;
+                    }}
+                  />
+                </View>
+              ) : null}
               <View style={{ flexDirection: "row", gap: 12 }}>
                 {([0, 1] as const).map((i) => {
                   const edificio = i === 0 ? ea : eb;
@@ -149,9 +224,30 @@ export default function Comparar() {
                 <SegmentosVx opcoes={TOPICOS} valor={topico} aoMudar={setTopico} rotulo="O que comparar" modo="abas" margemInferior={12} />
                 <View role="tabpanel" aria-label={TOPICOS.find((t) => t.valor === topico)?.rotulo}>
                   {topico === "custo" ? (
-                    <PainelDeCusto custo={comparacao.custo} rotulos={comparacao.rotulos} aoAjustar={(i) => editarAnalise(par[i].id)} />
+                    <PainelDeCusto
+                      custo={comparacao.custo}
+                      rotulos={comparacao.rotulos}
+                      aoAjustar={(i) => editarAnalise(par[i].id)}
+                      partes={partesDoPar}
+                      aoAbrirPerfilDomicilio={() => router.push("/perfil-domicilio")}
+                    />
                   ) : topico === "espaco" ? (
                     <PainelDeEspaco espaco={comparacao.espaco} rotulos={comparacao.rotulos} />
+                  ) : topico === "rotina" ? (
+                    <EsperaDasCamadas
+                      caminhos={camadasDaRotina([ea?.bairro, eb?.bairro])}
+                      carregando="Calculando a rotina por horário…"
+                      oQue="os horários de ônibus"
+                    >
+                    <PainelDeRotina
+                      par={par}
+                      edificios={[ea, eb]}
+                      rotulos={comparacao.rotulos}
+                      perfil={perfilDomicilio}
+                      aoAbrirPerfilDomicilio={() => router.push("/perfil-domicilio")}
+                      custos={[0, 1].map((i) => ({ mensal: comparacao.custo.colunas[i as 0 | 1].mensalConhecido, pendentes: comparacao.custo.colunas[i as 0 | 1].pendentes })) as [{ mensal: number | null; pendentes: number }, { mensal: number | null; pendentes: number }]}
+                    />
+                    </EsperaDasCamadas>
                   ) : (
                     <PainelDeEntorno
                       entorno={comparacao.entorno}

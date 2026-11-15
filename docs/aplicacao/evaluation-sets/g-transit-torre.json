@@ -1,0 +1,859 @@
+{
+ "conjunto": "G-TRANSIT-TORRE",
+ "versao": 1,
+ "criadoEm": "2026-11-15",
+ "epoca": "VE16",
+ "grade": "980943926f957010",
+ "feed": {
+  "versao": "v2026.10.26",
+  "inicio": "20200501",
+  "fim": "20271026",
+  "fuso": "America/Recife",
+  "publicador": "Grande Recife Consórcio de Transporte Metropolitano",
+  "sha256": "e1d834d9cf0165690ad0ac5c6aa01fb8b5b7dc38bb611f999cadb01512313fd5"
+ },
+ "selecao": "conjunto reservado da área de expansão (Torre): dois prédios com acesso a pé publicado, pela ordem do SHA-256 do id; destinos = centroides de bairro do app; 12 cenários fixados antes de rodar; nada foi ajustado com estes casos",
+ "revisao": "nao_revisado",
+ "casos": [
+  {
+   "id": "GTT01",
+   "cenario": "dia útil, ida",
+   "area": "torre",
+   "predio": "36056-510",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "ida",
+   "data": "2026-11-17",
+   "saida": "07:30",
+   "saidaSeg": 27000,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 46,
+   "viagens": 2,
+   "chegada": "08:15",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180425",
+     "seg": 164
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "516-PRI-IDA-0700-0835-DUT-33970",
+     "route_id": "516",
+     "linha": "516",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-17",
+     "de": "180425",
+     "deNome": "Ponto na Rua Real da Torre",
+     "para": "100170",
+     "paraNome": "Ponto na Avenida Rui Barbosa",
+     "partida": 27318,
+     "chegada": 27802,
+     "partidaTexto": "07:35",
+     "chegadaTexto": "07:43"
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "513-PCR2-IDA-0710-0825-DUT-33827",
+     "route_id": "513",
+     "linha": "513",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-17",
+     "de": "100170",
+     "deNome": "Ponto na Avenida Rui Barbosa",
+     "para": "180040",
+     "paraNome": "Ponto na Cais do Apolo",
+     "partida": 27937,
+     "chegada": 29596,
+     "partidaTexto": "07:45",
+     "chegadaTexto": "08:13"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180040",
+     "para": null,
+     "seg": 156
+    }
+   ]
+  },
+  {
+   "id": "GTT02",
+   "cenario": "dia útil, volta (sentido oposto do GTT01)",
+   "area": "torre",
+   "predio": "36056-510",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "volta",
+   "data": "2026-11-17",
+   "saida": "18:00",
+   "saidaSeg": 64800,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 46,
+   "viagens": 3,
+   "chegada": "18:45",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180040",
+     "seg": 156
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "1992-PRI-VOLTA-1801-1936-DUT-19142",
+     "route_id": "1992",
+     "linha": "1992",
+     "sentido": "Terminal De Pau Amarelo",
+     "diaDeServico": "2026-11-17",
+     "de": "180040",
+     "deNome": "Ponto na Cais do Apolo",
+     "para": "110027",
+     "paraNome": "Ponto na Avenida Norte Miguel Arraes de Alencar",
+     "partida": 65091,
+     "chegada": 65377,
+     "partidaTexto": "18:04",
+     "chegadaTexto": "18:09"
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "645-PRI-VOLTA-1801-1846-DUT-37080",
+     "route_id": "645",
+     "linha": "645",
+     "sentido": "Terminal Integrado Macaxeira",
+     "diaDeServico": "2026-11-17",
+     "de": "110027",
+     "deNome": "Ponto na Avenida Norte Miguel Arraes de Alencar",
+     "para": "110034",
+     "paraNome": "Ponto na Avenida Norte Miguel Arraes de Alencar",
+     "partida": 65553,
+     "chegada": 66075,
+     "partidaTexto": "18:12",
+     "chegadaTexto": "18:21"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "110034",
+     "para": "130299",
+     "seg": 250
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "2920-AMO-IDA-1735-1905-DUT-30361",
+     "route_id": "2920",
+     "linha": "2920",
+     "sentido": "Terminal Integrado Cdu",
+     "diaDeServico": "2026-11-17",
+     "de": "130299",
+     "deNome": "Ponto na Avenida João de Barros",
+     "para": "080128",
+     "paraNome": "Ponto na Rua Conde de Irajá",
+     "partida": 66690,
+     "chegada": 67194,
+     "partidaTexto": "18:31",
+     "chegadaTexto": "18:39"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "080128",
+     "para": null,
+     "seg": 345
+    }
+   ]
+  },
+  {
+   "id": "GTT03",
+   "cenario": "dia útil, ida com possível baldeação",
+   "area": "torre",
+   "predio": "36056-510",
+   "destinoBairro": "boa-viagem",
+   "centroide": [
+    -34.90575,
+    -8.12644
+   ],
+   "sentido": "ida",
+   "data": "2026-11-17",
+   "saida": "07:30",
+   "saidaSeg": 27000,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 64,
+   "viagens": 2,
+   "chegada": "08:33",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180425",
+     "seg": 164
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "516-PRI-IDA-0700-0835-DUT-33970",
+     "route_id": "516",
+     "linha": "516",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-17",
+     "de": "180425",
+     "deNome": "Ponto na Rua Real da Torre",
+     "para": "100173",
+     "paraNome": "Ponto na Avenida Rui Barbosa",
+     "partida": 27318,
+     "chegada": 28035,
+     "partidaTexto": "07:35",
+     "chegadaTexto": "07:47"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "100173",
+     "para": "180156",
+     "seg": 130
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "050-PRI-IDA-0722-0832-DUT-2505",
+     "route_id": "050",
+     "linha": "050",
+     "sentido": "Boa Viagem",
+     "diaDeServico": "2026-11-17",
+     "de": "180156",
+     "deNome": "Ponto na Avenida Governador Agamenon Magalhães",
+     "para": "010014",
+     "paraNome": "Ponto na Avenida Engenheiro Domingos Ferreira",
+     "partida": 28448,
+     "chegada": 30321,
+     "partidaTexto": "07:54",
+     "chegadaTexto": "08:25"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "010014",
+     "para": null,
+     "seg": 499
+    }
+   ]
+  },
+  {
+   "id": "GTT04",
+   "cenario": "dia útil, ida",
+   "area": "torre",
+   "predio": "36056-510",
+   "destinoBairro": "boa-vista",
+   "centroide": [
+    -34.89115,
+    -8.05854
+   ],
+   "sentido": "ida",
+   "data": "2026-11-17",
+   "saida": "07:30",
+   "saidaSeg": 27000,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 33,
+   "viagens": 1,
+   "chegada": "08:03",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180425",
+     "seg": 164
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "516-PRI-IDA-0700-0835-DUT-33970",
+     "route_id": "516",
+     "linha": "516",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-17",
+     "de": "180425",
+     "deNome": "Ponto na Rua Real da Torre",
+     "para": "180363",
+     "paraNome": "Ponto na Rua Henrique Dias",
+     "partida": 27318,
+     "chegada": 28581,
+     "partidaTexto": "07:35",
+     "chegadaTexto": "07:56"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180363",
+     "para": null,
+     "seg": 421
+    }
+   ]
+  },
+  {
+   "id": "GTT05",
+   "cenario": "sábado",
+   "area": "torre",
+   "predio": "36056-510",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "ida",
+   "data": "2026-11-21",
+   "saida": "09:30",
+   "saidaSeg": 34200,
+   "servicosAtivos": 383,
+   "resultado": "jornada",
+   "duracaoMin": 48,
+   "viagens": 2,
+   "chegada": "10:18",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180419",
+     "seg": 525
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "2920-PRI-VOLTA-0920-1040-SAB-30408",
+     "route_id": "2920",
+     "linha": "2920",
+     "sentido": "Terminal Integrado Rio Doce",
+     "diaDeServico": "2026-11-21",
+     "de": "180419",
+     "deNome": "Ponto na Rua José Bonifácio",
+     "para": "120210",
+     "paraNome": "Ponto na Rua Castro Alves",
+     "partida": 34876,
+     "chegada": 35369,
+     "partidaTexto": "09:41",
+     "chegadaTexto": "09:49"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "120210",
+     "para": "110020",
+     "seg": 221
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "722-PRI-IDA-0940-1025-SAB-38366",
+     "route_id": "722",
+     "linha": "722",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-21",
+     "de": "110020",
+     "deNome": "Ponto na Avenida Norte Miguel Arraes de Alencar",
+     "para": "180040",
+     "paraNome": "Ponto na Cais do Apolo",
+     "partida": 35834,
+     "chegada": 36942,
+     "partidaTexto": "09:57",
+     "chegadaTexto": "10:15"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180040",
+     "para": null,
+     "seg": 156
+    }
+   ]
+  },
+  {
+   "id": "GTT06",
+   "cenario": "domingo",
+   "area": "torre",
+   "predio": "36056-510",
+   "destinoBairro": "boa-viagem",
+   "centroide": [
+    -34.90575,
+    -8.12644
+   ],
+   "sentido": "ida",
+   "data": "2026-11-22",
+   "saida": "09:30",
+   "saidaSeg": 34200,
+   "servicosAtivos": 362,
+   "resultado": "jornada",
+   "duracaoMin": 57,
+   "viagens": 2,
+   "chegada": "10:27",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "080121",
+     "seg": 385
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "414-PRI-IDA-0930-1005-DOM-33014",
+     "route_id": "414",
+     "linha": "414",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-22",
+     "de": "080121",
+     "deNome": "Ponto na Rua Padre Anchieta",
+     "para": "100173",
+     "paraNome": "Ponto na Avenida Rui Barbosa",
+     "partida": 34822,
+     "chegada": 35228,
+     "partidaTexto": "09:40",
+     "chegadaTexto": "09:47"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "100173",
+     "para": "180156",
+     "seg": 130
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "050-PRI-IDA-0929-1024-DOM-2355",
+     "route_id": "050",
+     "linha": "050",
+     "sentido": "Boa Viagem",
+     "diaDeServico": "2026-11-22",
+     "de": "180156",
+     "deNome": "Ponto na Avenida Governador Agamenon Magalhães",
+     "para": "010014",
+     "paraNome": "Ponto na Avenida Engenheiro Domingos Ferreira",
+     "partida": 35655,
+     "chegada": 37126,
+     "partidaTexto": "09:54",
+     "chegadaTexto": "10:18"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "010014",
+     "para": null,
+     "seg": 499
+    }
+   ]
+  },
+  {
+   "id": "GTT07",
+   "cenario": "feriado (02/11, segunda: serviço de domingo por exceção)",
+   "area": "torre",
+   "predio": "36056-510",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "ida",
+   "data": "2026-11-02",
+   "saida": "07:30",
+   "saidaSeg": 27000,
+   "servicosAtivos": 364,
+   "resultado": "jornada",
+   "duracaoMin": 49,
+   "viagens": 2,
+   "chegada": "08:18",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180419",
+     "seg": 525
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "914-PRI-VOLTA-0730-0810-DOM-44673",
+     "route_id": "914",
+     "linha": "914",
+     "sentido": "Terminal Integrado Pe 15",
+     "diaDeServico": "2026-11-02",
+     "de": "180419",
+     "deNome": "Ponto na Rua José Bonifácio",
+     "para": "120055",
+     "paraNome": "Ponto na Avenida Beberibe",
+     "partida": 27565,
+     "chegada": 28403,
+     "partidaTexto": "07:39",
+     "chegadaTexto": "07:53"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "120055",
+     "para": "120037",
+     "seg": 65
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "723-PRI-IDA-0755-0822-DOM-38387",
+     "route_id": "723",
+     "linha": "723",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-02",
+     "de": "120037",
+     "deNome": "Ponto na Avenida Beberibe",
+     "para": "180040",
+     "paraNome": "Ponto na Cais do Apolo",
+     "partida": 28746,
+     "chegada": 29761,
+     "partidaTexto": "07:59",
+     "chegadaTexto": "08:16"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180040",
+     "para": null,
+     "seg": 156
+    }
+   ]
+  },
+  {
+   "id": "GTT08",
+   "cenario": "volta tarde",
+   "area": "torre",
+   "predio": "36056-510",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "volta",
+   "data": "2026-11-17",
+   "saida": "23:30",
+   "saidaSeg": 84600,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 38,
+   "viagens": 2,
+   "chegada": "24:08",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180040",
+     "seg": 156
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "1926-PRI-VOLTA-2330-2405-DUT-13310",
+     "route_id": "1926",
+     "linha": "1926",
+     "sentido": "Terminal De Ouro Preto (Jatobá)",
+     "diaDeServico": "2026-11-17",
+     "de": "180040",
+     "deNome": "Ponto na Cais do Apolo",
+     "para": "180196",
+     "paraNome": "Ponto 180196",
+     "partida": 84776,
+     "chegada": 85576,
+     "partidaTexto": "23:32",
+     "chegadaTexto": "23:46"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180196",
+     "para": "180198",
+     "seg": 132
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "2920-PRI-IDA-2330-2415-DUT-30386",
+     "route_id": "2920",
+     "linha": "2920",
+     "sentido": "Terminal Integrado Cdu",
+     "diaDeServico": "2026-11-17",
+     "de": "180198",
+     "deNome": "Ponto 180198",
+     "para": "080128",
+     "paraNome": "Ponto na Rua Conde de Irajá",
+     "partida": 85872,
+     "chegada": 86547,
+     "partidaTexto": "23:51",
+     "chegadaTexto": "24:02"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "080128",
+     "para": null,
+     "seg": 345
+    }
+   ]
+  },
+  {
+   "id": "GTT09",
+   "cenario": "depois da meia-noite, pedido como 24:20 do dia de serviço 17/11",
+   "area": "torre",
+   "predio": "36056-510",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "volta",
+   "data": "2026-11-17",
+   "saida": "24:20",
+   "saidaSeg": 87600,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 87,
+   "viagens": 3,
+   "chegada": "25:47",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180514",
+     "seg": 366
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "1967-TSR-VOLTA-2440-2540-DUT-16833",
+     "route_id": "1967",
+     "linha": "1967",
+     "sentido": "Terminal Integrado Igarassu",
+     "diaDeServico": "2026-11-17",
+     "de": "180514",
+     "deNome": "Estação Istmo Do Recife Retorno",
+     "para": "150077",
+     "paraNome": "Ponto 150077",
+     "partida": 88913,
+     "chegada": 89816,
+     "partidaTexto": "24:41",
+     "chegadaTexto": "24:56"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "150077",
+     "para": "150683",
+     "seg": 290
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "1927-PRI-VOLTA-0100-0125-DUT-13339",
+     "route_id": "1927",
+     "linha": "1927",
+     "sentido": "Terminal Cais De Sta. Rita",
+     "diaDeServico": "2026-11-18",
+     "de": "150683",
+     "deNome": "Ponto 150683",
+     "para": "180943",
+     "paraNome": "Terminal Cais De Sta. Rita, embarque Bacurau 13",
+     "partida": 3846,
+     "chegada": 5100,
+     "partidaTexto": "01:04",
+     "chegadaTexto": "01:25"
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "2427-PRI-IDA-2530-2630-DUT-23957",
+     "route_id": "2427",
+     "linha": "2427",
+     "sentido": "Terminal Tabatinga",
+     "diaDeServico": "2026-11-17",
+     "de": "180943",
+     "deNome": "Terminal Cais De Sta. Rita, embarque Bacurau 13",
+     "para": "180421",
+     "paraNome": "Ponto na Rua José Bonifácio",
+     "partida": 91800,
+     "chegada": 92654,
+     "partidaTexto": "25:30",
+     "chegadaTexto": "25:44"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180421",
+     "para": null,
+     "seg": 193
+    }
+   ]
+  },
+  {
+   "id": "GTT10",
+   "cenario": "segundo prédio, dia útil, ida",
+   "area": "torre",
+   "predio": "56839-1247",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "ida",
+   "data": "2026-11-17",
+   "saida": "07:30",
+   "saidaSeg": 27000,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 46,
+   "viagens": 2,
+   "chegada": "08:15",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180425",
+     "seg": 122
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "516-PRI-IDA-0700-0835-DUT-33970",
+     "route_id": "516",
+     "linha": "516",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-17",
+     "de": "180425",
+     "deNome": "Ponto na Rua Real da Torre",
+     "para": "100170",
+     "paraNome": "Ponto na Avenida Rui Barbosa",
+     "partida": 27318,
+     "chegada": 27802,
+     "partidaTexto": "07:35",
+     "chegadaTexto": "07:43"
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "513-PCR2-IDA-0710-0825-DUT-33827",
+     "route_id": "513",
+     "linha": "513",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-17",
+     "de": "100170",
+     "deNome": "Ponto na Avenida Rui Barbosa",
+     "para": "180040",
+     "paraNome": "Ponto na Cais do Apolo",
+     "partida": 27937,
+     "chegada": 29596,
+     "partidaTexto": "07:45",
+     "chegadaTexto": "08:13"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180040",
+     "para": null,
+     "seg": 156
+    }
+   ]
+  },
+  {
+   "id": "GTT11",
+   "cenario": "segundo prédio, dia útil, volta com possível baldeação",
+   "area": "torre",
+   "predio": "56839-1247",
+   "destinoBairro": "boa-viagem",
+   "centroide": [
+    -34.90575,
+    -8.12644
+   ],
+   "sentido": "volta",
+   "data": "2026-11-17",
+   "saida": "18:00",
+   "saidaSeg": 64800,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 72,
+   "viagens": 2,
+   "chegada": "19:11",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "010097",
+     "seg": 633
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "050-PRI-VOLTA-1811-1916-DUT-2618",
+     "route_id": "050",
+     "linha": "050",
+     "sentido": "Terminal Integrado Pe 15",
+     "diaDeServico": "2026-11-17",
+     "de": "010097",
+     "deNome": "Ponto na Avenida Conselheiro Aguiar",
+     "para": "180181",
+     "paraNome": "Ponto na Avenida Governador Agamenon Magalhães",
+     "partida": 65520,
+     "chegada": 67260,
+     "partidaTexto": "18:12",
+     "chegadaTexto": "18:41"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180181",
+     "para": "180560",
+     "seg": 191
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "313-PRI-VOLTA-1840-1920-DUT-30990",
+     "route_id": "313",
+     "linha": "313",
+     "sentido": "Terminal Linha San Martin(Abdias De Carvalho)",
+     "diaDeServico": "2026-11-17",
+     "de": "180560",
+     "deNome": "Ponto na Praça do Derby",
+     "para": "180429",
+     "paraNome": "Ponto na Rua Real da Torre",
+     "partida": 67888,
+     "chegada": 68288,
+     "partidaTexto": "18:51",
+     "chegadaTexto": "18:58"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180429",
+     "para": null,
+     "seg": 823
+    }
+   ]
+  },
+  {
+   "id": "GTT12",
+   "cenario": "segundo prédio, dia útil, ida",
+   "area": "torre",
+   "predio": "56839-1247",
+   "destinoBairro": "cidade-universitaria",
+   "centroide": [
+    -34.95219,
+    -8.05519
+   ],
+   "sentido": "ida",
+   "data": "2026-11-17",
+   "saida": "07:30",
+   "saidaSeg": 27000,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 53,
+   "viagens": 1,
+   "chegada": "08:22",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180424",
+     "seg": 323
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "330-PRI-IDA-0710-0830-DUT-31493",
+     "route_id": "330",
+     "linha": "330",
+     "sentido": "Cidade Universitária",
+     "diaDeServico": "2026-11-17",
+     "de": "180424",
+     "deNome": "Ponto na Rua Professor Trajano de Mendonça",
+     "para": "080295",
+     "paraNome": "Ponto na Avenida Jornalista Aníbal Fernandes",
+     "partida": 27515,
+     "chegada": 30053,
+     "partidaTexto": "07:38",
+     "chegadaTexto": "08:20"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "080295",
+     "para": null,
+     "seg": 105
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,34 @@
+{
+ "coletado_em": "2026-11-15",
+ "nota": "Podas e erradicações trazem CNPJ/nome do requerente; o VEREDA não usa esses campos. O censo traz nomes de usuário de edição; não são usados.",
+ "arquivos": [
+  {
+   "arquivo": "censo-arboreo-2023.geojson",
+   "fonte": "https://dados.recife.pe.gov.br/dataset/censo-arboreo (recurso 4ac43805-0f44-43b0-bdf1-c25d89b5fa5d)",
+   "licenca": "ODbL (catálogo CKAN)",
+   "bytes": 307270419,
+   "sha256": "3f3de67f3cfd5e158301e29be06397df379b0125754346e5a45ea34707983c92"
+  },
+  {
+   "arquivo": "erradicacao-de-arvores-2023.csv",
+   "fonte": "https://dados.recife.pe.gov.br/dataset/podas-e-extracoes (recurso 712f2199-ae75-454a-b233-ee40487c66fc)",
+   "licenca": "ODbL (catálogo CKAN)",
+   "bytes": 78353,
+   "sha256": "abba04e82751b353c7ac504bb662a4c05247ccfbf555c4ffa969c9ce57d254e2"
+  },
+  {
+   "arquivo": "podas-de-arvores-2023.csv",
+   "fonte": "https://dados.recife.pe.gov.br/dataset/podas-e-extracoes (recurso 040d8ada-fa47-4e15-b478-3b5ccc8ab4f5)",
+   "licenca": "ODbL (catálogo CKAN)",
+   "bytes": 108406,
+   "sha256": "960ea7dc7c610772ff4d57d93ee7c125897793e263fb1da922cbde58d28cd101"
+  },
+  {
+   "arquivo": "calcadas-2023.csv",
+   "fonte": "https://dados.recife.pe.gov.br/dataset/calcadas (recurso fc4c1c38-7fc0-45d7-b9a5-b0ec0b229a78)",
+   "licenca": "ODbL (catálogo CKAN)",
+   "bytes": 13118,
+   "sha256": "ff42e6beb5fca119f2bc2d102039c588979b01b5df374b77f07dbb15d7140285"
+  }
+ ]
+}

@@ -1,0 +1,1200 @@
+{
+  "ruido-aviacao": {
+    "q": "aircraft noise exposure real estate price impact",
+    "fonte": "arxiv",
+    "total": 20,
+    "papers": [
+      {
+        "titulo": "Learning Real Estate Automated Valuation Models from Heterogeneous Data Sources",
+        "url": "http://arxiv.org/abs/1909.00704v1",
+        "ano": "2019",
+        "resumo": "Real estate appraisal is a complex and important task, that can be made more precise and faster with the help of automated valuation tools. Usually the value of some property is determined by taking into account both structural and geographical characteristics. However, while geographical informatio"
+      },
+      {
+        "titulo": "A Decentralised Real Estate Transfer Verification Based on Self-Sovereign Identity and Smart Contracts",
+        "url": "http://arxiv.org/abs/2207.04459v1",
+        "ano": "2022",
+        "resumo": "Since its first introduction in late 90s, the use of marketplaces has continued to grow, today virtually everything from physical assets to services can be purchased on digital marketplaces, real estate is not an exception. Some marketplaces allow acclaimed asset owners to advertise their products, "
+      },
+      {
+        "titulo": "JENGA: Exploiting Counter-Based RowHammer Countermeasures to Break Real-Time Predictability",
+        "url": "http://arxiv.org/abs/2609.01077v1",
+        "ano": "2026",
+        "resumo": "Safety-critical real-time systems must satisfy multiple dependability requirements, notably time predictability and security. In such systems, tasks must complete within bounded and known execution times, typically characterised through Worst-Case Execution Time (WCET) analysis. At the same time, DR"
+      },
+      {
+        "titulo": "Identifying Real Estate Opportunities using Machine Learning",
+        "url": "http://arxiv.org/abs/1809.04933v2",
+        "ano": "2018",
+        "resumo": "The real estate market is exposed to many fluctuations in prices because of existing correlations with many variables, some of which cannot be controlled or might even be unknown. Housing prices can increase rapidly (or in some cases, also drop very fast), yet the numerous listings available online "
+      },
+      {
+        "titulo": "Vision-based Real Estate Price Estimation",
+        "url": "http://arxiv.org/abs/1707.05489v3",
+        "ano": "2017",
+        "resumo": "Since the advent of online real estate database companies like Zillow, Trulia and Redfin, the problem of automatic estimation of market values for houses has received considerable attention. Several real estate websites provide such estimates using a proprietary formula. Although these estimates are"
+      },
+      {
+        "titulo": "A model for predicting price polarity of real estate properties using information of real estate market websites",
+        "url": "http://arxiv.org/abs/1911.08382v1",
+        "ano": "2019",
+        "resumo": "This paper presents a model that uses the information that sellers publish in real estate market websites to predict whether a property has higher or lower price than the average price of its similar properties. The model learns the correlation between price and information (text descriptions and fe"
+      },
+      {
+        "titulo": "Dynamic Pricing for Real Estate",
+        "url": "http://arxiv.org/abs/2408.12553v1",
+        "ano": "2024",
+        "resumo": "We study a mathematical model for the optimization of the price of real estate (RE). This model can be characterised by a limited amount of goods, fixed sales horizon and presence of intermediate sales and revenue goals. We develop it as an enhancement and upgrade of the model presented by Besbes an"
+      },
+      {
+        "titulo": "Modeling the impact of Climate transition on real estate prices",
+        "url": "http://arxiv.org/abs/2408.02339v2",
+        "ano": "2024",
+        "resumo": "In this work, we propose a model to quantify the impact of the climate transition on a property in housing market. We begin by noting that property is an asset in an economy. That economy is organized in sectors, driven by its productivity which is a multidimensional Ornstein-Uhlenbeck process, whil"
+      },
+      {
+        "titulo": "Real estate price peaks: a comparative overview",
+        "url": "http://arxiv.org/abs/physics/0605133v1",
+        "ano": "2006",
+        "resumo": "First, we emphasize that the real estate price peaks which are currently under way in many industrialized countries (one important exception is Japan) share many of the characteristics of previous historical price peaks. In particular, we show that: (i) In the present episode real price increases ar"
+      },
+      {
+        "titulo": "Towards robust and speculation-reduction real estate pricing models based on a data-driven strategy",
+        "url": "http://arxiv.org/abs/2012.09115v1",
+        "ano": "2020",
+        "resumo": "In many countries, real estate appraisal is based on conventional methods that rely on appraisers' abilities to collect data, interpret it and model the price of a real estate property. With the increasing use of real estate online platforms and the large amount of information found therein, there e"
+      },
+      {
+        "titulo": "Low-altitude aircraft will reshape noise exposure across global cities",
+        "url": "http://arxiv.org/abs/2609.29763v1",
+        "ano": "2026",
+        "resumo": "Just as motorisation made road traffic a defining noise source of the twentieth-century city, low-altitude aircraft may reshape urban acoustic exposure in the twenty-first. Yet how this noise interacts with existing sound environments and three-dimensional urban form across global cities remains unc"
+      },
+      {
+        "titulo": "PATE: Property, Amenities, Traffic and Emotions Coming Together for Real Estate Price Prediction",
+        "url": "http://arxiv.org/abs/2209.05471v2",
+        "ano": "2022",
+        "resumo": "Real estate prices have a significant impact on individuals, families, businesses, and governments. The general objective of real estate price prediction is to identify and exploit socioeconomic patterns arising from real estate transactions over multiple aspects, ranging from the property itself to"
+      },
+      {
+        "titulo": "PropTech for Proactive Pricing of Houses in Classified Advertisements in the Indian Real Estate Market",
+        "url": "http://arxiv.org/abs/1904.05328v1",
+        "ano": "2019",
+        "resumo": "Property Technology (PropTech) is the next big thing that is going to disrupt the real estate market. Nowadays, we see applications of Machine Learning (ML) and Artificial Intelligence (AI) in almost all the domains but for a long time the real estate industry was quite slow in adopting data science"
+      },
+      {
+        "titulo": "What are the most important factors that influence the changes in London Real Estate Prices? How to quantify them?",
+        "url": "http://arxiv.org/abs/1802.08238v1",
+        "ano": "2018",
+        "resumo": "In recent years, real estate industry has captured government and public attention around the world. The factors influencing the prices of real estate are diversified and complex. However, due to the limitations and one-sidedness of their respective views, they did not provide enough theoretical bas"
+      },
+      {
+        "titulo": "Nash equilibria for relative investors with (non)linear price impact",
+        "url": "http://arxiv.org/abs/2303.18161v2",
+        "ano": "2023",
+        "resumo": "We consider the strategic interaction of $n$ investors who are able to influence a stock price process and at the same time measure their utilities relative to the other investors. Our main aim is to find Nash equilibrium investment strategies in this setting in a financial market driven by a Browni"
+      },
+      {
+        "titulo": "Implementing Dynamic Pricing Across Multiple Pricing Groups in Real Estate",
+        "url": "http://arxiv.org/abs/2411.07732v1",
+        "ano": "2024",
+        "resumo": "This article presents a mathematical model of dynamic pricing for real estate (RE) that incorporates multiple pricing groups, thereby expanding the capabilities of existing models. The developed model solves the problem of maximizing aggregate cumulative revenue at the end of the sales period while "
+      },
+      {
+        "titulo": "CAD-Estate: Large-scale CAD Model Annotation in RGB Videos",
+        "url": "http://arxiv.org/abs/2306.09011v2",
+        "ano": "2023",
+        "resumo": "We propose a method for annotating videos of complex multi-object scenes with a globally-consistent 3D representation of the objects. We annotate each object with a CAD model from a database, and place it in the 3D coordinate frame of the scene with a 9-DoF pose transformation. Our method is semi-au"
+      },
+      {
+        "titulo": "Using ensemble methods of machine learning to predict real estate prices",
+        "url": "http://arxiv.org/abs/2504.04303v1",
+        "ano": "2025",
+        "resumo": "In recent years, machine learning (ML) techniques have become a powerful tool for improving the accuracy of predictions and decision-making. Machine learning technologies have begun to penetrate all areas, including the real estate sector. Correct forecasting of real estate value plays an important "
+      },
+      {
+        "titulo": "On a stochastic differential equation arising in a price impact model",
+        "url": "http://arxiv.org/abs/1110.3250v5",
+        "ano": "2011",
+        "resumo": "We provide sufficient conditions for the existence and uniqueness of solutions to a stochastic differential equation which arises in a price impact model. These conditions are stated as smoothness and boundedness requirements on utility functions or Malliavin differentiability of payoffs and endowme"
+      },
+      {
+        "titulo": "Understanding the Impacts of Dark Pools on Price Discovery",
+        "url": "http://arxiv.org/abs/1612.08486v1",
+        "ano": "2016",
+        "resumo": "This paper investigates the impact of dark pools on price discovery (the efficiency of prices on stock exchanges to aggregate information). Assets are traded in either an exchange or a dark pool, with the dark pool offering better prices but lower execution rates. Informed traders receive noisy and "
+      }
+    ]
+  },
+  "ruido-urbano-saude": {
+    "q": "urban noise pollution health housing value",
+    "fonte": "arxiv",
+    "total": 20,
+    "papers": [
+      {
+        "titulo": "Light pollution and the concentration of anthropogenic photons in the terrestrial atmosphere",
+        "url": "http://arxiv.org/abs/2210.14131v1",
+        "ano": "2022",
+        "resumo": "Light pollution can be rigorously described in terms of the volume concentration of anthropogenic photons (light quanta) in the terrestrial atmosphere. This formulation, consistent with the basic physics of the emission, scattering and absorption of light, allows one to express light pollution level"
+      },
+      {
+        "titulo": "Urban Mobility",
+        "url": "http://arxiv.org/abs/2211.00355v1",
+        "ano": "2022",
+        "resumo": "In this chapter, we discuss urban mobility from a complexity science perspective. First, we give an overview of the datasets that enable this approach, such as mobile phone records, location-based social network traces, or GPS trajectories from sensors installed on vehicles. We then review the empir"
+      },
+      {
+        "titulo": "Mapping Urban Villages in China: Progress and Challenges",
+        "url": "http://arxiv.org/abs/2503.14195v1",
+        "ano": "2025",
+        "resumo": "The shift toward high-quality urbanization has brought increased attention to the issue of \"urban villages\", which has become a prominent social problem in China. However, there is a lack of available geospatial data on urban villages, making it crucial to prioritize urban village mapping. In order "
+      },
+      {
+        "titulo": "SONYC: A System for the Monitoring, Analysis and Mitigation of Urban Noise Pollution",
+        "url": "http://arxiv.org/abs/1805.00889v2",
+        "ano": "2018",
+        "resumo": "We present the Sounds of New York City (SONYC) project, a smart cities initiative focused on developing a cyber-physical system for the monitoring, analysis and mitigation of urban noise pollution. Noise pollution is one of the topmost quality of life issues for urban residents in the U.S. with prov"
+      },
+      {
+        "titulo": "Self-supervised learning unveils change in urban housing from street-level images",
+        "url": "http://arxiv.org/abs/2309.11354v2",
+        "ano": "2023",
+        "resumo": "Cities around the world face a critical shortage of affordable and decent housing. Despite its critical importance for policy, our ability to effectively monitor and track progress in urban housing is limited. Deep learning-based computer vision methods applied to street-level images have been succe"
+      },
+      {
+        "titulo": "Effects Of Zoning On Housing Option Value",
+        "url": "http://arxiv.org/abs/1306.6137v1",
+        "ano": "2013",
+        "resumo": "The research explores the subject of zoning effect on price value of a house in a certain designated zone. Zoning is defined as a land under planned use. This results in price value of the land. As the area of the land decreases an increase in price occurs. This research does not specify the magnitu"
+      },
+      {
+        "titulo": "Population size and centrality effects on NO2 air pollution across and within European cities",
+        "url": "http://arxiv.org/abs/2605.28672v1",
+        "ano": "2026",
+        "resumo": "Understanding how nitrogen dioxide (NO2) varies both within and across cities is essential for assessing urban health inequalities, yet the joint influence of city size and internal structure remains poorly quantified. While it is expected that agglomeration size increases NO2 concentrations and tha"
+      },
+      {
+        "titulo": "Spatiotemporal gender differences in urban vibrancy",
+        "url": "http://arxiv.org/abs/2304.12840v2",
+        "ano": "2023",
+        "resumo": "Urban vibrancy is the dynamic activity of humans in urban locations. It can vary with urban features and the opportunities for human interactions, but it might also differ according to the underlying social conditions of city inhabitants across and within social surroundings. Such heterogeneity in h"
+      },
+      {
+        "titulo": "The Digital Transformation in Health: How AI Can Improve the Performance of Health Systems",
+        "url": "http://arxiv.org/abs/2409.16098v2",
+        "ano": "2024",
+        "resumo": "Mobile health has the potential to revolutionize health care delivery and patient engagement. In this work, we discuss how integrating Artificial Intelligence into digital health applications-focused on supply chain, patient management, and capacity building, among other use cases-can improve the he"
+      },
+      {
+        "titulo": "Does Noise Affect Housing Prices? A Case Study in the Urban Area of Thessaloniki",
+        "url": "http://arxiv.org/abs/2302.13034v1",
+        "ano": "2023",
+        "resumo": "Real estate markets depend on various methods to predict housing prices, including models that have been trained on datasets of residential or commercial properties. Most studies endeavor to create more accurate machine learning models by utilizing data such as basic property characteristics as well"
+      },
+      {
+        "titulo": "Noise Emissions from Hyperscale AI Data Centers: A Poorly Characterized Exposure at the Doorstep of Community Health Research",
+        "url": "http://arxiv.org/abs/2610.03975v1",
+        "ano": "2026",
+        "resumo": "The rapid build-out of hyperscale computing for artificial-intelligence workloads has made data-center noise a recurring source of community concern in the United States, yet calibrated, standards-grade acoustic data remain scarce. This narrative review synthesizes direct measurements, regulatory an"
+      },
+      {
+        "titulo": "A Review of Urban Resilience Frameworks: Transferring Knowledge to Enhance Pandemic Resilience",
+        "url": "http://arxiv.org/abs/2503.17371v2",
+        "ano": "2025",
+        "resumo": "Urbanization is rapidly increasing, with urban populations expected to grow significantly by 2050, particularly in developing regions. This expansion brings challenges related to chronic stresses and acute shocks, such as the COVID-19 pandemic, which has underscored the critical role of urban form i"
+      },
+      {
+        "titulo": "A context-aware e-bike system to reduce pollution inhalation while cycling",
+        "url": "http://arxiv.org/abs/1706.00646v3",
+        "ano": "2017",
+        "resumo": "The effect of transport-related pollution on human health is fast becoming recognised as a major issue in cities worldwide. Cyclists, in particular, face great risks, as they typically are most exposed to tail-pipe emissions. Three avenues are being explored worldwide in the fight against urban poll"
+      },
+      {
+        "titulo": "Curating Transient Population in Urban Dynamics System",
+        "url": "http://arxiv.org/abs/1606.08488v1",
+        "ano": "2016",
+        "resumo": "For past several decades, research efforts in population modelling has proven its efficacy in understanding the basic information about residential and commercial areas, as well as for the purposes of planning, development and improvement of the community as an eco-system. More or less, such efforts"
+      },
+      {
+        "titulo": "FADL:Federated-Autonomous Deep Learning for Distributed Electronic Health Record",
+        "url": "http://arxiv.org/abs/1811.11400v2",
+        "ano": "2018",
+        "resumo": "Electronic health record (EHR) data is collected by individual institutions and often stored across locations in silos. Getting access to these data is difficult and slow due to security, privacy, regulatory, and operational issues. We show, using ICU data from 58 different hospitals, that machine l"
+      },
+      {
+        "titulo": "Noise Pollution and Household Sustainability: An Economic Approach",
+        "url": "http://arxiv.org/abs/2607.18676v1",
+        "ano": "2026",
+        "resumo": "Examining the economic impact of noise pollution from a lens of household is a burgeoning field in the study of environmental sustainability. Economics studies cover the source, measure, consequence of noise pollution, as well as the econometric methods used to identify the causal impact of noise po"
+      },
+      {
+        "titulo": "Urban Rhapsody: Large-scale exploration of urban soundscapes",
+        "url": "http://arxiv.org/abs/2205.13064v1",
+        "ano": "2022",
+        "resumo": "Noise is one of the primary quality-of-life issues in urban environments. In addition to annoyance, noise negatively impacts public health and educational performance. While low-cost sensors can be deployed to monitor ambient noise levels at high temporal resolutions, the amount of data they produce"
+      },
+      {
+        "titulo": "The non-linear health consequences of living in larger cities",
+        "url": "http://arxiv.org/abs/1506.02735v1",
+        "ano": "2015",
+        "resumo": "Urbanization promotes economy, mobility, access and availability of resources, but on the other hand, generates higher levels of pollution, violence, crime, and mental distress. The health consequences of the agglomeration of people living close together are not fully understood. Particularly, it re"
+      },
+      {
+        "titulo": "Noise and Bell's inequality",
+        "url": "http://arxiv.org/abs/1008.0667v2",
+        "ano": "2010",
+        "resumo": "From the beginning of quantum mechanics, there has been a discussion about the concept of reality, as exemplified by the EPR paradox. To many, the idea of the paradox and the possibility of local hidden variables was dismissed by the Bell inequality. Yet, there remains considerable evidence that thi"
+      },
+      {
+        "titulo": "Interactive Sonification for Health and Energy using ChucK and Unity",
+        "url": "http://arxiv.org/abs/2404.08813v1",
+        "ano": "2024",
+        "resumo": "Sonification can provide valuable insights about data but most existing approaches are not designed to be controlled by the user in an interactive fashion. Interactions enable the designer of the sonification to more rapidly experiment with sound design and allow the sonification to be modified in r"
+      }
+    ]
+  },
+  "recife-imovel": {
+    "q": "Recife real estate market price apartment",
+    "fonte": "semantic",
+    "erro": "Semantic HTTP 429"
+  },
+  "moradia-recife": {
+    "q": "Recife PE Brazil housing urbanization study",
+    "fonte": "semantic",
+    "erro": "Semantic HTTP 429"
+  },
+  "fotogrametria-imovel": {
+    "q": "photogrammetry real estate measurement accuracy smartphone",
+    "fonte": "arxiv",
+    "total": 20,
+    "papers": [
+      {
+        "titulo": "Learning Real Estate Automated Valuation Models from Heterogeneous Data Sources",
+        "url": "http://arxiv.org/abs/1909.00704v1",
+        "ano": "2019",
+        "resumo": "Real estate appraisal is a complex and important task, that can be made more precise and faster with the help of automated valuation tools. Usually the value of some property is determined by taking into account both structural and geographical characteristics. However, while geographical informatio"
+      },
+      {
+        "titulo": "A Decentralised Real Estate Transfer Verification Based on Self-Sovereign Identity and Smart Contracts",
+        "url": "http://arxiv.org/abs/2207.04459v1",
+        "ano": "2022",
+        "resumo": "Since its first introduction in late 90s, the use of marketplaces has continued to grow, today virtually everything from physical assets to services can be purchased on digital marketplaces, real estate is not an exception. Some marketplaces allow acclaimed asset owners to advertise their products, "
+      },
+      {
+        "titulo": "JENGA: Exploiting Counter-Based RowHammer Countermeasures to Break Real-Time Predictability",
+        "url": "http://arxiv.org/abs/2609.01077v1",
+        "ano": "2026",
+        "resumo": "Safety-critical real-time systems must satisfy multiple dependability requirements, notably time predictability and security. In such systems, tasks must complete within bounded and known execution times, typically characterised through Worst-Case Execution Time (WCET) analysis. At the same time, DR"
+      },
+      {
+        "titulo": "Identifying Real Estate Opportunities using Machine Learning",
+        "url": "http://arxiv.org/abs/1809.04933v2",
+        "ano": "2018",
+        "resumo": "The real estate market is exposed to many fluctuations in prices because of existing correlations with many variables, some of which cannot be controlled or might even be unknown. Housing prices can increase rapidly (or in some cases, also drop very fast), yet the numerous listings available online "
+      },
+      {
+        "titulo": "Uncertainty Quantification Framework for Aerial and UAV Photogrammetry through Error Propagation",
+        "url": "http://arxiv.org/abs/2507.13486v2",
+        "ano": "2025",
+        "resumo": "Uncertainty quantification of the photogrammetry process is essential for providing per-point accuracy credentials of the point clouds. Unlike airborne LiDAR, whose accuracy generally remains consistent with objects with varying geometric complexity, the accuracy of photogrammetric point clouds is r"
+      },
+      {
+        "titulo": "CAD-Estate: Large-scale CAD Model Annotation in RGB Videos",
+        "url": "http://arxiv.org/abs/2306.09011v2",
+        "ano": "2023",
+        "resumo": "We propose a method for annotating videos of complex multi-object scenes with a globally-consistent 3D representation of the objects. We annotate each object with a CAD model from a database, and place it in the 3D coordinate frame of the scene with a 9-DoF pose transformation. Our method is semi-au"
+      },
+      {
+        "titulo": "A model for predicting price polarity of real estate properties using information of real estate market websites",
+        "url": "http://arxiv.org/abs/1911.08382v1",
+        "ano": "2019",
+        "resumo": "This paper presents a model that uses the information that sellers publish in real estate market websites to predict whether a property has higher or lower price than the average price of its similar properties. The model learns the correlation between price and information (text descriptions and fe"
+      },
+      {
+        "titulo": "The Impact of Processing Parameters on High-Accuracy Measurements in UAV Photogrammetry",
+        "url": "http://arxiv.org/abs/2610.01438v1",
+        "ano": "2026",
+        "resumo": "Unmanned aerial vehicle (UAV) photogrammetry is increasingly used in applications requiring high accuracy, such as determining ground surface changes caused by landslides, mining, or microrelief transformation. While acquisition strategies have been widely studied, the influence of the processing wo"
+      },
+      {
+        "titulo": "Real-time and Robust Feature Detection of Continuous Marker Pattern for Dense 3-D Deformation Measurement",
+        "url": "http://arxiv.org/abs/2305.11782v2",
+        "ano": "2023",
+        "resumo": "Visuotactile sensing technology has received much attention in recent years. This article proposes a feature detection method applicable to visuotactile sensors based on continuous marker patterns (CMP) to measure 3-d deformation. First, we construct the feature model of checkerboard-like corners un"
+      },
+      {
+        "titulo": "The Effect of Real Estate Auction Events on Mortality Rate",
+        "url": "http://arxiv.org/abs/1912.00327v1",
+        "ano": "2019",
+        "resumo": "This study has investigated the mortality rate of parties at real estate auctions compared to that of the overall population in South Korea by using various variables, including age, real estate usage, cumulative number of real estate auction events, disposal of real estate, and appraisal price. In "
+      },
+      {
+        "titulo": "Issues In Disintermediation In The Real Estate Brokerage Sector",
+        "url": "http://arxiv.org/abs/2005.01710v1",
+        "ano": "2020",
+        "resumo": "This article introduces new models of disintermediation of the real estate broker by the buyer or the seller. The decision to retain a real estate broker is critical in the property purchase/sale process. The existing literature does not contain analysis of: 1) information asymmetry, 2) the conditio"
+      },
+      {
+        "titulo": "Dynamic Pricing for Real Estate",
+        "url": "http://arxiv.org/abs/2408.12553v1",
+        "ano": "2024",
+        "resumo": "We study a mathematical model for the optimization of the price of real estate (RE). This model can be characterised by a limited amount of goods, fixed sales horizon and presence of intermediate sales and revenue goals. We develop it as an enhancement and upgrade of the model presented by Besbes an"
+      },
+      {
+        "titulo": "Image Based Appraisal of Real Estate Properties",
+        "url": "http://arxiv.org/abs/1611.09180v2",
+        "ano": "2016",
+        "resumo": "Real estate appraisal, which is the process of estimating the price for real estate properties, is crucial for both buys and sellers as the basis for negotiation and transaction. Traditionally, the repeat sales model has been widely adopted to estimate real estate price. However, it depends the desi"
+      },
+      {
+        "titulo": "Numerical Behavior of the Riemann Zeta Function Using Real-to-Complex Conversion Without Gram Points or Bracketing",
+        "url": "http://arxiv.org/abs/2512.09960v1",
+        "ano": "2025",
+        "resumo": "The Riemann zeta function and the distribution of its nontrivial zeros on the critical line remain central topics in analytic number theory and large-scale computation. This work develops a numerical framework that replaces classical Gram-point bracketing with a real-to-complex parametrization of th"
+      },
+      {
+        "titulo": "Transforming Japan Real Estate",
+        "url": "http://arxiv.org/abs/2405.20715v1",
+        "ano": "2024",
+        "resumo": "The Japanese real estate market, valued over 35 trillion USD, offers significant investment opportunities. Accurate rent and price forecasting could provide a substantial competitive edge. This paper explores using alternative data variables to predict real estate performance in 1100 Japanese munici"
+      },
+      {
+        "titulo": "3D Point Cloud from Close-Range Photogrammetry for Defect Characterisation of Rubberised Concrete",
+        "url": "http://arxiv.org/abs/2608.21468v1",
+        "ano": "2026",
+        "resumo": "While three-dimensional (3D) point clouds are widely used in civil engineering, mainstream LiDAR systems such as Terrestrial Laser Scanning (TLS) are physically constrained to laboratory environments. Since their laser spot size typically exceeds the width of microcracks, the beam physically bridges"
+      },
+      {
+        "titulo": "Identification of Error Sources in High Precision Weight Measurements of Gyroscopes",
+        "url": "http://arxiv.org/abs/1506.02689v1",
+        "ano": "2015",
+        "resumo": "A number of weight anomalies have been reported in the past with respect to gyroscopes. Much attention was gained from a paper in Physical Review Letters, when Japanese scientists announced that a gyroscope loses weight up to $0.005\\%$ when spinning only in the clockwise rotation with the gyroscope'"
+      },
+      {
+        "titulo": "Optical Flow Method for Measuring Deformation of Soil Specimen Subjected to Torsional Shearing",
+        "url": "http://arxiv.org/abs/2101.07005v2",
+        "ano": "2021",
+        "resumo": "In this study optical flow method was used for soil small deformation measurement in laboratory tests. The main objective was to observe how the deformation distributes along the whole height of cylindrical soil specimen subjected to torsional shearing (TS test). The experiments were conducted on dr"
+      },
+      {
+        "titulo": "PropTech for Proactive Pricing of Houses in Classified Advertisements in the Indian Real Estate Market",
+        "url": "http://arxiv.org/abs/1904.05328v1",
+        "ano": "2019",
+        "resumo": "Property Technology (PropTech) is the next big thing that is going to disrupt the real estate market. Nowadays, we see applications of Machine Learning (ML) and Artificial Intelligence (AI) in almost all the domains but for a long time the real estate industry was quite slow in adopting data science"
+      },
+      {
+        "titulo": "Tokenization of Real Estate Assets Using Blockchain",
+        "url": "http://arxiv.org/abs/2405.01852v1",
+        "ano": "2024",
+        "resumo": "Blockchain technology is one of the key technologies that have revolutionized various facets of society, such as the banking, healthcare, and other critical ecosystems. One area that can harness the usage of blockchain is the real estate sector. The most lucrative long-term investment is real estate"
+      }
+    ]
+  },
+  "fisheye-desdistorcao": {
+    "q": "fisheye lens distortion correction room measurement",
+    "fonte": "arxiv",
+    "total": 20,
+    "papers": [
+      {
+        "titulo": "Fisheye lens distortion correction",
+        "url": "http://arxiv.org/abs/2010.10295v1",
+        "ano": "2020",
+        "resumo": "A new distortion correction algorithm for fisheye lens with equidistant mapping function is considered in the present study. The algorithm is much more data lossless and accurate than such a classical approach like Brown-Conrady model"
+      },
+      {
+        "titulo": "Optical diode effect in the room-temperature multiferroic BiFeO$_3",
+        "url": "http://arxiv.org/abs/1505.00033v1",
+        "ano": "2015",
+        "resumo": "Multiferroics permit the magnetic control of the electric polarization and electric control of the magnetization. These static magnetoelectric (ME) effects are of enormous interest: The ability to read and write a magnetic state current-free by an electric voltage would provide a huge technological "
+      },
+      {
+        "titulo": "FisheyeEX: Polar Outpainting for Extending the FoV of Fisheye Lens",
+        "url": "http://arxiv.org/abs/2206.05844v1",
+        "ano": "2022",
+        "resumo": "Fisheye lens gains increasing applications in computational photography and assisted driving because of its wide field of view (FoV). However, the fisheye image generally contains invalid black regions induced by its imaging model. In this paper, we present a FisheyeEX method that extends the FoV of"
+      },
+      {
+        "titulo": "Electromagnetic modes of Maxwell fisheye lens",
+        "url": "http://arxiv.org/abs/atom-ph/9604006v1",
+        "ano": "1996",
+        "resumo": "We provide an analysis of the radial structure of TE and TM modes of the Maxwell fisheye lens, by means of Maxwell equations as applied to the fisheye case. Choosing a lens of size R = 1 cm, we plot some of the modes in the infrared range."
+      },
+      {
+        "titulo": "Shear-selected clusters from the Deep Lens Survey",
+        "url": "http://arxiv.org/abs/astro-ph/0303381v1",
+        "ano": "2003",
+        "resumo": "Weak gravitational lensing has the potential to select clusters independently of their baryon content, dynamical state, and star formation history. We present steps toward the first shear-selected sample of clusters, from the Deep Lens Survey (DLS), a deep BVRz' imaging survey of 28 square degrees. "
+      },
+      {
+        "titulo": "Photometry and astrometry with JWST -- II. NIRCam distortion correction",
+        "url": "http://arxiv.org/abs/2212.03256v2",
+        "ano": "2022",
+        "resumo": "In preparation to make the most of our own planned James Webb Space Telescope investigations, we take advantage of publicly available calibration and early-science observations to independently derive and test a geometric-distortion solution for NIRCam detectors. Our solution is able to correct the "
+      },
+      {
+        "titulo": "Fisheye Distortion Rectification from Deep Straight Lines",
+        "url": "http://arxiv.org/abs/2003.11386v1",
+        "ano": "2020",
+        "resumo": "This paper presents a novel line-aware rectification network (LaRecNet) to address the problem of fisheye distortion rectification based on the classical observation that straight lines in 3D space should be still straight in image planes. Specifically, the proposed LaRecNet contains three sequentia"
+      },
+      {
+        "titulo": "Pixel-variant Local Homography for Fisheye Stereo Rectification Minimizing Resampling Distortion",
+        "url": "http://arxiv.org/abs/1707.03775v1",
+        "ano": "2017",
+        "resumo": "Large field-of-view fisheye lens cameras have attracted more and more researchers' attention in the field of robotics. However, there does not exist a convenient off-the-shelf stereo rectification approach which can be applied directly to fisheye stereo rig. One obvious drawback of existing methods "
+      },
+      {
+        "titulo": "QueryCDR: Query-Based Controllable Distortion Rectification Network for Fisheye Images",
+        "url": "http://arxiv.org/abs/2412.13496v2",
+        "ano": "2024",
+        "resumo": "Fisheye image rectification aims to correct distortions in images taken with fisheye cameras. Although current models show promising results on images with a similar degree of distortion as the training data, they will produce sub-optimal results when the degree of distortion changes and without ret"
+      },
+      {
+        "titulo": "Stitching Videos from a Fisheye Lens Camera and a Wide-Angle Lens Camera for Telepresence Robots",
+        "url": "http://arxiv.org/abs/1903.06319v1",
+        "ano": "2019",
+        "resumo": "Many telepresence robots are equipped with a forward-facing camera for video communication and a downward-facing camera for navigation. In this paper, we propose to stitch videos from the FF-camera with a wide-angle lens and the DF-camera with a fisheye lens for telepresence robots. We aim at provid"
+      },
+      {
+        "titulo": "Sector Patch Embedding: An Embedding Module Conforming to The Distortion Pattern of Fisheye Image",
+        "url": "http://arxiv.org/abs/2303.14645v1",
+        "ano": "2023",
+        "resumo": "Fisheye cameras suffer from image distortion while having a large field of view(LFOV). And this fact leads to poor performance on some fisheye vision tasks. One of the solutions is to optimize the current vision algorithm for fisheye images. However, most of the CNN-based methods and the Transformer"
+      },
+      {
+        "titulo": "Coding of distortion-corrected fisheye video sequences using H.265/HEVC",
+        "url": "http://arxiv.org/abs/2211.16967v1",
+        "ano": "2022",
+        "resumo": "Images and videos captured by fisheye cameras exhibit strong radial distortions due to their large field of view. Conventional intra-frame as well as inter-frame prediction techniques as employed in hybrid video coding schemes are not designed to cope with such distortions, however. So far, captured"
+      },
+      {
+        "titulo": "Depth Estimation Analysis of Orthogonally Divergent Fisheye Cameras with Distortion Removal",
+        "url": "http://arxiv.org/abs/2307.03602v1",
+        "ano": "2023",
+        "resumo": "Stereo vision systems have become popular in computer vision applications, such as 3D reconstruction, object tracking, and autonomous navigation. However, traditional stereo vision systems that use rectilinear lenses may not be suitable for certain scenarios due to their limited field of view. This "
+      },
+      {
+        "titulo": "Exploiting the Distortion-Semantic Interaction in Fisheye Data",
+        "url": "http://arxiv.org/abs/2305.00079v2",
+        "ano": "2023",
+        "resumo": "In this work, we present a methodology to shape a fisheye-specific representation space that reflects the interaction between distortion and semantic context present in this data modality. Fisheye data has the wider field of view advantage over other types of cameras, but this comes at the expense o"
+      },
+      {
+        "titulo": "Fisheye Lens Camera based Autonomous Valet Parking System",
+        "url": "http://arxiv.org/abs/2104.13119v1",
+        "ano": "2021",
+        "resumo": "This paper proposes an efficient autonomous valet parking system utilizing only cameras which are the most widely used sensor. To capture more information instantaneously and respond rapidly to changes in the surrounding environment, fisheye cameras which have a wider angle of view compared to pinho"
+      },
+      {
+        "titulo": "FisheyeDistanceNet: Self-Supervised Scale-Aware Distance Estimation using Monocular Fisheye Camera for Autonomous Driving",
+        "url": "http://arxiv.org/abs/1910.04076v4",
+        "ano": "2019",
+        "resumo": "Fisheye cameras are commonly used in applications like autonomous driving and surveillance to provide a large field of view ($&gt;180^{\\circ}$). However, they come at the cost of strong non-linear distortions which require more complex algorithms. In this paper, we explore Euclidean distance estimat"
+      },
+      {
+        "titulo": "AISHELL8-FISHEYE: A Fisheye Audio-Visual Dataset for Target Speaker Extraction with Distortion-Aware Baselines",
+        "url": "http://arxiv.org/abs/2611.09368v1",
+        "ano": "2026",
+        "resumo": "Fisheye cameras offer wide visual coverage but distort facial and lip geometry, challenging audio-visual target speaker extraction. We introduce AISHELL8-FISHEYE, a 47.03-hour corpus of 94 Mandarin speakers with synchronized audio and paired fisheye and normal-camera videos. Speaker-disjoint splits "
+      },
+      {
+        "titulo": "Bifunctional Luneburg-fisheye Lens Based on the Manipulation of Spoof Surface Plasmons",
+        "url": "http://arxiv.org/abs/2012.03691v1",
+        "ano": "2020",
+        "resumo": "Manipulation of spoof surface plasmons (SSPs) has recently intrigued enormous interest due to the capability of guiding waves with subwavelength footsteps. However, most of the previous studies, manifested for a single functionality, are not suitable for multifunctional integrated devices. Herein, a"
+      },
+      {
+        "titulo": "Surround-view Fisheye BEV-Perception for Valet Parking: Dataset, Baseline and Distortion-insensitive Multi-task Framework",
+        "url": "http://arxiv.org/abs/2212.04111v1",
+        "ano": "2022",
+        "resumo": "Surround-view fisheye perception under valet parking scenes is fundamental and crucial in autonomous driving. Environmental conditions in parking lots perform differently from the common public datasets, such as imperfect light and opacity, which substantially impacts on perception performance. Most"
+      },
+      {
+        "titulo": "Multilayered Maxwell's fisheye lens as waveguide crossing",
+        "url": "http://arxiv.org/abs/1812.00184v1",
+        "ano": "2018",
+        "resumo": "The Maxwell's fisheye (MFE) lens, due to its focusing properties, is an interesting candidate for implementing the crossing of multiple waveguides. The MFE lens is implemented by two different structures: concentric cylindrical multilayer and radially diverging gourd-shaped rods. Realization of the "
+      }
+    ]
+  },
+  "sensor-ruido-mobile": {
+    "q": "smartphone microphone sound level measurement accuracy dB",
+    "fonte": "arxiv",
+    "total": 20,
+    "papers": [
+      {
+        "titulo": "Sound Pressure Minimization at the Ear Drum for In-ear ANC Headphones using a Fixed Feedforward Remote Microphone Technique",
+        "url": "http://arxiv.org/abs/2105.06894v1",
+        "ano": "2021",
+        "resumo": "In this paper we consider an in-ear headphone equipped with an external microphone and aim to minimize the sound pressure at the ear drum by means of a fixed feedforward ANC controller. Based on measured acoustic paths to predict the sound pressure generated by external sources and the headphone at "
+      },
+      {
+        "titulo": "Measurement of Sound Fields Using Moving Microphones",
+        "url": "http://arxiv.org/abs/1609.09390v1",
+        "ano": "2016",
+        "resumo": "The sampling of sound fields involves the measurement of spatially dependent room impulse responses, where the Nyquist-Shannon sampling theorem applies in both the temporal and spatial domain. Therefore, sampling inside a volume of interest requires a huge number of sampling points in space, which c"
+      },
+      {
+        "titulo": "Quanta in sound, the sound of quanta: a voice-informed quantum theoretical perspective on sound",
+        "url": "http://arxiv.org/abs/2105.10781v2",
+        "ano": "2021",
+        "resumo": "Humans have a privileged, embodied way to explore the world of sounds, through vocal imitation. The Quantum Vocal Theory of Sounds (QVTS) starts from the assumption that any sound can be expressed and described as the evolution of a superposition of vocal states, i.e., phonation, turbulence, and sup"
+      },
+      {
+        "titulo": "Localization of Sound Sources in a Room with One Microphone",
+        "url": "http://arxiv.org/abs/1707.04504v1",
+        "ano": "2017",
+        "resumo": "Estimation of the location of sound sources is usually done using microphone arrays. Such settings provide an environment where we know the difference between the received signals among different microphones in the terms of phase or attenuation, which enables localization of the sound sources. In ou"
+      },
+      {
+        "titulo": "A data-driven two-microphone method for in-situ sound absorption measurements",
+        "url": "http://arxiv.org/abs/2502.04143v1",
+        "ano": "2025",
+        "resumo": "This work presents a data-driven approach to estimating the sound absorption coefficient of an infinite porous slab using a neural network and a two-microphone measurement on a finite porous sample. A 1D-convolutional network predicts the sound absorption coefficient from the complex-valued transfer"
+      },
+      {
+        "titulo": "Sound field reconstruction in rooms: inpainting meets super-resolution",
+        "url": "http://arxiv.org/abs/2001.11263v2",
+        "ano": "2020",
+        "resumo": "In this paper, a deep-learning-based method for sound field reconstruction is proposed. It is shown the possibility to reconstruct the magnitude of the sound pressure in the frequency band 30-300 Hz for an entire room by using a very low number of irregularly distributed microphones arbitrarily arra"
+      },
+      {
+        "titulo": "In situ sound absorption estimation with the discrete complex image source method",
+        "url": "http://arxiv.org/abs/2404.11399v1",
+        "ano": "2024",
+        "resumo": "Estimating the sound absorption in situ relies on accurately describing the measured sound field. Evidence suggests that modeling the reflection of impinging spherical waves is important, especially for compact measurement systems. This article proposes a method for estimating the sound absorption c"
+      },
+      {
+        "titulo": "Permutation-Invariant Physics-Informed Neural Network for Region-to-Region Sound Field Reconstruction",
+        "url": "http://arxiv.org/abs/2601.19491v1",
+        "ano": "2026",
+        "resumo": "Most existing sound field reconstruction methods target point-to-region reconstruction, interpolating the Acoustic Transfer Functions (ATFs) between a fixed-position sound source and a receiver region. The applicability of these methods is limited because real-world ATFs tend to varying continuously"
+      },
+      {
+        "titulo": "Direction Estimation of Sound Sources Using Microphone Arrays and Signal Strength",
+        "url": "http://arxiv.org/abs/2507.03466v3",
+        "ano": "2025",
+        "resumo": "Sound-tracking refers to the process of determining the direction from which a sound originates, making it a fundamental component of sound source localization. This capability is essential in a variety of applications, including security systems, acoustic monitoring, and speaker tracking, where acc"
+      },
+      {
+        "titulo": "Sound-based drone fault classification using multitask learning",
+        "url": "http://arxiv.org/abs/2304.11708v1",
+        "ano": "2023",
+        "resumo": "The drone has been used for various purposes, including military applications, aerial photography, and pesticide spraying. However, the drone is vulnerable to external disturbances, and malfunction in propellers and motors can easily occur. To improve the safety of drone operations, one should detec"
+      },
+      {
+        "titulo": "Numerical simulation of sound propagation in and around ducts using thin boundary elements",
+        "url": "http://arxiv.org/abs/2203.03926v1",
+        "ano": "2022",
+        "resumo": "Investigating the sound field in and around ducts is an important topic in acoustics, e.g. when simulating musical instruments or the human vocal tract. In this paper a method that is based on the boundary element method in 3D combined with a formulation for infinitely thin elements is presented. Th"
+      },
+      {
+        "titulo": "Sound Adversarial Audio-Visual Navigation",
+        "url": "http://arxiv.org/abs/2202.10910v1",
+        "ano": "2022",
+        "resumo": "Audio-visual navigation task requires an agent to find a sound source in a realistic, unmapped 3D environment by utilizing egocentric audio-visual observations. Existing audio-visual navigation works assume a clean environment that solely contains the target sound, which, however, would not be suita"
+      },
+      {
+        "titulo": "Acousto-optic reconstruction of exterior sound field based on concentric circle sampling with circular harmonic expansion",
+        "url": "http://arxiv.org/abs/2311.01715v3",
+        "ano": "2023",
+        "resumo": "Acousto-optic sensing provides an alternative approach to traditional microphone arrays by shedding light on the interaction of light with an acoustic field. Sound field reconstruction is a fascinating and advanced technique used in acousto-optics sensing. Current challenges in sound-field reconstru"
+      },
+      {
+        "titulo": "Images that Sound: Composing Images and Sounds on a Single Canvas",
+        "url": "http://arxiv.org/abs/2405.12221v3",
+        "ano": "2024",
+        "resumo": "Spectrograms are 2D representations of sound that look very different from the images found in our visual world. And natural images, when played as spectrograms, make unnatural sounds. In this paper, we show that it is possible to synthesize spectrograms that simultaneously look like natural images "
+      },
+      {
+        "titulo": "Lightweight and Optimized Sound Source Localization and Tracking Methods for Open and Closed Microphone Array Configurations",
+        "url": "http://arxiv.org/abs/1812.00115v1",
+        "ano": "2018",
+        "resumo": "Human-robot interaction in natural settings requires filtering out the different sources of sounds from the environment. Such ability usually involves the use of microphone arrays to localize, track and separate sound sources online. Multi-microphone signal processing techniques can improve robustne"
+      },
+      {
+        "titulo": "Single-Microphone-Based Sound Source Localization for Mobile Robots in Reverberant Environments",
+        "url": "http://arxiv.org/abs/2506.16173v1",
+        "ano": "2025",
+        "resumo": "Accurately estimating sound source positions is crucial for robot audition. However, existing sound source localization methods typically rely on a microphone array with at least two spatially preconfigured microphones. This requirement hinders the applicability of microphone-based robot audition sy"
+      },
+      {
+        "titulo": "3D Localization of a Sound Source Using Mobile Microphone Arrays Referenced by SLAM",
+        "url": "http://arxiv.org/abs/2007.11079v1",
+        "ano": "2020",
+        "resumo": "A microphone array can provide a mobile robot with the capability of localizing, tracking and separating distant sound sources in 2D, i.e., estimating their relative elevation and azimuth. To combine acoustic data with visual information in real world settings, spatial correlation must be establishe"
+      },
+      {
+        "titulo": "An individualized super Gaussian single microphone Speech Enhancement for hearing aid users with smartphone as an assistive device",
+        "url": "http://arxiv.org/abs/1812.03916v1",
+        "ano": "2018",
+        "resumo": "In this letter, we derive a new super Gaussian Joint Maximum a Posteriori based single microphone speech enhancement gain function. The developed Speech Enhancement method is implemented on a smartphone, and this arrangement functions as an assistive device to hearing aids. We introduce a tradeoff p"
+      },
+      {
+        "titulo": "Joint model-based recognition and localization of overlapped acoustic events using a set of distributed small microphone arrays",
+        "url": "http://arxiv.org/abs/1712.07065v1",
+        "ano": "2017",
+        "resumo": "In the analysis of acoustic scenes, often the occurring sounds have to be detected in time, recognized, and localized in space. Usually, each of these tasks is done separately. In this paper, a model-based approach to jointly carry them out for the case of multiple simultaneous sources is presented "
+      },
+      {
+        "titulo": "End-to-end Two-dimensional Sound Source Localization With Ad-hoc Microphone Arrays",
+        "url": "http://arxiv.org/abs/2210.08484v1",
+        "ano": "2022",
+        "resumo": "Conventional sound source localization methods are mostly based on a single microphone array that consists of multiple microphones. They are usually formulated as the estimation of the direction of arrival problem. In this paper, we propose a deep-learning-based end-to-end sound source localization "
+      }
+    ]
+  },
+  "gps-indoor": {
+    "q": "smartphone GPS accuracy indoor positioning housing",
+    "fonte": "arxiv",
+    "total": 20,
+    "papers": [
+      {
+        "titulo": "Indoor Positioning based on Active Radar Sensing and Passive Reflectors: Concepts &amp; Initial Results",
+        "url": "http://arxiv.org/abs/2310.04231v2",
+        "ano": "2023",
+        "resumo": "To navigate reliably in indoor environments, an industrial autonomous vehicle must know its position. However, current indoor vehicle positioning technologies either lack accuracy, usability or are too expensive. Thus, we propose a novel concept called local reference point assisted active radar pos"
+      },
+      {
+        "titulo": "New trends in indoor positioning based on WiFi and machine learning: A systematic review",
+        "url": "http://arxiv.org/abs/2107.14356v1",
+        "ano": "2021",
+        "resumo": "Currently there is no standard indoor positioning system, similar to outdoor GPS. However, WiFi signals have been used in a large number of proposals to achieve the above positioning, many of which use machine learning to do so. But what are the most commonly used techniques in machine learning? Wha"
+      },
+      {
+        "titulo": "Anchor Layout Optimization for Ultrasonic Indoor Positioning Using Swarm Intelligence",
+        "url": "http://arxiv.org/abs/2405.09222v1",
+        "ano": "2024",
+        "resumo": "Indoor positioning applications are craving for ever higher precision and accuracy across the entire coverage zone. Optimal anchor placement and the deployment of multiple distributed anchor nodes could have a major impact in this regard. This paper examines the influences of these two difficult to "
+      },
+      {
+        "titulo": "SURIMI: Supervised Radio Map Augmentation with Deep Learning and a Generative Adversarial Network for Fingerprint-based Indoor Positioning",
+        "url": "http://arxiv.org/abs/2207.06120v1",
+        "ano": "2022",
+        "resumo": "Indoor Positioning based on Machine Learning has drawn increasing attention both in the academy and the industry as meaningful information from the reference data can be extracted. Many researchers are using supervised, semi-supervised, and unsupervised Machine Learning models to reduce the position"
+      },
+      {
+        "titulo": "Smartphone-based user positioning in a multiple-user context with Wi-Fi and Bluetooth",
+        "url": "http://arxiv.org/abs/1807.05716v1",
+        "ano": "2018",
+        "resumo": "In a multiuser context, the Bluetooth data from the smartphone could give an approximation of the distance between users. Meanwhile, the Wi-Fi data can be used to calculate the user's position directly. However, both the Wi-Fi-based position outputs and Bluetooth-based distances are affected by some"
+      },
+      {
+        "titulo": "Indoor Positioning Based on Active Radar Sensing and Passive Reflectors: Reflector Placement Optimization",
+        "url": "http://arxiv.org/abs/2509.15613v2",
+        "ano": "2025",
+        "resumo": "We extend our work on a novel indoor positioning system (IPS) for autonomous mobile robots (AMRs) based on radar sensing of local, passive radar reflectors. Through the combination of simple reflectors and a single-channel frequency modulated continuous wave (FMCW) radar, high positioning accuracy a"
+      },
+      {
+        "titulo": "Decision Trees for Analyzing Influences on the Accuracy of Indoor Localization Systems",
+        "url": "http://arxiv.org/abs/2207.03853v1",
+        "ano": "2022",
+        "resumo": "Absolute position accuracy is the key performance criterion of an Indoor Localization System (ILS). Since ILS are heterogeneous and complex cyber-physical systems, the localization accuracy depends on various influences from the environment, system configuration, and the application processes. To de"
+      },
+      {
+        "titulo": "GPS Receiver with Enhanced User Positioning Time",
+        "url": "http://arxiv.org/abs/1510.03062v1",
+        "ano": "2015",
+        "resumo": "This paper introduces a Global Positioning System (GPS) Receiver that locates user's position instantly. Recently, many mobile devices require location information to add user position into their contents, and some applications require quick positioning when the device is initially switched on. In o"
+      },
+      {
+        "titulo": "PALMS: Plane-based Accessible Indoor Localization Using Mobile Smartphones",
+        "url": "http://arxiv.org/abs/2410.15694v1",
+        "ano": "2024",
+        "resumo": "In this paper, we present PALMS, an innovative indoor global localization and relocalization system for mobile smartphones that utilizes publicly available floor plans. Unlike most vision-based methods that require constant visual input, our system adopts a dynamic form of localization that consider"
+      },
+      {
+        "titulo": "Towards Ubiquitous Indoor Positioning: Comparing Systems across Heterogeneous Datasets",
+        "url": "http://arxiv.org/abs/2109.09436v1",
+        "ano": "2021",
+        "resumo": "The evaluation of Indoor Positioning Systems (IPS) mostly relies on local deployments in the researchers' or partners' facilities. The complexity of preparing comprehensive experiments, collecting data, and considering multiple scenarios usually limits the evaluation area and, therefore, the assessm"
+      },
+      {
+        "titulo": "High accuracy and error analysis of indoor visible light positioning algorithm based on image sensor",
+        "url": "http://arxiv.org/abs/1911.11773v2",
+        "ano": "2019",
+        "resumo": "In recent years, with the increasing demand for indoor positioning service, visible light indoor positioning based on image sensors has been widely studied. However, many researches only put forward the relevant localization algorithm and did not make a deep discussion on the principle of the visibl"
+      },
+      {
+        "titulo": "Enhanced Accessibility for Mobile Indoor Navigation",
+        "url": "http://arxiv.org/abs/2602.13233v1",
+        "ano": "2026",
+        "resumo": "The navigation of indoor spaces poses difficult challenges for individuals with visual impairments, as it requires processing of sensory information, dealing with uncertainties, and relying on assistance. To tackle these challenges, we present an indoor navigation app that places importance on acces"
+      },
+      {
+        "titulo": "Wi-Fi Based Indoor Positioning System For Mobile Robots By Using Particle Filter",
+        "url": "http://arxiv.org/abs/2012.05286v1",
+        "ano": "2020",
+        "resumo": "Mobile robots have the capability to work in real-time autonomously. Autonomous behavior is strictly dependent on knowing the position of the mobile robot. The positioning of a mobile robot in an indoor area is a difficult task for only one sensor information is used. We proposed a system and method"
+      },
+      {
+        "titulo": "GPSMirror: Expanding Accurate GPS Positioning to Shadowed and Indoor Regions with Backscatter",
+        "url": "http://arxiv.org/abs/2304.07572v1",
+        "ano": "2023",
+        "resumo": "Despite the prevalence of GPS services, they still suffer from intermittent positioning with poor accuracy in partially shadowed regions like urban canyons, flyover shadows, and factories' indoor areas. Existing wisdom relies on hardware modifications of GPS receivers or power-hungry infrastructures"
+      },
+      {
+        "titulo": "ChronoChart: Setup-Agnostic Channel Charting for Label-Free Indoor Localization",
+        "url": "http://arxiv.org/abs/2610.25199v1",
+        "ano": "2026",
+        "resumo": "Accurate radio-based indoor localization remains challenging in multipath-rich and dynamic indoor environments. Supervised fingerprinting methods achieve high positioning accuracy by learning mappings from radio channel measurements to physical locations, but require costly position labels and frequ"
+      },
+      {
+        "titulo": "Ubiquitous Indoor Fine-Grained Positioning and Tracking: A Channel Response Perspective",
+        "url": "http://arxiv.org/abs/2209.12158v2",
+        "ano": "2022",
+        "resumo": "The future of location-aided applications is shaped by the ubiquity of Internet-of-Things devices. As an increasing amount of commercial off-the-shelf radio devices support channel response collection, it is possible to achieve fine-grained position estimation at a relatively low cost. In this paper"
+      },
+      {
+        "titulo": "Indoor Distance Estimation using LSTMs over WLAN Network",
+        "url": "http://arxiv.org/abs/2003.13991v1",
+        "ano": "2020",
+        "resumo": "The Global Navigation Satellite Systems (GNSS) like GPS suffer from accuracy degradation and are almost unavailable in indoor environments. Indoor positioning systems (IPS) based on WiFi signals have been gaining popularity. However, owing to the strong spatial and temporal variations of wireless co"
+      },
+      {
+        "titulo": "Improving GNSS Positioning in Challenging Urban Areas by Digital Twin Database Correction",
+        "url": "http://arxiv.org/abs/2408.13823v1",
+        "ano": "2024",
+        "resumo": "Accurate positioning technology is the foundation for industry and business applications. Although indoor and outdoor positioning techniques have been well studied separately, positioning performance in the intermediate period of changing the positioning environment is still challenging. This paper "
+      },
+      {
+        "titulo": "Real-time kinematic positioning of LEO satellites using a single-frequency GPS receiver",
+        "url": "http://arxiv.org/abs/1611.04683v1",
+        "ano": "2016",
+        "resumo": "Due to their low cost and low power consumption, single-frequency GPS receivers are considered suitable for low-cost space applications such as small satellite missions. Recently, requirements have emerged for real-time accurate orbit determination at sub-meter level in order to carry out onboard ge"
+      },
+      {
+        "titulo": "RAIL-5G: A Challenging Real-World Dataset and Benchmark for AI-Based 5G Indoor Localization",
+        "url": "http://arxiv.org/abs/2610.25201v1",
+        "ano": "2026",
+        "resumo": "Reliable radio-based indoor localization is essential for industrial automation, yet existing methods are often evaluated in environments that do not fully reflect the severe multipath and non-line-of-sight (NLOS) conditions encountered in real deployments. This limits our understanding of how AI, i"
+      }
+    ]
+  },
+  "alagamento-urbano": {
+    "q": "urban flooding vulnerability housing value Brazil",
+    "fonte": "semantic",
+    "total": 20,
+    "papers": [
+      {
+        "titulo": "Assessing Economic Vulnerability from Urban Flooding: A Case Study of Catu, a Commerce-Based City in Brazil",
+        "ano": 2026,
+        "url": "https://www.semanticscholar.org/paper/3fdb058161fd7f57e214fbe56c1a94ef12080b69",
+        "doi": "10.3390/w18020282",
+        "resumo": "Flooding is a recurrent problem in many Brazilian cities, resulting in significant losses that affect health, assets, finance, and the environment. The uncertainty regarding extreme rainfall events due to climate change makes this challenge even more severe, compounded by inadequate urban planning a",
+        "autores": "Lais Das Neves Santana, Alarcon Matos de Oliveira, Lusanira Nogueira Aragão De Oliveira, Fabricio Ribeiro Garcia"
+      },
+      {
+        "titulo": "Social Vulnerability and the Right to Housing in Brazil: An Example of Urban Resistance",
+        "ano": 2025,
+        "url": "https://www.semanticscholar.org/paper/90c75ef5496c5cbb8bb727e13fc06bd9c7bde4f9",
+        "doi": "10.36253/smp-16181",
+        "resumo": "The awareness of a given phenomenon involves the implementation of an organised and defined solution based on the perception of social insecurity and exposure to different forms of inequality (economic, social and cultural). From these processes emerge forms of resilience and resistance, i.e. the ca",
+        "autores": "Salyanna de Souza Silva, Gisele Caroline Ribeiro Anselmo, Francesca Cubeddu"
+      },
+      {
+        "titulo": "Women and urban flooding vulnerability: A case study from Can Tho City in the Vietnamese Mekong Delta",
+        "ano": 2024,
+        "url": "https://www.semanticscholar.org/paper/8f207fd53e7b9ac0aa21fa88fbe0fbfa228d7e37",
+        "doi": "10.1111/apv.12402",
+        "resumo": "The main objectives of this research are to identify (i) how women in Can Tho City experience the impacts of flooding on their health, income, household and personal finances; and (ii) limitations to women's participation in flood‐related planning activities. Qualitative data collection included a h",
+        "autores": "Ly Quoc Dang"
+      },
+      {
+        "titulo": "Leptospirosis in Campinas, Brazil: The interplay between drainage, impermeable areas, and social vulnerability",
+        "ano": 2025,
+        "url": "https://www.semanticscholar.org/paper/d4a229a55d9600626681f7b94ff0248ee24e6aa9",
+        "doi": "10.1371/journal.pntd.0013560",
+        "resumo": "Leptospirosis is an epidemic disease caused by bacteria of the Leptospira genus. Its risk is closely associated with inadequate sanitation and flooding, a common public health challenge in large urban centers together with urban environmental modifications, and socio-economic factors. This retrospec",
+        "autores": "T. S. de Azevedo, S. Nisa, S. Littlejohn, R. de Lara Muylaert"
+      },
+      {
+        "titulo": "Flood vulnerability mapping in an urban area with high levels of impermeable coverage in southern Brazil",
+        "ano": 2024,
+        "url": "https://www.semanticscholar.org/paper/a2c107f63c6df376034e168f8d2fff4d4c757042",
+        "doi": "10.1007/s10113-024-02258-9",
+        "resumo": null,
+        "autores": "R. Alves, A. Rudke, Sueli Tavares de Melo Souza, M. D. dos Santos, J. A. Martins"
+      },
+      {
+        "titulo": "Climate change, urban flooding and the politics of elite-led urban expansion in Islamabad: A political ecology study of state power, land use, and flood vulnerability",
+        "ano": 2026,
+        "url": "https://www.semanticscholar.org/paper/ba94fa8df8afaeb7dea23478d69904fd11b75fdc",
+        "doi": "10.71085/rjhsa.04.04.141",
+        "resumo": "This study examines the ways elite-led urban expansion in Islamabad has disrupted natural drainage channels and heightened flood vulnerability. The study uses a qualitative political ecology case study that is based on policy and planning document review, historical maps and satellite images. Interv",
+        "autores": "A. Khan, Hamad Ullah Khan, Muhammad Jamil"
+      },
+      {
+        "titulo": "Assessing Urban Flooding and Drainage System Performance in Urban Area: A Mononobe Equation and Manning Formula Approach",
+        "ano": 2024,
+        "url": "https://www.semanticscholar.org/paper/b13f3bf834b912c49547e039bbffa92309494c8b",
+        "doi": "10.29244/jpsl.14.3.463",
+        "resumo": "Climate change causes erratic rainfall and often results in flooding of urban areas. Floods are hydrometeorological disasters that occur in various regions of Indonesia. Flood vulnerability in urban areas has increased over the past 30 years. Kauman Village is included in the Asri water catchment ar",
+        "autores": "Sukma Laksita Rahma, Sunarsih, Mussadun"
+      },
+      {
+        "titulo": "Vulnerability and Resilience of Urban Informal Sector to Climate-Induced Flooding: A Case Study of Makoko",
+        "ano": 2026,
+        "url": "https://www.semanticscholar.org/paper/4dba337a31a3a9b4d10d7b9cea9f5bd8c0523d69",
+        "doi": "10.47772/ijriss.2026.100700824",
+        "resumo": "Urban informal sector play a significant role in the sustenance of livelihoods especially in rapidly growing cities, yet they are highly vulnerable to the impacts of climate change, especially climate-induced flooding. This paper examines the vulnerability and resilience of the informal economic pla",
+        "autores": "A. O. Samson, Olorunimbe Rafiu oluwatoyin, Olayinka Abimbola popoola"
+      },
+      {
+        "titulo": "FLOOD VULNERABILITY AND HOUSING MARKET DYNAMICS IN PERI-URBAN IBADAN, NIGERIA",
+        "ano": 2026,
+        "url": "https://www.semanticscholar.org/paper/200e23a5c3d3d901306f800431fa396fce6d7954",
+        "doi": "10.66884/kesj.2026.m1vdz55t",
+        "resumo": "<p>\n <strong>Purpose:</strong> Peri-urban Ibadan in Nigeria Flood prone on the dynamics of housing rentals in peri-urban areas through using an integrated geospatial and housing market analysis. It was carried out in Akinyele, Ido and Egbeda Local Government Areas (LGAs) which have undergone a rapid",
+        "autores": "G. Morenikeji, Kehinde Olamiju"
+      },
+      {
+        "titulo": "An Enhanced Framework for Assessing Pluvial Flooding Risk with Integrated Dynamic Population Vulnerability at Urban Scale",
+        "ano": 2025,
+        "url": "https://www.semanticscholar.org/paper/d612e3aeda62ae721615910a1bb8394cc9ce9e82",
+        "doi": "10.3390/rs17040654",
+        "resumo": "Under the combined influence of climate change, accelerated urbanization, and inadequate urban flood defense standards, urban pluvial flooding has become an increasingly severe issue. This not only poses significant challenges to social stability and economic development but also makes accurate floo",
+        "autores": "Xinyi Shu, Chenlei Ye, Zong-Xue Xu, Ruting Liao, Pengyue Song"
+      },
+      {
+        "titulo": "Urban Flooding and Climate Change Vulnerability-A Case Study of North Karachi",
+        "ano": 2024,
+        "url": "https://www.semanticscholar.org/paper/c030e578d3d8efbaf40039f542010f41c86aea59",
+        "doi": "10.33411/ijist/954",
+        "resumo": "Urban flooding in Karachi has been exacerbated by insufficient climate resilience measures, inadequate urban planning, and underdeveloped drainage systems. These deficiencies have led to widespread flooding in residential and commercial areas, causing significant damage to infrastructure and ameniti",
+        "autores": "Fizza Ejaz, A. Khan, Hiba Arif, A. Kausar"
+      },
+      {
+        "titulo": "Urban flooding simulation and flood risk assessment based on the InfoWorks ICM model: A case study of the urban inland rivers in Zhengzhou, China.",
+        "ano": 2024,
+        "url": "https://www.semanticscholar.org/paper/ea0f62030c932bb6369804914f745f7849f77360",
+        "doi": "10.2166/wst.2024.280",
+        "resumo": "Urban flooding intensifies with escalating urbanization. This study focuses on Xiong'er river as the study area and couples a 1D/2D urban flooding model using InfoWorks ICM (Integrated Catchment Modeling). Ten scenarios are set respectively with a rainfall return period of 5a 10a, 20a, 50a, and 100a",
+        "autores": "Huai-Bin Wei, H. Wu, Liyuan Zhang, Jing Liu"
+      },
+      {
+        "titulo": "Hydraulic simulation of urban flooding in Monterrey, Mexico: lessons from Hurricane Alberto",
+        "ano": 2025,
+        "url": "https://www.semanticscholar.org/paper/f2299b315353edee601871a52c629e78e84182ac",
+        "doi": "10.1080/1573062X.2025.2589125",
+        "resumo": "ABSTRACT Hurricane Alberto struck Monterrey in June 2024, causing severe urban flooding and revealing weaknesses in flood control systems. This study integrates hydrological and hydraulic analyses to evaluate flood dynamics along the Santa Catarina River and assess infrastructure resilience. Peak fl",
+        "autores": "Francisco J. Castillo-Guerrero, M. De la Cruz-Ávila, Daniel Chavarría Barrientos, O. S. Areu-Rangel, Héctor A. Barrios-Piña"
+      },
+      {
+        "titulo": "Resilience-vulnerability balance to urban flooding: A case study in a densely populated coastal city in China",
+        "ano": 2019,
+        "url": "https://www.semanticscholar.org/paper/6d959b90992ae6957d91fccf66129a7a36921cee",
+        "doi": "10.1016/J.CITIES.2019.06.012",
+        "resumo": "Abstract City areas experiencing disproportionate vulnerability levels to urban flooding events have attracted attention. Resilience is widely accepted as a strategy for reducing the risks of vulnerability and maintaining sustainable development. This research conceptualized vulnerability to hazard ",
+        "autores": "Jing Song, Z. Chang, Wei-Feng Li, Zhe Feng, Jiansheng Wu"
+      },
+      {
+        "titulo": "Assessing Urban Vulnerability to Flooding: A Framework to Measure Resilience Using Remote Sensing Approaches",
+        "ano": 2022,
+        "url": "https://www.semanticscholar.org/paper/779e38e70c4644176ec6b8167e822b71fb6ca035",
+        "doi": "10.3390/su14042276",
+        "resumo": "Assessing and measuring urban vulnerability resilience is a challenging task if the right type of information is not readily available. In this context, remote sensing and Earth Observation (EO) approaches can help to monitor damages and local conditions before and after extreme weather events, such",
+        "autores": "Mercio Cerbaro, S. Morse, Richard J. Murphy, Sarah Middlemiss, Dimitrios G. Michelakis"
+      },
+      {
+        "titulo": "Insurance Coverage and Flood Exposure in the Gulf of Mexico: Scale, Social Vulnerability, Urban Form, and Risk Measures",
+        "ano": 2024,
+        "url": "https://www.semanticscholar.org/paper/7edc6ecac3d46494857d4452256b685c344e6aa6",
+        "doi": "10.3390/w16202968",
+        "resumo": "Increasing flood losses in the Gulf of Mexico related to development patterns and climate hazards pose serious threats to resilience and insurability. The purpose of this study is to understand how scale, social vulnerability, risk, and urban form relate to National Flood Insurance Program (NFIP) po",
+        "autores": "Anissa Hyde, Robert Habans, M. Valladares-Castellanos, T. Douthat"
+      },
+      {
+        "titulo": "Assessment of Urban Vulnerability to Flooding Using Multi-Criteria Analysis",
+        "ano": 2022,
+        "url": "https://www.semanticscholar.org/paper/f1c2f49f8fafe09c953f3f7ddc530368147c4c11",
+        "doi": "10.48084/etasr.4828",
+        "resumo": "Urban vulnerabilities must be studied and assessed to make cities more resilient to floods. This study aimed to assess the urban vulnerability of El Bayadh city, located in the west of Algeria, to floods and to identify flood-prone areas. Using the Hierarchical Multi-criteria Analysis (HMA) method, ",
+        "autores": "A. Hallil, A. Redjem"
+      },
+      {
+        "titulo": "Assessment of the Climate Environmental Vulnerability Index for Urban Settlements on the Mediterranean Coast: A Case Study in Sicily",
+        "ano": 2024,
+        "url": "https://www.semanticscholar.org/paper/bec5f360ccb130c06e50912bcecec519dd678993",
+        "doi": "10.3390/urbansci8030130",
+        "resumo": "Climate change poses a severe environmental crisis where many European urban centers face increased risks, among others, of flooding and/or water scarcity due to intense rainfall and prolonged droughts. Urgent adaptation measures are required to enhance resilience in urban, peri-urban, and agricultu",
+        "autores": "Floralba Pirracchio Massimino, R. Castanho, I. Gómez, Víctor Rincón, Javier Velázquez"
+      },
+      {
+        "titulo": "Socioeconomic Dimensions of Dynamic Urban Flood Risk, Migration, Vulnerability, and Coping Capacity: The Case of Peri-Urban Phnom Penh, Cambodia",
+        "ano": 2026,
+        "url": "https://www.semanticscholar.org/paper/b3eadc883b92b6a2fd7e0dc2ea55083fb2ce19cc",
+        "doi": "10.3390/w18050583",
+        "resumo": "Urban flooding increasingly challenges rapidly expanding cities in developing countries. Migration, weak urban planning, and unregulated land use collectively intensify flood risk. Effective flood mitigation requires understanding the dynamic interactions between physical and social processes that s",
+        "autores": "Monin Nong, Toru Konishi, Takuto Kumagae, Hideo Amaguchi, Yoshiyuki Imamura"
+      },
+      {
+        "titulo": "Flood Vulnerability Assessment Using Geoinformation Data and Multicriteria Evolution Approach in Dakar Urban Environment, Senegal",
+        "ano": 2026,
+        "url": "https://www.semanticscholar.org/paper/7029fbea66e07abd67e9449252eea1aa7f39ef8d",
+        "doi": "10.11648/j.ajep.20261504.12",
+        "resumo": "During this last decade, urban flooding has become recurrent in Senegal, particularly in the city of Dakar. The causes are multiple and varied, with devastating impacts on population well-being and the urban environment. For sustainable and harmonious urban development, flood risk mapping should be ",
+        "autores": "M. Ndiaye, V. Traore, H. Sambou, A. Diaw"
+      }
+    ]
+  },
+  "avaliacao-imobiliaria-ml": {
+    "q": "house price prediction machine learning Brazil",
+    "fonte": "semantic",
+    "erro": "Semantic HTTP 429"
+  },
+  "cie-lo-ruido": {
+    "q": "ruido aéreo aviação qualidade vida moradia",
+    "fonte": "arxiv",
+    "total": 20,
+    "papers": [
+      {
+        "titulo": "A Comparison of Fireball Luminous Efficiency Models using Acoustic Records",
+        "url": "http://arxiv.org/abs/2408.04078v1",
+        "ano": "2024",
+        "resumo": "The total energy of a fireball is commonly obtained from optical measurements with an assumed value for luminous efficiency. Acoustic energy measurements offer an independent means of energy estimation. Here we combine optical and acoustic methods to validate the luminous efficiency model of Borovič"
+      },
+      {
+        "titulo": "Pura Vida Neutrosophic Algebra",
+        "url": "http://arxiv.org/abs/2312.02169v1",
+        "ano": "2023",
+        "resumo": "We introduce Pura Vida Neutrosophic Algebra, an algebraic structure consisting of neutrosophic numbers equipped with two binary operations namely addition and multiplication. The addition can be calculated sometimes with the function min and other times with the max function. The multiplication oper"
+      },
+      {
+        "titulo": "ViDA: a Vlasov-DArwin solver for plasma physics at electron scales",
+        "url": "http://arxiv.org/abs/1905.02953v2",
+        "ano": "2019",
+        "resumo": "We present a Vlasov-DArwin numerical code (ViDA) specifically designed to address plasma physics problems, where small-scale high accuracy is requested even during the non linear regime to guarantee a clean description of the plasma dynamics at fine spatial scales. The algorithm provides a low-noise"
+      },
+      {
+        "titulo": "VIDA: A simulation model of domestic VIolence in times of social DistAncing",
+        "url": "http://arxiv.org/abs/2101.04057v1",
+        "ano": "2021",
+        "resumo": "Violence against women occurs predominantly in the family and domestic context. The COVID-19 pandemic led Brazil to recommend and, at times, impose social distancing, with the partial closure of economic activities, schools, and restrictions on events and public services. Preliminary evidence shows "
+      },
+      {
+        "titulo": "ViDA-MAN: Visual Dialog with Digital Humans",
+        "url": "http://arxiv.org/abs/2110.13384v1",
+        "ano": "2021",
+        "resumo": "We demonstrate ViDA-MAN, a digital-human agent for multi-modal interaction, which offers realtime audio-visual responses to instant speech inquiries. Compared to traditional text or voice-based system, ViDA-MAN offers human-like interactions (e.g, vivid voice, natural facial expression and body gest"
+      },
+      {
+        "titulo": "ViDA: Homeostatic Visual Domain Adapter for Continual Test Time Adaptation",
+        "url": "http://arxiv.org/abs/2306.04344v3",
+        "ano": "2023",
+        "resumo": "Since real-world machine systems are running in non-stationary environments, Continual Test-Time Adaptation (CTTA) task is proposed to adapt the pre-trained model to continually changing target domains. Recently, existing methods mainly focus on model-based adaptation, which aims to leverage a self-"
+      },
+      {
+        "titulo": "ViDa: Visualizing DNA hybridization trajectories with biophysics-informed deep graph embeddings",
+        "url": "http://arxiv.org/abs/2311.03411v1",
+        "ano": "2023",
+        "resumo": "Visualization tools can help synthetic biologists and molecular programmers understand the complex reactive pathways of nucleic acid reactions, which can be designed for many potential applications and can be modelled using a continuous-time Markov chain (CTMC). Here we present ViDa, a new visualiza"
+      },
+      {
+        "titulo": "ViDA-UGC: Detailed Image Quality Analysis via Visual Distortion Assessment for UGC Images",
+        "url": "http://arxiv.org/abs/2508.12605v1",
+        "ano": "2025",
+        "resumo": "Recent advances in Multimodal Large Language Models (MLLMs) have introduced a paradigm shift for Image Quality Assessment (IQA) from unexplainable image quality scoring to explainable IQA, demonstrating practical applications like quality control and optimization guidance. However, current explainab"
+      },
+      {
+        "titulo": "Results of the photometry of the spotted dM1-2e star EY Draconis",
+        "url": "http://arxiv.org/abs/0708.1864v1",
+        "ano": "2007",
+        "resumo": "We have observed EY Draconis with the 24`` telescope of Konkoly Observatory in Budapest for 64 nights. In the first obse rving season the star produced a stable light curve for more than 60 rotation periods, however, the light curves observe d in the next season and the spot modelling show clear evi"
+      },
+      {
+        "titulo": "Multicolour photometry of the M0V+M5V eclipsing binary V405 And",
+        "url": "http://arxiv.org/abs/0809.5029v2",
+        "ano": "2008",
+        "resumo": "We present multicolour photometry and modelling of the active eclipsing binary star V405 And. The components of 0.2 and 0.5 solar masses are just below and above the theoretical limit of the full convection, that is thought to be around 0.3 solar mass. The light curves are compositions of constant a"
+      },
+      {
+        "titulo": "VIDA: A Dataset for Visually Dependent Ambiguity in Multimodal Machine Translation",
+        "url": "http://arxiv.org/abs/2605.02035v4",
+        "ano": "2026",
+        "resumo": "Ambiguity resolution is a key challenge in multimodal machine translation (MMT), where models must genuinely leverage visual input to map an ambiguous expression to its intended meaning. Although prior work has proposed disambiguation-oriented benchmarks probing the role of vision, we observe that e"
+      },
+      {
+        "titulo": "Four-colour photometry of EY Dra: a study of an ultra-fast rotating active dM1-2e star",
+        "url": "http://arxiv.org/abs/1001.1852v2",
+        "ano": "2010",
+        "resumo": "We present more than 1000-day long photometry of EY Draconis in BV(RI)C passbands. The changes in the light curve are caused by the spottedness of the rotating surface. Modelling of the spotted surface shows that there are two large active regions present on the star on the opposite hemispheres. The"
+      },
+      {
+        "titulo": "Anti-solar differential rotation and surface flow pattern on UZ Librae",
+        "url": "http://arxiv.org/abs/0711.1187v1",
+        "ano": "2007",
+        "resumo": "We re-investigate UZ Librae spectra obtained at KPNO in 1998 and 2000. From the 1998 data we compose 11 consecutive Doppler images using the Ca I-6439, Fe I-6393 and Fe I-6411 lines. Applying the method of average cross-correlation of contiguous Doppler images we find anti-solar differential rotatio"
+      },
+      {
+        "titulo": "Photospheric and chromospheric activity in V405 And: An M dwarf binary with components on the two sides of the full convection limit",
+        "url": "http://arxiv.org/abs/0907.1011v3",
+        "ano": "2009",
+        "resumo": "We investigate the fast-rotating (P_orb=P_rot=0.465d), active dwarf binary V405 And (M0V+M5V) using photometric BV(RI)_C and optical spectroscopic data. The light variation is caused by the combined effect of spottedness and binarity with a small eclipse. We estimate the system parameters from the a"
+      },
+      {
+        "titulo": "Detecting activity cycles of late-type dwarfs in Kepler data",
+        "url": "http://arxiv.org/abs/1308.2641v1",
+        "ano": "2013",
+        "resumo": "Using data of fast-rotating active dwarf stars in the Kepler database, we perform time-frequency analysis of the light curves in order to search for signs of activity cycles. We use the phenomenon that the active region latitudes vary with the cycle (like the solar butterfly diagram), which causes t"
+      },
+      {
+        "titulo": "A quest for activity cycles in low mass stars",
+        "url": "http://arxiv.org/abs/1306.6845v1",
+        "ano": "2013",
+        "resumo": "Long-term photometric measurements in a sample of ultrashort-period (P~0.5 days or less) single and binary stars of different interior structures are analysed. A loose correlation exists between the rotational rate and cycle lengths of active stars, regardless of their evolutionary state and the cor"
+      },
+      {
+        "titulo": "Looking for activity cycles in late-type Kepler stars using time-frequency analysis",
+        "url": "http://arxiv.org/abs/1404.4359v1",
+        "ano": "2014",
+        "resumo": "We analyse light curves covering four years of 39 fast-rotating ($P_\\mathrm{rot}&lt; 1d$) late-type active stars from the Kepler database. Using time-frequency analysis (Short-Term Fourier-Transform), we find hints for activity cycles of 300-900 days at 9 targets from the changing typical latitude o"
+      },
+      {
+        "titulo": "Finding flares in Kepler data using machine learning tools",
+        "url": "http://arxiv.org/abs/1806.00334v1",
+        "ano": "2018",
+        "resumo": "Archives of long photometric surveys, like the Kepler database, are a gold mine for studying flares. However, identifying them is a complex task; while in the case of single-target observations it can be easily done manually by visual inspection, this is nearly impossible for years-long time series "
+      },
+      {
+        "titulo": "The strange close binary V405 And: the influence of different dynamos on the components",
+        "url": "http://arxiv.org/abs/1303.1813v1",
+        "ano": "2013",
+        "resumo": "V405 And is a fast-rotating (P=0.465d) grazing eclipsing binary with two active components. Using multicolor photometric monitoring and radial velocity measurements, we find that the primary and the secondary components have masses of 0.49 and 0.21 solar masses, meaning that the primary probably pos"
+      },
+      {
+        "titulo": "Values, Ethics, Morals? On the Use of Moral Concepts in NLP Research",
+        "url": "http://arxiv.org/abs/2310.13915v1",
+        "ano": "2023",
+        "resumo": "With language technology increasingly affecting individuals' lives, many recent works have investigated the ethical aspects of NLP. Among other topics, researchers focused on the notion of morality, investigating, for example, which moral judgements language models make. However, there has been litt"
+      }
+    ]
+  },
+  "ufpe-recife": {
+    "q": "Recife urbanização moradia UFPE",
+    "fonte": "arxiv",
+    "total": 20,
+    "papers": [
+      {
+        "titulo": "Correlation-Weighted Communicability Curvature as a Structural Driver of Dengue Spread: A Bayesian Spatial Analysis of Recife (2015-2024)",
+        "url": "http://arxiv.org/abs/2512.00315v3",
+        "ano": "2025",
+        "resumo": "We investigate whether the structural connectivity of urban road networks helps explain dengue incidence in Recife, Brazil (2015--2024). For each neighborhood, we compute the average \\emph{communicability curvature}, a graph-theoretic measure capturing the ability of a locality to influence others t"
+      },
+      {
+        "titulo": "Approximation Algorithms for ROUND-UFP and ROUND-SAP",
+        "url": "http://arxiv.org/abs/2202.03492v1",
+        "ano": "2022",
+        "resumo": "We study ROUND-UFP and ROUND-SAP, two generalizations of the classical BIN PACKING problem that correspond to the unsplittable flow problem on a path (UFP) and the storage allocation problem (SAP), respectively. We are given a path with capacities on its edges and a set of tasks where for each task "
+      },
+      {
+        "titulo": "Hierarchical Bayesian Modeling of Dengue in Recife, Brazil (2015-2024): The Role of Spatial Granularity and Data Quality for Epidemiological Risk Mapping",
+        "url": "http://arxiv.org/abs/2510.13672v1",
+        "ano": "2025",
+        "resumo": "Dengue remains one of Brazil's major epidemiological challenges, marked by strong intra-urban inequalities and the influence of climatic and socio-environmental factors. This study analyzed confirmed dengue cases in Recife from 2015 to 2024 using a Bayesian hierarchical spatio-temporal model impleme"
+      },
+      {
+        "titulo": "Urban Dengue and Spatial Dependence: A SAR Model Incorporating Favela Data in Recife, Brazil",
+        "url": "http://arxiv.org/abs/2507.11896v1",
+        "ano": "2025",
+        "resumo": "In this study, we used a dataset of approximately 96,000 reported dengue cases from 2015 to 2024 in Recife, the capital of northeastern Brazil, all geocoded by neighborhood. The dataset was enriched with sociodemographic data from the national census (population density, average residents per househ"
+      },
+      {
+        "titulo": "UFPS: A unified framework for partially-annotated federated segmentation in heterogeneous data distribution",
+        "url": "http://arxiv.org/abs/2311.09757v1",
+        "ano": "2023",
+        "resumo": "Partially supervised segmentation is a label-saving method based on datasets with fractional classes labeled and intersectant. However, it is still far from landing on real-world medical applications due to privacy concerns and data heterogeneity. As a remedy without privacy leakage, federated parti"
+      },
+      {
+        "titulo": "Esparsidade, Estrutura, Escalamento e Estabilidade em Algebra Linear Computacional",
+        "url": "http://arxiv.org/abs/1107.5342v2",
+        "ano": "2011",
+        "resumo": "Sparsity, Structure, Scaling and Stability in Computational Linear Algebra - Textbook from the IX School of Computer Science, held on July 24-31 of 1994 at Recife, Brazil. Esparsidade, Estrutura, Escalamento e Estabilidade em Algebra Linear Computacional - Livro texto da IX Escola de Computacao, rea"
+      },
+      {
+        "titulo": "Initial boundary value problem for Korteweg-de Vries equation: a review and open problems",
+        "url": "http://arxiv.org/abs/1810.02698v2",
+        "ano": "2018",
+        "resumo": "In the last 40 years the study of initial boundary value problem for the Korteweg-de Vries equation has had the attention of researchers from various research fields. In this note we present a review of the main results about this topic and also introduce interesting open problems which still requir"
+      },
+      {
+        "titulo": "Control results with overdetermination condition for higher order dispersive system",
+        "url": "http://arxiv.org/abs/2103.08495v2",
+        "ano": "2021",
+        "resumo": "In recent years, controllability problems for dispersive systems have been extensively studied. This work is dedicated to proving a new type of controllability for a dispersive fifth order equation that models water waves, what we will now call the overdetermination control problem. Precisely, we ar"
+      },
+      {
+        "titulo": "General Boundary Value Problems of the Korteweg-de Vries Equation on a Bounded Domain",
+        "url": "http://arxiv.org/abs/1703.08154v1",
+        "ano": "2017",
+        "resumo": "In this paper we consider the initial boundary value problem of the Korteweg-de Vries equation posed on a finite interval \\begin{equation} u_t+u_x+u_{xxx}+uu_x=0,\\qquad u(x,0)=φ(x), \\qquad 0&lt;x&lt;L, \\ t&gt;0 \\qquad (1) \\end{equation} subject to the nonhomogeneous boundary conditions, \\begin{equat"
+      },
+      {
+        "titulo": "Well-posedness and controllability of Kawahara equation in weighted Sobolev spaces",
+        "url": "http://arxiv.org/abs/1905.08625v3",
+        "ano": "2019",
+        "resumo": "We consider the Kawahara equation, a fifth order Korteweg-de Vries type equation, posed on a bounded interval. The first result of the article is related to the well-posedness in weighted Sobolev spaces, which one was shown using a general version of the Lax--Milgram Theorem. With respect to the con"
+      },
+      {
+        "titulo": "Asymptotic behavior of Boussinesq system of KdV-KdV type",
+        "url": "http://arxiv.org/abs/1709.06192v1",
+        "ano": "2017",
+        "resumo": "This work deals with the local rapid exponential stabilization for a Boussinesq system of KdV-KdV type introduced by J. Bona, M. Chen and J.-C. Saut. This is a model for the motion of small amplitude long waves on the surface of an ideal fluid. Here, we will consider the Boussinesq system of KdV-KdV"
+      },
+      {
+        "titulo": "Stabilization of the Gear-Grimshaw system with weak damping",
+        "url": "http://arxiv.org/abs/1610.03829v4",
+        "ano": "2016",
+        "resumo": "The aim of this work is to consider the internal stabilization of a nonlinear coupled system of two Korteweg--de Vries equations in a finite interval under the effect of a very weak localized damping. The system was introduced by Gear and Grimshaw to model the interactions of two-dimensional, long, "
+      },
+      {
+        "titulo": "Neumann boundary controllability of the Korteweg-de Vries equation on a bounded domain",
+        "url": "http://arxiv.org/abs/1508.07525v2",
+        "ano": "2015",
+        "resumo": "In this paper we study boundary controllability of the Korteweg-de Vries (KdV) equation posed on a finite domain $(0,L)$ with the Neumann boundary conditions: u_t+u_x+uu_x+u_{xxx}=0 in (0,L)x(0,T), u_{xx}(0,t)=0, u_x(L,t)=h(t), u_{xx}(L,t)=0 in (0,T), u(x,0)=u_0(x) in (0,L). We show that the associa"
+      },
+      {
+        "titulo": "A Possible Link Between Pyriproxyfen and Microcephaly",
+        "url": "http://arxiv.org/abs/1604.03834v1",
+        "ano": "2016",
+        "resumo": "The Zika virus is the primary suspect in the large increase in microcephaly cases in 2015-6 in Brazil, however its role is unconfirmed despite individual cases of viral infections found in neural tissue. Here we consider the alternative that the insecticide pyriproxyfen, used in Brazilian drinking w"
+      },
+      {
+        "titulo": "Massera's theorems for a higher order dispersive system",
+        "url": "http://arxiv.org/abs/2205.12200v1",
+        "ano": "2022",
+        "resumo": "This work is devoted to present Massera-type theorems for the Kawahara system, a higher order dispersive equation, posed in a bounded domain. Precisely, thanks to some properties of the semigroup and the decays of the solutions of this equation, we are able to prove its solutions are periodic, quasi"
+      },
+      {
+        "titulo": "Weak damping for the Korteweg-de Vries equation",
+        "url": "http://arxiv.org/abs/2005.10152v4",
+        "ano": "2020",
+        "resumo": "For more than 20 years, the Korteweg-de Vries equation has been intensively explored from the mathematical point of view. Regarding control theory, when adding an internal force term in this equation, it is well known that the Korteweg-de Vries equation is exponentially stable in a bounded domain. I"
+      },
+      {
+        "titulo": "Estimating the economic value of ultrafine particles information: A contingent valuation method",
+        "url": "http://arxiv.org/abs/2107.03034v1",
+        "ano": "2021",
+        "resumo": "Global concern regarding ultrafine particles (UFPs), which are particulate matter (PM) with a diameter of less than 100nm, is increasing. These particles-with more serious health effects than PM less than 2.5 micrometers (PM2.5)-are difficult to measure using the current methods because their charac"
+      },
+      {
+        "titulo": "Global control aspects for long waves in nonlinear dispersive media",
+        "url": "http://arxiv.org/abs/2103.00921v2",
+        "ano": "2021",
+        "resumo": "A class of models of long waves in dispersive media with coupled quadratic nonlinearities on a periodic domain $\\mathbb{T}$ are studied. We used two distributed controls, supported in $ω\\subset\\mathbb{T}$ and assumed to be generated by a linear feedback law conserving the \"mass\" (or \"volume\"), to pr"
+      },
+      {
+        "titulo": "Unsplittable Flow on a Short Path",
+        "url": "http://arxiv.org/abs/2407.10138v1",
+        "ano": "2024",
+        "resumo": "In the Unsplittable Flow on a Path problem UFP, we are given a path graph with edge capacities and a collection of tasks. Each task is characterized by a demand, a profit, and a subpath. Our goal is to select a maximum profit subset of tasks such that the total demand of the selected tasks that use "
+      },
+      {
+        "titulo": "Pointwise control of the linearized Gear-Grimshaw system",
+        "url": "http://arxiv.org/abs/1808.03721v4",
+        "ano": "2018",
+        "resumo": "In this paper we consider the problem of controlling pointwise, by means of a time dependent Dirac measure supported by a given point, a coupled system of two Korteweg-de Vries equations on the unit circle. More precisely, by means of spectral analysis and Fourier expansion we prove, under general a"
+      }
+    ]
+  }
+}

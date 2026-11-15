@@ -16,11 +16,13 @@ import { Icone } from "../../componentes/Icone";
 import { Pressionavel } from "../../componentes/Pressionavel";
 import { Texto } from "../../componentes/Texto";
 import type { AnaliseV2, Modalidade } from "../../dados/contratos";
+import { derivarCustoPorPartes } from "../../dados/custoPorPartes";
 import { custoMensal, ROTULO_MENSAL_CONHECIDO, avisoDeValoresPendentes } from "../../dados/custos";
 import { restaurarAnalise, rotuloDoMotivo } from "../../dados/descarte";
 import { formatarData, formatarReais, hojeIso } from "../../dados/formatos";
 import { useAnalises } from "../../estado/Analises";
 import { useCarteira } from "../../estado/Carteira";
+import { usePerfilDomicilio, type PerfilDoDomicilio } from "../../estado/PerfilDomicilio";
 import { useTema } from "../../tema/Tema";
 import { RAIO, comAlfa } from "../../tema/tokens";
 
@@ -76,6 +78,7 @@ function ImovelDoCartao({ analise, aoAbrir }: { analise: AnaliseV2; aoAbrir: () 
 
 type PropsDoCartaoSalvo = {
   analise: AnaliseV2;
+  perfilDomicilio: PerfilDoDomicilio;
   aoAbrir: () => void;
   aoRemover: () => void;
   aoPrepararVisita: () => void;
@@ -83,11 +86,15 @@ type PropsDoCartaoSalvo = {
 };
 
 /** `.vs-card`: imóvel, botão de remover, preço anunciado, e as ações. */
-function CartaoSalvo({ analise, aoAbrir, aoRemover, aoPrepararVisita, aoDescartar }: PropsDoCartaoSalvo) {
+function CartaoSalvo({ analise, perfilDomicilio, aoAbrir, aoRemover, aoPrepararVisita, aoDescartar }: PropsDoCartaoSalvo) {
   const { cor } = useTema();
   const custo = custoMensal(analise);
+  const partes = derivarCustoPorPartes(analise, null, perfilDomicilio);
   const aluguel = analise.modalidade === "aluguel";
   const valor = aluguel ? custo.totalMensalConhecido : custo.principal.valor;
+  const resumoRotina = partes.fatiasDaRotina
+    .map((f) => `${f.id === "energia" ? "luz" : "deslocamento"} ${f.valorMensalReais > 0 ? `~${formatarReais(f.valorMensalReais)}` : "sem gasto"}`)
+    .join(" · ");
   return (
     <View
       style={{
@@ -127,6 +134,9 @@ function CartaoSalvo({ analise, aoAbrir, aoRemover, aoPrepararVisita, aoDescarta
         {aluguel
           ? `${custo.principal.rotulo}: ${custo.principal.valor === null ? "A confirmar" : `${formatarReais(custo.principal.valor)}/mês`}`
           : `${ROTULO_MENSAL_CONHECIDO}: ${custo.totalMensalConhecido === null ? "A confirmar" : `${formatarReais(custo.totalMensalConhecido)}/mês`}`}
+      </Texto>
+      <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 11.5, lineHeight: 17, marginTop: 2 }}>
+        {`Rotina à parte: ${resumoRotina}/mês`}
       </Texto>
       {avisoDeValoresPendentes(custo) ? (
         <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 11, lineHeight: 17 }}>{avisoDeValoresPendentes(custo)}</Texto>
@@ -177,6 +187,7 @@ function CartaoDescartado({ analise, aoRestaurar }: { analise: AnaliseV2; aoRest
 export default function Salvos() {
   const { cor } = useTema();
   const { lista, pronto, erro, ativa, salvar, definirAtiva } = useAnalises();
+  const { perfil: perfilDomicilio } = usePerfilDomicilio();
   const { mostrarAviso } = useAviso();
   const { carteira, pronto: carteiraPronta, bloqueada: carteiraBloqueada } = useCarteira();
   const abrirAnalise = useAbrirAnalise();
@@ -232,6 +243,14 @@ export default function Salvos() {
             }
           />
 
+          <View style={{ marginBottom: 10 }}>
+            <LinkVx
+              rotulo={perfilDomicilio.configurado ? "Ajustar perfil da sua casa" : "Personalizar perfil da sua casa"}
+              tamanho={12}
+              onPress={() => router.push("/perfil-domicilio")}
+            />
+          </View>
+
           <SegmentosVx opcoes={FILTROS} valor={filtro} aoMudar={setFiltro} rotulo="Filtrar imóveis salvos" modo="grupo" />
 
           {erro ? (
@@ -245,6 +264,7 @@ export default function Salvos() {
                 <CartaoSalvo
                   key={a.id}
                   analise={a}
+                  perfilDomicilio={perfilDomicilio}
                   aoAbrir={() => void abrirAnalise(a)}
                   aoRemover={() => void gravar({ ...a, salva: false, atualizadaEm: new Date().toISOString() }, "Removido dos salvos")}
                   aoPrepararVisita={() => void prepararVisita(a.id)}

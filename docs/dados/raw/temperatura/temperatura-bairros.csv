@@ -1,0 +1,6 @@
+bairro,lat,lng,media_anual,max,max_em,min,min_em,mes_mais_quente,media_max_mes_quente,mes_mais_frio,media_min_mes_frio,tendencia_max_por_decada,unidade,fonte
+Boa Viagem,-8.865,-34.895,26.0,30.7,2008-02-27,21.1,1997-07-25,mar,28.5,ago,23.2,0.01,°C,Open-Meteo 1995–2026
+Casa Forte,-8.815,-34.915,26.0,30.7,2008-02-27,21.1,1997-07-25,mar,28.5,ago,23.2,0.02,°C,Open-Meteo 1995–2026
+Graças,-8.85,-34.925,26.0,30.7,2008-02-27,21.1,1997-07-25,mar,28.5,ago,23.2,0.02,°C,Open-Meteo 1995–2026
+Espinheiro,-8.84,-34.93,26.0,30.7,2008-02-27,21.1,1997-07-25,mar,28.5,ago,23.2,0.02,°C,Open-Meteo 1995–2026
+Madalena,-8.855,-34.935,26.0,30.7,2008-02-27,21.1,1997-07-25,mar,28.5,ago,23.2,0.02,°C,Open-Meteo 1995–2026

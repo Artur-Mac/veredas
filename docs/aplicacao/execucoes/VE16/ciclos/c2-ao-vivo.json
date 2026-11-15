@@ -1,0 +1,424 @@
+{
+ "nome": "c2-ao-vivo",
+ "aoVivo": true,
+ "semCache": false,
+ "areas": [
+  "boa-viagem",
+  "casa-forte",
+  "gracas",
+  "espinheiro",
+  "madalena"
+ ],
+ "expansao": [],
+ "inicio": "2026-11-15T01:58:08.161Z",
+ "fim": "2026-11-15T02:08:15.639Z",
+ "ms": 607465,
+ "estado": "completo",
+ "passos": [
+  {
+   "id": "observacoes",
+   "estado": "executado",
+   "ms": 61237,
+   "picoMB": 1109,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "observacoes.json"
+  },
+  {
+   "id": "rede",
+   "estado": "executado",
+   "ms": 119297,
+   "picoMB": 888,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "rede.json"
+  },
+  {
+   "id": "destinos",
+   "estado": "executado",
+   "ms": 103031,
+   "picoMB": 1146,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "destinos.json"
+  },
+  {
+   "id": "transito",
+   "estado": "executado",
+   "ms": 29922,
+   "picoMB": 1346,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "transito.json"
+  },
+  {
+   "id": "chuva",
+   "estado": "executado",
+   "ms": 38302,
+   "picoMB": 419,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "chuva.json"
+  },
+  {
+   "id": "noite",
+   "estado": "executado",
+   "ms": 23169,
+   "picoMB": 524,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "noite.json"
+  },
+  {
+   "id": "procura",
+   "estado": "executado",
+   "ms": 216881,
+   "picoMB": 297,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "procura.json"
+  },
+  {
+   "id": "sol",
+   "estado": "executado",
+   "ms": 15180,
+   "picoMB": 399,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": null
+  }
+ ],
+ "publicacoes": {
+  "defesa-civil": {
+   "antes": "7874298731e565c8",
+   "depois": "7874298731e565c8"
+  },
+  "rede-pedestre": {
+   "antes": "c05c3ba9033e9fd9",
+   "depois": "c05c3ba9033e9fd9"
+  },
+  "essenciais": {
+   "antes": "0ab936e670bdeec3",
+   "depois": "ccf6c654c2ab0b75"
+  },
+  "transito": {
+   "antes": "d0a1adbf5b49ec7a",
+   "depois": "d0a1adbf5b49ec7a"
+  },
+  "chuva": {
+   "antes": "94475c28dfb326f8",
+   "depois": "1b8d470204986364"
+  }
+ },
+ "geradosAlterados": [
+  "src/dados/recife/essenciaisGerados.ts",
+  "src/dados/recife/chuvaGerado.ts",
+  "src/dados/recife/procuraGerado.ts"
+ ],
+ "arquivosDoApp": {
+  "antes": 99,
+  "depois": 99,
+  "novos": 11,
+  "saiu": 11,
+  "bytesDepois": 27645418
+ },
+ "paraAPessoa": {
+  "chuva": {
+   "boa-viagem": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 147
+   },
+   "casa-forte": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 0
+   },
+   "espinheiro": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 1
+   },
+   "gracas": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 0
+   },
+   "madalena": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 25
+   }
+  },
+  "essenciais": {
+   "boa-viagem": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 1879
+   },
+   "casa-forte": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 82
+   },
+   "espinheiro": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 156
+   },
+   "gracas": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 291
+   },
+   "madalena": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 280
+   }
+  },
+  "noite": {
+   "boa-viagem": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 1761
+   },
+   "casa-forte": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 78
+   },
+   "espinheiro": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 151
+   },
+   "gracas": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 285
+   },
+   "madalena": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 241
+   }
+  },
+  "transito": {
+   "boa-viagem": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 1761
+   },
+   "casa-forte": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 78
+   },
+   "espinheiro": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 151
+   },
+   "gracas": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 285
+   },
+   "madalena": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 241
+   }
+  },
+  "sol": {
+   "boa-viagem": {
+    "arquivo": "alterado"
+   },
+   "casa-forte": {
+    "arquivo": "alterado"
+   },
+   "espinheiro": {
+    "arquivo": "alterado"
+   },
+   "gracas": {
+    "arquivo": "alterado"
+   },
+   "madalena": {
+    "arquivo": "alterado"
+   }
+  }
+ },
+ "idadeDasFontes": {
+  "defesa-civil": [
+   {
+    "fonte": "defesa_civil_2020",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:52Z"
+   },
+   {
+    "fonte": "defesa_civil_2021",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:47Z"
+   },
+   {
+    "fonte": "defesa_civil_2022",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:43Z"
+   },
+   {
+    "fonte": "defesa_civil_2023",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:36Z"
+   },
+   {
+    "fonte": "defesa_civil_2024",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:30Z"
+   }
+  ],
+  "rede-pedestre": [
+   {
+    "fonte": "osm_nordeste_261113",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   }
+  ],
+  "essenciais": [
+   {
+    "fonte": "osm_nordeste_261113",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "pcr_feiras_livres",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-15T02:01:09Z"
+   },
+   {
+    "fonte": "pcr_mercados_publicos",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-15T02:01:09Z"
+   },
+   {
+    "fonte": "pcr_farmacias_da_familia",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-15T02:01:09Z"
+   }
+  ],
+  "transito": [
+   {
+    "fonte": "gtfs_grande_recife",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-11T16:39:00Z"
+   }
+  ],
+  "chuva": [
+   {
+    "fonte": "defesa_civil_2014",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2015",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2016",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2017",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2018",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2019",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2020",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2021",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2022",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2023",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2024",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   }
+  ]
+ },
+ "problemasAntes": [],
+ "problemasDepois": []
+}

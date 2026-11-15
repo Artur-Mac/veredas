@@ -88,7 +88,11 @@ const RECURSOS_DEFESA_CIVIL = [
   { ano: 2014, id: "b81bf4cc-ae19-4a43-94a7-f11b3e0b662b" },
 ];
 /** Colunas da Defesa Civil, pelo nome sem acento (a grafia de "Mês" muda de um ano para outro). Nunca as medidas do imóvel. */
-const CAMPOS_DEFESA_CIVIL = ["Regional", "Ano", "Mes", "Data", "Ocorrencia", "Solicitacao", "Endereco", "Bairro"];
+// Tipo_da_Acao (VE02): separa ações comunitárias (porta a porta, atendimento social) dos atendimentos de risco.
+// Altura, Largura e Area_m (medidas do imóvel) continuam fora.
+const CAMPOS_DEFESA_CIVIL = ["Regional", "Ano", "Mes", "Data", "Ocorrencia", "Solicitacao", "Endereco", "Bairro", "Tipo_da_Acao"];
+/** Nome sem acento, caixa e separadores ("Tipo_da_Acao" → "tipodaacao"), para casar com o cabeçalho publicado. */
+const chaveDoCampo = (c) => c.toLowerCase().replace(/[^a-z]/g, "");
 const PERIODO_DA_DEFESA_CIVIL = { de: "2014-01-01", ate: "2024-12-31" };
 
 const FTP = "https://ftp.ibge.gov.br/";
@@ -213,7 +217,7 @@ async function camposDaDefesaCivil(f, id) {
   const porNome = new Map();
   for (const nome of nomes) {
     const d = nucleo.dobrar(nome).replace(/[^a-z]/g, "");
-    const canonico = /^m.{1,3}s$/.test(d) ? "Mes" : CAMPOS_DEFESA_CIVIL.find((c) => c.toLowerCase() === d);
+    const canonico = /^m.{1,3}s$/.test(d) ? "Mes" : CAMPOS_DEFESA_CIVIL.find((c) => chaveDoCampo(c) === d);
     if (canonico) porNome.set(canonico, nome);
   }
   const faltando = CAMPOS_DEFESA_CIVIL.filter((c) => !porNome.has(c));
@@ -242,14 +246,17 @@ async function lerDefesaCivil(f, metas) {
       anos.push({ ano, id, origem: "API", lidos: lido.registros.length, atendimentos });
       continue;
     }
-    const consulta = { recurso: id, campos: CAMPOS_DEFESA_CIVIL, versao: 1 };
+    // versao 2 (VE02): o leitor passou a reconhecer "Maro" (Março sem cedilha). O cache guarda linhas já lidas, então
+    // a versão do leitor faz parte da chave: com a versão 1, as linhas de março de 2015 e 2019 continuavam perdidas.
+    // versao 3 (VE02): a lista de campos ganhou Tipo_da_Acao.
+    const consulta = { recurso: id, campos: CAMPOS_DEFESA_CIVIL, versao: 3 };
     let cache = lerCache(f, `defesa-civil-${ano}.json`, consulta);
     if (!cache) {
       const { corpo } = await baixar(f, meta.url, `Defesa Civil ${ano}`);
       const linhas = nucleo.lerCsv(corpo.toString("utf-8").replace(/^﻿/, ""), ";");
       const cabecalho = linhas[0].map((c) => {
         const d = nucleo.dobrar(c).replace(/[^a-z]/g, "");
-        return /^m.{1,3}s$/.test(d) ? "Mes" : (CAMPOS_DEFESA_CIVIL.find((x) => x.toLowerCase() === d) ?? null);
+        return /^m.{1,3}s$/.test(d) ? "Mes" : (CAMPOS_DEFESA_CIVIL.find((x) => chaveDoCampo(x) === d) ?? null);
       });
       const faltando = CAMPOS_DEFESA_CIVIL.filter((c) => !cabecalho.includes(c));
       if (faltando.length) throw new Error(`CSV da Defesa Civil ${ano} sem as colunas: ${faltando.join(", ")}`);
@@ -648,6 +655,7 @@ export async function montarARua({ edificiosPorBairro, geradoEm, centroPorDsqfl,
   const viasDc = new Map();
   let dcLidos = 0;
   let dcNosBairros = 0;
+  let dcComunitarias = 0;
   for (const { atendimentos } of defesaCivil) {
     for (const a of atendimentos) {
       dcLidos++;
@@ -662,14 +670,21 @@ export async function montarARua({ edificiosPorBairro, geradoEm, centroPorDsqfl,
       const { rua, via } = nucleo.acharRua(geo, { logradouro: a.rua, bairro: b });
       contar(viasDc, rua ? `rua ${via}` : "rua não achada no CNEFE");
       if (!rua) continue;
-      if (!dcPorRua.has(rua.id)) dcPorRua.set(rua.id, { porAno: new Map(), ocorrencias: new Map(), grafias: new Map() });
+      if (!dcPorRua.has(rua.id)) dcPorRua.set(rua.id, { porAno: new Map(), ocorrencias: new Map(), grafias: new Map(), comunitarias: 0 });
       const resumo = dcPorRua.get(rua.id);
+      // VE02: ação comunitária (porta a porta, atendimento social, donativos) fica fora dos atendimentos e é contada à parte.
+      if (nucleo.classeDaAcao(a.acao) === "comunitaria") {
+        resumo.comunitarias++;
+        dcComunitarias++;
+        continue;
+      }
       contar(resumo.porAno, a.ano);
       contar(resumo.ocorrencias, nucleo.categoriaDaOcorrencia(a.ocorrencia));
       contar(resumo.grafias, a.rua);
     }
   }
   linha(`  Defesa Civil 2014 a 2024: ${f.mil(dcLidos)} linhas; ${f.mil(dcNosBairros)} nos ${bairros.length} bairros -> ${textoDoMapa(viasDc)}`);
+  linha(`  Defesa Civil: ${f.mil(dcComunitarias)} ações comunitárias em ruas casadas, fora dos atendimentos`);
 
   // 9. Por bairro e por edifício.
   const porBairro = {};
@@ -766,9 +781,10 @@ export async function montarARua({ edificiosPorBairro, geradoEm, centroPorDsqfl,
         defesaCivil: {
           atendimentos: total,
           // A grafia mais frequente na publicação (empate: a primeira em ordem alfabética), para a pessoa reconhecer a rua.
-          grafia: dc ? [...dc.grafias.entries()].sort((a, b) => b[1] - a[1] || nucleo.ordemTexto(a[0], b[0]))[0][0] : null,
+          grafia: dc && dc.grafias.size ? [...dc.grafias.entries()].sort((a, b) => b[1] - a[1] || nucleo.ordemTexto(a[0], b[0]))[0][0] : null,
           porAno: dc ? [...dc.porAno.entries()].sort((a, b) => a[0] - b[0]) : [],
           ocorrencias: dc ? [...dc.ocorrencias.entries()].sort((a, b) => b[1] - a[1] || nucleo.ordemTexto(a[0], b[0])) : [],
+          acoesComunitarias: dc ? dc.comunitarias : 0,
         },
       };
     }

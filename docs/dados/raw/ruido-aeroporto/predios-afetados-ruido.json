@@ -1,0 +1,15 @@
+{
+  "modelo": {
+    "pista": {
+      "lat": -8.8383,
+      "lng": -34.904,
+      "azimute": 86,
+      "nome": "08L/26R"
+    },
+    "modelo": "cone simplificado ±15° até 15km (FAA/ICAO)",
+    "gerado_em": "2026-11-11T16:49:23.405Z",
+    "nota": "Cone teórico; validar com mapa oficial da ANAC/DECEA"
+  },
+  "total_afiado": 0,
+  "predios": []
+}

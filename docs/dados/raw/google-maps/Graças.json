@@ -1,0 +1,482 @@
+{
+  "aeroportos": {
+    "bairro": "Graças, Recife",
+    "categoria": "airport",
+    "q": "airport em Graças, Recife",
+    "url": "https://www.google.com/maps/search/airport%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"airport em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,{\"206\":1,\"209\":1,\"212\":1,\"215\":1,\"216\":1,\"222\":1,\"223\":1,\"234\":1,\"235\":1,\"246\":1,\"253\":1,\"260\":1,\"262\":1,\"266\":1,\"270\":1,\"271\":1,\"273\":1,\"281\":1,\"294\":1,\"302\":300,\"303\":100}],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"O7b0atLUE5D05OUP4ITi4AU\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"O7b0atLUE5D05OUP4ITi4AU\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "hospitais": {
+    "bairro": "Graças, Recife",
+    "categoria": "hospital",
+    "q": "hospital em Graças, Recife",
+    "url": "https://www.google.com/maps/search/hospital%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"hospital em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,{\"206\":1,\"209\":1,\"212\":1,\"215\":1,\"216\":1,\"222\":1,\"223\":1,\"234\":1,\"235\":1,\"246\":1,\"253\":1,\"260\":1,\"262\":1,\"266\":1,\"270\":1,\"271\":1,\"273\":1,\"281\":1,\"294\":1,\"302\":300,\"303\":100}],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"PLb0aq-uMvuJ5OUPuOyj0Q0\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"PLb0aq-uMvuJ5OUPuOyj0Q0\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "escolas": {
+    "bairro": "Graças, Recife",
+    "categoria": "school",
+    "q": "school em Graças, Recife",
+    "url": "https://www.google.com/maps/search/school%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"school em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,null,null,null,1,1,null,1,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,300,100],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"Prb0as-nE_HB5OUPj4bO4Qc\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"Prb0as-nE_HB5OUPj4bO4Qc\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "bares": {
+    "bairro": "Graças, Recife",
+    "categoria": "bar",
+    "q": "bar em Graças, Recife",
+    "url": "https://www.google.com/maps/search/bar%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"bar em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,1,null,null,1,1,null,1,null,null,1,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,300,100],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"P7b0aozrOc-ihvcP1vPKkAM\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"P7b0aozrOc-ihvcP1vPKkAM\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "restaurantes": {
+    "bairro": "Graças, Recife",
+    "categoria": "restaurant",
+    "q": "restaurant em Graças, Recife",
+    "url": "https://www.google.com/maps/search/restaurant%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"restaurant em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,{\"206\":1,\"209\":1,\"212\":1,\"215\":1,\"216\":1,\"222\":1,\"223\":1,\"234\":1,\"235\":1,\"246\":1,\"253\":1,\"260\":1,\"262\":1,\"266\":1,\"270\":1,\"271\":1,\"273\":1,\"281\":1,\"294\":1,\"302\":300,\"303\":100}],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"Qrb0asiDEPGF5OUP3JSm0QM\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"Qrb0asiDEPGF5OUP3JSm0QM\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "academias": {
+    "bairro": "Graças, Recife",
+    "categoria": "gym",
+    "q": "gym em Graças, Recife",
+    "url": "https://www.google.com/maps/search/gym%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"gym em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,null,null,null,1,1,null,1,null,null,1,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,300,100],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"Q7b0auy7NZKfhvcPzq3M4AU\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"Q7b0auy7NZKfhvcPzq3M4AU\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "farmacias": {
+    "bairro": "Graças, Recife",
+    "categoria": "pharmacy",
+    "q": "pharmacy em Graças, Recife",
+    "url": "https://www.google.com/maps/search/pharmacy%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"pharmacy em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,null,null,null,1,1,null,1,{\"281\":1,\"294\":1,\"302\":300,\"303\":100,\"317\":1}],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"Rrb0ar2lCs2Y5OUP7YXWsA0\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"Rrb0ar2lCs2Y5OUP7YXWsA0\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "padarias": {
+    "bairro": "Graças, Recife",
+    "categoria": "bakery",
+    "q": "bakery em Graças, Recife",
+    "url": "https://www.google.com/maps/search/bakery%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"bakery em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,null,null,null,1,1,null,1,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,300,100],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"R7b0auSHKLOB5OUPqLGduAg\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"R7b0auSHKLOB5OUPqLGduAg\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "supermercados": {
+    "bairro": "Graças, Recife",
+    "categoria": "supermarket",
+    "q": "supermarket em Graças, Recife",
+    "url": "https://www.google.com/maps/search/supermarket%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"supermarket em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,{\"206\":1,\"209\":1,\"212\":1,\"215\":1,\"216\":1,\"222\":1,\"223\":1,\"234\":1,\"235\":1,\"246\":1,\"253\":1,\"260\":1,\"262\":1,\"266\":1,\"270\":1,\"271\":1,\"273\":1,\"281\":1,\"294\":1,\"302\":300,\"303\":100}],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1,\"105\":[1]}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"Sbb0aoPzB8Ov5OUPgtaBYA\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"Sbb0aoPzB8Ov5OUPgtaBYA\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "postos_saude": {
+    "bairro": "Graças, Recife",
+    "categoria": "health resort",
+    "q": "health resort em Graças, Recife",
+    "url": "https://www.google.com/maps/search/health%20resort%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"health resort em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,null,null,null,1,1,null,1,{\"281\":1,\"294\":1,\"302\":300,\"303\":100,\"317\":1}],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"Srb0asLXJfvf5OUP1rPv6Aw\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"Srb0asLXJfvf5OUP1rPv6Aw\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,1,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "construtoras": {
+    "bairro": "Graças, Recife",
+    "categoria": "general contractor",
+    "q": "general contractor em Graças, Recife",
+    "url": "https://www.google.com/maps/search/general%20contractor%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"general contractor em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,null,null,null,1,1,null,1,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,300,100],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"TLb0ar7HBamd5OUPisjsyQQ\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"TLb0ar7HBamd5OUPisjsyQQ\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "obras": {
+    "bairro": "Graças, Recife",
+    "categoria": "construction",
+    "q": "construction em Graças, Recife",
+    "url": "https://www.google.com/maps/search/construction%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"construction em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,null,null,null,1,1,null,1,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,300,100],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"Tbb0arqxI_bI5OUP3_mB4Aw\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"Tbb0arqxI_bI5OUP3_mB4Aw\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "estacionamentos": {
+    "bairro": "Graças, Recife",
+    "categoria": "parking",
+    "q": "parking em Graças, Recife",
+    "url": "https://www.google.com/maps/search/parking%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"parking em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,null,null,null,1,1,null,1,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,300,100,null,null,1],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"T7b0asKrAunY5OUPvKXdwA8\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"T7b0asKrAunY5OUPvKXdwA8\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "metrô_onibus": {
+    "bairro": "Graças, Recife",
+    "categoria": "bus station",
+    "q": "bus station em Graças, Recife",
+    "url": "https://www.google.com/maps/search/bus%20station%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"bus station em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,null,null,null,1,1,null,1,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,300,100],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"ULb0av7ZHqzC5OUPkOTX0Aw\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"ULb0av7ZHqzC5OUPkOTX0Aw\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "praças": {
+    "bairro": "Graças, Recife",
+    "categoria": "park",
+    "q": "park em Graças, Recife",
+    "url": "https://www.google.com/maps/search/park%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"park em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,null,null,null,1,1,null,1,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,300,100],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1,\"105\":[1]}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"Urb0aoA_jZrk5Q-EyaCRBQ\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"Urb0aoA_jZrk5Q-EyaCRBQ\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "igrejas": {
+    "bairro": "Graças, Recife",
+    "categoria": "church",
+    "q": "church em Graças, Recife",
+    "url": "https://www.google.com/maps/search/church%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"church em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,1,null,null,1,1,null,1,{\"281\":1,\"294\":1,\"302\":300,\"303\":100,\"317\":1}],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"U7b0aqvbHLG75OUPtcHPwQU\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"U7b0aqvbHLG75OUPtcHPwQU\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "petshops": {
+    "bairro": "Graças, Recife",
+    "categoria": "pet shop",
+    "q": "pet shop em Graças, Recife",
+    "url": "https://www.google.com/maps/search/pet%20shop%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"pet shop em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,{\"206\":1,\"209\":1,\"212\":1,\"215\":1,\"216\":1,\"222\":1,\"223\":1,\"234\":1,\"235\":1,\"246\":1,\"253\":1,\"260\":1,\"262\":1,\"266\":1,\"270\":1,\"271\":1,\"273\":1,\"281\":1,\"294\":1,\"302\":300,\"303\":100}],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1,\"105\":[1]}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"VLb0atnbOuOChuMPnfqDqA4\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"VLb0atnbOuOChuMPnfqDqA4\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "lava_rapido": {
+    "bairro": "Graças, Recife",
+    "categoria": "car wash",
+    "q": "car wash em Graças, Recife",
+    "url": "https://www.google.com/maps/search/car%20wash%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"car wash em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,null,null,null,1,1,null,1,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,300,100],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"Vrb0aoT0NumYhvcP9tW32Q4\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"Vrb0aoT0NumYhvcP9tW32Q4\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "loterias": {
+    "bairro": "Graças, Recife",
+    "categoria": "lottery",
+    "q": "lottery em Graças, Recife",
+    "url": "https://www.google.com/maps/search/lottery%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"lottery em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,null,null,null,1,1,null,1,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,300,100],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"WLb0aq7HO7aehvcP1sDoqQk\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"WLb0aq7HO7aehvcP1sDoqQk\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  },
+  "academias_luz": {
+    "bairro": "Graças, Recife",
+    "categoria": "electrician",
+    "q": "electrician em Graças, Recife",
+    "url": "https://www.google.com/maps/search/electrician%20em%20Gra%C3%A7as%2C%20Recife",
+    "http": 200,
+    "entidades": 0,
+    "centro": {
+      "lat": [
+        1024,
+        768
+      ],
+      "lng": [
+        0,
+        0,
+        0
+      ]
+    },
+    "zoom": [
+      null,
+      ")]}'\n[\"electrician em Graças, Recife\",null,null,null,null,null,20,null,null,1,null,[[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,1,[1],null,null,1],[{\"5\":[null,null,null,null,null,2],\"20\":3,\"39\":1}],null,null,null,[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,[],null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,1,null,null,1,null,null,1,1,null,null,null,null,null,1,1,null,null,null,null,null,null,null,null,null,null,1,1,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,null,null,null,null,null,1,null,1,null,null,null,1,null,null,null,1,1,null,1,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,null,null,300,100],null,null,null,1,null,1,1,1,null,1,[null,null,[1]],null,null,[null,null,null,null,2,1,null,1,null,null,null,null,null,1],{\"46\":[0],\"96\":1,\"97\":[null,1],\"99\":1}],null,null,null,null,null,null,[null,[360,120,null,8]],[null,[203,100],[null,4,null,null,1],null,null,[[[86,86],[408,240]]],[[[1,0,3],[2,1,2],[2,0,3],[8,0,3],[10,0,3],[10,1,2],[10,0,4],[9,1,2]],1],null,0,null,null,null,null,null,[[[[[[2]]],[195,195],20]]]],null,[\"W7b0auf7GZzyuNkPtteH8Qc\",null,null,null,null,null,81,null,null,null,null,null,null,[null,null,\"W7b0auf7GZzyuNkPtteH8Qc\"],9937],null,[[null,null,null,null,null,null,null,null,null,null,null,null,[null,1,1,1,null,1,null,1,1,null,null,null,null,1,null,null,null,null,null,1,null,null,null,null,1],null,null,null,null,[null,null,1,1,1,1,null,null,null,null,null,null,1,1,null,null,1,null,null,null,1,1,null,null,null,null,null,null,null,null,null,1,[1],1,null,2]],null,null,null,null,null,null,null,null,[null,null,null,null,null,null,null,3],[null,null,[1]],null,null,null,null,null,1,null,null,[[3,6]],null,null,null,1,1,1,1,null,1,[null,1],null,null,null,null,null,1,1,null,[null,[null,1,1]],null,null,null,1,null,null,null,null,null,null,null,null,1,null,[1],1,[1],null,null,null,null,[[[1]]],null,null,null,[null,null,[[[[224,298]]]]],null,null,null,null,null,null,[[null,1,null,null,1,null,1,null,null,null,null,[1,1,null,[[1]]]],null,null,1,null,null,null,[[[null,null,null,[[1],[3],[4]]],null,\"other_user_google_review_posts__and__hotel_and_vr_partner_review_posts\",null,null,[1]]],1],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,1,[[[2]]],null,null,null,null,null,null,null,[1,1,1],null,null,null,null,1,null,null,null,null,null,null,null,null,null,1,[1,[1]],null,null,1,null,null,null,null,[1],null,null,null,1,1,[1]],null,[null,[80,92,null,8]],null,null,null,[[[[0,0],[530,768]],[[974,0],[1024,768]],[[0,0],[1024,20]],[[0,748],[1024,768]]]],null,null,null,[null,1,1,1,null,1,null,[1,null,1,1,1,1,1],1,null,null,1,null,1,null,null,null,null,null,1,null,null,1,null,1,1,null,null,null,null,1],null,null,[81],null,null,null,null,1,null,null,null,null,null,null,[null,null,1,null,null,[1,1],[3,1],1,1,2],[null,2,[null,null,1]],null,null,null,null,null,null,null,null,null,null,1,null,null,null,null,null,[null,null,null,null,null,null,1,null,null,1,null,null,null,1,[0]],null,803,null,null,null,null,null,null,null,1]"
+    ],
+    "lista": []
+  }
+}

@@ -14,7 +14,9 @@ import { RecebedorDeCompartilhamento } from "../componentes/leitor/RecebedorDeCo
 import { ReinicioDoApp } from "../componentes/casca/Reinicio";
 import { AnalisesNoAparelho } from "../estado/Analises";
 import { CarteiraNoAparelho } from "../estado/Carteira";
+import { PerfilDoDomicilioNoAparelho } from "../estado/PerfilDomicilio";
 import { FONTES } from "../tema/tokens";
+import { iniciarModoOffline } from "../plataforma/modoOffline";
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -31,6 +33,13 @@ function Pilha() {
     if (pronto) void SplashScreen.hideAsync();
   }, [pronto]);
 
+  // D036: na web, depois das fontes, guarda a casca do app para reabrir sem rede (nada no nativo).
+  useEffect(() => {
+    if (!pronto) return;
+    const t = setTimeout(iniciarModoOffline, 2000);
+    return () => clearTimeout(t);
+  }, [pronto]);
+
   if (erroDeFonte) throw erroDeFonte;
   if (!pronto) return null;
 
@@ -44,6 +53,7 @@ function Pilha() {
         <Stack.Screen name="analise" />
         <Stack.Screen name="sobre-os-dados" options={OPCOES_DA_FOLHA} />
         <Stack.Screen name="creditos" options={OPCOES_DA_FOLHA} />
+        <Stack.Screen name="perfil-domicilio" options={OPCOES_DA_FOLHA} />
         <Stack.Screen name="mock" />
       </Stack>
       <RecebedorDeCompartilhamento />
@@ -66,9 +76,11 @@ export default function Raiz() {
               <DadosNoAparelho>
                 <CarteiraNoAparelho>
                   <AnalisesNoAparelho>
-                    <SessaoDoApp>
-                      <Pilha />
-                    </SessaoDoApp>
+                    <PerfilDoDomicilioNoAparelho>
+                      <SessaoDoApp>
+                        <Pilha />
+                      </SessaoDoApp>
+                    </PerfilDoDomicilioNoAparelho>
                   </AnalisesNoAparelho>
                 </CarteiraNoAparelho>
               </DadosNoAparelho>

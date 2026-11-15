@@ -534,11 +534,21 @@ function textosDe(no: TestRenderer.ReactTestRendererJSON | TestRenderer.ReactTes
   return saida;
 }
 
+// Desmonta as telas no fim de cada teste: cálculos adiados (ex.: o sol nas fachadas, VE07) são cancelados na limpeza do
+// efeito em vez de dispararem depois que o ambiente do Jest foi desmontado.
+const montadas: TestRenderer.ReactTestRenderer[] = [];
+afterEach(() => {
+  act(() => {
+    for (const a of montadas.splice(0)) a.unmount();
+  });
+});
+
 function renderizar(elemento: React.ReactElement): TestRenderer.ReactTestRenderer {
   let arvore!: TestRenderer.ReactTestRenderer;
   act(() => {
     arvore = TestRenderer.create(React.createElement(TemaDoApp, null, elemento));
   });
+  montadas.push(arvore);
   return arvore;
 }
 
@@ -698,14 +708,14 @@ function edificioRealDeCasaForte(): Edificio {
   return achado;
 }
 
-type Contexto = { definirAtiva: jest.Mock; salvar: jest.Mock };
+type Contexto = { definirAtiva: jest.Mock; salvar: jest.Mock; atualizar: jest.Mock };
 
 function prepararEstado(lista: AnaliseV2[], ativa: string | null, id?: string): Contexto {
-  const contexto: Contexto = { definirAtiva: jest.fn(async () => undefined), salvar: jest.fn(async () => undefined) };
+  const contexto: Contexto = { definirAtiva: jest.fn(async () => undefined), salvar: jest.fn(async () => undefined), atualizar: jest.fn(async () => undefined) };
   G.__params = id ? { id } : {};
   G.__analises = {
     lista, ativa, analiseAtiva: lista.find((a) => a.id === ativa) ?? null, pronto: true, erro: "",
-    definirAtiva: contexto.definirAtiva, salvar: contexto.salvar, remover: jest.fn(async () => undefined),
+    definirAtiva: contexto.definirAtiva, salvar: contexto.salvar, atualizar: contexto.atualizar, remover: jest.fn(async () => undefined),
   };
   return contexto;
 }
@@ -906,7 +916,13 @@ describe("tela do dossiê", () => {
       await act(async () => {
         (botao(arvore, "Remover dos salvos").props.onPress as () => void)();
       });
-      expect(estado.salvar).toHaveBeenCalledWith(expect.objectContaining({ id: "confirmada", salva: false }));
+      // VE09: o marcador usa `atualizar` (edita a análise guardada; `salvar` preserva o caderno existente de propósito).
+      expect(estado.atualizar).toHaveBeenCalledWith("confirmada", expect.any(Function));
+      const mudar = estado.atualizar.mock.calls[0]![1] as (x: AnaliseV2) => AnaliseV2;
+      expect(mudar(a)).toMatchObject({ id: "confirmada", salva: false });
+      // Tirar dos salvos não cria retrato; salvar um imóvel sem retrato cria.
+      expect(mudar(a).caderno?.memoria).toBeUndefined();
+      expect(mudar({ ...a, salva: false }).caderno?.memoria?.fatos.length).toBeGreaterThan(0);
     });
 
     it("Abrir mapa abre a gaveta com o lote e as obras numeradas", () => {

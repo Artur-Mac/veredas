@@ -1,3 +1,6 @@
+// Referência histórica (14/11/2026, VE06): os dossiês de exemplo usam o layout e o modelo de dados do protótipo, com
+// valores ilustrativos. Nenhum ponto do caminho principal leva mais até aqui (menu e Início foram retirados); a rota
+// continua existindo para consulta pelo endereço /exemplos/<bairro>. O dossiê do app é /dossie.
 import { Redirect, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo } from "react";
 import { View } from "react-native";

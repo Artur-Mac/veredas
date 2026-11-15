@@ -1,0 +1,52 @@
+{
+  "Boa Viagem": {
+    "venda": {
+      "url": "https://www.oleoimoveis.com.br/imoveis/apartamento/?uf=PE&cidade=Recife&bairro=Boa%20Viagem&tp_operacao=1&page=1",
+      "erro": "fetch failed"
+    },
+    "aluguel": {
+      "url": "https://www.oleoimoveis.com.br/imoveis/apartamento/?uf=PE&cidade=Recife&bairro=Boa%20Viagem&tp_operacao=2&page=1",
+      "erro": "fetch failed"
+    }
+  },
+  "Casa Forte": {
+    "venda": {
+      "url": "https://www.oleoimoveis.com.br/imoveis/apartamento/?uf=PE&cidade=Recife&bairro=Casa%20Forte&tp_operacao=1&page=1",
+      "erro": "fetch failed"
+    },
+    "aluguel": {
+      "url": "https://www.oleoimoveis.com.br/imoveis/apartamento/?uf=PE&cidade=Recife&bairro=Casa%20Forte&tp_operacao=2&page=1",
+      "erro": "fetch failed"
+    }
+  },
+  "Graças": {
+    "venda": {
+      "url": "https://www.oleoimoveis.com.br/imoveis/apartamento/?uf=PE&cidade=Recife&bairro=Gra%C3%A7as&tp_operacao=1&page=1",
+      "erro": "fetch failed"
+    },
+    "aluguel": {
+      "url": "https://www.oleoimoveis.com.br/imoveis/apartamento/?uf=PE&cidade=Recife&bairro=Gra%C3%A7as&tp_operacao=2&page=1",
+      "erro": "fetch failed"
+    }
+  },
+  "Espinheiro": {
+    "venda": {
+      "url": "https://www.oleoimoveis.com.br/imoveis/apartamento/?uf=PE&cidade=Recife&bairro=Espinheiro&tp_operacao=1&page=1",
+      "erro": "fetch failed"
+    },
+    "aluguel": {
+      "url": "https://www.oleoimoveis.com.br/imoveis/apartamento/?uf=PE&cidade=Recife&bairro=Espinheiro&tp_operacao=2&page=1",
+      "erro": "fetch failed"
+    }
+  },
+  "Madalena": {
+    "venda": {
+      "url": "https://www.oleoimoveis.com.br/imoveis/apartamento/?uf=PE&cidade=Recife&bairro=Madalena&tp_operacao=1&page=1",
+      "erro": "fetch failed"
+    },
+    "aluguel": {
+      "url": "https://www.oleoimoveis.com.br/imoveis/apartamento/?uf=PE&cidade=Recife&bairro=Madalena&tp_operacao=2&page=1",
+      "erro": "fetch failed"
+    }
+  }
+}

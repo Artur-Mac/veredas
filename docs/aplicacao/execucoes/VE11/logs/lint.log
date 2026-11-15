@@ -1,0 +1,26 @@
+
+> vereda@0.1.0 lint
+> expo lint
+
+Node.js (v18.19.1) is outdated and unsupported. Please update to a newer Node.js LTS version (required: >=20.19.4)
+Go to: https://nodejs.org/en/download
+
+
+/home/v/Documents/vereda/veredas/src/componentes/comparar/Paineis.tsx
+  156:1  warning  Import in body of module; reorder to top  import/first
+
+/home/v/Documents/vereda/veredas/src/componentes/dossie-v1/Custo.tsx
+  74:1  warning  Import in body of module; reorder to top  import/first
+
+/home/v/Documents/vereda/veredas/src/dados/recife/camadasAmbientais.ts
+  116:5  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-require-imports')
+
+/home/v/Documents/vereda/veredas/src/dados/recife/censoRenda.ts
+  54:5  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-require-imports')
+
+/home/v/Documents/vereda/veredas/src/dados/recife/referenciasPublicas.ts
+  62:5  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-require-imports')
+
+✖ 5 problems (0 errors, 5 warnings)
+  0 errors and 5 warnings potentially fixable with the `--fix` option.
+

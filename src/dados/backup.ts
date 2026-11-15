@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { esquemaAnaliseV2, type AnaliseV2 } from "./contratos";
+import { migrarJanelasLegadas } from "./sol/janelas";
 
 export const LIMITE_BACKUP_BYTES = 10 * 1024 * 1024;
 const esquemaBackup = z.strictObject({
@@ -27,7 +28,7 @@ export function exportarCaderno(analises: readonly AnaliseV2[], agora: string): 
 }
 export function lerBackup(texto: string): AnaliseV2[] {
   if (bytesUtf8(texto) > LIMITE_BACKUP_BYTES) throw new Error("O arquivo excede 10 MB.");
-  try { return esquemaBackup.parse(JSON.parse(texto)).analises; }
+  try { return esquemaBackup.parse(JSON.parse(texto)).analises.map(migrarJanelasLegadas); }
   catch { throw new Error("Arquivo incompatível ou inválido. Seu caderno continua intacto."); }
 }
 

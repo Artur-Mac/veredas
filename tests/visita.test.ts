@@ -592,130 +592,25 @@ describe("a tela Visita", () => {
     expect((await gravadas())[0]?.visita.ruido).toBeNull();
   });
 
-  it("orientação: sem registro até a pessoa ajustar; o rótulo acompanha os graus e grava ao parar", async () => {
+  it("abre a experiência de janelas depois de guardar e pausar a visita, sem inventar uma direção", async () => {
     jest.useFakeTimers({ now: new Date("2026-10-20T13:00:00.000Z") });
     const arvore = await montar([analise()]);
     await tocar(arvore, porTexto("Começar visita"));
-    expect(todoOTexto(arvore)).toContain("Sem registro");
-    expect((await gravadas())[0]?.visita.orientacaoGraus).toBeNull();
-
-    const aumentar = async () => {
-      const controle = achar(arvore, (i) => i.props.role === "slider" && typeof i.props.onAccessibilityAction === "function");
-      await act(async () => {
-        (controle.props.onAccessibilityAction as (e: { nativeEvent: { actionName: string } }) => void)({ nativeEvent: { actionName: "increment" } });
-      });
-    };
-    // O primeiro passo sem registro grava 0° (N); os 18 seguintes, de 5° em 5°, chegam a 90°.
-    for (let i = 0; i < 19; i++) await aumentar();
-    expect(todoOTexto(arvore)).toContain("90°");
-    expect(todoOTexto(arvore)).toContain("Leste");
-    // Ainda dentro do atraso de gravação: nada gravado.
-    expect((await gravadas())[0]?.visita.orientacaoGraus).toBeNull();
-    await act(async () => {
-      jest.advanceTimersByTime(700);
-    });
+    await digitar(arvore, "Suas impressões", "Vou conferir a janela da sala");
+    expect(todoOTexto(arvore)).toContain("Sol nas suas janelas");
+    expect(arvore.root.findAll(i => i.props.role === "slider")).toHaveLength(0);
+    await tocar(arvore, porTexto("Observar uma janela"));
     await esvaziar();
-    expect((await gravadas())[0]?.visita.orientacaoGraus).toBe(90);
-
-    await tocar(arvore, porTexto("Limpar orientação"));
-    await act(async () => {
-      jest.advanceTimersByTime(700);
-    });
-    await esvaziar();
+    expect(empurrar).toHaveBeenCalledWith({ pathname: "/sol", params: { id: analise().id } });
+    expect((await gravadas())[0]?.visita.notas).toBe("Vou conferir a janela da sala");
     expect((await gravadas())[0]?.visita.orientacaoGraus).toBeNull();
   });
 
-  describe("orientação sem registro (G7)", () => {
-    const trilho = (arvore: TestRenderer.ReactTestRenderer) =>
-      achar(arvore, (i) => i.props.role === "slider" && typeof i.props.onAccessibilityAction === "function");
-    const pelaDireita = porRotulo("Girar a direção da janela 1 grau para a direita");
-    const pelaEsquerda = porRotulo("Girar a direção da janela 1 grau para a esquerda");
-
-    async function gravarAgora() {
-      await act(async () => {
-        jest.advanceTimersByTime(700);
-      });
-      await esvaziar();
-    }
-
-    it("o leitor de tela não ouve valor nenhum: sem now, só o texto 'Não registrada'", async () => {
-      jest.useFakeTimers({ now: new Date("2026-10-20T13:00:00.000Z") });
-      const arvore = await montar([analise()]);
-      await tocar(arvore, porTexto("Começar visita"));
-      const sem = trilho(arvore);
-      expect(sem.props["aria-valuenow"]).toBeUndefined();
-      expect(sem.props["aria-valuetext"]).toBe("Não registrada");
-      expect(sem.props.accessibilityValue).toEqual({ min: 0, max: 359, text: "Não registrada" });
-      expect(sem.props.accessibilityValue).not.toHaveProperty("now");
-
-      await tocar(arvore, pelaDireita);
-      const com = trilho(arvore);
-      expect(com.props["aria-valuenow"]).toBe(0);
-      expect(com.props["aria-valuetext"]).toBe("0 graus, Norte");
-      expect(com.props.accessibilityValue).toEqual({ min: 0, max: 359, now: 0, text: "0 graus, Norte" });
-    });
-
-    it("o primeiro toque em + grava 0° (N), não 1°; o seguinte vai a 1°", async () => {
-      jest.useFakeTimers({ now: new Date("2026-10-20T13:00:00.000Z") });
-      const arvore = await montar([analise()]);
-      await tocar(arvore, porTexto("Começar visita"));
-      await tocar(arvore, pelaDireita);
-      expect(todoOTexto(arvore)).toContain("0°");
-      expect(todoOTexto(arvore)).toContain("Norte");
-      await gravarAgora();
-      expect((await gravadas())[0]?.visita.orientacaoGraus).toBe(0);
-      await tocar(arvore, pelaDireita);
-      await gravarAgora();
-      expect((await gravadas())[0]?.visita.orientacaoGraus).toBe(1);
-    });
-
-    it("o primeiro toque em − grava 0° (N), não 359°; depois dele, − dá a volta para 359°", async () => {
-      jest.useFakeTimers({ now: new Date("2026-10-20T13:00:00.000Z") });
-      const arvore = await montar([analise()]);
-      await tocar(arvore, porTexto("Começar visita"));
-      await tocar(arvore, pelaEsquerda);
-      await gravarAgora();
-      expect((await gravadas())[0]?.visita.orientacaoGraus).toBe(0);
-      await tocar(arvore, pelaEsquerda);
-      await gravarAgora();
-      expect((await gravadas())[0]?.visita.orientacaoGraus).toBe(359);
-    });
-
-    it("as ações de acessibilidade (±5°) também começam em 0°; limpar volta a 'Não registrada'", async () => {
-      jest.useFakeTimers({ now: new Date("2026-10-20T13:00:00.000Z") });
-      const arvore = await montar([analise()]);
-      await tocar(arvore, porTexto("Começar visita"));
-      const acao = async (actionName: string) => {
-        await act(async () => {
-          (trilho(arvore).props.onAccessibilityAction as (e: { nativeEvent: { actionName: string } }) => void)({ nativeEvent: { actionName } });
-        });
-      };
-      await acao("decrement");
-      expect(trilho(arvore).props["aria-valuenow"]).toBe(0);
-      await acao("increment");
-      expect(trilho(arvore).props["aria-valuenow"]).toBe(5);
-      await acao("decrement");
-      await acao("decrement");
-      expect(trilho(arvore).props["aria-valuenow"]).toBe(355);
-      await tocar(arvore, porTexto("Limpar orientação"));
-      expect(trilho(arvore).props["aria-valuenow"]).toBeUndefined();
-      expect(trilho(arvore).props["aria-valuetext"]).toBe("Não registrada");
-    });
-  });
-
-  it("se a gravação falhar, o rascunho das notas e da orientação continua na tela e vai junto na próxima gravação", async () => {
+  it("se a gravação falhar, o rascunho das notas continua na tela e vai junto na próxima gravação", async () => {
     jest.useFakeTimers({ now: new Date("2026-10-20T13:00:00.000Z") });
     const arvore = await montar([analise()]);
     await tocar(arvore, porTexto("Começar visita"));
     await digitar(arvore, "Suas impressões", "Luz boa na sala");
-    const trilho = () => achar(arvore, (i) => i.props.role === "slider" && typeof i.props.onAccessibilityAction === "function");
-    for (let i = 0; i < 19; i++) {
-      await act(async () => {
-        (trilho().props.onAccessibilityAction as (e: { nativeEvent: { actionName: string } }) => void)({ nativeEvent: { actionName: "increment" } });
-      });
-    }
-    expect(todoOTexto(arvore)).toContain("90°");
-
     // `setItem` já é um mock do jest: a próxima gravação falha uma vez e as seguintes voltam ao normal.
     const gravarItem = armazenamento.setItem as unknown as jest.Mock<(k: string, v: string) => Promise<void>>;
     gravarItem.mockRejectedValueOnce(new Error("sem espaço"));
@@ -730,14 +625,11 @@ describe("a tela Visita", () => {
     expect(naoGravada?.visita).toMatchObject({ notas: "", orientacaoGraus: null });
     const campo = achar(arvore, (i) => typeof i.props.onChangeText === "function" && i.props.accessibilityLabel === "Suas impressões");
     expect(campo.props.value).toBe("Luz boa na sala");
-    expect(todoOTexto(arvore)).toContain("90°");
-    expect(todoOTexto(arvore)).toContain("Leste");
-    expect(trilho().props["aria-valuenow"]).toBe(90);
 
-    // O rascunho segue pendente: a próxima gravação leva notas e orientação junto.
+    // O rascunho segue pendente: a próxima gravação leva as notas junto.
     await tocar(arvore, porRotulo("Moderado"));
     const [gravada] = await gravadas();
-    expect(gravada?.visita).toMatchObject({ notas: "Luz boa na sala", orientacaoGraus: 90, ruido: "moderado" });
+    expect(gravada?.visita).toMatchObject({ notas: "Luz boa na sala", orientacaoGraus: null, ruido: "moderado" });
     expect(achar(arvore, (i) => typeof i.props.onChangeText === "function" && i.props.accessibilityLabel === "Suas impressões").props.value).toBe("Luz boa na sala");
   });
 

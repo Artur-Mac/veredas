@@ -1,0 +1,22 @@
+{
+ "externas": [],
+ "erros": [],
+ "telas": {
+  "dossie@375": {
+   "secao": "A PÉ, A PARTIR DA ENTRADA\nMercado, farmácia, praça e ônibus\nPonte no caminho até mercado, farmácia e praça ou parque: Rua Barão de Souza Leão. Se ela fechar, cada linha mostra a opção que não depende dela.\nMercado\n6 min\nSupermercado Trevo, 420 m a pé. Passa pela ponte. Sem ela: Recibom, 15 min.\nFarmácia\n10 min\nFarmatodo, 700 m a pé. Passa pela ponte. Sem ela: Pegfarma, 13 min.\nPraça ou parque\n11 min\nParque Santos Dumont, 760 m a pé. Passa pela ponte. Sem ela: Praça Ministro Salgado Filho, 12 min.\nÔnibus ou metrô\n2 min\nPonto de ônibus, 170 m a pé. Outra opção: Ponto de ônibus, 4 min.\nMercado e farmácia numa volta só (Supermercado Trevo e Farmatodo): 1,4 km, em vez de 2,2 km em duas idas.\nCaminho pelas ruas do mapa a passo médio, a partir da entrada do prédio. Locais do OpenStreetMap, da Prefeitura e do GTFS; pode faltar algum.\nDADOS CRUZADOS EM LINGUAGEM SIMPLES\nO que esperar no dia a dia",
+   "rolagem": 0
+  },
+  "comparar@375": {
+   "resumo": "PARA DECIDIR\nMenor custo\nMais espaço\nVisite primeiro Graças.\nNo custo e no espaço, os dois ficam próximos; a diferença está no dia a dia a pé.\nCusto mensal parecido: R$ 50/mês de diferença no que já se sabe.\nAnúncio\nGraças fica a 1 min a pé de uma farmácia; Casa Forte, a 14 min.\nCaminho a pé no mapa · OpenStreetMap e Prefeitura\nPreparar visita a Graças\nImóvel 1\nFixture Casa Forte\n70 m² · 2 quartos\nVer dossiê\nImóvel 2\nFixture Graças\n70 m² · 2 quartos\nVer dossiê\nCusto\nEspaço\nEntorno\nO QUE PESA NO MÊS\nR$ 50\nde diferença no custo mensal conhecido.\nCasa Forte\nR$ 3.740/mês\nGraças\nR$ 3.790/mês\nMensal conhecido\nR$ 3.740/mês\nNenhuma parcela a confirmar\nR$ 3.790/mês\nNenhuma parcela a confirmar\nAluguel",
+   "rolagem": 0
+  },
+  "dossie@360": {
+   "secao": "A PÉ, A PARTIR DA ENTRADA\nMercado, farmácia, praça e ônibus\nPonte no caminho até mercado, farmácia e praça ou parque: Rua Barão de Souza Leão. Se ela fechar, cada linha mostra a opção que não depende dela.\nMercado\n6 min\nSupermercado Trevo, 420 m a pé. Passa pela ponte. Sem ela: Recibom, 15 min.\nFarmácia\n10 min\nFarmatodo, 700 m a pé. Passa pela ponte. Sem ela: Pegfarma, 13 min.\nPraça ou parque\n11 min\nParque Santos Dumont, 760 m a pé. Passa pela ponte. Sem ela: Praça Ministro Salgado Filho, 12 min.\nÔnibus ou metrô\n2 min\nPonto de ônibus, 170 m a pé. Outra opção: Ponto de ônibus, 4 min.\nMercado e farmácia numa volta só (Supermercado Trevo e Farmatodo): 1,4 km, em vez de 2,2 km em duas idas.\nCaminho pelas ruas do mapa a passo médio, a partir da entrada do prédio. Locais do OpenStreetMap, da Prefeitura e do GTFS; pode faltar algum.\nDADOS CRUZADOS EM LINGUAGEM SIMPLES\nO que esperar no dia a dia",
+   "rolagem": 0
+  },
+  "comparar@360": {
+   "resumo": "PARA DECIDIR\nMenor custo\nMais espaço\nVisite primeiro Graças.\nNo custo e no espaço, os dois ficam próximos; a diferença está no dia a dia a pé.\nCusto mensal parecido: R$ 50/mês de diferença no que já se sabe.\nAnúncio\nGraças fica a 1 min a pé de uma farmácia; Casa Forte, a 14 min.\nCaminho a pé no mapa · OpenStreetMap e Prefeitura\nPreparar visita a Graças\nImóvel 1\nFixture Casa Forte\n70 m² · 2 quartos\nVer dossiê\nImóvel 2\nFixture Graças\n70 m² · 2 quartos\nVer dossiê\nCusto\nEspaço\nEntorno\nO QUE PESA NO MÊS\nR$ 50\nde diferença no custo mensal conhecido.\nCasa Forte\nR$ 3.740/mês\nGraças\nR$ 3.790/mês\nMensal conhecido\nR$ 3.740/mês\nNenhuma parcela a confirmar\nR$ 3.790/mês\nNenhuma parcela a confirmar\nAluguel",
+   "rolagem": 0
+  }
+ }
+}

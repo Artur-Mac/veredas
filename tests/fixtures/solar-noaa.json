@@ -1,0 +1,183 @@
+{
+  "fonte": "https://gml.noaa.gov/grad/solcalc/calcdetails.html",
+  "metodo": "NOAA por s\u00e9culo juliano + refra\u00e7\u00e3o diurna, gera\u00e7\u00e3o independente em Python",
+  "longitude": -34.9,
+  "latitude": -8.05,
+  "casos": [
+    {
+      "dia": "2026-03-20",
+      "minutos": 510,
+      "azimute": 81.894048,
+      "elevacao": 45.190052,
+      "geometrica": 45.17403
+    },
+    {
+      "dia": "2026-03-20",
+      "minutos": 684,
+      "azimute": 5.348956,
+      "elevacao": 81.921335,
+      "geometrica": 81.919044
+    },
+    {
+      "dia": "2026-03-20",
+      "minutos": 720,
+      "azimute": 314.022148,
+      "elevacao": 78.491067,
+      "geometrica": 78.48778
+    },
+    {
+      "dia": "2026-03-20",
+      "minutos": 930,
+      "azimute": 274.553949,
+      "elevacao": 28.941531,
+      "geometrica": 28.912425
+    },
+    {
+      "dia": "2026-03-20",
+      "minutos": 1320,
+      "azimute": 251.037313,
+      "elevacao": -66.966291,
+      "geometrica": -66.966291
+    },
+    {
+      "dia": "2026-06-21",
+      "minutos": 510,
+      "azimute": 51.972444,
+      "elevacao": 37.629483,
+      "geometrica": 37.608575
+    },
+    {
+      "dia": "2026-06-21",
+      "minutos": 684,
+      "azimute": 358.878586,
+      "elevacao": 58.515784,
+      "geometrica": 58.505901
+    },
+    {
+      "dia": "2026-06-21",
+      "minutos": 720,
+      "azimute": 343.559245,
+      "elevacao": 57.143203,
+      "geometrica": 57.132781
+    },
+    {
+      "dia": "2026-06-21",
+      "minutos": 930,
+      "azimute": 299.232376,
+      "elevacao": 21.693286,
+      "geometrica": 21.652942
+    },
+    {
+      "dia": "2026-06-21",
+      "minutos": 1320,
+      "azimute": 310.542808,
+      "elevacao": -65.129596,
+      "geometrica": -65.129596
+    },
+    {
+      "dia": "2026-09-22",
+      "minutos": 510,
+      "azimute": 80.41242,
+      "elevacao": 48.728845,
+      "geometrica": 48.714687
+    },
+    {
+      "dia": "2026-09-22",
+      "minutos": 684,
+      "azimute": 340.315311,
+      "elevacao": 81.292106,
+      "geometrica": 81.289633
+    },
+    {
+      "dia": "2026-09-22",
+      "minutos": 720,
+      "azimute": 304.036764,
+      "elevacao": 75.563647,
+      "geometrica": 75.559492
+    },
+    {
+      "dia": "2026-09-22",
+      "minutos": 930,
+      "azimute": 273.932087,
+      "elevacao": 25.31093,
+      "geometrica": 25.276936
+    },
+    {
+      "dia": "2026-09-22",
+      "minutos": 1320,
+      "azimute": 246.693514,
+      "elevacao": -70.297134,
+      "geometrica": -70.297134
+    },
+    {
+      "dia": "2026-12-21",
+      "minutos": 510,
+      "azimute": 115.94493,
+      "elevacao": 47.043808,
+      "geometrica": 47.028789
+    },
+    {
+      "dia": "2026-12-21",
+      "minutos": 684,
+      "azimute": 185.405171,
+      "elevacao": 74.543591,
+      "geometrica": 74.539128
+    },
+    {
+      "dia": "2026-12-21",
+      "minutos": 720,
+      "azimute": 212.162769,
+      "elevacao": 71.582797,
+      "geometrica": 71.577422
+    },
+    {
+      "dia": "2026-12-21",
+      "minutos": 930,
+      "azimute": 247.68922,
+      "elevacao": 27.90006,
+      "geometrica": 27.869671
+    },
+    {
+      "dia": "2026-12-21",
+      "minutos": 1320,
+      "azimute": 210.724765,
+      "elevacao": -53.1986,
+      "geometrica": -53.1986
+    },
+    {
+      "dia": "2026-10-13",
+      "minutos": 510,
+      "azimute": 92.554631,
+      "elevacao": 51.446214,
+      "geometrica": 51.433355
+    },
+    {
+      "dia": "2026-10-13",
+      "minutos": 684,
+      "azimute": 271.338776,
+      "elevacao": 85.491705,
+      "geometrica": 85.491705
+    },
+    {
+      "dia": "2026-10-13",
+      "minutos": 720,
+      "azimute": 269.567803,
+      "elevacao": 76.583394,
+      "geometrica": 76.579544
+    },
+    {
+      "dia": "2026-10-13",
+      "minutos": 930,
+      "azimute": 264.870706,
+      "elevacao": 24.700659,
+      "geometrica": 24.665715
+    },
+    {
+      "dia": "2026-10-13",
+      "minutos": 1320,
+      "azimute": 225.797275,
+      "elevacao": -67.016499,
+      "geometrica": -67.016499
+    }
+  ]
+}

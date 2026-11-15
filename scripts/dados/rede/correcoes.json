@@ -1,0 +1,5 @@
+{
+ "versao": 1,
+ "nota": "Correções revisadas por uma pessoa (VE03.04). Cada entrada: {tipo: \"entrada\"|\"via_bloqueada\", predio|via, ponto?, motivo, revisor, data}. Aplicadas a cada execução de rodar-rede.mjs; o centroide bruto não é alterado.",
+ "correcoes": []
+}

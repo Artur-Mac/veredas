@@ -1,0 +1,52 @@
+{
+ "diaUtil": "2026-11-17",
+ "limiar": 180,
+ "grade": "df3b25344af0934b",
+ "feed": "v2026.10.26",
+ "antes": {
+  "corredores": 2356,
+  "unidade": "linhas de stop_times somando dia útil, sábado e domingo (feed não fixado)"
+ },
+ "depois": {
+  "corredores": 1492,
+  "unidade": "partidas programadas em 2026-11-17 (terça sem exceção)"
+ },
+ "piloto160m": {
+  "boa-viagem": {
+   "predios": 1879,
+   "antes": 1084,
+   "depois": 1014,
+   "perderam": 70,
+   "ganharam": 0
+  },
+  "casa-forte": {
+   "predios": 82,
+   "antes": 39,
+   "depois": 34,
+   "perderam": 5,
+   "ganharam": 0
+  },
+  "gracas": {
+   "predios": 291,
+   "antes": 221,
+   "depois": 152,
+   "perderam": 69,
+   "ganharam": 0
+  },
+  "espinheiro": {
+   "predios": 156,
+   "antes": 136,
+   "depois": 128,
+   "perderam": 8,
+   "ganharam": 0
+  },
+  "madalena": {
+   "predios": 280,
+   "antes": 217,
+   "depois": 184,
+   "perderam": 33,
+   "ganharam": 0
+  }
+ },
+ "aplicado": true
+}

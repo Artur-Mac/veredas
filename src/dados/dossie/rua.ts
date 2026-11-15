@@ -236,8 +236,13 @@ function grupoDaDefesaCivil(
     return { bloco: null, grupo: { id: "defesa_civil", titulo: "Defesa Civil", fatos: [fato], nota: null } };
   }
   const fatos: FatoDaRua[] = [];
+  // VE02: ações comunitárias (porta a porta, atendimento social, donativos) não são vistoria nem resposta a risco no endereço.
+  const comunitarias = dc.acoesComunitarias ?? 0;
+  const foraDaConta = comunitarias > 0
+    ? ` Fora da conta: ${formatarNumero(comunitarias)} ${comunitarias === 1 ? "ação comunitária" : "ações comunitárias"} da Defesa Civil (porta a porta, atendimento social, donativos).`
+    : "";
   if (dc.atendimentos === 0) {
-    fatos.push(c.fato("rua-defesa-civil", "Atendimentos da Defesa Civil na rua", "0", "Nenhum atendimento registrado nesta rua do bairro.", "defesa_civil"));
+    fatos.push(c.fato("rua-defesa-civil", "Atendimentos da Defesa Civil na rua", "0", `Nenhum atendimento registrado nesta rua do bairro.${foraDaConta}`, "defesa_civil"));
     return { bloco: null, grupo: { id: "defesa_civil", titulo: "Defesa Civil", fatos, nota: null } };
   }
   const ocorrencias = dc.ocorrencias.map(([categoria, n]) => `${formatarNumero(n)} ${ROTULO_DA_OCORRENCIA[categoria]}`);
@@ -246,7 +251,7 @@ function grupoDaDefesaCivil(
       "rua-defesa-civil",
       "Atendimentos da Defesa Civil na rua",
       formatarNumero(dc.atendimentos),
-      `${lista(ocorrencias)}. O número do imóvel não é publicado: não dá para saber se foi este prédio.`,
+      `${lista(ocorrencias)}. O número do imóvel não é publicado: não dá para saber se foi este prédio.${foraDaConta}`,
       "defesa_civil",
     ),
   );

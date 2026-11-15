@@ -1,0 +1,427 @@
+{
+ "set": "G-COMPARE",
+ "labels_version": "1.1",
+ "labelled": "2026-11-14",
+ "labelled_by": "VE01 implementing AI, by hand arithmetic from g-compare.json v1 inputs, before the first test run of src/dados/decisao.ts",
+ "reviewer": "none (no human review yet)",
+ "conventions": {
+  "listing_to_analysis": "price->declarados.preco, condo_monthly->condominio (null = unknown, 0 = declared zero), iptu_value+iptu_period (mensal->mes, anual->ano, desconhecido->desconhecido; null value = unknown), area_m2->area; seguro incêndio, taxa and outros are not in the fixtures, so for rent the expected 'Seguro incêndio' parcel is unknown on both sides",
+  "side": "0 = A, 1 = B; null = no winner",
+  "priority": "custo unless stated",
+  "money_threshold_rules": "rent monthly material if |diff| >= max(50, 2% of lower minimum); purchase price material if >= max(5000, 1% of lower price); monthly fees in purchase same rule as rent; area material if >= 10% of smaller area",
+  "known_monthly": "custoMensal().totalMensalConhecido, i.e. the same figure the dossier shows"
+ },
+ "fixture_note_corrections": [
+  "GC01 note says rent ordering reverses after fees; it does not (B is lower on rent and on total).",
+  "GC03 note says break-even = 400/month; the known totals give a 950/month threshold (3,530 - 2,580).",
+  "GC07 note says a 300-900 condo range can reverse the order; the threshold is 930, so it cannot within that range."
+ ],
+ "cases": {
+  "GC01": {
+   "known_monthly": [
+    3940,
+    3810
+   ],
+   "pending": [
+    1,
+    1
+   ],
+   "cost_diff": -130,
+   "cost_definite": false,
+   "cost_winner": 1,
+   "threshold": 130,
+   "visit_first": 1,
+   "question": {
+    "field": "seguro",
+    "target": 1
+   },
+   "horizon_months": null
+  },
+  "GC02": {
+   "known_monthly": [
+    3800,
+    3800
+   ],
+   "pending": [
+    1,
+    1
+   ],
+   "cost_diff": 0,
+   "cost_definite": false,
+   "cost_winner": null,
+   "threshold": null,
+   "visit_first": null,
+   "question": {
+    "field": "seguro",
+    "target": 0
+   },
+   "horizon_months": null
+  },
+  "GC03": {
+   "known_monthly": [
+    2580,
+    3530
+   ],
+   "pending": [
+    2,
+    1
+   ],
+   "cost_diff": 950,
+   "cost_definite": false,
+   "cost_winner": 0,
+   "threshold": 950,
+   "visit_first": 0,
+   "question": {
+    "field": "condominio",
+    "target": 0
+   },
+   "horizon_months": null
+  },
+  "GC04": {
+   "known_monthly": [
+    2670,
+    2670
+   ],
+   "pending": [
+    1,
+    2
+   ],
+   "cost_diff": 0,
+   "cost_definite": false,
+   "cost_winner": null,
+   "threshold": null,
+   "visit_first": null,
+   "question": {
+    "field": "condominio",
+    "target": 1
+   },
+   "horizon_months": null
+  },
+  "GC05": {
+   "known_monthly": [
+    3820,
+    3860
+   ],
+   "pending": [
+    1,
+    1
+   ],
+   "cost_diff": 40,
+   "cost_definite": false,
+   "cost_winner": null,
+   "threshold": null,
+   "visit_first": null,
+   "question": null,
+   "horizon_months": null
+  },
+  "GC06": {
+   "known_monthly": [
+    3200,
+    3330
+   ],
+   "pending": [
+    2,
+    1
+   ],
+   "cost_diff": 117.5,
+   "cost_definite": false,
+   "cost_winner": 0,
+   "threshold": 117.5,
+   "visit_first": 0,
+   "question": {
+    "field": "iptu_periodo",
+    "target": 0
+   },
+   "horizon_months": null
+  },
+  "GC07": {
+   "known_monthly": [
+    2460,
+    3390
+   ],
+   "pending": [
+    2,
+    1
+   ],
+   "cost_diff": 930,
+   "cost_definite": false,
+   "cost_winner": 0,
+   "threshold": 930,
+   "visit_first": 0,
+   "question": {
+    "field": "condominio",
+    "target": 0
+   },
+   "horizon_months": null
+  },
+  "GC08": {
+   "known_monthly": [
+    4420,
+    4050
+   ],
+   "pending": [
+    1,
+    1
+   ],
+   "cost_diff": -370,
+   "cost_definite": false,
+   "cost_winner": 1,
+   "threshold": 370,
+   "visit_first": 1,
+   "visit_first_if_space_priority": 0,
+   "area_winner": 0,
+   "question": {
+    "field": "seguro",
+    "target": 1
+   },
+   "horizon_months": null
+  },
+  "GC09": {
+   "known_monthly": [
+    2800,
+    3000
+   ],
+   "pending": [
+    3,
+    3
+   ],
+   "cost_diff": 200,
+   "cost_definite": false,
+   "cost_winner": 0,
+   "threshold": 200,
+   "visit_first": 0,
+   "question": {
+    "field": "condominio",
+    "target": 0
+   },
+   "horizon_months": null
+  },
+  "GC10": {
+   "known_monthly": [
+    3700,
+    3520
+   ],
+   "pending": [
+    1,
+    1
+   ],
+   "cost_diff": -180,
+   "cost_definite": false,
+   "cost_winner": 1,
+   "threshold": 180,
+   "visit_first": 1,
+   "question": {
+    "field": "seguro",
+    "target": 1
+   },
+   "horizon_months": null,
+   "time_tradeoff": {
+    "minutes_per_day": 20,
+    "days_per_month": 16,
+    "hours_text": "5h20",
+    "reais_per_hour_text": "R$ 33,75"
+   }
+  },
+  "GC11": {
+   "known_monthly": [
+    934,
+    770
+   ],
+   "pending": [
+    0,
+    0
+   ],
+   "cost_diff": -150000,
+   "cost_definite": true,
+   "cost_winner": 1,
+   "threshold": null,
+   "visit_first": 1,
+   "question": null,
+   "horizon_months": null
+  },
+  "GC12": {
+   "known_monthly": [
+    1050,
+    600
+   ],
+   "pending": [
+    0,
+    0
+   ],
+   "cost_diff": 0,
+   "cost_definite": true,
+   "cost_winner": 1,
+   "threshold": null,
+   "visit_first": 1,
+   "question": null,
+   "horizon_months": null
+  },
+  "GC13": {
+   "known_monthly": [
+    850,
+    1040
+   ],
+   "pending": [
+    1,
+    0
+   ],
+   "cost_diff": -30000,
+   "cost_definite": true,
+   "cost_winner": 1,
+   "threshold": null,
+   "visit_first": 1,
+   "question": {
+    "field": "iptu",
+    "target": 0
+   },
+   "horizon_months": null
+  },
+  "GC14": {
+   "known_monthly": [
+    1200,
+    1280
+   ],
+   "pending": [
+    0,
+    0
+   ],
+   "cost_diff": -20000,
+   "cost_definite": true,
+   "cost_winner": 1,
+   "threshold": null,
+   "visit_first": 1,
+   "question": null,
+   "horizon_months": 250
+  },
+  "GC15": {
+   "known_monthly": [
+    90,
+    540
+   ],
+   "pending": [
+    0,
+    0
+   ],
+   "cost_diff": -20000,
+   "cost_definite": true,
+   "cost_winner": 1,
+   "threshold": null,
+   "visit_first": 1,
+   "question": null,
+   "horizon_months": 45
+  },
+  "GC16": {
+   "known_monthly": [
+    750,
+    1250
+   ],
+   "pending": [
+    0,
+    0
+   ],
+   "cost_diff": -30000,
+   "cost_definite": true,
+   "cost_winner": 1,
+   "threshold": null,
+   "visit_first": 1,
+   "question": null,
+   "horizon_months": 60
+  },
+  "GC17": {
+   "known_monthly": [
+    830,
+    850
+   ],
+   "pending": [
+    0,
+    0
+   ],
+   "cost_diff": -10000,
+   "cost_definite": true,
+   "cost_winner": 1,
+   "threshold": null,
+   "visit_first": 1,
+   "question": null,
+   "horizon_months": null
+  },
+  "GC18": {
+   "known_monthly": [
+    830,
+    850
+   ],
+   "pending": [
+    0,
+    0
+   ],
+   "cost_diff": null,
+   "cost_definite": false,
+   "cost_winner": null,
+   "threshold": null,
+   "visit_first": null,
+   "question": {
+    "field": "preco",
+    "target": 0
+   },
+   "horizon_months": null
+  },
+  "GC19": {
+   "known_monthly": [
+    1800,
+    960
+   ],
+   "pending": [
+    0,
+    0
+   ],
+   "cost_diff": -500000,
+   "cost_definite": true,
+   "cost_winner": 1,
+   "threshold": null,
+   "visit_first": 1,
+   "visit_first_if_space_priority": 0,
+   "area_winner": 0,
+   "question": null,
+   "question_if_space_priority": {
+    "field": "preco_negociado",
+    "target": 0,
+    "type": "negociacao"
+   },
+   "horizon_months": null
+  },
+  "GC20": {
+   "known_monthly": [
+    600,
+    720
+   ],
+   "pending": [
+    1,
+    0
+   ],
+   "cost_diff": 20000,
+   "cost_definite": true,
+   "cost_winner": 0,
+   "threshold": null,
+   "visit_first": 0,
+   "question": {
+    "field": "iptu_periodo",
+    "target": 0
+   },
+   "horizon_months": null
+  }
+ },
+ "revisions": [
+  {
+   "date": "2026-11-14",
+   "from_version": 1,
+   "cases": [
+    "GC02",
+    "GC04"
+   ],
+   "field": "threshold",
+   "old": 0,
+   "new": null,
+   "reason": "Label error found on the first test run: threshold is defined as what the missing charges on the cheaper side must exceed; a tie has no cheaper side, so it is null. Code unchanged for this field.",
+   "first_run_log": "docs/aplicacao/execucoes/VE01/logs/decisao-first-run.log"
+  }
+ ]
+}

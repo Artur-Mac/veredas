@@ -183,6 +183,7 @@ describe("A rua: camada de cada bairro e de cada edifício", () => {
         expect(dc.porAno.reduce((s, [, n]) => s + n, 0)).toBe(dc.atendimentos);
         expect(dc.ocorrencias.reduce((s, [, n]) => s + n, 0)).toBe(dc.atendimentos);
         if (dc.atendimentos === 0) expect(dc.grafia).toBeNull();
+        if (dc.acoesComunitarias !== undefined) expect(Number.isInteger(dc.acoesComunitarias) && dc.acoesComunitarias >= 0).toBe(true);
         for (const r of l.coleta) expect(r.turno === null || ["manhã", "tarde", "noite", "dia"].includes(r.turno)).toBe(true);
       }
     }

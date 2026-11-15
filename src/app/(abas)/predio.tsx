@@ -13,10 +13,12 @@ import { PERCURSO_INICIAL, aposEscolha, proximoDoPercurso, type Percurso } from 
 import { avisoDeTipologia, formatarChaveCadastral, mensagemSemCandidatos } from "../../componentes/predio/textos";
 import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
+import { listaDeBairrosCobertos } from "../../componentes/dossie-v1/textos";
 import type { AnaliseV2, Edificio } from "../../dados/contratos";
 import { bairroPorSlug, eCoberto, type SlugCoberto } from "../../dados/recife/bairros";
 import { buscarCandidatosDetalhados, type EntradaDeBusca } from "../../dados/recife/buscar";
-import { edificiosDoBairro, indiceDoBairro } from "../../dados/recife/indice";
+import { arquivoDoIndice, edificiosDoBairro, indiceDoBairro } from "../../dados/recife/indice";
+import { EsperaDasCamadas } from "../../componentes/EsperaDasCamadas";
 import { useAnalises } from "../../estado/Analises";
 import { useCarteira } from "../../estado/Carteira";
 import { useTema } from "../../tema/Tema";
@@ -58,11 +60,19 @@ export default function TelaPredio() {
           ) : !eCoberto(analise.bairro) ? (
             <CartaoDeAviso
               titulo={`Ainda não temos o cadastro de ${analise.bairroTexto || "este bairro"}`}
-              texto="O Vereda confirma o prédio em Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena."
+              texto={`O Vereda confirma o prédio em ${listaDeBairrosCobertos()}.`}
             />
           ) : (
             // `key`: a tela fica montada entre uma análise e outra; o prédio escolhido na anterior não vale para esta.
-            <ConfirmarPredio key={analise.id} analise={analise} bairro={analise.bairro} aoFaltarCredito={() => setGavetaAberta(true)} />
+            // D036: o índice do bairro fica fora do bundle; a busca só roda com ele em memória.
+            <EsperaDasCamadas
+              key={analise.id}
+              caminhos={[arquivoDoIndice(analise.bairro)].filter((x): x is string => !!x)}
+              carregando={`Carregando o cadastro de ${bairroPorSlug(analise.bairro)?.nome ?? "do bairro"}…`}
+              oQue="o cadastro deste bairro"
+            >
+              <ConfirmarPredio analise={analise} bairro={analise.bairro} aoFaltarCredito={() => setGavetaAberta(true)} />
+            </EsperaDasCamadas>
           )}
         </Coluna>
       </ScrollView>

@@ -1,0 +1,30 @@
+[
+ {
+  "passo": "antes",
+  "publicacao": "defesa-civil",
+  "versao": "8daa1b9697d3d508",
+  "ativadoEm": "2026-11-14T18:52:37Z",
+  "anterior": "bbaec26866872abe",
+  "parcialAceita": null
+ },
+ {
+  "passo": "reverter",
+  "ms": 18,
+  "publicacao": "defesa-civil",
+  "versao": "bbaec26866872abe",
+  "ativadoEm": "2026-11-14T18:53:17.319Z",
+  "anterior": "b43b87fa2a941dc3",
+  "parcialAceita": null,
+  "revertidaDe": "8daa1b9697d3d508",
+  "conferencia": []
+ },
+ {
+  "passo": "reativar",
+  "ms": 13,
+  "publicacao": "defesa-civil",
+  "versao": "8daa1b9697d3d508",
+  "ativadoEm": "2026-11-14T18:53:17.350Z",
+  "anterior": "bbaec26866872abe",
+  "parcialAceita": null
+ }
+]

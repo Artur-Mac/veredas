@@ -1,0 +1,232 @@
+{
+  "consultado_em": "2026-11-14",
+  "indice": "src/dados/recife/indice-municipal/91b71d239c1847cf",
+  "malha": {
+    "url": "https://dados.recife.pe.gov.br/dataset/area-urbana/resource/6be90377-7b6d-483c-9b58-f7f34401ee6a",
+    "url_download": "https://dados.recife.pe.gov.br/dataset/1702c764-ec7a-4ef0-9861-8acd0e40c819/resource/6be90377-7b6d-483c-9b58-f7f34401ee6a/download/trechos-de-logradouros.geojson",
+    "sha256": "154ebe0adc920bd12ec013e1fe110df94f6d2717764dfec9b7ccfc639e426ace",
+    "bytes": 14527751,
+    "crs": "CRS84",
+    "geometrias_multiline": 10226,
+    "codigos_logradouro": 10226,
+    "metodo": "Chave inteira CLOGRACODI e prefixo do ID do edifício. Menor distância ponto-segmento do MultiLineString da via em projeção equidistante local, com fator 111319*cos(latitude) no eixo x e 110574 no eixo y. Corte exploratório de 50 m."
+  },
+  "gtfs": {
+    "bruto": {
+      "arquivo": "docs/dados/raw/transporte/gtfs.zip",
+      "versao": "v2026.10.26",
+      "sha256": "e1d834d9cf0165690ad0ac5c6aa01fb8b5b7dc38bb611f999cadb01512313fd5",
+      "paradas": 7238,
+      "rotas": 400,
+      "viagens": 87678,
+      "paradas_no_municipio": 2839,
+      "paradas_no_municipio_apos_subtrair_075_da_latitude": 0
+    },
+    "camada_ambiental": {
+      "arquivo": ".cache/dados-recife/gtfs-inspecao.zip",
+      "versao": "v2026.10.16",
+      "sha256": "5243ae9b92097b1b9f9c02c28694773fc1c730064656018571299d3f4192676a",
+      "paradas": 7217,
+      "viagens": 86668
+    }
+  },
+  "bairros": [
+    {
+      "bairro": "boa-viagem",
+      "predios_indice": 1879,
+      "predios_com_dsqfl": 1878,
+      "logradouros_indice": 168,
+      "vias_com_alagamento_indice_2014_2024": 5,
+      "predios_com_codigo_na_malha": 1879,
+      "centros_a_ate_50m_da_propria_via": 1850,
+      "feicoes_distintas_dentro_do_corte": 167,
+      "distancia_mediana_da_propria_via_m": 24.7,
+      "defesa_civil_cache_2020_2024": {
+        "linhas_alagamento": 15,
+        "linhas_com_data": 15,
+        "linhas_ligadas_exatamente": 5,
+        "vias_distintas_ligadas": 5,
+        "datas_distintas_dos_vinculos": 2
+      },
+      "drenagem": {
+        "predios_com_chamado_indice_a_150m": 1745,
+        "linhas_do_cache_2025_2026": 669,
+        "linhas_do_cache_com_ponto_a_30km_do_centro_de_referencia": 365
+      },
+      "cttu_2022_2024": {
+        "predios_com_chamado_de_sinistro_com_vitima_a_150m": 1817,
+        "predios_com_chamado_de_atropelamento_a_150m": 610,
+        "linhas_de_atropelamento_cache": 65,
+        "linhas_com_numero": 31,
+        "linhas_com_possivel_cruzamento": 17
+      },
+      "luse_vigentes_na_particao": 5,
+      "predios_com_obras_relevantes_24m": 1187,
+      "predios_com_quartis_itbi": 901,
+      "volumes_solares": 23062,
+      "volumes_com_altura": 18304,
+      "predios_com_volume_solar_associado_e_altura": 1159,
+      "paradas_gtfs_brutas_no_poligono": 127
+    },
+    {
+      "bairro": "casa-forte",
+      "predios_indice": 82,
+      "predios_com_dsqfl": 82,
+      "logradouros_indice": 21,
+      "vias_com_alagamento_indice_2014_2024": 1,
+      "predios_com_codigo_na_malha": 82,
+      "centros_a_ate_50m_da_propria_via": 70,
+      "feicoes_distintas_dentro_do_corte": 20,
+      "distancia_mediana_da_propria_via_m": 26.7,
+      "defesa_civil_cache_2020_2024": {
+        "linhas_alagamento": 0,
+        "linhas_com_data": 0,
+        "linhas_ligadas_exatamente": 0,
+        "vias_distintas_ligadas": 0,
+        "datas_distintas_dos_vinculos": 0
+      },
+      "drenagem": {
+        "predios_com_chamado_indice_a_150m": 64,
+        "linhas_do_cache_2025_2026": 63,
+        "linhas_do_cache_com_ponto_a_30km_do_centro_de_referencia": 22
+      },
+      "cttu_2022_2024": {
+        "predios_com_chamado_de_sinistro_com_vitima_a_150m": 72,
+        "predios_com_chamado_de_atropelamento_a_150m": 0,
+        "linhas_de_atropelamento_cache": 4,
+        "linhas_com_numero": 2,
+        "linhas_com_possivel_cruzamento": 1
+      },
+      "luse_vigentes_na_particao": 0,
+      "predios_com_obras_relevantes_24m": 51,
+      "predios_com_quartis_itbi": 38,
+      "volumes_solares": 8041,
+      "volumes_com_altura": 6643,
+      "predios_com_volume_solar_associado_e_altura": 76,
+      "paradas_gtfs_brutas_no_poligono": 11
+    },
+    {
+      "bairro": "gracas",
+      "predios_indice": 291,
+      "predios_com_dsqfl": 291,
+      "logradouros_indice": 58,
+      "vias_com_alagamento_indice_2014_2024": 0,
+      "predios_com_codigo_na_malha": 291,
+      "centros_a_ate_50m_da_propria_via": 281,
+      "feicoes_distintas_dentro_do_corte": 58,
+      "distancia_mediana_da_propria_via_m": 26.2,
+      "defesa_civil_cache_2020_2024": {
+        "linhas_alagamento": 0,
+        "linhas_com_data": 0,
+        "linhas_ligadas_exatamente": 0,
+        "vias_distintas_ligadas": 0,
+        "datas_distintas_dos_vinculos": 0
+      },
+      "drenagem": {
+        "predios_com_chamado_indice_a_150m": 282,
+        "linhas_do_cache_2025_2026": 167,
+        "linhas_do_cache_com_ponto_a_30km_do_centro_de_referencia": 77
+      },
+      "cttu_2022_2024": {
+        "predios_com_chamado_de_sinistro_com_vitima_a_150m": 271,
+        "predios_com_chamado_de_atropelamento_a_150m": 35,
+        "linhas_de_atropelamento_cache": 5,
+        "linhas_com_numero": 2,
+        "linhas_com_possivel_cruzamento": 3
+      },
+      "luse_vigentes_na_particao": 2,
+      "predios_com_obras_relevantes_24m": 229,
+      "predios_com_quartis_itbi": 172,
+      "volumes_solares": 8868,
+      "volumes_com_altura": 7064,
+      "predios_com_volume_solar_associado_e_altura": 252,
+      "paradas_gtfs_brutas_no_poligono": 28
+    },
+    {
+      "bairro": "espinheiro",
+      "predios_indice": 156,
+      "predios_com_dsqfl": 156,
+      "logradouros_indice": 28,
+      "vias_com_alagamento_indice_2014_2024": 1,
+      "predios_com_codigo_na_malha": 156,
+      "centros_a_ate_50m_da_propria_via": 150,
+      "feicoes_distintas_dentro_do_corte": 28,
+      "distancia_mediana_da_propria_via_m": 26.9,
+      "defesa_civil_cache_2020_2024": {
+        "linhas_alagamento": 3,
+        "linhas_com_data": 3,
+        "linhas_ligadas_exatamente": 1,
+        "vias_distintas_ligadas": 1,
+        "datas_distintas_dos_vinculos": 1
+      },
+      "drenagem": {
+        "predios_com_chamado_indice_a_150m": 156,
+        "linhas_do_cache_2025_2026": 181,
+        "linhas_do_cache_com_ponto_a_30km_do_centro_de_referencia": 72
+      },
+      "cttu_2022_2024": {
+        "predios_com_chamado_de_sinistro_com_vitima_a_150m": 151,
+        "predios_com_chamado_de_atropelamento_a_150m": 24,
+        "linhas_de_atropelamento_cache": 4,
+        "linhas_com_numero": 4,
+        "linhas_com_possivel_cruzamento": 1
+      },
+      "luse_vigentes_na_particao": 0,
+      "predios_com_obras_relevantes_24m": 117,
+      "predios_com_quartis_itbi": 79,
+      "volumes_solares": 7810,
+      "volumes_com_altura": 6265,
+      "predios_com_volume_solar_associado_e_altura": 67,
+      "paradas_gtfs_brutas_no_poligono": 17
+    },
+    {
+      "bairro": "madalena",
+      "predios_indice": 280,
+      "predios_com_dsqfl": 280,
+      "logradouros_indice": 72,
+      "vias_com_alagamento_indice_2014_2024": 0,
+      "predios_com_codigo_na_malha": 280,
+      "centros_a_ate_50m_da_propria_via": 271,
+      "feicoes_distintas_dentro_do_corte": 72,
+      "distancia_mediana_da_propria_via_m": 24.3,
+      "defesa_civil_cache_2020_2024": {
+        "linhas_alagamento": 2,
+        "linhas_com_data": 2,
+        "linhas_ligadas_exatamente": 0,
+        "vias_distintas_ligadas": 0,
+        "datas_distintas_dos_vinculos": 0
+      },
+      "drenagem": {
+        "predios_com_chamado_indice_a_150m": 268,
+        "linhas_do_cache_2025_2026": 186,
+        "linhas_do_cache_com_ponto_a_30km_do_centro_de_referencia": 128
+      },
+      "cttu_2022_2024": {
+        "predios_com_chamado_de_sinistro_com_vitima_a_150m": 277,
+        "predios_com_chamado_de_atropelamento_a_150m": 103,
+        "linhas_de_atropelamento_cache": 11,
+        "linhas_com_numero": 10,
+        "linhas_com_possivel_cruzamento": 5
+      },
+      "luse_vigentes_na_particao": 0,
+      "predios_com_obras_relevantes_24m": 163,
+      "predios_com_quartis_itbi": 129,
+      "volumes_solares": 0,
+      "volumes_com_altura": 0,
+      "predios_com_volume_solar_associado_e_altura": 0,
+      "paradas_gtfs_brutas_no_poligono": 39
+    }
+  ],
+  "literatura": {
+    "pdfs": 217,
+    "sha256_distintos": 217,
+    "avaliacao_individual": {
+      "aplicar": 68,
+      "experimentar": 106,
+      "referencia": 43
+    },
+    "busca_automatica_itens": 180,
+    "busca_automatica_urls_distintas": 172,
+    "buscas_http_429": 3
+  }
+}

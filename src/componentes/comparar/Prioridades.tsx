@@ -16,7 +16,7 @@ export function PrioridadesPessoais({analises}:{analises:AnaliseV2[]}) {
  const edificios=useEdificios(analises);
  const destinos=analises.flatMap(a=>(a.caderno?.destinos??[]).map(d=>({chave:`${a.id}/${d.id}`,d,imovel:a.nome})));
  const escolhido=destinos.find(d=>d.chave===destinoId);
- return <GrupoLocal titulo="Comparar pelas minhas prioridades" apoio="Escolha o assunto que quer ver primeiro. A ordem vale nesta tela; não altera dados, não produz nota nem escolhe um vencedor.">
+ return <GrupoLocal titulo="Comparar pelas minhas prioridades" apoio="Escolha o assunto que quer ver primeiro. A ordem vale nesta tela e não altera dados.">
   {ordem.map((assunto,indice)=><View key={assunto} style={{gap:8,marginVertical:10}}>
    <Texto tipo="secao">{indice+1}. {titulos[assunto]}</Texto>
    {indice>0?<Botao rotulo={`Ver ${titulos[assunto]} primeiro`} onPress={()=>setOrdem([assunto,...ordem.filter(v=>v!==assunto)])}/>:null}

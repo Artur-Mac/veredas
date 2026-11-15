@@ -1,6 +1,8 @@
 // Aba "Resumo" (index.html: renderLiveVisit 5908–5913, CSS .vv-summary-* 3198–3206): o que a pessoa conferiu,
 // respondeu e percebeu. Sem nota nem veredito sobre o imóvel.
 import type { ReactNode } from "react";
+import type { JanelaSolar } from "../../dados/sol/contratos";
+import { nomeDaDirecao, origemDaJanela } from "../../dados/sol/janelas";
 import { View } from "react-native";
 import { ESPACO } from "../../tema/tokens";
 import { Icone } from "../Icone";
@@ -25,7 +27,7 @@ function TextoDaNota({ children }: { children: string }) {
   );
 }
 
-export function Resumo({ resumo, aoReverRespostas }: { resumo: ResumoDaVisita; aoReverRespostas: () => void }) {
+export function Resumo({ resumo, aoReverRespostas, janelas, aoExplorarSol }: { resumo: ResumoDaVisita; aoReverRespostas: () => void; janelas?: JanelaSolar[]; aoExplorarSol?: () => void }) {
   const faltam = resumo.pendentes.length;
   return (
     <Superficie>
@@ -69,7 +71,10 @@ export function Resumo({ resumo, aoReverRespostas }: { resumo: ResumoDaVisita; a
         </Nota>
       ))}
 
-      {resumo.orientacao ? (
+      {janelas && janelas.length > 0 ? <Nota titulo="Sol nas suas janelas">
+        {janelas.map(j => <TextoDaNota key={j.id}>{`${j.nome}${j.graus !== null ? ` · ${nomeDaDirecao(j.graus)}` : " · direção a conferir"}. ${origemDaJanela(j)}.`}</TextoDaNota>)}
+        {aoExplorarSol ? <LinkDeAcao rotulo="Explorar o sol" onPress={aoExplorarSol} /> : null}
+      </Nota> : !janelas && resumo.orientacao ? (
         <Nota titulo="Luz na janela">
           <TextoDaNota>{`${resumo.orientacao.nome} (${resumo.orientacao.rotulo}) · ${resumo.orientacao.graus}° registrados por você`}</TextoDaNota>
         </Nota>

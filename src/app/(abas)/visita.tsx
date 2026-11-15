@@ -23,6 +23,11 @@ import { PainelDeCampo } from "../../componentes/visita-v1/NoImovel";
 import { Preparar } from "../../componentes/visita-v1/Preparar";
 import { Resumo } from "../../componentes/visita-v1/Resumo";
 import { useVisita } from "../../componentes/visita-v1/useVisita";
+import { registroSolar } from "../../dados/sol/janelas";
+import { eCoberto } from "../../dados/recife/bairros";
+import { edificiosDoBairro } from "../../dados/recife/indice";
+import { camadasDasAnalises } from "../../dados/camadasDasTelas";
+import { EsperaDasCamadas } from "../../componentes/EsperaDasCamadas";
 import { mensagemParaCorretor } from "../../dados/mensagem";
 import { useAnalises } from "../../estado/Analises";
 import { useTema } from "../../tema/Tema";
@@ -46,11 +51,15 @@ const TEXTOS: Record<Aba, { chamada: string; titulo: string; apoio: string }> = 
 
 export default function TelaVisita() {
   const { cor } = useTema();
+  const { lista } = useAnalises();
   // O aviso (toast) vive dentro da tela: "Mensagem copiada" aparece sobre o conteúdo da aba.
+  // D036: as perguntas e a lista de imóveis leem o índice de cada bairro do caderno, fora do bundle.
   return (
     <View style={{ flex: 1, backgroundColor: cor("cor-fundo") }}>
       <ProvedorDeAviso>
-        <ConteudoDaVisita />
+        <EsperaDasCamadas caminhos={camadasDasAnalises(lista)} carregando="Carregando os dados dos seus imóveis…" oQue="os dados dos bairros dos seus imóveis">
+          <ConteudoDaVisita />
+        </EsperaDasCamadas>
       </ProvedorDeAviso>
     </View>
   );
@@ -105,6 +114,15 @@ function ConteudoDaVisita() {
     return perguntasDaVisita({ ...analise, visita: { ...analise.visita, perguntasProprias: proprias } }, lista, new Date());
   }, [analise, proprias, lista]);
   const predio = useMemo(() => (analise ? predioDaAnalise(analise) : null), [analise]);
+  const vizinhos = useMemo(() => {
+    if (!predio || !analise || !eCoberto(analise.bairro)) return [];
+    try {
+      return edificiosDoBairro(analise.bairro);
+    } catch {
+      return [];
+    }
+  }, [predio, analise]);
+  const andarConhecido = analise && !analise.declarados.andar.aConfirmar ? analise.declarados.andar.valor : null;
 
   const analiseLocal = useMemo(() => (analise && visita ? { ...analise, visita } : null), [analise, visita]);
   const mensagemSugerida = useMemo(
@@ -280,14 +298,18 @@ function ConteudoDaVisita() {
             ) : null}
             {abaAtual === "campo" ? (
               <PainelDeCampo
+                analiseId={analise.id}
                 perguntas={perguntas}
                 controle={controle}
                 aoAbrirPergunta={(id) => definirGaveta({ tipo: "pergunta", id })}
                 aoAdicionarPergunta={() => definirGaveta({ tipo: "nova" })}
+                predio={predio}
+                vizinhos={vizinhos}
+                andar={andarConhecido}
               />
             ) : null}
             {abaAtual === "resumo" ? (
-              <Resumo resumo={resumirVisita(visita, perguntas)} aoReverRespostas={() => definirAba("campo")} />
+              <Resumo resumo={resumirVisita(visita, perguntas)} aoReverRespostas={() => definirAba("campo")} janelas={registroSolar(analise).janelas} aoExplorarSol={() => router.push({ pathname: "/sol", params: { id: analise.id } })} />
             ) : null}
           </View>
 

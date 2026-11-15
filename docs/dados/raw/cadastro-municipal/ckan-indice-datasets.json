@@ -1,0 +1,833 @@
+{
+  "lotes": [
+    {
+      "id": "area-urbana",
+      "titulo": "Área urbana",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1702c764-ec7a-4ef0-9861-8acd0e40c819/resource/a378d50a-5e55-4956-a28c-13305acfc2b3/download/bairros-e-rpas-do-recife.csv"
+        },
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1702c764-ec7a-4ef0-9861-8acd0e40c819/resource/5c67ce14-1799-40c4-a37c-9daa04d1761c/download/bairros-do-recife.geojson"
+        },
+        {
+          "format": "SHP",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1702c764-ec7a-4ef0-9861-8acd0e40c819/resource/2acb865c-5d8c-4bb8-bbd0-497f221c722a/download/bairros-do-recife-shapefile.shp"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1702c764-ec7a-4ef0-9861-8acd0e40c819/resource/15f820ba-6370-4d49-af5e-4eec6e559bf6/download/trechos-de-logradouros-por-bairro.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1702c764-ec7a-4ef0-9861-8acd0e40c819/resource/b4124768-953e-4080-870e-a655a755f40a/download/logradouros-por-face-de-quadra.csv"
+        },
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1702c764-ec7a-4ef0-9861-8acd0e40c819/resource/5c9068d9-7f36-45cd-a3ca-659a83dc0e37/download/face-de-quadra.geojson"
+        },
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1702c764-ec7a-4ef0-9861-8acd0e40c819/resource/c41ee0d0-bb33-4380-8809-2e9082d79ab0/download/lotes.geojson"
+        },
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1702c764-ec7a-4ef0-9861-8acd0e40c819/resource/6be90377-7b6d-483c-9b58-f7f34401ee6a/download/trechos-de-logradouros.geojson"
+        }
+      ]
+    },
+    {
+      "id": "faixas-e-corredores-de-onibus",
+      "titulo": "Faixas e Corredores de ônibus",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/cd77473e-107e-4dd2-9b8a-5069bfb16960/resource/0fecaf92-2a7a-42d0-ab33-820075f14d7d/download/faixas-e-corredores-exclusivos.csv"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/cd77473e-107e-4dd2-9b8a-5069bfb16960/resource/e342ba41-e306-4213-bf11-b15f79581c48/download/dicionario-de-dados-faixas-e-corredores-exclusivos.json"
+        },
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/cd77473e-107e-4dd2-9b8a-5069bfb16960/resource/4cee8c9a-681f-4e88-a347-0142e449e3fc/download/faixas-e-corredores-de-onibus.geojson"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/cd77473e-107e-4dd2-9b8a-5069bfb16960/resource/f3352973-ac76-4bb8-a4c4-41bcb2ac2b03/download/dicionario-de-dados-das-faixas-e-rotas-de-onibus.json"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/cd77473e-107e-4dd2-9b8a-5069bfb16960/resource/c2edab51-bf3f-4106-a356-96a15afc55b8/download/dicionario-de-dados-das-faixas-e-rotas-de-onibus.pdf"
+        }
+      ]
+    },
+    {
+      "id": "cobertura-da-terra",
+      "titulo": "Cobertura da Terra",
+      "recursos": [
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/4eff8deb-49df-47b5-9b6b-096071f309d3/resource/74e613ac-0612-474e-b605-2ce99097c890/download/cobertura-da-terra-recife.geojson"
+        }
+      ]
+    }
+  ],
+  "iptu": [
+    {
+      "id": "imposto-predial-e-territorial-urbano-iptu",
+      "titulo": "Imposto Predial e Territorial Urbano (IPTU)",
+      "recursos": [
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/4a82b8b9-66a1-441c-aece-dfdf1dbbf994/resource/ccbe03c4-6241-45a5-a081-53ec7e45badb/download/dicionario-de-dados-iptu.json"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/4a82b8b9-66a1-441c-aece-dfdf1dbbf994/resource/9a847338-92a6-4b74-b3e8-c8f8b57aff2d/download/iptu_2026.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/4a82b8b9-66a1-441c-aece-dfdf1dbbf994/resource/a024c141-2095-48ac-a8fa-d0d8ac18bce8/download/iptu-2025.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/4a82b8b9-66a1-441c-aece-dfdf1dbbf994/resource/d012d6e9-dd6c-40be-8886-c6b553523db3/download/iptu-2024.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/4a82b8b9-66a1-441c-aece-dfdf1dbbf994/resource/07f2d539-eebf-40ca-9c6b-b01212ae5a92/download/iptu-2023.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/4a82b8b9-66a1-441c-aece-dfdf1dbbf994/resource/464f31b4-66e0-4403-8c91-137838b57176/download/iptu-2022.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/4a82b8b9-66a1-441c-aece-dfdf1dbbf994/resource/96d8d455-f66e-4c48-a237-7a802fbac9c6/download/iptu-2021.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/4a82b8b9-66a1-441c-aece-dfdf1dbbf994/resource/ad921387-1166-4daa-a799-a5c2aa70b528/download/iptu-2020.csv"
+        }
+      ]
+    }
+  ],
+  "licenciamento": [
+    {
+      "id": "licenciamento-sanitario",
+      "titulo": "Licenciamento Sanitário",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/8535916b-588f-4006-bb1a-5d9c587a92d7/resource/d09900c8-14f2-4dc4-a128-b73a514ec791/download/licenciamento_sanitario.csv"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/8535916b-588f-4006-bb1a-5d9c587a92d7/resource/23543184-6785-48f2-bc36-7783865b1f48/download/dicionario-licenciamento-sanitario.pdf"
+        }
+      ]
+    },
+    {
+      "id": "licenciamento-urbanistico",
+      "titulo": "Licenciamento Urbanístico",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/f79dbcdf-ec99-4f4c-9b84-b33175c35528/resource/39927a3d-3235-436a-9dc8-df7f4ea3b720/download/licenciamento_urbanistico.csv"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/f79dbcdf-ec99-4f4c-9b84-b33175c35528/resource/f6f8b7e4-c13c-429b-af6c-b41f26cab505/download/dicionario-de-dados-licenciamento-urbanistico.pdf"
+        }
+      ]
+    },
+    {
+      "id": "licenciamento-ambiental",
+      "titulo": "Licenciamento Ambiental",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/75869ab7-ccce-40d6-aed6-4afca4c8cc82/resource/982d6c85-906a-4ea8-90e0-31f55eac63f9/download/licenciamento_ambiental.csv"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/75869ab7-ccce-40d6-aed6-4afca4c8cc82/resource/46451d7a-412b-40ad-b8d7-31932d6a2c8c/download/metadados-do-licenciamento-ambiental.pdf"
+        }
+      ]
+    },
+    {
+      "id": "outorga-onerosa-do-direito-de-construir",
+      "titulo": "Outorga onerosa do direito de construir",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/b285acc0-aafa-42e5-8dba-f2878de3acea/resource/b1420e7c-e6cb-451b-aad3-1ec2e65857bc/download/outorga-onerosa-do-direito-de-construir.csv"
+        }
+      ]
+    },
+    {
+      "id": "especies-de-aves-presentes-no-recife",
+      "titulo": "Espécies de aves presentes no Recife",
+      "recursos": [
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/0a319b1a-d4ef-4fdb-9c62-8eb350d9f1b1/resource/1ce0a405-fe8e-4ba3-ab59-7a26733b842a/download/especies-de-aves-presente-nas-pracas-do-recife.geojson"
+        },
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/0a319b1a-d4ef-4fdb-9c62-8eb350d9f1b1/resource/de504db6-d896-4d3a-8ce0-0e7bfd5785d4/download/especies-de-aves-presente-nas-unidades-de-conservacao-da-natureza.geojson"
+        }
+      ]
+    },
+    {
+      "id": "mapas-de-limites-e-divisoes-territoriais",
+      "titulo": "Mapas de limites e divisões territoriais",
+      "recursos": [
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ce23d3f4-7474-44d3-b310-19f3afcebf4a/resource/d5f956ce-7e1f-4c74-839b-06cb490c3721/download/limites-dos-bairros-2023.geojson"
+        },
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ce23d3f4-7474-44d3-b310-19f3afcebf4a/resource/20d87b5f-32ae-440f-948b-d3ad95847430/download/limites-por-microrregiao-2023.geojson"
+        },
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ce23d3f4-7474-44d3-b310-19f3afcebf4a/resource/44682388-5a26-4190-9138-fd72a1048de1/download/limites-por-rpa-2023.geojson"
+        },
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ce23d3f4-7474-44d3-b310-19f3afcebf4a/resource/b83fb0a3-3ef1-4f42-88fc-4dd864f419ce/download/limites-por-logradouros-2023.geojson"
+        }
+      ]
+    },
+    {
+      "id": "monitoramento-da-politica-urbana-e-plano-diretor",
+      "titulo": "Monitoramento da política urbana e Plano Diretor",
+      "recursos": []
+    },
+    {
+      "id": "arvores-tombadas",
+      "titulo": "Árvores Tombadas",
+      "recursos": [
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/42bbfbf1-57ad-4121-9087-ac52d0511a3a/resource/1104dfc8-5afb-467c-9135-f83257249c15/download/arvores-tombadas-georreferenciadas.geojson"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/42bbfbf1-57ad-4121-9087-ac52d0511a3a/resource/a652ee4e-832b-4d61-a304-50a78ce25995/download/lista-de-arvores-tombadas.csv"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/42bbfbf1-57ad-4121-9087-ac52d0511a3a/resource/3b2c95b6-93dc-42ff-858f-206c6b511ce4/download/dicionario-de-dados-de-arvores-tombadas.pdf.pdf"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/42bbfbf1-57ad-4121-9087-ac52d0511a3a/resource/d5300f83-901c-4ae9-ba1f-85bbf6ee1c67/download/dicionario-de-dados-de-arvores-tombadas.json"
+        }
+      ]
+    },
+    {
+      "id": "unidades-protegidas-do-recife",
+      "titulo": "Unidades Protegidas do Recife - Meio Ambiente",
+      "recursos": [
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/571c53d6-c288-4f01-bfc7-7026e2956631/resource/dc53573b-cce4-409d-9bc2-45e240439fe7/download/-unidades-protegidas-do-recife-meio-ambiente.geojson"
+        }
+      ]
+    },
+    {
+      "id": "faixas-marginais-dos-recursos-hidricos",
+      "titulo": "Faixas Marginais dos recursos hídricos",
+      "recursos": [
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1bf02d9c-2754-41cc-aede-1ac8e237f166/resource/81310c02-4bb8-4fea-b676-0c42977b4aef/download/faixas-marginais-dos-recursos-hidricos.geojson"
+        }
+      ]
+    }
+  ],
+  "ambiental": [
+    {
+      "id": "licenciamento-ambiental",
+      "titulo": "Licenciamento Ambiental",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/75869ab7-ccce-40d6-aed6-4afca4c8cc82/resource/982d6c85-906a-4ea8-90e0-31f55eac63f9/download/licenciamento_ambiental.csv"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/75869ab7-ccce-40d6-aed6-4afca4c8cc82/resource/46451d7a-412b-40ad-b8d7-31932d6a2c8c/download/metadados-do-licenciamento-ambiental.pdf"
+        }
+      ]
+    },
+    {
+      "id": "autos-de-infracao-ambiental",
+      "titulo": "Autos de infração ambiental",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ac38cabc-0885-4ba6-981c-c90cd4e71118/resource/899de797-b869-4c51-98a5-7b91401b058b/download/pessoa-fisica-e-juridica-autuadas-2023.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ac38cabc-0885-4ba6-981c-c90cd4e71118/resource/18bcd423-3e91-4f7b-8cdb-644a3efecf21/download/pessoa-fisica-e-juridica-autuadas-2022.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ac38cabc-0885-4ba6-981c-c90cd4e71118/resource/081eed8c-e56d-4107-ae74-6ec2c921b14a/download/pessoa-fisica-e-juridica-autuadas-2021.csv"
+        }
+      ]
+    },
+    {
+      "id": "unidades-protegidas-do-recife",
+      "titulo": "Unidades Protegidas do Recife - Meio Ambiente",
+      "recursos": [
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/571c53d6-c288-4f01-bfc7-7026e2956631/resource/dc53573b-cce4-409d-9bc2-45e240439fe7/download/-unidades-protegidas-do-recife-meio-ambiente.geojson"
+        }
+      ]
+    },
+    {
+      "id": "faixas-marginais-dos-recursos-hidricos",
+      "titulo": "Faixas Marginais dos recursos hídricos",
+      "recursos": [
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1bf02d9c-2754-41cc-aede-1ac8e237f166/resource/81310c02-4bb8-4fea-b676-0c42977b4aef/download/faixas-marginais-dos-recursos-hidricos.geojson"
+        }
+      ]
+    },
+    {
+      "id": "imovel-de-protecao-de-area-verde-ipav",
+      "titulo": "Imóvel de Proteção de Área Verde (IPAV)",
+      "recursos": [
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/17b323f5-9937-41b7-a456-93cbcbd5bc05/resource/5bfe1004-8760-4fdd-a4ad-c4d632217ed0/download/imoveis-de-protecao-de-area-verde-ipav.geojson"
+        }
+      ]
+    },
+    {
+      "id": "censo-arboreo",
+      "titulo": "Censo Arbóreo",
+      "recursos": [
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/e3ed201c-ab2f-4a42-b364-a1897724add1/resource/4ac43805-0f44-43b0-bdf1-c25d89b5fa5d/download/censo-arboreo-2023.geojson"
+        }
+      ]
+    },
+    {
+      "id": "especies-de-aves-presentes-no-recife",
+      "titulo": "Espécies de aves presentes no Recife",
+      "recursos": [
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/0a319b1a-d4ef-4fdb-9c62-8eb350d9f1b1/resource/1ce0a405-fe8e-4ba3-ab59-7a26733b842a/download/especies-de-aves-presente-nas-pracas-do-recife.geojson"
+        },
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/0a319b1a-d4ef-4fdb-9c62-8eb350d9f1b1/resource/de504db6-d896-4d3a-8ce0-0e7bfd5785d4/download/especies-de-aves-presente-nas-unidades-de-conservacao-da-natureza.geojson"
+        }
+      ]
+    },
+    {
+      "id": "pontos-de-coleta-seletiva",
+      "titulo": "Pontos de coleta seletiva e resíduos",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/b666164e-b813-4ab7-9842-f3bbdcdda07e/resource/bab62397-be40-436a-bc9c-fe7c7bacc0c6/download/pontos-de-coleta.csv"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/b666164e-b813-4ab7-9842-f3bbdcdda07e/resource/a2ce971b-b633-4bb0-8691-f96d9dca9c57/download/dicionario-de-dados-pontos-de-coleta.json"
+        }
+      ]
+    },
+    {
+      "id": "unidades-de-recebimento-de-pequenos-volumes",
+      "titulo": "Unidades de recebimento de pequenos volumes",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1d069c27-715b-4eea-84d7-186b19d0e3a5/resource/dd0d6d54-a313-490c-917f-fcb1b54fe591/download/eco-estacoes-2023.csv"
+        }
+      ]
+    },
+    {
+      "id": "podas-e-extracoes",
+      "titulo": "Podas e Extrações",
+      "recursos": [
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/ad506dca-3abf-48a4-87d9-b2f120de9641/download/dicionario-de-dados-erradicacao.json"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/3779e181-16a8-428b-aaed-632496bcb047/download/dicionario-de-dados-podas.json"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/ab3d817b-9e7b-4213-8953-8a77f425a3d0/download/dicionario-de-dados-erradicacao.json"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/997ecdfe-bfa5-4afc-86f6-371983479374/download/dicionario-de-dados-podas.json"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/d40984db-4db9-4557-b1e9-fe324f39fb98/download/erradicacao-de-arvores-2022.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/712f2199-ae75-454a-b233-ee40487c66fc/download/erradicacao-de-arvores-2023.csv"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/b6e4139a-d3e2-414a-ba29-1911e4aa28ca/download/dicionario-de-dados-erradicacao.json"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/3f51baa6-f7fb-4195-aaf2-6ebba7558909/download/podas-de-arvores-2022.csv"
+        }
+      ]
+    }
+  ],
+  "defesa civil": [
+    {
+      "id": "defesa-civil",
+      "titulo": "Defesa Civil",
+      "recursos": [
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c1d733d9-5867-481e-9c18-5fe572300ab2/resource/219a92f2-9cd1-4a6e-870c-f1059b94c4fc/download/dicionario-de-dados-das-areas-de-risco.pdf"
+        },
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c1d733d9-5867-481e-9c18-5fe572300ab2/resource/ec18759d-fac2-445e-ae72-af9d9210b831/download/coordenadas-geograficas-da-regiao-sul.geojson"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c1d733d9-5867-481e-9c18-5fe572300ab2/resource/75344435-aca8-4aef-ab2c-9521d6e5ff18/download/areas-de-risco-da-regional-sul.csv"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c1d733d9-5867-481e-9c18-5fe572300ab2/resource/bb0c4134-cac8-4588-88be-97fed5a11759/download/dicionario-de-dados-das-areas-de-risco.json"
+        }
+      ]
+    },
+    {
+      "id": "efetivo-da-defesa-civil",
+      "titulo": "Efetivo da Defesa Civil",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/f7a72991-bf53-41c4-8a97-b1d8ab39db33/resource/6084cef1-52ea-42c6-b535-5add65d82ae2/download/efetivo-da-defesa-civil-2023.csv"
+        }
+      ]
+    },
+    {
+      "id": "demandas-dos-cidadaos-e-servicos-dados-vivos-recife",
+      "titulo": "Demandas dos Cidadãos e Serviços - Dados Vivos Recife",
+      "recursos": [
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/bdab4128-9a12-4e1b-8460-bf14152a1e5b/resource/be197123-cbb1-4541-880a-89e4fefb7961/download/faixa-azul-velocidade-das-vias-em-tempo-real.json"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/bdab4128-9a12-4e1b-8460-bf14152a1e5b/resource/f3b3a0ab-ac8f-4fe8-a1cc-c3afdd20081a/download/solicitacoes-156-atendimentos-de-servicos-da-emlurb.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/bdab4128-9a12-4e1b-8460-bf14152a1e5b/resource/2f8f3a95-c8dc-41dd-b396-e586276fed5c/download/sedec-solicitacoes-tempo-real.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/bdab4128-9a12-4e1b-8460-bf14152a1e5b/resource/d7c98300-5043-4d6c-92d7-20a519b25366/download/sedec-vistorias-tempo-real.csv"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/bdab4128-9a12-4e1b-8460-bf14152a1e5b/resource/341801f3-3502-4a31-a12b-bab666a732e8/download/dicionario-de-dados-sedec-chamados.json"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/bdab4128-9a12-4e1b-8460-bf14152a1e5b/resource/70ba74a8-9d49-4449-8a11-6edc5b60ab2c/download/dicionario-de-dados-sedec-vistorias.json"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/bdab4128-9a12-4e1b-8460-bf14152a1e5b/resource/0b2a9ac8-d456-4627-a952-3d4d0cb12f90/download/dicionario-de-dados-sedec-lonas.json"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/bdab4128-9a12-4e1b-8460-bf14152a1e5b/resource/928eacb9-c44d-4cfc-9916-da58521c5ec2/download/dicionario-de-dados-156-tempo-real.json"
+        }
+      ]
+    },
+    {
+      "id": "registro-de-atendimentos-da-defesa-civil",
+      "titulo": "Registro de Atendimentos da Defesa Civil",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/ef03b0e3-0c83-4eb8-a2fb-97867d195204/download/atendimentos-2025.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/bbd37e34-44f7-4c21-a906-e4a2f560a359/download/atendimentos-2024.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/0f276561-43c2-4233-a539-cbfdd1b38d16/download/atendimentos-2023.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/71967fab-750b-44a9-8a86-405a99eb576c/download/atendimentos-2022.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/3362394d-0b60-4607-8f35-06421f7ce15b/download/atendimentos-2021.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/a2e18f69-9d10-4482-8f5f-04bc7bd2e8e7/download/atendimentos-2020.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/fed15150-ff77-41c6-9c1d-5055ae109903/download/atendimentos-2025.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/6d5cf1e6-3249-4d87-bc0d-a57ff5ba43e1/download/atendimentos-2024.csv"
+        }
+      ]
+    },
+    {
+      "id": "abrigos-temporarios-disponiveis",
+      "titulo": "Abrigos - Chuvas no Recife - Acolhimento",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/2b2657a8-d7fe-43a5-9295-1eb5e02111c2/resource/35566d21-a428-4595-89dc-eb405380b33e/download/abrigos-temporario.csv"
+        }
+      ]
+    }
+  ],
+  "alagamento": [
+    {
+      "id": "registro-de-atendimentos-da-defesa-civil",
+      "titulo": "Registro de Atendimentos da Defesa Civil",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/ef03b0e3-0c83-4eb8-a2fb-97867d195204/download/atendimentos-2025.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/bbd37e34-44f7-4c21-a906-e4a2f560a359/download/atendimentos-2024.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/0f276561-43c2-4233-a539-cbfdd1b38d16/download/atendimentos-2023.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/71967fab-750b-44a9-8a86-405a99eb576c/download/atendimentos-2022.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/3362394d-0b60-4607-8f35-06421f7ce15b/download/atendimentos-2021.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/a2e18f69-9d10-4482-8f5f-04bc7bd2e8e7/download/atendimentos-2020.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/fed15150-ff77-41c6-9c1d-5055ae109903/download/atendimentos-2025.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/ebda936c-f15a-4e0d-b8b6-5a9e270b0b67/resource/6d5cf1e6-3249-4d87-bc0d-a57ff5ba43e1/download/atendimentos-2024.csv"
+        }
+      ]
+    }
+  ],
+  "árvores": [
+    {
+      "id": "arvores-tombadas",
+      "titulo": "Árvores Tombadas",
+      "recursos": [
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/42bbfbf1-57ad-4121-9087-ac52d0511a3a/resource/1104dfc8-5afb-467c-9135-f83257249c15/download/arvores-tombadas-georreferenciadas.geojson"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/42bbfbf1-57ad-4121-9087-ac52d0511a3a/resource/a652ee4e-832b-4d61-a304-50a78ce25995/download/lista-de-arvores-tombadas.csv"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/42bbfbf1-57ad-4121-9087-ac52d0511a3a/resource/3b2c95b6-93dc-42ff-858f-206c6b511ce4/download/dicionario-de-dados-de-arvores-tombadas.pdf.pdf"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/42bbfbf1-57ad-4121-9087-ac52d0511a3a/resource/d5300f83-901c-4ae9-ba1f-85bbf6ee1c67/download/dicionario-de-dados-de-arvores-tombadas.json"
+        }
+      ]
+    },
+    {
+      "id": "podas-e-extracoes",
+      "titulo": "Podas e Extrações",
+      "recursos": [
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/ad506dca-3abf-48a4-87d9-b2f120de9641/download/dicionario-de-dados-erradicacao.json"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/3779e181-16a8-428b-aaed-632496bcb047/download/dicionario-de-dados-podas.json"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/ab3d817b-9e7b-4213-8953-8a77f425a3d0/download/dicionario-de-dados-erradicacao.json"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/997ecdfe-bfa5-4afc-86f6-371983479374/download/dicionario-de-dados-podas.json"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/d40984db-4db9-4557-b1e9-fe324f39fb98/download/erradicacao-de-arvores-2022.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/712f2199-ae75-454a-b233-ee40487c66fc/download/erradicacao-de-arvores-2023.csv"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/b6e4139a-d3e2-414a-ba29-1911e4aa28ca/download/dicionario-de-dados-erradicacao.json"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c24bb36a-7d47-48de-a768-5133eb3a8326/resource/3f51baa6-f7fb-4195-aaf2-6ebba7558909/download/podas-de-arvores-2022.csv"
+        }
+      ]
+    },
+    {
+      "id": "censo-arboreo",
+      "titulo": "Censo Arbóreo",
+      "recursos": [
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/e3ed201c-ab2f-4a42-b364-a1897724add1/resource/4ac43805-0f44-43b0-bdf1-c25d89b5fa5d/download/censo-arboreo-2023.geojson"
+        }
+      ]
+    },
+    {
+      "id": "unidade-conservacao-da-natureza",
+      "titulo": "Unidade Conservação da Natureza",
+      "recursos": [
+        {
+          "format": "GeoJSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/9c0aea52-1938-439a-b0e2-1181a156604d/resource/bc17896e-b2d9-4378-a87f-2f2440712bfd/download/unidades-de-conservacao-da-natureza-ucn.geojson"
+        }
+      ]
+    }
+  ],
+  "empresas": [
+    {
+      "id": "empresas-da-cidade-do-recife",
+      "titulo": "Empresas da Cidade do Recife",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/3442510c-c85a-4271-bd2d-49cdff392459/resource/e080550e-7238-444b-a821-8f5acfd82df2/download/empresasinativender.csv"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/3442510c-c85a-4271-bd2d-49cdff392459/resource/68ed40b0-5121-42ad-be12-14a081cfafa9/download/dicionario-de-dados-das-empresas-do-recife.json"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/3442510c-c85a-4271-bd2d-49cdff392459/resource/6d5e72aa-3f4b-4dc3-817c-0e0305cef538/download/empresasativender.csv"
+        }
+      ]
+    },
+    {
+      "id": "outorga-onerosa-do-direito-de-construir",
+      "titulo": "Outorga onerosa do direito de construir",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/b285acc0-aafa-42e5-8dba-f2878de3acea/resource/b1420e7c-e6cb-451b-aad3-1ec2e65857bc/download/outorga-onerosa-do-direito-de-construir.csv"
+        }
+      ]
+    },
+    {
+      "id": "contratos",
+      "titulo": "Contratos , Aditivos e Apostilamentos",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/195bb808-d2f0-4a41-8fad-00edadfdc281/resource/a72e7175-8fcd-40bd-82ef-056a621a6165/download/contratos.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/195bb808-d2f0-4a41-8fad-00edadfdc281/resource/145f5c46-10ea-4c02-ba26-21333ded8ae9/download/termo-aditivo.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/195bb808-d2f0-4a41-8fad-00edadfdc281/resource/acb67bb7-7cdb-4ffc-96ab-7aeedd13e859/download/apostilamento-dos-contratos.csv"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/195bb808-d2f0-4a41-8fad-00edadfdc281/resource/c8a653fc-44ce-4157-bcc8-e14a7f193cde/download/dicionario-de-dados-contratos.pdf"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/195bb808-d2f0-4a41-8fad-00edadfdc281/resource/0f8ae8a6-0071-4f5b-982c-cd118a05af66/download/dicionario-de-dados-apostilamentos.pdf"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/195bb808-d2f0-4a41-8fad-00edadfdc281/resource/10eba1cb-55c6-4a2e-8761-aca521b8fdff/download/dicionario-de-dados-termo-aditivo.pdf"
+        }
+      ]
+    },
+    {
+      "id": "licitacoes",
+      "titulo": "Licitações",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/e30eb7ea-a35d-4510-a0dd-1387e5459e64/resource/f0d3c9e4-da6d-4f7f-8184-0d91f2021c8b/download/licitacoes-concluidas.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/e30eb7ea-a35d-4510-a0dd-1387e5459e64/resource/9771bedc-6f2e-43f0-bd4c-25b0de5500b5/download/licitacoes-em-andamento.csv"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/e30eb7ea-a35d-4510-a0dd-1387e5459e64/resource/30e76f99-3ba3-4ace-a2b4-029d4eb9d02c/download/dicionario-de-dados-licitacoes-concluidas.pdf"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/e30eb7ea-a35d-4510-a0dd-1387e5459e64/resource/9e6e185f-d111-44ab-830b-db02c12cb707/download/dicionario-de-dados-licitacoes-em-andamento.pdf"
+        }
+      ]
+    },
+    {
+      "id": "cemiterios",
+      "titulo": "Cemitérios",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c9e032bf-787b-434e-906a-9770f88d2132/resource/a48e0bec-028b-481d-a521-e04e98079268/download/cemiterios.csv"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/c9e032bf-787b-434e-906a-9770f88d2132/resource/4e7dfd8e-1c88-4694-9725-894ea4b02a4b/download/dicionario-de-dados-de-cemiterios.json"
+        }
+      ]
+    },
+    {
+      "id": "roteiro-de-coleta",
+      "titulo": "Roteiro de Coleta",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/d29159e2-cb76-4cfc-bea4-d71e9c221c1f/resource/2a0dd9cf-86f4-4ceb-83c1-7e39ff239cb0/download/roteiros-de-coleta-de-residuos.csv"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/d29159e2-cb76-4cfc-bea4-d71e9c221c1f/resource/3fff9deb-c0e1-4465-80b5-4547eff20116/download/dicionario-de-dados-dos-roteiros-de-coleta-de-residuos.pdf"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/d29159e2-cb76-4cfc-bea4-d71e9c221c1f/resource/7c0bc97c-5ea4-46f1-918c-81acdd66e280/download/dicionario-de-dados-dos-roteiros-de-coleta-de-residuos.json"
+        }
+      ]
+    },
+    {
+      "id": "oferta-de-alimentacao-escolar",
+      "titulo": "Oferta de alimentação escolar",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/b73d052e-c7c5-4a28-ae25-e138fbe57718/resource/b7a40f72-3439-46f8-9bb8-36cf6a7b9da0/download/oferta-alimentacao-2023.csv"
+        }
+      ]
+    },
+    {
+      "id": "calcadas-recuperadas-da-cidade-do-recife",
+      "titulo": "Calçadas Recuperadas da Cidade do Recife",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/738a27d0-0406-47d5-9bfd-b65480738b2f/resource/6b563ce1-e12c-4bc2-bacc-1a75b627c2d8/download/calcadas-recuperadas-do-recife-2019-emlurb.csv"
+        }
+      ]
+    },
+    {
+      "id": "pesagem-de-coletas-de-residuos",
+      "titulo": "Pesagem de Coletas de Resíduos",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1f8290e6-875c-4407-a390-17dd70be17e5/resource/45d0acc9-6fe0-4c4f-bce4-568a571beb0f/download/rotas-de-coletas.csv"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1f8290e6-875c-4407-a390-17dd70be17e5/resource/ddc98b51-3ce8-4d4f-ba59-d9c231bee5ff/download/dicionario-de-dados-das-rotas-de-coletas.pdf"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1f8290e6-875c-4407-a390-17dd70be17e5/resource/1c6901ad-863b-4ee7-9cc1-4b0afb6c6458/download/pesagem-de-residuos-2012.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1f8290e6-875c-4407-a390-17dd70be17e5/resource/97622c28-79dd-4273-89a6-9958bf398ade/download/pesagem-de-residuos-2013.csv"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1f8290e6-875c-4407-a390-17dd70be17e5/resource/bf281fbc-167b-4602-994b-30772b11987f/download/pesagem-de-residuos-2014.csv"
+        },
+        {
+          "format": "PDF",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1f8290e6-875c-4407-a390-17dd70be17e5/resource/ba79380a-0e62-4c16-8656-e516a1430c8e/download/dicionario-de-dados-das-pesagens-de-residuos.pdf"
+        },
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1f8290e6-875c-4407-a390-17dd70be17e5/resource/c81ded9f-aeb1-4aca-9b68-0a1f72241b37/download/pesagem-de-residuos-2015.csv"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/1f8290e6-875c-4407-a390-17dd70be17e5/resource/d806df4e-7c55-46a3-8657-f6329c4f09bc/download/dicionario-de-dados-das-rotas-de-coletas.json"
+        }
+      ]
+    },
+    {
+      "id": "classificacao-nacional-de-atividades-economicas-cnae",
+      "titulo": "Classificação Nacional de Atividades Econômicas - CNAE",
+      "recursos": [
+        {
+          "format": "CSV",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/4a1d2fee-8151-4d2b-ab60-c56169deb877/resource/7aa9b05d-81b4-4fa1-bda0-1f5167bb280c/download/tabela_cnae.csv"
+        },
+        {
+          "format": "JSON",
+          "url": "https://dados.recife.pe.gov.br:443/dataset/4a1d2fee-8151-4d2b-ab60-c56169deb877/resource/e3b14255-613e-400e-8473-ec7ea2044e53/download/dicionario-de-dados-cnae.json"
+        }
+      ]
+    }
+  ]
+}

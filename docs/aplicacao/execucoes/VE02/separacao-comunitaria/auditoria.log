@@ -1,0 +1,11 @@
+PASS tests/municipal-staging.test.ts
+  ✓ audita todas as 94 partições geradas, sem modificar o app (1072 ms)
+  staging municipal
+    ✓ valida o formato completo sem publicar ou habilitar bairro novo (34 ms)
+    ✓ recusa bairro errado, totais incorretos e referências inexistentes (66 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        1.766 s
+Ran all test suites matching /tests\/municipal-staging.test.ts/i.

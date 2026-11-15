@@ -647,6 +647,40 @@ describe("Comparar", () => {
     expect(router.push).toHaveBeenCalledWith("/visita");
     expect(await AsyncStorage.getItem("vereda-ativa-v1")).toBe("alu2");
   });
+
+  it("Resumo da decisão (VE01): quem visitar primeiro muda com a prioridade, e a pergunta vai para a visita", async () => {
+    await semear(duas(), carteiraCom(3, [cota]));
+    const arvore = await montar(React.createElement(Comparar));
+    let t = texto(arvore);
+    expect(t).toContain("Para decidir");
+    // Graças: 3.800 + 900 + 200 = 4.900 com seguro a confirmar; Casa Forte: 6.020 com tudo conhecido.
+    expect(t).toContain("Visite primeiro Graças, se o custo pesa mais agora.");
+    expect(t).toContain("Graças custa R$ 1.120/mês a menos no que já se sabe.");
+    expect(t).toContain("Casa Forte tem 17,5 m² a mais de área anunciada.");
+    // O seguro de Casa Forte (R$ 42) é conhecido e fica muito abaixo do limiar: a pergunta é de confirmação, não decisiva.
+    expect(t).toContain("Para confirmar na visita");
+    expect(t).toContain("Para inverter a ordem, o seguro incêndio de Graças teria de passar de R$ 1.120/mês; em Casa Forte é R$ 42/mês.");
+    expect(t).toContain("Em troca, Casa Forte tem 17,5 m² a mais.");
+    expect(t.match(/Graças custa R\$ 1\.120\/mês a menos no que já se sabe\./g)).toHaveLength(1);
+    expect(t).not.toMatch(/melhor|pior|vale a pena|barat|caro\b|nota\b|vencedor/i);
+    await tocar(arvore, "Mais espaço");
+    t = texto(arvore);
+    expect(t).toContain("Visite primeiro Casa Forte, se o espaço pesa mais agora.");
+    await tocar(arvore, "Levar para a visita de Graças");
+    await esperar(20);
+    const gracas = (await gravadas()).find((a) => a.id === "alu2");
+    expect(gracas?.visita.perguntasProprias.map((p) => p.texto)).toEqual(["Qual é o valor do seguro incêndio, e quem paga?"]);
+    expect((await gravadas()).find((a) => a.id === "alu1")?.visita.perguntasProprias).toEqual([]);
+    expect(texto(arvore)).toContain("Pergunta no roteiro da visita de Graças.");
+  });
+
+  it("Resumo da decisão: com uma só análise da modalidade, não aparece", async () => {
+    await semear([duas()[0]!], carteiraCom(3, [cota]));
+    const arvore = await montar(React.createElement(Comparar));
+    const t = texto(arvore);
+    expect(t).not.toContain("Para decidir");
+    expect(t).toContain("Duas análises de aluguel para comparar.");
+  });
 });
 
 // ——— Créditos ————————————————————————————————————————————————————————————————————————
@@ -836,8 +870,10 @@ describe("Cabeçalho do app (H2)", () => {
     await tocar(arvore, "Menu de navegação");
     expect(hospedeiro(arvore, "Menu de navegação")?.props.accessibilityState).toMatchObject({ expanded: true });
     const rotulos = itensDoMenu(arvore).map((n) => textoDoNo(n).replace(/\s+/g, " ").trim());
-    expect(rotulos).toEqual(["Início", "Minhas análises", "Dossiês de exemplo", "Carteira de créditos 7", "Sobre os dados", "Cópia do meu caderno"]);
-    expect(ITENS_DO_MENU.map((i) => i.rota)).toEqual(["/", "/salvos", "/exemplos/boa-viagem", "/creditos", "/sobre-os-dados", "/dados-do-caderno"]);
+    // Os dossiês de exemplo (/exemplos/*, layout antigo) saíram do menu em 14/11/2026: nenhum item leva a eles.
+    expect(rotulos).toEqual(["Início", "Minhas análises", "Carteira de créditos 7", "Sobre os dados", "Cópia do meu caderno"]);
+    expect(ITENS_DO_MENU.map((i) => i.rota)).toEqual(["/", "/salvos", "/creditos", "/sobre-os-dados", "/dados-do-caderno"]);
+    expect(ITENS_DO_MENU.some((i) => String(i.rota).startsWith("/exemplos"))).toBe(false);
 
     for (const [i, item] of ITENS_DO_MENU.entries()) {
       jest.clearAllMocks();

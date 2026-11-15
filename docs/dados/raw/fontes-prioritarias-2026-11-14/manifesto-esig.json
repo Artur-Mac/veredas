@@ -1,0 +1,56 @@
+{
+  "coletado_em_utc": "2026-11-15T00:49:07.142511+00:00",
+  "arquivos": [
+    {
+      "arquivo": "pontos-alagamento.geojson",
+      "fonte": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/pontos_alagamento_arcgis/FeatureServer/0",
+      "recurso": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/pontos_alagamento_arcgis/FeatureServer/0/query?where=1%3D1&outFields=objectid%2Cid%2Crpa%2Cbairro%2Clogradouro%2Ctrecho%2Cbacia%2Csub_bacia%2Cprecisao%2Crecorrencia%2Cn_recorrencia%2Cmare%2Cn_mare%2Clamina&outSR=4326&f=geojson&returnGeometry=true",
+      "modo": "exportação completa com seleção de campos, WGS84",
+      "registros": 54,
+      "licenca_catalogo": null,
+      "data_edicao_servico_utc": "2026-09-25T15:41:33.098000+00:00",
+      "sha256": "07dc7175d2083d032397c2d3e3935384490ad5ce66364d2d1b7b5a4943c53fd8"
+    },
+    {
+      "arquivo": "poligonos-alagamento-2026.geojson",
+      "fonte": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Poligonos_Alagamentos_2026_5/FeatureServer/0",
+      "recurso": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Poligonos_Alagamentos_2026_5/FeatureServer/0/query?where=1%3D1&outFields=objectid%2Cid%2Ccomunidade%2Crpa%2Cqtd_registros&outSR=4326&f=geojson&returnGeometry=true",
+      "modo": "exportação completa com seleção de campos, WGS84",
+      "registros": 78,
+      "licenca_catalogo": null,
+      "data_edicao_servico_utc": "2026-06-17T11:08:06.802000+00:00",
+      "sha256": "02b30d0e31ec50e15d0574f40e7e01af80eeaecfc7668d8a227cdac595d4e5a3"
+    },
+    {
+      "arquivo": "logradouros-alagamento-2026.geojson",
+      "fonte": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Logradouros_Alagamentos_2026_V1/FeatureServer/0",
+      "recurso": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Logradouros_Alagamentos_2026_V1/FeatureServer/0/query?where=1%3D1&outFields=fid%2Cclogracodi%2Cnlograconc%2Cnmtpvia&outSR=4326&f=geojson&returnGeometry=true",
+      "modo": "exportação completa com seleção de campos, WGS84",
+      "registros": 552,
+      "licenca_catalogo": null,
+      "data_edicao_servico_utc": "2026-05-08T08:04:58.478000+00:00",
+      "sha256": "e26166ca04fe812b9f9c81c49889ce24eea59ef4d7b08029c1092df5446c4aee"
+    },
+    {
+      "arquivo": "canais-emlurb.geojson",
+      "fonte": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Emlurb/BASES_DRENAGEM_RECIFE_MA/FeatureServer/2",
+      "recurso": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Emlurb/BASES_DRENAGEM_RECIFE_MA/FeatureServer/2/query?where=1%3D1&outFields=OBJECTID%2CNOME%2CCODIGO%2CBACIA&outSR=4326&f=geojson&returnGeometry=true",
+      "modo": "exportação completa com seleção de campos, WGS84",
+      "registros": 99,
+      "licenca_catalogo": null,
+      "data_edicao_servico_utc": null,
+      "sha256": "8dc0cb5aa79ca050d7ff45de11adf77716d449cbf573137121d6165b9a960683"
+    },
+    {
+      "arquivo": "limpeza-macrodrenagem-2026.geojson",
+      "fonte": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/PAINEL_MACRODRENAGEM_2026/FeatureServer/0",
+      "recurso": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/PAINEL_MACRODRENAGEM_2026/FeatureServer/0/query?where=1%3D1&outFields=fid%2Ccod_curso%2Ccod_bacia%2Cnome%2Ctrecho%2Cclassifica&outSR=4326&f=geojson&returnGeometry=true",
+      "modo": "exportação completa com seleção de campos, WGS84",
+      "registros": 514,
+      "licenca_catalogo": null,
+      "data_edicao_servico_utc": "2026-07-23T16:27:06.377000+00:00",
+      "sha256": "f21b942054aaa0b1d00ec740bfc77085de5eec57052ed4195a6b37c182b827c0"
+    }
+  ],
+  "falhas": []
+}

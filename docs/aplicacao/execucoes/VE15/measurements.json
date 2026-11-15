@@ -1,0 +1,141 @@
+{
+ "epoch": "VE15",
+ "date": "2026-11-14",
+ "status": "partial",
+ "outcome": "iterate",
+ "reason": "The selected extension (answering the decisive question in Compare) resolves a concrete unknown in a rendered, scripted task on synthetic listings; it has not been measured with people, VE15.02 (document test) has no real documents to test against, and native capture/sync have no device evidence.",
+ "selected_extension": {
+  "name": "Já tem a resposta? (structured answer to the decisive question)",
+  "fields": [
+   "preco",
+   "condominio",
+   "iptu (+ period)",
+   "seguro",
+   "taxa",
+   "outros",
+   "area"
+  ],
+  "stored_as": {
+   "origem": "voce",
+   "aConfirmar": false
+  },
+  "unit_tests": {
+   "file": "tests/resposta.test.ts",
+   "passed": 5,
+   "failed": 0
+  },
+  "monotonic_check": "B condo 0,200,400,550,650,800,1200 against A 600 known: order never moves toward B as the value rises; 0 → B first, 1200 → A first",
+  "render": {
+   "script": "docs/aplicacao/execucoes/VE15/scripts/ve15-render.mjs",
+   "widths": [
+    375,
+    360
+   ],
+   "values": [
+    150,
+    1200
+   ],
+   "external_requests": 0,
+   "page_errors": 0,
+   "cases": {
+    "150@375": {
+     "frase": "Valor guardado. A ordem não mudou: Graças continua na frente.",
+     "fraseAVista": true,
+     "guardado": {
+      "valor": 150,
+      "origem": "voce",
+      "aConfirmar": false
+     },
+     "caixaDepoisDeResponder": false,
+     "caixaDepoisDeRecarregar": false,
+     "rolagemHorizontal": 0
+    },
+    "1200@375": {
+     "frase": "Valor guardado. Com esse valor, a ordem mudou: visite primeiro Casa Forte.",
+     "fraseAVista": true,
+     "guardado": {
+      "valor": 1200,
+      "origem": "voce",
+      "aConfirmar": false
+     },
+     "caixaDepoisDeResponder": false,
+     "caixaDepoisDeRecarregar": false,
+     "rolagemHorizontal": 0
+    },
+    "150@360": {
+     "frase": "Valor guardado. A ordem não mudou: Graças continua na frente.",
+     "fraseAVista": true,
+     "guardado": {
+      "valor": 150,
+      "origem": "voce",
+      "aConfirmar": false
+     },
+     "caixaDepoisDeResponder": false,
+     "caixaDepoisDeRecarregar": false,
+     "rolagemHorizontal": 0
+    },
+    "1200@360": {
+     "frase": "Valor guardado. Com esse valor, a ordem mudou: visite primeiro Casa Forte.",
+     "fraseAVista": true,
+     "guardado": {
+      "valor": 1200,
+      "origem": "voce",
+      "aConfirmar": false
+     },
+     "caixaDepoisDeResponder": false,
+     "caixaDepoisDeRecarregar": false,
+     "rolagemHorizontal": 0
+    }
+   }
+  },
+  "steps": {
+   "with_extension": "1 field + 1 tap in the Compare summary",
+   "generic_visit_checklist_same_fixture": {
+    "questions": 6,
+    "condo_position": 2,
+    "answer_type": "free text, does not change the comparison"
+   }
+  }
+ },
+ "defects_found_and_fixed": [
+  "The effect sentence lived inside the answer box; once answered, the decisive question changes and the box closes, so the sentence vanished. Moved to the Compare screen state, keyed to the pair, cleared on priority change.",
+  "After answering, the summary card shrinks (question block removed) and the viewport stayed below the sentence at 360/375 px. The sentence now scrolls into view on web; on native the status role announces it (not device-tested)."
+ ],
+ "environment": "Metro (Expo web dev server) served stale route code after edits three times; each render result above was taken after a server restart and a check that the served bundle contained the new code.",
+ "inventory": {
+  "file": "docs/aplicacao/execucoes/VE15/inventario.md",
+  "keep": 11,
+  "repair": 1,
+  "defer": 3,
+  "removed": 0
+ },
+ "context_queue": {
+  "research_task": 3,
+  "keep_as_is": 3,
+  "new_building_metrics": 0
+ },
+ "regression": {
+  "jest": {
+   "suites": 67,
+   "tests": 1569,
+   "failed": 0
+  },
+  "typecheck_errors": 0,
+  "lint": {
+   "errors": 0,
+   "warnings": 5,
+   "warnings_owner": "payload-split session files"
+  },
+  "smoke": {
+   "steps": 50,
+   "external_requests": 0,
+   "result": "pass"
+  }
+ },
+ "not_done": [
+  "VE15.02 document extraction test (needs real building documents with exact pages)",
+  "measured task with people (G-USER)",
+  "native device evidence for capture/sync",
+  "shared corrections (deferred by design)"
+ ]
+}

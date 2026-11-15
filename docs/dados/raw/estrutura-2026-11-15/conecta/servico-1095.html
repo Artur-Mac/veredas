@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <link rel="icon" href="https&#x3A;&#x2F;&#x2F;statics.recife.pe.gov.br&#x2F;images&#x2F;dynamics&#x2F;conecta&#x2F;icons&#x2F;favicon.png&#x3F;w&#x3D;32&amp;h&#x3D;32&amp;fit&#x3D;fill&amp;border&#x3D;2,transparent,shrink"/>
+
+                        <link rel="manifest" href="&#x2F;pwa&#x2F;manifest.json">
+            
+                        <!-- iPhone(first generation or 2G), iPhone 3G, iPhone 3GS -->
+            <link rel="apple-touch-icon" sizes="57x57" href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr.png?w=57&h=57&fit=fill&bg=ffffff&border=5,ffffff,shrink">
+            <!-- iPad and iPad mini @1x -->
+            <link rel="apple-touch-icon" sizes="76x76" href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr.png?w=76&h=76&fit=fill&bg=ffffff&border=7,ffffff,shrink">
+            <!-- iPhone 4, iPhone 4s, iPhone 5, iPhone 5c, iPhone 5s, iPhone 6, iPhone 6s, iPhone 7, iPhone 7s, iPhone8 -->
+            <link rel="apple-touch-icon" sizes="120x120" href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr.png?w=120&h=120&fit=fill&bg=ffffff&border=12,ffffff,shrink">
+            <!-- iPad and iPad mini @2x -->
+            <link rel="apple-touch-icon" sizes="152x152" href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr.png?w=152&h=152&fit=fill&bg=ffffff&border=15,ffffff,shrink">
+            <!-- iPad Pro -->
+            <link rel="apple-touch-icon" sizes="167x167" href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr.png?w=167&h=167&fit=fill&bg=ffffff&border=16,ffffff,shrink">
+            <!-- iPhone X, iPhone 8 Plus, iPhone 7 Plus, iPhone 6s Plus, iPhone 6 Plus -->
+            <link rel="apple-touch-icon" sizes="180x180" href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr.png?w=180&h=180&fit=fill&bg=ffffff&border=18,ffffff,shrink">
+
+            <meta name="mobile-web-app-capable" content="yes" />
+            <meta name="apple-touch-fullscreen" content="yes" />
+            <meta name="apple-mobile-web-app-title" content="Portal&#x20;de&#x20;Carta&#x20;de&#x20;Servi&#x00E7;os" />
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+            <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+            <link href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr.png?w=2048&h=2732&fit=fill&bg=ffffff&border=100,ffffff,shrink" sizes="2048x2732" rel="apple-touch-startup-image" />
+            <link href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr.png?w=1668&h=2224&fit=fill&bg=ffffff&border=100,ffffff,shrink" sizes="1668x2224" rel="apple-touch-startup-image" />
+            <link href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr.png?w=1536&h=2048&fit=fill&bg=ffffff&border=100,ffffff,shrink" sizes="1536x2048" rel="apple-touch-startup-image" />
+            <link href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr.png?w=1125&h=2436&fit=fill&bg=ffffff&border=50,ffffff,shrink" sizes="1125x2436" rel="apple-touch-startup-image" />
+            <link href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr.png?w=1242&h=2208&fit=fill&bg=ffffff&border=50,ffffff,shrink" sizes="1242x2208" rel="apple-touch-startup-image" />
+            <link href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr.png?w=750&h=1334&fit=fill&bg=ffffff&border=30,ffffff,shrink" sizes="750x1334" rel="apple-touch-startup-image" />
+            <link href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr.png?w=640&h=1136&fit=fill&bg=ffffff&border=30,ffffff,shrink" sizes="640x1136" rel="apple-touch-startup-image" />
+
+            <link
+                    rel="apple-touch-startup-image"
+                    media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)"
+                    href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr.png?w=828&h=1792&fit=fill&bg=ffffff&border=50,ffffff,shrink"
+            />
+            <link
+                    rel="apple-touch-startup-image"
+                    media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)"
+                    href="https://statics.recife.pe.gov.br/images/dynamics/logo_pcr_branco.png?w=1242&h=2688&fit=fill&bg=ffffff&border=50,ffffff,shrink"
+            />
+            <link
+                    rel="apple-touch-startup-image"
+                    media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+                    href="https://statics.recife.pe.gov.br/images/dynamics/logo_gestao_pcr.png?w=1125&h=2436&fit=fill&bg=ffffff&border=50,ffffff,shrink"
+            />
+            <link
+                    rel="apple-touch-startup-image"
+                    media="screen and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)"
+                    href="https://statics.recife.pe.gov.br/images/dynamics/logo_gestao_pcr.png?w=1242&h=2208&fit=fill&bg=ffffff&border=50,ffffff,shrink"
+            />
+            <link
+                    rel="apple-touch-startup-image"
+                    media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
+                    href="https://statics.recife.pe.gov.br/images/dynamics/logo_gestao_pcr.png?w=750&h=1334&fit=fill&bg=ffffff&border=50,ffffff,shrink"
+            />
+            <link
+                    rel="apple-touch-startup-image"
+                    media="screen and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)"
+                    href="https://statics.recife.pe.gov.br/images/dynamics/logo_gestao_pcr.png?w=2048&h=2732&fit=fill&bg=ffffff&border=100,ffffff,shrink"
+            />
+            <link
+                    rel="apple-touch-startup-image"
+                    media="screen and (device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)"
+                    href="https://statics.recife.pe.gov.br/images/dynamics/logo_gestao_pcr.png?w=1668&h=2224&fit=fill&bg=ffffff&border=100,ffffff,shrink"
+            />
+            <link
+                    rel="apple-touch-startup-image"
+                    media="screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
+                    href="https://statics.recife.pe.gov.br/images/dynamics/logo_gestao_pcr.png?w=640&h=1136&fit=fill&bg=ffffff&border=30,ffffff,shrink"
+            />
+            <link
+                    rel="apple-touch-startup-image"
+                    media="screen and (device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)"
+                    href="https://statics.recife.pe.gov.br/images/dynamics/logo_gestao_pcr.png?w=1668&h=2388&fit=fill&bg=ffffff&border=100,ffffff,shrink"
+            />
+            <link
+                    rel="apple-touch-startup-image"
+                    media="screen and (device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)"
+                    href="https://statics.recife.pe.gov.br/images/dynamics/logo_gestao_pcr.png?w=1536&h=2048&fit=fill&bg=ffffff&border=100,ffffff,shrink"
+            />
+
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+
+            <link rel="stylesheet" href="/build/assets/static/owl/css/owl.carousel.css" />
+            <link rel="stylesheet" href="/build/assets/static/owl/css/owl.theme.default.css" />
+            <link rel="stylesheet" href="/build/assets/static/owl/css/owl.theme.blue.css" />
+            
+        
+    <title class="text-acessibilidade">Portal de Serviços - Serviço</title>
+
+                                        <style>
+                    #loader {
+                        transition: all 0.3s ease-in-out;
+                        opacity: 1;
+                        visibility: visible;
+                        position: fixed;
+                        height: 100vh;
+                        width: 100vw;
+                        background: #fff;
+                        z-index: 90000;
+                        left: 0;
+                        top: 0;
+                    }
+
+                    #loader.fadeOut {
+                        opacity: 0;
+                        visibility: hidden;
+                    }
+
+                    .spinner {
+                        width: 40px;
+                        height: 40px;
+                        position: absolute;
+                        top: calc(50% - 20px);
+                        left: calc(50% - 20px);
+                        background-color: #333;
+                        border-radius: 100%;
+                        -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+                        animation: sk-scaleout 1.0s infinite ease-in-out;
+                    }
+
+                    @-webkit-keyframes sk-scaleout {
+                        0% { -webkit-transform: scale(0) }
+                        100% {
+                            -webkit-transform: scale(1.0);
+                            opacity: 0;
+                        }
+                    }
+
+                    @keyframes sk-scaleout {
+                        0% {
+                            -webkit-transform: scale(0);
+                            transform: scale(0);
+                        } 100% {
+                              -webkit-transform: scale(1.0);
+                              transform: scale(1.0);
+                              opacity: 0;
+                          }
+                    }
+                </style>
+                    
+        <!-- Configuração de session acessibilidade -->
+        
+                <link rel="stylesheet" href="/build/337.8cb13d5d.css"><link rel="stylesheet" href="/build/css/app.e67c20b4.css">            
+        
+        <link rel="stylesheet" href="/build/assets/static/css_util/page_html_twig.css" />        
+        
+</head>
+<body>
+    <noscript>
+    <p>Não existe scripts para essa página</p>
+</noscript>
+
+<div class="toast-container position-fixed p-5 top-0 end-0" id="toastPlacement" style="z-index: 9999;">
+    <div id="toastMsg" class="toast hide align-items-center text-white bg-info border-0" role="alert" aria-live="assertive" aria-atomic="true" style="width: auto">
+        <div class="d-flex">
+            <div class="toast-body">
+
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+            <div id='loader'>
+            <div class="spinner"></div>
+        </div>
+    
+ 
+        <header id="header">
+            <div class="header-container">
+                <div class="menu-1 d-lg-none d-block">
+                    <section id="menu-responsivo-acessibilidade" style="color: white;" class="d-xl-none">
+                        <div class="container">
+                            <nav class="navbar navbar-expand-xl" style="display: block;">
+                                <div class="lista-1">
+                                    <div id="expandir_menu_acessibilidade" style="color: white !important;" class="title navbar-toggler expandir" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav54" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border: none; font-size: 1em; text-align: left; width: 100%;">                                    
+                                        <span class="navbar-toggler-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+                                                <path class="icone"  stroke="#FFFFFF" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"/>
+                                            </svg>
+                                        </span>&nbsp; MENU ACESSIBILIDADE
+                                    </div>
+                                    <div class="container-fluid">
+                                        <div class="collapse navbar-collapse" id="navbarNav54">
+                                            <ul class="navbar-nav" style>
+                                                <li>
+                                                    <div style="border: none; font-size: 1em; text-align: left; width: 100%; text-align: center;" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav54" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" id="seta_cima_acessibilidade">
+                                                        <i class="fa fa-chevron-up" aria-hidden="true"></i>
+                                                    </div>
+                                                </li>
+                                                <div style="text-align: center; justify-content: center;">
+                                                    <li class="d-flex nav-item p-0 mb-1 mt-1">
+                                                        <a title="Ir para Menu" style="color: white" class="cor-hover d-flex nav-link" href="#menu-responsivo-acessibilidade" accesskey="1">Ir para Menu <div style="margin-top: 2px; margin-left: 16px; text-align: center; width: 20px; height: 20px; color: black !important; background-color: #F2F5F7 !important; border-radius: 4px; font-size: 14px;" class="o1"><p><strong>1</strong></p></div></a>
+                                                    </li>
+                                                <div>
+                                                <li class="d-flex nav-item p-0 mb-1">
+                                                    <a title="Ir para  Buscador" style="color: white" class="cor-hover nav-link d-flex" href="#buscaServicos" accesskey="2">Ir para  Buscador <div style="margin-top: 2px; margin-left: 16px; text-align: center; width: 20px; height: 20px; color: black !important; background-color: #F2F5F7 !important; border-radius: 4px; font-size: 14px;" class="o1"><strong>2</strong></div></a>
+                                                </li>
+                                                <li class=" d-flex nav-item p-0 mb-1">
+                                                    <a title="Ir para Rodapé" style="color: white" class="cor-hover nav-link d-flex" href="#footer-menu" accesskey="3">Ir para  Rodapé <div style="margin-top: 2px; margin-left: 16px; text-align: center; width: 20px; height: 20px; color: black !important; background-color: #F2F5F7 !important; border-radius: 4px; font-size: 14px;" class="o1"><strong>3</strong></div></a>
+                                                </li>
+                                                <li class=" d-flex nav-item p-0 mb-1 d-lg-none">
+                                                    <a title="Ir para o Mapa do Site" style="color: white" class="cor-hover nav-link d-flex" href="/mapasite" accesskey="4">Ir para o Mapa do Site <div style="margin-top: 2px; margin-left: 16px; text-align: center; width: 20px; height: 20px; color: black !important; background-color: #F2F5F7 !important; border-radius: 4px; font-size: 14px;" class="o1"><strong>4</strong></div></a>
+                                                </li>
+                                                <li class=" d-flex nav-item p-0 mb-1 d-flex d-sm-none">
+                                                    <a style="color: white; font-size: 15px;" title="Alto contraste" class="cor-hover nav-link d-flex" href="/contraste/L3NlcnZpY28vMTA5NQ%253D%253D"><span class="sr-only">ALTO CONTRASTE</span><i class="me-2 fa fa-adjust fs-4" aria-hidden="true" aria-hidden="true" role="img" aria-label="Ícone de contraste" accesskey="5"></i>ALTO CONTRASTE</a>
+                                                </li>
+                                                <li class=" d-flex nav-item p-0 mb-1 d-flex d-sm-none" style="justify-content: space-between; width: 47%;">
+                                                    <a title="Aumentar zoom" class="cor-hover nav-link d-flex" href="#" accesskey="6" onclick="return upZoom()" style="color: white;">A+</a> <a title="Zoom padrão" class="cor-hover nav-link d-flex" href="#" accesskey="7" onclick="return standardZoom()" style="color: white;">A</a> <a title="Diminuir zoom" class="cor-hover nav-link d-flex" href="#" accesskey="8" onclick="return downZoom()" style="color: white; padding-right: 10px;"   >A-</a>
+                                                </li>
+                                                <li class="d-flex nav-item p-0 mb-1 d-flex d-sm-none">
+                                                    <a style="color: white;" title="Página de acessibilidade" class="cor-hover nav-link d-flex" href="/acessibilidade"><span class="sr-only">Acessibilidade</span><i class="me-2 cadeirante fa fa-universal-access fa-solid fs-4" aria-hidden="true" accesskey="9" aria-hidden="true" role="img" aria-label="Ícone de acessibilidade"></i>Acessibilidade</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="lista-2 d-none d-sm-block" style="position: fixed;top: 0px; right: 0px">
+                                    <ul class=" flex-row navbar-nav" style="justify-content: center; align-items: center;">
+                                        <li class="me-4 nav-item">
+                                            <a style="color: white;" title="Alto contraste" class="cor-hover nav-link d-flex" href="/contraste/L3NlcnZpY28vMTA5NQ%253D%253D"><span class="sr-only">Alto Contraste</span><i class="me-2 fa fa-adjust fs-4" aria-hidden="true" accesskey="5"></i></a>
+                                        </li>
+                                        <li class="me-4 nav-item">
+                                            <a style="color: white;" title="Aumentar Zoom" class="cor-hover nav-link d-flex" href="#" accesskey="6" onclick="return upZoom()">A+</a>
+                                        </li>
+                                        <li class="me-4 nav-item">
+                                            <a style="color: white;" title="Zoom padrão" class="cor-hover nav-link d-flex" href="#" accesskey="7" onclick="return standardZoom()">&nbsp;A&nbsp;</a>
+                                        </li>
+                                        <li class="me-4 nav-item">
+                                            <a style="color: white;" title="Diminuir zoom" class="cor-hover nav-link d-flex" href="#" accesskey="8" onclick="return downZoom()">A-</a>
+                                        </li>
+                                        <li class="me-2 pt-1 nav-item">
+                                            <a style="color: white;" title="Página de acessibilidade" class="cor-hover nav-link d-flex" href="/acessibilidade"><span class="sr-only">Página de acessibilidade</span><i class="cadeirante fa fa-universal-access fa-solid fs-4" aria-hidden="true" accesskey="9"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                    </section>
+                </div>                
+                
+                <div class="menu-1 d-none d-lg-flex d-xxl-flex d-xxl-flex">                    
+                    <section id="menu-acessibilidade">                        
+                        <nav class="navbar">
+                            <div class="lista-1">                                                     
+                                <div class="d-none d-lg-flex d-xxl-flex d-xxl-flex margin-left-item-lista1">
+                                    <a  title="Ir para Menu" class="nav-link" href="#menu-acessibilidade" accesskey="1">Ir para Menu <div class="o1"><p><strong>1</strong></p></div></a>
+                                </div>
+                                <div class="d-none d-lg-flex d-xxl-flex d-xxl-flex margin-left-item-lista1">
+                                    <a title="Ir para Buscador" class="nav-link" href="#buscaServicos" accesskey="2">Ir para  Buscador <div class="o1"><p><strong>2</strong></p></div></a>
+                                </div>
+                                <div class="d-none d-lg-flex d-xxl-flex d-xxl-flex margin-left-item-lista1">
+                                    <a title="Ir para Rodapé" class="nav-link" href="#footer-menu" accesskey="3">Ir para  Rodapé <div class="o1"><p><strong>3</strong></p></div></a>
+                                </div>
+                                <div class="d-none d-lg-flex d-xxl-flex d-xxl-flex margin-left-item-lista1">
+                                    <a title="Ir para o Mapa do Site" class="nav-link" href="/mapasite" accesskey="4">Ir para o Mapa do Site <div class="o1"><p><strong>4</strong></p></div></a>
+                                </div>
+                            </div>
+                            <div class="lista-2">
+                                <ul class=" flex-row navbar-nav">
+                                    <li class="me-4 nav-item">
+                                        <a accesskey="5" title="Alto contraste" class="nav-link d-flex" href="/contraste/L3NlcnZpY28vMTA5NQ%253D%253D"> <i class="me-2 fa fa-adjust fs-4" aria-hidden="true"></i> <div class="d-none d-xxl-block">ALTO CONTRASTE</div></a>
+                                    </li>
+                                    <li class="me-4 nav-item">
+                                        <a title="Aumentar zoom" class="nav-link d-flex" href="#" accesskey="6" onclick="return upZoom()">A+</a>
+                                    </li>
+                                    <li class="me-4 nav-item">
+                                        <a title="Zoom padrão" class="nav-link d-flex" href="#" accesskey="7" onclick="return standardZoom()">&nbsp;A&nbsp;</a>
+                                    </li>
+                                    <li class="me-4 nav-item">
+                                        <a title="Diminuir zoom" class="nav-link d-flex" href="#" accesskey="8" onclick="return downZoom()">A-</a>
+                                    </li>
+                                    <li class="me-4 nav-item">
+                                        <a accesskey="9" title="Página de acessibilidade" class="nav-link d-flex" href="/acessibilidade"> <i class="me-2 cadeirante fa fa-universal-access fs-4" aria-hidden="true"></i> <div class="d-none d-xxl-block" style="font-size: 14px">Acessibilidade</div></a>
+                                    </li>
+                                </ul>
+                            </div>                        
+                        </nav>
+                    </section>
+                </div>
+                <div class="menu-2">  
+                    <section class="header-menu">
+                        <div class="container-menu container">
+                            <nav class="navbar navbar-expand-xl navbar-light">
+                                <div class="size-menu-2 bg-acessibilidade">
+                                    <!-- Logo -->
+                                    <div class="logos">
+                                        <a href="&#x2F;" class="navbar-brand logo">
+                                            <img title="Logomarca&#x20;do&#x20;Conecta&#x20;Recife" class="d-inline-block align-text-top" src="https&#x3A;&#x2F;&#x2F;statics.recife.pe.gov.br&#x2F;images&#x2F;dynamics&#x2F;conecta&#x2F;logo.png&#x3F;h&#x3D;250" alt="">
+                                        </a>
+                                                                            </div>
+                                                                            <a title="Entrar" href="&#x2F;acesso" class="entrar d-xl-none no-print">
+                                            <i class="fa fa-sign-in" aria-hidden="true"></i>&nbsp;Entrar
+                                        </a>
+                                                                            
+                                    <div class="collapse navbar-collapse no-print" id="navbarScroll">
+                                        <ul class="nav-menu navbar-nav me-auto mb-2 mb-xl-0 navbar-nav-scroll">
+                                                                                                                                                                                    <li class="nav-item d-none d-xl-block">
+                                                <a title="Portal Institucional do Recife" class="nav-link menu-2-text" target="_blank" href="https&#x3A;&#x2F;&#x2F;www2.recife.pe.gov.br&#x2F;">Institucional</a>
+                                            </li>
+                                            <li class="nav-item d-none d-xl-block">
+                                                <a title="Ouvidoria do Recife" class="nav-link menu-2-text" target="_blank" href="https&#x3A;&#x2F;&#x2F;ouvidoria.recife.pe.gov.br&#x2F;">Ouvidoria</a>
+                                            </li>
+                                            <li class="nav-item d-none d-xl-block">
+                                                <a title="Portal da Transparência do Recife" class="nav-link menu-2-text" target="_blank" href="http&#x3A;&#x2F;&#x2F;transparencia.recife.pe.gov.br&#x2F;">Portal da Transparência</a>
+                                            </li>
+                                            <li class="nav-item d-none d-xl-block">
+                                                <a title="Eventos do Recife" class="nav-link menu-2-text" href="/#eventos">Eventos</a>
+                                            </li>
+                                            <li class="nav-item d-none d-xl-block">
+                                                <a title="Mapa do Recife" class="nav-link menu-2-text" href="/#encontreMapa">Mapa</a>
+                                            </li>
+                                                                                                                                                                                </ul>
+
+                                        <ul class="nav-login navbar-nav mb-2 mb-xl-0">
+                                                                                                                                                <li class="nav-item">
+                                                        <a class="nav-link btn-enter" href="&#x2F;acesso">
+                                                            <i class="fa fa-sign-in" aria-hidden="true"></i> Entrar
+                                                        </a>
+                                                    </li>
+                                                                                                                                    </ul>
+                                    </div>
+                                </div>
+                            </nav>
+                    </section>
+                    <section id="menu-responsivo" style="background: #FCF9F9;" class="d-xl-none">                        
+                        <div class="container">
+                            <nav class="navbar navbar-expand-xl navbar-light">
+                                <div class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav53" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" id="expandir_menu" style="border: none; font-size: 1em; text-align: left; width: 100%;">
+                                                                            <span class="navbar-toggler-icon" style="margin-top: -3.5px; color: black;"></span>&nbsp; Menu
+                                                                    </div>
+                                <div class="container-fluid">
+                                    <div class="collapse navbar-collapse" id="navbarNav53">
+                                        <ul class="navbar-nav">
+                                            <li>
+                                                <div style="border: none; font-size: 1em; text-align: left; width: 100%; text-align: center;" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav53" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" id="seta_cima">
+                                                    <i class="fa fa-chevron-up" aria-hidden="true"></i>
+                                                </div>
+                                            </li>
+                                            <li class="nav-item p-0 mb-1 mt-1">
+                                                <a title="Portal Institucional do Recife" class="nav-link menu-2-text" target="_blank" href="https&#x3A;&#x2F;&#x2F;www2.recife.pe.gov.br&#x2F;">Institucional</a>
+                                            </li>
+                                            <li class="nav-item p-0 mb-1">
+                                                <a title="Ouvidoria do Recife" class="nav-link menu-2-text" target="_blank menu-2-text" href="https&#x3A;&#x2F;&#x2F;ouvidoria.recife.pe.gov.br&#x2F;">Ouvidoria</a>
+                                            </li>
+                                            <li class="nav-item p-0 mb-1">
+                                                <a title="Portal de Trasnparência do Recife" class="nav-link menu-2-text" target="_blank" href="http&#x3A;&#x2F;&#x2F;transparencia.recife.pe.gov.br&#x2F;">Portal da Transparência</a>
+                                            </li>
+                                            <li class="nav-item p-0 mb-1">
+                                                <a title="Eventos do Recife" class="nav-link menu-2-text" href="/#eventos">Eventos</a>
+                                            </li>
+                                            <li class="nav-item p-0 mb-1">
+                                                <a title="Mapa da Cidade do Recife" class="nav-link menu-2-text" href="/#encontreMapa">Mapa do Recife</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                    </section>
+                    
+                    <section class="header-banner no-print">
+                                                    <div class="banner-wrapper">
+                                                                    <picture>
+                                        <source media="(max-width: 480px)" srcset="/build/assets/static/images/banner/banner-0-mobile.svg" width="480" height="500">
+                                        <source media="(min-width: 481px) and (max-width: 1200px)" srcset="/build/assets/static/images/banner/banner-1-tablet.svg" width="1200" height="800">
+                                        <source media="(min-width: 1201px) and (max-width: 1600px)" srcset="/build/assets/static/images/banner/banner-2-desktop.svg" width="1660" height="328">
+                                        <img src="/build/assets/static/images/banner/banner-3-wide.svg" width="1920" height="380" fetchpriority="high" decoding="async" alt="A Prefeitura do Recife está mais conectada com você" class="banner-img">
+                                    </picture>
+                                                                <div class="search">
+                                    <div class="col-md-12 posicionamento-ancora">
+                                        
+       <!-- <span class="busca-titulo mt-45px">Solicitar Certidão Narrativa de Controle Urbano</span> -->
+
+
+    <div id="menuPesquisa" class="busca-posicionamento-ancora">
+    <div id="buscaServicosCampo" class="row">          
+        <div class="offset-md-2 col-md-8 offset-lg-3 col-lg-6 offset-xl-3 col-xl-6 position-relative">
+            <div id="buscaServicosCampoIG" class="input-group input-group-lg">
+                <input title="O que você procura?" id="buscaServicos" type="text" class="form-control" autocomplete="off" placeholder="O que você procura?">
+                <button title="Microfone" class="btn-light-border" type="button" id="buttonRec"><i class="fa fa-microphone"></i></button>
+                <button class="btn-light-border" style="display:none" type="button" id="buttonRecOff"><i class="fa fa-stop-circle text-danger"></i></button>
+                <button title="Enviar" type="submit" id="button-search" class="custom-gradient-btn">
+                    <img src="/build/assets/static/images/plane-send.svg" class="custom-btn-icon">
+                </button>
+            </div>
+            
+            <div id="buscaServicosResultado" class="">
+                <div class="card shadow-lg">
+                    <div id="buscaServicosLista" class="card-body p-0"></div>
+                    <a id="btnBuscaAvancada" href="#" class="text-decoration-none">
+                        <div class="card-footer bg-primary text-white p-3">
+                            Busca Avançada <i class="fa fa-arrow-right float-end"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="flash-message" style="display: none; width: 100%;"></div>
+        </div>
+    </div>
+</div>
+
+                                        </div>
+                                </div>
+                            </div>
+                                            </section>
+                </div>
+            </div>
+        </header>
+
+<main>
+        
+                    <section class="content-messages">
+                <div class="container">
+                                                                                </div>
+            </section>
+        
+        <section class="content">
+                <section id="categoria" class="session-without-bg">
+        <div class="container">
+
+            <nav aria-label="breadcrumb" class="no-print">
+                <ol class="breadcrumb">
+                    <li title="Pagina inicial" class="breadcrumb-item"><a href="/">Home</a></li>
+                                        <li title="Solicitar Certidão Narrativa de Controle Urbano" class="breadcrumb-item active" aria-current="page">Solicitar Certidão Narrativa de Controle Urbano</li>
+                </ol>
+            </nav>
+
+            
+            <h3 title="Solicitar Certidão Narrativa de Controle Urbano" class="text-start">Solicitar Certidão Narrativa de Controle Urbano 
+                            </h3>
+            
+            
+            <div class="row row-cols-auto align-items-center mt-3">
+                                <div class="servico-action col no-print">
+                    <span alt="Imprimir detalhes do serviço" title="Imprimir detalhes do serviço" class="ps-0"><a  onclick="javascript: window.print()">
+                    <button title="Imprimir detalhes do serviço" class="fa fa-print bt-icon" ></button></a></span>
+                    <span>
+                        <a id="linkShared" onclick="popoverShared();">
+                            <button alt="Compartilhar" title="Compartilhar" class="fa fa-share-alt bt-icon" ></button>
+                        </a>
+                        <div id="shared" class="popover fade show bs-popover-bottom" role="tooltip" style="display:none; position: absolute; border-radius: 5px" data-popper-placement="bottom">
+                            <div class="popover-arrow" style="position: absolute; left: 0px; transform: translate(20px, 0px);"></div>
+                            <div class="popover-body servico-action">
+                                <a href="https://api.whatsapp.com/send?text=https://conecta.recife.pe.gov.br/servico/1095" title="Compartilhar por WhatsApp" target="_blank">
+                                    <i class="fa fa-whatsapp me-2" aria-hidden="true"></i>
+                                </a>
+                                <a href="http://www.facebook.com/sharer.php?u=https://conecta.recife.pe.gov.br/servico/1095" title="Compartilhar por Facebook" target="_blank">
+                                    <i class="fa fa-facebook-official me-2" aria-hidden="true"></i>
+                                </a>
+                                <a href="https://twitter.com/share?text=Solicitar Certidão Narrativa de Controle Urbano&url=https://conecta.recife.pe.gov.br/servico/1095" title="Compartilhar por Twitter" target="_blank">
+                                    <i class="fa fa-twitter me-2" aria-hidden="true"></i>
+                                </a>
+                                <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://conecta.recife.pe.gov.br/servico/1095&title=Solicitar Certidão Narrativa de Controle Urbano" title="Compartilhar por LinkedIn" target="_blank">
+                                    <i class="fa fa-linkedin me-2" aria-hidden="true"></i>
+                                </a>
+                                <a class="link-clipboard" onclick="event.preventDefault()" href="https://conecta.recife.pe.gov.br/servico/1095" title="Copiar para área de transferência" >
+                                    <i class="fa fa-clipboard" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </span>
+                                    </div>
+            </div>
+            
+
+            <div class="row mt-5 mb-5">
+                <div class="col-lg-7 mb-3">
+                    <div class="card item-v-card mb-0 selected">
+                        <div class="card-body">
+                            <div class="row">
+                                                                    <div class="col-md-3 fw-medium">Categoria(s):</div>
+                                    <div class="col-md-9 detail">
+                                                                                                                                Serviços Urbanos
+                                                                                    ,                                             Imóveis
+                                                                                    ,                                             Licenças, Alvarás e Permissões
+                                                                            </div>
+                                                                                                    <div class="col-md-3 fw-medium">Grupo(s):</div>
+                                    <div class="col-md-9 detail">
+                                                                                                                                Controle Urbano
+                                                                                    ,                                             Obras e Projetos
+                                                                                    ,                                             Certidões
+                                                                            </div>
+                                                                                                    <div class="col-md-3 fw-medium">Órgão:</div>
+                                    <div class="col-md-9 detail">Secretaria de Ordem Pública e Segurança</div>
+                                                                                                    <div class="col-md-3 fw-medium">Público-alvo:</div>
+                                    <div class="col-md-9 detail">
+                                                                                                                                População em geral
+                                                                            </div>
+                                                            </div>
+                        </div>
+                    </div>
+                                    </div>
+                <div class="col-lg-5 d-flex flex-column justify-content-center mb-3">
+
+                    
+                    <div class="row mt-1 no-print btn_acessar_servico_sm">
+
+                                                                                    <div class="offset-lg-3 col-lg-6 offset-md-3 col-md-6">
+                                    <a href="/redirecionamento/servico/1095" title="Solicitar Certidão Narrativa de Controle Urbano" class="btn btn-primary w-100 justify-content-center">Acessar Serviço</a>
+                                </div>
+                                                                                                                               </div>
+                </div>
+            </div>
+
+
+            <div id="informacoes">
+                <div class="row mb-2 text-end">
+                    <a title="Expandir todos" href="#" class="info-toggle collapsed" style="width: auto;" data-bs-toggle="collapse" aria-expanded="false">Expandir Todos <i class="fa fa-plus-circle" aria-hidden="true"></i></a>
+                    <a href="#" class="info-toggle" style="display: none; width: auto;" data-bs-toggle="collapse" aria-expanded="false">Fechar Todos <i class="fa fa-minus-circle" aria-hidden="true"></i></a>
+                </div>
+
+                                    <div class="card info-card mb-3 text-dark">
+                        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#infoDescricao" aria-expanded="false" aria-controls="infoDescricao">
+                            Descrição
+                        </div>
+                        <div id="infoDescricao" class="card-body collapse show">
+                            <div>
+                                <p>Solicitação para pleitear a certidão emitida pela Secretaria Executiva de Controle Urbano - SECON, referente aos serviços por ela executados e/ou informações de sua competência.</p>
+                            </div>
+                        </div>
+                    </div>
+                
+                <!-- PASSO A PASSO -->
+                                     <div class="card info-card mb-3 text-dark">
+                        <div class="card-header" data-bs-toggle="collapse" data-bs-target="#infoPassoPasso" aria-expanded="false" aria-controls="infoPassoPasso">
+                            Passo a Passo
+                        </div>
+                        <div id="infoPassoPasso" class="card-body collapse show">
+                            <div>
+                                <p>Clique no botão azul <strong>ACESSAR SERVIÇO</strong>;</p><p>Você será redirecionado para tela de acesso. Insira seu CPF (Pessoa Física) ou CNPJ (Pessoa Jurídica) e sua senha;</p><p>Se não possui cadastro ou esqueceu a senha, nesta mesma tela, realize esse procedimento;</p><p>Clicar em solicitação de certidão narrativa;</p><p>Preencher os dados do formulário;</p><p>Anexar documentos relacionados ao pedido de certidão, se necessário;</p><p>Protocolo do processo será gerado;</p><p>Aguardar a análise;</p><p>Prestar as informações co9mplementares, se necessário, serão solicitadas pela SECON via e-mail cadastrado;</p><p>Aguardar análise do pedido;</p><p>Emitir certidão, caso haja dados a informar pela SECON.</p>
+                            </div>
+                        </div>
+                    </div>
+                
+                                    <div class="card info-card mb-3 text-dark">
+                        <div class="card-header collapsed" data-bs-toggle="collapse" data-bs-target="#infoRequisitos" aria-expanded="false" aria-controls="infoRequisitos">
+                            Requisitos para Acessar o Serviço
+                        </div>
+                        <div id="infoRequisitos" class="card-body collapse">
+                            <div>
+                                <ul><li>Não possui.</li></ul>
+                            </div>
+                        </div>
+                    </div>
+                
+                
+                
+                                    <div class="card info-card mb-3 text-dark">
+                        <div class="card-header collapsed" data-bs-toggle="collapse" data-bs-target="#infoFormaPrestacao" aria-expanded="false" aria-controls="infoFormaPrestacao">
+                            Forma de Prestação de Serviço
+                        </div>
+                        <div id="infoFormaPrestacao" class="card-body collapse">
+                            
+                            
+                                                            <div class="row">
+                                    <p><span class="card-tag">On-line</span></p>
+                                                                            <span class="fw-bold">Web</span>
+                                        <span class="mb-3">
+                                            https://portalsepul.suportegerencial.com.br/secon/certidaonarrativa
+                                                                                            </br>Tempo Atendimento: Imediato
+                                                                                                                                        </br>Tempo Resposta: 15 dias
+                                                                                    </span>
+                                                                                                                                                                                </div>
+                                                    </div>  
+                    </div>
+                
+                
+                
+                
+                                    <div class="card info-card mb-3 text-dark">
+                        <div class="card-header collapsed" data-bs-toggle="collapse" data-bs-target="#infoRespostaSolicitacao" aria-expanded="false" aria-controls="infoRespostaSolicitacao">
+                            Mecanismo de Comunicação com o Usuário
+                        </div>
+                        <div id="infoRespostaSolicitacao" class="card-body collapse">
+                            <div>
+                                <ul><li><strong>Regional Sul</strong> - Rua Senador Robert Kennedy, 350 - IPSEP - <a href="https://www.google.com/maps/&#64;-8.1172134,-34.9183215,3a,75y,124.59h,90t/data&#61;!3m6!1e1!3m4!1sF4dM9c6ZFQeBvrV1IzFzfw!2e0!7i16384!8i8192?entry&#61;ttu" target="_blank" rel="nofollow noopener noreferrer">Localização</a> / Whatsapp (81) 99485-0083, Tel.: 3355-1250/1251 / suldircon&#64;gmail.com</li><li><strong>Regional Norte</strong> - Av. Beberibe, 1020 - Arruda - <a href="https://www.google.com/maps/&#64;-8.0284279,-34.8928549,3a,75y,67.61h,90t/data&#61;!3m6!1e1!3m4!1swiCDKWRDy4_AYMPdmTFGFQ!2e0!7i16384!8i8192?entry&#61;ttu" target="_blank" rel="nofollow noopener noreferrer">Localização</a> / Whatsapp (81) 99159-1493, Tel.: 3355-7771 / nortedircon&#64;gmail.com</li><li><strong>Regional Centro-Oeste</strong> - Rua José Higino, 77 - Madalena - <a href="https://www.google.com.br/maps/&#64;-8.0531087,-34.9099403,3a,75y,305.03h,90t/data&#61;!3m7!1e1!3m5!1sHiyley7fE7UPtTAs6-CxjQ!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fpanoid%3DHiyley7fE7UPtTAs6-CxjQ%26cb_client%3Dsearch.gws-prod.gps%26w%3D86%26h%3D86%26yaw%3D305.02722%26pitch%3D0%26thumbfov%3D100!7i16384!8i8192?entry&#61;ttu" target="_blank" rel="nofollow noopener noreferrer">Localização</a> / Whatsapp (81) 99110-1789, Tel.: 3355-9759/9777 / centrooestedircon&#64;gmail.com</li></ul>
+                            </div>
+                        </div>
+                    </div>
+                
+                                    <div class="card info-card mb-3 text-dark">
+                        <div class="card-header collapsed" data-bs-toggle="collapse" data-bs-target="#infoConsultaAndamento" aria-expanded="false" aria-controls="infoConsultaAndamento">
+                            Mecanismos de Consulta, por Parte dos Usuários, Acerca do Andamento do Serviço Solicitado e de Eventual Manifestação
+                        </div>
+                        <div id="infoConsultaAndamento" class="card-body collapse">
+                            <div>
+                                <ul><li>Clique no botão azul <strong>ACESSAR SERVIÇO</strong></li></ul>
+                            </div>
+                        </div>
+                    </div>
+                
+                                    <div class="card info-card mb-3 text-dark">
+                        <div class="card-header collapsed" data-bs-toggle="collapse" data-bs-target="#infoManifestacao" aria-expanded="false" aria-controls="infoManifestacao">
+                            Locais e Formas para o Usuário Apresentar Eventual Manifestação sobre a Prestação do Serviço
+                        </div>
+                        <div id="infoManifestacao" class="card-body collapse">
+                            <div>
+                                <p>Para manifestações relacionadas aos serviços disponibilizados pela Prefeitura da Cidade do Recife,</p><p>o canal adequado é a Ouvidoria Geral do Município, nos meios abaixo:</p><p>Link: http://ouvidoria.recife.pe.gov.br/registre-sua-manifestacao</p><p>Teleatendimento: 0800 281 0040 (Segunda a sexta das 08h às 17h)</p><p>E-mail: ouvidoria&#64;recife.pe.gov.br</p><p>Atendimento Presencial: Sede da Prefeitura do Recife (segunda a sexta 08h às 17h)</p><p>Correspondência: Av. Cais do Apolo, 925, Térreo, Bairro do Recife, Recife / PE - CEP: 50030-903</p>
+                            </div>
+                        </div>
+                    </div>
+                            </div>
+
+            <div class="row mt-4 mb-2 text-start no-print">
+
+                                                            <div class="col-lg-3 col-md-4 mb-3">
+                            <a href="/redirecionamento/servico/1095" class="btn btn-primary w-100 justify-content-center">Acessar Serviço</a>
+                        </div>
+                                    
+            </div>
+
+            <div class="row mt-4 mb-4 text-start no-print">
+                <div class="col-md-12 d-flex align-items-center">
+                    <div title="Essas informações foram úteis?" class="me-2">Essas informações foram úteis?</div>
+                    <a class="avaliacaoDescr cursor-pointer" data-value="P">
+                        <button title="Gostei" class="fa fa-thumbs-o-up fs-3 ms-2 me-2 bt-icon" aria-hidden="true"></button>                     </a>
+                    <span class="me-2" id="aval-pos"></span>
+                    <a class="avaliacaoDescr cursor-pointer" data-value="N">
+                        <button title="Não Gostei" class="fa fa-thumbs-o-down fs-3 ms-2 me-2 bt-icon" aria-hidden="true"></button>                     </a>
+                    <span class="me-2" id="aval-neg"></span>
+                    <!-- Modal -->
+                    <div class="modal fade" id="avaliacaoDescrModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header border-bottom-0">
+                                    <button title="Fechar avaliação" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div title="Essas informações foram úteis?" class="col-12 d-flex justify-content-center mb-3">
+                                            Essas informações foram úteis?
+                                        </div>
+                                        <div class="col-12 d-flex justify-content-center mb-4">
+                                            <a class="avaliacaoDescrInt cursor-pointer" data-value="P">
+                                                <button type="button" title="Gostei" class="avaliacaoIconP fa fa-thumbs-o-up fs-3 ms-2 me-2" aria-hidden="true"></button>                                             </a>
+                                            <a class="avaliacaoDescrInt cursor-pointer" data-value="N">
+                                                <button title="Não gostei" class="avaliacaoIconN fa fa-thumbs-o-down fs-3 ms-2 me-2" aria-hidden="true"></button>                                             </a>
+                                        </div>
+                                    </div>
+
+                                    <form id="formAvaliacaoDescr" action="/avaliacao/descritivo/1095" method="post">
+
+                                        <input type="hidden" id="resposta" name="resposta" />
+
+                                        <div id="avalPositivas" class="d-none">
+                                            <div class="row">
+                                                <div class="col-12 d-flex justify-content-center mb-3">
+                                                    Do que você mais gostou?
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="text-center mb-3">
+                                                                                                            <input  type="checkbox" class="btn-check" id="itemPositivo-11" name="itensDescrPositivos[]" value="11" autocomplete="off">
+                                                        <label title="Clareza das informações" class="btn btn-item-check" for="itemPositivo-11">Clareza das informações</label>
+                                                                                                            <input  type="checkbox" class="btn-check" id="itemPositivo-12" name="itensDescrPositivos[]" value="12" autocomplete="off">
+                                                        <label title="Passo a passo" class="btn btn-item-check" for="itemPositivo-12">Passo a passo</label>
+                                                                                                            <input  type="checkbox" class="btn-check" id="itemPositivo-13" name="itensDescrPositivos[]" value="13" autocomplete="off">
+                                                        <label title="Agrupamento das informações" class="btn btn-item-check" for="itemPositivo-13">Agrupamento das informações</label>
+                                                                                                            <input  type="checkbox" class="btn-check" id="itemPositivo-14" name="itensDescrPositivos[]" value="14" autocomplete="off">
+                                                        <label title="Linguagem utilizada" class="btn btn-item-check" for="itemPositivo-14">Linguagem utilizada</label>
+                                                                                                            <input  type="checkbox" class="btn-check" id="itemPositivo-15" name="itensDescrPositivos[]" value="15" autocomplete="off">
+                                                        <label title="Objetividade" class="btn btn-item-check" for="itemPositivo-15">Objetividade</label>
+                                                                                                    </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="avalNegativas" class="d-none">
+                                            <div class="row">
+                                                <div class="d-flex justify-content-center mb-3">
+                                                    O que podemos melhorar?
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="text-center mb-3">
+                                                                                                            <input type="checkbox" class="btn-check" id="itemNegativo-16" name="itensDescrNegativos[]" value="16" autocomplete="off">
+                                                        <label class="btn btn-item-check" for="itemNegativo-16">Clareza das informações</label>
+                                                                                                            <input type="checkbox" class="btn-check" id="itemNegativo-17" name="itensDescrNegativos[]" value="17" autocomplete="off">
+                                                        <label class="btn btn-item-check" for="itemNegativo-17">Informação incorreta</label>
+                                                                                                            <input type="checkbox" class="btn-check" id="itemNegativo-18" name="itensDescrNegativos[]" value="18" autocomplete="off">
+                                                        <label class="btn btn-item-check" for="itemNegativo-18">Informação incompleta</label>
+                                                                                                            <input type="checkbox" class="btn-check" id="itemNegativo-19" name="itensDescrNegativos[]" value="19" autocomplete="off">
+                                                        <label class="btn btn-item-check" for="itemNegativo-19">Linguagem utilizada</label>
+                                                                                                            <input type="checkbox" class="btn-check" id="itemNegativo-20" name="itensDescrNegativos[]" value="20" autocomplete="off">
+                                                        <label class="btn btn-item-check" for="itemNegativo-20">Falta de objetividade</label>
+                                                                                                    </div>
+                                            </div>
+                                        </div>
+
+                                            <div class="mb-3">
+                                                <label for="comentario" class="form-label">Seu Comentário</label>
+                                                <textarea class="form-control" id="comentario" name="comentario" maxLength="200" rows="4" placeholder="Digite seu comentário aqui..."></textarea>
+                                            </div>
+
+
+                                        <div class="row">
+                                            <div class="d-flex justify-content-center mt-3 mb-3">
+                                                <button type="submit"  id="submit-avaliacao" class="btn btn-primary ps-4 pe-4">
+                                                <span id="spinner-enviar" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> Enviar Avaliação</button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="avaliacaoMsgModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header border-bottom-0 pb-0">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="d-flex justify-content-center fs-3 mb-3">
+                                            <span class="fa-stack fa-lg">
+                                                <i class="fa fa-circle fa-stack-2x text-neutral-lightest"></i>
+                                                <i class="fa fa-exclamation-circle fa-stack-1x fa-inverse text-primary"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div id="avaliacaoMsgModalTexto" class="d-flex justify-content-center mb-3"></div>
+                                    </div>
+                                    <div class="row mt-3 mb-3">
+                                        <div class="col-6">
+                                            <a href="https://ouvidoria.recife.pe.gov.br/" target="_blank" class="btn btn-secondary w-100 jus">Abrir Ouvidoria</a>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-primary w-100">Fechar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            
+        </div>
+    </section>
+        </section>
+    
+    <button class="pageScrollTop no-print" data-toggle="tooltip" data-placement="left" title="Voltar ao topo" data-bs-offset="10,20" data-bs-custom-class="tooltip-light">
+        <i title="Voltar ao topo" class="fa fa-arrow-up" aria-hidden="true"></i>
+    </button>
+    <a href="https://conectaservicospublicos.recife.pe.gov.br/" class="badge-156-link d-inline-block rounded-circle overflow-hidden shadow-sm" title="Acessar Central 156" aria-label="Acessar Central 156">
+        <img src="/build/assets/static/images/central_float_156.svg" alt="Central 156" class="img-fluid d-block badge-156-img">
+    </a>
+    <div class="action-fixedbottom no-print">
+        <a href="http://wa.me/558191171407" target="_blank" data-toggle="tooltip" data-placement="left" data-bs-offset="10,20" data-bs-custom-class="tooltip-light" data-bs-original-title="Whatsapp da Prefeitura do Recife"> 
+            <span title="Ícone Whatsapp da Prefeitura do Recife"  aria-hidden="true" role="img"><i class="fa fa-whatsapp"></i></span>
+            <span class="sr-only">Ícone Whatsapp da Prefeitura do Recife</span>
+        </a>
+    </div>
+</main>
+
+<footer id="footer-menu" class="no-print">
+            <div class="main-footer">
+            <div class="footer-map">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3 col-12 espaco-entre-social-logo">
+                            <div class="row justify-content-center align-items-center">
+                                                                <div class="col-md-6 col-4 mt-5 mb-3">
+                                    <a href="http://www.recife.pe.gov.br" target="_blank" aria-hidden-"true">
+                                        <img alt="Logo Prefeitura do Recife" class="img-fluid logo-pcr" src="https&#x3A;&#x2F;&#x2F;statics.recife.pe.gov.br&#x2F;images&#x2F;dynamics&#x2F;logo_gestao_pcr_negativa.png&#x3F;w&#x3D;400&amp;fit&#x3D;fill">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="footer-socialmendia">
+                                <div class="row row-cols-6 mt-3 mb-5">
+                                                                                                                        <a href="https&#x3A;&#x2F;&#x2F;www.facebook.com&#x2F;prefeituradorecife&#x2F;" title="Página oficial da Prefeitura do Recife no Facebook" target="_blank" class="col" style="color: white;"> 
+                                                <i class="fa fa-facebook-official" aria-hidden="true" role="img" aria-label="Ícone do Facebook"></i>
+                                                <span class="sr-only">Facebook oficial da Prefeitura do Recife</span>
+                                            </a>
+                                                                                                                            <a href="https&#x3A;&#x2F;&#x2F;www.instagram.com&#x2F;prefeiturarecife&#x2F;" title="Página oficial da Prefeitura do Recife no Instagram" target="_blank" class="col"> 
+                                                <i class="fa fa-instagram" aria-hidden="true" role="img" aria-label="Ícone do Instagram"></i>
+                                                <span class="sr-only">Instragram oficial da Prefeitura do Recife</span>
+                                            </a>
+                                                                                                                            <a href="https&#x3A;&#x2F;&#x2F;twitter.com&#x2F;prefrecife" title="Página oficial da Prefeitura do Recife no Twitter" target="_blank" class="col"> 
+                                                <i class="fa fa-twitter-square" aria-hidden="true" role="img" aria-label="Ícone do Twitter"></i>
+                                                <span class="sr-only">Twitter oficial da Prefeitura do Recife</span>
+                                            </a>
+                                                                                                                            <a href="https&#x3A;&#x2F;&#x2F;www.youtube.com&#x2F;user&#x2F;prefrecife" title="Página oficial da Prefeitura do Recife no Youtube" target="_blank" class="col"> 
+                                                <i class="fa fa-youtube-square" aria-hidden="true" role="img" aria-label="Ícone do Youtube"></i>
+                                                <span class="sr-only">Youtube da Prefeitura do Recife</span>
+                                            </a>
+                                                                                                                            <a href="https&#x3A;&#x2F;&#x2F;www.flickr.com&#x2F;photos&#x2F;prefeituradorecife" title="Página oficial da Prefeitura do Recife no Flickr" target="_blank" class="col"> 
+                                                <i class="fa fa-flickr" aria-hidden="true" role="img" aria-label="Ícone do Flickr"></i>
+                                                <span class="sr-only">Flickr da Prefeitura do Recife no Flickr</span>
+                                            </a>
+                                                                                                                            <a href="https&#x3A;&#x2F;&#x2F;api.whatsapp.com&#x2F;send&#x2F;&#x3F;phone&#x3D;558191171407&amp;text&#x3D;Ol&#x25;C3&#x25;A1&amp;app_absent&#x3D;0" title="Página oficial da Prefeitura do Recife no WhatsApp" target="_blank" class="col"> 
+                                                <i class="fa fa-whatsapp" aria-hidden="true" role="img" aria-label="Ícone do Whatsapp"></i>
+                                                <span class="sr-only">WhatsApp da Prefeitura do Recife no</span>
+                                            </a>
+                                                                                                            </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9 col-12">
+                            <div class="row">
+                                <div class="col-md-6 mt-5">
+                                    <div class="footer-menu d-flex flex-column">
+                                                                                                                        <ul class="ps-4 pe-4">
+                                            <li><a title="Destaques" href="/#destaques">Destaques</a></li>
+                                            <li><a title="Categorias" href="/#categoriaServicos">Categorias</a></li>
+                                            <li><a title="Descubra os Serviços" href="/#descubraServicos">Descubra os Serviços</a></li>
+                                            <li><a title="Eventos" href="/#eventos">Eventos</a></li>
+                                            <li><a title="Mapa" href="/#encontreMapa">Encontre no Mapa</a></li>
+                                            <li><a title="Aviso de Privacidade" href="/avisoPrivacidade">Aviso de Privacidade</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col mt-5 mb-5">
+                                    <!--select class="form-select mb-3">
+                                        <option selected>Secretarias/Órgãos</option>
+                                        <option value="1">One</option>
+                                        <option value="2">Two</option>
+                                        <option value="3">Three</option>
+                                    </select-->
+                                                                        
+<select class="form-select mb-3" id="listPortalPrograma">
+    <option selected>Portais/Programas</option>
+            <option value="8">Ação Inverno</option>
+            <option value="28">Acessar plataforma de gestão de negócios (Gestor Recife)</option>
+            <option value="12">Adota Pet</option>
+            <option value="24">Assistente Virtual Inteligente</option>
+            <option value="57">Auxílio Emergencial 2026</option>
+            <option value="48">Banco de Alimentos</option>
+            <option value="38">Bora Impactar</option>
+            <option value="47">Consulado da Mulher</option>
+            <option value="20">Credpop</option>
+            <option value="56">Desenrola Recife</option>
+            <option value="64">Diário Oficial</option>
+            <option value="39">Eita Recife</option>
+            <option value="4">Escola de Frevo</option>
+            <option value="23">Escola de Turismo do Recife</option>
+            <option value="19">GO Recife</option>
+            <option value="41">Guia do Recife Criativo</option>
+            <option value="21">Movimenta Recife</option>
+            <option value="27">Observatório Econômico do Recife</option>
+            <option value="17">Olha Recife!</option>
+            <option value="61">Pesquisa de Satisfação Conecta WI FI</option>
+            <option value="54">Plataforma CORETO</option>
+            <option value="32">Portal de Compras</option>
+            <option value="18">Portal de Finanças - Recife em Dia</option>
+            <option value="25">Portal de Licenciamento Unificado</option>
+            <option value="14">Portal do Servidor do Recife</option>
+            <option value="15">Portal SEI</option>
+            <option value="62">Pré-Campanha Antirrábica</option>
+            <option value="63">Prêmio Recife de Inovação 2026</option>
+            <option value="6">PROCON</option>
+            <option value="1">Programa ProMorar</option>
+            <option value="55">PROUNI/PROTEC</option>
+            <option value="5">Recentro</option>
+            <option value="2">Recife Limpa</option>
+            <option value="9">Recife sem racismo</option>
+            <option value="58">Salas de Vacina</option>
+            <option value="60">Semana do Bebê</option>
+            <option value="65">Site EMUR</option>
+            <option value="3">Soluções Emprel</option>
+            <option value="10">Tá Aprumado Praças</option>
+            <option value="26">Tech Divas</option>
+            <option value="66">TOGAG</option>
+            <option value="53">Treina Brasil</option>
+            <option value="11">TV Conecta</option>
+            <option value="16">Visit Recife</option>
+    </select>
+<script>
+    window.addEventListener("load", function() {
+        $listPortalPrograma = document.querySelector("#listPortalPrograma");
+        $listPortalPrograma.addEventListener("change", function(e) {
+            window.location.href = "/programaportal/" + e.target.value;
+        });
+    });
+</script>
+                                </div>
+                                <!--<div class="col-md-3 mt-5 mb-5">
+                                                                                                                                </div>-->
+                                <!--<div class="col-md-2 mt-5 mb-5">
+                                                                                                                                </div>-->
+                            </div>
+                            <div class="row">
+                                <div class="col-12 mt-5 mb-5 text-white">
+                                    <div title="O Portal Conecta Recife é a Carta de Serviços ao Usuário do Município do Recife e está em consonância com as exigências estabelecidas na Lei nº 13.460, de 26 de junho de 2017 (Lei de Proteção e Defesa de Usuários dos Serviços Públicos)." class="ps-5 pe-5">
+                                        O Portal Conecta Recife é a Carta de Serviços ao Usuário do Município do Recife e está em consonância com as exigências estabelecidas na Lei nº 13.460, de 26 de junho de 2017 (Lei de Proteção e Defesa de Usuários dos Serviços Públicos).
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-desenv">
+                <div class="container">
+                                    <strong title="Desenvolvido pela Emprel">Desenvolvido pela&nbsp;
+                        <a href="http://www.emprel.gov.br" target="_blank">
+                            <img title="Desenvolvido pela Emprel" class="logo-emprel" src="https://statics.recife.pe.gov.br/images/dynamics/emprel.png?w=122&h=39&fit=fill" alt="Logomarca da Emprel">
+                        </a>
+                    </strong>
+                                </div>
+            </div>
+        </div>
+    </footer>
+
+
+
+<div vw class="enabled no-print">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+    </div>
+</div>
+
+<script>
+// Função para abrir o modal
+  function openModal() {
+    var modal = document.getElementById('exampleModal');
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+    modal.focus();
+  }
+
+  // Adiciona um ouvinte de evento de clique ao elemento <a>
+  var link = document.querySelector('.nav-link');
+  link.addEventListener('click', openModal);
+</script>
+
+<script>
+
+var x = 1.0;
+
+function upZoom() {    
+    switch (x) {
+        case 0.25:
+            x = 0.3;
+            break;
+        case 0.3:
+            x = 0.5;
+            break;
+        case 0.5:
+            x = 0.67;
+            break;
+        case 0.67:
+            x = 0.75;
+            break;
+        case 0.75:
+            x = 0.8;
+            break;
+        case 0.8:
+            x = 0.9;
+            break;
+        case 0.9:
+            x = 1;
+            break;   
+        case 1.0:
+            x = 1.1;
+            break;
+        case 1.1:
+            x = 1.25;
+            break;
+        case 1.25:
+            x = 1.5;
+            break;
+        case 1.5:
+            x = 1.75;
+            break;
+        case 1.75:
+            x = 2;
+            break;
+        default:
+            x += 0.5;
+            break;
+    }
+
+    document.body.style.zoom = x;
+    this.blur();
+    return false;
+}
+
+function standardZoom(){
+    x = 1.0;
+    document.body.style.zoom = x;
+    this.blur();
+    return false;
+}
+
+function downZoom() {    
+    switch (x) {
+
+        case 2.0:
+            x = 1.75;
+            break;
+        case 1.75:
+            x = 1.5;
+            break;
+        case 1.5:
+            x = 1.25;
+            break;
+        case 1.25:
+            x = 1.1;
+            break;
+        case 1.1:
+            x = 1.0;
+            break;
+        case 1.0:
+            x = 0.9;
+            break;
+        case 0.9:
+            x = 0.8;
+            break;
+        case 0.8:
+            x = 0.75;
+            break;
+        case 0.75:
+            x = 0.67;
+            break;
+        case 0.67:
+            x = 0.5;
+            break;
+        case 0.5:
+            x = 0.33;
+            break;
+        case 0.33:
+            x = 0.25;
+            break;        
+    }
+    document.body.style.zoom = x;
+    this.blur();
+    return false;
+}
+
+</script>
+
+
+    
+    
+                        <script>
+                window.addEventListener('load', function load() {
+                    const loader = document.getElementById('loader');
+                    window.setTimeout(function() {
+                        loader.classList.add('fadeOut');
+                    }, 100);
+                    $expandir_menu = document.querySelector('#expandir_menu');
+                    $seta_cima = document.querySelector('#seta_cima');
+                    $expandir_menu.addEventListener('click', function() {
+                        window.setTimeout(function() {
+                            $expandir_menu.setAttribute('class', 'd-none');
+                        }, 100);
+                    });
+                    $seta_cima.addEventListener('click', function() {
+                        window.setTimeout(function() {
+                            $expandir_menu.setAttribute('class', 'navbar-toggler');
+                        }, 100);
+                    });
+                });
+            </script>
+            <script>
+                window.addEventListener('load', function load() {
+                    const loader = document.getElementById('loader');
+                    window.setTimeout(function() {
+                        loader.classList.add('fadeOut');
+                    }, 100);
+                    $expandir_menu_acessibilidade = document.querySelector('#expandir_menu_acessibilidade');
+                    $seta_cima_acessibilidade = document.querySelector('#seta_cima_acessibilidade');
+                    $expandir_menu_acessibilidade.addEventListener('click', function() {
+                        window.setTimeout(function() {
+                            $expandir_menu_acessibilidade.setAttribute('class', 'd-none');
+                        }, 100);
+                    });
+                    $seta_cima_acessibilidade.addEventListener('click', function() {
+                        window.setTimeout(function() {
+                            $expandir_menu_acessibilidade.setAttribute('class', 'navbar-toggler');
+                        }, 100);
+                    });
+                });
+            </script>
+                
+
+    <script src="/build/runtime.87e230af.js"></script><script src="/build/692.0dbd2f55.js"></script><script src="/build/377.260148a5.js"></script><script src="/build/js/app.2c178360.js"></script>
+
+     
+    <script  src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+    if (window.VLibras) {
+        vl = new window.VLibras.Widget('https://vlibras.gov.br/app');
+    }
+    </script>
+    
+    
+
+            <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-61TR2DDPES"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-61TR2DDPES');
+        </script>
+        
+    
+    <script src="/_check_sso/javascript"></script>
+
+    
+
+
+    <script type="application/javascript">
+        
+        function loadTotalAvaliacoes(){
+            $.ajax({
+                type: "GET",
+                url: "/avaliacao/total/1095",
+                success: function(data)
+                {
+                 $('#aval-pos').html(data.P);
+                 $('#aval-neg').html(data.N);
+                }
+            });
+        }
+
+        loadTotalAvaliacoes();
+
+        window.addEventListener("load", function() {
+            var $menuPesquisa = document.querySelector("#menuPesquisa");
+            var classMenuPesquisa = $menuPesquisa.getAttribute("class");
+            var $buscaServicosCampo = buscaServicosCampo;
+            var $buscaServicosCampoDiv = buscaServicosCampo.querySelector("div");
+            var classBuscaServicosCampoDiv = $buscaServicosCampoDiv.getAttribute("class");
+            var mudouEstiloMenuPesquisa = false;
+            // Fixa o menu de pesquisa no mobile
+            document.addEventListener("scroll", function() {
+                var posicaoy = window.pageYOffset;
+                var larguraPage = document.body.getBoundingClientRect().width;
+                var posicaoMenuPesquisa = $menuPesquisa.getBoundingClientRect().top;
+                if (!mudouEstiloMenuPesquisa && posicaoMenuPesquisa <= 14 && larguraPage <= 640) {
+                    $menuPesquisa.setAttribute("class", "fixaMenuPesquisa");
+                    $buscaServicosCampoDiv.setAttribute("class", "");
+                    mudouEstiloMenuPesquisa = true;
+                }
+                if (mudouEstiloMenuPesquisa && posicaoy < 133) {
+                    $menuPesquisa.setAttribute("class", classMenuPesquisa);
+                    $buscaServicosCampoDiv.setAttribute("class", classBuscaServicosCampoDiv);
+                    mudouEstiloMenuPesquisa = false;
+                }
+            });
+        });
+
+        $(".info-toggle").on('click', function() {
+            if ($(this).hasClass('collapsed')) {
+                $('#informacoes .card-body').collapse('show');
+            } else {
+                $('#informacoes .card-body').collapse('hide');
+            }
+            $(".info-toggle").toggle();
+        });
+
+        $(".favorito").on('click', function() {
+            var url = "";
+            if ($(this).hasClass("is-favorito")) {
+                url = "/api/favoritos/del/1095/json";
+            } else {
+                url = "/api/favoritos/add/1095/json";
+            }
+
+            $(".favorito").toggleClass("is-favorito");
+
+            $.post(url, function(data) {
+                if (data && data.sucesso==true && data.erro!=null) {
+                    $(".favorito").toggleClass("is-favorito");
+                }
+            })
+            .fail(function() {
+                console.log( "error" );
+            });
+        });
+
+        function popoverShared() {
+            var offset = $("#linkShared").offset();
+
+            $("#shared").css({top: (offset.top+50)+'px', left: (offset.left-20)+'px'});
+            $("#shared").toggle();
+        }
+        $(document).click(function(e) {
+            if (
+                e.target.id != 'linkShared' && !$('#linkShared').find(e.target).length &&
+                e.target.id != 'shared' && !$('#shared').find(e.target).length
+            ) {
+                $("#shared").hide();
+            }
+        });
+
+        var avalDescrModal = new bootstrap.Modal(document.getElementById('avaliacaoDescrModal'));
+        function funcAvaliacaoDescr(resposta) {
+            if (resposta.length) {
+                $("#resposta").val('');
+                $(".avaliacaoIconP").removeClass('fa-thumbs-up').addClass('fa-thumbs-o-up');
+                $(".avaliacaoIconN").removeClass('fa-thumbs-down').addClass('fa-thumbs-o-down');
+                $("#avalPositivas").removeClass('d-block').addClass('d-none');
+                $("#avalNegativas").removeClass('d-block').addClass('d-none');
+
+                if (resposta=='P') {
+                    $(".avaliacaoIconP").removeClass('fa-thumbs-o-up').addClass('fa-thumbs-up');
+                    $("#avalPositivas").removeClass('d-none').addClass('d-block');
+                } else if (resposta == 'N') {
+                    $(".avaliacaoIconN").removeClass('fa-thumbs-o-down').addClass('fa-thumbs-down');
+                    $("#avalNegativas").removeClass('d-none').addClass('d-block');
+                }
+                $("#resposta").val(resposta);
+            }
+        }
+        $(".avaliacaoDescr").click(function(){
+            var resposta = $(this).data('value');
+
+            if (resposta.length) {
+                funcAvaliacaoDescr(resposta);
+                avalDescrModal.show();
+            }
+        });
+        $(".avaliacaoDescrInt").click(function(){
+            var resposta = $(this).data('value');
+
+            if (resposta.length) {
+                funcAvaliacaoDescr(resposta);
+            }
+        });
+
+        var avalMsgModal = new bootstrap.Modal(document.getElementById('avaliacaoMsgModal'));
+        $("#formAvaliacaoDescr").submit(function(e) {
+
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+
+             $('#spinner-enviar').removeClass("d-none");
+            var form = $(this);
+            var actionUrl = form.attr('action');
+            $('#submit-avaliacao').prop("disabled", true);
+            $.ajax({
+                type: "POST",
+                url: actionUrl,
+                data: form.serialize(), // serializes the form's elements.
+                success: function(data)
+                {
+                    $("#avaliacaoMsgModalTexto").html(data.mensagem);
+                    avalDescrModal.hide();
+                    avalMsgModal.show();
+                    loadTotalAvaliacoes();
+                },
+                complete: function(data) {
+                    $("#submit-avaliacao").prop("disabled", false);
+
+                    $('#spinner-enviar').addClass("d-none");
+
+                }
+            });
+
+        });
+
+
+    </script>
+
+    <script src="/build/js/clipboard.24613032.js"></script>
+
+    <script>
+        // Foto de perfil carregada depois da tela: não segura o window.load nem o #loader
+        window.addEventListener('load', function () {
+            var imgs = document.querySelectorAll('img[data-foto-perfil]');
+            if (!imgs.length) return;
+            var url = imgs[0].getAttribute('data-foto-perfil');
+            var pre = new Image();
+            pre.onload = function () {
+                if (pre.naturalWidth > 0) {
+                    for (var i = 0; i < imgs.length; i++) { imgs[i].src = url; }
+                }
+            };
+            pre.src = url;
+        });
+    </script>
+</body>
+</html>

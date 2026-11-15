@@ -27,7 +27,8 @@ type Nucleo = {
   haversineM: (lat1: number, lon1: number, lat2: number, lon2: number) => number;
   situacaoDaLuse: (historico: string | null) => "vigente" | "expirada" | null;
   deduplicarLuse: (registros: Record<string, unknown>[], centroPorDsqfl?: Map<string, [number, number]>) => { locais: LocalLuse[]; linhasComLuse: number; semPosicao: number };
-  lerAtendimentoDaDefesaCivil: (r: Record<string, unknown>) => { ano: number | null; bairro: string; rua: string; ocorrencia: string } | null;
+  lerAtendimentoDaDefesaCivil: (r: Record<string, unknown>) => { ano: number | null; bairro: string; rua: string; ocorrencia: string; acao: string | null } | null;
+  classeDaAcao: (t: unknown) => "comunitaria" | "atendimento";
   categoriaDaOcorrencia: (texto: string) => string;
   categoriaDoPedido: (grupo: string, servico: string) => string | null;
   diasAteAtender: (situacao: string, demanda: string, ultima: string) => number | null;
@@ -268,7 +269,7 @@ describe("Defesa Civil: rua sem o número mascarado, inclusive nas linhas desloc
       Regional: "RPA 3", Ano: 2024, Mes: "Abril", Data: "2024-04-11T00:00:00", Ocorrencia: "Imóveis com Danos / Risco",
       Solicitacao: "Vistoria em Imóveis", Endereco: "Rua das Flores Sinteticas, ?_$.", Bairro: "Gracas",
     });
-    expect(lido).toEqual({ ano: 2024, bairro: "Gracas", rua: "Rua das Flores Sinteticas", ocorrencia: "Imóveis com Danos / Risco" });
+    expect(lido).toEqual({ ano: 2024, bairro: "Gracas", rua: "Rua das Flores Sinteticas", ocorrencia: "Imóveis com Danos / Risco", acao: null });
   });
 
   it("linha deslocada (o mês no campo Ano): a rua vem de Solicitacao e a ocorrência de Data", () => {
@@ -276,7 +277,7 @@ describe("Defesa Civil: rua sem o número mascarado, inclusive nas linhas desloc
       Regional: "2019", Ano: "Abril", Mes: "2019-04-24", Data: "rvores em Risco", Ocorrencia: "Vistoria em Imveis",
       Solicitacao: "\"Rua Sintetica do Conselheiro", Endereco: " \"\"#_|/\"", Bairro: "Espinheiro",
     });
-    expect(lido).toEqual({ ano: 2019, bairro: "Espinheiro", rua: "Rua Sintetica do Conselheiro", ocorrencia: "rvores em Risco" });
+    expect(lido).toEqual({ ano: 2019, bairro: "Espinheiro", rua: "Rua Sintetica do Conselheiro", ocorrencia: "rvores em Risco", acao: null });
   });
 
   it("nenhum símbolo da máscara chega à saída, e linha só com a máscara é descartada", () => {
@@ -287,6 +288,28 @@ describe("Defesa Civil: rua sem o número mascarado, inclusive nas linhas desloc
       expect(JSON.stringify(lido)).not.toContain(m);
     }
     expect(n.lerAtendimentoDaDefesaCivil({ Ano: "Novembro", Regional: "2020", Mes: "2020-11-01", Solicitacao: "{})!", Endereco: "{})!", Bairro: "Madalena" })).toBeNull();
+  });
+
+  it("linha deslocada de março com o 'ç' perdido (\"Maro\") é lida, não descartada (VE02)", () => {
+    const lido = n.lerAtendimentoDaDefesaCivil({
+      Regional: "2020", Ano: "Maro", Mes: "2020-03-02", Data: null, Ocorrencia: "Monitoramento",
+      Solicitacao: "Rua Santa Maria Gorete", Endereco: "$!>=", Bairro: "Vasco da Gama",
+    });
+    expect(lido).toEqual({ ano: 2020, bairro: "Vasco da Gama", rua: "Rua Santa Maria Gorete", ocorrencia: "", acao: null });
+  });
+
+  it("tipo da ação: porta a porta, atendimento social e donativos são comunitários; vazio e desconhecido continuam atendimento (VE02)", () => {
+    const lido = n.lerAtendimentoDaDefesaCivil({
+      Regional: "2019", Ano: "Maro", Mes: "2019-03-29", Data: "", Ocorrencia: "", Solicitacao: "\"Rua Sintetica", Endereco: " {})!\"",
+      Bairro: "Boa Viagem", Tipo_da_Acao: "Acoes de Porta-Porta",
+    });
+    expect(lido?.acao).toBe("Acoes de Porta-Porta");
+    for (const t of ["Acoes de Porta-Porta", "Atendimento Social", "ATENDIMENTO SOCIAL", "atendimento social", "Distribuicao de Cestas Basicas", "Distribuicao de Colchoes", "Acoes Educativas", "Encaminhamentos aos Parceiros"]) {
+      expect({ t, c: n.classeDaAcao(t) }).toEqual({ t, c: "comunitaria" });
+    }
+    for (const t of ["", null, undefined, "Mapeamento de Area de Risco", "Analise Visual Estrutural", "Orientado a Sair do Imovel em Caso de Chuva", "Encaminhar para Colocacao de Lonas", "Rocagem", "Demolicao", "Analise de Processos"]) {
+      expect({ t, c: n.classeDaAcao(t) }).toEqual({ t, c: "atendimento" });
+    }
   });
 
   it("categorias da ocorrência toleram a acentuação perdida na publicação", () => {

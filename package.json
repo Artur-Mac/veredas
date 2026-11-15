@@ -12,7 +12,9 @@
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "verificar": "npm run typecheck && npm run lint && npm test",
-    "test:v1": "node scripts/v1-smoke.mjs"
+    "test:v1": "node scripts/v1-smoke.mjs",
+    "camadas": "node scripts/dados/publicar-camadas.cjs",
+    "eas-build-post-install": "node scripts/dados/publicar-camadas.cjs"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
@@ -44,6 +46,7 @@
     "react-native-svg": "15.15.4",
     "react-native-web": "~0.21.0",
     "react-native-webview": "13.16.1",
+    "suncalc": "2.1.1",
     "tesseract.js": "^7.0.0",
     "zod": "^4.6.7"
   },
@@ -62,6 +65,9 @@
     "preset": "jest-expo",
     "testMatch": [
       "**/tests/**/*.test.ts"
+    ],
+    "setupFiles": [
+      "<rootDir>/tests/configurar-camadas.ts"
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",

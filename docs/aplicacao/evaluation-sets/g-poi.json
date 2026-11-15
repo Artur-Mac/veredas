@@ -1,0 +1,274 @@
+{
+ "set": "G-POI",
+ "version": 1,
+ "created": "2026-11-14",
+ "created_by": "VE04 rodar-destinos.mjs",
+ "regra": "2 locais por bairro e categoria (ordem SHA-256 do id) + duplicatas fundidas e locais fechados achados no piloto",
+ "label_status": "nao_revisado",
+ "itens": [
+  {
+   "local": "osm:w858890293",
+   "area": "boa-viagem",
+   "categoria": "mercado",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:n7204308285",
+   "area": "boa-viagem",
+   "categoria": "mercado",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:n10120060952",
+   "area": "boa-viagem",
+   "categoria": "farmacia",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:n5746159693",
+   "area": "boa-viagem",
+   "categoria": "farmacia",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:w688298291",
+   "area": "boa-viagem",
+   "categoria": "praca",
+   "motivo": "amostra"
+  },
+  {
+   "local": "pcr_pracas:2056",
+   "area": "boa-viagem",
+   "categoria": "praca",
+   "motivo": "amostra"
+  },
+  {
+   "local": "gtfs:010181",
+   "area": "boa-viagem",
+   "categoria": "transporte",
+   "motivo": "amostra"
+  },
+  {
+   "local": "gtfs:010225",
+   "area": "boa-viagem",
+   "categoria": "transporte",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:n5745804052",
+   "area": "casa-forte",
+   "categoria": "mercado",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:w1114960698",
+   "area": "casa-forte",
+   "categoria": "farmacia",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:w673898373",
+   "area": "casa-forte",
+   "categoria": "praca",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:w673898375",
+   "area": "casa-forte",
+   "categoria": "praca",
+   "motivo": "amostra"
+  },
+  {
+   "local": "gtfs:100067",
+   "area": "casa-forte",
+   "categoria": "transporte",
+   "motivo": "amostra"
+  },
+  {
+   "local": "gtfs:100090",
+   "area": "casa-forte",
+   "categoria": "transporte",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:n2578638078",
+   "area": "gracas",
+   "categoria": "mercado",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:w1014113861",
+   "area": "gracas",
+   "categoria": "mercado",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:n11099893721",
+   "area": "gracas",
+   "categoria": "farmacia",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:n4925588723",
+   "area": "gracas",
+   "categoria": "farmacia",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:w673593924",
+   "area": "gracas",
+   "categoria": "praca",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:w666264112",
+   "area": "gracas",
+   "categoria": "praca",
+   "motivo": "amostra"
+  },
+  {
+   "local": "gtfs:100183",
+   "area": "gracas",
+   "categoria": "transporte",
+   "motivo": "amostra"
+  },
+  {
+   "local": "gtfs:100002",
+   "area": "gracas",
+   "categoria": "transporte",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:w616970773",
+   "area": "espinheiro",
+   "categoria": "mercado",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:n12945134610",
+   "area": "espinheiro",
+   "categoria": "farmacia",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:n5739533908",
+   "area": "espinheiro",
+   "categoria": "farmacia",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:w369652679",
+   "area": "espinheiro",
+   "categoria": "praca",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:w369612051",
+   "area": "espinheiro",
+   "categoria": "praca",
+   "motivo": "amostra"
+  },
+  {
+   "local": "gtfs:180123",
+   "area": "espinheiro",
+   "categoria": "transporte",
+   "motivo": "amostra"
+  },
+  {
+   "local": "gtfs:100184",
+   "area": "espinheiro",
+   "categoria": "transporte",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:w990928749",
+   "area": "madalena",
+   "categoria": "mercado",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:w471248872",
+   "area": "madalena",
+   "categoria": "mercado",
+   "motivo": "amostra"
+  },
+  {
+   "local": "pcr_farmacias_da_familia:6",
+   "area": "madalena",
+   "categoria": "farmacia",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:n5214806355",
+   "area": "madalena",
+   "categoria": "farmacia",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:w673526871",
+   "area": "madalena",
+   "categoria": "praca",
+   "motivo": "amostra"
+  },
+  {
+   "local": "pcr_pracas:1979",
+   "area": "madalena",
+   "categoria": "praca",
+   "motivo": "amostra"
+  },
+  {
+   "local": "gtfs:180416",
+   "area": "madalena",
+   "categoria": "transporte",
+   "motivo": "amostra"
+  },
+  {
+   "local": "gtfs:180417",
+   "area": "madalena",
+   "categoria": "transporte",
+   "motivo": "amostra"
+  },
+  {
+   "local": "osm:n6292248252",
+   "area": "madalena",
+   "categoria": "farmacia",
+   "motivo": "duplicata_fundida:osm:w690955256"
+  },
+  {
+   "local": "osm:n6292248532",
+   "area": "madalena",
+   "categoria": "farmacia",
+   "motivo": "duplicata_fundida:osm:w772524556"
+  },
+  {
+   "local": "osm:w1014113861",
+   "area": "gracas",
+   "categoria": "mercado",
+   "motivo": "duplicata_fundida:osm:w384770633"
+  },
+  {
+   "local": "osm:w616970773",
+   "area": "espinheiro",
+   "categoria": "mercado",
+   "motivo": "duplicata_fundida:osm:w816364140"
+  },
+  {
+   "local": "osm:n4664439823",
+   "area": "boa-viagem",
+   "categoria": "mercado",
+   "motivo": "duplicata_fundida:osm:w920118033"
+  },
+  {
+   "local": "osm:w1023735336",
+   "area": "gracas",
+   "categoria": "praca",
+   "motivo": "duplicata_fundida:osm:w1023735337"
+  },
+  {
+   "local": "osm:w968905828",
+   "area": "madalena",
+   "categoria": "mercado",
+   "motivo": "fechado_no_osm"
+  }
+ ]
+}

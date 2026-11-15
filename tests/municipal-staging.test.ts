@@ -38,7 +38,9 @@ if (process.env.VEREDA_AUDITAR_MUNICIPAL === "1") {
       particoes: linhas.map(({ ids: _ids, ...resto }) => resto), colisoesEntreBairros: colisoes,
       semEdificios: linhas.filter(l => l.edificios === 0).map(l => l.bairro),
       acimaDe2MB: linhas.filter(l => l.bytes > 2000000).map(l => l.bairro) };
-    writeFileSync(join(raiz, "docs/plano-recife/execucoes/municipal-validacao.json"), JSON.stringify(resultado, null, 2) + "\n");
+    // VE02: o destino pode vir de VEREDA_AUDITORIA_MUNICIPAL (para não sobrescrever a auditoria histórica).
+    const destino = process.env.VEREDA_AUDITORIA_MUNICIPAL ?? join(raiz, "docs/plano-recife/execucoes/municipal-validacao.json");
+    writeFileSync(destino, JSON.stringify(resultado, null, 2) + "\n");
     expect(linhas).toHaveLength(94);
   }, 120000);
 }

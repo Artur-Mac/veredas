@@ -1,0 +1,272 @@
+{
+ "epoch": "VE03",
+ "run_date": "2026-11-14",
+ "status": "partial",
+ "outcome": "iterate",
+ "reason_for_partial": "entrance and route correctness not reviewed by a person (G-BUILDING/G-ROUTE precision unmeasured); only automated and proxy checks",
+ "inputs": {
+  "extract": {
+   "arquivo": ".cache/osm/nordeste-261113.osm.pbf",
+   "sha256": "e55995308145fa0b7e98f1231a3478f76815f5ff3cd114c0848c7ba047204f83",
+   "blocos": 9106,
+   "nos": 66414436,
+   "vias": 6353598,
+   "relacoesPuladas": 65868,
+   "cabecalhoVisto": true,
+   "ordenado": true,
+   "nosNaCaixa": 1630493,
+   "viasDeCirculacao": 55239,
+   "entradasOsm": 324,
+   "prediosOsmComEndereco": 10576
+  },
+  "official_streets_sha256": "154ebe0adc920bd12ec013e1fe110df94f6d2717764dfec9b7ccfc639e426ace",
+  "index": "indice-municipal/1e393803851f3fd5",
+  "gtfs": "v2026.10.26"
+ },
+ "code_sha256": {
+  "scripts/dados/rede/pbf.mjs": "4e1b2923850bdc72d3a6b3d5db495c3735dde30d3005956a7a0658a949fa4f66",
+  "scripts/dados/rede/grafo.mjs": "5710a75a0bb201110874d1f5857f6f521776ac3b73a2650ff33a8f4989a89bf9",
+  "scripts/dados/rede/frentes.mjs": "ea437d31a6e03458db41aaa58b3a84eedf08b5a84da45274ea31941759f6ec91",
+  "scripts/dados/rede/rodar-rede.mjs": "0e78c1f716c961db065f50b16dfde9be30c3279dc187099e97ded36632129445",
+  "scripts/dados/rede/correcoes.json": "926b592223c776b407eb8f46cc1c7c5d788b28ae6c8efd36393420bc37c44a97",
+  "scripts/dados/rede/testes/rede.test.mjs": "0d41f300e4d79a292f6ab8f58c61c7388c03b0d4ad69c7cca4caf86d9fe9d0ae",
+  "docs/aplicacao/evaluation-sets/g-route.json": "5ce0045f763c647a8e66ad3cdbe4993b3714c969ff5d8b393fa2a872b2e713e2",
+  "docs/aplicacao/evaluation-sets/g-building-revisao.csv": "b9e4303380ed9e5f7a74f45efb5987642928c1db64c560232662a49599fdb8dc",
+  "docs/aplicacao/evaluation-sets/g-route-caminhos.geojson": "cc6eff4501c772c14f4a76d846027d64811d7e66e9fccc8784cd31618da8d4b2"
+ },
+ "network": {
+  "version": "e8a0c30a51ab6cce",
+  "nos": 273529,
+  "arestas": 300703,
+  "viasMantidas": 53508,
+  "descartes": {
+   "semPermissao": 1731,
+   "bloqueadoPorBarreira": 255,
+   "semCoordenada": 3296
+  },
+  "componentes": 298,
+  "componentePrincipal": 268621,
+  "fracaoNoPrincipal": 0.982,
+  "escadasM": 58869,
+  "ponteM": 72066,
+  "travessiasMarcadas": 2604,
+  "barreiras": 3768,
+  "lineage": {
+   "viasComNome": 32590,
+   "porMetodo": {
+    "nome_e_bairro": 18922,
+    "nome_fora_do_bairro": 565,
+    "ambiguo": 2105,
+    "sem_correspondencia": 10998
+   }
+  }
+ },
+ "by_area": {
+  "boa-viagem": {
+   "buildings": 1879,
+   "link_class": {
+    "forte": 1761,
+    "media": 105,
+    "fraca": 13
+   },
+   "using_osm_entrance": 1,
+   "with_additional_frontages": 932,
+   "frontages_refused_water": 61,
+   "identity_proxy_osm_address": {
+    "comparable": 141,
+    "agree_within_40m": 139,
+    "disagree": 2,
+    "median_m": 5
+   },
+   "routes_to_nearest_stop": {
+    "routed": 1875,
+    "impossible": 0,
+    "water_without_bridge_tag": 30,
+    "detour_median": 1.57,
+    "detour_p90": 2.89
+   },
+   "g_route": {
+    "routes": 6,
+    "routed": 5,
+    "bridge_crossings": 2
+   }
+  },
+  "casa-forte": {
+   "buildings": 82,
+   "link_class": {
+    "forte": 78,
+    "media": 3,
+    "fraca": 1
+   },
+   "using_osm_entrance": 0,
+   "with_additional_frontages": 43,
+   "frontages_refused_water": 0,
+   "identity_proxy_osm_address": {
+    "comparable": 4,
+    "agree_within_40m": 4,
+    "disagree": 0,
+    "median_m": 7
+   },
+   "routes_to_nearest_stop": {
+    "routed": 82,
+    "impossible": 0,
+    "water_without_bridge_tag": 0,
+    "detour_median": 1.46,
+    "detour_p90": 2.09
+   },
+   "g_route": {
+    "routes": 6,
+    "routed": 6,
+    "bridge_crossings": 2
+   }
+  },
+  "gracas": {
+   "buildings": 291,
+   "link_class": {
+    "forte": 285,
+    "media": 6,
+    "fraca": 0
+   },
+   "using_osm_entrance": 0,
+   "with_additional_frontages": 130,
+   "frontages_refused_water": 5,
+   "identity_proxy_osm_address": {
+    "comparable": 149,
+    "agree_within_40m": 148,
+    "disagree": 1,
+    "median_m": 4
+   },
+   "routes_to_nearest_stop": {
+    "routed": 291,
+    "impossible": 0,
+    "water_without_bridge_tag": 0,
+    "detour_median": 1.4,
+    "detour_p90": 2.12
+   },
+   "g_route": {
+    "routes": 6,
+    "routed": 6,
+    "bridge_crossings": 2
+   }
+  },
+  "espinheiro": {
+   "buildings": 156,
+   "link_class": {
+    "forte": 151,
+    "media": 5,
+    "fraca": 0
+   },
+   "using_osm_entrance": 1,
+   "with_additional_frontages": 52,
+   "frontages_refused_water": 0,
+   "identity_proxy_osm_address": {
+    "comparable": 1,
+    "agree_within_40m": 1,
+    "disagree": 0,
+    "median_m": 2
+   },
+   "routes_to_nearest_stop": {
+    "routed": 156,
+    "impossible": 0,
+    "water_without_bridge_tag": 0,
+    "detour_median": 1.69,
+    "detour_p90": 3.18
+   },
+   "g_route": {
+    "routes": 6,
+    "routed": 6,
+    "bridge_crossings": 3
+   }
+  },
+  "madalena": {
+   "buildings": 280,
+   "link_class": {
+    "forte": 241,
+    "media": 38,
+    "fraca": 1
+   },
+   "using_osm_entrance": 0,
+   "with_additional_frontages": 128,
+   "frontages_refused_water": 10,
+   "identity_proxy_osm_address": {
+    "comparable": 20,
+    "agree_within_40m": 18,
+    "disagree": 2,
+    "median_m": 8
+   },
+   "routes_to_nearest_stop": {
+    "routed": 280,
+    "impossible": 0,
+    "water_without_bridge_tag": 2,
+    "detour_median": 1.62,
+    "detour_p90": 2.86
+   },
+   "g_route": {
+    "routes": 6,
+    "routed": 6,
+    "bridge_crossings": 2
+   }
+  }
+ },
+ "osm_mapped_entrances_on_outline": {
+  "n": 2,
+  "distance_to_automatic_candidate_m": [
+   25.9,
+   38.3
+  ],
+  "note": "both disagree by >10 m; now used as the entrance for those 2 buildings"
+ },
+ "g_route": {
+  "total": 30,
+  "routed": 29,
+  "no_origin_link": 1,
+  "impossible": 0,
+  "water_without_bridge_tag": 0,
+  "detour_min": 1.07,
+  "detour_max": 2.87,
+  "fewer_major_roads_scenario_reduced_major_road_m_on": 8,
+  "routes_using_steps": 0
+ },
+ "review_queue": {
+  "total": 180,
+  "building_links": 172,
+  "water_ways": 8
+ },
+ "engineering": {
+  "node_tests": "48/48 (rede 15 + pipeline 33)",
+  "first_run_rede_tests": "14/15 (test point error)",
+  "lint_new_scripts": "0 problems",
+  "decoder_bug_found": "length-delimited skip read pos before varint advanced it",
+  "reproducibility": "two full runs → same network e8a0c30a51ab6cce and publication c05c3ba9033e9fd9"
+ },
+ "operating": {
+  "wall_s": 73.7,
+  "phases_ms": {
+   "leituraDoPbf": 33727,
+   "grafo": 522,
+   "linhagem": 21866,
+   "frentes": 4465,
+   "concordanciaOsm": 118,
+   "gRoute": 344,
+   "rotasAmplas": 9698,
+   "publicacao": 2379,
+   "total": 73675
+  },
+  "peak_rss_mb": 903,
+  "publication_bytes": 5311098,
+  "spend_brl": 0,
+  "human_review_minutes": 0
+ },
+ "publication": {
+  "versao": "c05c3ba9033e9fd9",
+  "ativa": "c05c3ba9033e9fd9",
+  "anterior": "28ee1d12a811e7ab",
+  "bytes": 5311098
+ },
+ "not_run": [
+  "human review of G-BUILDING entrances and G-ROUTE paths",
+  "field walk of any route",
+  "app integration (VE04)",
+  "jest (no app code changed in VE03)"
+ ]
+}

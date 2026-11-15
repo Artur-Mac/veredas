@@ -1,0 +1,96 @@
+ M README.md
+ M docs/.obsidian/workspace.json
+ M docs/README.md
+ M docs/VEREDA_DOCUMENTO_DEFINITIVO.md
+ M docs/dados/README.md
+ M docs/dados/fontes/fontes.json
+ M docs/dados/infra/scripts/09-processar.mjs
+ M docs/dados/infra/scripts/http.mjs
+ M docs/dados/infra/scripts/rodar-tudo.mjs
+ M docs/dados/processado/entorno.json
+ M docs/dados/processado/ruido-aeroporto.json
+ M docs/plano-recife/README.md
+ M ignorar/LEIA-ME.md
+ D index.html
+ M package-lock.json
+ M package.json
+ M src/app/(abas)/comparar.tsx
+ M src/app/(abas)/dossie.tsx
+ M src/app/(abas)/salvos.tsx
+ M src/app/(abas)/visita.tsx
+ M src/app/_layout.tsx
+ M src/app/exemplos/[id]/(abas)/index.tsx
+ M src/app/exemplos/[id]/(abas)/visita.tsx
+ M src/app/sobre-os-dados.tsx
+ M src/componentes/comparar/Paineis.tsx
+ M src/componentes/dossie-v1/Custo.tsx
+ M src/componentes/dossie-v1/Edificio.tsx
+ M src/componentes/dossie-v1/Entorno.tsx
+ M src/componentes/dossie-v1/Gavetas.tsx
+ M src/componentes/dossie-v1/MapaDoLote.tsx
+ M src/componentes/dossie-v1/mapa.ts
+ M src/componentes/visita-v1/NoImovel.tsx
+ M src/componentes/visita-v1/Orientacao.tsx
+ M src/componentes/visita-v1/Resumo.tsx
+ M src/dados/backup.ts
+ M src/dados/caderno.ts
+ M src/estado/Analises.tsx
+ M src/estado/Aparelho.tsx
+ M tests/visita.test.ts
+?? docs/aplicacao/
+?? docs/dados/infra/RECADO-PARA-O-AGENTE.md
+?? docs/dados/infra/scripts/11-crimebrasil.mjs
+?? docs/dados/infra/scripts/11-temperatura.mjs
+?? docs/dados/infra/scripts/12-amenidades.mjs
+?? docs/dados/infra/scripts/13-seguranca.mjs
+?? docs/dados/infra/scripts/validar-defesa-civil.mjs
+?? docs/dados/infra/scripts/validar-gtfs.mjs
+?? docs/dados/literatura/
+?? docs/dados/processado/seguranca.json
+?? docs/dados/processado/temperatura.json
+?? docs/dados/raw/_cache/060628e8c5acb336.txt
+?? docs/dados/raw/_cache/115dacdf9ef56685.txt
+?? docs/dados/raw/_cache/20485775dbda8867.txt
+?? docs/dados/raw/_cache/2a5994d2ef5c6187.txt
+?? docs/dados/raw/_cache/360d74b6e208a20a.txt
+?? docs/dados/raw/_cache/4a52940cfb2429d3.txt
+?? docs/dados/raw/_cache/af5735894670381c.txt
+?? docs/dados/raw/_cache/c9258dce499954ae.txt
+?? docs/dados/raw/_cache/e9f2607b36521df9.txt
+?? docs/dados/raw/_cache/eb9a06f47bcee4a8.txt
+?? docs/dados/raw/osm-pois/
+?? docs/dados/raw/precos/zap-bairros-recife.json
+?? docs/dados/raw/seguranca/
+?? docs/dados/raw/temperatura/
+?? docs/dados/validacao-defesa-civil-gtfs.md
+?? docs/produto/sol-nas-janelas-2026-10-27/
+?? ignorar/prototipo-demonstrativo-legado/
+?? scripts/dados/camadas-inteligentes-recife.mjs
+?? scripts/dados/censo-renda-recife.mjs
+?? scripts/dados/gerar-referencia-solar.py
+?? scripts/dados/preparar-sol-recife.py
+?? scripts/dados/referencias-publicas.mjs
+?? scripts/sol-smoke.mjs
+?? src/app/perfil-domicilio.tsx
+?? src/app/sol.tsx
+?? src/componentes/sol/
+?? src/dados/custoPorPartes.ts
+?? src/dados/dossie/guiaEstrutura.ts
+?? src/dados/dossie/sintesesDaRua.ts
+?? src/dados/dossie/solESombra.ts
+?? src/dados/recife/camadas-ambientais.json
+?? src/dados/recife/camadasAmbientais.ts
+?? src/dados/recife/censo-renda-setores.json
+?? src/dados/recife/censoRenda.ts
+?? src/dados/recife/referencias-publicas.json
+?? src/dados/recife/referenciasPublicas.ts
+?? src/dados/sol/
+?? src/estado/PerfilDomicilio.tsx
+?? src/plataforma/bussolaSolar.ts
+?? src/plataforma/bussolaSolar.web.ts
+?? tests/fixtures/solar-noaa.json
+?? tests/perfil-domicilio-custo.test.ts
+?? tests/sinteses-da-rua.test.ts
+?? tests/sol-interface.test.ts
+?? tests/sol-janelas.test.ts
+?? tests/sol-sombra-estrutura.test.ts

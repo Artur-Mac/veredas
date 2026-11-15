@@ -1,0 +1,134 @@
+{
+ "epoch": "VE00",
+ "run_date": "2026-11-14",
+ "checkout": {
+  "repository": "veredas (local)",
+  "head": "5d90b642493a85bbcecf8079aaffb3902797f905",
+  "head_date": "2026-11-11T17:07:16-03:00",
+  "branch": "main (ahead of origin/main by 1 commit)",
+  "dirty_tracked_files": 39,
+  "dirty_summary": "39 tracked files modified/deleted before this run (1331 insertions, 6897 deletions), including deletion of root index.html; untracked docs/aplicacao/, docs/dados/literatura/ and exploratory collectors. None were modified by VE00.",
+  "evidence": [
+   "logs/git-status.txt",
+   "logs/git-diff-stat.txt"
+  ]
+ },
+ "environment": {
+  "os": "Linux 7.2.15 x86_64 (Pop!_OS), 12 cores, 23 GiB RAM",
+  "node_default": "v18.19.1 (/usr/bin/node) — used for typecheck, lint, Jest",
+  "node_for_browser_checks": "v22.23.3 (nvm) — used for Expo web server and Playwright scripts",
+  "npm": "9.2.0",
+  "browser": "Playwright Chromium 1248 (headless)",
+  "native_tooling": "adb/emulator/xcrun not installed; no native device available"
+ },
+ "checks": [
+  {
+   "id": "typecheck",
+   "command": "npm run typecheck",
+   "result": "pass",
+   "exit": 0,
+   "seconds": 9,
+   "detail": "tsc --noEmit, 0 errors",
+   "log": "logs/typecheck.log"
+  },
+  {
+   "id": "lint",
+   "command": "npm run lint",
+   "result": "pass_with_warnings",
+   "exit": 0,
+   "seconds": 23,
+   "detail": "0 errors, 5 warnings (2 import/first in user-modified Paineis.tsx and Custo.tsx; 3 unused eslint-disable directives)",
+   "log": "logs/lint.log"
+  },
+  {
+   "id": "jest",
+   "command": "npx jest --runInBand --json",
+   "result": "pass",
+   "exit": 0,
+   "seconds": 101,
+   "detail": "53/53 suites, 1414/1414 tests, 0 skipped",
+   "log": "logs/jest.log",
+   "summary": "logs/jest-summary.json"
+  },
+  {
+   "id": "v1_smoke_web",
+   "command": "SMOKE_OUT=out/ve00/v1-smoke node scripts/v1-smoke.mjs (Node 22; script started its own Expo web server on :8087)",
+   "result": "pass",
+   "exit": 0,
+   "seconds": 106,
+   "detail": "50 audited steps at 375x812 and 1280x900, 0 accessibility/overflow problems, no external requests; Casa Forte real building only; offline navigation after load; unreadable-notebook protection; discard/credit rules",
+   "log": "logs/v1-smoke.log",
+   "screenshots": "out/ve00/v1-smoke/ (gitignored, 113 files, 6.5 MB)"
+  },
+  {
+   "id": "ve00_pilot_journey_web",
+   "command": "POC_URL=http://localhost:8087 node docs/aplicacao/execucoes/VE00/scripts/ve00-pilot-journey.mjs",
+   "result": "pass",
+   "exit": 0,
+   "seconds": 30,
+   "detail": "5/5 pilot areas: link -> text -> building suggestion -> confirm -> dossier (Destaques, Entorno, Edifício) -> Visita; compare (rent); reload keeps 5/5 analyses and 5/5 confirmed links; 0 external requests, 0 page errors, 0 console errors, 0 px horizontal overflow at 375 px",
+   "log": "logs/pilot-journey.json",
+   "screenshots": "out/ve00/pilot-journey/ (gitignored, 35 files)",
+   "attempts": "3 runs; run 1 failed because the test seeded an invalid wallet (test bug, app correctly refused it); run 2 had a case-sensitive probe and a wrong post-reload wait (test bugs); run 3 is the recorded result"
+  },
+  {
+   "id": "reconcile_baseline",
+   "command": "python3 -I docs/aplicacao/execucoes/VE00/scripts/reconcile_baseline.py > coverage.json",
+   "result": "pass",
+   "exit": 0,
+   "seconds": null,
+   "detail": "published index checksums match cobertura.json for all 72 partitions; all section-2 counts recomputed",
+   "output": "coverage.json"
+  },
+  {
+   "id": "gtfs_daily_count",
+   "command": "python3 -I docs/aplicacao/execucoes/VE00/scripts/gtfs_daily_count_check.py",
+   "result": "defect_confirmed",
+   "exit": 0,
+   "seconds": null,
+   "detail": "published 'daily stops' = sum over all service calendars; median 2.42x the weekday count",
+   "output": "logs/gtfs-daily-count-check.json"
+  },
+  {
+   "id": "eval_set_selection",
+   "command": "python3 -I docs/aplicacao/execucoes/VE00/scripts/select_eval_sets.py (3 runs)",
+   "result": "pass",
+   "exit": 0,
+   "seconds": 1.5,
+   "detail": "SHA-256 identical after runs 2 and 3: g-building b613cd14…, g-compare 2d496353…",
+   "output": "../../evaluation-sets/"
+  }
+ ],
+ "not_run": [
+  {
+   "id": "native_android_ios",
+   "reason": "no device/emulator or native toolchain on this machine",
+   "affects": "WebView import, share intent, native storage, native accessibility, device performance"
+  },
+  {
+   "id": "offline_cold_reload_web",
+   "reason": "unsupported by design on web (no service worker); v1 smoke documents it",
+   "affects": "offline claim is limited to an already loaded web session"
+  },
+  {
+   "id": "target_device_performance",
+   "reason": "no reference low-end device available; only desktop headless timings recorded",
+   "affects": "plan section 6.3 performance budget remains unmeasured"
+  },
+  {
+   "id": "municipal_staging_audit",
+   "reason": "VEREDA_AUDITAR_MUNICIPAL=1 audit not run in VE00 (it writes its own artifact); instead every active partition checksum and building count was verified against cobertura.json",
+   "affects": "all-94-partition geometric audit not refreshed"
+  },
+  {
+   "id": "sol_smoke",
+   "reason": "scripts/sol-smoke.mjs hard-codes an older index version; not reused without update (VE07)",
+   "affects": "solar UI smoke not refreshed"
+  },
+  {
+   "id": "customer_study",
+   "reason": "no participants in VE00; not required for this epoch",
+   "affects": "customer usefulness baseline is an expert walkthrough only"
+  }
+ ]
+}

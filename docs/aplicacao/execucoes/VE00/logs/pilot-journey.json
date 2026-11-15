@@ -1,0 +1,366 @@
+{
+ "base": "http://localhost:8087",
+ "iniciado": "2026-11-14T17:52:43.899Z",
+ "areas": [
+  {
+   "area": "boa-viagem",
+   "predio": "11720-4398",
+   "estrato": "ordinary",
+   "endereco": "Avenida Boa Viagem, 4398",
+   "etapas": [
+    "link lido",
+    "texto lido",
+    "prédio confirmado",
+    "dossiê e visita"
+   ],
+   "capturas": [
+    {
+     "arquivo": "01-boa-viagem-ler.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "02-boa-viagem-predio.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "03-boa-viagem-dossie-destaques.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "04-boa-viagem-dossie-entorno.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "05-boa-viagem-dossie-edificio.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "06-boa-viagem-visita.png",
+     "rolagemHorizontalPx": 0
+    }
+   ],
+   "sugestaoAutomatica": true,
+   "dossieAposConfirmarMs": 227,
+   "dossieMostraEndereco": true,
+   "abaEntorno": {
+    "temARua": true,
+    "tem156": true,
+    "temDefesaCivil": true,
+    "temObras": true,
+    "temFonte": true,
+    "caracteres": 7454,
+    "aConfirmar": 2
+   },
+   "abaEdificio": {
+    "temARua": true,
+    "tem156": true,
+    "temDefesaCivil": false,
+    "temObras": true,
+    "temFonte": false,
+    "caracteres": 2033,
+    "aConfirmar": 2
+   },
+   "visitaAbre": true,
+   "ok": true
+  },
+  {
+   "area": "casa-forte",
+   "predio": "21385-617",
+   "estrato": "ordinary",
+   "endereco": "Estrada Do Encanamento, 617",
+   "etapas": [
+    "link lido",
+    "texto lido",
+    "prédio confirmado",
+    "dossiê e visita"
+   ],
+   "capturas": [
+    {
+     "arquivo": "07-casa-forte-ler.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "08-casa-forte-predio.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "09-casa-forte-dossie-destaques.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "10-casa-forte-dossie-entorno.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "11-casa-forte-dossie-edificio.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "12-casa-forte-visita.png",
+     "rolagemHorizontalPx": 0
+    }
+   ],
+   "sugestaoAutomatica": true,
+   "dossieAposConfirmarMs": 217,
+   "dossieMostraEndereco": true,
+   "abaEntorno": {
+    "temARua": true,
+    "tem156": true,
+    "temDefesaCivil": true,
+    "temObras": true,
+    "temFonte": true,
+    "caracteres": 7637,
+    "aConfirmar": 2
+   },
+   "abaEdificio": {
+    "temARua": false,
+    "tem156": false,
+    "temDefesaCivil": false,
+    "temObras": true,
+    "temFonte": false,
+    "caracteres": 2001,
+    "aConfirmar": 2
+   },
+   "visitaAbre": true,
+   "ok": true
+  },
+  {
+   "area": "gracas",
+   "predio": "34223-220",
+   "estrato": "ordinary",
+   "endereco": "Rua Joao Ramos, 220",
+   "etapas": [
+    "link lido",
+    "texto lido",
+    "prédio confirmado",
+    "dossiê e visita"
+   ],
+   "capturas": [
+    {
+     "arquivo": "13-gracas-ler.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "14-gracas-predio.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "15-gracas-dossie-destaques.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "16-gracas-dossie-entorno.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "17-gracas-dossie-edificio.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "18-gracas-visita.png",
+     "rolagemHorizontalPx": 0
+    }
+   ],
+   "sugestaoAutomatica": true,
+   "dossieAposConfirmarMs": 213,
+   "dossieMostraEndereco": true,
+   "abaEntorno": {
+    "temARua": true,
+    "tem156": true,
+    "temDefesaCivil": true,
+    "temObras": true,
+    "temFonte": true,
+    "caracteres": 7433,
+    "aConfirmar": 2
+   },
+   "abaEdificio": {
+    "temARua": false,
+    "tem156": false,
+    "temDefesaCivil": false,
+    "temObras": true,
+    "temFonte": false,
+    "caracteres": 1918,
+    "aConfirmar": 2
+   },
+   "visitaAbre": true,
+   "ok": true
+  },
+  {
+   "area": "espinheiro",
+   "predio": "59617-94",
+   "estrato": "ordinary",
+   "endereco": "Rua Rui Calaca, 94",
+   "etapas": [
+    "link lido",
+    "texto lido",
+    "prédio confirmado",
+    "dossiê e visita"
+   ],
+   "capturas": [
+    {
+     "arquivo": "19-espinheiro-ler.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "20-espinheiro-predio.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "21-espinheiro-dossie-destaques.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "22-espinheiro-dossie-entorno.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "23-espinheiro-dossie-edificio.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "24-espinheiro-visita.png",
+     "rolagemHorizontalPx": 0
+    }
+   ],
+   "sugestaoAutomatica": true,
+   "dossieAposConfirmarMs": 194,
+   "dossieMostraEndereco": true,
+   "abaEntorno": {
+    "temARua": true,
+    "tem156": true,
+    "temDefesaCivil": true,
+    "temObras": true,
+    "temFonte": true,
+    "caracteres": 7208,
+    "aConfirmar": 2
+   },
+   "abaEdificio": {
+    "temARua": false,
+    "tem156": false,
+    "temDefesaCivil": false,
+    "temObras": true,
+    "temFonte": false,
+    "caracteres": 2081,
+    "aConfirmar": 2
+   },
+   "visitaAbre": true,
+   "ok": true
+  },
+  {
+   "area": "madalena",
+   "predio": "28894-37",
+   "estrato": "multi_front",
+   "endereco": "Rua Hercilio Cunha, 37",
+   "etapas": [
+    "link lido",
+    "texto lido",
+    "prédio confirmado",
+    "dossiê e visita"
+   ],
+   "capturas": [
+    {
+     "arquivo": "25-madalena-ler.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "26-madalena-predio.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "27-madalena-dossie-destaques.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "28-madalena-dossie-entorno.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "29-madalena-dossie-edificio.png",
+     "rolagemHorizontalPx": 0
+    },
+    {
+     "arquivo": "30-madalena-visita.png",
+     "rolagemHorizontalPx": 0
+    }
+   ],
+   "sugestaoAutomatica": true,
+   "dossieAposConfirmarMs": 196,
+   "dossieMostraEndereco": true,
+   "abaEntorno": {
+    "temARua": true,
+    "tem156": true,
+    "temDefesaCivil": true,
+    "temObras": true,
+    "temFonte": true,
+    "caracteres": 7188,
+    "aConfirmar": 2
+   },
+   "abaEdificio": {
+    "temARua": false,
+    "tem156": false,
+    "temDefesaCivil": false,
+    "temObras": true,
+    "temFonte": false,
+    "caracteres": 2864,
+    "aConfirmar": 2
+   },
+   "visitaAbre": true,
+   "ok": true
+  }
+ ],
+ "comparacao": {
+  "imovel1": "Imóvel 1: Apartamento 2 quartos · Madalena. Trocar imóvel",
+  "imovel2": "Imóvel 2: Apartamento 2 quartos · Espinheiro. Trocar imóvel",
+  "mostraMensal": true,
+  "caracteres": 1477,
+  "capturas": [
+   {
+    "arquivo": "31-comparar-custo.png",
+    "rolagemHorizontalPx": 0
+   },
+   {
+    "arquivo": "32-comparar-espaco.png",
+    "rolagemHorizontalPx": 0
+   },
+   {
+    "arquivo": "33-comparar-entorno.png",
+    "rolagemHorizontalPx": 0
+   },
+   {
+    "arquivo": "34-comparar-entorno-1280.png",
+    "rolagemHorizontalPx": 0
+   }
+  ]
+ },
+ "recarga": {
+  "analises": 5,
+  "confirmadas": 5,
+  "bairros": [
+   "madalena",
+   "espinheiro",
+   "gracas",
+   "casa-forte",
+   "boa-viagem"
+  ],
+  "edificios": [
+   "28894-37",
+   "59617-94",
+   "34223-220",
+   "21385-617",
+   "11720-4398"
+  ],
+  "capturas": [
+   {
+    "arquivo": "35-explorar-apos-recarga.png",
+    "rolagemHorizontalPx": 0
+   }
+  ]
+ },
+ "externas": [],
+ "errosDePagina": [],
+ "consoleErros": [],
+ "primeiraCargaMs": 1143,
+ "rotaAposRecarga": "/comparar",
+ "recargaMs": 814,
+ "terminado": "2026-11-14T17:53:13.715Z"
+}

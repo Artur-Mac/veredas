@@ -1,0 +1,89 @@
+{
+ "generated_at": "2026-11-15T04:47:05+00:00",
+ "files": [
+  {
+   "file": "ckan_package_show_diario-oficial.json",
+   "url": "https://dados.recife.pe.gov.br/api/3/action/package_show?id=diario-oficial",
+   "consulted_at": "2026-11-15T04:15:30Z",
+   "sha256": "46ef5b653a88cf10e46cfafeec3def44263a4ef8aea2487424b03bea4eb7ec05",
+   "bytes": 33558,
+   "note": "Metadados CKAN do dataset diario-oficial: CSV-indice por ano (2017+), ZIP 'Completo' por ano, CSV com texto 2004-2016."
+  },
+  {
+   "file": "dicionario-de-dados-do-diario-oficial-a-partir-de-2017.json",
+   "url": "https://dados.recife.pe.gov.br/dataset/12578535-6cf0-4097-94fa-ff6ec3d51988/resource/3dfee877-f92a-4d0b-81f3-9f68fca9b227/download/dicionario-de-dados-do-diario-oficial-a-partir-de-2017.json",
+   "consulted_at": "2026-11-15T04:16:00Z",
+   "sha256": "5527127ba8712c9f2c07d4118d9573b7c83c52bb62170770b0091035f28fc60e",
+   "bytes": 4739,
+   "note": "Dicionario de dados do DO a partir de 2017 (redirect para storage EMPREL; URL assinada temporaria nao registrada)."
+  },
+  {
+   "file": "diario-oficial-2025.csv",
+   "url": "https://dados.recife.pe.gov.br/dataset/12578535-6cf0-4097-94fa-ff6ec3d51988/resource/06708c01-80b7-4814-a774-4e7a7418c8ac/download/diario-oficial-2025.csv",
+   "consulted_at": "2026-11-15T04:16:00Z",
+   "sha256": "6b9fbe36dc315c81992304350b9853061d6687e3679f6bfa3b9e19f49ff0fb32",
+   "bytes": 33103,
+   "note": "Indice de edicoes 2025 (id, data, nome, arquivo, link dome.recife.pe.gov.br/upload_dome). So metadados, sem texto. Links upload_dome hoje redirecionam para SPA HTML, nao para o PDF."
+  },
+  {
+   "file": "pdf/DO_046_10_04_2025.pdf",
+   "url": "https://dome-backend.app.emprel.gov.br/api/publico/edicoes/274/pdf",
+   "consulted_at": "2026-11-15T04:17:35Z",
+   "sha256": "2ffe3d6e6aca49300c01663ff152bba224cc299e3d325f7d75afbb8e7cde338e",
+   "bytes": 3486384,
+   "note": "DO Recife edicao 046 de 10/04/2025 (id 274, 36 p., PDF assinado). Dado nao confiavel; contem nomes e CPF mascarado de particulares - nao copiar.",
+   "local_atual": ".cache/estrutura-2026-11-15/pdf/DO_046_10_04_2025.pdf",
+   "nota_privacidade": "Movido para fora de docs/ em 15/11/2026: contém nomes e CPF mascarado de pessoas publicadas no DO. Não redistribuir; o VEREDA usa só número de decreto, ofício e processo."
+  },
+  {
+   "file": "txt/DO_046_10_04_2025.txt",
+   "url": "derivado: pdftotext -layout de pdf/DO_046_10_04_2025.pdf",
+   "consulted_at": "2026-11-15T04:18:00Z",
+   "sha256": "d765beffd564428b2c1435b64606e7cb5e7a345c47430e4d026c3a5aedb4d536",
+   "bytes": 1030909,
+   "note": "Texto extraido localmente (layout de colunas misturado). Contem dados pessoais publicados no DO - uso interno, nao redistribuir.",
+   "local_atual": ".cache/estrutura-2026-11-15/txt/DO_046_10_04_2025.txt",
+   "nota_privacidade": "Movido para fora de docs/ em 15/11/2026: contém nomes e CPF mascarado de pessoas publicadas no DO. Não redistribuir; o VEREDA usa só número de decreto, ofício e processo."
+  },
+  {
+   "file": "itep/service.json",
+   "url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ITEP_EDIF_GRAURISCO/MapServer?f=json",
+   "consulted_at": "2026-11-15T04:20:30Z",
+   "sha256": "865c89ef1d91fb00a7caac9b26e84c6d03a09ed9fbe92b334c79e94909a26df6",
+   "bytes": 2835,
+   "note": "Metadados do MapServer ITEP grau de risco (SR EPSG 31985)."
+  },
+  {
+   "file": "itep/layer0.json",
+   "url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ITEP_EDIF_GRAURISCO/MapServer/0?f=json",
+   "consulted_at": "2026-11-15T04:20:30Z",
+   "sha256": "31e0251cf5d8d89fe8aff9f345f2c932a6680f0309a75404afff5a99ecb3b33a",
+   "bytes": 6039,
+   "note": "Camada 0 'ITEP - Avaliacao Grau Risco Edificacoes (2007)': campos."
+  },
+  {
+   "file": "itep/count.json",
+   "url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ITEP_EDIF_GRAURISCO/MapServer/0/query?where=1%3D1&returnCountOnly=true&f=json",
+   "consulted_at": "2026-11-15T04:20:30Z",
+   "sha256": "6d9759ee051ed5ffb6a6da2ebc06b7aa8612f17ff902a984e5ddad4a83d28465",
+   "bytes": 13,
+   "note": "Contagem: 205 registros."
+  },
+  {
+   "file": "itep/all_attrs.json",
+   "url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ITEP_EDIF_GRAURISCO/MapServer/0/query?where=1%3D1&outFields=*&returnGeometry=false&f=json",
+   "consulted_at": "2026-11-15T04:21:00Z",
+   "sha256": "794ea77ee47cdf3bf829d3c7f6fe743df000738d58607b7ac16db4a686f2248e",
+   "bytes": 138793,
+   "note": "Todos os 205 registros, atributos sem geometria."
+  },
+  {
+   "file": "conecta/servico-1095.html",
+   "url": "https://conecta.recife.pe.gov.br/servico/1095",
+   "consulted_at": "2026-11-15T04:22:00Z",
+   "sha256": "f53d8e2d295facd1cac42219c74ce9e524a9f738eeccd06f6be0685fcd51a272",
+   "bytes": 87877,
+   "note": "Pagina Conecta Recife: 'Solicitar Certidao Narrativa de Controle Urbano' (SECON/SEOPS). Nenhum formulario enviado."
+  }
+ ]
+}

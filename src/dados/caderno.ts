@@ -1,4 +1,7 @@
 import { z } from "zod";
+import { esquemaSolar } from "./sol/contratos";
+import { esquemaInstantaneo } from "./memoria";
+import { esquemaRegistroDeConectividade } from "./conectividade";
 
 const id = z.string().regex(/^[a-z0-9-]{1,60}$/);
 const instante = z.iso.datetime();
@@ -58,6 +61,7 @@ export const esquemaSessaoVisita = z.strictObject({
 });
 export const esquemaCaderno = z.strictObject({
   versao: z.literal(1),
+  solar: esquemaSolar.optional(),
   lembretes: z.array(z.strictObject({ id, titulo: z.string().trim().min(1).max(160), em: instante,
     fuso: z.string().trim().min(1).max(100).refine(v => { try { new Intl.DateTimeFormat("pt-BR", { timeZone: v }).format(); return true; } catch { return false; } }), notificar: z.boolean(), estado: z.enum(["ativo", "concluido", "cancelado"]) })).max(100)
     .refine(a => new Set(a.map(r => r.id)).size === a.length, "Lembretes repetidos").optional(),
@@ -89,6 +93,8 @@ export const esquemaCaderno = z.strictObject({
     posicao: z.strictObject({ longitude: z.number().min(-180).max(180), latitude: z.number().min(-90).max(90),
       precisaoM: z.number().min(0).nullable(), em: instante }).nullable(),
   })).max(20).optional(),
+  /** Internet onde a pessoa vai usar: consultas de fibra e medições por cômodo (15/11/2026). Opcional e privado. */
+  conectividade: z.array(esquemaRegistroDeConectividade).max(200).optional(),
   localizacaoDaVisita: z.strictObject({ longitude: z.number().min(-180).max(180), latitude: z.number().min(-90).max(90),
     precisaoM: z.number().min(0).nullable(), em: instante, origem: z.literal("gps_da_visita") }).optional(),
   fotos: z.array(z.strictObject({ id, chave: z.string().regex(/^foto-[a-z0-9-]+\.(jpg|png)$/),
@@ -100,6 +106,8 @@ export const esquemaCaderno = z.strictObject({
   cenarios: z.array(esquemaCenario).max(30),
   visitas: z.array(esquemaSessaoVisita).max(100),
   decisao: z.enum(["considerando", "visita_planejada", "visitado", "escolhido"]),
+  /** VE09: retrato do que o dossiê mostrava quando a pessoa salvou ou marcou como visto (base das mudanças). */
+  memoria: esquemaInstantaneo.optional(),
   diario: z.array(z.strictObject({ id, em: instante, texto: z.string().trim().min(1).max(2000) })).max(200),
 });
 export type Caderno = z.infer<typeof esquemaCaderno>;

@@ -1,0 +1,128 @@
+{
+ "externas": [],
+ "erros": [],
+ "alagamento": {
+  "cf@375": {
+   "bloco": true,
+   "texto": "Se a rua alagar\nNa rua do prédio (Rua Lemos Torres), a Defesa Civil registrou alagamento na via em 2015. Nenhuma dessas fontes diz se a passagem a pé foi bloqueada, nem por quanto tempo. Na visita, pergunte até onde a água chega na entrada e por quanto tempo ela fica.\nVer o registro",
+   "aposVerRegistro": "Se a rua alagar\nNa rua do prédio (Rua Lemos Torres), a Defesa Civil registrou alagamento na via em 2015. Nenhuma dessas fontes diz se a passagem a pé foi bloqueada, nem por quanto tempo. Na visita, pergunte até onde a água chega na entrada e por quanto tempo ela fica.\nOcultar o registro\nDefesa Civil do Recife, atendimentos 2014–2024 (dados.recife.pe.gov.br): \"Alagamentos\" em Rua Lemos Torres, Casa Forte, em 2015 (sem dia no registro). A data é a do registro, não a hora da chuva, e o registro não diz se a passagem a pé foi bloqueada. Não ter registro não quer dizer que a rua não alaga.",
+   "afirmaBloqueio": false,
+   "carregando": false,
+   "falha": false,
+   "rolagem": 0
+  },
+  "gr@375": {
+   "bloco": true,
+   "texto": "Se a rua alagar\nNa rua do prédio (Avenida Rui Barbosa), a Defesa Civil não tem atendimento de alagamento de 2014 a 2024. A Prefeitura cataloga um ponto de alagamento nesta rua a 120 m da entrada (posição aproximada). Nenhuma dessas fontes diz se a passagem a pé foi bloqueada, nem por quanto tempo. Na visita, pergunte até onde a água chega na entrada e por quanto tempo ela fica.\nVer o registro",
+   "aposVerRegistro": "Se a rua alagar\nNa rua do prédio (Avenida Rui Barbosa), a Defesa Civil não tem atendimento de alagamento de 2014 a 2024. A Prefeitura cataloga um ponto de alagamento nesta rua a 120 m da entrada (posição aproximada). Nenhuma dessas fontes diz se a passagem a pé foi bloqueada, nem por quanto tempo. Na visita, pergunte até onde a água chega na entrada e por quanto tempo ela fica.\nOcultar o registro\nPrefeitura do Recife, eSIG: pontos de alagamento (edição de 25/09/2026) e logradouros de alagamento 2026 (edição de 08/05/2026). O catálogo não traz data de evento, recorrência, lâmina d'água nem influência da maré (campos vazios na fonte); o critério da lista de ruas não está publicado.",
+   "afirmaBloqueio": false,
+   "carregando": false,
+   "falha": false,
+   "rolagem": 0
+  },
+  "gp@375": {
+   "bloco": true,
+   "texto": "Se a rua alagar\nNo caminho a pé até a farmácia e o ponto de ônibus também há uma rua com alagamento registrado: Avenida Conselheiro Portela (mai/2024). Se ela ficar intransitável, o desvio é de menos de 3 min.\nVer o registro",
+   "aposVerRegistro": "Se a rua alagar\nNo caminho a pé até a farmácia e o ponto de ônibus também há uma rua com alagamento registrado: Avenida Conselheiro Portela (mai/2024). Se ela ficar intransitável, o desvio é de menos de 3 min.\nOcultar o registro\nDefesa Civil do Recife, atendimentos 2014–2024 (dados.recife.pe.gov.br). O desvio foi calculado para mercado, farmácia e ponto de ônibus, supondo o trecho intransitável a pé; o registro não diz se a passagem foi bloqueada.",
+   "afirmaBloqueio": false,
+   "carregando": false,
+   "falha": false,
+   "rolagem": 0
+  },
+  "bv@375": {
+   "bloco": true,
+   "texto": "Se a rua alagar\nSe um alagamento como o de 30/06/2023 bloquear a passagem a pé na Avenida Barão de Souza Leão, o caminho a pé até o mercado passaria de 6 min para 13 min, por outro caminho.\nVer o registro",
+   "aposVerRegistro": "Se a rua alagar\nSe um alagamento como o de 30/06/2023 bloquear a passagem a pé na Avenida Barão de Souza Leão, o caminho a pé até o mercado passaria de 6 min para 13 min, por outro caminho.\nOcultar o registro\nDefesa Civil do Recife, atendimentos 2014–2024 (dados.recife.pe.gov.br): \"Alagamentos\" em Avenida Barão de Souza Leão, Boa Viagem, em 30/06/2023. A data é a do registro, não a hora da chuva, e o registro não diz se a passagem a pé foi bloqueada: o desvio é um cenário, calculado supondo o trecho intransitável a pé (a rua é longa e a fonte não diz o ponto; consideramos os 1,7 km dela dentro do bairro). Não ter registro não quer dizer que a rua não alaga.",
+   "afirmaBloqueio": false,
+   "carregando": false,
+   "falha": false,
+   "rolagem": 0
+  },
+  "cf@360": {
+   "bloco": true,
+   "texto": "Se a rua alagar\nNa rua do prédio (Rua Lemos Torres), a Defesa Civil registrou alagamento na via em 2015. Nenhuma dessas fontes diz se a passagem a pé foi bloqueada, nem por quanto tempo. Na visita, pergunte até onde a água chega na entrada e por quanto tempo ela fica.\nVer o registro",
+   "aposVerRegistro": "Se a rua alagar\nNa rua do prédio (Rua Lemos Torres), a Defesa Civil registrou alagamento na via em 2015. Nenhuma dessas fontes diz se a passagem a pé foi bloqueada, nem por quanto tempo. Na visita, pergunte até onde a água chega na entrada e por quanto tempo ela fica.\nOcultar o registro\nDefesa Civil do Recife, atendimentos 2014–2024 (dados.recife.pe.gov.br): \"Alagamentos\" em Rua Lemos Torres, Casa Forte, em 2015 (sem dia no registro). A data é a do registro, não a hora da chuva, e o registro não diz se a passagem a pé foi bloqueada. Não ter registro não quer dizer que a rua não alaga.",
+   "afirmaBloqueio": false,
+   "carregando": false,
+   "falha": false,
+   "rolagem": 0
+  },
+  "gr@360": {
+   "bloco": true,
+   "texto": "Se a rua alagar\nNa rua do prédio (Avenida Rui Barbosa), a Defesa Civil não tem atendimento de alagamento de 2014 a 2024. A Prefeitura cataloga um ponto de alagamento nesta rua a 120 m da entrada (posição aproximada). Nenhuma dessas fontes diz se a passagem a pé foi bloqueada, nem por quanto tempo. Na visita, pergunte até onde a água chega na entrada e por quanto tempo ela fica.\nVer o registro",
+   "aposVerRegistro": "Se a rua alagar\nNa rua do prédio (Avenida Rui Barbosa), a Defesa Civil não tem atendimento de alagamento de 2014 a 2024. A Prefeitura cataloga um ponto de alagamento nesta rua a 120 m da entrada (posição aproximada). Nenhuma dessas fontes diz se a passagem a pé foi bloqueada, nem por quanto tempo. Na visita, pergunte até onde a água chega na entrada e por quanto tempo ela fica.\nOcultar o registro\nPrefeitura do Recife, eSIG: pontos de alagamento (edição de 25/09/2026) e logradouros de alagamento 2026 (edição de 08/05/2026). O catálogo não traz data de evento, recorrência, lâmina d'água nem influência da maré (campos vazios na fonte); o critério da lista de ruas não está publicado.",
+   "afirmaBloqueio": false,
+   "carregando": false,
+   "falha": false,
+   "rolagem": 0
+  },
+  "gp@360": {
+   "bloco": true,
+   "texto": "Se a rua alagar\nNo caminho a pé até a farmácia e o ponto de ônibus também há uma rua com alagamento registrado: Avenida Conselheiro Portela (mai/2024). Se ela ficar intransitável, o desvio é de menos de 3 min.\nVer o registro",
+   "aposVerRegistro": "Se a rua alagar\nNo caminho a pé até a farmácia e o ponto de ônibus também há uma rua com alagamento registrado: Avenida Conselheiro Portela (mai/2024). Se ela ficar intransitável, o desvio é de menos de 3 min.\nOcultar o registro\nDefesa Civil do Recife, atendimentos 2014–2024 (dados.recife.pe.gov.br). O desvio foi calculado para mercado, farmácia e ponto de ônibus, supondo o trecho intransitável a pé; o registro não diz se a passagem foi bloqueada.",
+   "afirmaBloqueio": false,
+   "carregando": false,
+   "falha": false,
+   "rolagem": 0
+  },
+  "bv@360": {
+   "bloco": true,
+   "texto": "Se a rua alagar\nSe um alagamento como o de 30/06/2023 bloquear a passagem a pé na Avenida Barão de Souza Leão, o caminho a pé até o mercado passaria de 6 min para 13 min, por outro caminho.\nVer o registro",
+   "aposVerRegistro": "Se a rua alagar\nSe um alagamento como o de 30/06/2023 bloquear a passagem a pé na Avenida Barão de Souza Leão, o caminho a pé até o mercado passaria de 6 min para 13 min, por outro caminho.\nOcultar o registro\nDefesa Civil do Recife, atendimentos 2014–2024 (dados.recife.pe.gov.br): \"Alagamentos\" em Avenida Barão de Souza Leão, Boa Viagem, em 30/06/2023. A data é a do registro, não a hora da chuva, e o registro não diz se a passagem a pé foi bloqueada: o desvio é um cenário, calculado supondo o trecho intransitável a pé (a rua é longa e a fonte não diz o ponto; consideramos os 1,7 km dela dentro do bairro). Não ter registro não quer dizer que a rua não alaga.",
+   "afirmaBloqueio": false,
+   "carregando": false,
+   "falha": false,
+   "rolagem": 0
+  }
+ },
+ "internet": {
+  "360": {
+   "inicial": "Disponibilidade consultada\nNenhuma consulta de fibra registrada.\nPrestadora consultada\nA resposta vale para\n✓ Endereço\nBloco\nUnidade\nResposta da prestadora\n✓ Disponível\nVisita técnica\nIndisponível\nSem resposta\nCanal da consulta\n✓ Site\nTelefone\nWhatsApp\nLoja\nSíndico/portaria\nOutro\nProtocolo (opcional)\nData da consulta (AAAA-MM-DD; vazio = hoje)\nGuardar consulta de fibra\nCobertura móvel externa\nO mapa da Anatel mostra a cobertura prevista ao ar livre, por operadora. Não diz como o sinal chega dentro da unidade.\nAbrir o mapa de cobertura da Anatel\nQualidade observada na unidade\nNenhuma medição registrada.\nAbrir o teste SIMET (NIC.br)\nCômodo da medição\nRede usada no teste\n✓ Wi-Fi\nRede móvel\nTecnologia vista no aparelho\n2,4 GHz\n5 GHz\n✓ Não sei\nOperadora da internet (se souber)\nComo testou\n✓ SIMET\nChamada\nOutro teste\nDownload em Mbps (se medido)\nUpload em Mbps (se medido)\nLatência em ms (se medida)\nChamada\n✓ Não testei\nFuncionou\nFalhou\nNota da medição (opcional)\nGuardar medição no cômodo\nAinda falta\nConsultar a fibra de pelo menos uma prestadora para o endereço ou o bloco.\nMedir no cômodo onde você pretende trabalhar (SIMET ou uma chamada), anotando a hora.\n+ Lembretes de visita e pendências\nAnotações locais. Avisos com navegador fechado não estão disponíveis nesta versão web.\n+ Destinos da sua rotina\nDestinos privados e opcionais. A distância reta não é um caminho: rios, pontes, trânsito e calçadas podem mudar o trajeto.\n+ Referência de localização da visita\nUse durante a visita. GPS não confirma prédio, unidade ou andar. A posição fica privada neste aparelho.\n− Registrar uma ob",
+   "recusouNegativo": true,
+   "final": "Disponibilidade consultada\nFibra Prestadora Teste: disponível segundo a prestadora para o bloco B, consulta de 15/11/2026.\nPrestadora consultada\nA resposta vale para\nEndereço\n✓ Bloco\nUnidade\nBloco\nResposta da prestadora\n✓ Disponível\nVisita técnica\nIndisponível\nSem resposta\nCanal da consulta\n✓ Site\nTelefone\nWhatsApp\nLoja\nSíndico/portaria\nOutro\nProtocolo (opcional)\nData da consulta (AAAA-MM-DD; vazio = hoje)\nGuardar consulta de fibra\nCobertura móvel externa\nO mapa da Anatel mostra a cobertura prevista ao ar livre, por operadora. Não diz como o sinal chega dentro da unidade.\nAbrir o mapa de cobertura da Anatel\nQualidade observada na unidade\nSala, 15/11/2026, 01:39, 4G (operadora não informada): chamada funcionou (teste de chamada).\nQuarto 2, 15/11/2026, 01:39, Wi-Fi: download 312,4 Mbps, latência 9 ms (SIMET).\nAbrir o teste SIMET (NIC.br)\nCômodo da medição\nRede usada no teste\nWi-Fi\n✓ Rede móvel\nTecnologia vista no aparelho\n✓ 4G\n5G\n3G\n2G\nNão sei\nOperadora do chip (se souber)\nComo testou\nSIMET\n✓ Chamada\nOutro teste\nDownload em Mbps (se medido)\nUpload em Mbps (se medido)\nLatência em ms (se medida)\nChamada\nNão testei\n✓ Funcionou\nFalhou\nNota da medição (opcional)\nGuardar medição no cômodo\nRetirar o último registro de internet\n+ Lembretes de visita e pendências\nAnotações locais. Avisos com navegador fechado não estão disponíveis nesta versão web.\n+ Destinos da sua rotina\nDestinos privados e opcionais. A distância reta não é um caminho: rios, pontes, trânsito e calçadas podem mudar o trajeto.\n+ Referência de localização da visita\nUse durante a visita. GPS não confirma prédio, unidade ou andar. A posição fica privada neste aparelho.\n− Registrar uma observação\nCômodo ou local\nAssunto da observação\n✓ Som\nSol\nConectividade\nÁgua\nAcesso\nOutro\nAnote fonte percebida, duração, janela aberta/fechada e horário. Este registro não mede decibéis.\nO que você observou\nGuardar observação\n+ Visitas anteriores (0)\nIniciar uma nova visita preserva o resumo anterior no histórico.\n+ Decisão e diário pessoal\nSua decisão não altera os fatos do imóvel nem é compartilhada automaticamente.\nRegistro salvo neste aparelho.",
+   "salvos": 3,
+   "tipos": [
+    "consulta_fibra",
+    "medicao",
+    "medicao"
+   ],
+   "nulos": [
+    [
+     312.4,
+     null,
+     9
+    ],
+    [
+     null,
+     null,
+     null
+    ]
+   ],
+   "rolagem": 0
+  },
+  "375": {
+   "inicial": "Disponibilidade consultada\nNenhuma consulta de fibra registrada.\nPrestadora consultada\nA resposta vale para\n✓ Endereço\nBloco\nUnidade\nResposta da prestadora\n✓ Disponível\nVisita técnica\nIndisponível\nSem resposta\nCanal da consulta\n✓ Site\nTelefone\nWhatsApp\nLoja\nSíndico/portaria\nOutro\nProtocolo (opcional)\nData da consulta (AAAA-MM-DD; vazio = hoje)\nGuardar consulta de fibra\nCobertura móvel externa\nO mapa da Anatel mostra a cobertura prevista ao ar livre, por operadora. Não diz como o sinal chega dentro da unidade.\nAbrir o mapa de cobertura da Anatel\nQualidade observada na unidade\nNenhuma medição registrada.\nAbrir o teste SIMET (NIC.br)\nCômodo da medição\nRede usada no teste\n✓ Wi-Fi\nRede móvel\nTecnologia vista no aparelho\n2,4 GHz\n5 GHz\n✓ Não sei\nOperadora da internet (se souber)\nComo testou\n✓ SIMET\nChamada\nOutro teste\nDownload em Mbps (se medido)\nUpload em Mbps (se medido)\nLatência em ms (se medida)\nChamada\n✓ Não testei\nFuncionou\nFalhou\nNota da medição (opcional)\nGuardar medição no cômodo\nAinda falta\nConsultar a fibra de pelo menos uma prestadora para o endereço ou o bloco.\nMedir no cômodo onde você pretende trabalhar (SIMET ou uma chamada), anotando a hora.\n+ Lembretes de visita e pendências\nAnotações locais. Avisos com navegador fechado não estão disponíveis nesta versão web.\n+ Destinos da sua rotina\nDestinos privados e opcionais. A distância reta não é um caminho: rios, pontes, trânsito e calçadas podem mudar o trajeto.\n+ Referência de localização da visita\nUse durante a visita. GPS não confirma prédio, unidade ou andar. A posição fica privada neste aparelho.\n− Registrar uma ob",
+   "recusouNegativo": true,
+   "final": "Disponibilidade consultada\nFibra Prestadora Teste: disponível segundo a prestadora para o bloco B, consulta de 15/11/2026.\nPrestadora consultada\nA resposta vale para\nEndereço\n✓ Bloco\nUnidade\nBloco\nResposta da prestadora\n✓ Disponível\nVisita técnica\nIndisponível\nSem resposta\nCanal da consulta\n✓ Site\nTelefone\nWhatsApp\nLoja\nSíndico/portaria\nOutro\nProtocolo (opcional)\nData da consulta (AAAA-MM-DD; vazio = hoje)\nGuardar consulta de fibra\nCobertura móvel externa\nO mapa da Anatel mostra a cobertura prevista ao ar livre, por operadora. Não diz como o sinal chega dentro da unidade.\nAbrir o mapa de cobertura da Anatel\nQualidade observada na unidade\nSala, 15/11/2026, 01:38, 4G (operadora não informada): chamada funcionou (teste de chamada).\nQuarto 2, 15/11/2026, 01:38, Wi-Fi: download 312,4 Mbps, latência 9 ms (SIMET).\nAbrir o teste SIMET (NIC.br)\nCômodo da medição\nRede usada no teste\nWi-Fi\n✓ Rede móvel\nTecnologia vista no aparelho\n✓ 4G\n5G\n3G\n2G\nNão sei\nOperadora do chip (se souber)\nComo testou\nSIMET\n✓ Chamada\nOutro teste\nDownload em Mbps (se medido)\nUpload em Mbps (se medido)\nLatência em ms (se medida)\nChamada\nNão testei\n✓ Funcionou\nFalhou\nNota da medição (opcional)\nGuardar medição no cômodo\nRetirar o último registro de internet\n+ Lembretes de visita e pendências\nAnotações locais. Avisos com navegador fechado não estão disponíveis nesta versão web.\n+ Destinos da sua rotina\nDestinos privados e opcionais. A distância reta não é um caminho: rios, pontes, trânsito e calçadas podem mudar o trajeto.\n+ Referência de localização da visita\nUse durante a visita. GPS não confirma prédio, unidade ou andar. A posição fica privada neste aparelho.\n− Registrar uma observação\nCômodo ou local\nAssunto da observação\n✓ Som\nSol\nConectividade\nÁgua\nAcesso\nOutro\nAnote fonte percebida, duração, janela aberta/fechada e horário. Este registro não mede decibéis.\nO que você observou\nGuardar observação\n+ Visitas anteriores (0)\nIniciar uma nova visita preserva o resumo anterior no histórico.\n+ Decisão e diário pessoal\nSua decisão não altera os fatos do imóvel nem é compartilhada automaticamente.\nRegistro salvo neste aparelho.",
+   "salvos": 3,
+   "tipos": [
+    "consulta_fibra",
+    "medicao",
+    "medicao"
+   ],
+   "nulos": [
+    [
+     312.4,
+     null,
+     9
+    ],
+    [
+     null,
+     null,
+     null
+    ]
+   ],
+   "rolagem": 0
+  }
+ }
+}

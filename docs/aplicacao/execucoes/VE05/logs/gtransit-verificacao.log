@@ -1,0 +1,21 @@
+{"feed": "v2026.10.26", "checked": 20, "ok": 20, "holiday": {"weekdayServicesActive_2026_11_02": 0, "sundayServicesActive_2026_11_02": 362, "weekdayServicesActive_2026_11_09": 393}}
+GT01 OK  | leg 1: 195-DUT; leg 3: 121-DUT
+GT02 OK  | leg 1: 232-DUT; leg 3: 062-DUT
+GT03 OK  | leg 1: 630-DUT
+GT04 OK  | leg 1: 1977-DUT; leg 3: 522-DUT
+GT05 OK  | leg 1: 2920-DUT; leg 2: 2450-DUT; leg 4: 330-DUT
+GT06 OK  | leg 1: 050-DUT; leg 2: 191-DUT
+GT07 OK  | leg 1: 513-DUT
+GT08 OK  | leg 1: 440-SAB
+GT09 OK  | leg 1: 522-SAB; leg 3: 1992-SAB
+GT10 OK  | leg 1: 522-DOM; leg 3: 050-DOM
+GT11 OK  | leg 1: 521-DOM
+GT12 OK  | leg 1: 195-DOM; leg 3: 723-DOM
+GT13 OK  | leg 1: 195-DUT; leg 3: 121-DUT
+GT14 OK  | leg 1: 1992-DUT; leg 3: 910-DUT
+GT15 OK  | leg 1: departure time 24:41:53 ≥ 24:00 in the feed; leg 1: 1967-DUT; leg 3: trip of service day 2026-11-18 at 01:04 (neighbouring service day); leg 3: 1927-DUT; leg 5: trip of service day 2026-11-18 at 02:00 (neighbourin
+GT16 OK  | leg 1: trip of service day 2026-11-17 at 24:41 (neighbouring service day); leg 1: departure time 24:41:53 ≥ 24:00 in the feed; leg 1: 1967-DUT; leg 3: 1927-DUT; leg 5: 038-DUT
+GT17 OK  | leg 1: 207-DUT; leg 3: 645-DUT
+GT18 OK  | leg 1: 050-SAB
+GT19 OK  | 6 departures from the 13 origin stops inside the window; departures exist; the router found none reaching the destination within the horizon (not a contradiction by itself)
+GT20 OK  | feed_end_date 20271026

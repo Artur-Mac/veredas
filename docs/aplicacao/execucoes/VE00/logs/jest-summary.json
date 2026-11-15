@@ -1,0 +1,385 @@
+{
+ "numTotalTestSuites": 53,
+ "numPassedTestSuites": 53,
+ "numFailedTestSuites": 0,
+ "numTotalTests": 1414,
+ "numPassedTests": 1414,
+ "numFailedTests": 0,
+ "numPendingTests": 0,
+ "numTodoTests": 0,
+ "success": true,
+ "startTime_ms": 1794678042497,
+ "suites": [
+  {
+   "file": "tests/analise.test.ts",
+   "status": "passed",
+   "tests": 5,
+   "failed": 0,
+   "duration_ms": 206
+  },
+  {
+   "file": "tests/buscar.test.ts",
+   "status": "passed",
+   "tests": 81,
+   "failed": 0,
+   "duration_ms": 12409
+  },
+  {
+   "file": "tests/caderno-amplo.test.ts",
+   "status": "passed",
+   "tests": 15,
+   "failed": 0,
+   "duration_ms": 485
+  },
+  {
+   "file": "tests/carteira.test.ts",
+   "status": "passed",
+   "tests": 54,
+   "failed": 0,
+   "duration_ms": 798
+  },
+  {
+   "file": "tests/casca.test.ts",
+   "status": "passed",
+   "tests": 15,
+   "failed": 0,
+   "duration_ms": 403
+  },
+  {
+   "file": "tests/cenarios-detalhados.test.ts",
+   "status": "passed",
+   "tests": 3,
+   "failed": 0,
+   "duration_ms": 249
+  },
+  {
+   "file": "tests/comparar.test.ts",
+   "status": "passed",
+   "tests": 40,
+   "failed": 0,
+   "duration_ms": 348
+  },
+  {
+   "file": "tests/comparaveis-pessoais.test.ts",
+   "status": "passed",
+   "tests": 2,
+   "failed": 0,
+   "duration_ms": 240
+  },
+  {
+   "file": "tests/compartilhar.test.ts",
+   "status": "passed",
+   "tests": 32,
+   "failed": 0,
+   "duration_ms": 1497
+  },
+  {
+   "file": "tests/complementos-finalizacao.test.ts",
+   "status": "passed",
+   "tests": 8,
+   "failed": 0,
+   "duration_ms": 311
+  },
+  {
+   "file": "tests/copiado.test.ts",
+   "status": "passed",
+   "tests": 4,
+   "failed": 0,
+   "duration_ms": 240
+  },
+  {
+   "file": "tests/cronologia-publica.test.ts",
+   "status": "passed",
+   "tests": 1,
+   "failed": 0,
+   "duration_ms": 242
+  },
+  {
+   "file": "tests/custos.test.ts",
+   "status": "passed",
+   "tests": 8,
+   "failed": 0,
+   "duration_ms": 368
+  },
+  {
+   "file": "tests/descarte.test.ts",
+   "status": "passed",
+   "tests": 34,
+   "failed": 0,
+   "duration_ms": 367
+  },
+  {
+   "file": "tests/diagnostico.test.ts",
+   "status": "passed",
+   "tests": 1,
+   "failed": 0,
+   "duration_ms": 233
+  },
+  {
+   "file": "tests/dominio.test.ts",
+   "status": "passed",
+   "tests": 13,
+   "failed": 0,
+   "duration_ms": 261
+  },
+  {
+   "file": "tests/dossie-tela.test.ts",
+   "status": "passed",
+   "tests": 74,
+   "failed": 0,
+   "duration_ms": 5243
+  },
+  {
+   "file": "tests/dossie.test.ts",
+   "status": "passed",
+   "tests": 205,
+   "failed": 0,
+   "duration_ms": 1263
+  },
+  {
+   "file": "tests/endereco.test.ts",
+   "status": "passed",
+   "tests": 4,
+   "failed": 0,
+   "duration_ms": 131
+  },
+  {
+   "file": "tests/exemplos-regua.test.ts",
+   "status": "passed",
+   "tests": 10,
+   "failed": 0,
+   "duration_ms": 982
+  },
+  {
+   "file": "tests/exportacao-nativa.test.ts",
+   "status": "passed",
+   "tests": 3,
+   "failed": 0,
+   "duration_ms": 185
+  },
+  {
+   "file": "tests/extrator-estado.test.ts",
+   "status": "passed",
+   "tests": 13,
+   "failed": 0,
+   "duration_ms": 247
+  },
+  {
+   "file": "tests/extrator-pagina.test.ts",
+   "status": "passed",
+   "tests": 23,
+   "failed": 0,
+   "duration_ms": 348
+  },
+  {
+   "file": "tests/extrator-texto.test.ts",
+   "status": "passed",
+   "tests": 10,
+   "failed": 0,
+   "duration_ms": 327
+  },
+  {
+   "file": "tests/extrator-url.test.ts",
+   "status": "passed",
+   "tests": 25,
+   "failed": 0,
+   "duration_ms": 276
+  },
+  {
+   "file": "tests/formulario.test.ts",
+   "status": "passed",
+   "tests": 183,
+   "failed": 0,
+   "duration_ms": 12879
+  },
+  {
+   "file": "tests/gaveta-de-fonte.test.ts",
+   "status": "passed",
+   "tests": 15,
+   "failed": 0,
+   "duration_ms": 748
+  },
+  {
+   "file": "tests/historico-do-anuncio.test.ts",
+   "status": "passed",
+   "tests": 3,
+   "failed": 0,
+   "duration_ms": 241
+  },
+  {
+   "file": "tests/indice-recife.test.ts",
+   "status": "passed",
+   "tests": 44,
+   "failed": 0,
+   "duration_ms": 20868
+  },
+  {
+   "file": "tests/leitor-decidir.test.ts",
+   "status": "passed",
+   "tests": 79,
+   "failed": 0,
+   "duration_ms": 935
+  },
+  {
+   "file": "tests/lembretes-nativos.test.ts",
+   "status": "passed",
+   "tests": 5,
+   "failed": 0,
+   "duration_ms": 320
+  },
+  {
+   "file": "tests/mensagem.test.ts",
+   "status": "passed",
+   "tests": 13,
+   "failed": 0,
+   "duration_ms": 263
+  },
+  {
+   "file": "tests/midia-nativa-integridade.test.ts",
+   "status": "passed",
+   "tests": 3,
+   "failed": 0,
+   "duration_ms": 149
+  },
+  {
+   "file": "tests/migracao.test.ts",
+   "status": "passed",
+   "tests": 6,
+   "failed": 0,
+   "duration_ms": 255
+  },
+  {
+   "file": "tests/montar.test.ts",
+   "status": "passed",
+   "tests": 16,
+   "failed": 0,
+   "duration_ms": 261
+  },
+  {
+   "file": "tests/municipal-staging.test.ts",
+   "status": "passed",
+   "tests": 2,
+   "failed": 0,
+   "duration_ms": 351
+  },
+  {
+   "file": "tests/paginacao.test.ts",
+   "status": "passed",
+   "tests": 3,
+   "failed": 0,
+   "duration_ms": 137
+  },
+  {
+   "file": "tests/perfil-domicilio-custo.test.ts",
+   "status": "passed",
+   "tests": 4,
+   "failed": 0,
+   "duration_ms": 405
+  },
+  {
+   "file": "tests/persistir-analises.test.ts",
+   "status": "passed",
+   "tests": 35,
+   "failed": 0,
+   "duration_ms": 617
+  },
+  {
+   "file": "tests/privacidade.test.ts",
+   "status": "passed",
+   "tests": 15,
+   "failed": 0,
+   "duration_ms": 237
+  },
+  {
+   "file": "tests/propostas-balancete.test.ts",
+   "status": "passed",
+   "tests": 9,
+   "failed": 0,
+   "duration_ms": 248
+  },
+  {
+   "file": "tests/protocolo-e-economia.test.ts",
+   "status": "passed",
+   "tests": 6,
+   "failed": 0,
+   "duration_ms": 260
+  },
+  {
+   "file": "tests/rascunho.test.ts",
+   "status": "passed",
+   "tests": 3,
+   "failed": 0,
+   "duration_ms": 152
+  },
+  {
+   "file": "tests/rua-dossie.test.ts",
+   "status": "passed",
+   "tests": 19,
+   "failed": 0,
+   "duration_ms": 1245
+  },
+  {
+   "file": "tests/rua-indice.test.ts",
+   "status": "passed",
+   "tests": 13,
+   "failed": 0,
+   "duration_ms": 6016
+  },
+  {
+   "file": "tests/rua-nucleo.test.ts",
+   "status": "passed",
+   "tests": 28,
+   "failed": 0,
+   "duration_ms": 216
+  },
+  {
+   "file": "tests/sinteses-da-rua.test.ts",
+   "status": "passed",
+   "tests": 4,
+   "failed": 0,
+   "duration_ms": 629
+  },
+  {
+   "file": "tests/sol-interface.test.ts",
+   "status": "passed",
+   "tests": 3,
+   "failed": 0,
+   "duration_ms": 853
+  },
+  {
+   "file": "tests/sol-janelas.test.ts",
+   "status": "passed",
+   "tests": 39,
+   "failed": 0,
+   "duration_ms": 1943
+  },
+  {
+   "file": "tests/sol-sombra-estrutura.test.ts",
+   "status": "passed",
+   "tests": 5,
+   "failed": 0,
+   "duration_ms": 469
+  },
+  {
+   "file": "tests/telas-fatia5.test.ts",
+   "status": "passed",
+   "tests": 98,
+   "failed": 0,
+   "duration_ms": 14097
+  },
+  {
+   "file": "tests/visita.test.ts",
+   "status": "passed",
+   "tests": 73,
+   "failed": 0,
+   "duration_ms": 3185
+  },
+  {
+   "file": "tests/zap-next-app.test.ts",
+   "status": "passed",
+   "tests": 5,
+   "failed": 0,
+   "duration_ms": 249
+  }
+ ]
+}

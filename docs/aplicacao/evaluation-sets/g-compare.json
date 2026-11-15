@@ -1,0 +1,604 @@
+{
+ "set": "G-COMPARE",
+ "version": 1,
+ "created": "2026-11-14",
+ "created_by": "VE00.03",
+ "selection_script": "docs/aplicacao/execucoes/VE00/scripts/select_eval_sets.py",
+ "synthetic_listing_values": true,
+ "warning": "Listing values are synthetic test inputs on real public buildings. Never import into a saved notebook.",
+ "building_pool": "dev-split streets only; G-BUILDING test buildings excluded",
+ "counts": {
+  "pairs": 20,
+  "rent": 10,
+  "purchase": 10,
+  "area_appearances": {
+   "boa-viagem": 8,
+   "casa-forte": 8,
+   "gracas": 8,
+   "espinheiro": 8,
+   "madalena": 8
+  }
+ },
+ "pairs": [
+  {
+   "pair_id": "GC01",
+   "case": "complete_rent_clear_difference",
+   "tenure": "aluguel",
+   "note": "totals differ; rent ordering reverses after fees",
+   "A": {
+    "building_id": "15091-826",
+    "area": "boa-viagem",
+    "address": "RUA CARLOS PEREIRA FALCAO, 826",
+    "tenure": "aluguel",
+    "price": 3200,
+    "condo_monthly": 650,
+    "iptu_value": 90,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "78271-551",
+    "area": "casa-forte",
+    "address": "PRC DE CASA FORTE, 551",
+    "tenure": "aluguel",
+    "price": 2800,
+    "condo_monthly": 900,
+    "iptu_value": 110,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC02",
+   "case": "rent_equal_totals",
+   "tenure": "aluguel",
+   "note": "equal known totals; no false winner",
+   "A": {
+    "building_id": "36048-137",
+    "area": "boa-viagem",
+    "address": "RUA JOSE HIPOLITO CARDOSO, 137",
+    "tenure": "aluguel",
+    "price": 3000,
+    "condo_monthly": 700,
+    "iptu_value": 100,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "27294-142",
+    "area": "gracas",
+    "address": "RUA DAS GRACAS, 142",
+    "tenure": "aluguel",
+    "price": 3300,
+    "condo_monthly": 450,
+    "iptu_value": 50,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC03",
+   "case": "rent_missing_condo",
+   "tenure": "aluguel",
+   "note": "missing fee must stay unknown; break-even = 400/month",
+   "A": {
+    "building_id": "11720-4574",
+    "area": "boa-viagem",
+    "address": "AV BOA VIAGEM, 4574",
+    "tenure": "aluguel",
+    "price": 2500,
+    "condo_monthly": null,
+    "iptu_value": 80,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "36250-82",
+    "area": "espinheiro",
+    "address": "RUA CORONEL JOSE MARTINS, 82",
+    "tenure": "aluguel",
+    "price": 2900,
+    "condo_monthly": 550,
+    "iptu_value": 80,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC04",
+   "case": "rent_condo_zero_vs_unknown",
+   "tenure": "aluguel",
+   "note": "declared zero is not unknown",
+   "A": {
+    "building_id": "15091-893",
+    "area": "boa-viagem",
+    "address": "RUA CARLOS PEREIRA FALCAO, 893",
+    "tenure": "aluguel",
+    "price": 2600,
+    "condo_monthly": 0,
+    "iptu_value": 70,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "29017-316",
+    "area": "madalena",
+    "address": "RUA HERMOGENES DE MORAIS, 316",
+    "tenure": "aluguel",
+    "price": 2600,
+    "condo_monthly": null,
+    "iptu_value": 70,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC05",
+   "case": "rent_annual_iptu",
+   "tenure": "aluguel",
+   "note": "annual IPTU converts to 120/month",
+   "A": {
+    "building_id": "19526-742",
+    "area": "casa-forte",
+    "address": "AV DEZESSETE DE AGOSTO, 742",
+    "tenure": "aluguel",
+    "price": 3100,
+    "condo_monthly": 600,
+    "iptu_value": 1440,
+    "iptu_period": "anual",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "22624-105",
+    "area": "gracas",
+    "address": "RUA ESMERALDINO BANDEIRA, 105",
+    "tenure": "aluguel",
+    "price": 3150,
+    "condo_monthly": 600,
+    "iptu_value": 110,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC06",
+   "case": "rent_iptu_period_unknown",
+   "tenure": "aluguel",
+   "note": "unknown period stays pending",
+   "A": {
+    "building_id": "16535-75",
+    "area": "casa-forte",
+    "address": "RUA CESAR LOUREIRO, 75",
+    "tenure": "aluguel",
+    "price": 2700,
+    "condo_monthly": 500,
+    "iptu_value": 150,
+    "iptu_period": "desconhecido",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "52221-602",
+    "area": "espinheiro",
+    "address": "RUA CONSELHEIRO PORTELA, 602",
+    "tenure": "aluguel",
+    "price": 2750,
+    "condo_monthly": 520,
+    "iptu_value": 60,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC07",
+   "case": "rent_reversal_by_fee_range",
+   "tenure": "aluguel",
+   "note": "unknown condo range 300-900 can reverse the order",
+   "A": {
+    "building_id": "32263-109",
+    "area": "casa-forte",
+    "address": "RUA JADER DE ANDRADE, 109",
+    "tenure": "aluguel",
+    "price": 2400,
+    "condo_monthly": null,
+    "iptu_value": 60,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "54569-97",
+    "area": "madalena",
+    "address": "RUA PROFESSORA ANUNCIADA DA ROCHA MELO, 97",
+    "tenure": "aluguel",
+    "price": 2950,
+    "condo_monthly": 380,
+    "iptu_value": 60,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC08",
+   "case": "rent_large_area_difference",
+   "tenure": "aluguel",
+   "note": "per-m2 and total disagree",
+   "A": {
+    "building_id": "22624-178",
+    "area": "gracas",
+    "address": "RUA ESMERALDINO BANDEIRA, 178",
+    "tenure": "aluguel",
+    "price": 3500,
+    "condo_monthly": 800,
+    "iptu_value": 120,
+    "iptu_period": "mensal",
+    "area_m2": 120
+   },
+   "B": {
+    "building_id": "52221-564",
+    "area": "espinheiro",
+    "address": "RUA CONSELHEIRO PORTELA, 564",
+    "tenure": "aluguel",
+    "price": 3200,
+    "condo_monthly": 750,
+    "iptu_value": 100,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC09",
+   "case": "rent_all_fees_missing",
+   "tenure": "aluguel",
+   "note": "only rent known",
+   "A": {
+    "building_id": "27294-377",
+    "area": "gracas",
+    "address": "RUA DAS GRACAS, 377",
+    "tenure": "aluguel",
+    "price": 2800,
+    "condo_monthly": null,
+    "iptu_value": null,
+    "iptu_period": "desconhecido",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "45640-40",
+    "area": "madalena",
+    "address": "RUA DR NAPOLEAO LAUREANO, 40",
+    "tenure": "aluguel",
+    "price": 3000,
+    "condo_monthly": null,
+    "iptu_value": null,
+    "iptu_period": "desconhecido",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC10",
+   "case": "rent_travel_tradeoff_fixture",
+   "tenure": "aluguel",
+   "note": "R$180/month vs 20 min/day x 16 days = 5h20 -> R$33.75/h (plan fixture)",
+   "A": {
+    "building_id": "31135-409",
+    "area": "espinheiro",
+    "address": "RUA BARAO DE ITAMARACA, 409",
+    "tenure": "aluguel",
+    "price": 3000,
+    "condo_monthly": 600,
+    "iptu_value": 100,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "41424-134",
+    "area": "madalena",
+    "address": "RUA MANOEL BERNARDES, 134",
+    "tenure": "aluguel",
+    "price": 2820,
+    "condo_monthly": 600,
+    "iptu_value": 100,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC11",
+   "case": "complete_purchase_clear_difference",
+   "tenure": "compra",
+   "note": "purchase price difference separate from monthly",
+   "A": {
+    "building_id": "37249-960",
+    "area": "boa-viagem",
+    "address": "RUA PROFESSOR JULIO FERREIRA DE MELO, 960",
+    "tenure": "compra",
+    "price": 690000,
+    "condo_monthly": 780,
+    "iptu_value": 154,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "32166-205",
+    "area": "casa-forte",
+    "address": "RUA JACO VELOSINO, 205",
+    "tenure": "compra",
+    "price": 540000,
+    "condo_monthly": 650,
+    "iptu_value": 120,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC12",
+   "case": "purchase_equal_price_different_fees",
+   "tenure": "compra",
+   "note": "monthly difference only",
+   "A": {
+    "building_id": "20184-2574",
+    "area": "boa-viagem",
+    "address": "AV ENGENHEIRO DOMINGOS FERREIRA, 2574",
+    "tenure": "compra",
+    "price": 600000,
+    "condo_monthly": 900,
+    "iptu_value": 150,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "41254-136",
+    "area": "gracas",
+    "address": "RUA MANOEL DE ALMEIDA, 136",
+    "tenure": "compra",
+    "price": 600000,
+    "condo_monthly": 500,
+    "iptu_value": 100,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC13",
+   "case": "purchase_missing_iptu",
+   "tenure": "compra",
+   "note": "missing IPTU not zero",
+   "A": {
+    "building_id": "38520-79",
+    "area": "boa-viagem",
+    "address": "RUA LEON HELMER, 79",
+    "tenure": "compra",
+    "price": 750000,
+    "condo_monthly": 850,
+    "iptu_value": null,
+    "iptu_period": "desconhecido",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "36250-142",
+    "area": "espinheiro",
+    "address": "RUA CORONEL JOSE MARTINS, 142",
+    "tenure": "compra",
+    "price": 720000,
+    "condo_monthly": 900,
+    "iptu_value": 140,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC14",
+   "case": "purchase_annual_iptu",
+   "tenure": "compra",
+   "note": "annual 2400 -> 200/month",
+   "A": {
+    "building_id": "56260-1103",
+    "area": "boa-viagem",
+    "address": "RUA BARAO DE SOUZA LEAO, 1103",
+    "tenure": "compra",
+    "price": 820000,
+    "condo_monthly": 1000,
+    "iptu_value": 2400,
+    "iptu_period": "anual",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "2895-62",
+    "area": "madalena",
+    "address": "RUA ALTINHO, 62",
+    "tenure": "compra",
+    "price": 800000,
+    "condo_monthly": 1100,
+    "iptu_value": 180,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC15",
+   "case": "purchase_condo_zero_house",
+   "tenure": "compra",
+   "note": "declared zero condo",
+   "A": {
+    "building_id": "33030-267",
+    "area": "casa-forte",
+    "address": "RUA JERONIMO DE ALBUQUERQUE, 267",
+    "tenure": "compra",
+    "price": 500000,
+    "condo_monthly": 0,
+    "iptu_value": 90,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "67547-325",
+    "area": "gracas",
+    "address": "RUA DEPUTADO PEDRO PIRES FERREIRA, 325",
+    "tenure": "compra",
+    "price": 480000,
+    "condo_monthly": 450,
+    "iptu_value": 90,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC16",
+   "case": "purchase_horizon_reversal",
+   "tenure": "compra",
+   "note": "30k price gap vs 500/month: crosses at 60 months",
+   "A": {
+    "building_id": "19526-934",
+    "area": "casa-forte",
+    "address": "AV DEZESSETE DE AGOSTO, 934",
+    "tenure": "compra",
+    "price": 900000,
+    "condo_monthly": 600,
+    "iptu_value": 150,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "31135-379",
+    "area": "espinheiro",
+    "address": "RUA BARAO DE ITAMARACA, 379",
+    "tenure": "compra",
+    "price": 870000,
+    "condo_monthly": 1100,
+    "iptu_value": 150,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC17",
+   "case": "purchase_itbi_gated_building",
+   "tenure": "compra",
+   "note": "fiscal reference only for single-typology buildings",
+   "A": {
+    "building_id": "21385-685",
+    "area": "casa-forte",
+    "address": "EST DO ENCANAMENTO, 685",
+    "tenure": "compra",
+    "price": 650000,
+    "condo_monthly": 700,
+    "iptu_value": 130,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "41424-320",
+    "area": "madalena",
+    "address": "RUA MANOEL BERNARDES, 320",
+    "tenure": "compra",
+    "price": 640000,
+    "condo_monthly": 720,
+    "iptu_value": 130,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC18",
+   "case": "purchase_price_unknown",
+   "tenure": "compra",
+   "note": "unknown price must block price difference",
+   "A": {
+    "building_id": "18252-229",
+    "area": "gracas",
+    "address": "RUA DAS CREOULAS, 229",
+    "tenure": "compra",
+    "price": null,
+    "condo_monthly": 700,
+    "iptu_value": 130,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "2410-171",
+    "area": "espinheiro",
+    "address": "RUA ALFREDO DE CASTRO, 171",
+    "tenure": "compra",
+    "price": 610000,
+    "condo_monthly": 720,
+    "iptu_value": 130,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC19",
+   "case": "purchase_large_vs_small",
+   "tenure": "compra",
+   "note": "per-m2 vs absolute",
+   "A": {
+    "building_id": "50849-455",
+    "area": "gracas",
+    "address": "RUA DAS PERNAMBUCANAS, 455",
+    "tenure": "compra",
+    "price": 1200000,
+    "condo_monthly": 1500,
+    "iptu_value": 300,
+    "iptu_period": "mensal",
+    "area_m2": 150
+   },
+   "B": {
+    "building_id": "62480-550",
+    "area": "madalena",
+    "address": "RUA VISCONDE DO URUGUAI, 550",
+    "tenure": "compra",
+    "price": 700000,
+    "condo_monthly": 800,
+    "iptu_value": 160,
+    "iptu_period": "mensal",
+    "area_m2": 80
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  },
+  {
+   "pair_id": "GC20",
+   "case": "purchase_iptu_period_unknown",
+   "tenure": "compra",
+   "note": "unknown period pending",
+   "A": {
+    "building_id": "36250-53",
+    "area": "espinheiro",
+    "address": "RUA CORONEL JOSE MARTINS, 53",
+    "tenure": "compra",
+    "price": 560000,
+    "condo_monthly": 600,
+    "iptu_value": 154,
+    "iptu_period": "desconhecido",
+    "area_m2": 70
+   },
+   "B": {
+    "building_id": "33855-109",
+    "area": "madalena",
+    "address": "RUA JOAO IVO DA SILVA, 109",
+    "tenure": "compra",
+    "price": 580000,
+    "condo_monthly": 620,
+    "iptu_value": 100,
+    "iptu_period": "mensal",
+    "area_m2": 70
+   },
+   "expected": "unlabeled (VE01 defines and labels the projection outcome)"
+  }
+ ]
+}
