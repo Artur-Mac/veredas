@@ -1,116 +1,102 @@
-# Público-Alvo, Voz do Cliente & Estratégia de Canais — VEREDA
+# Público-alvo e sinais de demanda — VEREDA
 
-**Phase:** 3 — Market Research (Síntese)
-**Project:** vereda
-**Date:** 2026-11-15
-**Confidence:** Medium *(vozes reais, processos TJPE/Procon e entidades PE)* | **Low** *(conversões de saída, CPA local e WTP pago — `G-USER = 0`)*
+**Fase:** 3 — Pesquisa, revista no gate 3.5  
+**Projeto:** vereda  
+**Data:** 2026-11-15  
+**Confiança:** [Opinion] Baixa para prioridade comercial e disposição a pagar; média para os temas de dor registrados na pesquisa exploratória.
 
-> **Síntese Executiva:** A pesquisa com voz real de compradores e inquilinos (`22` citações literais + processos TJPE/TRF5/Procon-PE/SP) `[Data]` revela que **ninguém procura um "app de mapa urbano"**: sob ansiedade pré-assinatura, as pessoas temem cair em uma **"bomba relógio"** (*cota extra*, *laudêmio de 5%*, *prédio-caixão*, *barulho noturno*, *sol poente*, *anúncio fake*) `[Data]`. Essa evidência refuta o foco inicial em *"turista virar local em segundos"* e prioriza **`V2` Anti-Cilada (`8,4/10`)** + **`B2B2C Buy-Side` (`6,9/10`)** à frente do **`V1` B2C `R$ 49,90` isolado (`3,2/10`)** `[Estimate]` / `[Opinion]`. Em **`G-USER = 0` testes reais pós-pivô** `[Data]`, a validação de campo na Fase 3.7 é obrigatória `[Opinion]`.
+## Síntese
 
----
+[Opinion] A prioridade candidata é a pessoa com decisão habitacional concreta e informação faltante antes de se comprometer, junto do profissional que já a atende. Isso é uma hipótese de segmentação, não uma persona validada. Não se pode concluir que “ninguém procura mapa” ou que toda pessoa pagará por evitar prejuízo. [Data] O [brief, seção 3](../00-intake/brief.md) registra ausência de testes do fluxo pós-pivô. [Opinion] O desconhecimento mais importante é se a pessoa consegue os documentos e atribui valor pago ao resultado do VEREDA.
 
-## 1. Voz do Cliente (*Customer Voice*), TJPE & Validação das Variações
+## Qualidade da voz do cliente
 
-**Confiança da Seção:** Alta para dores registradas em fóruns, TJPE, Procon e custos substitutos; Média para a hierarquia pontuada (`8,4` a `3,2`), construída sobre proxies transacionais diante da ausência de Keyword Planner (`DATA GAP`).
+**Confiança:** [Opinion] Baixa para representatividade; média para identificar temas a investigar.
 
-### 1.1 JTBD Real e Mapa Linguístico (Recife & Brasil)
-- **Evidência judicial e de consumo local:** Processos no **TJPE** expõem litígios pós-omissão — retenção de sinal (`0023177-48.2026.8.17.2001`) e omissão de **laudêmio** de Terreno de Marinha (`0032316-34.2020.8.17.2001`), além de **TRF5**, interdição do **Procon-PE** (venda duplicada em Janga) e multa de **`R$ 563,9 mil` do Procon-SP** contra o QuintoAndar `[Data]`.
-- **Vocabulário nativo (`r/Recife`, `r/ConselhosLegais`, `r/brasil`, `G1 PE`):** *"bomba relógio"*, ***"Leste salva vidas, oeste é morte"*** (nascente vs. poente), *"prédio caixão"*, *"cota extra"*, *"laudêmio"*, *"anúncio fake"* `[Data]`.
-- **Substitutos de preço ancoram o `V2` (não o `V1`):** Quem desconfia antes de assinar compara contra **OAB-PE** (piso consultoria **`R$ 1.100`**, diligência/ação **`R$ 6.038,70`**), **Vistoria Cautelar (`R$ 600–1.600+`)**, **Despachantes (`R$ 139,90–300+` a `R$ 500–1.500`)** e **Auditoria CRC condominial (`R$ 500–1.200/mês` ou `R$ 4k–12k/ano`)** `[Data]`. Frente a esses custos, **`R$ 199–349` (`V2`)** ancora como seguro barato; frente ao Google Maps/ChatGPT, **`R$ 49,90` (`V1`)** parece caro `[Opinion]`.
+[Data] [raw/customer-voice](raw/customer-voice.md) reúne 22 citações apresentadas como literais, em parte recuperadas por trechos indexados e redirecionamentos de busca, com lacunas de data e autoria. [Opinion] O corpus não é uma amostra representativa e sua origem não foi integralmente reaberta nesta revisão. Não se transforma frequência nesses trechos em prevalência populacional nem em disposição a pagar. As frases literais ficam no bruto, pendentes de reconstrução dos links diretos e datas.
 
-### 1.2 Matriz de Stress-Test das Hipóteses de Negócio (`V1–V6`)
+[Data] O intake registra um relato do fundador sobre uma compradora arrependida de custos condominiais e barulho ([brief, seção 3](../00-intake/brief.md)). [Opinion] É pista relevante, mas indireta, sem entrevista documentada nesta fase. Os números processuais e valores judiciais dos brutos não foram usados como prova de demanda paga.
 
-| Caminho | Nota | Avaliação & Veredito Estratégico | Grau |
-| :--- | :---: | :--- | :---: |
-| **`V2` Anti-Cilada Pré-Contrato** *(híbrido IA + analista)* | **`8,4/10`** | **Vencedor claro (#1).** Ataca pico de medo (`48–72h` pré-sinal/leilão), gera margem `~R$ 120–252`, escala fora do GIS municipal e evita *cold-start* (cliente já sobe ata/edital). | `[Estimate]` / `[Opinion]` |
-| **`V5` B2G / Impacto Social** | **`7,1/10`** | Útil para **fomento (`FACEPE Ed. 32–33/2026 R$ 15k–300k` / `E.I.T.A! cic. 2022–2025 R$ 50k` / `Campus Mobile`)**, mas lento para receita (`~191` editais CPSI `2021–2026 [inclui >18m]`, `57% >R$ 4,8M`, ciclos `6–18m` `[Data]`). | `[Data]` / `[Estimate]` / `[Opinion]` |
-| **`V4` Assessoria *Buy-Side* Usados (`B2B2C`)** | **`6,9/10`** | **Acoplar ao `V2`:** advogados (`OAB-PE`), engenheiros (`IBAPE-PE`), auditores (`CRC-PE`), corretores *buy-side* (`CRECI-PE`) e `Correspondentes Caixa Aqui` trazem recorrência. | `[Estimate]` / `[Opinion]` |
-| **`V3` Relocation Corporativo** | **`5,1/10`** | **Rebaixado a canal gratuito.** `Porto Digital` (`541` empresas, `24.079` trabalhadores, `+2.528` vagas em 2025 `[Data]`) contrata majoritariamente local: só **`~125–250` vindas externas/ano** (`~60–125` com auxílio) `[Estimate]`. | `[Data]` / `[Estimate]` |
-| **`V1` Comparador B2C (`R$ 49,90` isolado)** | **`3,2/10`** | **Rejeitado como tese principal.** Fica como isca **`1 Free-Look` gratuito + passes pós-limite + SEO por prédio** para alimentar o funil do `V2`. | `[Estimate]` / `[Opinion]` |
-| **`V6` Telecom/ISP-funded** | **Rejeitado** | Vetado pelo fundador e sem aderência de canal. | `[Opinion]` |
+## Personas candidatas e tarefas
 
----
+**Confiança:** [Opinion] Baixa até contato com o público correto.
 
-## 2. Personas Prioritárias, B2B2C & Anti-Personas
+| Segmento candidato | Situação e tarefa [Assumption] | O que sustentaria sua prioridade [Opinion] | Principal obstáculo [Opinion] |
+|---|---|---|---|
+| Comprador de apartamento usado no Recife | Está negociando um imóvel e quer entender documentos, custos recorrentes e perguntas pendentes antes do sinal | Problema ocorrido recentemente, acesso documental e pagamento ou gasto atual com alternativa | Acesso aos documentos e risco de confundir organização com parecer jurídico ou técnico |
+| Inquilino comparando opções concretas | Precisa confrontar custo, entorno e rotina antes da visita/contrato | Mudança de decisão ou economia de tempo que ele reconheça e valorize | Urgência, menor espaço no orçamento e alternativas suficientes sem contratação |
+| Advogado, vistoriador ou assessor do comprador | Já revisa casos e pode usar ferramenta de organização e contexto local | Volume de casos, tempo economizado, qualidade e orçamento próprio | Responsabilidade, suporte e integração ao trabalho; indicação não é recompra |
+| RH / relocation | Ajuda profissionais a se instalar na cidade | Fluxo de mudanças e orçamento confirmado por quem contrata | Volume e comprador econômico ainda desconhecidos |
 
-**Confiança da Seção:** Alta para dados IBGE/FipeZAP/entidades locais; Baixa para conversão paga de personas antes do campo (`G-USER = 0`).
+[Assumption] Faixas herdadas de imóvel R$ 350 mil–1,2 milhão e aluguel R$ 2.500–6.000 podem delimitar recrutamento futuro, mas não são o perfil medido do comprador do VEREDA. [Opinion] Não transferir idade/renda de morador de bairro ou de pesquisa nacional para a pessoa em compra ativa local.
 
-### 2.1 Compradores & Inquilinos (B2C Direto + Indicação `V2`)
-- **Persona A — Comprador de Apartamento Usado ou Arrematante (`R$ 350 mil – R$ 1,2 milhão` `[Assumption]`):** Idade média **`~46–47` anos (FipeZAP `2024–2025 [>18m na base]`)** ou **`35–44` anos (SBPE `2024–2025 [>18m na base]`)** `[Data]`; **`71%–77%` compram usados** e **`64%–72%`** para morar acompanhado `[Data]`; busca dura **`~10 semanas`** com mediana de **`7` visitas** e **`67%–71%`** fecham com **`10%–14%` de desconto** `[Data]`. Nos 5 bairros piloto, a renda mediana domiciliar do responsável gira em **`R$ 6.000–11.000` (média `R$ 8.871–14.342` — Censo 2022 `[Data — >18m]`)**. Inclui arrematantes de leilões da Caixa (**`R$ 420B` nacional em 2025** `[Data]`). **Dor crítica:** descobrir cota extra oculta, fundo zerado, prédio-caixão ou laudêmio de `5%` antes de assinar `[Opinion]`.
-- **Persona B — Inquilino Urbano & Transferido de Médio/Alto Padrão (`R$ 2.500 – R$ 6.000/mês` `[Assumption]`):** Pico de urgência de **`2–4 semanas`** `[Estimate]`; universo de **`~22.453` apartamentos alugados nos 5 bairros** `[Estimate]` (dentro de **`58.392` na cidade** `[Data — Censo 2022 >18m]`). Paga apenas sob assimetria severa (médico residente HC-UFPE, sênior tech, família com filho/idoso exigindo silêncio e garagem sem alagamento) `[Opinion]`.
+[Opinion] Para o recorte pré-contrato, turismo de curta estadia não é prioridade. Isso é uma decisão de foco, não constatação de “zero dor”. Estudantes e famílias com orçamento menor também não devem ser descartados como incapazes de perceber valor; podem ter necessidades reais cuja monetização demande outra hipótese.
 
-### 2.2 Canal Profissional `B2B2C` em Recife (`Personas 3A–3D`) — Entidades Verificadas
-- **3A — Advogados Imobiliários (`OAB-PE CDI` / `IBRADIM-PE`, de `~47,2k` em PE `[Data]`):** Sem CNPJ imediato (`<30d`); adquirem **`C1` `R$ 199/10 dossiês`** ou **`C2` `R$ 249/mês`** para anexar PDF *Co-Branded* com QR Code + citação de página `[Assumption]`. *(Restrição: `Provimento OAB 205/2021` veta comissão/lead fee; CAAPE Clube exige CNPJ+CNDs `3–6 meses` `[Data]`)*.
-- **3B — Engenheiros de Vistoria & Avaliadores em PE (`IBAPE-PE` / `CREA-PE`):** Profissionais locais verificados em PE incluem **`Rebeka Pedrôzo`**, **`Marina Domingos`**, **`Periton`**, **`Racon`**, **`Liberté`** e **`GS Engenharia`** `[Data]` *(não citar `Mangieri` [só SP], `Ferro 7` [PR/SP/SC] ou `Vistorize` [SaaS locação])*.
-- **3C — Auditores Condominiais (`CRC-PE`) & Administradoras Butique:** **`Grupo Aldom`** e administradoras independentes (**`Semog`**, **`DAC`**, **`Âncora`**, **`Inova`**, **`França`**, **`ASSINPRO-PE`**) `[Data]` — contornam os ERPs fechados (`Superlógica`, `uCondo`, `TownSq`, `Nextin`).
-- **3D — Correspondentes Bancários Caixa Aqui (`CCA`) & *Buy-Side* (`CRECI-PE`, `~17k–18k` em PE `[Data]`):** CCAs perdem horas no SIOPI com prédio-caixão/SPU; pela `Res. CMN 3.954/2011` não cobram tarifa do mutuário, mas contratação SaaS B2B é lícita `[Data]`.
+### Hierarquia provisória e linguagem
 
-### 2.3 Anti-Personas (Cortar do Roadmap e Marketing)
-1. **Turistas (`estadia 2–6 dias`):** **`>1.140` Airbnbs** em Boa Viagem (`coleta 2025–2026` `[Data]`); zero dor pré-contrato *(refuta premissa do brief)*.
-2. **Estudantes Sisu/UFPE de baixa renda:** Renda mediana na Várzea de **`R$ 1.500`** (`[Data — Censo 2022 >18m]`); substituem por boca a boca gratuito.
-3. **Corretores *Sell-Side* tradicionais** (conflito Zillow/First Street) e **caçadores 100% grátis** que usam porteiro + ChatGPT.
+[Opinion] A ordem abaixo reflete risco percebido e aderência ao produto, não uma contagem estatística validada.
 
----
+| Prioridade de investigação | Dor candidata [Assumption] | Tarefa funcional, social e emocional [Assumption] | Linguagem temática [Opinion] |
+|---|---|---|---|
+| Informação antes do compromisso | Surpresa em custo condominial, documento ausente ou condição mal compreendida | Organizar perguntas; conversar com vendedor/profissional com clareza; reduzir incerteza | Cota extra, ata, custo total, sinal — temas dos brutos, não citações literais republicadas |
+| Adequação à rotina | Sol, barulho, acesso e deslocamento diferem do esperado | Comparar opções; alinhar decisão com família; evitar arrependimento | Barulho, poente, trajeto, visita |
+| Trabalho profissional repetido | Informações dispersas atrasam revisão | Reunir evidências; explicar achados ao cliente; manter controle da qualidade | Documento, fonte, página, pendência |
 
-## 3. Estratégia de Canais & Plano Tático de 90 Dias (`16–18h/sem` | `R$ 0–3.000`)
+## Avaliação das variações
 
-**Confiança da Seção:** Alta *(veto à mídia fria paga e SEO genérico)*; **Baixa** *(taxas de conversão de saída, churn SaaS `C2` e CPA de criadores sem testes — `G-USER = 0`)*.
+**Confiança:** [Opinion] Baixa para viabilidade; preferência analítica condicionada.
 
-### 3.1 Regras de Distribuição em 2026
-- **Vetos imediatos:** (i) **Zero Google/Meta Ads frio** para `R$ 49,90` (CAC `R$ 100–750+` destrói caixa `[Estimate]`); (ii) **Zero "shadow ads"** no `r/Recife`/X (risco de banimento); (iii) **Zero Reels genéricos** (`8–12h/sem`, `~80 mil views` locais p/ 1 venda e notas `1★` fora do Recife `[Estimate]`).
-- **Ajuste a `AI Overviews` (`47%–48%` SERPs, `-58% a -61%` CTR `[Data]`):** Páginas rasas sofrem *Scaled Content Abuse* `[Data]`. Focar SEO apenas em **entidade de edifício (`DSQFL`) + 3 calculadoras exclusivas** (`ITBI+SPU`, `Alvarás 150m`, `Rota Defesa Civil`) `[Opinion]`.
-- **Micro-Criadores de PE & Retargeting:** Criadores locais (`5k–50k`, `Geo Insights >= 60% RMR`, zero marcas de portais `11.20(iv)`) com cachê `<= R$ 250–300` + **`25%–30%` CPA via Pix** `[Assumption]`. Meta Retargeting apenas para **`V2` (`R$ 199/349`)** com trava automática de **`CAC <= R$ 73,04` no Dia 1** (`Anexo V 15,5%` — incluindo **`+13,83%`** de repasse tributário Meta `[Data]`), elevando para `<= R$ 84,09` somente após `Fator R >= 28%` `[Estimate]`.
+- [Opinion] **V2 documental assistido:** merece investigação prioritária por conectar tarefa concreta e contribuição maior por venda, conforme [market-analysis](market-analysis.md). Depende de acesso e tempo de revisão; não é “vencedor comprovado”.
+- [Opinion] **V1 comparador:** pode permanecer hipótese de utilidade e receita. A margem limita aquisição/atendimento, mas os cenários não refutam todo B2C.
+- [Opinion] **V4 profissional:** candidato a comprador recorrente e canal, que precisam ser avaliados separadamente. Não presumir contrato com OAB, IBAPE, CRC ou CRECI a partir da existência dessas entidades.
+- [Opinion] **V3 relocation e V5 B2G:** alternativas com volume, ciclo e orçamento não confirmados; não entram como caixa garantido.
+- [Data] **V6 telecom/ISP:** descartada pelo fundador no [brainstorm, convergência](../00-intake/brainstorm.md).
 
-### 3.2 Sequenciamento `<90 Dias` para 5 Sócios Part-Time
-- **Semanas 1–4 (`17h/sem` | `R$ 0–300`):** Corrigir exploit em `Carteira.tsx`/`descarte.ts`, publicar **Web-First PWA + Pix** + *"Compartilhar Comparação (Casal)"* + PDF *Co-Branded*, rodar **`G-USER` (`8–12` buscadores reais fora da família)** + post transparente (Modmail) no `r/Recife`, e abordar **`30` advogados (`OAB-PE`) + `15` vistoriadores (`IBAPE-PE`)** com 3 dossiês grátis (`Meta: >=6/8 validação, 150+ testes, 2–5 vendas Pix` `[Assumption]`).
-- **Semanas 5–8 (`17h/sem` | `R$ 500–1.000`):** Converter `C1/C2`, atacar **`5–8` grupos de Leilão Caixa PE**, fechar **2 guias orgânicos de *onboarding*** (Porto Digital / CESAR / HC-UFPE), publicar 3 calculadoras + `300–500` perfis de edifícios e testar **`2` micro-criadores** (`Meta: 4–6 B2B2C + 5–10 V2` `[Assumption]`).
-- **Semanas 9–12 (`16h/sem` | `R$ 1.000–1.700`):** Escalar criadores (`+2–4`), ativar Meta Retargeting `V2` (`R$ 400–800/mês`), publicar **`2.688` edifícios** `[Data]` + preparar expansão (**`+979` edifícios em `9` bairros prontos contidos nos `72` indexados**, começando por `Torre 137` / `Boa Vista 267` `[Data]`) (`Meta Dia 90: 8–12 B2B2C + 12–25 vendas V2 + 25–50 passes pós-Free-Look = R$ 4.000–9.500 acumulados` `[Assumption] / [Estimate]`).
+[Opinion] As notas herdadas 8,4/10, 7,1/10, 6,9/10, 5,1/10 e 3,2/10 foram retiradas: davam precisão indevida a preferências construídas por proxies, não um escore validado de demanda.
 
----
+## Comportamento de compra e canais candidatos
 
-## 4. Conexões Estratégicas
+**Confiança:** [Opinion] Baixa; não há conversão observada.
 
-1. **Com [market-analysis.md](market-analysis.md):** Os tickets `V2` (`R$ 199/349`) e `B2B2C` (`R$ 199`/`R$ 249`) são os únicos que absorvem `Anexo V 15,5%` (Dia 1) e `Meta +13,83%` dentro de `16–18h/sem`.
-2. **Com [competitor-landscape.md](competitor-landscape.md):** O PDF *Co-Branded* para `OAB-PE`/`IBAPE-PE` aplica por analogia a virada da `Eli Report` + `CondoScan` sem conflito *sell-side* — hipótese ainda pendente de confirmação com profissionais reais na Fase 3.7 `[Opinion]`.
-3. **Com [industry-trends.md](industry-trends.md):** O salto de **`+38%` no crédito FGTS/MCMV (2026)** e inadimplência recorde (`11,95%`) criam urgência em arrematantes e `Caixa Aqui`.
+[Assumption] O comprador pode valorizar entrega antes do compromisso, compreensão fácil e confiança na origem. O profissional pode valorizar tempo poupado e responsabilidade delimitada. [Opinion] Uma oferta de preço estrangeira não mede quanto ambos pagarão no Recife.
 
----
+| Canal candidato | Por que investigar [Opinion] | O que falta [Opinion] |
+|---|---|---|
+| Profissionais que já atendem compradores | Proximidade de casos concretos | Interesse, custo de prospecção, orçamento, frequência e arranjo contratual |
+| Comunidades locais com participação transparente | Contexto territorial e acesso a problemas recentes | Permissão, qualidade dos contatos e conversão; nenhuma publicação foi feita |
+| Busca por problema/endereço | Pode alcançar intenção específica | Volume acessível, custo de conteúdo e resultado pago |
+| Criadores locais | Podem demonstrar uma tarefa | Alcance qualificado, custo total, atribuição e conversão |
+| Rede acadêmica/RH | Pode facilitar aprendizado e acesso | Separar conveniência de recrutamento de viés de seleção e orçamento real |
 
-## 5. Data Gaps
+[Opinion] Não há plano de execução de canais aprovado. O cronograma de aquisição e metas em 90 dias da versão anterior está arquivado; dependia de capacidade, orçamento e conversão não confirmados. Os limites analíticos de CAC são por oferta em [market-analysis](market-analysis.md): não aplicar a B1 o valor do B2. Não iniciar mídia, prospecção, entrevistas ou mudanças no produto durante este gate.
 
-1. **Testes reais pós-pivô (`G-USER = 0`):** Apenas levantamento acadêmico anterior (`UFPE N=83, WTP R$ 27,40–28,00` `[Data — período exato não datado/provável >18m — DATA GAP]`) sem compras reais.
-2. **Churn/LTV real da assinatura `B2B2C` (`C2`):** Horizonte de `6 meses` é premissa não testada em escritórios/peritos de PE.
-3. **CPA e conversão real de micro-criadores em Recife + volume exato de buscas (`Keyword Planner / Ahrefs`).**
-4. **Tempo humano real da curadoria `V2` (`<= 30–50 min`) e contagem segmentada de especialistas *buy-side* em `OAB-PE`/`CRECI-PE`.**
+## Auditoria Interna do Repositório
 
----
+**Confiança:** [Opinion] Média para registro no intake; dados primários não reanalisados.
+
+[Data] O [brief](../00-intake/brief.md) situa o levantamento N=83 e as 5 entrevistas anteriores em outubro/2026, antes do pivô. Não são dados [>18m]. [Opinion] A amostra acadêmica/rede próxima e a mudança de produto limitam extrapolação; intenção declarada não é pagamento. [Data] O intake registra zero testes do fluxo novo; ausência de venda documentada não foi auditada como extrato financeiro. [Opinion] Esses registros são internos, não fontes externas Tier 1 nem entrevistas feitas na Fase 3.7.
+
+## Conexões e próximo passo
+
+[Opinion] Confrontar a hipótese de dor com as alternativas em [competitor-landscape](competitor-landscape.md), o custo em [market-analysis](market-analysis.md) e os limites em [industry-trends](industry-trends.md). A decisão atual é escolher se haverá continuação, mudança de foco ou encerramento no [Research Gate](research-gate.md); nenhum protocolo de entrevista foi iniciado.
+
+## Data Gaps
+
+- [Opinion] Confirmação espontânea do problema, episódio recente, pagamento, acesso documental e alternativa já utilizada.
+- [Opinion] Representatividade, autoria, data e links diretos do corpus de voz do cliente; métricas locais de busca.
+- [Opinion] Volume de casos por profissional, duração da relação, suporte e retenção.
+- [Opinion] Orçamento e capacidade semanal total do time; horas por pessoa versus totais divergem entre brutos.
+- [Opinion] Critério do fundador para parar ou mudar a hipótese.
 
 ## Flags
 
 **Red Flags:**
-- **Validação praticamente nula (`G-USER = 0`):** Nenhuma transação real ou entrevista pós-pivô fora da família.
-- **Desalinhamento do fundador com anti-personas e features:** Brief ainda menciona *"turista virar local"*, *"criminalidade / desabamento / 5G"* e *"shadow ads"*.
-- **Risco de governança (`3` vagas `Campus Mobile` vs. `5` sócios atuais)** e **vício de canal no Instagram** (`8–12h/sem` sem conversão).
+- [Opinion] Usar relato indireto, entrevista pré-pivô ou tabela de concorrente como validação de compra do produto atual.
+- [Opinion] Prometer detectar risco jurídico/estrutural sem escopo profissional e dados adequados.
 
 **Yellow Flags:**
-- **Resistência de *buy-side* à IA pura:** Exige citação literal de página, *scrub* PII, zero treino público e revisão humana (`CondoScan` / `Rec. CFOAB 001/2024`).
-- **Limites éticos `B2B2C` (`Provimento OAB 205/2021` / `Res. CMN 3.954/2011`):** Proibido cobrar *lead fee* ou tarifa do mutuário.
-- **Incerteza nas taxas `90d` (`Baixa` confiança até Fase 3.7):** Micro-criadores PE e retenção `C2` sem histórico local.
+- [Opinion] Viés de cortesia e seleção; canais sem conversão; acesso aos documentos pode limitar a própria entrega.
 
----
+## Fontes
 
-## Sources
-
-### Tier 1 — Judiciário, Órgãos Públicos, Regulação & Entidades
-- `TJPE` (`Processos 0023177-48.2026.8.17.2001` e `0032316-34.2020.8.17.2001`), `TRF5`, `Procon-PE`, `Procon-SP` (`multa R$ 563,9k QuintoAndar`), `Receita Federal / Meta` (tributos `+12,15%`/`+13,83%`).
-- `IBGE` (Censo 2022 `[>18m]` renda 5 bairros e Várzea `R$ 1.500`), `ABECIP` (`2024–2025 [inclui >18m]`), `Caixa Econômica` (`R$ 420B` leilões `2025`).
-- `OAB-PE` (`~47,2k`; piso `R$ 1.100`/`R$ 6.038,70`), `Provimento OAB 205/2021`, `Rec. CFOAB 001/2024`, `Res. CMN 3.954/2011`, `CRECI-PE` (`~17k–18k`), `Instituto Claro` (`15ª ed. cláusula 11.20(iv)`).
-
-### Tier 2 — Estudos Setoriais, Imprensa Regional & Ecossistema Local
-- `Fipe/FipeZAP` (`perfil comprador ~46–47`), `Porto Digital` (`balanço 2025`), `CRC-PE` (`Grupo Aldom`), `IBAPE-PE` (`Rebeka Pedrôzo`, `Marina Domingos`, `Periton`, `Racon`, `Liberté`, `GS`), administradoras (`Semog`, `DAC`, `Âncora`, `Inova`, `França`, `ASSINPRO-PE`), `Ahrefs`/`Seer Interactive` (`AI Overviews`), `G1 PE`.
-
-### Tier 3 — Comunidades & Agregadores
-- `Reddit` (`r/Recife`, `r/ConselhosLegais`, `r/brasil`, `r/investimentos`, `r/saopaulo` — `22` falas), `Airbnb` (Boa Viagem `>1.140` `2025–2026`), `Tabela CRC/vistoria`.
-
-### Auditoria Interna do Repositório `veredas/` *(não confundir com validação externa)*
-- Índice `1e393803851f3fd5` (`72/94` bairros, `9` bairros contidos nos `72` com `+979` edifícios), `src/dados/mensagem.ts`, pesquisa exploratória anterior `UFPE (N=83)`.
+[Data] [Brief](../00-intake/brief.md), [brainstorm](../00-intake/brainstorm.md), [voz bruta](raw/customer-voice.md), [público bruto](raw/target-audience.md), [demanda bruta](raw/demand-signals.md), [canais](raw/channels.md) e [parcerias](raw/partnerships.md). Os limites de proveniência estão em [source-register](source-register.md); essas sínteses internas não multiplicam fontes independentes.
