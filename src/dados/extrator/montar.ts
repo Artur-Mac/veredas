@@ -401,6 +401,8 @@ export function montarExtracao(
     lacunas,
     cobertura: coberturaFinal,
   };
+  const fotos = leituras.find((l) => l.fotos?.length)?.fotos;
+  if (fotos?.length) resultado.fotos = fotos;
 
   return esquemaExtracao.parse(resultado);
 }

@@ -102,6 +102,28 @@ export function estadoDasCamadas(caminhos: readonly string[]): EstadoDasCamadas 
   return carregando ? "carregando" : "pronta";
 }
 
+/**
+ * Falha passageira (rede do celular, servidor de desenvolvimento lento) não vira "não foi possível carregar" de primeira
+ * (teste no celular, 15/11/2026: "às vezes tem que rodar de novo"). Até 3 tentativas, com 0,4 s e 1,2 s de espera.
+ * Arquivo fora do manifesto ou que não confere em tamanho/hash falha de novo igual e é devolvido na última tentativa.
+ */
+export const ESPERAS_ENTRE_TENTATIVAS_MS = [400, 1200] as const;
+let esperasAtuais: readonly number[] = ESPERAS_ENTRE_TENTATIVAS_MS;
+/** Só para testes: outras esperas (ex.: [] = sem novas tentativas). */
+export function definirEsperasEntreTentativas(esperas: readonly number[]): void {
+  esperasAtuais = esperas;
+}
+export async function comNovasTentativas<T>(tentar: () => Promise<T>, esperas: readonly number[] = esperasAtuais, dormir = (ms: number) => new Promise((r) => setTimeout(r, ms))): Promise<T> {
+  for (let i = 0; ; i += 1) {
+    try {
+      return await tentar();
+    } catch (e) {
+      if (i >= esperas.length) throw e;
+      await dormir(esperas[i]!);
+    }
+  }
+}
+
 function carregar(caminho: string): Promise<void> {
   const atual = entradas.get(caminho);
   if (atual?.estado === "pronta") return Promise.resolve();
@@ -116,7 +138,7 @@ function carregar(caminho: string): Promise<void> {
   const promessa = (async () => {
     try {
       if (!descritor) throw new CamadaIndisponivel(caminho, "fora do manifesto publicado; rode scripts/dados/publicar-camadas.mjs");
-      const valor = await buscarArquivoDeCamada(caminho, descritor);
+      const valor = await comNovasTentativas(() => buscarArquivoDeCamada(caminho, descritor));
       entradas.set(caminho, { estado: "pronta", valor });
     } catch (e) {
       const erro = e instanceof CamadaIndisponivel ? e : new CamadaIndisponivel(caminho, e instanceof Error ? e.message : String(e));

@@ -1237,9 +1237,9 @@ describe("Explorar: cartão da análise", () => {
       borderRadius: 13,
     });
     expect(estiloDoTexto(arvore, fato).color).toBe(CORES_CLARO["cor-barro-texto"]);
-    // No topo: antes do cartão de "Auditar novo anúncio".
+    // No topo: antes do cartão de entrada ("Anúncio, prédio ou rua", 15/11/2026).
     expect(texto(arvore).indexOf(fato)).toBeGreaterThanOrEqual(0);
-    expect(texto(arvore).indexOf(fato)).toBeLessThan(texto(arvore).indexOf("Auditar novo anúncio"));
+    expect(texto(arvore).indexOf(fato)).toBeLessThan(texto(arvore).indexOf("Anúncio, prédio ou rua"));
     // O toast (role status) leva o mesmo texto...
     const toast = () => arvore.root.findAll((n) => typeof n.type === "string" && n.props.role === "status" && textoDoNo(n) === fato);
     expect(toast()).toHaveLength(1);

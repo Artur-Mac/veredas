@@ -41,7 +41,15 @@ if (process.argv.includes("--reverter")) {
   const diretorio = `indice-municipal/${idVersao}`;
   const destino = path.join(pasta, diretorio);
   fs.mkdirSync(destino, { recursive: true });
+  // 15/11/2026: o construtor grava no staging a coleta do IPTU por bairro (CKAN ou hub auditado); sem ela, os caches.
+  const arquivoDaColeta = path.join(staging, "coleta-iptu.json");
+  const coleta = fs.existsSync(arquivoDaColeta) ? JSON.parse(fs.readFileSync(arquivoDaColeta, "utf8")) : null;
   const coberturas = auditoria.particoes.map(p => {
+    if (coleta) {
+      const c = coleta.bairros[p.bairro];
+      if (!c) throw new Error(`Coleta do IPTU sem o bairro ${p.bairro}.`);
+      return { ...p, grafias: c.grafias, registrosIptu: c.registros, estado: habilitadas.some(h => h.bairro === p.bairro) ? "habilitado" : p.edificios === 0 ? "sem_registros_elegiveis" : "revisao_geometrica_pendente" };
+    }
     const grafias = [];
     let registros = 0;
     for (let i = 0; i < 8; i++) {

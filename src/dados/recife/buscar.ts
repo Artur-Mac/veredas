@@ -23,6 +23,17 @@ const PONTOS_NUMERO = 100;
 const PONTOS_AREA = 30;
 const PONTOS_AREA_REPETIDA = 10;
 const PONTOS_ANO = 15;
+/** Área praticamente igual (até 1 m² ou 1%) numa tipologia com 2+ unidades: o tamanho do anúncio existe no prédio. */
+const PONTOS_AREA_EXATA = 20;
+/** Uma palavra própria em comum no nome ("Engenho Torre" × "Engenho Capibaribe"): pista fraca. */
+const PONTOS_NOME_PARCIAL = 15;
+/**
+ * Nenhuma tipologia a até 15% da área do anúncio: um apartamento de 53 m² não está num prédio só de 127 m². Pesa
+ * contra, sem excluir (a área do anúncio pode estar errada; ela já vem marcada "a confirmar" quando o leitor desconfia).
+ */
+const PENALIDADE_AREA_AUSENTE = 60;
+/** Palavras comuns demais em nome de prédio no Recife para valer como pista sozinhas. */
+const PALAVRAS_COMUNS_DE_NOME = new Set(["solar", "jardim", "jardins", "residencial", "parque", "praia", "mar", "vila", "torre", "torres", "recife", "boa", "viagem", "casa", "forte", "sao", "santa", "santo", "do", "da", "de", "dos", "das", "e"]);
 
 /** Palavras que não identificam o prédio ("Edifício Solar do Gayppio" e "Solar do Gayppio" são o mesmo nome). */
 const PALAVRAS_DE_EDIFICIO = new Set(["edificio", "edif", "edf", "condominio", "residencial"]);
@@ -62,8 +73,10 @@ function palavras(texto: string): string[] {
 
 /** Palavras do nome do prédio, sem "edifício", "edf", "condomínio" e "residencial". */
 function palavrasDoNome(texto: string): string[] {
-  return palavras(texto).filter((p) => !PALAVRAS_DE_EDIFICIO.has(p));
+  // Conectivos fora: "Engenho Torre" e "Engenho da Torre" são o mesmo nome escrito de dois jeitos.
+  return palavras(texto).filter((p) => !PALAVRAS_DE_EDIFICIO.has(p) && !CONECTIVOS.has(p));
 }
+const CONECTIVOS = new Set(["de", "da", "do", "das", "dos", "e"]);
 
 /** Palavras do logradouro, sem o tipo de via e com as abreviaturas de título por extenso. */
 function palavrasDaRua(texto: string): string[] {
@@ -180,6 +193,12 @@ export function buscarCandidatosDetalhados(entrada: EntradaDeBusca, edificios: r
       pistas.push("nome");
       pontos += PONTOS_NOME;
       motivos.push("Mesmo nome de edifício do anúncio");
+    } else {
+      const comum = nomeProcurado.find((p) => p.length >= 4 && !PALAVRAS_COMUNS_DE_NOME.has(p) && n.nome.includes(p));
+      if (comum) {
+        pontos += PONTOS_NOME_PARCIAL;
+        motivos.push(`Nome parecido com o do anúncio ("${comum}")`);
+      }
     }
 
     if (mesmoTexto(ruaProcurada, n.rua)) {
@@ -204,7 +223,11 @@ export function buscarCandidatosDetalhados(entrada: EntradaDeBusca, edificios: r
         const repetida = naTolerancia.find((t) => t.unidades >= 2);
         if (repetida) pontos += PONTOS_AREA_REPETIDA;
         const citada = repetida ?? maisProxima;
+        if (repetida && Math.abs(repetida.area - entrada.area) <= Math.max(1, entrada.area * 0.01)) pontos += PONTOS_AREA_EXATA;
         motivos.push(unidadesComArea(citada.unidades, citada.area));
+      } else if (e.tipologias.length > 0 && !e.tipologias.some((t) => Math.abs(t.area - entrada.area!) <= entrada.area! * 0.15)) {
+        pontos -= PENALIDADE_AREA_AUSENTE;
+        motivos.push(`Nenhum apartamento perto de ${textoDaArea(entrada.area)} m² no cadastro deste prédio`);
       }
     }
 
@@ -280,7 +303,7 @@ export function buscarPorEndereco(texto: string, edificios: readonly Edificio[])
   const { numero, resto } = separarNumero(palavras(enderecoSemFecho(texto)));
   const ruaDigitada = resto.length > 1 && TIPOS_DE_VIA.has(resto[0] ?? "") ? resto.slice(1) : resto;
   const ruaDigitadaCompleta = ruaDigitada.map((p) => ABREVIATURAS.get(p) ?? p);
-  const nomeDigitado = resto.filter((p) => !PALAVRAS_DE_EDIFICIO.has(p));
+  const nomeDigitado = resto.filter((p) => !PALAVRAS_DE_EDIFICIO.has(p) && !CONECTIVOS.has(p));
   const soNumero = resto.length === 0 && numero !== null;
   if (resto.length === 0 && numero === null) return [];
   if (!soNumero && normalizar(resto.join(" ")).length < 2) return [];

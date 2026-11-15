@@ -105,7 +105,8 @@ export const esquemaCaderno = z.strictObject({
   observacoes: z.array(esquemaObservacao).max(500),
   cenarios: z.array(esquemaCenario).max(30),
   visitas: z.array(esquemaSessaoVisita).max(100),
-  decisao: z.enum(["considerando", "visita_planejada", "visitado", "escolhido"]),
+  /** 15/11/2026: "negociando" entra entre "visitado" e "escolhido" (triagem do Explorar). Valores antigos continuam válidos. */
+  decisao: z.enum(["considerando", "visita_planejada", "visitado", "negociando", "escolhido"]),
   /** VE09: retrato do que o dossiê mostrava quando a pessoa salvou ou marcou como visto (base das mudanças). */
   memoria: esquemaInstantaneo.optional(),
   diario: z.array(z.strictObject({ id, em: instante, texto: z.string().trim().min(1).max(2000) })).max(200),

@@ -21,6 +21,15 @@ import { poligonoDoEdificio } from "../../componentes/comparar/lote";
 import { confirmarPredio, editarAnalise, useAbrirAnalise, usePrepararVisita } from "../../componentes/comparar/navegacao";
 import { PainelDeCusto, PainelDeEntorno, PainelDeEspaco } from "../../componentes/comparar/Paineis";
 import { PainelDeRotina } from "../../componentes/comparar/Rotina";
+import { PlacarDoPar } from "../../componentes/comparar/Placar";
+import { placarDoPar } from "../../componentes/comparar/placar";
+import { extrasDoPar } from "../../componentes/comparar/extras";
+import { CompartilharSala } from "../../componentes/comparar/Sala";
+import { arquivoDaProcura } from "../../dados/recife/procura";
+import { indicadoresDoPredio, type Indicador } from "../../dados/dossie/indicadores";
+import { chuvaDoBairro } from "../../dados/recife/chuva";
+import { edificiosDoBairro, indiceDoBairro } from "../../dados/recife/indice";
+import { noiteDoBairro } from "../../dados/recife/noite";
 import { useEdificios } from "../../componentes/comparar/useEdificios";
 import { EsperaDasCamadas } from "../../componentes/EsperaDasCamadas";
 import { camadasDaRotina, camadasDasAnalises } from "../../dados/camadasDasTelas";
@@ -28,12 +37,12 @@ import { ResumoDaDecisao } from "../../componentes/comparar/Decisao";
 import { adicionarPropria } from "../../componentes/visita-v1/logica";
 import { projetarDecisao, type PrioridadeDaDecisao } from "../../dados/decisao";
 import { aplicarResposta, efeitoDaResposta } from "../../dados/resposta";
-import { essenciaisDoPredio } from "../../dados/recife/essenciais";
+import { essenciaisDoBairro, essenciaisDoPredio } from "../../dados/recife/essenciais";
 import { BotaoVx, CabecalhoVx, LinkVx, MARGEM_DA_PAGINA_VX, PaginaVx, SegmentosVx, SuperficieVx, VazioVx } from "../../componentes/comparar/vx";
 import { Texto } from "../../componentes/Texto";
-import type { AnaliseV2, Modalidade } from "../../dados/contratos";
+import type { AnaliseV2, Edificio, Modalidade } from "../../dados/contratos";
 import { derivarCustoPorPartes } from "../../dados/custoPorPartes";
-import { eCoberto } from "../../dados/recife/bairros";
+import { bairroPorSlug, eCoberto } from "../../dados/recife/bairros";
 import { useAnalises } from "../../estado/Analises";
 import { usePerfilDomicilio } from "../../estado/PerfilDomicilio";
 import { useTema } from "../../tema/Tema";
@@ -61,10 +70,13 @@ function faltaConfirmar(a: AnaliseV2): boolean {
 /** D036: o Comparar lê o índice e o dia a dia a pé de cada bairro do caderno, fora do bundle; espera por eles. */
 export default function Comparar() {
   const { lista } = useAnalises();
+  const { perfil } = usePerfilDomicilio();
   const { cor } = useTema();
+  // 15/11/2026: com destino no perfil, o placar lê a ida das 7h por rua ("Onde mais procurar").
+  const caminhos = perfil.destinoBairro ? [...camadasDasAnalises(lista), arquivoDaProcura()] : camadasDasAnalises(lista);
   return (
     <View style={{ flex: 1, backgroundColor: cor("cor-fundo") }}>
-      <EsperaDasCamadas caminhos={camadasDasAnalises(lista)} carregando="Carregando os dados dos seus imóveis…" oQue="os dados dos bairros dos seus imóveis">
+      <EsperaDasCamadas caminhos={caminhos} carregando="Carregando os dados dos seus imóveis…" oQue="os dados dos bairros dos seus imóveis">
         <CompararComDados />
       </EsperaDasCamadas>
     </View>
@@ -113,6 +125,16 @@ function CompararComDados() {
   const ea = (a && doIndice?.get(a.id)) || null;
   const eb = (b && doIndice?.get(b.id)) || null;
   const comparacao = a && b ? comparar(a, b, [ea, eb]) : null;
+  // 15/11/2026: o placar por seção usa os mesmos indicadores do dossiê (comparados com o bairro de cada prédio).
+  const indicadoresDe = (e: Edificio | null): Indicador[] | null => {
+    if (!e) return null;
+    try {
+      return indicadoresDoPredio({ nomeDoBairro: bairroPorSlug(e.bairro)?.nome ?? e.bairro, predio: e, edificiosDoBairro: edificiosDoBairro(e.bairro), essenciais: essenciaisDoBairro(e.bairro), noite: noiteDoBairro(e.bairro), chuva: chuvaDoBairro(e.bairro), ruaDoBairro: indiceDoBairro(e.bairro).rua ?? null });
+    } catch {
+      return null;
+    }
+  };
+  const placar = comparacao && a && b ? placarDoPar(comparacao, [indicadoresDe(ea), indicadoresDe(eb)], extrasDoPar([a, b], [ea, eb], perfilDomicilio)) : [];
   const decisao = a && b && comparacao
     ? projetarDecisao(a, b, [ea, eb], comparacao.rotulos, prioridade, [
         ea ? essenciaisDoPredio(ea.bairro, ea.id)?.predio ?? null : null,
@@ -220,6 +242,11 @@ function CompararComDados() {
                 })}
               </View>
 
+              {placar.length ? (
+                <View style={{ marginTop: 16 }}>
+                  <PlacarDoPar linhas={placar} rotulos={comparacao.rotulos} aoAbrir={setTopico} />
+                </View>
+              ) : null}
               <View style={{ marginTop: 16 }}>
                 <SegmentosVx opcoes={TOPICOS} valor={topico} aoMudar={setTopico} rotulo="O que comparar" modo="abas" margemInferior={12} />
                 <View role="tabpanel" aria-label={TOPICOS.find((t) => t.valor === topico)?.rotulo}>
@@ -265,6 +292,7 @@ function CompararComDados() {
                 <ComparacaoDeTres par={par} candidatas={naModalidade} id={terceiroId} aoEscolher={setTerceiroId} aoAlternar={setTresAberto} />
                 <PrioridadesPessoais analises={modoTres ? [...par, naModalidade.find(a => a.id === terceiroId)!] : par} />
                 <ComparaveisPessoais key={par[0].id} lista={lista} referencia={par[0]} />
+                <CompartilharSala analises={modoTres ? [...par, naModalidade.find(a => a.id === terceiroId)!] : par} />
                 <BotaoVx rotulo="Escolher para visitar" onPress={() => setEscolhendoVisita(true)} />
               </View>
             </View>

@@ -311,7 +311,30 @@ export type LinhaDeObra = {
   detalhe: string;
   /** Frase completa para leitores de tela. */
   rotuloAcessivel: string;
+  /** 15/11/2026: estado da licença no retrato da base ("Licença válida até 11/2027"), ou null sem o dado. */
+  licenca: string | null;
 };
+
+/** "AAAA-MM-DD" → "MM/AAAA". */
+const mesAno = (iso: string) => `${iso.slice(5, 7)}/${iso.slice(0, 4)}`;
+
+/**
+ * Estado da licença em linguagem simples, no retrato da base (P05: não prova que a obra começou ou terminou).
+ * null quando o índice não traz o estado (versão anterior) ou ele não se encaixa em nenhum caso.
+ */
+export function textoDaLicenca(licenca: Obra["licenca"]): string | null {
+  if (!licenca) return null;
+  const [estado, validaAte, impacto] = licenca;
+  const base =
+    estado === "valida" && validaAte ? `Licença válida até ${mesAno(validaAte)}`
+      : estado === "vencida" && validaAte ? `Licença vencida em ${mesAno(validaAte)}`
+        : estado === "emitida" ? "Licença emitida, sem validade publicada"
+          : estado === "deferida" ? "Processo deferido, sem data de licença publicada"
+            : estado === "em_analise" ? "Licença em análise"
+              : null;
+  if (!base) return null;
+  return impacto ? `${base} · empreendimento de impacto` : base;
+}
 
 export function linhasDeObras(obras: ObrasProximas | null): LinhaDeObra[] {
   if (!obras) return [];
@@ -328,7 +351,8 @@ export function linhasDeObras(obras: ObrasProximas | null): LinhaDeObra[] {
       distancia,
       situacao,
       detalhe: `${mes} · ${distancia} · ${situacao}`,
-      rotuloAcessivel: `Obra ${i + 1}: ${titulo}, ${mes}, ${distancia}, ${situacao}`,
+      rotuloAcessivel: `Obra ${i + 1}: ${titulo}, ${mes}, ${distancia}, ${situacao}${textoDaLicenca(o.licenca) ? `. ${textoDaLicenca(o.licenca)}` : ""}`,
+      licenca: textoDaLicenca(o.licenca),
     };
   });
 }

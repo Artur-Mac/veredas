@@ -239,24 +239,25 @@ describe("posição (barra bala)", () => {
     expect(derivar(noUnico({ declarados: { preco: vazio } }, e).a, { e }).posicao).toBeNull();
   });
 
-  describe("prédio de tipologia única (até 3% da mediana das áreas)", () => {
+  describe("prédio de tamanhos parecidos (a maior área até 20% acima da menor, 15/11/2026)", () => {
     const comAreas = (...areas: number[]) => edificio({ tipologias: areas.map((area) => ({ area, unidades: 4, iptuAnualMediano: 3936 })) });
 
-    it("uma só tipologia, ou áreas dentro de 3% da mediana", () => {
+    it("uma só tipologia, ou áreas parecidas", () => {
       expect(tipologiaUnica(comAreas(98))).toBe(true);
       expect(tipologiaUnica(comAreas(98, 99, 100.5))).toBe(true);
       expect(tipologiaUnica(comAreas(100, 106))).toBe(true);
     });
 
-    it("área a mais de 3% da mediana desfaz a tipologia única", () => {
-      expect(tipologiaUnica(comAreas(100, 107))).toBe(false);
+    it("área mais de 20% acima da menor desfaz os tamanhos parecidos", () => {
+      expect(tipologiaUnica(comAreas(100, 121))).toBe(false);
+      expect(tipologiaUnica(comAreas(53.18, 60.97))).toBe(true); // Engenho Capibaribe, Torre
       expect(tipologiaUnica(comAreas(98, 124.5))).toBe(false);
       expect(tipologiaUnica(comAreas(98, 99, 100, 130))).toBe(false);
     });
 
     it("o limite decide a posição da compra", () => {
-      const dentro = comAreas(100, 106);
-      const fora = comAreas(100, 107);
+      const dentro = comAreas(100, 120);
+      const fora = comAreas(100, 121);
       expect(derivar(noUnico({}, dentro).a, { e: dentro }).posicao).not.toBeNull();
       expect(derivar(noUnico({}, fora).a, { e: fora }).posicao).toBeNull();
     });

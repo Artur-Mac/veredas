@@ -49,7 +49,7 @@ export const RECURSO_AMBIENTAL = "982d6c85-906a-4ea8-90e0-31f55eac63f9";
 export const CAMPOS_AMBIENTAL = ["dsqfl", "licenciamento_ambiental", "data_entrada", "situacao_processo", "bairro", "latitude", "longitude"];
 
 /** O recurso de 2025 republicado em 04/03/2026 é o completo (114.653 pedidos; a cópia de 02/03 tem 86.966). */
-const RECURSOS_156 = [
+export const RECURSOS_156 = [
   { ano: 2026, id: "80c5b3cd-d4f7-466e-9031-e636ef56dd99" },
   { ano: 2025, id: "e40fc8b9-49b7-4f08-8b9f-60ba6ed35519" },
 ];
@@ -530,34 +530,9 @@ export async function montarARua({ edificiosPorBairro, geradoEm, centroPorDsqfl,
     `  LUSE: ${f.mil(ambiental.registros.length)} processos do Licenciamento Ambiental; ${luse.linhasComLuse} com LUSE no histórico do lote -> ${luse.locais.length} locais (dedupe por dsqfl ou coordenada), ${luse.locais.filter((l) => l.vigente).length} com LUSE vigente; ${luse.semPosicao} sem posição`,
   );
 
-  // 4. Central 156: janela de 12 meses que termina no pedido mais recente publicado (até a geração).
-  const vias156 = new Map();
-  const linhas156 = new Map();
-  let fim156 = "0000-00-00";
-  for (const { registros } of pedidos156) {
-    for (const r of registros) {
-      const data = nucleo.dataIso(r.DATA_DEMANDA);
-      if (data && data <= geradoEmData && nucleo.categoriaDoPedido(r.GRUPOSERVICO_DESCRICAO, r.SERVICO_DESCRICAO) && data > fim156) fim156 = data;
-    }
-  }
-  const inicio156 = nucleo.inicioDaJanela(fim156, 12);
-  for (const { registros } of pedidos156) {
-    for (const r of registros) {
-      const categoria = nucleo.categoriaDoPedido(r.GRUPOSERVICO_DESCRICAO, r.SERVICO_DESCRICAO);
-      const data = nucleo.dataIso(r.DATA_DEMANDA);
-      if (!categoria || !data || data < inicio156 || data > fim156) continue;
-      // O mesmo pedido pode estar nos dois arquivos (2025 e 2026): fica uma vez, com a situação mais recente.
-      const chave = [categoria, nucleo.dobrar(r.SERVICO_DESCRICAO), nucleo.dobrar(r.LOGRADOURO), nucleo.dobrar(r.NUMERO), nucleo.dobrar(r.BAIRRO), data, r.latitude ?? "", r.longitude ?? ""].join("|");
-      const atual = linhas156.get(chave);
-      const ultima = nucleo.dataIso(r.DATA_ULT_SITUACAO) ?? "";
-      if (atual && atual.ultima >= ultima) {
-        contar(vias156, "repetido nos dois arquivos");
-        continue;
-      }
-      if (atual) contar(vias156, "repetido nos dois arquivos");
-      linhas156.set(chave, { r, categoria, data, ultima });
-    }
-  }
+  // 4. Central 156: janela estrita de 12 meses que termina no pedido mais recente publicado (até a geração), sem
+  //    somar o mesmo pedido duas vezes (nucleo.selecionarPedidos156).
+  const { inicio: inicio156, fim: fim156, linhas: linhas156, vias: vias156 } = nucleo.selecionarPedidos156(pedidos156, geradoEmData);
   const pontos156 = [];
   for (const chave of [...linhas156.keys()].sort()) {
     const { r, categoria } = linhas156.get(chave);

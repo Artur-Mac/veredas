@@ -1,0 +1,68 @@
+{
+ "porLargura": {
+  "360": {
+   "externas": [],
+   "fotos": 4,
+   "erros": [],
+   "console": [],
+   "rolagem": {
+    "dossie": 0,
+    "simulador": 0,
+    "entorno": 0,
+    "mapa": 0,
+    "perfil": 0,
+    "comparar": 0
+   },
+   "conferido": {
+    "simulador": true,
+    "simuladorMuda": true,
+    "solESombra": true,
+    "porPerto": true,
+    "avisoDoCadastro": true,
+    "ruaComConsequencia": true,
+    "semRampaSemPerfil": true,
+    "ruaFonteNoToque": true,
+    "seletor": true,
+    "volumeEstimado": true,
+    "zoom": true,
+    "obraComLicenca": true,
+    "obraRetrato": true,
+    "perfilAcessibilidade": true,
+    "compararRuaEClima": true
+   },
+   "compararPlacar": "QUEM GANHA EM CADA PARTE\nCusto\nTorre\nTorre custa R$ 190.000 a menos (há valores a confirmar).\nEspaço\nBoa Viagem\nBoa Viagem tem 21 m² a mais.\nDia a dia a pé\nBoa Viagem\nBoa Viagem fica 12 min mais perto de mercado, farmácia e ônibus (somados).\nRua e clima\nBoa Viagem\nBoa Viagem tem menos pontos de atenção; no outro: ônibus da noite longe, sol da tarde forte.\nCusto\nEspaço\nEntorno\nRotina\nO VALOR DA ESCOLHA\nR$ 190.000\nde diferença no preço anunciado.\nA diferença usa só as parcelas conhecidas; as a confirmar ficam fora.\nTorre\nR$ 350.000\nBoa Viagem\nR$ 540.000\nPreço anunciado\nR$ 350.000\nR$ 540.000\nMensal conhecido\nR$ 930/mês\nNenhuma parcela a confirmar\nA confirmar\n+ valores a confirmar · 2 parcelas a confirmar\nCondomínio\nR$"
+  },
+  "375": {
+   "externas": [],
+   "fotos": 4,
+   "erros": [],
+   "console": [],
+   "rolagem": {
+    "dossie": 0,
+    "simulador": 0,
+    "entorno": 0,
+    "mapa": 0,
+    "perfil": 0,
+    "comparar": 0
+   },
+   "conferido": {
+    "simulador": true,
+    "simuladorMuda": true,
+    "solESombra": true,
+    "porPerto": true,
+    "avisoDoCadastro": true,
+    "ruaComConsequencia": true,
+    "semRampaSemPerfil": true,
+    "ruaFonteNoToque": true,
+    "seletor": true,
+    "volumeEstimado": true,
+    "zoom": true,
+    "obraComLicenca": true,
+    "obraRetrato": true,
+    "perfilAcessibilidade": true,
+    "compararRuaEClima": true
+   },
+   "compararPlacar": "QUEM GANHA EM CADA PARTE\nCusto\nTorre\nTorre custa R$ 190.000 a menos (há valores a confirmar).\nEspaço\nBoa Viagem\nBoa Viagem tem 21 m² a mais.\nDia a dia a pé\nBoa Viagem\nBoa Viagem fica 12 min mais perto de mercado, farmácia e ônibus (somados).\nRua e clima\nBoa Viagem\nBoa Viagem tem menos pontos de atenção; no outro: ônibus da noite longe, sol da tarde forte.\nCusto\nEspaço\nEntorno\nRotina\nO VALOR DA ESCOLHA\nR$ 190.000\nde diferença no preço anunciado.\nA diferença usa só as parcelas conhecidas; as a confirmar ficam fora.\nTorre\nR$ 350.000\nBoa Viagem\nR$ 540.000\nPreço anunciado\nR$ 350.000\nR$ 540.000\nMensal conhecido\nR$ 930/mês\nNenhuma parcela a confirmar\nA confirmar\n+ valores a confirmar · 2 parcelas a confirmar\nCondomínio\nR$"
+  }
+ }
+}

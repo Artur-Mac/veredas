@@ -51,6 +51,8 @@ jest.mock("expo-router", () => ({
   useLocalSearchParams: () => mockParametros,
   usePathname: () => mockCaminho,
 }));
+// 15/11/2026: a leitura confirma o prédio direto do cartão (src/componentes/predio/confirmar.ts) e lê a carteira.
+jest.mock("../src/estado/Carteira", () => ({ useCarteira: () => ({ saldo: 3, debitarDossie: async () => true, bloqueada: false, erro: "" }) }));
 jest.mock("../src/estado/Analises", () => ({
   useAnalises: () => ({ salvar: async () => undefined, remover: async () => undefined, lista: [], definirAtiva: async () => undefined, pronto: true }),
 }));
@@ -495,6 +497,9 @@ describe("tela de leitura com o anúncio compartilhado", () => {
     });
     return arvore;
   }
+  /** 15/11/2026: com o anúncio lido, a tela mostra o cartão; o formulário abre em "Editar". */
+  const editar = (arvore: TestRenderer.ReactTestRenderer) =>
+    act(() => arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLabel === "Editar os dados do anúncio" && typeof n.props.onPress === "function")[0]?.props.onPress());
   const valor = (arvore: TestRenderer.ReactTestRenderer, rotulo: string) =>
     arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLabel === rotulo && typeof n.props.onChangeText === "function")[0]
       ?.props.value;
@@ -502,6 +507,7 @@ describe("tela de leitura com o anúncio compartilhado", () => {
   it("página do Safari: preço, condomínio e IPTU preenchidos na revisão, sem abrir a WebView", () => {
     const recebido = anuncioRecebido(compartilharDoSafari(PAGINA_ZAP), null)!;
     const arvore = abrir(parametrosDaLeitura(recebido, "1", guardarColeta(recebido.coleta!)));
+    editar(arvore);
     expect(valor(arvore, "Aluguel (R$ por mês)")).toBe("4.500");
     expect(valor(arvore, "Condomínio (R$ por mês)")).toBe("1.190");
     expect(valor(arvore, "IPTU (R$)")).toBe("288");
@@ -511,6 +517,7 @@ describe("tela de leitura com o anúncio compartilhado", () => {
 
   it("trecho do menu de seleção: preenche, mostra o trecho no campo e não lê a área de transferência", () => {
     const arvore = abrir(parametrosDaLeitura({ url: URL_ZAP, texto: TEXTO_ZAP, coleta: null }, "2", null));
+    editar(arvore);
     expect(valor(arvore, "Aluguel (R$ por mês)")).toBe("4.500");
     expect(valor(arvore, "Condomínio (R$ por mês)")).toBe("1.190");
     expect(valor(arvore, "IPTU (R$)")).toBe("288");

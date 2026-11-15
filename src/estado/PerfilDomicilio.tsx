@@ -11,6 +11,16 @@ export type UsoArCondicionado = z.infer<typeof esquemaUsoAr>;
 export const esquemaModoTransporte = z.enum(["transporte_publico", "carro_moto", "app", "a_pe_bike"]);
 export type ModoDeTransporte = z.infer<typeof esquemaModoTransporte>;
 
+export const esquemaLocalRotina = z.strictObject({
+  id: z.string().min(1).max(60),
+  nome: z.string().min(1).max(80),
+  detalhe: z.string().max(160).default(""),
+  tipo: z.enum(["rotina", "interesse"]).default("rotina"),
+  bairroSlug: z.string().nullable().default(null),
+  coordenada: z.tuple([z.number(), z.number()]),
+});
+export type LocalDeRotina = z.infer<typeof esquemaLocalRotina>;
+
 export const esquemaPerfilDomicilio = z.strictObject({
   versao: z.literal(1).default(1),
   /** Marca se a pessoa já personalizou o perfil da casa ao menos uma vez neste aparelho. */
@@ -25,8 +35,15 @@ export const esquemaPerfilDomicilio = z.strictObject({
   entradaPercentualCompra: z.number().min(10).max(80).default(20),
   /** Prazo em anos para simulação de financiamento na compra (5 a 35 anos). */
   prazoAnosCompra: z.number().int().min(5).max(35).default(30),
+  /**
+   * 15/11/2026, opcional: alguém na casa precisa de acessibilidade. Só liga fatos de rampa e semáforo sonoro perto do
+   * prédio. Dado sensível: fica só neste aparelho e nunca entra em compartilhamento ou exportação.
+   */
+  necessidadesDeAcesso: z.array(z.enum(["mobilidade", "visao"])).max(2).default([]),
   /** Teto mensal pessoal opcional definido pela pessoa (sem julgamento sobre o imóvel). */
   orcamentoMensalReais: z.number().positive().nullable().default(null),
+  /** Locais pessoais da rotina ou pontos de interesse (trabalho, escola, academia, família), só neste aparelho. */
+  locaisRotina: z.array(esquemaLocalRotina).max(15).default([]),
   atualizadoEm: z.string().nullable().default(null),
 });
 

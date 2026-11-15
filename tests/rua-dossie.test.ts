@@ -407,13 +407,20 @@ describe("A rua na tela do dossiê (prédio real de Casa Forte)", () => {
     const t = textosDe(arvore.toJSON());
     expect(t).toContain("A rua");
     expect(t).toContain("O que os registros dizem da rua");
-    expect(t).toContain("Pedidos de lâmpada apagada");
-    expect(t).toContain("Calçada e entorno da quadra");
+    // 15/11/2026: a consequência vem primeiro; a contagem fica embaixo, pequena, e o detalhe e a fonte, no toque.
+    expect(t.some((x) => /^(Lâmpada da rua apagada foi pedida \d+ vez|Ninguém pediu troca de lâmpada)/.test(x))).toBe(true);
+    expect(t.some((x) => x.startsWith("Pedidos de lâmpada apagada: "))).toBe(true);
+    // Os dados do Censo do quarteirão ficam atrás de um toque; a fonte e a data, no rótulo e na gaveta.
+    expect(t).not.toContain("Calçada e entorno da quadra");
+    tocar(arvore, "Ver calçada, árvores e moradia do quarteirão (Censo)");
+    expect(textosDe(arvore.toJSON())).toContain("Calçada e entorno da quadra");
     const periodo = dataDaFonteDaRua(META.fontesDaRua?.find((f) => f.chave === "central_156"));
-    expect(t).toContain(`registro oficial · Central 156 da Emlurb · ${periodo}`);
-    expect(t).toContain("registro oficial · Entorno do Censo · Censo 2022");
+    const rotulos = arvore.root.findAll((n) => typeof n.props.accessibilityLabel === "string").map((n) => n.props.accessibilityLabel as string);
+    expect(rotulos.some((r) => r.includes("registro oficial · Entorno do Censo · Censo 2022"))).toBe(true);
 
-    tocar(arvore, /^Pedidos de lâmpada apagada: /);
+    tocar(arvore, /^(Lâmpada da rua apagada foi pedida|Ninguém pediu troca de lâmpada)/);
+    expect(textosDe(arvore.toJSON())).toContain(`Ver fonte e data (${periodo})`);
+    tocar(arvore, `Ver fonte e data (${periodo})`);
     const depois = textosDe(arvore.toJSON());
     expect(depois).toContain("Central 156 da Emlurb · Prefeitura do Recife · ODbL");
     expect(depois).toContain(EXPLICACAO_DO_CALCULO_DA_RUA);

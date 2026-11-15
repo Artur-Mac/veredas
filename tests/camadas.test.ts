@@ -72,8 +72,9 @@ describe("arquivos de camada fora do bundle", () => {
 
 describe("registro de camadas (sem o leitor do Jest)", () => {
   let leitor: Leitor | undefined;
-  beforeEach(() => { leitor = global.__veredaLerCamadaEmTeste; delete global.__veredaLerCamadaEmTeste; esquecerCamadas(); });
-  afterEach(() => { global.__veredaLerCamadaEmTeste = leitor; });
+  // Sem novas tentativas: estes testes são do estado de falha e de "tentar de novo".
+  beforeEach(() => { leitor = global.__veredaLerCamadaEmTeste; delete global.__veredaLerCamadaEmTeste; esquecerCamadas(); camadas.definirEsperasEntreTentativas([]); });
+  afterEach(() => { global.__veredaLerCamadaEmTeste = leitor; camadas.definirEsperasEntreTentativas(camadas.ESPERAS_ENTRE_TENTATIVAS_MS); });
   function comPlataforma(buscar: (c: string) => Promise<unknown>) {
     const f = jest.fn(buscar);
     mockBuscar = f;
@@ -181,8 +182,9 @@ describe("web: leitura conferida", () => {
 
 describe("tela: espera, falha dita e só então o conteúdo", () => {
   let leitor: Leitor | undefined;
-  beforeEach(() => { leitor = global.__veredaLerCamadaEmTeste; delete global.__veredaLerCamadaEmTeste; esquecerCamadas(); });
-  afterEach(() => { global.__veredaLerCamadaEmTeste = leitor; });
+  // Sem novas tentativas aqui: o teste é da falha dita na tela (as tentativas têm teste próprio no fim).
+  beforeEach(() => { leitor = global.__veredaLerCamadaEmTeste; delete global.__veredaLerCamadaEmTeste; esquecerCamadas(); camadas.definirEsperasEntreTentativas([]); });
+  afterEach(() => { global.__veredaLerCamadaEmTeste = leitor; camadas.definirEsperasEntreTentativas(camadas.ESPERAS_ENTRE_TENTATIVAS_MS); });
   const textos = (no: unknown): string => {
     if (typeof no === "string" || typeof no === "number") return String(no);
     if (Array.isArray(no)) return no.map(textos).join(" ");
@@ -209,5 +211,20 @@ describe("tela: espera, falha dita e só então o conteúdo", () => {
     await act(async () => { liberar(); for (let i = 0; i < 5; i++) await Promise.resolve(); });
     expect(textos(a.toJSON())).toMatch(/CONTEUDO/);
     act(() => a.unmount());
+  });
+});
+
+describe("novas tentativas (teste no celular, 15/11/2026)", () => {
+  it("falha passageira é tentada de novo; falha persistente é devolvida depois da última tentativa", async () => {
+    const { comNovasTentativas } = camadas;
+    let n = 0;
+    const esperas: number[] = [];
+    const dormir = async (ms: number) => { esperas.push(ms); };
+    await expect(comNovasTentativas(async () => { n += 1; if (n < 3) throw new Error("rede"); return "ok"; }, [400, 1200], dormir)).resolves.toBe("ok");
+    expect(n).toBe(3);
+    expect(esperas).toEqual([400, 1200]);
+    let m = 0;
+    await expect(comNovasTentativas(async () => { m += 1; throw new Error("tamanho não confere"); }, [400, 1200], dormir)).rejects.toThrow("tamanho não confere");
+    expect(m).toBe(3);
   });
 });

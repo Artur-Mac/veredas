@@ -1,0 +1,77 @@
+{
+ "conferidoEm": "2026-11-15T15:49:11.868Z",
+ "gBuilding": {
+  "indiceDoConjunto": "indice-municipal/91b71d239c1847cf",
+  "indiceAtivo": "indice-municipal/faa40c969275e6b5",
+  "casos": 50,
+  "ausentes": [],
+  "mudados": [
+   {
+    "id": "59382-327",
+    "area": "gracas",
+    "campos": {
+     "unidades": {
+      "antes": 60,
+      "agora": 59
+     }
+    }
+   }
+  ],
+  "igual": false
+ },
+ "gPoi": {
+  "publicacaoAtiva": "784d2d6f3fa7bb4a",
+  "anterior": "2a88fafdb1b84047",
+  "casos": 44,
+  "ausentesAgora": [
+   {
+    "local": "osm:w968905828",
+    "area": "madalena",
+    "motivo": "fechado_no_osm"
+   }
+  ],
+  "ausentesNaAnterior": [
+   "osm:w968905828"
+  ],
+  "igualAAnterior": true
+ },
+ "gRain": {
+  "topo4": [
+   {
+    "data": "2023-06-30",
+    "rua": "Avenida Barao de Souza Leao",
+    "bairro": "Boa Viagem",
+    "predios": 147
+   },
+   {
+    "data": "2024-06-15",
+    "rua": "Tunel da Madalena",
+    "bairro": "Madalena",
+    "predios": 25
+   },
+   {
+    "data": "2024-06-25",
+    "rua": "Tunel da Madalena",
+    "bairro": "Madalena",
+    "predios": 25
+   },
+   {
+    "data": "2023-05-24",
+    "rua": "Avenida Gov. Agamenon Magalhaes",
+    "bairro": "Espinheiro",
+    "predios": 1
+   }
+  ],
+  "prediosDistintos": 173,
+  "referenciaVE17": {
+   "topo4": [
+    147,
+    25,
+    25,
+    1
+   ],
+   "distintos": 173
+  },
+  "igual": true
+ }
+}

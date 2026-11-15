@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LeitorDeAta } from "./LeitorDeAta";
 import { formatarData } from "../../dados/formatos";
 import { Linking, View } from "react-native";
 import type { AnaliseV2 } from "../../dados/contratos";
@@ -63,6 +64,7 @@ export function DocumentosDoEdificio({ analise, salvar, levarParaVisita }: Props
     <Texto>{ultimo ? `Última inspeção apresentada: ${formatarData(ultimo.inspecaoEm)} · ${ultimo.titulo}` : "Nenhum laudo com data de inspeção e vínculo confirmado foi apresentado."}</Texto>
     <Texto tipo="apoio">Data de emissão e ART/RRT não substituem a data/escopo da inspeção. Documentos apresentados não certificam a condição atual do prédio.</Texto>
     <ComplementosDoEdificio analise={analise} salvar={salvar} />
+    <LeitorDeAta salvar={salvar} />
     {c.documentos.map(d => <View key={d.id} style={{ gap: 4, marginVertical: 10 }}>
       <Texto tipo="secao">{d.titulo}</Texto>
       <Texto tipo="apoio">{TIPOS.find(t => t.valor === d.tipo)?.rotulo} · {d.vinculo === "confirmado" ? "Vínculo confirmado por você" : "Vínculo a revisar"}</Texto>

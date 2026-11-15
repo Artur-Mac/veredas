@@ -189,6 +189,22 @@ export function lerAreasVerdesProximas(centro: [number, number]) {
   return { pracasAte300m, pracaMaisProxima, arvoreTombadaProxima };
 }
 
+const MINUSCULAS_DO_NOME = new Set(["de", "da", "do", "das", "dos", "e"]);
+/**
+ * Nome do corpo d'água em linguagem de tela (15/11/2026). A hidrografia da ESIG mistura nomes ("RIO CAPIBARIBE") e classes
+ * ("ALAGADO", "RP", "CANAL"); "ALAGADO" é a classe de área úmida mapeada, e mostrá-lo como nome ("ALAGADO a 500 m") soava
+ * como veredito de alagamento.
+ */
+export function nomeHidricoDeTela(bruto: string): string {
+  const n = bruto.trim();
+  const classe: Record<string, string> = { ALAGADO: "Área úmida mapeada", RP: "Curso d'água", CANAL: "Canal", RIO: "Rio", "AÇUDE": "Açude", LAGOA: "Lagoa", RIACHO: "Riacho" };
+  if (classe[n.toUpperCase()]) return classe[n.toUpperCase()]!;
+  const subterraneo = /_SUBTERRANEO$/i.test(n);
+  const titulo = n.replace(/_SUBTERRANEO$/i, "").toLowerCase().split(/\s+/)
+    .map((p, i) => (i > 0 && MINUSCULAS_DO_NOME.has(p) ? p : p.charAt(0).toUpperCase() + p.slice(1))).join(" ");
+  return subterraneo ? `${titulo} (trecho subterrâneo)` : titulo;
+}
+
 export function lerRelevoECanalProximo(centro: [number, number]) {
   const { dados, gradeRelevo } = carregar();
   const g = dados.relevoEDrenagem;
@@ -225,7 +241,7 @@ export function lerRelevoECanalProximo(centro: [number, number]) {
     if (Math.abs(lon - centro[0]) > 0.005 || Math.abs(lat - centro[1]) > 0.005) continue;
     const d = Math.round(distanciaMetros(centro, [lon, lat]));
     if (!cursoDaguaMaisProximo || d < cursoDaguaMaisProximo.distanciaM) {
-      cursoDaguaMaisProximo = { nome: g.nomesHidricos[idNome] ?? "Canal ou rio", distanciaM: d };
+      cursoDaguaMaisProximo = { nome: nomeHidricoDeTela(g.nomesHidricos[idNome] ?? "Canal ou rio"), distanciaM: d };
     }
   }
 
@@ -282,4 +298,66 @@ export function lerArbovirosesDoBairro(slugBairro: string | null | undefined) {
     fonte: dados.arboviroses.fonte,
     url: dados.arboviroses.url,
   };
+}
+
+export type CategoriaPontoMapa = "praca" | "metro" | "ensino" | "saude" | "rotina";
+
+export type PontoDoMapaExtra = {
+  id: string;
+  categoria: CategoriaPontoMapa;
+  rotulo: string;
+  detalhe: string;
+  coordenada: [number, number];
+  distanciaM: number;
+};
+
+/**
+ * Pontos públicos georreferenciados nas camadas ambientais municipais (praças/parques e estações de metrô)
+ * próximos a `centro`, ordenados por distância em linha reta.
+ */
+export function pontosDoEntornoNoMapa(
+  centro: [number, number],
+  raioPracasM = 800,
+  limitePracas = 6,
+  raioMetroM = 1400,
+  limiteMetro = 3,
+): PontoDoMapaExtra[] {
+  const { dados } = carregar();
+  const pracas: PontoDoMapaExtra[] = [];
+  const vistasPracas = new Set<string>();
+  for (const [lon, lat, nome] of dados.areasVerdes.pracasEParques) {
+    if (Math.abs(lon - centro[0]) > 0.012 || Math.abs(lat - centro[1]) > 0.012) continue;
+    const d = Math.round(distanciaMetros(centro, [lon, lat]));
+    if (d > raioPracasM) continue;
+    const chave = nome.trim().toLowerCase();
+    if (vistasPracas.has(chave)) continue;
+    vistasPracas.add(chave);
+    pracas.push({
+      id: `praca-${pracas.length}-${lon.toFixed(5)}`,
+      categoria: "praca",
+      rotulo: nome,
+      detalhe: "Praça ou parque · cadastro municipal",
+      coordenada: [lon, lat],
+      distanciaM: d,
+    });
+  }
+  pracas.sort((a, b) => a.distanciaM - b.distanciaM);
+
+  const metro: PontoDoMapaExtra[] = [];
+  for (const [lon, lat, nome] of dados.ruidoCorredores.estacoesMetro) {
+    if (Math.abs(lon - centro[0]) > 0.018 || Math.abs(lat - centro[1]) > 0.018) continue;
+    const d = Math.round(distanciaMetros(centro, [lon, lat]));
+    if (d > raioMetroM) continue;
+    metro.push({
+      id: `metro-${metro.length}-${lon.toFixed(5)}`,
+      categoria: "metro",
+      rotulo: `Estação ${nome}`,
+      detalhe: "Estação de metrô · rede municipal",
+      coordenada: [lon, lat],
+      distanciaM: d,
+    });
+  }
+  metro.sort((a, b) => a.distanciaM - b.distanciaM);
+
+  return [...pracas.slice(0, limitePracas), ...metro.slice(0, limiteMetro)];
 }

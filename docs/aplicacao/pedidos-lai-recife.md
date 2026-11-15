@@ -1,6 +1,6 @@
 # Pedidos de acesso à informação (LAI) para o VEREDA, Recife
 
-Arquivo consolidado em 15/11/2026, para enviar manualmente. São **17 pedidos**: 11 à Prefeitura do Recife, 5 ao Estado de Pernambuco e 1 ao CNJ. Cada um diz o órgão, o canal, o texto pronto para colar, o que destrava no app e o teste a fazer com a resposta. Nenhum foi enviado.
+Arquivo consolidado em 15/11/2026 e revisado após consulta ao [Hub de Dados do Recife](https://hubdedados.recife.pe.gov.br/visualizacoes/), para enviar manualmente. São **17 pedidos**: 11 à Prefeitura do Recife, 5 ao Estado de Pernambuco e 1 ao CNJ. Cada um diz o órgão, o canal, o texto pronto para colar, o que destrava no app e o teste a fazer com a resposta. Nenhum foi enviado. Os achados, limites e ideias adicionais estão em [pesquisa-hub-dados-recife-2026-11-15.md](pesquisa-hub-dados-recife-2026-11-15.md).
 
 **Regras que valem para todos:**
 - **Só dados agregados ou de imóveis, nunca de pessoas.** Os textos já dizem "não solicito dados pessoais". Não acrescente nomes de terceiros.
@@ -25,7 +25,7 @@ Se o órgão indicado não aparecer na lista do e-SAI, escolha a secretaria mais
 |---|---|---|---|
 | 1 | P01 Interdições por alagamento | CTTU | Transforma o desvio "se bloquear" em fato datado no bloco de chuva, que já está no app. |
 | 2 | P03 Atendimentos 2025 e vistorias de edificações | Defesa Civil (SEDEC/SEOPS) | O livro de alagamento parou em 2024; e a estrutura não tem nenhum caso ligado a prédio. |
-| 3 | P12 Roubo a transeunte por bairro | SDS-PE | Única via legítima para a pergunta de segurança. |
+| 3 | P12 Roubo a transeunte por bairro | SDS-PE | A planilha pública de CVP traz data, município, região e total; faltam natureza e bairro. |
 | 4 | P07 ITBI: valor declarado e sequencial | Secretaria de Finanças | Separa "avaliação fiscal" de "valor declarado" sem custo de cartório. |
 | 5 | P02 COP: nota técnica e pluviômetros | COP | Atualiza o histórico com maio de 2026 e resolve o fuso da chuva. |
 | 6 | P04 Drenagem executada e catálogo | EMLURB | Destrava o histórico de intervenções (A12) e explica os pontos e trechos do eSIG. |
@@ -63,6 +63,8 @@ Se o órgão indicado não aparecer na lista do e-SAI, escolha a secretaria mais
 
 **Destrava:** o histórico de alagamento com 2026, e a chuva medida como contexto de cada registro, com estação e hora.
 
+**Fonte já vista:** o [painel meteorológico do Hub](https://hubdedados.recife.pe.gov.br/cards-visualizacao/centro-de-operacoes/) aponta para um dashboard do COP; na consulta de 15/11/2026, o dashboard retornou `Invalid redirect_uri`. Isso não prova inexistência dos dados. O pedido continua focado na série histórica, na lista do evento e na definição dos campos.
+
 **Texto para colar:**
 > Solicito, com encaminhamento ao Centro de Operações do Recife (COP), se necessário:
 > 1. a nota técnica, o relatório ou o boletim consolidado sobre as chuvas de 1 a 3 de maio de 2026;
@@ -82,6 +84,8 @@ Se o órgão indicado não aparecer na lista do e-SAI, escolha a secretaria mais
 - **Alagamento:** o livro ganha 2025; o arquivo aberto de 2025 tem só o cabeçalho e uma linha.
 - **Estrutura:** os primeiros casos de vistoria, interdição e desinterdição ligados a um prédio.
 
+**Checagem do portal:** os três recursos chamados “Atendimentos 2025” no [conjunto da Defesa Civil](https://dados.recife.pe.gov.br/dataset/registro-de-atendimentos-da-defesa-civil) retornaram um registro cada na API pública em 15/11/2026. O conjunto [Dados Vivos Recife](https://dados.recife.pe.gov.br/dataset/demandas-dos-cidadaos-e-servicos-dados-vivos-recife) também oferece solicitações e vistorias do dia, mas se declara restrito ao dia da consulta; não substitui o histórico.
+
 **Texto para colar:**
 > Solicito, em formato aberto (CSV ou XLSX):
 > 1. os registros de atendimentos da Defesa Civil do Recife de 01/01/2025 até a data da resposta, com os mesmos campos dos arquivos publicados de 2021 a 2024 no portal de dados abertos (Regional, Ano, Mês, Data, Ocorrência, Solicitação, Endereço, Bairro, Localidade, Grau de Risco, Data da Ação, Tipo da Ação). O arquivo "defesa-civil-2025" publicado no portal contém só o cabeçalho e uma linha; peço também a previsão de atualização;
@@ -100,10 +104,12 @@ Se o órgão indicado não aparecer na lista do e-SAI, escolha a secretaria mais
 
 **Destrava:** o histórico de intervenções de drenagem (aplicação A12, adiada até haver fonte datada), e a explicação do que significam os pontos, polígonos e trechos do eSIG que o app já usa.
 
+**Fonte já disponível:** a [camada PAINEL_MACRODRENAGEM_2026](https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/PAINEL_MACRODRENAGEM_2026/FeatureServer/0) expõe `program`, `statu_limp` e `data`: 514 trechos, 236 com `program = CONCLUÍDO`, todos esses com data não vazia, em consulta de 15/11/2026. Três datas dos concluídos são de 2025. A coleta local anterior omitiu esses campos. A data e o status precisam de definição oficial antes de virarem afirmação de execução no app.
+
 **Texto para colar:**
 > Solicito à EMLURB, em formato aberto (CSV, XLSX ou camada geográfica):
 > 1. as obras e serviços de drenagem executados no Recife de 2018 até a data da resposta, com logradouro e trecho (ou geometria), tipo de intervenção (micro ou macrodrenagem, galeria, canal, boca de lobo), data de início e data de conclusão;
-> 2. a execução da limpeza de canais e galerias do Planejamento de Macrodrenagem 2026 (camada PAINEL_MACRODRENAGEM_2026 do eSIG), com a data de execução de cada trecho e a etapa;
+> 2. sobre a camada pública PAINEL_MACRODRENAGEM_2026 do eSIG, o significado operacional dos campos `program`, `statu_limp` e `data`; se `data` registra execução, conclusão, atualização ou outro marco; a explicação das datas de 2025 em uma camada de 2026; e a relação de execuções de limpeza de canais e galerias não cobertas pela camada, com data e trecho;
 > 3. sobre as camadas do eSIG "pontos_alagamento_arcgis", "Poligonos_Alagamentos_2026" e "Logradouros_Alagamentos_2026":
 >    - a metodologia e o critério de inclusão de cada camada;
 >    - o período e os eventos em que se baseiam;
@@ -122,13 +128,15 @@ Se o órgão indicado não aparecer na lista do e-SAI, escolha a secretaria mais
 
 **Destrava:** a observação de obras e mudanças de vista (aplicação A19, adiada): saber se uma obra perto do prédio foi protocolada, aprovada, venceu, está ativa ou recebeu habite-se.
 
+**Fonte já disponível:** o [CSV de Licenciamento Urbanístico](https://dados.recife.pe.gov.br/dataset/licenciamento-urbanistico) já publica número do processo, endereço, DSQFL, situação atual e colunas de data de entrada, conclusão, emissão e validade da licença. O [painel do Hub](https://hubdedados.recife.pe.gov.br/cards-visualizacao/licenciamento-municipal/) mostra recortes e situações, com última atualização exibida em 22/07/2026. Verificar preenchimento e semântica das datas antes de usá-las; o histórico de cada mudança de situação ainda não foi identificado.
+
 **Texto para colar:**
 > Solicito, em formato aberto, para os processos de licenciamento urbanístico (construção, acréscimo, demolição e habite-se) de 2015 até a data da resposta:
-> 1. número do processo, endereço e sequencial ou DSQFL do lote;
-> 2. o histórico de situações com data de cada mudança: protocolado, em análise, aprovado, alvará emitido, alvará vencido, obra iniciada se registrada, habite-se emitido, indeferido ou arquivado;
+> 1. para os processos identificados pelo número e DSQFL já publicados no conjunto “Licenciamento Urbanístico”, o histórico de situações com data de cada mudança: protocolado, em análise, aprovado, alvará emitido, alvará vencido, obra iniciada se registrada, habite-se emitido, indeferido ou arquivado;
+> 2. a definição e a regra de preenchimento das colunas públicas `data_entrada`, `data_conclusao`, `data_emissao_licenca` e `data_validade_licenca`, incluindo se algum tipo de processo não é coberto pelo conjunto;
 > 3. o número de pavimentos e a área aprovados, quando houver.
 >
-> O conjunto "Licenciamento Urbanístico" do portal de dados abertos traz a situação atual, mas não o histórico. Peço também o dicionário de dados e a licença. Não solicito dados pessoais de requerentes.
+> O conjunto “Licenciamento Urbanístico” já traz a situação atual e as quatro colunas de data citadas, mas não identifiquei nele a sequência completa de mudanças de situação. Peço também o dicionário de dados e a licença. Não solicito dados pessoais de requerentes.
 
 **Teste com a resposta:** o processo é ligado ao lote pelo DSQFL. O dossiê mostra a linha do tempo da obra vizinha ("aprovada em …, alvará vencido em …"), e "Desde que você guardou" passa a avisar mudança de situação.
 
@@ -145,7 +153,7 @@ Se o órgão indicado não aparecer na lista do e-SAI, escolha a secretaria mais
 
 ## P07 · Secretaria de Finanças: ITBI com valor declarado e identificador da unidade
 
-**Destrava:** a pergunta de preço. Hoje o app só pode dizer "avaliação fiscal do ITBI", porque o arquivo aberto não traz o valor declarado nem identifica a unidade.
+**Destrava:** a pergunta de preço. Hoje o app só pode dizer "avaliação fiscal do ITBI", porque o arquivo aberto não traz o valor declarado nem um identificador estável e pseudonimizado da unidade. O [painel ITBI — Pesquisa do Hub](https://hubdedados.recife.pe.gov.br/cards-visualizacao/itbi-transmissao/) exibe endereço, complemento, data e valor de avaliação por registro, mas não o valor declarado; a última atualização exibida foi 06/10/2026.
 
 **Texto para colar:**
 > Sobre o conjunto "Imposto sobre Transmissão de Bens Imóveis (ITBI)" do portal de dados abertos do Recife, solicito:
@@ -179,9 +187,13 @@ Se o órgão indicado não aparecer na lista do e-SAI, escolha a secretaria mais
 
 **Destrava:** a caminhada com menos dificuldade (aplicação A09: só motor, sem dado verificado de calçada).
 
+**Fonte adicional encontrada:** [“Calçadas — 2023”](https://dados.recife.pe.gov.br/dataset/calcadas) tem 129 registros na API pública, mas os campos efetivos são contrato, obra, RPA, trecho, bairro, situação e extensão em metros. A descrição do conjunto menciona largura, estado e manutenção, que não aparecem como colunas desse recurso. A base não resolve sozinha a largura útil da rede caminhável.
+
+O arquivo público de [calçadas das vias principais](https://dados.recife.pe.gov.br/dataset/calcadas-dos-corredores-de-transporte-metropolitano) foi baixado: tem 159 linhas e o campo `largura_ambos_lados`. Também foi baixado o arquivo de calçadas recuperadas de 2019, com 40 linhas e campos de datas e situação. Nenhum dos dois comprova largura útil contínua e estado atual por trecho.
+
 **Texto para colar:**
 > Solicito, em formato aberto ou camada geográfica:
-> 1. o cadastro de calçadas do Recife com largura útil, material e estado, por trecho de logradouro, onde existir. O conjunto "Calçadas dos corredores de transporte metropolitano" cobre só vias principais;
+> 1. o cadastro de calçadas do Recife com largura útil, material e estado, por trecho de logradouro, onde existir. “Calçadas dos corredores de transporte metropolitano” cobre só vias principais, e “Calçadas — 2023” publica contrato, obra, trecho, situação e extensão, sem as colunas de largura útil, material ou estado prometidas na descrição;
 > 2. a localização das rampas de acessibilidade e das faixas de pedestres implantadas, com data de implantação;
 > 3. sobre os semáforos com dispositivo sonoro (conjunto "Localização dos semáforos"), a situação de funcionamento atual e a data da última manutenção.
 >
@@ -193,10 +205,15 @@ Se o órgão indicado não aparecer na lista do e-SAI, escolha a secretaria mais
 
 **Destrava:** "Voltando à noite". Hoje o app lista lâmpadas instaladas e pedidos de "lâmpada apagada" no 156, mas não sabe se a lâmpada funciona.
 
+**Fonte já disponível:** o [histórico do 156](https://dados.recife.pe.gov.br/dataset/central-de-atendimento-de-servicos-da-emlurb-156) publica serviço, logradouro, número, bairro, `DATA_DEMANDA`, `SITUACAO` e `DATA_ULT_SITUACAO`. O [painel EMLURB do Hub](https://hubdedados.recife.pe.gov.br/cards-visualizacao/emlurb/) permite filtrar chamados por rua, número, grupo e situação; exibe janeiro de 2024 a setembro de 2025 e última atualização em 18/11/2025. “Atendida” e data da última situação não comprovam, sem definição e vínculo ao ponto, que a luminária funcione hoje.
+
+**Divergência encontrada na coleta de 15/11/2026:** dois recursos públicos com o mesmo título de 2025 têm 86.966 e 114.653 linhas, respectivamente (`06872af2-9350-4c34-aa39-6337a1822ff7` e `e40fc8b9-49b7-4f08-8b9f-60ba6ed35519`). Não somar essas versões sem esclarecimento.
+
 **Texto para colar:**
 > Solicito, em formato aberto:
 > 1. para os pontos de iluminação pública do Recife, a situação de funcionamento registrada e a data da última manutenção ou troca, com o identificador do ponto usado no conjunto de iluminação publicado no portal;
-> 2. para as solicitações de "lâmpada apagada" recebidas pelo 156 de 2024 até a data da resposta, a data de abertura, a data de conclusão do atendimento e o identificador do ponto ou o logradouro.
+> 2. para as solicitações de “lâmpada apagada” do 156 desde 2024, o significado de `SITUACAO` e `DATA_ULT_SITUACAO` já publicados, a data de execução ou conclusão efetiva quando diferente da última mudança de situação, e o identificador que permita vincular o chamado ao ponto de iluminação. Se houver registros não cobertos pelo histórico público, peço também esses registros e seu período de cobertura.
+> 3. qual dos dois recursos publicados de 2025 (`06872af2-9350-4c34-aa39-6337a1822ff7` e `e40fc8b9-49b7-4f08-8b9f-60ba6ed35519`) é a versão correta ou mais completa, suas datas de referência e a razão da diferença entre os totais.
 >
 > Não solicito dados pessoais de solicitantes.
 
@@ -242,13 +259,18 @@ Se o órgão indicado não aparecer na lista do e-SAI, escolha a secretaria mais
 
 ## P13 · APAC: série horária de chuva das estações do Recife
 
-**Destrava:** a chuva como contexto datado de cada registro de alagamento. Os boletins diários não trazem hora, e o serviço de monitoramento só mostra o presente.
+**Destrava:** a chuva como contexto datado de cada registro de alagamento. Os boletins diários não trazem a janela horária; a APAC também oferece consultas e arquivos históricos, cuja cobertura, qualidade e formato ainda precisam ser conferidos para esta finalidade.
+
+**Antes do envio:** a [página de acesso a dados da APAC](http://monitoramento.apac.pe.gov.br:8031/modelos/Modelo_dados/informacoes_sobre_os_dados.html) descreve consulta histórica convencional, consulta de estações automáticas (horária ou a cada 15 minutos quando chove) e arquivos meteorológicos. Informa observação convencional às 9h locais. Conferir primeiro cobertura, estações do Recife, formato, falhas e fuso; pedir só lacunas remanescentes. A consulta convencional diária não equivale automaticamente à série horária solicitada.
+
+**Consulta adicional:** o [serviço de monitoramento APAC](https://geoportal.apac.pe.gov.br/server/rest/services/met_monitoramento_chuvas_pe/MapServer/0) fornece acumulados recentes; uma consulta por município retornou 20 feições do Recife, guardadas em [GeoJSON](apac-chuva-recife-2026-11-15.geojson). Há leitura anterior ao dia da consulta e valores `-1`; seu significado, fuso, licença e cobertura histórica não foram confirmados. O retrato não substitui a série solicitada.
 
 **Texto para colar:**
 > Solicito à Agência Pernambucana de Águas e Clima (APAC), em formato aberto:
 > 1. a série de precipitação das estações localizadas no município do Recife, de 01/01/2014 até a data da resposta, com código e nome da estação, coordenadas, data e hora de cada leitura (indicando o fuso), intervalo de acumulação e marcação de falha ou ausência de leitura;
 > 2. a janela horária (de que hora a que hora) a que se refere o total diário dos Boletins Pluviométricos publicados no site da APAC;
 > 3. a licença de reutilização desses dados.
+> 4. o significado de valores negativos como `-1`, a indicação de leitura desatualizada e o fuso no serviço público `met_monitoramento_chuvas_pe`.
 >
 > Não solicito dados pessoais.
 

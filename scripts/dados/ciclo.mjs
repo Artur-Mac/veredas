@@ -36,6 +36,10 @@ export const PASSOS = [
   { id: "chuva", script: "scripts/dados/chuva/rodar-chuva.mjs", publicacoes: ["chuva"], gerados: ["src/dados/recife/chuvaGerado.ts"] },
   { id: "noite", script: "scripts/dados/noite/rodar-noite.mjs", publicacoes: [], gerados: ["src/dados/recife/noiteGerado.ts"] },
   { id: "procura", script: "scripts/dados/transito/onde-procurar.mjs", publicacoes: [], gerados: ["src/dados/recife/procuraGerado.ts"] },
+  // Equipamentos por perto (15/11/2026): cadastro da Prefeitura (hub auditado, SHA-256) por prédio do índice ativo.
+  { id: "equipamentos", script: "scripts/dados/equipamentos/rodar-equipamentos.mjs", publicacoes: [], gerados: ["src/dados/recife/equipamentosGerado.ts"] },
+  // Atrito e conveniência (15/11/2026): CNEFE do Censo 2022 (zip oficial do IBGE, SHA-256 fixo), só categorias e contagens.
+  { id: "atrito", script: "scripts/dados/atrito/rodar-atrito.mjs", publicacoes: [], gerados: ["src/dados/recife/atritoGerado.ts"] },
   // Recortes solares (VE07): só arquivos locais (.cache/sol-fontes, hashes no relatório de geometrias).
   { id: "sol", python: "scripts/dados/preparar-sol-recife.py", publicacoes: [], gerados: ["src/dados/sol/fontesGeradas.ts"] },
 ];
@@ -94,7 +98,7 @@ const chaveDoPasso = (passo, entradas, e) => sha(JSON.stringify([passo.id, entra
 const saidaDoPasso = (passo, e) => sha(JSON.stringify([passo.publicacoes.map((p) => e.ponteiros[p]?.versao ?? null), passo.gerados.map((g) => e.gerados[g])]));
 
 // ——— O que muda para a pessoa: prédios por área e camada ————————————————————————————————————————————————
-const CAMADA = /^recife\/(essenciais|transito|chuva|noite)\/[0-9a-f]{16}\/([a-z-]+)\.json$/;
+const CAMADA = /^recife\/(essenciais|transito|chuva|noite|equipamentos|atrito)\/[0-9a-f]{16}\/([a-z-]+)\.json$/;
 function porCamada(e) {
   const m = {};
   for (const c of Object.keys(e.arquivos)) { const x = CAMADA.exec(c); if (x && x[2] !== "grade") (m[x[1]] ??= {})[x[2]] = c; }

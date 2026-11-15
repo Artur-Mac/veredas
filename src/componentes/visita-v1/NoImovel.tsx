@@ -13,6 +13,7 @@ import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { BarraDeProgresso, CampoDeTexto, Chamada, LinkDeAcao, TituloDeSecao } from "./blocos";
 import { LinhaDePergunta } from "./LinhaDePergunta";
+import { MedidorDeRuido } from "./MedidorDeRuido";
 import { OPCOES_DE_RUIDO, MAX_NOTAS, formatarCronometro } from "./logica";
 import type { ControleDaVisita } from "./useVisita";
 
@@ -65,14 +66,14 @@ function Cronometro({ controle }: { controle: ControleDaVisita }) {
 }
 
 /** Ruído em três opções: percepção da pessoa, sem decibéis. Tocar de novo na escolhida limpa o registro. */
-function RuidoDeFora({ ruido, aoEscolher }: { ruido: Visita["ruido"]; aoEscolher: (ruido: Visita["ruido"]) => void }) {
+function RuidoDeFora({ ruido, aoEscolher, aoGuardarMedida }: { ruido: Visita["ruido"]; aoEscolher: (ruido: Visita["ruido"]) => void; aoGuardarMedida?: (texto: string) => void }) {
   const { cor } = useTema();
   return (
     <View style={{ gap: ESPACO[3] }}>
       <View>
         <Texto style={{ fontSize: 16, lineHeight: 23, fontWeight: "600", letterSpacing: -0.4 }}>Ruído de fora</Texto>
         <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 17, marginTop: 5 }}>
-          Compare com a janela aberta e fechada. É a sua percepção: o Vereda não mede decibéis.
+          Compare com a janela aberta e fechada. Os botões guardam a sua percepção; a medida pelo microfone, abaixo, é opcional e só compara aberta × fechada.
         </Texto>
       </View>
       <View role="group" accessibilityLabel="Ruído percebido" style={{ flexDirection: "row", gap: ESPACO[2] }}>
@@ -104,6 +105,7 @@ function RuidoDeFora({ ruido, aoEscolher }: { ruido: Visita["ruido"]; aoEscolher
           );
         })}
       </View>
+      <MedidorDeRuido aoGuardar={aoGuardarMedida} />
     </View>
   );
 }
@@ -199,7 +201,8 @@ function Painel({ perguntas, controle, aoAbrirPergunta, aoAdicionarPergunta, pre
       </Faixa>
 
       <Faixa>
-        <RuidoDeFora ruido={visita.ruido} aoEscolher={controle.definirRuido} />
+        <RuidoDeFora ruido={visita.ruido} aoEscolher={controle.definirRuido}
+          aoGuardarMedida={(texto) => controle.definirNotas(`${controle.notas}${controle.notas.trim() ? "\n" : ""}${texto}`.slice(0, MAX_NOTAS))} />
       </Faixa>
 
       <Faixa ultima>

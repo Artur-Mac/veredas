@@ -189,6 +189,12 @@ describe("Referências públicas abertas, Perfil do Domicílio (T14) e Custo por
         ),
       );
     });
+    // 15/11/2026: as estimativas ficam recolhidas num cartão; um toque abre o detalhe.
+    const recolhido = textosDe(arvore.toJSON()).join("\n");
+    expect(recolhido).toContain("Estimativas à parte · toque para ver e ajustar");
+    expect(recolhido).not.toMatch(/R\$ 0(?![\d.,])/);
+    const cartao = arvore.root.findAll((n) => n.props.accessibilityLabel === "Estimativas à parte: luz e financiamento. Toque para ver e ajustar" && typeof n.props.onPress === "function")[0];
+    act(() => cartao?.props.onPress());
     const textoRenderizado = textosDe(arvore.toJSON()).join("\n");
     expect(textoRenderizado).toContain("Sem gasto direto");
     expect(textoRenderizado).not.toMatch(/R\$ 0(?![\d.,])/);

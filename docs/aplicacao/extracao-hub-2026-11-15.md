@@ -1,0 +1,33 @@
+# Extração do catálogo do Recife — 15/11/2026
+
+## Onde estão os dados
+
+Os arquivos originais baixados estão em [.cache/dados-recife/hub-2026-11-15](../../.cache/dados-recife/hub-2026-11-15/), identificados pelo UUID do recurso. Essa pasta é local e ignorada pelo Git: **não acompanhará um clone ou envio do repositório**. Alguns arquivos contêm dados individualizados e campos potencialmente pessoais; avalie a privacidade antes de compartilhar ou publicar.
+
+O [manifesto principal](manifesto-extracao-hub-2026-11-15.json) e o [manifesto complementar](manifesto-extracao-complementar-2026-11-15.json) fornecem nome, URL, caminho local, licença declarada, tamanho, SHA-256 e, para arquivos tabulares, colunas e contagem de registros. Foram baixados 29 e 42 recursos, respectivamente, sem falhas; os hashes foram novamente conferidos após a coleta. Esses totais incluem dicionários e versões duplicadas, não 71 bases independentes. O catálogo declara ODbL para os recursos coletados; verificar suas condições antes de redistribuir ou integrar.
+
+Para refazer a coleta, executar `python3 scripts/dados/extrair-hub-recife.py` e `python3 scripts/dados/extrair-hub-complementar.py` com acesso à internet. Os scripts usam os metadados salvos, substituem os arquivos locais de mesmo UUID e atualizam os manifestos; uma execução futura poderá receber dados diferentes. O [catálogo completo dos oito conjuntos principais](catalogo-recife-2026-11-15.json) e a [busca por 12 temas](busca-catalogo-hub-2026-11-15.json) registram a descoberta; a busca está limitada aos 20 primeiros resultados por tema.
+
+## Resultado e limites por fonte
+
+| Fonte | Obtido e verificado | Limite para uso ou pedido |
+|---|---|---|
+| EMLURB 156 | CSVs de 2024, 2025 e 2026 e dicionários. 2026: 61.225 linhas; coordenadas não vazias em 30.981. | Duas versões de 2025, com 86.966 e 114.653 linhas, têm UUIDs e hashes diferentes; duas de 2024 têm hash igual. Não somar versões. P10 atualizado para pedir explicação e vínculo aos pontos. |
+| Licenciamento urbanístico | 118.607 linhas e dicionário. `data_entrada` preenchida em 118.607; `data_conclusao` em 115.837; emissão em 36.562; validade em 36.255; DSQFL em 117.754. Contagens são de células não vazias, não validação das datas. | O CSV é uma fotografia de situação, não comprova sequência de mudanças. P05 permanece. Contém CNPJ e razão social; revisar antes de divulgar. |
+| Sinistros CTTU | CSVs 2022–2024: 2.669, 4.032 e 5.315 linhas; dicionário. Em 2024 há endereço e cruzamento textual, mas não colunas de coordenadas; `num_semaforo` está preenchido em 199 linhas. | São chamados, não necessariamente ocorrências verificadas ou um indicador de risco. O catálogo lista até 2024. Geocodificação e definição dos campos exigem auditoria. |
+| ITBI 2026 | 15.078 linhas e dicionário. Inclui `valor_avaliacao`, endereço e complemento. | Não foram encontrados campos de valor declarado e sequencial nos cabeçalhos. P07 permanece. O complemento pode identificar unidade: não publicar o bruto inadvertidamente. |
+| IPTU 2026 | 422.910 linhas e dicionário; já há extratos por bairro no cache anterior. | O CSV inclui número de contribuinte e CPF/CNPJ mascarado; não é uma lista pronta para publicação. |
+| Empresas | 439.905 linhas de ativas e 421.722 de inativas, mais dicionário. | Cadastro contém CNPJ e razão social. Situação cadastral não comprova funcionamento, atendimento ao público nem horário. |
+| Defesa Civil | 2024: 80.173 linhas. Cada um dos três recursos intitulados 2025 contém uma linha. Existem também extratos locais de 2014–2024 em `.cache/dados-recife/defesa-civil-ANO.json`. | A lacuna de 2025 em diante e os dados específicos de edifícios permanecem no P03. |
+| Calçadas | Arquivo 2023: 129 linhas; vias principais: 159 linhas com `largura_ambos_lados`; calçadas recuperadas 2019: 40 linhas com datas e situação. | Largura agregada não confirma largura útil contínua, rampa ou estado de cada trecho. P09 permanece. |
+| Bicicleta | 558 feições de rotas permanentes, 79 Conecta, sete operacionais; 562 linhas de paraciclos e 90 de estações Bike PE. | O GeoJSON de paraciclos tem 511 feições e aparece em três recursos; não somar sem comparar versões. Verificar atualidade e operação. |
+| Destinos e travessias | 68 linhas de cultura e lazer; 132 feições de saúde; 712 semáforos, dos quais o recurso separado para deficiência visual contém 67 linhas. Também foram baixadas faixas de ônibus e unidades de conservação. | São cadastros, não prova de funcionamento ou acesso atual. Semáforos sonoros ainda exigem manutenção e funcionamento atuais em P09. |
+| Chamados CTTU | Foram encontrados e baixados os recursos publicados de 2015 e 2016: 17.023 e 9.869 linhas. | Não substituem a série de interdições por alagamento 2022 em diante pedida em P01. |
+| Macrodrenagem | [GeoJSON eSIG](macrodrenagem-recife-2026-11-15.geojson), 514 feições, 236 com `program = CONCLUÍDO`. SHA-256 `fc38bb20a338279dea6120a5dde3a1963d28d5161e94b63086daddfc1b1dbe0e`. [Consulta original](https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/PAINEL_MACRODRENAGEM_2026/FeatureServer/0/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&f=geojson). | A definição de `data`, `program` e `statu_limp` e a licença ainda não foram confirmadas; P04 permanece. |
+| Chuva APAC | [GeoJSON de 20 feições do Recife](apac-chuva-recife-2026-11-15.geojson), obtido do [serviço de acumulados](https://geoportal.apac.pe.gov.br/server/rest/services/met_monitoramento_chuvas_pe/MapServer/0), filtro `UPPER(municipio) LIKE '%RECIFE%'`, com geometria em 4326. SHA-256 `234956aac572c1c2547572b8be12685fde5e0be765cfb0d119bac0e2c3b29e0c`. | Retrato de acumulados recentes, não série histórica horária; existem valores negativos e leituras desatualizadas. P13 atualizado para pedir sua interpretação, fuso e licença. |
+
+Outros dados já existentes incluem Censo, renda, CNEFE, GTFS, arborização, relevo, iluminação e séries de dengue na pasta `.cache/dados-recife`; conferir os metadados e a atualidade antes de reutilizar. A coleta atual não verifica integralmente esses materiais nem esgota os conjuntos de todos os órgãos.
+
+## Encaminhamento para análise de produto
+
+Use os manifestos para encontrar cada arquivo por UUID e conferir a origem. Avalie preenchimento, data de referência, localização, vinculação e licença antes de construir qualquer funcionalidade; contagens de linhas não são validação de qualidade. As [minutas LAI](pedidos-lai-recife.md) foram preservadas, com complementos pontuais em P10 e P13. As demais lacunas não foram consideradas resolvidas apenas porque algum arquivo foi baixado. Nenhum pedido foi enviado.

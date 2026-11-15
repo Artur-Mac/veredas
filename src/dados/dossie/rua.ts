@@ -145,10 +145,22 @@ function grupoDoSom(c: Contexto, e: Edificio, rua: RuaDoBairro): { grupo: GrupoD
     grupo: {
       id: "som",
       titulo: "Som",
-      fatos: [c.fato("rua-luse", "Licenças de som vigentes a 150 m", formatarNumero(vigentes.length), detalhe, "licenciamento_ambiental")],
+      fatos: [{
+        ...c.fato("rua-luse", "Licenças de som vigentes a 150 m", formatarNumero(vigentes.length), detalhe, "licenciamento_ambiental"),
+        consequencia: vigentes.length > 0
+          ? "Pode haver som amplificado à noite ou no fim de semana perto do prédio."
+          : "Nenhum bar ou evento com licença de som perto.",
+      }],
       nota: "A licença diz quem pode usar som amplificado, não quanto barulho faz; quem toca sem licença não aparece.",
     },
   };
+}
+
+/** O que um número de pedidos ao 156 pode significar, sem julgar a rua (o 156 mede quem pede, não a condição). */
+function consequenciaDo156(id: string, n: number): string {
+  if (id === "rua-156-drenagem") return n === 0 ? "Ninguém pediu limpeza de galeria ou canaleta perto em 12 meses." : `Houve ${plural(n, "pedido", "pedidos")} de limpeza de galeria ou canaleta perto do prédio em 12 meses: vale perguntar se a rua acumula água.`;
+  if (id === "rua-156-lampada") return n === 0 ? "Ninguém pediu troca de lâmpada da rua perto em 12 meses." : `Lâmpada da rua apagada foi pedida ${plural(n, "vez", "vezes")} em 12 meses: confira a rua à noite.`;
+  return n === 0 ? "Ninguém pediu remoção de entulho perto em 12 meses." : `Entulho na rua gerou ${plural(n, "pedido", "pedidos")} de remoção em 12 meses.`;
 }
 
 function grupoDo156(c: Contexto, rua: RuaDoEdificioLida): GrupoDaRua {
@@ -163,7 +175,7 @@ function grupoDo156(c: Contexto, rua: RuaDoEdificioLida): GrupoDaRua {
       : dias === null
         ? "Nenhum marcado como atendido até a publicação."
         : `Mediana de ${plural(dias, "dia", "dias")} até o atendimento.`;
-    return c.fato(id, rotulo, formatarNumero(n), detalhe, "central_156");
+    return { ...c.fato(id, rotulo, formatarNumero(n), detalhe, "central_156"), consequencia: consequenciaDo156(id, n) };
   });
   return { id: "zeladoria", titulo: "Pedidos ao 156 a 150 m, em 12 meses", fatos, nota: "O 156 mede quem pede o serviço, não a condição da rua." };
 }
@@ -176,7 +188,10 @@ function grupoDaIluminacao(c: Contexto, e: Edificio, rua: RuaDoBairro): { grupo:
     grupo: {
       id: "iluminacao",
       titulo: "Iluminação",
-      fatos: [c.fato("rua-luz", "Pontos de iluminação desativados a 150 m", formatarNumero(perto.length), detalhe, "iluminacao")],
+      fatos: [{
+        ...c.fato("rua-luz", "Pontos de iluminação desativados a 150 m", formatarNumero(perto.length), detalhe, "iluminacao"),
+        consequencia: perto.length > 0 ? "Há poste desativado perto: algum trecho da rua pode ficar mais escuro." : "Nenhum poste desativado perto, pelo cadastro da Emlurb.",
+      }],
       nota: null,
     },
   };
@@ -196,7 +211,7 @@ function grupoDaColeta(c: Contexto, logradouro: RuaDoBairro["logradouros"][strin
     const detalhe = logradouro.coleta.length === 1
       ? [unico?.intervalo, unico?.frequencia].filter(Boolean).join(" · ")
       : `A rua aparece em ${logradouro.coleta.length} roteiros: ${partes.join("; ")}.`;
-    fato = c.fato("rua-coleta", "Coleta domiciliar na rua", valor, detalhe || null, "coleta");
+    fato = { ...c.fato("rua-coleta", "Coleta domiciliar na rua", valor, detalhe || null, "coleta"), consequencia: `O caminhão do lixo passa na rua${unico?.turno && logradouro.coleta.length === 1 ? ` no turno da ${unico.turno.toLowerCase()}` : ""}: pergunte onde o lixo espera a coleta.` };
     resumo = partes[0] ?? null;
   }
   return { resumo, grupo: { id: "coleta", titulo: "Coleta de lixo", fatos: [fato], nota: null } };
@@ -212,7 +227,12 @@ function grupoDoTransito(c: Contexto, rua: RuaDoEdificioLida): GrupoDaRua {
   return {
     id: "transito",
     titulo: "Trânsito",
-    fatos: [c.fato("rua-sinistros", "Sinistros com vítima a 150 m", formatarNumero(comVitima), detalhe, "sinistros")],
+    fatos: [{
+      ...c.fato("rua-sinistros", "Sinistros com vítima a 150 m", formatarNumero(comVitima), detalhe, "sinistros"),
+      consequencia: comVitima === 0
+        ? `Nenhum chamado de trânsito com vítima perto (${c.data("sinistros")}).`
+        : `Houve chamado de trânsito com vítima perto${atropelamentos > 0 ? ", com pedestre atropelado" : ""}: confira as travessias na visita.`,
+    }],
     nota: "São chamados registrados pela CTTU, com o endereço posto no mapa pelo CNEFE.",
   };
 }
@@ -242,7 +262,7 @@ function grupoDaDefesaCivil(
     ? ` Fora da conta: ${formatarNumero(comunitarias)} ${comunitarias === 1 ? "ação comunitária" : "ações comunitárias"} da Defesa Civil (porta a porta, atendimento social, donativos).`
     : "";
   if (dc.atendimentos === 0) {
-    fatos.push(c.fato("rua-defesa-civil", "Atendimentos da Defesa Civil na rua", "0", `Nenhum atendimento registrado nesta rua do bairro.${foraDaConta}`, "defesa_civil"));
+    fatos.push({ ...c.fato("rua-defesa-civil", "Atendimentos da Defesa Civil na rua", "0", `Nenhum atendimento registrado nesta rua do bairro.${foraDaConta}`, "defesa_civil"), consequencia: `A Defesa Civil não registrou atendimento nesta rua (${c.data("defesa_civil")}).` });
     return { bloco: null, grupo: { id: "defesa_civil", titulo: "Defesa Civil", fatos, nota: null } };
   }
   const ocorrencias = dc.ocorrencias.map(([categoria, n]) => `${formatarNumero(n)} ${ROTULO_DA_OCORRENCIA[categoria]}`);
@@ -255,6 +275,7 @@ function grupoDaDefesaCivil(
       "defesa_civil",
     ),
   );
+  fatos[0] = { ...fatos[0]!, consequencia: "A Defesa Civil já foi chamada nesta rua; não dá para saber se foi neste prédio." };
   if (resposta === "neste_predio") {
     const em = a.confirmacoesDaRua?.defesaCivil?.em;
     fatos.push({
@@ -288,10 +309,16 @@ function grupoDoEntorno(c: Contexto, setor: RuaDoBairro["setores"][number] | nul
     ["rua-censo-rampa", "Rampa para cadeirante", setor.rampa],
     ["rua-censo-arvores", "Cinco ou mais árvores na face da quadra", setor.arvores],
   ];
+  // Rampa e obstáculo ganham a frase em "k de cada 10" (aparecem para quem marcou mobilidade no perfil da casa).
+  const consequenciaDoCenso: Record<string, (k: number) => string> = {
+    "rua-censo-rampa": (k) => `${k} de cada 10 domicílios do setor ficam em quarteirão com rampa para cadeirante.`,
+    "rua-censo-obstaculo": (k) => `${k} de cada 10 domicílios do setor ficam em quarteirão com obstáculo na calçada.`,
+  };
   const fatos = itens.map(([id, rotulo, n]) =>
     n === null
       ? c.fato(id, rotulo, A_CONFIRMAR, "Valor suprimido pelo IBGE neste setor.", "censo_entorno", "nao_sabemos")
-      : c.fato(id, rotulo, porcento(n, total), `${formatarNumero(n)} de ${plural(total, "domicílio", "domicílios")} do setor`, "censo_entorno"),
+      : { ...c.fato(id, rotulo, porcento(n, total), `${formatarNumero(n)} de ${plural(total, "domicílio", "domicílios")} do setor`, "censo_entorno"),
+        ...(consequenciaDoCenso[id] ? { consequencia: consequenciaDoCenso[id]!(Math.round((n / total) * 10)) } : {}) },
   );
   return { id: "entorno", titulo, fatos, nota };
 }

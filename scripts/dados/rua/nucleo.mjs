@@ -656,6 +656,51 @@ export function categoriaDoPedido(grupo, servico) {
   return null;
 }
 
+/** A cópia de 2025 de 02/03/2026 (86.966 linhas) é parcial: nunca entra (a completa é e40fc8b9, de 04/03/2026). */
+export const RECURSO_156_PARCIAL = "06872af2-9350-4c34-aa39-6337a1822ff7";
+
+/**
+ * Central 156 (15/11/2026): pedidos de drenagem, lâmpada apagada e entulho numa janela estrita de `meses` meses que
+ * termina no pedido mais recente publicado, nunca depois de `ate` (a data da geração). O arquivo de 2026 traz pedidos
+ * desde 2009 (os ainda abertos): o que está antes da janela fica fora. O mesmo pedido (categoria, serviço, logradouro,
+ * número, bairro e dia) pode estar nos dois arquivos, ou repetido no mesmo: fica uma vez, com a situação mais recente
+ * (no empate, a linha com coordenada). `arquivos`: [{ id, registros }] na ordem de leitura.
+ */
+export function selecionarPedidos156(arquivos, ate, meses = 12) {
+  for (const a of arquivos) if (a.id === RECURSO_156_PARCIAL) throw new Error(`156: o recurso ${RECURSO_156_PARCIAL} é a cópia parcial de 2025 e não pode ser somado`);
+  let fim = "0000-00-00";
+  for (const { registros } of arquivos) {
+    for (const r of registros) {
+      const data = dataIso(r.DATA_DEMANDA);
+      if (data && data <= ate && categoriaDoPedido(r.GRUPOSERVICO_DESCRICAO, r.SERVICO_DESCRICAO) && data > fim) fim = data;
+    }
+  }
+  const inicio = inicioDaJanela(fim, meses);
+  const vias = new Map();
+  const contar = (k) => vias.set(k, (vias.get(k) ?? 0) + 1);
+  const linhas = new Map();
+  for (const { id, registros } of arquivos) {
+    for (const r of registros) {
+      const categoria = categoriaDoPedido(r.GRUPOSERVICO_DESCRICAO, r.SERVICO_DESCRICAO);
+      if (!categoria) continue;
+      const data = dataIso(r.DATA_DEMANDA);
+      if (!data) { contar("sem data"); continue; }
+      if (data < inicio) { contar("antes da janela"); continue; }
+      if (data > fim) { contar("depois da janela"); continue; }
+      const chave = [categoria, dobrar(r.SERVICO_DESCRICAO), dobrar(String(r.LOGRADOURO ?? "").replace(/\s+/g, " ")), dobrar(r.NUMERO), dobrar(r.BAIRRO), data].join("|");
+      const ultima = dataIso(r.DATA_ULT_SITUACAO) ?? "";
+      const comPosicao = coordenadaNoRecife(r.latitude, r.longitude) ? 1 : 0;
+      const atual = linhas.get(chave);
+      if (atual) {
+        contar(atual.id === id ? "repetido no mesmo arquivo" : "repetido entre arquivos");
+        if (atual.ultima > ultima || (atual.ultima === ultima && atual.comPosicao >= comPosicao)) continue;
+      }
+      linhas.set(chave, { r, id, categoria, data, ultima, comPosicao });
+    }
+  }
+  return { inicio, fim, linhas, vias };
+}
+
 /** Dias da demanda até a última situação, só para pedido "ATENDIDA" com as duas datas em ordem; senão null. */
 export function diasAteAtender(situacao, demanda, ultimaSituacao) {
   if (dobrar(situacao) !== "atendida") return null;

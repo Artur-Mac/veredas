@@ -72,6 +72,8 @@ jest.mock("expo-router", () => ({
 }));
 const mockDefinirAtiva = jest.fn(async (_id: string | null) => undefined);
 let mockLista: unknown[] = [];
+// 15/11/2026: a leitura confirma o prédio direto do cartão (src/componentes/predio/confirmar.ts) e lê a carteira.
+jest.mock("../src/estado/Carteira", () => ({ useCarteira: () => ({ saldo: 3, debitarDossie: async () => true, bloqueada: false, erro: "" }) }));
 jest.mock("../src/estado/Analises", () => ({
   useAnalises: () => ({ salvar: mockSalvar, remover: mockRemover, lista: mockLista, definirAtiva: mockDefinirAtiva, pronto: true }),
 }));
@@ -1001,9 +1003,11 @@ describe("tela de leitura (K1 e K2)", () => {
     );
   };
 
-  it("bairro coberto: 'Encontrar o prédio' ligado, sem cartão de fora de cobertura", () => {
+  it("bairro coberto: a ação do prédio ligada ('É este' ou 'Encontrar o prédio'), sem cartão de fora de cobertura", () => {
     const arvore = abrir({ url: URL_CASA_FORTE });
-    expect(desativado(arvore, "Encontrar o prédio")).toBe(false);
+    // 15/11/2026: com bairro coberto, o cartão traz o prédio provável ("É este") ou, sem pista, "Encontrar o prédio".
+    const acao = ["É este · gerar o dossiê", "Encontrar o prédio"].map((r) => desativado(arvore, r)).find((d) => d !== undefined);
+    expect(acao).toBe(false);
     expect(tela(arvore)).not.toContain("Ainda não cobrimos");
     expect(tela(arvore)).not.toContain("Escolha o bairro");
   });
@@ -1072,6 +1076,8 @@ describe("tela de leitura (K1 e K2)", () => {
 
   it("'Ler texto' depois de a pessoa editar não desfaz nenhum campo editado", async () => {
     const arvore = abrir({ url: URL_CASA_FORTE });
+    // 15/11/2026: o anúncio lido aparece como cartão; "Editar" abre o formulário.
+    act(() => arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLabel === "Editar os dados do anúncio" && typeof n.props.onPress === "function")[0]?.props.onPress());
     // A leitura de um link abre o formulário enxuto: endereço e especificações ficam atrás de "Ver todos os campos".
     expect(campo(arvore, "Rua")).toBeUndefined();
     act(() => verTodosOsCampos(arvore)?.props.onPress());
@@ -1123,12 +1129,16 @@ describe("Explorar: o que o cartão abre (K8)", () => {
     return { ...analiseDe(formularioDeExtracao(ext), ext), id, nome, bairro, bairroTexto: bairro, vinculo };
   }
 
+  // 15/11/2026: cada árvore é desmontada no fim do teste; senão o cartão termina de ler o índice depois que o Jest
+  // desmonta o ambiente ("import after the environment has been torn down" e update fora de act).
+  const abertas: TestRenderer.ReactTestRenderer[] = [];
   function abrirExplorar(lista: AnaliseV2[]) {
     mockLista = lista;
     let arvore!: TestRenderer.ReactTestRenderer;
     act(() => {
       arvore = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(Explorar)));
     });
+    abertas.push(arvore);
     return arvore;
   }
   const tocarNoCartao = async (arvore: TestRenderer.ReactTestRenderer, nome: string) => {
@@ -1146,6 +1156,7 @@ describe("Explorar: o que o cartão abre (K8)", () => {
     mockDefinirAtiva.mockClear();
   });
   afterEach(() => {
+    act(() => abertas.splice(0).forEach((a) => a.unmount()));
     mockLista = [];
   });
 
@@ -1823,7 +1834,11 @@ describe("tela de leitura: preço e modalidade, leitura nova e 'Fora do Recife' 
     lerTexto(arvore, "Apartamento para alugar\nAluguel R$ 4.500 /mês\nCondomínio R$ 1.190\n85 m²");
     expect(bairroMostrado(arvore)).toBe("Boa Viagem");
     expect(textosDe(arvore.root)).not.toContain("Ainda não cobrimos");
-    await act(async () => botao(arvore, "Encontrar o prédio")?.props.onPress());
+    // 15/11/2026: com prédio provável, "Não é este" leva à tela do prédio; sem pista, "Encontrar o prédio".
+    const irAoPredio = botao(arvore, "Encontrar o prédio") ?? arvore.root.findAll(
+      (n) => typeof n.type !== "string" && typeof n.props.onPress === "function" && n.findAllByType(Text).length === 1 && textosDe(n).startsWith("Não é este"),
+    )[0];
+    await act(async () => irAoPredio?.props.onPress());
     expect(mockSalvar.mock.calls[0]?.[0]).toMatchObject({ bairro: "boa-viagem", bairroTexto: "Boa Viagem", vinculo: { estado: "pendente" } });
   });
 
@@ -2187,6 +2202,9 @@ describe("Explorar: o marcador e o cartão são irmãos (H3)", () => {
     bairroTexto: "Casa Forte",
     salva,
   });
+  // O cartão lê o índice depois da primeira pintura: desmontar no fim evita render depois do teste.
+  const abertas: TestRenderer.ReactTestRenderer[] = [];
+  afterEach(() => { act(() => abertas.splice(0).forEach((a) => a.unmount())); });
   const abrir = async (lista: AnaliseV2[]) => {
     mockLista = lista;
     let arvore!: TestRenderer.ReactTestRenderer;
@@ -2194,6 +2212,7 @@ describe("Explorar: o marcador e o cartão são irmãos (H3)", () => {
       arvore = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(Explorar)));
     });
     mockLista = [];
+    abertas.push(arvore);
     return arvore;
   };
 
@@ -2219,13 +2238,14 @@ describe("Explorar: o marcador e o cartão são irmãos (H3)", () => {
     const arvore = await abrir([analise("a", true), analise("b", false)]);
     expect(tocaveisAninhados(arvore)).toEqual([]);
 
-    const marcador = (rotulo: string) =>
-      arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLabel === rotulo && typeof n.props.onPress === "function")[0];
-    expect(marcador("Remover dos salvos")).toBeDefined();
-    expect(marcador("Salvar imóvel")).toBeDefined();
+    // 15/11/2026: o marcador do canto virou "Favoritar" na triagem do cartão (irmão do cartão, como antes).
+    const marcador = (rotulo: RegExp) =>
+      arvore.root.findAll((n) => typeof n.type !== "string" && rotulo.test(String(n.props.accessibilityLabel)) && typeof n.props.onPress === "function")[0];
+    expect(marcador(/^Tirar .* dos favoritos$/)).toBeDefined();
+    expect(marcador(/^Favoritar /)).toBeDefined();
     mockSalvar.mockClear();
     mockIr.mockClear();
-    await act(async () => marcador("Remover dos salvos")?.props.onPress());
+    await act(async () => marcador(/^Tirar .* dos favoritos$/)?.props.onPress());
     expect(mockSalvar).toHaveBeenCalledTimes(1);
     expect(mockSalvar.mock.calls[0]?.[0]).toMatchObject({ id: "a", salva: false });
     // Tocar no marcador não abre o cartão.
@@ -2234,10 +2254,10 @@ describe("Explorar: o marcador e o cartão são irmãos (H3)", () => {
 
   it("o alvo do marcador tem pelo menos 44 × 44", async () => {
     const arvore = await abrir([analise("a", true)]);
-    const alvo = arvore.root.findAll((n) => typeof n.type === "string" && n.props.accessibilityLabel === "Remover dos salvos")[0];
+    const alvo = arvore.root.findAll((n) => typeof n.type === "string" && /^Tirar .* dos favoritos$/.test(String(n.props.accessibilityLabel)))[0];
     const estilo = StyleSheet.flatten(alvo?.props.style);
-    expect(estilo?.width).toBeGreaterThanOrEqual(44);
-    expect(estilo?.height).toBeGreaterThanOrEqual(44);
+    expect(estilo?.minWidth ?? estilo?.width).toBeGreaterThanOrEqual(44);
+    expect(estilo?.minHeight ?? estilo?.height).toBeGreaterThanOrEqual(44);
   });
 });
 
@@ -2297,18 +2317,23 @@ describe("tela de leitura: checklist 'Preço e custos' (H6)", () => {
     });
     return arvore;
   };
+  /** 15/11/2026: com algo lido, o cartão do anúncio (preço e custos em linhas próprias) substitui o checklist. */
+  const linhaDoCartao = (arvore: TestRenderer.ReactTestRenderer, inicio: string) =>
+    arvore.root.findAll((n) => typeof n.type !== "string" && String(n.props.accessibilityLabel ?? "").startsWith(inicio))[0]?.props.accessibilityLabel as string | undefined;
   const linhaDePreco = (arvore: TestRenderer.ReactTestRenderer) =>
     arvore.root.findAll((n) => typeof n.type === "string" && String(n.props.accessibilityLabel ?? "").startsWith("Preço e custos:"))[0]?.props
       .accessibilityLabel as string;
 
-  it("aluguel com '/mês' e IPTU sem período: 'IPTU R$ 288 · período não informado'", () => {
-    const rotulo = linhaDePreco(abrir(caso("zap-like-iptu-sem-periodo").entrada));
-    expect(rotulo).toBe("Preço e custos: R$ 4.500/mês · Cond. R$ 1.190/mês · IPTU R$ 288 · período não informado. Lido");
+  it("aluguel com '/mês' e IPTU sem período: o cartão diz 'período a confirmar'", () => {
+    const arvore = abrir(caso("zap-like-iptu-sem-periodo").entrada);
+    expect(linhaDoCartao(arvore, "Preço:")).toBe("Preço: R$ 4.500/mês. Toque para editar");
+    expect(linhaDoCartao(arvore, "Custos:")).toBe("Custos: Condomínio R$ 1.190 · IPTU R$ 288 (período a confirmar). Toque para editar");
   });
 
   it("compra sem '/mês' e IPTU com o período que o anúncio disse", () => {
-    const rotulo = linhaDePreco(abrir(caso("iptu-anual-explicito").entrada));
-    expect(rotulo).toBe("Preço e custos: R$ 890.000 · Cond. R$ 980/mês · IPTU R$ 3.240/ano. Lido");
+    const arvore = abrir(caso("iptu-anual-explicito").entrada);
+    expect(linhaDoCartao(arvore, "Preço:")).toBe("Preço: R$ 890.000. Toque para editar");
+    expect(linhaDoCartao(arvore, "Custos:")).toBe("Custos: Condomínio R$ 980 · IPTU R$ 3.240/ano. Toque para editar");
   });
 
   it("sem nada lido, a linha pede o texto e não inventa valor", () => {

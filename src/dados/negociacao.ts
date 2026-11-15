@@ -5,7 +5,7 @@
 // Mesmo prédio não é a mesma unidade: candidatos a "mesmo imóvel" exigem prédio confirmado igual, mesma área (±2%) e
 // mesmos quartos (e andar, quando os dois informam); ficam fora da amostra e são mostrados para você conferir.
 import { comparaveisPessoais } from "./comparaveisPessoais";
-import type { AnaliseV2, VisaoDoDossie } from "./contratos";
+import type { AnaliseV2, Edificio, VisaoDoDossie } from "./contratos";
 import { custoMensal } from "./custos";
 import { formatarReais } from "./formatos";
 
@@ -48,7 +48,33 @@ export function valorDoHistorico(t: string): number | null {
 
 function dataBr(iso: string) { return `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}`; }
 
-export function prepararNegociacao(a: AnaliseV2, visao: Pick<VisaoDoDossie, "achados" | "perguntas">, lista: readonly AnaliseV2[]): Negociacao {
+/**
+ * 15/11/2026 (copiloto): fatos que a tela junta para mais argumentos, todos opcionais e marcáveis pela pessoa:
+ * ITBI do prédio × preço pedido, trechos de ata/convenção/balancete guardados no caderno, calor de superfície e fontes
+ * de barulho perto. O potencial de verticalização do vizinho (LPUOS) ainda não tem leitura publicada: não vira argumento.
+ */
+export type ExtrasDaNegociacao = {
+  predio: Edificio | null;
+  calor: { diferencaBairroC: number | null } | null;
+  barulho: readonly { nome: string; distanciaM: number }[];
+};
+
+const TEMAS_FINANCEIROS_DA_ATA = /^\[(Chamada extra \/ rateio|Obra do condomínio aprovada|Ações judiciais|Inadimplência|Fundo de reserva)(?: · p\. (\d+))?\] (.+)$/;
+
+/** Trechos financeiros e jurídicos que o leitor de ata guardou no caderno (documento ata/convenção/balancete). */
+export function trechosDaAta(a: AnaliseV2): { tema: string; pagina: number | null; trecho: string; documento: string }[] {
+  const out: { tema: string; pagina: number | null; trecho: string; documento: string }[] = [];
+  for (const d of a.caderno?.documentos ?? []) {
+    if (!["ata", "convencao", "balancete"].includes(d.tipo) || d.vinculo === "outro_imovel") continue;
+    for (const linha of d.trecho.split("\n")) {
+      const m = TEMAS_FINANCEIROS_DA_ATA.exec(linha.trim());
+      if (m) out.push({ tema: m[1]!, pagina: m[2] ? Number(m[2]) : null, trecho: m[3]!, documento: d.titulo });
+    }
+  }
+  return out;
+}
+
+export function prepararNegociacao(a: AnaliseV2, visao: Pick<VisaoDoDossie, "achados" | "perguntas">, lista: readonly AnaliseV2[], extras?: ExtrasDaNegociacao): Negociacao {
   const aluguel = a.modalidade === "aluguel";
   const custo = custoMensal(a);
   const faltando = custo.parcelas.filter((p) => p.estado !== "conhecido").map((p) => p.nome);
@@ -63,6 +89,8 @@ export function prepararNegociacao(a: AnaliseV2, visao: Pick<VisaoDoDossie, "ach
   // 1. Achados do cadastro que pesam no preço (IPTU, área, avaliação fiscal, anomalias de valor).
   for (const ach of [visao.achados.principal, ...visao.achados.apoio]) {
     if (!ach || !["iptu", "area", "itbi", "anomalia"].includes(ach.tipo)) continue;
+    // 15/11/2026: "IPTU no cadastro" (o anúncio não informou) não é argumento; o valor já está no custo.
+    if (ach.tipo === "iptu" && ach.titulo === "IPTU no cadastro") continue;
     const p = ach.perguntaId ? perguntaPorId.get(ach.perguntaId) : undefined;
     args.push({ id: `achado:${ach.id}`, fato: ach.texto, pergunta: p?.textoParaMensagem ?? null, peso: ach.tipo === "itbi" ? 2 : 3 });
   }
@@ -101,6 +129,33 @@ export function prepararNegociacao(a: AnaliseV2, visao: Pick<VisaoDoDossie, "ach
       fato: `Entre os ${todos.length} imóveis desse tipo que você salvou em ${a.bairroTexto} com área e valor conhecidos, este tem o ${pos === 1 ? "maior" : pos === todos.length ? "menor" : `${pos}º maior`} ${coisa} por m² (${m2(meu)}; os outros vão de ${m2(Math.min(...outros))} a ${m2(Math.max(...outros))}). É a sua amostra, não um preço de mercado.`,
       pergunta: null });
   }
+  // 5. Copiloto (15/11/2026).
+  if (extras) {
+    const q = extras.predio?.itbi?.valorUnidade ?? null;
+    const preco = !aluguel ? valorConhecido(a.declarados.preco) : null;
+    if (q && preco !== null && !args.some((x) => x.id.startsWith("achado:") && /ITBI|avalia/i.test(x.fato))) {
+      const dif = (preco - q.mediana) / q.mediana;
+      if (Math.abs(dif) >= 0.05) {
+        args.push({ id: "itbi:mediana", peso: dif > 0 ? 2 : 1, pergunta: null,
+          fato: `O preço pedido (${formatarReais(preco)}) fica ${Math.round(Math.abs(dif) * 100)}% ${dif > 0 ? "acima" : "abaixo"} da mediana da avaliação fiscal do ITBI neste prédio (${formatarReais(q.mediana)} por unidade, ${q.n} avaliações em 36 meses). É a avaliação da Prefeitura para o imposto, não preço de mercado, e é por unidade de qualquer tamanho.` });
+      }
+    }
+    if (faltando.length) {
+      args.push({ id: "taxas:omitidas", peso: 1, fato: `O anúncio não informa: ${emFrase(faltando)}.`, pergunta: `Quais os valores atuais de ${emFrase(faltando)}?` });
+    }
+    trechosDaAta(a).slice(0, 4).forEach((t, i) => {
+      args.push({ id: `ata:${i}`, peso: 2, fato: `${t.documento}${t.pagina ? `, p. ${t.pagina}` : ""} (${t.tema.toLowerCase()}): “${t.trecho}”`,
+        pergunta: t.tema === "Chamada extra / rateio" ? "A chamada extra aprovada em ata já foi paga ou fica com o comprador?" : t.tema === "Ações judiciais" ? "Qual a situação atual da ação citada em ata?" : null });
+    });
+    if (extras.calor?.diferencaBairroC != null && extras.calor.diferencaBairroC >= 1) {
+      args.push({ id: "ambiente:calor", peso: 1, pergunta: null,
+        fato: `A superfície da quadra fica ${extras.calor.diferencaBairroC.toFixed(1).replace(".", ",")} °C acima da mediana do bairro no satélite (Landsat, 100 m): mais gasto com ar-condicionado provável.` });
+    }
+    const perto = extras.barulho.filter((b) => b.distanciaM <= 80).slice(0, 2);
+    if (perto.length) {
+      args.push({ id: "ambiente:barulho", peso: 1, pergunta: null, fato: `Fontes de barulho perto: ${perto.map((b) => `${b.nome} a ~${b.distanciaM} m`).join("; ")}.` });
+    }
+  }
   return { aluguel, total, argumentos: args.sort((x, y) => y.peso - x.peso), mesmoImovel: mesmo };
 }
 
@@ -113,6 +168,8 @@ export function mensagemDeNegociacao(a: AnaliseV2, n: Negociacao, escolhidos: re
   if (perguntas.length) linhas.push("Antes de fazer uma proposta, queria confirmar:", ...perguntas.map((p) => `- ${p}`));
   const historico = args.find((x) => x.id === "historico:preco");
   if (historico) linhas.push(historico.fato.replace(/ \(registros? seus?\)\.$/, "."));
+  // 15/11/2026: fatos marcados pela pessoa entram literais (ITBI, ata, calor, barulho).
+  for (const x of args.filter((y) => /^(itbi:|ata:|ambiente:)/.test(y.id))) linhas.push(x.fato);
   if (n.total.valor !== null && proposta !== null) linhas.push(`Pelo que levantei, o total mensal conhecido fica em ${formatarReais(n.total.valor)}${n.total.faltando.length ? `, ainda sem ${emFrase(n.total.faltando)}` : ""}.`);
   if (proposta !== null) linhas.push(`Minha proposta é de ${formatarReais(proposta)}${n.aluguel ? " por mês de aluguel" : ""}.`);
   linhas.push("Obrigado!");

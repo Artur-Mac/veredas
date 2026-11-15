@@ -81,7 +81,7 @@ export function RegistrosPessoais({ analise, salvar, novaVisita }: Props) {
       </View>)}
     </GrupoLocal>
     <GrupoLocal titulo="Decisão e diário pessoal" apoio="Sua decisão não altera os fatos do imóvel nem é compartilhada automaticamente.">
-      <EscolhaLocal rotulo="Situação da busca" valor={c.decisao} opcoes={[{ valor: "considerando", rotulo: "Considerando" }, { valor: "visita_planejada", rotulo: "Visita planejada" }, { valor: "visitado", rotulo: "Visitado" }, { valor: "escolhido", rotulo: "Escolhido" }]}
+      <EscolhaLocal rotulo="Situação da busca" valor={c.decisao} opcoes={[{ valor: "considerando", rotulo: "Considerando" }, { valor: "visita_planejada", rotulo: "Visita planejada" }, { valor: "visitado", rotulo: "Visitado" }, { valor: "negociando", rotulo: "Negociando" }, { valor: "escolhido", rotulo: "Escolhido" }]}
         aoEscolher={v => { void salvar(a => ({ ...a, decisao: v })); }} />
       <CampoLocal rotulo="Expectativa ou experiência após a mudança" value={diario} onChangeText={setDiario} multiline maxLength={2000} />
       <Botao rotulo="Guardar no diário" desativado={!diario.trim()} onPress={() => {

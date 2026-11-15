@@ -16,11 +16,14 @@ import { Texto } from "../../componentes/Texto";
 import { listaDeBairrosCobertos } from "../../componentes/dossie-v1/textos";
 import type { AnaliseV2, Edificio } from "../../dados/contratos";
 import { bairroPorSlug, eCoberto, type SlugCoberto } from "../../dados/recife/bairros";
-import { buscarCandidatosDetalhados, type EntradaDeBusca } from "../../dados/recife/buscar";
-import { arquivoDoIndice, edificiosDoBairro, indiceDoBairro } from "../../dados/recife/indice";
+import { buscarCandidatosDetalhados } from "../../dados/recife/buscar";
+import { arquivoDoIndice, edificiosDoBairro } from "../../dados/recife/indice";
 import { EsperaDasCamadas } from "../../componentes/EsperaDasCamadas";
 import { useAnalises } from "../../estado/Analises";
 import { useCarteira } from "../../estado/Carteira";
+import { useConfirmarPredio } from "../../componentes/predio/confirmar";
+import { PreparoDoDossie } from "../../componentes/preparo/PreparoDoDossie";
+import { entradaDeBusca } from "../../componentes/predio/entrada";
 import { useTema } from "../../tema/Tema";
 import { comAlfa } from "../../tema/tokens";
 
@@ -123,30 +126,12 @@ function SobretituloCadastral({ chave }: { chave: string | null }) {
   );
 }
 
-/**
- * Área "a confirmar" (a leitura trouxe anomalia) não serve de pista: ela sozinha dá 30 a 40 pontos a qualquer prédio com
- * tipologia parecida e sugeriria um prédio (a confirmação custa 1 crédito) sem nenhum outro sinal do anúncio.
- */
-function entradaDeBusca(analise: AnaliseV2, bairro: SlugCoberto): EntradaDeBusca {
-  // Loja, sala ou casa: a área casaria com apartamentos parecidos, que não são o imóvel. Rua, número e nome valem.
-  const area = avisoDeTipologia(analise.tipologia) ? { valor: null, aConfirmar: true } : analise.declarados.area;
-  return {
-    bairro,
-    logradouro: analise.logradouro,
-    numero: analise.numero,
-    nomeEdificio: analise.nomeEdificio,
-    area: area.aConfirmar ? null : area.valor,
-    andar: analise.declarados.andar.valor,
-    anoConstrucao: analise.extracao?.campos.anoConstrucao ?? null,
-  };
-}
-
 type PropsDaConfirmacao = { analise: AnaliseV2; bairro: SlugCoberto; aoFaltarCredito: () => void };
 
 function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmacao) {
   const { cor } = useTema();
   const { salvar } = useAnalises();
-  const { saldo, debitarDossie, bloqueada: carteiraBloqueada, erro: erroDaCarteira } = useCarteira();
+  const { confirmar: confirmarPredio, trabalhando: confirmando, erroDaCarteira } = useConfirmarPredio();
 
   /** Prédio que a pessoa escolheu (vizinho, busca ou mapa). null = o primeiro da lista. */
   const [escolhidoId, setEscolhidoId] = useState<string | null>(null);
@@ -155,7 +140,8 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
   /** Como o prédio fora da lista de candidatos chegou à tela: a pessoa escolheu, ou o botão mostrou um vizinho. */
   const [comoChegou, setComoChegou] = useState<"escolha" | "vizinho">("escolha");
   const [aviso, setAviso] = useState("");
-  const [trabalhando, setTrabalhando] = useState(false);
+  const [salvandoSemPredio, setTrabalhando] = useState(false);
+  const trabalhando = salvandoSemPredio || confirmando;
   /** Trava de toque duplo: o estado só muda no próximo quadro e dois toques seguidos cobrariam duas vezes. */
   const ocupado = useRef(false);
   const [erro, setErro] = useState("");
@@ -201,6 +187,9 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
   const nomeDoBairro = bairroPorSlug(bairro)?.nome ?? analise.bairroTexto;
 
   const abrirDossie = () => router.push({ pathname: "/dossie", params: { id: analise.id } });
+  /** Depois de confirmar: o preparo (o que o Vereda está cruzando e o aviso) por cima da tela, que leva ao dossiê. */
+  const [preparando, setPreparando] = useState(false);
+  const abrirCarregamento = () => setPreparando(true);
   const estiloDoCartao = [styles.cartao, { borderColor: comAlfa(cor("cor-texto"), 0.09) }];
 
   const escolher = (edificio: Edificio) => {
@@ -226,52 +215,15 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
     }
   };
 
+  // Gravar o vínculo, decidir o IPTU contra o cadastro, completar o endereço e cobrar: src/componentes/predio/confirmar.ts.
   const confirmar = async (edificio: Edificio) => {
     if (ocupado.current) return;
-    if (!jaConfirmado && carteiraBloqueada) {
-      setErro(erroDaCarteira);
-      return;
-    }
-    if (!jaConfirmado && saldo <= 0) {
-      aoFaltarCredito();
-      return;
-    }
-    ocupado.current = true;
-    setTrabalhando(true);
     setErro("");
-    try {
-      const agora = new Date().toISOString();
-      await salvar({
-        ...analise,
-        atualizadaEm: agora,
-        vinculo: {
-          estado: "confirmado",
-          edificioId: edificio.id,
-          dsqfl: edificio.dsqfl,
-          confirmadoEm: agora,
-          indiceGeradoEm: indiceDoBairro(bairro).geradoEm,
-        },
-      });
-      if (!jaConfirmado) {
-        // Cobra depois de gravar o vínculo; se a cobrança não acontecer, desfaz o vínculo.
-        let debitou = false;
-        try {
-          debitou = await debitarDossie(analise.id);
-        } finally {
-          if (!debitou) await salvar(analise);
-        }
-        if (!debitou) {
-          aoFaltarCredito();
-          return;
-        }
-      }
-      abrirDossie();
-    } catch {
-      setErro("Não foi possível confirmar o prédio. Nenhum crédito foi usado; tente de novo.");
-    } finally {
-      ocupado.current = false;
-      setTrabalhando(false);
-    }
+    const r = await confirmarPredio(analise, edificio, bairro);
+    if (r === "carteira_bloqueada") setErro(erroDaCarteira);
+    else if (r === "sem_credito") aoFaltarCredito();
+    else if (r === "erro") setErro("Não foi possível confirmar o prédio. Nenhum crédito foi usado; tente de novo.");
+    else abrirCarregamento();
   };
 
   const seguirSemPredio = async () => {
@@ -371,6 +323,7 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
   return (
     <Cartao style={estiloDoCartao}>
       <CorpoDoCartao style={styles.corpo}>
+        <PreparoDoDossie aberto={preparando} nome={analise.nome} bairro={analise.bairro} aoTerminar={() => { setPreparando(false); abrirDossie(); }} />
         <SobretituloCadastral chave={chave} />
         <Texto tipo="titulo-tela" role="heading" style={styles.titulo}>
           É este o prédio?

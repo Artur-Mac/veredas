@@ -2,6 +2,7 @@
 // "Imóvel N", o seletor, o resumo e o link para o dossiê. Sem foto de anúncio (o Vereda não guarda fotos): o topo
 // mostra o padrão arquitetônico e, com o prédio confirmado, o polígono do lote.
 import { View } from "react-native";
+import { FotoRemota } from "../FotoRemota";
 import Svg, { Path } from "react-native-svg";
 import type { AnaliseV2 } from "../../dados/contratos";
 import { useTema } from "../../tema/Tema";
@@ -24,6 +25,7 @@ type Props = {
 };
 
 export function CartaoDoImovel({ indice, analise, poligono, resumo, aoTrocar, aoVerDossie }: Props) {
+  const foto = analise.extracao?.fotos?.[0] ?? null;
   const { cor } = useTema();
   const rotulo = `Imóvel ${indice + 1}`;
   return (
@@ -38,9 +40,10 @@ export function CartaoDoImovel({ indice, analise, poligono, resumo, aoTrocar, ao
         borderColor: comAlfa(cor("cor-texto"), 0.07),
       }}
     >
-      <View style={{ width: "100%", aspectRatio: 1.8, backgroundColor: cor("cor-sutil") }}>
-        <GradeArquitetonica />
-        {poligono ? (
+      <View style={{ width: "100%", aspectRatio: 1.8, backgroundColor: cor("cor-sutil"), overflow: "hidden" }}>
+        {/* 15/11/2026: com foto do anúncio, a foto; sem ela, o contorno do lote. */}
+        {foto ? <FotoRemota uri={foto} rotulo={`Foto do anúncio de ${analise.nome}`} estilo={{ width: "100%", height: "100%" }} /> : <GradeArquitetonica />}
+        {poligono && !foto ? (
           <View pointerEvents="none" style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}>
             <Svg width="100%" height="100%" viewBox="0 0 180 100" aria-hidden>
               <Path

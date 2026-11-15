@@ -19,6 +19,10 @@ export function movimentoReduzidoAgora(): boolean {
 /** `true` quando a pessoa pediu menos movimento. Acompanha a mudança da opção com o app aberto. */
 export function useMovimentoReduzido(): boolean {
   const [reduzir, definirReduzir] = useState<boolean>(() => movimentoReduzidoAgora());
+  const atual = useRef(reduzir);
+  useEffect(() => {
+    atual.current = reduzir;
+  }, [reduzir]);
 
   useEffect(() => {
     const consulta = consultaDaWeb();
@@ -28,9 +32,11 @@ export function useMovimentoReduzido(): boolean {
       consulta.addEventListener("change", aoMudar);
       return () => consulta.removeEventListener("change", aoMudar);
     }
+    // Guarda de desmontagem: a resposta do sistema pode chegar depois que a tela saiu. E só atualiza se mudou: a
+    // primeira leitura quase sempre confirma o valor inicial, sem renderizar de novo.
     let vivo = true;
     void AccessibilityInfo.isReduceMotionEnabled().then((ligado) => {
-      if (vivo) definirReduzir(ligado);
+      if (vivo && ligado !== atual.current) definirReduzir(ligado);
     });
     const assinatura = AccessibilityInfo.addEventListener("reduceMotionChanged", definirReduzir);
     return () => {

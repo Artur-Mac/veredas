@@ -15,6 +15,7 @@ import { baseDeReferenciasPublicas } from "../dados/recife/referenciasPublicas";
 import {
   usePerfilDomicilio,
   type ModoDeTransporte,
+  type PerfilDoDomicilio,
   type UsoArCondicionado,
 } from "../estado/PerfilDomicilio";
 import { useTema } from "../tema/Tema";
@@ -134,6 +135,8 @@ export default function TelaPerfilDomicilio() {
   const [diasMes, setDiasMes] = useState<number>(perfil.diasPresenciaisMes);
   const [entradaPct, setEntradaPct] = useState<number>(perfil.entradaPercentualCompra);
   const [prazoAnos, setPrazoAnos] = useState<number>(perfil.prazoAnosCompra);
+  const [acesso, setAcesso] = useState<PerfilDoDomicilio["necessidadesDeAcesso"]>(perfil.necessidadesDeAcesso);
+  const alternarAcesso = (x: "mobilidade" | "visao") => setAcesso((a) => (a.includes(x) ? a.filter((y) => y !== x) : [...a, x]));
   const [tetoTexto, setTetoTexto] = useState<string>(
     perfil.orcamentoMensalReais !== null ? String(Math.round(perfil.orcamentoMensalReais)) : "",
   );
@@ -169,6 +172,7 @@ export default function TelaPerfilDomicilio() {
         diasPresenciaisMes: diasMes,
         entradaPercentualCompra: entradaPct,
         prazoAnosCompra: prazoAnos,
+        necessidadesDeAcesso: acesso,
         orcamentoMensalReais: tetoNumero !== null && tetoNumero > 0 ? tetoNumero : null,
       });
       mostrarAviso("Perfil da casa salvo neste aparelho");
@@ -188,6 +192,7 @@ export default function TelaPerfilDomicilio() {
       setDiasMes(20);
       setEntradaPct(20);
       setPrazoAnos(30);
+      setAcesso([]);
       setTetoTexto("");
       mostrarAviso("Perfil restaurado para o padrão");
     } catch {
@@ -372,6 +377,16 @@ export default function TelaPerfilDomicilio() {
             {OPCOES_PRAZO_ANOS.map((anos) => (
               <PilulaDeEscolha key={anos} rotulo={`${anos} anos`} ativa={prazoAnos === anos} aoTocar={() => setPrazoAnos(anos)} />
             ))}
+          </View>
+        </SecaoDoPerfil>
+
+        <SecaoDoPerfil
+          titulo="Alguém na casa precisa de acessibilidade? (opcional)"
+          apoio="Se marcar, o dossiê mostra rampas do quarteirão e semáforos sonoros perto do prédio. Fica só neste aparelho e não entra em nada que você compartilhe."
+        >
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+            <PilulaDeEscolha rotulo="Mobilidade reduzida" ativa={acesso.includes("mobilidade")} aoTocar={() => alternarAcesso("mobilidade")} />
+            <PilulaDeEscolha rotulo="Baixa visão ou cegueira" ativa={acesso.includes("visao")} aoTocar={() => alternarAcesso("visao")} />
           </View>
         </SecaoDoPerfil>
 

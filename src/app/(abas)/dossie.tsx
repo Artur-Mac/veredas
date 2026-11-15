@@ -16,13 +16,13 @@ import { EdificioDoDossie, type SecaoDoEdificio } from "../../componentes/dossie
 import { Entorno, type SecaoDoEntorno } from "../../componentes/dossie-v1/Entorno";
 import { GavetaDaPergunta, GavetaDoAnuncio, GavetaDoCadastro, GavetaDoMapa, GavetaDoRoteiro } from "../../componentes/dossie-v1/Gavetas";
 import { InfoDoImovel } from "../../componentes/dossie-v1/InfoDoImovel";
+import { FichaViva, LinhaDoTempoEstrutural } from "../../componentes/dossie-v1/FichaViva";
 import { TopoDoDossie } from "../../componentes/dossie-v1/Topo";
 import { ServicosDeEntorno } from "../../componentes/caderno/Servicos";
 import type { AbaDoDossie } from "../../componentes/dossie-v1/textos";
 import { GavetaDeFonte, type PedidoDeFonte } from "../../componentes/fonte/GavetaDeFonte";
 import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
-import { CartaoSol } from "../../componentes/sol/CartaoSol";
 import { SolNasFachadas } from "../../componentes/dossie-v1/SolNasFachadas";
 import { LadoDoBarulho } from "../../componentes/dossie-v1/Noite";
 import { DesdeQueSalvou } from "../../componentes/dossie-v1/DesdeQueSalvou";
@@ -38,6 +38,12 @@ import type { RespostaDaDefesaCivil } from "../../componentes/dossie-v1/ARua";
 import type { AnaliseV2, Pergunta, Prioridade } from "../../dados/contratos";
 import { derivarCustoPorPartes } from "../../dados/custoPorPartes";
 import { derivarDossie } from "../../dados/dossie/derivar";
+import { indicadoresDoPredio, type Indicador } from "../../dados/dossie/indicadores";
+import { referenciaDoCadastro } from "../../dados/iptuDoAnuncio";
+import { chuvaDoBairro } from "../../dados/recife/chuva";
+import { essenciaisDoBairro } from "../../dados/recife/essenciais";
+import { edificiosDoBairro, indiceDoBairro } from "../../dados/recife/indice";
+import { noiteDoBairro } from "../../dados/recife/noite";
 import { bairroPorSlug, eCoberto } from "../../dados/recife/bairros";
 import { useAnalises } from "../../estado/Analises";
 import { usePerfilDomicilio } from "../../estado/PerfilDomicilio";
@@ -173,6 +179,16 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
   const vinculoConfirmado = analise.vinculo.estado === "confirmado";
   const nomeDoBairro = bairroPorSlug(analise.bairro)?.nome ?? (analise.bairroTexto.trim() || "Bairro");
   const predio = visao.loteConfirmado ? cadastro.edificio : null;
+  // 15/11/2026: o prédio comparado com o bairro (dia a dia a pé, noite, avenida, obras, alagamento).
+  const indicadores = useMemo<Indicador[]>(() => {
+    if (!predio || !analise.bairro) return [];
+    try {
+      return indicadoresDoPredio({ nomeDoBairro, predio, edificiosDoBairro: edificiosDoBairro(predio.bairro), essenciais: essenciaisDoBairro(analise.bairro), noite: noiteDoBairro(analise.bairro), chuva: chuvaDoBairro(analise.bairro), ruaDoBairro: indiceDoBairro(predio.bairro).rua ?? null });
+    } catch {
+      return [];
+    }
+  }, [predio, analise.bairro, nomeDoBairro]);
+
   const partesDeCusto = useMemo(
     () => derivarCustoPorPartes(analise, predio, perfilDomicilio),
     [analise, predio, perfilDomicilio],
@@ -197,7 +213,10 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
       setAba(destino);
     },
     [aba, rolarAte],
-  );
+  );  const investigar = useCallback((id: Indicador["id"]) => {
+    irPara("entorno", id === "obras" ? "obras" : id === "barulho" || id === "noite" ? "rua" : "leitura");
+  }, [irPara]);
+
 
   const medirSecao = useCallback(
     (secao: SecaoDaAba, y: number) => {
@@ -312,6 +331,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
           >
             <TopoDoDossie
               predio={predio}
+              fotos={analise.extracao?.fotos ?? []}
               salva={analise.salva}
               aoVoltar={() => router.navigate("/")}
               aoAlternarSalvo={() => void alternarSalvo()}
@@ -324,6 +344,9 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
               aoAbrirAnuncio={() => setGaveta({ tipo: "anuncio" })}
               aoAbrirCadastro={() => setGaveta({ tipo: "cadastro" })}
               aoAbrirFonte={abrirFonte}
+              comodidades={analise.extracao?.campos.comodidades ?? []}
+              unidades={predio?.unidades ?? null}
+              temAnuncio={Boolean(analise.url || analise.extracao)}
             />
             <BlocoDeCusto
               custo={visao.custo}
@@ -334,6 +357,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
               partes={partesDeCusto}
               perfilConfigurado={perfilDomicilio.configurado}
               aoAbrirPerfilDomicilio={abrirPerfilDomicilio}
+              referenciaIptu={predio ? referenciaDoCadastro(predio, visao.especificacoes.area) : null}
             />
           </View>
 
@@ -346,7 +370,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             </CaixaCreme>
           ) : null}
 
-          <View style={{ marginTop: 16 }}><CartaoSol analise={analise} /></View>
+          <View style={{ marginTop: 16 }} />
           <AbasDoDossie atual={aba} aoEscolher={escolherAba} />
 
           <View
@@ -381,6 +405,12 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                 aoVerObras={() => irPara("entorno", "obras")}
                 aoConfirmarPredio={confirmarPredio}
                 aoVerVerificacoes={() => irPara("edificio", "verificacoes")}
+                indicadores={indicadores}
+                bairro={analise.bairro}
+                predioId={predio?.id ?? null}
+                aoAbrirPergunta={(pergunta) => setGaveta({ tipo: "pergunta", pergunta })}
+                aoVerRotina={() => irPara("entorno", "leitura")}
+                aoInvestigar={investigar}
               />
             ) : aba === "entorno" ? (
               <Entorno
@@ -399,6 +429,11 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                 aoConfirmarPredio={confirmarPredio}
                 aoMedirSecao={medirSecao}
                 aoResponderDefesaCivil={(resposta) => void responderDefesaCivil(resposta)}
+                indicadores={indicadores}
+                acesso={perfilDomicilio.necessidadesDeAcesso}
+                tipologia={analise.tipologia}
+                analiseId={analise.id}
+                centroReferencia={analise.caderno?.localizacaoDaVisita ? [analise.caderno.localizacaoDaVisita.longitude, analise.caderno.localizacaoDaVisita.latitude] : null}
               />
             ) : (
               <EdificioDoDossie
@@ -418,18 +453,21 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             )}
           </View>
 
-          {/* `.ds-after-panel`: a ação principal e os dois links. */}
+          {/* `.ds-after-panel`: Raio-X vem depois dos destaques (ordem pedida pelo usuário), depois negociação e ações. */}
           <View style={styles.depoisDoPainel}>
-            {aba === "entorno" ? <ServicosDeEntorno centro={predio?.centro ?? (analise.caderno?.localizacaoDaVisita ? [analise.caderno.localizacaoDaVisita.longitude, analise.caderno.localizacaoDaVisita.latitude] : null)} referenciaDaVisita={!predio ? analise.caderno?.localizacaoDaVisita : undefined} /> : null}
-            {aba === "destaques" ? <PrepararNegociacao analise={analise} visao={visao} lista={lista} /> : null}
+            {aba === "destaques" ? <FichaViva analise={analise} predio={predio} lista={lista} visao={visao} nomeDoBairro={nomeDoBairro} /> : null}
+            {aba === "entorno" ? <ServicosDeEntorno centro={predio?.centro ?? (analise.caderno?.localizacaoDaVisita ? [analise.caderno.localizacaoDaVisita.longitude, analise.caderno.localizacaoDaVisita.latitude] : null)} referenciaDaVisita={!predio ? analise.caderno?.localizacaoDaVisita : undefined} bairro={predio?.bairro ?? null} predioId={predio?.id ?? null} /> : null}
+            {aba === "destaques" ? <PrepararNegociacao analise={analise} visao={visao} lista={lista} predio={predio} nomeDoBairro={nomeDoBairro} /> : null}
             {aba === "destaques" ? <LinkComSeta rotulo="Orçamento e cenários" onPress={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "orcamento" } })} /> : null}
             {aba === "edificio" ? <SolNasFachadas analise={analise} predio={predio} aoLevarParaVisita={levarParaVisita} /> : null}
             {aba === "edificio" ? <LadoDoBarulho bairro={predio?.bairro ?? null} predioId={predio?.id ?? null} aoLevarParaVisita={levarParaVisita} /> : null}
+            {aba === "edificio" ? <LinhaDoTempoEstrutural analise={analise} aoRegistrar={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "edificio" } })} /> : null}
             {aba === "edificio" ? <LinkComSeta rotulo="Documentos e CNPJ do edifício" onPress={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "edificio" } })} /> : null}
             <LinkComSeta rotulo="Observações e histórico de visitas" onPress={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "campo" } })} />
+            <LinkComSeta rotulo="Comparar imóveis" onPress={() => router.push("/comparar")} />
             <Botao rotulo="Preparar visita" variante="principal" seta onPress={() => void prepararVisita()} />
-            <View style={styles.acoes}>
-              <LinkComSeta rotulo="Comparar imóveis" onPress={() => router.push("/comparar")} discreto seta={false} />
+            {/* 15/11/2026: "Comparar" saiu do lado de "Descartar"; descartar fica sozinho, discreto, no fim. */}
+            <View style={[styles.acoes, { justifyContent: "flex-end" }]}>
               {analise.descarte ? (
                 <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 16 }}>
                   Análise descartada

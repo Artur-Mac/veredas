@@ -59,7 +59,7 @@ const MARGEM_RELATIVA = 0.22;
 const FOLGA_DOS_VIZINHOS_M = 30;
 const MAX_VIZINHOS = 60;
 
-function reguaDe(metrosPorPixel: number, larguraMaxima: number): CenaDoLote["regua"] {
+export function reguaDe(metrosPorPixel: number, larguraMaxima: number): CenaDoLote["regua"] {
   let escolhida = ESCALAS_DA_REGUA_M[0] ?? 10;
   for (const metros of ESCALAS_DA_REGUA_M) {
     if (metros / metrosPorPixel <= larguraMaxima) escolhida = metros;
@@ -125,6 +125,135 @@ export function montarCenaDoLote(
     metrosPorPixel,
     regua: reguaDe(metrosPorPixel, largura * 0.35),
   };
+}
+
+export type CategoriaPontoExtra = "praca" | "metro" | "ensino" | "saude" | "rotina";
+
+export type EntradaPontoExtraMapa = {
+  id: string;
+  categoria: CategoriaPontoExtra;
+  rotulo: string;
+  detalhe: string;
+  coordenada: Coordenada;
+  distanciaM: number;
+};
+
+export type PontoExtraCena = {
+  id: string;
+  categoria: CategoriaPontoExtra;
+  rotulo: string;
+  detalhe: string;
+  distanciaM: number;
+  x: number;
+  y: number;
+};
+
+const SETORES_CARDEAIS = ["L", "SE", "S", "SO", "O", "NO", "N", "NE"] as const;
+
+export function direcaoCardealPlano(x: number, y: number): string {
+  // No plano local, x > 0 é leste e y > 0 é sul (eixo y do SVG).
+  const rad = Math.atan2(y, x);
+  const idx = Math.round(rad / (Math.PI / 4));
+  return SETORES_CARDEAIS[((idx % 8) + 8) % 8] ?? "N";
+}
+
+/**
+ * Monta a cena 2D ampliando o enquadramento para incluir pontos próximos (praças, metrô, escolas, saúde
+ * e destinos da rotina dentro de `distanciaMaxEnquadramentoM`). Destinos mais distantes voltam em `foraDoQuadro`
+ * com direção cardeal para exibição como seta de rumo.
+ */
+export function montarCenaComPontosExtras(
+  predio: Edificio,
+  obras: ObrasProximas["recentes"],
+  vizinhos: readonly Edificio[],
+  largura: number,
+  altura: number,
+  pontosExtras: readonly EntradaPontoExtraMapa[],
+  distanciaMaxEnquadramentoM = 1300,
+): {
+  cena: CenaDoLote;
+  pontos: PontoExtraCena[];
+  foraDoQuadro: (EntradaPontoExtraMapa & { direcao: string })[];
+} {
+  const projetar = projetorDoPlano(predio.centro);
+  const lotePlano = poligonoDoLote(predio);
+  const pontosDeObra = obras.map((o) => projetar(o.centro));
+
+  const dentro: { item: EntradaPontoExtraMapa; plano: [number, number] }[] = [];
+  const foraDoQuadro: (EntradaPontoExtraMapa & { direcao: string })[] = [];
+
+  for (const item of pontosExtras) {
+    const plano = projetar(item.coordenada);
+    if (item.distanciaM <= distanciaMaxEnquadramentoM) {
+      dentro.push({ item, plano });
+    } else {
+      foraDoQuadro.push({ ...item, direcao: direcaoCardealPlano(plano[0], plano[1]) });
+    }
+  }
+
+  const todos: [number, number][] = [
+    [0, 0],
+    ...(lotePlano ?? []),
+    ...pontosDeObra,
+    ...dentro.map((d) => d.plano),
+  ];
+  const xs = todos.map((p) => p[0]);
+  const ys = todos.map((p) => p[1]);
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+  const vaoX = Math.max((maxX - minX) * (1 + 2 * MARGEM_RELATIVA), VAO_MINIMO_M);
+  const vaoY = Math.max((maxY - minY) * (1 + 2 * MARGEM_RELATIVA), (VAO_MINIMO_M * altura) / largura);
+  const metrosPorPixel = Math.max(vaoX / largura, vaoY / altura);
+  const meioX = (minX + maxX) / 2;
+  const meioY = (minY + maxY) / 2;
+
+  const paraDesenho = ([x, y]: [number, number]): [number, number] => [
+    largura / 2 + (x - meioX) / metrosPorPixel,
+    altura / 2 + (y - meioY) / metrosPorPixel,
+  ];
+  const caminhoDe = (plano: [number, number][]) => caminho(plano.map(paraDesenho));
+
+  const metadeX = (largura / 2) * metrosPorPixel + FOLGA_DOS_VIZINHOS_M;
+  const metadeY = (altura / 2) * metrosPorPixel + FOLGA_DOS_VIZINHOS_M;
+  const contornos: string[] = [];
+  for (const v of vizinhos) {
+    if (contornos.length >= MAX_VIZINHOS) break;
+    if (v.id === predio.id || !v.poligono) continue;
+    const [cx, cy] = projetar(v.centro);
+    if (Math.abs(cx - meioX) > metadeX || Math.abs(cy - meioY) > metadeY) continue;
+    contornos.push(caminhoDe(v.poligono.map((p) => projetar(p))));
+  }
+
+  const cena: CenaDoLote = {
+    largura,
+    altura,
+    lote: lotePlano ? caminhoDe(lotePlano) : null,
+    pino: paraDesenho([0, 0]),
+    vizinhos: contornos,
+    obras: pontosDeObra.map((p, i) => {
+      const [x, y] = paraDesenho(p);
+      return { numero: i + 1, categoria: obras[i]?.categoria ?? "construcao", x, y };
+    }),
+    metrosPorPixel,
+    regua: reguaDe(metrosPorPixel, largura * 0.35),
+  };
+
+  const pontos: PontoExtraCena[] = dentro.map(({ item, plano }) => {
+    const [x, y] = paraDesenho(plano);
+    return {
+      id: item.id,
+      categoria: item.categoria,
+      rotulo: item.rotulo,
+      detalhe: item.detalhe,
+      distanciaM: item.distanciaM,
+      x,
+      y,
+    };
+  });
+
+  return { cena, pontos, foraDoQuadro };
 }
 
 export type VolumeDeEdificio25D = {

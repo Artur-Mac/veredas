@@ -250,8 +250,33 @@ async function esperarSaldo(page, esperado) {
 
 const valorDoCampo = (page, nome) => page.getByRole("textbox", { name: nome, exact: true }).inputValue();
 
+/**
+ * 15/11/2026: com o anúncio lido, a tela mostra o cartão do anúncio (fotos, preço, custos, tamanho, lugar); o formulário
+ * abre em "Editar". Sem nada lido (ou sem bairro), o formulário já está aberto.
+ */
+async function abrirEdicao(page) {
+  const editar = page.getByRole("button", { name: "Editar os dados do anúncio", exact: true });
+  if (await editar.count()) await editar.click();
+}
+
+/** O link foi lido: o cartão do anúncio (com "Editar ›") ou, sem dado nenhum, o checklist com o código do portal. */
+async function esperarLeituraDoLink(page, idNoPortal) {
+  await esperar(async () => {
+    const t = await textoVisivel(page);
+    return t.includes("Editar ›") || t.includes(`ZAP Imóveis · código ${idNoPortal}`);
+  }, `cartão do anúncio ou checklist do código ${idNoPortal}`);
+}
+
+/** Do cartão à tela do prédio: "Encontrar o prédio" (sem pista) ou "Não é este · …" (com prédio provável). */
+async function irAoPredio(page) {
+  const encontrar = page.getByRole("button", { name: "Encontrar o prédio", exact: true });
+  if (await encontrar.count()) return encontrar.click();
+  await page.getByRole("button", { name: /^Não é este/ }).click();
+}
+
 /** A leitura de um link abre o formulário enxuto (preço, condomínio e IPTU); o resto fica atrás do link. */
 async function abrirTodosOsCampos(page) {
+  await abrirEdicao(page);
   assert.equal(await page.getByRole("textbox", { name: "Rua", exact: true }).count(), 0, "formulário enxuto sem a rua");
   await page.getByRole("button", { name: /^Ver todos os campos/ }).click();
 }
@@ -593,17 +618,20 @@ try {
     await autotesteDoAuditor(page);
     await etapa(page, "explorar-vazio");
 
-    await page.getByRole("textbox", { name: "Link do anúncio do imóvel" }).fill(LINK_CASA_FORTE);
+    await page.getByRole("textbox", { name: "Link do anúncio, prédio, rua ou bairro" }).fill(LINK_CASA_FORTE);
     await page.getByRole("button", { name: "Gerar Dossiê", exact: true }).click();
     await esperarRota(page, "/ler");
-    await esperarTexto(page, "ZAP Imóveis · código 2799999990");
-    await esperarTexto(page, "Casa Forte · com cadastro");
+    await esperarLeituraDoLink(page, "2799999990");
+    await esperarTexto(page, "Casa Forte");
     await etapa(page, "ler-link");
 
     await page.getByRole("textbox", { name: "Texto do anúncio" }).fill(TEXTO_CASA_FORTE);
     await page.getByRole("button", { name: "Ler texto", exact: true }).click();
+    // O cartão mostra preço e custos; a anomalia do IPTU aparece no formulário, em "Editar".
+    await esperarTexto(page, "R$ 690.000");
+    await esperarTexto(page, "Condomínio R$ 780 · IPTU R$ 154 (período a confirmar)");
+    await abrirEdicao(page);
     await esperarTexto(page, ANOMALIA_IPTU);
-    await esperarTexto(page, "R$ 690.000 · Cond. R$ 780/mês · IPTU R$ 154 · período não informado");
     await abrirTodosOsCampos(page);
     assert.equal(await valorDoCampo(page, "Rua"), "Estrada do Encanamento");
     assert.equal(await valorDoCampo(page, "Preço de venda (R$)"), "690.000");
@@ -615,7 +643,7 @@ try {
     assert.equal(await page.getByRole("radio", { name: "Comprar", exact: true }).isChecked(), true, "modalidade Comprar");
     await etapa(page, "ler-texto-anomalia-iptu");
 
-    await page.getByRole("button", { name: "Encontrar o prédio", exact: true }).click();
+    await irAoPredio(page);
     await esperarRota(page, "/predio");
     await esperarTexto(page, "É este o prédio?");
     await esperarTexto(page, "Estrada do Encanamento, 719");
@@ -642,8 +670,10 @@ try {
       assert.deepEqual(comM2, [], `aba ${aba}: linha de ITBI com m²`);
       return comITBI;
     };
-    // A anomalia lida no texto continua no dossiê, como achado principal.
-    await esperarTexto(page, "IPTU sem periodicidade");
+    // 15/11/2026: o IPTU sem período (R$ 154) é decidido pelo cadastro do prédio na confirmação (src/dados/iptuDoAnuncio.ts):
+    // entra como mensal no custo e o achado "IPTU sem periodicidade" não aparece mais.
+    await esperarTexto(page, "R$ 154");
+    assert(!(await textoVisivel(page)).includes("IPTU sem periodicidade"), "IPTU decidido pelo cadastro não fica sem periodicidade");
     const linhasITBI = await semPorM2ComITBI("Destaques");
     assert(
       linhasITBI.some((l) => /^\d+% (acima|abaixo) da mediana das avaliações fiscais de unidades deste prédio/.test(l)),
@@ -651,7 +681,8 @@ try {
     );
 
     // Toque num número do cadastro abre a gaveta da fonte: "IPTU 2026 · Prefeitura do Recife · ODbL".
-    await page.getByRole("button", { name: /IPTU 2026 no prédio\. Ver fonte/ }).click();
+    // 15/11/2026: o IPTU saiu do topo (aparece uma vez, no custo); a ficha do prédio abre a mesma gaveta de fonte.
+    await page.getByRole("button", { name: /^Prédio de .*Ver fonte\.$/ }).click();
     await page.getByRole("dialog", { name: "IPTU 2026 · Prefeitura do Recife · ODbL" }).waitFor();
     const gavetaDaFonte = await page.getByRole("dialog").last().innerText();
     assert.match(gavetaDaFonte, /Prefeitura da Cidade do Recife/);
@@ -683,13 +714,22 @@ try {
     const fontesDaRua = (await metaDoIndice()).fontesDaRua ?? [];
     const p156 = fontesDaRua.find((f) => f.chave === "central_156")?.periodo;
     assert(p156, "meta.json sem o período da Central 156");
-    await esperarTexto(page, `registro oficial · Central 156 da Emlurb · ${diaBr(p156.de)} a ${diaBr(p156.ate)}`);
-    await esperarTexto(page, "registro oficial · Entorno do Censo · Censo 2022");
-    await esperarTexto(page, "registro oficial · Sinistros da CTTU · 2022 a 2024");
+    // 15/11/2026: cada linha começa pela consequência em linguagem simples; a contagem, o detalhe, a fonte e a data
+    // ficam atrás do toque ("Ver fonte e data (período)"). O Censo do quarteirão, num toque.
+    const rotulosDaRua = async () => (await page.locator("body").ariaSnapshot());
+    const linhaDaLampada = page.getByRole("button", { name: /^(Lâmpada da rua apagada foi pedida|Ninguém pediu troca de lâmpada)/ });
+    await linhaDaLampada.waitFor();
+    assert((await rotulosDaRua()).includes("Pedidos de lâmpada apagada:"), "contagem da Central 156 embaixo da consequência");
+    await page.getByText("Ver calçada, árvores e moradia do quarteirão (Censo)", { exact: true }).click();
+    await esperar(async () => (await rotulosDaRua()).includes("registro oficial · Entorno do Censo · Censo 2022"), "Censo do quarteirão depois do toque");
     await esperarTexto(page, "A publicação esconde o número do imóvel.");
     await etapa(page, "dossie-entorno");
-    // Um toque numa linha da rua abre a gaveta da base, com a licença e as datas do meta.json.
-    await page.getByRole("button", { name: /^Pedidos de lâmpada apagada: / }).click();
+    // Um toque na linha mostra o número e o link da fonte com o período; o link abre a gaveta da base, com a licença e as
+    // datas do meta.json.
+    await linhaDaLampada.click();
+    const linkDaFonte = page.getByRole("link", { name: `Ver fonte e data (${diaBr(p156.de)} a ${diaBr(p156.ate)})` });
+    await linkDaFonte.waitFor();
+    await linkDaFonte.click();
     await page.getByRole("dialog", { name: "Central 156 da Emlurb · Prefeitura do Recife · ODbL" }).waitFor();
     const gavetaDaRua = await page.getByRole("dialog").last().innerText();
     const f156 = fontesDaRua.find((f) => f.chave === "central_156");
@@ -726,24 +766,24 @@ try {
     await esperarTexto(page, "Nenhuma análise de aluguel ainda.");
     await page.getByRole("radio", { name: "Todos", exact: true }).click();
 
-    await page.getByRole("textbox", { name: "Link do anúncio do imóvel" }).fill(casoDoLink.entrada);
+    await page.getByRole("textbox", { name: "Link do anúncio, prédio, rua ou bairro" }).fill(casoDoLink.entrada);
     await page.getByRole("button", { name: "Gerar Dossiê", exact: true }).click();
     await esperarRota(page, "/ler");
-    await esperarTexto(page, `ZAP Imóveis · código ${casoDoLink.esperado.idNoPortal}`);
-    await esperarTexto(page, "Casa Forte · com cadastro");
-    await esperarTexto(page, "Apartamento · 1 quarto · 37 m²");
-    assert.equal(await page.getByRole("radio", { name: "Alugar", exact: true }).isChecked(), true, "o link é de aluguel");
+    await esperarLeituraDoLink(page, casoDoLink.esperado.idNoPortal);
+    await esperarTexto(page, "Casa Forte");
+    await esperarTexto(page, "37 m² · 1 quarto");
+    // O cartão diz a modalidade que veio do link.
+    assert.equal(await page.getByRole("button", { name: "Aluguel. Toque para editar", exact: true }).count(), 1, "o link é de aluguel");
     await etapa(page, "ler-aluguel-link");
 
     await page.getByRole("textbox", { name: "Texto do anúncio" }).fill(casoDoTexto.entrada);
     await page.getByRole("button", { name: "Ler texto", exact: true }).click();
+    await esperarTexto(page, `R$ ${reais(dadosDoAluguel.preco)}/mês`);
+    await esperarTexto(page, `Condomínio R$ ${reais(dadosDoAluguel.condominio)} · IPTU R$ ${reais(dadosDoAluguel.iptu.valor)} (período a confirmar)`);
+    await abrirEdicao(page);
     await esperarTexto(page, ANOMALIA_IPTU);
-    await esperarTexto(
-      page,
-      `R$ ${reais(dadosDoAluguel.preco)}/mês · Cond. R$ ${reais(dadosDoAluguel.condominio)}/mês · IPTU R$ ${reais(dadosDoAluguel.iptu.valor)} · período não informado`,
-    );
     // A cobertura é a do link (Casa Forte): o texto colado fala de outro bairro e não a muda.
-    await esperarTexto(page, "Casa Forte · com cadastro");
+    await esperarTexto(page, "Casa Forte");
     await abrirTodosOsCampos(page);
     assert.equal(await valorDoCampo(page, "Rua"), dadosDoAluguel.logradouro);
     assert.equal(await valorDoCampo(page, "Aluguel (R$ por mês)"), reais(dadosDoAluguel.preco));
@@ -756,7 +796,7 @@ try {
     assert.equal(await page.getByRole("radio", { name: "Não sei", exact: true }).isChecked(), true, "o IPTU sem período fica em Não sei");
     await etapa(page, "ler-aluguel-anomalia-iptu");
 
-    await page.getByRole("button", { name: "Encontrar o prédio", exact: true }).click();
+    await irAoPredio(page);
     await esperarRota(page, "/predio");
     await esperarTexto(page, "Precisamos de mais uma informação");
     // T4: o link (37 m²) e o texto (125 m²) discordam da área, que fica a confirmar e não entra na busca de candidatos.
@@ -789,7 +829,7 @@ try {
     await esperarSaldo(page, 1);
     console.log("  saldo de créditos: 2 → 1");
     const textoDoDossieDeAluguel = semAcento(await textoVisivel(page));
-    assert(textoDoDossieDeAluguel.includes(`${ruaDoPredio}, ${predio.numero}`), `o dossiê mostra o endereço do prédio escolhido (${ruaDoPredio}, ${predio.numero})`);
+    assert(textoDoDossieDeAluguel.includes(`${ruaDoPredio}, ${predio.numero}`), `o dossiê mostra o endereço do prédio escolhido (${ruaDoPredio}, ${predio.numero}); tela: ${textoDoDossieDeAluguel.slice(0, 600)}`);
     await esperarTexto(page, "IPTU sem periodicidade");
     await esperarTexto(page, `R$ ${reais(dadosDoAluguel.preco)}`);
     await esperarTexto(page, `R$ ${reais(dadosDoAluguel.preco + dadosDoAluguel.condominio)}`);
@@ -898,7 +938,7 @@ try {
     console.log("c) Cabanga: fora da cobertura");
     await page.getByRole("tab", { name: "Explorar", exact: true }).click();
     await esperarRota(page, "/");
-    await page.getByRole("textbox", { name: "Link do anúncio do imóvel" }).fill(await linkDeCabanga());
+    await page.getByRole("textbox", { name: "Link do anúncio, prédio, rua ou bairro" }).fill(await linkDeCabanga());
     await page.getByRole("button", { name: "Gerar Dossiê", exact: true }).click();
     await esperarRota(page, "/ler");
     await esperarTexto(page, "Ainda não cobrimos Cabanga.");
@@ -982,8 +1022,9 @@ try {
     await esperarTexto(page, "Mensal conhecido");
     const custoComparado = await textoVisivel(page);
     assert.match(custoComparado, /R\$ 150\.000\nde diferença no preço anunciado/, "540.000 contra 690.000");
-    assert.match(custoComparado, /1 parcela a confirmar/, "o IPTU sem periodicidade da compra de Casa Forte fica a confirmar");
-    assert.match(custoComparado, /Mensal conhecido\nR\$ 780\/mês/, "Casa Forte: só o condomínio entra (IPTU sem período fica fora)");
+    // 15/11/2026: o IPTU sem período da compra de Casa Forte (R$ 154) foi decidido pelo cadastro na confirmação do prédio
+    // (src/dados/iptuDoAnuncio.ts) e entra como mensal: 780 + 154.
+    assert.match(custoComparado, /Mensal conhecido\nR\$ 934\/mês/, "Casa Forte: condomínio 780 + IPTU 154 por mês, decidido pelo cadastro");
     assert.match(custoComparado, /R\$ 770\/mês/, "Boa Viagem: condomínio 650 + IPTU 120 por mês");
     await etapa(page, "comparar-custo");
     await page.getByRole("tab", { name: "Espaço", exact: true }).click();
@@ -1190,11 +1231,11 @@ try {
       // Salvar a leitura: o erro é o do caderno (não "confira os valores"), nada navega e o crédito não sai.
       await pagina.getByRole("tab", { name: "Explorar", exact: true }).click();
       await esperarRota(pagina, "/");
-      await pagina.getByRole("textbox", { name: "Link do anúncio do imóvel" }).fill(LINK_CASA_FORTE);
+      await pagina.getByRole("textbox", { name: "Link do anúncio, prédio, rua ou bairro" }).fill(LINK_CASA_FORTE);
       await pagina.getByRole("button", { name: "Gerar Dossiê", exact: true }).click();
       await esperarRota(pagina, "/ler");
-      await esperarTexto(pagina, "Casa Forte · com cadastro");
-      await pagina.getByRole("button", { name: "Encontrar o prédio", exact: true }).click();
+      await esperarTexto(pagina, "Casa Forte");
+      await irAoPredio(pagina);
       await esperarTexto(pagina, ERRO_DO_CADERNO);
       assert.equal(new URL(pagina.url()).pathname, "/ler", "salvar a leitura com o caderno ilegível não navega");
       assert.equal(await saldoDoCabecalho(pagina), 3, "nenhum crédito sai");

@@ -1,13 +1,10 @@
-import * as Clipboard from "expo-clipboard";
 import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
-import { ScrollView, StyleSheet, TextInput, View } from "react-native";
-import Svg, { Path, Rect } from "react-native-svg";
-import { Botao } from "../../componentes/Botao";
+import React, { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import Svg, { Path } from "react-native-svg";
 import { Cartao, CorpoDoCartao } from "../../componentes/Cartao";
 import { Coluna } from "../../componentes/casca/Coluna";
 import { FaixaDoCaderno } from "../../componentes/casca/FaixaDoCaderno";
-import { useFocoDoCampo } from "../../componentes/casca/foco";
 import { carregarCadastro, type CadastroDaAnalise } from "../../componentes/dossie-v1/cadastro";
 import { GradeArquitetonica } from "../../componentes/GradeArquitetonica";
 import { caminho, poligonoNaCaixa, type Poligono } from "../../componentes/mapa/geometria";
@@ -16,6 +13,9 @@ import { estilosDoTema } from "../../componentes/revisao/estilosDoTema";
 import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
 import { ImportarExtensao } from "../../componentes/leitor/ImportarExtensao";
+import { BuscaUnificada, ExemplosAgora, FiltroDeEtapas, OndeMaisProcurarNoPiloto, TriagemDoCartao } from "../../componentes/inicio/Explorar";
+import { GavetaDeDescarte } from "../../componentes/descarte/GavetaDeDescarte";
+import { passaNoFiltro, type FiltroDeEtapa } from "../../dados/triagem";
 import { type AnaliseV2, type Edificio } from "../../dados/contratos";
 import { custoMensal, ROTULO_MENSAL_CONHECIDO, avisoDeValoresPendentes } from "../../dados/custos";
 import { derivarDossie } from "../../dados/dossie/derivar";
@@ -38,61 +38,15 @@ const FILTROS: { valor: FiltroModalidade; rotulo: string }[] = [
 ];
 
 export default function ExplorarT1() {
-  const { cor } = useTema();
   const styles = useEstilos();
-  const { lista, salvar, definirAtiva, erro } = useAnalises();
-  const [urlInput, setUrlInput] = useState("");
-  const [erroUrl, setErroUrl] = useState("");
+  const { lista, definirAtiva, erro } = useAnalises();
   const [filtro, setFiltro] = useState<FiltroModalidade>("TODOS");
-  const focoDoLink = useFocoDoCampo();
-  const inputRef = useRef<TextInput>(null);
-
-  const colarDaAreaDeTransferencia = async () => {
-    try {
-      const texto = await Clipboard.getStringAsync();
-      if (texto && texto.trim()) {
-        setUrlInput(texto.trim());
-        setErroUrl("");
-      } else {
-        setErroUrl("Não há nada copiado. Copie o endereço do anúncio e toque de novo, ou cole direto no campo.");
-        inputRef.current?.focus();
-      }
-    } catch {
-      // Firefox e permissão negada no Chrome recusam a leitura; sem aviso, o botão parecia não funcionar.
-      setErroUrl("O navegador não deixou o Vereda ler o que você copiou. Cole o link direto no campo (Ctrl+V; no celular, toque e segure o campo e escolha Colar).");
-      inputRef.current?.focus();
-    }
-  };
-
-  const gerarDossie = () => {
-    const limpo = urlInput.trim();
-    if (!limpo) {
-      setErroUrl("Cole ou digite o link do anúncio.");
-      return;
-    }
-
-    try {
-      const u = new URL(limpo);
-      if (!["http:", "https:"].includes(u.protocol) || !u.hostname.includes(".")) {
-        setErroUrl("Insira um link válido com https:// ou http://.");
-        return;
-      }
-    } catch {
-      setErroUrl("Link inválido. Confira o endereço digitado.");
-      return;
-    }
-
-    setErroUrl("");
-    // `n` faz cada "Gerar Dossiê" recomeçar a leitura: a tela fica montada entre uma visita e outra (ver `ler.tsx`).
-    router.push({ pathname: "/ler", params: { url: limpo, n: String(Date.now()) } });
-  };
+  const [etapa, setEtapa] = useState<FiltroDeEtapa>("todas");
+  const [descartando, setDescartando] = useState<string | null>(null);
 
   const analisesAtivas = lista.filter((a) => !a.descarte);
-  const analisesFiltradas = analisesAtivas.filter((a) => filtro === "TODOS" || a.modalidade === filtro);
-
-  const alternarSalvo = async (a: AnaliseV2) => {
-    await salvar({ ...a, salva: !a.salva, atualizadaEm: new Date().toISOString() });
-  };
+  const naModalidade = analisesAtivas.filter((a) => filtro === "TODOS" || a.modalidade === filtro);
+  const analisesFiltradas = naModalidade.filter((a) => passaNoFiltro(a, etapa));
 
   // Vínculo pendente em bairro coberto: falta confirmar o prédio. Nos demais casos, o dossiê, com a análise ativa.
   const abrirAnalise = async (a: AnaliseV2) => {
@@ -111,71 +65,16 @@ export default function ExplorarT1() {
           {/* Aviso do caderno (análises guardadas à parte): fica na tela, além do toast da abertura. */}
           <FaixaDoCaderno />
 
-          {/* `.scanner-card` */}
+          {/* `.scanner-card`, 15/11/2026: entrada única (link OU prédio, rua, bairro) e "Usar minha localização agora". */}
           <Cartao style={styles.cartaoDoScanner}>
             <CorpoDoCartao style={styles.corpoDoScanner}>
-              <View style={styles.scannerHead}>
-                <Texto tipo="titulo-tela" role="heading" style={styles.scannerTitulo}>
-                  Auditar novo anúncio
-                </Texto>
-                {/* A área de toque tem 44 px de altura; a pílula desenhada por dentro mantém os 28 px do protótipo. */}
-                <AlvoDeToque
-                  onPress={colarDaAreaDeTransferencia}
-                  style={styles.alvoColar}
-                  accessibilityRole="button"
-                  accessibilityLabel="Colar link"
-                >
-                  <View style={styles.btnColar}>
-                    <Svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke={cor("cor-texto-apoio")} strokeWidth={1.8} aria-hidden>
-                      <Rect x={9} y={9} width={13} height={13} rx={2} />
-                      <Path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                    </Svg>
-                    <Texto tipo="apoio" style={styles.textoBtnColar}>
-                      Colar link
-                    </Texto>
-                  </View>
-                </AlvoDeToque>
-              </View>
-
-              {/* `.scanner-input-well` */}
-              <View style={[styles.pocoLink, focoDoLink.focado ? styles.pocoLinkFocado : null, focoDoLink.estilo]}>
-                <Svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke={cor("cor-acao")} strokeWidth={1.8} aria-hidden>
-                  <Path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                  <Path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                </Svg>
-                <TextInput
-                  ref={inputRef}
-                  value={urlInput}
-                  onChangeText={(v) => {
-                    setUrlInput(v);
-                    if (erroUrl) setErroUrl("");
-                  }}
-                  onFocus={focoDoLink.aoFocar}
-                  onBlur={focoDoLink.aoDesfocar}
-                  onSubmitEditing={gerarDossie}
-                  placeholder="Cole o link do ZAP, VivaReal, QuintoAndar ou OLX"
-                  placeholderTextColor={cor("cor-texto-apoio")}
-                  accessibilityLabel="Link do anúncio do imóvel"
-                  style={styles.inputUrl}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  keyboardType="url"
-                  returnKeyType="go"
-                />
-              </View>
-
-              {erroUrl ? (
-                <Texto tipo="apoio" role="alert" style={styles.textoErroUrl}>
-                  {erroUrl}
-                </Texto>
-              ) : null}
-
-              <View style={styles.acoesDoScanner}>
-                <Botao rotulo="Gerar Dossiê" variante="principal" seta onPress={gerarDossie} />
-                <Botao rotulo="Adicionar imóvel sem link" variante="secundario" onPress={() => router.push("/editar")} />
-              </View>
+              <BuscaUnificada />
             </CorpoDoCartao>
           </Cartao>
+
+          {/* Sem análise ainda, os exemplos ficam abertos; com caderno, recolhidos (um toque abre). */}
+          <ExemplosAgora recolhido={analisesAtivas.length > 0} />
+          <OndeMaisProcurarNoPiloto />
 
           <ImportarExtensao />
           {/* `.saved-section-header` */}
@@ -203,13 +102,20 @@ export default function ExplorarT1() {
               })}
             </View>
           </View>
+          {naModalidade.length > 0 ? (
+            <FiltroDeEtapas filtro={etapa} aoEscolher={setEtapa} contagem={(f) => naModalidade.filter((a) => passaNoFiltro(a, f)).length} />
+          ) : null}
 
           {analisesFiltradas.length > 0 ? (
             <View style={styles.gradeAnalises}>
               {analisesFiltradas.map((a) => (
-                <CartaoDaAnalise key={a.id} analise={a} aoAbrir={() => abrirAnalise(a)} aoAlternarSalvo={() => alternarSalvo(a)} />
+                <CartaoDaAnalise key={a.id} analise={a} aoAbrir={() => abrirAnalise(a)} aoDescartar={() => setDescartando(a.id)} />
               ))}
             </View>
+          ) : naModalidade.length > 0 ? (
+            <Texto tipo="apoio" style={styles.semResultado}>
+              Nenhuma análise nesta etapa.
+            </Texto>
           ) : analisesAtivas.length > 0 ? (
             <Texto tipo="apoio" style={styles.semResultado}>
               {filtro === "aluguel" ? "Nenhuma análise de aluguel ainda." : "Nenhuma análise de compra ainda."}
@@ -232,22 +138,21 @@ export default function ExplorarT1() {
                 <Cartao style={styles.cartaoSimples}>
                   <CorpoDoCartao>
                     <Texto tipo="secao" style={styles.tituloDoCadernoVazio}>
-                      Seu caderno começa com um link.
+                      Seu caderno começa com um link, um prédio ou onde você está.
                     </Texto>
                     <Texto tipo="apoio" style={styles.textoDoCadernoVazio}>
-                      Cole o endereço de um anúncio acima para extrair dados declarados, checar lacunas de condomínio e cruzar
-                      com a base municipal do Recife.
+                      Cole o endereço de um anúncio, busque um prédio pelo nome ou pela rua, ou abra um dos exemplos acima.
                     </Texto>
                   </CorpoDoCartao>
                 </Cartao>
               )}
-
-              {/* VE06 (navegação): os "Dossiês de exemplo" (/exemplos/*) usam o layout antigo e dados ilustrativos; saíram do
-                  caminho principal. As telas ficam como referência histórica, abertas só pelo endereço. */}
             </View>
           )}
         </Coluna>
       </ScrollView>
+      {descartando ? (
+        <GavetaDeDescarte analiseId={descartando} visivel aoFechar={() => setDescartando(null)} aoDescartar={() => setDescartando(null)} />
+      ) : null}
     </Tela>
   );
 }
@@ -355,11 +260,11 @@ function useLeituraDoCartao(a: AnaliseV2, lista: AnaliseV2[]): LeituraDoCartao {
 function CartaoDaAnalise({
   analise: a,
   aoAbrir,
-  aoAlternarSalvo,
+  aoDescartar,
 }: {
   analise: AnaliseV2;
   aoAbrir: () => void;
-  aoAlternarSalvo: () => void;
+  aoDescartar: () => void;
 }) {
   const { cor } = useTema();
   const styles = useEstilos();
@@ -500,29 +405,8 @@ function CartaoDaAnalise({
         </View>
       </Pressionavel>
 
-      {/* Marcador: alvo de 44 px por cima do canto do topo; o círculo de 32 px do protótipo fica dentro dele. */}
-      <AlvoDeToque
-        onPress={aoAlternarSalvo}
-        accessibilityRole="button"
-        accessibilityLabel={a.salva ? "Remover dos salvos" : "Salvar imóvel"}
-        accessibilityState={{ selected: a.salva }}
-        aria-pressed={a.salva}
-        style={styles.alvoDoMarcador}
-      >
-        <View style={[styles.btnBookmark, a.salva ? styles.btnBookmarkSalvo : null]}>
-          <Svg
-            width={14}
-            height={14}
-            viewBox="0 0 24 24"
-            fill={a.salva ? cor("cor-acao") : "none"}
-            stroke={a.salva ? cor("cor-acao") : cor("cor-superficie")}
-            strokeWidth={2}
-            aria-hidden
-          >
-            <Path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
-          </Svg>
-        </View>
-      </AlvoDeToque>
+      {/* 15/11/2026: triagem num toque (favoritar, anotar, descartar e etapa). O marcador antigo do canto virou "Favoritar". */}
+      <TriagemDoCartao analise={a} aoDescartar={aoDescartar} />
     </View>
   );
 }

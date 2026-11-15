@@ -40,12 +40,19 @@ import { pipeline } from "node:stream/promises";
 import { fileURLToPath } from "node:url";
 import { dsqflsDaLuse, lerLicenciamentoAmbiental, montarARua } from "./rua/camadas.mjs";
 import { planejarPaginas } from "./paginacao.mjs";
+import { abrirHub, nomeDoHub } from "./hub.mjs";
+import { estadoDaLicenca } from "./licenca.mjs";
 
 const SEM_LOTES = process.argv.includes("--sem-lotes");
 /** Sem as camadas "A rua" da v1.1 (CNEFE, Censo, LUSE, 156, iluminação, coleta, CTTU e Defesa Civil). */
 const SEM_RUA = process.argv.includes("--sem-rua");
 /** Expansão municipal sempre em staging; nunca substitui o índice habilitado no app. */
 const TODOS_BAIRROS = process.argv.includes("--todos-bairros");
+/**
+ * --hub 2026-11-15 (ou VEREDA_HUB): lê do hub auditado em .cache/dados-recife/hub-<data>/ os recursos que ele tem
+ * (SHA-256 conferido pelo manifesto); os demais continuam vindo do CKAN. Carimbo próprio: "<data>T00:00:00Z".
+ */
+const HUB = abrirHub(nomeDoHub());
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const DIR_CACHE = path.join(RAIZ, ".cache", "dados-recife");
@@ -157,6 +164,12 @@ const CAMPOS_LICENCIAMENTO = [
   "latitude",
   "longitude",
   "categoria_empreendimento",
+  // Estado da licença (15/11/2026): retrato da base, não prova de obra em andamento (P05). `areatotalconstruida` está
+  // vazia em todas as 39.067 linhas de Obra e fica fora.
+  "data_emissao_licenca",
+  "data_validade_licenca",
+  "data_conclusao",
+  "empreendimento_de_impacto",
 ];
 
 const RECURSO_LOTES = "c41ee0d0-bb33-4380-8809-2e9082d79ab0";
@@ -636,6 +649,10 @@ function conferirColunas(fields) {
  */
 async function lerTabela({ recurso, fields, filters = null, arquivo, rotulo }) {
   conferirColunas(fields);
+  if (HUB) {
+    const doHub = HUB.lerTabela({ recurso, fields, filters, rotulo });
+    if (doHub) return doHub;
+  }
   const consulta = { recurso, fields, filters };
   const caminho = path.join(DIR_CACHE, arquivo);
   const emCache = lerJson(caminho);
@@ -696,8 +713,15 @@ async function lerTabela({ recurso, fields, filters = null, arquivo, rotulo }) {
   return { total, registros, doCache: false };
 }
 
-/** Metadados do recurso (nome, `last_modified`, `url` de download) e do pacote, com cache. */
+/** Metadados do recurso; no modo hub, `modificadoEm` vem do catálogo salvo no dia da extração. */
 async function metadadosDoRecurso(id) {
+  const meta = await metadadosDoRecursoNoCkan(id);
+  const doHub = HUB?.entrada(id) ? HUB.modificadoEm(id) : null;
+  return doHub ? { ...meta, modificadoEm: doHub } : meta;
+}
+
+/** Metadados do recurso (nome, `last_modified`, `url` de download) e do pacote, com cache. */
+async function metadadosDoRecursoNoCkan(id) {
   const caminho = path.join(DIR_CACHE, `recurso-${id}.json`);
   const emCache = lerJson(caminho);
   if (emCache) return emCache;
@@ -1313,6 +1337,7 @@ function prepararProcessos(registros, centroPorDsqfl, geradoEmData, relatorio) {
       dataCompleta: data,
       mes,
       situacao: limpar(r.situacao_processo).slice(0, 80) || null,
+      licenca: estadoDaLicenca(r, geradoEmData),
       lat,
       lon,
       propria,
@@ -1336,6 +1361,7 @@ function prepararProcessos(registros, centroPorDsqfl, geradoEmData, relatorio) {
       dataCompleta: maisRecente.dataCompleta,
       mes: maisRecente.mes,
       situacao: maisRecente.situacao,
+      licenca: maisRecente.licenca,
       lat: lugares[0].lat,
       lon: lugares[0].lon,
       dsqfl: maisRecente.dsqfl,
@@ -1425,6 +1451,8 @@ function ligarObras(edificios, processos, limiar24m) {
     data: o.mes,
     situacao: o.situacao,
     centro: [o.lon, o.lat],
+    // Retrato do estado da licença: [estado, válida até, empreendimento de impacto]. Não prova obra em andamento (P05).
+    ...(o.licenca ? { licenca: [o.licenca.estado, o.licenca.validaAte, o.licenca.impacto] } : {}),
   }));
 }
 
@@ -1696,8 +1724,9 @@ async function main() {
   fs.mkdirSync(DIR_SAIDA, { recursive: true });
 
   // Carimbo estável: nasce na primeira execução e fica no cache, para a segunda gerar arquivos idênticos.
-  const arquivoCarimbo = path.join(DIR_CACHE, TODOS_BAIRROS ? "geradoEm-municipal.txt" : "geradoEm.txt");
-  if (!fs.existsSync(arquivoCarimbo)) gravarAtomico(arquivoCarimbo, `${new Date().toISOString().slice(0, 19)}Z`);
+  const arquivoCarimbo = path.join(DIR_CACHE, HUB ? `geradoEm-hub-${HUB.nome}.txt` : TODOS_BAIRROS ? "geradoEm-municipal.txt" : "geradoEm.txt");
+  if (!fs.existsSync(arquivoCarimbo)) gravarAtomico(arquivoCarimbo, HUB ? `${HUB.nome}T00:00:00Z` : `${new Date().toISOString().slice(0, 19)}Z`);
+  if (HUB) console.log(`Modo hub ${HUB.nome}: recursos do manifesto lidos de .cache/dados-recife/hub-${HUB.nome}/ (SHA-256 conferido)`);
   const geradoEm = fs.readFileSync(arquivoCarimbo, "utf-8").trim();
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(geradoEm)) throw new Error(`Carimbo inválido em ${arquivoCarimbo}`);
   const geradoEmData = geradoEm.slice(0, 10);
@@ -1717,6 +1746,11 @@ async function main() {
   console.log(`  ${bairros.registros.length} bairros, total da API ${bairros.total}`);
   console.log("\nIPTU 2026");
   const iptu = await lerIptu();
+  if (TODOS_BAIRROS) {
+    // Coleta do IPTU por bairro (grafias e linhas), lida pelo ativador no lugar dos caches do CKAN.
+    const coleta = { origem: HUB ? `hub-${HUB.nome}` : "ckan", bairros: Object.fromEntries(Object.entries(iptu).map(([slug, gs]) => [slug, { grafias: gs.map((g) => g.grafia), registros: gs.reduce((s, g) => s + g.total, 0) }])) };
+    gravarAtomico(path.join(DIR_SAIDA, "coleta-iptu.json"), JSON.stringify(coleta));
+  }
   console.log("\nITBI");
   const itbiAnos = await lerItbi(metas);
   console.log("\nLicenciamento");

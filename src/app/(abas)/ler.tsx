@@ -14,12 +14,17 @@ import { avisoDeTipologia } from "../../componentes/predio/textos";
 import { estilosDoTema } from "../../componentes/revisao/estilosDoTema";
 import { AlvoDeToque } from "../../componentes/Pressionavel";
 import { FormularioDeRevisao } from "../../componentes/revisao/FormularioDeRevisao";
+import { CartaoDoAnuncio } from "../../componentes/revisao/CartaoDoAnuncio";
+import { PredioProvavel } from "../../componentes/predio/PredioProvavel";
+import { useConfirmarPredio } from "../../componentes/predio/confirmar";
+import { PreparoDoDossie } from "../../componentes/preparo/PreparoDoDossie";
+import type { SlugCoberto } from "../../dados/recife/bairros";
 import { LeituraDeImagem } from "../../componentes/leitor/LeituraDeImagem";
 import { arquivoDaExtensao } from "../../dados/arquivoDaExtensao";
 import { BAIRROS_COBERTOS } from "../../dados/recife/bairros";
 import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
-import { type AnaliseV2, type ExtracaoAnuncio, type LeituraParcial, type Portal } from "../../dados/contratos";
+import { type AnaliseV2, type Edificio, type ExtracaoAnuncio, type LeituraParcial, type Portal } from "../../dados/contratos";
 import { extrairDaUrl, extrairDoTexto, montarExtracao } from "../../dados/extrator";
 import { textoDoAnuncioCopiado } from "../../dados/extrator/copiado";
 import { lerPagina } from "../../dados/extrator/pagina";
@@ -160,6 +165,11 @@ function LeituraDoAnuncio() {
   const [pediuTexto, setPediuTexto] = useState(trechoRecebido || (daPagina !== null && !paginaRendeu));
   const [salvando, setSalvando] = useState(false);
   const [erroAoSalvar, setErroAoSalvar] = useState("");
+  /** A pessoa tocou num campo ou em "Editar": o formulário completo aparece (15/11/2026: o cartão vem antes). */
+  const [abriuEdicao, setAbriuEdicao] = useState(false);
+  /** Prédio confirmado no cartão: o preparo do dossiê por cima da tela, que termina no dossiê. */
+  const [preparando, setPreparando] = useState<{ id: string; nome: string; bairro: string | null } | null>(null);
+  const { confirmar: confirmarPredio, trabalhando: confirmando, erroDaCarteira } = useConfirmarPredio();
   /** Depois da primeira leitura bem-sucedida, a página reaberta é só para a pessoa ver. */
   const jaLeuAPagina = useRef(paginaRendeu);
   /** Resultado da última leitura do que a pessoa copiou (lido, vazio ou não é anúncio). */
@@ -378,12 +388,48 @@ function LeituraDoAnuncio() {
   };
   const salvarForaDeCobertura = () => salvarEIr({ estado: "fora_de_cobertura" }, () => router.push("/"));
 
+  /** "É este": salva a análise, confirma o prédio (IPTU contra o cadastro, endereço, crédito) e abre o preparo. */
+  const confirmarDaqui = async (edificio: Edificio) => {
+    if (salvando || confirmando || coberturaDoFormulario(form) !== "coberto") return;
+    if (idGerado.startsWith("ext-") && lista.some(a => a.id === idGerado)) {
+      setErroAoSalvar("Este arquivo já está no seu caderno. Abra a análise salva para editar; nenhuma cópia foi sobrescrita."); return;
+    }
+    setSalvando(true);
+    setErroAoSalvar("");
+    try {
+      const analise = montarAnalise({ estado: "pendente" });
+      await salvar(analise);
+      const r = await confirmarPredio(analise, edificio, form.bairro as SlugCoberto);
+      if (r === "ok") setPreparando({ id: analise.id, nome: analise.nome, bairro: analise.bairro });
+      else if (r === "sem_credito") setErroAoSalvar("Sem créditos para gerar o dossiê. O anúncio ficou salvo no caderno; recarregue em Créditos e confirme o prédio de novo.");
+      else if (r === "carteira_bloqueada") setErroAoSalvar(erroDaCarteira || "A carteira de créditos não abriu. Nenhum crédito foi usado.");
+      else setErroAoSalvar("Não foi possível confirmar o prédio. Nenhum crédito foi usado; tente de novo.");
+    } catch {
+      setErroAoSalvar(erroDoCaderno || "Não foi possível salvar. Confira os valores digitados e tente de novo.");
+    } finally {
+      setSalvando(false);
+    }
+  };
+
   // ——— Tela ————————————————————————————————————————————————————————————————————
+
+  /** Com preço ou tipo lido, o anúncio aparece como cartão; sem nada, o formulário fica aberto para preencher. */
+  const temDados = precoLido || partesDoTipo.length > 0;
+  const fotos = extracao.fotos ?? [];
+  // Prévia da análise para procurar o prédio enquanto a pessoa revisa (nada é salvo até "É este").
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const previa = useMemo(() => montarAnalise({ estado: "pendente" }), [form, extracao]);
 
   // A cobertura vem do bairro escolhido no formulário, não só do que a leitura achou.
   const coberturaEscolhida = coberturaDoFormulario(form);
   const foraDeCobertura = coberturaEscolhida === "recife_fora" || coberturaEscolhida === "fora_do_recife";
   const semBairro = coberturaEscolhida === "desconhecida";
+  // Fora de cobertura ou sem bairro, o formulário abre sozinho: é nele que a pessoa corrige o bairro. Aberto uma vez,
+  // continua aberto (não some no meio da edição quando uma leitura nova traz o bairro).
+  const formularioPrecisa = !temDados || foraDeCobertura || semBairro;
+  const mostrarFormulario = abriuEdicao || formularioPrecisa;
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { if (formularioPrecisa) setAbriuEdicao(true); }, [formularioPrecisa]);
   const mostrarCartaoDeTexto = !noCelular || pediuTexto;
   const bloqueado = motivoDaFalha === "bloqueio";
   /** No celular, quando a página não pôde ser lida, o caminho principal é o navegador do aparelho. */
@@ -392,6 +438,8 @@ function LeituraDoAnuncio() {
 
   return (
     <Tela>
+      <PreparoDoDossie aberto={preparando !== null} nome={preparando?.nome ?? ""} bairro={preparando?.bairro ?? null}
+        aoTerminar={() => { const id = preparando?.id; setPreparando(null); if (id) router.push({ pathname: "/dossie", params: { id } }); }} />
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
         <Coluna style={styles.coluna}>
           <AlvoDeToque
@@ -406,10 +454,10 @@ function LeituraDoAnuncio() {
           </AlvoDeToque>
 
           {arquivoExtensao && !recebidoDaExtensao ? <Texto role="alert">O arquivo da extensão não está aberto nesta sessão. Selecione-o novamente no início; nenhum texto privado foi colocado no endereço da página.</Texto> : null}
-          <LeituraDeImagem aoRevisar={texto => { setTextoDoCampo(texto); setPediuTexto(true); setAvisoDaCopia("Texto da imagem na revisão. Confira e toque em Ler texto para propor os campos."); }} />
+          {temDados ? null : <LeituraDeImagem aoRevisar={texto => { setTextoDoCampo(texto); setPediuTexto(true); setAvisoDaCopia("Texto da imagem na revisão. Confira e toque em Ler texto para propor os campos."); }} />}
           <Cartao style={styles.cartao}>
             <CorpoDoCartao style={styles.corpo}>
-              <View style={styles.cabecalho}>
+              {temDados ? null : <View style={styles.cabecalho}>
                 <Texto tipo="apoio" style={styles.sobretitulo}>
                   Lendo o anúncio no aparelho
                 </Texto>
@@ -421,7 +469,7 @@ function LeituraDoAnuncio() {
                     {url}
                   </Texto>
                 ) : null}
-              </View>
+              </View>}
 
               {avisoDoRecebido ? (
                 <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.avisoDaCopia}>
@@ -449,11 +497,15 @@ function LeituraDoAnuncio() {
                 </View>
               ) : null}
 
-              <View style={styles.checklist}>
-                {linhas.map((linha, indice) => (
-                  <LinhaDoChecklist key={linha.titulo} numero={indice + 1} {...linha} />
-                ))}
-              </View>
+              {temDados ? (
+                <CartaoDoAnuncio form={form} titulo={tituloDoCartao} portal={portal} url={url} fotos={fotos} aoEditar={() => setAbriuEdicao(true)} />
+              ) : (
+                <View style={styles.checklist}>
+                  {linhas.map((linha, indice) => (
+                    <LinhaDoChecklist key={linha.titulo} numero={indice + 1} {...linha} />
+                  ))}
+                </View>
+              )}
 
               {avisoDeTipologia(form.tipologia) ? (
                 <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.avisoDaCopia}>
@@ -527,20 +579,25 @@ function LeituraDoAnuncio() {
 
           <Cartao style={styles.cartao}>
             <CorpoDoCartao style={styles.corpo}>
-              <Texto tipo="titulo-tela" role="heading" style={styles.tituloDoFormulario}>
-                Revise antes de salvar
-              </Texto>
-              <FormularioDeRevisao essencial estado={form} anomalias={anomaliasDaRevisao(extracao, form)} aoAlterar={setForm} />
+              {mostrarFormulario ? (
+                <>
+                  <Texto tipo="titulo-tela" role="heading" style={styles.tituloDoFormulario}>
+                    Revise antes de salvar
+                  </Texto>
+                  <FormularioDeRevisao essencial estado={form} anomalias={anomaliasDaRevisao(extracao, form)} aoAlterar={setForm} />
+                </>
+              ) : null}
 
-              {foraDeCobertura ? null : (
+              {foraDeCobertura ? null : semBairro ? (
                 <View style={styles.acoes}>
-                  <Botao rotulo="Encontrar o prédio" variante="principal" desativado={salvando || semBairro} onPress={encontrarOPredio} />
-                  {semBairro ? (
-                    <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.dicaDoBairro}>
-                      Escolha o bairro
-                    </Texto>
-                  ) : null}
+                  <Botao rotulo="Encontrar o prédio" variante="principal" desativado onPress={encontrarOPredio} />
+                  <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.dicaDoBairro}>
+                    Escolha o bairro
+                  </Texto>
                 </View>
+              ) : (
+                <PredioProvavel analise={previa} bairro={form.bairro as SlugCoberto} trabalhando={salvando || confirmando}
+                  aoConfirmar={(e) => void confirmarDaqui(e)} aoEscolherOutro={() => void encontrarOPredio()} />
               )}
               {!foraDeCobertura && erroAoSalvar ? (
                 <Texto tipo="apoio" role="alert" style={styles.erro}>

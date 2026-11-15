@@ -27,3 +27,8 @@ out/
 /docs/dados/raw/transporte/gtfs-extracted/
 # Páginas salvas do Google Maps (trazem chaves do próprio Google embutidas); os JSON extraídos continuam
 /docs/dados/raw/google-maps/html/
+
+# Python cache
+__pycache__/
+*.pyc
+

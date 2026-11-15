@@ -18,7 +18,7 @@ import {
   GavetaDeTroca,
   GavetaDoRoteiro,
 } from "../../componentes/visita-v1/Gavetas";
-import { perguntasDaVisita, predioDaAnalise, resumirVisita } from "../../componentes/visita-v1/logica";
+import { predioDaAnalise, resumirVisita, roteiroDaVisita } from "../../componentes/visita-v1/logica";
 import { PainelDeCampo } from "../../componentes/visita-v1/NoImovel";
 import { Preparar } from "../../componentes/visita-v1/Preparar";
 import { Resumo } from "../../componentes/visita-v1/Resumo";
@@ -111,7 +111,7 @@ function ConteudoDaVisita() {
   const proprias = visita?.perguntasProprias;
   const perguntas = useMemo(() => {
     if (!analise || !proprias) return [];
-    return perguntasDaVisita({ ...analise, visita: { ...analise.visita, perguntasProprias: proprias } }, lista, new Date());
+    return roteiroDaVisita({ ...analise, visita: { ...analise.visita, perguntasProprias: proprias } }, lista, new Date());
   }, [analise, proprias, lista]);
   const predio = useMemo(() => (analise ? predioDaAnalise(analise) : null), [analise]);
   const vizinhos = useMemo(() => {

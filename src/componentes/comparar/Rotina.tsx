@@ -243,6 +243,6 @@ function ParaDecidir({ rotulos, perfil, custos, destino, destinos, edificios, re
 const MINUSCULAS = new Set(["de", "da", "do", "das", "dos", "e"]);
 /** "RUA CONSELHEIRO PORTELA" → "Rua Conselheiro Portela" (o índice guarda em caixa alta). */
 const ABREVIACOES: Record<string, string> = { av: "Avenida", r: "Rua", est: "Estrada", tv: "Travessa", pca: "Praça", al: "Alameda", lgo: "Largo", vl: "Vila", cais: "Cais" };
-function tituloDaRua(n: string): string {
+export function tituloDaRua(n: string): string {
   return n.toLowerCase().split(/\s+/).map((p, i) => (i === 0 && ABREVIACOES[p] ? ABREVIACOES[p] : i > 0 && MINUSCULAS.has(p) ? p : p.charAt(0).toUpperCase() + p.slice(1))).join(" ");
 }

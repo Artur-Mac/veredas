@@ -145,8 +145,10 @@ describe("índice cadastral do Recife: formato", () => {
       "cod_logradouro", "numero", "bairro", "valor_avaliacao", "area_construida", "data_transacao", "tipo_imovel", "latitude", "longitude",
     ]);
     expect(fonte("itbi").recursos).toHaveLength(11);
+    // 15/11/2026: estado da licença (datas e impacto), sem nenhuma coluna pessoal; `areatotalconstruida` fica fora (vazia).
     expect(fonte("licenciamento").colunasUsadas).toEqual([
       "dsqfl", "tipo_processo", "assunto", "data_entrada", "situacao_processo", "latitude", "longitude", "categoria_empreendimento",
+      "data_emissao_licenca", "data_validade_licenca", "data_conclusao", "empreendimento_de_impacto",
     ]);
     // NMENDCOMP (endereço do lote) é lido só para casar prédios sem coordenada; o valor nunca é gravado.
     expect(fonte("lotes").colunasUsadas).toEqual(["DSQFL", "QTDPAVIMENTOS", "NMEDIFICACAO", "NMENDCOMP", "geometry"]);
@@ -420,7 +422,16 @@ describe("índice cadastral do Recife: ITBI por unidade", () => {
       const fim = meta.geradoEm.slice(0, 10);
       type Linha = { cod_logradouro?: unknown; numero?: unknown; tipo_imovel?: unknown; data_transacao?: unknown; valor_avaliacao?: unknown };
       const linhas: Linha[] = [];
+      // Índice gerado do hub auditado de 15/11/2026: o ITBI 2026 vem do CSV do hub (SHA-256 no manifesto), não do cache do CKAN.
+      const hubItbi2026 = join(DIR_CACHE, "hub-2026-11-15", "fc95e204-a121-4b7a-94b2-e4420539c0d1.csv");
+      const doHub = meta.geradoEm.startsWith("2026-11-15") && existsSync(hubItbi2026);
       for (let ano = 2016; ano <= anoDaGeracao; ano++) {
+        if (ano === 2026 && doHub) {
+          const [cab, ...corpo] = readFileSync(hubItbi2026, "utf-8").replace(/^\uFEFF/, "").trim().split(/\r?\n/).map((l) => l.split(";"));
+          const i = (c: string) => cab!.indexOf(c);
+          for (const l of corpo) linhas.push({ cod_logradouro: l[i("cod_logradouro")], numero: l[i("numero")], tipo_imovel: l[i("tipo_imovel")], data_transacao: l[i("data_transacao")], valor_avaliacao: l[i("valor_avaliacao")] });
+          continue;
+        }
         const cache = JSON.parse(readFileSync(join(DIR_CACHE, `itbi-${ano}.json`), "utf-8")) as { registros: Linha[] };
         linhas.push(...cache.registros);
       }

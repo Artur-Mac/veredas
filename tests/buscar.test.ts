@@ -143,10 +143,10 @@ describe("buscarCandidatos: nome do edifício", () => {
 });
 
 describe("buscarCandidatos: área", () => {
-  it("só a área devolve quem tem a tipologia, 30 pontos e mais 10 se a tipologia tem 2 ou mais unidades", () => {
+  it("só a área devolve quem tem a tipologia: 30, +10 com 2+ unidades e +20 se a área é praticamente igual (15/11/2026)", () => {
     const r = buscarCandidatos(com({ area: 125 }), edificios);
     expect(r).toEqual([
-      { edificioId: "900001-250", pontos: 40, motivos: ["3 unidades com 125 m² no cadastro"] },
+      { edificioId: "900001-250", pontos: 60, motivos: ["3 unidades com 125 m² no cadastro"] },
       { edificioId: "900002-45", pontos: 30, motivos: ["1 unidade com 126,5 m² no cadastro"] },
     ]);
   });
@@ -164,11 +164,11 @@ describe("buscarCandidatos: área", () => {
     expect(buscarCandidatos(com({ area: 85.5, anoConstrucao: 2009 }), edificios)).toEqual([
       {
         edificioId: "900001-100",
-        pontos: 55,
+        pontos: 75,
         motivos: ["16 unidades com 85,5 m² no cadastro", "Construído em 2008, perto do ano do anúncio"],
       },
     ]);
-    expect(buscarCandidatos(com({ area: 85.5, anoConstrucao: 2011 }), edificios)[0]?.pontos).toBe(40);
+    expect(buscarCandidatos(com({ area: 85.5, anoConstrucao: 2011 }), edificios)[0]?.pontos).toBe(60);
     expect(buscarCandidatos(com({ anoConstrucao: 2008 }), edificios)).toEqual([]);
   });
 });
@@ -383,7 +383,7 @@ describe("buscarCandidatos: várias tipologias na tolerância de área", () => {
 
   it("o +10 vale uma vez só, mesmo com várias tipologias repetidas na tolerância", () => {
     const predio = comTipologias([t(99, 4), t(100, 2), t(101, 6)]);
-    expect(buscarCandidatos(com({ area: 100 }), [predio])[0]?.pontos).toBe(40);
+    expect(buscarCandidatos(com({ area: 100 }), [predio])[0]?.pontos).toBe(60); // 30 + 10 uma vez + 20 da área igual
   });
 
   it("sem nenhuma tipologia repetida na tolerância, são 30 pontos", () => {
@@ -398,10 +398,10 @@ describe("buscarCandidatos: várias tipologias na tolerância de área", () => {
     expect(buscarCandidatos(com({ area: 100 }), [predio])[0]?.pontos).toBe(30);
   });
 
-  it("a mais próxima com 2 ou mais unidades continua valendo 40", () => {
+  it("a mais próxima com 2 ou mais unidades continua valendo 40, mais 20 quando a área é igual", () => {
     const predio = comTipologias([t(100, 5), t(102, 1)]);
     expect(buscarCandidatos(com({ area: 100 }), [predio])).toEqual([
-      { edificioId: "900070-1", pontos: 40, motivos: ["5 unidades com 100 m² no cadastro"] },
+      { edificioId: "900070-1", pontos: 60, motivos: ["5 unidades com 100 m² no cadastro"] },
     ]);
   });
 });
@@ -926,5 +926,20 @@ describe("busca com o endereço colado do anúncio", () => {
   });
   it("tirar o fecho não apaga rua com nome de bairro no meio", () => {
     expect(enderecoSemFecho("Rua das Graças, 100 - Graças, Recife - PE")).toBe("Rua das Graças  100");
+  });
+});
+
+describe("teste no celular (15/11/2026): nome parecido × área que bate", () => {
+  it("Torre, 'Edf. Engenho Torre', 53 m², 8º andar, sem rua: o prédio com apartamentos de 53 m² vem antes do de nome igual só com 127 m²", () => {
+    const torre = edificiosDoBairro("torre");
+    const r = buscarCandidatosDetalhados({ bairro: "torre", logradouro: null, numero: null, nomeEdificio: "Engenho Torre", area: 53, andar: 8, anoConstrucao: null }, torre);
+    const ids = r.candidatos.map((c) => c.edificioId);
+    expect(ids[0]).toBe("29246-61"); // Rua Horácio Cahu, 61 · Engenho Capibaribe · 21 unidades de 53,18 m²
+    const capibaribe = r.candidatos[0]!;
+    expect(capibaribe.motivos).toContain('Nome parecido com o do anúncio ("engenho")');
+    expect(capibaribe.motivos).toContain("21 unidades com 53,18 m² no cadastro");
+    const daTorre = r.candidatos.find((c) => c.edificioId === "42870-140"); // Marquês de Maricá, 140 · Engenho da Torre · 127 m²
+    expect(daTorre?.motivos).toEqual(["Mesmo nome de edifício do anúncio", "Nenhum apartamento perto de 53 m² no cadastro deste prédio"]);
+    expect(ids.indexOf("42870-140")).toBeGreaterThan(0);
   });
 });

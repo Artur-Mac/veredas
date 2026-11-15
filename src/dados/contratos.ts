@@ -69,6 +69,8 @@ export const esquemaLeituraParcial = z.strictObject({
   portal,
   idNoPortal: z.string().max(40).nullable(),
   campos: esquemaCamposExtraidos,
+  /** URLs https das fotos do anúncio (mostradas sem guardar cópia). Opcional: leituras antigas não têm. */
+  fotos: z.array(z.string().url().max(600)).max(20).optional(),
 });
 
 export const esquemaAnomalia = z.strictObject({
@@ -95,6 +97,8 @@ export const esquemaExtracao = z.strictObject({
   /** Campos de custo e identificação esperados para a modalidade que ficaram nulos. */
   lacunas: z.array(chaveDeCampo).max(30),
   cobertura,
+  /** Fotos do anúncio, da primeira leitura que trouxe alguma. Opcional: análises antigas não têm. */
+  fotos: z.array(z.string().url().max(600)).max(20).optional(),
 });
 
 // ——— Análise do usuário (persistida, versão 2) ————————————————————————————————————
@@ -327,6 +331,17 @@ export const esquemaObra = z.strictObject({
   situacao: z.string().max(80).nullable(),
   /** Coordenada publicada ou, sem ela, centro do lote pelo `dsqfl`. */
   centro: coordenada,
+  /**
+   * 15/11/2026: estado da licença no retrato da base, [estado, válida até "AAAA-MM-DD", empreendimento de impacto].
+   * "valida"/"vencida" comparam a validade com a geração do índice; "deferida" é processo deferido sem data de
+   * licença publicada; "em_analise" é solicitada, em tramitação ou em exigência. Não prova que a obra começou ou
+   * terminou (P05). Ausente em índice anterior.
+   */
+  licenca: z.tuple([
+    z.enum(["valida", "vencida", "emitida", "deferida", "em_analise", "outra"]),
+    z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
+    z.boolean().nullable(),
+  ]).optional(),
 });
 
 export const esquemaEdificio = z.strictObject({
@@ -547,6 +562,11 @@ export type FatoDaRua = {
   fonte: ChaveDeFonteDaRua | "voce";
   /** Data ou período do dado, sempre na tela: "base de 19/10/2026", "31/01/2025 a 30/01/2026", "2022 a 2024", "Censo 2022". */
   data: string;
+  /**
+   * 15/11/2026: o que isso pode significar para quem mora, em linguagem simples ("Pode haver som amplificado à noite
+   * perto do prédio."). Vem primeiro na tela; a contagem, o detalhe e a fonte ficam atrás do toque.
+   */
+  consequencia?: string | null;
 };
 
 export type GrupoDaRua = {

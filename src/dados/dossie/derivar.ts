@@ -40,7 +40,9 @@ const LIMITE_AREA_NAO_CONFERE_RELATIVO = 0.1;
 const ANO_DE_CORTE_ESTRUTURA = 2005;
 const MAX_ACHADOS_DE_APOIO = 3;
 /** Prédio de tipologia única: todas as áreas das tipologias a até 3% da mediana delas. */
-const LIMITE_TIPOLOGIA_UNICA = 0.03;
+// 15/11/2026: "tamanhos parecidos" = a maior área até 20% acima da menor (antes: 3% da mediana). Apartamentos de 53 e
+// 61 m² comparam-se pelo valor da unidade; 98 e 124,5 m² não. A faixa de áreas fica dita na referência.
+const LIMITE_TIPOLOGIA_UNICA = 0.2;
 /** Como a posição de compra nomeia a referência: a mediana de `itbi.valorUnidade` (36 meses). */
 const REFERENCIA_DO_ITBI = "mediana das avaliações fiscais de unidades deste prédio (ITBI, 36 meses)";
 
@@ -130,12 +132,6 @@ const DEMONSTRATIVO: Record<Tipologia, string> = {
 
 // ——— Posição (barra bala) —————————————————————————————————————————————————————————
 
-/** Mediana de uma lista não vazia, sem interpolar além dos dois valores centrais. */
-function medianaDe(valores: number[]): number {
-  const v = [...valores].sort((x, y) => x - y);
-  const meio = Math.floor(v.length / 2);
-  return v.length % 2 === 1 ? (v[meio] ?? 0) : ((v[meio - 1] ?? 0) + (v[meio] ?? 0)) / 2;
-}
 
 /**
  * Prédio de tipologia única: todas as áreas das tipologias ficam a até 3% da mediana delas. Só nele o valor de uma
@@ -144,8 +140,8 @@ function medianaDe(valores: number[]): number {
  */
 export function tipologiaUnica(e: Edificio): boolean {
   if (e.tipologias.length === 0) return false;
-  const mediana = medianaDe(e.tipologias.map((t) => t.area));
-  return e.tipologias.every((t) => Math.abs(t.area - mediana) <= mediana * LIMITE_TIPOLOGIA_UNICA + 1e-9);
+  const areas = e.tipologias.map((t) => t.area);
+  return Math.max(...areas) <= Math.min(...areas) * (1 + LIMITE_TIPOLOGIA_UNICA) + 1e-9;
 }
 
 function montarPosicao(

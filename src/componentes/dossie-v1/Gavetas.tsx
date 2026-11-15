@@ -240,7 +240,7 @@ export function GavetaDoMapa({ visivel, aoFechar, predio, visao, vizinhos }: Pro
             {linhas.length > 0 ? (
               <View>
                 {linhas.map((l) => (
-                  <LinhaDeObraNumerada key={l.numero} numero={l.numero} categoria={l.categoria} titulo={l.titulo} detalhe={l.detalhe} rotulo={l.rotuloAcessivel} />
+                  <LinhaDeObraNumerada key={l.numero} numero={l.numero} categoria={l.categoria} titulo={l.titulo} detalhe={l.detalhe} rotulo={l.rotuloAcessivel} licenca={l.licenca} />
                 ))}
               </View>
             ) : (
@@ -249,7 +249,7 @@ export function GavetaDoMapa({ visivel, aoFechar, predio, visao, vizinhos }: Pro
               </Corpo>
             )}
             <Nota>
-              Contornos cadastrais dos lotes; não representam a planta das torres. Cada ponto numerado é onde a Prefeitura registrou a licença.
+              Contornos cadastrais dos lotes; não representam a planta das torres. Cada ponto numerado é onde a Prefeitura registrou a licença; toque nele para ver a distância e o estado da licença.
             </Nota>
           </>
         ) : (

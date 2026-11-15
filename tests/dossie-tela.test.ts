@@ -832,11 +832,9 @@ describe("tela do dossiê", () => {
       expect(t).toContain("Casa Forte · Recife");
       expect(t).toContain("Lote confirmado ✓");
       expect(t).toContain("Abrir mapa");
-      expect(t).toContain(`Construído em ${e.anoConstrucao}`);
-      const faixa = visao.cadastro.find((f) => f.id === "iptu-faixa");
-      expect(faixa).toBeDefined();
-      expect(t).toContain(faixa?.valor);
-      expect(t).toContain("IPTU 2026 no prédio");
+      // 15/11/2026: ficha do prédio em uma linha; o IPTU aparece uma vez só, no custo (não mais a faixa no topo).
+      expect(t).toContain(`Prédio de ${e.anoConstrucao} · ${e.pavimentos} andares`);
+      expect(t).not.toContain("IPTU 2026 no prédio");
       expect(t).toContain("Dados do anúncio");
       expect(t).toContain("Cadastro oficial");
       expect(t).toContain("Preparar visita");
@@ -867,21 +865,22 @@ describe("tela do dossiê", () => {
       expect(t).toContain("+R$ 1.190 além do aluguel");
       expect(t).toContain("IPTU e Seguro incêndio fora da soma.");
       expect(t).toContain("IPTU: O anúncio informa R$ 288, sem periodicidade.");
-      expect(t.filter((x) => x === "A confirmar").length).toBeGreaterThanOrEqual(2);
+      // 15/11/2026: o IPTU sem período mostra a referência do cadastro no mesmo lugar ("~R$ X", fora da soma).
+      expect(t.filter((x) => x === "A confirmar").length).toBeGreaterThanOrEqual(1);
+      expect(t).toContain("pelo cadastro, fora da soma");
       expect(t).toContain("Ver composição e ajustar valores");
     });
 
-    it("um toque no número de IPTU do cadastro abre a gaveta de fonte com as datas do meta.json", () => {
+    it("um toque na ficha do prédio abre a gaveta de fonte com as datas do meta.json", () => {
       prepararEstado([a], "confirmada");
       const arvore = abrirTela();
-      const faixa = visao.cadastro.find((f) => f.id === "iptu-faixa");
-      tocar(arvore, new RegExp(`${faixa?.valor.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}.*Ver fonte`));
+      tocar(arvore, /^Prédio de .*Ver fonte\.$/);
       const t = todosOsTextos(arvore);
-      const iptu = META.fontes.find((f) => f.chave === "iptu_2026");
-      expect(iptu).toBeDefined();
-      expect(t).toContain("IPTU 2026 · Prefeitura do Recife · ODbL");
-      expect(t).toContain(dataDaFonte(iptu?.modificadoEm ?? null));
-      expect(t).toContain(dataDaFonte(iptu?.consultadoEm ?? null));
+      const chave = visao.cadastro.find((f) => f.id === "cadastro-ano")?.fonte;
+      const base = META.fontes.find((f) => f.chave === chave);
+      expect(base).toBeDefined();
+      expect(t).toContain(dataDaFonte(base?.modificadoEm ?? null));
+      expect(t).toContain(dataDaFonte(base?.consultadoEm ?? null));
       expect(t).toContain("Colunas usadas");
       for (const c of ORDEM_DA_CONFIANCA) expect(t).toContain(rotuloDaConfianca(c));
     });
@@ -941,6 +940,8 @@ describe("tela do dossiê", () => {
       prepararEstado([a], "confirmada");
       const arvore = abrirTela();
       tocar(arvore, "Entorno");
+      // 15/11/2026: o Entorno abre pelo que as obras significam; a lista vem com um toque.
+      tocar(arvore, /^Ver (a obra|as \d+ obras)$/);
       const t = todosOsTextos(arvore);
       expect(t).toContain("Obras próximas");
       const linhas = linhasDeObras(visao.obras);
@@ -1290,7 +1291,7 @@ describe("tela do dossiê", () => {
       expect(u).not.toContain("Área a confirmar");
     });
 
-    it("a medida do achado, principal e de apoio, está em Fraunces 500 (`.ds-finding-measure`), não em JetBrains Mono", () => {
+    it("anomalias de custo vão para 'Divergências do anúncio', compactas, no painel da aba (15/11/2026)", () => {
       const a = analise({
         id: "medidas",
         declarados: { iptu: { ...v(288), periodo: "desconhecido", aConfirmar: true }, condominio: v(150) },
@@ -1311,11 +1312,11 @@ describe("tela do dossiê", () => {
       // Só o painel da aba: o bloco de custo, acima dele, escreve os mesmos valores em tabela, em outra fonte.
       const painel = arvore.root.findAll((n) => (n.type as unknown) === "View" && n.props.role === "tabpanel")[0];
       if (!painel) throw new Error("sem painel");
-      for (const numero of ["R$ 288", "R$ 150"]) {
-        const estilos = estilosDoTexto(painel, numero);
-        expect(estilos.length).toBeGreaterThan(0);
-        for (const estilo of estilos) expect(estilo).toMatchObject({ fontFamily: "Fraunces", fontWeight: "500" });
-      }
+      const noPainel = painel.findAll((n) => (n.type as unknown) === "Text").map((n) => [n.props.children].flat(3).filter((c: unknown) => typeof c === "string").join(""));
+      expect(noPainel).toContain("Divergências do anúncio (2)");
+      expect(noPainel).toContain(visao.achados.principal!.titulo);
+      expect(noPainel).toContain(visao.achados.apoio[0]!.titulo);
+      expect(noPainel).not.toContain("O que mais pesa");
     });
 
     it("com anomalia de custo, o achado vem do anúncio e 'Ver composição' leva a /editar", () => {
@@ -1330,12 +1331,11 @@ describe("tela do dossiê", () => {
       prepararEstado([a], "anomalia");
       const arvore = abrirTela();
       const t = todosOsTextos(arvore);
-      expect(t).toContain("O que o Vereda encontrou");
+      // 15/11/2026: divergência do anúncio fica na área própria, com o atalho para corrigir o valor.
+      expect(t).toContain("Divergências do anúncio (1)");
       expect(t).toContain("IPTU sem periodicidade");
-      tocar(arvore, "Ver composição");
+      tocar(arvore, "Corrigir o valor");
       expect(G.__router.push).toHaveBeenCalledWith({ pathname: "/editar", params: { id: "anomalia" } });
-      tocar(arvore, /^Ver fonte: declarado pelo anunciante · anúncio$/);
-      expect(todosOsTextos(arvore)).toContain("Informado no anúncio");
     });
   });
 

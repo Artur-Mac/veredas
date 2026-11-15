@@ -46,6 +46,33 @@ export type ReferenciaIptuCadastral = {
   nota: string;
 };
 
+export type CustosDeTransferencia = {
+  itbiMinimoReais: number;
+  itbiMaximoReais: number;
+  /** Escritura e registro: tabela do cartório (TJPE), não estimados aqui. */
+  escrituraERegistroReais: null;
+  totalMinimoReais: number;
+  totalMaximoReais: number;
+  explicacao: string;
+  fonteCurta: string;
+};
+
+/**
+ * ITBI do Recife numa faixa de 2% a 3% sobre o valor (Código Tributário Municipal, art. 52, II: 3%; redução temporária
+ * para 2% anunciada em dez/2025; parte financiada pode ter alíquota menor). A base é o valor declarado ou o arbitrado
+ * pela Prefeitura, o que for compatível (Lei 19.490/2026): por isso, sobre o preço é só uma referência.
+ */
+export function estimarTransferencia(precoReais: number | null): CustosDeTransferencia | null {
+  if (precoReais === null || !(precoReais > 0)) return null;
+  const itbiMinimoReais = Math.round(precoReais * 0.02), itbiMaximoReais = Math.round(precoReais * 0.03);
+  return {
+    itbiMinimoReais, itbiMaximoReais, escrituraERegistroReais: null,
+    totalMinimoReais: precoReais + itbiMinimoReais, totalMaximoReais: precoReais + itbiMaximoReais,
+    explicacao: `ITBI de ${formatarReais(itbiMinimoReais)} a ${formatarReais(itbiMaximoReais)} (2% a 3% do preço anunciado; confira a alíquota vigente e a base na Secretaria de Finanças). Escritura e registro: a confirmar no cartório (tabela de emolumentos do TJPE).`,
+    fonteCurta: "Código Tributário do Recife, art. 52; Lei municipal 19.490/2026",
+  };
+}
+
 export type CustoPorPartes = {
   /** Camada 1: exatamente o custo oficial conhecido do imóvel (aluguel/condomínio/IPTU declarados), sem misturar estimativas. */
   oficial: CustoMensal;
@@ -59,6 +86,8 @@ export type CustoPorPartes = {
   simulacaoCompra: SimulacaoDeCompra | null;
   /** Orientação sobre Terreno de Marinha / Laudêmio de 5% quando aplicável em compra no Recife. */
   alertaMarinha: AlertaMarinhaCompra | null;
+  /** 15/11/2026: custos de transferência na compra (ITBI em faixa; escritura e registro a confirmar, nunca 0). */
+  transferencia: CustosDeTransferencia | null;
   /** Comparação puramente descritiva com o teto mensal definido pela pessoa, se houver. */
   comparacaoComTetoPessoal: string | null;
   /** Compatibilidade: a direção da janela não altera o consumo estimado. */
@@ -180,6 +209,13 @@ export function estimarDeslocamentoMensal(
   };
 }
 
+/** Prestação constante da Tabela Price, com a taxa efetiva anual convertida para mensal; 0 sem valor ou sem taxa. */
+export function prestacaoPrice(valorFinanciadoReais: number, prazoMeses: number, taxaEfetivaAnualPct: number): number {
+  const taxaMensal = Math.pow(1 + taxaEfetivaAnualPct / 100, 1 / 12) - 1;
+  const fator = Math.pow(1 + taxaMensal, prazoMeses);
+  return valorFinanciadoReais > 0 && taxaMensal > 0 && prazoMeses > 0 ? Math.round((valorFinanciadoReais * (taxaMensal * fator)) / (fator - 1)) : 0;
+}
+
 export function simularFinanciamentoPrice(
   precoCompraReais: number,
   perfil: PerfilDoDomicilio,
@@ -191,13 +227,7 @@ export function simularFinanciamentoPrice(
   const prazoAnos = perfil.prazoAnosCompra;
   const prazoMeses = prazoAnos * 12;
   const taxaEfetivaAnualPct = refs.financiamento.taxaEfetivaAnualPct;
-  const taxaMensal = Math.pow(1 + taxaEfetivaAnualPct / 100, 1 / 12) - 1;
-
-  const fator = Math.pow(1 + taxaMensal, prazoMeses);
-  const prestacaoPriceReais =
-    valorFinanciadoReais > 0 && taxaMensal > 0
-      ? Math.round((valorFinanciadoReais * (taxaMensal * fator)) / (fator - 1))
-      : 0;
+  const prestacaoPriceReais = prestacaoPrice(valorFinanciadoReais, prazoMeses, taxaEfetivaAnualPct);
 
   return {
     entradaReais,
@@ -279,6 +309,8 @@ export function derivarCustoPorPartes(
     }
   }
 
+  const transferencia = analise.modalidade === "compra" ? estimarTransferencia(oficial.principal.valor) : null;
+
   let comparacaoComTetoPessoal: string | null = null;
   if (
     perfil.orcamentoMensalReais !== null &&
@@ -302,6 +334,7 @@ export function derivarCustoPorPartes(
     somaRotinaEstimadaReais,
     simulacaoCompra,
     alertaMarinha,
+    transferencia,
     comparacaoComTetoPessoal,
     janelaPoenteConsiderada: poente,
   };

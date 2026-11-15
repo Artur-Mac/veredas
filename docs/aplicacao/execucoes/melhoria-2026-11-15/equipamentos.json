@@ -1,0 +1,585 @@
+{
+ "executadoEm": "2026-11-15T15:36:41.330Z",
+ "versao": "fa075f4647c474d2",
+ "indice": "indice-municipal/faa40c969275e6b5",
+ "hub": "2026-11-15",
+ "fontes": {
+  "semaforos": {
+   "linhas": 712,
+   "comPosicao": 711,
+   "semPosicao": 1
+  },
+  "sonoros": {
+   "linhas": 67,
+   "comPosicao": 67,
+   "semPosicao": 0
+  },
+  "paraciclos": {
+   "linhas": 562,
+   "comPosicao": 551,
+   "semPosicao": 11,
+   "unicos": 528,
+   "posicaoPeloGeojson": 77,
+   "conferenciaGeojson": {
+    "recurso": "836b8e24-67d8-49fc-a62c-85602b501e80",
+    "feicoes": 511,
+    "nota": "a290b35f e 8778757a têm o mesmo SHA-256; não lidos"
+   }
+  },
+  "bikePe": {
+   "linhas": 90,
+   "comPosicao": 90,
+   "semPosicao": 0
+  },
+  "cultura": {
+   "linhas": 68,
+   "comPosicao": 68,
+   "semPosicao": 0,
+   "latLonTrocadas": 68
+  },
+  "rotasPermanentes": {
+   "feicoes": 558,
+   "comGeometria": 558
+  },
+  "rotasConecta": {
+   "feicoes": 79,
+   "comGeometria": 79
+  },
+  "saude": {
+   "feicoes": 132,
+   "saude": 94,
+   "academiaDaCidade": 18,
+   "foraDeProposito": {
+    "Albergue Terapeutica": 1,
+    "CAPS": 8,
+    "RESIDENCIA TERAPEUTICA": 8,
+    "ALBERGUE TERAPEUTICO": 1,
+    "CAPS AD": 1,
+    "CVA": 1
+   }
+  },
+  "ucn": {
+   "feicoes": 28,
+   "comGeometria": 28
+  },
+  "pracas": {
+   "feicoes": 499,
+   "porTipo": {
+    "AREA VERDE": 67,
+    "PRAÇA": 413,
+    "PARQUE": 19
+   },
+   "usadas": 432,
+   "nota": "\"AREA VERDE\" fica fora: não é espaço de convívio cadastrado"
+  }
+ },
+ "bairros": 72,
+ "predios": 7203,
+ "maiorArquivo": 240288,
+ "resumo": {
+  "boa-viagem": {
+   "predios": 1878,
+   "bytes": 240288,
+   "comSonoroA150m": 74,
+   "comCiclovia": 1878,
+   "comPraca": 1406
+  },
+  "casa-forte": {
+   "predios": 82,
+   "bytes": 13262,
+   "comSonoroA150m": 0,
+   "comCiclovia": 82,
+   "comPraca": 82
+  },
+  "gracas": {
+   "predios": 291,
+   "bytes": 44692,
+   "comSonoroA150m": 10,
+   "comCiclovia": 291,
+   "comPraca": 291
+  },
+  "espinheiro": {
+   "predios": 156,
+   "bytes": 24702,
+   "comSonoroA150m": 4,
+   "comCiclovia": 156,
+   "comPraca": 156
+  },
+  "madalena": {
+   "predios": 280,
+   "bytes": 43772,
+   "comSonoroA150m": 8,
+   "comCiclovia": 280,
+   "comPraca": 280
+  },
+  "aflitos": {
+   "predios": 70,
+   "bytes": 11307,
+   "comSonoroA150m": 0,
+   "comCiclovia": 70,
+   "comPraca": 70
+  },
+  "afogados": {
+   "predios": 174,
+   "bytes": 24360,
+   "comSonoroA150m": 1,
+   "comCiclovia": 174,
+   "comPraca": 174
+  },
+  "agua-fria": {
+   "predios": 33,
+   "bytes": 5839,
+   "comSonoroA150m": 0,
+   "comCiclovia": 33,
+   "comPraca": 33
+  },
+  "apipucos": {
+   "predios": 1,
+   "bytes": 494,
+   "comSonoroA150m": 0,
+   "comCiclovia": 1,
+   "comPraca": 1
+  },
+  "areias": {
+   "predios": 31,
+   "bytes": 5202,
+   "comSonoroA150m": 0,
+   "comCiclovia": 28,
+   "comPraca": 31
+  },
+  "arruda": {
+   "predios": 27,
+   "bytes": 4767,
+   "comSonoroA150m": 0,
+   "comCiclovia": 27,
+   "comPraca": 27
+  },
+  "barro": {
+   "predios": 38,
+   "bytes": 5794,
+   "comSonoroA150m": 15,
+   "comCiclovia": 2,
+   "comPraca": 38
+  },
+  "beberibe": {
+   "predios": 9,
+   "bytes": 1732,
+   "comSonoroA150m": 0,
+   "comCiclovia": 9,
+   "comPraca": 9
+  },
+  "boa-vista": {
+   "predios": 267,
+   "bytes": 43538,
+   "comSonoroA150m": 62,
+   "comCiclovia": 267,
+   "comPraca": 267
+  },
+  "bomba-do-hemeterio": {
+   "predios": 4,
+   "bytes": 1110,
+   "comSonoroA150m": 0,
+   "comCiclovia": 4,
+   "comPraca": 4
+  },
+  "bongi": {
+   "predios": 24,
+   "bytes": 4067,
+   "comSonoroA150m": 0,
+   "comCiclovia": 24,
+   "comPraca": 24
+  },
+  "cacote": {
+   "predios": 2,
+   "bytes": 674,
+   "comSonoroA150m": 0,
+   "comCiclovia": 2,
+   "comPraca": 2
+  },
+  "cajueiro": {
+   "predios": 16,
+   "bytes": 2516,
+   "comSonoroA150m": 0,
+   "comCiclovia": 16,
+   "comPraca": 16
+  },
+  "campina-do-barreto": {
+   "predios": 7,
+   "bytes": 1201,
+   "comSonoroA150m": 0,
+   "comCiclovia": 7,
+   "comPraca": 7
+  },
+  "campo-grande": {
+   "predios": 123,
+   "bytes": 17731,
+   "comSonoroA150m": 0,
+   "comCiclovia": 123,
+   "comPraca": 123
+  },
+  "casa-amarela": {
+   "predios": 265,
+   "bytes": 41970,
+   "comSonoroA150m": 4,
+   "comCiclovia": 265,
+   "comPraca": 265
+  },
+  "caxanga": {
+   "predios": 25,
+   "bytes": 3908,
+   "comSonoroA150m": 0,
+   "comCiclovia": 24,
+   "comPraca": 25
+  },
+  "coelhos": {
+   "predios": 10,
+   "bytes": 1907,
+   "comSonoroA150m": 0,
+   "comCiclovia": 10,
+   "comPraca": 10
+  },
+  "coqueiral": {
+   "predios": 1,
+   "bytes": 416,
+   "comSonoroA150m": 0,
+   "comCiclovia": 0,
+   "comPraca": 1
+  },
+  "cordeiro": {
+   "predios": 352,
+   "bytes": 51212,
+   "comSonoroA150m": 33,
+   "comCiclovia": 352,
+   "comPraca": 352
+  },
+  "curado": {
+   "predios": 1,
+   "bytes": 531,
+   "comSonoroA150m": 0,
+   "comCiclovia": 1,
+   "comPraca": 1
+  },
+  "derby": {
+   "predios": 33,
+   "bytes": 6063,
+   "comSonoroA150m": 4,
+   "comCiclovia": 33,
+   "comPraca": 33
+  },
+  "encruzilhada": {
+   "predios": 198,
+   "bytes": 31267,
+   "comSonoroA150m": 10,
+   "comCiclovia": 198,
+   "comPraca": 198
+  },
+  "engenho-do-meio": {
+   "predios": 45,
+   "bytes": 7104,
+   "comSonoroA150m": 0,
+   "comCiclovia": 45,
+   "comPraca": 45
+  },
+  "estancia": {
+   "predios": 16,
+   "bytes": 2868,
+   "comSonoroA150m": 0,
+   "comCiclovia": 16,
+   "comPraca": 16
+  },
+  "fundao": {
+   "predios": 6,
+   "bytes": 1374,
+   "comSonoroA150m": 0,
+   "comCiclovia": 6,
+   "comPraca": 6
+  },
+  "guabiraba": {
+   "predios": 1,
+   "bytes": 271,
+   "comSonoroA150m": 0,
+   "comCiclovia": 0,
+   "comPraca": 1
+  },
+  "hipodromo": {
+   "predios": 23,
+   "bytes": 4026,
+   "comSonoroA150m": 0,
+   "comCiclovia": 23,
+   "comPraca": 23
+  },
+  "ibura": {
+   "predios": 21,
+   "bytes": 3846,
+   "comSonoroA150m": 0,
+   "comCiclovia": 20,
+   "comPraca": 15
+  },
+  "ilha-do-leite": {
+   "predios": 36,
+   "bytes": 5789,
+   "comSonoroA150m": 0,
+   "comCiclovia": 36,
+   "comPraca": 36
+  },
+  "ilha-do-retiro": {
+   "predios": 33,
+   "bytes": 5955,
+   "comSonoroA150m": 1,
+   "comCiclovia": 33,
+   "comPraca": 33
+  },
+  "imbiribeira": {
+   "predios": 475,
+   "bytes": 62200,
+   "comSonoroA150m": 18,
+   "comCiclovia": 475,
+   "comPraca": 472
+  },
+  "ipsep": {
+   "predios": 183,
+   "bytes": 25610,
+   "comSonoroA150m": 0,
+   "comCiclovia": 183,
+   "comPraca": 183
+  },
+  "iputinga": {
+   "predios": 286,
+   "bytes": 42602,
+   "comSonoroA150m": 13,
+   "comCiclovia": 286,
+   "comPraca": 286
+  },
+  "jaqueira": {
+   "predios": 24,
+   "bytes": 4081,
+   "comSonoroA150m": 0,
+   "comCiclovia": 24,
+   "comPraca": 24
+  },
+  "jardim-sao-paulo": {
+   "predios": 56,
+   "bytes": 7925,
+   "comSonoroA150m": 0,
+   "comCiclovia": 47,
+   "comPraca": 55
+  },
+  "jiquia": {
+   "predios": 13,
+   "bytes": 2327,
+   "comSonoroA150m": 0,
+   "comCiclovia": 13,
+   "comPraca": 13
+  },
+  "jordao": {
+   "predios": 19,
+   "bytes": 2240,
+   "comSonoroA150m": 0,
+   "comCiclovia": 17,
+   "comPraca": 11
+  },
+  "mangueira": {
+   "predios": 3,
+   "bytes": 730,
+   "comSonoroA150m": 0,
+   "comCiclovia": 3,
+   "comPraca": 3
+  },
+  "monteiro": {
+   "predios": 38,
+   "bytes": 6350,
+   "comSonoroA150m": 6,
+   "comCiclovia": 38,
+   "comPraca": 38
+  },
+  "morro-da-conceicao": {
+   "predios": 4,
+   "bytes": 1144,
+   "comSonoroA150m": 0,
+   "comCiclovia": 4,
+   "comPraca": 4
+  },
+  "mustardinha": {
+   "predios": 26,
+   "bytes": 4014,
+   "comSonoroA150m": 0,
+   "comCiclovia": 26,
+   "comPraca": 26
+  },
+  "nova-descoberta": {
+   "predios": 6,
+   "bytes": 1269,
+   "comSonoroA150m": 0,
+   "comCiclovia": 6,
+   "comPraca": 6
+  },
+  "paissandu": {
+   "predios": 10,
+   "bytes": 2033,
+   "comSonoroA150m": 0,
+   "comCiclovia": 10,
+   "comPraca": 10
+  },
+  "parnamirim": {
+   "predios": 93,
+   "bytes": 14663,
+   "comSonoroA150m": 0,
+   "comCiclovia": 93,
+   "comPraca": 93
+  },
+  "pina": {
+   "predios": 130,
+   "bytes": 19554,
+   "comSonoroA150m": 0,
+   "comCiclovia": 130,
+   "comPraca": 130
+  },
+  "poco": {
+   "predios": 39,
+   "bytes": 7029,
+   "comSonoroA150m": 2,
+   "comCiclovia": 39,
+   "comPraca": 39
+  },
+  "ponto-de-parada": {
+   "predios": 13,
+   "bytes": 2572,
+   "comSonoroA150m": 0,
+   "comCiclovia": 13,
+   "comPraca": 13
+  },
+  "porto-da-madeira": {
+   "predios": 18,
+   "bytes": 2831,
+   "comSonoroA150m": 0,
+   "comCiclovia": 18,
+   "comPraca": 18
+  },
+  "prado": {
+   "predios": 92,
+   "bytes": 14907,
+   "comSonoroA150m": 6,
+   "comCiclovia": 92,
+   "comPraca": 92
+  },
+  "recife": {
+   "predios": 3,
+   "bytes": 865,
+   "comSonoroA150m": 0,
+   "comCiclovia": 3,
+   "comPraca": 3
+  },
+  "rosarinho": {
+   "predios": 65,
+   "bytes": 10664,
+   "comSonoroA150m": 0,
+   "comCiclovia": 65,
+   "comPraca": 65
+  },
+  "san-martin": {
+   "predios": 25,
+   "bytes": 4311,
+   "comSonoroA150m": 0,
+   "comCiclovia": 25,
+   "comPraca": 25
+  },
+  "sancho": {
+   "predios": 24,
+   "bytes": 2807,
+   "comSonoroA150m": 0,
+   "comCiclovia": 0,
+   "comPraca": 24
+  },
+  "santana": {
+   "predios": 32,
+   "bytes": 5048,
+   "comSonoroA150m": 0,
+   "comCiclovia": 32,
+   "comPraca": 32
+  },
+  "santo-amaro": {
+   "predios": 87,
+   "bytes": 14813,
+   "comSonoroA150m": 7,
+   "comCiclovia": 87,
+   "comPraca": 87
+  },
+  "santo-antonio": {
+   "predios": 25,
+   "bytes": 5067,
+   "comSonoroA150m": 14,
+   "comCiclovia": 25,
+   "comPraca": 25
+  },
+  "sao-jose": {
+   "predios": 47,
+   "bytes": 8472,
+   "comSonoroA150m": 0,
+   "comCiclovia": 47,
+   "comPraca": 47
+  },
+  "soledade": {
+   "predios": 41,
+   "bytes": 7471,
+   "comSonoroA150m": 12,
+   "comCiclovia": 41,
+   "comPraca": 41
+  },
+  "tamarineira": {
+   "predios": 159,
+   "bytes": 25624,
+   "comSonoroA150m": 3,
+   "comCiclovia": 159,
+   "comPraca": 159
+  },
+  "tejipio": {
+   "predios": 10,
+   "bytes": 1623,
+   "comSonoroA150m": 0,
+   "comCiclovia": 0,
+   "comPraca": 10
+  },
+  "torre": {
+   "predios": 136,
+   "bytes": 21737,
+   "comSonoroA150m": 25,
+   "comCiclovia": 136,
+   "comPraca": 136
+  },
+  "torreao": {
+   "predios": 35,
+   "bytes": 5662,
+   "comSonoroA150m": 0,
+   "comCiclovia": 35,
+   "comPraca": 35
+  },
+  "torroes": {
+   "predios": 13,
+   "bytes": 2640,
+   "comSonoroA150m": 0,
+   "comCiclovia": 13,
+   "comPraca": 13
+  },
+  "varzea": {
+   "predios": 326,
+   "bytes": 48492,
+   "comSonoroA150m": 3,
+   "comCiclovia": 325,
+   "comPraca": 321
+  },
+  "vasco-da-gama": {
+   "predios": 32,
+   "bytes": 5224,
+   "comSonoroA150m": 0,
+   "comCiclovia": 30,
+   "comPraca": 30
+  },
+  "zumbi": {
+   "predios": 36,
+   "bytes": 6065,
+   "comSonoroA150m": 0,
+   "comCiclovia": 36,
+   "comPraca": 36
+  }
+ }
+}

@@ -276,6 +276,8 @@ describe("Camadas abertas (Fases 3 e 4) e sínteses em linguagem humana", () => 
     expect(textoCompleto).toContain("Quando chove forte");
     expect(textoCompleto).toContain("Dengue e Chikungunya");
     expect(textoCompleto).toContain("Dia × Noite");
+    // 15/11/2026 (copiloto): a renda e a ocupação do setor (Censo) aparecem por padrão, sem toque extra.
     expect(textoCompleto).toContain("Censo 2022 IBGE");
+    expect(arvore.root.findAll((n) => n.props.accessibilityLabel === "Ver renda e perfil do setor (Censo)")).toHaveLength(0);
   });
 });

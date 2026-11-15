@@ -8,6 +8,7 @@ import { useTema } from "../../tema/Tema";
 import { ESPACO, type TokenDeCor } from "../../tema/tokens";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
+import { SimuladorPrice } from "./SimuladorPrice";
 import { LinkComSeta, Nota, Numero, Seta } from "./base";
 import { corpoQueCabe, notasDasParcelas, precoPorM2, rotuloDoTotal, segmentosDaBarra, textoDoValorMensal } from "./textos";
 
@@ -84,7 +85,21 @@ type Props = {
   partes?: CustoPorPartes | null;
   perfilConfigurado?: boolean;
   aoAbrirPerfilDomicilio?: () => void;
+  /** 15/11/2026: IPTU mensal do cadastro na tipologia do anúncio, para dizer a referência no mesmo lugar do IPTU. */
+  referenciaIptu?: { mensal: number } | null;
 };
+
+/** IPTU uma vez só: o do anúncio (com a referência do cadastro só quando difere mais de 20%), ou o do cadastro com "~". */
+export function textoDaParcela(p: ParcelaDoCusto, referenciaIptu: { mensal: number } | null, iptuDoPredio: number | null): { valor: string; apoio: string | null } {
+  if (p.nome !== "IPTU") return { valor: textoDoValorMensal(p), apoio: null };
+  if (p.estado === "conhecido" && p.valorMensal !== null) {
+    const ref = referenciaIptu?.mensal ?? null;
+    const difere = ref !== null && ref > 0 && Math.abs(p.valorMensal - ref) / ref > 0.2;
+    return { valor: formatarReais(p.valorMensal), apoio: difere ? `cadastro: ~${formatarReais(Math.round(ref!))}` : null };
+  }
+  if (iptuDoPredio !== null) return { valor: `~${formatarReais(iptuDoPredio)}`, apoio: "pelo cadastro, fora da soma" };
+  return { valor: textoDoValorMensal(p), apoio: null };
+}
 
 /**
  * `.ds-finance` de index.html (renderDossierFinance 5107 a 5137; CSS 2735 a 2759): principal e total mensal conhecido,
@@ -100,9 +115,15 @@ export function BlocoDeCusto({
   partes = null,
   perfilConfigurado = false,
   aoAbrirPerfilDomicilio,
+  referenciaIptu = null,
 }: Props) {
   const { cor } = useTema();
   const [largura, setLargura] = useState(147);
+  // Estimativas pessoais (luz, financiamento) recolhidas num cartão: a pessoa abre se quiser (sabatina, 15/11/2026).
+  const [estimativasAbertas, setEstimativasAbertas] = useState(false);
+  // 15/11/2026: a pílula do financiamento abre o simulador Price aqui mesmo.
+  const [simuladorAberto, setSimuladorAberto] = useState(false);
+  const iptuDoPredio = partes?.referenciaIptuDoPredio?.mensalMedianoReais ?? null;
   const aluguel = custo.principal.rotulo === "Aluguel anunciado";
   const principal = custo.principal.valor !== null ? formatarReais(custo.principal.valor) : "A confirmar";
   const total = custo.totalMensalConhecido !== null ? formatarReais(custo.totalMensalConhecido) : "A confirmar";
@@ -165,8 +186,8 @@ export function BlocoDeCusto({
       ) : null}
 
       <View style={{ flexDirection: "row", flexWrap: "wrap", columnGap: 14, rowGap: 9 }}>
-        {custo.parcelas.map((p) => (
-          <View key={p.nome} accessible accessibilityLabel={`${p.nome}: ${textoDoValorMensal(p)}`} style={{ width: "47%", flexGrow: 1, minWidth: 0 }}>
+        {custo.parcelas.map((p) => { const t = textoDaParcela(p, referenciaIptu, iptuDoPredio); return (
+          <View key={p.nome} accessible accessibilityLabel={`${p.nome}: ${t.valor}${t.apoio ? `, ${t.apoio}` : ""}`} style={{ width: "47%", flexGrow: 1, minWidth: 0 }}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
               <View
                 style={{
@@ -181,10 +202,15 @@ export function BlocoDeCusto({
               </Texto>
             </View>
             <Texto tipo="corpo" style={{ fontSize: 12, lineHeight: 17, fontWeight: "600", paddingLeft: 12, marginTop: 2 }}>
-              {textoDoValorMensal(p)}
+              {t.valor}
             </Texto>
+            {t.apoio ? (
+              <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 10.5, lineHeight: 14, paddingLeft: 12 }}>
+                {t.apoio}
+              </Texto>
+            ) : null}
           </View>
-        ))}
+        ); })}
       </View>
 
       <View style={{ gap: 4, marginTop: 6 }}>
@@ -193,12 +219,47 @@ export function BlocoDeCusto({
         {notas.map((n) => (
           <Nota key={n}>{n}</Nota>
         ))}
-        {partes?.referenciaIptuDoPredio ? <Nota>{partes.referenciaIptuDoPredio.nota}</Nota> : null}
         {partes?.comparacaoComTetoPessoal ? <Nota>{partes.comparacaoComTetoPessoal}</Nota> : null}
         {!aluguel ? <Nota>Preço de compra e financiamento não entram nesta soma.</Nota> : null}
       </View>
 
-      {partes ? (
+      {partes && !estimativasAbertas ? (
+        <View style={{ marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 8 }}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+            {partes.fatiasDaRotina.filter((f) => f.valorMensalReais > 0).map((f) => (
+              <Pressionavel
+                key={f.id}
+                onPress={() => setEstimativasAbertas(true)}
+                accessibilityRole="button"
+                accessibilityLabel={`${f.id === "energia" ? "Luz estimada" : f.rotulo}: cerca de ${formatarReais(f.valorMensalReais)} por mês, à parte. Toque para ver e ajustar`}
+                style={{ minHeight: 44, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 10, backgroundColor: cor("cor-superficie") }}
+              >
+                <Texto tipo="numero" style={{ fontSize: 13, lineHeight: 18, fontWeight: "600" }}>{`~${formatarReais(f.valorMensalReais)}/mês`}</Texto>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 10.5, lineHeight: 14 }}>{f.id === "energia" ? "Luz estimada" : f.rotulo}</Texto>
+              </Pressionavel>
+            ))}
+            {partes.simulacaoCompra && partes.simulacaoCompra.prestacaoPriceReais > 0 ? (
+              <Pressionavel
+                onPress={() => setSimuladorAberto((x) => !x)}
+                accessibilityRole="button"
+                accessibilityState={{ expanded: simuladorAberto }}
+                accessibilityLabel={`Financiamento: cerca de ${formatarReais(partes.simulacaoCompra.prestacaoPriceReais)} por mês, financiando ${100 - partes.simulacaoCompra.entradaPct}% em ${partes.simulacaoCompra.prazoAnos} anos. ${simuladorAberto ? "Fechar o simulador" : "Toque para simular entrada e prazo"}`}
+                style={{ minHeight: 44, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 10, backgroundColor: cor(simuladorAberto ? "cor-azul-cadastral-suave" : "cor-superficie") }}
+              >
+                <Texto tipo="numero" style={{ fontSize: 13, lineHeight: 18, fontWeight: "600" }}>{`~${formatarReais(partes.simulacaoCompra.prestacaoPriceReais)}/mês`}</Texto>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 10.5, lineHeight: 14 }}>{`Financiar ${100 - partes.simulacaoCompra.entradaPct}% em ${partes.simulacaoCompra.prazoAnos} anos`}</Texto>
+              </Pressionavel>
+            ) : null}
+          </View>
+          {simuladorAberto && partes.simulacaoCompra ? <SimuladorPrice simulacao={partes.simulacaoCompra} aoFechar={() => setSimuladorAberto(false)} /> : null}
+          <Pressionavel onPress={() => setEstimativasAbertas(true)} accessibilityRole="button" accessibilityLabel="Estimativas à parte: luz e financiamento. Toque para ver e ajustar" style={{ minHeight: 32, flexDirection: "row", alignItems: "center", gap: 4 }}>
+            <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 12, lineHeight: 16, fontWeight: "600" }}>Estimativas à parte · toque para ver e ajustar</Texto>
+            <Seta tamanho={11} />
+          </Pressionavel>
+        </View>
+      ) : null}
+
+      {partes && estimativasAbertas ? (
         <View
           style={{
             marginTop: 10,
@@ -262,6 +323,20 @@ export function BlocoDeCusto({
                 </View>
                 <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
                   {`Entrada de ${formatarReais(partes.simulacaoCompra.entradaReais)} · ${partes.simulacaoCompra.fonteCurta}. Não substitui proposta do banco.`}
+                </Texto>
+              </View>
+            ) : null}
+
+            {partes.transferencia ? (
+              <View style={{ marginTop: 2, paddingTop: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 2 }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                  <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600", flex: 1 }}>Custo total da compra (preço + ITBI)</Texto>
+                  <Texto tipo="numero" style={{ fontSize: 12, lineHeight: 17, fontWeight: "600" }}>
+                    {`${formatarReais(partes.transferencia.totalMinimoReais)} a ${formatarReais(partes.transferencia.totalMaximoReais)}`}
+                  </Texto>
+                </View>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                  {`${partes.transferencia.explicacao} Fonte: ${partes.transferencia.fonteCurta}.`}
                 </Texto>
               </View>
             ) : null}

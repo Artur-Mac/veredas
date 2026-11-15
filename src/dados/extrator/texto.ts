@@ -1,3 +1,4 @@
+import { nomeDeEdificioNoTexto } from "./nomeEFotos";
 import {
   camposVazios,
   type ChaveDeCampo,
@@ -375,6 +376,9 @@ export function extrairDoTexto(conteudo: string, portal: Portal): LeituraParcial
   }
   if (campos.logradouro === null && primeiraRua) campos.logradouro = primeiraRua;
 
+  // Nome do edifício escrito no anúncio ("Edf. Engenho Torre", "Condomínio Jardim das Acácias"): pista para achar o prédio.
+  campos.nomeEdificio = nomeDeEdificioNoTexto(textoLimpo);
+
   // Bairro no texto
   const resBairro = encontrarBairroNoTexto(textoLimpo);
   campos.bairro = resBairro.bairro;
@@ -382,6 +386,25 @@ export function extrairDoTexto(conteudo: string, portal: Portal): LeituraParcial
   if (campos.bairro || /recife/i.test(textoLimpo)) {
     campos.cidade = "recife";
   }
+
+  // Comodidades do prédio e unidade citadas no texto do anúncio
+  const regrasComodidades: readonly [string, RegExp][] = [
+    ["piscina", /\bpiscinas?\b/i],
+    ["academia", /\bacademia\b|\bfitness\b/i],
+    ["elevador", /\belevador(?:es)?\b/i],
+    ["portaria-24h", /\bportaria\s*24\s*h|\bportaria\s*24\s*horas\b/i],
+    ["salao-festas", /\bsal[ãa]o\s+de\s+festas\b/i],
+    ["churrasqueira", /\bchurrasqueiras?\b|\bespa[çc]o\s+gourmet\b/i],
+    ["playground", /\bplayground\b|\bbrinquedoteca\b/i],
+    ["varanda", /\bvarandas?\b|\bsacada\b/i],
+    ["mobiliado", /\bmobiliad[oa]\b/i],
+    ["sauna", /\bsauna\b/i],
+    ["vista-mar", /\bvista\s+(?:para\s+o\s+)?mar\b|\bbeira[\s-]mar\b/i],
+    ["garagem", /\bgaragem\b/i],
+  ];
+  campos.comodidades = regrasComodidades
+    .filter(([, re]) => re.test(textoLimpo))
+    .map(([slug]) => slug);
 
   const leituraTexto: LeituraParcial = {
     metodo: "texto",

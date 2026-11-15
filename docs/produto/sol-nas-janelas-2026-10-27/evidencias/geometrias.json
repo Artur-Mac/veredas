@@ -128,7 +128,7 @@
     "torre": {
       "volumes": 8545,
       "bytes": 1983688,
-      "associacoesValidadas": 1392
+      "associacoesValidadas": 1389
     },
     "casa-forte": {
       "volumes": 8041,
@@ -138,12 +138,12 @@
     "boa-viagem": {
       "volumes": 23062,
       "bytes": 5942870,
-      "associacoesValidadas": 5600
+      "associacoesValidadas": 5598
     },
     "madalena": {
       "volumes": 15701,
       "bytes": 3371676,
-      "associacoesValidadas": 2108
+      "associacoesValidadas": 2103
     },
     "espinheiro": {
       "volumes": 7810,

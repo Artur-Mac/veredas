@@ -9,7 +9,7 @@ import { router } from "expo-router";
 import React from "react";
 import { Linking, StyleSheet } from "react-native";
 import TestRenderer, { act, type ReactTestInstance } from "react-test-renderer";
-import { adicionarPropria, alternarVerificada, definirResposta, duracaoPorExtenso, enderecoDoImovel, formatarCronometro, idDaPropria, limitarGraus, orientacaoDaJanela, perguntasDaVisita, resumirVisita, segundosDoRelogio, subtituloDoImovel, urlDoWhatsapp } from "../src/componentes/visita-v1/logica";
+import { adicionarPropria, alternarVerificada, definirResposta, duracaoPorExtenso, enderecoDoImovel, formatarCronometro, idDaPropria, limitarGraus, orientacaoDaJanela, perguntasDaVisita, resumirVisita, roteiroDaVisita, segundosDoRelogio, subtituloDoImovel, urlDoWhatsapp } from "../src/componentes/visita-v1/logica";
 import TelaVisita from "../src/app/(abas)/visita";
 import { Pressionavel } from "../src/componentes/Pressionavel";
 import { AVISO_DE_FALHA_AO_SALVAR } from "../src/componentes/visita-v1/useVisita";
@@ -400,7 +400,8 @@ describe("a tela Visita", () => {
     const a = analise();
     const arvore = await montar([a]);
     const texto = todoOTexto(arvore);
-    const esperadas = perguntasDaVisita(a, [a], new Date());
+    // 15/11/2026: a tela usa o roteiro com as checagens do risco do prédio no topo.
+    const esperadas = roteiroDaVisita(a, [a], new Date());
     expect(texto).toContain("Prepare sua visita.");
     expect(texto).toContain("Sua próxima visita");
     expect(texto).toContain(String(esperadas.length));
@@ -422,7 +423,7 @@ describe("a tela Visita", () => {
     await tocar(arvore, porTexto("Preparar mensagem"));
     expect(todoOTexto(arvore)).toContain("Converse com o corretor");
 
-    const sugerida = mensagemParaCorretor(a, perguntasDaVisita(a, [a], new Date()));
+    const sugerida = mensagemParaCorretor(a, roteiroDaVisita(a, [a], new Date()));
     const campo = achar(arvore, (i) => typeof i.props.onChangeText === "function" && i.props.accessibilityLabel === "Mensagem para agendar");
     expect(campo.props.value).toBe(sugerida);
     expect(sugerida.endsWith("\n\nMensagem preparada com o VEREDA.")).toBe(true);
@@ -450,14 +451,14 @@ describe("a tela Visita", () => {
     const arvore = await montar([a]);
     await tocar(arvore, porTexto("Começar visita"));
     expect(todoOTexto(arvore)).toContain("Olhe de perto.");
-    const primeira = perguntasDaVisita(a, [a], new Date())[0];
+    const primeira = roteiroDaVisita(a, [a], new Date())[0];
     if (!primeira) throw new Error("sem perguntas");
 
     await tocar(arvore, porRotulo(`Conferida: ${primeira.titulo}`));
     const [gravada] = await gravadas();
     expect(gravada?.visita.verificadas).toEqual([primeira.id]);
     expect(Date.parse(gravada?.atualizadaEm ?? "")).toBeGreaterThan(Date.parse(INSTANTE));
-    expect(todoOTexto(arvore)).toContain(`1 de ${perguntasDaVisita(a, [a], new Date()).length}`);
+    expect(todoOTexto(arvore)).toContain(`1 de ${roteiroDaVisita(a, [a], new Date()).length}`);
 
     // Tocar de novo desmarca.
     await tocar(arvore, porRotulo(`Conferida: ${primeira.titulo}`));
@@ -468,7 +469,7 @@ describe("a tela Visita", () => {
     const a = analise();
     const arvore = await montar([a]);
     await tocar(arvore, porTexto("Começar visita"));
-    const [p1, p2] = perguntasDaVisita(a, [a], new Date());
+    const [p1, p2] = roteiroDaVisita(a, [a], new Date());
     if (!p1 || !p2) throw new Error("perguntas insuficientes");
     const um = achar(arvore, porRotulo(`Conferida: ${p1.titulo}`));
     const dois = achar(arvore, porRotulo(`Conferida: ${p2.titulo}`));
@@ -483,7 +484,7 @@ describe("a tela Visita", () => {
   it("responder: a gaveta grava a resposta e a conferência", async () => {
     const a = analise();
     const arvore = await montar([a]);
-    const primeira = perguntasDaVisita(a, [a], new Date())[0];
+    const primeira = roteiroDaVisita(a, [a], new Date())[0];
     if (!primeira) throw new Error("sem perguntas");
     await tocar(arvore, (i) => podeTocar(i) && typeof i.props.accessibilityLabel === "string" && i.props.accessibilityLabel.startsWith(primeira.titulo));
     expect(todoOTexto(arvore)).toContain("O que você descobriu?");
@@ -677,7 +678,7 @@ describe("a tela Visita", () => {
     const a = analise();
     const arvore = await montar([a]);
     await tocar(arvore, porTexto("Começar visita"));
-    const perguntas = perguntasDaVisita(a, [a], new Date());
+    const perguntas = roteiroDaVisita(a, [a], new Date());
     const primeira = perguntas[0];
     if (!primeira) throw new Error("sem perguntas");
     await tocar(arvore, porRotulo(`Conferida: ${primeira.titulo}`));
@@ -795,7 +796,7 @@ describe("a tela Visita", () => {
   it("'N pontos para conferir' e o número do resumo estão em Fraunces 500, não em JetBrains Mono", async () => {
     const a = analise();
     const arvore = await montar([a]);
-    const n = perguntasDaVisita(a, [a], new Date()).length;
+    const n = roteiroDaVisita(a, [a], new Date()).length;
     const preparar = estilosDoTexto(arvore, String(n));
     expect(preparar.length).toBeGreaterThan(0);
     for (const estilo of preparar) expect(estilo).toMatchObject({ fontFamily: "Fraunces", fontWeight: "500" });
