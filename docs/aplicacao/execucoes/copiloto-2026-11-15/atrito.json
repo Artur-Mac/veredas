@@ -1,0 +1,63 @@
+{
+ "executadoEm": "2026-11-15T18:26:05.211Z",
+ "versao": "7b838d25558798c2",
+ "indice": "indice-municipal/faa40c969275e6b5",
+ "sha256": "db8987a56019df7aaa4a2793b4fc31c8b2a439ede5a6bea3661e069d208e75c6",
+ "fonte": {
+  "lidas": 737511,
+  "especie6": 72760,
+  "especie7": 14695,
+  "semCategoria": 53254,
+  "nivelAproximado": 693,
+  "foraDoRecife": 0,
+  "repetidos": 910,
+  "porCategoria": {
+   "obra": 13755,
+   "noite": 3037,
+   "dia": 10939,
+   "oficina": 4416,
+   "mercado": 451
+  }
+ },
+ "bairros": 72,
+ "predios": 7203,
+ "maiorArquivo": 148966,
+ "pilotos": {
+  "boa-viagem": {
+   "predios": 1878,
+   "bytes": 148966,
+   "comNoiteA150m": 965,
+   "comObraA150m": 1804
+  },
+  "gracas": {
+   "predios": 291,
+   "bytes": 22871,
+   "comNoiteA150m": 130,
+   "comObraA150m": 258
+  },
+  "espinheiro": {
+   "predios": 156,
+   "bytes": 13049,
+   "comNoiteA150m": 77,
+   "comObraA150m": 135
+  },
+  "madalena": {
+   "predios": 280,
+   "bytes": 23524,
+   "comNoiteA150m": 152,
+   "comObraA150m": 275
+  },
+  "casa-forte": {
+   "predios": 82,
+   "bytes": 6561,
+   "comNoiteA150m": 34,
+   "comObraA150m": 82
+  },
+  "aflitos": {
+   "predios": 70,
+   "bytes": 5412,
+   "comNoiteA150m": 48,
+   "comObraA150m": 70
+  }
+ }
+}

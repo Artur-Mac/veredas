@@ -1,15 +1,33 @@
+import * as Clipboard from "expo-clipboard";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useMemo, useRef, useState } from "react";
-import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { ShareIntentModule } from "expo-share-intent";
+import * as WebBrowser from "expo-web-browser";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { AppState, Linking, Platform, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { Cartao, CorpoDoCartao } from "../../componentes/Cartao";
+import { Coluna } from "../../componentes/casca/Coluna";
+import { useFocoDoCampo } from "../../componentes/casca/foco";
+import { rendeDados } from "../../componentes/leitor/decidir";
 import { LeitorDePagina } from "../../componentes/leitor/LeitorDePagina";
+import { avisoDeTipologia } from "../../componentes/predio/textos";
 import { estilosDoTema } from "../../componentes/revisao/estilosDoTema";
+import { AlvoDeToque } from "../../componentes/Pressionavel";
 import { FormularioDeRevisao } from "../../componentes/revisao/FormularioDeRevisao";
+import { CartaoDoAnuncio } from "../../componentes/revisao/CartaoDoAnuncio";
+import { PredioProvavel } from "../../componentes/predio/PredioProvavel";
+import { useConfirmarPredio } from "../../componentes/predio/confirmar";
+import { PreparoDoDossie } from "../../componentes/preparo/PreparoDoDossie";
+import type { SlugCoberto } from "../../dados/recife/bairros";
+import { LeituraDeImagem } from "../../componentes/leitor/LeituraDeImagem";
+import { arquivoDaExtensao } from "../../dados/arquivoDaExtensao";
+import { BAIRROS_COBERTOS } from "../../dados/recife/bairros";
 import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
-import { type AnaliseV2, type ExtracaoAnuncio, type LeituraParcial, type Portal } from "../../dados/contratos";
+import { type AnaliseV2, type Edificio, type ExtracaoAnuncio, type LeituraParcial, type Portal } from "../../dados/contratos";
 import { extrairDaUrl, extrairDoTexto, montarExtracao } from "../../dados/extrator";
+import { textoDoAnuncioCopiado } from "../../dados/extrator/copiado";
+import { lerPagina } from "../../dados/extrator/pagina";
 import { formatarNumero } from "../../dados/formatos";
 import {
   anomaliasDaRevisao,
@@ -26,6 +44,7 @@ import {
   type EstadoDoFormulario,
 } from "../../dados/formulario";
 import { useAnalises } from "../../estado/Analises";
+import { coletaDoId, recebeuDesde, registrarLinkAberto } from "../../estado/compartilhamento";
 import { useTema } from "../../tema/Tema";
 import { comAlfa } from "../../tema/tokens";
 
@@ -39,6 +58,45 @@ const VISITA_VAZIA: AnaliseV2["visita"] = {
   segundos: 0,
   concluidaEm: null,
 };
+
+const AVISO_DE_TEXTO_LIDO = "Lemos o texto que você copiou. Confira os números abaixo.";
+const AVISO_SEM_COPIA = "Não conseguimos ler o que você copiou. Toque e segure o campo abaixo e escolha Colar.";
+const AVISO_NAO_E_ANUNCIO =
+  "O que você copiou não parece o anúncio. No navegador, selecione o trecho com o preço, copie e toque em Colar o que copiei.";
+const AVISO_SEM_NAVEGADOR = "Não conseguimos abrir o navegador. Abra o link nele, copie o texto do anúncio e cole abaixo.";
+const AVISO_DA_PAGINA_COMPARTILHADA = "Lemos a página que você compartilhou. Confira os números abaixo.";
+const AVISO_DO_TRECHO_RECEBIDO = "Lemos o trecho que você escolheu. Confira os números abaixo.";
+const AVISO_DA_PAGINA_SEM_PRECO =
+  "A página que você compartilhou não trouxe preço nem área. No navegador, selecione o trecho com o preço, copie e toque em Colar o que copiei.";
+
+/**
+ * Como o anúncio volta do navegador sem copiar, no build próprio do app (plugins/compartilhar): no iOS pela folha de
+ * compartilhar do Safari, no Android pelo menu de seleção de texto. No Expo Go e na web o módulo não existe e fica só a
+ * área de transferência.
+ */
+function instrucaoNoNavegador(): string | null {
+  if (ShareIntentModule == null) return null;
+  if (Platform.OS === "ios") {
+    return "Lá, toque em Compartilhar e escolha Ler no Vereda. Se preferir, copie o trecho com preço, condomínio e IPTU e volte: o Vereda lê sozinho o que você copiou.";
+  }
+  if (Platform.OS === "android") {
+    return "Lá, selecione o trecho com preço, condomínio e IPTU e toque em Ler no Vereda, no menu da seleção. Se preferir, copie o trecho e volte: o Vereda lê sozinho o que você copiou.";
+  }
+  return null;
+}
+
+/**
+ * A página que a pessoa compartilhou do Safari, lida como a coleta da WebView; null quando não veio página. Sem
+ * `urlPedida`: o link já é o da própria página, e o atalho "mesmo caminho do link pedido" leria uma lista ou uma busca
+ * compartilhada como se fosse o anúncio.
+ */
+function leiturasDaPaginaCompartilhada(idDaColeta: string, url: string): LeituraParcial[] | null {
+  const coleta = idDaColeta ? coletaDoId(idDaColeta) : null;
+  if (coleta === null) return null;
+  const lida = url ? extrairDaUrl(url) : null;
+  const doLink = lida !== null && !("erro" in lida) ? lida : null;
+  return lerPagina(coleta, doLink?.portal ?? "outro", doLink?.idNoPortal ?? null);
+}
 
 /** Todas as leituras juntas: link, página (celular) e o texto colado que já foi lido. */
 function extrairTudo(
@@ -55,25 +113,73 @@ function extrairTudo(
   return montarExtracao(url, leituras, new Date());
 }
 
+/**
+ * A leitura é uma aba escondida (`href: null`): o navegador a mantém montada entre uma visita e outra, e o estado dela
+ * (texto lido, formulário e o id da análise) sobreviveria ao link seguinte; salvar o segundo link regravaria a primeira
+ * análise com o mesmo id. A chave (link, texto e `n`, a marca que o Explorar põe a cada "Gerar Dossiê" e o
+ * `RecebedorDeCompartilhamento` a cada anúncio recebido) recomeça a leitura do zero a cada visita.
+ */
 export default function TelaDeLeitura() {
+  const { url = "", texto = "", n = "" } = useLocalSearchParams<{ url?: string; texto?: string; n?: string }>();
+  return <LeituraDoAnuncio key={`${url}|${texto}|${n}`} />;
+}
+
+function LeituraDoAnuncio() {
   const { cor } = useTema();
   const styles = useEstilos();
-  const { url: urlDaRota = "", texto: textoDaRota = "" } = useLocalSearchParams<{ url?: string; texto?: string }>();
-  const url = urlDaRota.trim();
-  const { salvar } = useAnalises();
+  const {
+    url: urlDaRota = "",
+    texto: textoDiretoDaRota = "",
+    coleta: idDaColeta = "",
+    origem = "",
+    arquivoExtensao = "",
+  } = useLocalSearchParams<{ url?: string; texto?: string; coleta?: string; origem?: string; arquivoExtensao?: string }>();
+  const recebidoDaExtensao = arquivoDaExtensao(arquivoExtensao);
+  const textoDaRota = recebidoDaExtensao?.texto ?? textoDiretoDaRota;
+  const idImportacao = recebidoDaExtensao?.id ?? "";
+  const url = (recebidoDaExtensao?.url ?? urlDaRota).trim();
+  const { salvar, lista, erro: erroDoCaderno } = useAnalises();
+  const focoDoTexto = useFocoDoCampo();
 
-  const [idGerado] = useState(() => `imovel-${Date.now()}`);
+  // Anúncio recebido por compartilhamento (`RecebedorDeCompartilhamento`): a página do Safari e o trecho escolhido no
+  // menu de seleção já chegam lidos, e a WebView não precisa abrir (nos portais que bloqueiam, nem abriria).
+  const compartilhado = origem === "compartilhado";
+  const [daPagina] = useState(() => (compartilhado ? leiturasDaPaginaCompartilhada(idDaColeta, url) : null));
+  const paginaRendeu = daPagina !== null && rendeDados(daPagina);
+  const trechoRecebido = compartilhado && textoDaRota.trim() !== "";
+  const avisoDoRecebido = paginaRendeu
+    ? AVISO_DA_PAGINA_COMPARTILHADA
+    : trechoRecebido
+      ? AVISO_DO_TRECHO_RECEBIDO
+      : daPagina !== null
+        ? AVISO_DA_PAGINA_SEM_PRECO
+        : "";
+
+  const [idGerado] = useState(() => /^ext-[a-f0-9]{40}$/.test(idImportacao) ? idImportacao : `imovel-${Date.now()}`);
   /** O que está no campo de texto e o que já foi lido ("Ler texto"): a leitura só muda no botão. */
   const [textoDoCampo, setTextoDoCampo] = useState(textoDaRota);
   const [textoLido, setTextoLido] = useState(textoDaRota);
-  const [leiturasDaPagina, setLeiturasDaPagina] = useState<LeituraParcial[]>([]);
-  const [paginaAberta, setPaginaAberta] = useState(true);
+  const [leiturasDaPagina, setLeiturasDaPagina] = useState<LeituraParcial[]>(daPagina ?? []);
+  const [paginaAberta, setPaginaAberta] = useState(daPagina === null && !trechoRecebido);
   const [motivoDaFalha, setMotivoDaFalha] = useState<string | null>(null);
-  const [pediuTexto, setPediuTexto] = useState(false);
+  const [pediuTexto, setPediuTexto] = useState(trechoRecebido || (daPagina !== null && !paginaRendeu));
   const [salvando, setSalvando] = useState(false);
   const [erroAoSalvar, setErroAoSalvar] = useState("");
+  /** A pessoa tocou num campo ou em "Editar": o formulário completo aparece (15/11/2026: o cartão vem antes). */
+  const [abriuEdicao, setAbriuEdicao] = useState(false);
+  /** Prédio confirmado no cartão: o preparo do dossiê por cima da tela, que termina no dossiê. */
+  const [preparando, setPreparando] = useState<{ id: string; nome: string; bairro: string | null } | null>(null);
+  const { confirmar: confirmarPredio, trabalhando: confirmando, erroDaCarteira } = useConfirmarPredio();
   /** Depois da primeira leitura bem-sucedida, a página reaberta é só para a pessoa ver. */
-  const jaLeuAPagina = useRef(false);
+  const jaLeuAPagina = useRef(paginaRendeu);
+  /** Resultado da última leitura do que a pessoa copiou (lido, vazio ou não é anúncio). */
+  const [avisoDaCopia, setAvisoDaCopia] = useState("");
+  /** A pessoa foi ao navegador copiar o anúncio: na volta, o app lê a área de transferência uma vez. */
+  const esperandoACopia = useRef(false);
+  /** Aba do Safari aberta por cima do app (iOS): a volta é o fim de `openBrowserAsync`, não a mudança de AppState. */
+  const abaPorCima = useRef(false);
+  /** Quando a pessoa foi ao navegador; o anúncio que chegar por compartilhamento depois disso dispensa a cópia. */
+  const abriuONavegadorEm = useRef(0);
 
   const leituraDaUrl = useMemo(() => {
     if (!url) return null;
@@ -106,13 +212,87 @@ export default function TelaDeLeitura() {
     if (jaLeuAPagina.current) return;
     setMotivoDaFalha(motivo);
     setPediuTexto(true);
+    // A página de bloqueio não tem nada para a pessoa fazer: sai da tela e dá lugar ao navegador.
+    if (motivo === "bloqueio") setPaginaAberta(false);
   };
 
-  const lerTexto = () => {
-    setTextoLido(textoDoCampo);
-    setForm((anterior) =>
-      formularioDeExtracao(extrairTudo(url, leituraDaUrl, portal, leiturasDaPagina, textoDoCampo), anterior),
-    );
+  const lerTexto = (texto: string) => {
+    setTextoLido(texto);
+    setForm((anterior) => formularioDeExtracao(extrairTudo(url, leituraDaUrl, portal, leiturasDaPagina, texto), anterior));
+  };
+
+  /** Lê a área de transferência. Só o que parece anúncio entra no campo; o resto é descartado sem aparecer. */
+  const lerCopiado = async () => {
+    let copiado = "";
+    try {
+      copiado = await Clipboard.getStringAsync();
+    } catch {
+      copiado = "";
+    }
+    if (!copiado.trim()) {
+      setAvisoDaCopia(AVISO_SEM_COPIA);
+      return;
+    }
+    const texto = textoDoAnuncioCopiado(copiado, url);
+    if (texto === null) {
+      setAvisoDaCopia(AVISO_NAO_E_ANUNCIO);
+      return;
+    }
+    setTextoDoCampo(texto);
+    lerTexto(texto);
+    setAvisoDaCopia(AVISO_DE_TEXTO_LIDO);
+  };
+
+  const voltouDoNavegador = () => {
+    if (!esperandoACopia.current) return;
+    esperandoACopia.current = false;
+    // O anúncio já voltou por "Ler no Vereda": ler a área de transferência por cima dele pediria permissão à toa (iOS).
+    if (recebeuDesde(abriuONavegadorEm.current)) return;
+    void lerCopiado();
+  };
+  // O ouvinte do AppState é montado uma vez; a ref aponta sempre para a versão desta renderização.
+  const voltouDoNavegadorRef = useRef(voltouDoNavegador);
+  useEffect(() => {
+    voltouDoNavegadorRef.current = voltouDoNavegador;
+  });
+
+  useEffect(() => {
+    if (Platform.OS === "web") return;
+    let espera: ReturnType<typeof setTimeout> | undefined;
+    const assinatura = AppState.addEventListener("change", (estado) => {
+      if (estado !== "active" || abaPorCima.current) return;
+      // No Android 10 ou mais novo, a área de transferência só é entregue ao app com foco, que chega logo depois.
+      espera = setTimeout(() => voltouDoNavegadorRef.current(), 500);
+    });
+    return () => {
+      assinatura.remove();
+      if (espera) clearTimeout(espera);
+    };
+  }, []);
+
+  /** O portal que bloqueia a página no app abre no navegador do aparelho (Safari ou Chrome), sem disfarce nenhum. */
+  const abrirNoNavegador = async () => {
+    setAvisoDaCopia("");
+    esperandoACopia.current = true;
+    abaPorCima.current = Platform.OS === "ios";
+    // O trecho escolhido no menu de seleção (Android) volta sem link: o recebedor junta este.
+    abriuONavegadorEm.current = Date.now();
+    registrarLinkAberto(url, abriuONavegadorEm.current);
+    try {
+      await WebBrowser.openBrowserAsync(url);
+      if (abaPorCima.current) {
+        abaPorCima.current = false;
+        voltouDoNavegador();
+      }
+    } catch {
+      abaPorCima.current = false;
+      try {
+        await Linking.openURL(url);
+      } catch {
+        esperandoACopia.current = false;
+        setAvisoDaCopia(AVISO_SEM_NAVEGADOR);
+      }
+    }
   };
 
   // ——— Checklist: reflete só o que a extração trouxe ———————————————————————————
@@ -135,14 +315,17 @@ export default function TelaDeLeitura() {
   // Aluguel com "/mês", IPTU com o período, e nada de preço que o formulário deixou de fora (outra modalidade).
   const { precoLido, partes: partesDoPreco } = resumoDePrecoECustos(extracao, form);
 
+  // A rua e o número lidos da página aparecem aqui: o formulário enxuto não mostra o endereço.
+  const enderecoLido = c.logradouro ? `${c.logradouro}${c.numero ? `, ${c.numero}` : ""} · ` : "";
   const detalheDaCobertura =
-    extracao.cobertura === "coberto"
+    enderecoLido +
+    (extracao.cobertura === "coberto"
       ? `${nomeDoImovel ?? "Bairro"} · com cadastro`
       : extracao.cobertura === "recife_fora"
         ? `${nomeDoImovel ?? "Bairro"} · ainda sem cadastro`
         : extracao.cobertura === "fora_do_recife"
           ? "Fora do Recife"
-          : "Bairro a confirmar";
+          : "Bairro a confirmar");
 
   const linhas = [
     { lida: reconhecido, titulo: "Link reconhecido", detalhe: detalheDoLink },
@@ -156,7 +339,7 @@ export default function TelaDeLeitura() {
       titulo: "Preço e custos",
       detalhe: partesDoPreco.length > 0 ? partesDoPreco.join(" · ") : "Cole o texto do anúncio para ler condomínio e IPTU",
     },
-    { lida: extracao.cobertura !== "desconhecida", titulo: "Bairro e cobertura", detalhe: detalheDaCobertura },
+    { lida: extracao.cobertura !== "desconhecida", titulo: c.logradouro ? "Endereço e cobertura" : "Bairro e cobertura", detalhe: detalheDaCobertura },
   ];
 
   // ——— Salvar ——————————————————————————————————————————————————————————————————
@@ -181,6 +364,9 @@ export default function TelaDeLeitura() {
 
   const salvarEIr = async (vinculo: AnaliseV2["vinculo"], depois: () => void) => {
     if (salvando) return;
+    if (idGerado.startsWith("ext-") && lista.some(a => a.id === idGerado)) {
+      setErroAoSalvar("Este arquivo já está no seu caderno. Abra a análise salva para editar; nenhuma cópia foi sobrescrita."); return;
+    }
     setSalvando(true);
     setErroAoSalvar("");
     try {
@@ -188,7 +374,8 @@ export default function TelaDeLeitura() {
       await salvar(analise);
       depois();
     } catch {
-      setErroAoSalvar("Não foi possível salvar. Confira os valores digitados e tente de novo.");
+      // Caderno que não abriu: o problema não são os valores digitados, e a mensagem do caderno diz o que fazer.
+      setErroAoSalvar(erroDoCaderno || "Não foi possível salvar. Confira os valores digitados e tente de novo.");
     } finally {
       setSalvando(false);
     }
@@ -201,171 +388,258 @@ export default function TelaDeLeitura() {
   };
   const salvarForaDeCobertura = () => salvarEIr({ estado: "fora_de_cobertura" }, () => router.push("/"));
 
+  /** "É este": salva a análise, confirma o prédio (IPTU contra o cadastro, endereço, crédito) e abre o preparo. */
+  const confirmarDaqui = async (edificio: Edificio) => {
+    if (salvando || confirmando || coberturaDoFormulario(form) !== "coberto") return;
+    if (idGerado.startsWith("ext-") && lista.some(a => a.id === idGerado)) {
+      setErroAoSalvar("Este arquivo já está no seu caderno. Abra a análise salva para editar; nenhuma cópia foi sobrescrita."); return;
+    }
+    setSalvando(true);
+    setErroAoSalvar("");
+    try {
+      const analise = montarAnalise({ estado: "pendente" });
+      await salvar(analise);
+      const r = await confirmarPredio(analise, edificio, form.bairro as SlugCoberto);
+      if (r === "ok") setPreparando({ id: analise.id, nome: analise.nome, bairro: analise.bairro });
+      else if (r === "sem_credito") setErroAoSalvar("Sem créditos para gerar o dossiê. O anúncio ficou salvo no caderno; recarregue em Créditos e confirme o prédio de novo.");
+      else if (r === "carteira_bloqueada") setErroAoSalvar(erroDaCarteira || "A carteira de créditos não abriu. Nenhum crédito foi usado.");
+      else setErroAoSalvar("Não foi possível confirmar o prédio. Nenhum crédito foi usado; tente de novo.");
+    } catch {
+      setErroAoSalvar(erroDoCaderno || "Não foi possível salvar. Confira os valores digitados e tente de novo.");
+    } finally {
+      setSalvando(false);
+    }
+  };
+
   // ——— Tela ————————————————————————————————————————————————————————————————————
+
+  /** Com preço ou tipo lido, o anúncio aparece como cartão; sem nada, o formulário fica aberto para preencher. */
+  const temDados = precoLido || partesDoTipo.length > 0;
+  const fotos = extracao.fotos ?? [];
+  // Prévia da análise para procurar o prédio enquanto a pessoa revisa (nada é salvo até "É este").
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const previa = useMemo(() => montarAnalise({ estado: "pendente" }), [form, extracao]);
 
   // A cobertura vem do bairro escolhido no formulário, não só do que a leitura achou.
   const coberturaEscolhida = coberturaDoFormulario(form);
   const foraDeCobertura = coberturaEscolhida === "recife_fora" || coberturaEscolhida === "fora_do_recife";
   const semBairro = coberturaEscolhida === "desconhecida";
+  // Fora de cobertura ou sem bairro, o formulário abre sozinho: é nele que a pessoa corrige o bairro. Aberto uma vez,
+  // continua aberto (não some no meio da edição quando uma leitura nova traz o bairro).
+  const formularioPrecisa = !temDados || foraDeCobertura || semBairro;
+  const mostrarFormulario = abriuEdicao || formularioPrecisa;
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { if (formularioPrecisa) setAbriuEdicao(true); }, [formularioPrecisa]);
   const mostrarCartaoDeTexto = !noCelular || pediuTexto;
+  const bloqueado = motivoDaFalha === "bloqueio";
+  /** No celular, quando a página não pôde ser lida, o caminho principal é o navegador do aparelho. */
+  const ofereceNavegador = noCelular && leituraDaUrl !== null && motivoDaFalha !== null;
+  const instrucao = instrucaoNoNavegador();
 
   return (
     <Tela>
+      <PreparoDoDossie aberto={preparando !== null} nome={preparando?.nome ?? ""} bairro={preparando?.bairro ?? null}
+        aoTerminar={() => { const id = preparando?.id; setPreparando(null); if (id) router.push({ pathname: "/dossie", params: { id } }); }} />
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-        <Pressable
-          onPress={() => router.push("/")}
-          accessibilityRole="button"
-          accessibilityLabel="Cancelar"
-          style={styles.botaoCancelar}
-        >
-          <Texto tipo="apoio" style={styles.textoCancelar}>
-            ← Cancelar
-          </Texto>
-        </Pressable>
+        <Coluna style={styles.coluna}>
+          <AlvoDeToque
+            onPress={() => router.push("/")}
+            accessibilityRole="button"
+            accessibilityLabel="Cancelar"
+            style={styles.botaoCancelar}
+          >
+            <Texto tipo="apoio" style={styles.textoCancelar}>
+              ← Cancelar
+            </Texto>
+          </AlvoDeToque>
 
-        <Cartao style={styles.cartao}>
-          <CorpoDoCartao style={styles.corpo}>
-            <View style={styles.cabecalho}>
-              <Texto tipo="apoio" style={styles.sobretitulo}>
-                Lendo o anúncio no aparelho
-              </Texto>
-              <Texto tipo="titulo-tela" role="heading" style={styles.titulo}>
-                {tituloDoCartao}
-              </Texto>
-              {url ? (
-                <Texto tipo="apoio" numberOfLines={1} style={styles.enderecoDoLink}>
-                  {url}
-                </Texto>
-              ) : null}
-            </View>
-
-            {abrePagina && paginaAberta ? (
-              <View style={styles.blocoDaPagina}>
-                <LeitorDePagina
-                  url={url}
-                  portal={portal}
-                  idNoPortal={idNoPortal}
-                  aoLer={aoLerAPagina}
-                  aoFalhar={aoFalharAPagina}
-                />
-                {!mostrarCartaoDeTexto ? <LinkDoCartao rotulo="Prefiro colar o texto" aoPressionar={() => setPediuTexto(true)} /> : null}
-              </View>
-            ) : null}
-
-            {abrePagina && !paginaAberta ? (
-              <View style={styles.linhaDeLinks}>
-                <LinkDoCartao rotulo="Ver página do anúncio" aoPressionar={() => setPaginaAberta(true)} />
-                {!mostrarCartaoDeTexto ? <LinkDoCartao rotulo="Prefiro colar o texto" aoPressionar={() => setPediuTexto(true)} /> : null}
-              </View>
-            ) : null}
-
-            <View style={styles.checklist}>
-              {linhas.map((linha, indice) => (
-                <LinhaDoChecklist key={linha.titulo} numero={indice + 1} {...linha} />
-              ))}
-            </View>
-
-            <View style={styles.rodapeDePrivacidade}>
-              <Texto tipo="apoio" style={styles.textoDePrivacidade}>
-                Só lemos campos do imóvel. Nada sobre quem anuncia.
-              </Texto>
-              <Texto tipo="apoio" style={styles.seloDePrivacidade}>
-                Privacidade local
-              </Texto>
-            </View>
-          </CorpoDoCartao>
-        </Cartao>
-
-        {mostrarCartaoDeTexto ? (
+          {arquivoExtensao && !recebidoDaExtensao ? <Texto role="alert">O arquivo da extensão não está aberto nesta sessão. Selecione-o novamente no início; nenhum texto privado foi colocado no endereço da página.</Texto> : null}
+          {temDados ? null : <LeituraDeImagem aoRevisar={texto => { setTextoDoCampo(texto); setPediuTexto(true); setAvisoDaCopia("Texto da imagem na revisão. Confira e toque em Ler texto para propor os campos."); }} />}
           <Cartao style={styles.cartao}>
             <CorpoDoCartao style={styles.corpo}>
-              <Texto tipo="secao" role="heading" style={styles.tituloDeSecao}>
-                Complete com o texto do anúncio
-              </Texto>
-              <Texto tipo="apoio" style={styles.descricao}>
-                {motivoDaFalha !== null
-                  ? "Não conseguimos ler esta página. Copie o texto dela e cole aqui."
-                  : "No anúncio, selecione todo o texto da página e cole aqui."}
-              </Texto>
-
-              <View style={styles.campoDeTexto}>
-                <Texto tipo="etiqueta" style={styles.rotuloDoCampo}>
-                  Texto do anúncio
+              {temDados ? null : <View style={styles.cabecalho}>
+                <Texto tipo="apoio" style={styles.sobretitulo}>
+                  Lendo o anúncio no aparelho
                 </Texto>
-                <TextInput
-                  multiline
-                  numberOfLines={6}
-                  value={textoDoCampo}
-                  onChangeText={setTextoDoCampo}
-                  placeholder="Cole aqui o texto copiado do anúncio"
-                  placeholderTextColor={cor("cor-texto-apoio")}
-                  accessibilityLabel="Texto do anúncio"
-                  style={styles.areaDeTexto}
-                />
-              </View>
+                <Texto tipo="titulo-tela" role="heading" style={styles.titulo}>
+                  {tituloDoCartao}
+                </Texto>
+                {url ? (
+                  <Texto tipo="apoio" numberOfLines={1} style={styles.enderecoDoLink}>
+                    {url}
+                  </Texto>
+                ) : null}
+              </View>}
 
-              <Botao rotulo="Ler texto" variante="secundario" onPress={lerTexto} />
+              {avisoDoRecebido ? (
+                <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.avisoDaCopia}>
+                  {avisoDoRecebido}
+                </Texto>
+              ) : null}
+
+              {abrePagina && paginaAberta ? (
+                <View style={styles.blocoDaPagina}>
+                  <LeitorDePagina
+                    url={url}
+                    portal={portal}
+                    idNoPortal={idNoPortal}
+                    aoLer={aoLerAPagina}
+                    aoFalhar={aoFalharAPagina}
+                  />
+                  {!mostrarCartaoDeTexto ? <LinkDoCartao rotulo="Prefiro colar o texto" aoPressionar={() => setPediuTexto(true)} /> : null}
+                </View>
+              ) : null}
+
+              {abrePagina && !paginaAberta && !bloqueado ? (
+                <View style={styles.linhaDeLinks}>
+                  <LinkDoCartao rotulo="Ver página do anúncio" aoPressionar={() => setPaginaAberta(true)} />
+                  {!mostrarCartaoDeTexto ? <LinkDoCartao rotulo="Prefiro colar o texto" aoPressionar={() => setPediuTexto(true)} /> : null}
+                </View>
+              ) : null}
+
+              {temDados ? (
+                <CartaoDoAnuncio form={form} titulo={tituloDoCartao} portal={portal} url={url} fotos={fotos} aoEditar={() => setAbriuEdicao(true)} />
+              ) : (
+                <View style={styles.checklist}>
+                  {linhas.map((linha, indice) => (
+                    <LinhaDoChecklist key={linha.titulo} numero={indice + 1} {...linha} />
+                  ))}
+                </View>
+              )}
+
+              {avisoDeTipologia(form.tipologia) ? (
+                <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.avisoDaCopia}>
+                  {avisoDeTipologia(form.tipologia)}
+                </Texto>
+              ) : null}
+
+              <View style={styles.rodapeDePrivacidade}>
+                <Texto tipo="apoio" style={styles.textoDePrivacidade}>
+                  Só lemos campos do imóvel. Nada sobre quem anuncia.
+                </Texto>
+                <Texto tipo="apoio" style={styles.seloDePrivacidade}>
+                  Privacidade local
+                </Texto>
+              </View>
             </CorpoDoCartao>
           </Cartao>
-        ) : null}
 
-        <Cartao style={styles.cartao}>
-          <CorpoDoCartao style={styles.corpo}>
-            <Texto tipo="titulo-tela" role="heading" style={styles.tituloDoFormulario}>
-              Revise antes de salvar
-            </Texto>
-            <FormularioDeRevisao estado={form} anomalias={anomaliasDaRevisao(extracao, form)} aoAlterar={setForm} />
+          {mostrarCartaoDeTexto ? (
+            <Cartao style={styles.cartao}>
+              <CorpoDoCartao style={styles.corpo}>
+                <Texto tipo="secao" role="heading" style={styles.tituloDeSecao}>
+                  {bloqueado ? "Abra o anúncio no navegador" : "Complete com o texto do anúncio"}
+                </Texto>
+                <Texto tipo="apoio" style={styles.descricao}>
+                  {bloqueado
+                    ? `${portal === "outro" ? "Este site" : nomeDoPortal(portal)} não deixa outros apps abrirem a página, mas o navegador do celular abre. ${instrucao ?? "Lá, selecione o trecho com preço, condomínio e IPTU, copie e volte: o Vereda lê sozinho o que você copiou."}`
+                    : ofereceNavegador
+                      ? instrucao
+                        ? `Não conseguimos ler esta página aqui. Abra no navegador. ${instrucao}`
+                        : "Não conseguimos ler esta página aqui. Abra no navegador, copie o trecho com preço, condomínio e IPTU e volte: o Vereda lê sozinho o que você copiou."
+                      : Platform.OS === "web"
+                        ? "O navegador não deixa o Vereda abrir a página do portal, então preço, condomínio e IPTU vêm do texto: no anúncio, selecione todo o texto da página e cole aqui. No celular, o app tenta ler a página sozinho."
+                        : "No anúncio, selecione todo o texto da página e cole aqui."}
+                </Texto>
 
-            {foraDeCobertura ? null : (
-              <View style={styles.acoes}>
-                <Botao rotulo="Encontrar o prédio" variante="principal" desativado={salvando || semBairro} onPress={encontrarOPredio} />
-                {semBairro ? (
+                {ofereceNavegador ? (
+                  <Botao rotulo="Abrir no navegador" variante="principal" icone="external-link" onPress={() => void abrirNoNavegador()} />
+                ) : null}
+                {noCelular ? (
+                  <Botao rotulo="Colar o que copiei" variante="secundario" icone="clipboard" onPress={() => void lerCopiado()} />
+                ) : null}
+                {avisoDaCopia ? (
+                  <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.avisoDaCopia}>
+                    {avisoDaCopia}
+                  </Texto>
+                ) : null}
+
+                <View style={styles.campoDeTexto}>
+                  <Texto tipo="etiqueta" style={styles.rotuloDoCampo}>
+                    Texto do anúncio
+                  </Texto>
+                  <TextInput
+                    multiline
+                    numberOfLines={6}
+                    value={textoDoCampo}
+                    onChangeText={setTextoDoCampo}
+                    placeholder="Cole aqui o texto copiado do anúncio"
+                    placeholderTextColor={cor("cor-texto-apoio")}
+                    accessibilityLabel="Texto do anúncio"
+                    onFocus={focoDoTexto.aoFocar}
+                    onBlur={focoDoTexto.aoDesfocar}
+                    style={[styles.areaDeTexto, focoDoTexto.estilo]}
+                  />
+                </View>
+
+                <Botao rotulo="Ler texto" variante="secundario" onPress={() => lerTexto(textoDoCampo)} />
+              </CorpoDoCartao>
+            </Cartao>
+          ) : null}
+
+          <Cartao style={styles.cartao}>
+            <CorpoDoCartao style={styles.corpo}>
+              {mostrarFormulario ? (
+                <>
+                  <Texto tipo="titulo-tela" role="heading" style={styles.tituloDoFormulario}>
+                    Revise antes de salvar
+                  </Texto>
+                  <FormularioDeRevisao essencial estado={form} anomalias={anomaliasDaRevisao(extracao, form)} aoAlterar={setForm} />
+                </>
+              ) : null}
+
+              {foraDeCobertura ? null : semBairro ? (
+                <View style={styles.acoes}>
+                  <Botao rotulo="Encontrar o prédio" variante="principal" desativado onPress={encontrarOPredio} />
                   <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.dicaDoBairro}>
                     Escolha o bairro
                   </Texto>
-                ) : null}
-              </View>
-            )}
-            {!foraDeCobertura && erroAoSalvar ? (
-              <Texto tipo="apoio" role="alert" style={styles.erro}>
-                {erroAoSalvar}
-              </Texto>
-            ) : null}
-          </CorpoDoCartao>
-        </Cartao>
-
-        {foraDeCobertura ? (
-          <Cartao style={styles.cartao}>
-            <CorpoDoCartao style={styles.corpo}>
-              <Texto tipo="titulo-tela" role="heading" style={styles.titulo}>
-                {tituloDeForaDeCobertura(form) ?? "Ainda não cobrimos este bairro."}
-              </Texto>
-              <Texto tipo="apoio" style={styles.textoDaCobertura}>
-                O Vereda está disponível para{" "}
-                <Texto tipo="apoio" style={styles.destaqueDaCobertura}>
-                  Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena
-                </Texto>
-                . A leitura deste anúncio não consumiu crédito.
-              </Texto>
-
-              <View style={styles.caixaCreme}>
-                <Texto tipo="apoio" style={styles.textoDaCaixaCreme}>
-                  Nosso recorte inicial exige consolidação completa da chave cadastral junto às bases abertas do Recife.
-                </Texto>
-              </View>
-
-              <View style={styles.acoes}>
-                <Botao rotulo="Salvar no caderno" variante="principal" desativado={salvando} onPress={salvarForaDeCobertura} />
-                <Botao rotulo="Colar outro link" variante="secundario" onPress={() => router.push("/")} />
-              </View>
-              {erroAoSalvar ? (
+                </View>
+              ) : (
+                <PredioProvavel analise={previa} bairro={form.bairro as SlugCoberto} trabalhando={salvando || confirmando}
+                  aoConfirmar={(e) => void confirmarDaqui(e)} aoEscolherOutro={() => void encontrarOPredio()} />
+              )}
+              {!foraDeCobertura && erroAoSalvar ? (
                 <Texto tipo="apoio" role="alert" style={styles.erro}>
                   {erroAoSalvar}
                 </Texto>
               ) : null}
             </CorpoDoCartao>
           </Cartao>
-        ) : null}
+
+          {foraDeCobertura ? (
+            <Cartao style={styles.cartao}>
+              <CorpoDoCartao style={styles.corpo}>
+                <Texto tipo="titulo-tela" role="heading" style={styles.titulo}>
+                  {tituloDeForaDeCobertura(form) ?? "Ainda não cobrimos este bairro."}
+                </Texto>
+                <Texto tipo="apoio" style={styles.textoDaCobertura}>
+                  O Vereda está disponível para{" "}
+                  <Texto tipo="apoio" style={styles.destaqueDaCobertura}>
+                    {BAIRROS_COBERTOS.length} bairros do Recife com índice cadastral em revisão
+                  </Texto>
+                  . A leitura deste anúncio não consumiu crédito.
+                </Texto>
+
+                <View style={styles.caixaCreme}>
+                  <Texto tipo="apoio" style={styles.textoDaCaixaCreme}>
+                    Nosso recorte inicial exige consolidação completa da chave cadastral junto às bases abertas do Recife.
+                  </Texto>
+                </View>
+
+                <View style={styles.acoes}>
+                  <Botao rotulo="Salvar no caderno" variante="principal" desativado={salvando} onPress={salvarForaDeCobertura} />
+                  <Botao rotulo="Colar outro link" variante="secundario" onPress={() => router.push("/")} />
+                </View>
+                {erroAoSalvar ? (
+                  <Texto tipo="apoio" role="alert" style={styles.erro}>
+                    {erroAoSalvar}
+                  </Texto>
+                ) : null}
+              </CorpoDoCartao>
+            </Cartao>
+          ) : null}
+        </Coluna>
       </ScrollView>
     </Tela>
   );
@@ -374,17 +648,11 @@ export default function TelaDeLeitura() {
 function LinkDoCartao({ rotulo, aoPressionar }: { rotulo: string; aoPressionar: () => void }) {
   const styles = useEstilos();
   return (
-    <Pressable
-      onPress={aoPressionar}
-      accessibilityRole="link"
-      accessibilityLabel={rotulo}
-      hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-      style={styles.link}
-    >
+    <AlvoDeToque onPress={aoPressionar} accessibilityRole="link" accessibilityLabel={rotulo} style={styles.link}>
       <Texto tipo="apoio" style={styles.textoDoLink}>
         {rotulo}
       </Texto>
-    </Pressable>
+    </AlvoDeToque>
   );
 }
 
@@ -428,10 +696,13 @@ function LinhaDoChecklist({
 // Texto pequeno em ferrugem usa "cor-barro-texto" (contraste); o laranja fica só em preenchimento, ícone e traço.
 const useEstilos = estilosDoTema((cor) =>
   StyleSheet.create({
+    // As margens laterais ficam na rolagem; a coluna (720 px no desktop) vem dentro delas.
     scroll: {
       padding: 16,
-      gap: 16,
       paddingBottom: 48,
+    },
+    coluna: {
+      gap: 16,
     },
     botaoCancelar: {
       alignSelf: "flex-start",
@@ -501,6 +772,7 @@ const useEstilos = estilosDoTema((cor) =>
     },
     link: {
       minHeight: 44,
+      minWidth: 44,
       justifyContent: "center",
       alignSelf: "flex-start",
     },
@@ -594,6 +866,12 @@ const useEstilos = estilosDoTema((cor) =>
       color: cor("cor-texto-apoio"),
       fontSize: 13,
       lineHeight: 18,
+    },
+    avisoDaCopia: {
+      color: cor("cor-texto"),
+      fontSize: 12.5,
+      lineHeight: 17,
+      fontWeight: "600",
     },
     campoDeTexto: {
       gap: 5,

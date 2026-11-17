@@ -1,0 +1,420 @@
+{
+ "nome": "c5-torre-interrompido",
+ "aoVivo": false,
+ "semCache": false,
+ "areas": [
+  "boa-viagem",
+  "casa-forte",
+  "gracas",
+  "espinheiro",
+  "madalena",
+  "torre"
+ ],
+ "expansao": [
+  "torre"
+ ],
+ "inicio": "2026-11-15T02:17:54.736Z",
+ "fim": "2026-11-15T02:21:34.568Z",
+ "ms": 219825,
+ "estado": "incompleto",
+ "passos": [
+  {
+   "id": "observacoes",
+   "estado": "executado",
+   "ms": 30272,
+   "picoMB": 1107,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "observacoes.json"
+  },
+  {
+   "id": "rede",
+   "estado": "executado",
+   "ms": 67788,
+   "picoMB": 865,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "rede.json"
+  },
+  {
+   "id": "destinos",
+   "estado": "executado",
+   "ms": 95804,
+   "picoMB": 1124,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "destinos.json"
+  },
+  {
+   "id": "transito",
+   "estado": "interrompido",
+   "ms": 25778,
+   "picoMB": 0,
+   "codigo": null,
+   "sinal": "SIGKILL",
+   "erro": "",
+   "relatorio": "transito.json"
+  },
+  {
+   "id": "chuva",
+   "estado": "nao_rodou",
+   "motivo": "parou em transito"
+  },
+  {
+   "id": "noite",
+   "estado": "nao_rodou",
+   "motivo": "parou em transito"
+  },
+  {
+   "id": "procura",
+   "estado": "nao_rodou",
+   "motivo": "parou em transito"
+  },
+  {
+   "id": "sol",
+   "estado": "nao_rodou",
+   "motivo": "parou em transito"
+  }
+ ],
+ "publicacoes": {
+  "defesa-civil": {
+   "antes": "7874298731e565c8",
+   "depois": "7874298731e565c8"
+  },
+  "rede-pedestre": {
+   "antes": "c05c3ba9033e9fd9",
+   "depois": "c9304b31f1c65e69"
+  },
+  "essenciais": {
+   "antes": "ccf6c654c2ab0b75",
+   "depois": "2a88fafdb1b84047"
+  },
+  "transito": {
+   "antes": "d0a1adbf5b49ec7a",
+   "depois": "d8567a18840e76bb"
+  },
+  "chuva": {
+   "antes": "1b8d470204986364",
+   "depois": "1b8d470204986364"
+  }
+ },
+ "geradosAlterados": [
+  "src/dados/recife/transitoGerado.ts",
+  "src/dados/recife/essenciaisGerados.ts"
+ ],
+ "arquivosDoApp": {
+  "antes": 99,
+  "depois": 101,
+  "novos": 13,
+  "saiu": 11,
+  "bytesDepois": 27713427
+ },
+ "paraAPessoa": {
+  "chuva": {
+   "boa-viagem": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 147
+   },
+   "casa-forte": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 0
+   },
+   "espinheiro": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 1
+   },
+   "gracas": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 0
+   },
+   "madalena": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 25
+   }
+  },
+  "essenciais": {
+   "boa-viagem": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 1879
+   },
+   "casa-forte": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 82
+   },
+   "espinheiro": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 156
+   },
+   "gracas": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 291
+   },
+   "madalena": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 280
+   },
+   "torre": {
+    "arquivoIgual": false,
+    "novos": 137,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 0
+   }
+  },
+  "noite": {
+   "boa-viagem": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 1761
+   },
+   "casa-forte": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 78
+   },
+   "espinheiro": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 151
+   },
+   "gracas": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 285
+   },
+   "madalena": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 241
+   }
+  },
+  "transito": {
+   "boa-viagem": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 1761
+   },
+   "casa-forte": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 78
+   },
+   "espinheiro": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 151
+   },
+   "gracas": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 285
+   },
+   "madalena": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 241
+   },
+   "torre": {
+    "arquivoIgual": false,
+    "novos": 127,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 0
+   }
+  },
+  "sol": {
+   "boa-viagem": {
+    "arquivo": "igual"
+   },
+   "casa-forte": {
+    "arquivo": "igual"
+   },
+   "espinheiro": {
+    "arquivo": "igual"
+   },
+   "gracas": {
+    "arquivo": "igual"
+   },
+   "madalena": {
+    "arquivo": "igual"
+   }
+  }
+ },
+ "idadeDasFontes": {
+  "defesa-civil": [
+   {
+    "fonte": "defesa_civil_2020",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:52Z"
+   },
+   {
+    "fonte": "defesa_civil_2021",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:47Z"
+   },
+   {
+    "fonte": "defesa_civil_2022",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:43Z"
+   },
+   {
+    "fonte": "defesa_civil_2023",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:36Z"
+   },
+   {
+    "fonte": "defesa_civil_2024",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:30Z"
+   }
+  ],
+  "rede-pedestre": [
+   {
+    "fonte": "osm_nordeste_261113",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   }
+  ],
+  "essenciais": [
+   {
+    "fonte": "osm_nordeste_261113",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "pcr_feiras_livres",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-15T02:01:09Z"
+   },
+   {
+    "fonte": "pcr_mercados_publicos",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-15T02:01:09Z"
+   },
+   {
+    "fonte": "pcr_farmacias_da_familia",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-15T02:01:09Z"
+   }
+  ],
+  "transito": [
+   {
+    "fonte": "gtfs_grande_recife",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-11T16:39:00Z"
+   }
+  ],
+  "chuva": [
+   {
+    "fonte": "defesa_civil_2014",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2015",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2016",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2017",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2018",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2019",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2020",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2021",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2022",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2023",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2024",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   }
+  ]
+ },
+ "problemasAntes": [],
+ "problemasDepois": []
+}

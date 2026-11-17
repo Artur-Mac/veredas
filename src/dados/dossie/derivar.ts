@@ -23,6 +23,7 @@ import { custoMensal } from "../custos";
 import { formatarNumero, formatarReais } from "../formatos";
 import { bairroPorSlug, eCoberto } from "../recife/bairros";
 import { formatarChaveCadastral, formatarEndereco } from "../recife/endereco";
+import { analisarRua, type EntradaDaRua } from "./rua";
 
 type TipologiaDoPredio = Edificio["tipologias"][number];
 type CampoDeCusto = "iptu" | "condominio";
@@ -39,7 +40,9 @@ const LIMITE_AREA_NAO_CONFERE_RELATIVO = 0.1;
 const ANO_DE_CORTE_ESTRUTURA = 2005;
 const MAX_ACHADOS_DE_APOIO = 3;
 /** Prédio de tipologia única: todas as áreas das tipologias a até 3% da mediana delas. */
-const LIMITE_TIPOLOGIA_UNICA = 0.03;
+// 15/11/2026: "tamanhos parecidos" = a maior área até 20% acima da menor (antes: 3% da mediana). Apartamentos de 53 e
+// 61 m² comparam-se pelo valor da unidade; 98 e 124,5 m² não. A faixa de áreas fica dita na referência.
+const LIMITE_TIPOLOGIA_UNICA = 0.2;
 /** Como a posição de compra nomeia a referência: a mediana de `itbi.valorUnidade` (36 meses). */
 const REFERENCIA_DO_ITBI = "mediana das avaliações fiscais de unidades deste prédio (ITBI, 36 meses)";
 
@@ -90,7 +93,11 @@ function quartisDe(valores: number[]): Quartis | null {
   return { n: v.length, p25: arredondar(em(0.25)), mediana: arredondar(em(0.5)), p75: arredondar(em(0.75)) };
 }
 
-/** Valor declarado que entra em conta: ausente ou "a confirmar" não entra. */
+/**
+ * Valor declarado que entra em conta: ausente ou "a confirmar" não entra. Vale também para a área: com `aConfirmar` ela
+ * não serve para casar tipologia (nem IPTU por tipologia, nem "Área não confere", nem "Área das unidades mais parecidas");
+ * quem aparece é o achado da anomalia da área.
+ */
 function conhecido(d: { valor: number | null; aConfirmar: boolean }): number | null {
   return d.aConfirmar ? null : d.valor;
 }
@@ -125,12 +132,6 @@ const DEMONSTRATIVO: Record<Tipologia, string> = {
 
 // ——— Posição (barra bala) —————————————————————————————————————————————————————————
 
-/** Mediana de uma lista não vazia, sem interpolar além dos dois valores centrais. */
-function medianaDe(valores: number[]): number {
-  const v = [...valores].sort((x, y) => x - y);
-  const meio = Math.floor(v.length / 2);
-  return v.length % 2 === 1 ? (v[meio] ?? 0) : ((v[meio - 1] ?? 0) + (v[meio] ?? 0)) / 2;
-}
 
 /**
  * Prédio de tipologia única: todas as áreas das tipologias ficam a até 3% da mediana delas. Só nele o valor de uma
@@ -139,8 +140,8 @@ function medianaDe(valores: number[]): number {
  */
 export function tipologiaUnica(e: Edificio): boolean {
   if (e.tipologias.length === 0) return false;
-  const mediana = medianaDe(e.tipologias.map((t) => t.area));
-  return e.tipologias.every((t) => Math.abs(t.area - mediana) <= mediana * LIMITE_TIPOLOGIA_UNICA + 1e-9);
+  const areas = e.tipologias.map((t) => t.area);
+  return Math.max(...areas) <= Math.min(...areas) * (1 + LIMITE_TIPOLOGIA_UNICA) + 1e-9;
 }
 
 function montarPosicao(
@@ -297,6 +298,72 @@ function descricaoDaAnomalia(a: AnaliseV2, campo: CampoDeCusto, anomalia: Anomal
   }
 }
 
+// ——— Anomalia da área ——————————————————————————————————————————————————————————————
+
+const ID_DA_PERGUNTA_DA_ANOMALIA_DE_AREA = "anomalia-area";
+
+/**
+ * Anomalia da leitura que deixa a área a confirmar. Só vale enquanto a área está marcada `aConfirmar`: o formulário a
+ * liga quando a leitura traz anomalia na área, e desliga quando a pessoa digita outro valor. Com a marca desligada a área
+ * entra em conta como qualquer outra e não há achado. Quando a leitura traz mais de uma anomalia, vale a primeira da
+ * precedência; sem nenhuma na lista, a primeira lida.
+ */
+function anomaliaDeArea(a: AnaliseV2): Anomalia | null {
+  const lidas = (a.extracao?.anomalias ?? []).filter((l) => l.campo === "area");
+  if (lidas.length === 0 || !a.declarados.area.aConfirmar) return null;
+  for (const tipo of PRECEDENCIA_DAS_ANOMALIAS) {
+    const achada = lidas.find((l) => l.tipo === tipo);
+    if (achada) return achada;
+  }
+  return lidas[0] ?? null;
+}
+
+type DescricaoDaAnomaliaDeArea = { pergunta: string; pista: string; texto: string; mensagem: string };
+
+function descricaoDaAnomaliaDeArea(a: AnaliseV2, anomalia: Anomalia): DescricaoDaAnomaliaDeArea {
+  // O valor que o anúncio traz, quando traz um: a área lida, mesmo a confirmar (ela só não entra em conta nenhuma).
+  const lida = a.declarados.area.valor ?? a.extracao?.campos.area ?? null;
+  const fora = "Fica fora da comparação com o cadastro e do preço por m² até você confirmar.";
+  switch (anomalia.tipo) {
+    case "incoerente":
+      return {
+        pergunta: lida !== null ? `Área de ${formatarArea(lida)} m² está certa?` : "Qual é a área do imóvel?",
+        pista: "Valores diferentes no anúncio",
+        texto: `O link e o texto colado trazem áreas diferentes. ${fora}`,
+        mensagem: "O anúncio traz áreas diferentes. Qual é a área privativa do imóvel?",
+      };
+    case "nao_informado":
+      return {
+        pergunta: "Qual é a área do imóvel?",
+        pista: "Não informado no anúncio",
+        texto: `O anúncio não informa a área. ${fora}`,
+        mensagem: "O anúncio não informa a área. Qual é a área privativa do imóvel?",
+      };
+    default:
+      return {
+        pergunta: lida !== null ? `Área de ${formatarArea(lida)} m² está certa?` : "Qual é a área do imóvel?",
+        pista: "Valor a confirmar",
+        texto: `O anúncio traz um valor de área que precisa de confirmação. ${fora}`,
+        mensagem: "Qual é a área privativa do imóvel?",
+      };
+  }
+}
+
+/** O título vem de `tituloDaAnomalia`, como o das anomalias de custo; só a pergunta e o texto são daqui. */
+function achadoDaAnomaliaDeArea(a: AnaliseV2, anomalia: Anomalia): Achado {
+  const d = descricaoDaAnomaliaDeArea(a, anomalia);
+  return {
+    id: "ach-anomalia-area",
+    tipo: "anomalia",
+    titulo: tituloDaAnomalia(anomalia),
+    medida: null,
+    texto: d.texto,
+    confianca: "declarado",
+    fonte: "anuncio",
+    perguntaId: ID_DA_PERGUNTA_DA_ANOMALIA_DE_AREA,
+  };
+}
+
 // ——— Achados ——————————————————————————————————————————————————————————————————————
 
 const ID_DA_PERGUNTA_DA_ANOMALIA: Record<CampoDeCusto, string> = { iptu: "anomalia-iptu", condominio: "anomalia-condominio" };
@@ -408,8 +475,10 @@ function achadosDe(
   iptuMensalDeclarado: number | null,
   posicao: Posicao | null,
 ): Achado[] {
+  const anomaliaDaArea = anomaliaDeArea(a);
   const lista: (Achado | null)[] = [
     ...anomalias.map((an) => achadoDaAnomalia(a, an)),
+    anomaliaDaArea ? achadoDaAnomaliaDeArea(a, anomaliaDaArea) : null,
     predio ? achadoDeIptu(a, predio, iptuMensalDeclarado) : null,
     predio ? achadoDeArea(a, predio) : null,
     predio ? achadoDeEstrutura(predio) : null,
@@ -436,6 +505,7 @@ function perguntasDe(
   anomalias: AnomaliaDeCusto[],
   achados: Achado[],
   custo: VisaoDoDossie["custo"],
+  daRua: readonly Pergunta[] = [],
 ): Pergunta[] {
   const lista: Pergunta[] = [];
   const d = a.declarados;
@@ -514,6 +584,15 @@ function perguntasDe(
     });
   }
 
+  const anomaliaDaArea = tem("ach-anomalia-area") ? anomaliaDeArea(a) : null;
+  if (anomaliaDaArea) {
+    const descricao = descricaoDaAnomaliaDeArea(a, anomaliaDaArea);
+    lista.push({
+      id: ID_DA_PERGUNTA_DA_ANOMALIA_DE_AREA, titulo: descricao.pergunta, pista: descricao.pista,
+      textoParaMensagem: descricao.mensagem, origem: "anomalia", prioridade: "documentos",
+    });
+  }
+
   if (tem("ach-estrutura")) {
     lista.push({
       id: "achado-estrutura", titulo: "Qual é o sistema estrutural?", pista: "3 sinais no cadastro",
@@ -537,6 +616,9 @@ function perguntasDe(
       textoParaMensagem: "Há obras próximas ao prédio que afetem a rotina dos moradores?", origem: "achado", prioridade: "conforto",
     });
   }
+
+  // v1.1: as perguntas da seção "A rua" (som, drenagem, iluminação, travessia, coleta e Defesa Civil), antes das padrão.
+  lista.push(...daRua);
 
   lista.push(
     {
@@ -723,6 +805,8 @@ export function enderecoDoImovel(a: Pick<AnaliseV2, "logradouro" | "numero">, pr
  * `prioridade` é o filtro Custo / Conforto / Documentos da tela (não faz parte da análise); sem ela, as
  * perguntas saem na ordem da derivação, com a de endereço em primeiro. `agora` fica na assinatura para que
  * regras futuras dependentes de tempo não mudem os chamadores; hoje nenhuma regra o usa.
+ * `rua` (v1.1) é a camada "A rua" do índice do bairro com as fontes do meta.json: com ela, a visão ganha `rua` (os fatos
+ * da seção, ou null sem prédio confirmado) e o roteiro ganha as perguntas da rua. Sem o argumento, a visão é a da v1.0.
  */
 export function derivarDossie(
   a: AnaliseV2,
@@ -732,6 +816,7 @@ export function derivarDossie(
   outras: AnaliseV2[],
   agora: Date,
   prioridade: Prioridade | null = null,
+  rua?: EntradaDaRua | null,
 ): VisaoDoDossie {
   void agora;
   void contexto;
@@ -751,7 +836,8 @@ export function derivarDossie(
   const posicao = posicaoDe(a, c.principal.porM2, predio, outras);
   const anomalias = anomaliasDeCusto(a);
   const todos = achadosDe(a, predio, anomalias, iptuMensalDeclarado, posicao);
-  const perguntas = ordenarPerguntas(perguntasDe(a, predio, anomalias, todos, custo), prioridade);
+  const daRua = rua ? analisarRua(a, predio, rua, predio ? formatarEndereco(predio.logradouro, null) : undefined) : null;
+  const perguntas = ordenarPerguntas(perguntasDe(a, predio, anomalias, todos, custo, daRua?.perguntas ?? []), prioridade);
   const obras = predio ? obrasProximas(predio, obrasDoBairro) : null;
 
   const d = a.declarados;
@@ -775,5 +861,6 @@ export function derivarDossie(
     cadastro: predio ? cadastroDe(a, predio) : [semPredio(a)],
     historico: predio && obras ? historicoDe(predio, obras) : [],
     obras,
+    ...(rua !== undefined ? { rua: daRua?.visao ?? null } : {}),
   };
 }

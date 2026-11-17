@@ -2,8 +2,10 @@
 // cronômetro, roteiro conferível, "Sinta o espaço" (luz e ruído) e impressões. Sob `TemaEscuro`, todas as peças
 // leem os tokens escuros; o fundo é `cor-campo` e o texto, `cor-texto-campo`.
 import type { ReactNode } from "react";
+import { router } from "expo-router";
 import { View } from "react-native";
-import type { Pergunta, Visita } from "../../dados/contratos";
+import type { Edificio, Pergunta, Visita } from "../../dados/contratos";
+import { derivarGuiaDeEstrutura } from "../../dados/dossie/guiaEstrutura";
 import { TemaEscuro, useTema } from "../../tema/Tema";
 import { ESPACO, RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
 import { Botao } from "../Botao";
@@ -11,8 +13,8 @@ import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { BarraDeProgresso, CampoDeTexto, Chamada, LinkDeAcao, TituloDeSecao } from "./blocos";
 import { LinhaDePergunta } from "./LinhaDePergunta";
+import { MedidorDeRuido } from "./MedidorDeRuido";
 import { OPCOES_DE_RUIDO, MAX_NOTAS, formatarCronometro } from "./logica";
-import { OrientacaoDaJanela } from "./Orientacao";
 import type { ControleDaVisita } from "./useVisita";
 
 /** `.field-dark-row`: faixa de 12 px de respiro com divisória fina embaixo, menos na última. */
@@ -64,14 +66,14 @@ function Cronometro({ controle }: { controle: ControleDaVisita }) {
 }
 
 /** Ruído em três opções: percepção da pessoa, sem decibéis. Tocar de novo na escolhida limpa o registro. */
-function RuidoDeFora({ ruido, aoEscolher }: { ruido: Visita["ruido"]; aoEscolher: (ruido: Visita["ruido"]) => void }) {
+function RuidoDeFora({ ruido, aoEscolher, aoGuardarMedida }: { ruido: Visita["ruido"]; aoEscolher: (ruido: Visita["ruido"]) => void; aoGuardarMedida?: (texto: string) => void }) {
   const { cor } = useTema();
   return (
     <View style={{ gap: ESPACO[3] }}>
       <View>
         <Texto style={{ fontSize: 16, lineHeight: 23, fontWeight: "600", letterSpacing: -0.4 }}>Ruído de fora</Texto>
         <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 17, marginTop: 5 }}>
-          Compare com a janela aberta e fechada. É a sua percepção: o Vereda não mede decibéis.
+          Compare com a janela aberta e fechada. Os botões guardam a sua percepção; a medida pelo microfone, abaixo, é opcional e só compara aberta × fechada.
         </Texto>
       </View>
       <View role="group" accessibilityLabel="Ruído percebido" style={{ flexDirection: "row", gap: ESPACO[2] }}>
@@ -103,22 +105,28 @@ function RuidoDeFora({ ruido, aoEscolher }: { ruido: Visita["ruido"]; aoEscolher
           );
         })}
       </View>
+      <MedidorDeRuido aoGuardar={aoGuardarMedida} />
     </View>
   );
 }
 
 type PropsDoPainel = {
+  analiseId?: string;
   perguntas: Pergunta[];
   controle: ControleDaVisita;
   aoAbrirPergunta: (id: string) => void;
   aoAdicionarPergunta: () => void;
+  predio?: Edificio | null;
+  vizinhos?: readonly Edificio[];
+  andar?: number | null;
 };
 
-function Painel({ perguntas, controle, aoAbrirPergunta, aoAdicionarPergunta }: PropsDoPainel) {
+function Painel({ perguntas, controle, aoAbrirPergunta, aoAdicionarPergunta, predio = null, analiseId }: PropsDoPainel) {
   const { cor } = useTema();
   const { visita } = controle;
   if (!visita) return null;
   const conferidas = perguntas.filter((p) => visita.verificadas.includes(p.id)).length;
+  const guiaEstrutura = derivarGuiaDeEstrutura(predio);
   return (
     <View
       style={{
@@ -156,16 +164,45 @@ function Painel({ perguntas, controle, aoAbrirPergunta, aoAdicionarPergunta }: P
         <LinkDeAcao rotulo="Sua pergunta" icone="plus" seta={false} onPress={aoAdicionarPergunta} />
       </Faixa>
 
+      {guiaEstrutura ? (
+        <Faixa>
+          <Chamada>Observação visual</Chamada>
+          <View style={{ height: ESPACO[2] }} />
+          <TituloDeSecao tamanho={18}>{guiaEstrutura.titulo}</TituloDeSecao>
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 18, marginTop: 6 }}>
+            {guiaEstrutura.sinaisNoCadastro}
+          </Texto>
+          <View style={{ gap: 10, marginTop: ESPACO[3] }}>
+            {guiaEstrutura.pontosDaVisita.map((ponto, idx) => (
+              <View key={ponto.id} style={{ gap: 2 }}>
+                <Texto style={{ fontSize: 13, lineHeight: 19, fontWeight: "600" }}>
+                  {`${idx + 1}. ${ponto.ondeOlhar}`}
+                </Texto>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>
+                  {ponto.oQueObservar}
+                </Texto>
+              </View>
+            ))}
+          </View>
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16, marginTop: ESPACO[2] }}>
+            {guiaEstrutura.avisoDeEscopo}
+          </Texto>
+        </Faixa>
+      ) : null}
+
       <Faixa>
         <Chamada>Sinta o espaço</Chamada>
         <View style={{ height: ESPACO[3] }} />
-        <TituloDeSecao tamanho={20}>Luz na janela</TituloDeSecao>
+        <TituloDeSecao tamanho={20}>Sol nas suas janelas</TituloDeSecao>
         <View style={{ height: ESPACO[3] }} />
-        <OrientacaoDaJanela graus={visita.orientacaoGraus} aoMudar={controle.definirOrientacao} />
+        <Texto tipo="apoio" cor="cor-texto-apoio">Guarde a direção de uma janela e explore o percurso do Sol ao longo do dia.</Texto>
+        <View style={{ height: 12 }} />
+        <Botao rotulo="Observar uma janela" onPress={() => { void controle.pausarEGravar().then(ok => { if (ok) router.push({ pathname: "/sol", params: { id: analiseId } }); }); }} />
       </Faixa>
 
       <Faixa>
-        <RuidoDeFora ruido={visita.ruido} aoEscolher={controle.definirRuido} />
+        <RuidoDeFora ruido={visita.ruido} aoEscolher={controle.definirRuido}
+          aoGuardarMedida={(texto) => controle.definirNotas(`${controle.notas}${controle.notas.trim() ? "\n" : ""}${texto}`.slice(0, MAX_NOTAS))} />
       </Faixa>
 
       <Faixa ultima>

@@ -1,0 +1,82 @@
+{
+ "porLargura": {
+  "360": {
+   "externas": [],
+   "erros": [],
+   "console": [],
+   "rolagem": {
+    "explorar": 0,
+    "dossie": 0,
+    "entorno": 0,
+    "leitor": 0,
+    "comparar": 0,
+    "sala": 0,
+    "visita": 0
+   },
+   "conferido": {
+    "entradaUnica": true,
+    "exemplosAbertos": true,
+    "botaoVira": true,
+    "buscaAcha": true,
+    "fichaViva": true,
+    "pilulas": true,
+    "condominioDesconhecido": true,
+    "itbiFiscal": true,
+    "simuladorRecalcula": true,
+    "semDb": true,
+    "atrito": true,
+    "bate": true,
+    "atritoSeparado": true,
+    "linhaDoTempo": true,
+    "leitorDeAta": true,
+    "triagem": true,
+    "anotar": true,
+    "placarAmpliado": true,
+    "linkDaSala": true,
+    "respostaImportada": true,
+    "checagens": true,
+    "microfone": true
+   },
+   "proibidos": []
+  },
+  "1280": {
+   "externas": [],
+   "erros": [],
+   "console": [],
+   "rolagem": {
+    "explorar": 0,
+    "dossie": 0,
+    "entorno": 0,
+    "leitor": 0,
+    "comparar": 0,
+    "sala": 0,
+    "visita": 0
+   },
+   "conferido": {
+    "entradaUnica": true,
+    "exemplosAbertos": true,
+    "botaoVira": true,
+    "buscaAcha": true,
+    "fichaViva": true,
+    "pilulas": true,
+    "condominioDesconhecido": true,
+    "itbiFiscal": true,
+    "simuladorRecalcula": true,
+    "semDb": true,
+    "atrito": true,
+    "bate": true,
+    "atritoSeparado": true,
+    "linhaDoTempo": true,
+    "leitorDeAta": true,
+    "triagem": true,
+    "anotar": true,
+    "placarAmpliado": true,
+    "linkDaSala": true,
+    "respostaImportada": true,
+    "checagens": true,
+    "microfone": true
+   },
+   "proibidos": []
+  }
+ }
+}

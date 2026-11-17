@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   Animated,
   PanResponder,
@@ -13,6 +13,15 @@ import { useTema } from "../../tema/Tema";
 import { ESPACO, RAIO, comAlfa } from "../../tema/tokens";
 import { BotaoIcone } from "../Botao";
 import { Texto } from "../Texto";
+import { LARGURA_DA_GAVETA } from "./Coluna";
+import { useFocoDaGaveta } from "./focoDaGaveta";
+import { useMovimentoReduzidoRef } from "./movimento";
+
+/**
+ * Espaço entre a divisória do cabeçalho e o primeiro título do conteúdo, nas gavetas de rota que desenham o próprio corpo
+ * (Créditos, Sobre os dados): o mesmo respiro das outras gavetas do app, que ficam entre 12 e 14 px.
+ */
+export const RESPIRO_NO_TOPO_DA_GAVETA = 13;
 
 type Props = {
   visivel: boolean;
@@ -26,6 +35,8 @@ export function Gaveta({ visivel, titulo, subtitulo, children, aoFechar }: Props
   const { cor } = useTema();
   const insets = useSafeAreaInsets();
   const [deslocamento] = useState(() => new Animated.Value(0));
+  const movimentoReduzido = useMovimentoReduzidoRef();
+  const painel = useRef<View>(null);
 
   const fechar = useCallback(() => {
     aoFechar();
@@ -39,10 +50,12 @@ export function Gaveta({ visivel, titulo, subtitulo, children, aoFechar }: Props
         onPanResponderMove: (_, gesto) => deslocamento.setValue(Math.max(0, gesto.dy)),
         onPanResponderRelease: (_, gesto) => {
           if (gesto.dy > 80) fechar();
+          // Com movimento reduzido a gaveta volta ao lugar de uma vez, sem a mola.
+          else if (movimentoReduzido.current) deslocamento.setValue(0);
           else Animated.spring(deslocamento, { toValue: 0, useNativeDriver: Platform.OS !== "web" }).start();
         },
       }),
-    [deslocamento, fechar]
+    [deslocamento, fechar, movimentoReduzido]
   );
 
   useEffect(() => {
@@ -54,16 +67,22 @@ export function Gaveta({ visivel, titulo, subtitulo, children, aoFechar }: Props
     return () => window.removeEventListener("keydown", aoTeclar);
   }, [visivel, fechar]);
 
+  // Na web: o foco entra na gaveta ao abrir, o Tab gira dentro dela e o foco volta a quem a abriu ao fechar.
+  useFocoDaGaveta(visivel, painel);
+
   if (!visivel) return null;
 
   return (
     <View style={styles.conteinerAbsoluto}>
+      {/* O fundo fecha por toque; teclado fecha com Esc ou com o botão "Fechar", então ele fica fora da ordem de Tab. */}
       <Pressable
         accessibilityLabel="Fechar gaveta"
+        tabIndex={-1}
         onPress={fechar}
         style={[styles.fundoBackdrop, { backgroundColor: comAlfa(cor("cor-campo"), 0.45) }]}
       />
       <Animated.View
+        ref={painel}
         role="dialog"
         aria-modal
         accessibilityLabel={titulo}
@@ -114,21 +133,21 @@ export function Gaveta({ visivel, titulo, subtitulo, children, aoFechar }: Props
 }
 
 const styles = StyleSheet.create({
+  // O painel é filho em fluxo, encostado no pé e centralizado: no desktop a gaveta tem `LARGURA_DA_GAVETA` no meio da tela.
   conteinerAbsoluto: {
     ...StyleSheet.absoluteFill,
     zIndex: 100,
+    alignItems: "center",
+    justifyContent: "flex-end",
   },
   fundoBackdrop: {
     ...StyleSheet.absoluteFill,
   },
+  // `outlineWidth: 0`: o painel e o título recebem o foco por programa ao abrir; o anel fica para os controles.
   painelGaveta: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
+    outlineWidth: 0,
     maxHeight: "90%",
-    maxWidth: 640,
-    alignSelf: "center",
+    maxWidth: LARGURA_DA_GAVETA,
     width: "100%",
     borderTopWidth: 1,
     elevation: 16,
@@ -154,5 +173,6 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 17,
     fontWeight: "600",
+    outlineWidth: 0,
   },
 });

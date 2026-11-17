@@ -1,0 +1,197 @@
+{
+	"metadados": {
+		"cabecalho": {
+			"titulo": "Registro de chamados atendidos pela CTTU",
+			"descricao": "Contém a relação dos chamados recebidos pela CTTU através do 0800 081 1078, serviço prestado ao Cidadão",
+			"categoria_vcge": "http://vocab.e.gov.br/2011/03/vcge#transportes-transito",
+			"fonte_dados": "http://dados.recife.pe.gov.br",
+			"licenca": "Open Database License (ODbL)",
+			"responsavel_dados": "CTTU",
+			"responsavel_disponibilizar": "Emprel",
+			"frequencia_atualizacao": "Mensal",
+			"endereco_dataset": "http://dados.recife.pe.gov.br/dataset/callcenter",
+			"status": "ativo",
+			"endereco_dataset_substituto": "",
+			"granularidade": "",
+			"etiquetas": "Registros, callcenter, CTTU"
+		},
+		"recursos": [
+			{ 
+				"identificador": "http://dados.recife.pe.gov.br/dataset/callcenter/resource/13b99f30-1a57-4ff3-b446-ec1426c15f00",
+				"titulo": "Callcenter",
+				"formato": "csv",
+				"descricao": "Dados do Callcenter"
+			}
+		],
+		"campos": [
+			{
+				"codigo": "tipo_atendimento",
+				"descricao": "Tipo do Atendimento",
+				"tipo": "Char",
+				"tamanho": 20,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "situacao",
+				"descricao": "Situação da ocorrência",
+				"tipo": "Char",
+				"tamanho": 15,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "data_chamado",
+				"descricao": "Data do Chamado",
+				"tipo": "Char",
+				"tamanho": 10,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "hora_chamado",
+				"descricao": "horario do chamado",
+				"tipo": "Num",
+				"tamanho": 4,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "bairro",
+				"descricao": "Bairro",
+				"tipo": "Char",
+				"tamanho": 50,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "endereco",
+				"descricao": "Endereço",
+				"tipo": "Char",
+				"tamanho": 150,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "numero",
+				"descricao": "número do endereço",
+				"tipo": "Num",
+				"tamanho": 5,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "complemento",
+				"descricao": "Complemento do endereço",
+				"tipo": "Char",
+				"tamanho": 150,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "tipo_ocorrencia",
+				"descricao": "Tipo da Ocorrência",
+				"tipo": "Char",
+				"tamanho": 50,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "auto",
+				"descricao": "Número de Automoveis envolvidos no ocorrido",
+				"tipo": "Num",
+				"tamanho": 3,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "moto",
+				"descricao": "Número de motos envolvidas no ocorrido",
+				"tipo": "Num",
+				"tamanho": 3,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "ciclomotor",
+				"descricao": "Número de ciclomotor envolvidos no ocorrido",
+				"tipo": "Num",
+				"tamanho": 3,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "ciclista",
+				"descricao": "Número de ciclistas envolvidos no ocorrido",
+				"tipo": "Num",
+				"tamanho": 3,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "pedestre",
+				"descricao": "Número de pedestres envolvidos no ocorrido",
+				"tipo": "Num",
+				"tamanho": 3,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "onibus",
+				"descricao": "Número de ônibus envolvidos no ocorrido",
+				"tipo": "Num",
+				"tamanho": 3,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "caminhao",
+				"descricao": "Número de caminhões envolvidos no ocorrido",
+				"tipo": "Num",
+				"tamanho": 3,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "viatura",
+				"descricao": "Número de viaturas envolvidos no ocorrido",
+				"tipo": "Num",
+				"tamanho": 3,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "outro",
+				"descricao": "Número de outros veiculos envolvidos no ocorrido",
+				"tipo": "Num",
+				"tamanho": 3,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "vitimas",
+				"descricao": "Número de vitimas do ocorrido",
+				"tipo": "Char",
+				"tamanho": 3,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "hora_aviso_equipe",
+				"descricao": "Horario que a equipe foi avisada",
+				"tipo": "Num",
+				"tamanho": 5,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "hora_chegada",
+				"descricao": "Horario que a equipe chegou no local",
+				"tipo": "Num",
+				"tamanho": 5,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "hora_saida",
+				"descricao": "Horario que a equipe saiu do local",
+				"tipo": "Num",
+				"tamanho": 5,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "detalhes",
+				"descricao": "Detalhes do atendimento",
+				"tipo": "Char",
+				"tamanho": 100,
+				"valores_permitidos": ""
+			},
+			{
+				"codigo": "tempo_total",
+				"descricao": "Tempo total que a equipe levou para resolver o ocorrido",
+				"tipo": "Num",
+				"tamanho": 5,
+				"valores_permitidos": ""
+			}
+		]
+	}
+}

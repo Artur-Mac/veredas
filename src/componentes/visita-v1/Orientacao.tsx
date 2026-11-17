@@ -1,11 +1,13 @@
 // Orientação da janela (index.html: openVisitLight 5870, updateCompassAzimuth 5880, CSS .vv-compass 3191–3196).
-// A pessoa informa para onde a janela está voltada, de 0° a 359°; o app mostra o rótulo (N, NE, L, SE, S, SO, O, NO).
-// Não usa bússola do aparelho nem sol calculado: é só o registro dela.
-import { useRef, useState } from "react";
+// A pessoa informa para onde a janela está voltada, de 0° a 359°; o app mostra o rótulo (N, NE, L, SE, S, SO, O, NO)
+// e traduz em linguagem prática de sol (Nascente/Poente), obstrução de prédios vizinhos e brisa Sudeste do Recife.
+import { useMemo, useRef, useState } from "react";
 import { View } from "react-native";
 import Svg, { Circle, G, Path, Text as TextoSvg } from "react-native-svg";
+import type { Edificio } from "../../dados/contratos";
+import { analisarJanelaNoRecife } from "../../dados/dossie/solESombra";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, TOQUE_MINIMO } from "../../tema/tokens";
+import { ESPACO, RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
 import { Icone } from "../Icone";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
@@ -15,6 +17,13 @@ import { limitarGraus, orientacaoDaJanela } from "./logica";
 const TAMANHO_DA_BUSSOLA = 108;
 const MARGEM_DO_CONTROLE = 12;
 const PASSO_ASSISTIVO = 5;
+
+const ATALHOS_RECIFE: readonly { graus: number; rotulo: string }[] = [
+  { graus: 90, rotulo: "Nascente · L" },
+  { graus: 135, rotulo: "Brisa · SE" },
+  { graus: 180, rotulo: "Sul · S" },
+  { graus: 270, rotulo: "Poente · O" },
+];
 
 /** `.vv-compass > svg`: rosa dos ventos com a agulha na direção informada; sem valor, sem agulha. */
 function Bussola({ graus }: { graus: number | null }) {
@@ -43,7 +52,7 @@ function Bussola({ graus }: { graus: number | null }) {
         O
       </TextoSvg>
       {o ? (
-        <G rotation={o.graus} origin="55, 55">
+        <G transform={`rotate(${o.graus} 55 55)`}>
           <Path d="M55 29 49 61 55 57 61 61Z" fill={cor("cor-acao")} />
           <Path d="M55 81 49 61 55 57 61 61Z" fill={cor("cor-traco")} />
         </G>
@@ -83,9 +92,6 @@ function BotaoDePasso({ sinal, acessivel, onPress }: { sinal: "mais" | "menos"; 
 
 /**
  * Controle de 0° a 359°: arrastar no trilho ou tocar em − e + (1° por toque; dá a volta, porque a direção é circular).
- * Para leitor de tela, o trilho aceita "aumentar" e "diminuir" em passos de 5°. Sem registro (`graus` nulo), o trilho não
- * informa valor nenhum ao leitor de tela, só "Não registrada", e o primeiro toque em − ou + registra 0° (N): o primeiro
- * passo não parte de um zero que ninguém escolheu.
  */
 function ControleDeGraus({ graus, aoMudar }: { graus: number | null; aoMudar: (graus: number) => void }) {
   const { cor } = useTema();
@@ -96,8 +102,6 @@ function ControleDeGraus({ graus, aoMudar }: { graus: number | null; aoMudar: (g
   const valor = graus ?? 0;
   const o = orientacaoDaJanela(valor);
 
-  // Posição horizontal da página (toque ou mouse) -> graus. O trilho é medido na janela a cada toque, porque a
-  // rolagem e o teclado mudam onde ele está.
   const aplicar = (paginaX: number) => {
     const util = largura.current - 2 * MARGEM_DO_CONTROLE;
     if (util <= 0) return;
@@ -184,9 +188,23 @@ function ControleDeGraus({ graus, aoMudar }: { graus: number | null; aoMudar: (g
   );
 }
 
-/** "Luz na janela": bússola, rótulo e controle. `graus` nulo = a pessoa ainda não registrou. */
-export function OrientacaoDaJanela({ graus, aoMudar }: { graus: number | null; aoMudar: (graus: number | null) => void }) {
+type PropsOrientacao = {
+  graus: number | null;
+  aoMudar: (graus: number | null) => void;
+  predio?: Edificio | null;
+  vizinhos?: readonly Edificio[];
+  andar?: number | null;
+};
+
+/** "Luz na janela": bússola, rótulo, atalhos rápidos do Recife e leitura prática de sol/sombra/brisa. */
+export function OrientacaoDaJanela({ graus, aoMudar, predio = null, vizinhos = [], andar = null }: PropsOrientacao) {
+  const { cor } = useTema();
   const o = graus === null ? null : orientacaoDaJanela(graus);
+  const leitura = useMemo(
+    () => (graus === null ? null : analisarJanelaNoRecife(graus, { predio, vizinhos, andar })),
+    [graus, predio, vizinhos, andar],
+  );
+
   return (
     <View style={{ gap: ESPACO[3] }}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
@@ -219,13 +237,66 @@ export function OrientacaoDaJanela({ graus, aoMudar }: { graus: number | null; a
                 Sem registro
               </Texto>
               <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 18, marginTop: 4 }}>
-                Ajuste a direção para registrar para onde a janela está voltada.
+                Toque num atalho abaixo ou ajuste o controle para ver como o sol e a brisa chegam nesta janela.
               </Texto>
             </>
           )}
         </View>
       </View>
+
+      <View role="group" accessibilityLabel="Atalhos de direção no Recife" style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+        {ATALHOS_RECIFE.map((a) => {
+          const proximo = graus !== null && Math.abs((((graus - a.graus) % 360) + 540) % 360 - 180) <= 22;
+          return (
+            <Pressionavel
+              key={a.graus}
+              accessibilityRole="button"
+              accessibilityLabel={`Apontar janela para ${a.rotulo}`}
+              accessibilityState={{ selected: proximo }}
+              onPress={() => aoMudar(a.graus)}
+              style={{
+                minHeight: 34,
+                paddingHorizontal: 10,
+                paddingVertical: 6,
+                borderRadius: RAIO.pilula,
+                borderWidth: 1,
+                borderColor: proximo ? cor("cor-acao") : cor("cor-linha-forte"),
+                backgroundColor: proximo ? comAlfa(cor("cor-acao"), 0.16) : undefined,
+                justifyContent: "center",
+              }}
+            >
+              <Texto tipo="etiqueta" cor={proximo ? "cor-acao" : "cor-texto-apoio"} style={{ fontSize: 11, fontWeight: proximo ? "700" : "500" }}>
+                {a.rotulo}
+              </Texto>
+            </Pressionavel>
+          );
+        })}
+      </View>
+
       <ControleDeGraus graus={graus} aoMudar={aoMudar} />
+
+      {leitura ? (
+        <View
+          accessible
+          accessibilityLabel={`${leitura.resumoHumano} ${leitura.dicaPratica}`}
+          style={{
+            padding: 12,
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: comAlfa(cor("cor-texto"), 0.14),
+            backgroundColor: comAlfa(cor("cor-texto"), 0.05),
+            gap: 4,
+          }}
+        >
+          <Texto tipo="corpo" style={{ fontSize: 13, lineHeight: 19, fontWeight: "600" }}>
+            {leitura.resumoHumano}
+          </Texto>
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>
+            {leitura.dicaPratica}
+          </Texto>
+        </View>
+      ) : null}
+
       {graus !== null ? <LinkDeAcao rotulo="Limpar orientação" seta={false} onPress={() => aoMudar(null)} /> : null}
     </View>
   );

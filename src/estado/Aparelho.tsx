@@ -1,10 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { z } from "zod";
+import { esquemaSolar } from "../dados/sol/contratos";
 import { apagar, gravarJson, lerJson } from "./armazenamento";
 
 const CHAVE = "vereda-mock";
 
 const esquema = z.object({
+  solarPorExemplo: z.record(z.string(), esquemaSolar).default({}),
   contestacoes: z.record(z.string(), z.object({ data: z.string(), motivo: z.string() })).default({}),
   lotesConfirmados: z.record(z.string(), z.boolean()).default({}),
   roteiro: z.record(z.string(), z.array(z.number().int())).default({}),

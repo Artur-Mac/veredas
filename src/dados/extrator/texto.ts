@@ -1,3 +1,4 @@
+import { nomeDeEdificioNoTexto } from "./nomeEFotos";
 import {
   camposVazios,
   type ChaveDeCampo,
@@ -6,6 +7,7 @@ import {
   type Portal,
 } from "../contratos";
 import { encontrarBairroNoTexto } from "./bairro";
+import { semDadosPessoais } from "./privacidade";
 
 /** Mapa auxiliar em memória para guardar textos de "Não informado" ou similares sem sujar o contrato Zod. */
 export const mapaNaoInformados = new WeakMap<LeituraParcial, Map<ChaveDeCampo, string>>();
@@ -150,8 +152,8 @@ export function extrairDoTexto(conteudo: string, portal: Portal): LeituraParcial
     leituras.push(leituraJsonLd);
   }
 
-  // 2. Camada B: Texto
-  const textoLimpo = limparHtml(conteudo);
+  // 2. Camada B: Texto, sem o contato de quem anuncia (o JSON-LD acima só rende campos da lista do imóvel)
+  const textoLimpo = semDadosPessoais(limparHtml(conteudo));
   const campos = camposVazios();
   const naoInformados = new Map<ChaveDeCampo, string>();
 
@@ -356,17 +358,26 @@ export function extrairDoTexto(conteudo: string, portal: Portal): LeituraParcial
   }
 
   // Logradouro: trecho que começa com Rua, R., Avenida, Av., Travessa, Tv., Estrada, Praça, Largo, Alameda
-  // até " - ", "," ou fim de linha; ", 123" logo depois vira numero.
-  const matchLog = /\b((?:Rua|R\.|Avenida|Av\.|Travessa|Tv\.|Estrada|Praça|Praca|Largo|Alameda)\s+[^,\n-]+?)(?:\s*-\s*|,\s*|\n|$)/i.exec(textoLimpo);
-  if (matchLog && matchLog[1]) {
-    campos.logradouro = matchLog[1].trim();
-    // Verifica se há número logo após o fim do match
-    const restoDepois = textoLimpo.slice(matchLog.index + matchLog[1].length);
+  // até " - ", "," ou fim de linha; ", 123" logo depois vira numero. A rua costuma aparecer mais de uma vez (a trilha do
+  // portal traz só o nome; a "Localização", o nome e o número): vale a primeira ocorrência com número, senão a primeira.
+  const padraoLog = /\b((?:Rua|R\.|Avenida|Av\.|Travessa|Tv\.|Estrada|Praça|Praca|Largo|Alameda)\s+[^,\n-]+?)(?:\s*-\s*|,\s*|\n|$)/gi;
+  let primeiraRua: string | null = null;
+  for (const matchLog of textoLimpo.matchAll(padraoLog)) {
+    const rua = matchLog[1]?.trim();
+    if (!rua) continue;
+    primeiraRua ??= rua;
+    const restoDepois = textoLimpo.slice((matchLog.index ?? 0) + (matchLog[1]?.length ?? 0));
     const matchNum = /^,\s*([0-9]+[a-zA-Z]?)\b/.exec(restoDepois);
     if (matchNum && matchNum[1]) {
+      campos.logradouro = rua;
       campos.numero = matchNum[1];
+      break;
     }
   }
+  if (campos.logradouro === null && primeiraRua) campos.logradouro = primeiraRua;
+
+  // Nome do edifício escrito no anúncio ("Edf. Engenho Torre", "Condomínio Jardim das Acácias"): pista para achar o prédio.
+  campos.nomeEdificio = nomeDeEdificioNoTexto(textoLimpo);
 
   // Bairro no texto
   const resBairro = encontrarBairroNoTexto(textoLimpo);
@@ -375,6 +386,25 @@ export function extrairDoTexto(conteudo: string, portal: Portal): LeituraParcial
   if (campos.bairro || /recife/i.test(textoLimpo)) {
     campos.cidade = "recife";
   }
+
+  // Comodidades do prédio e unidade citadas no texto do anúncio
+  const regrasComodidades: readonly [string, RegExp][] = [
+    ["piscina", /\bpiscinas?\b/i],
+    ["academia", /\bacademia\b|\bfitness\b/i],
+    ["elevador", /\belevador(?:es)?\b/i],
+    ["portaria-24h", /\bportaria\s*24\s*h|\bportaria\s*24\s*horas\b/i],
+    ["salao-festas", /\bsal[ãa]o\s+de\s+festas\b/i],
+    ["churrasqueira", /\bchurrasqueiras?\b|\bespa[çc]o\s+gourmet\b/i],
+    ["playground", /\bplayground\b|\bbrinquedoteca\b/i],
+    ["varanda", /\bvarandas?\b|\bsacada\b/i],
+    ["mobiliado", /\bmobiliad[oa]\b/i],
+    ["sauna", /\bsauna\b/i],
+    ["vista-mar", /\bvista\s+(?:para\s+o\s+)?mar\b|\bbeira[\s-]mar\b/i],
+    ["garagem", /\bgaragem\b/i],
+  ];
+  campos.comodidades = regrasComodidades
+    .filter(([, re]) => re.test(textoLimpo))
+    .map(([slug]) => slug);
 
   const leituraTexto: LeituraParcial = {
     metodo: "texto",

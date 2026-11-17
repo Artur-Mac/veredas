@@ -1,0 +1,123 @@
+{
+ "feed": "v2026.10.26",
+ "checked": 12,
+ "ok": 12,
+ "holiday": {
+  "weekdayServicesActive_2026_11_02": 0,
+  "sundayServicesActive_2026_11_02": 362,
+  "weekdayServicesActive_2026_11_09": 393
+ },
+ "cases": [
+  {
+   "id": "GTT01",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 516-DUT",
+    "leg 2: 513-DUT"
+   ]
+  },
+  {
+   "id": "GTT02",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 1992-DUT",
+    "leg 2: 645-DUT",
+    "leg 4: 2920-DUT"
+   ]
+  },
+  {
+   "id": "GTT03",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 516-DUT",
+    "leg 3: 050-DUT"
+   ]
+  },
+  {
+   "id": "GTT04",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 516-DUT"
+   ]
+  },
+  {
+   "id": "GTT05",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 2920-SAB",
+    "leg 3: 722-SAB"
+   ]
+  },
+  {
+   "id": "GTT06",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 414-DOM",
+    "leg 3: 050-DOM"
+   ]
+  },
+  {
+   "id": "GTT07",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 914-DOM",
+    "leg 3: 723-DOM"
+   ]
+  },
+  {
+   "id": "GTT08",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 1926-DUT",
+    "leg 3: 2920-DUT"
+   ]
+  },
+  {
+   "id": "GTT09",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: departure time 24:41:53 ≥ 24:00 in the feed",
+    "leg 1: 1967-DUT",
+    "leg 3: trip of service day 2026-11-18 at 01:04 (neighbouring service day)",
+    "leg 3: 1927-DUT",
+    "leg 4: departure time 25:30:00 ≥ 24:00 in the feed",
+    "leg 4: 2427-DUT"
+   ]
+  },
+  {
+   "id": "GTT10",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 516-DUT",
+    "leg 2: 513-DUT"
+   ]
+  },
+  {
+   "id": "GTT11",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 050-DUT",
+    "leg 3: 313-DUT"
+   ]
+  },
+  {
+   "id": "GTT12",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 330-DUT"
+   ]
+  }
+ ]
+}

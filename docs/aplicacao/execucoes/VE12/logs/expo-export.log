@@ -1,0 +1,31 @@
+Using src/app as the root directory for Expo Router.
+Starting Metro Bundler
+
+Web Bundled 26918ms node_modules/expo-router/entry.js (1340 modules)
+
+› Assets (21):
+assets/fonts/Fraunces.df89c7ab0af2020b3949cf8a4bece47a.ttf (360KB)
+assets/fonts/JetBrainsMono.4d05bb0e4a6903fc39fac52353f8e3d9.ttf (187KB)
+assets/fonts/PlusJakartaSans.6b68a2205325ea49b65af07e4061f320.ttf (176KB)
+node_modules/expo-router/assets/arrow_down.017bc6ba3fc25503e5eb5e53826d48a8.png (9.5KB)
+node_modules/expo-router/assets/error.d1ea1496f9057eb392d5bbf3732a61b7.png (469B)
+node_modules/expo-router/assets/file.19eeb73b9593a38f8e9f418337fc7d10.png (138B)
+node_modules/expo-router/assets/forward.d8b800c443b8972542883e0b9de2bdc6.png (188B)
+node_modules/expo-router/assets/pkg.ab19f4cbc543357183a20571f68380a3.png (364B)
+node_modules/expo-router/assets/react-navigation/elements/back-icon-mask.0a328cd9c1afd0afe8e3b1ec5165b1b4.png (653B)
+node_modules/expo-router/assets/react-navigation/elements/back-icon.35ba0eaec5a4f5ed12ca16fabeae451d.png (207B)
+node_modules/expo-router/assets/react-navigation/elements/clear-icon.c94f6478e7ae0cdd9f15de1fcb9e5e55.png (4 variations | 425B)
+node_modules/expo-router/assets/react-navigation/elements/close-icon.808e1b1b9b53114ec2838071a7e6daa7.png (4 variations | 235B)
+node_modules/expo-router/assets/react-navigation/elements/search-icon.286d67d3f74808a60a78d3ebf1a5fb57.png (928B)
+node_modules/expo-router/assets/sitemap.412dd9275b6b48ad28f5e3d81bb1f626.png (465B)
+node_modules/expo-router/assets/unmatched.20e71bdf79e3a97bf55fd9e164041578.png (4.8KB)
+
+› web bundles (1):
+_expo/static/js/web/entry-d5ac9cdf14bd3d82f36b633438cc347a.js (30MB)
+
+› Files (2):
+index.html (1.2KB)
+metadata.json (49B)
+
+Exported: /tmp/claude-1000/-home-v--claude-spares-spare-OHO8Hi/f33635fa-38c3-4a44-a73d-32afdbb6c2b7/scratchpad/export-web
+exit 0

@@ -1,0 +1,95 @@
+FAIL tests/decisao.test.ts
+  G-COMPARE v1 contra rótulos feitos à mão
+    ✓ tem 20 pares rotulados (5 ms)
+    ✓ GC01 complete_rent_clear_difference (14 ms)
+    ✕ GC02 rent_equal_totals (2 ms)
+    ✓ GC03 rent_missing_condo (2 ms)
+    ✕ GC04 rent_condo_zero_vs_unknown (1 ms)
+    ✓ GC05 rent_annual_iptu (1 ms)
+    ✓ GC06 rent_iptu_period_unknown (2 ms)
+    ✓ GC07 rent_reversal_by_fee_range (1 ms)
+    ✓ GC08 rent_large_area_difference (1 ms)
+    ✓ GC09 rent_all_fees_missing (1 ms)
+    ✓ GC10 rent_travel_tradeoff_fixture (1 ms)
+    ✓ GC11 complete_purchase_clear_difference (2 ms)
+    ✓ GC12 purchase_equal_price_different_fees (1 ms)
+    ✓ GC13 purchase_missing_iptu (1 ms)
+    ✓ GC14 purchase_annual_iptu (1 ms)
+    ✓ GC15 purchase_condo_zero_house (1 ms)
+    ✓ GC16 purchase_horizon_reversal (1 ms)
+    ✓ GC17 purchase_itbi_gated_building
+    ✓ GC18 purchase_price_unknown (1 ms)
+    ✓ GC19 purchase_large_vs_small (1 ms)
+    ✓ GC20 purchase_iptu_period_unknown (1 ms)
+  projeção da decisão: invariantes
+    ✓ aluguel e compra não se comparam (1 ms)
+    ✓ trocar A e B troca o lado e o sinal, sem mudar valores (1 ms)
+    ✓ zero declarado é conhecido; ausente fica pendente e nunca vira zero (1 ms)
+    ✓ IPTU anual vira mensal; IPTU sem período entra como faixa de valor/12 a valor (1 ms)
+    ✕ diferença definida quando a faixa do lado que custa menos não alcança o outro (2 ms)
+    ✓ diferença pequena não escolhe quem visitar primeiro (1 ms)
+    ✓ compra: horizonte do plano (R$ 30.000 de preço contra R$ 500/mês = 60 meses), sem juros (1 ms)
+    ✓ preço da hora poupada: 20 min × 16 dias = 5h20; R$ 180 / 5h20 = R$ 33,75
+    ✓ obras licenciadas só entram com os dois prédios confirmados e diferença de pelo menos 3 (5 ms)
+    ✓ o custo mensal da projeção é o mesmo número que o dossiê mostra (12 ms)
+    ✓ não expõe destinos privados nem fala em tempo de deslocamento (3 ms)
+    ✓ política de texto: sem adjetivo pejorativo, de segurança, nota ou vencedor; comparativos com número são permitidos (18 ms)
+
+  ● G-COMPARE v1 contra rótulos feitos à mão › GC02 rent_equal_totals
+
+    expect(received).toBeCloseTo(expected, precision)
+
+    Matcher error: received value must be a number
+
+    Received has value: null
+
+       97 |       expect(p.custo.definida).toBe(r.cost_definite);
+       98 |       if (r.threshold === null) expect(p.custo.limiarDeInversao).toBeNull();
+    >  99 |       else expect(p.custo.limiarDeInversao).toBeCloseTo(r.threshold, 2);
+          |                                             ^
+      100 |       expect(p.visitarPrimeiro).toBe(r.visit_first);
+      101 |       expect(p.pergunta ? { field: p.pergunta.campo, target: p.pergunta.alvo } : null).toEqual(r.question);
+      102 |       expect(p.horizonteMeses).toBe(r.horizon_months);
+
+      at Object.toBeCloseTo (tests/decisao.test.ts:99:45)
+
+  ● G-COMPARE v1 contra rótulos feitos à mão › GC04 rent_condo_zero_vs_unknown
+
+    expect(received).toBeCloseTo(expected, precision)
+
+    Matcher error: received value must be a number
+
+    Received has value: null
+
+       97 |       expect(p.custo.definida).toBe(r.cost_definite);
+       98 |       if (r.threshold === null) expect(p.custo.limiarDeInversao).toBeNull();
+    >  99 |       else expect(p.custo.limiarDeInversao).toBeCloseTo(r.threshold, 2);
+          |                                             ^
+      100 |       expect(p.visitarPrimeiro).toBe(r.visit_first);
+      101 |       expect(p.pergunta ? { field: p.pergunta.campo, target: p.pergunta.alvo } : null).toEqual(r.question);
+      102 |       expect(p.horizonteMeses).toBe(r.horizon_months);
+
+      at Object.toBeCloseTo (tests/decisao.test.ts:99:45)
+
+  ● projeção da decisão: invariantes › diferença definida quando a faixa do lado que custa menos não alcança o outro
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Imóvel A custa R$ 980/mês a menos que Imóvel B."
+    Received: "Imóvel A custa R$ 1.080/mês a menos que Imóvel B."
+
+      164 |     expect(p.custo.definida).toBe(true);
+      165 |     expect(p.custo.limiarDeInversao).toBeNull();
+    > 166 |     expect(p.diferencas[0]!.texto).toBe("Imóvel A custa R$ 980/mês a menos que Imóvel B.");
+          |                                    ^
+      167 |   });
+      168 |
+      169 |   it("diferença pequena não escolhe quem visitar primeiro", () => {
+
+      at Object.toBe (tests/decisao.test.ts:166:36)
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 30 passed, 33 total
+Snapshots:   0 total
+Time:        1.349 s
+Ran all test suites matching /tests\/decisao.test.ts/i.

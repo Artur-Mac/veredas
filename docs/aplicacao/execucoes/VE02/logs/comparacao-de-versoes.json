@@ -1,0 +1,73 @@
+{
+ "antes": {
+  "versao": "b43b87fa2a941dc3",
+  "total": 366660,
+  "quarentena": 22079,
+  "motivos": {
+   "sem_endereco": 162,
+   "sem_data": 7,
+   "layout_desconhecido": 21910
+  }
+ },
+ "depois": {
+  "versao": "bbaec26866872abe",
+  "total": 388555,
+  "quarentena": 184,
+  "motivos": {
+   "sem_endereco": 166,
+   "sem_data": 7,
+   "layout_desconhecido": 11
+  }
+ },
+ "porChave": {
+  "ano_administrativo:2001": [
+   1,
+   1
+  ],
+  "ano_administrativo:2019": [
+   7,
+   7
+  ],
+  "ano_administrativo:2020": [
+   59474,
+   70048
+  ],
+  "ano_administrativo:2021": [
+   64807,
+   64810
+  ],
+  "ano_administrativo:2022": [
+   79046,
+   90364
+  ],
+  "ano_administrativo:2023": [
+   83169,
+   83169
+  ],
+  "ano_administrativo:2024": [
+   80156,
+   80156
+  ],
+  "bairro:boa-viagem": [
+   965,
+   1052
+  ],
+  "bairro:casa-forte": [
+   104,
+   106
+  ],
+  "bairro:espinheiro": [
+   261,
+   264
+  ],
+  "bairro:gracas": [
+   205,
+   207
+  ],
+  "bairro:madalena": [
+   376,
+   376
+  ]
+ },
+ "causa": "analisador defesa_civil_ckan antes (v1) e depois (rotulado v1 por engano na versao bbaec268; v2 a partir da versao seguinte) de reconhecer 'Maro' (Março sem cedilha) como mês"
+}

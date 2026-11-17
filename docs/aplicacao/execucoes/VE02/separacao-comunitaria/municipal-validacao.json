@@ -1,0 +1,1158 @@
+{
+  "estado": "staging validado estruturalmente; publicação depende de auditoria de associação, cobertura e desempenho",
+  "particoes": [
+    {
+      "bairro": "aflitos",
+      "edificios": 70,
+      "unidades": 2128,
+      "geometria": {
+        "comPoligono": 70,
+        "centrosInternos": 70,
+        "fracaoInterna": 1
+      },
+      "bytes": 81298,
+      "sha256": "7652db3c01d743a6b6ccd03433712a6581890f7f6a91320c0e1e225f7676ff1e"
+    },
+    {
+      "bairro": "afogados",
+      "edificios": 174,
+      "unidades": 1523,
+      "geometria": {
+        "comPoligono": 173,
+        "centrosInternos": 173,
+        "fracaoInterna": 1
+      },
+      "bytes": 159693,
+      "sha256": "042d30f6f196c05bcbc8ff57dc46a74a1849fc8e4570fb3c1e311c71d77f0a45"
+    },
+    {
+      "bairro": "agua-fria",
+      "edificios": 33,
+      "unidades": 644,
+      "geometria": {
+        "comPoligono": 33,
+        "centrosInternos": 33,
+        "fracaoInterna": 1
+      },
+      "bytes": 36824,
+      "sha256": "4fc9c70fe99319268a85c7f554f8ab156e9241d88ee1114e6e2795cd9d19bf39"
+    },
+    {
+      "bairro": "alto-do-mandu",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 270,
+      "sha256": "eacc84435e8085497c28b199f221729fe266278c3c747cab5483c3d2ce4ee374"
+    },
+    {
+      "bairro": "alto-jose-bonifacio",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 282,
+      "sha256": "1bc1fa0c1d980b1687a8eae5efc357ab10cccc289eeed003f4a0045535ae5dd0"
+    },
+    {
+      "bairro": "alto-jose-do-pinho",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 280,
+      "sha256": "81a476e5a0bbef4b177acb130f3fb6a1fa3c8b99aebc02b0bd0dc9a36c9eb386"
+    },
+    {
+      "bairro": "alto-santa-terezinha",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 284,
+      "sha256": "c1a3e3eb3621aeac9eeefbc7e3d64afcb1328b0bfcc7e8276a80fc59fb0ffa14"
+    },
+    {
+      "bairro": "apipucos",
+      "edificios": 1,
+      "unidades": 54,
+      "geometria": {
+        "comPoligono": 1,
+        "centrosInternos": 1,
+        "fracaoInterna": 1
+      },
+      "bytes": 2200,
+      "sha256": "c60c77b8ee9a8ff2ef4be1942c60d94b6389956dcb9b50e8a3a5917c8f56e1d1"
+    },
+    {
+      "bairro": "areias",
+      "edificios": 31,
+      "unidades": 2666,
+      "geometria": {
+        "comPoligono": 31,
+        "centrosInternos": 31,
+        "fracaoInterna": 1
+      },
+      "bytes": 32990,
+      "sha256": "85512dd79292072cc9e483499d2352e9b567f24d31caafe5fd5799f52ce3943c"
+    },
+    {
+      "bairro": "arruda",
+      "edificios": 27,
+      "unidades": 1073,
+      "geometria": {
+        "comPoligono": 27,
+        "centrosInternos": 27,
+        "fracaoInterna": 1
+      },
+      "bytes": 30173,
+      "sha256": "6e17a5729bd0b6ef646bdf098f6200d95b46b2d1464dcc73cfda835f28509c55"
+    },
+    {
+      "bairro": "barro",
+      "edificios": 37,
+      "unidades": 1313,
+      "geometria": {
+        "comPoligono": 37,
+        "centrosInternos": 37,
+        "fracaoInterna": 1
+      },
+      "bytes": 37344,
+      "sha256": "973538dbecd8811429f4614244f054e55e29ea7269a7b4ded6b3b7ca34c9084f"
+    },
+    {
+      "bairro": "beberibe",
+      "edificios": 9,
+      "unidades": 96,
+      "geometria": {
+        "comPoligono": 9,
+        "centrosInternos": 9,
+        "fracaoInterna": 1
+      },
+      "bytes": 9543,
+      "sha256": "85b013f69020f14269d518d8b9a76511c6706575ba9021dd1c8f718ed6fca0d1"
+    },
+    {
+      "bairro": "boa-viagem",
+      "edificios": 1879,
+      "unidades": 55389,
+      "geometria": {
+        "comPoligono": 1878,
+        "centrosInternos": 1878,
+        "fracaoInterna": 1
+      },
+      "bytes": 1931520,
+      "sha256": "15953e9624c9058e9bad88456db12e2c9a9cacfc508c8010eca3140622cca3cc"
+    },
+    {
+      "bairro": "boa-vista",
+      "edificios": 267,
+      "unidades": 7845,
+      "geometria": {
+        "comPoligono": 267,
+        "centrosInternos": 267,
+        "fracaoInterna": 1
+      },
+      "bytes": 288781,
+      "sha256": "be8222f75951cede527174aae737a10a55a07d9a6ba189b6c58bd6e10499fb94"
+    },
+    {
+      "bairro": "bomba-do-hemeterio",
+      "edificios": 4,
+      "unidades": 43,
+      "geometria": {
+        "comPoligono": 4,
+        "centrosInternos": 4,
+        "fracaoInterna": 1
+      },
+      "bytes": 5087,
+      "sha256": "27fe0149e7502f24db6694e8579af46d6843044c8f33765027919f64ceac0684"
+    },
+    {
+      "bairro": "bongi",
+      "edificios": 24,
+      "unidades": 306,
+      "geometria": {
+        "comPoligono": 24,
+        "centrosInternos": 24,
+        "fracaoInterna": 1
+      },
+      "bytes": 25240,
+      "sha256": "238820d28e49be41d5091e40abfb6785b1c1a764a95f4f97e75c251ecafeb44b"
+    },
+    {
+      "bairro": "brasilia-teimosa",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 276,
+      "sha256": "2df13930a0a04879e71ed4cfdab699d0868874bdbd10de354c44b5a5694f4860"
+    },
+    {
+      "bairro": "brejo-da-guabiraba",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 280,
+      "sha256": "65d2afe48e38ab7767b80282b6ebb6af95212fe264369ce15c80c1701e0d46d4"
+    },
+    {
+      "bairro": "brejo-de-beberibe",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 278,
+      "sha256": "ce72a15dc4c3fd7a8a912107e2b79666b31ee911655d7e4915eba10c63029ea3"
+    },
+    {
+      "bairro": "cabanga",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 258,
+      "sha256": "019274e8b4d67b863c563b87d1a23a51459fd4bc063a7d3e4d84f7409996c0a1"
+    },
+    {
+      "bairro": "cacote",
+      "edificios": 2,
+      "unidades": 8,
+      "geometria": {
+        "comPoligono": 2,
+        "centrosInternos": 2,
+        "fracaoInterna": 1
+      },
+      "bytes": 2524,
+      "sha256": "9b311808e77e57add7628f8508799fafb99c15c54d34b7193585a2156239eb1c"
+    },
+    {
+      "bairro": "cajueiro",
+      "edificios": 16,
+      "unidades": 100,
+      "geometria": {
+        "comPoligono": 16,
+        "centrosInternos": 16,
+        "fracaoInterna": 1
+      },
+      "bytes": 16058,
+      "sha256": "177b70ccee9361610de4cf41dedc6f538d71cfe1a42730981b834776a8df356f"
+    },
+    {
+      "bairro": "campina-do-barreto",
+      "edificios": 7,
+      "unidades": 286,
+      "geometria": {
+        "comPoligono": 7,
+        "centrosInternos": 7,
+        "fracaoInterna": 1
+      },
+      "bytes": 8580,
+      "sha256": "51bc42112fa7094cbc2410371961e23eb00a3d4500b0b4b54e72b9b1036b82c1"
+    },
+    {
+      "bairro": "campo-grande",
+      "edificios": 123,
+      "unidades": 2153,
+      "geometria": {
+        "comPoligono": 123,
+        "centrosInternos": 123,
+        "fracaoInterna": 1
+      },
+      "bytes": 129471,
+      "sha256": "cef0025c06d5151272e2c3de276c508369e36a4558a56153191e8cb43d429a80"
+    },
+    {
+      "bairro": "casa-amarela",
+      "edificios": 265,
+      "unidades": 7087,
+      "geometria": {
+        "comPoligono": 265,
+        "centrosInternos": 265,
+        "fracaoInterna": 1
+      },
+      "bytes": 281037,
+      "sha256": "9528d9554be09b46b12f9121416ca479aa7a6f9580b934dd6e49f8f6a035f951"
+    },
+    {
+      "bairro": "casa-forte",
+      "edificios": 82,
+      "unidades": 2230,
+      "geometria": {
+        "comPoligono": 82,
+        "centrosInternos": 82,
+        "fracaoInterna": 1
+      },
+      "bytes": 91266,
+      "sha256": "9b238ec8a83f87b2d41415f8540c406d6a00f9bf59f0e91ba8bf5ff8de2609bf"
+    },
+    {
+      "bairro": "caxanga",
+      "edificios": 25,
+      "unidades": 923,
+      "geometria": {
+        "comPoligono": 25,
+        "centrosInternos": 25,
+        "fracaoInterna": 1
+      },
+      "bytes": 27180,
+      "sha256": "9d5f347e9d8858f0c2a4be3752f7842a3cae3b8a18bcf14fc1d6f68cc981d2d6"
+    },
+    {
+      "bairro": "cidade-universitaria",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 284,
+      "sha256": "fc04c6b0ef7df8823f84c7701a612c544cbfb74c4fcc0c41971ff3ca7b486801"
+    },
+    {
+      "bairro": "coelhos",
+      "edificios": 11,
+      "unidades": 54,
+      "geometria": {
+        "comPoligono": 10,
+        "centrosInternos": 10,
+        "fracaoInterna": 1
+      },
+      "bytes": 11927,
+      "sha256": "a87e1dca0b5eb0dee58f70b8dd9e1d1c9b89e6f045f07451bbf23fd32e69e7d8"
+    },
+    {
+      "bairro": "cohab",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 254,
+      "sha256": "9b7245533694135ce5f07b6f64b5c24ad7fecdb2ddb2d01bedad8c3342bada61"
+    },
+    {
+      "bairro": "coqueiral",
+      "edificios": 1,
+      "unidades": 2,
+      "geometria": {
+        "comPoligono": 1,
+        "centrosInternos": 1,
+        "fracaoInterna": 1
+      },
+      "bytes": 1624,
+      "sha256": "a40468cfb46b36833ab7be83a9e772f7983c4fa6231e1dcc6eb3815be859602a"
+    },
+    {
+      "bairro": "cordeiro",
+      "edificios": 353,
+      "unidades": 5000,
+      "geometria": {
+        "comPoligono": 346,
+        "centrosInternos": 346,
+        "fracaoInterna": 1
+      },
+      "bytes": 337210,
+      "sha256": "c0c3a08780421d896d25a97cef7e94518119a103547735a53de215b64e30fe3a"
+    },
+    {
+      "bairro": "corrego-do-jenipapo",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 282,
+      "sha256": "cb84e5ebb960d43815b76b6cb392e04374b78d6a2508f5423dca4782bd547443"
+    },
+    {
+      "bairro": "curado",
+      "edificios": 1,
+      "unidades": 2,
+      "geometria": {
+        "comPoligono": 1,
+        "centrosInternos": 1,
+        "fracaoInterna": 1
+      },
+      "bytes": 1433,
+      "sha256": "3ede629b570ecdb329c9bcf4a47bbe3218efbc9b5499f739ed2ba6aece31d0b2"
+    },
+    {
+      "bairro": "derby",
+      "edificios": 33,
+      "unidades": 786,
+      "geometria": {
+        "comPoligono": 33,
+        "centrosInternos": 33,
+        "fracaoInterna": 1
+      },
+      "bytes": 38679,
+      "sha256": "5ac0d8ac5d80d9fe5b6909d9871dbe834cfd8dea2723f4ec1e41c1e88d92884c"
+    },
+    {
+      "bairro": "dois-irmaos",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 266,
+      "sha256": "05c162c943c5b888640c476c3a06f1629c79d085dcd184fa96c353e4b863e567"
+    },
+    {
+      "bairro": "dois-unidos",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 266,
+      "sha256": "ea0c7f51ba56f0e24cd2e4af85c25da02fb8282aca9a64fffed8fca5838105c6"
+    },
+    {
+      "bairro": "encruzilhada",
+      "edificios": 198,
+      "unidades": 5802,
+      "geometria": {
+        "comPoligono": 198,
+        "centrosInternos": 198,
+        "fracaoInterna": 1
+      },
+      "bytes": 216737,
+      "sha256": "50128e5adbe4cf14538b37d66a26389dbb9102dbc3273b7fa0b8343ed14c7fa2"
+    },
+    {
+      "bairro": "engenho-do-meio",
+      "edificios": 45,
+      "unidades": 517,
+      "geometria": {
+        "comPoligono": 45,
+        "centrosInternos": 45,
+        "fracaoInterna": 1
+      },
+      "bytes": 44877,
+      "sha256": "f5394681b427b556072cf24d640044a379a43febb791bd968a427a7b68c99904"
+    },
+    {
+      "bairro": "espinheiro",
+      "edificios": 156,
+      "unidades": 4658,
+      "geometria": {
+        "comPoligono": 156,
+        "centrosInternos": 156,
+        "fracaoInterna": 1
+      },
+      "bytes": 174496,
+      "sha256": "8240d96ab488c063a40532e641629a06a156fa0ad9854280bc335fef4d4b080d"
+    },
+    {
+      "bairro": "estancia",
+      "edificios": 16,
+      "unidades": 145,
+      "geometria": {
+        "comPoligono": 16,
+        "centrosInternos": 16,
+        "fracaoInterna": 1
+      },
+      "bytes": 16124,
+      "sha256": "694a931d2b9917e790469e2719712d10ff8a3c182f521d876e7a2c379b867749"
+    },
+    {
+      "bairro": "fundao",
+      "edificios": 6,
+      "unidades": 210,
+      "geometria": {
+        "comPoligono": 6,
+        "centrosInternos": 6,
+        "fracaoInterna": 1
+      },
+      "bytes": 7196,
+      "sha256": "2be64817d71e8f4803ca1ecaed1bf0f162260c842c3e2d88b9a2a8ee684be251"
+    },
+    {
+      "bairro": "gracas",
+      "edificios": 291,
+      "unidades": 8921,
+      "geometria": {
+        "comPoligono": 291,
+        "centrosInternos": 291,
+        "fracaoInterna": 1
+      },
+      "bytes": 309151,
+      "sha256": "661381c65460a1224598b8ab3ffc14acd375e7ce34340295a5d5b319ccc57060"
+    },
+    {
+      "bairro": "guabiraba",
+      "edificios": 1,
+      "unidades": 254,
+      "geometria": {
+        "comPoligono": 1,
+        "centrosInternos": 1,
+        "fracaoInterna": 1
+      },
+      "bytes": 2436,
+      "sha256": "cef4a5f1c22708e7e5e70c1b17b779024db45e56315ea74edce0dab715bff3f2"
+    },
+    {
+      "bairro": "hipodromo",
+      "edificios": 23,
+      "unidades": 268,
+      "geometria": {
+        "comPoligono": 23,
+        "centrosInternos": 23,
+        "fracaoInterna": 1
+      },
+      "bytes": 24887,
+      "sha256": "534e43660000e6323a4cb08aef268e0ca3637e3df747ee0184d14fda761a41ff"
+    },
+    {
+      "bairro": "ibura",
+      "edificios": 21,
+      "unidades": 1405,
+      "geometria": {
+        "comPoligono": 21,
+        "centrosInternos": 21,
+        "fracaoInterna": 1
+      },
+      "bytes": 24770,
+      "sha256": "ad026f9c497092da3ffc2d3fd80851e6343688a79e41aa426a0ee5aae3a8b813"
+    },
+    {
+      "bairro": "ilha-do-leite",
+      "edificios": 36,
+      "unidades": 675,
+      "geometria": {
+        "comPoligono": 31,
+        "centrosInternos": 31,
+        "fracaoInterna": 1
+      },
+      "bytes": 35776,
+      "sha256": "6b7e8a3912c01abbd63ae431947a1bf3dc27da5c7549acd272aee67644d1dde8"
+    },
+    {
+      "bairro": "ilha-do-retiro",
+      "edificios": 33,
+      "unidades": 711,
+      "geometria": {
+        "comPoligono": 33,
+        "centrosInternos": 33,
+        "fracaoInterna": 1
+      },
+      "bytes": 37691,
+      "sha256": "be91ec8b3506cab866bf541cc80ab036f88d965d0161c039f7d756a2aa337cb8"
+    },
+    {
+      "bairro": "ilha-joana-bezerra",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 280,
+      "sha256": "511e6a719e082bdb00bb3a8d90193df61aab0a8b36753c776d28e86a208b93eb"
+    },
+    {
+      "bairro": "imbiribeira",
+      "edificios": 475,
+      "unidades": 8399,
+      "geometria": {
+        "comPoligono": 475,
+        "centrosInternos": 475,
+        "fracaoInterna": 1
+      },
+      "bytes": 424890,
+      "sha256": "c25ebcfe137d72f5f4217c7b99344e55e1201c4a30d6a9ce8dc01d204ebbfd55"
+    },
+    {
+      "bairro": "ipsep",
+      "edificios": 183,
+      "unidades": 2315,
+      "geometria": {
+        "comPoligono": 183,
+        "centrosInternos": 183,
+        "fracaoInterna": 1
+      },
+      "bytes": 172895,
+      "sha256": "d3c4f0b4cf791e0befb5ac16e4495e56625f8bbfed04cbb8db574a4b9b84969f"
+    },
+    {
+      "bairro": "iputinga",
+      "edificios": 286,
+      "unidades": 5102,
+      "geometria": {
+        "comPoligono": 286,
+        "centrosInternos": 286,
+        "fracaoInterna": 1
+      },
+      "bytes": 281131,
+      "sha256": "3fb83db832299563caca60c7c7ce2f2deec066502ca735181bd8993150e27327"
+    },
+    {
+      "bairro": "jaqueira",
+      "edificios": 24,
+      "unidades": 613,
+      "geometria": {
+        "comPoligono": 24,
+        "centrosInternos": 24,
+        "fracaoInterna": 1
+      },
+      "bytes": 27724,
+      "sha256": "459cd6ffa8b2083df8fe91954d5f06030ad7f94a206cda7f874af9ad63f434c5"
+    },
+    {
+      "bairro": "jardim-sao-paulo",
+      "edificios": 56,
+      "unidades": 2735,
+      "geometria": {
+        "comPoligono": 56,
+        "centrosInternos": 56,
+        "fracaoInterna": 1
+      },
+      "bytes": 60152,
+      "sha256": "bdbc1f8ab12c0fa403c0a174fad4f7c78b9b4d0e97f243b6b70ac4234e53e3f0"
+    },
+    {
+      "bairro": "jiquia",
+      "edificios": 13,
+      "unidades": 162,
+      "geometria": {
+        "comPoligono": 13,
+        "centrosInternos": 13,
+        "fracaoInterna": 1
+      },
+      "bytes": 12964,
+      "sha256": "7cc694faa9548012d26ec50b3996c683a6794b4cb1fc5805793927822c469910"
+    },
+    {
+      "bairro": "jordao",
+      "edificios": 19,
+      "unidades": 67,
+      "geometria": {
+        "comPoligono": 19,
+        "centrosInternos": 19,
+        "fracaoInterna": 1
+      },
+      "bytes": 19905,
+      "sha256": "25a3d6e8fd216850ede3ce125bb7a29da0504833ff5dc8403d9b631910186745"
+    },
+    {
+      "bairro": "linha-do-tiro",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 270,
+      "sha256": "850adf2733582c45eefca806fa866dfd2585505cb89025b7ff609aeab7a168d9"
+    },
+    {
+      "bairro": "macaxeira",
+      "edificios": 8,
+      "unidades": 712,
+      "geometria": {
+        "comPoligono": 8,
+        "centrosInternos": 7,
+        "fracaoInterna": 0.875
+      },
+      "bytes": 10885,
+      "sha256": "6b48421c478ce90f3ade55d037fd29df0e960385b8d3f343c4db1027646544e1"
+    },
+    {
+      "bairro": "madalena",
+      "edificios": 280,
+      "unidades": 8277,
+      "geometria": {
+        "comPoligono": 280,
+        "centrosInternos": 279,
+        "fracaoInterna": 0.9964285714285714
+      },
+      "bytes": 305665,
+      "sha256": "3d123e41b3ceaef865c25ff7fcf991f84aa71a9d6a8223fa902e513b30a47e5e"
+    },
+    {
+      "bairro": "mangabeira",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 264,
+      "sha256": "411280ff2a7e60f2ad465a7de19fc66e79231492374b95431e75ec916eed4fdc"
+    },
+    {
+      "bairro": "mangueira",
+      "edificios": 3,
+      "unidades": 11,
+      "geometria": {
+        "comPoligono": 3,
+        "centrosInternos": 3,
+        "fracaoInterna": 1
+      },
+      "bytes": 3110,
+      "sha256": "8b033610a92f531bc0be14d4a9b10989e04e42e45ea1b438080e30731b55a9b7"
+    },
+    {
+      "bairro": "monteiro",
+      "edificios": 38,
+      "unidades": 1488,
+      "geometria": {
+        "comPoligono": 38,
+        "centrosInternos": 38,
+        "fracaoInterna": 1
+      },
+      "bytes": 43587,
+      "sha256": "bc5fdeef19cabf6e33b278499cf78b85e1477acdc6a71edb88b847c13f39c434"
+    },
+    {
+      "bairro": "morro-da-conceicao",
+      "edificios": 4,
+      "unidades": 24,
+      "geometria": {
+        "comPoligono": 4,
+        "centrosInternos": 4,
+        "fracaoInterna": 1
+      },
+      "bytes": 4137,
+      "sha256": "97902cd336d71b9815f77cb1ffe121a430fdbdfbf10f41dd978145d3f7224922"
+    },
+    {
+      "bairro": "mustardinha",
+      "edificios": 26,
+      "unidades": 93,
+      "geometria": {
+        "comPoligono": 26,
+        "centrosInternos": 26,
+        "fracaoInterna": 1
+      },
+      "bytes": 24653,
+      "sha256": "631f3556ec6d71ad535a9109f2512c3062064788e38072818b80b0485b4fd897"
+    },
+    {
+      "bairro": "nova-descoberta",
+      "edificios": 6,
+      "unidades": 22,
+      "geometria": {
+        "comPoligono": 6,
+        "centrosInternos": 6,
+        "fracaoInterna": 1
+      },
+      "bytes": 6753,
+      "sha256": "02c4e0c8ee7bc1db5cb72b79582d9ba27a53cf51ea4a1ad9439ac8a5c677ca26"
+    },
+    {
+      "bairro": "paissandu",
+      "edificios": 10,
+      "unidades": 335,
+      "geometria": {
+        "comPoligono": 10,
+        "centrosInternos": 10,
+        "fracaoInterna": 1
+      },
+      "bytes": 11912,
+      "sha256": "562862421be17032399575f5014d429f1d2b0aec504c3daa170bd8adb93717c6"
+    },
+    {
+      "bairro": "parnamirim",
+      "edificios": 92,
+      "unidades": 2673,
+      "geometria": {
+        "comPoligono": 92,
+        "centrosInternos": 92,
+        "fracaoInterna": 1
+      },
+      "bytes": 105560,
+      "sha256": "cff42ed01a92e328f618be4d31bf03cf73090c6a1277cfe1e0da2b9cbac07863"
+    },
+    {
+      "bairro": "passarinho",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 264,
+      "sha256": "36d2c247f81df0a11d512421759df21a32764b29f2dcc0fe2d5b197324c4e8bb"
+    },
+    {
+      "bairro": "pau-ferro",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 262,
+      "sha256": "025ac68ab72887ac1855cb88224042408d2f782998a29c4c93c63b314f189ffd"
+    },
+    {
+      "bairro": "peixinhos",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 262,
+      "sha256": "49fec4a0a7d1cb82e03404d2542a764725b7eb6ce723de04488faf0b7cb045c1"
+    },
+    {
+      "bairro": "pina",
+      "edificios": 129,
+      "unidades": 5103,
+      "geometria": {
+        "comPoligono": 129,
+        "centrosInternos": 129,
+        "fracaoInterna": 1
+      },
+      "bytes": 145523,
+      "sha256": "47930de59d5a81e54619df15d27507735f227a7d659e3de2bc7ac24c669d59a3"
+    },
+    {
+      "bairro": "poco",
+      "edificios": 39,
+      "unidades": 1063,
+      "geometria": {
+        "comPoligono": 39,
+        "centrosInternos": 39,
+        "fracaoInterna": 1
+      },
+      "bytes": 44367,
+      "sha256": "fa546d180dfe6bb9528fa339c8ecd02747bf2825877daaf8784f9244632fc307"
+    },
+    {
+      "bairro": "ponto-de-parada",
+      "edificios": 13,
+      "unidades": 214,
+      "geometria": {
+        "comPoligono": 13,
+        "centrosInternos": 13,
+        "fracaoInterna": 1
+      },
+      "bytes": 13396,
+      "sha256": "171341f2535bd4905939118cb7058773819b27fa3e7ef2cfb435e492d6eb19f3"
+    },
+    {
+      "bairro": "porto-da-madeira",
+      "edificios": 19,
+      "unidades": 775,
+      "geometria": {
+        "comPoligono": 19,
+        "centrosInternos": 19,
+        "fracaoInterna": 1
+      },
+      "bytes": 20605,
+      "sha256": "c89671e21491cbc155679738d4259dd4813883292b1980973398ebffd10b9d9c"
+    },
+    {
+      "bairro": "prado",
+      "edificios": 93,
+      "unidades": 1249,
+      "geometria": {
+        "comPoligono": 93,
+        "centrosInternos": 93,
+        "fracaoInterna": 1
+      },
+      "bytes": 89590,
+      "sha256": "8c9cbe9cb4b00f7a013a77842308d01ad2ece9ba74eee6a70740ff12414e2b31"
+    },
+    {
+      "bairro": "recife",
+      "edificios": 3,
+      "unidades": 253,
+      "geometria": {
+        "comPoligono": 3,
+        "centrosInternos": 3,
+        "fracaoInterna": 1
+      },
+      "bytes": 6703,
+      "sha256": "41fdd2efe341acce7ffa7e7c52b9d1b2aa47e8947324a5aa654f849c00017580"
+    },
+    {
+      "bairro": "rosarinho",
+      "edificios": 65,
+      "unidades": 2879,
+      "geometria": {
+        "comPoligono": 65,
+        "centrosInternos": 65,
+        "fracaoInterna": 1
+      },
+      "bytes": 70572,
+      "sha256": "8a7ccd9718eadaf58937af1376a2bc534ebf297bf5f628852b3e6f938d097c20"
+    },
+    {
+      "bairro": "san-martin",
+      "edificios": 25,
+      "unidades": 1107,
+      "geometria": {
+        "comPoligono": 25,
+        "centrosInternos": 25,
+        "fracaoInterna": 1
+      },
+      "bytes": 28234,
+      "sha256": "2eb15b424da96e673b600d4be47e66657e207a04bd5c5235f28e391d9362c013"
+    },
+    {
+      "bairro": "sancho",
+      "edificios": 24,
+      "unidades": 768,
+      "geometria": {
+        "comPoligono": 24,
+        "centrosInternos": 24,
+        "fracaoInterna": 1
+      },
+      "bytes": 25129,
+      "sha256": "1c4fa26f7db8326ed7a34878c74c4fdb35a3d40a64b44d01de64fb3af94d8e9a"
+    },
+    {
+      "bairro": "santana",
+      "edificios": 32,
+      "unidades": 813,
+      "geometria": {
+        "comPoligono": 32,
+        "centrosInternos": 32,
+        "fracaoInterna": 1
+      },
+      "bytes": 36183,
+      "sha256": "f677c564a5c47739045b2d4fcaae39a555a90b34e7a1f7a3cda4b9207e62e9fb"
+    },
+    {
+      "bairro": "santo-amaro",
+      "edificios": 86,
+      "unidades": 3392,
+      "geometria": {
+        "comPoligono": 86,
+        "centrosInternos": 86,
+        "fracaoInterna": 1
+      },
+      "bytes": 104474,
+      "sha256": "0fab2a012f6d9fa27275c80d0d23a51b2f0064b79ec27599c00de0c4bb1038f1"
+    },
+    {
+      "bairro": "santo-antonio",
+      "edificios": 25,
+      "unidades": 130,
+      "geometria": {
+        "comPoligono": 25,
+        "centrosInternos": 25,
+        "fracaoInterna": 1
+      },
+      "bytes": 27211,
+      "sha256": "6af922056c016ad94c34669b7209217481863952d35f748e51e28d20a4a5967e"
+    },
+    {
+      "bairro": "sao-jose",
+      "edificios": 47,
+      "unidades": 532,
+      "geometria": {
+        "comPoligono": 47,
+        "centrosInternos": 47,
+        "fracaoInterna": 1
+      },
+      "bytes": 47981,
+      "sha256": "0451ce37945df0f37525cb6444cfaedb2ea5f28b165e8c7723262bd8056e98d2"
+    },
+    {
+      "bairro": "sitio-dos-pintos",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 276,
+      "sha256": "aad086b455c8ed9ec27009bdbbca348151a6ba5ae94e530bcdcc81e04c962ef0"
+    },
+    {
+      "bairro": "soledade",
+      "edificios": 41,
+      "unidades": 1420,
+      "geometria": {
+        "comPoligono": 41,
+        "centrosInternos": 41,
+        "fracaoInterna": 1
+      },
+      "bytes": 45136,
+      "sha256": "c7459fa51836ba9aa44982e4cc2358b0c565f2c5d2c06a310f12141507a6ca8e"
+    },
+    {
+      "bairro": "tamarineira",
+      "edificios": 159,
+      "unidades": 4236,
+      "geometria": {
+        "comPoligono": 159,
+        "centrosInternos": 159,
+        "fracaoInterna": 1
+      },
+      "bytes": 166604,
+      "sha256": "213672a81ed02fafb0c95783817f4d5aa3dda3bcc8b941f3f60f11f9525bc062"
+    },
+    {
+      "bairro": "tejipio",
+      "edificios": 10,
+      "unidades": 1159,
+      "geometria": {
+        "comPoligono": 10,
+        "centrosInternos": 10,
+        "fracaoInterna": 1
+      },
+      "bytes": 14491,
+      "sha256": "2e41ec134ab3e3dbe849a75001406201f4f79c64e5ecdf84284a76e8b1f38494"
+    },
+    {
+      "bairro": "torre",
+      "edificios": 137,
+      "unidades": 6056,
+      "geometria": {
+        "comPoligono": 137,
+        "centrosInternos": 137,
+        "fracaoInterna": 1
+      },
+      "bytes": 149949,
+      "sha256": "60145ac85bc9618f31c86567de2d9432cc35c958df8c81fadde1a8850a28575e"
+    },
+    {
+      "bairro": "torreao",
+      "edificios": 35,
+      "unidades": 567,
+      "geometria": {
+        "comPoligono": 35,
+        "centrosInternos": 35,
+        "fracaoInterna": 1
+      },
+      "bytes": 33970,
+      "sha256": "72210ebd980ea9f176f587192e7221a5bdc36af23c6bbc73c1c0fccf83ca39d9"
+    },
+    {
+      "bairro": "torroes",
+      "edificios": 13,
+      "unidades": 122,
+      "geometria": {
+        "comPoligono": 12,
+        "centrosInternos": 12,
+        "fracaoInterna": 1
+      },
+      "bytes": 14226,
+      "sha256": "76ace0d5535125d908063b5f5c813571ee8cfc55f8f7e2a09e4035541d398b26"
+    },
+    {
+      "bairro": "toto",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 252,
+      "sha256": "a2c1945c7f2d425eccbd18900e1a07afe1b30eae1097ac1a920112ed0c3ae6b6"
+    },
+    {
+      "bairro": "varzea",
+      "edificios": 327,
+      "unidades": 7675,
+      "geometria": {
+        "comPoligono": 318,
+        "centrosInternos": 318,
+        "fracaoInterna": 1
+      },
+      "bytes": 303391,
+      "sha256": "b4793a856eaa452308601a49ad3e6a0bd2d16ef4b382e9fef98068fd3f6425e1"
+    },
+    {
+      "bairro": "vasco-da-gama",
+      "edificios": 32,
+      "unidades": 866,
+      "geometria": {
+        "comPoligono": 32,
+        "centrosInternos": 32,
+        "fracaoInterna": 1
+      },
+      "bytes": 31639,
+      "sha256": "0168cc444aa77e1ac9b0fa0bbda4c42316404e23289f0be9bba07617fa243df9"
+    },
+    {
+      "bairro": "zumbi",
+      "edificios": 36,
+      "unidades": 275,
+      "geometria": {
+        "comPoligono": 36,
+        "centrosInternos": 36,
+        "fracaoInterna": 1
+      },
+      "bytes": 34203,
+      "sha256": "6ebb4a6c053f6d2e8e06b2a889d6fa8c3614b98f10789057b8e85d0329211b71"
+    }
+  ],
+  "colisoesEntreBairros": [],
+  "semEdificios": [
+    "alto-do-mandu",
+    "alto-jose-bonifacio",
+    "alto-jose-do-pinho",
+    "alto-santa-terezinha",
+    "brasilia-teimosa",
+    "brejo-da-guabiraba",
+    "brejo-de-beberibe",
+    "cabanga",
+    "cidade-universitaria",
+    "cohab",
+    "corrego-do-jenipapo",
+    "dois-irmaos",
+    "dois-unidos",
+    "ilha-joana-bezerra",
+    "linha-do-tiro",
+    "mangabeira",
+    "passarinho",
+    "pau-ferro",
+    "peixinhos",
+    "sitio-dos-pintos",
+    "toto"
+  ],
+  "acimaDe2MB": []
+}

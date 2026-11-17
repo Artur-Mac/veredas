@@ -1,0 +1,1080 @@
+{
+ "executadoEm": "2026-11-14T22:15:15.752Z",
+ "rede": "c05c3ba9033e9fd9",
+ "volumes": 57851,
+ "volumesSemAltura": 11396,
+ "pares": 20,
+ "cenarios": [
+  [
+   "2026-12-21",
+   9
+  ],
+  [
+   "2026-12-21",
+   15
+  ],
+  [
+   "2026-06-21",
+   9
+  ],
+  [
+   "2026-06-21",
+   15
+  ]
+ ],
+ "desvioMax": 0.15,
+ "porEstado": {
+  "sem_alternativa_util": 70,
+  "ganho_pequeno": 4,
+  "alternativa_estavel": 6
+ },
+ "resultados": [
+  {
+   "area": "boa-viagem",
+   "predio": "36048-117",
+   "mercado": "Supermercado Trevo",
+   "curtoM": 921,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 7,
+     "solAltMin": 7,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 6,
+     "solAltMin": 5.4,
+     "extraM": 71,
+     "extraMin": 1,
+     "estado": "ganho_pequeno",
+     "lambda": 2
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 5.5,
+     "solAltMin": 5.5,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 7.2,
+     "solAltMin": 7.2,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "boa-viagem",
+   "predio": "65749-68",
+   "mercado": "4490",
+   "curtoM": 441,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 2.2,
+     "solAltMin": 1.1,
+     "extraM": 25,
+     "extraMin": 0.3,
+     "estado": "alternativa_estavel",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 0.4,
+     "solAltMin": 0,
+     "extraM": 47,
+     "extraMin": 0.6,
+     "estado": "sem_alternativa_util",
+     "lambda": 4
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 1,
+     "solAltMin": 0,
+     "extraM": 25,
+     "extraMin": 0.3,
+     "estado": "alternativa_estavel",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 0.3,
+     "solAltMin": 0,
+     "extraM": 64,
+     "extraMin": 0.9,
+     "estado": "sem_alternativa_util",
+     "lambda": 4
+    }
+   ]
+  },
+  {
+   "area": "boa-viagem",
+   "predio": "42510-816",
+   "mercado": "Bem Bom Prime",
+   "curtoM": 582,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 6.5,
+     "solAltMin": 6.5,
+     "extraM": 2,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 1
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 0.1,
+     "solAltMin": 0,
+     "extraM": 2,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 0.9,
+     "solAltMin": 0.1,
+     "extraM": 1,
+     "extraMin": 0,
+     "estado": "ganho_pequeno",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 1.8,
+     "solAltMin": 1.8,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "boa-viagem",
+   "predio": "4170-223",
+   "mercado": "4209 - Mercadinho São Francisco",
+   "curtoM": 599,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 1.8,
+     "solAltMin": 1.8,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 2.6,
+     "solAltMin": 0.9,
+     "extraM": 29,
+     "extraMin": 0.4,
+     "estado": "alternativa_estavel",
+     "lambda": 4
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 1.8,
+     "solAltMin": 1.6,
+     "extraM": 26,
+     "extraMin": 0.4,
+     "estado": "sem_alternativa_util",
+     "lambda": 4
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 4.3,
+     "solAltMin": 2.5,
+     "extraM": 13,
+     "extraMin": 0.2,
+     "estado": "alternativa_estavel",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "casa-forte",
+   "predio": "33030-128",
+   "mercado": "Mercado Sertanejo",
+   "curtoM": 357,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 3.1,
+     "solAltMin": 3.1,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 0.3,
+     "solAltMin": 0.3,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 0.5,
+     "solAltMin": 0.5,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 0.4,
+     "solAltMin": 0.4,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "casa-forte",
+   "predio": "78271-354",
+   "mercado": "Mercado Sertanejo",
+   "curtoM": 530,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 3.3,
+     "solAltMin": 3.3,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 1,
+     "solAltMin": 1,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 3.2,
+     "solAltMin": 2.8,
+     "extraM": 10,
+     "extraMin": 0.1,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 3.8,
+     "solAltMin": 1.1,
+     "extraM": 43,
+     "extraMin": 0.6,
+     "estado": "alternativa_estavel",
+     "lambda": 1
+    }
+   ]
+  },
+  {
+   "area": "casa-forte",
+   "predio": "33030-86",
+   "mercado": "Mercado Sertanejo",
+   "curtoM": 296,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 1.8,
+     "solAltMin": 1.8,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 0.3,
+     "solAltMin": 0.3,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 0.5,
+     "solAltMin": 0.5,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 0,
+     "solAltMin": 0,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "casa-forte",
+   "predio": "2453-136",
+   "mercado": "Mercado Sertanejo",
+   "curtoM": 575,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 5.8,
+     "solAltMin": 2.2,
+     "extraM": 22,
+     "extraMin": 0.3,
+     "estado": "alternativa_estavel",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 1.4,
+     "solAltMin": 1.2,
+     "extraM": 73,
+     "extraMin": 1,
+     "estado": "sem_alternativa_util",
+     "lambda": 8
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 2.7,
+     "solAltMin": 1.8,
+     "extraM": 66,
+     "extraMin": 0.9,
+     "estado": "ganho_pequeno",
+     "lambda": 4
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 1.7,
+     "solAltMin": 1.7,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "gracas",
+   "predio": "25879-30",
+   "mercado": "Pão de Açúcar",
+   "curtoM": 449,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 3.9,
+     "solAltMin": 3.9,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 0.2,
+     "solAltMin": 0.2,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 3.3,
+     "solAltMin": 3.3,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 0,
+     "solAltMin": 0,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "gracas",
+   "predio": "49646-145",
+   "mercado": "Minuto Pão de Açúcar",
+   "curtoM": 382,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 1.7,
+     "solAltMin": 1.7,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 2.7,
+     "solAltMin": 2.7,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 1.5,
+     "solAltMin": 1.5,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 3.2,
+     "solAltMin": 2.9,
+     "extraM": 15,
+     "extraMin": 0.2,
+     "estado": "sem_alternativa_util",
+     "lambda": 1
+    }
+   ]
+  },
+  {
+   "area": "gracas",
+   "predio": "18252-58",
+   "mercado": "Casa dos Frios",
+   "curtoM": 286,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 3.2,
+     "solAltMin": 3.2,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 0,
+     "solAltMin": 0,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 1,
+     "solAltMin": 1,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 0,
+     "solAltMin": 0,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "gracas",
+   "predio": "7641-300",
+   "mercado": "Recibom",
+   "curtoM": 310,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 1.6,
+     "solAltMin": 1.6,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 0.9,
+     "solAltMin": 0.9,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 0.7,
+     "solAltMin": 0.7,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 0.3,
+     "solAltMin": 0.3,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "espinheiro",
+   "predio": "27006-465",
+   "mercado": "Mercado Extra",
+   "curtoM": 371,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 1.9,
+     "solAltMin": 1.9,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 1.8,
+     "solAltMin": 1.8,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 2.3,
+     "solAltMin": 2.3,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 0.4,
+     "solAltMin": 0.4,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "espinheiro",
+   "predio": "64084-100",
+   "mercado": "Pão de Açúcar",
+   "curtoM": 589,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 5.6,
+     "solAltMin": 5.6,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 4,
+     "solAltMin": 4,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 5.6,
+     "solAltMin": 5.6,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 2.9,
+     "solAltMin": 2.9,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "espinheiro",
+   "predio": "31135-379",
+   "mercado": "Mercado Extra",
+   "curtoM": 429,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 4,
+     "solAltMin": 3.2,
+     "extraM": 12,
+     "extraMin": 0.2,
+     "estado": "ganho_pequeno",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 4.3,
+     "solAltMin": 4.3,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 4,
+     "solAltMin": 3.8,
+     "extraM": 12,
+     "extraMin": 0.2,
+     "estado": "sem_alternativa_util",
+     "lambda": 1
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 3.9,
+     "solAltMin": 3.9,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "espinheiro",
+   "predio": "29238-473",
+   "mercado": "Pão de Açúcar",
+   "curtoM": 417,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 4.5,
+     "solAltMin": 4.5,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 2.9,
+     "solAltMin": 2.9,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 4.5,
+     "solAltMin": 4.5,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 1.8,
+     "solAltMin": 1.8,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "madalena",
+   "predio": "1880-236",
+   "mercado": "Mercado da Carne",
+   "curtoM": 338,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 1.2,
+     "solAltMin": 1.2,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 1,
+     "solAltMin": 1,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 1.6,
+     "solAltMin": 1.6,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 0.1,
+     "solAltMin": 0.1,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "madalena",
+   "predio": "39306-309",
+   "mercado": "Pernambucano Express",
+   "curtoM": 226,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 0.8,
+     "solAltMin": 0.8,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 0.5,
+     "solAltMin": 0.5,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 0.3,
+     "solAltMin": 0.3,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 0.5,
+     "solAltMin": 0.5,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "madalena",
+   "predio": "72656-103",
+   "mercado": "Recibom",
+   "curtoM": 258,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 1.8,
+     "solAltMin": 1.8,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 0.4,
+     "solAltMin": 0.4,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 0.5,
+     "solAltMin": 0.5,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 0.7,
+     "solAltMin": 0.7,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  },
+  {
+   "area": "madalena",
+   "predio": "38580-155",
+   "mercado": "Kitanda Bem Viver",
+   "curtoM": 498,
+   "cenarios": [
+    {
+     "dia": "2026-12-21",
+     "hora": 9,
+     "elevacao": 54,
+     "solCurtoMin": 4.3,
+     "solAltMin": 4.3,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-12-21",
+     "hora": 15,
+     "elevacao": 35,
+     "solCurtoMin": 1.2,
+     "solAltMin": 1.2,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 9,
+     "elevacao": 43,
+     "solCurtoMin": 5.8,
+     "solAltMin": 5.8,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    },
+    {
+     "dia": "2026-06-21",
+     "hora": 15,
+     "elevacao": 28,
+     "solCurtoMin": 3,
+     "solAltMin": 3,
+     "extraM": 0,
+     "extraMin": 0,
+     "estado": "sem_alternativa_util",
+     "lambda": 0.5
+    }
+   ]
+  }
+ ],
+ "limites": [
+  "Só sombra de prédios do cadastro; árvores, marquises e toldos não entram (não há base).",
+  "Rede de eixo de rua: o lado da calçada não é modelado.",
+  "Simulação, sem observação de campo (G-SHADE não observado)."
+ ],
+ "ms": 46213,
+ "memoriaPicoMB": 1059
+}

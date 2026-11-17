@@ -3,6 +3,7 @@ import * as WebBrowser from "expo-web-browser";
 import { View } from "react-native";
 import { Botao } from "../../../../componentes/Botao";
 import { Folha } from "../../../../componentes/Folha";
+import { ReguaDoItbiRetirada, reguaEDoItbi } from "../../../../componentes/fatos/Regua";
 import { Valores } from "../../../../componentes/fatos/Valores";
 import { Texto } from "../../../../componentes/Texto";
 import { Traco } from "../../../../componentes/Traco";
@@ -30,6 +31,14 @@ export default function VerFonte() {
   const { fato: idFato } = useLocalSearchParams<{ fato: string }>();
   const fato = acharFato(dossie, idFato);
   if (!fato) throw new Error(`Fato não encontrado: ${idFato}`);
+  // A régua do ITBI por m² saiu dos exemplos: o endereço direto dela não mostra base, N nem "registro oficial".
+  if ("regua" in fato && reguaEDoItbi(fato.regua)) {
+    return (
+      <Folha titulo="De onde vem" pai={{ pathname: "/exemplos/[id]", params: { id: dossie.id } }}>
+        <ReguaDoItbiRetirada />
+      </Folha>
+    );
+  }
   return <ConteudoDaFonte dossie={dossie} fato={fato} />;
 }
 

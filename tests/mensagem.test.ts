@@ -43,6 +43,8 @@ describe("mensagemParaCorretor", () => {
         "1. Pergunta número 1?",
         "2. Pergunta número 2?",
         "Obrigado!",
+        "",
+        "Mensagem preparada com o VEREDA.",
       ].join("\n"),
     );
   });
@@ -62,7 +64,7 @@ describe("mensagemParaCorretor", () => {
       "1. Pergunta número 1?", "2. Pergunta número 2?", "3. Pergunta número 3?",
       "4. Pergunta número 4?", "5. Pergunta número 5?", "6. Pergunta número 6?",
     ]);
-    expect(linhas[linhas.length - 1]).toBe("Obrigado!");
+    expect(linhas.slice(-3)).toEqual(["Obrigado!", "", "Mensagem preparada com o VEREDA."]);
   });
 
   it("deixa de fora as perguntas já verificadas e completa com as seguintes", () => {
@@ -97,7 +99,7 @@ describe("mensagemParaCorretor", () => {
   });
 
   it("sem pergunta pendente, só pede a visita", () => {
-    const esperado = "Olá! Vi o anúncio Apartamento sintético de 3 quartos (https://anuncio.invalid/sintetico-1).\nGostaria de marcar uma visita.\nObrigado!";
+    const esperado = "Olá! Vi o anúncio Apartamento sintético de 3 quartos (https://anuncio.invalid/sintetico-1).\nGostaria de marcar uma visita.\nObrigado!\n\nMensagem preparada com o VEREDA.";
     expect(mensagemParaCorretor(analise(), [])).toBe(esperado);
     const a = analise({ visita: { ...analise().visita, verificadas: ["p1"] } });
     expect(mensagemParaCorretor(a, [P(1)])).toBe(esperado);

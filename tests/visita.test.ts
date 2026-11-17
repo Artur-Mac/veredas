@@ -9,7 +9,7 @@ import { router } from "expo-router";
 import React from "react";
 import { Linking, StyleSheet } from "react-native";
 import TestRenderer, { act, type ReactTestInstance } from "react-test-renderer";
-import { adicionarPropria, alternarVerificada, definirResposta, duracaoPorExtenso, enderecoDoImovel, formatarCronometro, idDaPropria, limitarGraus, orientacaoDaJanela, perguntasDaVisita, resumirVisita, segundosDoRelogio, subtituloDoImovel, urlDoWhatsapp } from "../src/componentes/visita-v1/logica";
+import { adicionarPropria, alternarVerificada, definirResposta, duracaoPorExtenso, enderecoDoImovel, formatarCronometro, idDaPropria, limitarGraus, orientacaoDaJanela, perguntasDaVisita, resumirVisita, roteiroDaVisita, segundosDoRelogio, subtituloDoImovel, urlDoWhatsapp } from "../src/componentes/visita-v1/logica";
 import TelaVisita from "../src/app/(abas)/visita";
 import { Pressionavel } from "../src/componentes/Pressionavel";
 import { AVISO_DE_FALHA_AO_SALVAR } from "../src/componentes/visita-v1/useVisita";
@@ -22,6 +22,7 @@ import {
   type Visita,
 } from "../src/dados/contratos";
 import { derivarDossie } from "../src/dados/dossie/derivar";
+import { entradaDaRua } from "../src/componentes/dossie-v1/cadastro";
 import { formatarEndereco } from "../src/dados/recife/endereco";
 import { mensagemParaCorretor } from "../src/dados/mensagem";
 import { contextoDoBairro, edificiosDoBairro, indiceDoBairro } from "../src/dados/recife/indice";
@@ -224,8 +225,10 @@ describe("roteiro de perguntas: a mesma montagem do dossiê", () => {
     const a = analise({ vinculo: confirmada() });
     const perguntas = perguntasDaVisita(a, [], agora);
     expect(perguntas.some((p) => p.id === "lacuna-endereco")).toBe(false);
-    const dossie = derivarDossie(a, primeiro, contextoDoBairro("casa-forte"), indiceDoBairro("casa-forte").obras, [], agora);
+    // v1.1: a Visita monta como o dossiê, com a camada "A rua" do índice (e as perguntas da rua).
+    const dossie = derivarDossie(a, primeiro, contextoDoBairro("casa-forte"), indiceDoBairro("casa-forte").obras, [], agora, null, entradaDaRua(indiceDoBairro("casa-forte")));
     expect(perguntas).toEqual(dossie.perguntas);
+    expect(perguntas.some((p) => p.id.startsWith("rua-"))).toBe(true);
   });
 
   it("vínculo para um edifício que não está no índice não derruba a tela nem inventa dado", () => {
@@ -235,7 +238,7 @@ describe("roteiro de perguntas: a mesma montagem do dossiê", () => {
   });
 
   it("bairro fora da cobertura: só as perguntas que dispensam o índice", () => {
-    const fora = analise({ bairro: "pina", bairroTexto: "Pina", vinculo: { estado: "fora_de_cobertura" } });
+    const fora = analise({ bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" } });
     const ids = perguntasDaVisita(fora, [], agora).map((p) => p.id);
     expect(ids).toEqual(expect.arrayContaining(["padrao-documentos", "padrao-agua", "padrao-ruido", "padrao-sol"]));
     expect(ids).not.toContain("lacuna-endereco");
@@ -397,7 +400,8 @@ describe("a tela Visita", () => {
     const a = analise();
     const arvore = await montar([a]);
     const texto = todoOTexto(arvore);
-    const esperadas = perguntasDaVisita(a, [a], new Date());
+    // 15/11/2026: a tela usa o roteiro com as checagens do risco do prédio no topo.
+    const esperadas = roteiroDaVisita(a, [a], new Date());
     expect(texto).toContain("Prepare sua visita.");
     expect(texto).toContain("Sua próxima visita");
     expect(texto).toContain(String(esperadas.length));
@@ -419,9 +423,10 @@ describe("a tela Visita", () => {
     await tocar(arvore, porTexto("Preparar mensagem"));
     expect(todoOTexto(arvore)).toContain("Converse com o corretor");
 
-    const sugerida = mensagemParaCorretor(a, perguntasDaVisita(a, [a], new Date()));
+    const sugerida = mensagemParaCorretor(a, roteiroDaVisita(a, [a], new Date()));
     const campo = achar(arvore, (i) => typeof i.props.onChangeText === "function" && i.props.accessibilityLabel === "Mensagem para agendar");
     expect(campo.props.value).toBe(sugerida);
+    expect(sugerida.endsWith("\n\nMensagem preparada com o VEREDA.")).toBe(true);
     expect(sugerida.startsWith("Olá! Vi o anúncio Apartamento sintético de 3 quartos (https://anuncio.invalid/sintetico-1).")).toBe(true);
 
     await tocar(arvore, porTexto("Copiar mensagem"));
@@ -430,9 +435,13 @@ describe("a tela Visita", () => {
 
     const abrir = jest.spyOn(Linking, "openURL").mockResolvedValue(true);
     await digitar(arvore, "Mensagem para agendar", "Texto editado pela pessoa");
+    await tocar(arvore, porTexto("Copiar mensagem"));
+    expect(setStringAsync).toHaveBeenLastCalledWith("Texto editado pela pessoa");
     await tocar(arvore, porTexto("Abrir no WhatsApp"));
     expect(abrir).toHaveBeenCalledWith(`https://wa.me/?text=${encodeURIComponent("Texto editado pela pessoa")}`);
     expect(todoOTexto(arvore)).toContain("Nada é enviado pelo Vereda");
+    await tocar(arvore, porTexto("Voltar ao texto sugerido"));
+    expect(achar(arvore, (i) => i.props.accessibilityLabel === "Mensagem para agendar").props.value).toBe(sugerida);
     // Nada foi gravado na análise por causa da mensagem.
     expect((await gravadas())[0]?.visita).toEqual(VISITA_VAZIA);
   });
@@ -442,14 +451,14 @@ describe("a tela Visita", () => {
     const arvore = await montar([a]);
     await tocar(arvore, porTexto("Começar visita"));
     expect(todoOTexto(arvore)).toContain("Olhe de perto.");
-    const primeira = perguntasDaVisita(a, [a], new Date())[0];
+    const primeira = roteiroDaVisita(a, [a], new Date())[0];
     if (!primeira) throw new Error("sem perguntas");
 
     await tocar(arvore, porRotulo(`Conferida: ${primeira.titulo}`));
     const [gravada] = await gravadas();
     expect(gravada?.visita.verificadas).toEqual([primeira.id]);
     expect(Date.parse(gravada?.atualizadaEm ?? "")).toBeGreaterThan(Date.parse(INSTANTE));
-    expect(todoOTexto(arvore)).toContain(`1 de ${perguntasDaVisita(a, [a], new Date()).length}`);
+    expect(todoOTexto(arvore)).toContain(`1 de ${roteiroDaVisita(a, [a], new Date()).length}`);
 
     // Tocar de novo desmarca.
     await tocar(arvore, porRotulo(`Conferida: ${primeira.titulo}`));
@@ -460,7 +469,7 @@ describe("a tela Visita", () => {
     const a = analise();
     const arvore = await montar([a]);
     await tocar(arvore, porTexto("Começar visita"));
-    const [p1, p2] = perguntasDaVisita(a, [a], new Date());
+    const [p1, p2] = roteiroDaVisita(a, [a], new Date());
     if (!p1 || !p2) throw new Error("perguntas insuficientes");
     const um = achar(arvore, porRotulo(`Conferida: ${p1.titulo}`));
     const dois = achar(arvore, porRotulo(`Conferida: ${p2.titulo}`));
@@ -475,7 +484,7 @@ describe("a tela Visita", () => {
   it("responder: a gaveta grava a resposta e a conferência", async () => {
     const a = analise();
     const arvore = await montar([a]);
-    const primeira = perguntasDaVisita(a, [a], new Date())[0];
+    const primeira = roteiroDaVisita(a, [a], new Date())[0];
     if (!primeira) throw new Error("sem perguntas");
     await tocar(arvore, (i) => podeTocar(i) && typeof i.props.accessibilityLabel === "string" && i.props.accessibilityLabel.startsWith(primeira.titulo));
     expect(todoOTexto(arvore)).toContain("O que você descobriu?");
@@ -584,130 +593,25 @@ describe("a tela Visita", () => {
     expect((await gravadas())[0]?.visita.ruido).toBeNull();
   });
 
-  it("orientação: sem registro até a pessoa ajustar; o rótulo acompanha os graus e grava ao parar", async () => {
+  it("abre a experiência de janelas depois de guardar e pausar a visita, sem inventar uma direção", async () => {
     jest.useFakeTimers({ now: new Date("2026-10-20T13:00:00.000Z") });
     const arvore = await montar([analise()]);
     await tocar(arvore, porTexto("Começar visita"));
-    expect(todoOTexto(arvore)).toContain("Sem registro");
-    expect((await gravadas())[0]?.visita.orientacaoGraus).toBeNull();
-
-    const aumentar = async () => {
-      const controle = achar(arvore, (i) => i.props.role === "slider" && typeof i.props.onAccessibilityAction === "function");
-      await act(async () => {
-        (controle.props.onAccessibilityAction as (e: { nativeEvent: { actionName: string } }) => void)({ nativeEvent: { actionName: "increment" } });
-      });
-    };
-    // O primeiro passo sem registro grava 0° (N); os 18 seguintes, de 5° em 5°, chegam a 90°.
-    for (let i = 0; i < 19; i++) await aumentar();
-    expect(todoOTexto(arvore)).toContain("90°");
-    expect(todoOTexto(arvore)).toContain("Leste");
-    // Ainda dentro do atraso de gravação: nada gravado.
-    expect((await gravadas())[0]?.visita.orientacaoGraus).toBeNull();
-    await act(async () => {
-      jest.advanceTimersByTime(700);
-    });
+    await digitar(arvore, "Suas impressões", "Vou conferir a janela da sala");
+    expect(todoOTexto(arvore)).toContain("Sol nas suas janelas");
+    expect(arvore.root.findAll(i => i.props.role === "slider")).toHaveLength(0);
+    await tocar(arvore, porTexto("Observar uma janela"));
     await esvaziar();
-    expect((await gravadas())[0]?.visita.orientacaoGraus).toBe(90);
-
-    await tocar(arvore, porTexto("Limpar orientação"));
-    await act(async () => {
-      jest.advanceTimersByTime(700);
-    });
-    await esvaziar();
+    expect(empurrar).toHaveBeenCalledWith({ pathname: "/sol", params: { id: analise().id } });
+    expect((await gravadas())[0]?.visita.notas).toBe("Vou conferir a janela da sala");
     expect((await gravadas())[0]?.visita.orientacaoGraus).toBeNull();
   });
 
-  describe("orientação sem registro (G7)", () => {
-    const trilho = (arvore: TestRenderer.ReactTestRenderer) =>
-      achar(arvore, (i) => i.props.role === "slider" && typeof i.props.onAccessibilityAction === "function");
-    const pelaDireita = porRotulo("Girar a direção da janela 1 grau para a direita");
-    const pelaEsquerda = porRotulo("Girar a direção da janela 1 grau para a esquerda");
-
-    async function gravarAgora() {
-      await act(async () => {
-        jest.advanceTimersByTime(700);
-      });
-      await esvaziar();
-    }
-
-    it("o leitor de tela não ouve valor nenhum: sem now, só o texto 'Não registrada'", async () => {
-      jest.useFakeTimers({ now: new Date("2026-10-20T13:00:00.000Z") });
-      const arvore = await montar([analise()]);
-      await tocar(arvore, porTexto("Começar visita"));
-      const sem = trilho(arvore);
-      expect(sem.props["aria-valuenow"]).toBeUndefined();
-      expect(sem.props["aria-valuetext"]).toBe("Não registrada");
-      expect(sem.props.accessibilityValue).toEqual({ min: 0, max: 359, text: "Não registrada" });
-      expect(sem.props.accessibilityValue).not.toHaveProperty("now");
-
-      await tocar(arvore, pelaDireita);
-      const com = trilho(arvore);
-      expect(com.props["aria-valuenow"]).toBe(0);
-      expect(com.props["aria-valuetext"]).toBe("0 graus, Norte");
-      expect(com.props.accessibilityValue).toEqual({ min: 0, max: 359, now: 0, text: "0 graus, Norte" });
-    });
-
-    it("o primeiro toque em + grava 0° (N), não 1°; o seguinte vai a 1°", async () => {
-      jest.useFakeTimers({ now: new Date("2026-10-20T13:00:00.000Z") });
-      const arvore = await montar([analise()]);
-      await tocar(arvore, porTexto("Começar visita"));
-      await tocar(arvore, pelaDireita);
-      expect(todoOTexto(arvore)).toContain("0°");
-      expect(todoOTexto(arvore)).toContain("Norte");
-      await gravarAgora();
-      expect((await gravadas())[0]?.visita.orientacaoGraus).toBe(0);
-      await tocar(arvore, pelaDireita);
-      await gravarAgora();
-      expect((await gravadas())[0]?.visita.orientacaoGraus).toBe(1);
-    });
-
-    it("o primeiro toque em − grava 0° (N), não 359°; depois dele, − dá a volta para 359°", async () => {
-      jest.useFakeTimers({ now: new Date("2026-10-20T13:00:00.000Z") });
-      const arvore = await montar([analise()]);
-      await tocar(arvore, porTexto("Começar visita"));
-      await tocar(arvore, pelaEsquerda);
-      await gravarAgora();
-      expect((await gravadas())[0]?.visita.orientacaoGraus).toBe(0);
-      await tocar(arvore, pelaEsquerda);
-      await gravarAgora();
-      expect((await gravadas())[0]?.visita.orientacaoGraus).toBe(359);
-    });
-
-    it("as ações de acessibilidade (±5°) também começam em 0°; limpar volta a 'Não registrada'", async () => {
-      jest.useFakeTimers({ now: new Date("2026-10-20T13:00:00.000Z") });
-      const arvore = await montar([analise()]);
-      await tocar(arvore, porTexto("Começar visita"));
-      const acao = async (actionName: string) => {
-        await act(async () => {
-          (trilho(arvore).props.onAccessibilityAction as (e: { nativeEvent: { actionName: string } }) => void)({ nativeEvent: { actionName } });
-        });
-      };
-      await acao("decrement");
-      expect(trilho(arvore).props["aria-valuenow"]).toBe(0);
-      await acao("increment");
-      expect(trilho(arvore).props["aria-valuenow"]).toBe(5);
-      await acao("decrement");
-      await acao("decrement");
-      expect(trilho(arvore).props["aria-valuenow"]).toBe(355);
-      await tocar(arvore, porTexto("Limpar orientação"));
-      expect(trilho(arvore).props["aria-valuenow"]).toBeUndefined();
-      expect(trilho(arvore).props["aria-valuetext"]).toBe("Não registrada");
-    });
-  });
-
-  it("se a gravação falhar, o rascunho das notas e da orientação continua na tela e vai junto na próxima gravação", async () => {
+  it("se a gravação falhar, o rascunho das notas continua na tela e vai junto na próxima gravação", async () => {
     jest.useFakeTimers({ now: new Date("2026-10-20T13:00:00.000Z") });
     const arvore = await montar([analise()]);
     await tocar(arvore, porTexto("Começar visita"));
     await digitar(arvore, "Suas impressões", "Luz boa na sala");
-    const trilho = () => achar(arvore, (i) => i.props.role === "slider" && typeof i.props.onAccessibilityAction === "function");
-    for (let i = 0; i < 19; i++) {
-      await act(async () => {
-        (trilho().props.onAccessibilityAction as (e: { nativeEvent: { actionName: string } }) => void)({ nativeEvent: { actionName: "increment" } });
-      });
-    }
-    expect(todoOTexto(arvore)).toContain("90°");
-
     // `setItem` já é um mock do jest: a próxima gravação falha uma vez e as seguintes voltam ao normal.
     const gravarItem = armazenamento.setItem as unknown as jest.Mock<(k: string, v: string) => Promise<void>>;
     gravarItem.mockRejectedValueOnce(new Error("sem espaço"));
@@ -722,14 +626,11 @@ describe("a tela Visita", () => {
     expect(naoGravada?.visita).toMatchObject({ notas: "", orientacaoGraus: null });
     const campo = achar(arvore, (i) => typeof i.props.onChangeText === "function" && i.props.accessibilityLabel === "Suas impressões");
     expect(campo.props.value).toBe("Luz boa na sala");
-    expect(todoOTexto(arvore)).toContain("90°");
-    expect(todoOTexto(arvore)).toContain("Leste");
-    expect(trilho().props["aria-valuenow"]).toBe(90);
 
-    // O rascunho segue pendente: a próxima gravação leva notas e orientação junto.
+    // O rascunho segue pendente: a próxima gravação leva as notas junto.
     await tocar(arvore, porRotulo("Moderado"));
     const [gravada] = await gravadas();
-    expect(gravada?.visita).toMatchObject({ notas: "Luz boa na sala", orientacaoGraus: 90, ruido: "moderado" });
+    expect(gravada?.visita).toMatchObject({ notas: "Luz boa na sala", orientacaoGraus: null, ruido: "moderado" });
     expect(achar(arvore, (i) => typeof i.props.onChangeText === "function" && i.props.accessibilityLabel === "Suas impressões").props.value).toBe("Luz boa na sala");
   });
 
@@ -777,7 +678,7 @@ describe("a tela Visita", () => {
     const a = analise();
     const arvore = await montar([a]);
     await tocar(arvore, porTexto("Começar visita"));
-    const perguntas = perguntasDaVisita(a, [a], new Date());
+    const perguntas = roteiroDaVisita(a, [a], new Date());
     const primeira = perguntas[0];
     if (!primeira) throw new Error("sem perguntas");
     await tocar(arvore, porRotulo(`Conferida: ${primeira.titulo}`));
@@ -895,7 +796,7 @@ describe("a tela Visita", () => {
   it("'N pontos para conferir' e o número do resumo estão em Fraunces 500, não em JetBrains Mono", async () => {
     const a = analise();
     const arvore = await montar([a]);
-    const n = perguntasDaVisita(a, [a], new Date()).length;
+    const n = roteiroDaVisita(a, [a], new Date()).length;
     const preparar = estilosDoTexto(arvore, String(n));
     expect(preparar.length).toBeGreaterThan(0);
     for (const estilo of preparar) expect(estilo).toMatchObject({ fontFamily: "Fraunces", fontWeight: "500" });

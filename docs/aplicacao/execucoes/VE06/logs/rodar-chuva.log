@@ -1,0 +1,154 @@
+{
+ "registros": {
+  "total": 1645,
+  "porTipo": {
+   "imovel_alagado": 921,
+   "via_alagada": 724
+  },
+  "porPrecisaoDaData": {
+   "ano": 919,
+   "dia": 726
+  },
+  "porPrecisaoDoLocal": {
+   "rua": 1551,
+   "lugar_nomeado": 94
+  }
+ },
+ "observacoes": {
+  "total": 763,
+  "comRepeticao": 103,
+  "porTipo": {
+   "imovel_alagado": 369,
+   "via_alagada": 394
+  }
+ },
+ "episodios": 31,
+ "vinculo": {
+  "porMetodo": {
+   "nome_e_bairro": 175,
+   "sem_correspondencia": 136,
+   "lugar_sem_geometria": 35,
+   "ambiguo": 8,
+   "nome_fora_do_bairro": 32,
+   "nome_e_bairro_sem_aresta": 1,
+   "tunel_no_bairro": 7
+  },
+  "ligadasARede": 182,
+  "ruasLongas": 88
+ },
+ "piloto": {
+  "boa-viagem": {
+   "predios": 1761,
+   "comCenario": 175,
+   "porCategoria": {
+    "mercado": 97,
+    "farmacia": 95,
+    "transporte": 1
+   },
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 60,
+   "outroLocal": 133,
+   "comparados": 642,
+   "imateriais": 449,
+   "ruaPropria": 28
+  },
+  "casa-forte": {
+   "predios": 78,
+   "comCenario": 1,
+   "porCategoria": {},
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 0,
+   "outroLocal": 0,
+   "ruaPropria": 1
+  },
+  "gracas": {
+   "predios": 285,
+   "comCenario": 0,
+   "porCategoria": {},
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 0,
+   "outroLocal": 0,
+   "comparados": 9,
+   "imateriais": 9
+  },
+  "espinheiro": {
+   "predios": 151,
+   "comCenario": 12,
+   "porCategoria": {
+    "farmacia": 1
+   },
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 0,
+   "outroLocal": 1,
+   "ruaPropria": 11,
+   "comparados": 21,
+   "imateriais": 20
+  },
+  "madalena": {
+   "predios": 241,
+   "comCenario": 26,
+   "porCategoria": {
+    "mercado": 50
+   },
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 0,
+   "outroLocal": 50,
+   "comparados": 84,
+   "imateriais": 34,
+   "ruaPropria": 1
+  }
+ },
+ "exemplos": [
+  {
+   "area": "boa-viagem",
+   "predio": "10537-232",
+   "categoria": "mercado",
+   "data": "2023-06-30",
+   "rua": "Avenida Barao de Souza Leao",
+   "antesMin": 6.4,
+   "depoisMin": 13.3,
+   "mesmoLocal": true
+  },
+  {
+   "area": "boa-viagem",
+   "predio": "10537-260",
+   "categoria": "mercado",
+   "data": "2023-06-30",
+   "rua": "Avenida Barao de Souza Leao",
+   "antesMin": 6.4,
+   "depoisMin": 13.3,
+   "mesmoLocal": true
+  },
+  {
+   "area": "espinheiro",
+   "predio": "52833-76",
+   "categoria": "farmacia",
+   "data": "2023-05-24",
+   "rua": "Avenida Gov. Agamenon Magalhaes",
+   "antesMin": 3,
+   "depoisMin": 6,
+   "mesmoLocal": false
+  },
+  {
+   "area": "madalena",
+   "predio": "10910-341",
+   "categoria": "mercado",
+   "data": "2024-06-25",
+   "rua": "Tunel da Madalena",
+   "antesMin": 9.1,
+   "depoisMin": 14.4,
+   "mesmoLocal": false
+  },
+  {
+   "area": "madalena",
+   "predio": "10910-341",
+   "categoria": "mercado",
+   "data": "2024-06-15",
+   "rua": "Tunel da Madalena",
+   "antesMin": 9.1,
+   "depoisMin": 14.4,
+   "mesmoLocal": false
+  }
+ ],
+ "ms": 34830
+}

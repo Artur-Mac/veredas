@@ -1,0 +1,222 @@
+{
+ "epoch": "VE05",
+ "date": "2026-11-14",
+ "status": "partial",
+ "outcome": "iterate",
+ "reason": "Engineering acceptance met (G-TRANSIT 20/20 reproduced by an independent checker against the raw feed); no person has reviewed G-TRANSIT, VE03 entrances or G-POI; no observed vehicle data exists to compare scheduled with actual times; phone-engine performance not measured.",
+ "feed": {
+  "versao": "v2026.10.26",
+  "inicio": "20200501",
+  "fim": "20271026",
+  "fuso": "America/Recife",
+  "publicador": "Grande Recife Consórcio de Transporte Metropolitano",
+  "sha256": "e1d834d9cf0165690ad0ac5c6aa01fb8b5b7dc38bb611f999cadb01512313fd5"
+ },
+ "transit_payload_version": "df3b25344af0934b",
+ "publication": {
+  "versao": "d0a1adbf5b49ec7a",
+  "ativa": "d0a1adbf5b49ec7a",
+  "anterior": "94ee64f6afa22001"
+ },
+ "feed_counts": {
+  "viagens": 87678,
+  "padroes": 1216,
+  "rotas": 8417,
+  "paradas": 7208,
+  "servicos": 1143,
+  "excecoes": 1137
+ },
+ "discarded_trips": {
+  "semServico": 0,
+  "semViagem": 0,
+  "paradaDesconhecida": 0,
+  "horarioFaltando": 0,
+  "tempoVoltando": 0,
+  "curta": 0
+ },
+ "stops": {
+  "total": 7208,
+  "comNome": 477,
+  "noRecife": 2822,
+  "ruaAte15m": 2664,
+  "ruaAte40m": 2791,
+  "semRuaA40m": 31,
+  "ligadasARede": 5376
+ },
+ "transfers": {
+  "pares": 23358,
+  "pelaRede": 19623,
+  "estimadas": 3735,
+  "fatorDeDesvio": 1.19,
+  "amostrasDoFator": 31162
+ },
+ "access": {
+  "boa-viagem": {
+   "rede": 1761,
+   "linhaReta": 118,
+   "semParadaA1km": 0,
+   "medianaParadasGuardadas": 9
+  },
+  "casa-forte": {
+   "rede": 78,
+   "linhaReta": 4,
+   "semParadaA1km": 0,
+   "medianaParadasGuardadas": 12
+  },
+  "gracas": {
+   "rede": 285,
+   "linhaReta": 6,
+   "semParadaA1km": 0,
+   "medianaParadasGuardadas": 16
+  },
+  "espinheiro": {
+   "rede": 151,
+   "linhaReta": 5,
+   "semParadaA1km": 0,
+   "medianaParadasGuardadas": 21
+  },
+  "madalena": {
+   "rede": 241,
+   "linhaReta": 39,
+   "semParadaA1km": 0,
+   "medianaParadasGuardadas": 15
+  }
+ },
+ "active_services": {
+  "2026-11-17": 395,
+  "2026-11-21": 383,
+  "2026-11-22": 362,
+  "2026-11-02": 364
+ },
+ "scheduled_departures": {
+  "2026-11-17": 1367391,
+  "2026-11-21": 936616,
+  "2026-11-22": 692994,
+  "2026-11-02": 697654
+ },
+ "checks": {
+  "um_feed_por_execucao": true,
+  "fuso_unico_da_agencia": true,
+  "viagens_descartadas": true,
+  "horarios_apos_24h_preservados": true,
+  "feriado_2026_11_02_troca_servicos": true,
+  "paradas_do_recife_perto_de_rua_oficial": true,
+  "paradas_na_rede_de_caminhada": true
+ },
+ "g_transit": {
+  "cases": 20,
+  "independently_reproduced": 20,
+  "holiday": {
+   "weekdayServicesActive_2026_11_02": 0,
+   "sundayServicesActive_2026_11_02": 362,
+   "weekdayServicesActive_2026_11_09": 393
+  },
+  "human_reviewed": 0
+ },
+ "corridor_correction": {
+  "old_rule": {
+   "corredores": 2356,
+   "unidade": "linhas de stop_times somando dia útil, sábado e domingo (feed não fixado)"
+  },
+  "new_rule": {
+   "corredores": 1492,
+   "unidade": "partidas programadas em 2026-11-17 (terça sem exceção)"
+  },
+  "pilot_buildings_within_160m": {
+   "boa-viagem": {
+    "predios": 1879,
+    "antes": 1084,
+    "depois": 1014,
+    "perderam": 70,
+    "ganharam": 0
+   },
+   "casa-forte": {
+    "predios": 82,
+    "antes": 39,
+    "depois": 34,
+    "perderam": 5,
+    "ganharam": 0
+   },
+   "gracas": {
+    "predios": 291,
+    "antes": 221,
+    "depois": 152,
+    "perderam": 69,
+    "ganharam": 0
+   },
+   "espinheiro": {
+    "predios": 156,
+    "antes": 136,
+    "depois": 128,
+    "perderam": 8,
+    "ganharam": 0
+   },
+   "madalena": {
+    "predios": 280,
+    "antes": 217,
+    "depois": 184,
+    "perderam": 33,
+    "ganharam": 0
+   }
+  },
+  "old_vs_weekday_median_ratio": 2.22,
+  "old_corridor_stops_with_zero_weekday_service": 25
+ },
+ "payload_bytes": {
+  "grade": 2880517,
+  "gradeGzip": 755850,
+  "acessos": {
+   "boa-viagem": 149469,
+   "casa-forte": 9667,
+   "gracas": 46998,
+   "espinheiro": 30615,
+   "madalena": 36401
+  }
+ },
+ "pipeline_ms": {
+  "leitura": 17726,
+  "compactacao": 4618,
+  "rede": 730,
+  "baldeacoes": 353,
+  "acessos": 1186,
+  "publicacao": 439
+ },
+ "pipeline_peak_rss_mb": 1362,
+ "router_timing": {
+  "node22_desktop_ms_per_search": "9-18 (7 departures per window: 64-129 ms)",
+  "jest_node18_babel_ms_per_window": "~950 for 7 searches",
+  "web_compare_tab_two_homes_all_scenarios_ms_incl_page_load": {
+   "bv-cf@375": 4653,
+   "cf-gr@375": 3810,
+   "bv-cf@360": 4420,
+   "cf-gr@360": 3780
+  },
+  "phone_measured": false
+ },
+ "rendered": {
+  "widths": [
+   375,
+   360
+  ],
+  "overflow_px": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "external_requests": 0,
+  "page_errors": 0
+ },
+ "tests": {
+  "jest": "58/58 suites, 1500/1500",
+  "node": "65/65",
+  "typecheck": "0 errors",
+  "lint": "0 errors, 5 pre-existing warnings",
+  "v1_smoke": "50/50"
+ },
+ "reliability_stub": {
+  "authorized_vehicle_observations_found": false,
+  "search": "2026-11-14 web search for Grande Recife GTFS-RT/AVL: none found",
+  "disposition": "X09 stays a VE14 experiment"
+ }
+}

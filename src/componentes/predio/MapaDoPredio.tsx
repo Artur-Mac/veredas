@@ -4,6 +4,7 @@ import Svg, { Circle, Defs, G, Path, Pattern, Polygon, Rect, Text as TextoSvg } 
 import type { Edificio } from "../../dados/contratos";
 import { useTema } from "../../tema/Tema";
 import { RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { useFocoDeTeclado } from "../casca/foco";
 import { Texto } from "../Texto";
 import { montarCena, pontosDoSvg, raioSemPoligono, type Forma } from "./projecao";
 import { rotuloDoLoteVizinho } from "./textos";
@@ -26,6 +27,31 @@ function areaDeToque(f: Forma, raioDoCirculo: number): { left: number; top: numb
   const largura = Math.max(Math.max(...xs) - Math.min(...xs), TOQUE_MINIMO);
   const altura = Math.max(Math.max(...ys) - Math.min(...ys), TOQUE_MINIMO);
   return { left: f.centro[0] - largura / 2, top: f.centro[1] - altura / 2, width: largura, height: altura };
+}
+
+type AreaDoLote = ReturnType<typeof areaDeToque>;
+
+/** Botão transparente sobre um lote vizinho. Em componente próprio para levar o anel de foco de teclado. */
+function LoteTocavel({ rotulo, area, azul, aoEscolher }: { rotulo: string; area: AreaDoLote; azul: string; aoEscolher: () => void }) {
+  const foco = useFocoDeTeclado();
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={rotulo}
+      onPress={aoEscolher}
+      onFocus={foco.aoFocar}
+      onBlur={foco.aoDesfocar}
+      style={({ pressed }) => [
+        {
+          position: "absolute",
+          ...area,
+          borderRadius: RAIO.icone,
+          backgroundColor: pressed ? comAlfa(azul, 0.14) : "transparent",
+        },
+        foco.estilo,
+      ]}
+    />
+  );
 }
 
 /**
@@ -120,17 +146,12 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
         </Svg>
       </View>
       {lotesTocaveis.map(({ forma, edificio }) => (
-        <Pressable
+        <LoteTocavel
           key={forma.id}
-          accessibilityRole="button"
-          accessibilityLabel={rotuloDoLoteVizinho(edificio)}
-          onPress={() => aoEscolher(edificio)}
-          style={({ pressed }) => ({
-            position: "absolute",
-            ...areaDeToque(forma, raioSemPoligono(cena, false)),
-            borderRadius: RAIO.icone,
-            backgroundColor: pressed ? comAlfa(azul, 0.14) : "transparent",
-          })}
+          rotulo={rotuloDoLoteVizinho(edificio)}
+          area={areaDeToque(forma, raioSemPoligono(cena, false))}
+          azul={azul}
+          aoEscolher={() => aoEscolher(edificio)}
         />
       ))}
       <View

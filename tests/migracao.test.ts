@@ -46,9 +46,9 @@ describe("Migração de análises v1 para v2", () => {
 
   it("migra bairro fora de cobertura com estado fora_de_cobertura", () => {
     const agora = new Date("2026-10-19T21:00:00.000Z");
-    const v2 = migrarAnaliseV1({ ...base, bairro: "Torre" }, agora);
+    const v2 = migrarAnaliseV1({ ...base, bairro: "Cabanga" }, agora);
 
-    expect(v2.bairro).toBe("torre");
+    expect(v2.bairro).toBe("cabanga");
     expect(v2.vinculo.estado).toBe("fora_de_cobertura");
     expect(esquemaAnaliseV2.safeParse(v2).success).toBe(true);
   });
@@ -66,7 +66,7 @@ describe("Migração de análises v1 para v2", () => {
     for (const texto of ["Recife (bairro)", "Recife Antigo", "recife-antigo", "bairro-do-recife"]) {
       const v2 = migrarAnaliseV1({ ...base, bairro: texto }, agora);
       expect([texto, v2.bairro]).toEqual([texto, "recife"]);
-      expect(v2.vinculo.estado).toBe("fora_de_cobertura");
+      expect(v2.vinculo.estado).toBe("pendente");
     }
   });
 
@@ -79,9 +79,9 @@ describe("Migração de análises v1 para v2", () => {
       ["Graças", "gracas", "pendente"],
       ["gracas", "gracas", "pendente"],
       ["Casa Forte", "casa-forte", "pendente"],
-      ["Poço da Panela", "poco", "fora_de_cobertura"],
-      ["poco-da-panela", "poco", "fora_de_cobertura"],
-      ["Torre", "torre", "fora_de_cobertura"],
+      ["Poço da Panela", "poco", "pendente"],
+      ["poco-da-panela", "poco", "pendente"],
+      ["Cabanga", "cabanga", "fora_de_cobertura"],
     ];
     for (const [texto, slug, estado] of esperado) {
       const v2 = migrarAnaliseV1({ ...base, bairro: texto }, agora);

@@ -6,19 +6,23 @@ import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { useAviso } from "../../componentes/casca/Aviso";
-import { detalheDoImovel, textoDePendentes } from "../../componentes/comparar/comparar";
+import { FaixaDoCaderno } from "../../componentes/casca/FaixaDoCaderno";
+import { detalheDoImovel } from "../../componentes/comparar/comparar";
 import { useAbrirAnalise, usePrepararVisita } from "../../componentes/comparar/navegacao";
-import { BotaoVx, CabecalhoVx, LinkVx, PaginaVx, SegmentosVx, VazioVx } from "../../componentes/comparar/vx";
+import { BotaoVx, CabecalhoVx, LinkVx, MARGEM_DA_PAGINA_VX, PaginaVx, SegmentosVx, VazioVx } from "../../componentes/comparar/vx";
 import { GavetaDeDescarte } from "../../componentes/descarte/GavetaDeDescarte";
 import { GradeArquitetonica } from "../../componentes/GradeArquitetonica";
 import { Icone } from "../../componentes/Icone";
 import { Pressionavel } from "../../componentes/Pressionavel";
 import { Texto } from "../../componentes/Texto";
 import type { AnaliseV2, Modalidade } from "../../dados/contratos";
-import { custoMensal } from "../../dados/custos";
+import { derivarCustoPorPartes } from "../../dados/custoPorPartes";
+import { custoMensal, ROTULO_MENSAL_CONHECIDO, avisoDeValoresPendentes } from "../../dados/custos";
 import { restaurarAnalise, rotuloDoMotivo } from "../../dados/descarte";
 import { formatarData, formatarReais, hojeIso } from "../../dados/formatos";
 import { useAnalises } from "../../estado/Analises";
+import { useCarteira } from "../../estado/Carteira";
+import { usePerfilDomicilio, type PerfilDoDomicilio } from "../../estado/PerfilDomicilio";
 import { useTema } from "../../tema/Tema";
 import { RAIO, comAlfa } from "../../tema/tokens";
 
@@ -59,7 +63,7 @@ function ImovelDoCartao({ analise, aoAbrir }: { analise: AnaliseV2; aoAbrir: () 
     >
       <Miniatura />
       <View style={{ flex: 1, minWidth: 0 }}>
-        <Texto numberOfLines={2} style={{ fontSize: 14, lineHeight: 20, fontWeight: "600" }}>
+        <Texto style={{ fontSize: 14, lineHeight: 20, fontWeight: "600" }}>
           {analise.nome}
         </Texto>
         {detalhe ? (
@@ -74,6 +78,7 @@ function ImovelDoCartao({ analise, aoAbrir }: { analise: AnaliseV2; aoAbrir: () 
 
 type PropsDoCartaoSalvo = {
   analise: AnaliseV2;
+  perfilDomicilio: PerfilDoDomicilio;
   aoAbrir: () => void;
   aoRemover: () => void;
   aoPrepararVisita: () => void;
@@ -81,11 +86,15 @@ type PropsDoCartaoSalvo = {
 };
 
 /** `.vs-card`: imóvel, botão de remover, preço anunciado, e as ações. */
-function CartaoSalvo({ analise, aoAbrir, aoRemover, aoPrepararVisita, aoDescartar }: PropsDoCartaoSalvo) {
+function CartaoSalvo({ analise, perfilDomicilio, aoAbrir, aoRemover, aoPrepararVisita, aoDescartar }: PropsDoCartaoSalvo) {
   const { cor } = useTema();
   const custo = custoMensal(analise);
+  const partes = derivarCustoPorPartes(analise, null, perfilDomicilio);
   const aluguel = analise.modalidade === "aluguel";
-  const valor = custo.principal.valor;
+  const valor = aluguel ? custo.totalMensalConhecido : custo.principal.valor;
+  const resumoRotina = partes.fatiasDaRotina
+    .map((f) => `${f.id === "energia" ? "luz" : "deslocamento"} ${f.valorMensalReais > 0 ? `~${formatarReais(f.valorMensalReais)}` : "sem gasto"}`)
+    .join(" · ");
   return (
     <View
       style={{
@@ -119,9 +128,19 @@ function CartaoSalvo({ analise, aoAbrir, aoRemover, aoPrepararVisita, aoDescarta
         ) : null}
       </View>
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 17 }}>
-        {custo.principal.rotulo}
-        {custo.pendentes > 0 ? ` · ${textoDePendentes(custo.pendentes)}` : ""}
+        {aluguel ? ROTULO_MENSAL_CONHECIDO : custo.principal.rotulo}
       </Texto>
+      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 18, marginTop: 4 }}>
+        {aluguel
+          ? `${custo.principal.rotulo}: ${custo.principal.valor === null ? "A confirmar" : `${formatarReais(custo.principal.valor)}/mês`}`
+          : `${ROTULO_MENSAL_CONHECIDO}: ${custo.totalMensalConhecido === null ? "A confirmar" : `${formatarReais(custo.totalMensalConhecido)}/mês`}`}
+      </Texto>
+      <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 11.5, lineHeight: 17, marginTop: 2 }}>
+        {`Rotina à parte: ${resumoRotina}/mês`}
+      </Texto>
+      {avisoDeValoresPendentes(custo) ? (
+        <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 11, lineHeight: 17 }}>{avisoDeValoresPendentes(custo)}</Texto>
+      ) : null}
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12, marginTop: 6 }}>
         <LinkVx rotulo="Preparar visita" tamanho={12} onPress={aoPrepararVisita} acessivel={`Preparar visita de ${analise.nome}`} />
         <LinkVx rotulo="Descartar" seta={false} cor="cor-texto-apoio" tamanho={12} onPress={aoDescartar} acessivel={`Descartar ${analise.nome}`} />
@@ -168,7 +187,9 @@ function CartaoDescartado({ analise, aoRestaurar }: { analise: AnaliseV2; aoRest
 export default function Salvos() {
   const { cor } = useTema();
   const { lista, pronto, erro, ativa, salvar, definirAtiva } = useAnalises();
+  const { perfil: perfilDomicilio } = usePerfilDomicilio();
   const { mostrarAviso } = useAviso();
+  const { carteira, pronto: carteiraPronta, bloqueada: carteiraBloqueada } = useCarteira();
   const abrirAnalise = useAbrirAnalise();
   const prepararVisita = usePrepararVisita();
   const [filtro, setFiltro] = useState<Filtro>("todos");
@@ -190,10 +211,25 @@ export default function Salvos() {
     }
   };
 
+  // C2: com o extrato, restaurar desfaz a confirmação que o +1 do descarte devolveu (confirmar de novo custa 1 crédito).
+  // Sem a carteira lida, o extrato exposto é vazio e o vínculo ficaria confirmado de graça: não restaura.
+  const restaurar = (a: AnaliseV2) => {
+    if (!carteiraPronta || carteiraBloqueada) {
+      mostrarAviso("Não deu para restaurar agora: a carteira de créditos não abriu. Recarregue o app.");
+      return;
+    }
+    const restaurada = restaurarAnalise(a, new Date(), carteira.extrato);
+    const pedeConfirmar = restaurada.vinculo.estado !== a.vinculo.estado;
+    void gravar(restaurada, pedeConfirmar ? "Imóvel restaurado. Confirme o prédio de novo para abrir o dossiê." : "Imóvel restaurado");
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: cor("cor-fundo") }}>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 32 }} keyboardShouldPersistTaps="handled">
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: MARGEM_DA_PAGINA_VX, paddingBottom: 32 }} keyboardShouldPersistTaps="handled">
         <PaginaVx>
+          {/* Aviso do caderno (análises guardadas à parte): fica na tela, além do toast da abertura. */}
+          <FaixaDoCaderno style={{ marginBottom: 14 }} />
+
           <CabecalhoVx
             sobretitulo="Sua seleção"
             link={{ rotulo: "Comparar", onPress: () => router.push("/comparar") }}
@@ -206,6 +242,14 @@ export default function Salvos() {
                   : `${todos.length} ${todos.length === 1 ? "opção para olhar com calma." : "opções para olhar com calma."}`
             }
           />
+
+          <View style={{ marginBottom: 10 }}>
+            <LinkVx
+              rotulo={perfilDomicilio.configurado ? "Ajustar perfil da sua casa" : "Personalizar perfil da sua casa"}
+              tamanho={12}
+              onPress={() => router.push("/perfil-domicilio")}
+            />
+          </View>
 
           <SegmentosVx opcoes={FILTROS} valor={filtro} aoMudar={setFiltro} rotulo="Filtrar imóveis salvos" modo="grupo" />
 
@@ -220,6 +264,7 @@ export default function Salvos() {
                 <CartaoSalvo
                   key={a.id}
                   analise={a}
+                  perfilDomicilio={perfilDomicilio}
                   aoAbrir={() => void abrirAnalise(a)}
                   aoRemover={() => void gravar({ ...a, salva: false, atualizadaEm: new Date().toISOString() }, "Removido dos salvos")}
                   aoPrepararVisita={() => void prepararVisita(a.id)}
@@ -257,7 +302,7 @@ export default function Salvos() {
                 <CartaoDescartado
                   key={a.id}
                   analise={a}
-                  aoRestaurar={() => void gravar(restaurarAnalise(a, new Date()), "Imóvel restaurado")}
+                  aoRestaurar={() => restaurar(a)}
                 />
               ))}
             </View>

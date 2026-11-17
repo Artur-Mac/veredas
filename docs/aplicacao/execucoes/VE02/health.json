@@ -1,0 +1,546 @@
+{
+ "executadoEm": "2026-11-14T18:52:37Z",
+ "aoVivo": true,
+ "contrato": 1,
+ "fontes": [
+  {
+   "fonte": "defesa_civil_2020",
+   "tipo": "arquivo/API municipal (CKAN datastore), replay do bruto arquivado",
+   "snapshot": {
+    "versaoDoContrato": 1,
+    "fonte": "defesa_civil_2020",
+    "url": "https://dados.recife.pe.gov.br/api/3/action/datastore_search?resource_id=a2e18f69-9d10-4482-8f5f-04bc7bd2e8e7",
+    "recuperadoEm": "2026-10-21T00:16:19Z",
+    "periodoDeReferencia": {
+     "de": "2020-01-01",
+     "ate": "2020-12-31"
+    },
+    "tipoDeMidia": "application/json",
+    "sha256": "d1621b4a5187f29a11a37f0284b1be4277baaf044e92ed7ef9b3740d8c6907b8",
+    "bytes": 12012472,
+    "analisador": {
+     "nome": "defesa_civil_ckan",
+     "versao": "2"
+    },
+    "termos": {
+     "licenca": "ODbL",
+     "retencao": "arquivar",
+     "atribuicao": "Prefeitura da Cidade do Recife · Secretaria Executiva de Defesa Civil"
+    },
+    "escala": "rua",
+    "precisaoDaData": "dia",
+    "estado": "valida",
+    "motivo": null,
+    "contagens": {
+     "requisicoes": 0,
+     "registrosDeclarados": 70122,
+     "registrosLidos": 70122,
+     "observacoes": 70052,
+     "quarentena": 70
+    }
+   },
+   "etapas": {
+    "descobertos": 70122,
+    "capturados": 70122,
+    "analisados": 70052,
+    "vinculados": 41933,
+    "elegiveis": 1470,
+    "publicados": 70052
+   },
+   "vinculo": {
+    "nomeEBairro": 41933,
+    "ambiguos": 1252,
+    "semVinculo": 26867
+   },
+   "layouts": {
+    "alinhado": 0,
+    "deslocado": 70052
+   },
+   "anoDiferenteDoRecurso": 7,
+   "mesmoDiaRuaECategoria": 44792,
+   "quarentenaPorMotivo": {
+    "sem_endereco": 56,
+    "sem_data": 4,
+    "layout_desconhecido": 10
+   },
+   "idadeDaFonteDias": 24,
+   "msDeExecucao": 1457
+  },
+  {
+   "fonte": "defesa_civil_2021",
+   "tipo": "arquivo/API municipal (CKAN datastore), replay do bruto arquivado",
+   "snapshot": {
+    "versaoDoContrato": 1,
+    "fonte": "defesa_civil_2021",
+    "url": "https://dados.recife.pe.gov.br/api/3/action/datastore_search?resource_id=bf6f5af8-3556-425c-bfec-0eddccdeeb73",
+    "recuperadoEm": "2026-10-21T00:15:57Z",
+    "periodoDeReferencia": {
+     "de": "2021-01-01",
+     "ate": "2021-12-31"
+    },
+    "tipoDeMidia": "application/json",
+    "sha256": "2ed6f63786aa0392d5870b00b1cfb996dc657649fba466e0784da3375ec47535",
+    "bytes": 12039131,
+    "analisador": {
+     "nome": "defesa_civil_ckan",
+     "versao": "2"
+    },
+    "termos": {
+     "licenca": "ODbL",
+     "retencao": "arquivar",
+     "atribuicao": "Prefeitura da Cidade do Recife · Secretaria Executiva de Defesa Civil"
+    },
+    "escala": "rua",
+    "precisaoDaData": "dia",
+    "estado": "valida",
+    "motivo": null,
+    "contagens": {
+     "requisicoes": 0,
+     "registrosDeclarados": 64855,
+     "registrosLidos": 64855,
+     "observacoes": 64834,
+     "quarentena": 21
+    }
+   },
+   "etapas": {
+    "descobertos": 64855,
+    "capturados": 64855,
+    "analisados": 64834,
+    "vinculados": 37328,
+    "elegiveis": 1874,
+    "publicados": 64834
+   },
+   "vinculo": {
+    "nomeEBairro": 37328,
+    "ambiguos": 1549,
+    "semVinculo": 25957
+   },
+   "layouts": {
+    "alinhado": 64834,
+    "deslocado": 0
+   },
+   "anoDiferenteDoRecurso": 62,
+   "mesmoDiaRuaECategoria": 36544,
+   "quarentenaPorMotivo": {
+    "sem_endereco": 18,
+    "sem_data": 2,
+    "layout_desconhecido": 1
+   },
+   "idadeDaFonteDias": 24,
+   "msDeExecucao": 1348
+  },
+  {
+   "fonte": "defesa_civil_2022",
+   "tipo": "arquivo/API municipal (CKAN datastore), replay do bruto arquivado",
+   "snapshot": {
+    "versaoDoContrato": 1,
+    "fonte": "defesa_civil_2022",
+    "url": "https://dados.recife.pe.gov.br/api/3/action/datastore_search?resource_id=10203dd4-9052-4a76-95eb-fd858aa053d4",
+    "recuperadoEm": "2026-10-21T00:15:41Z",
+    "periodoDeReferencia": {
+     "de": "2022-01-01",
+     "ate": "2022-12-31"
+    },
+    "tipoDeMidia": "application/json",
+    "sha256": "3c0f9824bd584c5b7d2edaf74838ec6b2a5091435cc1c8a2f1a756f6d2cc0f47",
+    "bytes": 16556907,
+    "analisador": {
+     "nome": "defesa_civil_ckan",
+     "versao": "2"
+    },
+    "termos": {
+     "licenca": "ODbL",
+     "retencao": "arquivar",
+     "atribuicao": "Prefeitura da Cidade do Recife · Secretaria Executiva de Defesa Civil"
+    },
+    "escala": "rua",
+    "precisaoDaData": "dia",
+    "estado": "valida",
+    "motivo": null,
+    "contagens": {
+     "requisicoes": 0,
+     "registrosDeclarados": 90425,
+     "registrosLidos": 90425,
+     "observacoes": 90344,
+     "quarentena": 81
+    }
+   },
+   "etapas": {
+    "descobertos": 90425,
+    "capturados": 90425,
+    "analisados": 90344,
+    "vinculados": 54550,
+    "elegiveis": 5543,
+    "publicados": 90344
+   },
+   "vinculo": {
+    "nomeEBairro": 54550,
+    "ambiguos": 1020,
+    "semVinculo": 34774
+   },
+   "layouts": {
+    "alinhado": 0,
+    "deslocado": 90344
+   },
+   "anoDiferenteDoRecurso": 38,
+   "mesmoDiaRuaECategoria": 56081,
+   "quarentenaPorMotivo": {
+    "sem_endereco": 81
+   },
+   "idadeDaFonteDias": 24,
+   "msDeExecucao": 3500
+  },
+  {
+   "fonte": "defesa_civil_2023",
+   "tipo": "arquivo/API municipal (CKAN datastore), replay do bruto arquivado",
+   "snapshot": {
+    "versaoDoContrato": 1,
+    "fonte": "defesa_civil_2023",
+    "url": "https://dados.recife.pe.gov.br/api/3/action/datastore_search?resource_id=921d87c7-5ace-4856-9e3f-c31521259c36",
+    "recuperadoEm": "2026-10-21T00:15:02Z",
+    "periodoDeReferencia": {
+     "de": "2023-01-01",
+     "ate": "2023-12-31"
+    },
+    "tipoDeMidia": "application/json",
+    "sha256": "1929cd0d86df87e331a6e643222243f4a28078002764e06bedfefbff80bc14a4",
+    "bytes": 15687580,
+    "analisador": {
+     "nome": "defesa_civil_ckan",
+     "versao": "2"
+    },
+    "termos": {
+     "licenca": "ODbL",
+     "retencao": "arquivar",
+     "atribuicao": "Prefeitura da Cidade do Recife · Secretaria Executiva de Defesa Civil"
+    },
+    "escala": "rua",
+    "precisaoDaData": "dia",
+    "estado": "valida",
+    "motivo": null,
+    "contagens": {
+     "requisicoes": 0,
+     "registrosDeclarados": 83164,
+     "registrosLidos": 83164,
+     "observacoes": 83163,
+     "quarentena": 1
+    }
+   },
+   "etapas": {
+    "descobertos": 83164,
+    "capturados": 83164,
+    "analisados": 83163,
+    "vinculados": 51887,
+    "elegiveis": 3877,
+    "publicados": 83163
+   },
+   "vinculo": {
+    "nomeEBairro": 51887,
+    "ambiguos": 725,
+    "semVinculo": 30551
+   },
+   "layouts": {
+    "alinhado": 83163,
+    "deslocado": 0
+   },
+   "anoDiferenteDoRecurso": 0,
+   "mesmoDiaRuaECategoria": 48167,
+   "quarentenaPorMotivo": {
+    "sem_endereco": 1
+   },
+   "idadeDaFonteDias": 24,
+   "msDeExecucao": 1753
+  },
+  {
+   "fonte": "defesa_civil_2024",
+   "tipo": "arquivo/API municipal (CKAN datastore), replay do bruto arquivado",
+   "snapshot": {
+    "versaoDoContrato": 1,
+    "fonte": "defesa_civil_2024",
+    "url": "https://dados.recife.pe.gov.br/api/3/action/datastore_search?resource_id=7c7bb871-3906-4d82-8993-857c9e6f137b",
+    "recuperadoEm": "2026-10-21T00:14:21Z",
+    "periodoDeReferencia": {
+     "de": "2024-01-01",
+     "ate": "2024-12-31"
+    },
+    "tipoDeMidia": "application/json",
+    "sha256": "d5d68670f112be405580759c07a264d0c3ed3f71c7c10747d296b940c57f3ef1",
+    "bytes": 14724285,
+    "analisador": {
+     "nome": "defesa_civil_ckan",
+     "versao": "2"
+    },
+    "termos": {
+     "licenca": "ODbL",
+     "retencao": "arquivar",
+     "atribuicao": "Prefeitura da Cidade do Recife · Secretaria Executiva de Defesa Civil"
+    },
+    "escala": "rua",
+    "precisaoDaData": "dia",
+    "estado": "valida",
+    "motivo": null,
+    "contagens": {
+     "requisicoes": 0,
+     "registrosDeclarados": 80173,
+     "registrosLidos": 80173,
+     "observacoes": 80162,
+     "quarentena": 11
+    }
+   },
+   "etapas": {
+    "descobertos": 80173,
+    "capturados": 80173,
+    "analisados": 80162,
+    "vinculados": 50076,
+    "elegiveis": 2362,
+    "publicados": 80162
+   },
+   "vinculo": {
+    "nomeEBairro": 50076,
+    "ambiguos": 717,
+    "semVinculo": 29369
+   },
+   "layouts": {
+    "alinhado": 80162,
+    "deslocado": 0
+   },
+   "anoDiferenteDoRecurso": 6,
+   "mesmoDiaRuaECategoria": 47641,
+   "quarentenaPorMotivo": {
+    "sem_endereco": 10,
+    "sem_data": 1
+   },
+   "idadeDaFonteDias": 24,
+   "msDeExecucao": 1682
+  }
+ ],
+ "publicacao": {
+  "publicacao": "defesa-civil",
+  "versao": "8daa1b9697d3d508",
+  "estado": "completa",
+  "ativa": "8daa1b9697d3d508",
+  "anterior": "bbaec26866872abe",
+  "particoes": [
+   {
+    "arquivo": "defesa-civil-2020.ndjson.gz",
+    "sha256": "e115cc4351a2ad2130d5480ef117db89d7757250698b0721fc189d449e3fbe28",
+    "bytes": 2170590,
+    "registros": 70052
+   },
+   {
+    "arquivo": "defesa-civil-2021.ndjson.gz",
+    "sha256": "86e9cd8fe755aab76797b7a32dbcc68eacc74dd44143be4deb4886811dc2dc6f",
+    "bytes": 2095494,
+    "registros": 64834
+   },
+   {
+    "arquivo": "defesa-civil-2022.ndjson.gz",
+    "sha256": "227664d016a5e982181c43af3fbac530ffc67fd2b0c55f6b660ddfac5b58ec4d",
+    "bytes": 2844043,
+    "registros": 90344
+   },
+   {
+    "arquivo": "defesa-civil-2023.ndjson.gz",
+    "sha256": "58f7f12c7c652c1ebcbbe9dd434f5f91bab8e53fafec10f02564b185236e6b58",
+    "bytes": 2651148,
+    "registros": 83163
+   },
+   {
+    "arquivo": "defesa-civil-2024.ndjson.gz",
+    "sha256": "276c037c096c868b276d2d461905d45703f76564d9cc54088ab8a0d7017072e8",
+    "bytes": 2548430,
+    "registros": 80162
+   },
+   {
+    "arquivo": "quarentena.ndjson.gz",
+    "sha256": "47a824d89b2fe4e54ba4bf6df3c8610fc549cff4daf3761182142687484b15da",
+    "bytes": 2001,
+    "registros": 184
+   },
+   {
+    "arquivo": "snapshots.json",
+    "sha256": "bee723952dad2547e17df4a5c91a0d698b3cd8c6cf61707195f18b9d6cb1af9e",
+    "bytes": 4542,
+    "registros": 5
+   }
+  ],
+  "problemasNaConferencia": [],
+  "bytesTotais": 12316248,
+  "msDePublicacao": 44
+ },
+ "rede": {
+  "arquivoArquivado": ".cache/osm/nordeste-261113.osm.pbf",
+  "bytes": 445428124,
+  "md5Publicado": "e7cefb494ee5caa9612a8135110d8135",
+  "md5Confere": true,
+  "sha256": "e55995308145fa0b7e98f1231a3478f76815f5ff3cd114c0848c7ba047204f83",
+  "snapshot": {
+   "versaoDoContrato": 1,
+   "fonte": "geofabrik_nordeste",
+   "url": "https://download.geofabrik.de/south-america/brazil/",
+   "recuperadoEm": "2026-11-14T18:52:37Z",
+   "periodoDeReferencia": null,
+   "tipoDeMidia": "text/html",
+   "sha256": "cfe6aa2b7813c1634eedfd95021426533eb3d87011f58a7f787aedf79f1e24a2",
+   "bytes": 80970,
+   "analisador": {
+    "nome": "geofabrik_listagem_html",
+    "versao": "1"
+   },
+   "termos": {
+    "licenca": "ODbL (dados OSM)",
+    "retencao": "arquivar",
+    "atribuicao": "© OpenStreetMap contributors; extratos Geofabrik GmbH"
+   },
+   "escala": "regiao",
+   "precisaoDaData": "dia",
+   "estado": "valida",
+   "motivo": null,
+   "contagens": {
+    "requisicoes": 2,
+    "registrosDeclarados": null,
+    "registrosLidos": 17,
+    "observacoes": 17,
+    "quarentena": 0
+   }
+  },
+  "extratosDatados": 17,
+  "ultimoDatado": "nordeste-261113.osm.pbf",
+  "escolhido": "nordeste-261113.osm.pbf",
+  "escolhidoIgualAoArquivado": true,
+  "paginaDaRegiao": {
+   "dadosAte": "2026-11-13T21:22:20Z",
+   "tamanhoDoLatestMB": 424
+  },
+  "msDeExecucao": 1921
+ },
+ "transporte": {
+  "feeds": [
+   {
+    "arquivo": "docs/dados/raw/transporte/gtfs.zip",
+    "papel": "exploratório",
+    "versao": "v2026.10.26",
+    "inicio": "20200501",
+    "fim": "20271026",
+    "contagens": {
+     "paradas": 7238,
+     "paradasNoRecife": 4868,
+     "coordenadasInvalidas": 0,
+     "servicos": 1143,
+     "excecoes": 1137
+    },
+    "checagens": [
+     {
+      "nome": "arquivos_obrigatorios",
+      "ok": true,
+      "detalhe": "presentes"
+     },
+     {
+      "nome": "feed_info_com_versao",
+      "ok": true,
+      "detalhe": "v2026.10.26"
+     },
+     {
+      "nome": "paradas_no_recife_com_coordenada_original",
+      "ok": true,
+      "detalhe": "4868 de 7238"
+     },
+     {
+      "nome": "deslocamento_de_-0,75_rejeitado",
+      "ok": true,
+      "detalhe": "0 paradas no Recife se a latitude fosse deslocada"
+     },
+     {
+      "nome": "calendar_dates_presente",
+      "ok": true,
+      "detalhe": "1137 exceções de calendário"
+     }
+    ],
+    "bytes": 38260971,
+    "sha256": "e1d834d9cf0165690ad0ac5c6aa01fb8b5b7dc38bb611f999cadb01512313fd5"
+   },
+   {
+    "arquivo": ".cache/dados-recife/gtfs-inspecao.zip",
+    "papel": "usado pela camada de ruído publicada",
+    "versao": "v2026.10.16",
+    "inicio": "20200501",
+    "fim": "20271016",
+    "contagens": {
+     "paradas": 7217,
+     "paradasNoRecife": 4870,
+     "coordenadasInvalidas": 0,
+     "servicos": 1143,
+     "excecoes": 0
+    },
+    "checagens": [
+     {
+      "nome": "arquivos_obrigatorios",
+      "ok": true,
+      "detalhe": "presentes"
+     },
+     {
+      "nome": "feed_info_com_versao",
+      "ok": true,
+      "detalhe": "v2026.10.16"
+     },
+     {
+      "nome": "paradas_no_recife_com_coordenada_original",
+      "ok": true,
+      "detalhe": "4870 de 7217"
+     },
+     {
+      "nome": "deslocamento_de_-0,75_rejeitado",
+      "ok": true,
+      "detalhe": "0 paradas no Recife se a latitude fosse deslocada"
+     },
+     {
+      "nome": "calendar_dates_presente",
+      "ok": false,
+      "detalhe": "0 exceções de calendário"
+     }
+    ],
+    "bytes": 37870056,
+    "sha256": "5243ae9b92097b1b9f9c02c28694773fc1c730064656018571299d3f4192676a"
+   }
+  ],
+  "escolhidoParaProximasExecucoes": {
+   "arquivo": "docs/dados/raw/transporte/gtfs.zip",
+   "versao": "v2026.10.26",
+   "sha256": "e1d834d9cf0165690ad0ac5c6aa01fb8b5b7dc38bb611f999cadb01512313fd5"
+  },
+  "observacao": "A camada de ruído publicada continua gerada do feed v2026.10.16 (sem exceções de calendário); a regeração por data e direção é do VE05."
+ },
+ "coletoresOverpass": {
+  "estado": "reparados e cobertos por testes offline; não executados contra a Overpass nesta época",
+  "motivo": "o plano prefere um extrato regional datado a várias consultas por categoria; o extrato foi arquivado (seção rede)"
+ },
+ "custos": {
+  "gastoReais": 0,
+  "minutosDeRevisao": 0
+ },
+ "sondaAoVivo": {
+  "fonte": "defesa_civil_2024",
+  "requisicoes": 2,
+  "bytes": 193426,
+  "declaradosAgora": 80173,
+  "declaradosNoArquivo": 80173,
+  "lidos": 1000,
+  "estado": "parcial",
+  "motivo": "orcamento_esgotado",
+  "linhasComMesmoConteudoNoArquivo": 1000,
+  "colunasRecebidas": [
+   "Ano",
+   "Bairro",
+   "Data",
+   "Endereco",
+   "Mês",
+   "Ocorrencia",
+   "Regional",
+   "Solicitacao",
+   "_id"
+  ],
+  "ms": 961
+ },
+ "msTotais": 32204,
+ "msIndiceDeRuas": 18358
+}

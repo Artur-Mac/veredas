@@ -57,7 +57,7 @@ function FatoDoTopo({ fato, forma, aoAbrir }: { fato: FatoCurto; forma: "texto" 
       onPress={() => aoAbrir(pedido)}
       accessibilityRole="button"
       accessibilityLabel={`${fato.destaque}${fato.apoio ? `, ${fato.apoio}` : ""}. Ver fonte.`}
-      style={{ flex: 1, minWidth: 0, minHeight: 44, justifyContent: "center", borderRadius: RAIO.quadrado }}
+      style={{ ...(forma === "numero" ? { flex: 1 } : {}), minWidth: 0, minHeight: forma === "numero" ? 44 : 28, justifyContent: "center", borderRadius: RAIO.quadrado }}
     >
       {forma === "numero" ? (
         <Numero tamanho={13} peso="600">
@@ -84,21 +84,45 @@ type Props = {
   aoAbrirAnuncio: () => void;
   aoAbrirCadastro: () => void;
   aoAbrirFonte: (pedido: PedidoDeFonte) => void;
+  comodidades?: readonly string[];
+  unidades?: number | null;
+  temAnuncio?: boolean;
+};
+
+const ROTULOS_COMODIDADES: Record<string, string> = {
+  piscina: "Piscina",
+  academia: "Academia",
+  elevador: "Elevador",
+  "portaria-24h": "Portaria 24h",
+  "salao-festas": "Salão de festas",
+  churrasqueira: "Churrasqueira",
+  playground: "Playground",
+  varanda: "Varanda",
+  mobiliado: "Mobiliado",
+  sauna: "Sauna",
+  "vista-mar": "Vista mar",
+  garagem: "Garagem",
 };
 
 /**
- * `.ds-property-info` de index.html (CSS 2702 a 2733): bairro e situação do lote, título, endereço, especificações, os
- * dois fatos curtos e os links "Dados do anúncio" e "Cadastro oficial".
+ * `.ds-property-info` de index.html (CSS 2702 a 2733): bairro e situação do lote, título, endereço, especificações,
+ * fatos curtos, comodidades citadas e os links "Dados do anúncio" e "Cadastro oficial".
  */
-export function InfoDoImovel({ visao, coberto, aoConfirmarPredio, aoAbrirAnuncio, aoAbrirCadastro, aoAbrirFonte }: Props) {
+/** "Construído em 2018" + "15 pavimentos" → "Prédio de 2018 · 15 andares". */
+export function fichaCurtaDoPredio(f: { destaque: string; apoio: string | null }): string {
+  return [f.destaque, f.apoio].filter(Boolean).join(" · ").replace(/^Construído em /, "Prédio de ").replace(/pavimentos?\b/, (m) => (m.endsWith("s") ? "andares" : "andar"));
+}
+
+export function InfoDoImovel({ visao, coberto, aoConfirmarPredio, aoAbrirAnuncio, aoAbrirCadastro, aoAbrirFonte, comodidades = [], unidades = null, temAnuncio = false }: Props) {
   const { cor } = useTema();
   const endereco = linhaDeEndereco(visao);
   const itens = especificacoesDaFaixa(visao.especificacoes);
-  const { construcao, iptu } = fatosCurtos(visao);
+  const { construcao } = fatosCurtos(visao);
+  const textoConstrucao = construcao ? fichaCurtaDoPredio(construcao) : null;
   return (
     <View style={{ paddingTop: 14, paddingHorizontal: 18 }}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8, minHeight: 28, marginBottom: 6 }}>
-        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ flexShrink: 1, fontSize: 11, lineHeight: 15 }}>
+        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ flexShrink: 1, fontSize: 12.5, lineHeight: 17 }}>
           {visao.subtitulo}
         </Texto>
         {visao.loteConfirmado ? (
@@ -107,16 +131,16 @@ export function InfoDoImovel({ visao, coberto, aoConfirmarPredio, aoAbrirAnuncio
           <LinkComSeta rotulo="Confirmar prédio" onPress={aoConfirmarPredio} seta={false} estilo={{ paddingVertical: 0 }} />
         ) : null}
       </View>
-      <Texto tipo="titulo-tela" role="heading" style={{ fontSize: 25, lineHeight: 29, fontWeight: "500", letterSpacing: -0.88 }}>
+      <Texto tipo="titulo-tela" role="heading" style={{ fontSize: 26, lineHeight: 31, fontWeight: "500", letterSpacing: -0.7 }}>
         {visao.titulo}
       </Texto>
       {endereco ? (
-        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 18, marginTop: 7 }}>
+        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13.5, lineHeight: 20, marginTop: 6 }}>
           {endereco}
         </Texto>
       ) : null}
       {itens.length > 0 ? (
-        <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", columnGap: 7, rowGap: 6, marginTop: 10, marginBottom: 12 }}>
+        <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", columnGap: 8, rowGap: 6, marginTop: 10, marginBottom: 10 }}>
           {itens.map((item, i) => (
             <View key={item.id} style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
               {i > 0 ? <View style={{ width: 3, height: 3, borderRadius: 2, backgroundColor: cor("cor-linha-forte") }} /> : null}
@@ -125,13 +149,42 @@ export function InfoDoImovel({ visao, coberto, aoConfirmarPredio, aoAbrirAnuncio
           ))}
         </View>
       ) : (
-        <View style={{ height: ESPACO[3] }} />
+        <View style={{ height: ESPACO[2] }} />
       )}
-      {construcao || iptu ? (
-        <View style={{ flexDirection: "row", gap: 12, marginBottom: 6 }}>
-          {construcao ? <FatoDoTopo fato={construcao} forma="texto" aoAbrir={aoAbrirFonte} /> : <View style={{ flex: 1 }} />}
-          {iptu ? <FatoDoTopo fato={iptu} forma="numero" aoAbrir={aoAbrirFonte} /> : <View style={{ flex: 1 }} />}
+      {construcao && textoConstrucao ? (
+        <View style={{ flexDirection: "row", alignItems: "center", flexWrap: "wrap", columnGap: 6, marginBottom: 6 }}>
+          <FatoDoTopo fato={{ ...construcao, destaque: textoConstrucao, apoio: null }} forma="texto" aoAbrir={aoAbrirFonte} />
+          {unidades ? (
+            <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, lineHeight: 18 }}>
+              {`· ${unidades} unidades`}
+            </Texto>
+          ) : null}
         </View>
+      ) : null}
+      {comodidades.length > 0 ? (
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginBottom: 10 }} accessibilityLabel="O que o anúncio cita no prédio ou imóvel">
+          {comodidades.map((slug) => (
+            <View
+              key={slug}
+              style={{
+                paddingHorizontal: 9,
+                paddingVertical: 4,
+                borderRadius: 8,
+                backgroundColor: cor("cor-papel-claro"),
+                borderWidth: 1,
+                borderColor: cor("cor-linha"),
+              }}
+            >
+              <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 16, fontWeight: "500" }}>
+                {ROTULOS_COMODIDADES[slug] ?? slug.replace(/-/g, " ")}
+              </Texto>
+            </View>
+          ))}
+        </View>
+      ) : temAnuncio ? (
+        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, lineHeight: 18, marginBottom: 10 }}>
+          Piscina, elevador e áreas comuns: não citados no anúncio — conferir na visita.
+        </Texto>
       ) : null}
       <View
         style={{

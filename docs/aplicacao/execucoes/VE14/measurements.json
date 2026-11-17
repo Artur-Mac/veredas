@@ -1,0 +1,170 @@
+{
+ "epoch": "VE14",
+ "date": "2026-11-14",
+ "status": "verified",
+ "outcome": "reject/defer",
+ "reason": "Every advanced family has a pre-registered result or a dependency record; the only testable family (X04) was run under its pre-registered gate and the model was rejected in favour of the recurrence baseline. Acceptance is about closing planning decisions, not validating models; no model reaches the product.",
+ "preregistration": {
+  "file": "docs/aplicacao/execucoes/VE14/preregistro.md",
+  "sha256": "8bfe03a0f5c987cdd4476caeef5409feccb149530eb4c1ae9c5f7f211fe79b67",
+  "hashed_at": "2026-11-14T21:51:14-03:00"
+ },
+ "x04": {
+  "streets": 9037,
+  "train_positive_streets_2022_2023": 14,
+  "test_positive_streets_2024": 17,
+  "temporal": {
+   "B1_registros_anteriores": {
+    "p@20": 0.25,
+    "acertos@20": 5,
+    "p@50": 0.16,
+    "acertos@50": 8,
+    "p@100": 0.09,
+    "acertos@100": 9,
+    "recall50": 0.471
+   },
+   "B2_perto_da_agua": {
+    "p@20": 0,
+    "acertos@20": 0,
+    "p@50": 0,
+    "acertos@50": 0,
+    "p@100": 0,
+    "acertos@100": 0,
+    "recall50": 0
+   },
+   "B3_superficie_baixa": {
+    "p@20": 0,
+    "acertos@20": 0,
+    "p@50": 0,
+    "acertos@50": 0,
+    "p@100": 0,
+    "acertos@100": 0,
+    "recall50": 0
+   },
+   "B4_pedidos_de_drenagem": {
+    "p@20": 0,
+    "acertos@20": 0,
+    "p@50": 0,
+    "acertos@50": 0,
+    "p@100": 0.01,
+    "acertos@100": 1,
+    "recall50": 0
+   },
+   "M1_logistica": {
+    "p@20": 0.25,
+    "acertos@20": 5,
+    "p@50": 0.14,
+    "acertos@50": 7,
+    "p@100": 0.09,
+    "acertos@100": 9,
+    "recall50": 0.412
+   }
+  },
+  "spatial": {
+   "treino_A_teste_B": {
+    "positivos": 10,
+    "B1_registros_anteriores": {
+     "p@20": 0.15,
+     "acertos@20": 3,
+     "p@50": 0.12,
+     "acertos@50": 6,
+     "recall50": 0.6
+    },
+    "B2_perto_da_agua": {
+     "p@20": 0,
+     "acertos@20": 0,
+     "p@50": 0,
+     "acertos@50": 0,
+     "recall50": 0
+    },
+    "B3_superficie_baixa": {
+     "p@20": 0,
+     "acertos@20": 0,
+     "p@50": 0,
+     "acertos@50": 0,
+     "recall50": 0
+    },
+    "B4_pedidos_de_drenagem": {
+     "p@20": 0,
+     "acertos@20": 0,
+     "p@50": 0,
+     "acertos@50": 0,
+     "recall50": 0
+    },
+    "M1_logistica": {
+     "p@20": 0.15,
+     "acertos@20": 3,
+     "p@50": 0.08,
+     "acertos@50": 4,
+     "recall50": 0.4
+    }
+   },
+   "treino_B_teste_A": {
+    "positivos": 7,
+    "B1_registros_anteriores": {
+     "p@20": 0.15,
+     "acertos@20": 3,
+     "p@50": 0.06,
+     "acertos@50": 3,
+     "recall50": 0.429
+    },
+    "B2_perto_da_agua": {
+     "p@20": 0,
+     "acertos@20": 0,
+     "p@50": 0,
+     "acertos@50": 0,
+     "recall50": 0
+    },
+    "B3_superficie_baixa": {
+     "p@20": 0,
+     "acertos@20": 0,
+     "p@50": 0,
+     "acertos@50": 0,
+     "recall50": 0
+    },
+    "B4_pedidos_de_drenagem": {
+     "p@20": 0,
+     "acertos@20": 0,
+     "p@50": 0.04,
+     "acertos@50": 2,
+     "recall50": 0.286
+    },
+    "M1_logistica": {
+     "p@20": 0.1,
+     "acertos@20": 2,
+     "p@50": 0.04,
+     "acertos@50": 2,
+     "recall50": 0.286
+    }
+   }
+  },
+  "best_baseline": "B1_registros_anteriores",
+  "decision": "rejeitar M1; manter B1_registros_anteriores como regra de prioridade de revisão",
+  "logistic_weights": {
+   "ordem": [
+    "registros_anteriores",
+    "distancia_agua_m",
+    "superficie_m",
+    "pedidos_drenagem_50m"
+   ],
+   "w": [
+    0.473,
+    -2.18,
+    -4.565,
+    0.22
+   ],
+   "b": -4.59
+  },
+  "ms": 45811
+ },
+ "families": {
+  "X04_flood": "rejected model; keep recurrence baseline for review priority",
+  "X10_valuation": "not tested: no permitted offer data",
+  "X12_trends": "not tested: no offer series or closings",
+  "X07_heat": "not tested: no air/humidity/wind/radiant observations",
+  "X05_X06_noise_air": "not tested: no calibrated instruments",
+  "X09_reliability": "not tested: no authorised vehicle data",
+  "X18_post_repair": "not tested: chronology only; no control design"
+ },
+ "app_changes": "none"
+}

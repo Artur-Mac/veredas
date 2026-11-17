@@ -1,5 +1,5 @@
 {
-  "fonte": "docs/pitch-original-locked.md",
+  "fonte": "docs/pitch/pitch-original-locked.md",
   "regra": "trechos literais; a concatenação reconstrói o pitch inteiro",
   "cenas": [
     {

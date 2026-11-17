@@ -120,6 +120,7 @@ export default function TelaDoMapa() {
                 key={c.id}
                 role="button"
                 accessibilityState={{ selected: ligada }}
+                aria-pressed={ligada}
                 accessibilityLabel={c.nome}
                 onPress={() => setLigadas((atual) => (ligada ? atual.filter((x) => x !== c.id) : [...atual, c.id]))}
                 style={{

@@ -1,0 +1,8091 @@
+{
+ "executadoEm": "2026-11-15T04:21:40Z",
+ "versao": "179a8bc4e317a50c",
+ "publicacao": {
+  "versao": "03c8ce82bc6c5a89",
+  "ativa": "03c8ce82bc6c5a89",
+  "anterior": "b3d2555071ac513a"
+ },
+ "fontes": [
+  {
+   "fonte": "defesa_civil_2014",
+   "sha256": "cdfbecd14617b04b5d4f559e87d66d5700d75d9dea770fb0e367e3ed4965912a",
+   "linhas": 57655,
+   "comData": false
+  },
+  {
+   "fonte": "defesa_civil_2015",
+   "sha256": "42bd0df950aa56a1ace9e105811b5a5101e749ee52c4bf31a0b4b096528a7448",
+   "linhas": 81389,
+   "comData": false
+  },
+  {
+   "fonte": "defesa_civil_2016",
+   "sha256": "21d81da76d9f78abbf6ea9d6ef87ded905a9d68e7b2801b9aa66e939cf3dfc84",
+   "linhas": 92495,
+   "comData": false
+  },
+  {
+   "fonte": "defesa_civil_2017",
+   "sha256": "0706a1113214b9549bfac199ef251322c988c799d74dea1dbdc10b2090b84de5",
+   "linhas": 86325,
+   "comData": false
+  },
+  {
+   "fonte": "defesa_civil_2018",
+   "sha256": "f5e43981e9cba62a1eb68d9ef8932eca41055e8dbff0cbedbacad859eef2168c",
+   "linhas": 89705,
+   "comData": false
+  },
+  {
+   "fonte": "defesa_civil_2019",
+   "sha256": "0f709d7e8a01c309f1c0f68c55080db0e4d192783de3b6976f910fa67dc0cac5",
+   "linhas": 89955,
+   "comData": false
+  },
+  {
+   "fonte": "defesa_civil_2020",
+   "sha256": "db81debe724873de1dc13ffc205b18a37b8e2c04fafac179fb0abad2ad97a9a1",
+   "linhas": 70122,
+   "comData": true
+  },
+  {
+   "fonte": "defesa_civil_2021",
+   "sha256": "68af57fb42bddff96a9cac3eed643e4e01281d74b9d10287a4335846d2034965",
+   "linhas": 64855,
+   "comData": true
+  },
+  {
+   "fonte": "defesa_civil_2022",
+   "sha256": "4ebd38a0b61128da77c17a3945d1934d8e2e3bfa555fff8acee88011f4e4297f",
+   "linhas": 90425,
+   "comData": true
+  },
+  {
+   "fonte": "defesa_civil_2023",
+   "sha256": "19818bdd7382a21620509bbb5c7593263d60075ca64043b00a8a1e8bb9ba6346",
+   "linhas": 83164,
+   "comData": true
+  },
+  {
+   "fonte": "defesa_civil_2024",
+   "sha256": "2b4154e2ffaf8ee13aceaa81be063ee9f5e980d170a43e6b9db7388d27ec3014",
+   "linhas": 80173,
+   "comData": true
+  },
+  {
+   "fonte": "esig_pontos_alagamento",
+   "sha256": "07dc7175d2083d032397c2d3e3935384490ad5ce66364d2d1b7b5a4943c53fd8",
+   "linhas": 54,
+   "comData": false
+  },
+  {
+   "fonte": "esig_logradouros_alagamento_2026",
+   "sha256": "e26166ca04fe812b9f9c81c49889ce24eea59ef4d7b08029c1092df5446c4aee",
+   "linhas": 552,
+   "comData": false
+  }
+ ],
+ "registros": {
+  "total": 1645,
+  "porTipo": {
+   "imovel_alagado": 921,
+   "via_alagada": 724
+  },
+  "porPrecisaoDaData": {
+   "ano": 919,
+   "dia": 726
+  },
+  "porPrecisaoDoLocal": {
+   "rua": 1551,
+   "lugar_nomeado": 94
+  }
+ },
+ "observacoes": {
+  "total": 763,
+  "comRepeticao": 103,
+  "porTipo": {
+   "imovel_alagado": 369,
+   "via_alagada": 394
+  }
+ },
+ "episodios": {
+  "total": 31,
+  "maiores": [
+   [
+    "E2022-06-03",
+    129
+   ],
+   [
+    "E2022-06-13",
+    38
+   ],
+   [
+    "E2022-05-28",
+    32
+   ],
+   [
+    "E2024-06-25",
+    28
+   ],
+   [
+    "E2024-06-15",
+    28
+   ],
+   [
+    "E2024-02-16",
+    20
+   ],
+   [
+    "E2023-07-07",
+    17
+   ],
+   [
+    "E2023-06-30",
+    17
+   ]
+  ]
+ },
+ "vinculo": {
+  "porMetodo": {
+   "nome_e_bairro": 175,
+   "sem_correspondencia": 136,
+   "lugar_sem_geometria": 35,
+   "ambiguo": 8,
+   "nome_fora_do_bairro": 32,
+   "nome_e_bairro_sem_aresta": 1,
+   "tunel_no_bairro": 7
+  },
+  "ligadasARede": 182,
+  "ruasLongas": 88,
+  "imoveisPorMetodo": {
+   "imovel_nome_fora_do_bairro": 59,
+   "imovel_sem_correspondencia": 151,
+   "imovel_nome_e_bairro": 102,
+   "nao_e_via": 51,
+   "imovel_ambiguo": 6
+  },
+  "historico": {
+   "noHistorico": 267,
+   "tipoDeViaDiverge": 11
+  }
+ },
+ "esig": {
+  "pontos": {
+   "total": 54,
+   "porEstado": {
+    "nome_sem_correspondencia": 11,
+    "vinculado": 37,
+    "nome_nome_fora_do_bairro": 3,
+    "nome_longe_da_posicao": 3
+   },
+   "porPrecisao": {
+    "Aproximado": 39,
+    "Interseção": 15
+   },
+   "bairroConfere": 37,
+   "camposSempreVazios": [
+    "recorrencia",
+    "n_recorrencia",
+    "mare",
+    "n_mare",
+    "lamina"
+   ]
+  },
+  "trechos": {
+   "total": 552,
+   "codigoNaMalha": 545,
+   "nomeConfere": 536,
+   "codigosDistintos": 552,
+   "noPiloto": 26
+  },
+  "pontoXlivro": [
+   {
+    "id": 20,
+    "logradouro": "Rua Buarque de Macedo",
+    "bairro": "santo-amaro",
+    "precisao": "Interseção",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 17,
+    "logradouro": "Rua Dantas Barreto",
+    "bairro": "sao-jose",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 1,
+    "logradouro": "Rua São João",
+    "bairro": "sao-jose",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 23,
+    "logradouro": "Travessa do Gaspar",
+    "bairro": "sao-jose",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 13,
+    "logradouro": "Rua Zeferino Agra",
+    "bairro": "agua-fria",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 21,
+    "logradouro": "Avenida Cidade Monteiro",
+    "bairro": "porto-da-madeira",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 43,
+    "logradouro": "Rua Dona Rita de Souza",
+    "bairro": "casa-forte",
+    "precisao": "Interseção",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 2,
+    "logradouro": "Avenida Rui Barbosa",
+    "bairro": "gracas",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 10,
+    "logradouro": "Rua Gildo Neto",
+    "bairro": "tamarineira",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 40,
+    "logradouro": "Avenida Caxangá",
+    "bairro": "caxanga",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 5
+   },
+   {
+    "id": 3,
+    "logradouro": "Rua Costa Maia",
+    "bairro": "cordeiro",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 15,
+    "logradouro": "Avenida Maurício de Nassau",
+    "bairro": "iputinga",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 16,
+    "logradouro": "Rua Mario Campelo",
+    "bairro": "varzea",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 4,
+    "logradouro": "Rua Claudino dos Santos",
+    "bairro": "afogados",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 1
+   },
+   {
+    "id": 46,
+    "logradouro": "Rua José Natário",
+    "bairro": "areias",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 47,
+    "logradouro": "Avenida Abdias de Carvalho",
+    "bairro": "cordeiro",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 29,
+    "logradouro": "Rua Bragança",
+    "bairro": "jardim-sao-paulo",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 1
+   },
+   {
+    "id": 31,
+    "logradouro": "Rua Major Felicio",
+    "bairro": "jardim-sao-paulo",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 38,
+    "logradouro": "Avenida Mustardinha",
+    "bairro": "afogados",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 26,
+    "logradouro": "Avenida Boa Viagem",
+    "bairro": "boa-viagem",
+    "precisao": "Interseção",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 8,
+    "logradouro": "Avenida Conselheiro Aguiar",
+    "bairro": "boa-viagem",
+    "precisao": "Interseção",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 6,
+    "logradouro": "Avenida Conselheiro Aguiar",
+    "bairro": "boa-viagem",
+    "precisao": "Interseção",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 7,
+    "logradouro": "Avenida Conselheiro Aguiar",
+    "bairro": "boa-viagem",
+    "precisao": "Interseção",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 5,
+    "logradouro": "Avenida Conselheiro Aguiar",
+    "bairro": "boa-viagem",
+    "precisao": "Interseção",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 18,
+    "logradouro": "Rua Jornalista Alfredo Porto Silveira",
+    "bairro": "boa-viagem",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 12,
+    "logradouro": "Rua Padre Bernardino Pessoa",
+    "bairro": "boa-viagem",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 11,
+    "logradouro": "Rua Professor José Brandão",
+    "bairro": "boa-viagem",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 33,
+    "logradouro": "Avenida Dois Rios",
+    "bairro": "ibura",
+    "precisao": "Interseção",
+    "registrosNoLivro": 5
+   },
+   {
+    "id": 35,
+    "logradouro": "Avenida Dois Rios",
+    "bairro": "ibura",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 5
+   },
+   {
+    "id": 34,
+    "logradouro": "Avenida Dom Helder Câmara",
+    "bairro": "ibura",
+    "precisao": "Interseção",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 54,
+    "logradouro": "Rua Rio Prado",
+    "bairro": "ibura",
+    "precisao": "Interseção",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 37,
+    "logradouro": "Avenida Recife",
+    "bairro": "ibura",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 1
+   },
+   {
+    "id": 24,
+    "logradouro": "Rua Blumenau",
+    "bairro": "ipsep",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 25,
+    "logradouro": "Rua Raimundo Diniz",
+    "bairro": "ipsep",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 22,
+    "logradouro": "Avenida Maria Irene",
+    "bairro": "jordao",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   },
+   {
+    "id": 51,
+    "logradouro": "Avenida Antônio de Góes",
+    "bairro": "pina",
+    "precisao": "Interseção",
+    "registrosNoLivro": 3
+   },
+   {
+    "id": 19,
+    "logradouro": "Rua São Luiz",
+    "bairro": "pina",
+    "precisao": "Aproximado",
+    "registrosNoLivro": 0
+   }
+  ],
+  "detalhePontos": [
+   {
+    "id": 42,
+    "objectid": 1,
+    "logradouro": "Estação Joana Bezerra",
+    "trecho": "Até o Canal Bom Jesus",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Ilha Joana Bezerra",
+    "bairroDoPoligono": "sao-jose",
+    "bairroConfere": false,
+    "codigo": null,
+    "metodo": "sem_correspondencia",
+    "distanciaM": null,
+    "estado": "nome_sem_correspondencia",
+    "lon": -34.895394999729206,
+    "lat": -8.073210000276253,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 53,
+    "objectid": 2,
+    "logradouro": "Avenida Norte",
+    "trecho": "Bacia no entorno do SENAI",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Santo Amaro",
+    "bairroDoPoligono": "santo-amaro",
+    "bairroConfere": true,
+    "codigo": null,
+    "metodo": "sem_correspondencia",
+    "distanciaM": null,
+    "estado": "nome_sem_correspondencia",
+    "lon": -34.87779400024532,
+    "lat": -8.04696399987872,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 20,
+    "objectid": 3,
+    "logradouro": "Rua Buarque de Macedo",
+    "trecho": "Interseção da Rua Buarque de Macedo com a Avenida Norte",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Santo Amaro",
+    "bairroDoPoligono": "santo-amaro",
+    "bairroConfere": true,
+    "codigo": 12645,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 0,
+    "estado": "vinculado",
+    "lon": -34.87863399959613,
+    "lat": -8.046201999855631,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 52,
+    "objectid": 4,
+    "logradouro": "Avenida Sul",
+    "trecho": "Da Rua Brito até a Rua Dormentes",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "São José",
+    "bairroDoPoligono": "sao-jose",
+    "bairroConfere": true,
+    "codigo": null,
+    "metodo": "sem_correspondencia",
+    "distanciaM": null,
+    "estado": "nome_sem_correspondencia",
+    "lon": -34.89771999958462,
+    "lat": -8.077790000255991,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 17,
+    "objectid": 5,
+    "logradouro": "Rua Dantas Barreto",
+    "trecho": "Toda a extensão",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "São José",
+    "bairroDoPoligono": "sao-jose",
+    "bairroConfere": true,
+    "codigo": 19054,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 0,
+    "estado": "vinculado",
+    "lon": -34.88047700030102,
+    "lat": -8.067830000042749,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 1,
+    "objectid": 6,
+    "logradouro": "Rua São João",
+    "trecho": "Interseção com a Avenida Dantas Barreto até a Rua Vital de Negreiros",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "São José",
+    "bairroDoPoligono": "sao-jose",
+    "bairroConfere": true,
+    "codigo": 33278,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.88181600031745,
+    "lat": -8.070513999758077,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 23,
+    "objectid": 7,
+    "logradouro": "Travessa do Gaspar",
+    "trecho": "Rua sem saída — trecho até a Imperial",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "São José",
+    "bairroDoPoligono": "sao-jose",
+    "bairroConfere": true,
+    "codigo": 26158,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 0,
+    "estado": "vinculado",
+    "lon": -34.89624900022204,
+    "lat": -8.075496999672708,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 13,
+    "objectid": 8,
+    "logradouro": "Rua Zeferino Agra",
+    "trecho": "Toda a extensão",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Arruda",
+    "bairroDoPoligono": "agua-fria",
+    "bairroConfere": false,
+    "codigo": 65730,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 2,
+    "estado": "vinculado",
+    "lon": -34.888558000255195,
+    "lat": -8.022824999587899,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 21,
+    "objectid": 9,
+    "logradouro": "Avenida Cidade Monteiro",
+    "trecho": "Lateral do conjunto residencial",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Cajueiro",
+    "bairroDoPoligono": "porto-da-madeira",
+    "bairroConfere": false,
+    "codigo": 85650,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 3,
+    "estado": "vinculado",
+    "lon": -34.88706000023012,
+    "lat": -8.007005999991454,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 27,
+    "objectid": 10,
+    "logradouro": "Avenida Norte",
+    "trecho": "Interseção da Avenida Norte com a Rua José de Sá Carneiro",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Encruzilhada",
+    "bairroDoPoligono": "encruzilhada",
+    "bairroConfere": true,
+    "codigo": null,
+    "metodo": "sem_correspondencia",
+    "distanciaM": null,
+    "estado": "nome_sem_correspondencia",
+    "lon": -34.8903469996351,
+    "lat": -8.03902499976536,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 43,
+    "objectid": 11,
+    "logradouro": "Rua Dona Rita de Souza",
+    "trecho": "Interseção com a Rua Jerônimo Albuquerque",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Casa Forte",
+    "bairroDoPoligono": "casa-forte",
+    "bairroConfere": true,
+    "codigo": 58769,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 0,
+    "estado": "vinculado",
+    "lon": -34.917475000118046,
+    "lat": -8.031752000243952,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 44,
+    "objectid": 12,
+    "logradouro": "Rua Sítio dos Pintos",
+    "trecho": "Trechos pontuais",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Dois Irmãos",
+    "bairroDoPoligono": "sitio-dos-pintos",
+    "bairroConfere": false,
+    "codigo": null,
+    "metodo": "sem_correspondencia",
+    "distanciaM": null,
+    "estado": "nome_sem_correspondencia",
+    "lon": -34.957120999830664,
+    "lat": -8.013882000163193,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 2,
+    "objectid": 13,
+    "logradouro": "Avenida Rui Barbosa",
+    "trecho": "Da Rua Cardeal Arcoverde até a Rua das Criolas",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Graças",
+    "bairroDoPoligono": "gracas",
+    "bairroConfere": true,
+    "codigo": 59595,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.89891399983609,
+    "lat": -8.048708999608314,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 28,
+    "objectid": 14,
+    "logradouro": "Avenida Norte",
+    "trecho": "Em frente à Escola de Referência Clotilde de Oliveira",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Nova Descoberta",
+    "bairroDoPoligono": "casa-amarela",
+    "bairroConfere": false,
+    "codigo": null,
+    "metodo": "sem_correspondencia",
+    "distanciaM": null,
+    "estado": "nome_sem_correspondencia",
+    "lon": -34.92278699980279,
+    "lat": -8.020720999898233,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 49,
+    "objectid": 15,
+    "logradouro": "Avenida Nova Descoberta e arredores do Mercado Público de Nova Descoberta",
+    "trecho": "Do Córrego da Areia até o limite com o Rio Morno",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Nova Descoberta",
+    "bairroDoPoligono": "brejo-de-beberibe",
+    "bairroConfere": false,
+    "codigo": null,
+    "metodo": "sem_correspondencia",
+    "distanciaM": null,
+    "estado": "nome_sem_correspondencia",
+    "lon": -34.92250700031861,
+    "lat": -8.000639000090766,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 10,
+    "objectid": 16,
+    "logradouro": "Rua Gildo Neto",
+    "trecho": "Toda a extensão",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Tamarineira",
+    "bairroDoPoligono": "tamarineira",
+    "bairroConfere": true,
+    "codigo": 26620,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 2,
+    "estado": "vinculado",
+    "lon": -34.903525000087186,
+    "lat": -8.03389599961039,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 40,
+    "objectid": 17,
+    "logradouro": "Avenida Caxangá",
+    "trecho": "Do Hospital Santa Teresinha até o Golf Club",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Caxangá",
+    "bairroDoPoligono": "caxanga",
+    "bairroConfere": true,
+    "codigo": 15903,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.94679899968665,
+    "lat": -8.036126999738139,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 14,
+    "objectid": 18,
+    "logradouro": "Avenida do Forte",
+    "trecho": "Cruzamento com a Rua Onze de Fevereiro e a Avenida Abdias de Carvalho",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Cordeiro",
+    "bairroDoPoligono": "torroes",
+    "bairroConfere": false,
+    "codigo": null,
+    "metodo": "nome_fora_do_bairro",
+    "distanciaM": null,
+    "estado": "nome_nome_fora_do_bairro",
+    "lon": -34.932116000435094,
+    "lat": -8.061268000141633,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 39,
+    "objectid": 19,
+    "logradouro": "Avenida do Forte",
+    "trecho": "Entre a Rua Maravilha e a Rua Tamboril (URB executou passeios)",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Cordeiro",
+    "bairroDoPoligono": "torroes",
+    "bairroConfere": false,
+    "codigo": null,
+    "metodo": "nome_fora_do_bairro",
+    "distanciaM": null,
+    "estado": "nome_nome_fora_do_bairro",
+    "lon": -34.93151300001244,
+    "lat": -8.058857999983623,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 3,
+    "objectid": 20,
+    "logradouro": "Rua Costa Maia",
+    "trecho": "Toda a extensão",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Cordeiro",
+    "bairroDoPoligono": "cordeiro",
+    "bairroConfere": true,
+    "codigo": 18023,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.92506599962744,
+    "lat": -8.046612999678356,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 15,
+    "objectid": 21,
+    "logradouro": "Avenida Maurício de Nassau",
+    "trecho": "Da Rua Odilon Araújo até a Rua Pereira Coutinho",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Iputinga",
+    "bairroDoPoligono": "iputinga",
+    "bairroConfere": true,
+    "codigo": 107719,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.932995000143976,
+    "lat": -8.037613999603488,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 50,
+    "objectid": 22,
+    "logradouro": "Rua João Ivo",
+    "trecho": "Da Avenida Abdias de Carvalho até a Rua Padre Teófilo Twors",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Madalena",
+    "bairroDoPoligono": "prado",
+    "bairroConfere": false,
+    "codigo": null,
+    "metodo": "sem_correspondencia",
+    "distanciaM": null,
+    "estado": "nome_sem_correspondencia",
+    "lon": -34.909414000255346,
+    "lat": -8.063691999855603,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 16,
+    "objectid": 23,
+    "logradouro": "Rua Mario Campelo",
+    "trecho": "Toda a extensão",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Várzea",
+    "bairroDoPoligono": "varzea",
+    "bairroConfere": true,
+    "codigo": 43036,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 2,
+    "estado": "vinculado",
+    "lon": -34.95978299996999,
+    "lat": -8.052608999861016,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 4,
+    "objectid": 24,
+    "logradouro": "Rua Claudino dos Santos",
+    "trecho": "Próximo à Estação do Metrô de Afogados",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Afogados",
+    "bairroDoPoligono": "afogados",
+    "bairroConfere": true,
+    "codigo": 16217,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 3,
+    "estado": "vinculado",
+    "lon": -34.90604999995916,
+    "lat": -8.076899000414206,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 45,
+    "objectid": 25,
+    "logradouro": "Avenida Capitão Gregório de Caldas (engloba a Rua Aurora Caçote)",
+    "trecho": "Próximo ao canal",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Areias",
+    "bairroDoPoligono": "cacote",
+    "bairroConfere": false,
+    "codigo": null,
+    "metodo": "sem_correspondencia",
+    "distanciaM": null,
+    "estado": "nome_sem_correspondencia",
+    "lon": -34.93143699984445,
+    "lat": -8.098377999735648,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 46,
+    "objectid": 26,
+    "logradouro": "Rua José Natário",
+    "trecho": "Trecho do prédio do Metrorec",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Areias",
+    "bairroDoPoligono": "areias",
+    "bairroConfere": true,
+    "codigo": 36366,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.93752699985405,
+    "lat": -8.087204000308724,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 47,
+    "objectid": 27,
+    "logradouro": "Avenida Abdias de Carvalho",
+    "trecho": "Praça da Chesf",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Bongi",
+    "bairroDoPoligono": "cordeiro",
+    "bairroConfere": false,
+    "codigo": 175,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.93169399976239,
+    "lat": -8.062398000246809,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 48,
+    "objectid": 28,
+    "logradouro": "Rua João Cabral de Melo",
+    "trecho": "Próximo à ponte do Jiquiá",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Estância",
+    "bairroDoPoligono": "jiquia",
+    "bairroConfere": false,
+    "codigo": null,
+    "metodo": "sem_correspondencia",
+    "distanciaM": null,
+    "estado": "nome_sem_correspondencia",
+    "lon": -34.931548000172526,
+    "lat": -8.078297999894476,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 29,
+    "objectid": 29,
+    "logradouro": "Rua Bragança",
+    "trecho": "Próximo ao Canal dos Guarulhos",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Jardim São Paulo",
+    "bairroDoPoligono": "jardim-sao-paulo",
+    "bairroConfere": true,
+    "codigo": 12238,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.94192300002,
+    "lat": -8.081626000291248,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 30,
+    "objectid": 30,
+    "logradouro": "Rua Jundiaí",
+    "trecho": "Próximo ao canal",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Jardim São Paulo",
+    "bairroDoPoligono": "curado",
+    "bairroConfere": false,
+    "codigo": null,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 496,
+    "estado": "nome_longe_da_posicao",
+    "lon": -34.94105500018178,
+    "lat": -8.075193999792651,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 31,
+    "objectid": 31,
+    "logradouro": "Rua Major Felicio",
+    "trecho": "Ponte sobre o Canal Guarulhos",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Jardim São Paulo",
+    "bairroDoPoligono": "jardim-sao-paulo",
+    "bairroConfere": true,
+    "codigo": 23795,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.94068000026305,
+    "lat": -8.08261100019624,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 32,
+    "objectid": 32,
+    "logradouro": "Rua Nossa Senhora de Fátima",
+    "trecho": "Cruzamento com a Avenida Recife, em frente ao Canal do Sanbra",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Jardim São Paulo",
+    "bairroDoPoligono": "estancia",
+    "bairroConfere": false,
+    "codigo": null,
+    "metodo": "nome_fora_do_bairro",
+    "distanciaM": null,
+    "estado": "nome_nome_fora_do_bairro",
+    "lon": -34.93301600006038,
+    "lat": -8.082666999854933,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 38,
+    "objectid": 33,
+    "logradouro": "Avenida Mustardinha",
+    "trecho": "Próximo à Rua Moreira Reis",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Mustardinha",
+    "bairroDoPoligono": "afogados",
+    "bairroConfere": false,
+    "codigo": 45560,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 0,
+    "estado": "vinculado",
+    "lon": -34.914408999747685,
+    "lat": -8.072349999762398,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 26,
+    "objectid": 34,
+    "logradouro": "Avenida Boa Viagem",
+    "trecho": "Antes da Rua Baltazar Passos",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Boa Viagem",
+    "bairroDoPoligono": "boa-viagem",
+    "bairroConfere": true,
+    "codigo": 11720,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 3,
+    "estado": "vinculado",
+    "lon": -34.90511400034887,
+    "lat": -8.1450550000477,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 8,
+    "objectid": 35,
+    "logradouro": "Avenida Conselheiro Aguiar",
+    "trecho": "Do nº 1501 até a Rua Baltazar Pereira",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Boa Viagem",
+    "bairroDoPoligono": "boa-viagem",
+    "bairroConfere": true,
+    "codigo": 1465,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 0,
+    "estado": "vinculado",
+    "lon": -34.88676499977903,
+    "lat": -8.101066000155143,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 6,
+    "objectid": 36,
+    "logradouro": "Avenida Conselheiro Aguiar",
+    "trecho": "Interseção com a Rua Dona Benvinda",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Boa Viagem",
+    "bairroDoPoligono": "boa-viagem",
+    "bairroConfere": true,
+    "codigo": 1465,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 0,
+    "estado": "vinculado",
+    "lon": -34.891490999657854,
+    "lat": -8.111008999666499,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 7,
+    "objectid": 37,
+    "logradouro": "Avenida Conselheiro Aguiar",
+    "trecho": "Interseção com a Rua Maria Carolina",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Boa Viagem",
+    "bairroDoPoligono": "boa-viagem",
+    "bairroConfere": true,
+    "codigo": 1465,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 2,
+    "estado": "vinculado",
+    "lon": -34.894176000261695,
+    "lat": -8.115379999706274,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 5,
+    "objectid": 38,
+    "logradouro": "Avenida Conselheiro Aguiar",
+    "trecho": "Interseção com a Rua Tenente João Cícero",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Boa Viagem",
+    "bairroDoPoligono": "boa-viagem",
+    "bairroConfere": true,
+    "codigo": 1465,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 0,
+    "estado": "vinculado",
+    "lon": -34.8931629997602,
+    "lat": -8.113732000371835,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 18,
+    "objectid": 39,
+    "logradouro": "Rua Jornalista Alfredo Porto Silveira",
+    "trecho": "Toda a extensão",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Boa Viagem",
+    "bairroDoPoligono": "boa-viagem",
+    "bairroConfere": true,
+    "codigo": 2577,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 3,
+    "estado": "vinculado",
+    "lon": -34.913978999577374,
+    "lat": -8.138796000305117,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 12,
+    "objectid": 40,
+    "logradouro": "Rua Padre Bernardino Pessoa",
+    "trecho": "Da Avenida Conselheiro Aguiar até a Via Mangue",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Boa Viagem",
+    "bairroDoPoligono": "boa-viagem",
+    "bairroConfere": true,
+    "codigo": 11258,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.89679599966991,
+    "lat": -8.112934999850431,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 11,
+    "objectid": 41,
+    "logradouro": "Rua Professor José Brandão",
+    "trecho": "Toda a extensão",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Boa Viagem",
+    "bairroDoPoligono": "boa-viagem",
+    "bairroConfere": true,
+    "codigo": 35475,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.894788999831796,
+    "lat": -8.111816000045327,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 41,
+    "objectid": 42,
+    "logradouro": "Rua Thomé Gibson",
+    "trecho": "Da Avenida Encanta Moça até a Via Mangue",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Boa Viagem",
+    "bairroDoPoligono": "pina",
+    "bairroConfere": false,
+    "codigo": null,
+    "metodo": "sem_correspondencia",
+    "distanciaM": null,
+    "estado": "nome_sem_correspondencia",
+    "lon": -34.88812899990981,
+    "lat": -8.098065999850645,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 33,
+    "objectid": 43,
+    "logradouro": "Avenida Dois Rios",
+    "trecho": "Interseção da Avenida Dois Rios com a Rua Rio Pajeú até a Rua Ecoporanga / interseção da Avenida Dois Rios com a Rua Rio Prado",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Ibura",
+    "bairroDoPoligono": "ibura",
+    "bairroConfere": true,
+    "codigo": 20052,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.939007000335785,
+    "lat": -8.113526000202171,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 35,
+    "objectid": 44,
+    "logradouro": "Avenida Dois Rios",
+    "trecho": "Próximo ao SESI",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Ibura",
+    "bairroDoPoligono": "ibura",
+    "bairroConfere": true,
+    "codigo": 20052,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 0,
+    "estado": "vinculado",
+    "lon": -34.93686999990302,
+    "lat": -8.110390999990354,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 34,
+    "objectid": 45,
+    "logradouro": "Avenida Dom Helder Câmara",
+    "trecho": "Interseção da Avenida Dom Helder Câmara com a Rua Achiles Amorim",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Ibura",
+    "bairroDoPoligono": "ibura",
+    "bairroConfere": true,
+    "codigo": 96105,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 6,
+    "estado": "vinculado",
+    "lon": -34.92985299960565,
+    "lat": -8.10749299967472,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 54,
+    "objectid": 46,
+    "logradouro": "Rua Rio Prado",
+    "trecho": "Interseção da Rua Rio Prado com a Rua Rio Brígida",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Ibura",
+    "bairroDoPoligono": "ibura",
+    "bairroConfere": true,
+    "codigo": 58483,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 2,
+    "estado": "vinculado",
+    "lon": -34.94070200000436,
+    "lat": -8.113868999670709,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 9,
+    "objectid": 47,
+    "logradouro": "Avenida Mascarenhas de Moraes",
+    "trecho": "Da Rua General Mac Arthur até a Universo",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Imbiribeira",
+    "bairroDoPoligono": "imbiribeira",
+    "bairroConfere": true,
+    "codigo": null,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 2705,
+    "estado": "nome_longe_da_posicao",
+    "lon": -34.91177699974559,
+    "lat": -8.10893400021914,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 36,
+    "objectid": 48,
+    "logradouro": "Avenida Mascarenhas de Moraes",
+    "trecho": "Trecho da Ferreira Costa",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Imbiribeira",
+    "bairroDoPoligono": "imbiribeira",
+    "bairroConfere": true,
+    "codigo": null,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 3041,
+    "estado": "nome_longe_da_posicao",
+    "lon": -34.912386000016056,
+    "lat": -8.111914999943876,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 37,
+    "objectid": 49,
+    "logradouro": "Avenida Recife",
+    "trecho": "Da Avenida Dom Helder Câmara até o Rio Tejipió",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Ipsep",
+    "bairroDoPoligono": "ibura",
+    "bairroConfere": false,
+    "codigo": 56871,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 0,
+    "estado": "vinculado",
+    "lon": -34.92754899966662,
+    "lat": -8.105178999970205,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 24,
+    "objectid": 50,
+    "logradouro": "Rua Blumenau",
+    "trecho": "Até a maré",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Ipsep",
+    "bairroDoPoligono": "ipsep",
+    "bairroConfere": true,
+    "codigo": 11657,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 0,
+    "estado": "vinculado",
+    "lon": -34.920256000083036,
+    "lat": -8.107611000424399,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 25,
+    "objectid": 51,
+    "logradouro": "Rua Raimundo Diniz",
+    "trecho": "Vários trechos",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Ipsep",
+    "bairroDoPoligono": "ipsep",
+    "bairroConfere": true,
+    "codigo": 56537,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.92146500040312,
+    "lat": -8.114288000294023,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 22,
+    "objectid": 52,
+    "logradouro": "Avenida Maria Irene",
+    "trecho": "Vários trechos",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Jordão",
+    "bairroDoPoligono": "jordao",
+    "bairroConfere": true,
+    "codigo": 42625,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.92735799987091,
+    "lat": -8.140504999784309,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 51,
+    "objectid": 53,
+    "logradouro": "Avenida Antônio de Góes",
+    "trecho": "Da saída da Via Mangue até a Bacia do Pina (Rio Capibaribe) e cruzamento com a Avenida Conselheiro Aguiar",
+    "precisao": "Interseção",
+    "bairroDaFonte": "Pina",
+    "bairroDoPoligono": "pina",
+    "bairroConfere": true,
+    "codigo": 5770,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 4,
+    "estado": "vinculado",
+    "lon": -34.882716999767624,
+    "lat": -8.089422999588527,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   },
+   {
+    "id": 19,
+    "objectid": 54,
+    "logradouro": "Rua São Luiz",
+    "trecho": "Final da rua",
+    "precisao": "Aproximado",
+    "bairroDaFonte": "Pina",
+    "bairroDoPoligono": "pina",
+    "bairroConfere": true,
+    "codigo": 39691,
+    "metodo": "nome_e_bairro",
+    "distanciaM": 1,
+    "estado": "vinculado",
+    "lon": -34.88827500039799,
+    "lat": -8.089716000200225,
+    "camposVazios": [
+     "recorrencia",
+     "n_recorrencia",
+     "mare",
+     "n_mare",
+     "lamina"
+    ]
+   }
+  ],
+  "detalheTrechos": [
+   {
+    "fid": 1,
+    "codigo": 92533,
+    "nome": "Avenida Professor Artur Coutinho",
+    "codigoNaMalha": true,
+    "nomeConfere": false,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 2311
+   },
+   {
+    "fid": 2,
+    "codigo": 92959,
+    "nome": "Rua Zumbi dos Palmares",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 1281
+   },
+   {
+    "fid": 3,
+    "codigo": 91421,
+    "nome": "Rua Dancing Days",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 848
+   },
+   {
+    "fid": 4,
+    "codigo": 95516,
+    "nome": "Rua Palmital",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "iputinga"
+    ],
+    "metros": 487
+   },
+   {
+    "fid": 5,
+    "codigo": 97918,
+    "nome": "Rua Compositor Vinícius de Morais",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "beberibe",
+     "linha-do-tiro",
+     "porto-da-madeira"
+    ],
+    "metros": 2172
+   },
+   {
+    "fid": 6,
+    "codigo": 100269,
+    "nome": "Rua Senador Thomaz Lobo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias"
+    ],
+    "metros": 1097
+   },
+   {
+    "fid": 7,
+    "codigo": 109800,
+    "nome": "Rio Jiquiá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados",
+     "estancia",
+     "jardim-sao-paulo",
+     "jiquia"
+    ],
+    "metros": 3254
+   },
+   {
+    "fid": 8,
+    "codigo": 119415,
+    "nome": "Rio Moxotó",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 1934
+   },
+   {
+    "fid": 9,
+    "codigo": 121860,
+    "nome": "Rio Matéria",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga",
+     "sitio-dos-pintos"
+    ],
+    "metros": 1115
+   },
+   {
+    "fid": 10,
+    "codigo": 137820,
+    "nome": "Rua Bambuluá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 238
+   },
+   {
+    "fid": 11,
+    "codigo": 61921,
+    "nome": "Rua Turmalina",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 120
+   },
+   {
+    "fid": 12,
+    "codigo": 61972,
+    "nome": "Rua Turim",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 227
+   },
+   {
+    "fid": 13,
+    "codigo": 302,
+    "nome": "Rua Abelardo Rodrigues",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "dois-unidos"
+    ],
+    "metros": 161
+   },
+   {
+    "fid": 14,
+    "codigo": 787,
+    "nome": "Rua Dr Adelino Filho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias",
+     "estancia"
+    ],
+    "metros": 242
+   },
+   {
+    "fid": 15,
+    "codigo": 1120,
+    "nome": "Rua Deputado Afrânio Godoy",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 301
+   },
+   {
+    "fid": 16,
+    "codigo": 1210,
+    "nome": "Rua São Cristóvão",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-da-guabiraba",
+     "brejo-de-beberibe"
+    ],
+    "metros": 120
+   },
+   {
+    "fid": 17,
+    "codigo": 1449,
+    "nome": "Rua Aguati",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 197
+   },
+   {
+    "fid": 18,
+    "codigo": 1228,
+    "nome": "Rua Agostinho Barbalho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado",
+     "jardim-sao-paulo"
+    ],
+    "metros": 725
+   },
+   {
+    "fid": 19,
+    "codigo": 2054,
+    "nome": "Rua Aldemar de Oliveira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 280
+   },
+   {
+    "fid": 20,
+    "codigo": 2313,
+    "nome": "Rua Alexandrita",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 144
+   },
+   {
+    "fid": 21,
+    "codigo": 2682,
+    "nome": "Rua Alice Tibiriçá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cajueiro",
+     "campina-do-barreto"
+    ],
+    "metros": 464
+   },
+   {
+    "fid": 22,
+    "codigo": 2755,
+    "nome": "Rua Almeida Júnior",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 172
+   },
+   {
+    "fid": 23,
+    "codigo": 3387,
+    "nome": "Rua Alto Piquiri",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 170
+   },
+   {
+    "fid": 24,
+    "codigo": 62812,
+    "nome": "Rua Marques de Valenca",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 815
+   },
+   {
+    "fid": 25,
+    "codigo": 3808,
+    "nome": "Rua Alvorada",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 367
+   },
+   {
+    "fid": 26,
+    "codigo": 3824,
+    "nome": "Rua Alvorada do Sul",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 156
+   },
+   {
+    "fid": 27,
+    "codigo": 4359,
+    "nome": "Rua Amsterdam",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 237
+   },
+   {
+    "fid": 28,
+    "codigo": 4936,
+    "nome": "Rua André Vieira de Melo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 279
+   },
+   {
+    "fid": 29,
+    "codigo": 5533,
+    "nome": "Rua Antônio Cardoso da Fonte",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 664
+   },
+   {
+    "fid": 30,
+    "codigo": 6033,
+    "nome": "Rua Antônio Paes Barreto",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 603
+   },
+   {
+    "fid": 31,
+    "codigo": 6203,
+    "nome": "Rua Doutor Antônio da Rosa Borges",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-de-beberibe",
+     "dois-unidos"
+    ],
+    "metros": 208
+   },
+   {
+    "fid": 32,
+    "codigo": 7714,
+    "nome": "Rua Arês",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 190
+   },
+   {
+    "fid": 33,
+    "codigo": 6475,
+    "nome": "Rua Apeninos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 112
+   },
+   {
+    "fid": 34,
+    "codigo": 89664,
+    "nome": "Rua do Canal",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 366
+   },
+   {
+    "fid": 35,
+    "codigo": 6670,
+    "nome": "Rua Apulcro de Assunção",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "san-martin"
+    ],
+    "metros": 1154
+   },
+   {
+    "fid": 36,
+    "codigo": 89699,
+    "nome": "Rua Galópolis",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 281
+   },
+   {
+    "fid": 37,
+    "codigo": 6866,
+    "nome": "Rua Aracaju",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 462
+   },
+   {
+    "fid": 38,
+    "codigo": 89893,
+    "nome": "Beco Galópolis",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 81
+   },
+   {
+    "fid": 39,
+    "codigo": 7544,
+    "nome": "Rua Capitão Araujo Miranda",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "iputinga"
+    ],
+    "metros": 318
+   },
+   {
+    "fid": 40,
+    "codigo": 7919,
+    "nome": "Rua Aristoteles Amorim de Santana",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 299
+   },
+   {
+    "fid": 41,
+    "codigo": 12971,
+    "nome": "Rua Cabrobó",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 140
+   },
+   {
+    "fid": 42,
+    "codigo": 7935,
+    "nome": "Rua Arizona",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 68
+   },
+   {
+    "fid": 43,
+    "codigo": 8354,
+    "nome": "Rua Artur Barreto Lins",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 327
+   },
+   {
+    "fid": 44,
+    "codigo": 8443,
+    "nome": "Rua Juiz Artur Maciel",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 41
+   },
+   {
+    "fid": 45,
+    "codigo": 8796,
+    "nome": "Rua Frei Atanázio",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 596
+   },
+   {
+    "fid": 46,
+    "codigo": 9172,
+    "nome": "Rua Aurora Caçote",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias",
+     "cacote"
+    ],
+    "metros": 753
+   },
+   {
+    "fid": 47,
+    "codigo": 65072,
+    "nome": "Rua Virgínia Heráclio",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 917
+   },
+   {
+    "fid": 48,
+    "codigo": 11126,
+    "nome": "Rua Dona Benvinda de Farias",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 671
+   },
+   {
+    "fid": 49,
+    "codigo": 65676,
+    "nome": "Rua Sargento Wilson Viana",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 410
+   },
+   {
+    "fid": 50,
+    "codigo": 12670,
+    "nome": "Rua Levinópolis",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 32
+   },
+   {
+    "fid": 51,
+    "codigo": 12882,
+    "nome": "Rua Cabo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 129
+   },
+   {
+    "fid": 52,
+    "codigo": 13145,
+    "nome": "Rua Caetano Monteiro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado"
+    ],
+    "metros": 300
+   },
+   {
+    "fid": 53,
+    "codigo": 13188,
+    "nome": "Avenida Presidente Café Filho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-da-guabiraba",
+     "brejo-de-beberibe",
+     "passarinho"
+    ],
+    "metros": 153
+   },
+   {
+    "fid": 54,
+    "codigo": 13390,
+    "nome": "Rua Maricá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "macaxeira"
+    ],
+    "metros": 31
+   },
+   {
+    "fid": 55,
+    "codigo": 13404,
+    "nome": "Rua Jacarepaguá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "macaxeira"
+    ],
+    "metros": 25
+   },
+   {
+    "fid": 56,
+    "codigo": 14095,
+    "nome": "Rua Cananéia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "barro"
+    ],
+    "metros": 124
+   },
+   {
+    "fid": 57,
+    "codigo": 14320,
+    "nome": "Rua Canhotinho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 127
+   },
+   {
+    "fid": 58,
+    "codigo": 14346,
+    "nome": "Rua do Cano",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cacote"
+    ],
+    "metros": 120
+   },
+   {
+    "fid": 59,
+    "codigo": 14494,
+    "nome": "3ª Travessa Padre Henrique",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 75
+   },
+   {
+    "fid": 60,
+    "codigo": 14800,
+    "nome": "Rua Carijós",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 99
+   },
+   {
+    "fid": 61,
+    "codigo": 14885,
+    "nome": "Rua Carlos Alberto Valença",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 653
+   },
+   {
+    "fid": 62,
+    "codigo": 15288,
+    "nome": "Rua Carnijo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 140
+   },
+   {
+    "fid": 63,
+    "codigo": 15342,
+    "nome": "Rua Carpina",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 198
+   },
+   {
+    "fid": 64,
+    "codigo": 15954,
+    "nome": "1ª Travessa Desembargador Rodolfo Aureliano",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 121
+   },
+   {
+    "fid": 65,
+    "codigo": 16640,
+    "nome": "Rua Chapecó",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 159
+   },
+   {
+    "fid": 66,
+    "codigo": 16527,
+    "nome": "Rua Cerro Negro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 358
+   },
+   {
+    "fid": 67,
+    "codigo": 16756,
+    "nome": "Avenida Central",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados",
+     "areias",
+     "barro",
+     "coqueiral",
+     "curado",
+     "estancia",
+     "ilha-joana-bezerra",
+     "jardim-sao-paulo",
+     "jiquia",
+     "mangueira",
+     "sao-jose",
+     "tejipio",
+     "varzea"
+    ],
+    "metros": 18083
+   },
+   {
+    "fid": 68,
+    "codigo": 17558,
+    "nome": "Rua Corbélia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 172
+   },
+   {
+    "fid": 69,
+    "codigo": 17582,
+    "nome": "Rua Cordisburgo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 79
+   },
+   {
+    "fid": 70,
+    "codigo": 18228,
+    "nome": "Rua Cravina",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias"
+    ],
+    "metros": 120
+   },
+   {
+    "fid": 71,
+    "codigo": 18236,
+    "nome": "Rua Cravo Branco",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "dois-unidos"
+    ],
+    "metros": 171
+   },
+   {
+    "fid": 72,
+    "codigo": 18554,
+    "nome": "Rua Itarana",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "iputinga"
+    ],
+    "metros": 85
+   },
+   {
+    "fid": 73,
+    "codigo": 19011,
+    "nome": "Rua Damasqueiro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 160
+   },
+   {
+    "fid": 74,
+    "codigo": 19291,
+    "nome": "Rua do Dendezeiro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 90
+   },
+   {
+    "fid": 75,
+    "codigo": 19399,
+    "nome": "Rua do Desterro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 339
+   },
+   {
+    "fid": 76,
+    "codigo": 68012,
+    "nome": "Avenida Dom João VI",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem",
+     "imbiribeira"
+    ],
+    "metros": 2430
+   },
+   {
+    "fid": 77,
+    "codigo": 19666,
+    "nome": "Rua Diniz",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 168
+   },
+   {
+    "fid": 78,
+    "codigo": 19712,
+    "nome": "Rua Diogo Couto",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 26
+   },
+   {
+    "fid": 79,
+    "codigo": 111546,
+    "nome": "Travessa Papa João XXIII",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 139
+   },
+   {
+    "fid": 80,
+    "codigo": 19941,
+    "nome": "Rua Djalma Honório",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 273
+   },
+   {
+    "fid": 81,
+    "codigo": 20591,
+    "nome": "Rua Ecoporanga",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 161
+   },
+   {
+    "fid": 82,
+    "codigo": 21032,
+    "nome": "Rua Eládio Ramos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem",
+     "imbiribeira"
+    ],
+    "metros": 724
+   },
+   {
+    "fid": 83,
+    "codigo": 21261,
+    "nome": "Rua Ematuba",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 238
+   },
+   {
+    "fid": 84,
+    "codigo": 21210,
+    "nome": "Rua Ator Elpídio Câmara",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 497
+   },
+   {
+    "fid": 85,
+    "codigo": 22403,
+    "nome": "Rua Equador",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "san-martin"
+    ],
+    "metros": 465
+   },
+   {
+    "fid": 86,
+    "codigo": 22330,
+    "nome": "Rua Epaminondas Cristóvão de Oliveira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 425
+   },
+   {
+    "fid": 87,
+    "codigo": 22535,
+    "nome": "Rua Erval",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 78
+   },
+   {
+    "fid": 88,
+    "codigo": 22810,
+    "nome": "Rua Estela Borges",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 193
+   },
+   {
+    "fid": 89,
+    "codigo": 23361,
+    "nome": "Rua Evaristo Carneiro Leão",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 165
+   },
+   {
+    "fid": 90,
+    "codigo": 23418,
+    "nome": "Rua Dom Expedito Moura",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "san-martin"
+    ],
+    "metros": 415
+   },
+   {
+    "fid": 91,
+    "codigo": 23582,
+    "nome": "Rua Faria Brito",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 59
+   },
+   {
+    "fid": 92,
+    "codigo": 23620,
+    "nome": "Rua Farroupilha",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "san-martin"
+    ],
+    "metros": 553
+   },
+   {
+    "fid": 93,
+    "codigo": 23795,
+    "nome": "Rua Major Felício",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 244
+   },
+   {
+    "fid": 94,
+    "codigo": 23876,
+    "nome": "Rua Felipe Moura",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 204
+   },
+   {
+    "fid": 95,
+    "codigo": 24180,
+    "nome": "Rua Fernando Nobre",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 117
+   },
+   {
+    "fid": 96,
+    "codigo": 24651,
+    "nome": "Rua Flora Rica",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "san-martin"
+    ],
+    "metros": 417
+   },
+   {
+    "fid": 97,
+    "codigo": 25208,
+    "nome": "Rua Francisco Conte",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 129
+   },
+   {
+    "fid": 98,
+    "codigo": 25623,
+    "nome": "Rua Comendador Franco Ferreira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "san-martin"
+    ],
+    "metros": 1121
+   },
+   {
+    "fid": 99,
+    "codigo": 25984,
+    "nome": "Rua Galinéia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 147
+   },
+   {
+    "fid": 100,
+    "codigo": 26212,
+    "nome": "Rua Gastão de Carvalho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado"
+    ],
+    "metros": 146
+   },
+   {
+    "fid": 101,
+    "codigo": 26638,
+    "nome": "Rua Givaldo Motta",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 67
+   },
+   {
+    "fid": 102,
+    "codigo": 27537,
+    "nome": "Rua Grinalda",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias"
+    ],
+    "metros": 158
+   },
+   {
+    "fid": 103,
+    "codigo": 27758,
+    "nome": "Rua Guanabara",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral",
+     "tejipio"
+    ],
+    "metros": 439
+   },
+   {
+    "fid": 104,
+    "codigo": 27847,
+    "nome": "Rua Guaporema",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 79
+   },
+   {
+    "fid": 105,
+    "codigo": 27871,
+    "nome": "Rua Guaraci",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cacote"
+    ],
+    "metros": 245
+   },
+   {
+    "fid": 106,
+    "codigo": 27901,
+    "nome": "Rua Guarajá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "dois-unidos",
+     "linha-do-tiro"
+    ],
+    "metros": 191
+   },
+   {
+    "fid": 107,
+    "codigo": 27944,
+    "nome": "Rua Guarani",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 186
+   },
+   {
+    "fid": 108,
+    "codigo": 28312,
+    "nome": "Rua Guimarães",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 72
+   },
+   {
+    "fid": 109,
+    "codigo": 69795,
+    "nome": "Travessa Pedro Boulitreau",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "san-martin"
+    ],
+    "metros": 30
+   },
+   {
+    "fid": 110,
+    "codigo": 29092,
+    "nome": "Rua Monsenhor Hipólito",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 316
+   },
+   {
+    "fid": 111,
+    "codigo": 29408,
+    "nome": "Rua Humberto de Campos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 718
+   },
+   {
+    "fid": 112,
+    "codigo": 29327,
+    "nome": "Rua Hortelã",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 90
+   },
+   {
+    "fid": 113,
+    "codigo": 29548,
+    "nome": "Rua Ibiara",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 146
+   },
+   {
+    "fid": 114,
+    "codigo": 29696,
+    "nome": "Rua Icapó",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 87
+   },
+   {
+    "fid": 115,
+    "codigo": 30090,
+    "nome": "Rua Vale Verde",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-de-beberibe"
+    ],
+    "metros": 42
+   },
+   {
+    "fid": 116,
+    "codigo": 30201,
+    "nome": "Rua Inajá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 164
+   },
+   {
+    "fid": 117,
+    "codigo": 30597,
+    "nome": "Rua Aliança",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-de-beberibe"
+    ],
+    "metros": 70
+   },
+   {
+    "fid": 118,
+    "codigo": 30864,
+    "nome": "Rua Itacambira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 458
+   },
+   {
+    "fid": 119,
+    "codigo": 31151,
+    "nome": "Rua Itamirim",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 182
+   },
+   {
+    "fid": 120,
+    "codigo": 32425,
+    "nome": "Rua Jaime Ramiro Costa",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 168
+   },
+   {
+    "fid": 121,
+    "codigo": 32646,
+    "nome": "Rua Japomim",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 84
+   },
+   {
+    "fid": 122,
+    "codigo": 32840,
+    "nome": "Rua Jataúba",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cacote"
+    ],
+    "metros": 288
+   },
+   {
+    "fid": 123,
+    "codigo": 32743,
+    "nome": "Rua Jardim Alegre",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 76
+   },
+   {
+    "fid": 124,
+    "codigo": 33006,
+    "nome": "Rua Jericó",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 186
+   },
+   {
+    "fid": 125,
+    "codigo": 33090,
+    "nome": "Rua Jerônimo Heráclio",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 827
+   },
+   {
+    "fid": 126,
+    "codigo": 33227,
+    "nome": "Rua Santa Joana D'Arc",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias"
+    ],
+    "metros": 548
+   },
+   {
+    "fid": 127,
+    "codigo": 39519,
+    "nome": "Rua Bugre",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 82
+   },
+   {
+    "fid": 128,
+    "codigo": 34380,
+    "nome": "Rua João de Souza Canto",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 110
+   },
+   {
+    "fid": 129,
+    "codigo": 126950,
+    "nome": "Rua Professora Dona Noca",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "campo-grande"
+    ],
+    "metros": 107
+   },
+   {
+    "fid": 130,
+    "codigo": 34762,
+    "nome": "Rua Joaquim Pinheiro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 276
+   },
+   {
+    "fid": 131,
+    "codigo": 34886,
+    "nome": "Rua Soldado Joaquim Xavier",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 254
+   },
+   {
+    "fid": 132,
+    "codigo": 35025,
+    "nome": "Rua Jordão",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 149
+   },
+   {
+    "fid": 133,
+    "codigo": 85391,
+    "nome": "Rua Ator Marcus Siqueira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 178
+   },
+   {
+    "fid": 134,
+    "codigo": 35637,
+    "nome": "Rua Doutor José Cornélio",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 228
+   },
+   {
+    "fid": 135,
+    "codigo": 85405,
+    "nome": "Rua Dr Paulo de Biase",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 409
+   },
+   {
+    "fid": 136,
+    "codigo": 36587,
+    "nome": "Rua Clarice Lispector",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 361
+   },
+   {
+    "fid": 137,
+    "codigo": 37141,
+    "nome": "Rua Quatro de Setembro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado"
+    ],
+    "metros": 208
+   },
+   {
+    "fid": 138,
+    "codigo": 82252,
+    "nome": "Rua Compositor Luiz Bandeira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 166
+   },
+   {
+    "fid": 139,
+    "codigo": 37451,
+    "nome": "Rua Pirambu",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado"
+    ],
+    "metros": 99
+   },
+   {
+    "fid": 140,
+    "codigo": 37494,
+    "nome": "Rua Juriti",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 61
+   },
+   {
+    "fid": 141,
+    "codigo": 37516,
+    "nome": "Rua Jurupatã",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias"
+    ],
+    "metros": 323
+   },
+   {
+    "fid": 142,
+    "codigo": 37524,
+    "nome": "Rua Jurupatan",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 93
+   },
+   {
+    "fid": 143,
+    "codigo": 37613,
+    "nome": "Rua Juvanda",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 65
+   },
+   {
+    "fid": 144,
+    "codigo": 37435,
+    "nome": "Rua Jupiatá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias"
+    ],
+    "metros": 265
+   },
+   {
+    "fid": 145,
+    "codigo": 37745,
+    "nome": "Rua Padre José",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado"
+    ],
+    "metros": 117
+   },
+   {
+    "fid": 146,
+    "codigo": 37753,
+    "nome": "Rua Coqueirinho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado"
+    ],
+    "metros": 92
+   },
+   {
+    "fid": 147,
+    "codigo": 37788,
+    "nome": "Rua Capanema",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado"
+    ],
+    "metros": 100
+   },
+   {
+    "fid": 148,
+    "codigo": 37800,
+    "nome": "Rua Lagamar",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 157
+   },
+   {
+    "fid": 149,
+    "codigo": 45934,
+    "nome": "Rua Almirante Nelson Fernandes",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 478
+   },
+   {
+    "fid": 150,
+    "codigo": 38270,
+    "nome": "Rua Lauro de Freitas",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 274
+   },
+   {
+    "fid": 151,
+    "codigo": 38393,
+    "nome": "Rua Padre Leandro Camelo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 527
+   },
+   {
+    "fid": 152,
+    "codigo": 38989,
+    "nome": "Rua Linha Nova",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 178
+   },
+   {
+    "fid": 153,
+    "codigo": 39446,
+    "nome": "Rua Lourenço Bezerra",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral",
+     "tejipio"
+    ],
+    "metros": 383
+   },
+   {
+    "fid": 154,
+    "codigo": 39802,
+    "nome": "Rua Luiz Clericuzzi",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cajueiro"
+    ],
+    "metros": 504
+   },
+   {
+    "fid": 155,
+    "codigo": 39810,
+    "nome": "Rua Dr. Luiz Corrêa de Oliveira",
+    "codigoNaMalha": true,
+    "nomeConfere": false,
+    "bairros": [
+     "boa-viagem",
+     "imbiribeira"
+    ],
+    "metros": 743
+   },
+   {
+    "fid": 156,
+    "codigo": 40282,
+    "nome": "Rua Largo do Poço",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "poco"
+    ],
+    "metros": 143
+   },
+   {
+    "fid": 157,
+    "codigo": 40380,
+    "nome": "Rua Macaé",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 389
+   },
+   {
+    "fid": 158,
+    "codigo": 40843,
+    "nome": "Rua Jornalista Malebranche Bernard",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 125
+   },
+   {
+    "fid": 159,
+    "codigo": 40746,
+    "nome": "Rua Maguari",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 185
+   },
+   {
+    "fid": 160,
+    "codigo": 40991,
+    "nome": "Rua Manaira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 121
+   },
+   {
+    "fid": 161,
+    "codigo": 41858,
+    "nome": "Rua Padre Manuel Ribeiro da Rocha",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 76
+   },
+   {
+    "fid": 162,
+    "codigo": 41920,
+    "nome": "Rua Manoel Teixeira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 102
+   },
+   {
+    "fid": 163,
+    "codigo": 41955,
+    "nome": "Rua Manoel Vieira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "san-martin"
+    ],
+    "metros": 346
+   },
+   {
+    "fid": 164,
+    "codigo": 42641,
+    "nome": "Rua Maria Jesus Brasil Matos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 150
+   },
+   {
+    "fid": 165,
+    "codigo": 42781,
+    "nome": "Rua Maria Teresa",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 288
+   },
+   {
+    "fid": 166,
+    "codigo": 42838,
+    "nome": "Rua Mariante",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 50
+   },
+   {
+    "fid": 167,
+    "codigo": 42935,
+    "nome": "Rua Guaranis",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 149
+   },
+   {
+    "fid": 168,
+    "codigo": 83755,
+    "nome": "Rua Potengi",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 153
+   },
+   {
+    "fid": 169,
+    "codigo": 43770,
+    "nome": "Rua Mauro Borrione",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ilha-do-retiro"
+    ],
+    "metros": 290
+   },
+   {
+    "fid": 170,
+    "codigo": 43761,
+    "nome": "Rua Mauriti",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 69
+   },
+   {
+    "fid": 171,
+    "codigo": 44288,
+    "nome": "Rua Mil Novecentos e Onze",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 199
+   },
+   {
+    "fid": 172,
+    "codigo": 44342,
+    "nome": "Rua Tenente Mindelo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jiquia",
+     "san-martin"
+    ],
+    "metros": 878
+   },
+   {
+    "fid": 173,
+    "codigo": 44717,
+    "nome": "Rua Mocajuba",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 139
+   },
+   {
+    "fid": 174,
+    "codigo": 45209,
+    "nome": "Rua Morais e Silva",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 776
+   },
+   {
+    "fid": 175,
+    "codigo": 45284,
+    "nome": "Rua Mostardas",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 247
+   },
+   {
+    "fid": 176,
+    "codigo": 45543,
+    "nome": "Rua Mussurepe",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 147
+   },
+   {
+    "fid": 177,
+    "codigo": 45594,
+    "nome": "Rua Nádia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cajueiro",
+     "campina-do-barreto"
+    ],
+    "metros": 254
+   },
+   {
+    "fid": 178,
+    "codigo": 71749,
+    "nome": "Travessa Visconde de Araguaya",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "poco"
+    ],
+    "metros": 46
+   },
+   {
+    "fid": 179,
+    "codigo": 71757,
+    "nome": "Rua José Maria de Miranda",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 367
+   },
+   {
+    "fid": 180,
+    "codigo": 46191,
+    "nome": "Rua São Nicolau",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 427
+   },
+   {
+    "fid": 181,
+    "codigo": 46272,
+    "nome": "Rua Sabiá",
+    "codigoNaMalha": true,
+    "nomeConfere": false,
+    "bairros": [
+     "passarinho"
+    ],
+    "metros": 213
+   },
+   {
+    "fid": 182,
+    "codigo": 46515,
+    "nome": "Rua Normândia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 236
+   },
+   {
+    "fid": 183,
+    "codigo": 46582,
+    "nome": "Rua Mayana",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 149
+   },
+   {
+    "fid": 184,
+    "codigo": 72281,
+    "nome": "Rua Itaquetinga",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 87
+   },
+   {
+    "fid": 185,
+    "codigo": 46973,
+    "nome": "Rua Novo Horizonte",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias"
+    ],
+    "metros": 539
+   },
+   {
+    "fid": 186,
+    "codigo": 46833,
+    "nome": "Rua Nova Palmeira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 321
+   },
+   {
+    "fid": 187,
+    "codigo": 47597,
+    "nome": "Rua Onze de Fevereiro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cordeiro",
+     "torroes"
+    ],
+    "metros": 614
+   },
+   {
+    "fid": 188,
+    "codigo": 48313,
+    "nome": "Rua Pacaembu",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 162
+   },
+   {
+    "fid": 189,
+    "codigo": 48445,
+    "nome": "Rua Padilha",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "nova-descoberta"
+    ],
+    "metros": 99
+   },
+   {
+    "fid": 190,
+    "codigo": 48496,
+    "nome": "Rua Pagy",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 173
+   },
+   {
+    "fid": 191,
+    "codigo": 49514,
+    "nome": "Rua Patrimônio",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 59
+   },
+   {
+    "fid": 192,
+    "codigo": 50121,
+    "nome": "Rua Pedro Boulitreau",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jiquia",
+     "san-martin"
+    ],
+    "metros": 529
+   },
+   {
+    "fid": 193,
+    "codigo": 50881,
+    "nome": "Rua Peroba",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 572
+   },
+   {
+    "fid": 194,
+    "codigo": 51306,
+    "nome": "Rua Pinto Campos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "monteiro"
+    ],
+    "metros": 190
+   },
+   {
+    "fid": 195,
+    "codigo": 51772,
+    "nome": "Rua Pitimbú",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 51
+   },
+   {
+    "fid": 196,
+    "codigo": 102792,
+    "nome": "1ª Travessa Diniz",
+    "codigoNaMalha": false,
+    "nomeConfere": false,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 30
+   },
+   {
+    "fid": 197,
+    "codigo": 51853,
+    "nome": "Rua Planura",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 260
+   },
+   {
+    "fid": 198,
+    "codigo": 52035,
+    "nome": "Rua Senador Pompeu",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 283
+   },
+   {
+    "fid": 199,
+    "codigo": 102873,
+    "nome": "5ª Travessa Teófilo Otoni",
+    "codigoNaMalha": false,
+    "nomeConfere": false,
+    "bairros": [
+     "barro"
+    ],
+    "metros": 88
+   },
+   {
+    "fid": 200,
+    "codigo": 52507,
+    "nome": "Rua Potengy",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira",
+     "ipsep"
+    ],
+    "metros": 689
+   },
+   {
+    "fid": 201,
+    "codigo": 52523,
+    "nome": "Rua Potiraguá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 124
+   },
+   {
+    "fid": 202,
+    "codigo": 52981,
+    "nome": "Rua Quilombo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 82
+   },
+   {
+    "fid": 203,
+    "codigo": 53368,
+    "nome": "Rua Salamandra",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 69
+   },
+   {
+    "fid": 204,
+    "codigo": 54453,
+    "nome": "Rua Sebastião Grande",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias"
+    ],
+    "metros": 370
+   },
+   {
+    "fid": 205,
+    "codigo": 54542,
+    "nome": "Avenida Brigadeiro Seco",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 79
+   },
+   {
+    "fid": 206,
+    "codigo": 54607,
+    "nome": "Rua Califórnia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-de-beberibe"
+    ],
+    "metros": 106
+   },
+   {
+    "fid": 207,
+    "codigo": 54690,
+    "nome": "Rua Serafina Carneiro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 216
+   },
+   {
+    "fid": 208,
+    "codigo": 55190,
+    "nome": "Rua Aviador Severiano Lins",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 589
+   },
+   {
+    "fid": 209,
+    "codigo": 55522,
+    "nome": "Rua São Silvestre",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 427
+   },
+   {
+    "fid": 210,
+    "codigo": 57649,
+    "nome": "Rua Rio Branco do Sul",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 716
+   },
+   {
+    "fid": 211,
+    "codigo": 57380,
+    "nome": "Rua Ribeirão Vermelho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 710
+   },
+   {
+    "fid": 212,
+    "codigo": 57819,
+    "nome": "Rua Rio Doce",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 339
+   },
+   {
+    "fid": 213,
+    "codigo": 57843,
+    "nome": "Rua Rio Douro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 548
+   },
+   {
+    "fid": 214,
+    "codigo": 57967,
+    "nome": "Rua Rio Guaíra",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 73
+   },
+   {
+    "fid": 215,
+    "codigo": 58130,
+    "nome": "Rua Rio Jaratuba",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 94
+   },
+   {
+    "fid": 216,
+    "codigo": 58181,
+    "nome": "Rua Rio Juruá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 179
+   },
+   {
+    "fid": 217,
+    "codigo": 58688,
+    "nome": "Rua Rio Una",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 903
+   },
+   {
+    "fid": 218,
+    "codigo": 59293,
+    "nome": "Rua Rosário de Minas",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 196
+   },
+   {
+    "fid": 219,
+    "codigo": 58866,
+    "nome": "Rua Rocha Pombo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 784
+   },
+   {
+    "fid": 220,
+    "codigo": 58920,
+    "nome": "Rua Desembargador Rodolfo Aureliano",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 195
+   },
+   {
+    "fid": 221,
+    "codigo": 59676,
+    "nome": "Rua Professor Rutilho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 360
+   },
+   {
+    "fid": 222,
+    "codigo": 60410,
+    "nome": "Rua Teixeira de Melo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 215
+   },
+   {
+    "fid": 223,
+    "codigo": 60780,
+    "nome": "Rua Theodomiro Selva",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 552
+   },
+   {
+    "fid": 224,
+    "codigo": 76643,
+    "nome": "Rua Sitio Grande",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 643
+   },
+   {
+    "fid": 225,
+    "codigo": 77119,
+    "nome": "Rua Coronel Aviador Roberto Pessoa Ramos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 295
+   },
+   {
+    "fid": 226,
+    "codigo": 79413,
+    "nome": "Travessa Padre Teófilo Tworz",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ilha-do-retiro"
+    ],
+    "metros": 181
+   },
+   {
+    "fid": 227,
+    "codigo": 62529,
+    "nome": "Rua Urupés",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado"
+    ],
+    "metros": 139
+   },
+   {
+    "fid": 228,
+    "codigo": 62715,
+    "nome": "Rua Vale Fundo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "passarinho"
+    ],
+    "metros": 101
+   },
+   {
+    "fid": 229,
+    "codigo": 62707,
+    "nome": "Rua Vale do Cariri",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 671
+   },
+   {
+    "fid": 230,
+    "codigo": 63100,
+    "nome": "Rua Canatiba",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 120
+   },
+   {
+    "fid": 231,
+    "codigo": 63649,
+    "nome": "Rua Mari",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 54
+   },
+   {
+    "fid": 232,
+    "codigo": 63924,
+    "nome": "Rua Varsovia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 40
+   },
+   {
+    "fid": 233,
+    "codigo": 63967,
+    "nome": "Rua Vaticano",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 41
+   },
+   {
+    "fid": 234,
+    "codigo": 64408,
+    "nome": "Rua Capitão Vicente da Mota",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem",
+     "imbiribeira"
+    ],
+    "metros": 193
+   },
+   {
+    "fid": 235,
+    "codigo": 64459,
+    "nome": "Rua Dr Vicente Rabello",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 113
+   },
+   {
+    "fid": 236,
+    "codigo": 64556,
+    "nome": "Rua Deputado Vieira Souto",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 246
+   },
+   {
+    "fid": 237,
+    "codigo": 64963,
+    "nome": "Rua Vinte e Um de Maio",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 149
+   },
+   {
+    "fid": 238,
+    "codigo": 65021,
+    "nome": "Rua Virgílio de Melo Franco",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cajueiro"
+    ],
+    "metros": 654
+   },
+   {
+    "fid": 239,
+    "codigo": 67105,
+    "nome": "Rua Conde",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 125
+   },
+   {
+    "fid": 240,
+    "codigo": 67393,
+    "nome": "Rua dos Girassóis",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 82
+   },
+   {
+    "fid": 241,
+    "codigo": 67431,
+    "nome": "Rua do Jasmim",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 62
+   },
+   {
+    "fid": 242,
+    "codigo": 67482,
+    "nome": "Avenida Melvin Jones",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 560
+   },
+   {
+    "fid": 243,
+    "codigo": 70904,
+    "nome": "Travessa João Bento Batista",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "campo-grande"
+    ],
+    "metros": 278
+   },
+   {
+    "fid": 244,
+    "codigo": 71200,
+    "nome": "Ponte Barqueiro Sinval Peixoto da Silva",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "iputinga",
+     "monteiro"
+    ],
+    "metros": 171
+   },
+   {
+    "fid": 245,
+    "codigo": 72303,
+    "nome": "Rua Cidra",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 106
+   },
+   {
+    "fid": 246,
+    "codigo": 72265,
+    "nome": "Rua Amatura",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 55
+   },
+   {
+    "fid": 247,
+    "codigo": 73725,
+    "nome": "1ª Travessa São Miguel",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 134
+   },
+   {
+    "fid": 248,
+    "codigo": 74870,
+    "nome": "2ª Travessa da Linha",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 95
+   },
+   {
+    "fid": 249,
+    "codigo": 74934,
+    "nome": "Rua Santa Vitória",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 303
+   },
+   {
+    "fid": 250,
+    "codigo": 75264,
+    "nome": "2ª Travessa Desembargador Altino",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 179
+   },
+   {
+    "fid": 251,
+    "codigo": 75795,
+    "nome": "Rua Catimbau",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 64
+   },
+   {
+    "fid": 252,
+    "codigo": 76570,
+    "nome": "Largo do Encanta Moça",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "pina"
+    ],
+    "metros": 149
+   },
+   {
+    "fid": 253,
+    "codigo": 77550,
+    "nome": "Travessa Campos Tabaiares",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ilha-do-retiro"
+    ],
+    "metros": 39
+   },
+   {
+    "fid": 254,
+    "codigo": 77194,
+    "nome": "Rua Baltazar Gonçalves",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "dois-unidos"
+    ],
+    "metros": 148
+   },
+   {
+    "fid": 255,
+    "codigo": 77569,
+    "nome": "Rua Poetisa Maria Celina Maia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ilha-do-retiro"
+    ],
+    "metros": 43
+   },
+   {
+    "fid": 256,
+    "codigo": 77461,
+    "nome": "Rua Lucrécia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 77
+   },
+   {
+    "fid": 257,
+    "codigo": 80314,
+    "nome": "Rua Azul",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 113
+   },
+   {
+    "fid": 258,
+    "codigo": 80276,
+    "nome": "Rua Potira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 49
+   },
+   {
+    "fid": 259,
+    "codigo": 80322,
+    "nome": "Rua Guaramiranga",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 46
+   },
+   {
+    "fid": 260,
+    "codigo": 80195,
+    "nome": "Vila Sargento Biu",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 122
+   },
+   {
+    "fid": 261,
+    "codigo": 80241,
+    "nome": "Rua Guarita",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 48
+   },
+   {
+    "fid": 262,
+    "codigo": 80268,
+    "nome": "Rua Celina",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 74
+   },
+   {
+    "fid": 263,
+    "codigo": 80489,
+    "nome": "Rua Candiba",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 76
+   },
+   {
+    "fid": 264,
+    "codigo": 81167,
+    "nome": "Travessa Desterro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 33
+   },
+   {
+    "fid": 265,
+    "codigo": 81248,
+    "nome": "Rua Campos Dois Rios",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 106
+   },
+   {
+    "fid": 266,
+    "codigo": 81787,
+    "nome": "Rua Mario Sa Carneiro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 141
+   },
+   {
+    "fid": 267,
+    "codigo": 81116,
+    "nome": "Rua Iratinga",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 468
+   },
+   {
+    "fid": 268,
+    "codigo": 81680,
+    "nome": "Rua Governador Moura Cavalcanti",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 606
+   },
+   {
+    "fid": 269,
+    "codigo": 82295,
+    "nome": "1ª Travessa Custódia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 121
+   },
+   {
+    "fid": 270,
+    "codigo": 81698,
+    "nome": "1ª Travessa Urupes",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado"
+    ],
+    "metros": 48
+   },
+   {
+    "fid": 271,
+    "codigo": 81760,
+    "nome": "Rua Eugênio Coimbra",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 153
+   },
+   {
+    "fid": 272,
+    "codigo": 82120,
+    "nome": "Rua Juiz Milton Lyra",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 138
+   },
+   {
+    "fid": 273,
+    "codigo": 82147,
+    "nome": "Rua Engenheiro José Soares",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 366
+   },
+   {
+    "fid": 274,
+    "codigo": 82163,
+    "nome": "Rua Eliane Fragoso do Nascimento",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 380
+   },
+   {
+    "fid": 275,
+    "codigo": 82309,
+    "nome": "Rua Fotógrafo Fernando Gusmão",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 141
+   },
+   {
+    "fid": 276,
+    "codigo": 82236,
+    "nome": "Travessa Coripos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 65
+   },
+   {
+    "fid": 277,
+    "codigo": 82244,
+    "nome": "1ª Travessa Coripos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 76
+   },
+   {
+    "fid": 278,
+    "codigo": 82260,
+    "nome": "Rua Professor Carolino Goncalves",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 471
+   },
+   {
+    "fid": 279,
+    "codigo": 82970,
+    "nome": "Travessa Santa Vitória",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 45
+   },
+   {
+    "fid": 280,
+    "codigo": 83151,
+    "nome": "1ª Travessa Dr Adelino Filho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 156
+   },
+   {
+    "fid": 281,
+    "codigo": 83330,
+    "nome": "Rua Pinaré",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 23
+   },
+   {
+    "fid": 282,
+    "codigo": 83348,
+    "nome": "Travessa Juriti",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 71
+   },
+   {
+    "fid": 283,
+    "codigo": 83712,
+    "nome": "Rua Saubara",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 81
+   },
+   {
+    "fid": 284,
+    "codigo": 83925,
+    "nome": "Travessa Pagy",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 42
+   },
+   {
+    "fid": 285,
+    "codigo": 85260,
+    "nome": "Rua Rio do Oeste",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 194
+   },
+   {
+    "fid": 286,
+    "codigo": 85383,
+    "nome": "Rua Radialista Torres Filho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 79
+   },
+   {
+    "fid": 287,
+    "codigo": 85367,
+    "nome": "Rua Aroldo Barbosa",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 65
+   },
+   {
+    "fid": 288,
+    "codigo": 85375,
+    "nome": "Rua Pintor Francisco Lauria",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 67
+   },
+   {
+    "fid": 289,
+    "codigo": 85456,
+    "nome": "Rua Maria Adelaide Castelo Branco",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 310
+   },
+   {
+    "fid": 290,
+    "codigo": 85669,
+    "nome": "Travessa Guanabara",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 53
+   },
+   {
+    "fid": 291,
+    "codigo": 85677,
+    "nome": "Rua Iguá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 44
+   },
+   {
+    "fid": 292,
+    "codigo": 85790,
+    "nome": "Rua Buritizal",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 110
+   },
+   {
+    "fid": 293,
+    "codigo": 86460,
+    "nome": "Rua Professor Luiz A Gondim Guimarães",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 227
+   },
+   {
+    "fid": 294,
+    "codigo": 87220,
+    "nome": "Rua Locutor Abílio de Castro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias"
+    ],
+    "metros": 96
+   },
+   {
+    "fid": 295,
+    "codigo": 87980,
+    "nome": "Rua Safira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 185
+   },
+   {
+    "fid": 296,
+    "codigo": 88471,
+    "nome": "Rua do Narizinho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 44
+   },
+   {
+    "fid": 297,
+    "codigo": 88510,
+    "nome": "Rua do João Perfeito",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 32
+   },
+   {
+    "fid": 298,
+    "codigo": 89672,
+    "nome": "Rua Cupira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 85
+   },
+   {
+    "fid": 299,
+    "codigo": 89680,
+    "nome": "Rua Tupanatinga",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 43
+   },
+   {
+    "fid": 300,
+    "codigo": 89877,
+    "nome": "Rua Itacuraba",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 38
+   },
+   {
+    "fid": 301,
+    "codigo": 90018,
+    "nome": "Rodovia BR Cento e Um",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "apipucos",
+     "barro",
+     "brejo-da-guabiraba",
+     "cidade-universitaria",
+     "cohab",
+     "corrego-do-jenipapo",
+     "curado",
+     "dois-irmaos",
+     "guabiraba",
+     "ibura",
+     "iputinga",
+     "jardim-sao-paulo",
+     "jordao",
+     "passarinho",
+     "tejipio",
+     "varzea"
+    ],
+    "metros": 34911
+   },
+   {
+    "fid": 302,
+    "codigo": 89907,
+    "nome": "Rua Bonfinópolis",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 44
+   },
+   {
+    "fid": 303,
+    "codigo": 89869,
+    "nome": "Rua Capinópolis",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 80
+   },
+   {
+    "fid": 304,
+    "codigo": 90840,
+    "nome": "Rua Águas Vermelhas",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 58
+   },
+   {
+    "fid": 305,
+    "codigo": 91308,
+    "nome": "Travessa Aliança",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "apipucos"
+    ],
+    "metros": 76
+   },
+   {
+    "fid": 306,
+    "codigo": 92754,
+    "nome": "Travessa Jorge Couceiro da Costa Eiras",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 105
+   },
+   {
+    "fid": 307,
+    "codigo": 92770,
+    "nome": "Rua João Arruda Marinho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 81
+   },
+   {
+    "fid": 308,
+    "codigo": 93106,
+    "nome": "Rua Washington Duarte Espínola",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 500
+   },
+   {
+    "fid": 309,
+    "codigo": 93424,
+    "nome": "Rua Gustavo Cintra Pashaus",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 120
+   },
+   {
+    "fid": 310,
+    "codigo": 93483,
+    "nome": "Rua Murajá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "dois-unidos"
+    ],
+    "metros": 83
+   },
+   {
+    "fid": 311,
+    "codigo": 93866,
+    "nome": "Rua da Paz",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-de-beberibe",
+     "dois-unidos"
+    ],
+    "metros": 116
+   },
+   {
+    "fid": 312,
+    "codigo": 93386,
+    "nome": "Rua Poeta Raymundo Asfora",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 424
+   },
+   {
+    "fid": 313,
+    "codigo": 94706,
+    "nome": "Rua Doutor Aristacho Dourado de Azevedo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 442
+   },
+   {
+    "fid": 314,
+    "codigo": 94617,
+    "nome": "Rua Dr Adige Maranhão",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "sitio-dos-pintos"
+    ],
+    "metros": 106
+   },
+   {
+    "fid": 315,
+    "codigo": 94633,
+    "nome": "Rua Alberico Glasner da Rocha",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 245
+   },
+   {
+    "fid": 316,
+    "codigo": 94650,
+    "nome": "Rua Professor Barros Lima",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 90
+   },
+   {
+    "fid": 317,
+    "codigo": 94668,
+    "nome": "Rua Dirceu Pessoa",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 79
+   },
+   {
+    "fid": 318,
+    "codigo": 94692,
+    "nome": "Rua Professor Antônio Luiz Lins de Barros",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 444
+   },
+   {
+    "fid": 319,
+    "codigo": 95036,
+    "nome": "Rua Sargento Antônio Bezerra",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 143
+   },
+   {
+    "fid": 320,
+    "codigo": 95117,
+    "nome": "Rua Diogo Barbosa Machado",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 91
+   },
+   {
+    "fid": 321,
+    "codigo": 95508,
+    "nome": "Rua Joaquim Ferreira Lima",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "iputinga"
+    ],
+    "metros": 197
+   },
+   {
+    "fid": 322,
+    "codigo": 95630,
+    "nome": "Rua Professor Josué de Castro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 226
+   },
+   {
+    "fid": 323,
+    "codigo": 95648,
+    "nome": "Rua Almirante James Norton",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 91
+   },
+   {
+    "fid": 324,
+    "codigo": 96431,
+    "nome": "Rua S D 9643",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jiquia"
+    ],
+    "metros": 146
+   },
+   {
+    "fid": 325,
+    "codigo": 96180,
+    "nome": "Rua Nelson Raposo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 171
+   },
+   {
+    "fid": 326,
+    "codigo": 96245,
+    "nome": "Travessa Peroba",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 90
+   },
+   {
+    "fid": 327,
+    "codigo": 101648,
+    "nome": "Rua Vitória Régia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 43
+   },
+   {
+    "fid": 328,
+    "codigo": 101672,
+    "nome": "Rua Hercílio Teixeira Lins",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 135
+   },
+   {
+    "fid": 329,
+    "codigo": 102806,
+    "nome": "2ª Travessa Diniz",
+    "codigoNaMalha": false,
+    "nomeConfere": false,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 34
+   },
+   {
+    "fid": 330,
+    "codigo": 102865,
+    "nome": "1ª Travessa Deodato Torres",
+    "codigoNaMalha": false,
+    "nomeConfere": false,
+    "bairros": [
+     "barro"
+    ],
+    "metros": 144
+   },
+   {
+    "fid": 331,
+    "codigo": 120979,
+    "nome": "1ª Travessa Campo do Bangu",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 83
+   },
+   {
+    "fid": 332,
+    "codigo": 107689,
+    "nome": "5ª Travessa Compositor Vinícius de Morais",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "beberibe"
+    ],
+    "metros": 35
+   },
+   {
+    "fid": 333,
+    "codigo": 120987,
+    "nome": "Travessa Campo do Bangu",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 77
+   },
+   {
+    "fid": 334,
+    "codigo": 109983,
+    "nome": "1ª Travessa Daniel Antônio Rodrigues",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 112
+   },
+   {
+    "fid": 335,
+    "codigo": 110000,
+    "nome": "Limite de Município",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem",
+     "campo-grande",
+     "caxanga",
+     "cohab",
+     "coqueiral",
+     "guabiraba",
+     "jordao",
+     "passarinho",
+     "pau-ferro",
+     "peixinhos",
+     "santo-amaro",
+     "sitio-dos-pintos",
+     "toto",
+     "varzea"
+    ],
+    "metros": 23125
+   },
+   {
+    "fid": 336,
+    "codigo": 110078,
+    "nome": "Travessa Farias Lemos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 17
+   },
+   {
+    "fid": 337,
+    "codigo": 110086,
+    "nome": "1ª Travessa Antônio Paes Barreto",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 31
+   },
+   {
+    "fid": 338,
+    "codigo": 109886,
+    "nome": "Rio Tejipió",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados",
+     "areias",
+     "barro",
+     "cacote",
+     "coqueiral",
+     "curado",
+     "ibura",
+     "imbiribeira",
+     "ipsep",
+     "jiquia",
+     "varzea"
+    ],
+    "metros": 21603
+   },
+   {
+    "fid": 339,
+    "codigo": 110094,
+    "nome": "2ª Travessa Antônio Paes Barreto",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 12
+   },
+   {
+    "fid": 340,
+    "codigo": 110108,
+    "nome": "3ª Travessa Antônio Paes Barreto",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 12
+   },
+   {
+    "fid": 341,
+    "codigo": 110205,
+    "nome": "Rio Beberibe",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "arruda",
+     "beberibe",
+     "cajueiro",
+     "campina-do-barreto",
+     "campo-grande",
+     "dois-unidos",
+     "passarinho",
+     "peixinhos",
+     "porto-da-madeira"
+    ],
+    "metros": 10394
+   },
+   {
+    "fid": 342,
+    "codigo": 110574,
+    "nome": "Travessa Professor Artur Coutinho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 102
+   },
+   {
+    "fid": 343,
+    "codigo": 111317,
+    "nome": "Travessa Itapeva",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 129
+   },
+   {
+    "fid": 344,
+    "codigo": 111589,
+    "nome": "Travessa Felipe Moura",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 27
+   },
+   {
+    "fid": 345,
+    "codigo": 111597,
+    "nome": "Travessa Japomim",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 40
+   },
+   {
+    "fid": 346,
+    "codigo": 111600,
+    "nome": "Travessa Lavinia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 129
+   },
+   {
+    "fid": 347,
+    "codigo": 112003,
+    "nome": "Rio Morno",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "beberibe",
+     "brejo-da-guabiraba",
+     "brejo-de-beberibe",
+     "dois-unidos",
+     "guabiraba",
+     "linha-do-tiro",
+     "passarinho"
+    ],
+    "metros": 5405
+   },
+   {
+    "fid": 348,
+    "codigo": 113271,
+    "nome": "Travessa Lazaro Fontes",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jiquia"
+    ],
+    "metros": 49
+   },
+   {
+    "fid": 349,
+    "codigo": 113662,
+    "nome": "Travessa Urupês",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado"
+    ],
+    "metros": 58
+   },
+   {
+    "fid": 350,
+    "codigo": 114782,
+    "nome": "Travessa Cerro Negro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 75
+   },
+   {
+    "fid": 351,
+    "codigo": 116181,
+    "nome": "Travessa Engenheiro André Dias de Arruda Falcão",
+    "codigoNaMalha": true,
+    "nomeConfere": false,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 43
+   },
+   {
+    "fid": 352,
+    "codigo": 116645,
+    "nome": "Travessa dos Tijolos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 83
+   },
+   {
+    "fid": 353,
+    "codigo": 116726,
+    "nome": "Rua Liberdade",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias",
+     "estancia"
+    ],
+    "metros": 181
+   },
+   {
+    "fid": 354,
+    "codigo": 117498,
+    "nome": "Rua Portugal",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 106
+   },
+   {
+    "fid": 355,
+    "codigo": 117579,
+    "nome": "1ª Travessa Campos Tabaiares",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ilha-do-retiro"
+    ],
+    "metros": 82
+   },
+   {
+    "fid": 356,
+    "codigo": 118184,
+    "nome": "Travessa Ipatinga",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 87
+   },
+   {
+    "fid": 357,
+    "codigo": 118877,
+    "nome": "Rua Rio Guapore",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 135
+   },
+   {
+    "fid": 358,
+    "codigo": 119032,
+    "nome": "Rua Oriente",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 32
+   },
+   {
+    "fid": 359,
+    "codigo": 119040,
+    "nome": "Travessa Havaí",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 161
+   },
+   {
+    "fid": 360,
+    "codigo": 119636,
+    "nome": "Travessa Braulio Cavalcanti",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 50
+   },
+   {
+    "fid": 361,
+    "codigo": 120960,
+    "nome": "Rua Campo do Bangu",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 129
+   },
+   {
+    "fid": 362,
+    "codigo": 126268,
+    "nome": "Travessa Terezina",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 116
+   },
+   {
+    "fid": 363,
+    "codigo": 126276,
+    "nome": "Travessa Itaquice",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 127
+   },
+   {
+    "fid": 364,
+    "codigo": 126527,
+    "nome": "Rua Irlanda",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 70
+   },
+   {
+    "fid": 365,
+    "codigo": 126659,
+    "nome": "Rua Canadá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 80
+   },
+   {
+    "fid": 366,
+    "codigo": 137839,
+    "nome": "Rua da Jaqueira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 162
+   },
+   {
+    "fid": 367,
+    "codigo": 137847,
+    "nome": "Rua Jaspe",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 75
+   },
+   {
+    "fid": 368,
+    "codigo": 137936,
+    "nome": "Rua Dendezal",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 184
+   },
+   {
+    "fid": 369,
+    "codigo": 707074,
+    "nome": "Rua Dr Achilles Amorim Moura",
+    "codigoNaMalha": false,
+    "nomeConfere": false,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 197
+   },
+   {
+    "fid": 370,
+    "codigo": 707082,
+    "nome": "Rua Reinaldo Dorneles Câmara",
+    "codigoNaMalha": false,
+    "nomeConfere": false,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 235
+   },
+   {
+    "fid": 371,
+    "codigo": 707031,
+    "nome": "Rua Barão de Timbaúba",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 97
+   },
+   {
+    "fid": 372,
+    "codigo": 1171,
+    "nome": "Rua Pintor Agenor de Albuquerque César",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 1110
+   },
+   {
+    "fid": 373,
+    "codigo": 1821,
+    "nome": "Rua Dr Alberto Wanderley",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cajueiro",
+     "porto-da-madeira"
+    ],
+    "metros": 544
+   },
+   {
+    "fid": 374,
+    "codigo": 2593,
+    "nome": "Rua Alfredo Vieira de Melo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 206
+   },
+   {
+    "fid": 375,
+    "codigo": 3778,
+    "nome": "Rua Alvenópolis",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 570
+   },
+   {
+    "fid": 376,
+    "codigo": 4758,
+    "nome": "Rua Andira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado"
+    ],
+    "metros": 329
+   },
+   {
+    "fid": 377,
+    "codigo": 4405,
+    "nome": "Rua Amoroso Costa",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 170
+   },
+   {
+    "fid": 378,
+    "codigo": 5754,
+    "nome": "Rua Antônio Figueiredo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 432
+   },
+   {
+    "fid": 379,
+    "codigo": 13412,
+    "nome": "Rua Jitaúna",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "macaxeira"
+    ],
+    "metros": 39
+   },
+   {
+    "fid": 380,
+    "codigo": 5428,
+    "nome": "Rua Pintor Antônio Albuquerque",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura",
+     "ipsep"
+    ],
+    "metros": 597
+   },
+   {
+    "fid": 381,
+    "codigo": 11657,
+    "nome": "Rua Blumenau",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 668
+   },
+   {
+    "fid": 382,
+    "codigo": 13307,
+    "nome": "Rua Cairú",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 123
+   },
+   {
+    "fid": 383,
+    "codigo": 14141,
+    "nome": "Rua Canavial",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "dois-unidos"
+    ],
+    "metros": 363
+   },
+   {
+    "fid": 384,
+    "codigo": 14290,
+    "nome": "Rua Caneleira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "nova-descoberta"
+    ],
+    "metros": 138
+   },
+   {
+    "fid": 385,
+    "codigo": 15016,
+    "nome": "Rua Padre Carlos Leôncio",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 386
+   },
+   {
+    "fid": 386,
+    "codigo": 16888,
+    "nome": "Rua Clotilde Machado",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 249
+   },
+   {
+    "fid": 387,
+    "codigo": 18864,
+    "nome": "Rua Custódia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 441
+   },
+   {
+    "fid": 388,
+    "codigo": 17639,
+    "nome": "Rua Coripós",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 483
+   },
+   {
+    "fid": 389,
+    "codigo": 20966,
+    "nome": "Rua Professor Eduardo Wanderley Filho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 759
+   },
+   {
+    "fid": 390,
+    "codigo": 20745,
+    "nome": "Rua Edna",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 301
+   },
+   {
+    "fid": 391,
+    "codigo": 20788,
+    "nome": "Rua Jornalista Edson Regis",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 1292
+   },
+   {
+    "fid": 392,
+    "codigo": 19623,
+    "nome": "Rua Dias D`Avila",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 361
+   },
+   {
+    "fid": 393,
+    "codigo": 19720,
+    "nome": "Rua Diogenes Sampaio",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 755
+   },
+   {
+    "fid": 394,
+    "codigo": 22608,
+    "nome": "Rua Esdras Farias",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 429
+   },
+   {
+    "fid": 395,
+    "codigo": 21393,
+    "nome": "Avenida Encanta Moça",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "pina"
+    ],
+    "metros": 1138
+   },
+   {
+    "fid": 396,
+    "codigo": 21555,
+    "nome": "Rua Engenho Barra do Dia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 133
+   },
+   {
+    "fid": 397,
+    "codigo": 23604,
+    "nome": "Rua Farias Lemos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 69
+   },
+   {
+    "fid": 398,
+    "codigo": 24082,
+    "nome": "Rua Fernando César D`Andrade",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 208
+   },
+   {
+    "fid": 399,
+    "codigo": 25402,
+    "nome": "Rua São Francisco de Paula",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "caxanga"
+    ],
+    "metros": 601
+   },
+   {
+    "fid": 400,
+    "codigo": 26514,
+    "nome": "Rua Gerson Monteiro de Lima",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 240
+   },
+   {
+    "fid": 401,
+    "codigo": 26697,
+    "nome": "Rua Selma",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-de-beberibe",
+     "passarinho"
+    ],
+    "metros": 141
+   },
+   {
+    "fid": 402,
+    "codigo": 26719,
+    "nome": "Rua do Jardim",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-de-beberibe"
+    ],
+    "metros": 190
+   },
+   {
+    "fid": 403,
+    "codigo": 26751,
+    "nome": "Avenida Quinze de Novembro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 429
+   },
+   {
+    "fid": 404,
+    "codigo": 27464,
+    "nome": "Avenida Capitão Gregório de Caldas",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias",
+     "cacote"
+    ],
+    "metros": 787
+   },
+   {
+    "fid": 405,
+    "codigo": 29157,
+    "nome": "Rua Dr Holmes do Rego Barros",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 276
+   },
+   {
+    "fid": 406,
+    "codigo": 29165,
+    "nome": "Rua Barão Homem de Melo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 563
+   },
+   {
+    "fid": 407,
+    "codigo": 28398,
+    "nome": "Rua Fernando Cavalheira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "iputinga"
+    ],
+    "metros": 356
+   },
+   {
+    "fid": 408,
+    "codigo": 29670,
+    "nome": "Avenida Ibura",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 123
+   },
+   {
+    "fid": 409,
+    "codigo": 29718,
+    "nome": "Rua Icaraí",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 129
+   },
+   {
+    "fid": 410,
+    "codigo": 30988,
+    "nome": "Rua Itaiçuba",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "pina"
+    ],
+    "metros": 201
+   },
+   {
+    "fid": 411,
+    "codigo": 31089,
+    "nome": "Rua Italacy",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 356
+   },
+   {
+    "fid": 412,
+    "codigo": 31178,
+    "nome": "Rua Itamonte",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado"
+    ],
+    "metros": 382
+   },
+   {
+    "fid": 413,
+    "codigo": 31186,
+    "nome": "Rua Itanagé",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 465
+   },
+   {
+    "fid": 414,
+    "codigo": 34177,
+    "nome": "Rua João Pessoa",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 286
+   },
+   {
+    "fid": 415,
+    "codigo": 38326,
+    "nome": "Rua Lauro de Souza",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "campo-grande"
+    ],
+    "metros": 626
+   },
+   {
+    "fid": 416,
+    "codigo": 36781,
+    "nome": "Rua Maestro Jones Johnson",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 1148
+   },
+   {
+    "fid": 417,
+    "codigo": 37362,
+    "nome": "Rua Jundiaí",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado",
+     "jardim-sao-paulo"
+    ],
+    "metros": 985
+   },
+   {
+    "fid": 418,
+    "codigo": 37443,
+    "nome": "Rua Jupiracy",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias"
+    ],
+    "metros": 250
+   },
+   {
+    "fid": 419,
+    "codigo": 37656,
+    "nome": "Rua Amatari",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado"
+    ],
+    "metros": 123
+   },
+   {
+    "fid": 420,
+    "codigo": 37680,
+    "nome": "Avenida Arlindo dos Oito Baixos",
+    "codigoNaMalha": true,
+    "nomeConfere": false,
+    "bairros": [
+     "dois-unidos"
+    ],
+    "metros": 1227
+   },
+   {
+    "fid": 421,
+    "codigo": 39055,
+    "nome": "Rua da Linha",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 185
+   },
+   {
+    "fid": 422,
+    "codigo": 39357,
+    "nome": "Rua Lorena",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 813
+   },
+   {
+    "fid": 423,
+    "codigo": 41475,
+    "nome": "Rua Manoel Brandão",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cajueiro",
+     "campina-do-barreto"
+    ],
+    "metros": 780
+   },
+   {
+    "fid": 424,
+    "codigo": 42927,
+    "nome": "Rua Marília",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 468
+   },
+   {
+    "fid": 425,
+    "codigo": 44377,
+    "nome": "Rua Mineirolândia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "san-martin"
+    ],
+    "metros": 653
+   },
+   {
+    "fid": 426,
+    "codigo": 45667,
+    "nome": "Rua Nápolis",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 397
+   },
+   {
+    "fid": 427,
+    "codigo": 46566,
+    "nome": "Rua Noruega",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 485
+   },
+   {
+    "fid": 428,
+    "codigo": 47260,
+    "nome": "Rua Olegário Mariano",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 233
+   },
+   {
+    "fid": 429,
+    "codigo": 50547,
+    "nome": "Rua Conselheiro Pena",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 268
+   },
+   {
+    "fid": 430,
+    "codigo": 51390,
+    "nome": "Avenida Piracicaba",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado",
+     "jardim-sao-paulo"
+    ],
+    "metros": 1084
+   },
+   {
+    "fid": 431,
+    "codigo": 54534,
+    "nome": "Avenida Sebastião Salazar",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cajueiro",
+     "campina-do-barreto",
+     "porto-da-madeira"
+    ],
+    "metros": 1050
+   },
+   {
+    "fid": 432,
+    "codigo": 60089,
+    "nome": "Rua Tapacurá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "monteiro",
+     "poco"
+    ],
+    "metros": 709
+   },
+   {
+    "fid": 433,
+    "codigo": 58335,
+    "nome": "Rua Rio Pajeú",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 639
+   },
+   {
+    "fid": 434,
+    "codigo": 58378,
+    "nome": "Rua Rio Paranaíba",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 383
+   },
+   {
+    "fid": 435,
+    "codigo": 60658,
+    "nome": "Rua Teotônio de Melo Filho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 421
+   },
+   {
+    "fid": 436,
+    "codigo": 60674,
+    "nome": "Rua Santa Tereza",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-da-guabiraba",
+     "brejo-de-beberibe",
+     "passarinho"
+    ],
+    "metros": 663
+   },
+   {
+    "fid": 437,
+    "codigo": 61026,
+    "nome": "Rua Tinhorão",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 188
+   },
+   {
+    "fid": 438,
+    "codigo": 61425,
+    "nome": "Rua Três de Maio",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 308
+   },
+   {
+    "fid": 439,
+    "codigo": 61670,
+    "nome": "Rua Tucumã",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 195
+   },
+   {
+    "fid": 440,
+    "codigo": 61581,
+    "nome": "Rua 31 de Março",
+    "codigoNaMalha": true,
+    "nomeConfere": false,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 369
+   },
+   {
+    "fid": 441,
+    "codigo": 61808,
+    "nome": "Rua Tupiara",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias"
+    ],
+    "metros": 304
+   },
+   {
+    "fid": 442,
+    "codigo": 707007,
+    "nome": "Rua Professor Potiguar Matos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 285
+   },
+   {
+    "fid": 443,
+    "codigo": 92614,
+    "nome": "Rua Senador Jarbas Maranhão",
+    "codigoNaMalha": true,
+    "nomeConfere": false,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 170
+   },
+   {
+    "fid": 444,
+    "codigo": 93114,
+    "nome": "Rua Sanfoneiro Luiz Gonzaga",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 438
+   },
+   {
+    "fid": 445,
+    "codigo": 94374,
+    "nome": "Rua Cinco de Setembro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 117
+   },
+   {
+    "fid": 446,
+    "codigo": 93432,
+    "nome": "Travessa Rio Moxoto",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 50
+   },
+   {
+    "fid": 447,
+    "codigo": 93440,
+    "nome": "Rua da Carrapateira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 240
+   },
+   {
+    "fid": 448,
+    "codigo": 97896,
+    "nome": "Rua Guaiçuí",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jiquia"
+    ],
+    "metros": 80
+   },
+   {
+    "fid": 449,
+    "codigo": 97900,
+    "nome": "Rua Marumbi",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 257
+   },
+   {
+    "fid": 450,
+    "codigo": 100080,
+    "nome": "Rua Luiz da Câmara Cascudo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 1183
+   },
+   {
+    "fid": 451,
+    "codigo": 101923,
+    "nome": "Ponte Engenheiro Jaime Gusmão",
+    "codigoNaMalha": false,
+    "nomeConfere": false,
+    "bairros": [
+     "iputinga",
+     "monteiro"
+    ],
+    "metros": 525
+   },
+   {
+    "fid": 452,
+    "codigo": 114650,
+    "nome": "Travessa Daniel Antônio Rodrigues",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 45
+   },
+   {
+    "fid": 453,
+    "codigo": 119156,
+    "nome": "Rua Cabo da Boa Esperança",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 236
+   },
+   {
+    "fid": 454,
+    "codigo": 122971,
+    "nome": "Travessa Correia de Brito",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "peixinhos"
+    ],
+    "metros": 390
+   },
+   {
+    "fid": 455,
+    "codigo": 125784,
+    "nome": "Travessa Largo do Poço",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "poco"
+    ],
+    "metros": 115
+   },
+   {
+    "fid": 456,
+    "codigo": 126853,
+    "nome": "Rua General Ellery",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "campo-grande"
+    ],
+    "metros": 125
+   },
+   {
+    "fid": 457,
+    "codigo": 126926,
+    "nome": "Rua Arlindo Ramos Pereira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "campo-grande"
+    ],
+    "metros": 504
+   },
+   {
+    "fid": 458,
+    "codigo": 126942,
+    "nome": "Rua Compositor Sebastião Lopes",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "campo-grande"
+    ],
+    "metros": 105
+   },
+   {
+    "fid": 459,
+    "codigo": 126977,
+    "nome": "Rua Durval Selva",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "campo-grande"
+    ],
+    "metros": 151
+   },
+   {
+    "fid": 460,
+    "codigo": 700029,
+    "nome": "Travessa Joaquim Pinheiro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 174
+   },
+   {
+    "fid": 461,
+    "codigo": 137812,
+    "nome": "Rua da Prosperidade",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 379
+   },
+   {
+    "fid": 462,
+    "codigo": 1481,
+    "nome": "1ª Travessa Dona Benvida de Farias",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 263
+   },
+   {
+    "fid": 463,
+    "codigo": 1899,
+    "nome": "Rua Alcântara",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral",
+     "tejipio"
+    ],
+    "metros": 488
+   },
+   {
+    "fid": 464,
+    "codigo": 2712,
+    "nome": "Rua Alízio Cavalcanti",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 185
+   },
+   {
+    "fid": 465,
+    "codigo": 4669,
+    "nome": "Rua Ananias Catanho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral",
+     "toto"
+    ],
+    "metros": 786
+   },
+   {
+    "fid": 466,
+    "codigo": 8290,
+    "nome": "Rua Arsênio Calaça",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "san-martin"
+    ],
+    "metros": 1295
+   },
+   {
+    "fid": 467,
+    "codigo": 7218,
+    "nome": "Rua Arão Botler",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cajueiro",
+     "porto-da-madeira"
+    ],
+    "metros": 613
+   },
+   {
+    "fid": 468,
+    "codigo": 6637,
+    "nome": "Rua Aprígio Guimarães",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "sancho",
+     "tejipio"
+    ],
+    "metros": 1046
+   },
+   {
+    "fid": 469,
+    "codigo": 7668,
+    "nome": "Rua Córrego da Areia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "macaxeira",
+     "nova-descoberta"
+    ],
+    "metros": 1725
+   },
+   {
+    "fid": 470,
+    "codigo": 7765,
+    "nome": "Rua Argina Aguiar",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 376
+   },
+   {
+    "fid": 471,
+    "codigo": 8664,
+    "nome": "Avenida Embaixador Assis Chateaubriand",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-da-guabiraba",
+     "guabiraba"
+    ],
+    "metros": 603
+   },
+   {
+    "fid": 472,
+    "codigo": 8923,
+    "nome": "Rua Bacharel Augusto Genuino Albuquerque",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "guabiraba"
+    ],
+    "metros": 312
+   },
+   {
+    "fid": 473,
+    "codigo": 9628,
+    "nome": "Rua Baixa Grande",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "alto-do-mandu",
+     "macaxeira"
+    ],
+    "metros": 227
+   },
+   {
+    "fid": 474,
+    "codigo": 9830,
+    "nome": "Estrada do Barbalho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "iputinga"
+    ],
+    "metros": 1938
+   },
+   {
+    "fid": 475,
+    "codigo": 10529,
+    "nome": "Avenida Beberibe Santa Cruz Futebol Clube",
+    "codigoNaMalha": true,
+    "nomeConfere": false,
+    "bairros": [
+     "agua-fria",
+     "arruda",
+     "beberibe",
+     "cajueiro",
+     "encruzilhada",
+     "fundao",
+     "ponto-de-parada",
+     "porto-da-madeira"
+    ],
+    "metros": 7265
+   },
+   {
+    "fid": 476,
+    "codigo": 11029,
+    "nome": "Avenida General Bento da Gama",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 487
+   },
+   {
+    "fid": 477,
+    "codigo": 11576,
+    "nome": "Rua Marechal Bittencourt",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "poco"
+    ],
+    "metros": 304
+   },
+   {
+    "fid": 478,
+    "codigo": 12220,
+    "nome": "Rua Botuverá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia",
+     "jiquia"
+    ],
+    "metros": 295
+   },
+   {
+    "fid": 479,
+    "codigo": 12408,
+    "nome": "Avenida Vereador Otacílio Azevedo",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-da-guabiraba",
+     "brejo-de-beberibe",
+     "vasco-da-gama"
+    ],
+    "metros": 3909
+   },
+   {
+    "fid": 480,
+    "codigo": 12238,
+    "nome": "Rua Bragança",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 549
+   },
+   {
+    "fid": 481,
+    "codigo": 12807,
+    "nome": "Rua Buritama",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 125
+   },
+   {
+    "fid": 482,
+    "codigo": 13862,
+    "nome": "Rua Campinaçu",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 128
+   },
+   {
+    "fid": 483,
+    "codigo": 17574,
+    "nome": "Rua Cordélia Gois Silva",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jiquia",
+     "san-martin"
+    ],
+    "metros": 373
+   },
+   {
+    "fid": 484,
+    "codigo": 18759,
+    "nome": "Estrada do Curado",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado",
+     "jardim-sao-paulo"
+    ],
+    "metros": 1677
+   },
+   {
+    "fid": 485,
+    "codigo": 21113,
+    "nome": "Rua Elisio Medrado",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 445
+   },
+   {
+    "fid": 486,
+    "codigo": 23230,
+    "nome": "Rua Eurico de Souza Leão",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cordeiro",
+     "torroes"
+    ],
+    "metros": 1426
+   },
+   {
+    "fid": 487,
+    "codigo": 22470,
+    "nome": "Rua Ernesto Cavalcanti",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados",
+     "mustardinha"
+    ],
+    "metros": 1951
+   },
+   {
+    "fid": 488,
+    "codigo": 24155,
+    "nome": "Rua Coronel Fernando Machado",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado",
+     "jardim-sao-paulo"
+    ],
+    "metros": 604
+   },
+   {
+    "fid": 489,
+    "codigo": 28614,
+    "nome": "Rua Hélio Brandão",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 1451
+   },
+   {
+    "fid": 490,
+    "codigo": 25917,
+    "nome": "Avenida Canaã",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-de-beberibe",
+     "passarinho"
+    ],
+    "metros": 921
+   },
+   {
+    "fid": 491,
+    "codigo": 26590,
+    "nome": "Rua Madre Tereza de Calcutá",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-de-beberibe"
+    ],
+    "metros": 339
+   },
+   {
+    "fid": 492,
+    "codigo": 28118,
+    "nome": "Rua Guarulhos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 1150
+   },
+   {
+    "fid": 493,
+    "codigo": 28401,
+    "nome": "Rua Gurjaú",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "afogados"
+    ],
+    "metros": 212
+   },
+   {
+    "fid": 494,
+    "codigo": 29076,
+    "nome": "Avenida Hildebrando de Vasconcelos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "beberibe",
+     "dois-unidos"
+    ],
+    "metros": 2944
+   },
+   {
+    "fid": 495,
+    "codigo": 30449,
+    "nome": "Rua Ipatinga",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "coqueiral"
+    ],
+    "metros": 154
+   },
+   {
+    "fid": 496,
+    "codigo": 31194,
+    "nome": "Rua Marquês de Itanhaém",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 364
+   },
+   {
+    "fid": 497,
+    "codigo": 33014,
+    "nome": "Rua dos Prazeres",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias"
+    ],
+    "metros": 802
+   },
+   {
+    "fid": 498,
+    "codigo": 32972,
+    "nome": "Rua Visconde de Jequitinhonha",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem"
+    ],
+    "metros": 9131
+   },
+   {
+    "fid": 499,
+    "codigo": 35963,
+    "nome": "Rua José Gomes de Moura",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "estancia"
+    ],
+    "metros": 862
+   },
+   {
+    "fid": 500,
+    "codigo": 36374,
+    "nome": "Avenida Desembargador José Neves",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem",
+     "imbiribeira"
+    ],
+    "metros": 2841
+   },
+   {
+    "fid": 501,
+    "codigo": 36617,
+    "nome": "Rua José Rodrigues",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "pina"
+    ],
+    "metros": 962
+   },
+   {
+    "fid": 502,
+    "codigo": 36790,
+    "nome": "Rua José Tavares de Holanda",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "curado",
+     "jardim-sao-paulo"
+    ],
+    "metros": 639
+   },
+   {
+    "fid": 503,
+    "codigo": 36897,
+    "nome": "Rua Professor José Vicente",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 1666
+   },
+   {
+    "fid": 504,
+    "codigo": 36960,
+    "nome": "Avenida Josélia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "nova-descoberta"
+    ],
+    "metros": 817
+   },
+   {
+    "fid": 505,
+    "codigo": 38121,
+    "nome": "Rua das Laranjeiras",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias"
+    ],
+    "metros": 1280
+   },
+   {
+    "fid": 506,
+    "codigo": 38350,
+    "nome": "Rua Lázaro Fontes",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jiquia"
+    ],
+    "metros": 120
+   },
+   {
+    "fid": 507,
+    "codigo": 38377,
+    "nome": "Rua Leal de Barros",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "iputinga"
+    ],
+    "metros": 806
+   },
+   {
+    "fid": 508,
+    "codigo": 38385,
+    "nome": "Rua Leandro Barreto",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 1302
+   },
+   {
+    "fid": 509,
+    "codigo": 38512,
+    "nome": "Rua Leobina Pereira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 436
+   },
+   {
+    "fid": 510,
+    "codigo": 38660,
+    "nome": "Rua Santa Leopoldina",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 1235
+   },
+   {
+    "fid": 511,
+    "codigo": 40622,
+    "nome": "Rua Madrid",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 416
+   },
+   {
+    "fid": 512,
+    "codigo": 42986,
+    "nome": "Avenida Mário Álvares Pereira de Lyra",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cordeiro",
+     "iputinga"
+    ],
+    "metros": 2343
+   },
+   {
+    "fid": 513,
+    "codigo": 43451,
+    "nome": "Avenida Marechal Mascarenhas de Moraes",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "boa-viagem",
+     "ibura",
+     "imbiribeira",
+     "jordao"
+    ],
+    "metros": 14745
+   },
+   {
+    "fid": 514,
+    "codigo": 44326,
+    "nome": "Rua Waldeci Marinheiro da Silva",
+    "codigoNaMalha": true,
+    "nomeConfere": false,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 2149
+   },
+   {
+    "fid": 515,
+    "codigo": 44890,
+    "nome": "Rua Santa Mônica",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "san-martin"
+    ],
+    "metros": 478
+   },
+   {
+    "fid": 516,
+    "codigo": 46680,
+    "nome": "Rua Nova Europa",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "san-martin"
+    ],
+    "metros": 154
+   },
+   {
+    "fid": 517,
+    "codigo": 47350,
+    "nome": "Rua Olímpio Costa",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias"
+    ],
+    "metros": 613
+   },
+   {
+    "fid": 518,
+    "codigo": 47520,
+    "nome": "Avenida Ministro Oliveira Salazar",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 696
+   },
+   {
+    "fid": 519,
+    "codigo": 47783,
+    "nome": "Rua Oscar Brandão",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "torroes"
+    ],
+    "metros": 464
+   },
+   {
+    "fid": 520,
+    "codigo": 48836,
+    "nome": "Rua Pangaré",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 381
+   },
+   {
+    "fid": 521,
+    "codigo": 51462,
+    "nome": "Rua Pirambóia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "tejipio"
+    ],
+    "metros": 155
+   },
+   {
+    "fid": 522,
+    "codigo": 50687,
+    "nome": "Rua Pereira Barreto",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "passarinho"
+    ],
+    "metros": 1777
+   },
+   {
+    "fid": 523,
+    "codigo": 52949,
+    "nome": "Rua Queluz",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 355
+   },
+   {
+    "fid": 524,
+    "codigo": 54119,
+    "nome": "Avenida Concris",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "passarinho"
+    ],
+    "metros": 354
+   },
+   {
+    "fid": 525,
+    "codigo": 54780,
+    "nome": "Avenida Tancredo Neves",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-de-beberibe",
+     "passarinho"
+    ],
+    "metros": 1201
+   },
+   {
+    "fid": 526,
+    "codigo": 55590,
+    "nome": "Rua Sargento Sílvio Delmar Hollembach",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "imbiribeira"
+    ],
+    "metros": 1022
+   },
+   {
+    "fid": 527,
+    "codigo": 56820,
+    "nome": "Estrada Real do Poço",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "poco"
+    ],
+    "metros": 773
+   },
+   {
+    "fid": 528,
+    "codigo": 56855,
+    "nome": "Rua Realeza",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 329
+   },
+   {
+    "fid": 529,
+    "codigo": 57355,
+    "nome": "Rua Ribeirão das Neves",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 589
+   },
+   {
+    "fid": 530,
+    "codigo": 57363,
+    "nome": "Rua Ribeirão do Pinhal",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 801
+   },
+   {
+    "fid": 531,
+    "codigo": 56871,
+    "nome": "Avenida Recife",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "areias",
+     "cacote",
+     "curado",
+     "engenho-do-meio",
+     "estancia",
+     "ibura",
+     "ipsep",
+     "jardim-sao-paulo",
+     "san-martin",
+     "torroes"
+    ],
+    "metros": 14565
+   },
+   {
+    "fid": 532,
+    "codigo": 56693,
+    "nome": "Rua Doutor Raposo Pinto",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ipsep"
+    ],
+    "metros": 663
+   },
+   {
+    "fid": 533,
+    "codigo": 58220,
+    "nome": "Rua Rio Madeira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 134
+   },
+   {
+    "fid": 534,
+    "codigo": 58254,
+    "nome": "Avenida Rio Morno",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "dois-unidos",
+     "linha-do-tiro"
+    ],
+    "metros": 1052
+   },
+   {
+    "fid": 535,
+    "codigo": 57657,
+    "nome": "Rua Rio Brígida",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 811
+   },
+   {
+    "fid": 536,
+    "codigo": 58262,
+    "nome": "Rua Rio Moxotó",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 1031
+   },
+   {
+    "fid": 537,
+    "codigo": 58483,
+    "nome": "Rua Rio Prado",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 1118
+   },
+   {
+    "fid": 538,
+    "codigo": 58491,
+    "nome": "Rua Rio da Prata",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 941
+   },
+   {
+    "fid": 539,
+    "codigo": 59625,
+    "nome": "Rua Rui Duarte",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "varzea"
+    ],
+    "metros": 206
+   },
+   {
+    "fid": 540,
+    "codigo": 60615,
+    "nome": "Rua Teolândia",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "brejo-da-guabiraba",
+     "brejo-de-beberibe",
+     "nova-descoberta"
+    ],
+    "metros": 1087
+   },
+   {
+    "fid": 541,
+    "codigo": 61220,
+    "nome": "Rua Tomé Gibson",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "pina"
+    ],
+    "metros": 766
+   },
+   {
+    "fid": 542,
+    "codigo": 61573,
+    "nome": "Avenida Trinta de Outubro",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "jardim-sao-paulo"
+    ],
+    "metros": 934
+   },
+   {
+    "fid": 543,
+    "codigo": 63142,
+    "nome": "Rua Canavieira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "dois-unidos"
+    ],
+    "metros": 417
+   },
+   {
+    "fid": 544,
+    "codigo": 65790,
+    "nome": "Rua Ximboré",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cacote"
+    ],
+    "metros": 807
+   },
+   {
+    "fid": 545,
+    "codigo": 64068,
+    "nome": "Rua Presidente Venceslau",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 709
+   },
+   {
+    "fid": 546,
+    "codigo": 66354,
+    "nome": "Estrada de Passarinho",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "passarinho"
+    ],
+    "metros": 1342
+   },
+   {
+    "fid": 547,
+    "codigo": 77216,
+    "nome": "Avenida Chagas Ferreira",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "dois-unidos",
+     "passarinho"
+    ],
+    "metros": 3536
+   },
+   {
+    "fid": 548,
+    "codigo": 77666,
+    "nome": "Rua Campos Tabaiares",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ilha-do-retiro"
+    ],
+    "metros": 236
+   },
+   {
+    "fid": 549,
+    "codigo": 80080,
+    "nome": "Rua Dr Benigno Jordâo de Vasconcelos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 2449
+   },
+   {
+    "fid": 550,
+    "codigo": 79448,
+    "nome": "Rua Professor José Brasileiro Vilanova",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "ibura"
+    ],
+    "metros": 1054
+   },
+   {
+    "fid": 551,
+    "codigo": 81108,
+    "nome": "Rua Indaiá do Sul",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "cohab"
+    ],
+    "metros": 455
+   },
+   {
+    "fid": 552,
+    "codigo": 81523,
+    "nome": "Estrada dos Macacos",
+    "codigoNaMalha": true,
+    "nomeConfere": true,
+    "bairros": [
+     "dois-irmaos",
+     "guabiraba"
+    ],
+    "metros": 3268
+   }
+  ]
+ },
+ "piloto": {
+  "boa-viagem": {
+   "predios": 1761,
+   "comCenario": 175,
+   "porCategoria": {
+    "mercado": 97,
+    "farmacia": 95,
+    "transporte": 1
+   },
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 60,
+   "outroLocal": 133,
+   "comHistoricoDaRua": 61,
+   "comCatalogoPerto": 183,
+   "soDesvioPequeno": 320,
+   "comparados": 642,
+   "imateriais": 449,
+   "ruaPropria": 28
+  },
+  "casa-forte": {
+   "predios": 78,
+   "comCenario": 1,
+   "porCategoria": {},
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 0,
+   "outroLocal": 0,
+   "comHistoricoDaRua": 1,
+   "comCatalogoPerto": 5,
+   "soDesvioPequeno": 0,
+   "ruaPropria": 1
+  },
+  "gracas": {
+   "predios": 285,
+   "comCenario": 0,
+   "porCategoria": {},
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 0,
+   "outroLocal": 0,
+   "comHistoricoDaRua": 0,
+   "comCatalogoPerto": 4,
+   "soDesvioPequeno": 6,
+   "comparados": 9,
+   "imateriais": 9
+  },
+  "espinheiro": {
+   "predios": 151,
+   "comCenario": 12,
+   "porCategoria": {
+    "farmacia": 1
+   },
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 0,
+   "outroLocal": 1,
+   "comHistoricoDaRua": 6,
+   "comCatalogoPerto": 0,
+   "soDesvioPequeno": 17,
+   "ruaPropria": 11,
+   "comparados": 21,
+   "imateriais": 20
+  },
+  "madalena": {
+   "predios": 241,
+   "comCenario": 26,
+   "porCategoria": {
+    "mercado": 50
+   },
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 0,
+   "outroLocal": 50,
+   "comHistoricoDaRua": 0,
+   "comCatalogoPerto": 0,
+   "soDesvioPequeno": 15,
+   "comparados": 84,
+   "imateriais": 34,
+   "ruaPropria": 1
+  },
+  "torre": {
+   "predios": 127,
+   "comCenario": 0,
+   "porCategoria": {},
+   "perdeAcesso": 0,
+   "mesmoLocalOutroCaminho": 0,
+   "outroLocal": 0,
+   "comHistoricoDaRua": 0,
+   "comCatalogoPerto": 0,
+   "soDesvioPequeno": 0
+  }
+ },
+ "exemplos": [
+  {
+   "area": "boa-viagem",
+   "predio": "10537-232",
+   "categoria": "mercado",
+   "data": "2023-06-30",
+   "rua": "Avenida Barao de Souza Leao",
+   "antesMin": 6.4,
+   "depoisMin": 13.3,
+   "mesmoLocal": true
+  },
+  {
+   "area": "boa-viagem",
+   "predio": "10537-260",
+   "categoria": "mercado",
+   "data": "2023-06-30",
+   "rua": "Avenida Barao de Souza Leao",
+   "antesMin": 6.4,
+   "depoisMin": 13.3,
+   "mesmoLocal": true
+  },
+  {
+   "area": "espinheiro",
+   "predio": "52833-76",
+   "categoria": "farmacia",
+   "data": "2023-05-24",
+   "rua": "Avenida Gov. Agamenon Magalhaes",
+   "antesMin": 3,
+   "depoisMin": 6,
+   "mesmoLocal": false
+  },
+  {
+   "area": "madalena",
+   "predio": "10910-341",
+   "categoria": "mercado",
+   "data": "2024-06-25",
+   "rua": "Tunel da Madalena",
+   "antesMin": 9.1,
+   "depoisMin": 14.4,
+   "mesmoLocal": false
+  },
+  {
+   "area": "madalena",
+   "predio": "10910-341",
+   "categoria": "mercado",
+   "data": "2024-06-15",
+   "rua": "Tunel da Madalena",
+   "antesMin": 9.1,
+   "depoisMin": 14.4,
+   "mesmoLocal": false
+  }
+ ],
+ "gRain": {
+  "casos": 38,
+  "episodios": 9,
+  "reservados": [
+   "E2024-02-27",
+   "E2024-06-25"
+  ]
+ },
+ "bytes": {
+  "boa-viagem": 56379,
+  "casa-forte": 1168,
+  "gracas": 1639,
+  "espinheiro": 2534,
+  "madalena": 7347,
+  "torre": 444
+ },
+ "ms": 38085,
+ "memoriaPicoMB": 386
+}

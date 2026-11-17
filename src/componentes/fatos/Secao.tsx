@@ -77,6 +77,7 @@ export function SecaoDeFato({ dossie, id, pequeno, children, ...comum }: PropsDa
           role="button"
           accessibilityLabel={`${comum.titulo}, ${comum.resumo}`}
           accessibilityState={{ expanded: aberta }}
+          aria-expanded={aberta}
           onPress={() => {
             animarSecao(reduzir);
             alternarSecao(dossie.id, id);

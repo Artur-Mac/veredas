@@ -1,0 +1,13 @@
+{
+ "comentario": "Áreas com camadas por prédio (rede a pé, dia a dia, horários, chuva, noite, onde procurar). O índice municipal cobre todos os bairros habilitados; isto só decide onde os pipelines de camada rodam. VE16: expansão deliberada, uma área por vez, com conjunto de validação próprio.",
+ "piloto": [
+  "boa-viagem",
+  "casa-forte",
+  "gracas",
+  "espinheiro",
+  "madalena"
+ ],
+ "expansao": [
+  "torre"
+ ]
+}

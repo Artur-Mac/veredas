@@ -1,0 +1,319 @@
+{
+ "executadoEm": "2026-11-14T19:34:07Z",
+ "versaoDaRede": "e8a0c30a51ab6cce",
+ "publicacao": {
+  "versao": "c05c3ba9033e9fd9",
+  "ativa": "c05c3ba9033e9fd9",
+  "anterior": "28ee1d12a811e7ab",
+  "bytes": 5311098
+ },
+ "extrato": {
+  "arquivo": ".cache/osm/nordeste-261113.osm.pbf",
+  "sha256": "e55995308145fa0b7e98f1231a3478f76815f5ff3cd114c0848c7ba047204f83",
+  "blocos": 9106,
+  "nos": 66414436,
+  "vias": 6353598,
+  "relacoesPuladas": 65868,
+  "cabecalhoVisto": true,
+  "ordenado": true,
+  "nosNaCaixa": 1630493,
+  "viasDeCirculacao": 55239,
+  "entradasOsm": 324,
+  "prediosOsmComEndereco": 10576
+ },
+ "grafo": {
+  "nos": 273529,
+  "arestas": 300703,
+  "viasMantidas": 53508,
+  "descartes": {
+   "semPermissao": 1731,
+   "bloqueadoPorBarreira": 255,
+   "semCoordenada": 3296
+  },
+  "componentes": 298,
+  "componentePrincipal": 268621,
+  "fracaoNoPrincipal": 0.982,
+  "escadasM": 58869,
+  "ponteM": 72066,
+  "travessiasMarcadas": 2604,
+  "barreiras": 3768
+ },
+ "linhagem": {
+  "viasComNome": 32590,
+  "porMetodo": {
+   "nome_e_bairro": 18922,
+   "nome_fora_do_bairro": 565,
+   "ambiguo": 2105,
+   "sem_correspondencia": 10998
+  }
+ },
+ "frentes": {
+  "boa-viagem": {
+   "predios": 1879,
+   "forte": 1761,
+   "media": 105,
+   "fraca": 13,
+   "revisada": 0,
+   "comFrentesAdicionais": 932,
+   "frentesRecusadasPorAgua": 61,
+   "comEntradaOsmNoContorno": 1,
+   "usandoEntradaOsm": 1,
+   "entradaOsmAte10mDoCandidato": 0
+  },
+  "casa-forte": {
+   "predios": 82,
+   "forte": 78,
+   "media": 3,
+   "fraca": 1,
+   "revisada": 0,
+   "comFrentesAdicionais": 43,
+   "frentesRecusadasPorAgua": 0,
+   "comEntradaOsmNoContorno": 0,
+   "usandoEntradaOsm": 0,
+   "entradaOsmAte10mDoCandidato": 0
+  },
+  "gracas": {
+   "predios": 291,
+   "forte": 285,
+   "media": 6,
+   "fraca": 0,
+   "revisada": 0,
+   "comFrentesAdicionais": 130,
+   "frentesRecusadasPorAgua": 5,
+   "comEntradaOsmNoContorno": 0,
+   "usandoEntradaOsm": 0,
+   "entradaOsmAte10mDoCandidato": 0
+  },
+  "espinheiro": {
+   "predios": 156,
+   "forte": 151,
+   "media": 5,
+   "fraca": 0,
+   "revisada": 0,
+   "comFrentesAdicionais": 52,
+   "frentesRecusadasPorAgua": 0,
+   "comEntradaOsmNoContorno": 1,
+   "usandoEntradaOsm": 1,
+   "entradaOsmAte10mDoCandidato": 0
+  },
+  "madalena": {
+   "predios": 280,
+   "forte": 241,
+   "media": 38,
+   "fraca": 1,
+   "revisada": 0,
+   "comFrentesAdicionais": 128,
+   "frentesRecusadasPorAgua": 10,
+   "comEntradaOsmNoContorno": 0,
+   "usandoEntradaOsm": 0,
+   "entradaOsmAte10mDoCandidato": 0
+  }
+ },
+ "concordanciaComEnderecoOsm": {
+  "boa-viagem": {
+   "comCasaNoOsm": 141,
+   "concorda": 139,
+   "discorda": 2,
+   "medianaM": 5
+  },
+  "casa-forte": {
+   "comCasaNoOsm": 4,
+   "concorda": 4,
+   "discorda": 0,
+   "medianaM": 7
+  },
+  "gracas": {
+   "comCasaNoOsm": 149,
+   "concorda": 148,
+   "discorda": 1,
+   "medianaM": 4
+  },
+  "espinheiro": {
+   "comCasaNoOsm": 1,
+   "concorda": 1,
+   "discorda": 0,
+   "medianaM": 2
+  },
+  "madalena": {
+   "comCasaNoOsm": 20,
+   "concorda": 18,
+   "discorda": 2,
+   "medianaM": 8
+  }
+ },
+ "gRoute": {
+  "total": 30,
+  "porEstado": {
+   "rota": 29,
+   "origem_sem_ligacao": 1
+  },
+  "impossiveis": [],
+  "suspeitas": []
+ },
+ "rotasAmplas": {
+  "boa-viagem": {
+   "predios": 1879,
+   "comLigacao": 1875,
+   "comRota": 1875,
+   "impossiveis": 0,
+   "suspeitas": 30,
+   "desvioMediano": 1.57,
+   "desvioP90": 2.89
+  },
+  "casa-forte": {
+   "predios": 82,
+   "comLigacao": 82,
+   "comRota": 82,
+   "impossiveis": 0,
+   "suspeitas": 0,
+   "desvioMediano": 1.46,
+   "desvioP90": 2.09
+  },
+  "gracas": {
+   "predios": 291,
+   "comLigacao": 291,
+   "comRota": 291,
+   "impossiveis": 0,
+   "suspeitas": 0,
+   "desvioMediano": 1.4,
+   "desvioP90": 2.12
+  },
+  "espinheiro": {
+   "predios": 156,
+   "comLigacao": 156,
+   "comRota": 156,
+   "impossiveis": 0,
+   "suspeitas": 0,
+   "desvioMediano": 1.69,
+   "desvioP90": 3.18
+  },
+  "madalena": {
+   "predios": 280,
+   "comLigacao": 280,
+   "comRota": 280,
+   "impossiveis": 0,
+   "suspeitas": 2,
+   "desvioMediano": 1.62,
+   "desvioP90": 2.86
+  }
+ },
+ "filaDeRevisao": {
+  "total": 180,
+  "ligacoes": 172,
+  "viasSobreAgua": 8,
+  "top10": [
+   {
+    "tipo": "via_sobre_agua_sem_ponte",
+    "id": "via:967998466",
+    "nome": "Rua Maria Carolina",
+    "highway": "footway",
+    "agua": "RIO JORDÃO",
+    "prediosAfetados": 20,
+    "impacto": 1278
+   },
+   {
+    "tipo": "via_sobre_agua_sem_ponte",
+    "id": "via:762760194",
+    "nome": "Rua General Edson Amâncio Ramalho",
+    "highway": "secondary",
+    "agua": "RIO JORDÃO",
+    "prediosAfetados": 17,
+    "impacto": 608
+   },
+   {
+    "tipo": "ligacao_do_predio",
+    "id": "5690-1013",
+    "area": "boa-viagem",
+    "classe": "fraca",
+    "motivos": [
+     "sem_frente_propria_a_60m"
+    ],
+    "unidades": 173,
+    "impacto": 520
+   },
+   {
+    "tipo": "ligacao_do_predio",
+    "id": "5690-979",
+    "area": "boa-viagem",
+    "classe": "fraca",
+    "motivos": [
+     "frente_a_mais_de_30m"
+    ],
+    "unidades": 173,
+    "impacto": 520
+   },
+   {
+    "tipo": "via_sobre_agua_sem_ponte",
+    "id": "via:82210261",
+    "nome": "Rua Tenente João Cícero",
+    "highway": "residential",
+    "agua": "RIO JORDÃO",
+    "prediosAfetados": 11,
+    "impacto": 429
+   },
+   {
+    "tipo": "via_sobre_agua_sem_ponte",
+    "id": "via:836834960",
+    "nome": "Via Mangue - Pista Leste",
+    "highway": "primary",
+    "agua": "ALAGADO",
+    "prediosAfetados": 11,
+    "impacto": 429
+   },
+   {
+    "tipo": "via_sobre_agua_sem_ponte",
+    "id": "via:967998463",
+    "nome": "Rua General Edson Amâncio Ramalho",
+    "highway": "secondary",
+    "agua": "ALAGADO",
+    "prediosAfetados": 11,
+    "impacto": 429
+   },
+   {
+    "tipo": "ligacao_do_predio",
+    "id": "3905-532",
+    "area": "boa-viagem",
+    "classe": "media",
+    "motivos": [
+     "via_osm_sem_o_mesmo_codigo"
+    ],
+    "unidades": 391,
+    "impacto": 392
+   },
+   {
+    "tipo": "ligacao_do_predio",
+    "id": "10448-43",
+    "area": "boa-viagem",
+    "classe": "fraca",
+    "motivos": [
+     "ligacao_a_mais_de_30m"
+    ],
+    "unidades": 128,
+    "impacto": 385
+   },
+   {
+    "tipo": "ligacao_do_predio",
+    "id": "68713-200",
+    "area": "boa-viagem",
+    "classe": "fraca",
+    "motivos": [
+     "ligacao_a_mais_de_30m"
+    ],
+    "unidades": 110,
+    "impacto": 330
+   }
+  ]
+ },
+ "correcoesAplicadas": 0,
+ "tempos": {
+  "leituraDoPbf": 33727,
+  "grafo": 522,
+  "linhagem": 21866,
+  "frentes": 4465,
+  "concordanciaOsm": 118,
+  "gRoute": 344,
+  "rotasAmplas": 9698,
+  "publicacao": 2379,
+  "total": 73675
+ }
+}

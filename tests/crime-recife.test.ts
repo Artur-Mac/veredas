@@ -4,7 +4,7 @@ import { mkdtempSync, readFileSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 import { z } from "zod";
-import { BAIRROS_COBERTOS, BAIRROS_DO_RECIFE } from "../src/dados/recife/bairros";
+import { BAIRROS_DO_RECIFE } from "../src/dados/recife/bairros";
 
 // Confere os dois arquivos gerados por scripts/dados/coletar-crime-recife.mjs (contagens de ocorrência por bairro,
 // registros da SDS-PE compilados pelo Crime Brasil) e o parser do script, com uma fixture SINTÉTICA em
@@ -19,6 +19,11 @@ const DIR_CRIME = join(RAIZ, "src", "dados", "recife", "crime");
 const ATRIBUICAO = "registros da SDS-PE compilados pelo Crime Brasil";
 const PREFIXO_URL = "https://crimebrasil.com.br/bairro/pe/recife/";
 const CARIMBO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
+/**
+ * Os 5 bairros da v1, os mesmos de ALVOS no script. Não usa BAIRROS_COBERTOS de bairros.ts: essa lista passou a
+ * ser a dos bairros com índice cadastral habilitado e cresce sem mudar o recorte desta coleta.
+ */
+const ALVOS_DA_V1 = ["boa-viagem", "casa-forte", "gracas", "espinheiro", "madalena"];
 
 function parsear(arquivo: string): unknown {
   return JSON.parse(execFileSync(process.execPath, [SCRIPT, "--parsear", arquivo], { encoding: "utf-8" })) as unknown;
@@ -206,7 +211,7 @@ describe("src/dados/recife/crime/ocorrencias.json", () => {
 
   it("os cinco bairros da v1 são alvos; todo vizinho faz divisa com pelo menos um alvo", () => {
     const alvos = ocorrencias.bairros.filter((b) => b.papel === "alvo").map((b) => b.slug);
-    expect(alvos).toEqual([...BAIRROS_COBERTOS]);
+    expect(alvos).toEqual(ALVOS_DA_V1);
     for (const b of ocorrencias.bairros) {
       for (const a of b.divisaComAlvos) {
         expect(alvos).toContain(a);

@@ -3,23 +3,29 @@ import { useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { Cartao, CorpoDoCartao } from "../../componentes/Cartao";
+import { Coluna } from "../../componentes/casca/Coluna";
+import { AlternativasDePredio } from "../../componentes/predio/AlternativasDePredio";
 import { BuscaDePredio } from "../../componentes/predio/BuscaDePredio";
 import { CaixaDoPredio } from "../../componentes/predio/CaixaDoPredio";
 import { GavetaSemCreditos } from "../../componentes/predio/GavetaSemCreditos";
 import { MapaDoPredio } from "../../componentes/predio/MapaDoPredio";
 import { PERCURSO_INICIAL, aposEscolha, proximoDoPercurso, type Percurso } from "../../componentes/predio/percurso";
-import { formatarChaveCadastral, mensagemSemCandidatos } from "../../componentes/predio/textos";
+import { avisoDeTipologia, formatarChaveCadastral, mensagemSemCandidatos } from "../../componentes/predio/textos";
 import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
+import { listaDeBairrosCobertos } from "../../componentes/dossie-v1/textos";
 import type { AnaliseV2, Edificio } from "../../dados/contratos";
 import { bairroPorSlug, eCoberto, type SlugCoberto } from "../../dados/recife/bairros";
-import { buscarCandidatos, type EntradaDeBusca } from "../../dados/recife/buscar";
-import { edificiosDoBairro, indiceDoBairro } from "../../dados/recife/indice";
+import { buscarCandidatosDetalhados } from "../../dados/recife/buscar";
+import { arquivoDoIndice, edificiosDoBairro } from "../../dados/recife/indice";
+import { EsperaDasCamadas } from "../../componentes/EsperaDasCamadas";
 import { useAnalises } from "../../estado/Analises";
 import { useCarteira } from "../../estado/Carteira";
+import { useConfirmarPredio } from "../../componentes/predio/confirmar";
+import { PreparoDoDossie } from "../../componentes/preparo/PreparoDoDossie";
+import { entradaDeBusca } from "../../componentes/predio/entrada";
 import { useTema } from "../../tema/Tema";
-
-const AZUL_CADASTRAL = "#2E5A85";
+import { comAlfa } from "../../tema/tokens";
 
 export default function TelaPredio() {
   const parametros = useLocalSearchParams<{ id?: string | string[] }>();
@@ -47,7 +53,7 @@ export default function TelaPredio() {
   return (
     <Tela comAbas>
       <ScrollView contentContainerStyle={styles.rolagem} keyboardShouldPersistTaps="handled">
-        <View style={styles.coluna}>
+        <Coluna>
           {!pronto ? (
             <Texto tipo="apoio" cor="cor-texto-apoio">
               Abrindo suas análises…
@@ -57,12 +63,21 @@ export default function TelaPredio() {
           ) : !eCoberto(analise.bairro) ? (
             <CartaoDeAviso
               titulo={`Ainda não temos o cadastro de ${analise.bairroTexto || "este bairro"}`}
-              texto="O Vereda confirma o prédio em Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena."
+              texto={`O Vereda confirma o prédio em ${listaDeBairrosCobertos()}.`}
             />
           ) : (
-            <ConfirmarPredio analise={analise} bairro={analise.bairro} aoFaltarCredito={() => setGavetaAberta(true)} />
+            // `key`: a tela fica montada entre uma análise e outra; o prédio escolhido na anterior não vale para esta.
+            // D036: o índice do bairro fica fora do bundle; a busca só roda com ele em memória.
+            <EsperaDasCamadas
+              key={analise.id}
+              caminhos={[arquivoDoIndice(analise.bairro)].filter((x): x is string => !!x)}
+              carregando={`Carregando o cadastro de ${bairroPorSlug(analise.bairro)?.nome ?? "do bairro"}…`}
+              oQue="o cadastro deste bairro"
+            >
+              <ConfirmarPredio analise={analise} bairro={analise.bairro} aoFaltarCredito={() => setGavetaAberta(true)} />
+            </EsperaDasCamadas>
           )}
-        </View>
+        </Coluna>
       </ScrollView>
       <GavetaSemCreditos
         visivel={gavetaAberta}
@@ -77,8 +92,9 @@ export default function TelaPredio() {
 }
 
 function CartaoDeAviso({ titulo, texto }: { titulo: string; texto: string }) {
+  const { cor } = useTema();
   return (
-    <Cartao style={styles.cartao}>
+    <Cartao style={[styles.cartao, { borderColor: comAlfa(cor("cor-texto"), 0.09) }]}>
       <CorpoDoCartao style={styles.corpo}>
         <Texto tipo="secao">{titulo}</Texto>
         <Texto tipo="apoio" cor="cor-texto-apoio">
@@ -92,16 +108,17 @@ function CartaoDeAviso({ titulo, texto }: { titulo: string; texto: string }) {
 
 /** Sobretítulo azul com o traço de "registro oficial" de index.html (.conf-trace.oficial) e a chave cadastral. */
 function SobretituloCadastral({ chave }: { chave: string | null }) {
+  const { cor } = useTema();
   return (
     <View style={styles.sobretitulo}>
       <View style={styles.rastro} accessibilityLabel="Cadastro imobiliário · Prefeitura do Recife">
-        <View style={styles.linhaDoRastro} />
-        <Texto tipo="apoio" style={styles.textoDoRastro}>
+        <View style={[styles.linhaDoRastro, { backgroundColor: cor("cor-azul-cadastral") }]} />
+        <Texto tipo="apoio" cor="cor-azul-cadastral" style={styles.textoDoRastro}>
           Cadastro imobiliário · Prefeitura do Recife
         </Texto>
       </View>
       {chave ? (
-        <Texto tipo="etiqueta" accessibilityLabel={`Chave cadastral ${chave}`} style={styles.chave}>
+        <Texto tipo="etiqueta" cor="cor-azul-cadastral" accessibilityLabel={`Chave cadastral ${chave}`} style={styles.chave}>
           {chave}
         </Texto>
       ) : null}
@@ -109,24 +126,12 @@ function SobretituloCadastral({ chave }: { chave: string | null }) {
   );
 }
 
-function entradaDeBusca(analise: AnaliseV2, bairro: SlugCoberto): EntradaDeBusca {
-  return {
-    bairro,
-    logradouro: analise.logradouro,
-    numero: analise.numero,
-    nomeEdificio: analise.nomeEdificio,
-    area: analise.declarados.area.valor,
-    andar: analise.declarados.andar.valor,
-    anoConstrucao: analise.extracao?.campos.anoConstrucao ?? null,
-  };
-}
-
 type PropsDaConfirmacao = { analise: AnaliseV2; bairro: SlugCoberto; aoFaltarCredito: () => void };
 
 function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmacao) {
   const { cor } = useTema();
   const { salvar } = useAnalises();
-  const { saldo, debitarDossie } = useCarteira();
+  const { confirmar: confirmarPredio, trabalhando: confirmando, erroDaCarteira } = useConfirmarPredio();
 
   /** Prédio que a pessoa escolheu (vizinho, busca ou mapa). null = o primeiro da lista. */
   const [escolhidoId, setEscolhidoId] = useState<string | null>(null);
@@ -135,7 +140,8 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
   /** Como o prédio fora da lista de candidatos chegou à tela: a pessoa escolheu, ou o botão mostrou um vizinho. */
   const [comoChegou, setComoChegou] = useState<"escolha" | "vizinho">("escolha");
   const [aviso, setAviso] = useState("");
-  const [trabalhando, setTrabalhando] = useState(false);
+  const [salvandoSemPredio, setTrabalhando] = useState(false);
+  const trabalhando = salvandoSemPredio || confirmando;
   /** Trava de toque duplo: o estado só muda no próximo quadro e dois toques seguidos cobrariam duas vezes. */
   const ocupado = useRef(false);
   const [erro, setErro] = useState("");
@@ -150,10 +156,14 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
   const { edificios, problema } = indice;
   const porId = useMemo(() => new Map(edificios.map((e) => [e.id, e])), [edificios]);
 
-  const candidatos = useMemo(
-    () => buscarCandidatos(entradaDeBusca(analise, bairro), edificios),
+  const resultado = useMemo(
+    () => buscarCandidatosDetalhados(entradaDeBusca(analise, bairro), edificios),
     [analise, bairro, edificios],
   );
+
+  const candidatos = resultado.candidatos;
+  const [mostrarAlternativas, setMostrarAlternativas] = useState(false);
+  const soPistasGerais = !candidatos.some((c) => c.pistas.some((p) => p === "nome" || p === "rua"));
 
   const vinculo = analise.vinculo;
   const jaConfirmado = vinculo.estado === "confirmado";
@@ -166,7 +176,7 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
     return antes ? [antes, ...sugeridos.filter((e) => e.id !== antes.id)] : sugeridos;
   }, [candidatos, porId, idConfirmado]);
 
-  const atual = (escolhidoId ? porId.get(escolhidoId) : undefined) ?? ordem[0] ?? null;
+  const atual = (escolhidoId ? porId.get(escolhidoId) : undefined) ?? (jaConfirmado || !soPistasGerais ? ordem[0] : null) ?? null;
   const naLista = atual !== null && ordem.some((e) => e.id === atual.id);
   const candidato = atual ? candidatos.find((c) => c.edificioId === atual.id) : undefined;
   const eOConfirmado = atual !== null && atual.id === idConfirmado;
@@ -177,6 +187,10 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
   const nomeDoBairro = bairroPorSlug(bairro)?.nome ?? analise.bairroTexto;
 
   const abrirDossie = () => router.push({ pathname: "/dossie", params: { id: analise.id } });
+  /** Depois de confirmar: o preparo (o que o Vereda está cruzando e o aviso) por cima da tela, que leva ao dossiê. */
+  const [preparando, setPreparando] = useState(false);
+  const abrirCarregamento = () => setPreparando(true);
+  const estiloDoCartao = [styles.cartao, { borderColor: comAlfa(cor("cor-texto"), 0.09) }];
 
   const escolher = (edificio: Edificio) => {
     setErro("");
@@ -201,48 +215,15 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
     }
   };
 
+  // Gravar o vínculo, decidir o IPTU contra o cadastro, completar o endereço e cobrar: src/componentes/predio/confirmar.ts.
   const confirmar = async (edificio: Edificio) => {
     if (ocupado.current) return;
-    if (!jaConfirmado && saldo <= 0) {
-      aoFaltarCredito();
-      return;
-    }
-    ocupado.current = true;
-    setTrabalhando(true);
     setErro("");
-    try {
-      const agora = new Date().toISOString();
-      await salvar({
-        ...analise,
-        atualizadaEm: agora,
-        vinculo: {
-          estado: "confirmado",
-          edificioId: edificio.id,
-          dsqfl: edificio.dsqfl,
-          confirmadoEm: agora,
-          indiceGeradoEm: indiceDoBairro(bairro).geradoEm,
-        },
-      });
-      if (!jaConfirmado) {
-        // Cobra depois de gravar o vínculo; se a cobrança não acontecer, desfaz o vínculo.
-        let debitou = false;
-        try {
-          debitou = await debitarDossie(analise.id);
-        } finally {
-          if (!debitou) await salvar(analise);
-        }
-        if (!debitou) {
-          aoFaltarCredito();
-          return;
-        }
-      }
-      abrirDossie();
-    } catch {
-      setErro("Não foi possível confirmar o prédio. Nenhum crédito foi usado; tente de novo.");
-    } finally {
-      ocupado.current = false;
-      setTrabalhando(false);
-    }
+    const r = await confirmarPredio(analise, edificio, bairro);
+    if (r === "carteira_bloqueada") setErro(erroDaCarteira);
+    else if (r === "sem_credito") aoFaltarCredito();
+    else if (r === "erro") setErro("Não foi possível confirmar o prédio. Nenhum crédito foi usado; tente de novo.");
+    else abrirCarregamento();
   };
 
   const seguirSemPredio = async () => {
@@ -267,15 +248,34 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
   };
 
   const textoDeErro = erro ? (
-    <Texto tipo="apoio" style={{ color: cor("cor-barro") }} accessibilityLiveRegion="polite">
+    <Texto tipo="apoio" cor="cor-barro-texto" accessibilityLiveRegion="polite">
       {erro}
     </Texto>
+  ) : null;
+
+  const alternativas = resultado.totalCompativeis > 0 ? (
+    <View style={{ gap: 8 }}>
+      <Texto tipo="apoio" cor="cor-texto-apoio">
+        {`${resultado.totalCompativeis} ${resultado.totalCompativeis === 1 ? "prédio compatível" : "prédios compatíveis"} com as informações disponíveis.`}
+        {resultado.resultadosLimitados ? ` Até ${candidatos.length} sugestões exibidas; refine pelo endereço ou nome.` : ""}
+      </Texto>
+      <Botao
+        rotulo={mostrarAlternativas ? "Ocultar sugestões" : "Examinar sugestões"}
+        expandido={mostrarAlternativas}
+        variante="secundario"
+        desativado={trabalhando}
+        onPress={() => setMostrarAlternativas((v) => !v)}
+      />
+      {mostrarAlternativas ? (
+        <AlternativasDePredio resultado={resultado} porId={porId} atualId={atual?.id ?? null} aoEscolher={escolher} desativado={trabalhando} />
+      ) : null}
+    </View>
   ) : null;
 
   // Sem prédio para mostrar: índice ilegível, ou nenhum candidato e nada escolhido na busca.
   if (!atual) {
     return (
-      <Cartao style={styles.cartao}>
+      <Cartao style={estiloDoCartao}>
         <CorpoDoCartao style={styles.corpo}>
           <SobretituloCadastral chave={null} />
           {problema ? (
@@ -293,19 +293,25 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
           ) : (
             <>
               <Texto tipo="titulo-tela" role="heading" style={styles.titulo}>
-                É este o prédio?
+                {avisoDeTipologia(analise.tipologia)
+                  ? "Este tipo de imóvel não está no cadastro de prédios"
+                  : soPistasGerais ? "Precisamos de mais uma informação para localizar o prédio" : "É este o prédio?"}
               </Texto>
               <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.paragrafo}>
-                {mensagemSemCandidatos(analise.logradouro, analise.numero)}
+                {avisoDeTipologia(analise.tipologia) ??
+                  (resultado.totalCompativeis > 0
+                  ? "Área e ano podem coincidir em vários prédios. Informe a rua e o número ou o nome do edifício. Você também pode continuar sem identificar."
+                  : mensagemSemCandidatos(analise.logradouro, analise.numero))}
               </Texto>
               <BuscaDePredio edificios={edificios} aoEscolher={escolher} />
+              {alternativas}
             </>
           )}
           {textoDeErro}
           {jaConfirmado ? (
             <Botao rotulo="Ver dossiê" variante="principal" onPress={abrirDossie} />
           ) : (
-            <Botao rotulo={rotuloDeSeguir} variante="secundario" desativado={trabalhando} onPress={() => void seguirSemPredio()} />
+            <Botao rotulo="Continuar sem identificar" variante="secundario" desativado={trabalhando} onPress={() => void seguirSemPredio()} />
           )}
         </CorpoDoCartao>
       </Cartao>
@@ -315,16 +321,17 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
   const chave = formatarChaveCadastral(atual.dsqfl);
 
   return (
-    <Cartao style={styles.cartao}>
+    <Cartao style={estiloDoCartao}>
       <CorpoDoCartao style={styles.corpo}>
+        <PreparoDoDossie aberto={preparando} nome={analise.nome} bairro={analise.bairro} aoTerminar={() => { setPreparando(false); abrirDossie(); }} />
         <SobretituloCadastral chave={chave} />
         <Texto tipo="titulo-tela" role="heading" style={styles.titulo}>
           É este o prédio?
         </Texto>
         <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.paragrafo}>
-          Confirmar o prédio garante que IPTU, ITBI e obras sejam deste edifício.
+          Vou usar este prédio para consultar o cadastro. Confira o endereço antes de confirmar.
           {jaConfirmado ? null : (
-            <Texto tipo="apoio" style={[styles.paragrafo, { color: cor("cor-barro"), fontWeight: "700" }]}>
+            <Texto tipo="apoio" cor="cor-barro-texto" style={[styles.paragrafo, { fontWeight: "700" }]}>
               {" Usa 1 crédito."}
             </Texto>
           )}
@@ -332,6 +339,7 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
 
         <BuscaDePredio edificios={edificios} aoEscolher={escolher} />
 
+        {alternativas}
         <MapaDoPredio selecionado={atual} outros={edificios} aoEscolher={escolher} />
 
         <CaixaDoPredio edificio={atual} motivos={motivos} />
@@ -375,14 +383,14 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
 }
 
 const styles = StyleSheet.create({
-  rolagem: { padding: 16, paddingBottom: 48, alignItems: "center" },
-  coluna: { width: "100%", maxWidth: 560 },
+  // As margens laterais ficam na rolagem; a coluna (720 px no desktop, como as demais telas) vem dentro delas.
+  rolagem: { padding: 16, paddingBottom: 48 },
+  // A cor da borda (`cor-texto` a 9%) entra pelo tema, em cada uso.
   cartao: {
     marginHorizontal: 0,
     marginBottom: 16,
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: "rgba(23, 23, 23, 0.09)",
   },
   corpo: { paddingVertical: 16, paddingHorizontal: 15, gap: 12 },
   sobretitulo: {
@@ -394,10 +402,9 @@ const styles = StyleSheet.create({
     rowGap: 4,
   },
   rastro: { flexDirection: "row", alignItems: "center", gap: 6, flexShrink: 1 },
-  linhaDoRastro: { width: 16, height: 2, backgroundColor: AZUL_CADASTRAL },
-  textoDoRastro: { color: AZUL_CADASTRAL, fontSize: 11, lineHeight: 13, fontWeight: "500", flexShrink: 1 },
+  linhaDoRastro: { width: 16, height: 2 },
+  textoDoRastro: { fontSize: 11, lineHeight: 13, fontWeight: "500", flexShrink: 1 },
   chave: {
-    color: AZUL_CADASTRAL,
     fontFamily: "JetBrainsMono",
     fontSize: 11,
     lineHeight: 14,

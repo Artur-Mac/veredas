@@ -4,7 +4,7 @@
 import { View } from "react-native";
 import { Botao } from "../componentes/Botao";
 import { useAviso } from "../componentes/casca/Aviso";
-import { Folha } from "../componentes/Folha";
+import { Gaveta, RESPIRO_NO_TOPO_DA_GAVETA } from "../componentes/casca/Gaveta";
 import { voltarOu } from "../componentes/Tela";
 import { Texto } from "../componentes/Texto";
 import { dataLocal, descreverMovimento, sinalDoDelta } from "../dados/descarte";
@@ -16,7 +16,9 @@ import { useTema } from "../tema/Tema";
 export default function Creditos() {
   const { cor } = useTema();
   const { lista } = useAnalises();
-  const { carteira, saldo, pronto, recarregarTeste } = useCarteira();
+  const { carteira, saldo, pronto: lida, bloqueada, erro, recarregarTeste } = useCarteira();
+  // Carteira que não abriu (bloqueada): o saldo 0 exposto é falta de leitura, não o da pessoa.
+  const pronto = lida && !bloqueada;
   const { mostrarAviso } = useAviso();
   const nomes = new Map(lista.map((a) => [a.id, a.nome]));
 
@@ -30,8 +32,8 @@ export default function Creditos() {
   };
 
   return (
-    <Folha titulo="Carteira de créditos" pai="/">
-      <View style={{ gap: 14 }}>
+    <Gaveta visivel titulo="Carteira de créditos" aoFechar={() => voltarOu("/")}>
+      <View style={{ gap: 14, paddingTop: RESPIRO_NO_TOPO_DA_GAVETA }}>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           <View style={{ flex: 1, gap: 2 }}>
             <Texto tipo="titulo-tela" role="heading" aria-level={2} style={{ fontSize: 18.5, lineHeight: 22, fontWeight: "500", letterSpacing: -0.37 }}>
@@ -115,12 +117,18 @@ export default function Creditos() {
           Na versão de teste, créditos não têm valor em dinheiro.
         </Texto>
 
+        {bloqueada ? (
+          <Texto role="alert" cor="cor-barro-texto" style={{ fontSize: 13, lineHeight: 20 }}>
+            {erro}
+          </Texto>
+        ) : null}
+
         {pronto && saldo === 0 ? (
           <Botao rotulo="Recarregar 3 créditos de teste" variante="principal" onPress={() => void recarregar()} />
         ) : (
           <Botao rotulo="Fechar" onPress={() => voltarOu("/")} />
         )}
       </View>
-    </Folha>
+    </Gaveta>
   );
 }

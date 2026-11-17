@@ -1,0 +1,54 @@
+{
+ "feed": ".cache/dados-recife/gtfs-inspecao.zip",
+ "corridor_threshold_summed_events": 180,
+ "corridor_stops_by_generator_rule": 4316,
+ "active_services": {
+  "weekday_2026-11-11": 355,
+  "saturday_2026-11-14": 380,
+  "sunday_2026-11-15": 350
+ },
+ "corridor_stops_still_>=180_on_weekday": 2059,
+ "corridor_stops_with_zero_weekday_events": 146,
+ "median_ratio_summed_to_weekday": 2.42,
+ "p10_p90_ratio": [
+  2.01,
+  7.24
+ ],
+ "examples": [
+  {
+   "stop_id": "180163",
+   "published_count_labelled_daily": 5280,
+   "weekday_2026-11-11": 2215,
+   "saturday_2026-11-14": 1626,
+   "sunday_2026-11-15": 1030
+  },
+  {
+   "stop_id": "180161",
+   "published_count_labelled_daily": 4348,
+   "weekday_2026-11-11": 1841,
+   "saturday_2026-11-14": 1328,
+   "sunday_2026-11-15": 883
+  },
+  {
+   "stop_id": "180170",
+   "published_count_labelled_daily": 4036,
+   "weekday_2026-11-11": 1378,
+   "saturday_2026-11-14": 1372,
+   "sunday_2026-11-15": 853
+  },
+  {
+   "stop_id": "180201",
+   "published_count_labelled_daily": 3936,
+   "weekday_2026-11-11": 1199,
+   "saturday_2026-11-14": 1183,
+   "sunday_2026-11-15": 750
+  },
+  {
+   "stop_id": "180383",
+   "published_count_labelled_daily": 3569,
+   "weekday_2026-11-11": 1492,
+   "saturday_2026-11-14": 1064,
+   "sunday_2026-11-15": 661
+  }
+ ]
+}

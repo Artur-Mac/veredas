@@ -6,6 +6,7 @@ import {
 } from "../contratos";
 import { BAIRROS_DO_RECIFE } from "../recife/bairros";
 import { normalizarTexto } from "./bairro";
+import { fotosDoAnuncio, nomeDeEdificioNoTexto, textoDoCampo } from "./nomeEFotos";
 
 const CHAVES_ID = new Set(["id", "listingid", "legacyid", "houseid"]);
 
@@ -154,16 +155,39 @@ export function extrairDoEstado(
     campos.preco = rentPrice ?? salePrice;
   }
 
+  // R$ 1 ou R$ 2 de condomínio ou IPTU é valor simbólico do portal ("não informado"), visto no ZAP real (15/11/2026).
+  const simbolico = (n: number | null) => (n !== null && n <= 5 ? null : n);
+
   // Condomínio
   const condo = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["condoPrice", "condoFee", "monthlyCondoFee"]));
-  campos.condominio = condo;
+  campos.condominio = simbolico(condo);
+
+  // ZAP e VivaReal com Next.js App Router (2026): `prices.rental` ou `prices.sale`, cada um com `value`,
+  // `condominium` e `iptu`. A página mostra só "IPTU", sem período (teste no celular, 15/11/2026: R$ 180 lido como
+  // anual dava R$ 15/mês contra R$ 131–165/mês no cadastro). O período fica desconhecido e é resolvido contra o
+  // cadastro do prédio na confirmação (src/dados/iptuDoAnuncio.ts). Zero é "isento" ou ausência.
+  const precos = objetoAnuncio["prices"];
+  if (precos && typeof precos === "object" && !Array.isArray(precos)) {
+    const { rental, sale } = precos as Record<string, unknown>;
+    const ehObjeto = (v: unknown): v is Record<string, unknown> => !!v && typeof v === "object" && !Array.isArray(v);
+    const bloco = ehObjeto(rental) ? rental : ehObjeto(sale) ? sale : null;
+    if (bloco) {
+      campos.modalidade = ehObjeto(rental) ? "aluguel" : "compra";
+      campos.preco = extrairNumero(bloco["value"]) ?? campos.preco;
+      campos.condominio = simbolico(extrairNumero(bloco["condominium"])) ?? campos.condominio;
+      const iptuSemPeriodo = simbolico(extrairNumero(bloco["iptu"]));
+      if (iptuSemPeriodo !== null) campos.iptu = { valor: iptuSemPeriodo, periodo: "desconhecido" };
+    }
+  }
 
   // IPTU
-  const yearlyIptu = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["yearlyIptu"]));
-  const monthlyIptu = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["monthlyIptu"]));
-  const iptuGen = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["iptu"]));
+  const yearlyIptu = simbolico(extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["yearlyIptu"])));
+  const monthlyIptu = simbolico(extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["monthlyIptu"])));
+  const iptuGen = simbolico(extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["iptu"])));
 
-  if (yearlyIptu !== null) {
+  if (campos.iptu !== null) {
+    // já veio de `prices` (formato novo do ZAP e do VivaReal)
+  } else if (yearlyIptu !== null) {
     campos.iptu = { valor: yearlyIptu, periodo: "ano" };
   } else if (monthlyIptu !== null) {
     campos.iptu = { valor: monthlyIptu, periodo: "mes" };
@@ -186,35 +210,42 @@ export function extrairDoEstado(
   }
 
   // Quartos, Suítes, Banheiros, Vagas, Andar
-  const bedrooms = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["bedrooms"]));
+  // No formato novo do ZAP e do VivaReal vêm em lista ("bedrooms": [1]); vale o primeiro, como na área.
+  const primeiro = (v: unknown): unknown => (Array.isArray(v) ? v[0] : v);
+  const bedrooms = extrairNumero(primeiro(buscarChaveInsensivel(objetoAnuncio, ["bedrooms"])));
   if (bedrooms !== null) campos.quartos = Math.round(bedrooms);
 
-  const suites = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["suites"]));
+  const suites = extrairNumero(primeiro(buscarChaveInsensivel(objetoAnuncio, ["suites"])));
   if (suites !== null) campos.suites = Math.round(suites);
 
-  const bathrooms = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["bathrooms"]));
+  const bathrooms = extrairNumero(primeiro(buscarChaveInsensivel(objetoAnuncio, ["bathrooms"])));
   if (bathrooms !== null) campos.banheiros = Math.round(bathrooms);
 
-  const parking = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["parkingSpaces"]));
+  const parking = extrairNumero(primeiro(buscarChaveInsensivel(objetoAnuncio, ["parkingSpaces"])));
   if (parking !== null) campos.vagas = Math.round(parking);
 
   const floor = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["floor", "unitFloor"]));
   if (floor !== null) campos.andar = Math.round(floor);
 
   // Endereço
-  const street = buscarChaveInsensivel(objetoAnuncio, ["street"]);
-  if (typeof street === "string" && street.trim()) {
-    campos.logradouro = street.trim();
-  }
+  // "$undefined" (marcador de ausência do ZAP) e afins não viram rua nem número.
+  const street = textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["street"]));
+  if (street) campos.logradouro = street;
 
   const numberRaw = buscarChaveInsensivel(objetoAnuncio, ["streetNumber", "number"]);
-  if (numberRaw !== undefined && numberRaw !== null) {
-    const numStr = String(numberRaw).trim();
-    if (numStr) campos.numero = numStr;
-  }
+  const numStr = typeof numberRaw === "number" ? String(numberRaw) : textoDoCampo(numberRaw);
+  if (numStr && /\d/.test(numStr)) campos.numero = numStr.slice(0, 12);
 
-  const neighborhood = buscarChaveInsensivel(objetoAnuncio, ["neighborhood"]);
-  if (typeof neighborhood === "string" && neighborhood.trim()) {
+  // Nome do edifício: campo próprio, quando o portal tem; senão, "Edf. …" no título ou na descrição.
+  const nomeDoCampo = textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["condominiumName", "buildingName", "condoName", "developmentName"]));
+  campos.nomeEdificio = (nomeDoCampo ? nomeDoCampo.slice(0, 120) : null)
+    ?? nomeDeEdificioNoTexto(textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["title"])))
+    // O código interno do anunciante costuma trazer o prédio ("EDF CASTELO DE BRUNO RENDA, OPORTUNIDADE…").
+    ?? nomeDeEdificioNoTexto(textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["externalId"])))
+    ?? nomeDeEdificioNoTexto(textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["description"])));
+
+  const neighborhood = textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["neighborhood"]));
+  if (neighborhood) {
     campos.bairroTexto = neighborhood.trim();
     const norm = normalizarTexto(neighborhood);
     const achouBairro = BAIRROS_DO_RECIFE.find(
@@ -223,8 +254,8 @@ export function extrairDoEstado(
     campos.bairro = achouBairro ? achouBairro.slug : null;
   }
 
-  const city = buscarChaveInsensivel(objetoAnuncio, ["city"]);
-  if (typeof city === "string" && city.trim()) {
+  const city = textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["city"]));
+  if (city) {
     if (normalizarTexto(city).includes("recife")) {
       campos.cidade = "recife";
     }
@@ -233,11 +264,13 @@ export function extrairDoEstado(
   const year = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["constructionYear", "buildingYear"]));
   if (year !== null) campos.anoConstrucao = Math.round(year);
 
+  const fotos = fotosDoAnuncio(objetoAnuncio);
   return {
     metodo: "json_ld",
     portal,
     idNoPortal,
     campos,
+    ...(fotos.length ? { fotos } : {}),
   };
 }
 

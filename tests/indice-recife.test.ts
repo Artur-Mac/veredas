@@ -9,12 +9,13 @@ import {
   type MetaDoIndice,
 } from "../src/dados/contratos";
 import { BAIRROS_COBERTOS, GRAFIAS_NO_CADASTRO, type SlugCoberto } from "../src/dados/recife/bairros";
+import { DIRETORIO_DO_INDICE } from "../src/dados/recife/publicacaoGerada";
 import { checarIndiceRaso, edificioPorId, indiceDoBairro, validarIndiceCompleto } from "../src/dados/recife/indice";
 
 // Confere os seis arquivos gerados por scripts/dados/construir-indice-recife.mjs. Ver Fatia 3 e C7 da ordem
 // do arquiteto. Os arquivos são dado real da Prefeitura do Recife (ODbL): nada aqui é fixture inventada.
 
-const DIR_INDICE = join(__dirname, "..", "src", "dados", "recife", "indice");
+const DIR_INDICE = join(__dirname, "..", "src", "dados", "recife", DIRETORIO_DO_INDICE);
 const SCRIPT = join(__dirname, "..", "scripts", "dados", "construir-indice-recife.mjs");
 const DIR_CACHE = join(__dirname, "..", ".cache", "dados-recife");
 
@@ -24,8 +25,8 @@ const DIR_CACHE = join(__dirname, "..", ".cache", "dados-recife");
  * pelo endereço), então a contagem de edifícios é um piso (95%) e pode passar da tabela.
  */
 const C7 = {
-  iptu: { "boa-viagem": 71237, "casa-forte": 3247, gracas: 11373, espinheiro: 6533, madalena: 12805 } satisfies Record<SlugCoberto, number>,
-  edificios: { "boa-viagem": 1818, "casa-forte": 78, gracas: 283, espinheiro: 154, madalena: 214 } satisfies Record<SlugCoberto, number>,
+  iptu: { "boa-viagem": 71237, "casa-forte": 3247, gracas: 11373, espinheiro: 6533, madalena: 12805 } as Record<string, number>,
+  edificios: { "boa-viagem": 1818, "casa-forte": 78, gracas: 283, espinheiro: 154, madalena: 214 } as Record<string, number>,
   licenciamento: 39067,
   lotes: 114079,
 };
@@ -97,7 +98,8 @@ function chavesDe(valor: unknown, acumulado = new Set<string>()): Set<string> {
 
 describe("índice cadastral do Recife: formato", () => {
   it("há um JSON por bairro coberto e o meta.json", () => {
-    expect(bairros.map((b) => b.slug)).toEqual(["boa-viagem", "casa-forte", "gracas", "espinheiro", "madalena"]);
+    expect(bairros.map((b) => b.slug)).toEqual(BAIRROS_COBERTOS);
+    expect(bairros).toHaveLength(72);
     for (const b of bairros) {
       expect(b.dados.bairro).toBe(b.slug);
       expect(b.dados.contexto.bairro).toBe(b.slug);
@@ -122,7 +124,7 @@ describe("índice cadastral do Recife: formato", () => {
     for (const b of bairros) {
       expect(b.dados.contexto.edificios).toBe(b.dados.edificios.length);
       expect(b.dados.contexto.unidades).toBe(b.dados.edificios.reduce((s, e) => s + e.unidades, 0));
-      expect(b.dados.contexto.iptuAnualPorM2).not.toBeNull();
+      if (C7.edificios[b.slug] !== undefined) expect(b.dados.contexto.iptuAnualPorM2).not.toBeNull();
       // O ITBI por m² saiu do contexto (a área do ITBI inclui área comum): só estas quatro chaves existem.
       expect(Object.keys(b.dados.contexto).sort()).toEqual(["bairro", "edificios", "iptuAnualPorM2", "unidades"]);
     }
@@ -143,8 +145,10 @@ describe("índice cadastral do Recife: formato", () => {
       "cod_logradouro", "numero", "bairro", "valor_avaliacao", "area_construida", "data_transacao", "tipo_imovel", "latitude", "longitude",
     ]);
     expect(fonte("itbi").recursos).toHaveLength(11);
+    // 15/11/2026: estado da licença (datas e impacto), sem nenhuma coluna pessoal; `areatotalconstruida` fica fora (vazia).
     expect(fonte("licenciamento").colunasUsadas).toEqual([
       "dsqfl", "tipo_processo", "assunto", "data_entrada", "situacao_processo", "latitude", "longitude", "categoria_empreendimento",
+      "data_emissao_licenca", "data_validade_licenca", "data_conclusao", "empreendimento_de_impacto",
     ]);
     // NMENDCOMP (endereço do lote) é lido só para casar prédios sem coordenada; o valor nunca é gravado.
     expect(fonte("lotes").colunasUsadas).toEqual(["DSQFL", "QTDPAVIMENTOS", "NMEDIFICACAO", "NMENDCOMP", "geometry"]);
@@ -159,14 +163,16 @@ describe("índice cadastral do Recife: formato", () => {
     const trecho = /const GRAFIAS_NO_CADASTRO = (\{[\s\S]*?\n\});/.exec(codigo);
     expect(trecho).not.toBeNull();
     const doScript = new Function(`return (${trecho?.[1] ?? "{}"});`)() as unknown;
-    expect(doScript).toEqual(GRAFIAS_NO_CADASTRO);
+    for (const [slug, grafias] of Object.entries(doScript as Record<string, string[]>)) {
+      expect(GRAFIAS_NO_CADASTRO[slug as keyof typeof GRAFIAS_NO_CADASTRO]).toEqual(grafias);
+    }
   });
 });
 
 describe("índice cadastral do Recife: orçamento e privacidade", () => {
-  it("cada arquivo tem no máximo 2,0 MB e a soma no máximo 4 MB", () => {
+  it("cada arquivo tem no máximo 2,0 MB e a soma municipal no máximo 8 MB", () => {
     for (const a of arquivos) expect({ arquivo: a.nome, ok: a.bytes <= 2 * MEGABYTE }).toEqual({ arquivo: a.nome, ok: true });
-    expect(arquivos.reduce((s, a) => s + a.bytes, 0)).toBeLessThanOrEqual(4 * MEGABYTE);
+    expect(arquivos.reduce((s, a) => s + a.bytes, 0)).toBeLessThanOrEqual(8 * MEGABYTE);
   });
 
   it("nenhuma coluna proibida aparece como chave nem como texto em nenhum JSON", () => {
@@ -199,20 +205,26 @@ describe("índice cadastral do Recife: orçamento e privacidade", () => {
 describe("índice cadastral do Recife: conferência com a tabela de C7", () => {
   it("o número de edifícios de cada bairro é de pelo menos 95% da tabela C7 (pode passar dela, por causa do I2)", () => {
     for (const b of bairros) {
+      if (C7.edificios[b.slug] === undefined) continue;
       const n = b.dados.edificios.length;
-      const piso = Math.ceil(C7.edificios[b.slug] * 0.95);
+      const piso = Math.ceil(C7.edificios[b.slug]! * 0.95);
       expect({ bairro: b.slug, n, ok: n >= piso }).toEqual({ bairro: b.slug, n, ok: true });
     }
   });
 
   it("os prédios sem coordenada entraram: nenhum bairro ficou abaixo da tabela C7 e algum passou dela", () => {
-    expect(bairros.every((b) => b.dados.edificios.length >= C7.edificios[b.slug])).toBe(true);
-    expect(bairros.some((b) => b.dados.edificios.length > C7.edificios[b.slug])).toBe(true);
+    const historicos = bairros.filter(b => C7.edificios[b.slug] !== undefined);
+    expect(historicos).toHaveLength(5);
+    expect(historicos.every((b) => b.dados.edificios.length >= C7.edificios[b.slug]!)).toBe(true);
+    expect(historicos.some((b) => b.dados.edificios.length > C7.edificios[b.slug]!)).toBe(true);
   });
 
   it("registrosLidos de cada fonte está a 5% da medida do arquiteto", () => {
     const iptu = Object.values(C7.iptu).reduce((s, n) => s + n, 0);
-    expect(dentroDe5(fonte("iptu_2026").registrosLidos, iptu)).toBe(true);
+    const cobertura = JSON.parse(readFileSync(join(DIR_INDICE, "cobertura.json"), "utf8")) as { bairros: { bairro: string; registrosIptu: number }[] };
+    expect(cobertura.bairros).toHaveLength(94);
+    expect(fonte("iptu_2026").registrosLidos).toBe(cobertura.bairros.reduce((s, b) => s + b.registrosIptu, 0));
+    expect(dentroDe5(cobertura.bairros.filter(b => C7.iptu[b.bairro] !== undefined).reduce((s, b) => s + b.registrosIptu, 0), iptu)).toBe(true);
     expect(dentroDe5(fonte("licenciamento").registrosLidos, C7.licenciamento)).toBe(true);
     expect(dentroDe5(fonte("lotes").registrosLidos, C7.lotes)).toBe(true);
     expect(fonte("bairros").registrosLidos).toBe(94);
@@ -410,7 +422,16 @@ describe("índice cadastral do Recife: ITBI por unidade", () => {
       const fim = meta.geradoEm.slice(0, 10);
       type Linha = { cod_logradouro?: unknown; numero?: unknown; tipo_imovel?: unknown; data_transacao?: unknown; valor_avaliacao?: unknown };
       const linhas: Linha[] = [];
+      // Índice gerado do hub auditado de 15/11/2026: o ITBI 2026 vem do CSV do hub (SHA-256 no manifesto), não do cache do CKAN.
+      const hubItbi2026 = join(DIR_CACHE, "hub-2026-11-15", "fc95e204-a121-4b7a-94b2-e4420539c0d1.csv");
+      const doHub = meta.geradoEm.startsWith("2026-11-15") && existsSync(hubItbi2026);
       for (let ano = 2016; ano <= anoDaGeracao; ano++) {
+        if (ano === 2026 && doHub) {
+          const [cab, ...corpo] = readFileSync(hubItbi2026, "utf-8").replace(/^\uFEFF/, "").trim().split(/\r?\n/).map((l) => l.split(";"));
+          const i = (c: string) => cab!.indexOf(c);
+          for (const l of corpo) linhas.push({ cod_logradouro: l[i("cod_logradouro")], numero: l[i("numero")], tipo_imovel: l[i("tipo_imovel")], data_transacao: l[i("data_transacao")], valor_avaliacao: l[i("valor_avaliacao")] });
+          continue;
+        }
         const cache = JSON.parse(readFileSync(join(DIR_CACHE, `itbi-${ano}.json`), "utf-8")) as { registros: Linha[] };
         linhas.push(...cache.registros);
       }

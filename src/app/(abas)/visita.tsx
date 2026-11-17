@@ -7,6 +7,7 @@ import { useMemo, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { ProvedorDeAviso, useAviso } from "../../componentes/casca/Aviso";
+import { Coluna } from "../../componentes/casca/Coluna";
 import { Texto } from "../../componentes/Texto";
 import { Chamada, Etapas, LinkDeAcao, Superficie } from "../../componentes/visita-v1/blocos";
 import { CartaoDoImovel } from "../../componentes/visita-v1/CartaoDoImovel";
@@ -17,11 +18,16 @@ import {
   GavetaDeTroca,
   GavetaDoRoteiro,
 } from "../../componentes/visita-v1/Gavetas";
-import { perguntasDaVisita, predioDaAnalise, resumirVisita } from "../../componentes/visita-v1/logica";
+import { predioDaAnalise, resumirVisita, roteiroDaVisita } from "../../componentes/visita-v1/logica";
 import { PainelDeCampo } from "../../componentes/visita-v1/NoImovel";
 import { Preparar } from "../../componentes/visita-v1/Preparar";
 import { Resumo } from "../../componentes/visita-v1/Resumo";
 import { useVisita } from "../../componentes/visita-v1/useVisita";
+import { registroSolar } from "../../dados/sol/janelas";
+import { eCoberto } from "../../dados/recife/bairros";
+import { edificiosDoBairro } from "../../dados/recife/indice";
+import { camadasDasAnalises } from "../../dados/camadasDasTelas";
+import { EsperaDasCamadas } from "../../componentes/EsperaDasCamadas";
 import { mensagemParaCorretor } from "../../dados/mensagem";
 import { useAnalises } from "../../estado/Analises";
 import { useTema } from "../../tema/Tema";
@@ -45,11 +51,15 @@ const TEXTOS: Record<Aba, { chamada: string; titulo: string; apoio: string }> = 
 
 export default function TelaVisita() {
   const { cor } = useTema();
+  const { lista } = useAnalises();
   // O aviso (toast) vive dentro da tela: "Mensagem copiada" aparece sobre o conteúdo da aba.
+  // D036: as perguntas e a lista de imóveis leem o índice de cada bairro do caderno, fora do bundle.
   return (
     <View style={{ flex: 1, backgroundColor: cor("cor-fundo") }}>
       <ProvedorDeAviso>
-        <ConteudoDaVisita />
+        <EsperaDasCamadas caminhos={camadasDasAnalises(lista)} carregando="Carregando os dados dos seus imóveis…" oQue="os dados dos bairros dos seus imóveis">
+          <ConteudoDaVisita />
+        </EsperaDasCamadas>
       </ProvedorDeAviso>
     </View>
   );
@@ -101,9 +111,18 @@ function ConteudoDaVisita() {
   const proprias = visita?.perguntasProprias;
   const perguntas = useMemo(() => {
     if (!analise || !proprias) return [];
-    return perguntasDaVisita({ ...analise, visita: { ...analise.visita, perguntasProprias: proprias } }, lista, new Date());
+    return roteiroDaVisita({ ...analise, visita: { ...analise.visita, perguntasProprias: proprias } }, lista, new Date());
   }, [analise, proprias, lista]);
   const predio = useMemo(() => (analise ? predioDaAnalise(analise) : null), [analise]);
+  const vizinhos = useMemo(() => {
+    if (!predio || !analise || !eCoberto(analise.bairro)) return [];
+    try {
+      return edificiosDoBairro(analise.bairro);
+    } catch {
+      return [];
+    }
+  }, [predio, analise]);
+  const andarConhecido = analise && !analise.declarados.andar.aConfirmar ? analise.declarados.andar.valor : null;
 
   const analiseLocal = useMemo(() => (analise && visita ? { ...analise, visita } : null), [analise, visita]);
   const mensagemSugerida = useMemo(
@@ -209,7 +228,7 @@ function ConteudoDaVisita() {
     return (
       <>
         <ScrollView contentContainerStyle={{ padding: ESPACO[4], paddingBottom: ESPACO[6] + ESPACO[4] }} keyboardShouldPersistTaps="handled">
-          <View style={{ width: "100%", maxWidth: 780, alignSelf: "center" }}>
+          <Coluna>
             <View style={{ marginBottom: 4, marginHorizontal: 2 }}>
               <Chamada>Sua próxima visita</Chamada>
             </View>
@@ -233,7 +252,7 @@ function ConteudoDaVisita() {
                 onPress={() => router.push("/")}
               />
             </Superficie>
-          </View>
+          </Coluna>
         </ScrollView>
         {gavetas}
       </>
@@ -251,7 +270,7 @@ function ConteudoDaVisita() {
   return (
     <>
       <ScrollView ref={rolagem} contentContainerStyle={{ padding: ESPACO[4], paddingBottom: ESPACO[6] + ESPACO[4] }} keyboardShouldPersistTaps="handled">
-        <View style={{ width: "100%", maxWidth: 780, alignSelf: "center" }}>
+        <Coluna>
           {erro ? (
             <Texto role="alert" cor="cor-barro-texto" style={{ fontSize: 13, lineHeight: 20, marginBottom: ESPACO[3] }}>
               {erro}
@@ -279,14 +298,18 @@ function ConteudoDaVisita() {
             ) : null}
             {abaAtual === "campo" ? (
               <PainelDeCampo
+                analiseId={analise.id}
                 perguntas={perguntas}
                 controle={controle}
                 aoAbrirPergunta={(id) => definirGaveta({ tipo: "pergunta", id })}
                 aoAdicionarPergunta={() => definirGaveta({ tipo: "nova" })}
+                predio={predio}
+                vizinhos={vizinhos}
+                andar={andarConhecido}
               />
             ) : null}
             {abaAtual === "resumo" ? (
-              <Resumo resumo={resumirVisita(visita, perguntas)} aoReverRespostas={() => definirAba("campo")} />
+              <Resumo resumo={resumirVisita(visita, perguntas)} aoReverRespostas={() => definirAba("campo")} janelas={registroSolar(analise).janelas} aoExplorarSol={() => router.push({ pathname: "/sol", params: { id: analise.id } })} />
             ) : null}
           </View>
 
@@ -300,7 +323,7 @@ function ConteudoDaVisita() {
             ) : null}
             {abaAtual !== "resumo" && concluida ? <LinkDeAcao rotulo="Ver último resumo" onPress={() => definirAba("resumo")} /> : null}
           </View>
-        </View>
+        </Coluna>
       </ScrollView>
       {gavetas}
     </>

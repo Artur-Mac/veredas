@@ -1,0 +1,81 @@
+
+> vereda@0.1.0 test:v1
+> node scripts/v1-smoke.mjs
+
+Servidor já no ar em http://localhost:8094; não será derrubado.
+a) Casa Forte: link, texto, anomalia, prédio, crédito e dossiê
+  autoteste do auditor: apontou controle dentro de controle, botão sem nome, radio sem aria-checked, aba sem aria-selected, estouro horizontal e gaveta desalinhada a 1280 px
+  etapa 01 explorar-vazio: sem problemas
+  etapa 02 ler-link: sem problemas
+  etapa 03 ler-texto-anomalia-iptu: sem problemas
+  etapa 04 predio: sem problemas
+  saldo de créditos: 3 → 2
+  etapa 05 dossie-destaques: sem problemas
+  etapa 06 dossie-fonte-iptu: sem problemas
+  etapa 07 dossie-cadastro-oficial: sem problemas
+  etapa 08 dossie-entorno: sem problemas
+  etapa 09 dossie-fonte-rua: sem problemas
+  etapa 10 dossie-edificio: sem problemas
+  etapa 11 visita-preparar: sem problemas
+a2) aluguel em Casa Forte: link, texto, anomalia de IPTU, prédio por rua e número, crédito e dossiê
+  etapa 12 ler-aluguel-link: sem problemas
+  etapa 13 ler-aluguel-anomalia-iptu: sem problemas
+  etapa 14 predio-aluguel-busca: sem problemas
+  etapa 15 predio-aluguel-escolhido: sem problemas
+  saldo de créditos: 2 → 1
+  etapa 16 dossie-aluguel-destaques: sem problemas
+  etapa 17 dossie-aluguel-cadastro-oficial: sem problemas
+b) sem rede: com o app já aberto, abas, dossiês e cadastro só com o índice local
+  etapa 18 dossie-aluguel-sem-rede: sem problemas
+  etapa 19 dossie-sem-rede: sem problemas
+  sem rede: Explorar, dois dossiês (Destaques, Entorno, Edifício), cadastro oficial, Comparar e Visita; recarga offline não testada (sem service worker na web)
+  dossiê recarregado com a rede externa fechada: tudo no aparelho, nenhuma requisição para fora
+  etapa 20 dossie-recarregado: sem problemas
+c) Cabanga: fora da cobertura
+  etapa 21 ler-cabanga-fora-de-cobertura: sem problemas
+  etapa 22 explorar-tres-analises: sem problemas
+d) recarregar: análises, vínculos e saldo persistem
+  etapa 23 explorar-apos-recarga: sem problemas
+e) segunda análise de compra pelo editor e comparação
+  etapa 24 editar-imovel-sem-link: sem problemas
+  etapa 25 salvos-quatro-analises: sem problemas
+  etapa 26 comparar-custo: sem problemas
+  etapa 27 comparar-espaco: sem problemas
+  etapa 28 comparar-entorno: sem problemas
+e2) segunda análise de aluguel pelo editor e comparação das duas de aluguel
+  etapa 29 editar-aluguel-sem-link: sem problemas
+  etapa 30 salvos-cinco-analises: sem problemas
+  etapa 31 comparar-aluguel-custo: sem problemas
+  etapa 32 comparar-aluguel-espaco: sem problemas
+  etapa 33 comparar-aluguel-entorno: sem problemas
+f) descartar: +1 crédito só para o imóvel que usou crédito, e uma vez só
+  etapa 34 descartar-gaveta-sem-credito: sem problemas
+  compra manual descartada sem crédito: saldo continua 1
+  etapa 35 descartar-gaveta: sem problemas
+  aviso "+1 crédito" visto; saldo 1 → 2 depois de um toque duplo
+  etapa 36 salvos-com-descartado: sem problemas
+  restaurar e descartar de novo: saldo continua 2
+g) menu e pílula de créditos
+  etapa 37 menu-aberto: sem problemas
+  etapa 38 sobre-os-dados: sem problemas
+  etapa 39 creditos: sem problemas
+  etapa 40 exemplo-boa-viagem: sem problemas
+g2) caderno ilegível: JSON inválido em vereda-analises-v2
+  etapa 41 caderno-ilegivel-explorar: sem problemas
+  etapa 42 caderno-ilegivel-ler-erro: sem problemas
+  etapa 43 caderno-ilegivel-editor-cheio: sem problemas
+  etapa 44 caderno-ilegivel-editor-erro: sem problemas
+  caderno ilegível: erro na tela em Explorar, Dossiê, Comparar, Salvos, Visita, leitura e editor; chave intacta; cópia à parte (vereda-analises-v2-bruto-2026-10-22T11-52-08-857Z)
+g3) lote A: área sem endereço, alternativas e semântica de custo
+  etapa 45 lote-a-area-sem-endereco: sem problemas
+  etapa 46 lote-a-alternativas: sem problemas
+  etapa 47 lote-a-escolha-explicita: sem problemas
+  etapa 48 lote-a-dossie-custo: sem problemas
+  etapa 49 lote-a-salvos-custo: sem problemas
+  etapa 50 lote-a-comparar-custo: sem problemas
+h) conferência final
+
+Requisições para fora do servidor do app: nenhuma
+Etapas auditadas a 375×812 e 1280×900: 50. Capturas em out/v1/auditoria-2026-10-22/smoke/
+
+V1: compra e aluguel em Casa Forte (link, texto, anomalia de IPTU, prédio real do índice, busca por rua e número, crédito 3→2→1, fonte da Prefeitura, sem R$/m² com ITBI), abas e dossiês sem rede, Cabanga fora da cobertura, persistência, segunda análise e comparação de compra e de aluguel, descarte (+1 só para quem usou crédito, uma vez), menu e créditos, caderno ilegível (erro na tela, chave intacta) passaram.

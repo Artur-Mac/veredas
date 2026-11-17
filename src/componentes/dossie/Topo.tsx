@@ -11,7 +11,7 @@ import { ESPACO, RAIO, comAlfa } from "../../tema/tokens";
 import { Botao, LinkDeLinha } from "../Botao";
 import { Cartao, CorpoDoCartao } from "../Cartao";
 import { PilulaIlustrativo } from "../Etiquetas";
-import { Regua } from "../fatos/Regua";
+import { Regua, reguaEDoItbi } from "../fatos/Regua";
 import { Rodape } from "../fatos/Rodape";
 import { LinhaDeValor, LinhaNaoSabemos, Valores } from "../fatos/Valores";
 import { Icone } from "../Icone";
@@ -115,6 +115,8 @@ export function CartaoDoAnuncio({ dossie }: { dossie: Dossie }) {
   const fatos = [c.area, c.quartos, c.suites, c.banheiros, c.vagas, c.andar].filter((f): f is Fato => f !== undefined);
   const principal = precoPrincipal(dossie);
   const fatosDoAnuncio = [principal, c.condominio, c.iptu].filter((f): f is Fato => f !== undefined);
+  // A régua do ITBI por m² saiu (Revisão 2.5): no lugar dela vai a frase, sem rodapé de "registro oficial" nem "Ver fonte".
+  const reguaDoItbi = reguaEDoItbi(dossie.preco.regua);
   return (
     <Cartao>
       <CorpoDoCartao style={{ gap: ESPACO[4] }}>
@@ -157,9 +159,9 @@ export function CartaoDoAnuncio({ dossie }: { dossie: Dossie }) {
           </Texto>
           <View style={{ gap: ESPACO[3] }}>
             <Regua dossie={dossie} />
-            {recebido === chaveDoFato(dossie.id, "regua") ? <Texto tipo="apoio">{TEXTO_RECEBIDO}</Texto> : null}
+            {!reguaDoItbi && recebido === chaveDoFato(dossie.id, "regua") ? <Texto tipo="apoio">{TEXTO_RECEBIDO}</Texto> : null}
           </View>
-          <Rodape dossie={dossie} fatos={[reguaComoFato(dossie)]} recorte={dossie.bairro} />
+          {reguaDoItbi ? null : <Rodape dossie={dossie} fatos={[reguaComoFato(dossie)]} recorte={dossie.bairro} />}
           {agruparPorFonte(fatosDoAnuncio).map((grupo, i) => (
             <Rodape key={i} dossie={dossie} fatos={grupo} tracejado />
           ))}

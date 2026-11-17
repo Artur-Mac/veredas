@@ -1,0 +1,10 @@
+{
+ "pares": 20,
+ "porEstado": {
+  "sem_alternativa_util": 70,
+  "ganho_pequeno": 4,
+  "alternativa_estavel": 6
+ },
+ "ms": 46213,
+ "mem": 1059
+}

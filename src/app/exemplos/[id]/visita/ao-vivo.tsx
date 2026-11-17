@@ -121,6 +121,7 @@ function ItemDaGrade({ icone, titulo, leitura, onPress, expandido }: { icone: No
       role="button"
       accessibilityLabel={titulo}
       accessibilityState={expandido === undefined ? undefined : { expanded: expandido }}
+      aria-expanded={expandido}
       onPress={onPress}
       style={{
         flex: 1,

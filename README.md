@@ -7,14 +7,17 @@
 
 ## Prova de conceito em execução
 
-**Referência exclusiva de design e experiência:** [`index.html`](./index.html), em `/home/v/Documents/vereda/veredas/index.html`. A regra abrange interface, layout, navegação e interações, além de cores e fontes. Outros protótipos, o app existente e documentos arquivados não são referências alternativas de design ou UX.
+**Plano vigente da próxima rodada ampla (Recife):** [15 épocas, catálogo de funcionalidades e instruções para execução](./docs/plano-recife/README.md). Consolida e resolve conflitos dos planos anteriores; o [prompt da IA operária](./docs/plano-recife/08-PROMPT-OPERARIA.md) começa pela conferência do código atual. As seções históricas abaixo não certificam funcionalidades ou sensores como entregues.
+
+**Referência histórica de design:** [`ignorar/prototipo-demonstrativo-legado/index.html`](./ignorar/prototipo-demonstrativo-legado/index.html). O protótipo web demonstrativo foi arquivado na pasta de cold storage (`ignorar/`), mantendo a raiz limpa e focada no aplicativo oficial em [`src/`](./src/).
 
 O app agora inclui um caderno local: cadastro manual ou link de referência, edição, custos mensais, comparação de dois imóveis, checklist e perguntas copiáveis. Na página inicial, use **Adicionar imóvel sem link** ou **Abrir minhas análises**. Os dossiês de referência continuam separados dos dados que você adicionar.
 
-- [Plano por épocas e prompt de continuidade](./docs/PLANO-POC-EXECUCAO.md)
-- [Validação e limites atuais](./docs/POC-VALIDACAO.md)
-- [v1.0: escopo e viabilidade](./docs/V1-ESCOPO-E-VIABILIDADE.md) e [ordem de execução para o operário](./docs/handoff/ORDEM_DO_ARQUITETO.md)
-- Iniciar: `npm run web`; teste do fluxo com servidor ativo: `npm run test:poc` (porta padrão 8087; configure `POC_URL` para outra).
+- [Plano Canônico da v1.0 (15 épocas e arquitetura)](./docs/plano-recife/README.md)
+- [Pesquisa de Produto Verificada](./docs/produto/pesquisa-2026-10-20/README.md) e [Refinamento Executável](./docs/produto/refinamento-2026-10-21/README.md)
+- [Pesquisa Extensiva de KPIs e Inteligência Territorial](./docs/produto/pesquisa-extensiva-kpis-indicadores-insights-vereda.md)
+- [Roteiro Oficial do Pitch e Storyboard](./docs/pitch/pitch-revisado-2026-10-18.md)
+- Iniciar: `npm run web`; teste do fluxo com servidor ativo: `npm run test:v1` (porta padrão 8087; configure `POC_URL` para outra).
 
 ## 📌 Especificação histórica
 
@@ -22,7 +25,7 @@ Toda a especificação estratégica, funcional, de dados e arquitetural do proje
 
 * **[Documento Definitivo do Projeto (`docs/VEREDA_DOCUMENTO_DEFINITIVO.md`)](./docs/VEREDA_DOCUMENTO_DEFINITIVO.md):** Master Spec 3.0 & Avaliação Executiva (Visão, Arquitetura de 3 Camadas com chave `DSQFL`, Tese de IA, Funcionalidades Decididas, Modelo de Negócios e Roteiro Campus Mobile 15ª Edição).
 
-> **Atualização de 19/10/2026:** o usuário autorizou consultar `ignorar/` como pesquisa para a prova de conceito. O plano atual está em [Plano da POC](./docs/PLANO-POC-EXECUCAO.md); ideias antigas devem ser reconciliadas com esse plano e com o código, não aplicadas automaticamente.
+> Documentos intermediários e planos superados de fases anteriores estão arquivados em [`ignorar/`](./ignorar/LEIA-ME.md). O plano canônico atual é o [Plano de 15 Épocas do Recife](./docs/plano-recife/README.md).
 
 ---
 
@@ -54,7 +57,7 @@ Quem procura apartamento para alugar ou comprar decide hoje no escuro: anúncios
 
 ## 📱 Aplicativo (React Native + Expo SDK 57) e Protótipos
 
-O repositório conta com o aplicativo multiplataforma em **React Native 0.86 + Expo SDK 57** ([`src/`](./src/)) e o mock interativo em HTML ([`docs/mock/index.html`](./docs/mock/index.html)), além do protótipo web da raiz, referência exclusiva de design e experiência ([`index.html`](./index.html)).
+O repositório conta com o aplicativo multiplataforma em **React Native 0.86 + Expo SDK 57** ([`src/`](./src/)), além do protótipo histórico demonstrativo arquivado em cold storage ([`ignorar/prototipo-demonstrativo-legado/index.html`](./ignorar/prototipo-demonstrativo-legado/index.html)).
 
 ### 1. Rodando o App Oficial (Expo SDK 57 — `src/`)
 ```bash

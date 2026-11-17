@@ -12,8 +12,11 @@ import { descreverFonte, type DescricaoDaFonte, type FonteDoDado } from "./texto
 
 export type DadoDaFonte = { rotulo: string; valor: string };
 
-/** O que a tela guarda para abrir a gaveta: de onde vem o dado, com que confiança e qual é o dado. */
-export type PedidoDeFonte = { fonte: FonteDoDado; confianca: Confianca; dado?: DadoDaFonte | null };
+/**
+ * O que a tela guarda para abrir a gaveta: de onde vem o dado, com que confiança e qual é o dado. `idDoDado` (o `id` do
+ * `Fato` ou do `Achado`) é opcional: com ele a gaveta separa o dado copiado do calculado pela lista; sem ele, pela fonte.
+ */
+export type PedidoDeFonte = { fonte: FonteDoDado; confianca: Confianca; dado?: DadoDaFonte | null; idDoDado?: string | null };
 
 type Props = {
   visivel: boolean;
@@ -23,11 +26,15 @@ type Props = {
   confianca: Confianca | null;
   /** O dado em si, para a pessoa ver de qual número a fonte fala. */
   dado?: DadoDaFonte | null;
+  /** Id do `Fato` ou do `Achado`, quando a tela o tem (ver `PedidoDeFonte`). */
+  idDoDado?: string | null;
   /** Só para teste: quando ausente, vale o `META` do índice. */
-  meta?: Pick<MetaDoIndice, "fontes">;
+  meta?: Pick<MetaDoIndice, "fontes"> & Partial<Pick<MetaDoIndice, "fontesDaRua">>;
 };
 
-function descricaoOuErro(fonte: FonteDoDado, meta: Pick<MetaDoIndice, "fontes">): { descricao: DescricaoDaFonte | null; erro: boolean } {
+type MetaDaGaveta = Pick<MetaDoIndice, "fontes"> & Partial<Pick<MetaDoIndice, "fontesDaRua">>;
+
+function descricaoOuErro(fonte: FonteDoDado, meta: MetaDaGaveta): { descricao: DescricaoDaFonte | null; erro: boolean } {
   try {
     return { descricao: descreverFonte(fonte, meta), erro: false };
   } catch {
@@ -35,9 +42,9 @@ function descricaoOuErro(fonte: FonteDoDado, meta: Pick<MetaDoIndice, "fontes">)
   }
 }
 
-function lerMeta(): Pick<MetaDoIndice, "fontes"> | null {
+function lerMeta(): MetaDaGaveta | null {
   try {
-    return { fontes: META.fontes };
+    return { fontes: META.fontes, fontesDaRua: META.fontesDaRua };
   } catch {
     return null;
   }
@@ -68,7 +75,7 @@ function LinhaDeDados({ rotulo, valor, mono = false }: { rotulo: string; valor: 
  * Gaveta de fonte (`openSourceSheet`, index.html 6003 a 6101): de onde vem o dado, quem publica, em que licença, quando a
  * base foi modificada e quando o Vereda a consultou, quais colunas leu e qual a confiança do dado.
  */
-export function GavetaDeFonte({ visivel, aoFechar, fonte, confianca, dado = null, meta }: Props) {
+export function GavetaDeFonte({ visivel, aoFechar, fonte, confianca, dado = null, idDoDado = null, meta }: Props) {
   const { cor } = useTema();
   const metaUsada = useMemo(() => (visivel ? (meta ?? lerMeta()) : null), [visivel, meta]);
   const { descricao, erro } = useMemo(
@@ -142,7 +149,7 @@ export function GavetaDeFonte({ visivel, aoFechar, fonte, confianca, dado = null
             <Texto tipo="secao" role="heading" style={{ fontWeight: "600" }}>
               Confiança deste dado
             </Texto>
-            <RastroCompleto atual={confianca} fonte={fonte} />
+            <RastroCompleto atual={confianca} fonte={fonte} idDoDado={idDoDado} />
           </View>
         ) : null}
 

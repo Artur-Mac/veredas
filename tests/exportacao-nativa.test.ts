@@ -1,0 +1,40 @@
+import { beforeEach, expect, it, jest } from "@jest/globals";
+import * as FileSystem from "expo-file-system/legacy";
+import * as Sharing from "expo-sharing";
+import * as Clipboard from "expo-clipboard";
+import * as Print from "expo-print";
+import { imprimirResumo } from "../src/plataforma/imprimir";
+import { baixarBackup } from "../src/plataforma/backupArquivo";
+import { copiarArquivoNativo } from "../src/plataforma/copiarArquivoNativo";
+jest.mock("expo-sharing",()=>({isAvailableAsync:jest.fn(),shareAsync:jest.fn()}));
+jest.mock("expo-clipboard",()=>({setStringAsync:jest.fn()}));
+jest.mock("expo-print",()=>({printToFileAsync:jest.fn()}));
+jest.mock("expo-file-system/legacy",()=>({documentDirectory:"file:///privado/",EncodingType:{UTF8:"utf8",Base64:"base64"},makeDirectoryAsync:jest.fn(),getInfoAsync:jest.fn(),writeAsStringAsync:jest.fn(),readAsStringAsync:jest.fn(),deleteAsync:jest.fn()}));
+jest.mock("expo-asset",()=>({Asset:{fromModule:()=>({localUri:"file:///font.ttf",downloadAsync:async()=>{}})}}));
+jest.mock("../src/plataforma/copiarArquivoNativo",()=>({copiarArquivoNativo:jest.fn()}));
+beforeEach(()=>{jest.clearAllMocks();jest.mocked(Sharing.isAvailableAsync).mockResolvedValue(true);});
+it("exportação JSON verifica conteúdo antes de abrir destino deliberado; falha não compartilha",async()=>{
+ jest.mocked(FileSystem.getInfoAsync).mockResolvedValue({exists:false,uri:"file:///novo",isDirectory:false});
+ jest.mocked(FileSystem.readAsStringAsync).mockResolvedValueOnce("conteúdo divergente");
+ await expect(baixarBackup("caderno privado")).rejects.toThrow("verificar");expect(Sharing.shareAsync).not.toHaveBeenCalled();
+ jest.mocked(FileSystem.readAsStringAsync).mockResolvedValueOnce("caderno privado");await baixarBackup("caderno privado");
+ expect(Sharing.shareAsync).toHaveBeenCalledWith(expect.stringMatching(/^file:\/\/\/privado\/vereda-midia\/vereda-caderno-.*\.json$/),expect.anything());
+ expect(Clipboard.setStringAsync).not.toHaveBeenCalled();
+});
+it("PDF só libera temporário e abre compartilhamento após cópia privada verificada",async()=>{
+ jest.mocked(FileSystem.readAsStringAsync).mockResolvedValue("Zm9udA==");
+ jest.mocked(Print.printToFileAsync).mockResolvedValue({uri:"file:///temporario.pdf",numberOfPages:1});
+ jest.mocked(copiarArquivoNativo).mockResolvedValueOnce(100);
+ await imprimirResumo("<html><style>body{}</style><body>Resumo privado</body></html>");
+ expect(jest.mocked(Print.printToFileAsync).mock.calls[0]![0]?.html).toContain("data:font/ttf;base64,Zm9udA==");
+ expect(FileSystem.deleteAsync).toHaveBeenCalledWith("file:///temporario.pdf",{idempotent:true});
+ expect(jest.mocked(copiarArquivoNativo).mock.invocationCallOrder[0]).toBeLessThan(jest.mocked(FileSystem.deleteAsync).mock.invocationCallOrder[0]!);
+ expect(Sharing.shareAsync).toHaveBeenCalledWith(expect.stringMatching(/^file:\/\/\/privado\/vereda-midia\/documento-resumo-.*\.pdf$/),expect.anything());
+});
+it("cópia de PDF que falha não apaga temporário nem abre destino; sem recurso não finge PDF",async()=>{
+ jest.mocked(FileSystem.readAsStringAsync).mockResolvedValue("Zm9udA==");jest.mocked(Print.printToFileAsync).mockResolvedValue({uri:"file:///temporario.pdf",numberOfPages:1});
+ jest.mocked(copiarArquivoNativo).mockRejectedValueOnce(new Error("Falhou"));await expect(imprimirResumo("<style></style>")).rejects.toThrow("Falhou");
+ expect(FileSystem.deleteAsync).not.toHaveBeenCalled();expect(Sharing.shareAsync).not.toHaveBeenCalled();
+ jest.mocked(Sharing.isAvailableAsync).mockResolvedValue(false);await expect(imprimirResumo("<style></style>")).rejects.toThrow("não está disponível");
+ await expect(baixarBackup("caderno privado")).resolves.toContain("mídia não está incluída");expect(Clipboard.setStringAsync).toHaveBeenCalledWith("caderno privado");
+});

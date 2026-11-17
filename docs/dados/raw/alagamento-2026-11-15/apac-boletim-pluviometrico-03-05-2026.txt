@@ -1,0 +1,751 @@
+                                    BOLETIM PLUVIOMÉTRICO DIÁRIO
+
+                                           Data: 03/05/2026
+
+
+
+
+                        Mesorregião: Metropolitana de Recife
+                   Maior acumulado: Itapissuma (Itapissuma [Convencional]) - 68.3 mm
+
+ CÓDIGO            MUNICÍPIO                                   ESTAÇÃO                    CHUVA TOTAL
+
+260005401V        Abreu e Lima                       Abreu e Lima [Convencional]            0.5 mm
+
+260105201A          Araçoiaba                         [APAC] Prefeitura Municipal           4.6 mm
+
+260290206V   Cabo de Santo Agostinho           Cabo (Barragem de Gurjaú) [Convencional]     22.9 mm
+
+260290205A   Cabo de Santo Agostinho               [CEMADEN] Pontes dos Carvalhos           0.6 mm
+
+260290204A   Cabo de Santo Agostinho                [CEMADEN] Enseada dos Corais            1.0 mm
+
+260290203A   Cabo de Santo Agostinho                        [APAC] Torrinha                 1.0 mm
+
+260290202A   Cabo de Santo Agostinho                       [APAC] Charneca                  0.0 mm
+
+260290207V   Cabo de Santo Agostinho                Cabo (Pirapama) [Convencional]          18.7 mm
+
+260720804V   Cabo de Santo Agostinho           Cabo (Barragem de Suape) [Convencional]      9.7 mm
+
+260345401V         Camaragibe                         Camaragibe [Convencional]             4.1 mm
+
+260345406A         Camaragibe                             [CEMADEN] Aldeia                  3.2 mm
+
+260345404A         Camaragibe                          [APAC] Jardim Primavera              3.4 mm
+
+260545901A    Fernando de Noronha                       [APAC] Baía Do Sancho               0.2 mm
+
+260680403A          Igarassu                              [APAC] Alto do Céu                21.2 mm
+
+260680404V          Igarassu                      Igarassu (Bar.Catucá) [Convencional]      27.8 mm
+
+260680405A          Igarassu                        [CEMADEN] Cruz de Rebouças 2            13.6 mm
+
+260680403V          Igarassu                            Igarassu [Convencional]             0.5 mm
+
+260760401A      Ilha de Itamaracá                            [APAC] SERES                   26.8 mm
+
+260760401V      Ilha de Itamaracá                      Itamaracá [Convencional]             60.2 mm
+
+260720801A           Ipojuca                                  [APAC] IFPE                   0.2 mm
+
+260720804A           Ipojuca                             [CEMADEN] Rurópolis                0.0 mm
+
+260720805A           Ipojuca                           [APAC] Núcleo Maranhão               1.6 mm
+260775201V         Itapissuma                        Itapissuma [Convencional]                  68.3 mm
+
+260775201A         Itapissuma                         [APAC] Colégio Municipal                  33.2 mm
+
+260790103V   Jaboatão dos Guararapes   Jaboatão dos Guararapes (Bar.Duas Unas) [Convencional]   9.4 mm
+
+260790106A   Jaboatão dos Guararapes                    [CEMADEN] Piedade                       0.8 mm
+
+260790104A   Jaboatão dos Guararapes                    [CEMADEN] Prazeres                      1.4 mm
+
+260790115H   Jaboatão dos Guararapes                  [CEMADEN] Santana [H]                     0.2 mm
+
+260940201A          Moreno                                [APAC] Bonança                        1.0 mm
+
+260940202A          Moreno                             [APAC] [ETA Compesa]                     0.4 mm
+
+260940201V          Moreno                             Moreno [Convencional]                    0.0 mm
+
+260960004A           Olinda                              [APAC] Ouro Preto                      5.7 mm
+
+261070705A           Paulista                              [APAC] Janga 2                       11.0 mm
+
+261070704A           Paulista                            [CEMADEN] Janga                        0.0 mm
+
+261070701V           Paulista                          Paulista [Convencional]                  0.0 mm
+
+261160616G           Recife                 [CEMADEN] Compaz - Alto Sta. Terezinha [G]          3.8 mm
+
+261160606A           Recife                           [CEMADEN] Dois Unidos                     2.2 mm
+
+261160603A           Recife                           [CEMADEN] Dois Irmãos                     6.3 mm
+
+261160608A           Recife                       [CEMADEN] Córrego do Jenipapo                 3.8 mm
+
+261160614A           Recife                       [CEMADEN] Campina do Barreto                  3.7 mm
+
+261160612A           Recife                              [APAC] Guabiraba                       5.3 mm
+
+261160623A           Recife                                 [APAC] Sede                         5.6 mm
+
+261160609A           Recife                            [APAC] UPA Imbiribeira                   3.4 mm
+
+261160605A           Recife                         [APAC] UPA Nova Descoberta                  5.5 mm
+
+261160604V           Recife                 [CEMADEN] (Alto da Brasileira) [Convencional]       0.0 mm
+
+261160610A           Recife                           [CEMADEN] Alto Mandu                      3.7 mm
+
+261160621A           Recife                              [CEMADEN] Areias                       0.2 mm
+
+261160603G           Recife                        [CEMADEN] Brega E Chique [G]                 0.0 mm
+
+261160618A           Recife                             [CEMADEN] Torreão                       5.9 mm
+
+261160619A           Recife                            [CEMADEN] San Martin                     2.4 mm
+
+261160617A           Recife                               [CEMADEN] Pina                        1.8 mm
+
+261370101A    São Lourenço da Mata                   [APAC] Corpo de Bombeiro                   0.4 mm
+
+261370102V    São Lourenço da Mata        São Lourenço da Mata (Tapacurá) [Convencional]        8.1 mm
+
+261370104A    São Lourenço da Mata                  [CEMADEN] Rua dos Milagres                  1.4 mm
+                      Mesorregião: Mata Pernambucana
+             Maior acumulado: Tracunhaém (Tracunhaém [Convencional]) - 48.3 mm
+
+ CÓDIGO        MUNICÍPIO                                   ESTAÇÃO                           CHUVA TOTAL
+
+260040101V     Água Preta                          Água Preta [Convencional]                   0.0 mm
+
+260070801A       Aliança                                    [APAC]                             4.0 mm
+
+260090601V       Amaraji                            Amaraji [Convencional]                     6.4 mm
+
+260090602A       Amaraji                  [CEMADEN] G2-Hospital Alice B. Dos Anjos             0.0 mm
+
+260090603A       Amaraji                     [CEMADEN] G2- Sj da Boa Esperança                 6.0 mm
+
+260090601A       Amaraji                                 [APAC] SAAE                           4.8 mm
+
+260150802A   Belém de Maria                          [APAC] [ETA Compesa]                      1.2 mm
+
+260270401A    Buenos Aires                           [APAC] [ETA Compesa]                      5.4 mm
+
+260270401V    Buenos Aires                        Buenos Aires [Convenional]                   40.2 mm
+
+260360301A     Camutanga                           [APAC] Usina Olho D´Água                    6.2 mm
+
+260400701M       Carpina                         Carpina - PCD [Convencional]                  4.4 mm
+
+260400702V       Carpina              Carpina (Est. Exp. de Cana-de-Açúcar) [Convencional]     5.5 mm
+
+260420503V       Catende                            Catende [Convencional]                     4.8 mm
+
+260420502A       Catende                                [APAC] SEDUC                           0.4 mm
+
+260450201V     Chã Grande                         Chã Grande [Convencional]                    14.0 mm
+
+260450201A     Chã Grande                                [APAC] Centro                         0.4 mm
+
+260440301A    Chã de Alegria                         [APAC] [ETA Compesa]                      1.2 mm
+
+260460101A      Condado                          [APAC] Assentamento Agrícola                  11.0 mm
+
+260480901A       Cortês                            [APAC] Hospital Municipal                   6.3 mm
+
+260520202V       Escada                              Escada [Convencional]                     0.0 mm
+
+260520201A       Escada                              [APAC] [ETA Compesa]                      0.6 mm
+
+260550901A      Ferreiros                           [APAC] Centro Cultural                     7.2 mm
+
+260590502V      Gameleira                          Gameleira [Convencional]                    0.0 mm
+
+260610101V   Glória do Goitá                    Glória do Goitá [Convencional]                 25.0 mm
+
+260610102A   Glória do Goitá                         [APAC] Nissan Miojo                       2.2 mm
+
+260620001V       Goiana                     Goiana (Itapirema - IPA) [Convencional]            25.8 mm
+
+260620003A       Goiana                             [APAC] Ponta de Pedra                      22.4 mm
+
+260620001A       Goiana                              [APAC] [ETA Compesa]                      18.6 mm
+260620002A           Goiana                 [CEMADEN] Cine Teatro Polytheama          0.0 mm
+
+260765302V           Itambé                     Itambé (IPA) [Convencional]           7.3 mm
+
+260765301A           Itambé                      [APAC] Ginásio Municipal             7.6 mm
+
+260780201A          Itaquitinga                 [APAC] Fórum de Itaquitinga           22.0 mm
+
+260780201V          Itaquitinga                  Itaquitinga [Convencional]           30.5 mm
+
+260795002V           Jaqueira                     Jaqueira [Convencional]             0.0 mm
+
+260795001A           Jaqueira                    [APAC] Hospital Municipal            0.4 mm
+
+260820602A       Joaquim Nabuco               [APAC] Escola Eduardo Campos            0.4 mm
+
+260590501V       Joaquim Nabuco               Joaquim Nabuco [Convencional]           0.0 mm
+
+260850301A       Lagoa de Itaenga                       [APAC] USF                    0.0 mm
+
+260845301A       Lagoa do Carro                   [APAC] [ETA Compesa]                3.8 mm
+
+260795001V           Maraial                      Maraial [Convencional]              0.0 mm
+
+260920401A           Maraial               [APAC] Casa de Saúde e Maternidade         1.4 mm
+
+260950102A       Nazaré da Mata                   [APAC] [ETA Compesa]                12.6 mm
+
+261000402A          Palmares                           [APAC] SAAE                    0.6 mm
+
+261000401V          Palmares                      Palmares [Convenional]              10.0 mm
+
+261000403A          Palmares                [APAC] Santo Antônio dos Palmares         0.2 mm
+
+261060804V          Paudalho            Paudalho (Barragem de Goitá) [Convencional]   0.5 mm
+
+261130901A           Pombos                        [APAC] Vila São José               1.2 mm
+
+261140801A          Primavera                         [APAC] Centro                   0.0 mm
+
+261140801V          Primavera                    Primavera [Convencional]             0.0 mm
+
+261150703V           Quipapá                      Quipapá [Convencional]              1.5 mm
+
+261150701A           Quipapá                      [APAC] [ETA Compesa]                0.2 mm
+
+261180402A           Ribeirão                         [APAC] Aripibu                  0.4 mm
+
+261180401A           Ribeirão                       [APAC] Bandeirante                9.6 mm
+
+261190303A         Rio Formoso                [APAC] Assentamento Minguito            2.2 mm
+
+261190302V         Rio Formoso           Rio Formoso (Usina Cucaú) [Convencional]     0.0 mm
+
+261290101A     São Benedito do Sul                [APAC] [ETA Compesa]                0.2 mm
+
+260870102V     São Benedito do Sul          São Benedito do Sul [Convencional]        2.8 mm
+
+261340401A   São José da Coroa Grande             [APAC] Faz. Boca do Rio             2.8 mm
+
+261340401V   São José da Coroa Grande    São José da Coroa Grande [Convencional]      0.0 mm
+
+261420401A          Sirinhaém                     [APAC] [ETA Compesa]                0.0 mm
+261420401V         Sirinhaém                         Sirinhaém [Convencional]                0.0 mm
+
+261485701V        Tamandaré                          Tamandaré [Convencional]                6.7 mm
+
+261485701A        Tamandaré                                 [APAC] Saué                      6.7 mm
+
+261485702A        Tamandaré                                  [APAC] PSF                      0.0 mm
+
+261530001A         Timbaúba                       [APAC] Secretária de Agricultura           9.0 mm
+
+261530001V         Timbaúba                          Timbaúba [Convencional]                 16.0 mm
+
+261550801V        Tracunhaém                        Tracunhaém [Convencional]                48.3 mm
+
+261630802A          Vicência                           [APAC] [ETA Compesa]                  9.0 mm
+
+261630801A          Vicência                        [APAC] Escola Luiz Maranhão              8.5 mm
+
+261640704A   Vitória de Santo Antão                   [CEMADEN] Livramento                   1.4 mm
+
+261640701V   Vitória de Santo Antão          Vitória de Santo Antão (IPA) [Convencional]     7.0 mm
+
+261640702A   Vitória de Santo Antão                       [APAC] Bairro C                    0.2 mm
+
+261640703A   Vitória de Santo Antão                       [CEMADEN] Cajá                     0.0 mm
+
+261650601A           Xexéu                                  [APAC] SAAE                      0.2 mm
+
+261650602V           Xexéu                    Xexéu (Usina Bom Mirar) [Convencional]         9.4 mm
+
+
+
+
+                       Mesorregião: Agreste Pernambucano
+                    Maior acumulado: Cumaru (Cumaru [Convencional]) - 30.0 mm
+
+ CÓDIGO          MUNICÍPIO                                   ESTAÇÃO                       CHUVA TOTAL
+
+
+260030201V        Agrestina                          Agrestina [Convencional]                0.0 mm
+
+260050001V       Águas Belas                        Águas Belas [Convenional]                0.0 mm
+
+260080701V         Altinho                            Altinho [Convencional]                 0.0 mm
+
+260100301V         Angelim                            Angelim [Convencional]                 0.0 mm
+
+260100301A         Angelim                         [APAC] Reservatório Compesa               0.2 mm
+
+260130001A    Barra de Guabiraba                      [APAC] [ETA Compesa]                   0.8 mm
+
+260130002V    Barra de Guabiraba                Barra de Guabiraba [Convencional]            0.2 mm
+
+260170602A       Belo Jardim                           [CEMADEN] G2-IFPE                     0.0 mm
+
+260170601V       Belo Jardim                        Belo Jardim [Convencional]               14.0 mm
+
+260170601A       Belo Jardim                   [APAC] 15 Batalhão de Policía Militar         0.4 mm
+
+260170604A       Belo Jardim                   [CEMADEN] G2-Escola Santo Antônio             0.0 mm
+
+260170603A       Belo Jardim                   [CEMADEN] G2-Garagem - Prefeitura             0.0 mm
+260190401A         Bezerros                 [APAC] Escritório Compesa          0.8 mm
+
+260210001V      Bom Conselho            Bom Conselho (IPA) [Convencional]      5.1 mm
+
+260220901V       Bom Jardim                Bom Jardim [Convencional]           19.4 mm
+
+260220903A       Bom Jardim                 [CEMADEN] G2-Tamboatá              9.6 mm
+
+260220904A       Bom Jardim                [CEMADEN] G2-Encruzilhada           9.8 mm
+
+260220902A       Bom Jardim                  [CEMADEN] G2-Bizarra              12.2 mm
+
+260220901A       Bom Jardim                   [APAC] [ETA Compesa]             10.6 mm
+
+260230801A          Bonito                    [APAC] [ETA Compesa]             1.0 mm
+
+260230802V          Bonito                    Bonito [Convencional]            0.5 mm
+
+260230802A          Bonito                     [APAC] Sítio Ágape              3.0 mm
+
+260230805A          Bonito          [CEMADEN] G2-Colégio Manoel De Q Lima      0.2 mm
+
+260230803A          Bonito                [CEMADEN] Estreito do Norte          2.4 mm
+
+260230804A          Bonito              [CEMADEN] G2-Colégio João XXIII        0.6 mm
+
+260240702V          Brejão                 Brejão (IPA) [Convencional]         0.0 mm
+
+260310801V       Cachoeirinha              Cachoeirinha [Convencional]         2.5 mm
+
+260310801A       Cachoeirinha               [APAC 01] [ETA Compesa]            0.0 mm
+
+260320701V         Caetés                     Caetés [Convencional]            0.0 mm
+
+260320701A         Caetés                [APAC] Secretária de Agricultura      0.0 mm
+
+260330601V         Calçado                   Calçados [Convencional]           0.0 mm
+
+260350401A   Camocim de São Félix                [APAC] Centro                 1.2 mm
+
+260370201A       Canhotinho                       [APAC] CRAS                  0.4 mm
+
+260380101V        Capoeiras                 Capoeiras [Convencional]           0.0 mm
+
+260410601A         Caruaru          [CEMADEN] Posto Policiamento Comunitário   1.2 mm
+
+260410603V         Caruaru                   Caruaru [Convencional]            0.0 mm
+
+260410602A         Caruaru                    [APAC] Cidade Jardim             1.4 mm
+
+260410605A         Caruaru                [CEMADEN] Gonçalves Ferreira         2.2 mm
+
+260410606A         Caruaru                 [CEMADEN] Terra Vermelha            0.0 mm
+
+260415501V         Casinhas                  Casinhas [Convencional]           0.0 mm
+
+260415501A         Casinhas                   [APAC] [ETA Compesa]             5.4 mm
+
+260470001A        Correntes           [APAC] Colégio Antenor Alves Pedrosa     0.0 mm
+
+260470001V        Correntes                 Correntes [Convencional]           0.0 mm
+
+260490801A         Cumaru                     [APAC] [ETA Compesa]             3.6 mm
+260490801V      Cumaru                      Cumaru [Convencional]                  30.0 mm
+
+260500401V       Cupira                      Cupira [Convencional]                 10.0 mm
+
+260540001V     Feira Nova                  Feira Nova [Convencional]               14.9 mm
+
+260540001A     Feira Nova                    [APAC] Assentamento                   0.2 mm
+
+260580601V   Frei Miguelinho   Frei Miguelinho [Algodão do Manso] [Convencional]   15.0 mm
+
+260580601A   Frei Miguelinho                 [APAC] EREN São José                  5.8 mm
+
+260600203A     Garanhuns              [CEMADEN] G2-Secretaria de Obras             0.0 mm
+
+260600204A     Garanhuns                   [CEMADEN] G2-Cohab III                  0.2 mm
+
+260600201V     Garanhuns                   Garanhuns [Convencional]                0.0 mm
+
+260600201A     Garanhuns                 [APAC] Clínica Bolvinos URFPE             0.0 mm
+
+260600202A     Garanhuns              [CEMADEN] G2-Centro De Zoonoses              0.0 mm
+
+260640803A       Gravatá               [CEMADEN] G2-Janelas Para o Rio             0.4 mm
+
+260640801V       Gravatá                    Gravatá [Convencional]                 2.4 mm
+
+260640802A       Gravatá                    [CEMADEN] G2-Avencas                   2.8 mm
+
+260640801A       Gravatá                  [CEMADEN] G2-Uruçu-Mirim                 5.2 mm
+
+260650701V         Iati                        Iati [Convencional]                 0.0 mm
+
+260650701A         Iati                    [APAC] Garagem Municipal                0.0 mm
+
+260670501V      Ibirajuba                   Ibirajuba [Convencional]               0.0 mm
+
+260670501A      Ibirajuba                 [APAC] Rancho Dona Analia                0.8 mm
+
+260750501A       Itaíba         [APAC] Escola Estadual Pedro de Alcântara Ramos    0.4 mm
+
+260800801A       Jataúba              [APAC] Escola Antônio Vieira de Melo         0.6 mm
+
+260810702V    João Alfredo                João Alfredo [Convencional]              22.0 mm
+
+260810701A    João Alfredo                   [APAC] Sítio Cascavél                 12.6 mm
+
+260825502V       Jucati                      Jucati [Convencional]                 0.0 mm
+
+260830501A        Jupi              [APAC] Creche Municipal Alto dos Santos        0.0 mm
+
+260840401V       Jurema                      Jurema [Convencional]                 0.5 mm
+
+260840401A       Jurema               [APAC] Creche São Francisco de Assis         0.4 mm
+
+260860202V   Lagoa do Ouro               Lagoa do Ouro [Convencional]              0.0 mm
+
+260860201A   Lagoa do Ouro             [APAC] Caixa de Água da Prefeitura          0.2 mm
+
+260870101A   Lagoa dos Gatos                 [APAC] [ETA Compesa]                  1.6 mm
+
+260870103A   Lagoa dos Gatos          [CEMADEN] G2-Escola João Correia             2.2 mm
+
+260880002V       Lajedo                      Lajedo [Convencional]                 0.0 mm
+260880001A           Lajedo             [APAC] Colégio José Ferreira dos Prazeres   0.4 mm
+
+260890902V          Limoeiro                    Limoeiro [Convencional]             11.1 mm
+
+260890901A          Limoeiro                       [APAC] Polícia Cívil             7.6 mm
+
+260910501V          Machados                   Machados [Convencional]              0.2 mm
+
+260910501A          Machados                     [APAC] [ETA Compesa]               7.3 mm
+
+260970901A           Orobó                  [APAC] Secretária de Agricultura        8.5 mm
+
+260970901C           Orobó                          [CEMADEN] [C]                   0.0 mm
+
+260970902V           Orobó                       Orobó [Convencional]               0.2 mm
+
+261010301A          Palmeirina                   [APAC] [ETA Compesa]               0.0 mm
+
+261010302V          Palmeirina                 Palmeirina [Convencional]            0.0 mm
+
+261020201A           Panelas                    [APAC] Escola Municipal             0.8 mm
+
+261030101A         Paranatama            [APAC] Fonte Água Mineral Cristal Plus     0.2 mm
+
+261030101V         Paranatama                  Paranatama [Convencional]            0.0 mm
+
+261050901V           Passira                     Passira [Convencional]             0.0 mm
+
+261080601A            Pedra                      [APAC] [ETA Compesa]               0.0 mm
+
+261090502A          Pesqueira             [CEMADEN] G2-Distrito de Mimoso           0.0 mm
+
+261090501V          Pesqueira                   Pesqueira [Convencional]            0.0 mm
+
+261090501A          Pesqueira                         [APAC] IFPE                   0.2 mm
+
+261090504A          Pesqueira              [CEMADEN] G2-Escola Paulo Melo           0.0 mm
+
+261120001A            Poção                     [APAC] USB Renascença               0.2 mm
+
+261170501A      Riacho das Almas                 [APAC] [ETA Compesa}               14.0 mm
+
+261200001V            Sairé                       Sairé [Convencional]              1.2 mm
+
+261200001A            Sairé                   [APAC] Prefeitura Municipal           1.2 mm
+
+261450103V         Salgadinho                  Salgadinho [Convencional]            0.0 mm
+
+261210901A         Salgadinho           [APAC] Associação Senhoras de Caridade      9.8 mm
+
+261230701V            Saloá                       Saloá [Convencional]              0.0 mm
+
+261230701A            Saloá              [APAC] EREN Monsenhor São Marques          0.0 mm
+
+261240601A           Sanharó                     [APAC] [ETA Compesa]               0.2 mm
+
+261250501A   Santa Cruz do Capibaribe     [APAC] Escritório Regional Compesa        0.0 mm
+
+261270301V   Santa Maria do Cambucá     Santa Maria do Cambuca [Convencional]       9.0 mm
+
+261270301A   Santa Maria do Cambucá              [APAC] [ETA Compesa]               9.1 mm
+
+261300801V      São Bento do Una         São Bento do Una (IPA) [Convencional]      0.0 mm
+260410702V        São Caitano                        São Caetano [Convencional]                   0.0 mm
+
+261310701A        São Caitano                           [APAC] [ETA Compesa]                      2.4 mm
+
+261320601A         São João                            [APAC] Açude Municipal                     1.8 mm
+
+261320601V         São João                            São João [Convencional]                    5.2 mm
+
+261330502A   São Joaquim do Monte                       [APAC] [ETA Compesa]                      1.0 mm
+
+261380001V     São Vicente Férrer                  São Vicente Férrer [Convencional]              5.4 mm
+
+261380001A     São Vicente Férrer                     [APAC] Prefeitura Municipal                 3.6 mm
+
+261450101A         Surubim                             [APAC] 4º SB Bombeiros                     6.8 mm
+
+261450102V         Surubim                             Surubim [Convencional]                     0.0 mm
+
+261470902A         Tacaimbó                           [APAC] Prefeitura Municipal                 0.2 mm
+
+261470902V         Tacaimbó                            Tacaimbó [Convencional]                    5.1 mm
+
+261470903A         Tacaimbó                    [CEMADEN] G2-Escola Mun. Maria Luíza               0.0 mm
+
+261500301A   Taquaritinga do Norte                      [APAC] CAIC Municipal                     4.0 mm
+
+261500301V   Taquaritinga do Norte               Taquaritinga do Norte [Convencional]             1.5 mm
+
+261510201V         Terezinha                           Terezinha [Convencional]                   0.0 mm
+
+261510201A         Terezinha                                [APAC] Correios                       0.0 mm
+
+261540901A         Toritama                             [APAC] [ETA Compesa]                      0.8 mm
+
+261580501A       Tupanatinga               [APAC] Escola Professora Felisbela Rodrigues Silva     0.0 mm
+
+261618301V     Vertente do Lério                   Vertente do Lério [Convencional]               11.8 mm
+
+261620902V         Vertentes                        Vertentes (IPA) [Convencional]                14.5 mm
+
+
+
+
+                         Mesorregião: Sertão Pernambucano
+                  Maior acumulado: Exu ([APAC] Escola Bárbara de Alencar) - 7.7 mm
+
+  CÓDIGO             MUNICÍPIO                                  ESTAÇÃO                         CHUVA TOTAL
+
+260010403V     Afogados da Ingazeira              Afogados da Ingazeira [Convencional]            0.0 mm
+
+260110206A            Araripina                        [CEMADEN] G2-Marcolândia                   0.0 mm
+
+260110202V            Araripina                                 Araripina                         0.0 mm
+
+260110201M            Araripina                      Araripina - PCD [Convencional]               0.0 mm
+
+260110202A            Araripina                      [APAC] Gerência Regional do IPA              0.0 mm
+
+260110207A            Araripina                   [CEMADEN] G2-Escola Luzanira Ramos              0.0 mm
+
+260110203A            Araripina                      [CEMADEN] G2-Lagoa do Barro                  0.0 mm
+260110204A    Araripina    [CEMADEN] G2-Parque Três Vaqueiros    0.0 mm
+
+260120101A   Arcoverde      [APAC] Estação Experimental do IPA   0.2 mm
+
+260120101V   Arcoverde        Arcoverde (IPA) [Convencional]     0.0 mm
+
+260180501A     Betânia        [APAC] Clube Oásis do Sertão       0.0 mm
+
+260200101A    Bodocó             [APAC] Escritório do IPA        0.0 mm
+
+260200101V    Bodocó              Bodocó [Convenional]           0.0 mm
+
+260250601A    Brejinho            [APAC] [ETA Compesa]           0.6 mm
+
+260250601V    Brejinho           Brejinho [Convencional]         0.0 mm
+
+260340501A    Calumbi             [APAC] [ETA Compesa]           1.6 mm
+
+260390001V    Carnaíba           Carnaíba [Convencional]         0.0 mm
+
+260390001A    Carnaíba         [APAC] Terreno da Prefeitura      0.0 mm
+
+260510302V    Custódia           Custódia [Convencional]         3.2 mm
+
+260530101A      Exu          [APAC] Escola Bárbara de Alencar    7.7 mm
+
+260530101V      Exu              Exu (IPA) [Convencional]        0.0 mm
+
+260560802V     Flores             Flores [Convencional]          0.0 mm
+
+260570701C    Floresta               [CEMADEN] [C]               0.0 mm
+
+260630901V     Granito            Granito [Convencional]         0.0 mm
+
+260630901A     Granito     [APAC] Hospital Sinhorinha de Souza   0.0 mm
+
+260660601A    Ibimirim                [APAC] Lages               0.0 mm
+
+260690302V    Iguaracy           Iguaraci [Convencional]         0.0 mm
+
+260700001A      Inajá            [APAC] Estádio Municipal        0.0 mm
+
+260710901A    Ingazeira    [APAC] Estação Tratamendo Compesa     0.0 mm
+
+260730701V      Ipubi              Ipubi [Convencional]          0.0 mm
+
+260730703A      Ipubi             [APAC] [ETA Compesa]           0.0 mm
+
+260770301A    Itapetim            [APAC] [ETA Compesa]           1.2 mm
+
+260770301V    Itapetim           Itapetim [Convencional]         0.0 mm
+
+260930301A   Mirandiba       [APAC] Creche Josefa Magalhães      2.6 mm
+
+261430301V   Moreilândia       Moreilândia [Convencional]        0.0 mm
+
+261430301A   Moreilândia          [APAC] [ETA Compesa]           0.0 mm
+
+260990703V    Ouricuri           Ouricuri [Convencional]         0.0 mm
+
+260990701A    Ouricuri                 [APAC] IPA                0.0 mm
+
+260990701C    Ouricuri           [CEMADEN] Ouricuri [C]          0.0 mm
+261040001A          Parnamirim                          [APAC] Quixaba                  0.0 mm
+
+261040002A          Parnamirim               [APAC] Unidade de Saúde da Família         0.0 mm
+
+261153301A           Quixaba                        [APAC] [ETA Compesa]                2.2 mm
+
+261220801M          Salgueiro                   Salgueiro - PCD [Convencional]          0.0 mm
+
+261220801A          Salgueiro                      [APAC] Escritório do IPA             0.0 mm
+
+261245501V          Santa Cruz              Santa Cruz da Venerada [Convencional]       0.0 mm
+
+261247102V   Santa Cruz da Baixa Verde     Santa Cruz da Baixa Verde [Convencional]     0.0 mm
+
+261247101A   Santa Cruz da Baixa Verde              [APAC] [ETA Compesa]                4.7 mm
+
+261255401V        Santa Filomena                Santa Filomena [Convencional]           0.0 mm
+
+261255401A        Santa Filomena            [APAC] EREN Raimundo Castro Ferreira        0.0 mm
+
+261280202V       Santa Terezinha                Santa Terezinha [Convencional]          0.0 mm
+
+261280201A       Santa Terezinha                    [APAC] Posto de Saúde               0.0 mm
+
+261350302A    São José do Belmonte                 [APAC 02] [ETA Compesa]              0.0 mm
+
+261350301A    São José do Belmonte                  [APAC] [ETA Compesa]                0.0 mm
+
+261360201V       São José do Egito         São José do Egito (CHESF) [Convencional]     0.0 mm
+
+261390903A         Serra Talhada                   [CEMADEN] G2-Varzinha                0.0 mm
+
+261390903V         Serra Talhada                 Serra Talhada [Convencional]           0.0 mm
+
+261390901A         Serra Talhada                        [APAC] DNOCS                    0.4 mm
+
+261390902A         Serra Talhada                [CEMADEN] G2-Ginásio Aeset              2.2 mm
+
+261390904A         Serra Talhada              [CEMADEN] G2-Policlínica Do Ipsep         0.2 mm
+
+261400601A            Serrita                           [APAC] FUNESE                   0.0 mm
+
+261410502A           Sertânia                        [CEMADEN] G2-CSU                   0.0 mm
+
+261410503A           Sertânia                [CEMADEN] G2-Parque de Exposição           0.0 mm
+
+261410501A           Sertânia            [APAC] Escola Municipal Constancia Rodrigues   0.0 mm
+
+261410506V           Sertânia                       Sertânia [Convencional]             0.0 mm
+
+261440202V           Solidão                        Solidão [Convencional]              0.0 mm
+
+261440201A           Solidão                        [APAC] Nova Instalação              0.8 mm
+
+261460001A            Tabira                        [APAC] [ETA Compesa]                0.2 mm
+
+261460001V            Tabira                         Tabira [Convencional]              0.0 mm
+
+261560701V           Trindade                      Trindade [Convencional]              0.0 mm
+
+261570601A            Triunfo                 [APAC] Estação Elevatória (Hospital)      0.2 mm
+
+261590401V         Tuparetama                     Tuparetama [Convencional]             0.0 mm
+261610001A                  Verdejante                           [APAC] [ETA Compesa]                    0.6 mm
+
+
+
+
+                         Mesorregião: São Francisco Pernambucano
+             Maior acumulado: Floresta ([APAC] Creche Municipal Professora Nahy Diniz Ferraz) - 0.0 mm
+
+ CÓDIGO                MUNICÍPIO                                    ESTAÇÃO                           CHUVA TOTAL
+
+
+260020302A               Afrânio                                  [APAC] Centro                          0.0 mm
+
+260300901A               Cabrobó                 [APAC] Estação de tratamento de Água Compesa            0.0 mm
+
+260392601A         Carnaubeira da Penha                      [APAC] Fazenda Milagres                     0.0 mm
+
+260515201V             Dormentes                            Dormentes [Convencional]                     0.0 mm
+
+260515201A             Dormentes                             [APAC] Escola Municipal                     0.0 mm
+
+260570702A               Floresta                             [APAC] [ETA Compesa]                       0.0 mm
+
+260570704V               Floresta                            Floresta [Convencional]                     0.0 mm
+
+260570701A               Floresta              [APAC] Creche Municipal Professora Nahy Diniz Ferraz      0.0 mm
+
+260740601V              Itacuruba                            Itacuruba [Convencional]                    0.0 mm
+
+260740601A              Itacuruba                             [APAC] [ETA Compesa]                       0.0 mm
+
+260805701V                Jatobá                              Jatobá [Convencional]                      0.0 mm
+
+260805701A                Jatobá                       [APAC] Escola Eunápio Gomes Varjão                0.0 mm
+
+260875001A            Lagoa Grande                    [APAC] Escola Municipal Tarcila Araújo             0.0 mm
+
+260875002A            Lagoa Grande                             [APAC] Antena da OI                       0.0 mm
+
+260875001V            Lagoa Grande                        Lagoa Grande [Convencional]                    0.0 mm
+
+260980802V                Orocó                               Orocó [Convencional]                       0.0 mm
+
+261100201V             Petrolândia                          Petrolândia [Convenional]                    0.0 mm
+
+261100201A             Petrolândia                              [APAC] Prefeitura                        0.0 mm
+
+261110106A              Petrolina                    [APAC] Estação de Tratamento de Uruais              0.0 mm
+
+261110104V              Petrolina                        Petrolina (INMET) [Convencional]                0.0 mm
+
+261110101V              Petrolina                            Petrolina [Convencional]                    0.0 mm
+
+261110102A              Petrolina                             [APAC] Gersino Coelho                      0.0 mm
+
+261110103A              Petrolina                               [CEMADEN] SAMU                           0.0 mm
+
+261110101C              Petrolina                                [CEMADEN] [C]                           0.0 mm
+
+261480801V               Tacaratu                    Tacaratu [Sítio Gameleira] [Convencional]           0.0 mm
+
+261480801A               Tacaratu                  [APAC] Secretária de Desenvolvimento Social           0.0 mm
+261520102A               Terra Nova                                     [APAC] Escola Francisco Hugo   0.0 mm
+
+261520101A               Terra Nova                                         [APAC] [ETA Compesa]       0.0 mm
+
+
+
+        1) Convencional: Aparelho de medição manual
+
+        2) PCD (Plataforma de Coleta de Dados): Aparelho de medição automática
+

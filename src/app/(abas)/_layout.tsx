@@ -22,6 +22,7 @@ export default function LayoutAbas() {
       <Tabs.Screen name="ler" options={{ href: null }} />
       <Tabs.Screen name="predio" options={{ href: null }} />
       <Tabs.Screen name="salvos" options={{ href: null }} />
+      <Tabs.Screen name="receber" options={{ href: null }} />
     </Tabs>
   );
 }

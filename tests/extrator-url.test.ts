@@ -36,3 +36,16 @@ describe("Extrator Camada A (URL)", () => {
     });
   });
 });
+
+describe("anúncio que não é moradia", () => {
+  it("loja, sala ou ponto comercial vira tipologia 'outro'; apartamento continua apartamento", () => {
+    const loja = extrairDaUrl(
+      "https://www.zapimoveis.com.br/imovel/aluguel-loja-salao-3-quartos-com-varanda-espinheiro-recife-pe-70m2-id-2917916680/?source=ranking%2Crp",
+    );
+    expect("erro" in loja ? null : loja.campos).toMatchObject({ tipologia: "outro", bairro: "espinheiro", area: 70 });
+    const sala = extrairDaUrl("https://www.zapimoveis.com.br/imovel/venda-sala-comercial-gracas-recife-pe-40m2-id-123/");
+    expect("erro" in sala ? null : sala.campos.tipologia).toBe("outro");
+    const ap = extrairDaUrl("https://www.zapimoveis.com.br/imovel/aluguel-apartamento-2-quartos-com-sala-gracas-recife-pe-60m2-id-124/");
+    expect("erro" in ap ? null : ap.campos.tipologia).toBe("apartamento");
+  });
+});

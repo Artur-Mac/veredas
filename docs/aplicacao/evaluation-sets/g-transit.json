@@ -1,0 +1,1348 @@
+{
+ "conjunto": "G-TRANSIT",
+ "versao": 1,
+ "criadoEm": "2026-11-14",
+ "epoca": "VE05",
+ "grade": "df3b25344af0934b",
+ "feed": {
+  "versao": "v2026.10.26",
+  "inicio": "20200501",
+  "fim": "20271026",
+  "fuso": "America/Recife",
+  "publicador": "Grande Recife Consórcio de Transporte Metropolitano",
+  "sha256": "e1d834d9cf0165690ad0ac5c6aa01fb8b5b7dc38bb611f999cadb01512313fd5"
+ },
+ "selecao": "um prédio com ligação forte por área do piloto, pela ordem do SHA-256 do id; destinos = centroides de bairro usados pelo app (referencias-publicas.json); 20 cenários fixados antes de rodar",
+ "revisao": "nao_revisado",
+ "casos": [
+  {
+   "id": "GT01",
+   "cenario": "dia útil, ida",
+   "area": "boa-viagem",
+   "predio": "20184-3904",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "ida",
+   "data": "2026-11-17",
+   "saida": "07:30",
+   "saidaSeg": 27000,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 42,
+   "viagens": 2,
+   "chegada": "08:11",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "010099",
+     "seg": 232
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "195-PRI-VOLTA-0600-0800-DUT-14987",
+     "route_id": "195",
+     "linha": "195",
+     "sentido": "Terminal Cais De Sta. Rita",
+     "diaDeServico": "2026-11-17",
+     "de": "010099",
+     "deNome": "Ponto na Avenida Conselheiro Aguiar",
+     "para": "180933",
+     "paraNome": "Terminal Cais De Sta. Rita, embarque 03",
+     "partida": 28043,
+     "chegada": 28800,
+     "partidaTexto": "07:47",
+     "chegadaTexto": "08:00"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180933",
+     "para": "180939",
+     "seg": 61
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "121-PCR-VOLTA-0805-0905-DUT-6062",
+     "route_id": "121",
+     "linha": "121",
+     "sentido": "Terminal Vila Da Sudene",
+     "diaDeServico": "2026-11-17",
+     "de": "180939",
+     "deNome": "Terminal Cais De Sta. Rita, embarque 09",
+     "para": "180040",
+     "paraNome": "Ponto na Cais do Apolo",
+     "partida": 29100,
+     "chegada": 29349,
+     "partidaTexto": "08:05",
+     "chegadaTexto": "08:09"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180040",
+     "para": null,
+     "seg": 156
+    }
+   ]
+  },
+  {
+   "id": "GT02",
+   "cenario": "dia útil, volta (sentido oposto do GT01)",
+   "area": "boa-viagem",
+   "predio": "20184-3904",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "volta",
+   "data": "2026-11-17",
+   "saida": "18:00",
+   "saidaSeg": 64800,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 53,
+   "viagens": 2,
+   "chegada": "18:53",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180043",
+     "seg": 200
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "232-PCR-VOLTA-1755-1900-DUT-22741",
+     "route_id": "232",
+     "linha": "232",
+     "sentido": "Terminal De Cavaleiro",
+     "diaDeServico": "2026-11-17",
+     "de": "180043",
+     "deNome": "Ponto na Cais do Apolo",
+     "para": "180212",
+     "paraNome": "Ponto na Rua Imperador Dom Pedro II",
+     "partida": 65077,
+     "chegada": 65335,
+     "partidaTexto": "18:04",
+     "chegadaTexto": "18:08"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180212",
+     "para": "180026",
+     "seg": 220
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "062-PRI-VOLTA-1818-1935-DUT-3120",
+     "route_id": "062",
+     "linha": "062",
+     "sentido": "Terminal De Jardim Piedade",
+     "diaDeServico": "2026-11-17",
+     "de": "180026",
+     "deNome": "Ponto na Avenida Martins de Barros",
+     "para": "010498",
+     "paraNome": "Ponto na Avenida Engenheiro Domingos Ferreira",
+     "partida": 65960,
+     "chegada": 67989,
+     "partidaTexto": "18:19",
+     "chegadaTexto": "18:53"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "010498",
+     "para": null,
+     "seg": 20
+    }
+   ]
+  },
+  {
+   "id": "GT03",
+   "cenario": "dia útil, ida",
+   "area": "casa-forte",
+   "predio": "61999-670",
+   "destinoBairro": "boa-vista",
+   "centroide": [
+    -34.89115,
+    -8.05854
+   ],
+   "sentido": "ida",
+   "data": "2026-11-17",
+   "saida": "07:30",
+   "saidaSeg": 27000,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 49,
+   "viagens": 1,
+   "chegada": "08:19",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "100035",
+     "seg": 472
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "630-PRI-IDA-0700-0820-DUT-35822",
+     "route_id": "630",
+     "linha": "630",
+     "sentido": "Ilha Joana Bezerra",
+     "diaDeServico": "2026-11-17",
+     "de": "100035",
+     "deNome": "Ponto na Estrada do Encanamento",
+     "para": "180163",
+     "paraNome": "Ponto na Avenida Governador Agamenon Magalhães",
+     "partida": 27554,
+     "chegada": 29179,
+     "partidaTexto": "07:39",
+     "chegadaTexto": "08:06"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180163",
+     "para": null,
+     "seg": 770
+    }
+   ]
+  },
+  {
+   "id": "GT04",
+   "cenario": "dia útil, volta (sentido oposto do GT03)",
+   "area": "casa-forte",
+   "predio": "61999-670",
+   "destinoBairro": "boa-vista",
+   "centroide": [
+    -34.89115,
+    -8.05854
+   ],
+   "sentido": "volta",
+   "data": "2026-11-17",
+   "saida": "18:00",
+   "saidaSeg": 64800,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 47,
+   "viagens": 2,
+   "chegada": "18:46",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180319",
+     "seg": 197
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "1977-PRI-IDA-1719-1809-DUT-17632",
+     "route_id": "1977",
+     "linha": "1977",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-17",
+     "de": "180319",
+     "deNome": "Ponto na Avenida Conde da Boa Vista",
+     "para": "180216",
+     "paraNome": "Ponto na Avenida Dantas Barreto",
+     "partida": 65108,
+     "chegada": 65340,
+     "partidaTexto": "18:05",
+     "chegadaTexto": "18:09"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180216",
+     "para": "180288",
+     "seg": 225
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "522-PRI-VOLTA-1815-1915-DUT-34580",
+     "route_id": "522",
+     "linha": "522",
+     "sentido": "Terminal Da Linha 522: Dois Irmãos (Rui Barbosa)",
+     "diaDeServico": "2026-11-17",
+     "de": "180288",
+     "deNome": "Ponto na Rua Primeiro de Março",
+     "para": "100091",
+     "paraNome": "Ponto na Avenida Dezessete de Agosto",
+     "partida": 65700,
+     "chegada": 67441,
+     "partidaTexto": "18:15",
+     "chegadaTexto": "18:44"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "100091",
+     "para": null,
+     "seg": 158
+    }
+   ]
+  },
+  {
+   "id": "GT05",
+   "cenario": "dia útil, ida com possível baldeação",
+   "area": "gracas",
+   "predio": "73237-330",
+   "destinoBairro": "cidade-universitaria",
+   "centroide": [
+    -34.95219,
+    -8.05519
+   ],
+   "sentido": "ida",
+   "data": "2026-11-17",
+   "saida": "07:30",
+   "saidaSeg": 27000,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 53,
+   "viagens": 3,
+   "chegada": "08:22",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "100176",
+     "seg": 181
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "2920-PRI-IDA-0620-0810-DUT-30313",
+     "route_id": "2920",
+     "linha": "2920",
+     "sentido": "Terminal Integrado Cdu",
+     "diaDeServico": "2026-11-17",
+     "de": "100176",
+     "deNome": "Ponto na Rua Engenheiro Edgar D`Amorim",
+     "para": "080341",
+     "paraNome": "Estação Abolição Volta",
+     "partida": 27232,
+     "chegada": 27953,
+     "partidaTexto": "07:33",
+     "chegadaTexto": "07:45"
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "2450-COS-VOLTA-0738-0826-DUT-25969",
+     "route_id": "2450",
+     "linha": "2450",
+     "sentido": "Terminal Integrado Cosme E Damião",
+     "diaDeServico": "2026-11-17",
+     "de": "080341",
+     "deNome": "Estação Abolição Volta",
+     "para": "080398",
+     "paraNome": "Estação Br-101 Volta",
+     "partida": 28174,
+     "chegada": 28830,
+     "partidaTexto": "07:49",
+     "chegadaTexto": "08:00"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "080398",
+     "para": "080413",
+     "seg": 20
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "330-PRI-IDA-0710-0830-DUT-31493",
+     "route_id": "330",
+     "linha": "330",
+     "sentido": "Cidade Universitária",
+     "diaDeServico": "2026-11-17",
+     "de": "080413",
+     "deNome": "Ponto na Avenida Caxangá",
+     "para": "080295",
+     "paraNome": "Ponto na Avenida Jornalista Aníbal Fernandes",
+     "partida": 29008,
+     "chegada": 30053,
+     "partidaTexto": "08:03",
+     "chegadaTexto": "08:20"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "080295",
+     "para": null,
+     "seg": 105
+    }
+   ]
+  },
+  {
+   "id": "GT06",
+   "cenario": "dia útil, ida com possível baldeação",
+   "area": "espinheiro",
+   "predio": "29238-307",
+   "destinoBairro": "imbiribeira",
+   "centroide": [
+    -34.91348,
+    -8.10963
+   ],
+   "sentido": "ida",
+   "data": "2026-11-17",
+   "saida": "07:30",
+   "saidaSeg": 27000,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 38,
+   "viagens": 2,
+   "chegada": "08:07",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180153",
+     "seg": 553
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "050-PRI-IDA-0710-0820-DUT-2502",
+     "route_id": "050",
+     "linha": "050",
+     "sentido": "Boa Viagem",
+     "diaDeServico": "2026-11-17",
+     "de": "180153",
+     "deNome": "Ponto na Avenida Governador Agamenon Magalhães",
+     "para": "180160",
+     "paraNome": "Ponto na Avenida Governador Agamenon Magalhães",
+     "partida": 27628,
+     "chegada": 27811,
+     "partidaTexto": "07:40",
+     "chegadaTexto": "07:43"
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "191-PRI-IDA-0740-1040-DUT-11857",
+     "route_id": "191",
+     "linha": "191",
+     "sentido": "Ponto 030732",
+     "diaDeServico": "2026-11-17",
+     "de": "180160",
+     "deNome": "Ponto na Avenida Governador Agamenon Magalhães",
+     "para": "020011",
+     "paraNome": "Ponto na Avenida Marechal Mascarenhas de Moraes",
+     "partida": 28117,
+     "chegada": 29131,
+     "partidaTexto": "07:48",
+     "chegadaTexto": "08:05"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "020011",
+     "para": null,
+     "seg": 148
+    }
+   ]
+  },
+  {
+   "id": "GT07",
+   "cenario": "dia útil, ida",
+   "area": "madalena",
+   "predio": "16918-49",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "ida",
+   "data": "2026-11-17",
+   "saida": "07:30",
+   "saidaSeg": 27000,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 46,
+   "viagens": 1,
+   "chegada": "08:15",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "100169",
+     "seg": 746
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "513-PCR2-IDA-0710-0825-DUT-33827",
+     "route_id": "513",
+     "linha": "513",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-17",
+     "de": "100169",
+     "deNome": "Ponto na Avenida Rui Barbosa",
+     "para": "180040",
+     "paraNome": "Ponto na Cais do Apolo",
+     "partida": 27814,
+     "chegada": 29596,
+     "partidaTexto": "07:43",
+     "chegadaTexto": "08:13"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180040",
+     "para": null,
+     "seg": 156
+    }
+   ]
+  },
+  {
+   "id": "GT08",
+   "cenario": "sábado",
+   "area": "boa-viagem",
+   "predio": "20184-3904",
+   "destinoBairro": "cidade-universitaria",
+   "centroide": [
+    -34.95219,
+    -8.05519
+   ],
+   "sentido": "ida",
+   "data": "2026-11-21",
+   "saida": "09:30",
+   "saidaSeg": 34200,
+   "servicosAtivos": 383,
+   "resultado": "jornada",
+   "duracaoMin": 50,
+   "viagens": 1,
+   "chegada": "10:19",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "010498",
+     "seg": 20
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "440-PRI-VOLTA-0923-1021-SAB-33455",
+     "route_id": "440",
+     "linha": "440",
+     "sentido": "Terminal Da Linha 440 - Cdu/Caxangá/Boa Viagem",
+     "diaDeServico": "2026-11-21",
+     "de": "010498",
+     "deNome": "Ponto na Avenida Engenheiro Domingos Ferreira",
+     "para": "190236",
+     "paraNome": "Ponto na Avenida Visconde de São Leopoldo",
+     "partida": 34395,
+     "chegada": 36492,
+     "partidaTexto": "09:33",
+     "chegadaTexto": "10:08"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "190236",
+     "para": null,
+     "seg": 691
+    }
+   ]
+  },
+  {
+   "id": "GT09",
+   "cenario": "sábado",
+   "area": "casa-forte",
+   "predio": "61999-670",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "ida",
+   "data": "2026-11-21",
+   "saida": "09:30",
+   "saidaSeg": 34200,
+   "servicosAtivos": 383,
+   "resultado": "jornada",
+   "duracaoMin": 51,
+   "viagens": 2,
+   "chegada": "10:21",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "100108",
+     "seg": 199
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "522-PRI-IDA-0910-1010-SAB-34602",
+     "route_id": "522",
+     "linha": "522",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-21",
+     "de": "100108",
+     "deNome": "Ponto na Avenida Dezessete de Agosto",
+     "para": "180288",
+     "paraNome": "Ponto na Rua Primeiro de Março",
+     "partida": 34874,
+     "chegada": 36600,
+     "partidaTexto": "09:41",
+     "chegadaTexto": "10:10"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180288",
+     "para": "180026",
+     "seg": 222
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "1992-PRI-VOLTA-1016-1116-SAB-19212",
+     "route_id": "1992",
+     "linha": "1992",
+     "sentido": "Terminal De Pau Amarelo",
+     "diaDeServico": "2026-11-21",
+     "de": "180026",
+     "deNome": "Ponto na Avenida Martins de Barros",
+     "para": "180040",
+     "paraNome": "Ponto na Cais do Apolo",
+     "partida": 36960,
+     "chegada": 37105,
+     "partidaTexto": "10:16",
+     "chegadaTexto": "10:18"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180040",
+     "para": null,
+     "seg": 156
+    }
+   ]
+  },
+  {
+   "id": "GT10",
+   "cenario": "domingo",
+   "area": "madalena",
+   "predio": "16918-49",
+   "destinoBairro": "boa-viagem",
+   "centroide": [
+    -34.90575,
+    -8.12644
+   ],
+   "sentido": "ida",
+   "data": "2026-11-22",
+   "saida": "09:30",
+   "saidaSeg": 34200,
+   "servicosAtivos": 362,
+   "resultado": "jornada",
+   "duracaoMin": 57,
+   "viagens": 2,
+   "chegada": "10:27",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "100170",
+     "seg": 765
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "522-PRI-IDA-0900-1000-DOM-34520",
+     "route_id": "522",
+     "linha": "522",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-22",
+     "de": "100170",
+     "deNome": "Ponto na Avenida Rui Barbosa",
+     "para": "180185",
+     "paraNome": "Ponto na Avenida Governador Agamenon Magalhães",
+     "partida": 35016,
+     "chegada": 35216,
+     "partidaTexto": "09:43",
+     "chegadaTexto": "09:46"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180185",
+     "para": "180154",
+     "seg": 233
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "050-PRI-IDA-0929-1024-DOM-2355",
+     "route_id": "050",
+     "linha": "050",
+     "sentido": "Boa Viagem",
+     "diaDeServico": "2026-11-22",
+     "de": "180154",
+     "deNome": "Ponto na Avenida Governador Agamenon Magalhães",
+     "para": "010014",
+     "paraNome": "Ponto na Avenida Engenheiro Domingos Ferreira",
+     "partida": 35615,
+     "chegada": 37126,
+     "partidaTexto": "09:53",
+     "chegadaTexto": "10:18"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "010014",
+     "para": null,
+     "seg": 499
+    }
+   ]
+  },
+  {
+   "id": "GT11",
+   "cenario": "domingo",
+   "area": "gracas",
+   "predio": "73237-330",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "ida",
+   "data": "2026-11-22",
+   "saida": "09:30",
+   "saidaSeg": 34200,
+   "servicosAtivos": 362,
+   "resultado": "jornada",
+   "duracaoMin": 45,
+   "viagens": 1,
+   "chegada": "10:14",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "100171",
+     "seg": 402
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "521-PRI-IDA-0925-1005-DOM-34418",
+     "route_id": "521",
+     "linha": "521",
+     "sentido": "Recife",
+     "diaDeServico": "2026-11-22",
+     "de": "100171",
+     "deNome": "Ponto na Avenida Rui Barbosa",
+     "para": "180567",
+     "paraNome": "Ponto na Avenida Marquês de Olinda",
+     "partida": 34953,
+     "chegada": 36300,
+     "partidaTexto": "09:42",
+     "chegadaTexto": "10:05"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180567",
+     "para": null,
+     "seg": 574
+    }
+   ]
+  },
+  {
+   "id": "GT12",
+   "cenario": "feriado (02/11, segunda: serviço de domingo por exceção)",
+   "area": "boa-viagem",
+   "predio": "20184-3904",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "ida",
+   "data": "2026-11-02",
+   "saida": "07:30",
+   "saidaSeg": 27000,
+   "servicosAtivos": 364,
+   "resultado": "jornada",
+   "duracaoMin": 49,
+   "viagens": 2,
+   "chegada": "08:18",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "010099",
+     "seg": 232
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "195-PRI-VOLTA-0600-0800-DOM-14964",
+     "route_id": "195",
+     "linha": "195",
+     "sentido": "Terminal Cais De Sta. Rita",
+     "diaDeServico": "2026-11-02",
+     "de": "010099",
+     "deNome": "Ponto na Avenida Conselheiro Aguiar",
+     "para": "180933",
+     "paraNome": "Terminal Cais De Sta. Rita, embarque 03",
+     "partida": 28043,
+     "chegada": 28800,
+     "partidaTexto": "07:47",
+     "chegadaTexto": "08:00"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180933",
+     "para": "180025",
+     "seg": 278
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "723-PRI-IDA-0755-0822-DOM-38387",
+     "route_id": "723",
+     "linha": "723",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-02",
+     "de": "180025",
+     "deNome": "Ponto na Avenida Martins de Barros",
+     "para": "180040",
+     "paraNome": "Ponto na Cais do Apolo",
+     "partida": 29631,
+     "chegada": 29761,
+     "partidaTexto": "08:13",
+     "chegadaTexto": "08:16"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180040",
+     "para": null,
+     "seg": 156
+    }
+   ]
+  },
+  {
+   "id": "GT13",
+   "cenario": "segunda comum (controle do GT12)",
+   "area": "boa-viagem",
+   "predio": "20184-3904",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "ida",
+   "data": "2026-11-09",
+   "saida": "07:30",
+   "saidaSeg": 27000,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 42,
+   "viagens": 2,
+   "chegada": "08:11",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "010099",
+     "seg": 232
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "195-PRI-VOLTA-0600-0800-DUT-14987",
+     "route_id": "195",
+     "linha": "195",
+     "sentido": "Terminal Cais De Sta. Rita",
+     "diaDeServico": "2026-11-09",
+     "de": "010099",
+     "deNome": "Ponto na Avenida Conselheiro Aguiar",
+     "para": "180933",
+     "paraNome": "Terminal Cais De Sta. Rita, embarque 03",
+     "partida": 28043,
+     "chegada": 28800,
+     "partidaTexto": "07:47",
+     "chegadaTexto": "08:00"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180933",
+     "para": "180939",
+     "seg": 61
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "121-PCR-VOLTA-0805-0905-DUT-6062",
+     "route_id": "121",
+     "linha": "121",
+     "sentido": "Terminal Vila Da Sudene",
+     "diaDeServico": "2026-11-09",
+     "de": "180939",
+     "deNome": "Terminal Cais De Sta. Rita, embarque 09",
+     "para": "180040",
+     "paraNome": "Ponto na Cais do Apolo",
+     "partida": 29100,
+     "chegada": 29349,
+     "partidaTexto": "08:05",
+     "chegadaTexto": "08:09"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180040",
+     "para": null,
+     "seg": 156
+    }
+   ]
+  },
+  {
+   "id": "GT14",
+   "cenario": "volta tarde",
+   "area": "boa-viagem",
+   "predio": "20184-3904",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "volta",
+   "data": "2026-11-17",
+   "saida": "23:30",
+   "saidaSeg": 84600,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 61,
+   "viagens": 2,
+   "chegada": "24:31",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180038",
+     "seg": 423
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "1992-PRI-VOLTA-2340-2425-DUT-19180",
+     "route_id": "1992",
+     "linha": "1992",
+     "sentido": "Terminal De Pau Amarelo",
+     "diaDeServico": "2026-11-17",
+     "de": "180038",
+     "deNome": "Ponto na Cais do Apolo",
+     "para": "160047",
+     "paraNome": "Ponto 160047",
+     "partida": 85274,
+     "chegada": 85982,
+     "partidaTexto": "23:41",
+     "chegadaTexto": "23:53"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "160047",
+     "para": "160033",
+     "seg": 111
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "910-RM1-VOLTA-2338-2453-DUT-43762",
+     "route_id": "910",
+     "linha": "910",
+     "sentido": "Ponto 010326",
+     "diaDeServico": "2026-11-17",
+     "de": "160033",
+     "deNome": "Ponto 160033",
+     "para": "010498",
+     "paraNome": "Ponto na Avenida Engenheiro Domingos Ferreira",
+     "partida": 86213,
+     "chegada": 88240,
+     "partidaTexto": "23:56",
+     "chegadaTexto": "24:30"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "010498",
+     "para": null,
+     "seg": 20
+    }
+   ]
+  },
+  {
+   "id": "GT15",
+   "cenario": "depois da meia-noite, pedido como 24:20 do dia de serviço 17/11",
+   "area": "boa-viagem",
+   "predio": "20184-3904",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "volta",
+   "data": "2026-11-17",
+   "saida": "24:20",
+   "saidaSeg": 87600,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 119,
+   "viagens": 3,
+   "chegada": "26:19",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180514",
+     "seg": 366
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "1967-TSR-VOLTA-2440-2540-DUT-16833",
+     "route_id": "1967",
+     "linha": "1967",
+     "sentido": "Terminal Integrado Igarassu",
+     "diaDeServico": "2026-11-17",
+     "de": "180514",
+     "deNome": "Estação Istmo Do Recife Retorno",
+     "para": "150077",
+     "paraNome": "Ponto 150077",
+     "partida": 88913,
+     "chegada": 89816,
+     "partidaTexto": "24:41",
+     "chegadaTexto": "24:56"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "150077",
+     "para": "150683",
+     "seg": 290
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "1927-PRI-VOLTA-0100-0125-DUT-13339",
+     "route_id": "1927",
+     "linha": "1927",
+     "sentido": "Terminal Cais De Sta. Rita",
+     "diaDeServico": "2026-11-18",
+     "de": "150683",
+     "deNome": "Ponto 150683",
+     "para": "180943",
+     "paraNome": "Terminal Cais De Sta. Rita, embarque Bacurau 13",
+     "partida": 3846,
+     "chegada": 5100,
+     "partidaTexto": "01:04",
+     "chegadaTexto": "01:25"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180943",
+     "para": "180944",
+     "seg": 29
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "038-PRI-IDA-0200-0227-DUT-2132",
+     "route_id": "038",
+     "linha": "038",
+     "sentido": "Terminal Residencial Boa Viagem",
+     "diaDeServico": "2026-11-18",
+     "de": "180944",
+     "deNome": "Terminal Cais De Sta. Rita, embarque Bacurau 14",
+     "para": "010498",
+     "paraNome": "Ponto na Avenida Engenheiro Domingos Ferreira",
+     "partida": 7200,
+     "chegada": 8336,
+     "partidaTexto": "02:00",
+     "chegadaTexto": "02:18"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "010498",
+     "para": null,
+     "seg": 20
+    }
+   ]
+  },
+  {
+   "id": "GT16",
+   "cenario": "o mesmo instante pedido como 00:20 de 18/11 (usa viagens 24:xx do dia de serviço anterior)",
+   "area": "boa-viagem",
+   "predio": "20184-3904",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "volta",
+   "data": "2026-11-18",
+   "saida": "00:20",
+   "saidaSeg": 1200,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 119,
+   "viagens": 3,
+   "chegada": "02:19",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "180514",
+     "seg": 366
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "1967-TSR-VOLTA-2440-2540-DUT-16833",
+     "route_id": "1967",
+     "linha": "1967",
+     "sentido": "Terminal Integrado Igarassu",
+     "diaDeServico": "2026-11-17",
+     "de": "180514",
+     "deNome": "Estação Istmo Do Recife Retorno",
+     "para": "150077",
+     "paraNome": "Ponto 150077",
+     "partida": 88913,
+     "chegada": 89816,
+     "partidaTexto": "24:41",
+     "chegadaTexto": "24:56"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "150077",
+     "para": "150683",
+     "seg": 290
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "1927-PRI-VOLTA-0100-0125-DUT-13339",
+     "route_id": "1927",
+     "linha": "1927",
+     "sentido": "Terminal Cais De Sta. Rita",
+     "diaDeServico": "2026-11-18",
+     "de": "150683",
+     "deNome": "Ponto 150683",
+     "para": "180943",
+     "paraNome": "Terminal Cais De Sta. Rita, embarque Bacurau 13",
+     "partida": 3846,
+     "chegada": 5100,
+     "partidaTexto": "01:04",
+     "chegadaTexto": "01:25"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180943",
+     "para": "180944",
+     "seg": 29
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "038-PRI-IDA-0200-0227-DUT-2132",
+     "route_id": "038",
+     "linha": "038",
+     "sentido": "Terminal Residencial Boa Viagem",
+     "diaDeServico": "2026-11-18",
+     "de": "180944",
+     "deNome": "Terminal Cais De Sta. Rita, embarque Bacurau 14",
+     "para": "010498",
+     "paraNome": "Ponto na Avenida Engenheiro Domingos Ferreira",
+     "partida": 7200,
+     "chegada": 8336,
+     "partidaTexto": "02:00",
+     "chegadaTexto": "02:18"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "010498",
+     "para": null,
+     "seg": 20
+    }
+   ]
+  },
+  {
+   "id": "GT17",
+   "cenario": "dia útil, volta com possível baldeação",
+   "area": "espinheiro",
+   "predio": "29238-307",
+   "destinoBairro": "cidade-universitaria",
+   "centroide": [
+    -34.95219,
+    -8.05519
+   ],
+   "sentido": "volta",
+   "data": "2026-11-17",
+   "saida": "18:00",
+   "saidaSeg": 64800,
+   "servicosAtivos": 395,
+   "resultado": "jornada",
+   "duracaoMin": 66,
+   "viagens": 2,
+   "chegada": "19:06",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "190236",
+     "seg": 691
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "207-PRI-IDA-1800-1830-DUT-21695",
+     "route_id": "207",
+     "linha": "207",
+     "sentido": "Terminal Integrado Macaxeira",
+     "diaDeServico": "2026-11-17",
+     "de": "190236",
+     "deNome": "Ponto na Avenida Visconde de São Leopoldo",
+     "para": "110915",
+     "paraNome": "Terminal Integrado Macaxeira - Desembarque 02",
+     "partida": 65515,
+     "chegada": 66572,
+     "partidaTexto": "18:11",
+     "chegadaTexto": "18:29"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "110915",
+     "para": "110901",
+     "seg": 85
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "645-PRI4-IDA-1835-1910-DUT-37094",
+     "route_id": "645",
+     "linha": "645",
+     "sentido": "Santo Antônio",
+     "diaDeServico": "2026-11-17",
+     "de": "110901",
+     "deNome": "Terminal Integrado Macaxeira, embarque 01",
+     "para": "110020",
+     "paraNome": "Ponto na Avenida Norte Miguel Arraes de Alencar",
+     "partida": 66900,
+     "chegada": 68143,
+     "partidaTexto": "18:35",
+     "chegadaTexto": "18:55"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "110020",
+     "para": null,
+     "seg": 640
+    }
+   ]
+  },
+  {
+   "id": "GT18",
+   "cenario": "sábado, volta",
+   "area": "gracas",
+   "predio": "73237-330",
+   "destinoBairro": "boa-viagem",
+   "centroide": [
+    -34.90575,
+    -8.12644
+   ],
+   "sentido": "volta",
+   "data": "2026-11-21",
+   "saida": "13:00",
+   "saidaSeg": 46800,
+   "servicosAtivos": 383,
+   "resultado": "jornada",
+   "duracaoMin": 52,
+   "viagens": 1,
+   "chegada": "13:52",
+   "pernas": [
+    {
+     "tipo": "a_pe",
+     "de": null,
+     "para": "010096",
+     "seg": 754
+    },
+    {
+     "tipo": "viagem",
+     "trip_id": "050-PRI-VOLTA-1314-1404-SAB-2753",
+     "route_id": "050",
+     "linha": "050",
+     "sentido": "Terminal Integrado Pe 15",
+     "diaDeServico": "2026-11-21",
+     "de": "010096",
+     "deNome": "Ponto na Rua Setubal",
+     "para": "180184",
+     "paraNome": "Ponto na Avenida Governador Agamenon Magalhães",
+     "partida": 47640,
+     "chegada": 49119,
+     "partidaTexto": "13:14",
+     "chegadaTexto": "13:38"
+    },
+    {
+     "tipo": "a_pe",
+     "de": "180184",
+     "para": null,
+     "seg": 821
+    }
+   ]
+  },
+  {
+   "id": "GT19",
+   "cenario": "janela sem serviço útil (03:00, limite de 1 h)",
+   "area": "casa-forte",
+   "predio": "61999-670",
+   "destinoBairro": "cidade-universitaria",
+   "centroide": [
+    -34.95219,
+    -8.05519
+   ],
+   "sentido": "ida",
+   "data": "2026-11-17",
+   "saida": "03:00",
+   "saidaSeg": 10800,
+   "servicosAtivos": 395,
+   "resultado": "sem_jornada",
+   "horizonteSeg": 3600,
+   "paradasDeOrigem": [
+    {
+     "stop_id": "100071",
+     "seg": 24
+    },
+    {
+     "stop_id": "100066",
+     "seg": 38
+    },
+    {
+     "stop_id": "100070",
+     "seg": 121
+    },
+    {
+     "stop_id": "100067",
+     "seg": 156
+    },
+    {
+     "stop_id": "100091",
+     "seg": 158
+    },
+    {
+     "stop_id": "100108",
+     "seg": 199
+    },
+    {
+     "stop_id": "100216",
+     "seg": 289
+    },
+    {
+     "stop_id": "100090",
+     "seg": 324
+    },
+    {
+     "stop_id": "100035",
+     "seg": 472
+    },
+    {
+     "stop_id": "100074",
+     "seg": 497
+    },
+    {
+     "stop_id": "100064",
+     "seg": 538
+    },
+    {
+     "stop_id": "100068",
+     "seg": 628
+    },
+    {
+     "stop_id": "100036",
+     "seg": 778
+    }
+   ]
+  },
+  {
+   "id": "GT20",
+   "cenario": "data fora da validade do feed (fim 26/10/2027)",
+   "area": "boa-viagem",
+   "predio": "20184-3904",
+   "destinoBairro": "recife",
+   "centroide": [
+    -34.87102,
+    -8.05827
+   ],
+   "sentido": "ida",
+   "data": "2027-11-03",
+   "saida": "07:30",
+   "saidaSeg": 27000,
+   "servicosAtivos": 0,
+   "resultado": "fora_da_validade"
+  }
+ ]
+}

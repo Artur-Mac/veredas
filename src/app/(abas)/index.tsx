@@ -1,25 +1,30 @@
-import * as Clipboard from "expo-clipboard";
 import { router } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
-import Svg, { Path, Rect } from "react-native-svg";
-import { Botao } from "../../componentes/Botao";
+import React, { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import Svg, { Path } from "react-native-svg";
 import { Cartao, CorpoDoCartao } from "../../componentes/Cartao";
+import { Coluna } from "../../componentes/casca/Coluna";
+import { FaixaDoCaderno } from "../../componentes/casca/FaixaDoCaderno";
+import { carregarCadastro, type CadastroDaAnalise } from "../../componentes/dossie-v1/cadastro";
 import { GradeArquitetonica } from "../../componentes/GradeArquitetonica";
 import { caminho, poligonoNaCaixa, type Poligono } from "../../componentes/mapa/geometria";
-import { Pressionavel } from "../../componentes/Pressionavel";
+import { AlvoDeToque, Pressionavel } from "../../componentes/Pressionavel";
 import { estilosDoTema } from "../../componentes/revisao/estilosDoTema";
 import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
-import { type AnaliseV2 } from "../../dados/contratos";
-import { enderecoDoDossie } from "../../dados/consultas";
-import { custoMensal } from "../../dados/custos";
-import { IDS_DOSSIES, dossieOuErro } from "../../dados/dossies";
+import { ImportarExtensao } from "../../componentes/leitor/ImportarExtensao";
+import { BuscaUnificada, ExemplosAgora, FiltroDeEtapas, OndeMaisProcurarNoPiloto, TriagemDoCartao } from "../../componentes/inicio/Explorar";
+import { GavetaDeDescarte } from "../../componentes/descarte/GavetaDeDescarte";
+import { passaNoFiltro, type FiltroDeEtapa } from "../../dados/triagem";
+import { type AnaliseV2, type Edificio } from "../../dados/contratos";
+import { custoMensal, ROTULO_MENSAL_CONHECIDO, avisoDeValoresPendentes } from "../../dados/custos";
+import { derivarDossie } from "../../dados/dossie/derivar";
 import { formatarReais } from "../../dados/formatos";
-import { destinoDaAnalise, nomeDoBairro, primeiraAnomaliaPendente, rotuloDoBairroNoCartao, textoEhACidade } from "../../dados/formulario";
+import { destinoDaAnalise, nomeDoBairro, rotuloDoBairroNoCartao, textoEhACidade } from "../../dados/formulario";
 import { formatarEndereco } from "../../dados/recife/endereco";
 import { eCoberto } from "../../dados/recife/bairros";
-import { edificioPorId } from "../../dados/recife/indice";
+import { arquivoDoIndice } from "../../dados/recife/indice";
+import { garantirCamadas } from "../../dados/camadas";
 import { useAnalises } from "../../estado/Analises";
 import { useTema } from "../../tema/Tema";
 import { comAlfa } from "../../tema/tokens";
@@ -33,57 +38,15 @@ const FILTROS: { valor: FiltroModalidade; rotulo: string }[] = [
 ];
 
 export default function ExplorarT1() {
-  const { cor } = useTema();
   const styles = useEstilos();
-  const { lista, salvar, definirAtiva } = useAnalises();
-  const [urlInput, setUrlInput] = useState("");
-  const [erroUrl, setErroUrl] = useState("");
+  const { lista, definirAtiva, erro } = useAnalises();
   const [filtro, setFiltro] = useState<FiltroModalidade>("TODOS");
-  const [pocoFocado, setPocoFocado] = useState(false);
-  const inputRef = useRef<TextInput>(null);
-
-  const colarDaAreaDeTransferencia = async () => {
-    try {
-      const texto = await Clipboard.getStringAsync();
-      if (texto && texto.trim()) {
-        setUrlInput(texto.trim());
-        setErroUrl("");
-      } else {
-        inputRef.current?.focus();
-      }
-    } catch {
-      inputRef.current?.focus();
-    }
-  };
-
-  const gerarDossie = () => {
-    const limpo = urlInput.trim();
-    if (!limpo) {
-      setErroUrl("Cole ou digite o link do anúncio.");
-      return;
-    }
-
-    try {
-      const u = new URL(limpo);
-      if (!["http:", "https:"].includes(u.protocol) || !u.hostname.includes(".")) {
-        setErroUrl("Insira um link válido com https:// ou http://.");
-        return;
-      }
-    } catch {
-      setErroUrl("Link inválido. Confira o endereço digitado.");
-      return;
-    }
-
-    setErroUrl("");
-    router.push({ pathname: "/ler", params: { url: limpo } });
-  };
+  const [etapa, setEtapa] = useState<FiltroDeEtapa>("todas");
+  const [descartando, setDescartando] = useState<string | null>(null);
 
   const analisesAtivas = lista.filter((a) => !a.descarte);
-  const analisesFiltradas = analisesAtivas.filter((a) => filtro === "TODOS" || a.modalidade === filtro);
-
-  const alternarSalvo = async (a: AnaliseV2) => {
-    await salvar({ ...a, salva: !a.salva, atualizadaEm: new Date().toISOString() });
-  };
+  const naModalidade = analisesAtivas.filter((a) => filtro === "TODOS" || a.modalidade === filtro);
+  const analisesFiltradas = naModalidade.filter((a) => passaNoFiltro(a, etapa));
 
   // Vínculo pendente em bairro coberto: falta confirmar o prédio. Nos demais casos, o dossiê, com a análise ativa.
   const abrirAnalise = async (a: AnaliseV2) => {
@@ -98,156 +61,98 @@ export default function ExplorarT1() {
   return (
     <Tela>
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-        {/* `.scanner-card` */}
-        <Cartao style={styles.cartaoDoScanner}>
-          <CorpoDoCartao style={styles.corpoDoScanner}>
-            <View style={styles.scannerHead}>
-              <Texto tipo="titulo-tela" role="heading" style={styles.scannerTitulo}>
-                Auditar novo anúncio
-              </Texto>
-              <Pressable
-                onPress={colarDaAreaDeTransferencia}
-                style={styles.btnColar}
-                accessibilityRole="button"
-                accessibilityLabel="Colar link"
-                hitSlop={{ top: 10, bottom: 10, left: 8, right: 8 }}
-              >
-                <Svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke={cor("cor-texto-apoio")} strokeWidth={1.8} aria-hidden>
-                  <Rect x={9} y={9} width={13} height={13} rx={2} />
-                  <Path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </Svg>
-                <Texto tipo="apoio" style={styles.textoBtnColar}>
-                  Colar link
-                </Texto>
-              </Pressable>
-            </View>
+        <Coluna style={styles.coluna}>
+          {/* Aviso do caderno (análises guardadas à parte): fica na tela, além do toast da abertura. */}
+          <FaixaDoCaderno />
 
-            {/* `.scanner-input-well` */}
-            <View style={[styles.pocoLink, pocoFocado ? styles.pocoLinkFocado : null]}>
-              <Svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke={cor("cor-acao")} strokeWidth={1.8} aria-hidden>
-                <Path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                <Path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-              </Svg>
-              <TextInput
-                ref={inputRef}
-                value={urlInput}
-                onChangeText={(v) => {
-                  setUrlInput(v);
-                  if (erroUrl) setErroUrl("");
-                }}
-                onFocus={() => setPocoFocado(true)}
-                onBlur={() => setPocoFocado(false)}
-                onSubmitEditing={gerarDossie}
-                placeholder="Cole o link do ZAP, VivaReal, QuintoAndar ou OLX"
-                placeholderTextColor={cor("cor-texto-apoio")}
-                accessibilityLabel="Link do anúncio do imóvel"
-                style={styles.inputUrl}
-                autoCapitalize="none"
-                autoCorrect={false}
-                keyboardType="url"
-                returnKeyType="go"
-              />
-            </View>
+          {/* `.scanner-card`, 15/11/2026: entrada única (link OU prédio, rua, bairro) e "Usar minha localização agora". */}
+          <Cartao style={styles.cartaoDoScanner}>
+            <CorpoDoCartao style={styles.corpoDoScanner}>
+              <BuscaUnificada />
+            </CorpoDoCartao>
+          </Cartao>
 
-            {erroUrl ? (
-              <Texto tipo="apoio" role="alert" style={styles.textoErroUrl}>
-                {erroUrl}
-              </Texto>
-            ) : null}
+          {/* Sem análise ainda, os exemplos ficam abertos; com caderno, recolhidos (um toque abre). */}
+          <ExemplosAgora recolhido={analisesAtivas.length > 0} />
+          <OndeMaisProcurarNoPiloto />
 
-            <View style={styles.acoesDoScanner}>
-              <Botao rotulo="Gerar Dossiê" variante="principal" seta onPress={gerarDossie} />
-              <Botao rotulo="Adicionar imóvel sem link" variante="secundario" onPress={() => router.push("/editar")} />
-            </View>
-          </CorpoDoCartao>
-        </Cartao>
-
-        {/* `.saved-section-header` */}
-        <View style={styles.secaoHeader}>
-          <Texto tipo="titulo-tela" role="heading" style={[styles.secaoTitulo, styles.secaoTituloQueEncolhe]}>
-            Análises Recentes
-          </Texto>
-          <View style={styles.segmentadoFiltro} accessibilityRole="radiogroup">
-            {FILTROS.map(({ valor, rotulo }) => {
-              const ativo = filtro === valor;
-              return (
-                <Pressable
-                  key={valor}
-                  onPress={() => setFiltro(valor)}
-                  accessibilityRole="radio"
-                  accessibilityState={{ checked: ativo }}
-                  aria-checked={ativo}
-                  hitSlop={{ top: 10, bottom: 10 }}
-                  style={[styles.btnFiltro, ativo ? styles.btnFiltroAtivo : null]}
-                >
-                  <Texto tipo="apoio" style={ativo ? styles.textoFiltroAtivo : styles.textoFiltro}>
-                    {rotulo}
-                  </Texto>
-                </Pressable>
-              );
-            })}
-          </View>
-        </View>
-
-        {analisesFiltradas.length > 0 ? (
-          <View style={styles.gradeAnalises}>
-            {analisesFiltradas.map((a) => (
-              <CartaoDaAnalise key={a.id} analise={a} aoAbrir={() => abrirAnalise(a)} aoAlternarSalvo={() => alternarSalvo(a)} />
-            ))}
-          </View>
-        ) : analisesAtivas.length > 0 ? (
-          <Texto tipo="apoio" style={styles.semResultado}>
-            {filtro === "aluguel" ? "Nenhuma análise de aluguel ainda." : "Nenhuma análise de compra ainda."}
-          </Texto>
-        ) : (
-          <View style={styles.cadernoVazioContainer}>
-            <Cartao style={styles.cartaoSimples}>
-              <CorpoDoCartao>
-                <Texto tipo="secao" style={styles.tituloDoCadernoVazio}>
-                  Seu caderno começa com um link.
-                </Texto>
-                <Texto tipo="apoio" style={styles.textoDoCadernoVazio}>
-                  Cole o endereço de um anúncio acima para extrair dados declarados, checar lacunas de condomínio e cruzar
-                  com a base municipal do Recife.
-                </Texto>
-              </CorpoDoCartao>
-            </Cartao>
-
-            <Texto tipo="titulo-tela" role="heading" style={[styles.secaoTitulo, styles.tituloDosExemplos]}>
-              Dossiês de exemplo
+          <ImportarExtensao />
+          {/* `.saved-section-header` */}
+          <View style={styles.secaoHeader}>
+            <Texto tipo="titulo-tela" role="heading" style={[styles.secaoTitulo, styles.secaoTituloQueEncolhe]}>
+              Análises Recentes
             </Texto>
-
-            <View style={styles.listaDeExemplos}>
-              {IDS_DOSSIES.map((id) => {
-                const ex = dossieOuErro(id);
+            <View style={styles.segmentadoFiltro} accessibilityRole="radiogroup">
+              {FILTROS.map(({ valor, rotulo }) => {
+                const ativo = filtro === valor;
                 return (
-                  <Pressionavel
-                    key={id}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Exemplo: ${enderecoDoDossie(ex)}, ${ex.bairro}`}
-                    onPress={() => router.push({ pathname: "/exemplos/[id]", params: { id } })}
-                    style={styles.cardExemplo}
+                  <AlvoDeToque
+                    key={valor}
+                    onPress={() => setFiltro(valor)}
+                    accessibilityRole="radio"
+                    accessibilityState={{ checked: ativo }}
+                    aria-checked={ativo}
+                    style={[styles.btnFiltro, ativo ? styles.btnFiltroAtivo : null]}
                   >
-                    <View style={styles.textosDoExemplo}>
-                      <Texto tipo="etiqueta" numberOfLines={1} style={styles.enderecoDoExemplo}>
-                        {enderecoDoDossie(ex)}
-                      </Texto>
-                      <Texto tipo="apoio" style={styles.bairroDoExemplo}>
-                        {`${ex.bairro} · Recife`}
-                      </Texto>
-                    </View>
-                    <View style={styles.tagExemplo}>
-                      <Texto tipo="apoio" style={styles.textoTagExemplo}>
-                        Exemplo
-                      </Texto>
-                    </View>
-                  </Pressionavel>
+                    <Texto tipo="apoio" style={ativo ? styles.textoFiltroAtivo : styles.textoFiltro}>
+                      {rotulo}
+                    </Texto>
+                  </AlvoDeToque>
                 );
               })}
             </View>
           </View>
-        )}
+          {naModalidade.length > 0 ? (
+            <FiltroDeEtapas filtro={etapa} aoEscolher={setEtapa} contagem={(f) => naModalidade.filter((a) => passaNoFiltro(a, f)).length} />
+          ) : null}
+
+          {analisesFiltradas.length > 0 ? (
+            <View style={styles.gradeAnalises}>
+              {analisesFiltradas.map((a) => (
+                <CartaoDaAnalise key={a.id} analise={a} aoAbrir={() => abrirAnalise(a)} aoDescartar={() => setDescartando(a.id)} />
+              ))}
+            </View>
+          ) : naModalidade.length > 0 ? (
+            <Texto tipo="apoio" style={styles.semResultado}>
+              Nenhuma análise nesta etapa.
+            </Texto>
+          ) : analisesAtivas.length > 0 ? (
+            <Texto tipo="apoio" style={styles.semResultado}>
+              {filtro === "aluguel" ? "Nenhuma análise de aluguel ainda." : "Nenhuma análise de compra ainda."}
+            </Texto>
+          ) : (
+            <View style={styles.cadernoVazioContainer}>
+              {/* Caderno que não abriu não está vazio: dizer "começa com um link" faria a pessoa achar que perdeu as análises. */}
+              {erro ? (
+                <Cartao style={styles.cartaoSimples}>
+                  <CorpoDoCartao>
+                    <Texto tipo="secao" style={styles.tituloDoCadernoVazio}>
+                      Seu caderno não abriu.
+                    </Texto>
+                    <Texto tipo="apoio" role="alert" cor="cor-barro-texto" style={styles.textoDoCadernoVazio}>
+                      {erro}
+                    </Texto>
+                  </CorpoDoCartao>
+                </Cartao>
+              ) : (
+                <Cartao style={styles.cartaoSimples}>
+                  <CorpoDoCartao>
+                    <Texto tipo="secao" style={styles.tituloDoCadernoVazio}>
+                      Seu caderno começa com um link, um prédio ou onde você está.
+                    </Texto>
+                    <Texto tipo="apoio" style={styles.textoDoCadernoVazio}>
+                      Cole o endereço de um anúncio, busque um prédio pelo nome ou pela rua, ou abra um dos exemplos acima.
+                    </Texto>
+                  </CorpoDoCartao>
+                </Cartao>
+              )}
+            </View>
+          )}
+        </Coluna>
       </ScrollView>
+      {descartando ? (
+        <GavetaDeDescarte analiseId={descartando} visivel aoFechar={() => setDescartando(null)} aoDescartar={() => setDescartando(null)} />
+      ) : null}
     </Tela>
   );
 }
@@ -285,13 +190,11 @@ type LoteDoCartao = { poligono: Poligono | null; ano: number | null; endereco: s
 
 /**
  * Lote, ano e endereço do edifício confirmado, do índice cadastral. O endereço é o do cadastro, com número, escrito por
- * `formatarEndereco`. Sem índice ou sem polígono, nada é desenhado.
+ * `formatarEndereco`. Sem edifício confirmado ou sem polígono, nada é desenhado.
  */
-function loteDoEdificio(a: AnaliseV2): LoteDoCartao | null {
-  if (a.vinculo.estado !== "confirmado" || !eCoberto(a.bairro)) return null;
+function loteDoEdificio(a: AnaliseV2, edificio: Edificio | null): LoteDoCartao | null {
+  if (a.vinculo.estado !== "confirmado" || !edificio) return null;
   try {
-    const edificio = edificioPorId(a.vinculo.edificioId, a.bairro);
-    if (!edificio) return null;
     const endereco = formatarEndereco(edificio.logradouro, edificio.numero);
     const pontos = edificio.poligono;
     if (!pontos) return { poligono: null, ano: edificio.anoConstrucao, endereco };
@@ -306,32 +209,68 @@ function loteDoEdificio(a: AnaliseV2): LoteDoCartao | null {
 }
 
 /**
- * Lê o índice depois da primeira pintura: o primeiro acesso a um bairro valida o arquivo inteiro, e o Explorar
- * não deve esperar por isso para aparecer.
+ * Título do achado principal do dossiê desta análise, o mesmo que o dossiê destaca: a derivação recebe o cadastro como o
+ * dossiê o monta (edifício só com vínculo confirmado; contexto e obras do índice do bairro) e as outras análises do caderno.
  */
-function useLoteDoEdificio(a: AnaliseV2): LoteDoCartao | null {
-  const [lote, definirLote] = useState<LoteDoCartao | null>(null);
+function achadoPrincipalDoCartao(a: AnaliseV2, cadastro: CadastroDaAnalise, outras: AnaliseV2[]): string | null {
+  try {
+    const visao = derivarDossie(a, cadastro.edificio, cadastro.contexto, cadastro.obras, outras, new Date());
+    return visao.achados.principal?.titulo ?? null;
+  } catch {
+    return null;
+  }
+}
+
+type LeituraDoCartao = { lote: LoteDoCartao | null; achado: string | null };
+
+const SEM_LEITURA: LeituraDoCartao = { lote: null, achado: null };
+
+/**
+ * Lê o índice depois da primeira pintura: o primeiro acesso a um bairro valida o arquivo inteiro, e o Explorar
+ * não deve esperar por isso para aparecer. Devolve o lote do edifício e o achado principal do dossiê.
+ */
+function useLeituraDoCartao(a: AnaliseV2, lista: AnaliseV2[]): LeituraDoCartao {
+  const [leitura, definirLeitura] = useState<LeituraDoCartao>(SEM_LEITURA);
   useEffect(() => {
-    const agendado = setTimeout(() => definirLote(loteDoEdificio(a)), 0);
-    return () => clearTimeout(agendado);
-  }, [a]);
-  return lote;
+    let ativo = true;
+    // D036: o índice do bairro fica fora do bundle. Sem ele (ex.: sem rede), o cartão fica sem lote e sem achado.
+    const arquivo = eCoberto(a.bairro) ? arquivoDoIndice(a.bairro) : null;
+    const agendado = setTimeout(() => {
+      void garantirCamadas(arquivo ? [arquivo] : []).then(
+        () => {
+          if (!ativo) return;
+          const cadastro = carregarCadastro(a);
+          const outras = lista.filter((x) => x.id !== a.id);
+          definirLeitura({ lote: loteDoEdificio(a, cadastro.edificio), achado: achadoPrincipalDoCartao(a, cadastro, outras) });
+        },
+        () => {
+          if (ativo) definirLeitura(SEM_LEITURA);
+        },
+      );
+    }, 0);
+    return () => {
+      ativo = false;
+      clearTimeout(agendado);
+    };
+  }, [a, lista]);
+  return leitura;
 }
 
 /** `.vereda-home-card`: topo 16:10 com a grade arquitetônica, barra de preço, corpo e faixa de diagnóstico. */
 function CartaoDaAnalise({
   analise: a,
   aoAbrir,
-  aoAlternarSalvo,
+  aoDescartar,
 }: {
   analise: AnaliseV2;
   aoAbrir: () => void;
-  aoAlternarSalvo: () => void;
+  aoDescartar: () => void;
 }) {
   const { cor } = useTema();
   const styles = useEstilos();
+  const { lista } = useAnalises();
   const confirmado = a.vinculo.estado === "confirmado";
-  const lote = useLoteDoEdificio(a);
+  const { lote, achado } = useLeituraDoCartao(a, lista);
   const aluguel = a.modalidade === "aluguel";
   // Único cálculo de custo do app: nenhuma tela soma parcelas por conta própria.
   const custo = custoMensal(a);
@@ -344,7 +283,6 @@ function CartaoDaAnalise({
   const bairro = textoEhACidade(nomeDoBairroDaAnalise) ? null : nomeDoBairroDaAnalise;
   // Nome oficial quando há slug; senão o texto que o anúncio trouxe; senão "Fora do Recife" (nunca "Recife" por padrão).
   const rotuloDoBairro = rotuloDoBairroNoCartao(a);
-  const anomalia = primeiraAnomaliaPendente(a);
   // Prédio confirmado: o endereço do edifício, com número. Senão, a rua que a pessoa informou; sem rua, o bairro.
   const enderecoDoCartao = lote?.endereco ?? (a.logradouro ? formatarEndereco(a.logradouro, a.numero) : (bairro ?? ""));
 
@@ -352,15 +290,18 @@ function CartaoDaAnalise({
   const quartos = a.declarados.quartos.valor;
   const banheiros = a.declarados.banheiros.valor;
   const vagas = a.declarados.vagas.valor;
-  const temFaixa = area !== null || quartos !== null || banheiros !== null || vagas !== null;
+  // Área marcada "a confirmar" (a leitura trouxe anomalia): o cartão diz isso em vez de mostrar o valor ou nada, como o dossiê.
+  const areaAConfirmar = a.declarados.area.aConfirmar;
+  const temFaixa = areaAConfirmar || area !== null || quartos !== null || banheiros !== null || vagas !== null;
 
   // O marcador e o cartão são irmãos: um botão dentro de outro quebra a hidratação na web (<button> em <button>).
   return (
     <View style={styles.cardAnalise}>
       <Pressionavel
         onPress={aoAbrir}
+        style={styles.areaDoCartao}
         accessibilityRole="button"
-        accessibilityLabel={`${a.nome}. ${rotuloDoBairro}. ${custo.pendentes > 0 ? `${custo.pendentes} a confirmar.` : ""}`}
+        accessibilityLabel={`${a.nome}. ${rotuloDoBairro}. ${ROTULO_MENSAL_CONHECIDO}: ${mensalConhecido}. ${custo.principal.rotulo}: ${anunciado}. ${avisoDeValoresPendentes(custo) ?? ""}`}
       >
         <View style={styles.cardTopo}>
           <GradeArquitetonica />
@@ -388,15 +329,11 @@ function CartaoDaAnalise({
           {/* `.photo-price-bar` */}
           <View style={styles.photoPriceBar}>
             <View style={styles.grupoDePreco}>
-              <Texto tipo="apoio" style={styles.precoLinha}>
-                {aluguel
-                  ? `Anúncio: ${anunciado}${custo.principal.valor !== null ? "/mês" : ""}`
-                  : `Preço: ${anunciado}`}
+              <Texto tipo="apoio" style={aluguel ? styles.precoDestaque : styles.precoLinha}>
+                {`${ROTULO_MENSAL_CONHECIDO}: ${mensalConhecido}${custo.totalMensalConhecido !== null ? "/mês" : ""}`}
               </Texto>
-              <Texto tipo="apoio" style={styles.precoDestaque}>
-                {aluguel
-                  ? `Total conhecido: ${mensalConhecido}${custo.totalMensalConhecido !== null ? "/mês" : ""}`
-                  : `Mensal conhecido: ${mensalConhecido}`}
+              <Texto tipo="apoio" style={aluguel ? styles.precoLinha : styles.precoDestaque}>
+                {`${custo.principal.rotulo}: ${anunciado}${aluguel && custo.principal.valor !== null ? "/mês" : ""}`}
               </Texto>
             </View>
             {alem !== null || custo.pendentes > 0 ? (
@@ -411,7 +348,7 @@ function CartaoDaAnalise({
                 {custo.pendentes > 0 ? (
                   <View style={styles.etiquetaAlerta}>
                     <Texto tipo="apoio" style={styles.textoEtiquetaAlerta}>
-                      {`${custo.pendentes} a confirmar`}
+                      {avisoDeValoresPendentes(custo)}
                     </Texto>
                   </View>
                 ) : null}
@@ -434,14 +371,18 @@ function CartaoDaAnalise({
 
           {temFaixa ? (
             <View style={styles.faixaSpecs}>
-              {area !== null ? <ItemDaFaixa icone="area" texto={`${String(area).replace(".", ",")} m²`} /> : null}
+              {areaAConfirmar ? (
+                <ItemDaFaixa icone="area" texto="Área a confirmar" />
+              ) : area !== null ? (
+                <ItemDaFaixa icone="area" texto={`${String(area).replace(".", ",")} m²`} />
+              ) : null}
               {quartos !== null ? <ItemDaFaixa icone="quartos" texto={`${quartos} qtos`} /> : null}
               {banheiros !== null ? <ItemDaFaixa icone="banheiros" texto={`${banheiros} ban`} /> : null}
               {vagas !== null ? <ItemDaFaixa icone="vagas" texto={`${vagas} vg`} /> : null}
             </View>
           ) : null}
 
-          {/* `.urban-diagnosis-strip`: o segundo item é a primeira anomalia da leitura que ainda não foi resolvida. */}
+          {/* `.urban-diagnosis-strip`: o segundo item é o achado principal do dossiê desta análise. */}
           <View style={styles.faixaDiagnostico}>
             <View style={styles.itemDeDiagnostico}>
               <View style={[styles.pontoDiagnostico, confirmado ? styles.pontoConfirmado : styles.pontoNeutro]} />
@@ -449,13 +390,13 @@ function CartaoDaAnalise({
                 {confirmado ? (lote?.ano ? `Prédio confirmado · ${lote.ano}` : "Prédio confirmado") : "Prédio não confirmado"}
               </Texto>
             </View>
-            {anomalia ? (
+            {achado ? (
               <>
                 <View style={styles.divisorDiagnostico} />
                 <View style={styles.itemDeDiagnostico}>
                   <View style={[styles.pontoDiagnostico, styles.pontoFerrugem]} />
                   <Texto tipo="apoio" numberOfLines={1} style={styles.textoFerrugem}>
-                    {anomalia}
+                    {achado}
                   </Texto>
                 </View>
               </>
@@ -464,29 +405,8 @@ function CartaoDaAnalise({
         </View>
       </Pressionavel>
 
-      {/* Marcador: alvo de 44 px por cima do canto do topo; o círculo de 32 px do protótipo fica dentro dele. */}
-      <Pressable
-        onPress={aoAlternarSalvo}
-        accessibilityRole="button"
-        accessibilityLabel={a.salva ? "Remover dos salvos" : "Salvar imóvel"}
-        accessibilityState={{ selected: a.salva }}
-        aria-pressed={a.salva}
-        style={styles.alvoDoMarcador}
-      >
-        <View style={[styles.btnBookmark, a.salva ? styles.btnBookmarkSalvo : null]}>
-          <Svg
-            width={14}
-            height={14}
-            viewBox="0 0 24 24"
-            fill={a.salva ? cor("cor-acao") : "none"}
-            stroke={a.salva ? cor("cor-acao") : cor("cor-superficie")}
-            strokeWidth={2}
-            aria-hidden
-          >
-            <Path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
-          </Svg>
-        </View>
-      </Pressable>
+      {/* 15/11/2026: triagem num toque (favoritar, anotar, descartar e etapa). O marcador antigo do canto virou "Favoritar". */}
+      <TriagemDoCartao analise={a} aoDescartar={aoDescartar} />
     </View>
   );
 }
@@ -497,10 +417,13 @@ const useEstilos = estilosDoTema((cor) => {
   const bordaDoCartao = cor("cor-linha");
   const sombraDoCartao = `0 4px 14px -4px ${comAlfa(cor("cor-texto"), 0.05)}`;
   return StyleSheet.create({
+    // As margens laterais ficam na rolagem; a coluna (720 px no desktop) vem dentro delas.
     scroll: {
       padding: 16,
-      gap: 16,
       paddingBottom: 48,
+    },
+    coluna: {
+      gap: 16,
     },
     // `.scanner-card`: raio 18, borda e sombra suaves. Sem a margem lateral do `Cartao`: a rolagem já recua.
     cartaoDoScanner: {
@@ -531,6 +454,11 @@ const useEstilos = estilosDoTema((cor) => {
       letterSpacing: -0.42,
       color: cor("cor-texto"),
     },
+    alvoColar: {
+      minHeight: 44,
+      minWidth: 44,
+      justifyContent: "center",
+    },
     btnColar: {
       flexDirection: "row",
       alignItems: "center",
@@ -560,10 +488,9 @@ const useEstilos = estilosDoTema((cor) => {
       borderWidth: 1,
       borderColor: cor("cor-linha"),
     },
+    // O contorno de foco (2 px em azul cadastral) vem de `useFocoDoCampo`; aqui só o fundo branco do protótipo.
     pocoLinkFocado: {
       backgroundColor: cor("cor-superficie"),
-      borderColor: cor("cor-acao"),
-      boxShadow: `0 0 0 3px ${comAlfa(cor("cor-acao"), 0.15)}`,
     },
     inputUrl: {
       flex: 1,
@@ -610,16 +537,17 @@ const useEstilos = estilosDoTema((cor) => {
       borderRadius: 10,
       borderWidth: 1,
       borderColor: cor("cor-linha"),
-      padding: 3,
+      padding: 2,
       gap: 2,
     },
     // 6 px de lado em vez dos 11 do protótipo: com a fonte do app o título tem 162 px, e só assim ele e o filtro cabem
-    // na mesma linha a 375 px. A largura mínima de 44 px mantém o alvo de toque.
+    // na mesma linha a 375 px. Altura e largura mínimas de 44 px: a web ignora `hitSlop`, então a área desenhada é a que vale.
     btnFiltro: {
       minWidth: 44,
+      minHeight: 44,
       paddingHorizontal: 6,
       paddingVertical: 5,
-      borderRadius: 7,
+      borderRadius: 8,
       alignItems: "center",
       justifyContent: "center",
     },
@@ -648,18 +576,26 @@ const useEstilos = estilosDoTema((cor) => {
       paddingHorizontal: 2,
     },
     // `.vereda-home-card`
+    // Sem `overflow: hidden`: o anel de foco do teclado é desenhado por fora da área do cartão (`Pressionavel`,
+    // `outlineOffset` 2) e seria cortado. O recorte dos cantos fica por dentro: `areaDoCartao` e o topo (`cardTopo`).
     cardAnalise: {
       backgroundColor: cor("cor-superficie"),
       borderRadius: 18,
       borderWidth: 1,
       borderColor: bordaDoCartao,
       boxShadow: sombraDoCartao,
-      overflow: "hidden",
+    },
+    // Raio do cartão menos a borda de 1 px: o toque e o realce de "pressionado" seguem os cantos arredondados, e o anel de
+    // foco, que acompanha este raio, aparece inteiro.
+    areaDoCartao: {
+      borderRadius: 17,
     },
     cardTopo: {
       width: "100%",
       aspectRatio: 16 / 10,
       backgroundColor: cor("cor-sutil"),
+      borderTopLeftRadius: 17,
+      borderTopRightRadius: 17,
       overflow: "hidden",
     },
     poligonoBox: {
@@ -878,51 +814,6 @@ const useEstilos = estilosDoTema((cor) => {
       color: cor("cor-texto-apoio"),
       fontSize: 13,
       lineHeight: 19,
-    },
-    tituloDosExemplos: {
-      marginTop: 12,
-      paddingHorizontal: 2,
-    },
-    listaDeExemplos: {
-      gap: 10,
-    },
-    cardExemplo: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      gap: 10,
-      minHeight: 56,
-      backgroundColor: cor("cor-superficie"),
-      paddingVertical: 12,
-      paddingHorizontal: 14,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: bordaDoCartao,
-    },
-    textosDoExemplo: {
-      flex: 1,
-      minWidth: 0,
-    },
-    enderecoDoExemplo: {
-      color: cor("cor-texto"),
-      fontWeight: "600",
-    },
-    bairroDoExemplo: {
-      color: cor("cor-texto-apoio"),
-    },
-    tagExemplo: {
-      paddingHorizontal: 9,
-      paddingVertical: 3,
-      backgroundColor: cor("cor-creme"),
-      borderRadius: 999,
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
-    },
-    textoTagExemplo: {
-      fontSize: 11,
-      lineHeight: 15,
-      color: cor("cor-texto-apoio"),
-      fontWeight: "600",
     },
   });
 });

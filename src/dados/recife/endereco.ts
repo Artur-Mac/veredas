@@ -24,9 +24,10 @@ function semAcento(texto: string): string {
   return texto.normalize("NFD").replace(/[̀-ͯ]/g, "");
 }
 
-function emCaixaDeTitulo(palavra: string, primeira: boolean): string {
+/** Partícula só fica minúscula no meio do nome: "Rua Projetada A" mantém o "A" final. */
+function emCaixaDeTitulo(palavra: string, primeira: boolean, ultima: boolean): string {
   const minuscula = palavra.toLowerCase();
-  if (!primeira && MINUSCULAS.has(minuscula)) return minuscula;
+  if (!primeira && !ultima && MINUSCULAS.has(minuscula)) return minuscula;
   return minuscula.charAt(0).toUpperCase() + minuscula.slice(1);
 }
 
@@ -39,7 +40,9 @@ export function formatarEndereco(logradouro: string, numero: string | null): str
   const [primeira, ...resto] = partes;
   const via = primeira ? VIAS_POR_EXTENSO.get(semAcento(primeira.toLowerCase())) : undefined;
   const palavras =
-    primeira === undefined ? [] : [via ?? emCaixaDeTitulo(primeira, true), ...resto.map((p) => emCaixaDeTitulo(p, false))];
+    primeira === undefined
+      ? []
+      : [via ?? emCaixaDeTitulo(primeira, true, resto.length === 0), ...resto.map((p, i) => emCaixaDeTitulo(p, false, i === resto.length - 1))];
   const rua = palavras.join(" ");
   const n = numero?.trim();
   return n ? `${rua}, ${n}` : rua;

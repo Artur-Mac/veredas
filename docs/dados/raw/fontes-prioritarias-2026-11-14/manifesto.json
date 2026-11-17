@@ -1,0 +1,104 @@
+{
+  "coletado_em_utc": "2026-11-15T00:48:16.546726+00:00",
+  "arquivos": [
+    {
+      "arquivo": "ciclovias-permanentes.geojson",
+      "fonte": "https://dados.recife.pe.gov.br/dataset/malha-cicloviaria-do-recife",
+      "recurso": "https://dados.recife.pe.gov.br:443/dataset/8512f8d0-b0be-4880-9fbd-3d568c65ca1a/resource/1c9feb5e-38ad-4235-b3d2-771964c59c46/download/rotas-ciclaveis-do-recife-permanente.geojson",
+      "modo": "exportação completa",
+      "registros": 558,
+      "licenca_catalogo": "Open Data Commons Open Database License (ODbL)",
+      "data_catalogo": "2026-08-25T13:24:34.540182",
+      "sha256": "2abf6968b27e679751416c6f92f091ff63860dddd5b78868f0b051dbab59b01b"
+    },
+    {
+      "arquivo": "imoveis-de-preservacao.geojson",
+      "fonte": "https://dados.recife.pe.gov.br/dataset/imoveis-especiais-de-preservacao-ieps",
+      "recurso": "https://dados.recife.pe.gov.br:443/dataset/1c59ec91-3a5f-4f72-8f0b-10743bc2fb40/resource/cabff8a7-a9e3-43c2-ab53-57d7ddd7dff8/download/imoveis-especiais-de-preservacao-mapa.geojson",
+      "modo": "exportação completa",
+      "registros": 275,
+      "licenca_catalogo": "Open Data Commons Open Database License (ODbL)",
+      "data_catalogo": "2026-03-02T14:45:03.692211",
+      "sha256": "e15851598dc77f0c609ddc479909d0b69aec6f9bdfe1c717da9ce73bed756b55"
+    },
+    {
+      "arquivo": "saude-municipal.geojson",
+      "fonte": "https://dados.recife.pe.gov.br/dataset/rede-de-saude-municipal",
+      "recurso": "https://dados.recife.pe.gov.br:443/dataset/b65c3bb6-06d7-4a85-8982-ba9ca65d204c/resource/9a8e3ff8-950c-4548-ad9f-a73aa84dd616/download/saude-municipal.geojson",
+      "modo": "exportação completa",
+      "registros": 132,
+      "licenca_catalogo": "Open Data Commons Open Database License (ODbL)",
+      "data_catalogo": "2026-03-04T13:21:51.383317",
+      "sha256": "b7806c0a483137938beae1cc9544cdeacceeedd650aaae25bb26ff20774cf00e"
+    },
+    {
+      "arquivo": "feiras.json",
+      "fonte": "https://dados.recife.pe.gov.br/dataset/conviva-feiras-e-mercados",
+      "recurso": "https://dados.recife.pe.gov.br/api/3/action/datastore_search?resource_id=2aca1941-ca17-47b5-b151-58ac5119bb8e&limit=10000&sort=_id+asc",
+      "modo": "exportação completa com seleção de campos",
+      "registros": 17,
+      "licenca_catalogo": "Open Data Commons Open Database License (ODbL)",
+      "data_catalogo": "2026-07-07T19:15:04.332605",
+      "sha256": "ca5d450167346ab52ce5912e392f9fdca898b59db2bebab4cbd7611b86410e70"
+    },
+    {
+      "arquivo": "mercados.json",
+      "fonte": "https://dados.recife.pe.gov.br/dataset/conviva-feiras-e-mercados",
+      "recurso": "https://dados.recife.pe.gov.br/api/3/action/datastore_search?resource_id=53085c8b-f007-4979-b60e-dfd3f882b0bd&limit=10000&sort=_id+asc",
+      "modo": "exportação completa com seleção de campos",
+      "registros": 6,
+      "licenca_catalogo": "Open Data Commons Open Database License (ODbL)",
+      "data_catalogo": "2026-07-07T19:15:46.281739",
+      "sha256": "7ebf2c65d03e8839499171bf3618a8bf8e5b01654cabd7b720d2c0035a7c5749"
+    },
+    {
+      "arquivo": "calcadas-corredores.json",
+      "fonte": "https://dados.recife.pe.gov.br/dataset/calcadas-dos-corredores-de-transporte-metropolitano",
+      "recurso": "https://dados.recife.pe.gov.br/api/3/action/datastore_search?resource_id=0c15f2ce-7651-48d8-ae38-87267b4e0c6f&limit=10000&sort=_id+asc",
+      "modo": "exportação completa com seleção de campos",
+      "registros": 159,
+      "licenca_catalogo": "Open Data Commons Open Database License (ODbL)",
+      "data_catalogo": "2026-03-02T13:52:13.842831",
+      "sha256": "17b791cced3a780896b057c51a86cdc9be77d106d00899a588c5227ddbf6304b"
+    },
+    {
+      "arquivo": "semaforos-acessiveis.json",
+      "fonte": "https://dados.recife.pe.gov.br/dataset/localizacao-dos-semaforos",
+      "recurso": "https://dados.recife.pe.gov.br/api/3/action/datastore_search?resource_id=d163e8ff-dc1f-410d-81d5-164ea97dc447&limit=10000&sort=_id+asc",
+      "modo": "exportação completa com seleção de campos",
+      "registros": 67,
+      "licenca_catalogo": "Open Data Commons Open Database License (ODbL)",
+      "data_catalogo": "2026-03-02T15:23:28.477864",
+      "sha256": "dd354f59916a0bd67010e5cd94958cf42cd5fe23fe82210ed43f42c4ae8be645"
+    },
+    {
+      "arquivo": "educacao-municipal-2023.json",
+      "fonte": "https://dados.recife.pe.gov.br/dataset/rede-de-educacao-municipal",
+      "recurso": "https://dados.recife.pe.gov.br/api/3/action/datastore_search?resource_id=5e7d8579-ac3c-432f-a4b0-cf9cb7281915&limit=10000&sort=_id+asc",
+      "modo": "exportação completa com seleção de campos",
+      "registros": 357,
+      "licenca_catalogo": "Open Data Commons Open Database License (ODbL)",
+      "data_catalogo": "2026-03-04T13:21:45.914548",
+      "sha256": "124fb1a56fb09838d729d6357c1df643cc64658dc08e65e018253bfbe322999f"
+    },
+    {
+      "arquivo": "cnes-amostra.json",
+      "fonte": "https://apidadosabertos.saude.gov.br/",
+      "recurso": "https://apidadosabertos.saude.gov.br/cnes/estabelecimentos?codigo_municipio=261160&status=1&limit=20",
+      "modo": "amostra de 20 unidades ativas de Recife",
+      "registros": 20,
+      "licenca_catalogo": null,
+      "data_catalogo": null,
+      "sha256": "474de3cdabd581b276abd0ae5a6d8f1dcec99fee8a087bbddaad8453416f4741"
+    },
+    {
+      "arquivo": "coleta-residuos.json",
+      "fonte": "https://dados.recife.pe.gov.br/dataset/roteiro-de-coleta",
+      "recurso": "https://dados.recife.pe.gov.br/api/3/action/datastore_search?resource_id=2a0dd9cf-86f4-4ceb-83c1-7e39ff239cb0&limit=500&sort=_id+asc",
+      "modo": "exportação completa paginada com seleção de campos",
+      "registros": 5046,
+      "sha256": "b2be409165818d6ef70cf37fb6139f12dff45d5d5fd535ce70170d0733853c7d"
+    }
+  ],
+  "falhas": []
+}

@@ -1,0 +1,49 @@
+{
+ "epoch": "VE09",
+ "date": "2026-11-14",
+ "status": "partial",
+ "outcome": "iterate",
+ "reason": "Semantic snapshot, change classification and the dossier block are implemented and tested on real successive index versions; Compare does not yet show changes; construction sequence (VE09.03) has only the published state per licence; no participants.",
+ "real_snapshot_tests": {
+  "building": "53490-78 (Rua Salgueiro, Boa Viagem)",
+  "versions": [
+   "59f361842f6410d4",
+   "91b71d239c1847cf",
+   "5bad409c1782ca8a",
+   "1e393803851f3fd5"
+  ],
+  "59f_to_91b": "no change (republish)",
+  "91b_to_5ba": "Defesa Civil past-year counts corrected (2019: 15 → 730), classified as correction; spelling change ignored",
+  "5ba_to_1e3": "outreach split: counts fall, 2024 disappears, new community-actions field; all corrections"
+ },
+ "rendered": {
+  "case_A": "listing change first (condomínio R$ 550 → R$ 600), 9 base corrections behind a tap, 'Marcar como visto hoje' updates the snapshot",
+  "case_B": "saving an unsaved home stores the first snapshot (17 facts)",
+  "widths": [
+   375,
+   360
+  ],
+  "overflow_px": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "page_errors": 0,
+  "external_requests": 0
+ },
+ "tests": {
+  "jest": "62/62 suites, 1531/1531",
+  "node": "81/81",
+  "typecheck": "0 errors",
+  "lint": "0 errors, 5 pre-existing warnings",
+  "v1_smoke": "50/50"
+ },
+ "storage": "caderno.memoria (optional, one snapshot); older notebooks stay valid",
+ "not_done": [
+  "changes in Compare",
+  "licence state history beyond the published state (filed/approved/expired/active/completed)",
+  "proposed-volume solar scenario",
+  "outbound notifications (not authorized; on-demand only)"
+ ]
+}

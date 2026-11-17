@@ -1,0 +1,46 @@
+{
+ "epoch": "VE11",
+ "date": "2026-11-14",
+ "status": "partial",
+ "outcome": "iterate",
+ "reason": "Cost × time threshold, dominance across destinations and reverse search are implemented, tested and rendered; VE11.04 (recompute when a visit answer arrives) needs structured answers and was not built; the paired-task study (generic checklist vs targeted question) has no participants.",
+ "reverse_search": {
+  "buildings": 2516,
+  "streets": 261,
+  "streets_dropped_single_building": 51,
+  "destinations": 94,
+  "bytes": 96564,
+  "pipeline_ms": 228660,
+  "spot_check": "Av. Conselheiro Rosa e Silva median 41 min to centro do bairro Recife vs 37 min for one of its buildings in the Rotina tab (different sampling)"
+ },
+ "rendered": {
+  "pair": "Casa Forte 61999-311 (R$ 3,000) vs Graças 59382-327 (R$ 3,250); destinations: profile 'recife' + notebook 'Faculdade'",
+  "cost_time": "Graças costs R$ 250 more and saves 11h26 per month: about R$ 22 per hour saved",
+  "dominance": "no option wins everything",
+  "streets_listed": 6,
+  "streets_total_within_threshold": 139,
+  "widths": [
+   375,
+   360
+  ],
+  "overflow_px": [
+   0,
+   0
+  ],
+  "page_errors": 0,
+  "external_requests": 0
+ },
+ "tests": {
+  "jest": "64/64 suites, 1550/1550",
+  "node": "81/81",
+  "typecheck": "0 errors",
+  "lint": "0 errors, 5 pre-existing warnings",
+  "v1_smoke": "50/50"
+ },
+ "not_done": [
+  "recompute on structured visit answers (VE11.04)",
+  "paired task study",
+  "household constraints beyond destinations (strict constraints UI)",
+  "reverse search for GPS notebook destinations (precomputed only for neighbourhood centroids)"
+ ]
+}

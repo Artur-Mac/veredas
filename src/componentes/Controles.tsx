@@ -1,4 +1,4 @@
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import { useTema } from "../tema/Tema";
 import { ESPACO, RAIO, TOQUE_MINIMO } from "../tema/tokens";
 import { Icone } from "./Icone";
@@ -30,7 +30,9 @@ export function Segmentado<T extends string | number>({ opcoes, valor, aoMudar, 
               flexGrow: 1,
               flexShrink: 0,
               flexBasis: "auto",
-              minHeight: 40,
+              // 44 px de toque (a web ignora `hitSlop`); com os 2 px de cada lado do trilho, o controle todo tem 48.
+              minHeight: 44,
+              minWidth: 44,
               borderRadius: RAIO.pilula,
               paddingHorizontal: ESPACO[3],
               alignItems: "center",
@@ -55,7 +57,7 @@ type PropsDaAlterna = { rotulo: string; ligado: boolean; aoMudar: (ligado: boole
 export function Alterna({ rotulo, ligado, aoMudar }: PropsDaAlterna) {
   const { cor } = useTema();
   return (
-    <Pressable
+    <Pressionavel
       role="switch"
       accessibilityLabel={rotulo}
       accessibilityState={{ checked: ligado }}
@@ -86,7 +88,7 @@ export function Alterna({ rotulo, ligado, aoMudar }: PropsDaAlterna) {
           }}
         />
       </View>
-    </Pressable>
+    </Pressionavel>
   );
 }
 

@@ -1,0 +1,93 @@
+{
+ "epoch": "VE17",
+ "date": "2026-11-15",
+ "status": "partial",
+ "outcome": "programme closed with a measured roadmap; customer value unmeasured",
+ "reason": "Every A01–A40 item and all 217 papers have destinations; data-side longitudinal and moat measures computed; no participant, telemetry or human-review evidence exists, and owners are roles without assigned people.",
+ "audit": {
+  "applications": {
+   "implemented_verified_engineering": 6,
+   "experiment_passed": 1,
+   "experiment_rejected": 2,
+   "partial": 20,
+   "deferred_with_trigger": 9,
+   "retained": 2,
+   "total": 40
+  },
+  "papers": {
+   "total": 217,
+   "families": 19,
+   "reference_retained": 43,
+   "file": "docs/aplicacao/execucoes/VE17/pesquisa-destinos.csv"
+  },
+  "discovery_queue_rows": 180
+ },
+ "longitudinal": {
+  "reviewed_corrections": 0,
+  "automatic_link_fixes": {
+   "marco_reader_records": 2154,
+   "outreach_split_records": 18820,
+   "ve13_auto_links": 4,
+   "ve13_non_street": 50
+  },
+  "event_history": {
+   "records": 1645,
+   "observations": 763,
+   "episodes": 31,
+   "x04_2024_streets_in_top50_from_2022_23": "8/17"
+  },
+  "offer_histories": 0,
+  "pilot_buildings_changed_by_refresh_cycles": 0,
+  "returning_use": "not measurable (no participants; no telemetry by design)",
+  "review_minutes": 0,
+  "review_rows_waiting": 259
+ },
+ "moat": {
+  "buildings": 2825,
+  "areas": 6,
+  "buildings_with_maintained_link_block": 2643,
+  "share_link_blocks_mean": 0.705,
+  "blocks": {
+   "cadastro_single_lookup": 2825,
+   "essentials": 2643,
+   "routine": 2643,
+   "night": 2643,
+   "rain": 214
+  },
+  "rain_reuse": {
+   "linked_records_driving_consequences": 4,
+   "buildings_per_record": [
+    147,
+    25,
+    25,
+    1
+   ],
+   "route_consequences": 173
+  },
+  "persistence": {
+   "later_period": "VE14 X04 recurrence 8/50 vs logistic 7/50 on 2024",
+   "new_area": "Torre strong links 92.7% vs pilot 93.6%; held-out 12/12"
+  },
+  "method": "per-building block types shown by the app; single lookup = cadastral/fiscal facts; maintained links = entrance × network × external source. Shown ≠ valued."
+ },
+ "deliverables": [
+  "docs/aplicacao/execucoes/VE17/auditoria.md",
+  "docs/aplicacao/execucoes/VE17/pesquisa-destinos.csv",
+  "docs/aplicacao/FEATURE-REGISTER.md",
+  "docs/aplicacao/NEXT-PROGRAMME.md"
+ ],
+ "next_programme": {
+  "budget": {
+   "money_reais": 0,
+   "review_hours": 6,
+   "participant_sessions": 5,
+   "devices": 2
+  },
+  "hypotheses": [
+   "H1 rain links ≥3/4 confirmed in <30 min, else hide rain block",
+   "H2 dossier+Compare speeds a justified visit choice in 5 paired sessions",
+   "H3 review ≤1 min/row before the next area"
+  ]
+ },
+ "code_changes": "none"
+}

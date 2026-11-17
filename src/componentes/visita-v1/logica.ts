@@ -1,9 +1,14 @@
 // Lógica pura da aba Visita (Fatia 5). Sem React, sem relógio, sem armazenamento: recebe a análise e devolve
 // dados. As telas e o hook `useVisita` só chamam estas funções. Valor desconhecido nunca vira zero.
+import { checagensDoRisco } from "../../dados/visita/checagensDoRisco";
+import { compararCondominio } from "../../dados/dossie/fichaViva";
+import { lerRelevoECanalProximo } from "../../dados/recife/camadasAmbientais";
 import type { AnaliseV2, ContextoDoBairro, Edificio, Obra, Pergunta, Visita } from "../../dados/contratos";
 import { derivarDossie, enderecoDoImovel } from "../../dados/dossie/derivar";
+import type { EntradaDaRua } from "../../dados/dossie/rua";
 import { eCoberto, bairroPorSlug } from "../../dados/recife/bairros";
 import { contextoDoBairro, edificioPorId, indiceDoBairro } from "../../dados/recife/indice";
+import { entradaDaRua } from "../dossie-v1/cadastro";
 import type { Poligono } from "../mapa/geometria";
 
 // ——— Limites do contrato (esquemaVisita) ————————————————————————————————————————
@@ -29,25 +34,43 @@ export function predioDaAnalise(a: AnaliseV2): Edificio | null {
 
 /**
  * As perguntas da visita são as do dossiê, na mesma montagem da tela dele: edifício só com vínculo confirmado,
- * contexto e obras do índice do bairro. As perguntas próprias já vêm no fim (derivarDossie as acrescenta).
+ * contexto, obras e a camada "A rua" do índice do bairro. As perguntas próprias já vêm no fim (derivarDossie as acrescenta).
  */
 export function perguntasDaVisita(a: AnaliseV2, todas: readonly AnaliseV2[], agora: Date): Pergunta[] {
   let predio: Edificio | null = null;
   let contexto: ContextoDoBairro | null = null;
   let obras: Obra[] = [];
+  let rua: EntradaDaRua | null = null;
   if (eCoberto(a.bairro)) {
     try {
       contexto = contextoDoBairro(a.bairro);
-      obras = indiceDoBairro(a.bairro).obras;
+      const indice = indiceDoBairro(a.bairro);
+      obras = indice.obras;
+      rua = entradaDaRua(indice);
       if (a.vinculo.estado === "confirmado") predio = edificioPorId(a.vinculo.edificioId, a.bairro);
     } catch {
       predio = null;
       contexto = null;
       obras = [];
+      rua = null;
     }
   }
   const outras = todas.filter((x) => x.id !== a.id && x.descarte === null);
-  return derivarDossie(a, predio, contexto, obras, outras, agora).perguntas;
+  return derivarDossie(a, predio, contexto, obras, outras, agora, null, rua).perguntas;
+}
+
+/**
+ * 15/11/2026: o roteiro da tela Visita é o do dossiê com até 3 checagens do risco deste prédio no topo (água, idade,
+ * internet: `checagensDoRisco`), cada uma com o porquê em números.
+ */
+export function roteiroDaVisita(a: AnaliseV2, todas: readonly AnaliseV2[], agora: Date): Pergunta[] {
+  const base = perguntasDaVisita(a, todas, agora);
+  const p = predioDaAnalise(a);
+  let relevo: ReturnType<typeof lerRelevoECanalProximo> | null = null;
+  try { relevo = p ? lerRelevoECanalProximo(p.centro) : null; } catch { relevo = null; }
+  const condominio = compararCondominio(a, p?.anoConstrucao ?? null, todas, (x) => predioDaAnalise(x)?.anoConstrucao ?? null, agora.getFullYear());
+  const riscos = checagensDoRisco({ analise: a, predio: p, relevo, condominio, anoAtual: agora.getFullYear() });
+  return [...riscos, ...base.filter((q) => !riscos.some((r) => r.id === q.id))];
 }
 
 /** Contorno do lote no plano local (longitude reduzida pelo cosseno da latitude, norte para cima). */

@@ -1,0 +1,31 @@
+{
+ "geradoEm": "2026-11-15T01:09:56.078Z",
+ "base": "http://127.0.0.1:8099",
+ "externas": [],
+ "erros": [],
+ "passos": {
+  "online": {
+   "msAteODossie": 207,
+   "diaADia": true,
+   "sol": true,
+   "predio": "59161-384",
+   "controlado": true,
+   "cache": {
+    "vereda-dados-v1": 8,
+    "vereda-casca-v1": 5
+   }
+  },
+  "semRede": {
+   "msAteODossie": 237,
+   "diaADia": true,
+   "sol": true
+  },
+  "nuncaAberto": {
+   "falhaDita": true,
+   "tentarDeNovo": true,
+   "semDossie": true,
+   "invariante": true
+  },
+  "recupera": true
+ }
+}

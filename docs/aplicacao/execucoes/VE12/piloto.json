@@ -1,0 +1,430 @@
+{
+ "geradoEm": "2026-11-15T00:33:59.917Z",
+ "base": "http://localhost:8087",
+ "indice": "indice-municipal/1e393803851f3fd5",
+ "areas": {
+  "boa-viagem": {
+   "predios": {
+    "boa-viagem-a1": {
+     "predio": "56260-406",
+     "modalidade": "aluguel",
+     "msAteODossie": 1580,
+     "achados": true,
+     "memoriaMudou": true,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": true,
+     "noite": true,
+     "sol": true,
+     "barulho": true,
+     "comRetratoAntigo": true
+    },
+    "boa-viagem-a2": {
+     "predio": "55379-53",
+     "modalidade": "aluguel",
+     "msAteODossie": 952,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": true,
+     "comRetratoAntigo": false
+    },
+    "boa-viagem-c3": {
+     "predio": "5690-775",
+     "modalidade": "compra",
+     "msAteODossie": 936,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": false,
+     "barulho": true,
+     "comRetratoAntigo": false
+    },
+    "boa-viagem-c4": {
+     "predio": "11720-2978",
+     "modalidade": "compra",
+     "msAteODossie": 935,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": false,
+     "barulho": true,
+     "comRetratoAntigo": false
+    }
+   },
+   "comparacoes": {
+    "aluguel": {
+     "msAteARotina": 2281,
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": true,
+     "ondeProcurar": true,
+     "semOnibus": false
+    },
+    "compra": {
+     "msAteARotina": 2210,
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": false,
+     "ondeProcurar": true,
+     "semOnibus": false
+    }
+   }
+  },
+  "casa-forte": {
+   "predios": {
+    "casa-forte-a1": {
+     "predio": "19526-742",
+     "modalidade": "aluguel",
+     "msAteODossie": 1685,
+     "achados": true,
+     "memoriaMudou": true,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": true,
+     "comRetratoAntigo": true
+    },
+    "casa-forte-a2": {
+     "predio": "55565-125",
+     "modalidade": "aluguel",
+     "msAteODossie": 1017,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": false,
+     "comRetratoAntigo": false
+    },
+    "casa-forte-c3": {
+     "predio": "2453-210",
+     "modalidade": "compra",
+     "msAteODossie": 1024,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": false,
+     "comRetratoAntigo": false
+    },
+    "casa-forte-c4": {
+     "predio": "58769-63",
+     "modalidade": "compra",
+     "msAteODossie": 1164,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": false,
+     "comRetratoAntigo": false
+    }
+   },
+   "comparacoes": {
+    "aluguel": {
+     "msAteARotina": 2501,
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": true,
+     "ondeProcurar": true,
+     "semOnibus": false
+    },
+    "compra": {
+     "msAteARotina": 2466,
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": false,
+     "ondeProcurar": true,
+     "semOnibus": false
+    }
+   }
+  },
+  "gracas": {
+   "predios": {
+    "gracas-a1": {
+     "predio": "25879-321",
+     "modalidade": "aluguel",
+     "msAteODossie": 1545,
+     "achados": true,
+     "memoriaMudou": true,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": false,
+     "comRetratoAntigo": true
+    },
+    "gracas-a2": {
+     "predio": "43400-257",
+     "modalidade": "aluguel",
+     "msAteODossie": 913,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": false,
+     "comRetratoAntigo": false
+    },
+    "gracas-c3": {
+     "predio": "59382-923",
+     "modalidade": "compra",
+     "msAteODossie": 969,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": true,
+     "comRetratoAntigo": false
+    },
+    "gracas-c4": {
+     "predio": "59382-999",
+     "modalidade": "compra",
+     "msAteODossie": 967,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": true,
+     "comRetratoAntigo": false
+    }
+   },
+   "comparacoes": {
+    "aluguel": {
+     "msAteARotina": 2099,
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": true,
+     "ondeProcurar": true,
+     "semOnibus": false
+    },
+    "compra": {
+     "msAteARotina": 1925,
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": false,
+     "ondeProcurar": true,
+     "semOnibus": false
+    }
+   }
+  },
+  "espinheiro": {
+   "predios": {
+    "espinheiro-a1": {
+     "predio": "27006-391",
+     "modalidade": "aluguel",
+     "msAteODossie": 1409,
+     "achados": true,
+     "memoriaMudou": true,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": false,
+     "comRetratoAntigo": true
+    },
+    "espinheiro-a2": {
+     "predio": "36250-130",
+     "modalidade": "aluguel",
+     "msAteODossie": 922,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": false,
+     "comRetratoAntigo": false
+    },
+    "espinheiro-c3": {
+     "predio": "1155-2265",
+     "modalidade": "compra",
+     "msAteODossie": 937,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": true,
+     "noite": true,
+     "sol": false,
+     "barulho": true,
+     "comRetratoAntigo": false
+    },
+    "espinheiro-c4": {
+     "predio": "12661-98",
+     "modalidade": "compra",
+     "msAteODossie": 940,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": true,
+     "comRetratoAntigo": false
+    }
+   },
+   "comparacoes": {
+    "aluguel": {
+     "msAteARotina": 1955,
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": true,
+     "ondeProcurar": true,
+     "semOnibus": false
+    },
+    "compra": {
+     "msAteARotina": 1983,
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": false,
+     "ondeProcurar": true,
+     "semOnibus": false
+    }
+   }
+  },
+  "madalena": {
+   "predios": {
+    "madalena-a1": {
+     "predio": "37265-127",
+     "modalidade": "aluguel",
+     "msAteODossie": 1433,
+     "achados": true,
+     "memoriaMudou": true,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": true,
+     "comRetratoAntigo": true
+    },
+    "madalena-a2": {
+     "predio": "1880-500",
+     "modalidade": "aluguel",
+     "msAteODossie": 968,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": true,
+     "comRetratoAntigo": false
+    },
+    "madalena-c3": {
+     "predio": "56839-337",
+     "modalidade": "compra",
+     "msAteODossie": 950,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": false,
+     "barulho": true,
+     "comRetratoAntigo": false
+    },
+    "madalena-c4": {
+     "predio": "37265-180",
+     "modalidade": "compra",
+     "msAteODossie": 1093,
+     "achados": true,
+     "memoriaMudou": false,
+     "memoria": true,
+     "negociacao": true,
+     "diaADia": true,
+     "seAlagar": false,
+     "noite": true,
+     "sol": true,
+     "barulho": true,
+     "comRetratoAntigo": false
+    }
+   },
+   "comparacoes": {
+    "aluguel": {
+     "msAteARotina": 2145,
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": true,
+     "ondeProcurar": true,
+     "semOnibus": false
+    },
+    "compra": {
+     "msAteARotina": 2075,
+     "resumo": true,
+     "rotina": true,
+     "mensal": true,
+     "custoTempo": false,
+     "ondeProcurar": true,
+     "semOnibus": false
+    }
+   }
+  }
+ },
+ "erros": [],
+ "externas": [],
+ "invariantes": []
+}

@@ -1,0 +1,112 @@
+{
+ "epoch": "VE08",
+ "date": "2026-11-14",
+ "status": "partial",
+ "outcome": "iterate",
+ "reason": "Evening return context and noise-side context are implemented, tested and shown; crossings are network estimates; collision records have no time or point; lamp working condition is unknown; the observation campaign (15 cases) has not been run; airport contours not used.",
+ "inputs": {
+  "night_stops_22h_02h_weekday": 6555,
+  "night_stops_with_arrivals_after_02h": 1101,
+  "installed_lamps": 111666,
+  "lamp_out_requests_12m": 14571,
+  "window_156": [
+   "2025-01-30",
+   "2026-01-30"
+  ],
+  "cttu_records": {
+   "total": 12016,
+   "comPedestre": 671,
+   "ligados": 577
+  }
+ },
+ "pilot": {
+  "boa-viagem": {
+   "predios": 1761,
+   "comPontoNoturno": 1761,
+   "semPontoNoturno": 0,
+   "comAlternativa": 112,
+   "comViaPrincipalA80m": 1064,
+   "comLuseVigenteA150m": 113,
+   "travessiasMediana": 0
+  },
+  "casa-forte": {
+   "predios": 78,
+   "comPontoNoturno": 78,
+   "semPontoNoturno": 0,
+   "comAlternativa": 0,
+   "comViaPrincipalA80m": 22,
+   "comLuseVigenteA150m": 0,
+   "travessiasMediana": 0
+  },
+  "gracas": {
+   "predios": 285,
+   "comPontoNoturno": 285,
+   "semPontoNoturno": 0,
+   "comAlternativa": 1,
+   "comViaPrincipalA80m": 124,
+   "comLuseVigenteA150m": 21,
+   "travessiasMediana": 0
+  },
+  "espinheiro": {
+   "predios": 151,
+   "comPontoNoturno": 151,
+   "semPontoNoturno": 0,
+   "comAlternativa": 3,
+   "comViaPrincipalA80m": 91,
+   "comLuseVigenteA150m": 0,
+   "travessiasMediana": 0
+  },
+  "madalena": {
+   "predios": 241,
+   "comPontoNoturno": 241,
+   "semPontoNoturno": 0,
+   "comAlternativa": 7,
+   "comViaPrincipalA80m": 166,
+   "comLuseVigenteA150m": 0,
+   "travessiasMediana": 0
+  }
+ },
+ "payload_bytes": {
+  "boa-viagem": 281665,
+  "casa-forte": 9481,
+  "gracas": 35993,
+  "espinheiro": 21910,
+  "madalena": 38380
+ },
+ "observation_cases": 15,
+ "observed": 0,
+ "pipeline_ms": 21143,
+ "pipeline_peak_rss_mb": 520,
+ "rendered": {
+  "buildings": {
+   "bv": "11720-5110",
+   "gr": "12610-150"
+  },
+  "widths": [
+   375,
+   360
+  ],
+  "overflow_px": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "page_errors": 0,
+  "external_requests": 0,
+  "visit_question_saved": true
+ },
+ "tests": {
+  "jest": "61/61 suites, 1520/1520",
+  "node": "81/81",
+  "typecheck": "0 errors",
+  "lint": "0 errors, 5 pre-existing warnings",
+  "v1_smoke": "50/50"
+ },
+ "not_done": [
+  "airport noise contours (official plan not georeferenced/verified)",
+  "decibel model (needs calibrated measurements, VE14)",
+  "lamp working condition (only installed inventory and 156 reports)",
+  "crash time of day (CTTU data has date only)"
+ ]
+}

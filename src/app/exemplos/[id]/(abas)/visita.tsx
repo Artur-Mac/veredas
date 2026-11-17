@@ -5,6 +5,7 @@ import { Botao, BotaoIcone } from "../../../../componentes/Botao";
 import { Cartao, CorpoDoCartao } from "../../../../componentes/Cartao";
 import { AreaDeBotoes, Cabecalho, Rolagem, Tela } from "../../../../componentes/Tela";
 import { Texto } from "../../../../componentes/Texto";
+import { CartaoSolExemplo } from "../../../../componentes/sol/CartaoSolExemplo";
 import { mensagemPadrao } from "../../../../componentes/visita/textosDaVisita";
 import { ListaDoRoteiro } from "../../../../componentes/visita/Roteiro";
 import { useAparelho } from "../../../../estado/Aparelho";
@@ -47,6 +48,7 @@ export default function TelaDaVisita() {
     <Tela comAbas>
       <Cabecalho titulo="Visita" pai={{ pathname: "/exemplos/[id]", params: { id: dossie.id } }} />
       <Rolagem>
+        <CartaoSolExemplo dossie={dossie} />
         <Cartao>
           <CorpoDoCartao style={{ gap: 0 }}>
             <Texto tipo="secao" role="heading" style={{ marginBottom: ESPACO[3] }}>

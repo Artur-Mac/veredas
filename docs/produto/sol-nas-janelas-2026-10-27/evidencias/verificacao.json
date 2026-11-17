@@ -1,0 +1,77 @@
+{
+  "verificadoEmUTC": "2026-10-27T23:24:10.714382+00:00",
+  "typecheck": {
+    "comando": "npm run typecheck",
+    "estado": "passou"
+  },
+  "lintFuncionalidade": {
+    "comando": "npx eslint src/app/sol.tsx src/componentes/sol src/dados/sol/*.ts src/plataforma/bussolaSolar* tests/sol-janelas.test.ts tests/sol-interface.test.ts",
+    "estado": "passou",
+    "erros": 0,
+    "avisos": 0
+  },
+  "lintGeral": {
+    "comando": "npm run lint",
+    "estado": "passou",
+    "erros": 0,
+    "avisos": 5,
+    "observacao": "Avisos de importações/disable em outros módulos em edição; nenhuma supressão adicionada para esconder erros solares."
+  },
+  "suiteGeral": {
+    "comando": "npm test -- --runInBand",
+    "estado": "passou",
+    "arquivos": 53,
+    "testes": 1414,
+    "duracaoSegundos": 50.387
+  },
+  "focadosAposUltimasCorrecoes": {
+    "comando": "npm test -- --runInBand sol-janelas sol-interface",
+    "estado": "passou",
+    "arquivos": 2,
+    "testes": 42,
+    "duracaoSegundos": 2.652
+  },
+  "navegador": {
+    "passo": "entrega-final",
+    "erroPagina": [],
+    "entornoAbrirMs": 255,
+    "viewport": "390x844 / 360x800 / 1280x900 / 844x390",
+    "janelas": 2,
+    "casos": [
+      "captura manual",
+      "calendário sazonal",
+      "noite",
+      "teclado",
+      "entorno",
+      "posição por fachada",
+      "hipótese",
+      "comparação",
+      "persistência após recarga",
+      "interação offline após carga",
+      "dossiê"
+    ],
+    "limite": "Chromium desktop; não comprova sensores ou desempenho em celular físico"
+  },
+  "rodadasVisuais": [
+    "pass-1",
+    "pass-2",
+    "pass-3",
+    "final",
+    "entrega",
+    "validacao-final",
+    "entrega-final"
+  ],
+  "geometriasPreparadas": [
+    "gracas",
+    "casa-forte",
+    "espinheiro",
+    "boa-viagem"
+  ],
+  "sensores": {
+    "adaptadorNativo": "implementado",
+    "cicloDeVida": "testado com fontes simuladas",
+    "aparelhoFisico": "não disponível nesta execução",
+    "web": "direção manual"
+  },
+  "offline": "interação e navegação depois da carga; não implica recarga web sem rede"
+}

@@ -1,0 +1,35 @@
+{
+ "epoch": "VE10",
+ "date": "2026-11-14",
+ "status": "partial",
+ "outcome": "iterate",
+ "reason": "Negotiation preparation, personal same-unit candidates and price history are implemented and tested; no permitted external offer feed exists, so external comparable ranges (VE10.03) and cross-portal identity (G-OFFER) were not built; no participants.",
+ "external_offer_ranges": {
+  "built": false,
+  "why": "no permitted feed with dated, deduplicated distinct units; plan fallback applies (personal comparables + cost thresholds)"
+ },
+ "g_offer": {
+  "built": false
+ },
+ "rendered": {
+  "notebook": "Rua Salgueiro 53490-78 + second listing of the same flat + 2 other Boa Viagem homes",
+  "widths": [
+   375,
+   360
+  ],
+  "overflow_px": [
+   0,
+   0
+  ],
+  "clipboard_equals_message": true,
+  "page_errors": 0,
+  "external_requests": 0
+ },
+ "tests": {
+  "jest": "63/63 suites, 1538/1538",
+  "node": "81/81",
+  "typecheck": "0 errors",
+  "lint": "0 errors, 5 pre-existing warnings",
+  "v1_smoke": "50/50 (caught an ITBI + m² accessibility merge; fixed)"
+ }
+}

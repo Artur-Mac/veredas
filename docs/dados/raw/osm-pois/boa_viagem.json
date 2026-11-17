@@ -1,0 +1,76 @@
+{
+  "bairro": "Boa Viagem",
+  "consultado_em": "2026-11-11T20:07:47.567Z",
+  "restaurantes": {
+    "total": -1,
+    "erro": "HTTP 400 (maps.mail.ru)"
+  },
+  "bares": {
+    "total": -1,
+    "erro": "HTTP 400 (maps.mail.ru)"
+  },
+  "academias": {
+    "total": -1,
+    "erro": "HTTP 504 (maps.mail.ru)"
+  },
+  "farmacias": {
+    "total": -1,
+    "erro": "HTTP 400 (maps.mail.ru)"
+  },
+  "padarias": {
+    "total": -1,
+    "erro": "HTTP 504 (maps.mail.ru)"
+  },
+  "supermercados": {
+    "total": -1,
+    "erro": "HTTP 400 (maps.mail.ru)"
+  },
+  "hospitais": {
+    "total": -1,
+    "erro": "HTTP 400 (maps.mail.ru)"
+  },
+  "postos_saude": {
+    "total": -1,
+    "erro": "HTTP 400 (maps.mail.ru)"
+  },
+  "escolas": {
+    "total": -1,
+    "erro": "HTTP 504 (maps.mail.ru)"
+  },
+  "igrejas": {
+    "total": -1,
+    "erro": "HTTP 504 (maps.mail.ru)"
+  },
+  "praças": {
+    "total": -1,
+    "erro": "HTTP 504 (maps.mail.ru)"
+  },
+  "estacionamentos": {
+    "total": -1,
+    "erro": "HTTP 504 (maps.mail.ru)"
+  },
+  "metrô_onibus": {
+    "total": -1,
+    "erro": "HTTP 400 (maps.mail.ru)"
+  },
+  "petshops": {
+    "total": -1,
+    "erro": "HTTP 504 (maps.mail.ru)"
+  },
+  "lava_rapido": {
+    "total": -1,
+    "erro": "HTTP 504 (maps.mail.ru)"
+  },
+  "loterias": {
+    "total": -1,
+    "erro": "HTTP 400 (maps.mail.ru)"
+  },
+  "construtoras": {
+    "total": -1,
+    "erro": "HTTP 504 (maps.mail.ru)"
+  },
+  "aerportros": {
+    "total": -1,
+    "erro": "HTTP 504 (maps.mail.ru)"
+  }
+}

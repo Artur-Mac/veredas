@@ -1,0 +1,1170 @@
+{
+  "metadata": {
+    "timestamp_utc": "2026-11-15T01:40:47.836686+00:00",
+    "llm_url": "http://127.0.0.1:9931/v1/chat/completions",
+    "llm_model": "qwen-local",
+    "temperature": 0.75,
+    "num_ctx": 4096,
+    "reference_engine": "viralix-adapted headless Python swarm",
+    "ground_truth_date": "2026-11-14"
+  },
+  "personas": [
+    {
+      "id": "corretor_veterano",
+      "name": "Sérgio Cavalcanti",
+      "role": "Corretor CRECI-PE (22 anos, Boa Viagem/Setúbal)",
+      "group": "Incumbente Hostil",
+      "swarm": "brand",
+      "contrarian_score": 0.9,
+      "bio": "52 anos, corretor autônomo de alto volume em Boa Viagem. Vive de comissão de 5-6% na venda e 1º aluguel; esconde nome do prédio e número nos anúncios do ZAP/OLX para não levar bypass direto na portaria.",
+      "self_interest": "Proteger exclusividade do lead, comissão e fechamento rápido. Odeia qualquer app que desmascare número do prédio antes da visita, exponha ITBI abaixo do valor pedido ou coloque perguntas hostis na boca do cliente.",
+      "action_hint": "BOYCOTT / QUOTE_POST / CREATE_COMMENT agressivo; pense em como bloquear, contornar ou denunciar no CRECI."
+    },
+    {
+      "id": "incorporadora_diretora",
+      "name": "Renata Albuquerque",
+      "role": "Diretora Comercial de Incorporadora (Zona Norte - Graças/Casa Forte)",
+      "group": "Incumbente Hostil",
+      "swarm": "brand",
+      "contrarian_score": 0.85,
+      "bio": "41 anos, lidera vendas de incorporadora média no Recife (SPEs, estoque pronto e lançamentos na Zona Norte). Acompanha proptechs e lembra perfeitamente da Zillow recuando das notas de risco climático em 2025 após pressão do setor.",
+      "self_interest": "Impedir que dados municipais crus (alvarás, ações trabalhistas TRT6 de SPEs/construtoras, sinais de alagamento ou 'prédio-caixão') derrubem velocidade de vendas (VSO) e valor de m². Pronta para acionar jurídico por difamação/desvio de finalidade.",
+      "action_hint": "BOYCOTT / FACT_CHECK corporativo; ataque riscos de dano à imagem e contestação jurídica."
+    },
+    {
+      "id": "proprietario_especulador",
+      "name": "Eduardo 'Duda' Vasconcelos",
+      "role": "Proprietário Multi-Imóveis & Rentista (7 aptos BV/Espinheiro)",
+      "group": "Incumbente Hostil",
+      "swarm": "retail",
+      "contrarian_score": 0.85,
+      "bio": "58 anos, investe em apartamentos antigos dos anos 80/90 no Recife para maximizar yield de aluguel (8,5% a.a.). Costuma colocar 'IPTU a consultar', 'condomínio baixinho' e omitir cota extra de fachada até a hora da assinatura.",
+      "self_interest": "Fechar locação pelo maior valor sem desconto nem questionamento técnico sobre sol poente, ruído ou rateio futuro. Se um inquilino aparecer com decibelímetro e pergunta da Lei do Inquilinato art. 22 IX, ele prefere alugar para o próximo da fila.",
+      "action_hint": "BOYCOTT / CREATE_COMMENT pragmático e cínico; explique como recusaria inquilinos 'chatos' ou burlaria o botão 'Isso está errado'."
+    },
+    {
+      "id": "compradora_primeira_viagem",
+      "name": "Camila Ferreira",
+      "role": "Médica Residente / Compradora 1º Imóvel (Madalena/Espinheiro)",
+      "group": "Usuário Final (Baixa Tolerância a Atrito)",
+      "swarm": "public",
+      "contrarian_score": 0.45,
+      "bio": "29 anos, faz plantão de 60h/semana. Tem pavor de cair em prédio-caixão, apartamento forno no poente ou obra ao lado, mas tem zero paciência para tutorial técnico, extensão de navegador ou planilha.",
+      "self_interest": "Quer resposta rápida e clara no celular em 30 segundos ('vale visitar ou é furada?'). Odeia ter que copiar/colar texto manualmente do portal, confirmar polígono no mapa sem saber o endereço ou baixar 30MB no 4G.",
+      "action_hint": "CREATE_COMMENT / EXPRESS_PURCHASE_INTENT / FACT_CHECK emocional e impaciente; teste fricção de UX real."
+    },
+    {
+      "id": "inquilino_cetico",
+      "name": "Thiago Santana",
+      "role": "Analista Jr. / Inquilino fora do eixo nobre (Torre/Cordeiro/Madalena)",
+      "group": "Usuário Final (Sensível a Preço)",
+      "swarm": "public",
+      "contrarian_score": 0.7,
+      "bio": "26 anos, ganha R$ 4.200/mês e busca aluguel de até R$ 2.100 com transporte público bom à noite e zero taxa surpresa. Cético com startup que cobra R$ 29,90 por PDF enquanto ele já paga caro na mudança.",
+      "self_interest": "Não quer pagar nada antes de ver valor real, não quer trabalhar de graça cadastrando prédio para startup ganhar dinheiro depois, e fica furioso se o bairro onde ele realmente pode pagar (Torre/Várzea/Pina) estiver sem camadas.",
+      "action_hint": "FACT_CHECK / DISLIKE_POST / CREATE_COMMENT ácido de usuário duro na queda."
+    },
+    {
+      "id": "investidor_planilheiro",
+      "name": "Marcelo Tavares",
+      "role": "Engenheiro Civil & Investidor Imobiliário (Graças/Boa Viagem)",
+      "group": "Usuário Final (Power User / Analítico)",
+      "swarm": "academic",
+      "contrarian_score": 0.75,
+      "bio": "46 anos, engenheiro, compra imóveis subprecificados e avalia yield líquido. Acostumado a ler matrícula no RI Digital, balancete condominial e usar Excel avançado.",
+      "self_interest": "Só paga por dado duro que economize tempo ou revele assimetria real de preço/risco jurídico. Detecta imediatamente quando ITBI fiscal é vendido como 'valor real de escritura' ou quando falta base real de aluguéis fechados.",
+      "action_hint": "FACT_CHECK técnico / QUOTE_POST analítico; aponte furos entre dado fiscal, amostra de aluguel e promessa do pitch."
+    },
+    {
+      "id": "auditora_lgpd_juridica",
+      "name": "Dra. Helena Guimarães",
+      "role": "Advogada Especialista em LGPD, Direito Digital & Imobiliário (PE)",
+      "group": "Auditor Técnico / Legal",
+      "swarm": "regulator",
+      "contrarian_score": 0.85,
+      "bio": "39 anos, sócia de boutique jurídica no Recife atendendo imobiliárias e startups. Conhece a fundo ODbL 1.0, LGPD art. 7º §3º, Lei 6.530/78 (CRECI), CDC e termos de uso de portais.",
+      "self_interest": "Identificar passivos fatais de processo judicial, notificação extrajudicial dos portais (QuintoAndar/OLX ToS), quebra de share-alike da ODbL, exercício ilegal de corretagem ao recomendar 'visite A antes de B' e danos morais a condomínios/SPEs.",
+      "action_hint": "FACT_CHECK jurídico implacável; cite normas concretas (ODbL, LGPD, CRECI, ToS, CDC)."
+    },
+    {
+      "id": "engenheiro_dados_senior",
+      "name": "Rafael Brito",
+      "role": "Staff Data & Mobile Engineer (Ex-Fintech, Recife/SP)",
+      "group": "Auditor Técnico / Engenharia",
+      "swarm": "spy",
+      "contrarian_score": 0.8,
+      "bio": "37 anos, arquiteto de pipelines de dados e apps mobile em produção. Leu os logs VE00–VE15 do repositório e sabe exatamente onde scrapers quebram e onde bundles de 30MB morrem em Android de entrada.",
+      "self_interest": "Não engole slide bonito de arquitetura. Aponta falhas do coletor Oleo (10/10 erro), Overpass quebrado, ZAP de 139 cards, GTFS vs dados não observados, modelo de alagamento rejeitado (VE14), ERA5 de 30km e G-USER = 0 usuários testados.",
+      "action_hint": "FACT_CHECK técnico direto nos números do repo (VE00–VE15); sem elogio genérico."
+    },
+    {
+      "id": "jurada_vc_campus",
+      "name": "Beatriz Monteiro",
+      "role": "Jurada Campus Mobile & Investidora Seed Proptech (SP/Recife)",
+      "group": "Avaliadora de Pitch & VC",
+      "swarm": "media",
+      "contrarian_score": 0.8,
+      "bio": "35 anos, investidora de early-stage e avaliadora rigorosa de competições como Campus Mobile (Instituto Claro/LSI-TEC). Já viu 200 startups de proptech morrerem por CAC alto e baixa frequência de compra.",
+      "self_interest": "Separar projeto de hackathon com pesquisa N=83 enviesada de negócio escalável real. Cobra coerência entre o pitch ('corrige foto olho de peixe', 'escritura real', '500k registros') e o código, além de risco de desclassificação pelo item 11.20(iv) e unit economics.",
+      "action_hint": "QUOTE_POST / FACT_CHECK estratégico de banca e VC; exponha lacuna pitch-vs-código, moat e monetização."
+    }
+  ],
+  "ground_truth_brief": "VEREDA (Estado real em 14/11/2026 — Código Expo/React Native + Plano VE00–VE17 + Pitch 18/10/2026):\n\n1. O QUE O PITCH PROMETE (roteiro 120s, Campus Mobile):\n- \"Você cola o link do anúncio e em segundos revelamos tudo: corrige fotos esticadas em olho de peixe, descobre o lote exato, cruza metragem com IPTU, taxas omitidas, valor real das escrituras do edifício, alvará de obra/demolição, alagamentos, ilha de calor, segurança, custo de vida.\"\n- \"Monta no WhatsApp a lista de perguntas para o corretor. Pay-per-use com teste grátis + créditos para quem valida dados em campo (89% aceitaram na pesquisa UFPE N=83, nota 4,7/5) + fase 2 licenciando dados para bancos, seguradoras e imobiliárias. Piloto na rua até jun/2027.\"\n\n2. O QUE REALMENTE EXISTE NO REPOSITÓRIO HOJE (VE00–VE15):\n- Arquitetura atual 100% local/offline no aparelho (Expo SDK 57 / React Native, AsyncStorage, sem backend nem login nem gateway de pagamento). Bundle web atual pesa 30,1 MB JS (7,4 MB gzip), causando demora na primeira carga; ZERO testes em aparelho celular real (Android/iOS só não rodados ainda; testes só em desktop/375px Playwright).\n- Cobertura geográfica: índice básico de 7.206 prédios em 72 bairros, mas camadas enriquecidas cobrem só 5 bairros piloto (Boa Viagem 1.879 prédios, Graças 291, Madalena 280, Espinheiro 156, Casa Forte 82 = 2.688 prédios; 2.516 com vínculo forte à rede de pedestres). Fora dos 5 bairros, só ficha básica ou fora de cobertura.\n- Ingestão de anúncios: Portais (QuintoAndar ToS jan/2026, OLX ToS fev/2025) proíbem scraping e usam bloqueios/CAPTCHA. App usa importação deliberada no cliente (WebView no celular, Share Intent Safari/Android, copiar/colar trecho, extensão Chrome desktop, OCR local ou entrada manual). NÃO existe correção automática de foto olho-de-peixe implementada (VE13 VLM não rodou).\n- Preços & Réguas: \"Posição é fato, adjetivo é veredito\" — sem notas 0–10, usa quartis (P25, Mediana, P75). Porém:\n  * Compra usa ITBI (valor de avaliação fiscal da Prefeitura, NÃO preço real de escritura/fechamento!), disponível em apenas 1.319/2.688 prédios piloto (630 elegíveis homogêneos; 410 em Boa Viagem vs. apenas 26 em Casa Forte).\n  * Aluguel: NÃO há feed externo de ofertas permitidas! Coletor Oleo falhou 10/10, ZAP tem só 139 resumos viciados de página 1, D034 bloqueou exibição de faixas externas de mercado. Hoje a régua de aluguel compara apenas contra os anúncios que o próprio usuário salvou no caderno + FipeZAP agregado da cidade.\n- Entorno & Clima:\n  * Alagamento: Defesa Civil tem 1.645 registros -> 31 episódios (14 registros em apenas 2 datas administrativas; 211/394 sem vínculo à rua). Modelo ML de alagamento (VE14) foi REJEITADO porque perdeu para recorrência simples (7/50 vs 8/50).\n  * Calor/Ruído/Segurança: ERA5 temperatura caiu na mesma célula de 25-30km para os 5 bairros; Landsat superfície != temperatura interna. Sem decibelímetro calibrado no entorno (apenas aponta fachada voltada a via arterial <=80m ou LUSE <=150m; cone do aeroporto estava vazio). Sombra na rota a pé foi CANCELADA (D030: ganho de 1-3,6 min em só 6/80 casos, sem dados de copas de árvores). Motor solar de fachadas + bússola `/sol` funciona nos 5 bairros.\n  * Prédio-Caixão: sinal cadastral (<=4 pavimentos, pré-2005, padrão simples/médio), nunca laudo.\n  * CNPJ / Processos TRT6 / Atas: modelado e com upload manual opcional, mas DataJud deu 403, TST exige CAPTCHA, Infosimples/JUDIT não testados; extração de atas reais (VE15.02) não executada.\n- Validação com Usuários & Créditos:\n  * Pesquisa inicial N=83 (Google Forms UFPE/WhatsApp) deu WTP média ~R$28 e 89% interesse, mas G-USER (teste moderado com usuários reais no app VE01–VE15) = ZERO participantes até hoje!\n  * Carteira de créditos atual é só de teste (\"sem valor em dinheiro\"): confirmar prédio custa -1, informar motivo de descarte dá +1, botão recarrega +3 créditos de teste.\n- Restrições Legais:\n  * ODbL 1.0 (IPTU/ITBI/Licenciamento Recife): índice derivado publicado aciona cláusula share-alike (§4.6b) — o dado bruto não é fosso defensável!\n  * Lei 6.530/78 (CRECI): proibição de parecer corretagem/intermediação.\n  * Campus Mobile item 11.20(iv): proíbe citar marcas terceiras na submissão/demo, mas a tela Explorar (`index.tsx`) ainda exibe \"Cole o link do ZAP, VivaReal, QuintoAndar ou OLX\".",
+  "rounds": {
+    "round_1_initial_exposure": [
+      {
+        "round": 1,
+        "agent_id": "corretor_veterano",
+        "name": "Sérgio Cavalcanti",
+        "role": "Corretor CRECI-PE (22 anos, Boa Viagem/Setúbal)",
+        "group": "Incumbente Hostil",
+        "swarm": "brand",
+        "stance": "boycott",
+        "primary_action": "QUOTE_POST",
+        "trust_score": 12,
+        "adoption_intent": 8,
+        "public_statement": "Gente, o VEREDA prometeu mágica, mas entrega app de 30MB que não roda em celular nenhum. Aí vem a régua de preço: usa ITBI, que é valor fiscal do IPTU, não o que eu fechei na escritura! E pior: o app manda perguntar 'taxas omitidas' na minha cara, quando o cliente só quer ver o quarto. Se o app deixa o cliente saber o preço real antes de me ligar, minha comissão de 6% foi pro espaço. Até junho de 2027 é conversa pra boi dormir, gente. Não baixem.",
+        "distrust_or_attack_triggers": [
+          "Uso de ITBI fiscal como referência de mercado, desvalorizando o fechamento real do corretor",
+          "App ainda não testado em dispositivos móveis reais (bundle de 30MB)",
+          "Lista de perguntas hostis expõe ao cliente a possibilidade de taxas ocultas"
+        ],
+        "internal_monologue": "Vou marcar o CRECI para ver se não estão exercendo intermediação. Na prática, vou continuar esconder o nome do prédio no ZAP e só revelar depois do cliente pagar o café. Esse app é só pra assustar novato.",
+        "elapsed_s": 36.01,
+        "usage": {
+          "completion_tokens": 324,
+          "prompt_tokens": 2113,
+          "total_tokens": 2437,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 1,
+        "agent_id": "incorporadora_diretora",
+        "name": "Renata Albuquerque",
+        "role": "Diretora Comercial de Incorporadora (Zona Norte - Graças/Casa Forte)",
+        "group": "Incumbente Hostil",
+        "swarm": "brand",
+        "stance": "sue_or_block",
+        "primary_action": "FACT_CHECK",
+        "trust_score": 25,
+        "adoption_intent": 10,
+        "public_statement": "O VEREDA prometeu 'valor real das escrituras' mas usa ITBI (valor fiscal da Prefeitura), não o preço de fechamento! E onde estão os dados de alagamento? O modelo ML foi rejeitado e 211 registros nem têm rua vinculada. Para quem compra na Zona Norte, isso é marketing com dados crus e ODbL. Se não corrigirem a régua e a fonte do preço, meus corretores vão ignorar o app para não passar vergonha com cliente.",
+        "distrust_or_attack_triggers": [
+          "Confusão entre ITBI (fiscal) e valor real de escritura",
+          "Modelo de alagamento rejeitado e dados sem vínculo viário"
+        ],
+        "internal_monologue": "Vou acionar o jurídico para notificar por 'verdade parcial' na régua de preço. Se eles não trocarem o ITBI por dados de escrituras reais em 30 dias, processo por dano à imagem dos meus imóveis na Graças. Enquanto isso, peço para a TI bloquear o app no Wi-Fi dos corretores.",
+        "elapsed_s": 34.28,
+        "usage": {
+          "completion_tokens": 292,
+          "prompt_tokens": 2123,
+          "total_tokens": 2415,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 1,
+        "agent_id": "proprietario_especulador",
+        "name": "Eduardo 'Duda' Vasconcelos",
+        "role": "Proprietário Multi-Imóveis & Rentista (7 aptos BV/Espinheiro)",
+        "group": "Incumbente Hostil",
+        "swarm": "retail",
+        "stance": "hostile",
+        "primary_action": "CREATE_COMMENT",
+        "trust_score": 25,
+        "adoption_intent": 10,
+        "public_statement": "No Espinheiro, meu aluguel é 8,5% a.a. e não tenho tempo para app que pede colar link manualmente. A régua de aluguel compara só com o que eu já sei? Onde está a verdade? Vocês usam o valor fiscal da Prefeitura (ITBI), que é 30% abaixo do mercado real, e ainda escondem o sol poente atrás de 'bússola'. Enquanto não pagarem corretamente pelo meu tempo com dados reais de escritura e ruído calibrado, é só marketing de faculdade.",
+        "distrust_or_attack_triggers": [
+          "Uso de ITBI (valor fiscal) em vez de preço real de escritura para comparação",
+          "Régua de aluguel baseada apenas em anúncios salvados pelo próprio usuário, sem feed externo confiável",
+          "Ingestão manual de links via WebView/OCR, sem scraping automático real"
+        ],
+        "internal_monologue": "Vou salvar o app só para burlar o 'Isso está errado' quando o inquilino chatoso perguntar do condomínio. Se o app mostrar que o IPTU está errado, eu explico que é 'a consultar'. Uso a ferramenta para filtrar inquilinos técnicos, mas não pago por isso.",
+        "elapsed_s": 39.98,
+        "usage": {
+          "completion_tokens": 316,
+          "prompt_tokens": 2145,
+          "total_tokens": 2461,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 1,
+        "agent_id": "compradora_primeira_viagem",
+        "name": "Camila Ferreira",
+        "role": "Médica Residente / Compradora 1º Imóvel (Madalena/Espinheiro)",
+        "group": "Usuário Final (Baixa Tolerância a Atrito)",
+        "swarm": "public",
+        "stance": "skeptical",
+        "primary_action": "CREATE_COMMENT",
+        "trust_score": 35,
+        "adoption_intent": 20,
+        "public_statement": "Madalena, meu bairro, tem só 280 prédios indexados. Se eu colar um link do QuintoAndar, o app me pede OCR ou extensão de navegador? Eu tenho plantão de 60h, não tempo para tutorial técnico. E o pior: a 'régua de preço' usa ITU fiscal, não o valor real de escritura. Se eu cair num apartamento forno no poente e o app só me disser 'fachada voltada a via', eu quero o sol calculado, não promessa de VLM que nunca rodou. Vale visitar ou é furada? Me responda em 30s ou eu ignoro.",
+        "distrust_or_attack_triggers": [
+          "Bundle de 30MB em 4G durante plantão",
+          "Uso de ITBI fiscal em vez de preço real de escritura",
+          "Dependência de OCR/extensão manual em vez de ingestão automática"
+        ],
+        "internal_monologue": "Se eu não conseguir ver o sol na fachada do meu candidato sem baixar 30MB, eu abro o Play Store e procuro 'app de sol'. Vou testar o botão de créditos de teste agora. Se travar, eu posto print no grupo de WhatsApp do condomínio.",
+        "elapsed_s": 37.42,
+        "usage": {
+          "completion_tokens": 324,
+          "prompt_tokens": 2116,
+          "total_tokens": 2440,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 1,
+        "agent_id": "inquilino_cetico",
+        "name": "Thiago Santana",
+        "role": "Analista Jr. / Inquilino fora do eixo nobre (Torre/Cordeiro/Madalena)",
+        "group": "Usuário Final (Sensível a Preço)",
+        "swarm": "public",
+        "stance": "hostile",
+        "primary_action": "CREATE_COMMENT",
+        "trust_score": 25,
+        "adoption_intent": 15,
+        "public_statement": "Meu bairro (Torre/Cordeiro) é zona morta no app. Encheu de dados do Espinheiro, mas lá só tem ficha básica. E o que tem é lixo: a 'régua de aluguel' compara só com anúncios que eu mesmo salvei, não é mercado real. O modelo de alagamento foi rejeitado por perder para uma lista simples. Vocês vendem PDF por R$ 29,90 sem nem ter backend ou login. Pra quem ganha R$ 4.200, é golpe com interface bonita.",
+        "distrust_or_attack_triggers": [
+          "Cobertura enriquecida ausente em Torre/Cordeiro",
+          "Régua de aluguel baseada apenas em caderno local do usuário",
+          "Modelo de alagamento rejeitado por baixa acurácia"
+        ],
+        "internal_monologue": "Vou ignorar o app por 6 meses. Se cobrarem antes de eu ver valor real no meu bairro, processo por publicidade enganosa. Não quero trabalhar de graça validando prédios para o fosso deles. Se a camada da Torre não sair até o piloto, é só mais um pitch do Campus Mobile.",
+        "elapsed_s": 34.78,
+        "usage": {
+          "completion_tokens": 316,
+          "prompt_tokens": 2112,
+          "total_tokens": 2428,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 1,
+        "agent_id": "investidor_planilheiro",
+        "name": "Marcelo Tavares",
+        "role": "Engenheiro Civil & Investidor Imobiliário (Graças/Boa Viagem)",
+        "group": "Usuário Final (Power User / Analítico)",
+        "swarm": "academic",
+        "stance": "skeptical",
+        "primary_action": "FACT_CHECK",
+        "trust_score": 35,
+        "adoption_intent": 40,
+        "public_statement": "Vocês vendem 'valor real de escritura' usando ITBI, que é mero valor fiscal da Prefeitura, não preço de fechamento. Para mim, engenheiro na Graças, isso é dado sujo. A régua de aluguel é inexistente sem feed externo, comparando só o que eu já salvei contra FipeZAP genérico. E o bundle de 30MB sem backend real? É um planilha em React Native. Prometem 89% de aceitação, mas zero testes em campo (G-USER vazio). Se não têm dados duros de aluguéis fechados e matrícula, não me vendam 'segurança'.",
+        "distrust_or_attack_triggers": [
+          "Uso de ITBI como proxy para preço real de escritura",
+          "Régua de aluguel baseada apenas em anúncios salvos pelo usuário e FipeZAP, sem feed externo válido",
+          "Zero participantes no teste moderado G-USER apesar da pesquisa inicial promissora"
+        ],
+        "internal_monologue": "Vou baixar o app só para verificar se o ITBI da Graças bate com as matrículas que já tenho. Se não houver backend para atualizar dados em tempo real, vou ignorar o piloto. A brecha é a ODbL: se eu publicar o índice, eles têm que compartilhar. Não pago por promessa.",
+        "elapsed_s": 40.71,
+        "usage": {
+          "completion_tokens": 340,
+          "prompt_tokens": 2097,
+          "total_tokens": 2437,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 1,
+        "agent_id": "auditora_lgpd_juridica",
+        "name": "Dra. Helena Guimarães",
+        "role": "Advogada Especialista em LGPD, Direito Digital & Imobiliário (PE)",
+        "group": "Auditor Técnico / Legal",
+        "swarm": "regulator",
+        "stance": "skeptical",
+        "primary_action": "CREATE_COMMENT",
+        "trust_score": 35,
+        "adoption_intent": 30,
+        "public_statement": "{\n  \"stance\": \"sue_or_block\",\n  \"primary_action\": \"FACT_CHECK\",\n  \"trust_score\": 25,\n  \"adoption_intent\": 10,\n  \"public_statement\": \"O VEREDA promete 'descobrir o lote exato' e 'cruzar metragem com IPTU', mas opera offline sem backend. Isso significa que, ao processar o link do anúncio e o CNPJ do imóvel no aparelho do usuário, há tratamento de dados pessoais sem consentimento específico (LGPD art",
+        "distrust_or_attack_triggers": [],
+        "internal_monologue": "",
+        "elapsed_s": 36.18,
+        "usage": {
+          "completion_tokens": 360,
+          "prompt_tokens": 2160,
+          "total_tokens": 2520,
+          "prompt_tokens_details": {
+            "cached_tokens": 1877
+          }
+        }
+      },
+      {
+        "round": 1,
+        "agent_id": "engenheiro_dados_senior",
+        "name": "Rafael Brito",
+        "role": "Staff Data & Mobile Engineer (Ex-Fintech, Recife/SP)",
+        "group": "Auditor Técnico / Engenharia",
+        "swarm": "spy",
+        "stance": "hostile",
+        "primary_action": "FACT_CHECK",
+        "trust_score": 35,
+        "adoption_intent": 20,
+        "public_statement": "Meu time já rodou o bundle: 30MB de JS no Android de entrada é morte certa. Vocês vendem 'correção de foto olho-de-peixe', mas o VLM do VE13 nem rodou. O coletor Oleo falhou 10/10 e o ZAP tem só 139 cards viciados. Como pretendem validar a régua de aluguel sem feed externo? G-USER zero significa que nenhum humano real tocou no app. O modelo de alagamento perdeu do acaso (VE14). É protótipo de desktop com cara de produto.",
+        "distrust_or_attack_triggers": [
+          "Coletor Oleo 10/10 erro",
+          "G-USER = 0 usuários reais",
+          "VLM olho-de-peixe não implementado"
+        ],
+        "internal_monologue": "Vou abrir issue no repo apontando o 403 da DataJud e a ausência de backend. Se não resolverem a ingestão antes de junho, meu time migra para o FipeZAP direto. Não pago por promessa.",
+        "elapsed_s": 34.63,
+        "usage": {
+          "completion_tokens": 295,
+          "prompt_tokens": 2125,
+          "total_tokens": 2420,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 1,
+        "agent_id": "jurada_vc_campus",
+        "name": "Beatriz Monteiro",
+        "role": "Jurada Campus Mobile & Investidora Seed Proptech (SP/Recife)",
+        "group": "Avaliadora de Pitch & VC",
+        "swarm": "media",
+        "stance": "skeptical",
+        "primary_action": "FACT_CHECK",
+        "trust_score": 35,
+        "adoption_intent": 20,
+        "public_statement": "Achei o pitch bonito, mas o código conta outra história. Vocês prometem 'correção de olho de peixe' e o VLM nem rodou. A régua de aluguel é um espelho vazio: sem feed externo, comparo o preço com... os anúncios que o próprio usuário salvou? Isso não é dado de mercado, é diário de bordo. E a pesquisa N=83 da UFPE? Zero validação em campo (G-USER). É hackathon com cara de SaaS, não proptech escalável.",
+        "distrust_or_attack_triggers": [
+          "Promessa de VLM não implementada (VE13)",
+          "Régua de aluguel circular sem feed externo",
+          "Zero participantes no teste moderado G-USER"
+        ],
+        "internal_monologue": "Largo no pré-seed se não provarem CAC. O ODbL mata o moat dos dados. Se processarem por citar ZAP na demo (item 11.20), perco minha reputação de banca. Exijo backend e pagamento real antes de assinar cheque.",
+        "elapsed_s": 28.34,
+        "usage": {
+          "completion_tokens": 289,
+          "prompt_tokens": 2150,
+          "total_tokens": 2439,
+          "prompt_tokens_details": {
+            "cached_tokens": 1867
+          }
+        }
+      }
+    ],
+    "round_2_cross_debate": [
+      {
+        "round": 2,
+        "agent_id": "corretor_veterano",
+        "name": "Sérgio Cavalcanti",
+        "role": "Corretor CRECI-PE (22 anos, Boa Viagem/Setúbal)",
+        "group": "Incumbente Hostil",
+        "replied_to": [
+          "@compradora_primeira_viagem",
+          "@engenheiro_dados_senior"
+        ],
+        "stance": "boycott",
+        "primary_action": "QUOTE_POST",
+        "trust_score": 10,
+        "adoption_intent": 5,
+        "trust_delta_from_r1": -2,
+        "public_reply": "@compradora_primeira_viagem, você reclama da complexidade, mas o VEREDA destrói minha exclusividade. Antes, eu esconhia o nome do prédio na Boa Viagem para o cliente não ir direto na portaria. Agora, com o 'lote exato' e o IPTU exposto, o lead desvia de mim. @engenheiro_dados_senior, pare de falar de bundle e veja o dano: o app entrega o endereço completo antes da visita. É o fim da comissão de 6%. Se o cliente vê o valor fiscal (ITBI) e o endereço, ele processa o corretor por 'informativo incompleto'. Eu boicoto até saírem do ar ou cobrarem taxa de 'exclusividade de lead'.",
+        "biggest_weakness_exposed": "A exposição do endereço exato e do IPTU antes da visita elimina a barreira de entrada que eu usava para proteger meu lead.",
+        "internal_monologue": "Eles acham que é sobre dados. Não é. É sobre quem controla o primeiro contato. Se o cliente sabe onde fica e quanto custa, ele não precisa do meu telefone. A guerra é minha comissão.",
+        "elapsed_s": 35.76,
+        "usage": {
+          "completion_tokens": 333,
+          "prompt_tokens": 1720,
+          "total_tokens": 2053,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 2,
+        "agent_id": "incorporadora_diretora",
+        "name": "Renata Albuquerque",
+        "role": "Diretora Comercial de Incorporadora (Zona Norte - Graças/Casa Forte)",
+        "group": "Incumbente Hostil",
+        "replied_to": [
+          "@auditora_lgpd_juridica",
+          "@investidor_planilheiro"
+        ],
+        "stance": "sue_or_block",
+        "primary_action": "FACT_CHECK",
+        "trust_score": 22,
+        "adoption_intent": 8,
+        "trust_delta_from_r1": -3,
+        "public_reply": "@auditora_lgpd_juridica, pare de usar LGPD como cortina de fumaça para o problema real: o VEREDA expõe dados operacionais sensíveis das nossas SPEs. Se o app cruza alvarás com ações do TRT6, minha obra no Casa Forte vira manchete de 'construtora atrasada' antes do lançamento. @investidor_planilheiro, você reclama de ITBI, mas ignora o dano de imagem: se o app marca meu empreendimento como 'risco de alagamento' com base em dado bruto municipal, quem paga o prejuízo? Não é o seu m², é a minha VSO. Eu processo por desvio de finalidade antes de aceitar qualquer 'transparência' que não me convém.",
+        "biggest_weakness_exposed": "O cruzamento de dados municipais com histórico judicial de SPEs é a maior ameaça à minha margem de lucro.",
+        "internal_monologue": "Eles acham que transparência é virtude. Para mim, é bomba-relógio. Se a Zillow recuou das notas de risco, por que eu não recuaria de dados que expõem a minha obra? Vou acionar o jurídico agora.",
+        "elapsed_s": 38.1,
+        "usage": {
+          "completion_tokens": 342,
+          "prompt_tokens": 1816,
+          "total_tokens": 2158,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 2,
+        "agent_id": "proprietario_especulador",
+        "name": "Eduardo 'Duda' Vasconcelos",
+        "role": "Proprietário Multi-Imóveis & Rentista (7 aptos BV/Espinheiro)",
+        "group": "Incumbente Hostil",
+        "replied_to": [
+          "@corretor_veterano",
+          "@inquilino_cetico"
+        ],
+        "stance": "hostile",
+        "primary_action": "BOYCOTT",
+        "trust_score": 25,
+        "adoption_intent": 10,
+        "trust_delta_from_r1": 0,
+        "public_reply": "@corretor_veterano, se o VEREDA destrói sua exclusividade, ele destrói meu lucro. Eu não quero transparência, quero silêncio. @inquilino_cetico, sua 'zona morta' é um alívio: quem aluga lá não tem decibelímetro. Minha tática é postar 'IPTU a consultar' e 'condomínio simbólico'. O inquilino que checar a régua de preço do app vai ver o ITBI fiscal, não o meu yield de 8,5%. Vou boicotar ativamente: qualquer anúncio com foto nítida ou endereço visível no VEREDA, eu removo. O app é inútil para quem sabe burlar.",
+        "biggest_weakness_exposed": "A régua baseada em ITBI fiscal expõe meus descontos, mas só se o inquilino souber que o valor fiscal difere do mercado real.",
+        "internal_monologue": "Enquanto os técnicos gritam sobre bug, eu colho o aluguel. O app é só ruído que distrai o inquilino preguiçoso da inspeção técnica do meu apartamento dos anos 90.",
+        "elapsed_s": 38.48,
+        "usage": {
+          "completion_tokens": 325,
+          "prompt_tokens": 1895,
+          "total_tokens": 2220,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 2,
+        "agent_id": "compradora_primeira_viagem",
+        "name": "Camila Ferreira",
+        "role": "Médica Residente / Compradora 1º Imóvel (Madalena/Espinheiro)",
+        "group": "Usuário Final (Baixa Tolerância a Atrito)",
+        "replied_to": [
+          "@corretor_veterano",
+          "@engenheiro_dados_senior"
+        ],
+        "stance": "hostile",
+        "primary_action": "FACT_CHECK",
+        "trust_score": 30,
+        "adoption_intent": 15,
+        "trust_delta_from_r1": -5,
+        "public_reply": "@corretor_veterano, seu medo de perder exclusividade é problema de quem ganha comissão, não de quem paga o imóvel. @engenheiro_dados_senior, se o app é 30MB de JS que trava no Android de entrada, eu desinstalo antes do plantão terminar. Não tenho tempo para 'colar link' ou 'confirmar polígono'. Quero saber em 30 segundos se o Espinheiro alaga ou se o sol bate na tarde. Se o VLM nem rodou, é só promessa. Me deixem ver a ficha simples ou eu volto ao portal antigo.",
+        "biggest_weakness_exposed": "A fricção técnica (30MB/colar link) é matadora para quem tem 60h de plantão e zero paciência.",
+        "internal_monologue": "Enquanto os profissionais discutem ITBI e LGPD, eu só quero um 'sim ou não' no celular. O app parece feito para engenheiros, não para quem corre contra o tempo.",
+        "elapsed_s": 32.16,
+        "usage": {
+          "completion_tokens": 293,
+          "prompt_tokens": 1930,
+          "total_tokens": 2223,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 2,
+        "agent_id": "inquilino_cetico",
+        "name": "Thiago Santana",
+        "role": "Analista Jr. / Inquilino fora do eixo nobre (Torre/Cordeiro/Madalena)",
+        "group": "Usuário Final (Sensível a Preço)",
+        "replied_to": [
+          "@proprietario_especulador",
+          "@compradora_primeira_viagem"
+        ],
+        "stance": "hostile",
+        "primary_action": "CREATE_COMMENT",
+        "trust_score": 20,
+        "adoption_intent": 10,
+        "trust_delta_from_r1": -5,
+        "public_reply": "@proprietario_especulador fala que minha 'zona morta' é um alívio? Mentira! Torre e Cordeiro estão desabastecidas no app. Enquanto você lucra no Espinheiro, eu pago R$ 29,90 por PDF que nem abre no Android 8. @compradora_primeira_viagem, pare de romantizar o OCR. Eu não tenho 60h de plantão, tenho 3h de ônibus. Se o app trava em 30MB de JS, é inútil para quem não tem 5G. Não quero 'transparência' cara, quero camadas na minha rua.",
+        "biggest_weakness_exposed": "A exclusividade dos corretores esconde a falta de dados nas periferias onde eu realmente moro e trabalho.",
+        "internal_monologue": "Estão brigando sobre ITBI e LGPD enquanto eu pago a fatura. Se não cobrir Torre/Várzea, o VEREDA é só um luxo de classe média alta.",
+        "elapsed_s": 34.4,
+        "usage": {
+          "completion_tokens": 297,
+          "prompt_tokens": 1931,
+          "total_tokens": 2228,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 2,
+        "agent_id": "investidor_planilheiro",
+        "name": "Marcelo Tavares",
+        "role": "Engenheiro Civil & Investidor Imobiliário (Graças/Boa Viagem)",
+        "group": "Usuário Final (Power User / Analítico)",
+        "replied_to": [
+          "@proprietario_especulador",
+          "@corretor_veterano"
+        ],
+        "stance": "skeptical",
+        "primary_action": "FACT_CHECK",
+        "trust_score": 32,
+        "adoption_intent": 35,
+        "trust_delta_from_r1": -3,
+        "public_reply": "@proprietario_especulador fala que 'zona morta é alívio'? Para mim, é prejuízo. Se a amostra é só Espinheiro, minha análise de yield em Graças é enviesada. @corretor_veterano, você reclama do ITBI, certo, mas o erro é não ter base de fechamento real. Eu não pago R$ 29,90 para ver um espelho dos meus próprios dados. Onde está o histórico de aluguel fechado, não anunciado? Se não há backend, não há mercado, só vaidade.",
+        "biggest_weakness_exposed": "A amostra de dados concentrada no Espinheiro inviabiliza a análise comparativa de yield nos bairros periféricos onde realmente opero.",
+        "internal_monologue": "Enquanto os corretores brigam por exclusividade e os engenheiros por performance, ninguém pergunta: de onde vem o dado? Sem base de aluguéis fechados, é planilha vazia cara.",
+        "elapsed_s": 30.23,
+        "usage": {
+          "completion_tokens": 289,
+          "prompt_tokens": 1936,
+          "total_tokens": 2225,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 2,
+        "agent_id": "auditora_lgpd_juridica",
+        "name": "Dra. Helena Guimarães",
+        "role": "Advogada Especialista em LGPD, Direito Digital & Imobiliário (PE)",
+        "group": "Auditor Técnico / Legal",
+        "replied_to": [
+          "@corretor_veterano",
+          "@compradora_primeira_viagem"
+        ],
+        "stance": "sue_or_block",
+        "primary_action": "FACT_CHECK",
+        "trust_score": 20,
+        "adoption_intent": 15,
+        "trust_delta_from_r1": -15,
+        "public_reply": "@corretor_veterano, pare de chorar 'app pesado' e olhe o abacaxi jurídico: o VEREDA recomenda ordem de visitas. Isso é corretagem disfarçada! Sem CRECI-PE, é exercício ilegal da profissão (Lei 6.530/78). @compradora_primeira_viagem, você fala em OCR, mas esqueceu da LGPD art. 7º §3º: o VEREDA coleta dados sensíveis de localização sem base legal válida, apenas 'interesse legítimo' genérico. Além disso, a licença ODbL 1.0 exige share-alike: se usarem dados do QuintoAndar, o código deles vira aberto. Processam? Sim, notificação extrajudicial já está na mesa.",
+        "biggest_weakness_exposed": "A omissão da base legal LGPD para dados de localização e a violação da ODbL ao reutilizar dados de portais fechados.",
+        "internal_monologue": "Enquanto todos discutem UI e ITBI, o VEREDA está construindo uma tese de processo para a minha boutique. A quebra da ODbL é o passivo que eles não viram chegar.",
+        "elapsed_s": 34.06,
+        "usage": {
+          "completion_tokens": 337,
+          "prompt_tokens": 1964,
+          "total_tokens": 2301,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 2,
+        "agent_id": "engenheiro_dados_senior",
+        "name": "Rafael Brito",
+        "role": "Staff Data & Mobile Engineer (Ex-Fintech, Recife/SP)",
+        "group": "Auditor Técnico / Engenharia",
+        "replied_to": [
+          "@jurada_vc_campus",
+          "@auditora_lgpd_juridica"
+        ],
+        "stance": "hostile",
+        "primary_action": "FACT_CHECK",
+        "trust_score": 30,
+        "adoption_intent": 15,
+        "trust_delta_from_r1": -5,
+        "public_reply": "@jurada_vc_campus, pare de aplaudir o pitch. O VLM 'não rodou' porque o bundle de 30MB mata Android de entrada. @auditora_lgpd_juridica, seu abacaxi jurídico é irrelevante se o scraper Oleo tem 10/10 de erro e o Overpass está quebrado. Vocês discutem CRECI enquanto o pipeline de dados é um ralo. Sem backend, a LGPD não existe; é só local storage sujo. O GTFS não foi observado, o modelo de alagamento foi rejeitado (VE14) e a ERA5 tem resolução de 30km. É protótipo de garagem, não produto. Não engulam slide bonito.",
+        "biggest_weakness_exposed": "A discordância jurídica sobre CRECI mascara a falha catastrófica do coletor de dados e a instabilidade técnica da base.",
+        "internal_monologue": "Todos gritam sobre preço e LGPD, mas ninguém olha os logs VE00-VE15. O app quebra em hardware real e os dados são lixo. Se o pipeline não fecha, o jurídico é detalhe. Estou saindo antes que o VC queime o seed.",
+        "elapsed_s": 34.75,
+        "usage": {
+          "completion_tokens": 344,
+          "prompt_tokens": 1953,
+          "total_tokens": 2297,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 2,
+        "agent_id": "jurada_vc_campus",
+        "name": "Beatriz Monteiro",
+        "role": "Jurada Campus Mobile & Investidora Seed Proptech (SP/Recife)",
+        "group": "Avaliadora de Pitch & VC",
+        "replied_to": [
+          "@engenheiro_dados_senior",
+          "@auditora_lgpd_juridica"
+        ],
+        "stance": "skeptical",
+        "primary_action": "QUOTE_POST",
+        "trust_score": 30,
+        "adoption_intent": 15,
+        "trust_delta_from_r1": -5,
+        "public_reply": "@engenheiro_dados_senior, pare de focar no bundle de 30MB. O problema não é o Android, é a matemática: se o VLM não rodou, a 'correção de olho-de-peixe' é ficção. Pitch vende mágica, código entrega bug. @auditora_lgpd_juridica, seu abacaxi do CRECI é ruído jurídico. O que mata meu ticket é o CAC: se a régua usa ITBI (fiscal) e não escritura real, meu cliente churna em 30 dias. Onde está a frequência de compra? 500k registros não valem nada se a fonte é suja. Isso é hackathon, não proptech escalável.",
+        "biggest_weakness_exposed": "A lacuna entre o pitch de 'escritura real' e a dependência de ITBI fiscal aniquila a unit economics.",
+        "internal_monologue": "O time técnico grita 'morte certa', mas eu vejo falta de moat. Sem backend e com dados enviesados (N=83), é impossível projetar LTV. Vou cobrar prova de retention, não de UI.",
+        "elapsed_s": 33.88,
+        "usage": {
+          "completion_tokens": 335,
+          "prompt_tokens": 1971,
+          "total_tokens": 2306,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      }
+    ],
+    "round_3_feature_monetization_stress": [
+      {
+        "round": 3,
+        "agent_id": "corretor_veterano",
+        "name": "Sérgio Cavalcanti",
+        "role": "Corretor CRECI-PE (22 anos, Boa Viagem/Setúbal)",
+        "group": "Incumbente Hostil",
+        "ux_a_vote": "bypass_or_game",
+        "ux_b_vote": "abandon_friction",
+        "m1_b2c_vote": "use_free_only",
+        "m2_b2b_brokers_vote": "boycott_or_block",
+        "m3_b2b2c_api_vote": "use_free_only",
+        "max_wtp_brl": 15.0,
+        "most_useful_feature": "Comparador de yield para filtrar leads ruins antes de sair de casa.",
+        "biggest_failure_or_loophole": "O Give-to-Get é falho. Eu jogo o lead no descarte dizendo 'cliente desistiu' sem visitar, ganho o crédito grátis e nunca pago. Para M2, boicoto: se o corretor paga, ele vira refém do app. Exijo o dado bruto exportável em PDF sem marca d'água, senão processo por retenção de dados via CRECI.",
+        "surviving_business_model": "M3",
+        "rationale": "M2 é armadilha: pagando R$49, perco o controle do lead. M1 é caro para cliente que não sabe o que quer. M3 (API) é o único que me serve indiretamente, pois o banco valida o crédito do comprador antes de eu perder tempo. Se o app não exportar meu lead livremente, é bloqueio.",
+        "elapsed_s": 31.68,
+        "usage": {
+          "completion_tokens": 316,
+          "prompt_tokens": 1544,
+          "total_tokens": 1860,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 3,
+        "agent_id": "incorporadora_diretora",
+        "name": "Renata Albuquerque",
+        "role": "Diretora Comercial de Incorporadora (Zona Norte - Graças/Casa Forte)",
+        "group": "Incumbente Hostil",
+        "ux_a_vote": "abandon_friction",
+        "ux_b_vote": "boycott_or_block",
+        "m1_b2c_vote": "bypass_or_game",
+        "m2_b2b_brokers_vote": "bypass_or_game",
+        "m3_b2b2c_api_vote": "use_free_only",
+        "max_wtp_brl": 50.0,
+        "most_useful_feature": "Alerta de obras em 150m e alagamento Defesa Civil para filtrar risco físico imediato.",
+        "biggest_failure_or_loophole": "O 'Give-to-Get' é um furo de balde. Minha equipe de pré-venda cria 500 CPFs fakes por semana para zerar o custo dos dossiês e contaminar seus dados com feedback genérico. Além disso, a régua P25 expõe meu estoque parado, então eu burlaria pagando R$49/mês só no mês do lançamento e cancelando, usando a API M3 de graça para os bancos.",
+        "surviving_business_model": "M2",
+        "rationale": "UX-A é lenta demais para meu ciclo de vendas. UX-B é um pesadelo jurídico: cruzar TRT6 e alagamentos com o endereço do imóvel é difamação pura se eu não tiver contrato assinado com cada proprietário. M2 é o único que me força a pagar, mas ainda assim eu brigo por exclusividade territorial. M3 é isca para eu pescar dados dos bancos sem custo.",
+        "elapsed_s": 34.3,
+        "usage": {
+          "completion_tokens": 347,
+          "prompt_tokens": 1554,
+          "total_tokens": 1901,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 3,
+        "agent_id": "proprietario_especulador",
+        "name": "Eduardo 'Duda' Vasconcelos",
+        "role": "Proprietário Multi-Imóveis & Rentista (7 aptos BV/Espinheiro)",
+        "group": "Incumbente Hostil",
+        "ux_a_vote": "abandon_friction",
+        "ux_b_vote": "bypass_or_game",
+        "m1_b2c_vote": "use_free_only",
+        "m2_b2b_brokers_vote": "bypass_or_game",
+        "m3_b2b2c_api_vote": "boycott_or_block",
+        "max_wtp_brl": 0.0,
+        "most_useful_feature": "Decibelímetro e bússola de sol para filtrar inquilinos técnicos antes da visita",
+        "biggest_failure_or_loophole": "Eu nunca pago os R$ 29,90. Uso os 5 créditos grátis para gerar o dossiê completo, mando o PDF pro inquilino e ele decide sozinho. Se ele reclamar do sol poente, uso o botão 'Isso está errado' alegando erro de dados, ganho o crédito e o inquilino vai embora. Para o M2, meus corretores parceiros usam a conta corporativa para escanear meus 7 aptos sem me pagar nada, mantendo o lead quente só pra mim.",
+        "surviving_business_model": "M2",
+        "rationale": "AUX-A é fricção de 30MB para quem quer fechar rápido. AUX-B é armadilha: quem usa decibelímetro é o inquilino chato que eu quero evitar. M1 é caro para quem só quer o PDF uma vez. M2 sobrevive porque corretor é o único que paga por volume e não me incomoda que ele use, desde que eu controle o lead final. M3 me expõe demais.",
+        "elapsed_s": 35.8,
+        "usage": {
+          "completion_tokens": 364,
+          "prompt_tokens": 1576,
+          "total_tokens": 1940,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 3,
+        "agent_id": "compradora_primeira_viagem",
+        "name": "Camila Ferreira",
+        "role": "Médica Residente / Compradora 1º Imóvel (Madalena/Espinheiro)",
+        "group": "Usuário Final (Baixa Tolerância a Atrito)",
+        "ux_a_vote": "abandon_friction",
+        "ux_b_vote": "pay_or_adopt",
+        "m1_b2c_vote": "use_free_only",
+        "m2_b2b_brokers_vote": "bypass_or_game",
+        "m3_b2b2c_api_vote": "bypass_or_game",
+        "max_wtp_brl": 29.9,
+        "most_useful_feature": "Sinal de sol nas janelas e alerta de obra próxima no celular.",
+        "biggest_failure_or_loophole": "Se o bundle for 30MB no 4G, eu desisto antes de pagar. Vou usar os 5 créditos grátis e, se quiser mais, vou caçar o mesmo dado no Instagram do corretor ou perguntar no grupo do condomínio. O 'give-to-get' é inútil porque eu não tenho tempo para dar feedback detalhado depois de uma visita cansativa. Se a camada avançada (UX-B) funcionar offline e for rápida, pago R$ 29,90 uma vez. Não assino mensalidade.",
+        "surviving_business_model": "M1",
+        "rationale": "Sou impaciente. A fricção técnica do UX-A mata a conversão. O UX-B resolve meus pavor reais (sol, obra, barulho). O modelo M2 favorece os corretores que eu desconfio. O M3 é irrelevante para mim agora. Pago pelo valor imediato da análise no celular, não por assinatura. Se for lento ou exigir cadastro, fujo.",
+        "elapsed_s": 34.57,
+        "usage": {
+          "completion_tokens": 350,
+          "prompt_tokens": 1547,
+          "total_tokens": 1897,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 3,
+        "agent_id": "inquilino_cetico",
+        "name": "Thiago Santana",
+        "role": "Analista Jr. / Inquilino fora do eixo nobre (Torre/Cordeiro/Madalena)",
+        "group": "Usuário Final (Sensível a Preço)",
+        "ux_a_vote": "use_free_only",
+        "ux_b_vote": "abandon_friction",
+        "m1_b2c_vote": "bypass_or_game",
+        "m2_b2b_brokers_vote": "boycott_or_block",
+        "m3_b2b2c_api_vote": "use_free_only",
+        "max_wtp_brl": 0.0,
+        "most_useful_feature": "Réguas de preço P25/Mediana/P75 para detectar aluguel abusivo na Várzea.",
+        "biggest_failure_or_loophole": "Uso os 5 créditos grátis, depois jogo o sistema de 'Give-to-Get' confirmando lotes genéricos ou dando feedback vago para ganhar créditos infinitos sem custo real. A fricção de 30MB no fluxo core já me faz abrir o portal direto e ignorar o app.",
+        "surviving_business_model": "M2",
+        "rationale": "Para mim, só vale se for grátis. O fluxo A é pesado mas útil; o B é luxo para quem paga. A monetização B2C é burra: não pago por PDF. A M2 sobrevive porque o corretor paga, mas eles vão boicotar a transparência, deixando dados ruins para mim.",
+        "elapsed_s": 26.72,
+        "usage": {
+          "completion_tokens": 292,
+          "prompt_tokens": 1552,
+          "total_tokens": 1844,
+          "prompt_tokens_details": {
+            "cached_tokens": 1283
+          }
+        }
+      },
+      {
+        "round": 3,
+        "agent_id": "investidor_planilheiro",
+        "name": "Marcelo Tavares",
+        "role": "Engenheiro Civil & Investidor Imobiliário (Graças/Boa Viagem)",
+        "group": "Usuário Final (Power User / Analítico)",
+        "ux_a_vote": "use_free_only",
+        "ux_b_vote": "pay_or_adopt",
+        "m1_b2c_vote": "bypass_or_game",
+        "m2_b2b_brokers_vote": "boycott_or_block",
+        "m3_b2b2c_api_vote": "pay_or_adopt",
+        "max_wtp_brl": 49.9,
+        "most_useful_feature": "Cruzamento de histórico judicial de SPEs com dados de alagamento da Defesa Civil",
+        "biggest_failure_or_loophole": "Burlaria o M1 criando 10 contas de e-mail descartáveis para zerar os 5 créditos iniciais. O modelo quebra porque o corretor, ao pagar M2, vira o dono da base de dados, eliminando a minha vantagem de assimetria informacional. Sem servidor próprio, a dependência de link externo torna o 'pay-per-use' uma ilusão para quem quer escalar análise de 50 imóveis.",
+        "surviving_business_model": "M3",
+        "rationale": "Como engenheiro, valorizo a camada técnica do Modo Visita e o risco jurídico da SPE, não o marketing. O M2 é boicote puro: pago para eles me expor. M1 é fricção de UX para quem tem Excel. M3 é o único que paga por dados limpos (DSQFL + Judicial) sem me obrigar a ser lead de corretor.",
+        "elapsed_s": 33.08,
+        "usage": {
+          "completion_tokens": 333,
+          "prompt_tokens": 1528,
+          "total_tokens": 1861,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 3,
+        "agent_id": "auditora_lgpd_juridica",
+        "name": "Dra. Helena Guimarães",
+        "role": "Advogada Especialista em LGPD, Direito Digital & Imobiliário (PE)",
+        "group": "Auditor Técnico / Legal",
+        "ux_a_vote": "bypass_or_game",
+        "ux_b_vote": "bypass_or_game",
+        "m1_b2c_vote": "use_free_only",
+        "m2_b2b_brokers_vote": "bypass_or_game",
+        "m3_b2b2c_api_vote": "pay_or_adopt",
+        "max_wtp_brl": 4500.0,
+        "most_useful_feature": "Alerta de passivo judicial TRT6 e CNPJ para evitar prédios-caixão.",
+        "biggest_failure_or_loophole": "A UX-A é uma armadilha de compliance: colar link do QuintoAndar viola o ToS 'no scraping' e o OCR das atas na UX-B exige base legal LGPD específica, não apenas consentimento genérico. Em M2, o corretor burla o paywall exportando o 'Dossiê' para PDF e revendendo manualmente, ou processa o VEREDA por exercício irregular de corretagem se a ferramenta recomendar ordem de visita sem CRECI.",
+        "surviving_business_model": "M3",
+        "rationale": "M1 é inócuo para o consumidor que não lê regulamentos. M2 quebra por responsabilidade jurídica do corretor. M3 é o único viável: bancos e seguradoras têm capital para arcar com o risco de litígio contra o VEREDA, transformando a imprecisão técnica em passivo deles, não do app. Vendemos a camada de dados, não a confiança do usuário final.",
+        "elapsed_s": 34.6,
+        "usage": {
+          "completion_tokens": 347,
+          "prompt_tokens": 1568,
+          "total_tokens": 1915,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 3,
+        "agent_id": "engenheiro_dados_senior",
+        "name": "Rafael Brito",
+        "role": "Staff Data & Mobile Engineer (Ex-Fintech, Recife/SP)",
+        "group": "Auditor Técnico / Engenharia",
+        "ux_a_vote": "abandon_friction",
+        "ux_b_vote": "bypass_or_game",
+        "m1_b2c_vote": "bypass_or_game",
+        "m2_b2b_brokers_vote": "pay_or_adopt",
+        "m3_b2b2c_api_vote": "use_free_only",
+        "max_wtp_brl": 50.0,
+        "most_useful_feature": "Réguas P25/P75 comparativas com dados observados reais, não estimativas de IA.",
+        "biggest_failure_or_loophole": "O coletor Oleo tem 10/10 de erro e o ZAP tem 139 cards quebrados. Usuários vão printar a tela para contornar o paywall. A fricção do bundle de 30MB matará a conversão. O modelo de alagamento (VE14) foi rejeitado tecnicamente, mas segue no app como se fosse fato.",
+        "surviving_business_model": "M2",
+        "rationale": "UX-A morre pelo bundle de 30MB em Android de entrada. M1 é burlada por screenshots. M2 sobrevive porque corretores pagam por white-label para esconder a fragilidade dos dados. M3 é ilusão sem SLA técnico confiável. A base de dados é instável demais para monetizar B2C direto.",
+        "elapsed_s": 32.16,
+        "usage": {
+          "completion_tokens": 321,
+          "prompt_tokens": 1556,
+          "total_tokens": 1877,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 3,
+        "agent_id": "jurada_vc_campus",
+        "name": "Beatriz Monteiro",
+        "role": "Jurada Campus Mobile & Investidora Seed Proptech (SP/Recife)",
+        "group": "Avaliadora de Pitch & VC",
+        "ux_a_vote": "abandon_friction",
+        "ux_b_vote": "bypass_or_game",
+        "m1_b2c_vote": "abandon_friction",
+        "m2_b2b_brokers_vote": "bypass_or_game",
+        "m3_b2b2c_api_vote": "pay_or_adopt",
+        "max_wtp_brl": 149.0,
+        "most_useful_feature": "Cruzamento de histórico judicial de SPEs com dados municipais para mitigar risco de compra.",
+        "biggest_failure_or_loophole": "O M1 morre por CAC: ninguém paga R$29,90 para 'descobrir' o que o corretor já sabe. No M2, corretores usam 5 créditos grátis para qualificar lead e descarte sem pagar assinatura, quebrando a monetização. O M3 é o único viable, mas exige contrato robusto com bancos, não é hackathon-ready.",
+        "surviving_business_model": "M3",
+        "rationale": "Como VC, vejo N=83 enviesada e dependência de ITBI fiscal no pitch. O UX-A é pesado (30MB) para um produto que ainda não provou retenção. O M2 falha porque corretores boicotam transparência; o M1 é caro para o usuário final. Só o M3 tem escala real, vendendo dados enriquecidos para instituições que já pagam por risco.",
+        "elapsed_s": 33.78,
+        "usage": {
+          "completion_tokens": 328,
+          "prompt_tokens": 1558,
+          "total_tokens": 1886,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      }
+    ],
+    "round_4_final_verdict": [
+      {
+        "round": 4,
+        "agent_id": "corretor_veterano",
+        "name": "Sérgio Cavalcanti",
+        "role": "Corretor CRECI-PE (22 anos, Boa Viagem/Setúbal)",
+        "group": "Incumbente Hostil",
+        "final_stance": "conditional",
+        "final_trust_score": 35,
+        "final_market_viability_score": 50,
+        "brutal_verdict": "O Vereda virou um leão de estimação, mas ainda late demais para quem vive de comissão. A ODbL garante que ninguém fique rico, mas a LGPD dá o mínimo de trégua. Não é o fim do mundo, mas é um imposto disfarçado de digitalização para o corretor de rua.",
+        "single_non_negotiable_fix": "Cláusula de exclusividade de lead por 72h: o corretor que agendar a visita primeira via app tem direito exclusivo ao fechamento, bloqueando bypass direto do cliente para o proprietário.",
+        "elapsed_s": 19.12,
+        "usage": {
+          "completion_tokens": 169,
+          "prompt_tokens": 734,
+          "total_tokens": 903,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 4,
+        "agent_id": "incorporadora_diretora",
+        "name": "Renata Albuquerque",
+        "role": "Diretora Comercial de Incorporadora (Zona Norte - Graças/Casa Forte)",
+        "group": "Incumbente Hostil",
+        "final_stance": "sue_or_block",
+        "final_trust_score": 18,
+        "final_market_viability_score": 25,
+        "brutal_verdict": "O Vereda é um tribunal popular disfarçado de app, expondo falhas construtivas e passivos trabalhistas que eu prefiro esconder no contrato. Sem blindagem jurídica contra 'opinião pública' e sem exclusão de dados sensíveis de SPEs, meu VSO despenca na Zona Norte.",
+        "single_non_negotiable_fix": "Criar cláusula de 'dados anonimizados e auditáveis' com direito de veto prévio para incorporadoras sobre publicações, evitando que alvarás ou ações TRT6 virarem manchete de 'prédio-caixão' sem recurso.",
+        "elapsed_s": 19.78,
+        "usage": {
+          "completion_tokens": 183,
+          "prompt_tokens": 744,
+          "total_tokens": 927,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 4,
+        "agent_id": "proprietario_especulador",
+        "name": "Eduardo 'Duda' Vasconcelos",
+        "role": "Proprietário Multi-Imóveis & Rentista (7 aptos BV/Espinheiro)",
+        "group": "Incumbente Hostil",
+        "final_stance": "hostile",
+        "final_trust_score": 20,
+        "final_market_viability_score": 35,
+        "brutal_verdict": "É um app de burocracia disfarçado de tecnologia. Enquanto o inquilino poder contestar meu 'condomínio baixo' com clique, eu prefiro alugar para o próximo da fila que não sabe ler. Sem transparência, só tem atrito e custo para o rentista.",
+        "single_non_negotiable_fix": "Criar um 'modo proprietário' que oculta detalhes técnicos e permite marcar campos como 'informativos', impedindo que o inquilino use o botão 'isso está errado' para travar a assinatura do contrato.",
+        "elapsed_s": 17.62,
+        "usage": {
+          "completion_tokens": 168,
+          "prompt_tokens": 765,
+          "total_tokens": 933,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 4,
+        "agent_id": "compradora_primeira_viagem",
+        "name": "Camila Ferreira",
+        "role": "Médica Residente / Compradora 1º Imóvel (Madalena/Espinheiro)",
+        "group": "Usuário Final (Baixa Tolerância a Atrito)",
+        "final_stance": "conditional",
+        "final_trust_score": 45,
+        "final_market_viability_score": 60,
+        "brutal_verdict": "O Vereda é um mapa bonito que ninguém tem tempo de abrir. Para mim, que vivo de plantão, se não me disser 'vá' ou 'fuja' em 15 segundos na tela inicial, eu pego o WhatsApp da minha corretora. A tecnologia existe, mas a fricção de uso mata a urgência.",
+        "single_non_negotiable_fix": "Implementar um 'Resumo de Risco' automático no topo do anúncio, com máximo de 3 linhas e ícones de alerta, gerado instantaneamente. Se eu tiver que clicar em 'detalhes' ou navegar no mapa para saber se o prédio é caixão, já perdem.",
+        "elapsed_s": 19.9,
+        "usage": {
+          "completion_tokens": 193,
+          "prompt_tokens": 737,
+          "total_tokens": 930,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 4,
+        "agent_id": "inquilino_cetico",
+        "name": "Thiago Santana",
+        "role": "Analista Jr. / Inquilino fora do eixo nobre (Torre/Cordeiro/Madalena)",
+        "group": "Usuário Final (Sensível a Preço)",
+        "final_stance": "boycott",
+        "final_trust_score": 15,
+        "final_market_viability_score": 20,
+        "brutal_verdict": "Vereda é um PDF de R$ 29,90 para quem já pode pagar. Para mim, que moro na Torre e vivo de transporte público noturno, é um luxo inútil. Se a camada de dados não cobre minha realidade de sobrevivência, a startup só serve para encher o bolso dos incorporadores nobres.",
+        "single_non_negotiable_fix": "Camada de dados gratuita e completa para a Zona Oeste (Torre, Várzea, Pina) com métricas reais de transporte público noturno e zero taxa de cadastro para inquilinos.",
+        "elapsed_s": 17.74,
+        "usage": {
+          "completion_tokens": 175,
+          "prompt_tokens": 732,
+          "total_tokens": 907,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 4,
+        "agent_id": "investidor_planilheiro",
+        "name": "Marcelo Tavares",
+        "role": "Engenheiro Civil & Investidor Imobiliário (Graças/Boa Viagem)",
+        "group": "Usuário Final (Power User / Analítico)",
+        "final_stance": "conditional",
+        "final_trust_score": 48,
+        "final_market_viability_score": 55,
+        "brutal_verdict": "É uma planilha de Excel com interface bonita, mas o coração ainda bate com dados de cadastro, não de transação. Enquanto o ITBI fiscal for o único 'valor de mercado' confiável e a amostra de aluguéis for estatisticamente insignificante, o risco jurídico e de precificação continua cego para quem compra imóvel subprecificado.",
+        "single_non_negotiable_fix": "Integração obrigatória com base de aluguéis fechados (não pedidos) dos últimos 12 meses no mesmo raio de 500m, com amostra mínima de 20 registros. Sem isso, o cálculo de yield líquido é ficção contábil.",
+        "elapsed_s": 19.6,
+        "usage": {
+          "completion_tokens": 192,
+          "prompt_tokens": 718,
+          "total_tokens": 910,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 4,
+        "agent_id": "auditora_lgpd_juridica",
+        "name": "Dra. Helena Guimarães",
+        "role": "Advogada Especialista em LGPD, Direito Digital & Imobiliário (PE)",
+        "group": "Auditor Técnico / Legal",
+        "final_stance": "conditional",
+        "final_trust_score": 45,
+        "final_market_viability_score": 60,
+        "brutal_verdict": "O Vereda é uma bomba-relógio jurídica. Vocês violam a ODbL 1.0 ao não licenciar derivados e praticam corretagem ilegal (CRECI) com recomendações algorítmicas. Sem blindagem contra notificação extrajudicial do QuintoAndar, o ativo é insustentável.",
+        "single_non_negotiable_fix": "Implementar disclaimer de 'curadoria independente' para afastar o vínculo de corretagem (art. 16, Lei 6.530/78) e publicar a licença ODbL 1.0 clara em todos os metadados de dados abertos.",
+        "elapsed_s": 21.45,
+        "usage": {
+          "completion_tokens": 189,
+          "prompt_tokens": 761,
+          "total_tokens": 950,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 4,
+        "agent_id": "engenheiro_dados_senior",
+        "name": "Rafael Brito",
+        "role": "Staff Data & Mobile Engineer (Ex-Fintech, Recife/SP)",
+        "group": "Auditor Técnico / Engenharia",
+        "final_stance": "skeptical",
+        "final_trust_score": 35,
+        "final_market_viability_score": 40,
+        "brutal_verdict": "É um protótipo de vaidade com GTFS fantasma e coletores quebrados, não um produto. A dependência de ERA5 de 30km e o modelo de alagamento rejeitado (VE14) provam que a 'inteligência' é marketing, não engenharia. Com G-USER zero, ninguém validou a dor real do Recife.",
+        "single_non_negotiable_fix": "Substituir os scrapers instáveis e o GTFS teórico por ingestão direta da API oficial do REC e exibir o erro de confiança dos dados na UI. Sem transparência de falha técnica, é só feitiçaria.",
+        "elapsed_s": 20.94,
+        "usage": {
+          "completion_tokens": 191,
+          "prompt_tokens": 746,
+          "total_tokens": 937,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      },
+      {
+        "round": 4,
+        "agent_id": "jurada_vc_campus",
+        "name": "Beatriz Monteiro",
+        "role": "Jurada Campus Mobile & Investidora Seed Proptech (SP/Recife)",
+        "group": "Avaliadora de Pitch & VC",
+        "final_stance": "conditional",
+        "final_trust_score": 45,
+        "final_market_viability_score": 60,
+        "brutal_verdict": "É um hackathon sofisticado, não um SaaS. A 'escritura real' é marketing de banco de dados, não jurídico, e o N=83 não sustenta unit economics para proptech. Sem moat claro além do código, o CAC vai engolir a margem antes da Série A.",
+        "single_non_negotiable_fix": "Provar via API pública que a 'escritura' gera título de propriedade ou direito real registrado em cartório, e não apenas um hash no blockchain. Sem isso, é só um PDF com filtro de imagem.",
+        "elapsed_s": 18.78,
+        "usage": {
+          "completion_tokens": 172,
+          "prompt_tokens": 749,
+          "total_tokens": 921,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      }
+    ]
+  },
+  "metrics": {
+    "agent_count": 9,
+    "rounds_completed": 4,
+    "stance_distribution_r1": {
+      "boycott": 1,
+      "sue_or_block": 1,
+      "hostile": 3,
+      "skeptical": 4
+    },
+    "stance_distribution_r2": {
+      "boycott": 1,
+      "sue_or_block": 2,
+      "hostile": 4,
+      "skeptical": 2
+    },
+    "stance_distribution_r4": {
+      "conditional": 5,
+      "sue_or_block": 1,
+      "hostile": 1,
+      "boycott": 1,
+      "skeptical": 1
+    },
+    "action_distribution_r1": {
+      "QUOTE_POST": 1,
+      "FACT_CHECK": 4,
+      "CREATE_COMMENT": 4
+    },
+    "action_distribution_r2": {
+      "QUOTE_POST": 2,
+      "FACT_CHECK": 5,
+      "BOYCOTT": 1,
+      "CREATE_COMMENT": 1
+    },
+    "mean_trust_r1": 29.1,
+    "mean_trust_r2": 24.3,
+    "mean_trust_r4": 34,
+    "mean_viability_r4": 45,
+    "trust_stdev_r4": 12.36,
+    "viability_stdev_r4": 14.72,
+    "mean_trust_by_group_r1": {
+      "Incumbente Hostil": 20.7,
+      "Usuário Final (Baixa Tolerância a Atrito)": 35.0,
+      "Usuário Final (Sensível a Preço)": 25.0,
+      "Usuário Final (Power User / Analítico)": 35.0,
+      "Auditor Técnico / Legal": 35.0,
+      "Auditor Técnico / Engenharia": 35.0,
+      "Avaliadora de Pitch & VC": 35.0
+    },
+    "mean_trust_by_group_r4": {
+      "Incumbente Hostil": 24.3,
+      "Usuário Final (Baixa Tolerância a Atrito)": 45.0,
+      "Usuário Final (Sensível a Preço)": 15.0,
+      "Usuário Final (Power User / Analítico)": 48.0,
+      "Auditor Técnico / Legal": 45.0,
+      "Auditor Técnico / Engenharia": 35.0,
+      "Avaliadora de Pitch & VC": 45.0
+    },
+    "mean_viability_by_group_r4": {
+      "Incumbente Hostil": 36.7,
+      "Usuário Final (Baixa Tolerância a Atrito)": 60.0,
+      "Usuário Final (Sensível a Preço)": 20.0,
+      "Usuário Final (Power User / Analítico)": 55.0,
+      "Auditor Técnico / Legal": 60.0,
+      "Auditor Técnico / Engenharia": 40.0,
+      "Avaliadora de Pitch & VC": 60.0
+    },
+    "votes_ux_a": {
+      "bypass_or_game": 2,
+      "abandon_friction": 5,
+      "use_free_only": 2
+    },
+    "votes_ux_b": {
+      "abandon_friction": 2,
+      "boycott_or_block": 1,
+      "bypass_or_game": 4,
+      "pay_or_adopt": 2
+    },
+    "votes_m1_b2c": {
+      "use_free_only": 4,
+      "bypass_or_game": 4,
+      "abandon_friction": 1
+    },
+    "votes_m2_b2b_brokers": {
+      "boycott_or_block": 3,
+      "bypass_or_game": 5,
+      "pay_or_adopt": 1
+    },
+    "votes_m3_b2b2c_api": {
+      "use_free_only": 4,
+      "boycott_or_block": 1,
+      "bypass_or_game": 1,
+      "pay_or_adopt": 3
+    },
+    "surviving_business_model_votes": {
+      "M3": 4,
+      "M2": 4,
+      "M1": 1
+    },
+    "wtp_all_mean_brl": 538.2,
+    "wtp_end_users_mean_brl": 26.6,
+    "wtp_by_agent": {
+      "corretor_veterano": 15.0,
+      "incorporadora_diretora": 50.0,
+      "proprietario_especulador": 0.0,
+      "compradora_primeira_viagem": 29.9,
+      "inquilino_cetico": 0.0,
+      "investidor_planilheiro": 49.9,
+      "auditora_lgpd_juridica": 4500.0,
+      "engenheiro_dados_senior": 50.0,
+      "jurada_vc_campus": 149.0
+    },
+    "reply_network_most_targeted": {
+      "corretor_veterano": 4,
+      "compradora_primeira_viagem": 3,
+      "engenheiro_dados_senior": 3,
+      "auditora_lgpd_juridica": 3,
+      "proprietario_especulador": 2,
+      "investidor_planilheiro": 1,
+      "inquilino_cetico": 1,
+      "jurada_vc_campus": 1
+    },
+    "reply_edges_count": 18,
+    "total_llm_elapsed_s": 1105.77,
+    "total_completion_tokens": 10381
+  }
+}

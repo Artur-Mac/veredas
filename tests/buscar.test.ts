@@ -4,7 +4,9 @@ import { join } from "node:path";
 import React from "react";
 import TestRenderer, { act, type ReactTestInstance } from "react-test-renderer";
 import { esquemaCandidato, esquemaIndiceDoBairro, type AnaliseV2, type Edificio } from "../src/dados/contratos";
-import { buscarCandidatos, buscarPorEndereco, normalizar, type EntradaDeBusca } from "../src/dados/recife/buscar";
+import { buscarCandidatos, buscarCandidatosDetalhados, buscarPorEndereco, enderecoSemFecho, normalizar, type EntradaDeBusca } from "../src/dados/recife/buscar";
+import { DIRETORIO_DO_INDICE } from "../src/dados/recife/publicacaoGerada";
+import { edificiosDoBairro } from "../src/dados/recife/indice";
 import { MapaDoPredio } from "../src/componentes/predio/MapaDoPredio";
 import {
   PERCURSO_INICIAL,
@@ -141,10 +143,10 @@ describe("buscarCandidatos: nome do edifício", () => {
 });
 
 describe("buscarCandidatos: área", () => {
-  it("só a área devolve quem tem a tipologia, 30 pontos e mais 10 se a tipologia tem 2 ou mais unidades", () => {
+  it("só a área devolve quem tem a tipologia: 30, +10 com 2+ unidades e +20 se a área é praticamente igual (15/11/2026)", () => {
     const r = buscarCandidatos(com({ area: 125 }), edificios);
     expect(r).toEqual([
-      { edificioId: "900001-250", pontos: 40, motivos: ["3 unidades com 125 m² no cadastro"] },
+      { edificioId: "900001-250", pontos: 60, motivos: ["3 unidades com 125 m² no cadastro"] },
       { edificioId: "900002-45", pontos: 30, motivos: ["1 unidade com 126,5 m² no cadastro"] },
     ]);
   });
@@ -162,11 +164,11 @@ describe("buscarCandidatos: área", () => {
     expect(buscarCandidatos(com({ area: 85.5, anoConstrucao: 2009 }), edificios)).toEqual([
       {
         edificioId: "900001-100",
-        pontos: 55,
+        pontos: 75,
         motivos: ["16 unidades com 85,5 m² no cadastro", "Construído em 2008, perto do ano do anúncio"],
       },
     ]);
-    expect(buscarCandidatos(com({ area: 85.5, anoConstrucao: 2011 }), edificios)[0]?.pontos).toBe(40);
+    expect(buscarCandidatos(com({ area: 85.5, anoConstrucao: 2011 }), edificios)[0]?.pontos).toBe(60);
     expect(buscarCandidatos(com({ anoConstrucao: 2008 }), edificios)).toEqual([]);
   });
 });
@@ -201,6 +203,22 @@ describe("buscarCandidatos: andar, sinal e ordem", () => {
     expect(r[0]).toMatchObject({ edificioId: "900200-07", pontos: 150 });
     expect(ids(r.slice(1))).toEqual(["900200-01", "900200-02", "900200-03", "900200-04", "900200-05", "900200-06", "900200-08"]);
     expect(r.slice(1).every((c) => c.pontos === 50)).toBe(true);
+  });
+
+  it("informa total antes do corte e pistas estruturadas sem mudar a API anterior", () => {
+    const muitos = Array.from({ length: 12 }, (_, i) => clone(SOLAR, `900200-${String(i + 1).padStart(2, "0")}`, { logradouro: "RUA DAS CLONES", numero: String(i + 1) }));
+    const entrada = com({ logradouro: "Rua das Clones", numero: "7" });
+    const r = buscarCandidatosDetalhados(entrada, muitos);
+    expect(r.totalCompativeis).toBe(12);
+    expect(r.resultadosLimitados).toBe(true);
+    expect(r.candidatos).toHaveLength(8);
+    expect(r.candidatos[0]?.pistas).toEqual(["rua", "numero"]);
+    expect(r.candidatos.slice(1).every((c) => c.pistas.join() === "rua")).toBe(true);
+    expect(r.candidatos.map(({ pistas, ...c }) => c)).toEqual(buscarCandidatos(entrada, muitos));
+    expect(buscarCandidatosDetalhados(vazio, muitos)).toEqual({ candidatos: [], totalCompativeis: 0, resultadosLimitados: false });
+    const area = buscarCandidatosDetalhados(com({ area: SOLAR.tipologias[0]!.area }), [SOLAR]);
+    expect(area.candidatos[0]?.pistas).toEqual(["area"]);
+    expect(area.resultadosLimitados).toBe(false);
   });
 
   it("cada candidato passa em esquemaCandidato", () => {
@@ -365,7 +383,7 @@ describe("buscarCandidatos: várias tipologias na tolerância de área", () => {
 
   it("o +10 vale uma vez só, mesmo com várias tipologias repetidas na tolerância", () => {
     const predio = comTipologias([t(99, 4), t(100, 2), t(101, 6)]);
-    expect(buscarCandidatos(com({ area: 100 }), [predio])[0]?.pontos).toBe(40);
+    expect(buscarCandidatos(com({ area: 100 }), [predio])[0]?.pontos).toBe(60); // 30 + 10 uma vez + 20 da área igual
   });
 
   it("sem nenhuma tipologia repetida na tolerância, são 30 pontos", () => {
@@ -380,10 +398,10 @@ describe("buscarCandidatos: várias tipologias na tolerância de área", () => {
     expect(buscarCandidatos(com({ area: 100 }), [predio])[0]?.pontos).toBe(30);
   });
 
-  it("a mais próxima com 2 ou mais unidades continua valendo 40", () => {
+  it("a mais próxima com 2 ou mais unidades continua valendo 40, mais 20 quando a área é igual", () => {
     const predio = comTipologias([t(100, 5), t(102, 1)]);
     expect(buscarCandidatos(com({ area: 100 }), [predio])).toEqual([
-      { edificioId: "900070-1", pontos: 40, motivos: ["5 unidades com 100 m² no cadastro"] },
+      { edificioId: "900070-1", pontos: 60, motivos: ["5 unidades com 100 m² no cadastro"] },
     ]);
   });
 });
@@ -393,10 +411,10 @@ describe("mensagem da tela quando não há candidatos", () => {
 
   it("com rua no anúncio, diz que não achou o endereço e manda conferir ou buscar", () => {
     expect(mensagemSemCandidatos("RUA TELES JUNIOR", "331")).toBe(
-      "Não achamos Rua Teles Junior, 331 no cadastro destes cinco bairros. Confira o endereço com o corretor ou busque abaixo.",
+      "Não achamos Rua Teles Junior, 331 no cadastro disponível para o Recife. Confira o endereço com o corretor ou busque abaixo.",
     );
     expect(mensagemSemCandidatos("Estrada do Encanamento", null)).toBe(
-      "Não achamos Estrada do Encanamento no cadastro destes cinco bairros. Confira o endereço com o corretor ou busque abaixo.",
+      "Não achamos Estrada do Encanamento no cadastro disponível para o Recife. Confira o endereço com o corretor ou busque abaixo.",
     );
   });
 
@@ -670,7 +688,7 @@ describe("projeção local do mapa", () => {
 // com a fixture sintética, de modo que o teste não depende do índice gerado nem o toca.
 describe("indice.ts com JSON simulado", () => {
   const virtual = { virtual: true } as const;
-  const caminho = (nome: string) => `../src/dados/recife/indice/${nome}.json`;
+  const caminho = (nome: string) => `../src/dados/recife/${DIRETORIO_DO_INDICE}/${nome}.json`;
   const doBairro = (slug: string) => ({
     ...indiceBruto,
     bairro: slug,
@@ -823,13 +841,13 @@ describe("tela do prédio, de ponta a ponta", () => {
       });
     });
   }
-  const caminhoDoJson = (slug: string) => `../src/dados/recife/indice/${slug}.json`;
+  const caminhoDoJson = (slug: string) => `../src/dados/recife/${DIRETORIO_DO_INDICE}/${slug}.json`;
 
   it("sem candidatos e com rua no anúncio: só a mensagem de endereço não achado", () => {
     abrir(analiseDe({ logradouro: "RUA QUE NAO EXISTE", numero: "999" }), (tela) => {
       const texto = tela.texto();
       expect(texto).toContain(
-        "Não achamos Rua Que Nao Existe, 999 no cadastro destes cinco bairros. Confira o endereço com o corretor ou busque abaixo.",
+        "Não achamos Rua Que Nao Existe, 999 no cadastro disponível para o Recife. Confira o endereço com o corretor ou busque abaixo.",
       );
       expect(texto).not.toContain("Sem o endereço não dá para saber");
       expect(tela.botoes()).not.toContain(rotuloVizinho);
@@ -894,5 +912,34 @@ describe("tela do prédio, de ponta a ponta", () => {
       tela.tocar(rotuloVizinho);
       expect(tela.texto().split("\n")).toContain("Mar Ficticio");
     });
+  });
+});
+
+describe("busca com o endereço colado do anúncio", () => {
+  const ed = edificiosDoBairro("gracas");
+  it.each([
+    "Rua Esmeraldino Bandeira, 411 - Graças, Recife - PE",
+    "Rua Esmeraldino Bandeira, 411, Graças, Recife, PE, 52011-000",
+    "Esmeraldino Bandeira 411 - Gracas",
+  ])("%s acha o 411", (texto) => {
+    expect(buscarPorEndereco(texto, ed)[0]).toMatchObject({ logradouro: "RUA ESMERALDINO BANDEIRA", numero: "411" });
+  });
+  it("tirar o fecho não apaga rua com nome de bairro no meio", () => {
+    expect(enderecoSemFecho("Rua das Graças, 100 - Graças, Recife - PE")).toBe("Rua das Graças  100");
+  });
+});
+
+describe("teste no celular (15/11/2026): nome parecido × área que bate", () => {
+  it("Torre, 'Edf. Engenho Torre', 53 m², 8º andar, sem rua: o prédio com apartamentos de 53 m² vem antes do de nome igual só com 127 m²", () => {
+    const torre = edificiosDoBairro("torre");
+    const r = buscarCandidatosDetalhados({ bairro: "torre", logradouro: null, numero: null, nomeEdificio: "Engenho Torre", area: 53, andar: 8, anoConstrucao: null }, torre);
+    const ids = r.candidatos.map((c) => c.edificioId);
+    expect(ids[0]).toBe("29246-61"); // Rua Horácio Cahu, 61 · Engenho Capibaribe · 21 unidades de 53,18 m²
+    const capibaribe = r.candidatos[0]!;
+    expect(capibaribe.motivos).toContain('Nome parecido com o do anúncio ("engenho")');
+    expect(capibaribe.motivos).toContain("21 unidades com 53,18 m² no cadastro");
+    const daTorre = r.candidatos.find((c) => c.edificioId === "42870-140"); // Marquês de Maricá, 140 · Engenho da Torre · 127 m²
+    expect(daTorre?.motivos).toEqual(["Mesmo nome de edifício do anúncio", "Nenhum apartamento perto de 53 m² no cadastro deste prédio"]);
+    expect(ids.indexOf("42870-140")).toBeGreaterThan(0);
   });
 });

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import {
   bairroEscolhido,
@@ -11,6 +11,8 @@ import {
 } from "../../dados/formulario";
 import { useTema } from "../../tema/Tema";
 import { comAlfa } from "../../tema/tokens";
+import { useFocoDoCampo } from "../casca/foco";
+import { AlvoDeToque } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { estilosDoTema } from "./estilosDoTema";
 
@@ -30,6 +32,7 @@ export function SeletorDeBairro({ estado, aoEscolher, desabilitado = false }: Se
   const styles = useEstilos();
   const [aberto, definirAberto] = useState(false);
   const [consulta, definirConsulta] = useState("");
+  const focoDaBusca = useFocoDoCampo();
   const opcoes = useMemo(() => opcoesDeBairro(consulta), [consulta]);
   const escolhido = bairroEscolhido(estado);
   const rotulo = rotuloDoBairroEscolhido(estado);
@@ -52,7 +55,7 @@ export function SeletorDeBairro({ estado, aoEscolher, desabilitado = false }: Se
       <Texto tipo="etiqueta" style={styles.rotulo}>
         Bairro
       </Texto>
-      <Pressable
+      <AlvoDeToque
         accessibilityRole="button"
         accessibilityLabel="Bairro"
         accessibilityValue={{ text: rotulo ?? "Nenhum escolhido" }}
@@ -68,7 +71,7 @@ export function SeletorDeBairro({ estado, aoEscolher, desabilitado = false }: Se
         <Svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={cor("cor-texto-apoio")} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <Path d={aberto ? "m6 15 6-6 6 6" : "m6 9 6 6 6-6"} />
         </Svg>
-      </Pressable>
+      </AlvoDeToque>
 
       {aberto ? (
         <View style={styles.painel}>
@@ -81,7 +84,9 @@ export function SeletorDeBairro({ estado, aoEscolher, desabilitado = false }: Se
             accessibilityLabel="Buscar bairro"
             autoCapitalize="none"
             autoCorrect={false}
-            style={styles.busca}
+            onFocus={focoDaBusca.aoFocar}
+            onBlur={focoDaBusca.aoDesfocar}
+            style={[styles.busca, focoDaBusca.estilo]}
           />
           <ScrollView nestedScrollEnabled keyboardShouldPersistTaps="handled" style={styles.lista}>
             {opcoes.length === 0 ? (
@@ -92,7 +97,7 @@ export function SeletorDeBairro({ estado, aoEscolher, desabilitado = false }: Se
               opcoes.map((opcao) => {
                 const marcada = opcao.valor === escolhido;
                 return (
-                  <Pressable
+                  <AlvoDeToque
                     key={opcao.valor}
                     accessibilityRole="button"
                     accessibilityLabel={opcao.rotulo}
@@ -111,7 +116,7 @@ export function SeletorDeBairro({ estado, aoEscolher, desabilitado = false }: Se
                         </Texto>
                       </View>
                     ) : null}
-                  </Pressable>
+                  </AlvoDeToque>
                 );
               })
             )}

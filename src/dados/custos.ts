@@ -64,3 +64,9 @@ export function custoMensal(a: AnaliseV2): CustoMensal {
     pendentes: fora.length,
   };
 }
+
+/** Vocabulário compartilhado por cartões, dossiê e comparação. */
+export const ROTULO_MENSAL_CONHECIDO = "Mensal conhecido";
+export function avisoDeValoresPendentes(custo: VisaoDoDossie["custo"]): string | null {
+  return custo.notaForaDaSoma ? "+ valores a confirmar" : null;
+}

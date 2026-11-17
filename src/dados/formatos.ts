@@ -31,6 +31,11 @@ export function formatarNumero(valor: number, casas = 0): string {
 export function formatarReais(valor: number): string {
   return `R$ ${formatarNumero(Math.round(valor))}`;
 }
+/** Para simulações e tarifas, não esconder centavos que mudam o resultado. */
+export function formatarCentavos(valor: number): string {
+  if (!Number.isSafeInteger(valor)) throw new Error("Valor monetário fora da precisão segura.");
+  return `R$ ${(valor / 100).toLocaleString("pt-BR", { minimumFractionDigits: valor % 100 === 0 ? 0 : 2, maximumFractionDigits: 2 })}`;
+}
 
 export function formatarDistancia(metros: number): string {
   if (metros < 1000) return `${formatarNumero(Math.round(metros / 10) * 10)} m`;

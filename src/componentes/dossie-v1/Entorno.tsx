@@ -1,15 +1,25 @@
+import * as WebBrowser from "expo-web-browser";
+import type { Indicador } from "../../dados/dossie/indicadores";
+import { CartaoDoIndicador } from "./Indicadores";
+import { useMemo, useState } from "react";
 import { View } from "react-native";
-import type { ContextoDoBairro, Edificio, Posicao, VisaoDoDossie } from "../../dados/contratos";
+import type { ContextoDoBairro, Edificio, Posicao, RuaDoBairro, VisaoDoDossie } from "../../dados/contratos";
+import { derivarSintesesInteligentes, type CartaoDeSinteseHumana } from "../../dados/dossie/sintesesDaRua";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, type TokenDeCor } from "../../tema/tokens";
+import { ESPACO, RAIO, comAlfa, type TokenDeCor } from "../../tema/tokens";
 import type { PedidoDeFonte } from "../fonte/GavetaDeFonte";
 import { RastroDeConfianca } from "../fonte/RastroDeConfianca";
 import { nomeCurtoDaFonte, rotuloDaConfianca } from "../fonte/textos";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
+import { ARua, type RespostaDaDefesaCivil } from "./ARua";
+import { PorPerto } from "./PorPerto";
+import { BateComARua, SimuladorDaUnidade } from "./SimuladorDaUnidade";
 import { CartaoSemPredio } from "./CartaoSemPredio";
+import { DiaADia } from "./DiaADia";
+import { essenciaisDoPredio } from "../../dados/recife/essenciais";
 import { LinhaDeObraNumerada } from "./MapaDoLote";
-import { Corpo, LinkComSeta, Nota, Numero, NumeroEditorial, Secao, Seta, Sobretitulo, Titulo2 } from "./base";
+import { CaixaCreme, Corpo, LinkComSeta, Nota, Numero, NumeroEditorial, Secao, Seta, Sobretitulo, Titulo2 } from "./base";
 import {
   corpoQueCabe,
   deltaDaPosicao,
@@ -23,12 +33,16 @@ import {
   valorDaPosicao,
 } from "./textos";
 
-export type SecaoDoEntorno = "obras" | "preco" | "contexto";
+export type SecaoDoEntorno = "sol" | "obras" | "rua" | "leitura" | "preco" | "contexto";
 
 type Props = {
   visao: VisaoDoDossie;
-  /** Edifício confirmado do índice: só para explicar por que a compra não tem posição. */
+  /** Edifício confirmado do índice: usado na síntese de sol/sombra e na explicação de posição fiscal. */
   edificio: Edificio | null;
+  vizinhos?: readonly Edificio[];
+  orientacaoJanelaGraus?: number | null;
+  slugBairro?: string | null;
+  ruaDoBairro?: RuaDoBairro | null;
   contexto: ContextoDoBairro | null;
   nomeDoBairro: string;
   coberto: boolean;
@@ -37,13 +51,90 @@ type Props = {
   aoAbrirMapa: () => void;
   aoConfirmarPredio: () => void;
   aoMedirSecao: (secao: SecaoDoEntorno, y: number) => void;
+  /** v1.1: a resposta da pessoa sobre os atendimentos da Defesa Civil na rua (null desfaz). */
+  aoResponderDefesaCivil: (resposta: RespostaDaDefesaCivil) => void;
+  /** 15/11/2026: o prédio comparado com o bairro, no alto da aba; tocar abre o porquê. */
+  indicadores?: readonly Indicador[];
+  /** 15/11/2026: necessidades de acesso do perfil da casa (rampa e semáforo sonoro só aparecem com elas). */
+  acesso?: readonly ("mobilidade" | "visao")[];
+  /** 15/11/2026: simulador andar × fachada e "Isso bate com a rua hoje?". */
+  tipologia?: string | null;
+  analiseId?: string;
+  /** Coordenada de referência quando o prédio ainda não foi vinculado (ex.: GPS de visita). */
+  centroReferencia?: [number, number] | null;
 };
 
-/** Barra bala (`.ds-bullet`, index.html 5284 a 5290): o preenchimento é o imóvel; o traço escuro, a mediana. */
+
+function CartaoSintese({ cartao }: { cartao: CartaoDeSinteseHumana }) {
+  const { cor } = useTema();
+  // 15/11/2026: manchete e medida de cara; explicação, dica e fonte só para quem toca.
+  const [aberto, setAberto] = useState(false);
+  if (!aberto) {
+    return (
+      <Pressionavel onPress={() => setAberto(true)} accessibilityRole="button" accessibilityLabel={`${cartao.sobretitulo}: ${cartao.manchete}. Ver detalhes`}>
+        <CaixaCreme estilo={{ gap: 4 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+            <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 10, lineHeight: 14, fontWeight: "700", letterSpacing: 0.7, textTransform: "uppercase", flexShrink: 1 }}>{cartao.sobretitulo}</Texto>
+            <Seta tamanho={11} />
+          </View>
+          <Texto tipo="secao" style={{ fontSize: 14.5, lineHeight: 20, fontWeight: "600" }}>{cartao.manchete}</Texto>
+        </CaixaCreme>
+      </Pressionavel>
+    );
+  }
+  return (
+    <CaixaCreme estilo={{ gap: 6 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
+        <Texto
+          tipo="etiqueta"
+          cor="cor-barro-texto"
+          style={{ fontSize: 10, lineHeight: 14, fontWeight: "700", letterSpacing: 0.7, textTransform: "uppercase", flexShrink: 1 }}
+        >
+          {cartao.sobretitulo}
+        </Texto>
+        <View
+          style={{
+            paddingHorizontal: 8,
+            paddingVertical: 3,
+            borderRadius: 6,
+            backgroundColor: comAlfa(cor("cor-texto"), 0.06),
+          }}
+        >
+          <Numero tamanho={11.5}>{cartao.medidaDestaque}</Numero>
+        </View>
+      </View>
+      <Texto tipo="secao" style={{ fontSize: 14.5, lineHeight: 20, fontWeight: "600" }}>
+        {cartao.manchete}
+      </Texto>
+      <Texto tipo="corpo" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 19 }}>
+        {cartao.explicacaoHumana}
+      </Texto>
+      {cartao.dicaPratica ? (
+        <View style={{ paddingTop: 6, borderTopWidth: 0.5, borderTopColor: cor("cor-linha") }}>
+          <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 17.5 }}>
+            {cartao.dicaPratica}
+          </Texto>
+        </View>
+      ) : null}
+      {cartao.urlFonte ? (
+        <Pressionavel
+          accessibilityRole="link"
+          accessibilityLabel={`Fonte oficial: ${cartao.fonteCurta}`}
+          onPress={() => void WebBrowser.openBrowserAsync(cartao.urlFonte!)}
+          style={{ minHeight: 44, justifyContent: "center", alignSelf: "flex-start" }}
+        >
+          <Nota estilo={{ textDecorationLine: "underline" }}>{`Fonte: ${cartao.fonteCurta}`}</Nota>
+        </Pressionavel>
+      ) : (
+        <Nota>{`Fonte: ${cartao.fonteCurta}`}</Nota>
+      )}
+    </CaixaCreme>
+  );
+}
+
 function BarraBala({ posicao }: { posicao: Posicao }) {
   const { cor } = useTema();
   const { valor, referencia } = posicoesDoBullet(posicao);
-  // Compra: o preço do anúncio contra as avaliações fiscais por unidade (R$). Aluguel: R$/m² contra as suas análises.
   const rotuloDoImovel = posicao.fonte === "itbi" ? "Preço anunciado" : "Este imóvel";
   const medianaRotulo = posicao.fonte === "suas_analises" ? "Mediana das suas análises" : "Mediana fiscal";
   return (
@@ -136,8 +227,9 @@ function PrecoNoContexto({ visao, edificio, aoAbrirFonte }: Pick<Props, "visao" 
   );
 }
 
-function ObrasProximas({ visao, aoAbrirFonte, aoAbrirMapa }: Pick<Props, "visao" | "aoAbrirFonte" | "aoAbrirMapa">) {
+function ObrasProximas({ visao, aoAbrirFonte, aoAbrirMapa, indicador }: Pick<Props, "visao" | "aoAbrirFonte" | "aoAbrirMapa"> & { indicador: Indicador | null }) {
   const obras = visao.obras;
+  const [lista, setLista] = useState(false);
   if (!obras) return null;
   const linhas = linhasDeObras(obras);
   const nota = notaDasLicencas(obras);
@@ -157,15 +249,21 @@ function ObrasProximas({ visao, aoAbrirFonte, aoAbrirMapa }: Pick<Props, "visao"
           {obras.relevantes24m === 1 ? "obra licenciada perto" : "obras licenciadas perto"}
         </Texto>
       </View>
-      <Corpo estilo={{ marginTop: ESPACO[2] }}>{resumoDasObras(obras)}</Corpo>
-      {linhas.length > 0 ? (
+      {indicador ? (
+        <>
+          <Corpo estilo={{ marginTop: ESPACO[2], fontWeight: "600" }}>{indicador.significado}</Corpo>
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17, marginTop: 4 }}>{indicador.comparacao}</Texto>
+        </>
+      ) : <Corpo estilo={{ marginTop: ESPACO[2] }}>{resumoDasObras(obras)}</Corpo>}
+      {linhas.length > 0 && !lista ? <LinkComSeta rotulo={`Ver ${linhas.length === 1 ? "a obra" : `as ${linhas.length} obras`}`} onPress={() => setLista(true)} /> : null}
+      {linhas.length > 0 && lista ? (
         <View style={{ marginTop: ESPACO[3] }}>
           {linhas.map((l) => (
-            <LinhaDeObraNumerada key={l.numero} numero={l.numero} categoria={l.categoria} titulo={l.titulo} detalhe={l.detalhe} rotulo={l.rotuloAcessivel} />
+            <LinhaDeObraNumerada key={l.numero} numero={l.numero} categoria={l.categoria} titulo={l.titulo} detalhe={l.detalhe} rotulo={l.rotuloAcessivel} licenca={l.licenca} />
           ))}
         </View>
       ) : null}
-      {nota ? <Nota estilo={{ marginTop: ESPACO[2] }}>{nota}</Nota> : null}
+      {nota && lista ? <Nota estilo={{ marginTop: ESPACO[2] }}>{nota}</Nota> : null}
       <LinkComSeta rotulo="Abrir mapa" onPress={aoAbrirMapa} acessivel="Abrir mapa do lote com as obras como pontos" />
       <Pressionavel
         onPress={() => aoAbrirFonte(pedido)}
@@ -219,24 +317,116 @@ function ContextoDoBairroSecao({ contexto, aoAbrirFonte }: { contexto: ContextoD
   );
 }
 
-/** Aba Entorno: obras recentes, o preço no contexto e o contexto do bairro. */
+/** Aba Entorno: obras, rua, leitura cruzada e contexto. A análise solar fica no cartão próprio de janelas. */
 export function Entorno({
-  visao, edificio, contexto, nomeDoBairro, coberto, vinculoConfirmado, aoAbrirFonte, aoAbrirMapa, aoConfirmarPredio, aoMedirSecao,
+  visao,
+  edificio,
+  slugBairro = null,
+  ruaDoBairro = null,
+  contexto,
+  nomeDoBairro,
+  coberto,
+  vinculoConfirmado,
+  aoAbrirFonte,
+  aoAbrirMapa,
+  aoConfirmarPredio,
+  aoMedirSecao,
+  aoResponderDefesaCivil,
+  indicadores = [],
+  acesso = [],
+  vizinhos = [],
+  orientacaoJanelaGraus = null,
+  tipologia = null,
+  analiseId,
+  centroReferencia = null,
 }: Props) {
   const aluguel = visao.custo.principal.rotulo === "Aluguel anunciado";
+  const sinteses = useMemo(
+    () =>
+      derivarSintesesInteligentes({
+        slugBairro: slugBairro ?? edificio?.bairro ?? null,
+        edificio,
+        ruaDoBairro,
+        andar: visao.especificacoes.andar,
+      }),
+    [slugBairro, edificio, ruaDoBairro, visao.especificacoes.andar],
+  );
+  const cartoesDeSintese = [
+    sinteses.calorEArvores,
+    sinteses.chuvaEAlagamento,
+    sinteses.arboviroses,
+    sinteses.ruidoDiaNoite,
+  ].filter((c): c is CartaoDeSinteseHumana => c !== null);
+  // Renda do setor (Censo): visível por padrão desde o brief do copiloto (15/11/2026), como os outros cartões cruzados.
+  const renda = sinteses.rendaDoSetor;
+  const indicadorDeObras = indicadores.find((i) => i.id === "obras") ?? null;
+
   return (
     <View>
-      <Secao semTopo aoMedir={(y) => aoMedirSecao("obras", y)}>
+      {indicadores.length ? (
+        <Secao semTopo>
+          <Sobretitulo>Comparado com o bairro</Sobretitulo>
+          <Titulo2>{`Onde este prédio fica entre os de ${nomeDoBairro}`}</Titulo2>
+          <View style={{ gap: ESPACO[2] }}>
+            {indicadores.map((i) => <CartaoDoIndicador key={i.id} indicador={i} />)}
+          </View>
+        </Secao>
+      ) : null}
+      {edificio ? (
+        <Secao semTopo={!indicadores.length}>
+          <Sobretitulo>Sua unidade</Sobretitulo>
+          <Titulo2>Andar × fachada</Titulo2>
+          <SimuladorDaUnidade predio={edificio} vizinhos={vizinhos} tipologia={tipologia} andarDoAnuncio={visao.especificacoes.andar} orientacaoGraus={orientacaoJanelaGraus} />
+        </Secao>
+      ) : null}
+      <Secao semTopo={!indicadores.length && !edificio} aoMedir={(y) => aoMedirSecao("obras", y)}>
         <Sobretitulo>Mudanças na vizinhança</Sobretitulo>
         <Titulo2>Obras próximas</Titulo2>
         {visao.obras ? (
-          <ObrasProximas visao={visao} aoAbrirFonte={aoAbrirFonte} aoAbrirMapa={aoAbrirMapa} />
+          <ObrasProximas visao={visao} aoAbrirFonte={aoAbrirFonte} aoAbrirMapa={aoAbrirMapa} indicador={indicadorDeObras} />
         ) : (
           <View style={{ marginTop: ESPACO[3] }}>
             <CartaoSemPredio visao={visao} coberto={coberto} vinculoConfirmado={vinculoConfirmado} aoConfirmar={aoConfirmarPredio} />
           </View>
         )}
       </Secao>
+      {visao.rua ? (
+        <Secao aoMedir={(y) => aoMedirSecao("rua", y)}>
+          <ARua rua={visao.rua} aoAbrirFonte={aoAbrirFonte} aoResponderDefesaCivil={aoResponderDefesaCivil} acesso={acesso} />
+        </Secao>
+      ) : null}
+      {edificio || centroReferencia ? (
+        <Secao>
+          <PorPerto
+            bairro={edificio?.bairro ?? slugBairro ?? null}
+            predioId={edificio?.id ?? null}
+            acesso={acesso}
+            centro={edificio?.centro ?? centroReferencia}
+            edificio={edificio}
+            obras={visao.obras?.recentes ?? []}
+            vizinhos={vizinhos}
+          />
+        </Secao>
+      ) : null}
+      {/* VE04: tempo a pé até mercado, farmácia, praça e ônibus, com plano B (some fora do piloto). */}
+      {edificio && essenciaisDoPredio(edificio.bairro, edificio.id) ? (
+        <Secao>
+          <DiaADia edificio={edificio} />
+        </Secao>
+      ) : null}
+      {cartoesDeSintese.length > 0 ? (
+        <Secao aoMedir={(y) => aoMedirSecao("leitura", y)}>
+          <Sobretitulo>Dados cruzados em linguagem simples</Sobretitulo>
+          <Titulo2>O que esperar no dia a dia</Titulo2>
+          <Corpo estilo={{ marginBottom: ESPACO[3] }}>Calor, chuva, mosquito e barulho neste ponto da cidade. Toque para ver o porquê e a fonte.</Corpo>
+          <View style={{ gap: ESPACO[2] }}>
+            {cartoesDeSintese.map((c) => (
+              <CartaoSintese key={c.id} cartao={c} />
+            ))}
+          </View>
+          {renda ? <View style={{ marginTop: ESPACO[2] }}><CartaoSintese cartao={renda} /></View> : null}
+        </Secao>
+      ) : null}
       <Secao aoMedir={(y) => aoMedirSecao("preco", y)}>
         <Sobretitulo>Preço no contexto</Sobretitulo>
         <Titulo2>{aluguel ? "Aluguel por m²" : "Preço e avaliação fiscal"}</Titulo2>
@@ -250,6 +440,7 @@ export function Entorno({
         ) : (
           <Corpo>Ainda não há contexto cadastral para este bairro.</Corpo>
         )}
+        {analiseId ? <BateComARua chave={`${analiseId}:entorno`} /> : null}
       </Secao>
     </View>
   );

@@ -228,18 +228,19 @@ type PropsDoMapa = {
 export function GavetaDoMapa({ visivel, aoFechar, predio, visao, vizinhos }: PropsDoMapa) {
   const obras = visao.obras?.recentes ?? [];
   const linhas = useMemo(() => linhasDeObras(visao.obras), [visao.obras]);
+  const andar = visao.especificacoes.andar;
   if (!visivel) return null;
   return (
     <Gaveta visivel titulo="Mapa do lote" subtitulo={visao.endereco ?? visao.subtitulo} aoFechar={aoFechar}>
       <View style={CORPO_DA_GAVETA}>
         {predio ? (
           <>
-            <MapaDoLote predio={predio} obras={obras} vizinhos={vizinhos} />
-            <LegendaDoMapa categorias={obras.map((o) => o.categoria)} />
+            <MapaDoLote predio={predio} obras={obras} vizinhos={vizinhos} andar={andar} />
+            <LegendaDoMapa categorias={obras.map((o) => o.categoria)} temAndar={false} />
             {linhas.length > 0 ? (
               <View>
                 {linhas.map((l) => (
-                  <LinhaDeObraNumerada key={l.numero} numero={l.numero} categoria={l.categoria} titulo={l.titulo} detalhe={l.detalhe} rotulo={l.rotuloAcessivel} />
+                  <LinhaDeObraNumerada key={l.numero} numero={l.numero} categoria={l.categoria} titulo={l.titulo} detalhe={l.detalhe} rotulo={l.rotuloAcessivel} licenca={l.licenca} />
                 ))}
               </View>
             ) : (
@@ -248,7 +249,7 @@ export function GavetaDoMapa({ visivel, aoFechar, predio, visao, vizinhos }: Pro
               </Corpo>
             )}
             <Nota>
-              Cada ponto é onde a Prefeitura registrou a licença; sem coordenada publicada, vale o centro do lote. O contorno do prédio vem da base de Lotes.
+              Contornos cadastrais dos lotes; não representam a planta das torres. Cada ponto numerado é onde a Prefeitura registrou a licença; toque nele para ver a distância e o estado da licença.
             </Nota>
           </>
         ) : (

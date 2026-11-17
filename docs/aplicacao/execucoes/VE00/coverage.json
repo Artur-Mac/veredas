@@ -1,0 +1,764 @@
+{
+ "generated_by": "docs/aplicacao/execucoes/VE00/scripts/reconcile_baseline.py",
+ "index": {
+  "coverage_manifest_states": {
+   "habilitado": 72,
+   "sem_registros_elegiveis": 21,
+   "revisao_geometrica_pendente": 1
+  },
+  "coverage_manifest_partitions": 94,
+  "partition_checksum_mismatches": [],
+  "partition_building_count_mismatches": [],
+  "active_directory": "indice-municipal/91b71d239c1847cf",
+  "generated_at": "2026-10-22T00:30:36Z",
+  "partitions_on_disk": 72,
+  "enabled_neighbourhoods": 72,
+  "enabled_without_partition": [],
+  "partitions_not_enabled": [],
+  "buildings_total": 7206,
+  "buildings_pilot": 2688,
+  "sha256_of_concatenated_partitions": "569d9d0c7d7edec0166625cf705c8fd3b24284b94e11a1a4d17f1fa0ee8d4e0f",
+  "sources": [
+   {
+    "key": "iptu_2026",
+    "modified": "2026-10-03",
+    "retrieved": "2026-10-22T00:30:36Z",
+    "records_read": 413651
+   },
+   {
+    "key": "itbi",
+    "modified": "2026-10-03",
+    "retrieved": "2026-10-22T00:30:36Z",
+    "records_read": 143350
+   },
+   {
+    "key": "licenciamento",
+    "modified": "2026-10-19",
+    "retrieved": "2026-10-22T00:30:36Z",
+    "records_read": 39067
+   },
+   {
+    "key": "lotes",
+    "modified": "2026-03-02",
+    "retrieved": "2026-10-22T00:30:36Z",
+    "records_read": 114079
+   },
+   {
+    "key": "bairros",
+    "modified": "2026-03-02",
+    "retrieved": "2026-10-22T00:30:36Z",
+    "records_read": 94
+   }
+  ],
+  "street_sources": [
+   {
+    "key": "licenciamento_ambiental",
+    "modified": "2026-10-19",
+    "period": null,
+    "records_read": 49924
+   },
+   {
+    "key": "central_156",
+    "modified": "2026-06-19",
+    "period": {
+     "de": "2025-01-31",
+     "ate": "2026-01-30"
+    },
+    "records_read": 126027
+   },
+   {
+    "key": "iluminacao",
+    "modified": "2026-03-04",
+    "period": null,
+    "records_read": 111666
+   },
+   {
+    "key": "coleta",
+    "modified": "2026-03-06",
+    "period": null,
+    "records_read": 5046
+   },
+   {
+    "key": "sinistros",
+    "modified": "2026-03-02",
+    "period": {
+     "de": "2022-01-01",
+     "ate": "2024-12-31"
+    },
+    "records_read": 12016
+   },
+   {
+    "key": "defesa_civil",
+    "modified": "2026-03-06",
+    "period": {
+     "de": "2014-01-01",
+     "ate": "2024-12-31"
+    },
+    "records_read": 886263
+   },
+   {
+    "key": "cnefe",
+    "modified": "2024-05-20",
+    "period": {
+     "de": "2022-01-01",
+     "ate": "2022-12-31"
+    },
+    "records_read": 737511
+   },
+   {
+    "key": "censo_entorno",
+    "modified": "2025-04-17",
+    "period": {
+     "de": "2022-01-01",
+     "ate": "2022-12-31"
+    },
+    "records_read": 5637
+   },
+   {
+    "key": "censo_amostra",
+    "modified": "2026-09-01",
+    "period": {
+     "de": "2022-01-01",
+     "ate": "2022-12-31"
+    },
+    "records_read": 2885
+   }
+  ]
+ },
+ "official_street_network": {
+  "path": ".cache/dados-recife/trechos-de-logradouros.geojson",
+  "available": true,
+  "sha256": "154ebe0adc920bd12ec013e1fe110df94f6d2717764dfec9b7ccfc639e426ace",
+  "bytes": 14527751,
+  "features": 10226,
+  "crs": "urn:ogc:def:crs:OGC:1.3:CRS84",
+  "distinct_street_codes": 10226
+ },
+ "cnefe_layer": {
+  "points": 5661,
+  "by_species": {
+   "8": 2558,
+   "5": 1427,
+   "4": 1676
+  },
+  "sha256_input_declared": "424040817d90431893dd555d456e3909a7bcc2f96e613cad7249092bebdc2eb6",
+  "reference": "Censo 2022"
+ },
+ "solar_partitions_published": [
+  "boa-viagem",
+  "casa-forte",
+  "espinheiro",
+  "gracas"
+ ],
+ "pilot": {
+  "boa-viagem": {
+   "name": "Boa Viagem",
+   "buildings": 1879,
+   "buildings_with_dsqfl": 1878,
+   "distinct_street_codes": 168,
+   "street_code_in_official_network": 1879,
+   "centroid_within_50m_of_own_street": 1850,
+   "median_centroid_to_own_street_m": 24.7,
+   "farthest_5": [
+    [
+     326.8,
+     "8060-695"
+    ],
+    [
+     141.9,
+     "31852-313"
+    ],
+    [
+     124.7,
+     "5690-1013"
+    ],
+    [
+     95.0,
+     "68713-140"
+    ],
+    [
+     81.9,
+     "14702-825"
+    ]
+   ],
+   "streets_with_flood_category_2014_2024": 5,
+   "buildings_on_flood_category_street": 61,
+   "buildings_with_drainage_156_within_150m": 1745,
+   "buildings_drainage_unknown": 0,
+   "buildings_with_injury_collision_within_150m": 1817,
+   "buildings_with_pedestrian_collision_within_150m": 610,
+   "buildings_with_itbi_unit_quartiles": 901,
+   "buildings_itbi_and_single_typology": 410,
+   "buildings_with_cnefe_point_within_300m": 1785,
+   "buildings_with_cnefe_health_within_300m": 1742,
+   "permits_in_partition": 144,
+   "luse_current_in_partition": 5,
+   "solar_partition_published": true
+  },
+  "casa-forte": {
+   "name": "Casa Forte",
+   "buildings": 82,
+   "buildings_with_dsqfl": 82,
+   "distinct_street_codes": 21,
+   "street_code_in_official_network": 82,
+   "centroid_within_50m_of_own_street": 70,
+   "median_centroid_to_own_street_m": 26.7,
+   "farthest_5": [
+    [
+     93.3,
+     "19526-934"
+    ],
+    [
+     79.7,
+     "42544-210"
+    ],
+    [
+     74.8,
+     "61999-311"
+    ],
+    [
+     74.2,
+     "19526-892"
+    ],
+    [
+     72.8,
+     "19526-742"
+    ]
+   ],
+   "streets_with_flood_category_2014_2024": 1,
+   "buildings_on_flood_category_street": 1,
+   "buildings_with_drainage_156_within_150m": 64,
+   "buildings_drainage_unknown": 0,
+   "buildings_with_injury_collision_within_150m": 72,
+   "buildings_with_pedestrian_collision_within_150m": 0,
+   "buildings_with_itbi_unit_quartiles": 38,
+   "buildings_itbi_and_single_typology": 26,
+   "buildings_with_cnefe_point_within_300m": 82,
+   "buildings_with_cnefe_health_within_300m": 82,
+   "permits_in_partition": 18,
+   "luse_current_in_partition": 0,
+   "solar_partition_published": true
+  },
+  "gracas": {
+   "name": "Graças",
+   "buildings": 291,
+   "buildings_with_dsqfl": 291,
+   "distinct_street_codes": 58,
+   "street_code_in_official_network": 291,
+   "centroid_within_50m_of_own_street": 281,
+   "median_centroid_to_own_street_m": 26.2,
+   "farthest_5": [
+    [
+     81.2,
+     "59382-327"
+    ],
+    [
+     67.0,
+     "50849-194"
+    ],
+    [
+     65.9,
+     "59382-257"
+    ],
+    [
+     62.0,
+     "18252-58"
+    ],
+    [
+     60.4,
+     "59382-215"
+    ]
+   ],
+   "streets_with_flood_category_2014_2024": 0,
+   "buildings_on_flood_category_street": 0,
+   "buildings_with_drainage_156_within_150m": 282,
+   "buildings_drainage_unknown": 0,
+   "buildings_with_injury_collision_within_150m": 271,
+   "buildings_with_pedestrian_collision_within_150m": 35,
+   "buildings_with_itbi_unit_quartiles": 172,
+   "buildings_itbi_and_single_typology": 84,
+   "buildings_with_cnefe_point_within_300m": 291,
+   "buildings_with_cnefe_health_within_300m": 291,
+   "permits_in_partition": 49,
+   "luse_current_in_partition": 2,
+   "solar_partition_published": true
+  },
+  "espinheiro": {
+   "name": "Espinheiro",
+   "buildings": 156,
+   "buildings_with_dsqfl": 156,
+   "distinct_street_codes": 28,
+   "street_code_in_official_network": 156,
+   "centroid_within_50m_of_own_street": 150,
+   "median_centroid_to_own_street_m": 26.9,
+   "farthest_5": [
+    [
+     83.9,
+     "29238-593"
+    ],
+    [
+     69.2,
+     "29238-625"
+    ],
+    [
+     66.7,
+     "1155-2265"
+    ],
+    [
+     56.3,
+     "31135-78"
+    ],
+    [
+     51.5,
+     "2402-80"
+    ]
+   ],
+   "streets_with_flood_category_2014_2024": 1,
+   "buildings_on_flood_category_street": 6,
+   "buildings_with_drainage_156_within_150m": 156,
+   "buildings_drainage_unknown": 0,
+   "buildings_with_injury_collision_within_150m": 151,
+   "buildings_with_pedestrian_collision_within_150m": 24,
+   "buildings_with_itbi_unit_quartiles": 79,
+   "buildings_itbi_and_single_typology": 36,
+   "buildings_with_cnefe_point_within_300m": 156,
+   "buildings_with_cnefe_health_within_300m": 156,
+   "permits_in_partition": 32,
+   "luse_current_in_partition": 0,
+   "solar_partition_published": true
+  },
+  "madalena": {
+   "name": "Madalena",
+   "buildings": 280,
+   "buildings_with_dsqfl": 280,
+   "distinct_street_codes": 72,
+   "street_code_in_official_network": 280,
+   "centroid_within_50m_of_own_street": 271,
+   "median_centroid_to_own_street_m": 24.3,
+   "farthest_5": [
+    [
+     88.1,
+     "10910-341"
+    ],
+    [
+     76.2,
+     "19259-300"
+    ],
+    [
+     75.5,
+     "19259-350"
+    ],
+    [
+     68.0,
+     "19259-156"
+    ],
+    [
+     64.8,
+     "15903-125"
+    ]
+   ],
+   "streets_with_flood_category_2014_2024": 0,
+   "buildings_on_flood_category_street": 0,
+   "buildings_with_drainage_156_within_150m": 268,
+   "buildings_drainage_unknown": 0,
+   "buildings_with_injury_collision_within_150m": 277,
+   "buildings_with_pedestrian_collision_within_150m": 103,
+   "buildings_with_itbi_unit_quartiles": 129,
+   "buildings_itbi_and_single_typology": 74,
+   "buildings_with_cnefe_point_within_300m": 280,
+   "buildings_with_cnefe_health_within_300m": 278,
+   "permits_in_partition": 51,
+   "luse_current_in_partition": 0,
+   "solar_partition_published": false
+  }
+ },
+ "pilot_totals": {
+  "buildings": 2688,
+  "buildings_with_dsqfl": 2687,
+  "distinct_street_codes": 347,
+  "street_code_in_official_network": 2688,
+  "centroid_within_50m_of_own_street": 2622,
+  "streets_with_flood_category_2014_2024": 7,
+  "buildings_on_flood_category_street": 68,
+  "buildings_with_drainage_156_within_150m": 2515,
+  "buildings_drainage_unknown": 0,
+  "buildings_with_injury_collision_within_150m": 2588,
+  "buildings_with_pedestrian_collision_within_150m": 772,
+  "buildings_with_itbi_unit_quartiles": 1319,
+  "buildings_itbi_and_single_typology": 630,
+  "buildings_with_cnefe_point_within_300m": 2594,
+  "buildings_with_cnefe_health_within_300m": 2549,
+  "permits_in_partition": 294,
+  "luse_current_in_partition": 7
+ },
+ "defesa_civil_flood_rows": {
+  "years": {
+   "2014": {
+    "rows": 57655,
+    "pilot_flood_rows": 0
+   },
+   "2015": {
+    "rows": 81389,
+    "pilot_flood_rows": 0
+   },
+   "2016": {
+    "rows": 92495,
+    "pilot_flood_rows": 0
+   },
+   "2017": {
+    "rows": 86325,
+    "pilot_flood_rows": 0
+   },
+   "2018": {
+    "rows": 89705,
+    "pilot_flood_rows": 0
+   },
+   "2019": {
+    "rows": 89955,
+    "pilot_flood_rows": 0
+   },
+   "2020": {
+    "rows": 70122,
+    "pilot_flood_rows": 0
+   },
+   "2021": {
+    "rows": 64855,
+    "pilot_flood_rows": 0
+   },
+   "2022": {
+    "rows": 90425,
+    "pilot_flood_rows": 14
+   },
+   "2023": {
+    "rows": 83164,
+    "pilot_flood_rows": 2
+   },
+   "2024": {
+    "rows": 80173,
+    "pilot_flood_rows": 4
+   }
+  },
+  "pilot_flood_rows": 20,
+  "pilot_flood_rows_by_area": {
+   "boa-viagem": 15,
+   "espinheiro": 3,
+   "madalena": 2
+  },
+  "dates": {
+   "2022-06-08": 12,
+   "2022-06-06": 2,
+   "2024-02-16": 2,
+   "2023-06-30": 1,
+   "2023-05-24": 1,
+   "2024-06-25": 1,
+   "2024-06-15": 1
+  },
+  "schema_by_year": {
+   "2014": {
+    "format": "normalized_atendimentos",
+    "fields": [
+     "ano",
+     "bairro",
+     "ocorrencia",
+     "rua"
+    ],
+    "null_rows": 46,
+    "has_event_date": false
+   },
+   "2015": {
+    "format": "normalized_atendimentos",
+    "fields": [
+     "ano",
+     "bairro",
+     "ocorrencia",
+     "rua"
+    ],
+    "null_rows": 10212,
+    "has_event_date": false
+   },
+   "2016": {
+    "format": "normalized_atendimentos",
+    "fields": [
+     "ano",
+     "bairro",
+     "ocorrencia",
+     "rua"
+    ],
+    "null_rows": 47,
+    "has_event_date": false
+   },
+   "2017": {
+    "format": "normalized_atendimentos",
+    "fields": [
+     "ano",
+     "bairro",
+     "ocorrencia",
+     "rua"
+    ],
+    "null_rows": 84,
+    "has_event_date": false
+   },
+   "2018": {
+    "format": "normalized_atendimentos",
+    "fields": [
+     "ano",
+     "bairro",
+     "ocorrencia",
+     "rua"
+    ],
+    "null_rows": 67,
+    "has_event_date": false
+   },
+   "2019": {
+    "format": "normalized_atendimentos",
+    "fields": [
+     "ano",
+     "bairro",
+     "ocorrencia",
+     "rua"
+    ],
+    "null_rows": 5761,
+    "has_event_date": false
+   },
+   "2020": {
+    "format": "raw_ckan_rows",
+    "declared_fields": [
+     "Regional",
+     "Ano",
+     "Mês",
+     "Data",
+     "Ocorrencia",
+     "Solicitacao",
+     "Endereco",
+     "Bairro"
+    ],
+    "field_holding_iso_date": "Mês",
+    "columns_shifted": true
+   },
+   "2021": {
+    "format": "raw_ckan_rows",
+    "declared_fields": [
+     "Regional",
+     "Ano",
+     "Mês",
+     "Data",
+     "Ocorrencia",
+     "Solicitacao",
+     "Endereco",
+     "Bairro"
+    ],
+    "field_holding_iso_date": "Data",
+    "columns_shifted": false
+   },
+   "2022": {
+    "format": "raw_ckan_rows",
+    "declared_fields": [
+     "Regional",
+     "Ano",
+     "MÃªs",
+     "Data",
+     "Ocorrencia",
+     "Solicitacao",
+     "Endereco",
+     "Bairro"
+    ],
+    "field_holding_iso_date": "MÃªs",
+    "columns_shifted": true
+   },
+   "2023": {
+    "format": "raw_ckan_rows",
+    "declared_fields": [
+     "Regional",
+     "Ano",
+     "MÃªs",
+     "Data",
+     "Ocorrencia",
+     "Solicitacao",
+     "Endereco",
+     "Bairro"
+    ],
+    "field_holding_iso_date": "Data",
+    "columns_shifted": false
+   },
+   "2024": {
+    "format": "raw_ckan_rows",
+    "declared_fields": [
+     "Regional",
+     "Ano",
+     "Mês",
+     "Data",
+     "Ocorrencia",
+     "Solicitacao",
+     "Endereco",
+     "Bairro"
+    ],
+    "field_holding_iso_date": "Data",
+    "columns_shifted": false
+   }
+  },
+  "distinct_dates_2020_2024": 7,
+  "max_rows_on_one_date": [
+   "2022-06-08",
+   12
+  ]
+ },
+ "gtfs": {
+  "raw_exploratory": {
+   "path": "docs/dados/raw/transporte/gtfs.zip",
+   "sha256": "e1d834d9cf0165690ad0ac5c6aa01fb8b5b7dc38bb611f999cadb01512313fd5",
+   "bytes": 38260971,
+   "feed_version": "v2026.10.26",
+   "feed_start": "20200501",
+   "feed_end": "20271026",
+   "stops": 7238,
+   "stops_in_recife_original_coordinates": 2839,
+   "stops_in_recife_after_minus_075_lat_shift": 0,
+   "trips": 87678,
+   "routes": 400,
+   "calendar_services": 1143,
+   "calendar_date_exceptions": 1137,
+   "calendar_service_days": {
+    "weekday": 396,
+    "sunday": 363,
+    "saturday": 383,
+    "other": 1
+   }
+  },
+  "published_layer_cache": {
+   "path": ".cache/dados-recife/gtfs-inspecao.zip",
+   "sha256": "5243ae9b92097b1b9f9c02c28694773fc1c730064656018571299d3f4192676a",
+   "bytes": 37870056,
+   "feed_version": "v2026.10.16",
+   "feed_start": "20200501",
+   "feed_end": "20271016",
+   "stops": 7217,
+   "stops_in_recife_original_coordinates": 2841,
+   "stops_in_recife_after_minus_075_lat_shift": 0,
+   "trips": 86668,
+   "routes": 400,
+   "calendar_services": 1143,
+   "calendar_date_exceptions": 0,
+   "calendar_service_days": {
+    "weekday": 396,
+    "sunday": 363,
+    "saturday": 383,
+    "other": 1
+   }
+  },
+  "published_noise_corridor_layer": {
+   "source_label": "Grande Recife Consórcio de Transporte / CBTU Metrô do Recife (GTFS oficial)",
+   "declared_feed_version": null,
+   "retrieved": "2026-10-27",
+   "keys": [
+    "corredoresOnibus",
+    "estacoesMetro",
+    "fonte",
+    "licenca",
+    "trilhosMetro"
+   ]
+  }
+ },
+ "exploratory_acquisition": {
+  "google_maps": {
+   "Espinheiro.json": {
+    "searches": 20,
+    "http_statuses": [
+     "200"
+    ],
+    "extracted_entities": 0
+   },
+   "Madalena.json": {
+    "searches": 20,
+    "http_statuses": [
+     "200"
+    ],
+    "extracted_entities": 0
+   },
+   "Graças.json": {
+    "searches": 20,
+    "http_statuses": [
+     "200"
+    ],
+    "extracted_entities": 0
+   },
+   "Boa_Viagem.json": {
+    "searches": 20,
+    "http_statuses": [
+     "200"
+    ],
+    "extracted_entities": 0
+   },
+   "Casa_Forte.json": {
+    "searches": 20,
+    "http_statuses": [
+     "200"
+    ],
+    "extracted_entities": 0
+   }
+  },
+  "osm_collector_10_boxes": [
+   {
+    "area": "Boa Viagem",
+    "south_lat": -8.89,
+    "north_lat": -8.84,
+    "overlaps_recife_bbox": false
+   },
+   {
+    "area": "Casa Forte",
+    "south_lat": -8.83,
+    "north_lat": -8.805,
+    "overlaps_recife_bbox": false
+   },
+   {
+    "area": "Graças",
+    "south_lat": -8.858,
+    "north_lat": -8.842,
+    "overlaps_recife_bbox": false
+   },
+   {
+    "area": "Espinheiro",
+    "south_lat": -8.849,
+    "north_lat": -8.834,
+    "overlaps_recife_bbox": false
+   },
+   {
+    "area": "Madalena",
+    "south_lat": -8.864,
+    "north_lat": -8.846,
+    "overlaps_recife_bbox": false
+   }
+  ],
+  "amenities_collector_12": {
+   "todosPois_declared_lines": [
+    154
+   ],
+   "todosPois_used_lines": [
+    192,
+    196,
+    217
+   ],
+   "selector_template": "const matchers = values.map((v) => `${key}[\"${v}\"](${b.bbox.s},${b.bbox.w},${b.bbox.n},${b.bbox.e})`).join(\";\");"
+  },
+  "zap_sample": {
+   "note": "Only per-neighbourhood summaries are stored (no per-card rows, no listing IDs): uniqueness cannot be verified.",
+   "per_card_rows_stored": 0,
+   "sample_cards_all_neighbourhoods": 334,
+   "sample_cards_pilot": 139,
+   "neighbourhoods": {
+    "Boa Viagem": 30,
+    "Casa Forte": 23,
+    "Graças": 31,
+    "Espinheiro": 26,
+    "Madalena": 29,
+    "Casa Amarela": 27,
+    "Pina": 32,
+    "Imbiribeira": 28,
+    "Torre": 22,
+    "Aflitos": 24,
+    "Boa Vista": 26,
+    "Ilha do Retiro": 36
+   },
+   "retrieved": "2026-11-14"
+  }
+ }
+}

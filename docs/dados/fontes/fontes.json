@@ -1,0 +1,316 @@
+{
+  "fontes": {
+    "ruido-aeroporto-recife": {
+      "id": "ruido-aeroporto-recife",
+      "nome": "Cone de ruído — Aeroporto Recife (Belo Jardim)",
+      "url": "https://www.anac.gov.br",
+      "tipo": "calculado + scraping",
+      "area": "ruido",
+      "observacoes": "Validar com o mapa oficial de ruído da ANAC/DECEA; cruzar com lotes",
+      "status": "ok",
+      "ultimo_acesso": "2026-11-11T16:49:23.842Z",
+      "historico": [
+        {
+          "em": "2026-11-11T16:49:23.842Z",
+          "status": "ok",
+          "acesso": "Cone teórico calculado (±15°, 15km) + busca ANAC",
+          "observacoes": "Validar com o mapa oficial de ruído da ANAC/DECEA; cruzar com lotes"
+        }
+      ]
+    },
+    "fipezap": {
+      "id": "fipezap",
+      "nome": "Índice FipeZAP (preço m² aluguel/venda)",
+      "url": "https://www.fipezap.com.br",
+      "tipo": "xlsx",
+      "area": "precos",
+      "observacoes": "Recife: aluguel R$ 64,39/m² (set/2026); venda R$ 9.044,83/m²",
+      "status": "ok",
+      "ultimo_acesso": "2026-11-11T16:49:35.644Z",
+      "historico": [
+        {
+          "em": "2026-11-11T16:49:35.644Z",
+          "status": "ok",
+          "acesso": "XLSX público; licença: direitos reservados à Fipe (citar fonte)",
+          "observacoes": "Recife: aluguel R$ 64,39/m² (set/2026); venda R$ 9.044,83/m²"
+        }
+      ]
+    },
+    "gtfs-grande-recife": {
+      "id": "gtfs-grande-recife",
+      "nome": "GTFS Grande Recife (ônibus, metrô, VLT)",
+      "url": "https://www.granderecife.pe.gov.br/transporte/gtfs/",
+      "tipo": "gtfs_zip",
+      "area": "transporte",
+      "observacoes": "400 linhas, 7.217 paradas; versão 16/10/2026",
+      "status": "ok",
+      "ultimo_acesso": "2026-11-11T19:39:47.462Z",
+      "historico": [
+        {
+          "em": "2026-11-11T16:49:40.371Z",
+          "status": "ok",
+          "acesso": "ZIP público, sem chave",
+          "observacoes": "400 linhas, 7.217 paradas; versão 16/10/2026"
+        },
+        {
+          "em": "2026-11-11T18:08:28.783Z",
+          "status": "ok",
+          "acesso": "ZIP público, sem chave",
+          "observacoes": "400 linhas, 7.217 paradas; versão 16/10/2026"
+        },
+        {
+          "em": "2026-11-11T18:08:40.929Z",
+          "status": "ok",
+          "acesso": "ZIP público, sem chave",
+          "observacoes": "400 linhas, 7.217 paradas; versão 16/10/2026"
+        },
+        {
+          "em": "2026-11-11T18:19:30.907Z",
+          "status": "ok",
+          "acesso": "ZIP público, sem chave",
+          "observacoes": "400 linhas, 7.217 paradas; versão 16/10/2026"
+        },
+        {
+          "em": "2026-11-11T19:39:47.462Z",
+          "status": "ok",
+          "acesso": "ZIP público, sem chave",
+          "observacoes": "400 linhas, 7.217 paradas; versão 16/10/2026"
+        }
+      ]
+    },
+    "cadastro-municipal-recife": {
+      "id": "cadastro-municipal-recife",
+      "nome": "Bases municipais Recife (CKAN + ESIG)",
+      "url": "https://dados.recife.pe.gov.br",
+      "tipo": "api_ckan_arcgis",
+      "area": "cadastro",
+      "observacoes": "Lotes com DSQFL (21.873, UTM 17S); limites de bairro; Defesa Civil 2021–2025 (CSV direto); bairros-do-recife.geojson",
+      "status": "ok",
+      "ultimo_acesso": "2026-11-11T19:00:04.029Z",
+      "historico": [
+        {
+          "em": "2026-11-11T16:49:40.792Z",
+          "status": "ok",
+          "acesso": "CKAN API + ArcGIS REST público",
+          "observacoes": "Lotes com DSQFL; IPTU 2026; LUSE (som); Defesa Civil; alagamentos"
+        },
+        {
+          "em": "2026-11-11T18:20:22.519Z",
+          "status": "ok",
+          "acesso": "CKAN API + ArcGIS REST público",
+          "observacoes": "Lotes com DSQFL (21.873, UTM 17S); limites de bairro; Defesa Civil 2021–2025 (CSV direto); bairros-do-recife.geojson"
+        },
+        {
+          "em": "2026-11-11T18:37:53.060Z",
+          "status": "ok",
+          "acesso": "CKAN API + ArcGIS REST público",
+          "observacoes": "Lotes com DSQFL (21.873, UTM 17S); limites de bairro; Defesa Civil 2021–2025 (CSV direto); bairros-do-recife.geojson"
+        },
+        {
+          "em": "2026-11-11T19:00:04.029Z",
+          "status": "ok",
+          "acesso": "CKAN API + ArcGIS REST público",
+          "observacoes": "Lotes com DSQFL (21.873, UTM 17S); limites de bairro; Defesa Civil 2021–2025 (CSV direto); bairros-do-recife.geojson"
+        }
+      ]
+    },
+    "leiloes-pe": {
+      "id": "leiloes-pe",
+      "nome": "Leilões judiciais e extrajudiciais PE",
+      "url": "https://www.jusleggis.com/leiloes/PE",
+      "tipo": "scraping_html",
+      "area": "leiloes",
+      "observacoes": "Foco: preço de mercado real (leilões fecham abaixo do avaliado) e imóveis com pendência",
+      "status": "parcial",
+      "ultimo_acesso": "2026-11-11T18:37:54.305Z",
+      "historico": [
+        {
+          "em": "2026-11-11T18:37:54.305Z",
+          "status": "parcial",
+          "acesso": "HTML público; estrutura varia por leiloeiro",
+          "observacoes": "Foco: preço de mercado real (leilões fecham abaixo do avaliado) e imóveis com pendência"
+        }
+      ]
+    },
+    "oleo-imoveis": {
+      "id": "oleo-imoveis",
+      "nome": "Oleo Imoveis (imoveis.com.br)",
+      "url": "https://www.oleoimoveis.com.br",
+      "tipo": "scraping_html",
+      "area": "imoveis",
+      "observacoes": "Cards extraídos de JSON embutido; confirmar estrutura em produção",
+      "status": "parcial",
+      "ultimo_acesso": "2026-11-11T18:38:06.320Z",
+      "historico": [
+        {
+          "em": "2026-11-11T18:38:06.320Z",
+          "status": "parcial",
+          "acesso": "HTML público, sem chave; rate limit humano",
+          "observacoes": "Cards extraídos de JSON embutido; confirmar estrutura em produção"
+        }
+      ]
+    },
+    "google-maps": {
+      "id": "google-maps",
+      "nome": "Google Maps (busca pública por categoria)",
+      "url": "https://www.google.com/maps",
+      "tipo": "scraping_html",
+      "area": "entorno",
+      "observacoes": "Ritmo de 1.2s entre buscas para não cair em rate limit",
+      "status": "ok",
+      "ultimo_acesso": "2026-11-11T18:40:47.202Z",
+      "historico": [
+        {
+          "em": "2026-11-11T18:40:47.202Z",
+          "status": "ok",
+          "acesso": "HTML público, APP_INITIALIZATION_STATE, sem chave",
+          "observacoes": "Ritmo de 1.2s entre buscas para não cair em rate limit"
+        }
+      ]
+    },
+    "pesquisa-cientifica": {
+      "id": "pesquisa-cientifica",
+      "nome": "Semantic Scholar + arXiv",
+      "url": "https://api.semanticscholar.org",
+      "tipo": "api_publica",
+      "area": "pesquisa",
+      "observacoes": "Tópicos: ruído, aviação, preço, moradia Recife, fisheye, sensores",
+      "status": "ativo",
+      "ultimo_acesso": "2026-11-11T19:21:19.824Z",
+      "historico": [
+        {
+          "em": "2026-11-11T19:00:36.556Z",
+          "status": "parcial",
+          "acesso": "HTML público, sem API",
+          "observacoes": "Tópicos: ruído, aviação, preço, moradia Recife, fisheye, sensores"
+        },
+        {
+          "em": "2026-11-11T19:05:20.284Z",
+          "status": "ativo",
+          "acesso": "API pública, sem chave (rate limit 100 req/s)",
+          "observacoes": "Tópicos: ruído, aviação, preço, moradia Recife, fisheye, sensores"
+        },
+        {
+          "em": "2026-11-11T19:15:19.571Z",
+          "status": "ativo",
+          "acesso": "API pública, sem chave (rate limit 100 req/s)",
+          "observacoes": "Tópicos: ruído, aviação, preço, moradia Recife, fisheye, sensores"
+        },
+        {
+          "em": "2026-11-11T19:21:19.824Z",
+          "status": "ativo",
+          "acesso": "API pública, sem chave (rate limit 100 req/s)",
+          "observacoes": "Tópicos: ruído, aviação, preço, moradia Recife, fisheye, sensores"
+        }
+      ]
+    },
+    "osm-pois": {
+      "id": "osm-pois",
+      "nome": "OpenStreetMap (Overpass API)",
+      "url": "https://overpass-api.de",
+      "tipo": "api_publica",
+      "area": "entorno",
+      "observacoes": "POIs com nome, coordenada e tags. Complementa o Google Maps (que só devolve o centro).",
+      "status": "ok",
+      "ultimo_acesso": "2026-11-11T20:07:47.570Z",
+      "historico": [
+        {
+          "em": "2026-11-11T20:07:47.570Z",
+          "status": "ok",
+          "acesso": "API pública, sem chave, rate limit de servidor",
+          "observacoes": "POIs com nome, coordenada e tags. Complementa o Google Maps (que só devolve o centro)."
+        }
+      ]
+    },
+    "open-meteo": {
+      "id": "open-meteo",
+      "nome": "Open-Meteo (temperatura do ar por bairro)",
+      "url": "https://open-meteo.com",
+      "tipo": "api_publica",
+      "area": "temperatura",
+      "observacoes": "Série diária 1995–2026 por coordenada de bairro. 5 bairros.",
+      "status": "ok",
+      "ultimo_acesso": "2026-11-11T21:12:28.400Z",
+      "historico": [
+        {
+          "em": "2026-11-11T21:08:23.401Z",
+          "status": "parcial",
+          "acesso": "API pública, sem chave; reanálise ERA5 (histórico) + medição recente",
+          "observacoes": "Série diária 1995–2026 por coordenada de bairro. 5 bairros."
+        },
+        {
+          "em": "2026-11-11T21:10:04.554Z",
+          "status": "ok",
+          "acesso": "API pública, sem chave; reanálise ERA5 (histórico) + medição recente",
+          "observacoes": "Série diária 1995–2026 por coordenada de bairro. 5 bairros."
+        },
+        {
+          "em": "2026-11-11T21:12:28.400Z",
+          "status": "ok",
+          "acesso": "API pública, sem chave; reanálise ERA5 (histórico) + medição recente",
+          "observacoes": "Série diária 1995–2026 por coordenada de bairro. 5 bairros."
+        }
+      ]
+    },
+    "crimebrasil": {
+      "id": "crimebrasil",
+      "nome": "Crime Brasil",
+      "url": "https://crimebrasil.com.br",
+      "tipo": "scraping_publico",
+      "area": "seguranca",
+      "observacoes": "Contagem de ocorrências (subnotificação). População IBGE Censo 2022. Período: Nov 2025 — Out 2026. Licença CC BY 4.0.",
+      "status": "ok",
+      "ultimo_acesso": "2026-11-12T17:33:01.148Z",
+      "historico": [
+        {
+          "em": "2026-11-12T15:29:04.637Z",
+          "status": "ok",
+          "acesso": "HTML server-side renderizado, sem chave; scraping das páginas por bairro",
+          "observacoes": "Fonte original: SDS/PE (boletins de ocorrência com município, bairro e natureza do crime). Período exibido: 12 meses móveis. Taxas por 100 mil habitantes disponíveis; população por setor censitário IBGE 2022. O dado é contagem de ocorrências registradas, não crimes ocorridos (subnotificação)."
+        },
+        {
+          "em": "2026-11-12T15:30:41.134Z",
+          "status": "ok",
+          "acesso": "HTML server-side renderizado, sem chave; scraping das páginas por bairro",
+          "observacoes": "Fonte original: SDS/PE (boletins de ocorrência com município, bairro e natureza do crime). Período exibido: 12 meses móveis. Taxas por 100 mil habitantes disponíveis; população por setor censitário IBGE 2022. O dado é contagem de ocorrências registradas, não crimes ocorridos (subnotificação)."
+        },
+        {
+          "em": "2026-11-12T15:32:44.224Z",
+          "status": "ok",
+          "acesso": "HTML server-side renderizado, sem chave; scraping das páginas por bairro",
+          "observacoes": "Fonte original: SDS/PE (boletins de ocorrência com município, bairro e natureza do crime). Período exibido: 12 meses móveis. Taxas por 100 mil habitantes disponíveis; população por setor censitário IBGE 2022. O dado é contagem de ocorrências registradas, não crimes ocorridos (subnotificação)."
+        },
+        {
+          "em": "2026-11-12T17:33:01.148Z",
+          "status": "ok",
+          "acesso": "Páginas por bairro (crimebrasil.com.br/bairro/pe/recife/{bairro}), HTML server-side, período 12 meses",
+          "observacoes": "Contagem de ocorrências (subnotificação). População IBGE Censo 2022. Período: Nov 2025 — Out 2026. Licença CC BY 4.0."
+        }
+      ]
+    },
+    "osm_overpass": {
+      "id": "osm_overpass",
+      "nome": "OpenStreetMap (Overpass API)",
+      "url": "https://www.openstreetmap.org",
+      "tipo": "api_publica",
+      "area": "amenidades",
+      "observacoes": "POIs georreferenciados por contribuintes do OSM. Cobertura varia por bairro e categoria. Distâncias em linha reta (haversine) do centroide — não o trajeto real. Tempo: 80 m/min.",
+      "status": "parcial",
+      "ultimo_acesso": "2026-11-12T18:30:00.000Z",
+      "historico": [
+        {
+          "em": "2026-11-12T15:48:18.339Z",
+          "status": "falhou",
+          "acesso": "erro",
+          "observacoes": "Cannot read properties of undefined (reading '0') — centroid function bug"
+        },
+        {
+          "em": "2026-11-12T18:30:00.000Z",
+          "status": "parcial",
+          "acesso": "Overpass API (mirrors overpass-api.de, maps.mail.ru, kumi.systems), bounding box do bairro municipal",
+          "observacoes": "Mirrors instáveis (502/504/timeout) em 12/11/2026. Coleta parcial; reexecutar quando mirrors se recuperarem."
+        }
+      ]
+    }
+  }
+}

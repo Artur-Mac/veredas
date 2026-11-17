@@ -1,0 +1,95 @@
+{
+  "versao": "1e393803851f3fd5",
+  "bairrosHabilitados": 72,
+  "edificios": 7206,
+  "mantidosSemIndice": [
+    {
+      "bairro": "alto-do-mandu",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "alto-jose-bonifacio",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "alto-jose-do-pinho",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "alto-santa-terezinha",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "brasilia-teimosa",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "brejo-da-guabiraba",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "brejo-de-beberibe",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "cabanga",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "cidade-universitaria",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "cohab",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "corrego-do-jenipapo",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "dois-irmaos",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "dois-unidos",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "ilha-joana-bezerra",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "linha-do-tiro",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "macaxeira",
+      "motivo": "revisao_geometrica_pendente"
+    },
+    {
+      "bairro": "mangabeira",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "passarinho",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "pau-ferro",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "peixinhos",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "sitio-dos-pintos",
+      "motivo": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "toto",
+      "motivo": "sem_registros_elegiveis"
+    }
+  ]
+}

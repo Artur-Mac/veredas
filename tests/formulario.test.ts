@@ -20,6 +20,7 @@ import {
   type LeituraParcial,
 } from "../src/dados/contratos";
 import { tituloDaAnomalia } from "../src/dados/anomalias";
+import { derivarDossie } from "../src/dados/dossie/derivar";
 import { custoMensal } from "../src/dados/custos";
 import { extrairDaUrl } from "../src/dados/extrator/url";
 import { extrairDoTexto } from "../src/dados/extrator/texto";
@@ -71,6 +72,8 @@ jest.mock("expo-router", () => ({
 }));
 const mockDefinirAtiva = jest.fn(async (_id: string | null) => undefined);
 let mockLista: unknown[] = [];
+// 15/11/2026: a leitura confirma o prédio direto do cartão (src/componentes/predio/confirmar.ts) e lê a carteira.
+jest.mock("../src/estado/Carteira", () => ({ useCarteira: () => ({ saldo: 3, debitarDossie: async () => true, bloqueada: false, erro: "" }) }));
 jest.mock("../src/estado/Analises", () => ({
   useAnalises: () => ({ salvar: mockSalvar, remover: mockRemover, lista: mockLista, definirAtiva: mockDefinirAtiva, pronto: true }),
 }));
@@ -653,9 +656,9 @@ describe("seletor de bairro e cobertura (K2)", () => {
     expect(casaForte).toMatchObject({ bairro: "casa-forte", bairroTexto: "Casa Forte" });
     expect(coberturaDoFormulario(casaForte)).toBe("coberto");
 
-    const torre = formularioDaUrl("vivareal-torre-venda");
-    expect(torre).toMatchObject({ bairro: "torre", bairroTexto: "Torre" });
-    expect(coberturaDoFormulario(torre)).toBe("recife_fora");
+    const cabanga = formularioDaUrl("vivareal-cabanga-venda");
+    expect(cabanga).toMatchObject({ bairro: "cabanga", bairroTexto: "Cabanga" });
+    expect(coberturaDoFormulario(cabanga)).toBe("recife_fora");
 
     const piata = formularioDaUrl("quintoandar-outra-cidade");
     expect(piata.bairro).toBe(FORA_DO_RECIFE);
@@ -669,7 +672,7 @@ describe("seletor de bairro e cobertura (K2)", () => {
   });
 
   it("o slug escolhido decide a cobertura, não o que a leitura achou", () => {
-    const lido = formularioDaUrl("vivareal-torre-venda");
+    const lido = formularioDaUrl("vivareal-cabanga-venda");
     expect(coberturaDoFormulario(lido)).toBe("recife_fora");
     expect(coberturaDoFormulario(editarFormulario(lido, { bairro: "casa-forte", bairroTexto: "Casa Forte" }))).toBe("coberto");
     expect(coberturaDoFormulario(editarFormulario(lido, { bairro: FORA_DO_RECIFE, bairroTexto: "" }))).toBe("fora_do_recife");
@@ -680,7 +683,7 @@ describe("seletor de bairro e cobertura (K2)", () => {
   it("cobertura para cada tipo de escolha", () => {
     expect(coberturaDoFormulario({ bairro: "boa-viagem" })).toBe("coberto");
     expect(coberturaDoFormulario({ bairro: "gracas" })).toBe("coberto");
-    expect(coberturaDoFormulario({ bairro: "boa-vista" })).toBe("recife_fora");
+    expect(coberturaDoFormulario({ bairro: "cabanga" })).toBe("recife_fora");
     expect(coberturaDoFormulario({ bairro: FORA_DO_RECIFE })).toBe("fora_do_recife");
     expect(coberturaDoFormulario({ bairro: null })).toBe("desconhecida");
     expect(coberturaDoFormulario({ bairro: "bairro-que-nao-existe" })).toBe("desconhecida");
@@ -689,7 +692,7 @@ describe("seletor de bairro e cobertura (K2)", () => {
   it("formulário montado à mão, sem `bairro`, vale o bairro que o texto nomeia", () => {
     expect(coberturaDoFormulario({ bairroTexto: "Casa Forte" })).toBe("coberto");
     expect(coberturaDoFormulario({ bairroTexto: "graças" })).toBe("coberto");
-    expect(coberturaDoFormulario({ bairroTexto: "Torre" })).toBe("recife_fora");
+    expect(coberturaDoFormulario({ bairroTexto: "Cabanga" })).toBe("recife_fora");
     expect(coberturaDoFormulario({ bairroTexto: "Piedade" })).toBe("desconhecida");
     expect(coberturaDoFormulario({ bairroTexto: "" })).toBe("desconhecida");
     expect(coberturaDoFormulario({})).toBe("desconhecida");
@@ -697,8 +700,8 @@ describe("seletor de bairro e cobertura (K2)", () => {
   });
 
   it("textos do cartão de fora de cobertura", () => {
-    expect(tituloDeForaDeCobertura({ bairro: "torre" })).toBe("Ainda não cobrimos Torre.");
-    expect(tituloDeForaDeCobertura({ bairro: "boa-vista" })).toBe("Ainda não cobrimos Boa Vista.");
+    expect(tituloDeForaDeCobertura({ bairro: "cabanga" })).toBe("Ainda não cobrimos Cabanga.");
+    expect(tituloDeForaDeCobertura({ bairro: "cabanga" })).toBe("Ainda não cobrimos Cabanga.");
     expect(tituloDeForaDeCobertura({ bairro: FORA_DO_RECIFE })).toBe("Ainda não cobrimos esta cidade.");
     expect(tituloDeForaDeCobertura({ bairro: "casa-forte" })).toBeNull();
     expect(tituloDeForaDeCobertura({ bairro: null })).toBeNull();
@@ -810,9 +813,9 @@ describe("destino do cartão do Explorar (K8)", () => {
     expect(destinoDaAnalise({ bairro: "casa-forte", vinculo: confirmado })).toBe("dossie");
     expect(destinoDaAnalise({ bairro: "casa-forte", vinculo: { estado: "pulado", em: "2026-10-20T12:00:00.000Z" } })).toBe("dossie");
     expect(destinoDaAnalise({ bairro: "casa-forte", vinculo: { estado: "nao_encontrado", em: "2026-10-20T12:00:00.000Z" } })).toBe("dossie");
-    expect(destinoDaAnalise({ bairro: "torre", vinculo: { estado: "pendente" } })).toBe("dossie");
+    expect(destinoDaAnalise({ bairro: "cabanga", vinculo: { estado: "pendente" } })).toBe("dossie");
     expect(destinoDaAnalise({ bairro: null, vinculo: { estado: "pendente" } })).toBe("dossie");
-    expect(destinoDaAnalise({ bairro: "torre", vinculo: { estado: "fora_de_cobertura" } })).toBe("dossie");
+    expect(destinoDaAnalise({ bairro: "cabanga", vinculo: { estado: "fora_de_cobertura" } })).toBe("dossie");
   });
 });
 
@@ -950,7 +953,7 @@ describe("tela de leitura (K1 e K2)", () => {
   const URL_CASA_FORTE =
     "https://www.zapimoveis.com.br/imovel/aluguel-apartamento-1-quarto-com-piscina-casa-forte-recife-pe-37m2-id-2790563018/";
   const URL_TORRE =
-    "https://www.vivareal.com.br/imovel/apartamento-3-quartos-torre-bairros-recife-com-garagem-80m2-venda-RS648810-id-2913218130/";
+    "https://www.vivareal.com.br/imovel/apartamento-3-quartos-cabanga-bairros-recife-com-garagem-80m2-venda-RS648810-id-2913218130/";
   const URL_OUTRO_SITE = "https://imobiliaria-exemplo.com.br/imovel/apartamento-3-quartos";
 
   const sistema = Platform.OS;
@@ -989,6 +992,10 @@ describe("tela de leitura (K1 e K2)", () => {
       .accessibilityState.disabled;
   const campo = (arvore: TestRenderer.ReactTestRenderer, rotulo: string) =>
     arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLabel === rotulo && typeof n.props.onChangeText === "function")[0];
+  const verTodosOsCampos = (arvore: TestRenderer.ReactTestRenderer) =>
+    arvore.root.findAll(
+      (n) => typeof n.type !== "string" && typeof n.props.onPress === "function" && String(n.props.accessibilityLabel ?? "").startsWith("Ver todos os campos"),
+    )[0];
   const escolherBairro = (arvore: TestRenderer.ReactTestRenderer, rotulo: string) => {
     act(() => arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLabel === "Bairro" && n.props.onPress)[0]?.props.onPress());
     act(() =>
@@ -996,16 +1003,18 @@ describe("tela de leitura (K1 e K2)", () => {
     );
   };
 
-  it("bairro coberto: 'Encontrar o prédio' ligado, sem cartão de fora de cobertura", () => {
+  it("bairro coberto: a ação do prédio ligada ('É este' ou 'Encontrar o prédio'), sem cartão de fora de cobertura", () => {
     const arvore = abrir({ url: URL_CASA_FORTE });
-    expect(desativado(arvore, "Encontrar o prédio")).toBe(false);
+    // 15/11/2026: com bairro coberto, o cartão traz o prédio provável ("É este") ou, sem pista, "Encontrar o prédio".
+    const acao = ["É este · gerar o dossiê", "Encontrar o prédio"].map((r) => desativado(arvore, r)).find((d) => d !== undefined);
+    expect(acao).toBe(false);
     expect(tela(arvore)).not.toContain("Ainda não cobrimos");
     expect(tela(arvore)).not.toContain("Escolha o bairro");
   });
 
-  it("outro bairro do Recife: cartão 'Ainda não cobrimos Torre.' no lugar do botão principal", () => {
+  it("outro bairro do Recife: cartão 'Ainda não cobrimos Cabanga.' no lugar do botão principal", () => {
     const arvore = abrir({ url: URL_TORRE });
-    expect(tela(arvore)).toContain("Ainda não cobrimos Torre.");
+    expect(tela(arvore)).toContain("Ainda não cobrimos Cabanga.");
     expect(botao(arvore, "Encontrar o prédio")).toBeUndefined();
     expect(botao(arvore, "Salvar no caderno")).toBeDefined();
     expect(botao(arvore, "Colar outro link")).toBeDefined();
@@ -1033,8 +1042,8 @@ describe("tela de leitura (K1 e K2)", () => {
     expect(tela(arvore)).not.toContain("Escolha o bairro");
     expect(arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLiveRegion === "polite")).toHaveLength(0);
 
-    escolherBairro(arvore, "Boa Vista");
-    expect(tela(arvore)).toContain("Ainda não cobrimos Boa Vista.");
+    escolherBairro(arvore, "Cabanga");
+    expect(tela(arvore)).toContain("Ainda não cobrimos Cabanga.");
     expect(botao(arvore, "Encontrar o prédio")).toBeUndefined();
 
     escolherBairro(arvore, "Fora do Recife");
@@ -1057,7 +1066,7 @@ describe("tela de leitura (K1 e K2)", () => {
   it("'Salvar no caderno' fora de cobertura grava vínculo fora_de_cobertura; fora do Recife não grava bairro", async () => {
     const arvore = abrir({ url: URL_TORRE });
     await act(async () => botao(arvore, "Salvar no caderno")?.props.onPress());
-    expect(mockSalvar.mock.calls[0]?.[0]).toMatchObject({ bairro: "torre", bairroTexto: "Torre", vinculo: { estado: "fora_de_cobertura" } });
+    expect(mockSalvar.mock.calls[0]?.[0]).toMatchObject({ bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" } });
 
     mockSalvar.mockClear();
     escolherBairro(arvore, "Fora do Recife");
@@ -1067,6 +1076,11 @@ describe("tela de leitura (K1 e K2)", () => {
 
   it("'Ler texto' depois de a pessoa editar não desfaz nenhum campo editado", async () => {
     const arvore = abrir({ url: URL_CASA_FORTE });
+    // 15/11/2026: o anúncio lido aparece como cartão; "Editar" abre o formulário.
+    act(() => arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLabel === "Editar os dados do anúncio" && typeof n.props.onPress === "function")[0]?.props.onPress());
+    // A leitura de um link abre o formulário enxuto: endereço e especificações ficam atrás de "Ver todos os campos".
+    expect(campo(arvore, "Rua")).toBeUndefined();
+    act(() => verTodosOsCampos(arvore)?.props.onPress());
     act(() => campo(arvore, "Rua")?.props.onChangeText("Rua Que Eu Digitei"));
     act(() => campo(arvore, "Número")?.props.onChangeText("12"));
     act(() => campo(arvore, "Edifício")?.props.onChangeText("Edifício Que Eu Digitei"));
@@ -1115,12 +1129,16 @@ describe("Explorar: o que o cartão abre (K8)", () => {
     return { ...analiseDe(formularioDeExtracao(ext), ext), id, nome, bairro, bairroTexto: bairro, vinculo };
   }
 
+  // 15/11/2026: cada árvore é desmontada no fim do teste; senão o cartão termina de ler o índice depois que o Jest
+  // desmonta o ambiente ("import after the environment has been torn down" e update fora de act).
+  const abertas: TestRenderer.ReactTestRenderer[] = [];
   function abrirExplorar(lista: AnaliseV2[]) {
     mockLista = lista;
     let arvore!: TestRenderer.ReactTestRenderer;
     act(() => {
       arvore = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(Explorar)));
     });
+    abertas.push(arvore);
     return arvore;
   }
   const tocarNoCartao = async (arvore: TestRenderer.ReactTestRenderer, nome: string) => {
@@ -1138,6 +1156,7 @@ describe("Explorar: o que o cartão abre (K8)", () => {
     mockDefinirAtiva.mockClear();
   });
   afterEach(() => {
+    act(() => abertas.splice(0).forEach((a) => a.unmount()));
     mockLista = [];
   });
 
@@ -1151,9 +1170,9 @@ describe("Explorar: o que o cartão abre (K8)", () => {
 
   it("as demais abrem /dossie?id= e definem a análise ativa antes", async () => {
     const arvore = abrirExplorar([
-      analiseDoCartao("fora-1", "Imóvel de fora", "torre", { estado: "fora_de_cobertura" }),
+      analiseDoCartao("fora-1", "Imóvel de fora", "cabanga", { estado: "fora_de_cobertura" }),
       analiseDoCartao("pulado-1", "Imóvel pulado", "casa-forte", { estado: "pulado", em: "2026-10-20T12:00:00.000Z" }),
-      analiseDoCartao("pendente-fora", "Pendente em outro bairro", "boa-vista", { estado: "pendente" }),
+      analiseDoCartao("pendente-fora", "Pendente em outro bairro", "cabanga", { estado: "pendente" }),
     ]);
     for (const [nome, id] of [
       ["Imóvel de fora", "fora-1"],
@@ -1511,7 +1530,7 @@ describe("slugDoBairroPorTexto (R5)", () => {
     for (const texto of ["bairro-do-recife", "Bairro do Recife", "recife-antigo", "Recife Antigo", "RECIFE ANTIGO", "Recife (bairro)"]) {
       expect(slugDoBairroPorTexto(texto)).toBe("recife");
     }
-    expect(coberturaDoFormulario({ bairroTexto: "Recife Antigo" })).toBe("recife_fora");
+    expect(coberturaDoFormulario({ bairroTexto: "Recife Antigo" })).toBe("coberto");
   });
 
   it("os demais bairros seguem casando por nome, slug e alias, sem acento e sem caixa", () => {
@@ -1520,7 +1539,7 @@ describe("slugDoBairroPorTexto (R5)", () => {
     expect(slugDoBairroPorTexto("GRAÇAS")).toBe("gracas");
     expect(slugDoBairroPorTexto("Poço da Panela")).toBe("poco");
     expect(slugDoBairroPorTexto("poco-da-panela")).toBe("poco");
-    expect(slugDoBairroPorTexto("Boa Vista")).toBe("boa-vista");
+    expect(slugDoBairroPorTexto("Cabanga")).toBe("cabanga");
     expect(slugDoBairroPorTexto("Piedade")).toBeNull();
     expect(slugDoBairroPorTexto("")).toBeNull();
     expect(slugDoBairroPorTexto("   ")).toBeNull();
@@ -1596,13 +1615,13 @@ describe("tela de edição (R6)", () => {
     expect(textosDe(arvore.root)).toContain("Adicionar imóvel");
   });
 
-  it("análise nova sem bairro escolhido: salvar desativado e a dica 'Escolha o bairro'", async () => {
+  it("análise nova pode ser salva sem bairro e avisa que está incompleta", async () => {
     const arvore = abrirEditar();
-    expect(desativado(arvore, "Salvar alterações")).toBe(true);
-    const dica = arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLiveRegion === "polite" && textosDe(n) === "Escolha o bairro");
+    expect(desativado(arvore, "Salvar alterações")).toBe(false);
+    const dica = arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLiveRegion === "polite" && textosDe(n).includes("salvar incompleto"));
     expect(dica.length).toBeGreaterThan(0);
     await act(async () => botao(arvore, "Salvar alterações")?.props.onPress());
-    expect(mockSalvar).not.toHaveBeenCalled();
+    expect(mockSalvar).toHaveBeenCalledWith(expect.objectContaining({ bairro: null, nomeEdificio: null }));
     escolherBairro(arvore, "Casa Forte");
     expect(desativado(arvore, "Salvar alterações")).toBe(false);
     expect(arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLiveRegion === "polite")).toHaveLength(0);
@@ -1611,7 +1630,7 @@ describe("tela de edição (R6)", () => {
   it("a cobertura vem do bairro escolhido: coberto fica pendente; outro bairro e fora do Recife, fora de cobertura", async () => {
     const casos = [
       ["Graças", { bairro: "gracas", bairroTexto: "Graças", vinculo: { estado: "pendente" } }],
-      ["Torre", { bairro: "torre", bairroTexto: "Torre", vinculo: { estado: "fora_de_cobertura" } }],
+      ["Cabanga", { bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" } }],
       ["Fora do Recife", { bairro: null, bairroTexto: "", vinculo: { estado: "fora_de_cobertura" } }],
     ] as const;
     for (const [rotulo, esperado] of casos) {
@@ -1678,8 +1697,8 @@ describe("tela de edição (R6)", () => {
 
     mockSalvar.mockClear();
     const foraDeCobertura = abrirEditar({ id: "salva-3" }, [existente]);
-    escolherBairro(foraDeCobertura, "Torre");
-    expect(await salvar(foraDeCobertura)).toMatchObject({ bairro: "torre", vinculo: { estado: "fora_de_cobertura" } });
+    escolherBairro(foraDeCobertura, "Cabanga");
+    expect(await salvar(foraDeCobertura)).toMatchObject({ bairro: "cabanga", vinculo: { estado: "fora_de_cobertura" } });
   });
 
   it("análise de fora do Recife abre com 'Fora do Recife' e o texto lido guardado", async () => {
@@ -1751,7 +1770,7 @@ describe("tela de edição (R6)", () => {
     expect(f).toMatchObject({ bairro: "casa-forte", bairroTexto: "Casa Forte", editados: {}, preco: 4500, condominio: 1190 });
     expect(declaradosDoFormulario(f)).toEqual(salvaX.declarados);
     expect(vinculoDoFormulario(f, null)).toEqual({ estado: "pendente" });
-    expect(vinculoDoFormulario({ bairro: "torre" }, salvaX)).toEqual({ estado: "fora_de_cobertura" });
+    expect(vinculoDoFormulario({ bairro: "cabanga" }, salvaX)).toEqual({ estado: "fora_de_cobertura" });
     expect(vinculoDoFormulario({ bairro: null }, null)).toEqual({ estado: "fora_de_cobertura" });
   });
 });
@@ -1815,7 +1834,11 @@ describe("tela de leitura: preço e modalidade, leitura nova e 'Fora do Recife' 
     lerTexto(arvore, "Apartamento para alugar\nAluguel R$ 4.500 /mês\nCondomínio R$ 1.190\n85 m²");
     expect(bairroMostrado(arvore)).toBe("Boa Viagem");
     expect(textosDe(arvore.root)).not.toContain("Ainda não cobrimos");
-    await act(async () => botao(arvore, "Encontrar o prédio")?.props.onPress());
+    // 15/11/2026: com prédio provável, "Não é este" leva à tela do prédio; sem pista, "Encontrar o prédio".
+    const irAoPredio = botao(arvore, "Encontrar o prédio") ?? arvore.root.findAll(
+      (n) => typeof n.type !== "string" && typeof n.props.onPress === "function" && n.findAllByType(Text).length === 1 && textosDe(n).startsWith("Não é este"),
+    )[0];
+    await act(async () => irAoPredio?.props.onPress());
     expect(mockSalvar.mock.calls[0]?.[0]).toMatchObject({ bairro: "boa-viagem", bairroTexto: "Boa Viagem", vinculo: { estado: "pendente" } });
   });
 
@@ -1873,15 +1896,15 @@ describe("formularioDeAnalise: bairro de uma análise salva sem slug (H5a)", () 
     expect(abre(semSlug("Boa Viagem", fora))).toEqual({ bairro: "boa-viagem", bairroTexto: "Boa Viagem" });
     expect(abre(semSlug("boa-viagem", fora))).toEqual({ bairro: "boa-viagem", bairroTexto: "Boa Viagem" });
     expect(abre(semSlug("GRAÇAS", fora))).toEqual({ bairro: "gracas", bairroTexto: "Graças" });
-    expect(abre(semSlug("Torre", fora))).toEqual({ bairro: "torre", bairroTexto: "Torre" });
+    expect(abre(semSlug("Cabanga", fora))).toEqual({ bairro: "cabanga", bairroTexto: "Cabanga" });
     expect(abre(semSlug("Recife Antigo", fora))).toEqual({ bairro: "recife", bairroTexto: "Recife (bairro)" });
-    // Daí a cobertura sai do bairro: Boa Viagem é coberto, Torre não.
+    // Daí a cobertura sai do bairro: Boa Viagem é coberto, Cabanga não.
     expect(coberturaDoFormulario(formularioDeAnalise(semSlug("Boa Viagem", fora)))).toBe("coberto");
-    expect(coberturaDoFormulario(formularioDeAnalise(semSlug("Torre", fora)))).toBe("recife_fora");
+    expect(coberturaDoFormulario(formularioDeAnalise(semSlug("Cabanga", fora)))).toBe("recife_fora");
   });
 
   it("o slug guardado continua mandando", () => {
-    expect(abre({ ...semSlug("Torre"), bairro: "casa-forte" })).toEqual({ bairro: "casa-forte", bairroTexto: "Casa Forte" });
+    expect(abre({ ...semSlug("Cabanga"), bairro: "casa-forte" })).toEqual({ bairro: "casa-forte", bairroTexto: "Casa Forte" });
   });
 
   it("texto que não é bairro do Recife continua 'Fora do Recife', com o texto guardado", () => {
@@ -1969,21 +1992,30 @@ describe("anomalias pendentes depois de salvar (H5b)", () => {
     expect(pendentes(comCondominio, formularioDeExtracao(comCondominio), "compra")).toEqual(["condominio:valor_simbolico"]);
   });
 
-  it("no cartão do Explorar a faixa de diagnóstico segue a mesma regra", () => {
+  it("no cartão do Explorar a faixa de diagnóstico segue o achado principal do dossiê, não a anomalia da leitura (T3)", async () => {
     const aluguel = extracaoDeCampos({ modalidade: "aluguel", preco: 50, condominio: 1190 });
     const analise = analiseDe(formularioDeExtracao(aluguel), aluguel);
-    const faixa = (a: AnaliseV2) => {
+    const faixa = async (a: AnaliseV2) => {
       mockLista = [a];
       let arvore!: TestRenderer.ReactTestRenderer;
       act(() => {
         arvore = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(Explorar)));
       });
+      // O cartão lê o cadastro e deriva o dossiê depois da primeira pintura.
+      await act(async () => {
+        await new Promise((r) => setTimeout(r, 30));
+      });
       mockLista = [];
       return arvore.root.findAllByType(Text).map((t) => [t.props.children].flat(3).join(""));
     };
     const titulo = tituloDaAnomalia({ campo: "preco", tipo: "valor_simbolico" });
-    expect(faixa({ ...analise, id: "cartao-aluguel" })).toContain(titulo);
-    expect(faixa({ ...analise, modalidade: "compra", id: "cartao-compra" })).not.toContain(titulo);
+    for (const a of [{ ...analise, id: "cartao-aluguel" }, { ...analise, modalidade: "compra" as const, id: "cartao-compra" }]) {
+      // Fora do Recife: sem edifício, contexto nem obras, como `carregarCadastro` monta para o dossiê.
+      const principal = derivarDossie(a, null, null, [], [], new Date()).achados.principal?.titulo ?? null;
+      const textos = await faixa(a);
+      expect(textos).not.toContain(titulo);
+      if (principal !== null) expect(textos).toContain(principal);
+    }
   });
 });
 
@@ -2018,6 +2050,33 @@ describe("campos de custo vazios (H5c)", () => {
     }
     const compra = abrir({ ...formularioVazio(), modalidade: "compra" });
     expect(entrada(compra, "Preço de venda (R$)")?.props.placeholder).toBe("Não informado");
+  });
+
+  it("modo essencial (leitura de um link): só preço, condomínio e IPTU; o resto atrás de 'Ver todos os campos'", () => {
+    let arvore!: TestRenderer.ReactTestRenderer;
+    const anomalias = [{ campo: "area", tipo: "incoerente", mensagem: "A área difere entre o link e o texto do anúncio." }] as unknown as ExtracaoAnuncio["anomalias"];
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(FormularioDeRevisao, { estado: formularioVazio(), anomalias, aoAlterar: () => undefined, essencial: true }),
+        ),
+      );
+    });
+    const rotulos = () =>
+      arvore.root
+        .findAll((n) => typeof n.type !== "string" && typeof n.props.onChangeText === "function" && typeof n.props.accessibilityLabel === "string")
+        .map((n) => n.props.accessibilityLabel as string)
+        .filter((r, i, todos) => todos.indexOf(r) === i);
+    expect(rotulos()).toEqual(["Aluguel (R$ por mês)", "Condomínio (R$ por mês)", "IPTU (R$)"]);
+    // O aviso de um campo recolhido não some: o link conta quantos há.
+    const link = arvore.root.findAll(
+      (n) => typeof n.type !== "string" && typeof n.props.onPress === "function" && String(n.props.accessibilityLabel ?? "").startsWith("Ver todos os campos"),
+    )[0];
+    expect(link?.props.accessibilityLabel).toBe("Ver todos os campos, 1 aviso");
+    act(() => link?.props.onPress());
+    expect(rotulos()).toEqual(expect.arrayContaining(["Nome da análise", "Rua", "Número", "Edifício", ...CAMPOS, "Área (m²)", "Quartos", "Andar"]));
   });
 
   it("valor lido aparece e zero digitado pela pessoa continua zero", () => {
@@ -2143,6 +2202,9 @@ describe("Explorar: o marcador e o cartão são irmãos (H3)", () => {
     bairroTexto: "Casa Forte",
     salva,
   });
+  // O cartão lê o índice depois da primeira pintura: desmontar no fim evita render depois do teste.
+  const abertas: TestRenderer.ReactTestRenderer[] = [];
+  afterEach(() => { act(() => abertas.splice(0).forEach((a) => a.unmount())); });
   const abrir = async (lista: AnaliseV2[]) => {
     mockLista = lista;
     let arvore!: TestRenderer.ReactTestRenderer;
@@ -2150,6 +2212,7 @@ describe("Explorar: o marcador e o cartão são irmãos (H3)", () => {
       arvore = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(Explorar)));
     });
     mockLista = [];
+    abertas.push(arvore);
     return arvore;
   };
 
@@ -2175,13 +2238,14 @@ describe("Explorar: o marcador e o cartão são irmãos (H3)", () => {
     const arvore = await abrir([analise("a", true), analise("b", false)]);
     expect(tocaveisAninhados(arvore)).toEqual([]);
 
-    const marcador = (rotulo: string) =>
-      arvore.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityLabel === rotulo && typeof n.props.onPress === "function")[0];
-    expect(marcador("Remover dos salvos")).toBeDefined();
-    expect(marcador("Salvar imóvel")).toBeDefined();
+    // 15/11/2026: o marcador do canto virou "Favoritar" na triagem do cartão (irmão do cartão, como antes).
+    const marcador = (rotulo: RegExp) =>
+      arvore.root.findAll((n) => typeof n.type !== "string" && rotulo.test(String(n.props.accessibilityLabel)) && typeof n.props.onPress === "function")[0];
+    expect(marcador(/^Tirar .* dos favoritos$/)).toBeDefined();
+    expect(marcador(/^Favoritar /)).toBeDefined();
     mockSalvar.mockClear();
     mockIr.mockClear();
-    await act(async () => marcador("Remover dos salvos")?.props.onPress());
+    await act(async () => marcador(/^Tirar .* dos favoritos$/)?.props.onPress());
     expect(mockSalvar).toHaveBeenCalledTimes(1);
     expect(mockSalvar.mock.calls[0]?.[0]).toMatchObject({ id: "a", salva: false });
     // Tocar no marcador não abre o cartão.
@@ -2190,10 +2254,10 @@ describe("Explorar: o marcador e o cartão são irmãos (H3)", () => {
 
   it("o alvo do marcador tem pelo menos 44 × 44", async () => {
     const arvore = await abrir([analise("a", true)]);
-    const alvo = arvore.root.findAll((n) => typeof n.type === "string" && n.props.accessibilityLabel === "Remover dos salvos")[0];
+    const alvo = arvore.root.findAll((n) => typeof n.type === "string" && /^Tirar .* dos favoritos$/.test(String(n.props.accessibilityLabel)))[0];
     const estilo = StyleSheet.flatten(alvo?.props.style);
-    expect(estilo?.width).toBeGreaterThanOrEqual(44);
-    expect(estilo?.height).toBeGreaterThanOrEqual(44);
+    expect(estilo?.minWidth ?? estilo?.width).toBeGreaterThanOrEqual(44);
+    expect(estilo?.minHeight ?? estilo?.height).toBeGreaterThanOrEqual(44);
   });
 });
 
@@ -2253,18 +2317,23 @@ describe("tela de leitura: checklist 'Preço e custos' (H6)", () => {
     });
     return arvore;
   };
+  /** 15/11/2026: com algo lido, o cartão do anúncio (preço e custos em linhas próprias) substitui o checklist. */
+  const linhaDoCartao = (arvore: TestRenderer.ReactTestRenderer, inicio: string) =>
+    arvore.root.findAll((n) => typeof n.type !== "string" && String(n.props.accessibilityLabel ?? "").startsWith(inicio))[0]?.props.accessibilityLabel as string | undefined;
   const linhaDePreco = (arvore: TestRenderer.ReactTestRenderer) =>
     arvore.root.findAll((n) => typeof n.type === "string" && String(n.props.accessibilityLabel ?? "").startsWith("Preço e custos:"))[0]?.props
       .accessibilityLabel as string;
 
-  it("aluguel com '/mês' e IPTU sem período: 'IPTU R$ 288 · período não informado'", () => {
-    const rotulo = linhaDePreco(abrir(caso("zap-like-iptu-sem-periodo").entrada));
-    expect(rotulo).toBe("Preço e custos: R$ 4.500/mês · Cond. R$ 1.190/mês · IPTU R$ 288 · período não informado. Lido");
+  it("aluguel com '/mês' e IPTU sem período: o cartão diz 'período a confirmar'", () => {
+    const arvore = abrir(caso("zap-like-iptu-sem-periodo").entrada);
+    expect(linhaDoCartao(arvore, "Preço:")).toBe("Preço: R$ 4.500/mês. Toque para editar");
+    expect(linhaDoCartao(arvore, "Custos:")).toBe("Custos: Condomínio R$ 1.190 · IPTU R$ 288 (período a confirmar). Toque para editar");
   });
 
   it("compra sem '/mês' e IPTU com o período que o anúncio disse", () => {
-    const rotulo = linhaDePreco(abrir(caso("iptu-anual-explicito").entrada));
-    expect(rotulo).toBe("Preço e custos: R$ 890.000 · Cond. R$ 980/mês · IPTU R$ 3.240/ano. Lido");
+    const arvore = abrir(caso("iptu-anual-explicito").entrada);
+    expect(linhaDoCartao(arvore, "Preço:")).toBe("Preço: R$ 890.000. Toque para editar");
+    expect(linhaDoCartao(arvore, "Custos:")).toBe("Custos: Condomínio R$ 980 · IPTU R$ 3.240/ano. Toque para editar");
   });
 
   it("sem nada lido, a linha pede o texto e não inventa valor", () => {
@@ -2287,5 +2356,123 @@ describe("tela de leitura: checklist 'Preço e custos' (H6)", () => {
     const rotulo = linhaDePreco(arvore);
     expect(rotulo).toBe("Preço e custos: Cond. R$ 1.190/mês. Não lido");
     expect(rotulo).not.toContain("4.500");
+  });
+});
+
+// ——— P2: área com anomalia nasce a confirmar ———————————————————————————————————————————————
+
+describe("área com anomalia nasce a confirmar (P2)", () => {
+  /** Link e texto trazem valores diferentes para o campo: a leitura registra anomalia `incoerente` nele. */
+  const incoerenteEm = (campo: "area" | "quartos" | "suites" | "banheiros" | "vagas" | "andar", doLink: number, doTexto: number) =>
+    montarExtracao(
+      "",
+      [leituraDe("url", { [campo]: doLink }), leituraDe("texto", { [campo]: doTexto, preco: 4500, condominio: 1190 })],
+      AGORA,
+    );
+  const comAnomaliaNaArea = (tipo: "valor_atipico" | "nao_informado" | "periodo_desconhecido", area: number | null): ExtracaoAnuncio => {
+    const base = extracaoDeCampos({ preco: 4500, condominio: 1190, area });
+    return { ...base, anomalias: [...base.anomalias, { campo: "area", tipo, valorLido: area === null ? "Consulte" : String(area), mensagem: "Mensagem sintética." }] };
+  };
+  const pendentes = (ext: ExtracaoAnuncio, form: EstadoDoFormulario) =>
+    anomaliasPendentes(ext, declaradosDoFormulario(form), form.modalidade).map((a) => `${a.campo}:${a.tipo}`);
+
+  it("área incoerente entre o link e o texto nasce a confirmar, com o valor lido guardado e a origem da leitura", () => {
+    const ext = incoerenteEm("area", 100, 152);
+    expect(ext.anomalias).toContainEqual(expect.objectContaining({ campo: "area", tipo: "incoerente" }));
+    const form = formularioDeExtracao(ext);
+    expect(form).toMatchObject({ area: 152, areaAConfirmar: true, areaOrigem: "texto" });
+    const declarados = declaradosDoFormulario(form);
+    expect(declarados.area).toEqual({ valor: 152, origem: "texto", aConfirmar: true });
+    expect(esquemaDeclarados.safeParse(declarados).success).toBe(true);
+  });
+
+  it.each(["valor_atipico", "nao_informado", "periodo_desconhecido"] as const)("anomalia '%s' na área (incoerente ou outra) também liga a marca", (tipo) => {
+    const form = formularioDeExtracao(comAnomaliaNaArea(tipo, tipo === "nao_informado" ? null : 85));
+    expect(form.areaAConfirmar).toBe(true);
+    expect(declaradosDoFormulario(form).area.aConfirmar).toBe(true);
+  });
+
+  it("área sem anomalia não nasce a confirmar, nem com os custos a confirmar", () => {
+    const ext = extracaoDeCampos({ preco: 4500, condominio: 5, area: 85 });
+    expect(ext.anomalias.some((a) => a.campo === "condominio")).toBe(true);
+    const form = formularioDeExtracao(ext);
+    expect(form).toMatchObject({ area: 85, areaAConfirmar: false, condominioAConfirmar: true });
+    expect(declaradosDoFormulario(form).area.aConfirmar).toBe(false);
+  });
+
+  const OUTRAS_ESPECIFICACOES: ["quartos" | "suites" | "banheiros" | "vagas" | "andar", number, number][] = [
+    ["quartos", 2, 3],
+    ["suites", 1, 2],
+    ["banheiros", 1, 2],
+    ["vagas", 1, 2],
+    ["andar", 3, 5],
+  ];
+
+  it.each(OUTRAS_ESPECIFICACOES)("%s com anomalia continua com aConfirmar false, mas a anomalia aparece", (campo, doLink, doTexto) => {
+    const ext = incoerenteEm(campo, doLink, doTexto);
+    expect(ext.anomalias).toContainEqual(expect.objectContaining({ campo, tipo: "incoerente" }));
+    const form = formularioDeExtracao(ext);
+    const declarados = declaradosDoFormulario(form);
+    expect(declarados[campo]).toMatchObject({ valor: doTexto, aConfirmar: false });
+    expect(declarados.area.aConfirmar).toBe(false);
+    expect(pendentes(ext, form)).toEqual([`${campo}:incoerente`]);
+    expect(anomaliasDaRevisao(ext, form).map((a) => a.campo)).toEqual([campo]);
+    expect(primeiraAnomaliaPendente(analiseDe(form, ext))).toBe(tituloDaAnomalia({ campo, tipo: "incoerente" }));
+  });
+
+  it("a anomalia da área aparece enquanto o valor é o da leitura", () => {
+    const ext = incoerenteEm("area", 100, 152);
+    const form = formularioDeExtracao(ext);
+    expect(pendentes(ext, form)).toEqual(["area:incoerente"]);
+    expect(anomaliasDaRevisao(ext, form).map((a) => a.campo)).toEqual(["area"]);
+    expect(primeiraAnomaliaPendente(analiseDe(form, ext))).toBe(tituloDaAnomalia({ campo: "area", tipo: "incoerente" }));
+  });
+
+  it("digitar outra área resolve: a marca desliga, a origem vira você e reler não a liga de novo", () => {
+    const ext = incoerenteEm("area", 100, 152);
+    const lido = formularioDeExtracao(ext);
+    const digitado = editarFormulario(lido, { area: 100 });
+    expect(digitado).toMatchObject({ area: 100, areaOrigem: "voce", areaAConfirmar: false });
+    expect(digitado.editados).toEqual({ area: true, areaAConfirmar: true });
+    expect(declaradosDoFormulario(digitado).area).toEqual({ valor: 100, origem: "voce", aConfirmar: false });
+    expect(pendentes(ext, digitado)).toEqual([]);
+    expect(primeiraAnomaliaPendente(analiseDe(digitado, ext))).toBeNull();
+    // O formulário anterior não foi mexido.
+    expect(lido).toMatchObject({ area: 152, areaAConfirmar: true });
+    // Nova leitura com a mesma anomalia: a área e a marca ficam como a pessoa deixou.
+    expect(formularioDeExtracao(ext, digitado)).toMatchObject({ area: 100, areaOrigem: "voce", areaAConfirmar: false });
+  });
+
+  it("digitar a mesma área não resolve; a marca explícita, na mesma mudança ou sozinha, vale", () => {
+    const ext = incoerenteEm("area", 100, 152);
+    const lido = formularioDeExtracao(ext);
+    expect(editarFormulario(lido, { area: 152 }).areaAConfirmar).toBe(true);
+    expect(editarFormulario(lido, { area: 100, areaAConfirmar: true }).areaAConfirmar).toBe(true);
+    const aceita = editarFormulario(lido, { areaAConfirmar: false });
+    expect(aceita).toMatchObject({ area: 152, areaOrigem: "texto", areaAConfirmar: false });
+    expect(aceita.editados).toEqual({ areaAConfirmar: true });
+    expect(formularioDeExtracao(ext, aceita).areaAConfirmar).toBe(false);
+  });
+
+  it("reler mantém ligada a marca que a leitura ligou, mesmo quando a nova leitura não tem anomalia na área", () => {
+    const lido = formularioDeExtracao(incoerenteEm("area", 100, 152));
+    const semAnomalia = extracaoDeCampos({ preco: 4500, condominio: 1190, area: 152 });
+    expect(semAnomalia.anomalias.some((a) => a.campo === "area")).toBe(false);
+    expect(formularioDeExtracao(semAnomalia, lido)).toMatchObject({ area: 152, areaAConfirmar: true });
+  });
+
+  it("a marca vai para a análise salva e volta ao reabrir; a área a confirmar não entra no preço por m²", () => {
+    const ext = incoerenteEm("area", 100, 152);
+    const form = formularioDeExtracao(ext);
+    const salva = esquemaAnaliseV2.parse({ ...analiseDe(form, ext), ...camposDaAnalise(form) });
+    expect(salva.declarados.area).toEqual({ valor: 152, origem: "texto", aConfirmar: true });
+    expect(formularioDeAnalise(salva)).toMatchObject({ area: 152, areaAConfirmar: true, areaOrigem: "texto" });
+    expect(custoMensal(salva).principal).toMatchObject({ valor: 4500, porM2: null });
+    expect(formularioVazio().areaAConfirmar).toBe(false);
+  });
+
+  it("formulário sem o campo (estado antigo) vale como área não marcada, nunca como valor indefinido", () => {
+    const antigo = { ...formularioVazio(), area: 80, areaAConfirmar: undefined as never };
+    expect(declaradosDoFormulario(antigo).area.aConfirmar).toBe(false);
   });
 });

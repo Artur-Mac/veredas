@@ -1,0 +1,97 @@
+{
+  "versao": 1,
+  "dataAuditoria": "2026-10-22",
+  "escopo": "artefatos de auditoria local, dados sintéticos",
+  "arquivos": [
+    {
+      "arquivo": "testes-focados.log",
+      "bytes": 394,
+      "sha256": "d1fd6c2f0d8b8f7fc6d7245effc6ba51a35e96656935634ee94c2e66388e4be8"
+    },
+    {
+      "arquivo": "baseline-verificar.log",
+      "bytes": 4741,
+      "sha256": "114cc461d22d202005ebdaafef9244181e8fa63bf49bf1ba16be2769d81f7dbe"
+    },
+    {
+      "arquivo": "smoke-amplo-resultado.json",
+      "bytes": 1956,
+      "sha256": "5947afe71471b2cc416262b15f55c63b35db15877ac258c86f9fa73597e3ded1"
+    },
+    {
+      "arquivo": "smoke-amplo.log",
+      "bytes": 27,
+      "sha256": "2786aef339a0785b07b7dbd5c86dfbc6538e838d420da8cd0cbf9bca2b1215e7"
+    },
+    {
+      "arquivo": "smoke-v1.log",
+      "bytes": 4624,
+      "sha256": "4c93b93d0246ef8d1aea95a666f2359dfb6cc449f53a2a135816a7e46c81b171"
+    },
+    {
+      "arquivo": "verificar.log",
+      "bytes": 4722,
+      "sha256": "163b875956169f6c02ced3fc8f8fc9c7581bb56020cbf16f27f3143df6ba26bb"
+    },
+    {
+      "arquivo": "capturas/compra-cenario-360.png",
+      "bytes": 39111,
+      "sha256": "7431f85f218f67852bece82dadb940a0592f92c9c6a461b52ed62632422b3d81"
+    },
+    {
+      "arquivo": "capturas/documento-datas-ausentes-375.png",
+      "bytes": 55304,
+      "sha256": "01a06d7e700c0a2205ea81f2f89cd220e951182379e2f773253967721080e906"
+    },
+    {
+      "arquivo": "capturas/price-ajuste-1280.png",
+      "bytes": 49096,
+      "sha256": "b1dfea562a1339e9e81d19a8855ee1ca0bb5839ee66379ed8c77a1a776f94bc8"
+    },
+    {
+      "arquivo": "capturas/price-ajuste-375.png",
+      "bytes": 36906,
+      "sha256": "7789e42418c2b75e4fcaad1a5e81fd1765856f5124f0666630f5587c317fbbc6"
+    },
+    {
+      "arquivo": "capturas/comparacao-documentos-ausentes-360.png",
+      "bytes": 49464,
+      "sha256": "cdd4da41c116f1d09e1a2af033c2920b31ad4d0d6f6e09b91cbf409f4ec601db"
+    },
+    {
+      "arquivo": "capturas/comparacao-documentos-ausentes-375.png",
+      "bytes": 49890,
+      "sha256": "fcf4dfc0ae6d3554ef5199b0c2550570d453fd11981c1a54fc816ab49562a784"
+    },
+    {
+      "arquivo": "capturas/compra-cenario-1280.png",
+      "bytes": 54656,
+      "sha256": "8d58697aac859703462a4b6c7566cea2f01b36da03172276235aa54e9bb18094"
+    },
+    {
+      "arquivo": "capturas/compra-cenario-375.png",
+      "bytes": 39277,
+      "sha256": "d96019d58150d3660d18be90b62742e09943b57b3eda6c9dade87f9498d25300"
+    },
+    {
+      "arquivo": "capturas/documento-datas-ausentes-1280.png",
+      "bytes": 70832,
+      "sha256": "a538bbf914c6fef5acd5e5d16d1fb03da8474920b9bcdb5ab4e391023ae50113"
+    },
+    {
+      "arquivo": "capturas/comparacao-documentos-ausentes-1280.png",
+      "bytes": 68518,
+      "sha256": "ae859f12e565346434b5b22fa60242c0451479fc63a3fead94a134b529d8a333"
+    },
+    {
+      "arquivo": "capturas/price-ajuste-360.png",
+      "bytes": 35557,
+      "sha256": "f6968bb982b1c30d66bda01aa96c2fc6bf481720cf56b71c6c9162ac9b7674bd"
+    },
+    {
+      "arquivo": "capturas/documento-datas-ausentes-360.png",
+      "bytes": 52361,
+      "sha256": "dbfd568a7e43c122060740f604119dfb91498976449b5ef1f17340ef76597610"
+    }
+  ]
+}

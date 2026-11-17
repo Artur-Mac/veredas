@@ -1,0 +1,96 @@
+{
+ "base": "http://localhost:8087",
+ "pares": {
+  "GC03": {
+   "resumo": "PARA DECIDIR\nMenor custo\nMais espaço\nVisite primeiro Boa Viagem.\nBoa Viagem custa R$ 950/mês a menos no que já se sabe. Só se inverte se o condomínio e o seguro incêndio de Boa Viagem somarem mais de R$ 950/mês.\nAnúncio\nPARA CONFIRMAR NA VISITA\nPara inverter a ordem, o condomínio de Boa Viagem teria de passar de R$ 950/mês; em Espinheiro é R$ 550/mês.\nPergunta para Boa Viagem\nLevar para a visita de Boa Viagem\nCopiar pergunta\nE se o que custa mais te poupar tempo?",
+   "rolagemHorizontalPx": 0,
+   "kickerTopPx": 301,
+   "mancheteBottomPx": 425
+  },
+  "GC08": {
+   "resumo": "PARA DECIDIR\nMenor custo\nMais espaço\nVisite primeiro Espinheiro, se o custo pesa mais agora.\nEm troca, Graças tem 50 m² a mais.\nEspinheiro custa R$ 370/mês a menos no que já se sabe. Só se inverte se o seguro incêndio de Espinheiro passar de R$ 370/mês.\nAnúncio\nGraças tem 50 m² a mais de área anunciada.\nAnúncio\nA PERGUNTA QUE PODE MUDAR A ESCOLHA\nSe o seguro incêndio de Espinheiro passar de R$ 370/mês, Graças passa a custar menos por mês.\nPergunta para Espinheiro\nLevar para a visita de Espinheiro\nCopiar pergunta\nE se o que custa mais te poupar tempo?",
+   "rolagemHorizontalPx": 0,
+   "kickerTopPx": 301,
+   "mancheteBottomPx": 455
+  },
+  "GC10": {
+   "resumo": "PARA DECIDIR\nMenor custo\nMais espaço\nVisite primeiro Madalena.\nMadalena custa R$ 180/mês a menos no que já se sabe. Só se inverte se o seguro incêndio de Madalena passar de R$ 180/mês.\nAnúncio\nA PERGUNTA QUE PODE MUDAR A ESCOLHA\nSe o seguro incêndio de Madalena passar de R$ 180/mês, Espinheiro passa a custar menos por mês.\nPergunta para Madalena\nLevar para a visita de Madalena\nCopiar pergunta\nE se o que custa mais te poupar tempo?",
+   "rolagemHorizontalPx": 0,
+   "kickerTopPx": 301,
+   "mancheteBottomPx": 425
+  },
+  "GC02": {
+   "resumo": "PARA DECIDIR\nMenor custo\nMais espaço\nCom o que se sabe, os dois ficam próximos.\nA pergunta abaixo é a que mais pode separar os dois.\nCusto mensal conhecido igual (R$ 3.800/mês), com parcelas ainda a confirmar.\nAnúncio\nA PERGUNTA QUE PODE MUDAR A ESCOLHA\nO custo mensal conhecido empata; o seguro incêndio de Boa Viagem desempata.\nPergunta para Boa Viagem\nLevar para a visita de Boa Viagem\nCopiar pergunta",
+   "rolagemHorizontalPx": 0,
+   "kickerTopPx": 301,
+   "mancheteBottomPx": 455
+  },
+  "GC16": {
+   "resumo": "PARA DECIDIR\nMenor custo\nMais espaço\nVisite primeiro Espinheiro.\nEspinheiro pede R$ 30.000 a menos que Casa Forte.\nAnúncio\nAs despesas mensais de Espinheiro são R$ 500/mês mais altas. Em 60 meses (cerca de 5 anos) elas somam a diferença de preço, sem contar juros, financiamento ou valorização.\nAnúncio\nPreparar visita a Espinheiro",
+   "rolagemHorizontalPx": 0,
+   "kickerTopPx": 301,
+   "mancheteBottomPx": 425
+  },
+  "GC20": {
+   "resumo": "PARA DECIDIR\nMenor custo\nMais espaço\nVisite primeiro Espinheiro.\nEspinheiro pede R$ 20.000 a menos que Madalena.\nAnúncio\nAs despesas mensais de Madalena são R$ 107/mês mais altas no que já se sabe.\nAnúncio\nA PERGUNTA QUE PODE MUDAR A ESCOLHA\nSe os R$ 154 de IPTU forem por mês, Madalena passa a ter despesas mensais menores.\nPergunta para Espinheiro\nLevar para a visita de Espinheiro\nCopiar pergunta",
+   "rolagemHorizontalPx": 0,
+   "kickerTopPx": 301,
+   "mancheteBottomPx": 425
+  }
+ },
+ "larguras": {
+  "GC08@360": {
+   "rolagemHorizontalPx": 0
+  },
+  "GC16@360": {
+   "rolagemHorizontalPx": 0
+  },
+  "GC08@1280": {
+   "rolagemHorizontalPx": 0
+  },
+  "GC16@1280": {
+   "rolagemHorizontalPx": 0
+  }
+ },
+ "tempos": {
+  "ambiente": "Expo web dev server, headless Chromium, this desktop; not the target device",
+  "aberturaMorna": {
+   "n": 30,
+   "p50": 734,
+   "p95": 801,
+   "unidade": "ms, page.goto(/comparar?ids) until 'Para decidir' visible"
+  },
+  "trocaDePrioridade": {
+   "n": 30,
+   "p50": 49,
+   "p95": 64,
+   "unidade": "ms, click until heading/aria-checked updated (includes Playwright round trips)"
+  },
+  "aberturaFria": {
+   "n": 5,
+   "p50": 1084,
+   "p95": 1090,
+   "unidade": "ms, new browser context (empty cache) until 'Para decidir'"
+  }
+ },
+ "offline": {
+  "resumoPresente": true,
+  "externas": 0
+ },
+ "tempo": "São 5h20 por mês: cada hora poupada sai por R$ 33,75. Você decide quanto vale.",
+ "visita": {
+  "antes": "Visite primeiro Boa Viagem.",
+  "depois": "Visite primeiro Boa Viagem.",
+  "rotuloDoBotao": null,
+  "gravadas": [
+   {
+    "id": "propria-qual-e-o-valor-atual-do",
+    "texto": "Qual é o valor atual do condomínio? Há chamada extra prevista para 2027?"
+   }
+  ],
+  "naTelaDaVisita": false
+ },
+ "externas": [],
+ "errosDePagina": [],
+ "consoleErros": []
+}

@@ -1,0 +1,1702 @@
+{
+ "active_directory": "indice-municipal/91b71d239c1847cf",
+ "partitions": {
+  "boa-viagem": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 47,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 24,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 7,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 34,
+    ".rua.logradouros.*.defesaCivil.grafia": 3,
+    ".rua.logradouros.*.defesaCivil.ocorrencias[len]": 2
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 166,
+    "records": 1799,
+    "flood_records": 5,
+    "flood_streets": 5
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 166,
+    "records": 2656,
+    "flood_records": 5,
+    "flood_streets": 5
+   },
+   "buildings_before": 1879,
+   "buildings_after": 1879
+  },
+  "casa-forte": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 2,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 2,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 2
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 21,
+    "records": 153,
+    "flood_records": 5,
+    "flood_streets": 1
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 21,
+    "records": 155,
+    "flood_records": 5,
+    "flood_streets": 1
+   },
+   "buildings_before": 82,
+   "buildings_after": 82
+  },
+  "gracas": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 6,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 5,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 2,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 6,
+    ".rua.logradouros.*.defesaCivil.grafia": 1,
+    ".rua.logradouros.*.defesaCivil.ocorrencias[len]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 58,
+    "records": 501,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 58,
+    "records": 506,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 291,
+   "buildings_after": 291
+  },
+  "espinheiro": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 8,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 5,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 5
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 27,
+    "records": 421,
+    "flood_records": 1,
+    "flood_streets": 1
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 27,
+    "records": 431,
+    "flood_records": 1,
+    "flood_streets": 1
+   },
+   "buildings_before": 156,
+   "buildings_after": 156
+  },
+  "madalena": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.grafia": 1,
+    ".rua.logradouros.*.defesaCivil.ocorrencias[len]": 1,
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 3,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 2,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 3
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 70,
+    "records": 446,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 70,
+    "records": 455,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 280,
+   "buildings_after": 280
+  },
+  "aflitos": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 5,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 3,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 10,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 12,
+    "records": 213,
+    "flood_records": 1,
+    "flood_streets": 1
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 12,
+    "records": 222,
+    "flood_records": 1,
+    "flood_streets": 1
+   },
+   "buildings_before": 70,
+   "buildings_after": 70
+  },
+  "afogados": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 3,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 4,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 2,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 14,
+    ".rua.logradouros.*.defesaCivil.ocorrencias[len]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 52,
+    "records": 444,
+    "flood_records": 15,
+    "flood_streets": 6
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 52,
+    "records": 448,
+    "flood_records": 15,
+    "flood_streets": 6
+   },
+   "buildings_before": 174,
+   "buildings_after": 174
+  },
+  "agua-fria": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 4,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 4,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 8
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 18,
+    "records": 1266,
+    "flood_records": 1,
+    "flood_streets": 1
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 18,
+    "records": 1309,
+    "flood_records": 1,
+    "flood_streets": 1
+   },
+   "buildings_before": 33,
+   "buildings_after": 33
+  },
+  "apipucos": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 1,
+    "records": 27,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 1,
+    "records": 27,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 1,
+   "buildings_after": 1
+  },
+  "areias": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 4,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 2,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 2
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 12,
+    "records": 373,
+    "flood_records": 18,
+    "flood_streets": 4
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 12,
+    "records": 376,
+    "flood_records": 18,
+    "flood_streets": 4
+   },
+   "buildings_before": 31,
+   "buildings_after": 31
+  },
+  "arruda": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 4,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 3,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 11
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 15,
+    "records": 874,
+    "flood_records": 2,
+    "flood_streets": 2
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 15,
+    "records": 1136,
+    "flood_records": 2,
+    "flood_streets": 2
+   },
+   "buildings_before": 27,
+   "buildings_after": 27
+  },
+  "barro": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 5,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 3,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 3
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 17,
+    "records": 207,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 17,
+    "records": 211,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 37,
+   "buildings_after": 37
+  },
+  "beberibe": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 4,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 3
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 5,
+    "records": 847,
+    "flood_records": 1,
+    "flood_streets": 1
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 5,
+    "records": 880,
+    "flood_records": 1,
+    "flood_streets": 1
+   },
+   "buildings_before": 9,
+   "buildings_after": 9
+  },
+  "boa-vista": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 34,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 21,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 33,
+    ".rua.logradouros.*.defesaCivil.grafia": 1,
+    ".rua.logradouros.*.defesaCivil.ocorrencias[len]": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 61,
+    "records": 5210,
+    "flood_records": 1,
+    "flood_streets": 1
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 61,
+    "records": 5425,
+    "flood_records": 1,
+    "flood_streets": 1
+   },
+   "buildings_before": 267,
+   "buildings_after": 267
+  },
+  "bomba-do-hemeterio": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 4,
+    "records": 62,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 4,
+    "records": 62,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 4,
+   "buildings_after": 4
+  },
+  "bongi": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 9,
+    "records": 92,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 9,
+    "records": 92,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 24,
+   "buildings_after": 24
+  },
+  "cacote": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 2,
+    "records": 88,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 2,
+    "records": 88,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 2,
+   "buildings_after": 2
+  },
+  "cajueiro": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 10,
+    "records": 108,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 10,
+    "records": 108,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 16,
+   "buildings_after": 16
+  },
+  "campina-do-barreto": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 5,
+    "records": 70,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 5,
+    "records": 70,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 7,
+   "buildings_after": 7
+  },
+  "campo-grande": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 11,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 8,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 14
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 37,
+    "records": 670,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 37,
+    "records": 687,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 123,
+   "buildings_after": 123
+  },
+  "casa-amarela": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 8,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 6,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 17,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 2
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 60,
+    "records": 782,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 60,
+    "records": 793,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 265,
+   "buildings_after": 265
+  },
+  "caxanga": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 5,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 2,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 13,
+    "records": 784,
+    "flood_records": 7,
+    "flood_streets": 3
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 13,
+    "records": 787,
+    "flood_records": 7,
+    "flood_streets": 3
+   },
+   "buildings_before": 25,
+   "buildings_after": 25
+  },
+  "coelhos": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 1,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 13
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 7,
+    "records": 67,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 7,
+    "records": 68,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 11,
+   "buildings_after": 11
+  },
+  "coqueiral": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 1,
+    "records": 57,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 1,
+    "records": 57,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 1,
+   "buildings_after": 1
+  },
+  "cordeiro": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 10,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 8,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 11
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 91,
+    "records": 1790,
+    "flood_records": 6,
+    "flood_streets": 3
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 91,
+    "records": 1824,
+    "flood_records": 6,
+    "flood_streets": 3
+   },
+   "buildings_before": 353,
+   "buildings_after": 353
+  },
+  "curado": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 1,
+    "records": 0,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 1,
+    "records": 0,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 1,
+   "buildings_after": 1
+  },
+  "derby": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 7,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 3,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 2,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 5
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 15,
+    "records": 95,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 15,
+    "records": 102,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 33,
+   "buildings_after": 33
+  },
+  "encruzilhada": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 3,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 2,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 52,
+    "records": 286,
+    "flood_records": 1,
+    "flood_streets": 1
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 52,
+    "records": 290,
+    "flood_records": 1,
+    "flood_streets": 1
+   },
+   "buildings_before": 198,
+   "buildings_after": 198
+  },
+  "engenho-do-meio": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 14,
+    "records": 74,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 14,
+    "records": 74,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 45,
+   "buildings_after": 45
+  },
+  "estancia": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 4,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 3,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 3
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 10,
+    "records": 247,
+    "flood_records": 7,
+    "flood_streets": 3
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 10,
+    "records": 252,
+    "flood_records": 7,
+    "flood_streets": 3
+   },
+   "buildings_before": 16,
+   "buildings_after": 16
+  },
+  "fundao": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[len]": 1,
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 3,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 2
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 4,
+    "records": 121,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 4,
+    "records": 123,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 6,
+   "buildings_after": 6
+  },
+  "guabiraba": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 1,
+    "records": 22,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 1,
+    "records": 22,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 1,
+   "buildings_after": 1
+  },
+  "hipodromo": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 12,
+    "records": 28,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 12,
+    "records": 28,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 23,
+   "buildings_after": 23
+  },
+  "ibura": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 9,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 7,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 20,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 3
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 18,
+    "records": 1898,
+    "flood_records": 11,
+    "flood_streets": 5
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 18,
+    "records": 1978,
+    "flood_records": 11,
+    "flood_streets": 5
+   },
+   "buildings_before": 21,
+   "buildings_after": 21
+  },
+  "ilha-do-leite": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 1,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 11,
+    "records": 111,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 11,
+    "records": 112,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 36,
+   "buildings_after": 36
+  },
+  "ilha-do-retiro": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 15,
+    "records": 50,
+    "flood_records": 2,
+    "flood_streets": 1
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 15,
+    "records": 50,
+    "flood_records": 2,
+    "flood_streets": 1
+   },
+   "buildings_before": 33,
+   "buildings_after": 33
+  },
+  "imbiribeira": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 13,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 8,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 13,
+    ".rua.logradouros.*.defesaCivil.grafia": 2,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 2
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 95,
+    "records": 698,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 95,
+    "records": 713,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 475,
+   "buildings_after": 475
+  },
+  "ipsep": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 17,
+    "records": 189,
+    "flood_records": 6,
+    "flood_streets": 1
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 17,
+    "records": 189,
+    "flood_records": 6,
+    "flood_streets": 1
+   },
+   "buildings_before": 183,
+   "buildings_after": 183
+  },
+  "iputinga": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 14,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 12,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 2,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 17,
+    ".rua.logradouros.*.defesaCivil.ocorrencias[len]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 87,
+    "records": 973,
+    "flood_records": 2,
+    "flood_streets": 2
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 87,
+    "records": 992,
+    "flood_records": 2,
+    "flood_streets": 2
+   },
+   "buildings_before": 286,
+   "buildings_after": 286
+  },
+  "jaqueira": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 9,
+    "records": 10,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 9,
+    "records": 10,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 24,
+   "buildings_after": 24
+  },
+  "jardim-sao-paulo": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 10,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 9,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 18,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 3,
+    ".rua.logradouros.*.defesaCivil.grafia": 1,
+    ".rua.logradouros.*.defesaCivil.ocorrencias[len]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 31,
+    "records": 1720,
+    "flood_records": 13,
+    "flood_streets": 5
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 31,
+    "records": 1759,
+    "flood_records": 13,
+    "flood_streets": 5
+   },
+   "buildings_before": 56,
+   "buildings_after": 56
+  },
+  "jiquia": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[len]": 1,
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 1,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 10,
+    "records": 57,
+    "flood_records": 2,
+    "flood_streets": 2
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 10,
+    "records": 58,
+    "flood_records": 2,
+    "flood_streets": 2
+   },
+   "buildings_before": 13,
+   "buildings_after": 13
+  },
+  "jordao": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 7,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 7,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 2,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 21
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 11,
+    "records": 3236,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 11,
+    "records": 3472,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 19,
+   "buildings_after": 19
+  },
+  "mangueira": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 2,
+    "records": 4,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 2,
+    "records": 4,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 3,
+   "buildings_after": 3
+  },
+  "monteiro": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 4,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 2,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 9,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 9,
+    "records": 30,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 9,
+    "records": 35,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 38,
+   "buildings_after": 38
+  },
+  "morro-da-conceicao": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 2,
+    "records": 46,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 2,
+    "records": 46,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 4,
+   "buildings_after": 4
+  },
+  "mustardinha": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 1,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 12,
+    "records": 46,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 12,
+    "records": 47,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 26,
+   "buildings_after": 26
+  },
+  "nova-descoberta": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 3,
+    "records": 40,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 3,
+    "records": 40,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 6,
+   "buildings_after": 6
+  },
+  "paissandu": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 6,
+    "records": 38,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 6,
+    "records": 38,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 10,
+   "buildings_after": 10
+  },
+  "parnamirim": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 1,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 28,
+    "records": 113,
+    "flood_records": 5,
+    "flood_streets": 1
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 28,
+    "records": 114,
+    "flood_records": 5,
+    "flood_streets": 1
+   },
+   "buildings_before": 92,
+   "buildings_after": 92
+  },
+  "pina": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 6,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 3,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 6,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 30,
+    "records": 707,
+    "flood_records": 5,
+    "flood_streets": 3
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 30,
+    "records": 715,
+    "flood_records": 5,
+    "flood_streets": 3
+   },
+   "buildings_before": 129,
+   "buildings_after": 129
+  },
+  "poco": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 14,
+    "records": 1,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 14,
+    "records": 1,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 39,
+   "buildings_after": 39
+  },
+  "ponto-de-parada": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 7,
+    "records": 2,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 7,
+    "records": 2,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 13,
+   "buildings_after": 13
+  },
+  "porto-da-madeira": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 2,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 6,
+    "records": 73,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 6,
+    "records": 77,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 19,
+   "buildings_after": 19
+  },
+  "prado": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 4,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 2,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 8
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 35,
+    "records": 124,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 35,
+    "records": 129,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 93,
+   "buildings_after": 93
+  },
+  "recife": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 2,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 2
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 2,
+    "records": 399,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 2,
+    "records": 402,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 3,
+   "buildings_after": 3
+  },
+  "rosarinho": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 1,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 16,
+    "records": 112,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 16,
+    "records": 115,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 65,
+   "buildings_after": 65
+  },
+  "san-martin": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 4,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 14,
+    "records": 86,
+    "flood_records": 3,
+    "flood_streets": 1
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 14,
+    "records": 89,
+    "flood_records": 3,
+    "flood_streets": 1
+   },
+   "buildings_before": 25,
+   "buildings_after": 25
+  },
+  "sancho": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 2,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 8
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 6,
+    "records": 122,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 6,
+    "records": 124,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 24,
+   "buildings_after": 24
+  },
+  "santana": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 9,
+    "records": 3,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 9,
+    "records": 3,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 32,
+   "buildings_after": 32
+  },
+  "santo-amaro": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[len]": 1,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 7,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 10,
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 10
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 33,
+    "records": 827,
+    "flood_records": 2,
+    "flood_streets": 1
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 33,
+    "records": 847,
+    "flood_records": 2,
+    "flood_streets": 1
+   },
+   "buildings_before": 86,
+   "buildings_after": 86
+  },
+  "santo-antonio": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 12,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 7,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 11
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 15,
+    "records": 3059,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 15,
+    "records": 3086,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 25,
+   "buildings_after": 25
+  },
+  "sao-jose": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 18,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 10,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 2,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 44
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 17,
+    "records": 5690,
+    "flood_records": 11,
+    "flood_streets": 2
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 17,
+    "records": 5739,
+    "flood_records": 11,
+    "flood_streets": 2
+   },
+   "buildings_before": 47,
+   "buildings_after": 47
+  },
+  "soledade": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 1,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 1,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 12,
+    "records": 104,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 12,
+    "records": 105,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 41,
+   "buildings_after": 41
+  },
+  "tamarineira": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 6,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 5,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 5
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 43,
+    "records": 330,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 43,
+    "records": 336,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 159,
+   "buildings_after": 159
+  },
+  "tejipio": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 7,
+    "records": 38,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 7,
+    "records": 38,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 10,
+   "buildings_after": 10
+  },
+  "torre": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 7,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 4,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 4,
+    ".rua.logradouros.*.defesaCivil.ocorrencias[len]": 1
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 29,
+    "records": 235,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 29,
+    "records": 243,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 137,
+   "buildings_after": 137
+  },
+  "torreao": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 8,
+    "records": 66,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 8,
+    "records": 66,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 35,
+   "buildings_after": 35
+  },
+  "torroes": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 9,
+    "records": 31,
+    "flood_records": 1,
+    "flood_streets": 1
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 9,
+    "records": 31,
+    "flood_records": 1,
+    "flood_streets": 1
+   },
+   "buildings_before": 13,
+   "buildings_after": 13
+  },
+  "varzea": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[len]": 1,
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 13,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 10,
+    ".rua.logradouros.*.defesaCivil.porAno[len]": 3,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 30
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 74,
+    "records": 2263,
+    "flood_records": 7,
+    "flood_streets": 3
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 74,
+    "records": 2290,
+    "flood_records": 7,
+    "flood_streets": 3
+   },
+   "buildings_before": 327,
+   "buildings_after": 327
+  },
+  "vasco-da-gama": {
+   "identical": false,
+   "changed_paths": {
+    ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 5,
+    ".rua.logradouros.*.defesaCivil.atendimentos": 5,
+    ".rua.logradouros.*.defesaCivil.porAno[][]": 10
+   },
+   "defesa_civil_before": {
+    "streets_with_records": 14,
+    "records": 1617,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 14,
+    "records": 1667,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 32,
+   "buildings_after": 32
+  },
+  "zumbi": {
+   "identical": true,
+   "changed_paths": {},
+   "defesa_civil_before": {
+    "streets_with_records": 13,
+    "records": 13,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "defesa_civil_after": {
+    "streets_with_records": 13,
+    "records": 13,
+    "flood_records": 0,
+    "flood_streets": 0
+   },
+   "buildings_before": 36,
+   "buildings_after": 36
+  }
+ },
+ "paths_changed": {
+  ".rua.logradouros.*.defesaCivil.ocorrencias[][]": 335,
+  ".rua.logradouros.*.defesaCivil.atendimentos": 221,
+  ".rua.logradouros.*.defesaCivil.porAno[len]": 45,
+  ".rua.logradouros.*.defesaCivil.porAno[][]": 444,
+  ".rua.logradouros.*.defesaCivil.grafia": 9,
+  ".rua.logradouros.*.defesaCivil.ocorrencias[len]": 13
+ },
+ "meta_changes": {},
+ "meta_defesa_civil": {
+  "before": {
+   "chave": "defesa_civil",
+   "nome": "Atendimentos da Defesa Civil",
+   "orgao": "Prefeitura da Cidade do Recife · Secretaria Executiva de Defesa Civil",
+   "licenca": "ODbL",
+   "url": "https://dados.recife.pe.gov.br/dataset/registro-de-atendimentos-da-defesa-civil",
+   "recursos": [
+    "7c7bb871-3906-4d82-8993-857c9e6f137b",
+    "921d87c7-5ace-4856-9e3f-c31521259c36",
+    "10203dd4-9052-4a76-95eb-fd858aa053d4",
+    "bf6f5af8-3556-425c-bfec-0eddccdeeb73",
+    "a2e18f69-9d10-4482-8f5f-04bc7bd2e8e7",
+    "9bb859e1-19ae-4b95-9246-139b9273846f",
+    "a3a25520-de12-4f56-ae05-6dc1ec4c6207",
+    "40e0558f-dc49-4ec7-b5e6-5a791703ae34",
+    "932fee1e-80fd-49f8-9ae3-6e8dd96e33a3",
+    "9a5103f7-6bd0-4694-90d6-7e776b1e372d",
+    "b81bf4cc-ae19-4a43-94a7-f11b3e0b662b"
+   ],
+   "modificadoEm": "2026-03-06",
+   "consultadoEm": "2026-10-22T00:30:36Z",
+   "registrosLidos": 886263,
+   "colunasUsadas": [
+    "Regional",
+    "Ano",
+    "Mes",
+    "Data",
+    "Ocorrencia",
+    "Solicitacao",
+    "Endereco",
+    "Bairro"
+   ],
+   "periodo": {
+    "de": "2014-01-01",
+    "ate": "2024-12-31"
+   }
+  },
+  "after": {
+   "chave": "defesa_civil",
+   "nome": "Atendimentos da Defesa Civil",
+   "orgao": "Prefeitura da Cidade do Recife · Secretaria Executiva de Defesa Civil",
+   "licenca": "ODbL",
+   "url": "https://dados.recife.pe.gov.br/dataset/registro-de-atendimentos-da-defesa-civil",
+   "recursos": [
+    "7c7bb871-3906-4d82-8993-857c9e6f137b",
+    "921d87c7-5ace-4856-9e3f-c31521259c36",
+    "10203dd4-9052-4a76-95eb-fd858aa053d4",
+    "bf6f5af8-3556-425c-bfec-0eddccdeeb73",
+    "a2e18f69-9d10-4482-8f5f-04bc7bd2e8e7",
+    "9bb859e1-19ae-4b95-9246-139b9273846f",
+    "a3a25520-de12-4f56-ae05-6dc1ec4c6207",
+    "40e0558f-dc49-4ec7-b5e6-5a791703ae34",
+    "932fee1e-80fd-49f8-9ae3-6e8dd96e33a3",
+    "9a5103f7-6bd0-4694-90d6-7e776b1e372d",
+    "b81bf4cc-ae19-4a43-94a7-f11b3e0b662b"
+   ],
+   "modificadoEm": "2026-03-06",
+   "consultadoEm": "2026-10-22T00:30:36Z",
+   "registrosLidos": 886263,
+   "colunasUsadas": [
+    "Regional",
+    "Ano",
+    "Mes",
+    "Data",
+    "Ocorrencia",
+    "Solicitacao",
+    "Endereco",
+    "Bairro"
+   ],
+   "periodo": {
+    "de": "2014-01-01",
+    "ate": "2024-12-31"
+   }
+  }
+ },
+ "unexpected_paths": [],
+ "summary": {
+  "partitions": 72,
+  "identical_partitions": 25,
+  "building_count_changes": 0,
+  "records_before": 43385,
+  "records_after": 45539,
+  "flood_records_before": 141,
+  "flood_records_after": 141,
+  "flood_streets_before": 61,
+  "flood_streets_after": 61,
+  "streets_with_records_before": 1662,
+  "streets_with_records_after": 1662,
+  "pilot": {
+   "boa-viagem": {
+    "before": {
+     "streets_with_records": 166,
+     "records": 1799,
+     "flood_records": 5,
+     "flood_streets": 5
+    },
+    "after": {
+     "streets_with_records": 166,
+     "records": 2656,
+     "flood_records": 5,
+     "flood_streets": 5
+    }
+   },
+   "casa-forte": {
+    "before": {
+     "streets_with_records": 21,
+     "records": 153,
+     "flood_records": 5,
+     "flood_streets": 1
+    },
+    "after": {
+     "streets_with_records": 21,
+     "records": 155,
+     "flood_records": 5,
+     "flood_streets": 1
+    }
+   },
+   "gracas": {
+    "before": {
+     "streets_with_records": 58,
+     "records": 501,
+     "flood_records": 0,
+     "flood_streets": 0
+    },
+    "after": {
+     "streets_with_records": 58,
+     "records": 506,
+     "flood_records": 0,
+     "flood_streets": 0
+    }
+   },
+   "espinheiro": {
+    "before": {
+     "streets_with_records": 27,
+     "records": 421,
+     "flood_records": 1,
+     "flood_streets": 1
+    },
+    "after": {
+     "streets_with_records": 27,
+     "records": 431,
+     "flood_records": 1,
+     "flood_streets": 1
+    }
+   },
+   "madalena": {
+    "before": {
+     "streets_with_records": 70,
+     "records": 446,
+     "flood_records": 0,
+     "flood_streets": 0
+    },
+    "after": {
+     "streets_with_records": 70,
+     "records": 455,
+     "flood_records": 0,
+     "flood_streets": 0
+    }
+   }
+  }
+ }
+}

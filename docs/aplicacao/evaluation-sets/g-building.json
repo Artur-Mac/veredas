@@ -1,0 +1,1456 @@
+{
+ "set": "G-BUILDING",
+ "version": 1,
+ "created": "2026-11-14",
+ "created_by": "VE00.03",
+ "selection_script": "docs/aplicacao/execucoes/VE00/scripts/select_eval_sets.py",
+ "salt": "VE00-2026-11-14",
+ "index_directory": "indice-municipal/91b71d239c1847cf",
+ "street_network_sha256": "154ebe0adc920bd12ec013e1fe110df94f6d2717764dfec9b7ccfc639e426ace",
+ "split_rule": "whole official street code -> dev/test by SHA-256 parity; no street in both splits",
+ "label_status": "all labels unlabeled; no field review performed in VE00",
+ "counts": {
+  "boa-viagem": {
+   "total": 10,
+   "dev": 4,
+   "test": 6
+  },
+  "casa-forte": {
+   "total": 10,
+   "dev": 5,
+   "test": 5
+  },
+  "gracas": {
+   "total": 10,
+   "dev": 4,
+   "test": 6
+  },
+  "espinheiro": {
+   "total": 10,
+   "dev": 2,
+   "test": 8
+  },
+  "madalena": {
+   "total": 10,
+   "dev": 3,
+   "test": 7
+  }
+ },
+ "buildings": [
+  {
+   "area": "boa-viagem",
+   "id": "8060-695",
+   "street_code": 8060,
+   "logradouro": "AV ARMINDO MOURA",
+   "numero": "695",
+   "nome": "Vila Resid Sgt Walder Xavier de Lima",
+   "dsqfl": "61850045121086",
+   "centro": [
+    -34.910699,
+    -8.146843
+   ],
+   "unidades": 72,
+   "own_street_distance_m": 326.8,
+   "street_codes_within_40m": [],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 4,
+   "stratum": "far_centroid",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "boa-viagem",
+   "id": "31852-313",
+   "street_code": 31852,
+   "logradouro": "RUA IZABEL MAGALHAES",
+   "numero": "313",
+   "nome": "Santa Ana",
+   "dsqfl": "61845231040120",
+   "centro": [
+    -34.9084,
+    -8.139079
+   ],
+   "unidades": 24,
+   "own_street_distance_m": 141.9,
+   "street_codes_within_40m": [
+    18546,
+    37052
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 7,
+   "stratum": "far_centroid",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "boa-viagem",
+   "id": "50326-22",
+   "street_code": 50326,
+   "logradouro": "RUA DR PEDRO DE MELLO CAHU",
+   "numero": "22",
+   "nome": "Villa Lobos",
+   "dsqfl": "61785051020045",
+   "centro": [
+    -34.895693,
+    -8.110002
+   ],
+   "unidades": 70,
+   "own_street_distance_m": 48.3,
+   "street_codes_within_40m": [
+    6220,
+    20966
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 38,
+   "stratum": "multi_front",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "boa-viagem",
+   "id": "45810-1929",
+   "street_code": 45810,
+   "logradouro": "RUA DOS NAVEGANTES",
+   "numero": "1929",
+   "nome": "Primus",
+   "dsqfl": "61755295020295",
+   "centro": [
+    -34.893663,
+    -8.115995
+   ],
+   "unidades": 11,
+   "own_street_distance_m": 26.0,
+   "street_codes_within_40m": [
+    42510,
+    45810
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 5,
+   "stratum": "multi_front",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "boa-viagem",
+   "id": "13676-126",
+   "street_code": 13676,
+   "logradouro": "RUA CAMBOIM",
+   "numero": "126",
+   "nome": null,
+   "dsqfl": "61845080020010",
+   "centro": [
+    -34.912771,
+    -8.134358
+   ],
+   "unidades": 2,
+   "own_street_distance_m": 21.1,
+   "street_codes_within_40m": [
+    13676,
+    43923
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 2,
+   "stratum": "sparse",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "boa-viagem",
+   "id": "43044-508",
+   "street_code": 43044,
+   "logradouro": "RUA PROFESSOR MARIO CASTRO",
+   "numero": "508",
+   "nome": "Diane",
+   "dsqfl": "61845045030105",
+   "centro": [
+    -34.905988,
+    -8.135529
+   ],
+   "unidades": 4,
+   "own_street_distance_m": 18.1,
+   "street_codes_within_40m": [
+    43044,
+    53317
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 2,
+   "stratum": "sparse",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "boa-viagem",
+   "id": "11720-4398",
+   "street_code": 11720,
+   "logradouro": "AV BOA VIAGEM",
+   "numero": "4398",
+   "nome": "Maria Juliana",
+   "dsqfl": "61840025020164",
+   "centro": [
+    -34.898444,
+    -8.12776
+   ],
+   "unidades": 26,
+   "own_street_distance_m": 45.1,
+   "street_codes_within_40m": [],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 30,
+   "stratum": "ordinary",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "boa-viagem",
+   "id": "39993-175",
+   "street_code": 39993,
+   "logradouro": "RUA PADRE LUIZ MARQUES TEIXEIRA",
+   "numero": "175",
+   "nome": "Cortez",
+   "dsqfl": "61835295020267",
+   "centro": [
+    -34.906503,
+    -8.130495
+   ],
+   "unidades": 5,
+   "own_street_distance_m": 22.6,
+   "street_codes_within_40m": [
+    39993
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 3,
+   "stratum": "ordinary",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "boa-viagem",
+   "id": "74420-36",
+   "street_code": 74420,
+   "logradouro": "RUA LUIZ DE FARIA BARBOSA",
+   "numero": "36",
+   "nome": "Boulevard Prince",
+   "dsqfl": "61785044020408",
+   "centro": [
+    -34.896911,
+    -8.108709
+   ],
+   "unidades": 44,
+   "own_street_distance_m": 21.1,
+   "street_codes_within_40m": [
+    20966,
+    74420
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 24,
+   "stratum": "ordinary",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "boa-viagem",
+   "id": "12629-140",
+   "street_code": 12629,
+   "logradouro": "RUA BRUNO VELOSO",
+   "numero": "140",
+   "nome": "Eça de Queiroz",
+   "dsqfl": "61810205030061",
+   "centro": [
+    -34.897301,
+    -8.121661
+   ],
+   "unidades": 20,
+   "own_street_distance_m": 21.5,
+   "street_codes_within_40m": [
+    12629
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 13,
+   "stratum": "ordinary",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "casa-forte",
+   "id": "19526-934",
+   "street_code": 19526,
+   "logradouro": "AV DEZESSETE DE AGOSTO",
+   "numero": "934",
+   "nome": "Canavial 02",
+   "dsqfl": "31405190092261",
+   "centro": [
+    -34.917234,
+    -8.037082
+   ],
+   "unidades": 31,
+   "own_street_distance_m": 93.3,
+   "street_codes_within_40m": [],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 4,
+   "stratum": "far_centroid",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "casa-forte",
+   "id": "42544-210",
+   "street_code": 42544,
+   "logradouro": "RUA IRMA MARIA DAVID",
+   "numero": "210",
+   "nome": "Maria Inês",
+   "dsqfl": "31400055310158",
+   "centro": [
+    -34.920883,
+    -8.030978
+   ],
+   "unidades": 64,
+   "own_street_distance_m": 79.7,
+   "street_codes_within_40m": [],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 16,
+   "stratum": "far_centroid",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "casa-forte",
+   "id": "16535-40",
+   "street_code": 16535,
+   "logradouro": "RUA CESAR LOUREIRO",
+   "numero": "40",
+   "nome": "Chale de Montreux",
+   "dsqfl": "31405230060203",
+   "centro": [
+    -34.915418,
+    -8.035544
+   ],
+   "unidades": 10,
+   "own_street_distance_m": 15.5,
+   "street_codes_within_40m": [
+    2453,
+    16535,
+    32417
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 7,
+   "stratum": "multi_front",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "casa-forte",
+   "id": "35220-22",
+   "street_code": 35220,
+   "logradouro": "RUA JOSE DE ALMEIDA MACIEL",
+   "numero": "22",
+   "nome": "Gramado",
+   "dsqfl": "31405230020130",
+   "centro": [
+    -34.916054,
+    -8.035212
+   ],
+   "unidades": 8,
+   "own_street_distance_m": 20.6,
+   "street_codes_within_40m": [
+    2453,
+    35220
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 5,
+   "stratum": "multi_front",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "casa-forte",
+   "id": "2453-151",
+   "street_code": 2453,
+   "logradouro": "RUA ALFREDO FERNANDES",
+   "numero": "151",
+   "nome": null,
+   "dsqfl": "31405235010215",
+   "centro": [
+    -34.91513,
+    -8.035734
+   ],
+   "unidades": 4,
+   "own_street_distance_m": 18.9,
+   "street_codes_within_40m": [
+    2453,
+    16535,
+    32417
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 2,
+   "stratum": "sparse",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "casa-forte",
+   "id": "2453-210",
+   "street_code": 2453,
+   "logradouro": "RUA ALFREDO FERNANDES",
+   "numero": "210",
+   "nome": null,
+   "dsqfl": "31405220030490",
+   "centro": [
+    -34.915233,
+    -8.035178
+   ],
+   "unidades": 2,
+   "own_street_distance_m": 25.0,
+   "street_codes_within_40m": [
+    2453,
+    16535
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 2,
+   "stratum": "sparse",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "casa-forte",
+   "id": "61999-311",
+   "street_code": 61999,
+   "logradouro": "EST DAS UBAIAS",
+   "numero": "311",
+   "nome": "Casa Grande das Ubaias",
+   "dsqfl": "31400056120337",
+   "centro": [
+    -34.918628,
+    -8.031425
+   ],
+   "unidades": 59,
+   "own_street_distance_m": 74.8,
+   "street_codes_within_40m": [],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 22,
+   "stratum": "ordinary",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "casa-forte",
+   "id": "21385-617",
+   "street_code": 21385,
+   "logradouro": "EST DO ENCANAMENTO",
+   "numero": "617",
+   "nome": "Eng Elvio Dalla Nora",
+   "dsqfl": "31400095010435",
+   "centro": [
+    -34.915929,
+    -8.031697
+   ],
+   "unidades": 15,
+   "own_street_distance_m": 38.0,
+   "street_codes_within_40m": [
+    21385
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 18,
+   "stratum": "ordinary",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "casa-forte",
+   "id": "61999-332",
+   "street_code": 61999,
+   "logradouro": "EST DAS UBAIAS",
+   "numero": "332",
+   "nome": "Manuela",
+   "dsqfl": "31400055220932",
+   "centro": [
+    -34.919673,
+    -8.030964
+   ],
+   "unidades": 24,
+   "own_street_distance_m": 46.3,
+   "street_codes_within_40m": [
+    24678
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 14,
+   "stratum": "ordinary",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "casa-forte",
+   "id": "21385-719",
+   "street_code": 21385,
+   "logradouro": "EST DO ENCANAMENTO",
+   "numero": "719",
+   "nome": "Sobrado Gilberto Freyre",
+   "dsqfl": "31400097010326",
+   "centro": [
+    -34.916726,
+    -8.031337
+   ],
+   "unidades": 54,
+   "own_street_distance_m": 26.8,
+   "street_codes_within_40m": [
+    21385
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 20,
+   "stratum": "ordinary",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "gracas",
+   "id": "59382-327",
+   "street_code": 59382,
+   "logradouro": "AV CONSELHEIRO ROSA E SILVA",
+   "numero": "327",
+   "nome": "Jardim Pedrosa",
+   "dsqfl": "11490075010650",
+   "centro": [
+    -34.897328,
+    -8.048835
+   ],
+   "unidades": 60,
+   "own_street_distance_m": 81.2,
+   "street_codes_within_40m": [],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 17,
+   "stratum": "far_centroid",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "gracas",
+   "id": "50849-194",
+   "street_code": 50849,
+   "logradouro": "RUA DAS PERNAMBUCANAS",
+   "numero": "194",
+   "nome": "Santa Inês",
+   "dsqfl": "11490155030188",
+   "centro": [
+    -34.90069,
+    -8.050321
+   ],
+   "unidades": 48,
+   "own_street_distance_m": 67.0,
+   "street_codes_within_40m": [],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 9,
+   "stratum": "far_centroid",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "gracas",
+   "id": "73300-100",
+   "street_code": 73300,
+   "logradouro": "RUA DR OSVALDO SALSA",
+   "numero": "100",
+   "nome": "Príncipe de Provence",
+   "dsqfl": "11490310030085",
+   "centro": [
+    -34.903401,
+    -8.049447
+   ],
+   "unidades": 32,
+   "own_street_distance_m": 22.4,
+   "street_codes_within_40m": [
+    10596,
+    73300
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 19,
+   "stratum": "multi_front",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "gracas",
+   "id": "25879-10",
+   "street_code": 25879,
+   "logradouro": "RUA DO FUTURO",
+   "numero": "10",
+   "nome": "Cap Saint Michell",
+   "dsqfl": "11410116040212",
+   "centro": [
+    -34.897975,
+    -8.044453
+   ],
+   "unidades": 56,
+   "own_street_distance_m": 23.9,
+   "street_codes_within_40m": [
+    25879,
+    34223
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 17,
+   "stratum": "multi_front",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "gracas",
+   "id": "25879-673",
+   "street_code": 25879,
+   "logradouro": "RUA DO FUTURO",
+   "numero": "673",
+   "nome": null,
+   "dsqfl": "11410170010260",
+   "centro": [
+    -34.901443,
+    -8.039467
+   ],
+   "unidades": 4,
+   "own_street_distance_m": 20.9,
+   "street_codes_within_40m": [
+    25879,
+    65471
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 4,
+   "stratum": "sparse",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "gracas",
+   "id": "43400-345",
+   "street_code": 43400,
+   "logradouro": "RUA DESEMBARGADOR MARTINS PEREIRA",
+   "numero": "345",
+   "nome": null,
+   "dsqfl": "11410040040250",
+   "centro": [
+    -34.89998,
+    -8.037985
+   ],
+   "unidades": 4,
+   "own_street_distance_m": 28.0,
+   "street_codes_within_40m": [
+    43400
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 2,
+   "stratum": "sparse",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "gracas",
+   "id": "34223-220",
+   "street_code": 34223,
+   "logradouro": "RUA JOAO RAMOS",
+   "numero": "220",
+   "nome": "Villa de Pádua",
+   "dsqfl": "11490090040161",
+   "centro": [
+    -34.898418,
+    -8.046271
+   ],
+   "unidades": 14,
+   "own_street_distance_m": 18.3,
+   "street_codes_within_40m": [
+    6408,
+    34223
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 10,
+   "stratum": "ordinary",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "gracas",
+   "id": "612-47",
+   "street_code": 612,
+   "logradouro": "RUA ADALBERTO CAMARGO",
+   "numero": "47",
+   "nome": "Don Perignon",
+   "dsqfl": "11410235020280",
+   "centro": [
+    -34.89988,
+    -8.044493
+   ],
+   "unidades": 16,
+   "own_street_distance_m": 20.0,
+   "street_codes_within_40m": [
+    612
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 19,
+   "stratum": "ordinary",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "gracas",
+   "id": "34720-398",
+   "street_code": 34720,
+   "logradouro": "RUA JOAQUIM NABUCO",
+   "numero": "398",
+   "nome": null,
+   "dsqfl": "11490175110035",
+   "centro": [
+    -34.899903,
+    -8.052326
+   ],
+   "unidades": 5,
+   "own_street_distance_m": 21.1,
+   "street_codes_within_40m": [
+    32085,
+    34720
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 1,
+   "stratum": "ordinary",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "gracas",
+   "id": "25879-361",
+   "street_code": 25879,
+   "logradouro": "RUA DO FUTURO",
+   "numero": "361",
+   "nome": "Saint Louis",
+   "dsqfl": "11410180010327",
+   "centro": [
+    -34.899681,
+    -8.041661
+   ],
+   "unidades": 36,
+   "own_street_distance_m": 24.5,
+   "street_codes_within_40m": [
+    25879,
+    60429
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 22,
+   "stratum": "ordinary",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "espinheiro",
+   "id": "29238-593",
+   "street_code": 29238,
+   "logradouro": "RUA DA HORA",
+   "numero": "593",
+   "nome": "Conj Resid Esperanza Cristina",
+   "dsqfl": "11490035040310",
+   "centro": [
+    -34.893752,
+    -8.046711
+   ],
+   "unidades": 48,
+   "own_street_distance_m": 83.9,
+   "street_codes_within_40m": [
+    36137
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 4,
+   "stratum": "far_centroid",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "espinheiro",
+   "id": "29238-625",
+   "street_code": 29238,
+   "logradouro": "RUA DA HORA",
+   "numero": "625",
+   "nome": "Cavalcanti de Albuquerque",
+   "dsqfl": "11490035040286",
+   "centro": [
+    -34.893967,
+    -8.046824
+   ],
+   "unidades": 56,
+   "own_street_distance_m": 69.2,
+   "street_codes_within_40m": [],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 17,
+   "stratum": "far_centroid",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "espinheiro",
+   "id": "12661-231",
+   "street_code": 12661,
+   "logradouro": "RUA BUENOS AIRES",
+   "numero": "231",
+   "nome": "Rotterdam",
+   "dsqfl": "11490050010270",
+   "centro": [
+    -34.894987,
+    -8.047838
+   ],
+   "unidades": 12,
+   "own_street_distance_m": 12.6,
+   "street_codes_within_40m": [
+    12661,
+    29238
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 7,
+   "stratum": "multi_front",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "espinheiro",
+   "id": "29238-663",
+   "street_code": 29238,
+   "logradouro": "RUA DA HORA",
+   "numero": "663",
+   "nome": "Guarany",
+   "dsqfl": "11490035040245",
+   "centro": [
+    -34.894513,
+    -8.046928
+   ],
+   "unidades": 12,
+   "own_street_distance_m": 22.3,
+   "street_codes_within_40m": [
+    29238,
+    64084
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 6,
+   "stratum": "multi_front",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "espinheiro",
+   "id": "2410-171",
+   "street_code": 2410,
+   "logradouro": "RUA ALFREDO DE CASTRO",
+   "numero": "171",
+   "nome": null,
+   "dsqfl": "11415005020540",
+   "centro": [
+    -34.890732,
+    -8.039548
+   ],
+   "unidades": 4,
+   "own_street_distance_m": 11.9,
+   "street_codes_within_40m": [
+    2410
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 2,
+   "stratum": "sparse",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "espinheiro",
+   "id": "29238-233",
+   "street_code": 29238,
+   "logradouro": "RUA DA HORA",
+   "numero": "233",
+   "nome": "José Affonso",
+   "dsqfl": "11490010040351",
+   "centro": [
+    -34.89235,
+    -8.043749
+   ],
+   "unidades": 2,
+   "own_street_distance_m": 33.3,
+   "street_codes_within_40m": [
+    29238,
+    31135
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 4,
+   "stratum": "sparse",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "espinheiro",
+   "id": "33405-1500",
+   "street_code": 33405,
+   "logradouro": "AV JOAO DE BARROS",
+   "numero": "1500",
+   "nome": "Monte Líbano",
+   "dsqfl": "11415015030240",
+   "centro": [
+    -34.891241,
+    -8.041336
+   ],
+   "unidades": 6,
+   "own_street_distance_m": 19.0,
+   "street_codes_within_40m": [
+    1007,
+    22713,
+    33405
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 3,
+   "stratum": "ordinary",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "espinheiro",
+   "id": "46175-80",
+   "street_code": 46175,
+   "logradouro": "RUA NICARAGUA",
+   "numero": "80",
+   "nome": "Quinta dos Vinhedos",
+   "dsqfl": "11490050030073",
+   "centro": [
+    -34.894229,
+    -8.048693
+   ],
+   "unidades": 36,
+   "own_street_distance_m": 28.5,
+   "street_codes_within_40m": [
+    46175
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 18,
+   "stratum": "ordinary",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "espinheiro",
+   "id": "49018-221",
+   "street_code": 49018,
+   "logradouro": "RUA MARQUES DO PARANA",
+   "numero": "221",
+   "nome": "Trevo",
+   "dsqfl": "11415010020130",
+   "centro": [
+    -34.889136,
+    -8.041517
+   ],
+   "unidades": 12,
+   "own_street_distance_m": 24.5,
+   "street_codes_within_40m": [
+    2402,
+    24058,
+    49018
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 7,
+   "stratum": "ordinary",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "espinheiro",
+   "id": "59617-94",
+   "street_code": 59617,
+   "logradouro": "RUA RUI CALACA",
+   "numero": "94",
+   "nome": "Armando Rabelo",
+   "dsqfl": "11490025020111",
+   "centro": [
+    -34.892534,
+    -8.045246
+   ],
+   "unidades": 17,
+   "own_street_distance_m": 24.6,
+   "street_codes_within_40m": [
+    41300,
+    59617
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 12,
+   "stratum": "ordinary",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "madalena",
+   "id": "10910-341",
+   "street_code": 10910,
+   "logradouro": "RUA BENFICA",
+   "numero": "341",
+   "nome": "Internacional",
+   "dsqfl": "41581045010661",
+   "centro": [
+    -34.902889,
+    -8.059597
+   ],
+   "unidades": 57,
+   "own_street_distance_m": 88.1,
+   "street_codes_within_40m": [],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 4,
+   "stratum": "far_centroid",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "madalena",
+   "id": "19259-300",
+   "street_code": 19259,
+   "logradouro": "RUA DEMOCRITO DE SOUZA FILHO",
+   "numero": "300",
+   "nome": "Conjunto Residencial Benfica",
+   "dsqfl": "41545226040180",
+   "centro": [
+    -34.904965,
+    -8.055368
+   ],
+   "unidades": 246,
+   "own_street_distance_m": 76.2,
+   "street_codes_within_40m": [
+    2895
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 4,
+   "stratum": "far_centroid",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "madalena",
+   "id": "28894-37",
+   "street_code": 28894,
+   "logradouro": "RUA HERCILIO CUNHA",
+   "numero": "37",
+   "nome": "Maria Carolina",
+   "dsqfl": "41580025010196",
+   "centro": [
+    -34.908634,
+    -8.05887
+   ],
+   "unidades": 16,
+   "own_street_distance_m": 20.6,
+   "street_codes_within_40m": [
+    9873,
+    28894,
+    45640
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 4,
+   "stratum": "multi_front",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "madalena",
+   "id": "56839-651",
+   "street_code": 56839,
+   "logradouro": "RUA REAL DA TORRE",
+   "numero": "651",
+   "nome": null,
+   "dsqfl": "41545020020480",
+   "centro": [
+    -34.908578,
+    -8.051175
+   ],
+   "unidades": 6,
+   "own_street_distance_m": 22.5,
+   "street_codes_within_40m": [
+    34371,
+    44067,
+    56839
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 3,
+   "stratum": "multi_front",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "madalena",
+   "id": "37265-50",
+   "street_code": 37265,
+   "logradouro": "RUA MONSENHOR JULIO MARIA",
+   "numero": "50",
+   "nome": "Jangadeiro",
+   "dsqfl": "41580005020290",
+   "centro": [
+    -34.90903,
+    -8.058078
+   ],
+   "unidades": 4,
+   "own_street_distance_m": 18.2,
+   "street_codes_within_40m": [
+    37265
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 2,
+   "stratum": "sparse",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "madalena",
+   "id": "10910-939",
+   "street_code": 10910,
+   "logradouro": "RUA BENFICA",
+   "numero": "939",
+   "nome": null,
+   "dsqfl": "41580015010040",
+   "centro": [
+    -34.907463,
+    -8.0584
+   ],
+   "unidades": 2,
+   "own_street_distance_m": 31.3,
+   "street_codes_within_40m": [
+    10910,
+    35971,
+    57061
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 2,
+   "stratum": "sparse",
+   "split": "dev",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "madalena",
+   "id": "50946-65",
+   "street_code": 50946,
+   "logradouro": "RUA PESSOA DE MELO",
+   "numero": "65",
+   "nome": "Praia de Ibicui",
+   "dsqfl": "41545135020129",
+   "centro": [
+    -34.907899,
+    -8.052914
+   ],
+   "unidades": 72,
+   "own_street_distance_m": 28.4,
+   "street_codes_within_40m": [
+    50946
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 27,
+   "stratum": "ordinary",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "madalena",
+   "id": "127620-771",
+   "street_code": 127620,
+   "logradouro": "AV BEIRA RIO GOVERNADOR EDUARDO CAMPOS",
+   "numero": "771",
+   "nome": "Vila Rica",
+   "dsqfl": "41545105020046",
+   "centro": [
+    -34.905246,
+    -8.052321
+   ],
+   "unidades": 28,
+   "own_street_distance_m": 35.8,
+   "street_codes_within_40m": [
+    127620
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 17,
+   "stratum": "ordinary",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "madalena",
+   "id": "30368-26",
+   "street_code": 30368,
+   "logradouro": "RUA PROFESSOR JOSE TORRES PIRES",
+   "numero": "26",
+   "nome": "Solar Beira Rio",
+   "dsqfl": "41545200030046",
+   "centro": [
+    -34.904819,
+    -8.053652
+   ],
+   "unidades": 34,
+   "own_street_distance_m": 21.1,
+   "street_codes_within_40m": [
+    30368,
+    127620
+   ],
+   "has_itbi_unit_quartiles": true,
+   "pavimentos": 21,
+   "stratum": "ordinary",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  },
+  {
+   "area": "madalena",
+   "id": "19259-71",
+   "street_code": 19259,
+   "logradouro": "RUA DEMOCRITO DE SOUZA FILHO",
+   "numero": "71",
+   "nome": "Solar do Sicupema Bloco D",
+   "dsqfl": "41545275020498",
+   "centro": [
+    -34.906208,
+    -8.057411
+   ],
+   "unidades": 13,
+   "own_street_distance_m": 20.7,
+   "street_codes_within_40m": [
+    19259
+   ],
+   "has_itbi_unit_quartiles": false,
+   "pavimentos": 7,
+   "stratum": "ordinary",
+   "split": "test",
+   "labels": {
+    "building_identity": "unlabeled",
+    "street_frontages": "unlabeled",
+    "public_entrance": "unlabeled",
+    "wrong_street_negative": "unlabeled"
+   }
+  }
+ ]
+}

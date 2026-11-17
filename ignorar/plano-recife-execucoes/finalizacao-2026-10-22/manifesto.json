@@ -1,0 +1,159 @@
+{
+  "data": "2026-10-22",
+  "testes": {
+    "suites": 48,
+    "casos": 1363,
+    "v1Etapas": 50,
+    "capturasFinalizacao": 40,
+    "capturasAmplo": 60
+  },
+  "origemCompleta": "out/v1/finalizacao-2026-10-22",
+  "capturas": "fixtures sintéticas; seleção e folhas examinadas visualmente; não certificam dispositivo nativo",
+  "arquivos": [
+    {
+      "caminho": "amplo.log",
+      "bytes": 27,
+      "sha256": "f05a4fb6961b777cff024da23f04b6373151ca07dce552f0a7f59db17dfc57ae"
+    },
+    {
+      "caminho": "capturas/balancete-citacoes-1280.png",
+      "bytes": 74632,
+      "sha256": "4a3d2d4e828f98b062e75480c6aca4e4b76a1dc81d0d47968470a4dd15c0bfc1"
+    },
+    {
+      "caminho": "capturas/balancete-citacoes-375.png",
+      "bytes": 52163,
+      "sha256": "47a5e4ad1e75a625dc1bfc5772aaba69ce6120528e6ee1c50a0ee6b2d91ad989"
+    },
+    {
+      "caminho": "capturas/cenario-detalhado-375.png",
+      "bytes": 48849,
+      "sha256": "b22294d7f32f55da0b8f704bc3d1fced564dfb81bf773a1295e098427d5b7d6f"
+    },
+    {
+      "caminho": "capturas/cenario-editor-360.png",
+      "bytes": 32656,
+      "sha256": "06fe6377cd7d8146eb89e18288b82dbf4bdabffe0de7f4b746682de9271b319c"
+    },
+    {
+      "caminho": "capturas/cenario-texto-200-1280.png",
+      "bytes": 65736,
+      "sha256": "b4865a49892ea98c369f292d0482c4822d738fe3fc91b8c1060042f78256929e"
+    },
+    {
+      "caminho": "capturas/cenario-texto-200-375.png",
+      "bytes": 50856,
+      "sha256": "7f55e050dcaea855cd6ae998c562e1cdaf5315c769b96e271ef6e5dc7f6c7444"
+    },
+    {
+      "caminho": "capturas/comparaveis-filtro-360.png",
+      "bytes": 45004,
+      "sha256": "31e3dbc09333648f3fda31705c907bb84e5a95a191a94e1a925543af9e8036dd"
+    },
+    {
+      "caminho": "capturas/contato-final-1280-1.jpg",
+      "bytes": 91863,
+      "sha256": "91e9bb8fa01db8da4a308dce033f965322e7a5e7f0c1946cb19b068309c36215"
+    },
+    {
+      "caminho": "capturas/contato-final-1280-2.jpg",
+      "bytes": 77837,
+      "sha256": "8f59ffe124feb16bc919200f592ddcbbe91959fec4342051ab58c95f1655cd91"
+    },
+    {
+      "caminho": "capturas/contato-final-360-1.jpg",
+      "bytes": 154866,
+      "sha256": "d73bfdc08c10a0dd91075d2ee5aa4cb5024b20141656f5643a464bc1db939096"
+    },
+    {
+      "caminho": "capturas/contato-final-360-2.jpg",
+      "bytes": 129234,
+      "sha256": "63fcfcca0cc1763658357eac009904178366a2cbd8f71fc8f7ba9b03b22f0a96"
+    },
+    {
+      "caminho": "capturas/contato-final-375-1.jpg",
+      "bytes": 157107,
+      "sha256": "7ec771dd862e40961a85744c22b4e0f1df0b88401f33c4b09b92e21b1be48850"
+    },
+    {
+      "caminho": "capturas/contato-final-375-2.jpg",
+      "bytes": 143467,
+      "sha256": "b8c92b63438bfb013db7ee50804aebb09f59054fdd63876ef3532864ccb2706f"
+    },
+    {
+      "caminho": "capturas/cronologia-publica-1280.png",
+      "bytes": 79147,
+      "sha256": "7510eca95d2fba51b02982b8f8f2eecf404c2d5382f972d8058afded4f9841a3"
+    },
+    {
+      "caminho": "capturas/cronologia-publica-360.png",
+      "bytes": 50642,
+      "sha256": "38db923d0b3de23bf964ac891f7f6f76aa623c010213adca4cc24f05b119ca70"
+    },
+    {
+      "caminho": "capturas/extensao-revisao-375.png",
+      "bytes": 46976,
+      "sha256": "4246ea5b4673561e791c478b2d5c96aa20bac3d2bdc3846e452683150a69d292"
+    },
+    {
+      "caminho": "capturas/galeria-ordem-360.png",
+      "bytes": 31406,
+      "sha256": "772d3ef55a6853ef90fa90032961ab71667973559fc4b259f7f7081719e6180a"
+    },
+    {
+      "caminho": "capturas/lembrete-cancelado-375.png",
+      "bytes": 39765,
+      "sha256": "2eddbd1e8876ac39d632106951d3cc85a6763b173d4fcf9d75c112d779362df8"
+    },
+    {
+      "caminho": "capturas/ocr-cancelado-375.png",
+      "bytes": 54039,
+      "sha256": "cd57c702b168441642fd154596866246d39c06dee62bd31e21c1c63d005ae856"
+    },
+    {
+      "caminho": "capturas/ocr-revisao-1280.png",
+      "bytes": 73976,
+      "sha256": "fd9a00d4aadcc0171402f50032de8d629bdf2f9489cee3c9d421a13d24b65800"
+    },
+    {
+      "caminho": "capturas/ocr-revisao-375.png",
+      "bytes": 53953,
+      "sha256": "f790dd5dcba8d2e28f8a85400e9fc607c922e06601a737100645108475d1add0"
+    },
+    {
+      "caminho": "capturas/prioridades-rotina-1280.png",
+      "bytes": 94502,
+      "sha256": "abc927693d086ed420d46e2b606010a97ea8ce76cb609ca2ca95548f23dd7bc1"
+    },
+    {
+      "caminho": "capturas/prioridades-rotina-375.png",
+      "bytes": 53683,
+      "sha256": "9055538f7e90a85685a09741fb204ef129e27a227c6a301d6e198e87e6ee7e13"
+    },
+    {
+      "caminho": "finalizacao.log",
+      "bytes": 27,
+      "sha256": "6624d6a4abbc01d722d4ed1f19efd4d0c464236d36f87a8d95f2391eb61debf1"
+    },
+    {
+      "caminho": "resultado-amplo.json",
+      "bytes": 2265,
+      "sha256": "752aee39c88f8267d49d6217f4c2eafdef4967db82a2bf223df6b121a9a98be5"
+    },
+    {
+      "caminho": "resultado-finalizacao.json",
+      "bytes": 1539,
+      "sha256": "a73a23d4d22af80f21a014698ff31f93baf8e8283b19533e616b8e18c1912501"
+    },
+    {
+      "caminho": "v1.log",
+      "bytes": 4623,
+      "sha256": "8bb1b0ed75783ccb36fe7b9834db5ae9a0b02bf6855802f4af5c92393bfd3156"
+    },
+    {
+      "caminho": "verificar.log",
+      "bytes": 5011,
+      "sha256": "f96580ba965066c2dfcf3464b20df591f18b7b20bc5647e58cf061fff2a6b2d7"
+    }
+  ]
+}

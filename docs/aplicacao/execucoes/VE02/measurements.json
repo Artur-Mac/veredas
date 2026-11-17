@@ -1,0 +1,561 @@
+{
+ "epoch": "VE02",
+ "run_date": "2026-11-14",
+ "status": "verified",
+ "outcome": "adopt",
+ "environment": {
+  "jest_node": "v18.19.1",
+  "pipeline_node": "v22.23.3 (TypeScript contract imported via type stripping)",
+  "machine": "Linux x86_64, 12 cores, 23 GiB"
+ },
+ "code_sha256": {
+  "src/dados/observacao.ts": "d288c23f1060759c9f3a306d1ef5486c77b6f8ee1106bf9d9b5ab1884fd99ee3",
+  "src/dados/observacoesDoAnuncio.ts": "e4e4d82435e7a59ea74f43da82c6fcba6fc53d00bc09244aba7571eff283a5f6",
+  "scripts/dados/observacoes/coleta.mjs": "87105044f5bc908a629410b13a46a9e03b83aef76cd755b943ab5ad465485ffc",
+  "scripts/dados/observacoes/defesaCivil.mjs": "72b898cfca7d2c4335375bee0920190a2c8b65503fc2c217fbf6bccf27442384",
+  "scripts/dados/observacoes/vinculo.mjs": "fbc04e7fce46f67deedb9244d46510b9200bc5b3b07fabe2ed654c3b63554ca2",
+  "scripts/dados/observacoes/geofabrik.mjs": "e3604221bcdf4e959c80b0c184ef480b8ae06c66ca0dd4c33fc4dbfd692b772d",
+  "scripts/dados/observacoes/gtfs.mjs": "6220ec805a0106bbcd08aa7f947429d2270999926be6ac494d28d59dffe1fd6e",
+  "scripts/dados/observacoes/osm.mjs": "080c738458b838ea7e65d95fa68bb1d7f1b61beaa98a8b21ba09bc4494188557",
+  "scripts/dados/observacoes/publicar.mjs": "7dc1af4139d06554261f4e22d98ed7407de13672d377e88fdeac5c88a85f72fc",
+  "scripts/dados/observacoes/rodar.mjs": "5398b845650f2cc0c8c4afaa8484996398d7ecd38bf2377910f47d6d88bc1e78",
+  "scripts/dados/observacoes/testes/pipeline.test.mjs": "f08464eccadb1281299f80f64b0876760af1676c3fa021867ea8a442733100c7",
+  "tests/observacoes.test.ts": "908118b6b65eceb49bed2c25b5141cc8aecb1947544a7dce1c80741e976e19f7",
+  "tests/publicacao-ativa.test.ts": "5be65bcdbaa353c8961d026d3b5145e825aba2d0a02a7116ed92c222e0e5da9f"
+ },
+ "engineering": {
+  "typecheck_errors": 0,
+  "lint": {
+   "errors": 0,
+   "warnings": 5,
+   "new": 0,
+   "note": "expo lint does not lint .mjs; new .mjs files were checked with npx eslint directly: 0 errors"
+  },
+  "jest": {
+   "suites": "56/56",
+   "tests": "1468/1468",
+   "new_tests": 18,
+   "seconds": 74
+  },
+  "pipeline_node_tests": {
+   "tests": "33/33",
+   "first_run": "30/32 then 32/32 (1 test regex error, 1 real parser bug: region-page size always null); 33rd test added for field whitelist",
+   "duration_ms": 382
+  },
+  "acceptance_fixtures": {
+   "http_200_html_error": "pass",
+   "ckan_success_false": "pass",
+   "http_403": "pass",
+   "http_429_persistent": "pass",
+   "http_429_retry_after_then_ok": "pass",
+   "repeated_page": "pass",
+   "missing_next_page": "pass",
+   "short_page": "pass",
+   "budget_exhausted": "pass",
+   "legitimate_empty": "pass",
+   "shifted_columns": "pass",
+   "march_without_cedilla": "pass",
+   "wrong_crs_utm": "pass",
+   "lat_lon_swapped": "pass",
+   "all_categories_failed": "pass",
+   "absent_fees": "pass",
+   "interrupted_write": "pass",
+   "leftover_tmp_from_killed_process": "pass",
+   "bad_checksum": "pass",
+   "partial_requires_reason": "pass",
+   "coverage_drop_blocked": "pass",
+   "all_sources_failed_blocks": "pass",
+   "rollback": "pass"
+  }
+ },
+ "data_validity": {
+  "defesa_civil_2020_2024": {
+   "declared": 388739,
+   "captured": 388739,
+   "accepted": 388555,
+   "linked_to_official_street": 235774,
+   "category_known": 15126,
+   "published": 388555,
+   "quarantine": 184,
+   "quarantine_reasons": {
+    "sem_endereco": 166,
+    "sem_data": 7,
+    "layout_desconhecido": 11
+   },
+   "layouts": {
+    "defesa_civil_2020": {
+     "alinhado": 0,
+     "deslocado": 70052
+    },
+    "defesa_civil_2021": {
+     "alinhado": 64834,
+     "deslocado": 0
+    },
+    "defesa_civil_2022": {
+     "alinhado": 0,
+     "deslocado": 90344
+    },
+    "defesa_civil_2023": {
+     "alinhado": 83163,
+     "deslocado": 0
+    },
+    "defesa_civil_2024": {
+     "alinhado": 80162,
+     "deslocado": 0
+    }
+   },
+   "link_rule": "name + official neighbourhood polygon; no human review; precision NOT measured",
+   "ambiguous": 5263,
+   "unlinked": 147518
+  },
+  "parser_change_comparison": {
+   "antes": {
+    "versao": "b43b87fa2a941dc3",
+    "total": 366660,
+    "quarentena": 22079,
+    "motivos": {
+     "sem_endereco": 162,
+     "sem_data": 7,
+     "layout_desconhecido": 21910
+    }
+   },
+   "depois": {
+    "versao": "bbaec26866872abe",
+    "total": 388555,
+    "quarentena": 184,
+    "motivos": {
+     "sem_endereco": 166,
+     "sem_data": 7,
+     "layout_desconhecido": 11
+    }
+   },
+   "porChave": {
+    "ano_administrativo:2001": [
+     1,
+     1
+    ],
+    "ano_administrativo:2019": [
+     7,
+     7
+    ],
+    "ano_administrativo:2020": [
+     59474,
+     70048
+    ],
+    "ano_administrativo:2021": [
+     64807,
+     64810
+    ],
+    "ano_administrativo:2022": [
+     79046,
+     90364
+    ],
+    "ano_administrativo:2023": [
+     83169,
+     83169
+    ],
+    "ano_administrativo:2024": [
+     80156,
+     80156
+    ],
+    "bairro:boa-viagem": [
+     965,
+     1052
+    ],
+    "bairro:casa-forte": [
+     104,
+     106
+    ],
+    "bairro:espinheiro": [
+     261,
+     264
+    ],
+    "bairro:gracas": [
+     205,
+     207
+    ],
+    "bairro:madalena": [
+     376,
+     376
+    ]
+   },
+   "causa": "analisador defesa_civil_ckan antes (v1) e depois (rotulado v1 por engano na versao bbaec268; v2 a partir da versao seguinte) de reconhecer 'Maro' (Março sem cedilha) como mês"
+  },
+  "existing_reader_defect": {
+   "file": "scripts/dados/rua/nucleo.mjs",
+   "effect": "all March rows of 2020 (10,577) and 2022 (11,322) silently dropped from the published street aggregates; 110 citywide rows mention flooding; 94 pilot rows",
+   "fixed_in_reader": true,
+   "published_index_regenerated": true,
+   "also_affected_csv_years": {
+    "2015": {
+     "discarded_before": 10212,
+     "after": 33
+    },
+    "2019": {
+     "discarded_before": 5761,
+     "after": 21
+    }
+   }
+  },
+  "live_probe": {
+   "fonte": "defesa_civil_2024",
+   "requisicoes": 2,
+   "bytes": 193426,
+   "declaradosAgora": 80173,
+   "declaradosNoArquivo": 80173,
+   "lidos": 1000,
+   "estado": "parcial",
+   "motivo": "orcamento_esgotado",
+   "linhasComMesmoConteudoNoArquivo": 1000,
+   "colunasRecebidas": [
+    "Ano",
+    "Bairro",
+    "Data",
+    "Endereco",
+    "Mês",
+    "Ocorrencia",
+    "Regional",
+    "Solicitacao",
+    "_id"
+   ],
+   "ms": 961
+  },
+  "network_extract": {
+   "arquivoArquivado": ".cache/osm/nordeste-261113.osm.pbf",
+   "bytes": 445428124,
+   "md5Publicado": "e7cefb494ee5caa9612a8135110d8135",
+   "md5Confere": true,
+   "sha256": "e55995308145fa0b7e98f1231a3478f76815f5ff3cd114c0848c7ba047204f83",
+   "extratosDatados": 17,
+   "escolhido": "nordeste-261113.osm.pbf",
+   "escolhidoIgualAoArquivado": true,
+   "paginaDaRegiao": {
+    "dadosAte": "2026-11-13T21:22:20Z",
+    "tamanhoDoLatestMB": 424
+   }
+  },
+  "gtfs": [
+   {
+    "arquivo": "docs/dados/raw/transporte/gtfs.zip",
+    "papel": "exploratório",
+    "versao": "v2026.10.26",
+    "inicio": "20200501",
+    "fim": "20271026",
+    "contagens": {
+     "paradas": 7238,
+     "paradasNoRecife": 4868,
+     "coordenadasInvalidas": 0,
+     "servicos": 1143,
+     "excecoes": 1137
+    },
+    "sha256": "e1d834d9cf0165690ad0ac5c6aa01fb8b5b7dc38bb611f999cadb01512313fd5",
+    "checks_failed": []
+   },
+   {
+    "arquivo": ".cache/dados-recife/gtfs-inspecao.zip",
+    "papel": "usado pela camada de ruído publicada",
+    "versao": "v2026.10.16",
+    "inicio": "20200501",
+    "fim": "20271016",
+    "contagens": {
+     "paradas": 7217,
+     "paradasNoRecife": 4870,
+     "coordenadasInvalidas": 0,
+     "servicos": 1143,
+     "excecoes": 0
+    },
+    "sha256": "5243ae9b92097b1b9f9c02c28694773fc1c730064656018571299d3f4192676a",
+    "checks_failed": [
+     "calendar_dates_presente"
+    ]
+   }
+  ],
+  "gtfs_pinned": {
+   "arquivo": "docs/dados/raw/transporte/gtfs.zip",
+   "versao": "v2026.10.26",
+   "sha256": "e1d834d9cf0165690ad0ac5c6aa01fb8b5b7dc38bb611f999cadb01512313fd5"
+  }
+ },
+ "operating": {
+  "pipeline_wall_s": 32.2,
+  "street_index_build_ms": 18358,
+  "peak_rss_mb": 1101,
+  "requests_live_run": 4,
+  "publication": {
+   "active": "8daa1b9697d3d508",
+   "previous": [
+    "bbaec26866872abe (parser fixed but mislabelled v1)",
+    "b43b87fa2a941dc3 (parser v1)"
+   ],
+   "bytes_gz": 12316248
+  },
+  "raw_archive_mb": 68,
+  "one_time_downloads": [
+   {
+    "file": "nordeste-261113.osm.pbf",
+    "bytes": 445428124,
+    "seconds": 38
+   }
+  ],
+  "rollback_ms": 18,
+  "reactivate_ms": 13,
+  "spend_brl": 0,
+  "human_review_minutes": 0,
+  "cost_per_accepted_record_ms": 0.0829
+ },
+ "customer": {
+  "impact": "none directly; one data defect affecting dossier counts identified (not yet republished)"
+ },
+ "not_run": [
+  "Overpass collectors against the live API (superseded by dated extract)",
+  "human review of street links",
+  "second independent update cycle (VE16)",
+  "native/device checks (not applicable)",
+  "review of the outreach rule by Defesa Civil staff",
+  "republication of the VE02 observation layer with Tipo_da_Acao"
+ ],
+ "index_regeneration": {
+  "date": "2026-11-14",
+  "new_version": "indice-municipal/5bad409c1782ca8a",
+  "previous_version": "indice-municipal/91b71d239c1847cf",
+  "builder_seconds": 34,
+  "changed_paths_only_defesa_civil": true,
+  "summary": {
+   "partitions": 72,
+   "identical_partitions": 25,
+   "building_count_changes": 0,
+   "records_before": 43385,
+   "records_after": 45539,
+   "flood_records_before": 141,
+   "flood_records_after": 141,
+   "flood_streets_before": 61,
+   "flood_streets_after": 61,
+   "streets_with_records_before": 1662,
+   "streets_with_records_after": 1662,
+   "pilot": {
+    "boa-viagem": {
+     "before": {
+      "streets_with_records": 166,
+      "records": 1799,
+      "flood_records": 5,
+      "flood_streets": 5
+     },
+     "after": {
+      "streets_with_records": 166,
+      "records": 2656,
+      "flood_records": 5,
+      "flood_streets": 5
+     }
+    },
+    "casa-forte": {
+     "before": {
+      "streets_with_records": 21,
+      "records": 153,
+      "flood_records": 5,
+      "flood_streets": 1
+     },
+     "after": {
+      "streets_with_records": 21,
+      "records": 155,
+      "flood_records": 5,
+      "flood_streets": 1
+     }
+    },
+    "gracas": {
+     "before": {
+      "streets_with_records": 58,
+      "records": 501,
+      "flood_records": 0,
+      "flood_streets": 0
+     },
+     "after": {
+      "streets_with_records": 58,
+      "records": 506,
+      "flood_records": 0,
+      "flood_streets": 0
+     }
+    },
+    "espinheiro": {
+     "before": {
+      "streets_with_records": 27,
+      "records": 421,
+      "flood_records": 1,
+      "flood_streets": 1
+     },
+     "after": {
+      "streets_with_records": 27,
+      "records": 431,
+      "flood_records": 1,
+      "flood_streets": 1
+     }
+    },
+    "madalena": {
+     "before": {
+      "streets_with_records": 70,
+      "records": 446,
+      "flood_records": 0,
+      "flood_streets": 0
+     },
+     "after": {
+      "streets_with_records": 70,
+      "records": 455,
+      "flood_records": 0,
+      "flood_streets": 0
+     }
+    }
+   }
+  },
+  "rendered_check": {
+   "building": "53490-78",
+   "street": "Rua Salgueiro, Boa Viagem",
+   "dossier_value_before": 33,
+   "dossier_value_after": 749
+  },
+  "outreach_finding": {
+   "rua_salgueiro_rows_2019_03_29": 712,
+   "types": {
+    "Acoes de Porta-Porta": 356,
+    "Atendimento Social": 356
+   },
+   "outreach_share_2019": {
+    "rows": 18606,
+    "of": 89955
+   }
+  },
+  "tests_after_activation": {
+   "jest": "56/56 suites, 1468/1468",
+   "typecheck_errors": 0
+  }
+ },
+ "outreach_split": {
+  "date": "2026-11-14",
+  "rule": "classeDaAcao (nucleo.mjs), D018",
+  "new_version": "indice-municipal/1e393803851f3fd5",
+  "previous_version": "indice-municipal/5bad409c1782ca8a",
+  "builder_seconds": 60,
+  "changed_paths_only_defesa_civil": true,
+  "meta_changes": {
+   "meta.fontesDaRua[].colunasUsadas[len]": 1
+  },
+  "summary": {
+   "partitions": 72,
+   "identical_partitions": 0,
+   "building_count_changes": 0,
+   "records_before": 45539,
+   "records_after": 26719,
+   "community_actions_before": 0,
+   "community_actions_after": 18820,
+   "flood_records_before": 141,
+   "flood_records_after": 141,
+   "flood_streets_before": 61,
+   "flood_streets_after": 61,
+   "streets_with_records_before": 1183,
+   "streets_with_records_after": 1145,
+   "pilot": {
+    "boa-viagem": {
+     "before": {
+      "streets_with_records": 122,
+      "records": 2656,
+      "community_actions": 0,
+      "flood_records": 5,
+      "flood_streets": 5
+     },
+     "after": {
+      "streets_with_records": 119,
+      "records": 1057,
+      "community_actions": 1599,
+      "flood_records": 5,
+      "flood_streets": 5
+     }
+    },
+    "casa-forte": {
+     "before": {
+      "streets_with_records": 12,
+      "records": 155,
+      "community_actions": 0,
+      "flood_records": 5,
+      "flood_streets": 1
+     },
+     "after": {
+      "streets_with_records": 12,
+      "records": 84,
+      "community_actions": 71,
+      "flood_records": 5,
+      "flood_streets": 1
+     }
+    },
+    "gracas": {
+     "before": {
+      "streets_with_records": 37,
+      "records": 506,
+      "community_actions": 0,
+      "flood_records": 0,
+      "flood_streets": 0
+     },
+     "after": {
+      "streets_with_records": 37,
+      "records": 282,
+      "community_actions": 224,
+      "flood_records": 0,
+      "flood_streets": 0
+     }
+    },
+    "espinheiro": {
+     "before": {
+      "streets_with_records": 19,
+      "records": 431,
+      "community_actions": 0,
+      "flood_records": 1,
+      "flood_streets": 1
+     },
+     "after": {
+      "streets_with_records": 17,
+      "records": 211,
+      "community_actions": 220,
+      "flood_records": 1,
+      "flood_streets": 1
+     }
+    },
+    "madalena": {
+     "before": {
+      "streets_with_records": 49,
+      "records": 455,
+      "community_actions": 0,
+      "flood_records": 0,
+      "flood_streets": 0
+     },
+     "after": {
+      "streets_with_records": 48,
+      "records": 232,
+      "community_actions": 223,
+      "flood_records": 0,
+      "flood_streets": 0
+     }
+    }
+   }
+  },
+  "rendered_check": {
+   "building": "53490-78",
+   "before": 749,
+   "after": 14,
+   "outreach_shown": 735
+  },
+  "tests": {
+   "jest": "56/56 suites, 1470/1470",
+   "pipeline": "33/33",
+   "typecheck_errors": 0,
+   "lint_errors": 0
+  },
+  "sample_for_rule": {
+   "rows_per_year": 1500,
+   "years": [
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+   ],
+   "data_da_acao_dated": "7500/7500"
+  }
+ }
+}

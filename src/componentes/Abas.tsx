@@ -44,6 +44,7 @@ export function Abas({ atual, aoEscolher }: Props) {
             role="tab"
             accessibilityLabel={item.nome}
             accessibilityState={{ selected: ativa }}
+            aria-selected={ativa}
             onPress={() => aoEscolher(item.id)}
             style={{ flex: 1, alignItems: "center", justifyContent: "center", gap: 2, minHeight: 56, borderRadius: RAIO.cartao }}
           >

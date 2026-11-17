@@ -1,0 +1,43 @@
+{
+  "Boa Viagem": {
+    "paradas_400m": 5,
+    "exemplos": [
+      "010010",
+      "010011",
+      "010100"
+    ],
+    "fonte": "GTFS Grande Recife, stops.txt (7238 paradas), offset lat -0.75° aplicado"
+  },
+  "Casa Forte": {
+    "paradas_400m": 19,
+    "exemplos": [
+      "060007",
+      "060008",
+      "060015"
+    ],
+    "fonte": "GTFS Grande Recife, stops.txt (7238 paradas), offset lat -0.75° aplicado"
+  },
+  "Graças": {
+    "paradas_400m": 3,
+    "exemplos": [
+      "020140",
+      "020157",
+      "040057"
+    ],
+    "fonte": "GTFS Grande Recife, stops.txt (7238 paradas), offset lat -0.75° aplicado"
+  },
+  "Espinheiro": {
+    "paradas_400m": 10,
+    "exemplos": [
+      "020143",
+      "020144",
+      "020154"
+    ],
+    "fonte": "GTFS Grande Recife, stops.txt (7238 paradas), offset lat -0.75° aplicado"
+  },
+  "Madalena": {
+    "paradas_400m": 0,
+    "exemplos": [],
+    "fonte": "GTFS Grande Recife, stops.txt (7238 paradas), offset lat -0.75° aplicado"
+  }
+}

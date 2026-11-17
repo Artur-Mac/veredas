@@ -1,0 +1,195 @@
+{
+ "feed": "v2026.10.26",
+ "checked": 20,
+ "ok": 20,
+ "holiday": {
+  "weekdayServicesActive_2026_11_02": 0,
+  "sundayServicesActive_2026_11_02": 362,
+  "weekdayServicesActive_2026_11_09": 393
+ },
+ "cases": [
+  {
+   "id": "GT01",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 195-DUT",
+    "leg 3: 121-DUT"
+   ]
+  },
+  {
+   "id": "GT02",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 232-DUT",
+    "leg 3: 062-DUT"
+   ]
+  },
+  {
+   "id": "GT03",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 630-DUT"
+   ]
+  },
+  {
+   "id": "GT04",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 1977-DUT",
+    "leg 3: 522-DUT"
+   ]
+  },
+  {
+   "id": "GT05",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 2920-DUT",
+    "leg 2: 2450-DUT",
+    "leg 4: 330-DUT"
+   ]
+  },
+  {
+   "id": "GT06",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 050-DUT",
+    "leg 2: 191-DUT"
+   ]
+  },
+  {
+   "id": "GT07",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 513-DUT"
+   ]
+  },
+  {
+   "id": "GT08",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 440-SAB"
+   ]
+  },
+  {
+   "id": "GT09",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 522-SAB",
+    "leg 3: 1992-SAB"
+   ]
+  },
+  {
+   "id": "GT10",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 522-DOM",
+    "leg 3: 050-DOM"
+   ]
+  },
+  {
+   "id": "GT11",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 521-DOM"
+   ]
+  },
+  {
+   "id": "GT12",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 195-DOM",
+    "leg 3: 723-DOM"
+   ]
+  },
+  {
+   "id": "GT13",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 195-DUT",
+    "leg 3: 121-DUT"
+   ]
+  },
+  {
+   "id": "GT14",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 1992-DUT",
+    "leg 3: 910-DUT"
+   ]
+  },
+  {
+   "id": "GT15",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: departure time 24:41:53 ≥ 24:00 in the feed",
+    "leg 1: 1967-DUT",
+    "leg 3: trip of service day 2026-11-18 at 01:04 (neighbouring service day)",
+    "leg 3: 1927-DUT",
+    "leg 5: trip of service day 2026-11-18 at 02:00 (neighbouring service day)",
+    "leg 5: 038-DUT"
+   ]
+  },
+  {
+   "id": "GT16",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: trip of service day 2026-11-17 at 24:41 (neighbouring service day)",
+    "leg 1: departure time 24:41:53 ≥ 24:00 in the feed",
+    "leg 1: 1967-DUT",
+    "leg 3: 1927-DUT",
+    "leg 5: 038-DUT"
+   ]
+  },
+  {
+   "id": "GT17",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 207-DUT",
+    "leg 3: 645-DUT"
+   ]
+  },
+  {
+   "id": "GT18",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "leg 1: 050-SAB"
+   ]
+  },
+  {
+   "id": "GT19",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "6 departures from the 13 origin stops inside the window",
+    "departures exist; the router found none reaching the destination within the horizon (not a contradiction by itself)"
+   ],
+   "departuresInWindow": 6
+  },
+  {
+   "id": "GT20",
+   "ok": true,
+   "problems": [],
+   "notes": [
+    "feed_end_date 20271026"
+   ]
+  }
+ ]
+}

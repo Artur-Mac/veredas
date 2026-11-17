@@ -1,0 +1,21 @@
+{
+  "data": "2026-10-21",
+  "documentos": 7,
+  "links_locais_validos": 18,
+  "hashes_e_somas_eda": "ok",
+  "edificios": 2688,
+  "proximidade": {
+    "150": 2347,
+    "300": 2594
+  },
+  "percentuais": {
+    "150": 87.3,
+    "300": 96.5
+  },
+  "contribuicoes_cenarios": [
+    38.92,
+    31.92,
+    9.92
+  ],
+  "pedidos_equilibrio_cenario": 76
+}

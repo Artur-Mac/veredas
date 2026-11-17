@@ -12,13 +12,14 @@ import { abaPorTecla, focarElemento } from "../src/componentes/dossie-v1/teclado
 import { GavetaDeFonte } from "../src/componentes/fonte/GavetaDeFonte";
 import {
   EXPLICACAO_DA_CONFIANCA,
+  EXPLICACAO_DO_CALCULO,
   ORDEM_DA_CONFIANCA,
   dataDaFonte,
   descreverFonte,
   orgaoCurto,
   rotuloDaConfianca,
 } from "../src/componentes/fonte/textos";
-import { carregarCadastro } from "../src/componentes/dossie-v1/cadastro";
+import { carregarCadastro, entradaDaRua } from "../src/componentes/dossie-v1/cadastro";
 import { montarCenaDoLote, poligonoDoLote } from "../src/componentes/dossie-v1/mapa";
 import {
   anomaliaResolvida,
@@ -275,13 +276,13 @@ describe("custo", () => {
     expect(segmentosDaBarra(visao.custo.parcelas)).toEqual([{ nome: "Aluguel", valor: 4500 }, { nome: "Condomínio", valor: 1190 }]);
   });
 
-  it("rótulo do total: 'Total mensal' só quando nada ficou de fora", () => {
+  it("rótulo mensal é consistente mesmo com parcelas ausentes", () => {
     const completo = derivar(analise());
-    expect(rotuloDoTotal(completo.custo)).toBe("Total mensal");
+    expect(rotuloDoTotal(completo.custo)).toBe("Mensal conhecido");
     const incompleto = derivar(analise({ declarados: { seguroIncendio: vazio } }));
-    expect(rotuloDoTotal(incompleto.custo)).toBe("Total mensal conhecido");
+    expect(rotuloDoTotal(incompleto.custo)).toBe("Mensal conhecido");
     const compra = derivar(analise({ modalidade: "compra", declarados: { seguroIncendio: vazio, preco: v(900000) } }));
-    expect(rotuloDoTotal(compra.custo)).toBe("Total mensal");
+    expect(rotuloDoTotal(compra.custo)).toBe("Mensal conhecido");
     const compraComFalta = derivar(analise({ modalidade: "compra", declarados: { condominio: vazio, preco: v(900000) } }));
     expect(rotuloDoTotal(compraComFalta.custo)).toBe("Mensal conhecido");
   });
@@ -445,10 +446,10 @@ describe("cadastro, valor e histórico", () => {
   it("sem prédio: o cartão diz o que fazer, conforme a cobertura e o vínculo", () => {
     const pendente = derivar(analise());
     expect(textosSemPredio(pendente, true, false)).toMatchObject({ titulo: "Confirme o prédio para ver o cadastro", podeConfirmar: true });
-    const fora = derivar(analise({ bairro: "torre", bairroTexto: "Torre", vinculo: { estado: "fora_de_cobertura" } }));
+    const fora = derivar(analise({ bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" } }));
     const t = textosSemPredio(fora, false, false);
     expect(t).toMatchObject({ titulo: "Fora da área com cadastro", podeConfirmar: false });
-    expect(t.texto).toContain("Boa Viagem, Casa Forte, Graças, Espinheiro e Madalena");
+    expect(t.texto).toContain("72 bairros do Recife");
     const sumiu = derivar(analise({ vinculo: confirmadoEm("99001-100") }));
     expect(textosSemPredio(sumiu, true, true)).toMatchObject({ titulo: "Prédio confirmado não encontrado no índice atual", podeConfirmar: true });
   });
@@ -533,11 +534,21 @@ function textosDe(no: TestRenderer.ReactTestRendererJSON | TestRenderer.ReactTes
   return saida;
 }
 
+// Desmonta as telas no fim de cada teste: cálculos adiados (ex.: o sol nas fachadas, VE07) são cancelados na limpeza do
+// efeito em vez de dispararem depois que o ambiente do Jest foi desmontado.
+const montadas: TestRenderer.ReactTestRenderer[] = [];
+afterEach(() => {
+  act(() => {
+    for (const a of montadas.splice(0)) a.unmount();
+  });
+});
+
 function renderizar(elemento: React.ReactElement): TestRenderer.ReactTestRenderer {
   let arvore!: TestRenderer.ReactTestRenderer;
   act(() => {
     arvore = TestRenderer.create(React.createElement(TemaDoApp, null, elemento));
   });
+  montadas.push(arvore);
   return arvore;
 }
 
@@ -653,7 +664,9 @@ describe("GavetaDeFonte", () => {
     expect(t).toContain("R$ 328–R$ 371/mês");
     for (const c of ORDEM_DA_CONFIANCA) expect(t).toContain(rotuloDaConfianca(c));
     expect(t).toContain("Este dado");
-    expect(t).toContain(EXPLICACAO_DA_CONFIANCA.oficial);
+    // L2: a faixa de IPTU é calculada pelo Vereda, não copiada do registro.
+    expect(t).toContain(EXPLICACAO_DO_CALCULO);
+    expect(t).not.toContain(EXPLICACAO_DA_CONFIANCA.oficial);
     expect(t).not.toContain(EXPLICACAO_DA_CONFIANCA.declarado);
     const destacadas = arvore.root.findAll((n) => typeof n.props.accessibilityLabel === "string" && n.props.accessibilityLabel.includes("é a confiança deste dado"));
     expect(destacadas.length).toBeGreaterThan(0);
@@ -695,14 +708,14 @@ function edificioRealDeCasaForte(): Edificio {
   return achado;
 }
 
-type Contexto = { definirAtiva: jest.Mock; salvar: jest.Mock };
+type Contexto = { definirAtiva: jest.Mock; salvar: jest.Mock; atualizar: jest.Mock };
 
 function prepararEstado(lista: AnaliseV2[], ativa: string | null, id?: string): Contexto {
-  const contexto: Contexto = { definirAtiva: jest.fn(async () => undefined), salvar: jest.fn(async () => undefined) };
+  const contexto: Contexto = { definirAtiva: jest.fn(async () => undefined), salvar: jest.fn(async () => undefined), atualizar: jest.fn(async () => undefined) };
   G.__params = id ? { id } : {};
   G.__analises = {
     lista, ativa, analiseAtiva: lista.find((a) => a.id === ativa) ?? null, pronto: true, erro: "",
-    definirAtiva: contexto.definirAtiva, salvar: contexto.salvar, remover: jest.fn(async () => undefined),
+    definirAtiva: contexto.definirAtiva, salvar: contexto.salvar, atualizar: contexto.atualizar, remover: jest.fn(async () => undefined),
   };
   return contexto;
 }
@@ -808,7 +821,8 @@ describe("tela do dossiê", () => {
   describe("com prédio confirmado (edifício real de Casa Forte)", () => {
     const e = edificioRealDeCasaForte();
     const a = analise({ id: "confirmada", nome: "Apartamento de teste", vinculo: confirmadoEm(e.id) });
-    const visao = derivarDossie(a, e, indiceDoBairro("casa-forte").contexto, indiceDoBairro("casa-forte").obras, [], AGORA, "custo");
+    // A tela passa a camada "A rua" do índice (v1.1): as perguntas da rua entram no roteiro.
+    const visao = derivarDossie(a, e, indiceDoBairro("casa-forte").contexto, indiceDoBairro("casa-forte").obras, [], AGORA, "custo", entradaDaRua(indiceDoBairro("casa-forte")));
 
     it("mostra o topo, o título, o lote confirmado, os fatos curtos e os links", () => {
       prepararEstado([a], "confirmada");
@@ -818,11 +832,9 @@ describe("tela do dossiê", () => {
       expect(t).toContain("Casa Forte · Recife");
       expect(t).toContain("Lote confirmado ✓");
       expect(t).toContain("Abrir mapa");
-      expect(t).toContain(`Construído em ${e.anoConstrucao}`);
-      const faixa = visao.cadastro.find((f) => f.id === "iptu-faixa");
-      expect(faixa).toBeDefined();
-      expect(t).toContain(faixa?.valor);
-      expect(t).toContain("IPTU 2026 no prédio");
+      // 15/11/2026: ficha do prédio em uma linha; o IPTU aparece uma vez só, no custo (não mais a faixa no topo).
+      expect(t).toContain(`Prédio de ${e.anoConstrucao} · ${e.pavimentos} andares`);
+      expect(t).not.toContain("IPTU 2026 no prédio");
       expect(t).toContain("Dados do anúncio");
       expect(t).toContain("Cadastro oficial");
       expect(t).toContain("Preparar visita");
@@ -831,31 +843,44 @@ describe("tela do dossiê", () => {
       expect(t).not.toContain("Confirmar prédio");
     });
 
+    it("lote A: aluguel 2.500 + condomínio 600 destaca mensal 3.100 com pendências", () => {
+      const a = analise({ declarados: { preco: v(2500), condominio: v(600), iptu: { ...vazio, periodo: "desconhecido" }, seguroIncendio: vazio } });
+      prepararEstado([a], a.id);
+      const t = todosOsTextos(abrirTela());
+      expect(t).toContain("Mensal conhecido");
+      expect(t).toContain("R$ 3.100");
+      expect(t).toContain("Aluguel anunciado");
+      expect(t).toContain("R$ 2.500");
+      expect(t).toContain("+ valores a confirmar");
+      expect(t.indexOf("Mensal conhecido")).toBeLessThan(t.indexOf("Aluguel anunciado"));
+    });
+
     it("o custo vem de custoMensal: principal, total conhecido, além do aluguel e a nota do que ficou de fora", () => {
       const comPendencia = analise({ id: "confirmada", vinculo: confirmadoEm(e.id), declarados: { iptu: { ...v(288), periodo: "desconhecido" }, seguroIncendio: vazio } });
       prepararEstado([comPendencia], "confirmada");
       const t = todosOsTextos(abrirTela());
       expect(t).toContain("Aluguel anunciado");
-      expect(t).toContain("Total mensal conhecido");
+      expect(t).toContain("Mensal conhecido");
       expect(t).toContain("R$ 5.690");
       expect(t).toContain("+R$ 1.190 além do aluguel");
       expect(t).toContain("IPTU e Seguro incêndio fora da soma.");
       expect(t).toContain("IPTU: O anúncio informa R$ 288, sem periodicidade.");
-      expect(t.filter((x) => x === "A confirmar").length).toBeGreaterThanOrEqual(2);
+      // 15/11/2026: o IPTU sem período mostra a referência do cadastro no mesmo lugar ("~R$ X", fora da soma).
+      expect(t.filter((x) => x === "A confirmar").length).toBeGreaterThanOrEqual(1);
+      expect(t).toContain("pelo cadastro, fora da soma");
       expect(t).toContain("Ver composição e ajustar valores");
     });
 
-    it("um toque no número de IPTU do cadastro abre a gaveta de fonte com as datas do meta.json", () => {
+    it("um toque na ficha do prédio abre a gaveta de fonte com as datas do meta.json", () => {
       prepararEstado([a], "confirmada");
       const arvore = abrirTela();
-      const faixa = visao.cadastro.find((f) => f.id === "iptu-faixa");
-      tocar(arvore, new RegExp(`${faixa?.valor.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}.*Ver fonte`));
+      tocar(arvore, /^Prédio de .*Ver fonte\.$/);
       const t = todosOsTextos(arvore);
-      const iptu = META.fontes.find((f) => f.chave === "iptu_2026");
-      expect(iptu).toBeDefined();
-      expect(t).toContain("IPTU 2026 · Prefeitura do Recife · ODbL");
-      expect(t).toContain(dataDaFonte(iptu?.modificadoEm ?? null));
-      expect(t).toContain(dataDaFonte(iptu?.consultadoEm ?? null));
+      const chave = visao.cadastro.find((f) => f.id === "cadastro-ano")?.fonte;
+      const base = META.fontes.find((f) => f.chave === chave);
+      expect(base).toBeDefined();
+      expect(t).toContain(dataDaFonte(base?.modificadoEm ?? null));
+      expect(t).toContain(dataDaFonte(base?.consultadoEm ?? null));
       expect(t).toContain("Colunas usadas");
       for (const c of ORDEM_DA_CONFIANCA) expect(t).toContain(rotuloDaConfianca(c));
     });
@@ -890,7 +915,13 @@ describe("tela do dossiê", () => {
       await act(async () => {
         (botao(arvore, "Remover dos salvos").props.onPress as () => void)();
       });
-      expect(estado.salvar).toHaveBeenCalledWith(expect.objectContaining({ id: "confirmada", salva: false }));
+      // VE09: o marcador usa `atualizar` (edita a análise guardada; `salvar` preserva o caderno existente de propósito).
+      expect(estado.atualizar).toHaveBeenCalledWith("confirmada", expect.any(Function));
+      const mudar = estado.atualizar.mock.calls[0]![1] as (x: AnaliseV2) => AnaliseV2;
+      expect(mudar(a)).toMatchObject({ id: "confirmada", salva: false });
+      // Tirar dos salvos não cria retrato; salvar um imóvel sem retrato cria.
+      expect(mudar(a).caderno?.memoria).toBeUndefined();
+      expect(mudar({ ...a, salva: false }).caderno?.memoria?.fatos.length).toBeGreaterThan(0);
     });
 
     it("Abrir mapa abre a gaveta com o lote e as obras numeradas", () => {
@@ -909,6 +940,8 @@ describe("tela do dossiê", () => {
       prepararEstado([a], "confirmada");
       const arvore = abrirTela();
       tocar(arvore, "Entorno");
+      // 15/11/2026: o Entorno abre pelo que as obras significam; a lista vem com um toque.
+      tocar(arvore, /^Ver (a obra|as \d+ obras)$/);
       const t = todosOsTextos(arvore);
       expect(t).toContain("Obras próximas");
       const linhas = linhasDeObras(visao.obras);
@@ -935,7 +968,7 @@ describe("tela do dossiê", () => {
       expect(t).toContain("Chave cadastral");
       expect(t).toContain("Ver todas as verificações");
       // As três primeiras perguntas são as da prioridade escolhida, com a de endereço sempre à frente.
-      const antes = derivarDossie(a, e, null, [], [], AGORA, "custo").perguntas.slice(0, 3);
+      const antes = derivarDossie(a, e, null, [], [], AGORA, "custo", entradaDaRua(indiceDoBairro("casa-forte"))).perguntas.slice(0, 3);
       for (const p of antes) expect(t).toContain(p.titulo);
     });
 
@@ -945,7 +978,7 @@ describe("tela do dossiê", () => {
       tocar(arvore, "Edifício");
       tocar(arvore, "Conforto");
       const t = todosOsTextos(arvore);
-      const conforto = derivarDossie(a, e, null, [], [], AGORA, "conforto").perguntas.slice(0, 3);
+      const conforto = derivarDossie(a, e, null, [], [], AGORA, "conforto", entradaDaRua(indiceDoBairro("casa-forte"))).perguntas.slice(0, 3);
       for (const p of conforto) expect(t).toContain(p.titulo);
     });
 
@@ -1211,12 +1244,12 @@ describe("tela do dossiê", () => {
     });
 
     it("fora da área com cadastro: sem link para confirmar e sem dado de cadastro", () => {
-      const fora = analise({ id: "fora", nome: "Em Torre", bairro: "torre", bairroTexto: "Torre", vinculo: { estado: "fora_de_cobertura" } });
+      const fora = analise({ id: "fora", nome: "Em Cabanga", bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" } });
       prepararEstado([fora], "fora");
       const arvore = abrirTela();
       const t = todosOsTextos(arvore);
       expect(t).toContain("Fora da área com cadastro");
-      expect(t).toContain("Torre · Recife");
+      expect(t).toContain("Cabanga · Recife");
       expect(arvore.root.findAll((n) => n.props.accessibilityLabel === "Confirmar prédio")).toHaveLength(0);
       tocar(arvore, "Entorno");
       expect(todosOsTextos(arvore)).toContain("Fora da área com cadastro");
@@ -1258,7 +1291,7 @@ describe("tela do dossiê", () => {
       expect(u).not.toContain("Área a confirmar");
     });
 
-    it("a medida do achado, principal e de apoio, está em Fraunces 500 (`.ds-finding-measure`), não em JetBrains Mono", () => {
+    it("anomalias de custo vão para 'Divergências do anúncio', compactas, no painel da aba (15/11/2026)", () => {
       const a = analise({
         id: "medidas",
         declarados: { iptu: { ...v(288), periodo: "desconhecido", aConfirmar: true }, condominio: v(150) },
@@ -1279,11 +1312,11 @@ describe("tela do dossiê", () => {
       // Só o painel da aba: o bloco de custo, acima dele, escreve os mesmos valores em tabela, em outra fonte.
       const painel = arvore.root.findAll((n) => (n.type as unknown) === "View" && n.props.role === "tabpanel")[0];
       if (!painel) throw new Error("sem painel");
-      for (const numero of ["R$ 288", "R$ 150"]) {
-        const estilos = estilosDoTexto(painel, numero);
-        expect(estilos.length).toBeGreaterThan(0);
-        for (const estilo of estilos) expect(estilo).toMatchObject({ fontFamily: "Fraunces", fontWeight: "500" });
-      }
+      const noPainel = painel.findAll((n) => (n.type as unknown) === "Text").map((n) => [n.props.children].flat(3).filter((c: unknown) => typeof c === "string").join(""));
+      expect(noPainel).toContain("Divergências do anúncio (2)");
+      expect(noPainel).toContain(visao.achados.principal!.titulo);
+      expect(noPainel).toContain(visao.achados.apoio[0]!.titulo);
+      expect(noPainel).not.toContain("O que mais pesa");
     });
 
     it("com anomalia de custo, o achado vem do anúncio e 'Ver composição' leva a /editar", () => {
@@ -1298,12 +1331,11 @@ describe("tela do dossiê", () => {
       prepararEstado([a], "anomalia");
       const arvore = abrirTela();
       const t = todosOsTextos(arvore);
-      expect(t).toContain("O que o Vereda encontrou");
+      // 15/11/2026: divergência do anúncio fica na área própria, com o atalho para corrigir o valor.
+      expect(t).toContain("Divergências do anúncio (1)");
       expect(t).toContain("IPTU sem periodicidade");
-      tocar(arvore, "Ver composição");
+      tocar(arvore, "Corrigir o valor");
       expect(G.__router.push).toHaveBeenCalledWith({ pathname: "/editar", params: { id: "anomalia" } });
-      tocar(arvore, /^Ver fonte: declarado pelo anunciante · anúncio$/);
-      expect(todosOsTextos(arvore)).toContain("Informado no anúncio");
     });
   });
 
@@ -1311,8 +1343,8 @@ describe("tela do dossiê", () => {
     const desconhecido = analise({ vinculo: confirmadoEm("id-que-nao-existe") });
     expect(carregarCadastro(desconhecido)).toMatchObject({ edificio: null, falhou: false });
     expect(carregarCadastro(desconhecido).contexto?.bairro).toBe("casa-forte");
-    const fora = analise({ bairro: "torre", bairroTexto: "Torre", vinculo: { estado: "fora_de_cobertura" } });
-    expect(carregarCadastro(fora)).toEqual({ edificio: null, contexto: null, obras: [], vizinhos: [], falhou: false });
+    const fora = analise({ bairro: "cabanga", bairroTexto: "Cabanga", vinculo: { estado: "fora_de_cobertura" } });
+    expect(carregarCadastro(fora)).toEqual({ edificio: null, contexto: null, obras: [], vizinhos: [], rua: null, falhou: false });
   });
 
   it("índice ilegível vira 'falhou' em vez de derrubar a tela", () => {
@@ -1325,7 +1357,7 @@ describe("tela do dossiê", () => {
       }));
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { carregarCadastro: carregar } = require("../src/componentes/dossie-v1/cadastro") as typeof import("../src/componentes/dossie-v1/cadastro");
-      expect(carregar(analise())).toEqual({ edificio: null, contexto: null, obras: [], vizinhos: [], falhou: true });
+      expect(carregar(analise())).toEqual({ edificio: null, contexto: null, obras: [], vizinhos: [], rua: null, falhou: true });
     });
     jest.dontMock("../src/dados/recife/indice");
   });

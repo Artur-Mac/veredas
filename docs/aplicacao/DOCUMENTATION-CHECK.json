@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-14",
+  "scope": "Documentation integrity only; no app tests or epoch execution performed",
+  "markdown_documents": 7,
+  "local_links_checked": 328,
+  "research_rows": 217,
+  "research_dispositions": {
+    "Experiment": 106,
+    "Reference": 43,
+    "Apply": 68
+  },
+  "epochs": 18,
+  "work_packages": 72,
+  "application_candidates": 40,
+  "errors": [],
+  "words_by_document": {
+    "EPOCH-TRACKER.md": 960,
+    "EXECUTION-PROMPT.md": 730,
+    "EXPERIMENT-CARDS.md": 4035,
+    "README.md": 262,
+    "REPOSITORY-BASELINE.md": 3031,
+    "RESEARCH-TRACEABILITY.md": 8087,
+    "VEREDA-APPLICATION-PLAN.md": 11378
+  }
+}

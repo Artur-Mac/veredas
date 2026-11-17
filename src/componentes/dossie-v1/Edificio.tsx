@@ -1,5 +1,6 @@
 import { View } from "react-native";
 import type { Edificio as EdificioDoIndice, Fato, Pergunta, Prioridade, VisaoDoDossie } from "../../dados/contratos";
+import { derivarGuiaDeEstrutura } from "../../dados/dossie/guiaEstrutura";
 import { useTema } from "../../tema/Tema";
 import { ESPACO, RAIO, comAlfa } from "../../tema/tokens";
 import type { PedidoDeFonte } from "../fonte/GavetaDeFonte";
@@ -8,7 +9,7 @@ import { rotuloDaConfianca } from "../fonte/textos";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { CartaoSemPredio } from "./CartaoSemPredio";
-import { Corpo, LinhaTocavel, LinkComSeta, Nota, Numero, NumeroEditorial, Secao, Sobretitulo, Titulo2 } from "./base";
+import { CaixaCreme, Corpo, LinhaTocavel, LinkComSeta, Nota, Numero, NumeroEditorial, Secao, Sobretitulo, Titulo2 } from "./base";
 import { PRIORIDADES, VERIFICACOES_VISIVEIS, corpoQueCabe, resumoDoValor } from "./textos";
 
 export type SecaoDoEdificio = "verificacoes" | "cadastro" | "valor";
@@ -145,7 +146,8 @@ function FatoDaGrade({ fato, aoAbrirFonte }: { fato: Fato; aoAbrirFonte: Props["
   );
 }
 
-function EstruturaECadastro({ visao, aoAbrirFonte, aoAbrirCadastro }: Pick<Props, "visao" | "aoAbrirFonte" | "aoAbrirCadastro">) {
+function EstruturaECadastro({ visao, edificio, aoAbrirFonte, aoAbrirCadastro }: Pick<Props, "visao" | "edificio" | "aoAbrirFonte" | "aoAbrirCadastro">) {
+  const guia = derivarGuiaDeEstrutura(edificio, visao);
   return (
     <View>
       <Sobretitulo>Identidade cadastral</Sobretitulo>
@@ -155,6 +157,28 @@ function EstruturaECadastro({ visao, aoAbrirFonte, aoAbrirCadastro }: Pick<Props
           <FatoDaGrade key={f.id} fato={f} aoAbrirFonte={aoAbrirFonte} />
         ))}
       </View>
+      {guia ? (
+        <CaixaCreme estilo={{ marginTop: ESPACO[4] }}>
+          <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20, fontWeight: "700" }}>
+            {guia.titulo}
+          </Texto>
+          <Corpo estilo={{ fontSize: 12.5, lineHeight: 18.5 }}>{guia.explicacaoSimples}</Corpo>
+          <View style={{ gap: 8, marginTop: 4 }}>
+            {guia.pontosDaVisita.map((ponto, idx) => (
+              <View key={ponto.id} style={{ gap: 2 }}>
+                <Texto tipo="corpo" style={{ fontSize: 12.5, lineHeight: 18, fontWeight: "600" }}>
+                  {`${idx + 1}. ${ponto.ondeOlhar}`}
+                </Texto>
+                <Corpo estilo={{ fontSize: 12, lineHeight: 17.5 }}>{ponto.oQueObservar}</Corpo>
+              </View>
+            ))}
+          </View>
+          {guia.contextoDefesaCivil ? (
+            <Corpo estilo={{ fontSize: 12, lineHeight: 17.5, marginTop: 2 }}>{guia.contextoDefesaCivil}</Corpo>
+          ) : null}
+          <Nota>{guia.avisoDeEscopo}</Nota>
+        </CaixaCreme>
+      ) : null}
       <Nota estilo={{ marginTop: 12 }}>Toque em um dado para ver a fonte.</Nota>
       <LinkComSeta rotulo="Abrir cadastro completo" onPress={aoAbrirCadastro} />
     </View>
@@ -250,7 +274,7 @@ export function EdificioDoDossie(props: Props) {
       {visao.loteConfirmado ? (
         <>
           <Secao aoMedir={(y) => aoMedirSecao("cadastro", y)}>
-            <EstruturaECadastro visao={visao} aoAbrirFonte={props.aoAbrirFonte} aoAbrirCadastro={props.aoAbrirCadastro} />
+            <EstruturaECadastro visao={visao} edificio={props.edificio} aoAbrirFonte={props.aoAbrirFonte} aoAbrirCadastro={props.aoAbrirCadastro} />
           </Secao>
           <Secao semBase aoMedir={(y) => aoMedirSecao("valor", y)}>
             <ValorEHistorico visao={visao} edificio={props.edificio} aoAbrirFonte={props.aoAbrirFonte} />

@@ -17,17 +17,16 @@ import {
   type Edificio,
   type IndiceDoBairro,
   type MetaDoIndice,
+  type RuaDoBairro,
 } from "../contratos";
 import { BAIRROS_COBERTOS, type SlugCoberto } from "./bairros";
+import { lerCamada } from "../camadas";
+import { ARQUIVOS_DO_INDICE, LER_META_PUBLICADA } from "./publicacaoGerada";
 
-const ARQUIVOS: Record<SlugCoberto, () => unknown> = {
-  "boa-viagem": () => require("./indice/boa-viagem.json") as unknown,
-  "casa-forte": () => require("./indice/casa-forte.json") as unknown,
-  gracas: () => require("./indice/gracas.json") as unknown,
-  espinheiro: () => require("./indice/espinheiro.json") as unknown,
-  madalena: () => require("./indice/madalena.json") as unknown,
-};
-const ARQUIVO_META = () => require("./indice/meta.json") as unknown;
+// D036: o arquivo de cada bairro fica fora do bundle; a tela espera por ele (`arquivoDoIndice`) antes de ler. O meta.json,
+// pequeno, continua no bundle.
+const ARQUIVOS: Record<SlugCoberto, string> = ARQUIVOS_DO_INDICE;
+const ARQUIVO_META = LER_META_PUBLICADA;
 
 type Carregado = { indice: IndiceDoBairro; porId: Map<string, Edificio> };
 /** Um problema de formato, no mesmo feitio dos `issues` do Zod (que são aceitos como estão). */
@@ -95,6 +94,16 @@ export function checarIndiceRaso(slug: SlugCoberto, dados: unknown): IndiceDoBai
     if (typeof dados.geradoEm !== "string") problemas.push({ path: ["geradoEm"], message: "esperado texto" });
     if (!ehObjeto(dados.contexto)) problemas.push({ path: ["contexto"], message: "esperado objeto" });
     if (!Array.isArray(dados.obras)) problemas.push({ path: ["obras"], message: "esperado lista" });
+    // v1.1: a camada "A rua" é opcional; presente, tem de ser objeto com as listas do contrato.
+    if (dados.rua !== undefined) {
+      if (!ehObjeto(dados.rua)) problemas.push({ path: ["rua"], message: "esperado objeto" });
+      else {
+        for (const campo of ["setores", "areasDePonderacao", "luse", "iluminacaoDesativada"] as const) {
+          if (!Array.isArray(dados.rua[campo])) problemas.push({ path: ["rua", campo], message: "esperado lista" });
+        }
+        if (!ehObjeto(dados.rua.logradouros)) problemas.push({ path: ["rua", "logradouros"], message: "esperado objeto" });
+      }
+    }
     if (!Array.isArray(dados.edificios)) {
       problemas.push({ path: ["edificios"], message: "esperado lista" });
     } else if (dados.edificios.length > 0) {
@@ -114,9 +123,9 @@ export function checarIndiceRaso(slug: SlugCoberto, dados: unknown): IndiceDoBai
 function carregar(slug: SlugCoberto): Carregado {
   const guardado = emMemoria.get(slug);
   if (guardado) return guardado;
-  const leitor = ARQUIVOS[slug];
-  if (!leitor) throw new Error(`Bairro sem índice cadastral: ${String(slug)}`);
-  const indice = checarIndiceRaso(slug, leitor());
+  const arquivo = ARQUIVOS[slug];
+  if (!arquivo) throw new Error(`Bairro sem índice cadastral: ${String(slug)}`);
+  const indice = checarIndiceRaso(slug, lerCamada(arquivo));
   const carregado = { indice, porId: indexarPorId(slug, indice.edificios) };
   emMemoria.set(slug, carregado);
   return carregado;
@@ -129,6 +138,11 @@ function carregarMeta(): MetaDoIndice {
   if (!resultado.success) throw new Error(descreverFalha("meta.json", resultado.error.issues));
   metaEmMemoria = resultado.data;
   return metaEmMemoria;
+}
+
+/** O arquivo de camada do índice do bairro (para `garantirCamadas`), ou null fora dos bairros habilitados. */
+export function arquivoDoIndice(slug: string | null | undefined): string | null {
+  return slug ? ((ARQUIVOS as Record<string, string | undefined>)[slug] ?? null) : null;
 }
 
 /** O índice inteiro do bairro (edifícios, contexto e obras). Checa o formato no primeiro acesso. */
@@ -145,8 +159,13 @@ export function contextoDoBairro(slug: SlugCoberto): ContextoDoBairro {
   return carregar(slug).indice.contexto;
 }
 
+/** v1.1: a camada "A rua" do bairro (setores, LUSE, iluminação, coleta, Defesa Civil), ou null num índice da v1.0. */
+export function ruaDoBairro(slug: SlugCoberto): RuaDoBairro | null {
+  return carregar(slug).indice.rua ?? null;
+}
+
 /**
- * Acha um edifício pelo `id` (`${Código Logradouro}-${numero}`). Sem `bairro`, procura nos cinco, começando pelos
+ * Acha um edifício pelo `id` (`${Código Logradouro}-${numero}`). Sem `bairro`, procura nas partições habilitadas, começando pelas
  * que já estão em memória; com `bairro`, só nele. Devolve null quando o id não está no índice. Um bairro inválido
  * não esconde um id achado em outro; só lança quando o id não apareceu em nenhum e algum arquivo falhou.
  */
@@ -176,5 +195,9 @@ export const META: MetaDoIndice = {
   },
   get fontes() {
     return carregarMeta().fontes;
+  },
+  /** v1.1: as bases da seção "A rua"; ausente num índice da v1.0. */
+  get fontesDaRua() {
+    return carregarMeta().fontesDaRua;
   },
 };

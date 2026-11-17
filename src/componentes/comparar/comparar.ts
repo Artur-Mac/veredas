@@ -1,13 +1,14 @@
 // Lógica do Comparar (Fatia 5). Pura: recebe duas análises v2 e devolve o que a tela mostra, já formatado.
 // Custos só via `custoMensal` (src/dados/custos.ts): nada aqui soma parcelas por conta própria.
-// Nenhuma frase compara com adjetivo nem recomenda; a tela mostra fatos lado a lado.
+// Os painéis mostram fatos lado a lado, sem adjetivo. A recomendação dependente da prioridade da pessoa (quem visitar
+// primeiro, com motivo) vive em src/dados/decisao.ts (VE01, decisão D010), não aqui.
 import type { AnaliseV2, Edificio, Modalidade, OrigemDoValor, ParcelaDoCusto } from "../../dados/contratos";
-import { custoMensal, quemInforma } from "../../dados/custos";
+import { custoMensal, quemInforma, ROTULO_MENSAL_CONHECIDO, avisoDeValoresPendentes } from "../../dados/custos";
 import { formatarNumero, formatarReais } from "../../dados/formatos";
 import { nomeDoBairro } from "../../dados/formulario";
 import { enderecoEmCaixaDeTitulo } from "../predio/textos";
 
-export type Topico = "custo" | "espaco" | "entorno";
+export type Topico = "custo" | "espaco" | "entorno" | "rotina";
 export type Par<T> = [T, T];
 
 // ——— Quem entra na comparação ——————————————————————————————————————————————————————
@@ -140,7 +141,7 @@ export type LinhaDeParcela = { nome: ParcelaDoCusto["nome"]; celulas: Par<Celula
 export type ComparacaoDeCusto = {
   referencia: "custo_mensal_conhecido" | "preco_anunciado";
   rotuloDoPrincipal: "Aluguel anunciado" | "Preço anunciado";
-  rotuloDoMensal: "Custo mensal conhecido" | "Despesas mensais conhecidas";
+  rotuloDoMensal: typeof ROTULO_MENSAL_CONHECIDO;
   colunas: Par<ColunaDeCusto>;
   /** 0 a 1, na mesma escala (o maior valor conhecido ocupa a barra inteira); null sem valor conhecido. */
   barras: Par<number | null>;
@@ -159,6 +160,18 @@ export type ComparacaoDeCusto = {
 
 const ORDEM_DAS_PARCELAS: ParcelaDoCusto["nome"][] = ["Aluguel", "Condomínio", "IPTU", "Seguro incêndio", "Taxa de serviço", "Outros"];
 
+/** Nota de que a conta de cada coluna deixa de fora parcelas a confirmar (aluguel e compra usam o mesmo texto). */
+const NOTA_DAS_PARCELAS_A_CONFIRMAR = "A diferença usa só as parcelas conhecidas; as a confirmar ficam fora.";
+
+/** Quais parcelas ficaram fora da soma da coluna (a confirmar ou desconhecidas), como um texto comparável: nomes em ordem. */
+function chaveDasParcelasForaDaSoma(c: ReturnType<typeof custoMensal>): string {
+  return c.parcelas
+    .filter((p) => p.estado !== "conhecido")
+    .map((p) => p.nome)
+    .sort()
+    .join("|");
+}
+
 export function compararCusto(a: AnaliseV2, b: AnaliseV2): ComparacaoDeCusto {
   const aluguel = a.modalidade === "aluguel";
   const custos: Par<ReturnType<typeof custoMensal>> = [custoMensal(a), custoMensal(b)];
@@ -167,7 +180,7 @@ export function compararCusto(a: AnaliseV2, b: AnaliseV2): ComparacaoDeCusto {
     mensalConhecido: c.totalMensalConhecido,
     valorDaBarra: aluguel ? c.totalMensalConhecido : c.principal.valor,
     pendentes: c.pendentes,
-    textoDePendentes: textoDePendentes(c.pendentes),
+    textoDePendentes: [avisoDeValoresPendentes(c), textoDePendentes(c.pendentes)].filter(Boolean).join(" · "),
     porM2: c.principal.porM2,
   })) as Par<ColunaDeCusto>;
 
@@ -194,11 +207,12 @@ export function compararCusto(a: AnaliseV2, b: AnaliseV2): ComparacaoDeCusto {
     frase = `${destaque} ${legenda}`;
   }
 
+  // Aluguel: qualquer parcela a confirmar tira algo da soma que gera a diferença. Compra: a diferença é do preço, mas as
+  // despesas mensais ficam lado a lado, e só se comparam quando as duas somas deixam de fora as mesmas parcelas.
   const pendentes = colunas[0].pendentes + colunas[1].pendentes;
+  const somasComParcelasDiferentes = chaveDasParcelasForaDaSoma(custos[0]) !== chaveDasParcelasForaDaSoma(custos[1]);
   const nota =
-    aluguel && diferenca !== null && pendentes > 0
-      ? "A diferença usa só as parcelas conhecidas; as a confirmar ficam fora."
-      : null;
+    diferenca !== null && (aluguel ? pendentes > 0 : somasComParcelasDiferentes) ? NOTA_DAS_PARCELAS_A_CONFIRMAR : null;
 
   const nomes = ORDEM_DAS_PARCELAS.filter((nome) => custos.some((c) => c.parcelas.some((p) => p.nome === nome)));
   const parcelas = nomes.map((nome): LinhaDeParcela => ({
@@ -212,7 +226,7 @@ export function compararCusto(a: AnaliseV2, b: AnaliseV2): ComparacaoDeCusto {
   return {
     referencia,
     rotuloDoPrincipal: aluguel ? "Aluguel anunciado" : "Preço anunciado",
-    rotuloDoMensal: aluguel ? "Custo mensal conhecido" : "Despesas mensais conhecidas",
+    rotuloDoMensal: ROTULO_MENSAL_CONHECIDO,
     colunas,
     barras: barras(valores),
     diferenca,

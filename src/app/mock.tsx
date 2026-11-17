@@ -107,6 +107,7 @@ export default function ControlesDoMock() {
                 <Pressionavel
                   role="radio"
                   accessibilityState={{ checked: d === id }}
+                  aria-checked={d === id}
                   onPress={() => setId(d)}
                   style={{ minHeight: 40, justifyContent: "center" }}
                 >

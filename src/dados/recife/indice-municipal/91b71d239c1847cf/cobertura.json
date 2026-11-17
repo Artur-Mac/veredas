@@ -1,0 +1,1623 @@
+{
+  "versao": 1,
+  "geradoEm": "2026-10-22T00:30:36Z",
+  "bairroNaoHabilitadoPermiteCaderno": true,
+  "nota": "Controle geométrico não é probabilidade de identificação nem validação física do edifício.",
+  "bairros": [
+    {
+      "bairro": "aflitos",
+      "edificios": 70,
+      "unidades": 2128,
+      "geometria": {
+        "comPoligono": 70,
+        "centrosInternos": 70,
+        "fracaoInterna": 1
+      },
+      "bytes": 81150,
+      "sha256": "bfd1e2a1cfbfa3b72c816555560620bacd39ab28124e4d0c2e83e1083c90927a",
+      "grafias": [
+        "Aflitos"
+      ],
+      "registrosIptu": 2685,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "afogados",
+      "edificios": 174,
+      "unidades": 1523,
+      "geometria": {
+        "comPoligono": 173,
+        "centrosInternos": 173,
+        "fracaoInterna": 1
+      },
+      "bytes": 159212,
+      "sha256": "61ae2766b1cdcc96a7711b06626d6aeb912c194428c4f0b8fd1c083ddb1ccbdd",
+      "grafias": [
+        "Afogados"
+      ],
+      "registrosIptu": 11422,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "agua-fria",
+      "edificios": 33,
+      "unidades": 644,
+      "geometria": {
+        "comPoligono": 33,
+        "centrosInternos": 33,
+        "fracaoInterna": 1
+      },
+      "bytes": 36539,
+      "sha256": "25d8c6d66a38853cdf9396c67a1a37453c7a5cc8e85c0ad88c0b8474052e0a6b",
+      "grafias": [
+        "Agua Fria"
+      ],
+      "registrosIptu": 7236,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "alto-do-mandu",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 270,
+      "sha256": "eacc84435e8085497c28b199f221729fe266278c3c747cab5483c3d2ce4ee374",
+      "grafias": [
+        "Alto Do Mandu",
+        "Alto do Mandu"
+      ],
+      "registrosIptu": 0,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "alto-jose-bonifacio",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 282,
+      "sha256": "1bc1fa0c1d980b1687a8eae5efc357ab10cccc289eeed003f4a0045535ae5dd0",
+      "grafias": [
+        "Alto Jose Bonifacio"
+      ],
+      "registrosIptu": 1502,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "alto-jose-do-pinho",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 280,
+      "sha256": "81a476e5a0bbef4b177acb130f3fb6a1fa3c8b99aebc02b0bd0dc9a36c9eb386",
+      "grafias": [
+        "Alto Jose Do Pinho",
+        "Alto Jose do Pinho"
+      ],
+      "registrosIptu": 1953,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "alto-santa-terezinha",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 284,
+      "sha256": "c1a3e3eb3621aeac9eeefbc7e3d64afcb1328b0bfcc7e8276a80fc59fb0ffa14",
+      "grafias": [
+        "Alto Santa Terezinha"
+      ],
+      "registrosIptu": 675,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "apipucos",
+      "edificios": 1,
+      "unidades": 54,
+      "geometria": {
+        "comPoligono": 1,
+        "centrosInternos": 1,
+        "fracaoInterna": 1
+      },
+      "bytes": 2178,
+      "sha256": "e376593b65fac2e3bac2a78e555624f921ef5bc43eb9eb1cc7eee2453b1d351f",
+      "grafias": [
+        "Apipucos"
+      ],
+      "registrosIptu": 336,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "areias",
+      "edificios": 31,
+      "unidades": 2666,
+      "geometria": {
+        "comPoligono": 31,
+        "centrosInternos": 31,
+        "fracaoInterna": 1
+      },
+      "bytes": 32891,
+      "sha256": "f524d842ee4e1da905a3b3f06b4494f15533a09a8971a46f7564d07732e34f7e",
+      "grafias": [
+        "Areias"
+      ],
+      "registrosIptu": 7253,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "arruda",
+      "edificios": 27,
+      "unidades": 1073,
+      "geometria": {
+        "comPoligono": 27,
+        "centrosInternos": 27,
+        "fracaoInterna": 1
+      },
+      "bytes": 29968,
+      "sha256": "e48c9d006c3a604a161f16aa37dd1490ace641740823974d45e628e480c8ac6b",
+      "grafias": [
+        "Arruda"
+      ],
+      "registrosIptu": 4047,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "barro",
+      "edificios": 37,
+      "unidades": 1313,
+      "geometria": {
+        "comPoligono": 37,
+        "centrosInternos": 37,
+        "fracaoInterna": 1
+      },
+      "bytes": 37083,
+      "sha256": "aee18010600586b442124ffb4642e0f31f49b80f705b27fdc121823b9a6791e8",
+      "grafias": [
+        "Barro"
+      ],
+      "registrosIptu": 3454,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "beberibe",
+      "edificios": 9,
+      "unidades": 96,
+      "geometria": {
+        "comPoligono": 9,
+        "centrosInternos": 9,
+        "fracaoInterna": 1
+      },
+      "bytes": 9471,
+      "sha256": "a3cd8efae7ffe629dc30cd6f908bd6829a94c70ddcd09708b4dcd423e1e6e839",
+      "grafias": [
+        "Beberibe"
+      ],
+      "registrosIptu": 1367,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "boa-viagem",
+      "edificios": 1879,
+      "unidades": 55389,
+      "geometria": {
+        "comPoligono": 1878,
+        "centrosInternos": 1878,
+        "fracaoInterna": 1
+      },
+      "bytes": 1929575,
+      "sha256": "b3671635e21cd95440242ede395a3797e9e4917a8ecc706ae04e4a39ca62c15c",
+      "grafias": [
+        "Boa Viagem"
+      ],
+      "registrosIptu": 71237,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "boa-vista",
+      "edificios": 267,
+      "unidades": 7845,
+      "geometria": {
+        "comPoligono": 267,
+        "centrosInternos": 267,
+        "fracaoInterna": 1
+      },
+      "bytes": 288022,
+      "sha256": "5e44bab7e015b55907068a1e326ea20e91e057e3e64f0082a5cf096f6edfba84",
+      "grafias": [
+        "Boa Vista"
+      ],
+      "registrosIptu": 14819,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "bomba-do-hemeterio",
+      "edificios": 4,
+      "unidades": 43,
+      "geometria": {
+        "comPoligono": 4,
+        "centrosInternos": 4,
+        "fracaoInterna": 1
+      },
+      "bytes": 4998,
+      "sha256": "f3a501c797aa01e44dda692be573774e1ec7ab0ddef86c0e124ccfdf80554091",
+      "grafias": [
+        "Bomba Do Hemeterio",
+        "Bomba do Hemeterio"
+      ],
+      "registrosIptu": 1525,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "bongi",
+      "edificios": 24,
+      "unidades": 306,
+      "geometria": {
+        "comPoligono": 24,
+        "centrosInternos": 24,
+        "fracaoInterna": 1
+      },
+      "bytes": 25130,
+      "sha256": "0490e871a164419d7ba3c7d94193f4097f903ae8960339dfb7e6fb1ce0d5eede",
+      "grafias": [
+        "Bongi"
+      ],
+      "registrosIptu": 1839,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "brasilia-teimosa",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 276,
+      "sha256": "2df13930a0a04879e71ed4cfdab699d0868874bdbd10de354c44b5a5694f4860",
+      "grafias": [
+        "Brasilia Teimosa"
+      ],
+      "registrosIptu": 3036,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "brejo-da-guabiraba",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 280,
+      "sha256": "65d2afe48e38ab7767b80282b6ebb6af95212fe264369ce15c80c1701e0d46d4",
+      "grafias": [
+        "Brejo Da Guabiraba",
+        "Brejo da Guabiraba"
+      ],
+      "registrosIptu": 953,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "brejo-de-beberibe",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 278,
+      "sha256": "ce72a15dc4c3fd7a8a912107e2b79666b31ee911655d7e4915eba10c63029ea3",
+      "grafias": [
+        "Brejo De Beberibe",
+        "Brejo de Beberibe"
+      ],
+      "registrosIptu": 769,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "cabanga",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 258,
+      "sha256": "019274e8b4d67b863c563b87d1a23a51459fd4bc063a7d3e4d84f7409996c0a1",
+      "grafias": [
+        "Cabanga"
+      ],
+      "registrosIptu": 409,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "cacote",
+      "edificios": 2,
+      "unidades": 8,
+      "geometria": {
+        "comPoligono": 2,
+        "centrosInternos": 2,
+        "fracaoInterna": 1
+      },
+      "bytes": 2552,
+      "sha256": "11e3127808bbd6f6f8fa546f96a8dd4be5e91ff8ef15b7b60da8b5c650735f8b",
+      "grafias": [
+        "Cacote"
+      ],
+      "registrosIptu": 578,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "cajueiro",
+      "edificios": 16,
+      "unidades": 100,
+      "geometria": {
+        "comPoligono": 16,
+        "centrosInternos": 16,
+        "fracaoInterna": 1
+      },
+      "bytes": 15930,
+      "sha256": "8f9b9e37199128500bbc24c8dc38fe2d03685b02bb6bf12009e5edeab402a4da",
+      "grafias": [
+        "Cajueiro"
+      ],
+      "registrosIptu": 1599,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "campina-do-barreto",
+      "edificios": 7,
+      "unidades": 286,
+      "geometria": {
+        "comPoligono": 7,
+        "centrosInternos": 7,
+        "fracaoInterna": 1
+      },
+      "bytes": 8541,
+      "sha256": "74cee6d9b0e1d995cfe87062c2766ba184112d5cc5f0a27deac2024d53f74057",
+      "grafias": [
+        "Campina Do Barreto",
+        "Campina do Barreto"
+      ],
+      "registrosIptu": 1560,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "campo-grande",
+      "edificios": 123,
+      "unidades": 2153,
+      "geometria": {
+        "comPoligono": 123,
+        "centrosInternos": 123,
+        "fracaoInterna": 1
+      },
+      "bytes": 129145,
+      "sha256": "2905b717812dca242a548db044c66c805a37ee8ff4d1f8640c87adc7aead8ce6",
+      "grafias": [
+        "Campo Grande"
+      ],
+      "registrosIptu": 6360,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "casa-amarela",
+      "edificios": 265,
+      "unidades": 7087,
+      "geometria": {
+        "comPoligono": 265,
+        "centrosInternos": 265,
+        "fracaoInterna": 1
+      },
+      "bytes": 280191,
+      "sha256": "3760b972d0af7b422285b7ed0a451c133b5f005e8a6f3e0fbba52924b29783c6",
+      "grafias": [
+        "Casa Amarela"
+      ],
+      "registrosIptu": 13745,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "casa-forte",
+      "edificios": 82,
+      "unidades": 2230,
+      "geometria": {
+        "comPoligono": 82,
+        "centrosInternos": 82,
+        "fracaoInterna": 1
+      },
+      "bytes": 90967,
+      "sha256": "d266770cf8fc2e4a3edd636e04eab4a762e8cdf8e41b2225a027177c046cdf7a",
+      "grafias": [
+        "Casa Forte"
+      ],
+      "registrosIptu": 3247,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "caxanga",
+      "edificios": 25,
+      "unidades": 923,
+      "geometria": {
+        "comPoligono": 25,
+        "centrosInternos": 25,
+        "fracaoInterna": 1
+      },
+      "bytes": 27098,
+      "sha256": "da34e9304169ea9b752cc19a4e95a0efbe7d217e03e652c76a417d5f0af63341",
+      "grafias": [
+        "Caxanga"
+      ],
+      "registrosIptu": 2608,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "cidade-universitaria",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 284,
+      "sha256": "fc04c6b0ef7df8823f84c7701a612c544cbfb74c4fcc0c41971ff3ca7b486801",
+      "grafias": [
+        "Cidade Universitaria"
+      ],
+      "registrosIptu": 29,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "coelhos",
+      "edificios": 11,
+      "unidades": 54,
+      "geometria": {
+        "comPoligono": 10,
+        "centrosInternos": 10,
+        "fracaoInterna": 1
+      },
+      "bytes": 11787,
+      "sha256": "9bf6c8952c05a4a7839859caf7975cd5c58c8e622f078e6584b895c6dceb273e",
+      "grafias": [
+        "Coelhos"
+      ],
+      "registrosIptu": 1174,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "cohab",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 254,
+      "sha256": "9b7245533694135ce5f07b6f64b5c24ad7fecdb2ddb2d01bedad8c3342bada61",
+      "grafias": [
+        "Cohab"
+      ],
+      "registrosIptu": 0,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "coqueiral",
+      "edificios": 1,
+      "unidades": 2,
+      "geometria": {
+        "comPoligono": 1,
+        "centrosInternos": 1,
+        "fracaoInterna": 1
+      },
+      "bytes": 1621,
+      "sha256": "529f8d6dc2b5de546b4be6db50c09b2d4bd8c627250fa2c33500c58c75cb35e2",
+      "grafias": [
+        "Coqueiral"
+      ],
+      "registrosIptu": 2200,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "cordeiro",
+      "edificios": 353,
+      "unidades": 5000,
+      "geometria": {
+        "comPoligono": 346,
+        "centrosInternos": 346,
+        "fracaoInterna": 1
+      },
+      "bytes": 336098,
+      "sha256": "8e229b734d81bd98f7c1e6c498b9cc34316b8672769001b3398051a3b6ec8013",
+      "grafias": [
+        "Cordeiro"
+      ],
+      "registrosIptu": 11699,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "corrego-do-jenipapo",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 282,
+      "sha256": "cb84e5ebb960d43815b76b6cb392e04374b78d6a2508f5423dca4782bd547443",
+      "grafias": [
+        "Corrego Do Jenipapo",
+        "Corrego do Jenipapo"
+      ],
+      "registrosIptu": 676,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "curado",
+      "edificios": 1,
+      "unidades": 2,
+      "geometria": {
+        "comPoligono": 1,
+        "centrosInternos": 1,
+        "fracaoInterna": 1
+      },
+      "bytes": 1411,
+      "sha256": "714bf88aa5575b98c098d8cd381fe582f7fbbae9156d524cea5002469f57a57d",
+      "grafias": [
+        "Curado"
+      ],
+      "registrosIptu": 1764,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "derby",
+      "edificios": 33,
+      "unidades": 786,
+      "geometria": {
+        "comPoligono": 33,
+        "centrosInternos": 33,
+        "fracaoInterna": 1
+      },
+      "bytes": 38512,
+      "sha256": "9175afbe57dea738b68ae2e3517b460db678df38eb36990b10ac463dbd53f1a4",
+      "grafias": [
+        "Derby"
+      ],
+      "registrosIptu": 1205,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "dois-irmaos",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 266,
+      "sha256": "05c162c943c5b888640c476c3a06f1629c79d085dcd184fa96c353e4b863e567",
+      "grafias": [
+        "Dois Irmaos"
+      ],
+      "registrosIptu": 69,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "dois-unidos",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 266,
+      "sha256": "ea0c7f51ba56f0e24cd2e4af85c25da02fb8282aca9a64fffed8fca5838105c6",
+      "grafias": [
+        "Dois Unidos"
+      ],
+      "registrosIptu": 1686,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "encruzilhada",
+      "edificios": 198,
+      "unidades": 5802,
+      "geometria": {
+        "comPoligono": 198,
+        "centrosInternos": 198,
+        "fracaoInterna": 1
+      },
+      "bytes": 215974,
+      "sha256": "5ddf09497beecd8dc31adeb1fd4f153bd028591ed60a238f069f8e8ce79ae89e",
+      "grafias": [
+        "Encruzilhada"
+      ],
+      "registrosIptu": 8057,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "engenho-do-meio",
+      "edificios": 45,
+      "unidades": 517,
+      "geometria": {
+        "comPoligono": 45,
+        "centrosInternos": 45,
+        "fracaoInterna": 1
+      },
+      "bytes": 44776,
+      "sha256": "4d4516f9ddefef595715400a4ae152700c0bd81b40681db3f99ba07f5ab4b3cd",
+      "grafias": [
+        "Engenho Do Meio",
+        "Engenho do Meio"
+      ],
+      "registrosIptu": 3009,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "espinheiro",
+      "edificios": 156,
+      "unidades": 4658,
+      "geometria": {
+        "comPoligono": 156,
+        "centrosInternos": 156,
+        "fracaoInterna": 1
+      },
+      "bytes": 174212,
+      "sha256": "6b441225b523ec4d5de262fd0e2aec49882dd607e16f046d688e94f8ae989e46",
+      "grafias": [
+        "Espinheiro"
+      ],
+      "registrosIptu": 6533,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "estancia",
+      "edificios": 16,
+      "unidades": 145,
+      "geometria": {
+        "comPoligono": 16,
+        "centrosInternos": 16,
+        "fracaoInterna": 1
+      },
+      "bytes": 15988,
+      "sha256": "4eccb3d2e329e0f3d1ac42845f83849caa2c72734d2aa94ea3329d4073662d0e",
+      "grafias": [
+        "Estancia"
+      ],
+      "registrosIptu": 1610,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "fundao",
+      "edificios": 6,
+      "unidades": 210,
+      "geometria": {
+        "comPoligono": 6,
+        "centrosInternos": 6,
+        "fracaoInterna": 1
+      },
+      "bytes": 7094,
+      "sha256": "77be83f8e58df8bf583a173c70caf391df8f1875ba12fa5cf2baba4e32013a8a",
+      "grafias": [
+        "Fundao"
+      ],
+      "registrosIptu": 1667,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "gracas",
+      "edificios": 291,
+      "unidades": 8921,
+      "geometria": {
+        "comPoligono": 291,
+        "centrosInternos": 291,
+        "fracaoInterna": 1
+      },
+      "bytes": 308324,
+      "sha256": "cf33298880087b8ec75e5cd51f7c185c1c4c28c080530a91a92cf8356b43673b",
+      "grafias": [
+        "Gracas",
+        "Graças"
+      ],
+      "registrosIptu": 11373,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "guabiraba",
+      "edificios": 1,
+      "unidades": 254,
+      "geometria": {
+        "comPoligono": 1,
+        "centrosInternos": 1,
+        "fracaoInterna": 1
+      },
+      "bytes": 2471,
+      "sha256": "8bd8e6f48a0c1534b47e737d43dc297eefa59cb4d12a1ac9e992e1a778bce4b0",
+      "grafias": [
+        "Guabiraba"
+      ],
+      "registrosIptu": 1141,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "hipodromo",
+      "edificios": 23,
+      "unidades": 268,
+      "geometria": {
+        "comPoligono": 23,
+        "centrosInternos": 23,
+        "fracaoInterna": 1
+      },
+      "bytes": 24724,
+      "sha256": "aa794e6e44f0d87b7049db3391cfc242d11e9a18a4fc5ed06ceb35c33247b295",
+      "grafias": [
+        "Hipodromo"
+      ],
+      "registrosIptu": 945,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "ibura",
+      "edificios": 21,
+      "unidades": 1405,
+      "geometria": {
+        "comPoligono": 21,
+        "centrosInternos": 21,
+        "fracaoInterna": 1
+      },
+      "bytes": 24579,
+      "sha256": "ecc9d542a86478df4af3463c23a9a4704ab9b70613af11d9bb79639caafd7436",
+      "grafias": [
+        "Ibura"
+      ],
+      "registrosIptu": 6566,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "ilha-do-leite",
+      "edificios": 36,
+      "unidades": 675,
+      "geometria": {
+        "comPoligono": 31,
+        "centrosInternos": 31,
+        "fracaoInterna": 1
+      },
+      "bytes": 35707,
+      "sha256": "b41a898f5b24bf14b53142cc4632da3a565e95ebce84b6f18a9588b7b19d9af0",
+      "grafias": [
+        "Ilha Do Leite",
+        "Ilha do Leite"
+      ],
+      "registrosIptu": 2340,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "ilha-do-retiro",
+      "edificios": 33,
+      "unidades": 711,
+      "geometria": {
+        "comPoligono": 33,
+        "centrosInternos": 33,
+        "fracaoInterna": 1
+      },
+      "bytes": 37458,
+      "sha256": "daf93455cd251a8ee9df2c1f1bb6b573512da08e2e72e13a2dafac874d64a78a",
+      "grafias": [
+        "Ilha Do Retiro",
+        "Ilha do Retiro"
+      ],
+      "registrosIptu": 1457,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "ilha-joana-bezerra",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 280,
+      "sha256": "511e6a719e082bdb00bb3a8d90193df61aab0a8b36753c776d28e86a208b93eb",
+      "grafias": [
+        "Ilha Joana Bezerra"
+      ],
+      "registrosIptu": 653,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "imbiribeira",
+      "edificios": 475,
+      "unidades": 8399,
+      "geometria": {
+        "comPoligono": 475,
+        "centrosInternos": 475,
+        "fracaoInterna": 1
+      },
+      "bytes": 423911,
+      "sha256": "05bd0156abb514da1b9adc802ea6c67df64791e7c70b123dcfd30ac5598a50a7",
+      "grafias": [
+        "Imbiribeira"
+      ],
+      "registrosIptu": 14731,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "ipsep",
+      "edificios": 183,
+      "unidades": 2315,
+      "geometria": {
+        "comPoligono": 183,
+        "centrosInternos": 183,
+        "fracaoInterna": 1
+      },
+      "bytes": 172827,
+      "sha256": "ea9c0fd20639e1101212573f33731d066976ebd52319fc481cf8be8e0aa4e68b",
+      "grafias": [
+        "Ipsep"
+      ],
+      "registrosIptu": 6889,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "iputinga",
+      "edificios": 286,
+      "unidades": 5102,
+      "geometria": {
+        "comPoligono": 286,
+        "centrosInternos": 286,
+        "fracaoInterna": 1
+      },
+      "bytes": 279898,
+      "sha256": "932e66a6b620d231e69b5b46a38031888e469854afab18f45050814a560bb778",
+      "grafias": [
+        "Iputinga"
+      ],
+      "registrosIptu": 11502,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "jaqueira",
+      "edificios": 24,
+      "unidades": 613,
+      "geometria": {
+        "comPoligono": 24,
+        "centrosInternos": 24,
+        "fracaoInterna": 1
+      },
+      "bytes": 27620,
+      "sha256": "dbb22c7a60c171e50c18ba7df0739e2b13dfbf14ca3e50287fa41cb6b149ad38",
+      "grafias": [
+        "Jaqueira"
+      ],
+      "registrosIptu": 735,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "jardim-sao-paulo",
+      "edificios": 56,
+      "unidades": 2735,
+      "geometria": {
+        "comPoligono": 56,
+        "centrosInternos": 56,
+        "fracaoInterna": 1
+      },
+      "bytes": 59668,
+      "sha256": "2ff2bd15e56bf9ceb764aa08ba41b22ff4d4c7f492265ec9a35b7bdfcb9f6a67",
+      "grafias": [
+        "Jardim Sao Paulo"
+      ],
+      "registrosIptu": 7673,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "jiquia",
+      "edificios": 13,
+      "unidades": 162,
+      "geometria": {
+        "comPoligono": 13,
+        "centrosInternos": 13,
+        "fracaoInterna": 1
+      },
+      "bytes": 12944,
+      "sha256": "4753b086dcd332cf6bed5dfb3e7820631ae715d2b5aee550f4729820930b85dd",
+      "grafias": [
+        "Jiquia"
+      ],
+      "registrosIptu": 1370,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "jordao",
+      "edificios": 19,
+      "unidades": 67,
+      "geometria": {
+        "comPoligono": 19,
+        "centrosInternos": 19,
+        "fracaoInterna": 1
+      },
+      "bytes": 19717,
+      "sha256": "d1c270cc2a442be9858907b05cb19d6be041da60fbadecea3266e274f63cd876",
+      "grafias": [
+        "Jordao"
+      ],
+      "registrosIptu": 2411,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "linha-do-tiro",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 270,
+      "sha256": "850adf2733582c45eefca806fa866dfd2585505cb89025b7ff609aeab7a168d9",
+      "grafias": [
+        "Linha Do Tiro",
+        "Linha do Tiro"
+      ],
+      "registrosIptu": 2261,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "macaxeira",
+      "edificios": 8,
+      "unidades": 712,
+      "geometria": {
+        "comPoligono": 8,
+        "centrosInternos": 7,
+        "fracaoInterna": 0.875
+      },
+      "bytes": 10871,
+      "sha256": "f34341f12e835c2cb60c78270b239474f52dc96e22b30ea0a028ac596ba57450",
+      "grafias": [
+        "Macaxeira"
+      ],
+      "registrosIptu": 1844,
+      "estado": "revisao_geometrica_pendente"
+    },
+    {
+      "bairro": "madalena",
+      "edificios": 280,
+      "unidades": 8277,
+      "geometria": {
+        "comPoligono": 280,
+        "centrosInternos": 279,
+        "fracaoInterna": 0.9964285714285714
+      },
+      "bytes": 304834,
+      "sha256": "29118fb91f8b03b43aecf314c805016be804247441844b7f1c2036041f7ef93b",
+      "grafias": [
+        "Madalena"
+      ],
+      "registrosIptu": 12805,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "mangabeira",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 264,
+      "sha256": "411280ff2a7e60f2ad465a7de19fc66e79231492374b95431e75ec916eed4fdc",
+      "grafias": [
+        "Mangabeira"
+      ],
+      "registrosIptu": 1306,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "mangueira",
+      "edificios": 3,
+      "unidades": 11,
+      "geometria": {
+        "comPoligono": 3,
+        "centrosInternos": 3,
+        "fracaoInterna": 1
+      },
+      "bytes": 3095,
+      "sha256": "71d2769a5868c9b74d6c11084c06dc3eeeb28dda6b1c7f4f0906977669dbbd35",
+      "grafias": [
+        "Mangueira"
+      ],
+      "registrosIptu": 1354,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "monteiro",
+      "edificios": 38,
+      "unidades": 1488,
+      "geometria": {
+        "comPoligono": 38,
+        "centrosInternos": 38,
+        "fracaoInterna": 1
+      },
+      "bytes": 43457,
+      "sha256": "d058e8803cc91339f5961bf3d23bc81367add8fe60aee20241c0640451fa145e",
+      "grafias": [
+        "Monteiro"
+      ],
+      "registrosIptu": 2126,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "morro-da-conceicao",
+      "edificios": 4,
+      "unidades": 24,
+      "geometria": {
+        "comPoligono": 4,
+        "centrosInternos": 4,
+        "fracaoInterna": 1
+      },
+      "bytes": 4093,
+      "sha256": "2c97aac1546aba0af6db3adf37075bfc4eb5314a7d2606cbd8755d7bd0c29da0",
+      "grafias": [
+        "Morro Da Conceicao",
+        "Morro da Conceicao"
+      ],
+      "registrosIptu": 1822,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "mustardinha",
+      "edificios": 26,
+      "unidades": 93,
+      "geometria": {
+        "comPoligono": 26,
+        "centrosInternos": 26,
+        "fracaoInterna": 1
+      },
+      "bytes": 24547,
+      "sha256": "38c2ddb28917a43d6c005740bebf9662c6f4431d8b45b8fd702155bbf9971df6",
+      "grafias": [
+        "Mustardinha"
+      ],
+      "registrosIptu": 2642,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "nova-descoberta",
+      "edificios": 6,
+      "unidades": 22,
+      "geometria": {
+        "comPoligono": 6,
+        "centrosInternos": 6,
+        "fracaoInterna": 1
+      },
+      "bytes": 6716,
+      "sha256": "636e7fcaccd4a0327f67d00da24439ffa94dd6500165ae396a317b17527009ff",
+      "grafias": [
+        "Nova Descoberta"
+      ],
+      "registrosIptu": 4193,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "paissandu",
+      "edificios": 10,
+      "unidades": 335,
+      "geometria": {
+        "comPoligono": 10,
+        "centrosInternos": 10,
+        "fracaoInterna": 1
+      },
+      "bytes": 11800,
+      "sha256": "8451756a618f17aa5b2a57aa6fcd9c31b519a6a1867ecb0e396c99a98a67c6eb",
+      "grafias": [
+        "Paissandu"
+      ],
+      "registrosIptu": 1559,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "parnamirim",
+      "edificios": 92,
+      "unidades": 2673,
+      "geometria": {
+        "comPoligono": 92,
+        "centrosInternos": 92,
+        "fracaoInterna": 1
+      },
+      "bytes": 105176,
+      "sha256": "92c9ccba5515f00a2eb8f64782eabcdffa2eedac42db643c776e6db72b6dc646",
+      "grafias": [
+        "Parnamirim"
+      ],
+      "registrosIptu": 3846,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "passarinho",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 264,
+      "sha256": "36d2c247f81df0a11d512421759df21a32764b29f2dcc0fe2d5b197324c4e8bb",
+      "grafias": [
+        "Passarinho"
+      ],
+      "registrosIptu": 633,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "pau-ferro",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 262,
+      "sha256": "025ac68ab72887ac1855cb88224042408d2f782998a29c4c93c63b314f189ffd",
+      "grafias": [
+        "Pau Ferro"
+      ],
+      "registrosIptu": 0,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "peixinhos",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 262,
+      "sha256": "49fec4a0a7d1cb82e03404d2542a764725b7eb6ce723de04488faf0b7cb045c1",
+      "grafias": [
+        "Peixinhos"
+      ],
+      "registrosIptu": 60,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "pina",
+      "edificios": 129,
+      "unidades": 5103,
+      "geometria": {
+        "comPoligono": 129,
+        "centrosInternos": 129,
+        "fracaoInterna": 1
+      },
+      "bytes": 145249,
+      "sha256": "ea8f7b7021f8fda28cba92a045d22b07235e0988aebcf0e330e57eea14d65070",
+      "grafias": [
+        "Pina"
+      ],
+      "registrosIptu": 13501,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "poco",
+      "edificios": 39,
+      "unidades": 1063,
+      "geometria": {
+        "comPoligono": 39,
+        "centrosInternos": 39,
+        "fracaoInterna": 1
+      },
+      "bytes": 44059,
+      "sha256": "eebdfdb137cdd54cd716c0a8bd3365dba62a23324cee07c61dd4bf74128d6a47",
+      "grafias": [
+        "Poco"
+      ],
+      "registrosIptu": 2370,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "ponto-de-parada",
+      "edificios": 13,
+      "unidades": 214,
+      "geometria": {
+        "comPoligono": 13,
+        "centrosInternos": 13,
+        "fracaoInterna": 1
+      },
+      "bytes": 13289,
+      "sha256": "9716845d74db4833cf73cc0f809b5fcd88f3296f38fea37720d781fddaa4f86f",
+      "grafias": [
+        "Ponto De Parada",
+        "Ponto de Parada"
+      ],
+      "registrosIptu": 667,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "porto-da-madeira",
+      "edificios": 19,
+      "unidades": 775,
+      "geometria": {
+        "comPoligono": 19,
+        "centrosInternos": 19,
+        "fracaoInterna": 1
+      },
+      "bytes": 20567,
+      "sha256": "e640d232f811b83803ef57b16e7987ee53f7bf4168dbfedc064d8f69e2016f87",
+      "grafias": [
+        "Porto Da Madeira",
+        "Porto da Madeira"
+      ],
+      "registrosIptu": 1904,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "prado",
+      "edificios": 93,
+      "unidades": 1249,
+      "geometria": {
+        "comPoligono": 93,
+        "centrosInternos": 93,
+        "fracaoInterna": 1
+      },
+      "bytes": 89065,
+      "sha256": "7d602846ac659eb17014c88f7238a418cd27f3c75836219048cd9ea924206057",
+      "grafias": [
+        "Prado"
+      ],
+      "registrosIptu": 3171,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "recife",
+      "edificios": 3,
+      "unidades": 253,
+      "geometria": {
+        "comPoligono": 3,
+        "centrosInternos": 3,
+        "fracaoInterna": 1
+      },
+      "bytes": 6660,
+      "sha256": "87c657ce5b6d3b7366b97f37901e1137d3225aada6bffafc4a095de9efd28dc4",
+      "grafias": [
+        "Recife"
+      ],
+      "registrosIptu": 1586,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "rosarinho",
+      "edificios": 65,
+      "unidades": 2879,
+      "geometria": {
+        "comPoligono": 65,
+        "centrosInternos": 65,
+        "fracaoInterna": 1
+      },
+      "bytes": 70399,
+      "sha256": "93abdeefa2e207bd4788eea3674849735a70429945c312107cc691de5593f3fc",
+      "grafias": [
+        "Rosarinho"
+      ],
+      "registrosIptu": 3401,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "san-martin",
+      "edificios": 25,
+      "unidades": 1107,
+      "geometria": {
+        "comPoligono": 25,
+        "centrosInternos": 25,
+        "fracaoInterna": 1
+      },
+      "bytes": 28064,
+      "sha256": "f712ccacbb4ac81c9df45e061cc5ef5ffc8b37f6e33c79ab523dd08569a7cc47",
+      "grafias": [
+        "San Martin"
+      ],
+      "registrosIptu": 5299,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "sancho",
+      "edificios": 24,
+      "unidades": 768,
+      "geometria": {
+        "comPoligono": 24,
+        "centrosInternos": 24,
+        "fracaoInterna": 1
+      },
+      "bytes": 25000,
+      "sha256": "81a25388fe653f5457e7c196ec356830459b6f1a80ae9e6ee4388330a8e3f6d7",
+      "grafias": [
+        "Sancho"
+      ],
+      "registrosIptu": 1466,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "santana",
+      "edificios": 32,
+      "unidades": 813,
+      "geometria": {
+        "comPoligono": 32,
+        "centrosInternos": 32,
+        "fracaoInterna": 1
+      },
+      "bytes": 36005,
+      "sha256": "440346ed7b2109f7e6f99c590bff3ad18dbcfddf6ce0ca145f5d0e45dd0e9109",
+      "grafias": [
+        "Santana"
+      ],
+      "registrosIptu": 1215,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "santo-amaro",
+      "edificios": 86,
+      "unidades": 3392,
+      "geometria": {
+        "comPoligono": 86,
+        "centrosInternos": 86,
+        "fracaoInterna": 1
+      },
+      "bytes": 104037,
+      "sha256": "c2c0aac21d0740d25eb9d9afdb8f96c667aa9ed92164a71b521682002aaa4aff",
+      "grafias": [
+        "Santo Amaro"
+      ],
+      "registrosIptu": 8449,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "santo-antonio",
+      "edificios": 25,
+      "unidades": 130,
+      "geometria": {
+        "comPoligono": 25,
+        "centrosInternos": 25,
+        "fracaoInterna": 1
+      },
+      "bytes": 27059,
+      "sha256": "0c6f1dfa7b873c53b0f8c4542f86464adadae3673dae75fe97be2911702cb19b",
+      "grafias": [
+        "Santo Antonio"
+      ],
+      "registrosIptu": 6114,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "sao-jose",
+      "edificios": 47,
+      "unidades": 532,
+      "geometria": {
+        "comPoligono": 47,
+        "centrosInternos": 47,
+        "fracaoInterna": 1
+      },
+      "bytes": 47749,
+      "sha256": "ba321e9cde9af4ae793dfacec70d6912ff598c5fe885b8aaafd716b0d4c672d3",
+      "grafias": [
+        "Sao Jose"
+      ],
+      "registrosIptu": 4259,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "sitio-dos-pintos",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 276,
+      "sha256": "aad086b455c8ed9ec27009bdbbca348151a6ba5ae94e530bcdcc81e04c962ef0",
+      "grafias": [
+        "Sitio Dos Pintos",
+        "Sitio dos Pintos"
+      ],
+      "registrosIptu": 0,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "soledade",
+      "edificios": 41,
+      "unidades": 1420,
+      "geometria": {
+        "comPoligono": 41,
+        "centrosInternos": 41,
+        "fracaoInterna": 1
+      },
+      "bytes": 45001,
+      "sha256": "aa8edea432721ba00e235a14919a17764b618309cd074ee151b8dd807b4d582f",
+      "grafias": [
+        "Soledade"
+      ],
+      "registrosIptu": 2302,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "tamarineira",
+      "edificios": 159,
+      "unidades": 4236,
+      "geometria": {
+        "comPoligono": 159,
+        "centrosInternos": 159,
+        "fracaoInterna": 1
+      },
+      "bytes": 166026,
+      "sha256": "a8f4dbce3d9ffc177752ad80af40c5cefda76c2cda6c0a478b766d679331c69a",
+      "grafias": [
+        "Tamarineira"
+      ],
+      "registrosIptu": 6436,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "tejipio",
+      "edificios": 10,
+      "unidades": 1159,
+      "geometria": {
+        "comPoligono": 10,
+        "centrosInternos": 10,
+        "fracaoInterna": 1
+      },
+      "bytes": 14424,
+      "sha256": "b00a55371f9d51d37332936af0cda49e12794d1f6c535b1dcfa6759ffb49fbf4",
+      "grafias": [
+        "Tejipio"
+      ],
+      "registrosIptu": 3385,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "torre",
+      "edificios": 137,
+      "unidades": 6056,
+      "geometria": {
+        "comPoligono": 137,
+        "centrosInternos": 137,
+        "fracaoInterna": 1
+      },
+      "bytes": 149496,
+      "sha256": "2dfbd92ff5f30df363dd00dccae6e50f17046e8d6f3c4e5d8602815d6d44a4ec",
+      "grafias": [
+        "Torre"
+      ],
+      "registrosIptu": 7974,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "torreao",
+      "edificios": 35,
+      "unidades": 567,
+      "geometria": {
+        "comPoligono": 35,
+        "centrosInternos": 35,
+        "fracaoInterna": 1
+      },
+      "bytes": 33874,
+      "sha256": "3970637cafc7490c203a4080d2e37118581807fb09f5b23d8649de3b9ebd86c9",
+      "grafias": [
+        "Torreao"
+      ],
+      "registrosIptu": 805,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "torroes",
+      "edificios": 13,
+      "unidades": 122,
+      "geometria": {
+        "comPoligono": 12,
+        "centrosInternos": 12,
+        "fracaoInterna": 1
+      },
+      "bytes": 14069,
+      "sha256": "8baa88c0463806ea01d5aee928f38191eb18702e7c099bbee2ffdd333c22081c",
+      "grafias": [
+        "Torroes"
+      ],
+      "registrosIptu": 2460,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "toto",
+      "edificios": 0,
+      "unidades": 0,
+      "geometria": {
+        "comPoligono": 0,
+        "centrosInternos": 0,
+        "fracaoInterna": null
+      },
+      "bytes": 252,
+      "sha256": "a2c1945c7f2d425eccbd18900e1a07afe1b30eae1097ac1a920112ed0c3ae6b6",
+      "grafias": [
+        "Toto"
+      ],
+      "registrosIptu": 503,
+      "estado": "sem_registros_elegiveis"
+    },
+    {
+      "bairro": "varzea",
+      "edificios": 327,
+      "unidades": 7675,
+      "geometria": {
+        "comPoligono": 318,
+        "centrosInternos": 318,
+        "fracaoInterna": 1
+      },
+      "bytes": 302616,
+      "sha256": "ef15a5b874d6d352df73bb134f0645c9d0100774578a3528ec47fcee431ec0c5",
+      "grafias": [
+        "Varzea"
+      ],
+      "registrosIptu": 15293,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "vasco-da-gama",
+      "edificios": 32,
+      "unidades": 866,
+      "geometria": {
+        "comPoligono": 32,
+        "centrosInternos": 32,
+        "fracaoInterna": 1
+      },
+      "bytes": 31357,
+      "sha256": "a9ed70fd22ce4d872f39e5ab1d0fefdaae75d16bc4adc26c96a23a3a796fcd18",
+      "grafias": [
+        "Vasco Da Gama",
+        "Vasco da Gama"
+      ],
+      "registrosIptu": 5634,
+      "estado": "habilitado"
+    },
+    {
+      "bairro": "zumbi",
+      "edificios": 36,
+      "unidades": 275,
+      "geometria": {
+        "comPoligono": 36,
+        "centrosInternos": 36,
+        "fracaoInterna": 1
+      },
+      "bytes": 33997,
+      "sha256": "5b93478987f0a936e09b4f84c8e5f8d3ebabfafa1f5aff84772591bf10a79877",
+      "grafias": [
+        "Zumbi"
+      ],
+      "registrosIptu": 1628,
+      "estado": "habilitado"
+    }
+  ]
+}

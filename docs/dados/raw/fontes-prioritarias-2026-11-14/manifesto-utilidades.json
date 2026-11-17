@@ -1,0 +1,29 @@
+{
+  "coleta_local": "2026-11-14",
+  "arquivos": [
+    {
+      "arquivo": "energia-prova-conjuntos-dec-fec-2025.json",
+      "registros": 288,
+      "fonte": "https://dadosabertos.aneel.gov.br/dataset/indicadores-coletivos-de-continuidade-dec-e-fec",
+      "sha256": "e7d9900e34540478c9f5af022d760545acbc00f093d911b5ce282875c9ba761f"
+    },
+    {
+      "arquivo": "chuva-apac-recife.json",
+      "registros": 20,
+      "fonte": "https://geoportal.apac.pe.gov.br/server/rest/services/met_monitoramento_chuvas_pe/MapServer/4/query?where=cod_municipio%3D%272611606%27&outFields=nome%2Clatitude%2Clongitude%2Cbacia%2Cultima_leitura%2Cultima_leitura_hora%2Cultima_leitura_data_hora%2Chora_1%2Choras_3%2Choras_6%2Choras_12%2Choras_24%2Choras_48%2Choras_72%2Ccodigo_gmmc&returnGeometry=false&f=json",
+      "sha256": "f4b1b057d0349a41c5bd298b60fa1f23acbe141ae135078144177a70d5b91d6a"
+    },
+    {
+      "arquivo": "chuva-cop-pulsos-recife.json",
+      "registros": 7808,
+      "fonte": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/COP/BASE_SENSORES_PLUVIOMETRICOS_RECIFE/MapServer/0",
+      "sha256": "3894bc4333da08682f9da2bf49c1d49858e354d400c591d9dd3ac77935761e69"
+    },
+    {
+      "arquivo": "mare-remo-porto-recife-2026-11-14.json",
+      "registros": 28,
+      "fonte": "https://pam.marinha.mil.br/tabuamares/tabuamares.html",
+      "sha256": "61f74b88a05f2ba3466bdc3d0a8699081ae3e0b7b83ffb5bb9568a176e6f3291"
+    }
+  ]
+}

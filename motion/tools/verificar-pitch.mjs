@@ -6,7 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const travado = readFileSync(path.join(RAIZ, 'docs/pitch-original-locked.md'), 'utf8');
+const travado = readFileSync(path.join(RAIZ, 'docs/pitch/pitch-original-locked.md'), 'utf8');
 const m = travado.match(/<!-- PITCH:INICIO -->\n([\s\S]*?)\n<!-- PITCH:FIM -->/);
 if (!m) { console.error('Marcadores do pitch não encontrados.'); process.exit(1); }
 const pitch = m[1];
@@ -17,7 +17,7 @@ const esperado = readFileSync(path.join(RAIZ, 'motion/tools/pitch.sha256'), 'utf
 if (hash !== esperado) { console.error(`O texto travado mudou (esperado ${esperado}).`); ok = false; } else console.log('Texto travado intacto.');
 
 // citações do storyboard: linhas "| Frase | “...” |" ou blocos "> " depois de "Trecho:"
-const sb = readFileSync(path.join(RAIZ, 'docs/storyboard.md'), 'utf8');
+const sb = readFileSync(path.join(RAIZ, 'docs/pitch/storyboard.md'), 'utf8');
 const citacoes = [];
 for (const linha of sb.split('\n')) {
   const f = linha.match(/^\| (?:Frase|Trecho)[^|]*\| ([“"].*[”"]) \|\s*$/);

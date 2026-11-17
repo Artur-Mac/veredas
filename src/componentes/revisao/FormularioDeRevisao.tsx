@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pressable, StyleSheet, TextInput, View, type TextInputProps } from "react-native";
+import { StyleSheet, TextInput, View, type TextInputProps } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import {
   type Anomalia,
@@ -10,7 +10,8 @@ import {
 import { editarFormulario, type EstadoDoFormulario } from "../../dados/formulario";
 import { formatarNumero } from "../../dados/formatos";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
+import { useFocoDoCampo } from "../casca/foco";
+import { AlvoDeToque } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { estilosDoTema } from "./estilosDoTema";
 import { SeletorDeBairro } from "./SeletorDeBairro";
@@ -23,7 +24,17 @@ export interface FormularioDeRevisaoProps {
   anomalias: Anomalia[];
   aoAlterar: (novo: EstadoDoFormulario) => void;
   desabilitado?: boolean;
+  /**
+   * Leitura de um link: só modalidade, bairro e os três números do custo (preço, condomínio e IPTU). Nome, endereço,
+   * seguro, taxa, outros e especificações ficam atrás de "Ver todos os campos"; o que ficou em branco vira pergunta.
+   */
+  essencial?: boolean;
 }
+
+/** Campos que o modo essencial recolhe; o aviso deles aparece no link "Ver todos os campos". */
+const CAMPOS_RECOLHIDOS: ChaveDeCampo[] = [
+  "logradouro", "numero", "nomeEdificio", "seguroIncendio", "taxaServico", "area", "quartos", "suites", "banheiros", "vagas", "andar",
+];
 
 // ——— Conversão de números digitados ——————————————————————————————————————————————
 
@@ -59,20 +70,21 @@ const CONVERSORES: Record<TipoDeNumero, { ler: (texto: string) => number | null;
 function Entrada({ style, onFocus, onBlur, ...resto }: TextInputProps) {
   const { cor } = useTema();
   const styles = useEstilos();
-  const [focado, setFocado] = useState(false);
+  // Foco: borda de 2 px em azul cadastral (o contorno do navegador está zerado em `input`).
+  const foco = useFocoDoCampo();
   return (
     <TextInput
       placeholderTextColor={cor("cor-texto-apoio")}
       {...resto}
       onFocus={(e) => {
-        setFocado(true);
+        foco.aoFocar();
         onFocus?.(e);
       }}
       onBlur={(e) => {
-        setFocado(false);
+        foco.aoDesfocar();
         onBlur?.(e);
       }}
-      style={[styles.input, focado ? styles.inputFocado : null, style]}
+      style={[styles.input, foco.focado ? styles.inputFocado : null, style, foco.estilo]}
     />
   );
 }
@@ -103,14 +115,13 @@ function CasaDeMarcar({
   const { cor } = useTema();
   const styles = useEstilos();
   return (
-    <Pressable
+    <AlvoDeToque
       accessibilityRole="checkbox"
       accessibilityLabel={rotulo}
       accessibilityState={{ checked: marcada, disabled: desabilitado }}
       aria-checked={marcada}
       disabled={desabilitado}
       onPress={aoAlternar}
-      hitSlop={{ top: 8, bottom: 8, left: 4, right: 12 }}
       style={styles.linhaConfirmar}
     >
       <View style={[styles.caixa, marcada ? styles.caixaMarcada : null]}>
@@ -123,7 +134,7 @@ function CasaDeMarcar({
       <Texto tipo="apoio" style={styles.textoConfirmar}>
         {rotulo}
       </Texto>
-    </Pressable>
+    </AlvoDeToque>
   );
 }
 
@@ -195,8 +206,10 @@ function CampoNumerico({
 
 // ——— Formulário ————————————————————————————————————————————————————————————————
 
-export function FormularioDeRevisao({ estado, anomalias, aoAlterar, desabilitado = false }: FormularioDeRevisaoProps) {
+export function FormularioDeRevisao({ estado, anomalias, aoAlterar, desabilitado = false, essencial = false }: FormularioDeRevisaoProps) {
   const styles = useEstilos();
+  const [verTudo, definirVerTudo] = useState(!essencial);
+  const avisosRecolhidos = anomalias.filter((a) => CAMPOS_RECOLHIDOS.includes(a.campo)).length;
   const acharAnomalia = (campo: ChaveDeCampo): Anomalia | undefined => anomalias.find((a) => a.campo === campo);
   // Toda mudança passa por `editarFormulario`: ela marca o campo como editado, e nova leitura não o sobrescreve.
   const alterar = (mudanca: Partial<EstadoDoFormulario>) => aoAlterar(editarFormulario(estado, mudanca));
@@ -218,7 +231,7 @@ export function FormularioDeRevisao({ estado, anomalias, aoAlterar, desabilitado
 
   return (
     <View style={styles.container}>
-      {textoDe("Nome da análise", estado.nome, "nome", "Ex.: Apartamento 2 quartos · Casa Forte")}
+      {verTudo ? textoDe("Nome da análise", estado.nome, "nome", "Ex.: Apartamento 2 quartos · Casa Forte") : null}
 
       <View style={styles.campo}>
         <Texto tipo="etiqueta" style={styles.rotulo}>
@@ -228,7 +241,7 @@ export function FormularioDeRevisao({ estado, anomalias, aoAlterar, desabilitado
           {(["aluguel", "compra"] as const).map((m) => {
             const ativo = estado.modalidade === m;
             return (
-              <Pressable
+              <AlvoDeToque
                 key={m}
                 accessibilityRole="radio"
                 accessibilityState={{ checked: ativo, disabled: desabilitado }}
@@ -240,7 +253,7 @@ export function FormularioDeRevisao({ estado, anomalias, aoAlterar, desabilitado
                 <Texto tipo="apoio" style={ativo ? styles.textoSegmentadoAtivo : styles.textoSegmentado}>
                   {m === "aluguel" ? "Alugar" : "Comprar"}
                 </Texto>
-              </Pressable>
+              </AlvoDeToque>
             );
           })}
         </View>
@@ -252,16 +265,26 @@ export function FormularioDeRevisao({ estado, anomalias, aoAlterar, desabilitado
         aoEscolher={alterar}
       />
 
-      <View style={styles.linhaDupla}>
-        <View style={styles.doisTercos}>{textoDe("Rua", estado.logradouro, "logradouro", "Ex.: Rua Amélia")}</View>
-        <View style={styles.umTerco}>{textoDe("Número", estado.numero, "numero", "Ex.: 331")}</View>
-      </View>
+      {verTudo ? (
+        <>
+          <View style={styles.linhaDupla}>
+            <View style={styles.doisTercos}>{textoDe("Rua", estado.logradouro, "logradouro", "Ex.: Rua Amélia")}</View>
+            <View style={styles.umTerco}>{textoDe("Número", estado.numero, "numero", "Ex.: 331")}</View>
+          </View>
 
-      {textoDe("Edifício", estado.nomeEdificio, "nomeEdificio", "Ex.: Edifício Quinta das Américas")}
+          {textoDe("Edifício", estado.nomeEdificio, "nomeEdificio", "Ex.: Edifício Quinta das Américas")}
+        </>
+      ) : null}
 
       <Texto tipo="secao" style={styles.secaoTitulo}>
         Custos mensais e compra
       </Texto>
+      {verTudo ? null : (
+        <Texto tipo="apoio" style={styles.textoDeApoio}>
+          Confira o que o anúncio trouxe. O que ele não diz, deixe em branco: vira pergunta para a visita, e o IPTU do
+          cadastro aparece quando o prédio for confirmado.
+        </Texto>
+      )}
 
       <CampoNumerico
         rotulo={estado.modalidade === "aluguel" ? "Aluguel (R$ por mês)" : "Preço de venda (R$)"}
@@ -314,20 +337,22 @@ export function FormularioDeRevisao({ estado, anomalias, aoAlterar, desabilitado
             const rotulo = p === "mes" ? "Mês" : p === "ano" ? "Ano" : "Não sei";
             const ativo = estado.iptuPeriodo === p;
             return (
-              <Pressable
+              // A área de toque tem 44 px de altura; a pílula desenhada por dentro mantém os 30 px.
+              <AlvoDeToque
                 key={p}
                 accessibilityRole="radio"
                 accessibilityState={{ checked: ativo, disabled: desabilitado }}
                 aria-checked={ativo}
                 disabled={desabilitado}
                 onPress={() => alterar({ iptuPeriodo: p })}
-                hitSlop={{ top: 8, bottom: 8, left: 3, right: 3 }}
-                style={[styles.pilulaPeriodo, ativo ? styles.pilulaPeriodoAtiva : null]}
+                style={styles.alvoDoPeriodo}
               >
-                <Texto tipo="apoio" style={ativo ? styles.textoPeriodoAtivo : styles.textoPeriodo}>
-                  {rotulo}
-                </Texto>
-              </Pressable>
+                <View style={[styles.pilulaPeriodo, ativo ? styles.pilulaPeriodoAtiva : null]}>
+                  <Texto tipo="apoio" style={ativo ? styles.textoPeriodoAtivo : styles.textoPeriodo}>
+                    {rotulo}
+                  </Texto>
+                </View>
+              </AlvoDeToque>
             );
           })}
         </View>
@@ -339,137 +364,157 @@ export function FormularioDeRevisao({ estado, anomalias, aoAlterar, desabilitado
         />
       </View>
 
-      <View style={styles.linhaDupla}>
-        <View style={styles.metade}>
+      {verTudo ? (
+        <>
+          <View style={styles.linhaDupla}>
+            <View style={styles.metade}>
+              <CampoNumerico
+                rotulo="Seguro incêndio (R$ por mês)"
+                tipo="moeda"
+                valor={estado.seguroIncendio}
+                origem={estado.seguroIncendioOrigem}
+                anomalia={acharAnomalia("seguroIncendio")}
+                placeholder="Não informado"
+                desabilitado={desabilitado}
+                aoMudar={(v) => alterar({ seguroIncendio: v })}
+                aConfirmar={{
+                  marcada: estado.seguroIncendioAConfirmar,
+                  rotulo: "A confirmar",
+                  aoAlternar: () => alterar({ seguroIncendioAConfirmar: !estado.seguroIncendioAConfirmar }),
+                }}
+              />
+            </View>
+            <View style={styles.metade}>
+              <CampoNumerico
+                rotulo="Taxa de serviço (R$ por mês)"
+                tipo="moeda"
+                valor={estado.taxaServico}
+                origem={estado.taxaServicoOrigem}
+                anomalia={acharAnomalia("taxaServico")}
+                placeholder="Não informado"
+                desabilitado={desabilitado}
+                aoMudar={(v) => alterar({ taxaServico: v })}
+                aConfirmar={{
+                  marcada: estado.taxaServicoAConfirmar,
+                  rotulo: "A confirmar",
+                  aoAlternar: () => alterar({ taxaServicoAConfirmar: !estado.taxaServicoAConfirmar }),
+                }}
+              />
+            </View>
+          </View>
+
           <CampoNumerico
-            rotulo="Seguro incêndio (R$ por mês)"
+            rotulo="Outros custos (R$ por mês)"
             tipo="moeda"
-            valor={estado.seguroIncendio}
-            origem={estado.seguroIncendioOrigem}
-            anomalia={acharAnomalia("seguroIncendio")}
+            valor={estado.outros}
+            origem={estado.outrosOrigem}
             placeholder="Não informado"
             desabilitado={desabilitado}
-            aoMudar={(v) => alterar({ seguroIncendio: v })}
+            aoMudar={(v) => alterar({ outros: v })}
             aConfirmar={{
-              marcada: estado.seguroIncendioAConfirmar,
+              marcada: estado.outrosAConfirmar,
               rotulo: "A confirmar",
-              aoAlternar: () => alterar({ seguroIncendioAConfirmar: !estado.seguroIncendioAConfirmar }),
+              aoAlternar: () => alterar({ outrosAConfirmar: !estado.outrosAConfirmar }),
             }}
           />
-        </View>
-        <View style={styles.metade}>
-          <CampoNumerico
-            rotulo="Taxa de serviço (R$ por mês)"
-            tipo="moeda"
-            valor={estado.taxaServico}
-            origem={estado.taxaServicoOrigem}
-            anomalia={acharAnomalia("taxaServico")}
-            placeholder="Não informado"
-            desabilitado={desabilitado}
-            aoMudar={(v) => alterar({ taxaServico: v })}
-            aConfirmar={{
-              marcada: estado.taxaServicoAConfirmar,
-              rotulo: "A confirmar",
-              aoAlternar: () => alterar({ taxaServicoAConfirmar: !estado.taxaServicoAConfirmar }),
-            }}
-          />
-        </View>
-      </View>
 
-      <CampoNumerico
-        rotulo="Outros custos (R$ por mês)"
-        tipo="moeda"
-        valor={estado.outros}
-        origem={estado.outrosOrigem}
-        placeholder="Não informado"
-        desabilitado={desabilitado}
-        aoMudar={(v) => alterar({ outros: v })}
-        aConfirmar={{
-          marcada: estado.outrosAConfirmar,
-          rotulo: "A confirmar",
-          aoAlternar: () => alterar({ outrosAConfirmar: !estado.outrosAConfirmar }),
-        }}
-      />
+          <Texto tipo="secao" style={styles.secaoTitulo}>
+            Especificações do imóvel
+          </Texto>
 
-      <Texto tipo="secao" style={styles.secaoTitulo}>
-        Especificações do imóvel
-      </Texto>
+          <View style={styles.linhaDupla}>
+            <View style={styles.metade}>
+              <CampoNumerico
+                rotulo="Área (m²)"
+                tipo="decimal"
+                valor={estado.area}
+                origem={estado.areaOrigem}
+                anomalia={acharAnomalia("area")}
+                placeholder="Ex.: 85"
+                desabilitado={desabilitado}
+                aoMudar={(v) => alterar({ area: v })}
+              />
+            </View>
+            <View style={styles.metade}>
+              <CampoNumerico
+                rotulo="Quartos"
+                tipo="inteiro"
+                valor={estado.quartos}
+                origem={estado.quartosOrigem}
+                placeholder="Ex.: 2"
+                desabilitado={desabilitado}
+                aoMudar={(v) => alterar({ quartos: v })}
+              />
+            </View>
+          </View>
 
-      <View style={styles.linhaDupla}>
-        <View style={styles.metade}>
-          <CampoNumerico
-            rotulo="Área (m²)"
-            tipo="decimal"
-            valor={estado.area}
-            origem={estado.areaOrigem}
-            anomalia={acharAnomalia("area")}
-            placeholder="Ex.: 85"
-            desabilitado={desabilitado}
-            aoMudar={(v) => alterar({ area: v })}
-          />
-        </View>
-        <View style={styles.metade}>
-          <CampoNumerico
-            rotulo="Quartos"
-            tipo="inteiro"
-            valor={estado.quartos}
-            origem={estado.quartosOrigem}
-            placeholder="Ex.: 2"
-            desabilitado={desabilitado}
-            aoMudar={(v) => alterar({ quartos: v })}
-          />
-        </View>
-      </View>
+          <View style={styles.linhaDupla}>
+            <View style={styles.metade}>
+              <CampoNumerico
+                rotulo="Suítes"
+                tipo="inteiro"
+                valor={estado.suites}
+                origem={estado.suitesOrigem}
+                placeholder="Ex.: 1"
+                desabilitado={desabilitado}
+                aoMudar={(v) => alterar({ suites: v })}
+              />
+            </View>
+            <View style={styles.metade}>
+              <CampoNumerico
+                rotulo="Banheiros"
+                tipo="inteiro"
+                valor={estado.banheiros}
+                origem={estado.banheirosOrigem}
+                placeholder="Ex.: 2"
+                desabilitado={desabilitado}
+                aoMudar={(v) => alterar({ banheiros: v })}
+              />
+            </View>
+          </View>
 
-      <View style={styles.linhaDupla}>
-        <View style={styles.metade}>
-          <CampoNumerico
-            rotulo="Suítes"
-            tipo="inteiro"
-            valor={estado.suites}
-            origem={estado.suitesOrigem}
-            placeholder="Ex.: 1"
-            desabilitado={desabilitado}
-            aoMudar={(v) => alterar({ suites: v })}
-          />
-        </View>
-        <View style={styles.metade}>
-          <CampoNumerico
-            rotulo="Banheiros"
-            tipo="inteiro"
-            valor={estado.banheiros}
-            origem={estado.banheirosOrigem}
-            placeholder="Ex.: 2"
-            desabilitado={desabilitado}
-            aoMudar={(v) => alterar({ banheiros: v })}
-          />
-        </View>
-      </View>
-
-      <View style={styles.linhaDupla}>
-        <View style={styles.metade}>
-          <CampoNumerico
-            rotulo="Vagas"
-            tipo="inteiro"
-            valor={estado.vagas}
-            origem={estado.vagasOrigem}
-            placeholder="Ex.: 1"
-            desabilitado={desabilitado}
-            aoMudar={(v) => alterar({ vagas: v })}
-          />
-        </View>
-        <View style={styles.metade}>
-          <CampoNumerico
-            rotulo="Andar"
-            tipo="inteiro"
-            valor={estado.andar}
-            origem={estado.andarOrigem}
-            placeholder="Ex.: 5"
-            desabilitado={desabilitado}
-            aoMudar={(v) => alterar({ andar: v })}
-          />
-        </View>
-      </View>
+          <View style={styles.linhaDupla}>
+            <View style={styles.metade}>
+              <CampoNumerico
+                rotulo="Vagas"
+                tipo="inteiro"
+                valor={estado.vagas}
+                origem={estado.vagasOrigem}
+                placeholder="Ex.: 1"
+                desabilitado={desabilitado}
+                aoMudar={(v) => alterar({ vagas: v })}
+              />
+            </View>
+            <View style={styles.metade}>
+              <CampoNumerico
+                rotulo="Andar"
+                tipo="inteiro"
+                valor={estado.andar}
+                origem={estado.andarOrigem}
+                placeholder="Ex.: 5"
+                desabilitado={desabilitado}
+                aoMudar={(v) => alterar({ andar: v })}
+              />
+            </View>
+          </View>
+        </>
+      ) : (
+        <AlvoDeToque
+          onPress={() => definirVerTudo(true)}
+          accessibilityRole="button"
+          accessibilityLabel={`Ver todos os campos${avisosRecolhidos > 0 ? `, ${avisosRecolhidos} ${avisosRecolhidos === 1 ? "aviso" : "avisos"}` : ""}`}
+          style={styles.linkVerTudo}
+        >
+          <Texto tipo="apoio" style={styles.textoVerTudo}>
+            Ver todos os campos
+          </Texto>
+          <Texto tipo="apoio" style={styles.textoDeApoio}>
+            {avisosRecolhidos > 0
+              ? `Endereço, seguro, área e quartos · ${avisosRecolhidos} ${avisosRecolhidos === 1 ? "aviso" : "avisos"}`
+              : "Endereço, seguro, área e quartos"}
+          </Texto>
+        </AlvoDeToque>
+      )}
     </View>
   );
 }
@@ -484,6 +529,23 @@ const useEstilos = estilosDoTema((cor) =>
       marginTop: 10,
       color: cor("cor-texto"),
       fontWeight: "700",
+    },
+    textoDeApoio: {
+      color: cor("cor-texto-apoio"),
+      fontSize: 12,
+      lineHeight: 16,
+    },
+    linkVerTudo: {
+      minHeight: 44,
+      justifyContent: "center",
+      alignSelf: "flex-start",
+      gap: 2,
+    },
+    textoVerTudo: {
+      color: cor("cor-azul-cadastral"),
+      fontSize: 12.5,
+      fontWeight: "600",
+      textDecorationLine: "underline",
     },
     campo: {
       gap: 5,
@@ -527,10 +589,9 @@ const useEstilos = estilosDoTema((cor) =>
       fontWeight: "500",
       outlineWidth: 0,
     },
+    // O contorno (2 px em azul cadastral) vem de `useFocoDoCampo`; aqui só o fundo branco do protótipo.
     inputFocado: {
       backgroundColor: cor("cor-superficie"),
-      borderColor: cor("cor-acao"),
-      boxShadow: `0 0 0 3px ${comAlfa(cor("cor-acao"), 0.15)}`,
     },
     linhaDupla: {
       flexDirection: "row",
@@ -539,16 +600,17 @@ const useEstilos = estilosDoTema((cor) =>
     },
     segmentado: {
       flexDirection: "row",
-      minHeight: 46,
       backgroundColor: cor("cor-sutil"),
       borderWidth: 1,
       borderColor: cor("cor-linha"),
-      padding: 3,
+      padding: 2,
       borderRadius: 10,
       gap: 2,
     },
+    // 44 px de altura: a web ignora `hitSlop`, então a área desenhada é a que vale.
     segmentadoBtn: {
       flex: 1,
+      minHeight: 44,
       alignItems: "center",
       justifyContent: "center",
       borderRadius: 7,
@@ -596,7 +658,7 @@ const useEstilos = estilosDoTema((cor) =>
       flexDirection: "row",
       alignItems: "center",
       gap: 8,
-      minHeight: 28,
+      minHeight: 44,
       alignSelf: "flex-start",
     },
     caixa: {
@@ -617,16 +679,23 @@ const useEstilos = estilosDoTema((cor) =>
       color: cor("cor-texto-apoio"),
       fontSize: 12,
     },
+    // Sem `gap`: cada área de toque já traz 3 px de folga de cada lado, e entre as pílulas ficam os 6 px de antes.
     periodoContainer: {
       flexDirection: "row",
       flexWrap: "wrap",
       alignItems: "center",
-      gap: 6,
     },
     textoPeriodoRotulo: {
       color: cor("cor-texto-apoio"),
       fontSize: 12,
-      marginRight: 2,
+      marginRight: 5,
+    },
+    // Área de toque de 44 px; a pílula (`pilulaPeriodo`) fica desenhada por dentro, com 3 px de folga de cada lado.
+    alvoDoPeriodo: {
+      minHeight: 44,
+      minWidth: 44,
+      justifyContent: "center",
+      paddingHorizontal: 3,
     },
     pilulaPeriodo: {
       paddingHorizontal: 11,

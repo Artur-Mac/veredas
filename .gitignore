@@ -9,3 +9,26 @@ expo-env.d.ts
 /android
 .cache/
 out/
+
+# D036: arquivos de camada publicados por scripts/dados/publicar-camadas.cjs (copiados de src/dados)
+/public/dados/
+/assets/dados/
+
+# 15/11/2026: fora do repositório público (ficam só na máquina; os manifestos com URL e SHA-256 sobem)
+# Artigos científicos em PDF (direitos autorais das editoras)
+/docs/dados/literatura/**/*.pdf
+# Arquivo acima do limite de 100 MB do GitHub (Censo Arbóreo 2023, 307 MB)
+/docs/dados/raw/sombra-2026-11-15/censo-arboreo-2023.geojson
+# Dados que identificam pessoas (requerentes de podas; número da unidade no ITBI)
+/docs/dados/raw/sombra-2026-11-15/podas-de-arvores-2023.csv
+/docs/dados/raw/sombra-2026-11-15/erradicacao-de-arvores-2023.csv
+/docs/dados/raw/preco-registro-2026-11-15/itbi_2026.csv
+# GTFS descompactado (stop_times.txt tem 208 MB); recriar a partir de docs/dados/raw/transporte/gtfs.zip
+/docs/dados/raw/transporte/gtfs-extracted/
+# Páginas salvas do Google Maps (trazem chaves do próprio Google embutidas); os JSON extraídos continuam
+/docs/dados/raw/google-maps/html/
+
+# Python cache
+__pycache__/
+*.pyc
+

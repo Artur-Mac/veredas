@@ -1,0 +1,41 @@
+{
+  "Boa Viagem": {
+    "categorias": {
+      "restaurantes": -1,
+      "bares": -1,
+      "academias": -1,
+      "farmacias": -1,
+      "padarias": -1,
+      "supermercados": -1,
+      "hospitais": -1,
+      "postos_saude": -1,
+      "escolas": -1,
+      "igrejas": -1,
+      "praças": -1,
+      "estacionamentos": -1,
+      "metrô_onibus": -1,
+      "petshops": -1,
+      "lava_rapido": -1,
+      "loterias": -1,
+      "construtoras": -1,
+      "aerportros": -1
+    },
+    "fonte": "OSM (Overpass API) + Google Maps (endpoint público)"
+  },
+  "Casa Forte": {
+    "categorias": {},
+    "fonte": "OSM (Overpass API) + Google Maps (endpoint público)"
+  },
+  "Graças": {
+    "categorias": {},
+    "fonte": "OSM (Overpass API) + Google Maps (endpoint público)"
+  },
+  "Espinheiro": {
+    "categorias": {},
+    "fonte": "OSM (Overpass API) + Google Maps (endpoint público)"
+  },
+  "Madalena": {
+    "categorias": {},
+    "fonte": "OSM (Overpass API) + Google Maps (endpoint público)"
+  }
+}

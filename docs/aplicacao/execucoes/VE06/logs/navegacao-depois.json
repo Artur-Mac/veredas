@@ -1,0 +1,41 @@
+{
+ "rotulo": "depois",
+ "fluxos": {
+  "recente": {
+   "url": "/dossie",
+   "layoutAprovado": true,
+   "avisoDeExemplo": false,
+   "titulo": "VEREDA 3 créditos Auditar novo anúncio Colar link Gerar Dossiê Adicionar imóvel sem link + Importar anúncio da extensão Escolha o arquivo preparado pela extensão VEREDA. Os campos serão propostos para revisão; não salva nem confirma prédio automaticamente. Aná"
+  },
+  "salvos": {
+   "url": "/dossie",
+   "layoutAprovado": true,
+   "avisoDeExemplo": false,
+   "titulo": "VEREDA 3 créditos Abrir mapa Boa Viagem · Recife Lote confirmado ✓ Apartamento em Boa Viagem (teste) Rua Barao de Beberibe, 232 70 m² 2 qtos Construído em 1966 2 pavimentos R$ 33–R$ 37/mês IPTU 2026 no prédio Dados do anúncio Cadastro oficial Mensal conhecido "
+  },
+  "exemploNoInicio": {
+   "exposto": false
+  },
+  "exemploNoMenu": {
+   "exposto": false
+  },
+  "recenteDeNovo": {
+   "url": "/dossie",
+   "layoutAprovado": true,
+   "avisoDeExemplo": false,
+   "titulo": "VEREDA 3 créditos Auditar novo anúncio Colar link Gerar Dossiê Adicionar imóvel sem link + Importar anúncio da extensão Escolha o arquivo preparado pela extensão VEREDA. Os campos serão propostos para revisão; não salva nem confirma prédio automaticamente. Aná"
+  },
+  "inicioVazio": {
+   "cartoesDeExemplo": 0,
+   "tituloDosExemplos": 0
+  }
+ },
+ "erros": [],
+ "analisesDepois": [
+  {
+   "id": "bv",
+   "nome": "Apartamento em Boa Viagem (teste)",
+   "salva": true
+  }
+ ]
+}

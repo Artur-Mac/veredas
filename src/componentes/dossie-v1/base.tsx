@@ -41,19 +41,19 @@ export function Titulo2({ children, estilo }: { children: ReactNode; estilo?: St
   );
 }
 
-/** `.ds-copy` dentro do painel: 14 px, entrelinha 1,5, cinza de apoio. */
+/** `.ds-copy` dentro do painel: 15 px, entrelinha 22 px, cinza de apoio. */
 export function Corpo({ children, estilo }: { children: ReactNode; estilo?: StyleProp<TextStyle> }) {
   return (
-    <Texto tipo="corpo" cor="cor-texto-apoio" style={[{ fontSize: 14, lineHeight: 21 }, estilo]}>
+    <Texto tipo="corpo" cor="cor-texto-apoio" style={[{ fontSize: 15, lineHeight: 22 }, estilo]}>
       {children}
     </Texto>
   );
 }
 
-/** `.ds-map-note`: nota de rodapé de 11 px. */
+/** `.ds-map-note`: nota de rodapé legível de 12.5 px. */
 export function Nota({ children, estilo }: { children: ReactNode; estilo?: StyleProp<TextStyle> }) {
   return (
-    <Texto tipo="apoio" cor="cor-texto-apoio" style={[{ fontSize: 11, lineHeight: 17 }, estilo]}>
+    <Texto tipo="apoio" cor="cor-texto-apoio" style={[{ fontSize: 12.5, lineHeight: 18 }, estilo]}>
       {children}
     </Texto>
   );

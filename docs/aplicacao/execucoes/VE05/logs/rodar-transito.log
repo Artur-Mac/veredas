@@ -1,0 +1,60 @@
+{
+ "versao": "df3b25344af0934b",
+ "checagens": [
+  [
+   "um_feed_por_execucao",
+   true
+  ],
+  [
+   "fuso_unico_da_agencia",
+   true
+  ],
+  [
+   "viagens_descartadas",
+   true
+  ],
+  [
+   "horarios_apos_24h_preservados",
+   true
+  ],
+  [
+   "feriado_2026_11_02_troca_servicos",
+   true
+  ],
+  [
+   "paradas_do_recife_perto_de_rua_oficial",
+   true
+  ],
+  [
+   "paradas_na_rede_de_caminhada",
+   true
+  ]
+ ],
+ "bytes": {
+  "grade": 2880517,
+  "gradeGzip": 755850,
+  "acessos": {
+   "boa-viagem": 149469,
+   "casa-forte": 9667,
+   "gracas": 46998,
+   "espinheiro": 30615,
+   "madalena": 36401
+  }
+ },
+ "corredor": {
+  "antigaMaior180": 2907,
+  "utilMaior180": 1730,
+  "saemComDiaUtil": 1177,
+  "entramComDiaUtil": 0,
+  "antigaSemServicoUtil": 25,
+  "razaoMediana": 2.22
+ },
+ "tempos": {
+  "leitura": 17726,
+  "compactacao": 4618,
+  "rede": 730,
+  "baldeacoes": 353,
+  "acessos": 1186,
+  "publicacao": 439
+ }
+}

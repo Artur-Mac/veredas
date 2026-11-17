@@ -50,7 +50,7 @@ type PropsDaLinha = {
 };
 
 /** `.vc-row`: rótulo de 11 px e as duas colunas lado a lado; `chave` (`.is-key`) tinge a linha até as bordas. */
-function LinhaDeDois({ rotulo, celulas, colunas, chave = false, primeira = false, tamanho }: PropsDaLinha) {
+export function LinhaDeDois({ rotulo, celulas, colunas, chave = false, primeira = false, tamanho }: PropsDaLinha) {
   const { cor } = useTema();
   const leitura = celulas.map((c, i) => `${colunas[i]}: ${c.texto}${c.detalhe ? `, ${c.detalhe}` : ""}`).join(". ");
   return (
@@ -87,7 +87,7 @@ type PropsDoDestaque = {
 };
 
 /** `.vc-insight`: sobretítulo, o número da diferença em ferrugem e a frase que o explica. */
-function Destaque({ sobretitulo, destaque, legenda, nota = null, texto = false }: PropsDoDestaque) {
+export function Destaque({ sobretitulo, destaque, legenda, nota = null, texto = false }: PropsDoDestaque) {
   const comoTexto = texto || !/\d/.test(destaque);
   return (
     <View style={{ marginBottom: 23 }} accessible accessibilityLabel={`${sobretitulo}. ${destaque} ${legenda}`}>
@@ -147,23 +147,34 @@ function Barras({ rotulos, textos, barras }: PropsDasBarras) {
   );
 }
 
-const PAINEL = { paddingTop: 22, paddingHorizontal: 17, paddingBottom: 15 } as const;
+export const PAINEL = { paddingTop: 22, paddingHorizontal: 17, paddingBottom: 15 } as const;
 
 const moeda = (valor: number | null, sufixo = "") => (valor === null ? "A confirmar" : `${formatarReais(valor)}${sufixo}`);
 
 // ——— Painéis ————————————————————————————————————————————————————————————————————————
+
+import type { CustoPorPartes } from "../../dados/custoPorPartes";
 
 type PropsDoPainelDeCusto = {
   custo: ComparacaoDeCusto;
   rotulos: Par<string>;
   /** "Ajustar valores" de cada coluna: abre a edição da análise. */
   aoAjustar: (indice: 0 | 1) => void;
+  partes?: Par<CustoPorPartes> | null;
+  aoAbrirPerfilDomicilio?: () => void;
 };
 
-export function PainelDeCusto({ custo, rotulos, aoAjustar }: PropsDoPainelDeCusto) {
+export function PainelDeCusto({ custo, rotulos, aoAjustar, partes = null, aoAbrirPerfilDomicilio }: PropsDoPainelDeCusto) {
   const aluguel = custo.referencia === "custo_mensal_conhecido";
   const sufixo = aluguel ? "/mês" : "";
   const [a, b] = custo.colunas;
+  const fatiaEnergiaA = partes?.[0].fatiasDaRotina.find((f) => f.id === "energia") ?? null;
+  const fatiaEnergiaB = partes?.[1].fatiasDaRotina.find((f) => f.id === "energia") ?? null;
+  const fatiaDeslocA = partes?.[0].fatiasDaRotina.find((f) => f.id === "deslocamento") ?? null;
+  const fatiaDeslocB = partes?.[1].fatiasDaRotina.find((f) => f.id === "deslocamento") ?? null;
+  const textoEstimado = (v: number | undefined | null) =>
+    v === undefined || v === null ? "—" : v > 0 ? `~${formatarReais(v)}/mês` : "Sem gasto direto";
+
   return (
     <SuperficieVx style={PAINEL}>
       <Destaque
@@ -177,29 +188,90 @@ export function PainelDeCusto({ custo, rotulos, aoAjustar }: PropsDoPainelDeCust
         textos={[moeda(a.valorDaBarra, sufixo), moeda(b.valorDaBarra, sufixo)]}
         barras={custo.barras}
       />
-      <LinhaDeDois
-        primeira
-        rotulo={custo.rotuloDoPrincipal}
-        colunas={rotulos}
-        celulas={[
-          { texto: moeda(a.principal, aluguel ? "/mês" : ""), detalhe: null },
-          { texto: moeda(b.principal, aluguel ? "/mês" : ""), detalhe: null },
-        ]}
-        tamanho={18}
-      />
-      <LinhaDeDois
-        chave
-        rotulo={custo.rotuloDoMensal}
-        colunas={rotulos}
-        celulas={[
-          { texto: moeda(a.mensalConhecido, "/mês"), detalhe: a.textoDePendentes },
-          { texto: moeda(b.mensalConhecido, "/mês"), detalhe: b.textoDePendentes },
-        ]}
-        tamanho={18}
-      />
+      {(aluguel ? ["mensal", "principal"] : ["principal", "mensal"]).map((tipo, i) => (
+        <LinhaDeDois
+          key={tipo}
+          primeira={i === 0}
+          chave={tipo === "mensal"}
+          rotulo={tipo === "mensal" ? custo.rotuloDoMensal : custo.rotuloDoPrincipal}
+          colunas={rotulos}
+          celulas={tipo === "mensal" ? [
+            { texto: moeda(a.mensalConhecido, "/mês"), detalhe: a.textoDePendentes },
+            { texto: moeda(b.mensalConhecido, "/mês"), detalhe: b.textoDePendentes },
+          ] : [
+            { texto: moeda(a.principal, aluguel ? "/mês" : ""), detalhe: null },
+            { texto: moeda(b.principal, aluguel ? "/mês" : ""), detalhe: null },
+          ]}
+          tamanho={18}
+        />
+      ))}
       {custo.parcelas.map((p) => (
         <LinhaDeDois key={p.nome} rotulo={p.nome} colunas={rotulos} celulas={p.celulas} />
       ))}
+
+      {partes ? (
+        <>
+          {fatiaEnergiaA || fatiaEnergiaB ? (
+            <LinhaDeDois
+              rotulo="Luz estimada da casa (à parte)"
+              colunas={rotulos}
+              celulas={[
+                { texto: textoEstimado(fatiaEnergiaA?.valorMensalReais), detalhe: partes[0].janelaPoenteConsiderada ? "Janela Poente" : "Tarifa Neoenergia PE" },
+                { texto: textoEstimado(fatiaEnergiaB?.valorMensalReais), detalhe: partes[1].janelaPoenteConsiderada ? "Janela Poente" : "Tarifa Neoenergia PE" },
+              ]}
+            />
+          ) : null}
+          {fatiaDeslocA || fatiaDeslocB ? (
+            <LinhaDeDois
+              rotulo={`${fatiaDeslocA?.rotulo ?? fatiaDeslocB?.rotulo ?? "Deslocamento"} (à parte)`}
+              colunas={rotulos}
+              celulas={[
+                { texto: textoEstimado(fatiaDeslocA?.valorMensalReais), detalhe: "Estimativa da rotina" },
+                { texto: textoEstimado(fatiaDeslocB?.valorMensalReais), detalhe: "Estimativa da rotina" },
+              ]}
+            />
+          ) : null}
+          {!aluguel && (partes[0].simulacaoCompra || partes[1].simulacaoCompra) ? (
+            <LinhaDeDois
+              rotulo="Simulação Price BCB (à parte)"
+              colunas={rotulos}
+              celulas={[
+                {
+                  texto: textoEstimado(partes[0].simulacaoCompra?.prestacaoPriceReais),
+                  detalhe: partes[0].simulacaoCompra ? `Entrada ${formatarReais(partes[0].simulacaoCompra.entradaReais)}` : null,
+                },
+                {
+                  texto: textoEstimado(partes[1].simulacaoCompra?.prestacaoPriceReais),
+                  detalhe: partes[1].simulacaoCompra ? `Entrada ${formatarReais(partes[1].simulacaoCompra.entradaReais)}` : null,
+                },
+              ]}
+            />
+          ) : null}
+          {!aluguel && (partes[0].alertaMarinha || partes[1].alertaMarinha) ? (
+            <LinhaDeDois
+              rotulo="Terreno de Marinha / SPU"
+              colunas={rotulos}
+              celulas={[
+                {
+                  texto: partes[0].alertaMarinha ? "Conferir matrícula" : "Fora da faixa costeira",
+                  detalhe:
+                    partes[0].alertaMarinha?.laudemioReferencia5PctReais != null
+                      ? `Se SPU: 5% = ${formatarReais(partes[0].alertaMarinha.laudemioReferencia5PctReais)}`
+                      : null,
+                },
+                {
+                  texto: partes[1].alertaMarinha ? "Conferir matrícula" : "Fora da faixa costeira",
+                  detalhe:
+                    partes[1].alertaMarinha?.laudemioReferencia5PctReais != null
+                      ? `Se SPU: 5% = ${formatarReais(partes[1].alertaMarinha.laudemioReferencia5PctReais)}`
+                      : null,
+                },
+              ]}
+            />
+          ) : null}
+        </>
+      ) : null}
+
       <View style={{ flexDirection: "row", gap: 12, marginTop: 12 }}>
         {([0, 1] as const).map((i) => (
           <View key={i} style={{ flex: 1, minWidth: 0 }}>
@@ -207,6 +279,11 @@ export function PainelDeCusto({ custo, rotulos, aoAjustar }: PropsDoPainelDeCust
           </View>
         ))}
       </View>
+      {aoAbrirPerfilDomicilio ? (
+        <View style={{ marginTop: 8 }}>
+          <LinkVx rotulo="Personalizar perfil da sua casa" tamanho={11} onPress={aoAbrirPerfilDomicilio} />
+        </View>
+      ) : null}
     </SuperficieVx>
   );
 }

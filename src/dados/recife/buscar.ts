@@ -2,7 +2,7 @@
 // pela pessoa (buscarPorEndereco). Funções puras sobre os edifícios que o chamador passa; nada de rede.
 import type { Candidato, Edificio } from "../contratos";
 import { formatarNumero } from "../formatos";
-import type { SlugCoberto } from "./bairros";
+import { BAIRROS_DO_RECIFE, type SlugCoberto } from "./bairros";
 
 export type EntradaDeBusca = {
   bairro: SlugCoberto;
@@ -23,6 +23,17 @@ const PONTOS_NUMERO = 100;
 const PONTOS_AREA = 30;
 const PONTOS_AREA_REPETIDA = 10;
 const PONTOS_ANO = 15;
+/** Área praticamente igual (até 1 m² ou 1%) numa tipologia com 2+ unidades: o tamanho do anúncio existe no prédio. */
+const PONTOS_AREA_EXATA = 20;
+/** Uma palavra própria em comum no nome ("Engenho Torre" × "Engenho Capibaribe"): pista fraca. */
+const PONTOS_NOME_PARCIAL = 15;
+/**
+ * Nenhuma tipologia a até 15% da área do anúncio: um apartamento de 53 m² não está num prédio só de 127 m². Pesa
+ * contra, sem excluir (a área do anúncio pode estar errada; ela já vem marcada "a confirmar" quando o leitor desconfia).
+ */
+const PENALIDADE_AREA_AUSENTE = 60;
+/** Palavras comuns demais em nome de prédio no Recife para valer como pista sozinhas. */
+const PALAVRAS_COMUNS_DE_NOME = new Set(["solar", "jardim", "jardins", "residencial", "parque", "praia", "mar", "vila", "torre", "torres", "recife", "boa", "viagem", "casa", "forte", "sao", "santa", "santo", "do", "da", "de", "dos", "das", "e"]);
 
 /** Palavras que não identificam o prédio ("Edifício Solar do Gayppio" e "Solar do Gayppio" são o mesmo nome). */
 const PALAVRAS_DE_EDIFICIO = new Set(["edificio", "edif", "edf", "condominio", "residencial"]);
@@ -62,8 +73,10 @@ function palavras(texto: string): string[] {
 
 /** Palavras do nome do prédio, sem "edifício", "edf", "condomínio" e "residencial". */
 function palavrasDoNome(texto: string): string[] {
-  return palavras(texto).filter((p) => !PALAVRAS_DE_EDIFICIO.has(p));
+  // Conectivos fora: "Engenho Torre" e "Engenho da Torre" são o mesmo nome escrito de dois jeitos.
+  return palavras(texto).filter((p) => !PALAVRAS_DE_EDIFICIO.has(p) && !CONECTIVOS.has(p));
 }
+const CONECTIVOS = new Set(["de", "da", "do", "das", "dos", "e"]);
 
 /** Palavras do logradouro, sem o tipo de via e com as abreviaturas de título por extenso. */
 function palavrasDaRua(texto: string): string[] {
@@ -152,12 +165,21 @@ function tipologiasNaTolerancia(e: Edificio, area: number): Tipologia[] {
  * unidades (não precisa ser a mais próxima); ano de construção com no máximo 1 ano de diferença +15. Andar maior que os pavimentos do prédio exclui. Sem nenhum sinal, devolve
  * lista vazia. Só entram edifícios do `bairro` da entrada.
  */
-export function buscarCandidatos(entrada: EntradaDeBusca, edificios: readonly Edificio[]): Candidato[] {
+export type PistaDeCorrespondencia = "nome" | "rua" | "numero" | "area" | "ano";
+export type CandidatoDetalhado = Candidato & { pistas: PistaDeCorrespondencia[] };
+export type ResultadoDeCandidatos = {
+  candidatos: CandidatoDetalhado[];
+  totalCompativeis: number;
+  resultadosLimitados: boolean;
+};
+
+/** Detalhes não persistidos: os pontos ordenam, mas não representam probabilidade. */
+export function buscarCandidatosDetalhados(entrada: EntradaDeBusca, edificios: readonly Edificio[]): ResultadoDeCandidatos {
   const nomeProcurado = entrada.nomeEdificio ? palavrasDoNome(entrada.nomeEdificio) : [];
   const ruaProcurada = entrada.logradouro ? palavrasDaRua(entrada.logradouro) : [];
   const numeroProcurado = numeroNormalizado(entrada.numero);
 
-  const candidatos: (Candidato & { id: string })[] = [];
+  const candidatos: (CandidatoDetalhado & { id: string })[] = [];
   for (const e of edificios) {
     if (e.bairro !== entrada.bairro) continue;
     if (entrada.andar !== null && e.pavimentos !== null && entrada.andar > e.pavimentos) continue;
@@ -165,15 +187,25 @@ export function buscarCandidatos(entrada: EntradaDeBusca, edificios: readonly Ed
     const n = normalizado(e);
     let pontos = 0;
     const motivos: string[] = [];
+    const pistas: PistaDeCorrespondencia[] = [];
 
     if (mesmoNomeDeEdificio(nomeProcurado, n.nome)) {
+      pistas.push("nome");
       pontos += PONTOS_NOME;
       motivos.push("Mesmo nome de edifício do anúncio");
+    } else {
+      const comum = nomeProcurado.find((p) => p.length >= 4 && !PALAVRAS_COMUNS_DE_NOME.has(p) && n.nome.includes(p));
+      if (comum) {
+        pontos += PONTOS_NOME_PARCIAL;
+        motivos.push(`Nome parecido com o do anúncio ("${comum}")`);
+      }
     }
 
     if (mesmoTexto(ruaProcurada, n.rua)) {
+      pistas.push("rua");
       pontos += PONTOS_RUA;
       if (numeroProcurado !== null && numeroProcurado === n.numero) {
+        pistas.push("numero");
         pontos += PONTOS_NUMERO;
         motivos.push("Mesma rua e mesmo número do anúncio");
       } else {
@@ -185,26 +217,40 @@ export function buscarCandidatos(entrada: EntradaDeBusca, edificios: readonly Ed
       const naTolerancia = tipologiasNaTolerancia(e, entrada.area);
       const maisProxima = naTolerancia[0];
       if (maisProxima) {
+        pistas.push("area");
         pontos += PONTOS_AREA;
         // O motivo cita a tipologia que explica a pontuação: a repetida, quando existe; senão, a mais próxima.
         const repetida = naTolerancia.find((t) => t.unidades >= 2);
         if (repetida) pontos += PONTOS_AREA_REPETIDA;
         const citada = repetida ?? maisProxima;
+        if (repetida && Math.abs(repetida.area - entrada.area) <= Math.max(1, entrada.area * 0.01)) pontos += PONTOS_AREA_EXATA;
         motivos.push(unidadesComArea(citada.unidades, citada.area));
+      } else if (e.tipologias.length > 0 && !e.tipologias.some((t) => Math.abs(t.area - entrada.area!) <= entrada.area! * 0.15)) {
+        pontos -= PENALIDADE_AREA_AUSENTE;
+        motivos.push(`Nenhum apartamento perto de ${textoDaArea(entrada.area)} m² no cadastro deste prédio`);
       }
     }
 
     if (entrada.anoConstrucao !== null && e.anoConstrucao !== null && Math.abs(e.anoConstrucao - entrada.anoConstrucao) <= 1) {
+      pistas.push("ano");
       pontos += PONTOS_ANO;
       motivos.push(`Construído em ${e.anoConstrucao}, perto do ano do anúncio`);
     }
 
-    if (pontos >= PONTOS_MINIMOS) candidatos.push({ id: e.id, edificioId: e.id, pontos, motivos });
+    if (pontos >= PONTOS_MINIMOS) candidatos.push({ id: e.id, edificioId: e.id, pontos, motivos, pistas });
   }
 
-  return candidatos
-    .sort(porPontosEDepoisId)
-    .slice(0, MAXIMO_DE_RESULTADOS)
+  return {
+    totalCompativeis: candidatos.length,
+    resultadosLimitados: candidatos.length > MAXIMO_DE_RESULTADOS,
+    candidatos: candidatos.sort(porPontosEDepoisId).slice(0, MAXIMO_DE_RESULTADOS)
+      .map(({ edificioId, pontos, motivos, pistas }) => ({ edificioId, pontos, motivos, pistas })),
+  };
+}
+
+/** API anterior preservada para consumidores que só precisam da lista. */
+export function buscarCandidatos(entrada: EntradaDeBusca, edificios: readonly Edificio[]): Candidato[] {
+  return buscarCandidatosDetalhados(entrada, edificios).candidatos
     .map(({ edificioId, pontos, motivos }) => ({ edificioId, pontos, motivos }));
 }
 
@@ -234,11 +280,30 @@ function separarNumero(digitado: string[]): { numero: string | null; resto: stri
  * incompletas (a pessoa ainda digitando). Com número digitado, só devolve os prédios daquela rua com aquele
  * número quando existe algum; senão, os da rua. Até 8, do mais ao menos parecido, depois por `id`.
  */
+/** Nomes que fecham um endereço colado do anúncio ("- Graças, Recife - PE") e não são da rua nem do prédio. */
+const FECHOS_DE_ENDERECO = new Set([
+  ...BAIRROS_DO_RECIFE.map((b) => normalizar(b.nome)),
+  "recife", "pe", "pernambuco", "brasil", "cep",
+]);
+
+/**
+ * O endereço como o anúncio mostra ("Rua Esmeraldino Bandeira, 411 - Graças, Recife - PE, 52011-000") vira só a rua
+ * e o número: sai o CEP, e saem os trechos (separados por vírgula ou " - ") que são bairro, cidade ou estado.
+ */
+export function enderecoSemFecho(texto: string): string {
+  const semCep = texto.replace(/\b\d{5}-?\d{3}\b/g, " ");
+  const trechos = semCep.split(/,|\s+[-–]\s+/).filter((t) => {
+    const n = normalizar(t);
+    return n !== "" && !FECHOS_DE_ENDERECO.has(n);
+  });
+  return trechos.join(" ");
+}
+
 export function buscarPorEndereco(texto: string, edificios: readonly Edificio[]): Edificio[] {
-  const { numero, resto } = separarNumero(palavras(texto));
+  const { numero, resto } = separarNumero(palavras(enderecoSemFecho(texto)));
   const ruaDigitada = resto.length > 1 && TIPOS_DE_VIA.has(resto[0] ?? "") ? resto.slice(1) : resto;
   const ruaDigitadaCompleta = ruaDigitada.map((p) => ABREVIATURAS.get(p) ?? p);
-  const nomeDigitado = resto.filter((p) => !PALAVRAS_DE_EDIFICIO.has(p));
+  const nomeDigitado = resto.filter((p) => !PALAVRAS_DE_EDIFICIO.has(p) && !CONECTIVOS.has(p));
   const soNumero = resto.length === 0 && numero !== null;
   if (resto.length === 0 && numero === null) return [];
   if (!soNumero && normalizar(resto.join(" ")).length < 2) return [];

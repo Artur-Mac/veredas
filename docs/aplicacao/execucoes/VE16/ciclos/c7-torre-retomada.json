@@ -1,0 +1,460 @@
+{
+ "nome": "c7-torre-retomada",
+ "aoVivo": false,
+ "semCache": false,
+ "areas": [
+  "boa-viagem",
+  "casa-forte",
+  "gracas",
+  "espinheiro",
+  "madalena",
+  "torre"
+ ],
+ "expansao": [
+  "torre"
+ ],
+ "inicio": "2026-11-15T02:26:02.992Z",
+ "fim": "2026-11-15T02:35:22.463Z",
+ "ms": 559466,
+ "estado": "completo",
+ "passos": [
+  {
+   "id": "observacoes",
+   "estado": "executado",
+   "ms": 30084,
+   "picoMB": 1106,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "observacoes.json"
+  },
+  {
+   "id": "rede",
+   "estado": "executado",
+   "ms": 98289,
+   "picoMB": 857,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "rede.json"
+  },
+  {
+   "id": "destinos",
+   "estado": "executado",
+   "ms": 101657,
+   "picoMB": 1131,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "destinos.json"
+  },
+  {
+   "id": "transito",
+   "estado": "executado",
+   "ms": 25815,
+   "picoMB": 1340,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "transito.json"
+  },
+  {
+   "id": "chuva",
+   "estado": "executado",
+   "ms": 37588,
+   "picoMB": 422,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "chuva.json"
+  },
+  {
+   "id": "noite",
+   "estado": "executado",
+   "ms": 21453,
+   "picoMB": 522,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "noite.json"
+  },
+  {
+   "id": "procura",
+   "estado": "executado",
+   "ms": 228353,
+   "picoMB": 306,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": "procura.json"
+  },
+  {
+   "id": "sol",
+   "estado": "executado",
+   "ms": 15837,
+   "picoMB": 403,
+   "codigo": 0,
+   "sinal": null,
+   "erro": null,
+   "relatorio": null
+  }
+ ],
+ "publicacoes": {
+  "defesa-civil": {
+   "antes": "7874298731e565c8",
+   "depois": "7874298731e565c8"
+  },
+  "rede-pedestre": {
+   "antes": "c9304b31f1c65e69",
+   "depois": "c9304b31f1c65e69"
+  },
+  "essenciais": {
+   "antes": "2a88fafdb1b84047",
+   "depois": "2a88fafdb1b84047"
+  },
+  "transito": {
+   "antes": "d0a1adbf5b49ec7a",
+   "depois": "d8567a18840e76bb"
+  },
+  "chuva": {
+   "antes": "1b8d470204986364",
+   "depois": "618a026790d52a94"
+  }
+ },
+ "geradosAlterados": [
+  "src/dados/recife/transitoGerado.ts",
+  "src/dados/recife/noiteGerado.ts",
+  "src/dados/recife/chuvaGerado.ts",
+  "src/dados/recife/procuraGerado.ts",
+  "src/dados/sol/fontesGeradas.ts"
+ ],
+ "arquivosDoApp": {
+  "antes": 100,
+  "depois": 104,
+  "novos": 21,
+  "saiu": 17,
+  "bytesDepois": 29721045
+ },
+ "paraAPessoa": {
+  "chuva": {
+   "boa-viagem": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 147
+   },
+   "casa-forte": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 0
+   },
+   "espinheiro": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 1
+   },
+   "gracas": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 0
+   },
+   "madalena": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 25
+   },
+   "torre": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 0
+   }
+  },
+  "essenciais": {
+   "boa-viagem": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 1879
+   },
+   "casa-forte": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 82
+   },
+   "espinheiro": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 156
+   },
+   "gracas": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 291
+   },
+   "madalena": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 280
+   },
+   "torre": {
+    "arquivoIgual": true,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 137
+   }
+  },
+  "noite": {
+   "boa-viagem": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 1761
+   },
+   "casa-forte": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 78
+   },
+   "espinheiro": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 151
+   },
+   "gracas": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 285
+   },
+   "madalena": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 241
+   },
+   "torre": {
+    "arquivoIgual": false,
+    "novos": 127,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 0
+   }
+  },
+  "transito": {
+   "boa-viagem": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 1761
+   },
+   "casa-forte": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 78
+   },
+   "espinheiro": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 151
+   },
+   "gracas": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 285
+   },
+   "madalena": {
+    "arquivoIgual": false,
+    "novos": 0,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 241
+   },
+   "torre": {
+    "arquivoIgual": false,
+    "novos": 127,
+    "removidos": 0,
+    "alterados": 0,
+    "iguais": 0
+   }
+  },
+  "sol": {
+   "boa-viagem": {
+    "arquivo": "igual"
+   },
+   "casa-forte": {
+    "arquivo": "igual"
+   },
+   "espinheiro": {
+    "arquivo": "igual"
+   },
+   "gracas": {
+    "arquivo": "igual"
+   },
+   "madalena": {
+    "arquivo": "igual"
+   },
+   "torre": {
+    "arquivo": "novo"
+   }
+  }
+ },
+ "idadeDasFontes": {
+  "defesa-civil": [
+   {
+    "fonte": "defesa_civil_2020",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:52Z"
+   },
+   {
+    "fonte": "defesa_civil_2021",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:47Z"
+   },
+   {
+    "fonte": "defesa_civil_2022",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:43Z"
+   },
+   {
+    "fonte": "defesa_civil_2023",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:36Z"
+   },
+   {
+    "fonte": "defesa_civil_2024",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T19:11:30Z"
+   }
+  ],
+  "rede-pedestre": [
+   {
+    "fonte": "osm_nordeste_261113",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   }
+  ],
+  "essenciais": [
+   {
+    "fonte": "osm_nordeste_261113",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "pcr_feiras_livres",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-15T02:01:09Z"
+   },
+   {
+    "fonte": "pcr_mercados_publicos",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-15T02:01:09Z"
+   },
+   {
+    "fonte": "pcr_farmacias_da_familia",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-15T02:01:09Z"
+   }
+  ],
+  "transito": [
+   {
+    "fonte": "gtfs_grande_recife",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-11T16:39:00Z"
+   }
+  ],
+  "chuva": [
+   {
+    "fonte": "defesa_civil_2014",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2015",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2016",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2017",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2018",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2019",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2020",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2021",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2022",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2023",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   },
+   {
+    "fonte": "defesa_civil_2024",
+    "estado": "valida",
+    "recuperadoEm": "2026-11-14T00:00:00Z"
+   }
+  ]
+ },
+ "problemasAntes": [],
+ "problemasDepois": []
+}

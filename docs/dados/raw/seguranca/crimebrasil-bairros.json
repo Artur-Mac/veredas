@@ -1,0 +1,415 @@
+{
+  "consultado_em": "2026-11-12T15:32:44.223Z",
+  "bairros": {
+    "Boa Viagem": {
+      "bairro": "Boa Viagem",
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/boa-viagem",
+      "consultado_em": "2026-11-12T15:32:43.889Z",
+      "de_cache": false,
+      "periodo": "Nov 2025 — Out 2026",
+      "ocorrencias_periodo": 2148,
+      "ranking": {
+        "posicao": 1,
+        "total_bairros": 94
+      },
+      "ano_a_ano": {
+        "tendencia": "subiu 11%",
+        "ano_base": 2429,
+        "ano_fim": 2706
+      },
+      "grafico_ano_a_ano": [
+        3067,
+        2300,
+        1534,
+        767,
+        0
+      ],
+      "grafico_anos": [
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ],
+      "por_tipo": [
+        {
+          "tipo": "Ameaça",
+          "parte_pct": 28,
+          "quantidade": 601
+        },
+        {
+          "tipo": "Roubo a Transeunte",
+          "parte_pct": 27,
+          "quantidade": 587
+        },
+        {
+          "tipo": "Roubo",
+          "parte_pct": 9.6,
+          "quantidade": 206
+        },
+        {
+          "tipo": "Furto",
+          "parte_pct": 9.2,
+          "quantidade": 198
+        },
+        {
+          "tipo": "Lesão Corporal",
+          "parte_pct": 7.4,
+          "quantidade": 159
+        },
+        {
+          "tipo": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "parte_pct": 5.9,
+          "quantidade": 127
+        },
+        {
+          "tipo": "Outros Roubos",
+          "parte_pct": 3.6,
+          "quantidade": 78
+        },
+        {
+          "tipo": "Outros Crimes",
+          "parte_pct": 2.3,
+          "quantidade": 49
+        },
+        {
+          "tipo": "Outros tipos",
+          "parte_pct": 6.7,
+          "quantidade": 143
+        }
+      ],
+      "perfil": {
+        "crimes_violentos_pct": 83
+      }
+    },
+    "Casa Forte": {
+      "bairro": "Casa Forte",
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/casa-forte",
+      "consultado_em": "2026-11-12T15:32:43.978Z",
+      "de_cache": false,
+      "periodo": "Nov 2025 — Out 2026",
+      "ocorrencias_periodo": 154,
+      "ranking": {
+        "posicao": 54,
+        "total_bairros": 94
+      },
+      "ano_a_ano": {
+        "tendencia": "subiu 8%",
+        "ano_base": 205,
+        "ano_fim": 222
+      },
+      "grafico_ano_a_ano": [
+        231,
+        173,
+        116,
+        58,
+        0
+      ],
+      "grafico_anos": [
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ],
+      "por_tipo": [
+        {
+          "tipo": "Ameaça",
+          "parte_pct": 34,
+          "quantidade": 52
+        },
+        {
+          "tipo": "Roubo a Transeunte",
+          "parte_pct": 25,
+          "quantidade": 38
+        },
+        {
+          "tipo": "Roubo",
+          "parte_pct": 12,
+          "quantidade": 19
+        },
+        {
+          "tipo": "Furto",
+          "parte_pct": 11,
+          "quantidade": 17
+        },
+        {
+          "tipo": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "parte_pct": 4.5,
+          "quantidade": 7
+        },
+        {
+          "tipo": "Lesão Corporal",
+          "parte_pct": 4.5,
+          "quantidade": 7
+        },
+        {
+          "tipo": "Outros Crimes",
+          "parte_pct": 2.6,
+          "quantidade": 4
+        },
+        {
+          "tipo": "Injúria",
+          "parte_pct": 1.9,
+          "quantidade": 3
+        },
+        {
+          "tipo": "Outros tipos",
+          "parte_pct": 4.5,
+          "quantidade": 7
+        }
+      ],
+      "perfil": {
+        "crimes_violentos_pct": 81
+      }
+    },
+    "Graças": {
+      "bairro": "Graças",
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/gracas",
+      "consultado_em": "2026-11-12T15:32:44.057Z",
+      "de_cache": false,
+      "periodo": "Nov 2025 — Out 2026",
+      "ocorrencias_periodo": 178,
+      "ranking": {
+        "posicao": 47,
+        "total_bairros": 94
+      },
+      "ano_a_ano": {
+        "tendencia": "subiu 96%",
+        "ano_base": 177,
+        "ano_fim": 347
+      },
+      "grafico_ano_a_ano": [
+        347,
+        260,
+        174,
+        87,
+        0
+      ],
+      "grafico_anos": [
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ],
+      "por_tipo": [
+        {
+          "tipo": "Roubo a Transeunte",
+          "parte_pct": 35,
+          "quantidade": 63
+        },
+        {
+          "tipo": "Ameaça",
+          "parte_pct": 30,
+          "quantidade": 54
+        },
+        {
+          "tipo": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "parte_pct": 10,
+          "quantidade": 18
+        },
+        {
+          "tipo": "Lesão Corporal",
+          "parte_pct": 9,
+          "quantidade": 16
+        },
+        {
+          "tipo": "Roubo",
+          "parte_pct": 3.9,
+          "quantidade": 7
+        },
+        {
+          "tipo": "Outros Roubos",
+          "parte_pct": 3.4,
+          "quantidade": 6
+        },
+        {
+          "tipo": "Injúria",
+          "parte_pct": 2.8,
+          "quantidade": 5
+        },
+        {
+          "tipo": "Furto",
+          "parte_pct": 1.1,
+          "quantidade": 2
+        },
+        {
+          "tipo": "Outros tipos",
+          "parte_pct": 3.9,
+          "quantidade": 7
+        }
+      ],
+      "perfil": {
+        "crimes_violentos_pct": 92
+      }
+    },
+    "Espinheiro": {
+      "bairro": "Espinheiro",
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/espinheiro",
+      "consultado_em": "2026-11-12T15:32:44.147Z",
+      "de_cache": false,
+      "periodo": "Nov 2025 — Out 2026",
+      "ocorrencias_periodo": 191,
+      "ranking": {
+        "posicao": 45,
+        "total_bairros": 94
+      },
+      "ano_a_ano": {
+        "tendencia": "subiu 20%",
+        "ano_base": 202,
+        "ano_fim": 242
+      },
+      "grafico_ano_a_ano": [
+        290,
+        218,
+        145,
+        73,
+        0
+      ],
+      "grafico_anos": [
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ],
+      "por_tipo": [
+        {
+          "tipo": "Ameaça",
+          "parte_pct": 42,
+          "quantidade": 80
+        },
+        {
+          "tipo": "Roubo a Transeunte",
+          "parte_pct": 22,
+          "quantidade": 42
+        },
+        {
+          "tipo": "Roubo",
+          "parte_pct": 7.3,
+          "quantidade": 14
+        },
+        {
+          "tipo": "Lesão Corporal",
+          "parte_pct": 6.8,
+          "quantidade": 13
+        },
+        {
+          "tipo": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "parte_pct": 4.2,
+          "quantidade": 8
+        },
+        {
+          "tipo": "Outros Roubos",
+          "parte_pct": 3.7,
+          "quantidade": 7
+        },
+        {
+          "tipo": "Furto",
+          "parte_pct": 2.6,
+          "quantidade": 5
+        },
+        {
+          "tipo": "Outros Crimes",
+          "parte_pct": 2.6,
+          "quantidade": 5
+        },
+        {
+          "tipo": "Outros tipos",
+          "parte_pct": 8.9,
+          "quantidade": 17
+        }
+      ],
+      "perfil": {
+        "crimes_violentos_pct": 86
+      }
+    },
+    "Madalena": {
+      "bairro": "Madalena",
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/madalena",
+      "consultado_em": "2026-11-12T15:32:44.223Z",
+      "de_cache": false,
+      "periodo": "Nov 2025 — Out 2026",
+      "ocorrencias_periodo": 406,
+      "ranking": {
+        "posicao": 22,
+        "total_bairros": 94
+      },
+      "ano_a_ano": {
+        "tendencia": "estável",
+        "ano_base": 537,
+        "ano_fim": 543
+      },
+      "grafico_ano_a_ano": [
+        578,
+        434,
+        289,
+        145,
+        0
+      ],
+      "grafico_anos": [
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ],
+      "por_tipo": [
+        {
+          "tipo": "Ameaça",
+          "parte_pct": 33,
+          "quantidade": 133
+        },
+        {
+          "tipo": "Roubo a Transeunte",
+          "parte_pct": 22,
+          "quantidade": 89
+        },
+        {
+          "tipo": "Lesão Corporal",
+          "parte_pct": 10,
+          "quantidade": 41
+        },
+        {
+          "tipo": "Furto",
+          "parte_pct": 9.1,
+          "quantidade": 37
+        },
+        {
+          "tipo": "Roubo",
+          "parte_pct": 7.4,
+          "quantidade": 30
+        },
+        {
+          "tipo": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "parte_pct": 7.1,
+          "quantidade": 29
+        },
+        {
+          "tipo": "Outros Roubos",
+          "parte_pct": 3,
+          "quantidade": 12
+        },
+        {
+          "tipo": "Injúria",
+          "parte_pct": 2.5,
+          "quantidade": 10
+        },
+        {
+          "tipo": "Outros tipos",
+          "parte_pct": 6.2,
+          "quantidade": 25
+        }
+      ],
+      "perfil": {
+        "crimes_violentos_pct": 83
+      }
+    }
+  }
+}

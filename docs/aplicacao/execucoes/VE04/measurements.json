@@ -1,0 +1,455 @@
+{
+ "epoch": "VE04",
+ "run_date": "2026-11-14",
+ "status": "partial",
+ "outcome": "iterate",
+ "reason_for_partial": "G-POI (44 venues) and VE03 G-BUILDING/G-ROUTE unreviewed by a person; OSM venue completeness unmeasured",
+ "inputs": {
+  "network": "c05c3ba9033e9fd9",
+  "essentials_version": "eb4dd0621958f6be",
+  "municipal": [
+   {
+    "fonte": "pcr_feiras_livres",
+    "estado": "valida",
+    "motivo": null,
+    "registros": 17,
+    "sha256": "293a27a263f1d9d0c4ca10751d43b8f191640b3ceeabbc69dd128c2cda2dcae5"
+   },
+   {
+    "fonte": "pcr_mercados_publicos",
+    "estado": "valida",
+    "motivo": null,
+    "registros": 6,
+    "sha256": "634ec10f555e96563f7d8536b555aa6ba19fa1120c48f9c2d587472cc03ed446"
+   },
+   {
+    "fonte": "pcr_farmacias_da_familia",
+    "estado": "valida",
+    "motivo": null,
+    "registros": 11,
+    "sha256": "c4587a74526b31b504143177b2fad8461c8cca723499a9b599653031bf46c15b"
+   }
+  ]
+ },
+ "code_sha256": {
+  "scripts/dados/destinos/catalogo.mjs": "62e58ffed5d84e24ab453f7f8e28db450c503dd54d7b174ef04fa64c12efc0ea",
+  "scripts/dados/destinos/alcance.mjs": "b434ac68ec5a03b367b525d69dfdb46efd1ec4f742dbb22783ead4276335c8f8",
+  "scripts/dados/destinos/rodar-destinos.mjs": "da0f6c648bbb2506b85a884e0a157c2ac7ceca1d9b8da5f75f5f845930d312bd",
+  "scripts/dados/destinos/testes/destinos.test.mjs": "7ab86a07adf5842c26cc248c29b270663646ba2f349a00edc8d1436aa800d564",
+  "src/dados/recife/essenciais.ts": "62efed06ab479ad94f89af13d51cb7fa79509dfb7832a1dccc08d9500e2e1081",
+  "src/componentes/dossie-v1/DiaADia.tsx": "5ecdcdb914fd57c036959560e047de3377261ddbaea012ddae260d410b52cf63",
+  "src/dados/decisao.ts": "5a77fb95c0c7d475db340eae1a0ee79b2696a9b2e808a939fac8ccae5a8d22c5",
+  "tests/essenciais.test.ts": "0418b9c5e3824b206cd9a8318c6db8dc11987a6edf91fcb2ad31e2b787535f7e",
+  "docs/aplicacao/evaluation-sets/g-poi.json": "34123822c8f549e2cd2793cf46080c384bced75473ca67af318cbe6206318bd6",
+  "docs/aplicacao/evaluation-sets/g-poi-revisao.csv": "f57ac616af84639ffe33f907523f53bfbed49ad15f75d14bf00184b937af39ba"
+ },
+ "catalogue": {
+  "candidates": {
+   "total": 7748,
+   "porCategoria": {
+    "farmacia": 220,
+    "mercado": 492,
+    "praca": 1664,
+    "transporte": 5372
+   },
+   "porFonte": {
+    "osm": 1910,
+    "prefeitura": 466,
+    "gtfs": 5372
+   }
+  },
+  "venues": {
+   "total": 7272,
+   "porCategoria": {
+    "farmacia": 212,
+    "mercado": 462,
+    "praca": 1226,
+    "transporte": 5372
+   },
+   "ligadosARede": 7241,
+   "comEntradaMapeada": 44,
+   "comHorario": {
+    "farmacia": 23,
+    "mercado": 58,
+    "praca": 24
+   },
+   "multiFonte": 335,
+   "noPiloto": {
+    "farmacia": 53,
+    "mercado": 48,
+    "praca": 90,
+    "transporte": 221
+   }
+  },
+  "duplicates_merged": 476,
+  "closed_in_osm": {
+   "total": 2,
+   "porCategoria": {
+    "mercado": 2
+   }
+  },
+  "gtfs_stops_without_service": 29
+ },
+ "coverage_by_area": {
+  "boa-viagem": {
+   "predios": 1879,
+   "modoRede": 1761,
+   "modoLinhaReta": 118,
+   "categorias": {
+    "mercado": {
+     "predios": 1879,
+     "comRede": 1761,
+     "alcancadoAte2km": 1761,
+     "ate10min": 1404,
+     "medianaMin": 5.6,
+     "rotaComPonte": 335,
+     "planoBIndependenteQuandoHaPonte": 335,
+     "segundoMaisProximoCompartilhaPonte": 188,
+     "comPlanoB": 1761
+    },
+    "farmacia": {
+     "predios": 1879,
+     "comRede": 1761,
+     "alcancadoAte2km": 1761,
+     "ate10min": 1295,
+     "medianaMin": 6,
+     "rotaComPonte": 282,
+     "planoBIndependenteQuandoHaPonte": 282,
+     "segundoMaisProximoCompartilhaPonte": 249,
+     "comPlanoB": 1759
+    },
+    "praca": {
+     "predios": 1879,
+     "comRede": 1761,
+     "alcancadoAte2km": 1761,
+     "ate10min": 1458,
+     "medianaMin": 6.1,
+     "rotaComPonte": 709,
+     "planoBIndependenteQuandoHaPonte": 709,
+     "segundoMaisProximoCompartilhaPonte": 316,
+     "comPlanoB": 1761
+    },
+    "transporte": {
+     "predios": 1879,
+     "comRede": 1761,
+     "alcancadoAte2km": 1761,
+     "ate10min": 1756,
+     "medianaMin": 2.6,
+     "rotaComPonte": 86,
+     "planoBIndependenteQuandoHaPonte": 86,
+     "segundoMaisProximoCompartilhaPonte": 4,
+     "comPlanoB": 1761
+    }
+   },
+   "cadeia": {
+    "comparadas": 1759,
+    "economiaMedianaM": 504,
+    "comEconomiaMaterial": 1252
+   }
+  },
+  "casa-forte": {
+   "predios": 82,
+   "modoRede": 78,
+   "modoLinhaReta": 4,
+   "categorias": {
+    "mercado": {
+     "predios": 82,
+     "comRede": 78,
+     "alcancadoAte2km": 78,
+     "ate10min": 57,
+     "medianaMin": 7.3,
+     "rotaComPonte": 0,
+     "planoBIndependenteQuandoHaPonte": 0,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 78
+    },
+    "farmacia": {
+     "predios": 82,
+     "comRede": 78,
+     "alcancadoAte2km": 78,
+     "ate10min": 46,
+     "medianaMin": 9.5,
+     "rotaComPonte": 0,
+     "planoBIndependenteQuandoHaPonte": 0,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 78
+    },
+    "praca": {
+     "predios": 82,
+     "comRede": 78,
+     "alcancadoAte2km": 78,
+     "ate10min": 78,
+     "medianaMin": 2.9,
+     "rotaComPonte": 0,
+     "planoBIndependenteQuandoHaPonte": 0,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 78
+    },
+    "transporte": {
+     "predios": 82,
+     "comRede": 78,
+     "alcancadoAte2km": 78,
+     "ate10min": 78,
+     "medianaMin": 3.1,
+     "rotaComPonte": 0,
+     "planoBIndependenteQuandoHaPonte": 0,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 78
+    }
+   },
+   "cadeia": {
+    "comparadas": 78,
+    "economiaMedianaM": 450,
+    "comEconomiaMaterial": 55
+   }
+  },
+  "gracas": {
+   "predios": 291,
+   "modoRede": 285,
+   "modoLinhaReta": 6,
+   "categorias": {
+    "mercado": {
+     "predios": 291,
+     "comRede": 285,
+     "alcancadoAte2km": 285,
+     "ate10min": 285,
+     "medianaMin": 4.8,
+     "rotaComPonte": 9,
+     "planoBIndependenteQuandoHaPonte": 9,
+     "segundoMaisProximoCompartilhaPonte": 2,
+     "comPlanoB": 285
+    },
+    "farmacia": {
+     "predios": 291,
+     "comRede": 285,
+     "alcancadoAte2km": 285,
+     "ate10min": 284,
+     "medianaMin": 4,
+     "rotaComPonte": 1,
+     "planoBIndependenteQuandoHaPonte": 1,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 285
+    },
+    "praca": {
+     "predios": 291,
+     "comRede": 285,
+     "alcancadoAte2km": 285,
+     "ate10min": 285,
+     "medianaMin": 2.9,
+     "rotaComPonte": 9,
+     "planoBIndependenteQuandoHaPonte": 9,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 285
+    },
+    "transporte": {
+     "predios": 291,
+     "comRede": 285,
+     "alcancadoAte2km": 285,
+     "ate10min": 285,
+     "medianaMin": 1.9,
+     "rotaComPonte": 0,
+     "planoBIndependenteQuandoHaPonte": 0,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 285
+    }
+   },
+   "cadeia": {
+    "comparadas": 285,
+    "economiaMedianaM": 361,
+    "comEconomiaMaterial": 173
+   }
+  },
+  "espinheiro": {
+   "predios": 156,
+   "modoRede": 151,
+   "modoLinhaReta": 5,
+   "categorias": {
+    "mercado": {
+     "predios": 156,
+     "comRede": 151,
+     "alcancadoAte2km": 151,
+     "ate10min": 151,
+     "medianaMin": 4.2,
+     "rotaComPonte": 3,
+     "planoBIndependenteQuandoHaPonte": 3,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 151
+    },
+    "farmacia": {
+     "predios": 156,
+     "comRede": 151,
+     "alcancadoAte2km": 151,
+     "ate10min": 151,
+     "medianaMin": 3.4,
+     "rotaComPonte": 0,
+     "planoBIndependenteQuandoHaPonte": 0,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 151
+    },
+    "praca": {
+     "predios": 156,
+     "comRede": 151,
+     "alcancadoAte2km": 151,
+     "ate10min": 151,
+     "medianaMin": 3.5,
+     "rotaComPonte": 7,
+     "planoBIndependenteQuandoHaPonte": 7,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 151
+    },
+    "transporte": {
+     "predios": 156,
+     "comRede": 151,
+     "alcancadoAte2km": 151,
+     "ate10min": 151,
+     "medianaMin": 2.2,
+     "rotaComPonte": 1,
+     "planoBIndependenteQuandoHaPonte": 1,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 151
+    }
+   },
+   "cadeia": {
+    "comparadas": 151,
+    "economiaMedianaM": 359,
+    "comEconomiaMaterial": 98
+   }
+  },
+  "madalena": {
+   "predios": 280,
+   "modoRede": 241,
+   "modoLinhaReta": 39,
+   "categorias": {
+    "mercado": {
+     "predios": 280,
+     "comRede": 241,
+     "alcancadoAte2km": 241,
+     "ate10min": 241,
+     "medianaMin": 3.7,
+     "rotaComPonte": 0,
+     "planoBIndependenteQuandoHaPonte": 0,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 241
+    },
+    "farmacia": {
+     "predios": 280,
+     "comRede": 241,
+     "alcancadoAte2km": 241,
+     "ate10min": 238,
+     "medianaMin": 4.1,
+     "rotaComPonte": 0,
+     "planoBIndependenteQuandoHaPonte": 0,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 241
+    },
+    "praca": {
+     "predios": 280,
+     "comRede": 241,
+     "alcancadoAte2km": 241,
+     "ate10min": 241,
+     "medianaMin": 2.3,
+     "rotaComPonte": 0,
+     "planoBIndependenteQuandoHaPonte": 0,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 241
+    },
+    "transporte": {
+     "predios": 280,
+     "comRede": 241,
+     "alcancadoAte2km": 241,
+     "ate10min": 241,
+     "medianaMin": 2.1,
+     "rotaComPonte": 0,
+     "planoBIndependenteQuandoHaPonte": 0,
+     "segundoMaisProximoCompartilhaPonte": 0,
+     "comPlanoB": 241
+    }
+   },
+   "cadeia": {
+    "comparadas": 241,
+    "economiaMedianaM": 357,
+    "comEconomiaMaterial": 135
+   }
+  }
+ },
+ "errand_chains": {
+  "comparadas": 2514,
+  "maioresQueSeparadas": 0
+ },
+ "g_poi": {
+  "itens": 44,
+  "porMotivo": {
+   "amostra": 37,
+   "duplicata_fundida": 6,
+   "fechado_no_osm": 1
+  }
+ },
+ "g_route_consistency": {
+  "checked": 9,
+  "violations": 0,
+  "network_nearest_closer_than_straight_nearest": 4
+ },
+ "app_payload": {
+  "version": "eb4dd0621958f6be",
+  "bytes": {
+   "boa-viagem": 782366,
+   "casa-forte": 36320,
+   "gracas": 118594,
+   "espinheiro": 64327,
+   "madalena": 110579
+  },
+  "total_bytes": 1112186
+ },
+ "engineering": {
+  "node_tests": "60/60 (destinos 12 + rede 15 + pipeline 33)",
+  "jest": "57/57 suites, 1480/1480 tests (10 new)",
+  "typecheck_errors": 0,
+  "lint": "0 errors, 5 pre-existing warnings; new .mjs 0 problems",
+  "v1_smoke": "50/50 audited steps, 0 external requests",
+  "rendered": {
+   "dossier_375_360": "section present, 0 px overflow",
+   "compare_375_360": "brief recommends from walking difference, 0 px overflow",
+   "external_requests": 0,
+   "page_errors": 0
+  },
+  "test_errors_fixed": [
+   "chain tolerance below metre/degree approximation",
+   "regex 'min' matched 'caminho'"
+  ],
+  "product_defects_fixed_after_render": [
+   "headline contradicted walking difference",
+   "bridge named three times",
+   "GTFS numeric codes shown as stop names",
+   "payload version ignored format change",
+   "dev server served stale bundle (restart)"
+  ]
+ },
+ "operating": {
+  "pipeline_s": 101.4,
+  "phases_ms": {
+   "grafo": 506,
+   "osm": 20435,
+   "fontes": 1605,
+   "fusao": 23797,
+   "alcance": 54940,
+   "publicacao": 75,
+   "total": 101379
+  },
+  "peak_rss_mb": 1172,
+  "live_requests": "3 CKAN (whitelisted) on the --ao-vivo run",
+  "spend_brl": 0,
+  "human_review_minutes": 0
+ },
+ "publication": {
+  "versao": "4fb69a0d8aeaecc2",
+  "ativa": "4fb69a0d8aeaecc2",
+  "anterior": "f17390698c1125dc"
+ },
+ "not_run": [
+  "human review of G-POI and G-ROUTE",
+  "field visits",
+  "opening-hours interpretation (raw text only)",
+  "customer study",
+  "native devices"
+ ]
+}

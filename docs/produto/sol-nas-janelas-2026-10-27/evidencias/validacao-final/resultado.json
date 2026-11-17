@@ -1,0 +1,21 @@
+{
+  "passo": "validacao-final",
+  "erroPagina": [],
+  "entornoAbrirMs": 268,
+  "viewport": "390x844 / 360x800 / 1280x900 / 844x390",
+  "janelas": 2,
+  "casos": [
+    "captura manual",
+    "calendário sazonal",
+    "noite",
+    "teclado",
+    "entorno",
+    "posição por fachada",
+    "hipótese",
+    "comparação",
+    "persistência após recarga",
+    "interação offline após carga",
+    "dossiê"
+  ],
+  "limite": "Chromium desktop; não comprova sensores ou desempenho em celular físico"
+}

@@ -1,5 +1,7 @@
 # VEREDA — Documento Definitivo do Projeto (Master Spec 3.0 & Avaliação Executiva)
 
+**Execution update — 14 November 2026:** the [Official Application and Evaluation Plan](aplicacao/VEREDA-APPLICATION-PLAN.md) is the newer authority for research application, feature priorities, and execution sequence. Its scope-specific decisions supersede conflicting statements below, including this document's historical blanket precedence statement. The product history and existing capabilities remain preserved.
+
 **Data de Consolidação:** 16 de outubro de 2026  
 **Programa-Alvo:** Campus Mobile 15ª Edição — Categoria: *Tecnologias Urbanas*  
 **Equipe:** Samuel (Produto & Estratégia), Walter (Design & Interface), Artur (Pesquisa, Dados & Engenharia)  
