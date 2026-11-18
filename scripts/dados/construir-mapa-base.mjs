@@ -1,10 +1,19 @@
-// Mapa-base por bairro (18/11/2026): quadras, lotes, ruas, água, praças e a divisa de cada bairro do Recife, das bases
+// Mapa-base por bairro (18/11/2026): quadras, lotes, ruas, água, praças, pontes e a divisa de cada bairro do Recife, das bases
 // abertas da Prefeitura (dados.recife.pe.gov.br, dataset "Área urbana" e "Parques e Praças", ODbL), mais um arquivo da
 // cidade inteira (divisas, água grande, avenidas). Contrato em memória: src/dados/recife/mapaBaseContrato.ts.
 //
 //   node --max-old-space-size=4096 scripts/dados/construir-mapa-base.mjs --bairros boa-viagem,torre
 //   node --max-old-space-size=4096 scripts/dados/construir-mapa-base.mjs --todos
-//   opções: --relatorio <arquivo.json> (pesos por arquivo e por seção, tempo e memória)
+//   opções:
+//     --bairros a,b    só esses bairros. Recusado se tiraria bairros já publicados (liste-os também), salvo --substituir.
+//     --todos          todos os bairros da base; sempre troca a versão inteira.
+//     --substituir     com --bairros: publica só a lista dada, tirando os outros de propósito.
+//     --saida <pasta>  grava a versão e o módulo em <pasta> (pasta/<sha>/*.json e pasta/mapaBaseGerado.ts), sem tocar no
+//                      publicado e sem chamar publicar-camadas. Para experimentar e para testes.
+//     --borda <m>      borda do recorte em metros (padrão 300). Só com --saida: a leitura publicada supõe 300 m.
+//     --atualizar [a,b] relê os metadados no portal, baixa de novo o que mudou (last_modified ou tamanho) e recalcula o
+//                      sha256; sem lista, todos os recursos (chaves de RECURSOS em mapa-base/fontes.mjs).
+//     --relatorio <arquivo.json> (pesos por arquivo e por seção, tempo e memória)
 //
 // Brutos em .cache/dados-recife/mapa-base/ (fora do git), reaproveitados. Saída: src/dados/recife/mapa-base/<sha>/
 // <bairro>.json e cidade.json, e o módulo src/dados/recife/mapaBaseGerado.ts. Ordem de gravação: arquivos da versão nova,
@@ -16,11 +25,12 @@
 import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
 import { createReadStream, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { createInterface } from "node:readline";
 import { gzipSync } from "node:zlib";
 import publicacaoDeCamadas from "./publicar-camadas.cjs";
 import { gravarImutavel } from "./imutavel.mjs";
+import { compararTexto, decidirBairros, textoDoModulo } from "./mapa-base/decisao.mjs";
 import { garantirFontes } from "./mapa-base/fontes.mjs";
 import {
   alargar, areaM2, caixaDe, caixasTocam, degenerado, dentroDoPoligono, limparAnel, pontoInterior, recortarAnel, regiao, simplificar,
@@ -29,15 +39,23 @@ import { VERSAO, escreverLinhas, escreverPoligonos, poligonoQuantizado, projetor
 
 const RAIZ = process.cwd();
 const BRUTOS = join(RAIZ, ".cache/dados-recife/mapa-base");
-const SAIDA = join(RAIZ, "src/dados/recife/mapa-base");
-const MODULO = join(RAIZ, "src/dados/recife/mapaBaseGerado.ts");
+const MODULO_PUBLICADO = join(RAIZ, "src/dados/recife/mapaBaseGerado.ts");
 const t0 = Date.now();
-const arg = (n) => { const i = process.argv.indexOf(n); return i >= 0 ? process.argv[i + 1] : null; };
+const arg = (n) => { const i = process.argv.indexOf(n); const v = i >= 0 ? process.argv[i + 1] : null; return v && !v.startsWith("--") ? v : null; };
+const tem = (n) => process.argv.includes(n);
+
+const SAIDA_PROPRIA = arg("--saida") ? resolve(RAIZ, arg("--saida")) : null;
+if (tem("--saida") && !SAIDA_PROPRIA) throw new Error("--saida pede uma pasta");
+const SAIDA = SAIDA_PROPRIA ?? join(RAIZ, "src/dados/recife/mapa-base");
+const MODULO = SAIDA_PROPRIA ? join(SAIDA_PROPRIA, "mapaBaseGerado.ts") : MODULO_PUBLICADO;
+const ATUALIZAR = tem("--atualizar") ? (arg("--atualizar") ? arg("--atualizar").split(",").map((x) => x.trim()) : true) : false;
 
 /** Tolerâncias de Douglas-Peucker (m). A cidade usa outras, mais grossas. */
-const TOL = { lote: 0.5, quadra: 0.5, agua: 0.5, praca: 0.5, divisa: 0.5, rua: 1 };
+const TOL = { lote: 0.5, quadra: 0.5, agua: 0.5, praca: 0.5, ponte: 0.5, divisa: 0.5, rua: 1 };
 const TOL_CIDADE = { divisa: 2, agua: 3, via: 3 };
-const BORDA_M = 300;
+const BORDA_M = arg("--borda") ? Number(arg("--borda")) : 300;
+if (!(BORDA_M > 0 && BORDA_M <= 1000)) throw new Error("--borda fora de 1..1000 m");
+if (BORDA_M !== 300 && !SAIDA_PROPRIA) throw new Error("--borda diferente de 300 só com --saida: a leitura publicada supõe 300 m.");
 /** Ruas: trecho entra se uma ponta está a até BORDA_M + FOLGA_RUA_M do bairro. */
 const FOLGA_RUA_M = 60;
 /** Água maior que isto (em área de caixa, vezes a caixa do recorte) é cortada à caixa do recorte. */
@@ -50,7 +68,7 @@ const slugDe = (s) => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").t
 const sha256 = (s) => createHash("sha256").update(s).digest("hex");
 
 // ——— Entradas ———————————————————————————————————————————————————————————————————————————————————
-const fontes = await garantirFontes(BRUTOS);
+const fontes = await garantirFontes(BRUTOS, { atualizar: ATUALIZAR });
 const lerGeo = (k) => JSON.parse(readFileSync(fontes[k].caminho, "utf8")).features;
 
 /** GeoJSON (Multi)Polygon → lista de polígonos, cada um lista de anéis limpos. */
@@ -82,15 +100,22 @@ const bairros = lerGeo("bairros").map((f) => {
   if (!slug) throw new Error(`Bairro sem slug em bairros.ts: ${p.EBAIRRNOMEOF}`);
   const bruto = poligonosDe(f.geometry);
   return { slug, nome: p.EBAIRRNOMEOF, bruto, caixa: caixaDe(bruto.flat()), divisa: simplificarPoligonos(bruto, TOL.divisa), cidade: simplificarPoligonos(bruto, TOL_CIDADE.divisa) };
-}).sort((a, b) => (a.slug < b.slug ? -1 : 1));
+}).sort((a, b) => compararTexto(a.slug, b.slug));
 if (new Set(bairros.map((b) => b.slug)).size !== bairros.length) throw new Error("Slug de bairro repetido");
 const porSlug = new Map(bairros.map((b) => [b.slug, b]));
 
-const todos = process.argv.includes("--todos");
-const pedidos = todos ? bairros.map((b) => b.slug) : (arg("--bairros") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
-if (!pedidos.length) throw new Error("Use --bairros a,b ou --todos");
-for (const s of pedidos) if (!porSlug.has(s)) throw new Error(`Bairro desconhecido: ${s}`);
-pedidos.sort();
+// O que já está publicado (para recusar uma lista que tiraria bairros sem --substituir).
+const publicados = existsSync(MODULO_PUBLICADO)
+  ? [...(/ARQUIVOS_DO_MAPA_BASE[^{]*\{([^}]*)\}/.exec(readFileSync(MODULO_PUBLICADO, "utf8"))?.[1] ?? "").matchAll(/"([a-z0-9-]+)":/g)].map((m) => m[1])
+  : [];
+const pedidos = decidirBairros({
+  todos: tem("--todos"),
+  pedidos: (arg("--bairros") ?? "").split(",").map((s) => s.trim()).filter(Boolean),
+  substituir: tem("--substituir"),
+  saida: Boolean(SAIDA_PROPRIA),
+  publicados,
+  conhecidos: bairros.map((b) => b.slug),
+});
 
 // Quadras: cada parte de MultiPolygon é uma quadra.
 const quadras = [];
@@ -105,7 +130,10 @@ for (const f of lerGeo("ruas")) {
   if (!nomeBruto || !f.geometry) { ruasSemNome++; continue; }
   // Única normalização: "Av Fulano" → "Av. Fulano". O resto do nome fica como a base publica.
   const nome = nomeBruto.replace(/^Av (?=\S)/, "Av. ");
-  const codigo = Number.isInteger(p.CLOGRACODI) ? p.CLOGRACODI : null;
+  // 23 trechos da base de 2026 trazem o código com ruído de ponto flutuante (700398.0000000001): arredonda só quando a
+  // diferença para o inteiro é desprezível; qualquer outro valor não inteiro fica sem código.
+  const c = p.CLOGRACODI;
+  const codigo = typeof c === "number" && Math.abs(c - Math.round(c)) < 1e-6 ? Math.round(c) : null;
   const linhas = (f.geometry.type === "LineString" ? [f.geometry.coordinates] : f.geometry.coordinates).map((l) => simplificar(limparAnel(l), TOL.rua, false)).filter((l) => l.length >= 2);
   if (!linhas.length) continue;
   const chave = codigo ?? `nome:${nome}`;
@@ -145,6 +173,11 @@ for (const f of lerGeo("pracas")) {
   const tipo = slugDe(p.CDTIPO) === "parque" ? "parque" : "praca";
   for (const aneis of simplificarPoligonos(poligonosDe(f.geometry), TOL.praca)) pracas.push({ nome, tipo, aneis, caixa: caixaDe([aneis[0]]) });
 }
+
+// Pontes do Recife: só a geometria (a base não traz nome; os campos de cadastro, como CREATED_USER e LAST_EDITED_USER,
+// nunca são lidos). Cada parte de MultiPolygon é um tabuleiro.
+const pontes = [];
+for (const f of lerGeo("pontes")) for (const aneis of simplificarPoligonos(poligonosDe(f.geometry), TOL.ponte)) pontes.push({ aneis, caixa: caixaDe([aneis[0]]) });
 
 // Lotes, em fluxo (137 MB, uma feição por linha). Guarda só a forma simplificada, os pavimentos e o DSQFL (interno).
 const lotes = [];
@@ -240,10 +273,13 @@ for (const c of arquivosDoIndice) {
 }
 
 // ——— Recorte por bairro ———————————————————————————————————————————————————————————————————————————
-/** A feição toca a região: um vértice dentro ou perto; ou, se for grande, um vértice do bairro dentro dela. */
+/**
+ * A feição toca a região: um vértice dentro ou perto, ou uma aresta que passa perto (segmento a segmento: uma aresta
+ * longa que atravessa a faixa sem vértice nela também conta); ou, se for grande, um vértice do bairro dentro dela.
+ */
 function tocaRegiao(reg, b, item, aneis) {
   if (!caixasTocam(item.caixa, reg.caixa)) return false;
-  for (const a of aneis) for (const p of a) if (reg.toca(p[0], p[1])) return true;
+  for (const a of aneis) if (reg.tocaLinha(a, true)) return true;
   const c = item.caixa;
   if (c[2] - c[0] > 0.005 || c[3] - c[1] > 0.005) {
     for (const poli of b.divisa) for (const p of poli[0]) if (dentroDoPoligono(p[0], p[1], aneis)) return true;
@@ -288,14 +324,14 @@ function gerarBairro(b) {
       const dentro = l.map((p) => regRua.toca(p[0], p[1]));
       let atual = null;
       for (let k = 1; k < l.length; k++) {
-        if (dentro[k - 1] || dentro[k]) { if (!atual) { atual = [l[k - 1]]; linhas.push(atual); } atual.push(l[k]); } else atual = null;
+        if (dentro[k - 1] || dentro[k] || regRua.tocaSegmento(l[k - 1], l[k])) { if (!atual) { atual = [l[k - 1]]; linhas.push(atual); } atual.push(l[k]); } else atual = null;
       }
     }
     const qz = linhas.map((l) => quantizar(l, proj, false)).filter(Boolean);
     if (!qz.length) continue;
     rs.push({ r, g: qz, k: chaveEspacial(qz[0][0]) });
   }
-  rs.sort((a, b2) => (a.r.codigo ?? 1e9) - (b2.r.codigo ?? 1e9) || (a.r.nome < b2.r.nome ? -1 : a.r.nome > b2.r.nome ? 1 : 0));
+  rs.sort((a, b2) => (a.r.codigo ?? 1e9) - (b2.r.codigo ?? 1e9) || compararTexto(a.r.nome, b2.r.nome));
 
   // Água: inteira, ou cortada à caixa do recorte quando muito maior que ela (o oceano, a bacia portuária).
   const caixaRec = alargar(reg.caixa, 100);
@@ -322,6 +358,14 @@ function gerarBairro(b) {
   }
   ps.sort(porChave);
 
+  const pts = [];
+  for (const p of pontes) {
+    if (!tocaRegiao(reg, b, p, p.aneis)) continue;
+    const g = poligonoQuantizado(p.aneis, proj);
+    if (g) pts.push({ g, k: chaveEspacial(g[0][0]) });
+  }
+  pts.sort(porChave);
+
   const divisa = b.divisa.map((p) => poligonoQuantizado(p, proj)).filter(Boolean);
   const conteudo = {
     versao: VERSAO,
@@ -343,8 +387,9 @@ function gerarBairro(b) {
     },
     agua: { nome: as.map((x) => x.w.nome), tipo: as.map((x) => x.w.tipo), g: escreverPoligonos(as.map((x) => x.g)) },
     pracas: { nome: ps.map((x) => x.p.nome), tipo: ps.map((x) => x.p.tipo), g: escreverPoligonos(ps.map((x) => x.g)) },
+    pontes: { g: escreverPoligonos(pts.map((x) => x.g)) },
   };
-  return { conteudo, contagem: { quadras: qs.length, lotes: ls.length, lotesNoIndice: conteudo.lotes.noIndice.length, ruas: rs.length, agua: as.length, pracas: ps.length } };
+  return { conteudo, contagem: { quadras: qs.length, lotes: ls.length, lotesNoIndice: conteudo.lotes.noIndice.length, ruas: rs.length, agua: as.length, pracas: ps.length, pontes: pts.length } };
 }
 
 function gerarCidade() {
@@ -371,7 +416,7 @@ function gerarCidade() {
     const g = r.linhas.map((l) => quantizar(simplificar(l, TOL_CIDADE.via, false), proj, false)).filter(Boolean);
     if (g.length) vs.push({ r, g });
   }
-  vs.sort((a, b) => (a.r.codigo ?? 1e9) - (b.r.codigo ?? 1e9) || (a.r.nome < b.r.nome ? -1 : 1));
+  vs.sort((a, b) => (a.r.codigo ?? 1e9) - (b.r.codigo ?? 1e9) || compararTexto(a.r.nome, b.r.nome));
   const conteudo = {
     versao: VERSAO,
     origem,
@@ -395,7 +440,7 @@ for (const slug of pedidos) {
   const { conteudo, contagem } = gerarBairro(porSlug.get(slug));
   const texto = JSON.stringify(conteudo);
   textos.set(`${slug}.json`, texto);
-  const secoes = Object.fromEntries(["divisa", "quadras", "lotes", "ruas", "agua", "pracas"].map((s) => { const t = JSON.stringify(conteudo[s]); return [s, { bytes: t.length, gzip: gz(t) }]; }));
+  const secoes = Object.fromEntries(["divisa", "quadras", "lotes", "ruas", "agua", "pracas", "pontes"].map((s) => { const t = JSON.stringify(conteudo[s]); return [s, { bytes: t.length, gzip: gz(t) }]; }));
   relatorio.bairros[slug] = { bytes: Buffer.byteLength(texto), gzip: gz(texto), contagem, secoes };
 }
 {
@@ -408,44 +453,34 @@ for (const slug of pedidos) {
 
 const listaFontes = [
   ["bairros", "Bairros do Recife"], ["quadras", "Quadras"], ["lotes", "Lotes"], ["ruas", "Trechos de Logradouros"],
-  ["agua", "Recursos Hídricos"], ["pracas", "Parques e Praças"],
+  ["agua", "Recursos Hídricos"], ["pracas", "Parques e Praças"], ["pontes", "Pontes do Recife"],
 ].map(([k]) => fontes[k].fonte);
-const nomes = [...textos.keys()].sort();
+const nomes = [...textos.keys()].sort(compararTexto);
 const versao = sha256(JSON.stringify({ formato: VERSAO, indice: DIRETORIO_DO_INDICE, fontes: listaFontes.map((f) => f.sha256), arquivos: nomes.map((n) => [n, sha256(textos.get(n))]) })).slice(0, 16);
 const pasta = join(SAIDA, versao);
 mkdirSync(pasta, { recursive: true });
 for (const n of nomes) gravarImutavel(join(pasta, n), textos.get(n));
 
-const caixaGraus = (c) => [Math.floor(c[0] * 1e5) / 1e5, Math.floor(c[1] * 1e5) / 1e5, Math.ceil(c[2] * 1e5) / 1e5, Math.ceil(c[3] * 1e5) / 1e5];
-const ts =
-  "// Gerado por scripts/dados/construir-mapa-base.mjs. Não edite à mão. Troca atômica depois de gravar os arquivos.\n" +
-  "// Mapa-base por bairro (fora do bundle, D036): bairro → arquivo de camada; caixa [oeste, sul, leste, norte] em graus do\n" +
-  "// polígono do bairro; o índice usado para marcar os lotes de prédios conhecidos; as fontes para \"Sobre os dados\".\n" +
-  `export const VERSAO_DO_MAPA_BASE_GERADO = ${JSON.stringify(versao)};\n` +
-  `export const INDICE_DO_MAPA_BASE = ${JSON.stringify(DIRETORIO_DO_INDICE)};\n` +
-  `export const ARQUIVO_DA_CIDADE: string = ${JSON.stringify(`recife/mapa-base/${versao}/cidade.json`)};\n` +
-  `export const ARQUIVOS_DO_MAPA_BASE: Record<string, string> = {\n${pedidos.map((s) => `  ${JSON.stringify(s)}: ${JSON.stringify(`recife/mapa-base/${versao}/${s}.json`)},`).join("\n")}\n};\n` +
-  `export const CAIXAS_DO_MAPA_BASE: Record<string, readonly [number, number, number, number]> = {\n${pedidos.map((s) => `  ${JSON.stringify(s)}: [${caixaGraus(porSlug.get(s).caixa).join(", ")}],`).join("\n")}\n};\n` +
-  "export type FonteDoMapaBase = { recurso: string; nome: string; conjunto: string; licenca: string; lastModified: string | null; sha256: string; bytes: number };\n" +
-  `export const FONTES_DO_MAPA_BASE: readonly FonteDoMapaBase[] = ${JSON.stringify(listaFontes, null, 2)};\n`;
+const ts = textoDoModulo({ versao, indice: DIRETORIO_DO_INDICE, bairros: pedidos, caixas: Object.fromEntries(pedidos.map((x) => [x, porSlug.get(x).caixa])), fontes: listaFontes });
 writeFileSync(`${MODULO}.tmp`, ts);
 renameSync(`${MODULO}.tmp`, MODULO);
-const registrado = publicacaoDeCamadas.MODULOS_GERADOS.includes("recife/mapaBaseGerado.ts");
+// Com --saida, nada do publicado é tocado: nem publicar-camadas, nem as versões antigas.
+const registrado = !SAIDA_PROPRIA && publicacaoDeCamadas.MODULOS_GERADOS.includes("recife/mapaBaseGerado.ts");
 if (registrado) publicacaoDeCamadas.publicarCamadas();
 // Por último, as versões anteriores (o módulo já não aponta para elas).
 const removidas = [];
-for (const d of readdirSync(SAIDA)) if (d !== versao && /^[0-9a-f]{16}$/.test(d)) { rmSync(join(SAIDA, d), { recursive: true }); removidas.push(d); }
+if (!SAIDA_PROPRIA) for (const d of readdirSync(SAIDA)) if (d !== versao && /^[0-9a-f]{16}$/.test(d)) { rmSync(join(SAIDA, d), { recursive: true }); removidas.push(d); }
 if (registrado) publicacaoDeCamadas.publicarCamadas();
 
 const resumo = {
-  versao, indice: DIRETORIO_DO_INDICE, bairros: pedidos.length, lidos, ligacao, cruzamento, ruasSemNome, removidas,
+  versao, indice: DIRETORIO_DO_INDICE, bordaM: BORDA_M, saida: SAIDA_PROPRIA ? "propria" : "publicada", bairros: pedidos.length, lidos, ligacao, cruzamento, ruasSemNome, removidas,
   registradoEmPublicarCamadas: registrado,
   totalBytes: [...textos.values()].reduce((s, t) => s + Buffer.byteLength(t), 0),
   totalGzip: Object.values(relatorio.bairros).reduce((s, r) => s + r.gzip, 0) + relatorio.cidade.gzip,
   maiorGzip: Object.entries(relatorio.bairros).sort((a, b) => b[1].gzip - a[1].gzip).slice(0, 5).map(([s, r]) => [s, r.gzip]),
   acimaDoTeto: Object.entries(relatorio.bairros).filter(([, r]) => r.gzip > 250_000).map(([s, r]) => [s, r.gzip]),
   ms: Date.now() - t0, memoriaPicoMB: Math.round(process.resourceUsage().maxRSS / 1024),
-  sha256: Object.fromEntries(nomes.map((n) => [n, sha256(textos.get(n))])),
+  sha256: { ...Object.fromEntries(nomes.map((n) => [n, sha256(textos.get(n))])), "mapaBaseGerado.ts": sha256(ts) },
 };
 const saidaRel = arg("--relatorio");
 if (saidaRel) writeFileSync(saidaRel, JSON.stringify({ ...resumo, ...relatorio }, null, 1) + "\n");

@@ -135,11 +135,31 @@ export function distPontoSegmento(px, py, ax, ay, bx, by) {
   return Math.sqrt(ex * ex + ey * ey);
 }
 
+/** Os segmentos AB e CD se cruzam (ou se tocam)? Plano em metros. */
+export function segmentosCruzam(ax, ay, bx, by, cx, cy, dx, dy) {
+  const o = (px, py, qx, qy, rx, ry) => Math.sign((qx - px) * (ry - py) - (qy - py) * (rx - px));
+  const d1 = o(cx, cy, dx, dy, ax, ay), d2 = o(cx, cy, dx, dy, bx, by), d3 = o(ax, ay, bx, by, cx, cy), d4 = o(ax, ay, bx, by, dx, dy);
+  if (d1 !== d2 && d3 !== d4 && d1 !== 0 && d2 !== 0 && d3 !== 0 && d4 !== 0) return true;
+  // Colineares ou com ponta sobre o outro segmento: a distância (0) decide em distSegmentos.
+  return false;
+}
+
+/** Distância (m) entre os segmentos AB e CD, num plano local já em metros. */
+export function distSegmentos(ax, ay, bx, by, cx, cy, dx, dy) {
+  if (segmentosCruzam(ax, ay, bx, by, cx, cy, dx, dy)) return 0;
+  return Math.min(
+    distPontoSegmento(ax, ay, cx, cy, dx, dy), distPontoSegmento(bx, by, cx, cy, dx, dy),
+    distPontoSegmento(cx, cy, ax, ay, bx, by), distPontoSegmento(dx, dy, ax, ay, bx, by),
+  );
+}
+
 /**
  * Região de recorte: um multipolígono em [lon, lat] alargado em `metros`. `toca(x, y)` diz se o ponto está dentro ou a
  * até `metros` da borda. As bordas ficam em metros no plano da cidade, em grade, para o teste ser barato.
  */
 export function regiao(poligonos, metros) {
+  // `tocaSegmento(a, b)`: o SEGMENTO a–b (em [lon, lat]) passa dentro ou a até `metros` da borda, mesmo sem nenhum dos
+  // dois pontos perto (uma aresta longa que atravessa a faixa).
   const P = PLANO_DA_CIDADE;
   const segs = [];
   for (const p of poligonos) for (const a of p) for (let i = 0, j = a.length - 1; i < a.length; j = i++) {
@@ -158,6 +178,20 @@ export function regiao(poligonos, metros) {
     }
   }
   const caixa = alargar(caixaDe(poligonos.flat()), metros);
+  const cxMin = P.x(caixa[0]), cxMax = P.x(caixa[2]), cyMin = P.y(caixa[1]), cyMax = P.y(caixa[3]);
+  /** Pontas fora da região: o segmento só entra se passar a até `metros` de uma aresta da divisa (se cruzasse para dentro,
+   * cruzaria a borda, e a distância seria 0). */
+  function segmentoPerto(a, b) {
+    const ax = P.x(a[0]), ay = P.y(a[1]), bx = P.x(b[0]), by = P.y(b[1]);
+    if (Math.max(ax, bx) < cxMin || Math.min(ax, bx) > cxMax || Math.max(ay, by) < cyMin || Math.min(ay, by) > cyMax) return false;
+    const gx0 = Math.floor(Math.min(ax, bx) / CEL), gx1 = Math.floor(Math.max(ax, bx) / CEL);
+    const gy0 = Math.floor(Math.min(ay, by) / CEL), gy1 = Math.floor(Math.max(ay, by) / CEL);
+    for (let gx = gx0; gx <= gx1; gx++) for (let gy = gy0; gy <= gy1; gy++) {
+      const l = grade.get(gx * 100003 + gy);
+      if (l) for (const s of l) if (distSegmentos(ax, ay, bx, by, s[0], s[1], s[2], s[3]) <= metros) return true;
+    }
+    return false;
+  }
   return {
     caixa,
     toca(lon, lat) {
@@ -166,6 +200,16 @@ export function regiao(poligonos, metros) {
       const x = P.x(lon), y = P.y(lat);
       const l = grade.get(Math.floor(x / CEL) * 100003 + Math.floor(y / CEL));
       if (l) for (const s of l) if (distPontoSegmento(x, y, s[0], s[1], s[2], s[3]) <= metros) return true;
+      return false;
+    },
+    tocaSegmento(a, b) {
+      return this.toca(a[0], a[1]) || this.toca(b[0], b[1]) || segmentoPerto(a, b);
+    },
+    /** Algum ponto ou alguma aresta do anel (fechado se `fechado`) toca a região. */
+    tocaLinha(pts, fechado) {
+      for (const p of pts) if (this.toca(p[0], p[1])) return true;
+      const n = pts.length;
+      for (let i = fechado ? 0 : 1; i < n; i++) if (segmentoPerto(pts[(i + n - 1) % n], pts[i])) return true;
       return false;
     },
   };

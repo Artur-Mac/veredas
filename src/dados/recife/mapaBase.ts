@@ -39,6 +39,9 @@ export type CaixaEmGraus = readonly [number, number, number, number];
 /** Borda incluída em cada arquivo de bairro, em metros. */
 export const BORDA_DO_MAPA_BASE_M = 300;
 
+/** Folga de segurança (m) de quadroCobertoPeloBairro: o quadro conta como coberto só até a borda menos isto. */
+export const FOLGA_DO_QUADRO_M = 30;
+
 // ——— Esquemas (validação completa, nos testes) ——————————————————————————————————————————————————————
 const inteiros = z.array(z.number().int());
 const TIPOS_DE_AGUA = ["oceano", "rio", "canal", "lago", "outro"] as const;
@@ -67,9 +70,8 @@ export const esquemaArquivoDoBairro = z.strictObject({
   ruas: esquemaRuas,
   agua: esquemaAgua,
   pracas: z.strictObject({ nome: z.array(z.string().min(1).nullable()), tipo: z.array(z.enum(["praca", "parque"])), g: inteiros }),
-  // Pontes (18/11/2026): seção acrescentada ao contrato depois do piloto. Opcional só até o pipeline gravá-la em todos
-  // os arquivos; quem regenerar os dados com a seção torna este campo obrigatório.
-  pontes: z.strictObject({ g: inteiros }).optional(),
+  // Pontes (base "Pontes do Recife"): só a geometria. Obrigatória desde a publicação de todos os bairros (18/11/2026).
+  pontes: z.strictObject({ g: inteiros }),
 });
 export type ArquivoDoBairro = z.infer<typeof esquemaArquivoDoBairro>;
 
@@ -226,6 +228,7 @@ export function checarArquivoDoBairroRaso(slug: string, dados: unknown): Arquivo
   checarColunas(onde, dados.ruas, ["nome", "codigo", "tipo"]);
   checarColunas(onde, dados.agua, ["nome", "tipo"]);
   checarColunas(onde, dados.pracas, ["nome", "tipo"]);
+  checarColunas(onde, dados.pontes, []);
   return dados as unknown as ArquivoDoBairro;
 }
 
@@ -283,7 +286,7 @@ export function decodificarArquivoDoBairro(a: ArquivoDoBairro): MapaBaseDoBairro
     ruas: decodificarRuas(a.ruas, `${onde} ruas`),
     agua: decodificarAgua(a.agua, `${onde} água`),
     pracas,
-    pontes: a.pontes ? decodificarPoligonos(a.pontes.g, null, `${onde} pontes`) : [],
+    pontes: decodificarPoligonos(a.pontes.g, null, `${onde} pontes`),
   };
 }
 
@@ -396,13 +399,15 @@ function dentro(x: number, y: number, p: PoligonoBase): boolean {
 
 /**
  * O quadro (em graus) está todo dentro da divisa do bairro ou a menos de `borda` metros dela? Confere pontos a cada
- * ~25 m ao longo da borda do quadro (e os cantos): o arquivo do bairro cobre a divisa mais 300 m.
+ * ~25 m ao longo da borda do quadro (e os cantos): o arquivo do bairro cobre a divisa mais 300 m. A conta usa a borda
+ * menos FOLGA_DO_QUADRO_M: entre duas amostras o quadro pode chegar ~12,5 m mais longe, e a divisa do arquivo é a
+ * simplificada (0,5 m). Na dúvida, entram os vizinhos.
  */
 export function quadroCobertoPeloBairro(mapa: MapaBaseDoBairro, caixa: CaixaEmGraus, bordaM = BORDA_DO_MAPA_BASE_M): boolean {
   const [lon0, lat0] = mapa.origem;
   const kx = METROS_POR_GRAU * Math.cos((lat0 * Math.PI) / 180) * UNIDADES_POR_METRO;
   const ky = METROS_POR_GRAU * UNIDADES_POR_METRO;
-  const limite = bordaM * UNIDADES_POR_METRO;
+  const limite = Math.max(0, bordaM - FOLGA_DO_QUADRO_M) * UNIDADES_POR_METRO;
   const x0 = (caixa[0] - lon0) * kx, x1 = (caixa[2] - lon0) * kx;
   const y0 = -(caixa[3] - lat0) * ky, y1 = -(caixa[1] - lat0) * ky;
   const passo = 25 * UNIDADES_POR_METRO;

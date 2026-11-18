@@ -1,5 +1,8 @@
 // Fontes do mapa-base: as bases abertas da Prefeitura do Recife (dados.recife.pe.gov.br, CKAN). Baixa para
 // .cache/dados-recife/mapa-base/ (fora do git), reaproveita o que já foi baixado e registra sha256 e tamanho de cada bruto.
+// Com `atualizar` (a flag --atualizar do pipeline), relê os metadados no CKAN, compara last_modified e tamanho com os do
+// cache, baixa de novo o que mudou e recalcula sempre o sha256. Sem ela, usa o cache como está; o sha é refeito quando o
+// tamanho ou a data de modificação do arquivo mudam.
 import { createHash } from "node:crypto";
 import { createReadStream, createWriteStream, existsSync, mkdirSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -16,6 +19,7 @@ export const RECURSOS = {
   ruas: { id: "6be90377-7b6d-483c-9b58-f7f34401ee6a", arquivo: "trechos-de-logradouros.geojson" },
   agua: { id: "dc655db0-6b58-4334-8d72-1ef666de4b86", arquivo: "recursos-hidricos.geojson" },
   pracas: { id: "054f05a9-a113-47e0-a46f-720e4828eaf2", arquivo: "parques-e-pracas.geojson" },
+  pontes: { id: "53a04509-3524-4e4d-ac9e-79cf7d942c3d", arquivo: "pontes-do-recife.geojson" },
 };
 
 /** Dicionários de dados (JSON) do mesmo dataset, para conferir o significado das colunas. Não entram na saída. */
@@ -51,15 +55,29 @@ async function chamarCkan(acao, id) {
   });
 }
 
-/** Metadados do recurso e do pacote, guardados no cache (o portal às vezes responde "no healthy upstream"). */
+/** Lê resource_show e package_show no portal e grava no cache (o portal às vezes responde "no healthy upstream"). */
+async function metadadosDoPortal(dir, id) {
+  const r = await chamarCkan("resource_show", id);
+  const p = await chamarCkan("package_show", r.package_id);
+  const meta = { id, nome: r.name, url: r.url, lastModified: r.last_modified ?? null, tamanho: Number.isInteger(r.size) ? r.size : null, conjunto: p.title, licenca: p.license_id };
+  writeFileSync(join(dir, `recurso-${id}.json`), JSON.stringify(meta, null, 1));
+  return meta;
+}
+
+/** Metadados do recurso e do pacote: os do cache, se houver; senão os do portal. */
 export async function metadados(dir, id) {
   const caminho = join(dir, `recurso-${id}.json`);
   if (existsSync(caminho)) return JSON.parse(readFileSync(caminho, "utf8"));
-  const r = await chamarCkan("resource_show", id);
-  const p = await chamarCkan("package_show", r.package_id);
-  const meta = { id, nome: r.name, url: r.url, lastModified: r.last_modified ?? null, conjunto: p.title, licenca: p.license_id };
-  writeFileSync(caminho, JSON.stringify(meta, null, 1));
-  return meta;
+  return metadadosDoPortal(dir, id);
+}
+
+/**
+ * O bruto precisa ser baixado de novo? Mudou a data de modificação publicada ou o tamanho publicado difere do arquivo
+ * guardado. Tamanho null no portal não conta como mudança.
+ */
+export function mudouNoPortal(antes, agora, bytesNoCache) {
+  if ((antes?.lastModified ?? null) !== (agora.lastModified ?? null)) return true;
+  return agora.tamanho !== null && agora.tamanho !== undefined && bytesNoCache !== null && agora.tamanho !== bytesNoCache;
 }
 
 async function baixar(url, destino) {
@@ -78,24 +96,43 @@ export async function sha256DoArquivo(caminho) {
   return h.digest("hex");
 }
 
-/** Garante os brutos no cache; devolve { chave: { caminho, fonte } } com sha256 e bytes de cada um. */
-export async function garantirFontes(dir) {
+/**
+ * Garante os brutos no cache; devolve { chave: { caminho, fonte } } com sha256 e bytes de cada um.
+ * `atualizar`: false, true (todos os recursos) ou a lista de chaves a atualizar (ex.: ["bairros"]).
+ */
+export async function garantirFontes(dir, { atualizar = false } = {}) {
   mkdirSync(dir, { recursive: true });
   const saida = {};
+  const relato = [];
+  const atualizarChave = (c) => atualizar === true || (Array.isArray(atualizar) && atualizar.includes(c));
   for (const [chave, r] of Object.entries(RECURSOS)) {
-    const meta = await metadados(dir, r.id);
     const caminho = join(dir, r.arquivo);
-    if (!existsSync(caminho)) {
+    const naCache = existsSync(caminho);
+    let meta;
+    let baixarDeNovo = !naCache;
+    if (atualizarChave(chave)) {
+      const cacheMeta = join(dir, `recurso-${r.id}.json`);
+      const antes = existsSync(cacheMeta) ? JSON.parse(readFileSync(cacheMeta, "utf8")) : null;
+      meta = await metadadosDoPortal(dir, r.id);
+      if (naCache && mudouNoPortal(antes, meta, statSync(caminho).size)) baixarDeNovo = true;
+      relato.push({ chave, antes: antes?.lastModified ?? null, agora: meta.lastModified, tamanhoNoPortal: meta.tamanho, baixouDeNovo: baixarDeNovo });
+    } else meta = await metadados(dir, r.id);
+    if (baixarDeNovo) {
       console.error(`baixando ${r.arquivo}…`);
       await baixar(meta.url, caminho);
     }
-    // sha do bruto guardado ao lado (o de 137 MB leva segundos); recalculado se o tamanho mudar.
-    const bytes = statSync(caminho).size;
+    // sha do bruto guardado ao lado (o de 137 MB leva segundos). Recalculado com --atualizar, ou se o tamanho ou a data
+    // de modificação do arquivo mudarem.
+    const st = statSync(caminho);
+    const bytes = st.size;
+    const mtime = Math.round(st.mtimeMs);
     const marca = `${caminho}.sha256.json`;
     let sha = existsSync(marca) ? JSON.parse(readFileSync(marca, "utf8")) : null;
-    if (!sha || sha.bytes !== bytes) {
-      sha = { bytes, sha256: await sha256DoArquivo(caminho) };
+    if (!sha || sha.bytes !== bytes || (sha.mtime !== undefined && sha.mtime !== mtime) || atualizarChave(chave)) {
+      sha = { bytes, mtime, sha256: await sha256DoArquivo(caminho) };
       writeFileSync(marca, JSON.stringify(sha));
+    } else if (sha.mtime === undefined) {
+      writeFileSync(marca, JSON.stringify({ ...sha, mtime }));
     }
     saida[chave] = {
       caminho,
@@ -108,5 +145,6 @@ export async function garantirFontes(dir) {
     const meta = await metadados(dir, id);
     await baixar(meta.url, caminho);
   }
+  if (atualizar) console.error(JSON.stringify({ atualizar: relato }));
   return saida;
 }
