@@ -101,9 +101,45 @@ Decisões tomadas aqui, para o dono do produto confirmar:
 3. **Pontes desenhadas** (base "Pontes do Recife", 113 polígonos, só a geometria): entraram no contrato e nos arquivos.
 4. **Tokens novos de mapa** em `src/tema/tokens.ts` (`mapa-sem-dado`, `mapa-rua`, `mapa-quadra`, `mapa-lote`, `mapa-lote-linha`, `mapa-agua`, `mapa-via-cidade`): no claro repetem as cores da especificação (a água é `#D3DEE8`); no escuro foram escolhidos para as camadas se distinguirem, porque os tokens gerais do escuro têm rua igual a papel e quadra igual a linha.
 
-**Rodada 2:** _a preencher._
+**Rodada 2, um revisor independente.** Conferiu de novo, por conta própria: o determinismo (gerou duas vezes em pastas à parte, arquivos iguais entre si e iguais aos publicados), a independência da ordem dos bairros, a lista branca em todos os campos dos arquivos (as pontes só têm geometria), os pesos e os testes. **Não abriu nenhuma imagem**: a parte visual ficou sem veredito nesta rodada (o primeiro revisor de dados também tinha pulado essa parte). O orquestrador olhou as fotos da integração e é dali que saíram os defeitos corrigidos na etapa B da F2. Achados novos:
+
+1. Imbiribeira a 646 bytes do teto de 250 kB (medido com `gzip -9`): qualquer quadra a mais numa base nova quebra o teste de peso. Tratado só com um aviso do pipeline a partir de 90% do teto; a folga de verdade depende da decisão sobre a borda (seção F3).
+2. Depois de uma falha por arquivo recusado, "Tentar de novo" não refazia a montagem. Corrigido na etapa B da F2.
 
 ## F2 Integração
+
+Antes de integrar, o orquestrador escreveu duas peças comuns para as telas não repetirem lógica: `src/componentes/mapa/useFundoDoMapa.ts` (dado o quadro de um mapa, carrega os arquivos em dois tempos e entrega o estado e a cena; commit `80b4ab7`, 12 testes) e `AvisoDoFundoDoMapa.tsx` ("Carregando ruas e quadras…" ou a falha com "Tentar de novo"; commit `a2a938d`).
+
+### Etapa A: quatro frentes em paralelo, arquivos disjuntos
+
+| Superfície | O que mudou | Commit |
+|---|---|---|
+| Gaveta "Mapa do lote", planta 2D | Fundo com quadras, lotes, ruas com nome, selo do bairro e crédito; lote do imóvel em azul cadastral. Abre em 220 m (eram 80 m) e ganhou o passo de zoom 4 (~55 m no celular). Sem o fundo, desenha como antes, com os vizinhos do índice numa forma só (sem o limite de 60). Rótulo de acessibilidade com rua, bairro e distância até a divisa. Legenda nova: "Prédios que o Vereda conhece". | `git log --grep "planta do Mapa do lote"` |
+| Confirmação do prédio (`/predio`) | Fundo no lugar da grade; lotes vizinhos continuam botões de verdade; um só destaque para o prédio. | `git log --grep "confirmação do prédio"` |
+| Topo do dossiê sem fotos | Mapa parado de 220 m em volta do prédio, com o crédito. Com fotos, nada muda. | mesmo commit |
+| Mapa dos exemplos (mapa, caminhos, confirmar lote, topo do exemplo) | A cidade inventada saiu: o chão é o mapa-base em volta da coordenada do exemplo, montado para a janela visível. Os candidatos de "É este o prédio?" são lotes de verdade. Sem o fundo, chão liso, sem reserva inventada. | `git log --grep "mapa dos exemplos"` |
+
+Decisões desta etapa:
+
+1. **Miniaturas dos cartões (início, Comparar, Visita) continuam só com o contorno do lote.** São ícones de 72 a 84 px de altura; cada cartão baixaria de 80 a 250 kB do bairro só para a miniatura; e todo mapa com o fundo precisa do crédito, que não cabe legível num cartão. O agente montou a cena no tamanho real de cada uma para conferir: não fica legível (fotos e nota em `telas/noite/f2-miniaturas/`).
+2. **Em tela larga a gaveta tem pelo menos 160 m de altura de quadro.** Só com os 220 m de largura, a 1280 px sobravam ~100 m de altura e a rua do imóvel saía do quadro.
+3. **`PoligonoMini.tsx` foi apagado.** Não era usado por ninguém e dependia dos lotes inventados.
+4. **A camada "Alagamento" dos exemplos ficou sem a faixa hachurada.** Sobre a água de verdade, ela pareceria uma inundação mapeada. "Calor" continua ilustrativo e rotulado; "3D e sombra" usa os lotes da base com pavimentos, só de perto.
+5. O servidor web compartilhado que o orquestrador subiu para as capturas não serviu: com `CI=1` o Metro não enxerga arquivo criado depois de iniciar. Cada agente usou o próprio servidor e o derrubou.
+
+Suíte depois da etapa A: `tsc` sem erros; `eslint` sem erros; `jest` com 91 suítes, **2.362 testes passando**, 0 falhas.
+
+Defeitos que o orquestrador viu ao abrir as fotos da etapa A (e mandou corrigir na etapa B):
+
+- Junto à divisa (Casa Forte), as ruas do bairro vizinho apareciam hachuradas como "sem dado", embora os lotes de lá estivessem desenhados.
+- No Por perto de Casa Forte apareciam PARNAMIRIM, SANTANA e TORRE, mas não o nome do bairro do imóvel; e os pontos de interesse cobriam nomes.
+- O rótulo da rua do imóvel passava por baixo de um botão no zoom máximo e saía cortado em tela larga.
+
+### Etapa B
+
+_A preencher._
+
+### Revisão da F2
 
 _A preencher._
 
@@ -137,7 +173,13 @@ Problemas de dados encontrados:
 
 ## F4 Interação, acessibilidade e documentação
 
-_A preencher._
+**Documentação** (feita em paralelo com a etapa A da F2; `git log --grep "Sobre os dados, registro"`):
+
+- Tela "Sobre os dados": seção nova "O desenho dos mapas", com as bases (lidas do módulo gerado, sem data escrita à mão), a licença ODbL com o crédito e o que o desenho não é (não é foto de satélite; onde falta o lote aparece só a quadra; a forma do lote não é a planta do prédio). Teste novo em `tests/telas-fatia5.test.ts`.
+- `docs/aplicacao/FEATURE-REGISTER.md` (em inglês, como o arquivo): linha do mapa-base na seção Platform, com o estado "construído na branch, pendente de revisão humana, teste em celular físico e parecer jurídico sobre a ODbL".
+- `docs/aplicacao/RUNBOOK-ATUALIZACAO.md` (em inglês): seção "6. Base map", com quando e como gerar de novo, o que conferir e o que fazer se um bairro passar do teto.
+
+**Interação e acessibilidade:** _a preencher._
 
 ## F5 Verificação final
 
