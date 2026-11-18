@@ -7,7 +7,6 @@ import type { AnaliseV2, Edificio, VisaoDoDossie } from "../../dados/contratos";
 import { estruturaDoCaderno, fichaDoDossie, type ItemDaFicha } from "../../dados/dossie/fichaViva";
 import { ORDEM_DAS_ETAPAS, ROTULO_DA_ETAPA } from "../../dados/estrutura/linhaDoTempo";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { Nota, Seta } from "./base";
@@ -65,7 +64,7 @@ function LinhaDaFicha({ item, primeira }: { item: ItemDaFicha; primeira: boolean
           <Texto tipo="corpo" style={{ fontSize: 14.5, lineHeight: 20, fontWeight: "700", flexShrink: 1 }}>{titulo}</Texto>
           <Seta tamanho={13} />
         </View>
-        <Texto tipo="corpo" style={{ fontSize: 15, lineHeight: 21, fontWeight: "600", color: cor("cor-texto") }}>
+        <Texto tipo="corpo" style={{ fontSize: 15, lineHeight: 21, fontWeight: "600", fontVariant: ["tabular-nums"], color: cor("cor-texto") }}>
           {valorPrincipal}
         </Texto>
         {explicacaoCurta ? (
@@ -123,7 +122,7 @@ function IndicadorVisual({ rotulo, estado, detalhe, tom }: { rotulo: string; est
           {rotulo}
         </Texto>
       </View>
-      <Texto tipo="corpo" style={{ fontSize: 14.5, lineHeight: 19, fontWeight: "700", color: c.texto }}>
+      <Texto tipo="corpo" style={{ fontSize: 14.5, lineHeight: 19, fontWeight: "700", fontVariant: ["tabular-nums"], color: c.texto }}>
         {estado}
       </Texto>
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, lineHeight: 17 }}>
@@ -203,7 +202,7 @@ export function FichaViva({ analise, predio, lista, visao, nomeDoBairro }: { ana
   const itensVisiveis = predio ? itens.filter((i) => i.id !== "escala") : itens;
 
   return (
-    <View role="region" aria-label="Raio-X do imóvel e edifício" style={{ marginTop: 18, padding: 18, borderRadius: 16, borderWidth: 1, borderColor: comAlfa(cor("cor-texto"), 0.09), backgroundColor: cor("cor-superficie"), gap: 12 }}>
+    <View role="region" aria-label="Raio-X do imóvel e edifício" style={{ marginTop: 18, padding: 18, borderRadius: 16, borderWidth: 1, borderColor: cor("cor-linha-forte"), backgroundColor: cor("cor-superficie"), gap: 12 }}>
       <View style={{ gap: 3 }}>
         <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>Raio-X do edifício</Texto>
         <Texto tipo="secao" role="heading" style={{ fontSize: 18, lineHeight: 24, fontWeight: "700" }}>Condições físicas, imposto e prédio</Texto>

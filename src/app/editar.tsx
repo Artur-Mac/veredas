@@ -226,7 +226,7 @@ const useEstilos = estilosDoTema((cor) =>
       marginBottom: 0,
       borderRadius: 18,
       borderWidth: 1,
-      borderColor: cor("cor-linha"),
+      borderColor: cor("cor-linha-forte"),
     },
     acoes: {
       marginTop: 20,
@@ -256,7 +256,7 @@ const useEstilos = estilosDoTema((cor) =>
       borderRadius: 12,
       padding: 20,
       borderWidth: 1,
-      borderColor: cor("cor-linha"),
+      borderColor: cor("cor-linha-forte"),
     },
     modalTitulo: {
       color: cor("cor-barro-texto"),
@@ -274,9 +274,8 @@ const useEstilos = estilosDoTema((cor) =>
       minHeight: 44,
       justifyContent: "center",
       paddingHorizontal: 14,
-      borderRadius: 6,
-      borderWidth: 1,
-      borderColor: cor("cor-linha-forte"),
+      borderRadius: 8,
+      backgroundColor: cor("cor-sutil"),
     },
     textoCancelarModal: {
       color: cor("cor-texto"),

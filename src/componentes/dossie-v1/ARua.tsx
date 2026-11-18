@@ -41,7 +41,7 @@ function LinhaDaRua({ fato, primeira, aoAbrirFonte }: { fato: FatoDaRua; primeir
   // 15/11/2026: a consequência vem primeiro; a contagem, o detalhe e a fonte ficam atrás do toque.
   if (fato.consequencia) {
     return (
-      <View style={{ borderTopWidth: primeira ? 0 : 0.5, borderTopColor: cor("cor-linha") }}>
+      <View style={{ borderTopWidth: primeira ? 0 : 1, borderTopColor: cor("cor-linha") }}>
         <Pressionavel
           onPress={() => setAberta((x) => !x)}
           accessibilityRole="button"
@@ -76,7 +76,7 @@ function LinhaDaRua({ fato, primeira, aoAbrirFonte }: { fato: FatoDaRua; primeir
         minHeight: 48,
         paddingVertical: 10,
         gap: 3,
-        borderTopWidth: primeira ? 0 : 0.5,
+        borderTopWidth: primeira ? 0 : 1,
         borderTopColor: cor("cor-linha"),
         borderRadius: RAIO.quadrado,
       }}

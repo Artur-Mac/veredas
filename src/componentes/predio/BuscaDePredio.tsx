@@ -81,7 +81,7 @@ export function BuscaDePredio({ edificios, aoEscolher }: Props) {
                   justifyContent: "center",
                   paddingHorizontal: 13,
                   paddingVertical: 8,
-                  borderTopWidth: i === 0 ? 0 : 0.5,
+                  borderTopWidth: i === 0 ? 0 : 1,
                   borderTopColor: cor("cor-linha"),
                 }}
               >

@@ -2,7 +2,7 @@ import { View } from "react-native";
 import type { Edificio as EdificioDoIndice, Fato, Pergunta, Prioridade, VisaoDoDossie } from "../../dados/contratos";
 import { derivarGuiaDeEstrutura } from "../../dados/dossie/guiaEstrutura";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, comAlfa } from "../../tema/tokens";
+import { ESPACO, RAIO } from "../../tema/tokens";
 import type { PedidoDeFonte } from "../fonte/GavetaDeFonte";
 import { TracoDeConfianca } from "../fonte/RastroDeConfianca";
 import { rotuloDaConfianca } from "../fonte/textos";
@@ -50,12 +50,10 @@ function Prioridades({ atual, aoMudar }: { atual: Prioridade; aoMudar: (p: Prior
               alignItems: "center",
               justifyContent: "center",
               borderRadius: 7,
-              borderWidth: 1,
-              borderColor: ativa ? comAlfa(cor("cor-barro"), 0.5) : cor("cor-linha"),
-              backgroundColor: ativa ? cor("cor-barro-suave") : cor("cor-papel-claro"),
+              backgroundColor: ativa ? cor("cor-barro-suave") : cor("cor-sutil"),
             }}
           >
-            <Texto tipo="apoio" cor={ativa ? "cor-barro-texto" : "cor-texto-apoio"} style={{ fontSize: 12, lineHeight: 16, fontWeight: ativa ? "600" : "400" }}>
+            <Texto tipo="apoio" cor={ativa ? "cor-barro-texto" : "cor-texto-apoio"} style={{ fontSize: 12, lineHeight: 16, fontWeight: ativa ? "700" : "500" }}>
               {p.rotulo}
             </Texto>
           </Pressionavel>
@@ -91,7 +89,7 @@ function AntesDeDecidir({ visao, prioridade, aoMudarPrioridade, aoAbrirPergunta,
       <Prioridades atual={prioridade} aoMudar={aoMudarPrioridade} />
       <View>
         {primeiras.map((p, i) => (
-          <View key={p.id} style={{ borderTopWidth: i === 0 ? 0 : 0.5, borderTopColor: cor("cor-linha") }}>
+          <View key={p.id} style={{ borderTopWidth: i === 0 ? 0 : 1, borderTopColor: cor("cor-linha") }}>
             <LinhaTocavel onPress={() => aoAbrirPergunta(p)} acessivel={`${p.titulo}. ${p.pista}`} minimo={58} estilo={{ paddingVertical: 14 }}>
               <Texto tipo="corpo" style={{ fontSize: i === 0 ? 20 : 18, lineHeight: i === 0 ? 26 : 24, fontWeight: "600", letterSpacing: -0.45 }}>
                 {p.titulo}

@@ -2744,4 +2744,34 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     const lerSrc = readFileSync(lerPath, "utf8");
     expect(lerSrc).toContain("tabular-nums");
   });
+
+  it("zera bordas ternárias 0.5px em todo src/ e desmodulariza Edificio, AbasDoDossie, FichaViva, CartaoDoImovel e editar (S72)", () => {
+    const arquivosTsx = listarTsxRecursivo(join(__dirname, "..", "src"));
+    for (const arquivo of arquivosTsx) {
+      const conteudo = readFileSync(arquivo, "utf8");
+      expect(conteudo).not.toMatch(/border(?:Top|Bottom|Left|Right)?Width:\s*[^,\n}]*\b0\.5\b/);
+    }
+
+    const semComAlfa = [
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "Edificio.tsx"),
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "FichaViva.tsx"),
+      join(__dirname, "..", "src", "componentes", "comparar", "CartaoDoImovel.tsx"),
+    ];
+    for (const p of semComAlfa) {
+      expect(readFileSync(p, "utf8")).not.toMatch(/\bcomAlfa\b/);
+    }
+
+    const abasSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "AbasDoDossie.tsx"),
+      "utf8",
+    );
+    const edifSrc = readFileSync(semComAlfa[0]!, "utf8");
+    expect(abasSrc).not.toMatch(/borderWidth:\s*1\b/);
+    expect(edifSrc).not.toMatch(/borderWidth:\s*1\b/);
+
+    const fichaSrc = readFileSync(semComAlfa[1]!, "utf8");
+    const cartaoSrc = readFileSync(semComAlfa[2]!, "utf8");
+    expect(fichaSrc).toContain("tabular-nums");
+    expect(cartaoSrc).toContain("tabular-nums");
+  });
 });

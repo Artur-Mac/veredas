@@ -46,8 +46,6 @@ export function AbasDoDossie({ atual, aoEscolher }: Props) {
         marginTop: 18,
         marginBottom: 13,
         borderRadius: 12,
-        borderWidth: 1,
-        borderColor: cor("cor-linha"),
         backgroundColor: cor("cor-sutil"),
       }}
     >
