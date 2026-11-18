@@ -407,7 +407,7 @@ export default function TelaPerfilDomicilio() {
               borderColor: cor("cor-linha"),
               backgroundColor: cor("cor-superficie"),
               color: cor("cor-texto"),
-              fontFamily: "JetBrainsMono",
+              fontVariant: ["tabular-nums"],
               fontSize: 13.5,
             }}
           />

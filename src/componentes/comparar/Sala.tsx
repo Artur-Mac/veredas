@@ -27,7 +27,7 @@ function CaixaDoLink({ link, rotulo }: { link: string; rotulo: string }) {
   const [aviso, setAviso] = useState("");
   return (
     <View style={{ gap: 8 }}>
-      <Texto tipo="apoio" selectable numberOfLines={3} style={{ fontSize: 11.5, lineHeight: 16, fontFamily: "JetBrainsMono", padding: 8, borderRadius: 8, backgroundColor: cor("cor-papel-claro") }}>{link}</Texto>
+      <Texto tipo="apoio" selectable numberOfLines={3} style={{ fontSize: 11.5, lineHeight: 16, fontVariant: ["tabular-nums"], padding: 8, borderRadius: 8, backgroundColor: cor("cor-papel-claro") }}>{link}</Texto>
       <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
         <Botao rotulo="Copiar link" variante="secundario" onPress={() => void Clipboard.setStringAsync(link).then(() => setAviso("Link copiado."), () => setAviso("Não deu para copiar: selecione o link acima."))} />
         <Botao rotulo="Enviar" variante="secundario" onPress={() => void Share.share({ message: `${rotulo}\n${link}` }).catch(() => setAviso("Não deu para abrir o compartilhamento."))} />
@@ -88,10 +88,10 @@ export function TelaDaSala({
     return (
       <View style={{ gap: 12 }}>
         <Texto tipo="secao" role="heading" style={{ fontSize: 18, fontWeight: "600" }}>{`Resposta de ${resposta.autor.trim() || "outra pessoa"}`}</Texto>
-        {resposta.respostas.map((r) => {
+        {resposta.respostas.map((r, idx) => {
           const a = lista.find((x) => x.id === r.id);
           return (
-            <View key={r.id} style={{ padding: 12, borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha"), gap: 2 }}>
+            <View key={r.id} style={{ paddingVertical: 10, borderTopWidth: idx === 0 ? 0 : 1, borderTopColor: cor("cor-linha"), gap: 2 }}>
               <Texto style={{ fontWeight: "600" }}>{a?.nome ?? "Análise que não está neste aparelho"}</Texto>
               <Texto tipo="apoio">{`${r.reacao ? REACOES.find((x) => x.valor === r.reacao)!.rotulo : "Sem reação"}${r.nota ? ` — ${r.nota}` : ""}`}</Texto>
             </View>
@@ -117,10 +117,10 @@ export function TelaDaSala({
           <View key={i.id} style={{ padding: 12, borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha"), backgroundColor: cor("cor-superficie"), gap: 6 }} role="group" aria-label={i.nome}>
             <Texto style={{ fontWeight: "600", fontSize: 15 }}>{i.nome}</Texto>
             <Texto tipo="apoio" cor="cor-texto-apoio">{[i.bairro, i.modalidade === "compra" ? "Compra" : "Aluguel"].filter(Boolean).join(" · ")}</Texto>
-            <Texto tipo="apoio" style={{ fontFamily: "JetBrainsMono", fontSize: 12 }}>
+            <Texto tipo="apoio" style={{ fontVariant: ["tabular-nums"], fontSize: 12 }}>
               {`${i.modalidade === "compra" ? "Preço" : "Aluguel"}: ${valor(i.preco, formatarReais)} · Condomínio: ${valor(i.condominio, formatarReais)} · IPTU: ${valor(i.iptu, formatarReais)}`}
             </Texto>
-            <Texto tipo="apoio" style={{ fontFamily: "JetBrainsMono", fontSize: 12 }}>
+            <Texto tipo="apoio" style={{ fontVariant: ["tabular-nums"], fontSize: 12 }}>
               {`Área: ${valor(i.area, (n) => `${formatarNumero(n)} m²`)} · Quartos: ${valor(i.quartos, String)} · Vagas: ${valor(i.vagas, String)} · Andar: ${valor(i.andar, (n) => `${n}º`)}`}
             </Texto>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }} accessibilityRole="radiogroup" aria-label={`Reação a ${i.nome}`}>

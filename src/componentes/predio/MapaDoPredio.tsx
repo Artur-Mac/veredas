@@ -89,7 +89,7 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
             y={f.centro[1] + 3}
             fill={azul}
             fillOpacity={0.8}
-            fontFamily="JetBrainsMono"
+            fontFamily="PlusJakartaSans"
             fontSize={9}
             fontWeight="600"
             textAnchor="middle"

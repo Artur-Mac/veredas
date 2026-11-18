@@ -52,7 +52,7 @@ function PlantaSolar({ janela, recorte, volumes, leitura, semId }: {
       const p = px(v.aneis[0]![0]!);
       if (p[0] >= 18 && p[0] <= 322 && p[1] >= 45 && p[1] <= 212) return null;
       const x = Math.max(24, Math.min(306, p[0])), y = Math.max(48, Math.min(206, p[1]));
-      return <G key={`fora-${v.id}`}><Circle cx={x} cy={y} r={8} fill={cor("cor-superficie")} stroke={cor("cor-traco")} /><SvgText x={x} y={y + 3} fontFamily="JetBrainsMono" fontSize={9} textAnchor="middle" fill={cor("cor-texto")}>{i + 1}</SvgText></G>;
+      return <G key={`fora-${v.id}`}><Circle cx={x} cy={y} r={8} fill={cor("cor-superficie")} stroke={cor("cor-traco")} /><SvgText x={x} y={y + 3} fontFamily="PlusJakartaSans" fontSize={9} textAnchor="middle" fill={cor("cor-texto")}>{i + 1}</SvgText></G>;
     })}
     {janela.posicao ? <G>
       <Circle cx={170} cy={120} r={7} fill={cor("cor-superficie")} stroke={cor("cor-acao")} strokeWidth={3} />
@@ -62,7 +62,7 @@ function PlantaSolar({ janela, recorte, volumes, leitura, semId }: {
     <SvgText x={316} y={16} textAnchor="middle" fontFamily="PlusJakartaSans" fontWeight="600" fontSize={10} fill={cor("cor-texto-apoio")}>N</SvgText>
     <SvgText x={14} y={232} fontSize={10} fontFamily="PlusJakartaSans" fill={cor("cor-texto-apoio")}>Planta · alturas estimadas</SvgText>
     <Line x1={264} y1={228} x2={308} y2={228} stroke={cor("cor-texto-apoio")} />
-    <SvgText x={286} y={220} textAnchor="middle" fontFamily="JetBrainsMono" fontSize={10} fill={cor("cor-texto-apoio")}>20 m</SvgText>
+    <SvgText x={286} y={220} textAnchor="middle" fontFamily="PlusJakartaSans" fontSize={10} fill={cor("cor-texto-apoio")}>20 m</SvgText>
   </Svg>;
 }
 

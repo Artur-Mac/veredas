@@ -242,7 +242,7 @@ export function LinhaDoTempoEstrutural({ analise, aoRegistrar }: { analise: Anal
               <View style={{ flex: 1, gap: 1 }}>
                 <Texto tipo="apoio" style={{ fontSize: 12.5, lineHeight: 17, fontWeight: "600" }}>{`${ROTULO_DA_ETAPA[etapa]}${atos.length ? "" : " · sem documento"}`}</Texto>
                 {atos.map((a, k) => (
-                  <Texto key={`${etapa}-${k}`} tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 16, fontFamily: "JetBrainsMono" }}>
+                  <Texto key={`${etapa}-${k}`} tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 16, fontVariant: ["tabular-nums"] }}>
                     {`${a.data ? `${a.data.slice(8, 10)}/${a.data.slice(5, 7)}/${a.data.slice(0, 4)}` : "sem data"} · ${a.documento}${a.numero ? ` · nº ${a.numero}` : ""}`}
                   </Texto>
                 ))}

@@ -56,5 +56,7 @@ Branch: `feat/vereda-visual-power-overhaul`
 - [x] **S36**: Year-over-year cadence comparison in `LinhaUnificadaDoLote` (`Placer app29` §6.4 + `Jupiter app28` §6.3) + full 98-suite (`2050/2050` tests) & live Metro (`ANDROID 200 6681193`, `WEB 200 3901360`) verification.
 - [x] **S37**: WCAG >= 44px touch-target cleanup across `visita-v1/` (`NoImovel`, `Orientacao`) and `dossie-v1/` (`MapaDoLote`, `PorPerto`, `Topo`) (`4/4` suites, `192/192` tests).
 - [x] **S38**: 2.5D future shadow projection for real licensed neighboring builds (`Localize.city app4` §6.2) in `CanvasSolSombraBrisa25D.tsx` (`4/4` suites, `52/52` tests).
-- [ ] **S39**: Final citizen typography & hairline cleanup across `Sala.tsx`, `FichaViva.tsx`, `EntornoSolar.tsx`, `MapaDoPredio.tsx`, and `perfil-domicilio.tsx` + full 98-suite & live Metro verification.
-- [ ] **S40**: Building-level resolution & explicit relative-position labeling (`Local Logic app8` §6.5 + `ClimateCheck app12` §6.1) + past-to-present timeline framing (`app12` §6.3) across `PulsoDaQuadra` & `VidaAPeNaQuadra`.
+- [x] **S39**: Final citizen typography & hairline cleanup across `Sala.tsx`, `FichaViva.tsx`, `EntornoSolar.tsx`, `MapaDoPredio.tsx`, and `perfil-domicilio.tsx` + full 98-suite (`2053/2053` tests) & live Metro (`ANDROID 200 6681193`, `WEB 200 3901360`) verification.
+- [ ] **S40**: Building-level resolution & explicit relative-position labeling (`Local Logic app8` §6.5 + `ClimateCheck app12` §6.1) across `PulsoDaQuadra` & `VidaAPeNaQuadra`.
+- [ ] **S41**: Provenance, dual IDs (`CNM 16 dígitos`), and `Modelo v2` metadata in `pacoteEspecialista.ts` (`Gridics app24` §6.5 + `ONR app26` §6.1 + `Cherre app27` §6.4).
+- [ ] **S42**: Listing-vs-registry claim checks (`HouseCanary app9` §6.1) and distance-attenuation hint without dB (`Mapa Sossego app1` §6.2) in `SimuladorDaUnidade`.

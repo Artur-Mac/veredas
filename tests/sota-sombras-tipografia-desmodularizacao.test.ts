@@ -1774,4 +1774,25 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(REGEX_JARGON_CAMADA1.test(depois)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(depois)).toBe(false);
   });
+
+  it("unifica tipografia PlusJakartaSans/tabular-nums e desmodulariza respostas em Sala, FichaViva, EntornoSolar, MapaDoPredio e perfil-domicilio (S39)", () => {
+    for (const rel of [
+      "src/componentes/comparar/Sala.tsx",
+      "src/componentes/dossie-v1/FichaViva.tsx",
+      "src/app/perfil-domicilio.tsx",
+      "src/componentes/sol/EntornoSolar.tsx",
+      "src/componentes/predio/MapaDoPredio.tsx",
+    ]) {
+      const src = readFileSync(join(__dirname, "..", rel), "utf8");
+      expect(src).not.toContain("JetBrainsMono");
+    }
+
+    const salaSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "comparar", "Sala.tsx"),
+      "utf8",
+    );
+    const respBlock = salaSrc.match(/resposta\.respostas\.map[\s\S]*?<\/View>/)?.[0] ?? "";
+    expect(respBlock).toContain("borderTopWidth");
+    expect(respBlock).not.toMatch(/borderRadius:\s*12/);
+  });
 });
