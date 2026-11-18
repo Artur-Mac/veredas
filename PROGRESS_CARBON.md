@@ -26,7 +26,7 @@
 - [x] **M5 (Pillar B.9 & B.10):** `IND-10/#41` ONR CNM 16-digit ISO 7064 MOD 97-10 + 100% deterministic citation entailment + DataJud client, `Fellegi-Sunter` EM + `pHash` deduplication + *Street Smart* walkability & GTFS calendar router.
 - [x] **M6 (Pillar C):** `expo-sqlite` (`R*Tree`, `FTS5`, `SQLCipher`), `user_vault.db` + `ATTACH DATABASE`, non-destructive `AsyncStorage` migration, Python offline city compiler (`recife_public.db` + `.db.zst` + `.pmtiles` + `publication_manifest.json`), MapLibre editorial cartography, Layer 0 / 1 / 2 multi-city adapters.
 - [x] **M7 (Supreme UX Mandate):** 3-layer zero-jargon `pt-BR` citizen cards across `IND-01..IND-10`, invisible dominance filtering (zero "Pareto" / "0-100 score"), clean `A × B` finalist duel, Household Convergence Mode, 10-Year Buy vs Rent TCO Simulator, Live Solar/Breeze Visit Compass, Shareable Evidence Summary.
-- [ ] **M8 (Unbounded Hyper-Refinement):** 4 end-to-end citizen persona test suites, `fast-check` property-based math suites, <16ms 60fps SQLite/derive benchmarks + pipeline dead-code pruning, WCAG AA contrast + 48dp touch targets + corrupted input fuzzing.
+- [x] **M8 (Unbounded Hyper-Refinement):** 4 end-to-end citizen persona test suites, `fast-check` property-based math suites, <16ms 60fps SQLite/derive benchmarks + pipeline dead-code pruning, WCAG AA contrast + 48dp touch targets + corrupted input fuzzing.
 
 ## 4. Autonomous Architectural Decisions & Notes
 - `node:sqlite` (`DatabaseSync` on Node `v22.23.3`) + Python `sqlite3` (`ENABLE_RTREE` + `ENABLE_FTS5`) enable full real-SQLite spatial and FTS5 test parity without native emulator blockers.
