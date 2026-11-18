@@ -60,6 +60,7 @@ import {
   gerarRoteiroTresPerguntasSindico,
 } from "../src/dados/pacoteEspecialista";
 import { montarTextoDivergenciasParaCorretor } from "../src/componentes/dossie-v1/Indicadores";
+import { calcularAreaPoligonoM2, MapaDoLote } from "../src/componentes/dossie-v1/MapaDoLote";
 import { descreverJanelaTemporalDaBase, GavetaDeFonte } from "../src/componentes/fonte/GavetaDeFonte";
 import { Entorno } from "../src/componentes/dossie-v1/Entorno";
 import { sintetizarPerfilObrasProximas } from "../src/componentes/dossie-v1/textos";
@@ -3625,14 +3626,76 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       "peça o boleto vigente do condomínio",
     );
     const tConhecido = montarCusto("conhecido");
-    const txtConhecido = extrairTextos(tConhecido.toJSON()).join(" ");
-    expect(txtConhecido).toContain("valide também o saldo do fundo de reserva");
-    expect(REGEX_JARGON_CAMADA1.test(txtConhecido)).toBe(false);
-    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txtConhecido)).toBe(false);
+    const txt = extrairTextos(tConhecido.toJSON()).join(" ");
+    expect(txt).toContain("valide também o saldo do fundo de reserva");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
 
     act(() => {
       tPendente.unmount();
       tConhecido.unmount();
+    });
+  });
+
+  it("MapaDoLote zera comAlfa/bordas extras e exibe área geométrica do polígono (S92)", () => {
+    const mapaSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "MapaDoLote.tsx"),
+      "utf8",
+    );
+    expect(mapaSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((mapaSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    expect(mapaSrc).toContain("tabular-nums");
+
+    expect(calcularAreaPoligonoM2(null)).toBeNull();
+    expect(calcularAreaPoligonoM2([[-34.896, -8.121], [-34.895, -8.121]])).toBeNull();
+    const areaCalc = calcularAreaPoligonoM2(poligono);
+    expect(areaCalc).not.toBeNull();
+    expect(areaCalc!).toBeGreaterThan(300);
+    expect(areaCalc!).toBeLessThan(500);
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(MapaDoLote, {
+            predio: {
+              id: "60461-120",
+              bairro: "boa-viagem",
+              logradouro: "AV BOA VIAGEM",
+              numero: "120",
+              dsqfl: null,
+              nome: "Ed. Teste Mapa",
+              centro,
+              poligono,
+              unidades: 12,
+              tipologias: [{ area: 75, unidades: 12, iptuAnualMediano: null }],
+              anoConstrucao: 2012,
+              pavimentos: 12,
+              ate4Pavimentos: false,
+              padrao: "Superior",
+              iptuAnual: null,
+              itbi: null,
+              obras150m: { licencasDeObra: 0, relevantes24m: 0, demolicoes24m: 0, recentes: [] },
+            },
+            obras: [],
+            vizinhos: [],
+          }),
+        ),
+      );
+    });
+
+    const geoNode = tree.root.find((n) => n.props.testID === "mapa-geometria-lote");
+    expect(geoNode).toBeDefined();
+    const txt = extrairTextos(tree.toJSON()).join(" ");
+    expect(txt).toContain("Contorno cadastral no mapa:");
+    expect(txt).toContain("4 vértices");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+
+    act(() => {
+      tree.unmount();
     });
   });
 });
