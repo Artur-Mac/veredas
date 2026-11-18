@@ -187,7 +187,12 @@ describe("Por perto na aba Entorno", () => {
     expect(lidos).toEqual([]);
     act(() => raiz.props.onLayout({ nativeEvent: { layout: { x: 0, y: 0, width: 305, height: 600 } } }));
     expect(lidos).toEqual([]);
-    await esperar(ESPERA_DO_AQUECIMENTO_MS + 250);
+    // Espera o pré-aquecimento terminar (as leituras param de chegar), sem depender de a máquina estar livre.
+    for (let i = 0, antes = -1, parado = 0; i < 100 && parado < 3; i++) {
+      await esperar(ESPERA_DO_AQUECIMENTO_MS);
+      parado = lidos.length > 0 && lidos.length === antes ? parado + 1 : 0;
+      antes = lidos.length;
+    }
     expect(new Set(lidos).size).toBeGreaterThan(2);
     expect(lidos).toContain(arquivoDoMapaBase("boa-viagem"));
     const antesDeAbrir = lidos.length;
