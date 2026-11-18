@@ -4,7 +4,9 @@
 import { describe, expect, it } from "@jest/globals";
 import { mkdirSync, writeFileSync } from "fs";
 import { join, resolve } from "path";
-import { montarFundoDoMapa, type CenaDoFundo, type EntradaDoFundo } from "../src/componentes/mapa/fundoDoMapaCena";
+import { montarFundoDoMapa, QUADRAS_ATE_M_POR_PX, type CenaDoFundo, type EntradaDoFundo } from "../src/componentes/mapa/fundoDoMapaCena";
+import { bairrosNaCaixa, mapaBaseDaCidade, mapaBaseDoBairro } from "../src/dados/recife/mapaBase";
+import { METROS_POR_GRAU } from "../src/dados/recife/mapaBaseContrato";
 import { CORES_CLARO, CORES_ESCURO, type Cores } from "../src/tema/tokens";
 import { CENTRO_DO_IMOVEL, LOGRADOURO_DO_IMOVEL, lerRecorte, mapaBaseDoRecorte, paraDesenhoCentrado, svgDaCena } from "./apoio/mapa-base-de-teste";
 
@@ -60,22 +62,80 @@ body{margin:0;padding:12px;background:${cores["cor-fundo"]};font-family:PlusJaka
 ${cena.selo ? `<div class="selo"><small>BAIRRO</small><b>${cena.selo}</b></div>` : ""}${regua(cena, cores)}<div class="credito">Base: Prefeitura do Recife (ODbL)</div></div></body></html>`;
 }
 
-describe("custo de montar a cena (média de 50)", () => {
-  it("gaveta e por perto", () => {
+/** A caixa em graus de um quadro centrado (a mesma conta de paraDesenhoCentrado), com folga de 300 m. */
+function caixaDoQuadro(centro: readonly [number, number], largura: number, altura: number, metros: number): readonly [number, number, number, number] {
+  const cos = Math.cos((centro[1] * Math.PI) / 180);
+  const meiaL = metros / 2 + 300;
+  const meiaA = (metros * altura) / largura / 2 + 300;
+  return [centro[0] - meiaL / (METROS_POR_GRAU * cos), centro[1] - meiaA / METROS_POR_GRAU, centro[0] + meiaL / (METROS_POR_GRAU * cos), centro[1] + meiaA / METROS_POR_GRAU];
+}
+
+/** Os arquivos reais que o mapa que hospeda carregaria para o quadro: os bairros cuja caixa toca o quadro, e a cidade. */
+function entradaReal(largura: number, altura: number, metros: number, zoom = 1): EntradaDoFundo {
+  const caixa = caixaDoQuadro(CENTRO_DO_IMOVEL, largura, altura, metros);
+  const slugs = metros / zoom / largura > QUADRAS_ATE_M_POR_PX ? ["boa-viagem"] : bairrosNaCaixa(caixa);
+  return {
+    bairros: slugs.map((s) => mapaBaseDoBairro(s)).filter((m): m is NonNullable<typeof m> => m !== null),
+    cidade: mapaBaseDaCidade(),
+    bairroDoImovel: "boa-viagem",
+    imovel: { centro: CENTRO_DO_IMOVEL, codigoDoLogradouro: LOGRADOURO_DO_IMOVEL },
+    quadro: { largura, altura, paraDesenho: paraDesenhoCentrado(CENTRO_DO_IMOVEL, largura, altura, metros), zoom },
+  };
+}
+
+/**
+ * Metas da noite (node, arquivos reais, cidade carregada, depois de aquecido): gaveta de 220 m em 340 px até 5 ms; Por
+ * perto de 2,6 km em 340 px até 15 ms; 1240 × 600 em qualquer escala até 40 ms. Os tetos ficam um pouco acima das metas.
+ *
+ * Milissegundo medido com a máquina carregada não é medida: na suíte inteira, com as outras suítes disputando os
+ * núcleos, a mediana estourava o teto sem o código ter mudado (18/11/2026). Por isso há dois modos:
+ * - suíte normal: o MELHOR tempo de 15 contra 8 vezes o teto. Pega a regressão grande (a busca do nome de bairro já
+ *   custou 774 ms num quadro largo) e não falha por carga.
+ * - CUSTO_ESTRITO=1 (ou PROVA_FUNDO), rodando este arquivo sozinho: a mediana contra o teto. É a medida que vale para
+ *   o relatório; vai para custo.txt e para o LEIA.md.
+ */
+const CUSTO_ESTRITO = Boolean(process.env.CUSTO_ESTRITO || process.env.PROVA_FUNDO);
+const FOLGA_NA_SUITE = 8;
+const CASOS_DE_CUSTO: { nome: string; largura: number; altura: number; metros: number; zoom?: number; teto: number }[] = [
+  { nome: "gaveta 220 m, 340 px", largura: 340, altura: 300, metros: 220, teto: 6 },
+  { nome: "gaveta 220 m, 340 px, zoom 3", largura: 340, altura: 300, metros: 220, zoom: 3, teto: 6 },
+  { nome: "por perto 2,6 km, 340 px", largura: 340, altura: 300, metros: 2600, teto: 18 },
+  { nome: "1240 × 600 a 802 m", largura: 1240, altura: 600, metros: 802, teto: 45 },
+  { nome: "1240 × 600 a 2 km", largura: 1240, altura: 600, metros: 2000, teto: 45 },
+  { nome: "1240 × 600 a 5 km", largura: 1240, altura: 600, metros: 5000, teto: 45 },
+  { nome: "1240 × 600 a 12 km", largura: 1240, altura: 600, metros: 12000, teto: 45 },
+];
+
+const temArquivosReais = mapaBaseDoBairro("boa-viagem") !== null && mapaBaseDaCidade() !== null;
+
+(temArquivosReais ? describe : describe.skip)("custo de montar a cena com os arquivos reais (15 medidas, aquecido)", () => {
+  it("gaveta, por perto e quadro largo dentro dos limites", () => {
     const linhas: string[] = [];
-    for (const v of VISTAS) {
-      const e = entradaDe(v);
-      montarFundoDoMapa(e);
-      const t0 = performance.now();
+    const acima: string[] = [];
+    for (const k of CASOS_DE_CUSTO) {
+      const e = entradaReal(k.largura, k.altura, k.metros, k.zoom);
+      for (let i = 0; i < 3; i++) montarFundoDoMapa(e);
+      const tempos: number[] = [];
       let cena!: CenaDoFundo;
-      for (let i = 0; i < 50; i++) cena = montarFundoDoMapa(e);
-      const ms = (performance.now() - t0) / 50;
-      const bytes = Object.values(cena.camadas).reduce((s, d) => s + d.length, 0) + cena.rotulos.reduce((s, r) => s + r.caminho.length, 0);
-      linhas.push(`${v.nome}: ${ms.toFixed(2)} ms, ${(bytes / 1024).toFixed(1)} kB de caminho, ${cena.rotulos.length} rótulos de rua, ${cena.bairros.length} nomes de bairro, nível ${cena.nivel}`);
-      expect(ms).toBeLessThan(200);
+      for (let i = 0; i < 15; i++) {
+        const t0 = process.hrtime.bigint();
+        cena = montarFundoDoMapa(e);
+        tempos.push(Number(process.hrtime.bigint() - t0) / 1e6);
+      }
+      tempos.sort((a, b) => a - b);
+      const mediana = tempos[7]!;
+      const bytes = Object.values(cena.camadas).reduce((s, d) => s + d.length, 0);
+      linhas.push(
+        `${k.nome}: mediana ${mediana.toFixed(2)} ms, pior ${tempos[14]!.toFixed(2)} ms, ${e.bairros.length} arquivos de bairro, nível ${cena.nivel}, ${cena.lotes.length} lotes, ${(bytes / 1024).toFixed(0)} kB de caminho, ${cena.rotulos.length} rótulos, ${cena.bairros.length} nomes de bairro`,
+      );
+      const medido = CUSTO_ESTRITO ? mediana : tempos[0]!;
+      const limite = CUSTO_ESTRITO ? k.teto : k.teto * FOLGA_NA_SUITE;
+      if (medido >= limite) acima.push(`${k.nome}: ${medido.toFixed(1)} ms (limite ${limite}${CUSTO_ESTRITO ? ", mediana" : ", melhor de 15 na suíte"})`);
     }
     if (process.env.PROVA_FUNDO) mkdirSync(process.env.PROVA_FUNDO, { recursive: true });
     if (process.env.PROVA_FUNDO) writeFileSync(join(process.env.PROVA_FUNDO, "custo.txt"), linhas.join("\n") + "\n");
+    if (process.env.MOSTRAR_CUSTO) console.log(linhas.join("\n"));
+    expect(acima).toEqual([]);
   });
 });
 

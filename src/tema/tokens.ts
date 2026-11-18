@@ -42,6 +42,22 @@ export const CORES_CLARO = {
   "mapa-mar": "#D3E3E8",
   "mapa-praia": "#F1E8D6",
   "mapa-praca": "#DDE6DA",
+  // Fundo do mapa (mapa-base, 18/11/2026). No claro são as cores da tabela da seção 4 do pedido da noite
+  // (docs/aplicacao/mapa-base-2026-11-18/PROMPT-SESSAO-NOTURNA.md), repetidas aqui para o escuro poder ter degraus próprios.
+  /** "Sem dado" (fora de bairro carregado), sob a hachura: = cor-papel-claro. */
+  "mapa-sem-dado": "#FAF6EE",
+  /** Rua, o chão entre as quadras dentro dos bairros com dado: = cor-superficie. */
+  "mapa-rua": "#FFFFFF",
+  /** Quadra: = cor-sutil. */
+  "mapa-quadra": "#E7DEC9",
+  /** Lote: = cor-fundo. */
+  "mapa-lote": "#F2EBDD",
+  /** Contorno do lote: = cor-linha-forte. */
+  "mapa-lote-linha": "#C9BEA8",
+  /** Água (canal, rio, mar): o azul cadastral claro da especificação (~#D3DEE8). */
+  "mapa-agua": "#D3DEE8",
+  /** Avenida em linha no nível de cidade, sobre o chão branco: = cor-linha-forte. */
+  "mapa-via-cidade": "#C9BEA8",
 } as const;
 
 export type TokenDeCor = keyof typeof CORES_CLARO;
@@ -88,6 +104,23 @@ export const CORES_ESCURO: Cores = {
   "mapa-mar": "#15252D",
   "mapa-praia": "#2A2A25",
   "mapa-praca": "#1E2A26",
+  // Fundo do mapa no escuro (18/11/2026): no escuro cor-papel-claro = cor-superficie e cor-sutil = cor-linha, então os
+  // degraus vêm daqui. Contraste medido em tests/fundo-do-mapa.test.ts: sem dado/rua 1,18 (mais a hachura 1,44),
+  // rua/quadra 1,39, quadra/lote ≥ 1,15; os rótulos ficam em ≥ 4,5:1 sobre a rua (o halo).
+  /** = cor-fundo escuro, o tom mais fundo: "sem dado" fica abaixo da rua. */
+  "mapa-sem-dado": "#141413",
+  /** = cor-superficie escura (o halo dos rótulos). */
+  "mapa-rua": "#1F2427",
+  /** Um passo acima da rua, entre cor-linha (#2C3338) e cor-linha-forte (#4A5357). */
+  "mapa-quadra": "#343C41",
+  /** Um passo acima da quadra, abaixo de cor-linha-forte. */
+  "mapa-lote": "#444C51",
+  /** = cat-outros escuro: o contorno do lote acima do lote. */
+  "mapa-lote-linha": "#5C656A",
+  /** Azul do mar do escuro (mapa-mar #15252D) saturado para se separar de quadra, lote e prédio do índice (#1A2836). */
+  "mapa-agua": "#1B4A66",
+  /** = cor-linha-forte escura. */
+  "mapa-via-cidade": "#4A5357",
 };
 
 export const FONTES = {

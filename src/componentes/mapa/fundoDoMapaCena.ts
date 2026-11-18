@@ -1,7 +1,7 @@
 // Fundo do mapa (mapa-base, 18/11/2026): transforma o mapa-base em memória (src/dados/recife/mapaBaseContrato.ts) numa
 // cena pronta para desenhar no <Svg> de qualquer mapa do app. Puro: sem React, sem rede, sem data, sem acaso.
 //
-// - Nível pela escala NA TELA (largura do quadro em metros, já contando o zoom), não pelo tamanho da tela.
+// - Nível pela escala NA TELA, em metros por pixel (já contando o zoom), não pela largura do quadro em metros.
 // - Uma forma por camada: um único caminho SVG com todos os anéis (medido no Chrome com CPU 4× mais lenta, 7 mil
 //   polígonos juntos desenham em 24 ms contra 114 ms separados; no nativo cada elemento é um objeto).
 // - A cena é montada para o quadro inteiro na escala 1 (a pessoa arrasta), com traços e textos já divididos pelo zoom.
@@ -28,6 +28,7 @@ import {
   pontoNosAneis,
   pontoNosAneisDoDesenho,
   recortarLinha,
+  retanguloNoPlano,
   seTocam,
   trechoDoCaminho,
   type Afim,
@@ -46,13 +47,19 @@ import {
 export type { NomeDeBairro, RotuloDeRua, TipoDeRotulo } from "./fundoDoMapaRotulos";
 
 /**
- * Até aqui (largura do quadro na tela, em metros) desenha todos os lotes. 800 m num quadro de 340 px dá 2,4 m por px:
- * um lote de 10 a 12 m de frente ainda tem 4 a 5 px e se distingue do vizinho; acima disso os lotes viram textura e só
- * pesam. 600 m (a especificação) deixaria o Por perto mais fechado sem lote; 1 km já embola os lotes.
+ * Nível de lote enquanto a escala NA TELA (já contando o zoom) for de até 2,4 metros por pixel: 800 m num quadro de
+ * 340 px. Um lote de 10 a 12 m de frente ainda tem 4 a 5 px e se distingue do vizinho; acima disso os lotes viram
+ * textura e só pesam. Decidido por m/px, não pela largura em metros: num quadro de 1240 px a 802 m (0,65 m/px) os lotes
+ * têm 15 px ou mais e aparecem. A especificação fala em ~600 m (1,8 m/px em 340 px); o desvio está no relatório da noite.
  */
-export const LOTES_ATE_M = 800;
-/** Acima disto, só bairros, água e avenidas (a especificação diz "mais de 3 km"). */
-export const QUADRAS_ATE_M = 3000;
+export const LOTES_ATE_M_POR_PX = 2.4;
+/** Nível de quadras até 8,8 m/px (3 km em 340 px); acima, só bairros, água e avenidas. */
+export const QUADRAS_ATE_M_POR_PX = 8.8;
+
+/** Nível pela escala na tela, em metros por pixel. */
+export function nivelDaEscala(metrosPorPx: number): NivelDoFundo {
+  return metrosPorPx <= LOTES_ATE_M_POR_PX ? "lote" : metrosPorPx <= QUADRAS_ATE_M_POR_PX ? "bairro" : "cidade";
+}
 
 export type NivelDoFundo = "lote" | "bairro" | "cidade";
 
@@ -62,8 +69,16 @@ export type QuadroDoFundo = {
   readonly altura: number;
   /** A conta do mapa que hospeda: [lon, lat] → [x, y] no desenho, na escala 1. Tem de ser linear em lon e lat. */
   readonly paraDesenho: ParaDesenho;
-  /** Zoom aplicado pelo mapa por transform de grupo (1 sem zoom). */
+  /** Zoom aplicado pelo mapa por transform de grupo (1 sem zoom), em torno do centro do quadro. */
   readonly zoom?: number;
+  /**
+   * Retângulos [x0, y0, x1, y1] ocupados pelo mapa que hospeda por cima do desenho (selo, régua, crédito, botões), em px da
+   * TELA. Rótulos de rua e nomes de bairro desviam deles. Valem para a vista sem arraste: o grupo de zoom
+   * `translate(cx + dx, cy + dy) scale(zoom) translate(-cx, -cy)` com o `deslocamento` [dx, dy] abaixo.
+   */
+  readonly obstaculos?: readonly (readonly [number, number, number, number])[];
+  /** Deslocamento [dx, dy] do grupo de zoom em px da tela (o do zoom com foco no pino); [0, 0] se omitido. */
+  readonly deslocamento?: readonly [number, number];
 };
 
 export type ImovelDoFundo = {
@@ -96,10 +111,16 @@ export type CamadasDoFundo = {
   readonly predios: string;
   readonly pracas: string;
   readonly agua: string;
+  /** Tabuleiros de pontes e viadutos, na cor do chão, por cima da água (níveis de lote e de quadras). */
+  readonly pontes: string;
   /** Avenidas como linha (só no nível de cidade, onde não há quadra para a rua aparecer como vão). */
   readonly vias: string;
   readonly divisas: string;
   readonly divisaDoImovel: string;
+  /**
+   * O lote do imóvel, nos níveis de lote E de quadras: é a camada "lote do imóvel" da tabela da seção 4, que não tem
+   * restrição de nível (decisão do orquestrador, 18/11/2026). Some só no nível de cidade, onde não há arquivo de lote.
+   */
   readonly loteDoImovel: string;
 };
 
@@ -119,6 +140,8 @@ export type CenaDoFundo = {
   readonly nivel: NivelDoFundo;
   /** Largura do quadro visível, em metros, já contando o zoom. */
   readonly larguraEmMetros: number;
+  /** Escala na tela, já contando o zoom: o que decide o nível. */
+  readonly metrosPorPx: number;
   /** Passo da hachura e espessuras de referência já divididos pelo zoom (unidades da cena). */
   readonly camadas: CamadasDoFundo;
   readonly rotulos: readonly RotuloDeRua[];
@@ -216,6 +239,7 @@ const CAMADAS_VAZIAS: CamadasDoFundo = {
   predios: "",
   pracas: "",
   agua: "",
+  pontes: "",
   vias: "",
   divisas: "",
   divisaDoImovel: "",
@@ -236,6 +260,7 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
       zoom,
       nivel: "lote",
       larguraEmMetros: NaN,
+      metrosPorPx: NaN,
       camadas: CAMADAS_VAZIAS,
       rotulos: [],
       bairros: [],
@@ -245,14 +270,27 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
       temDado: false,
     };
   }
-  const larguraEmMetros = largura / (pixelsPorMetro(referencia) * zoom);
-  const nivel: NivelDoFundo = larguraEmMetros <= LOTES_ATE_M ? "lote" : larguraEmMetros <= QUADRAS_ATE_M ? "bairro" : "cidade";
+  const metrosPorPx = 1 / (pixelsPorMetro(referencia) * zoom);
+  const larguraEmMetros = largura * metrosPorPx;
+  const nivel = nivelDaEscala(metrosPorPx);
   // Sem arquivo de bairro, só a cidade serve, em qualquer escala.
   const daCidade = nivel === "cidade" || arquivos.length === 0;
   const tolerancia = TOLERANCIA_PX / zoom;
   const slugDoImovel = entrada.bairroDoImovel;
 
+  // Pré-filtro no plano de cada arquivo (folga de 4 px, maior que a de naCena): descarta sem alocar nada.
+  const noPlanoDoQuadro = new Map<Afim, Caixa>();
+  const planoDe = (a: Arquivo) => {
+    let c = noPlanoDoQuadro.get(a.afim);
+    if (!c) {
+      c = retanguloNoPlano(a.afim, [-4, -4, largura + 4, altura + 4]);
+      noPlanoDoQuadro.set(a.afim, c);
+    }
+    return c;
+  };
   const naCena = (a: Arquivo, c: Caixa, folga = 1) => {
+    const p = planoDe(a);
+    if (c[2] < p[0] || c[0] > p[2] || c[3] < p[1] || c[1] > p[3]) return null;
     const r = caixaNoDesenho(a.afim, c);
     return seTocam(r, [-folga, -folga, largura + folga, altura + folga]) ? r : null;
   };
@@ -308,6 +346,8 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
     : camada(deArquivos((b) => b.quadras), nivel === "bairro" ? (_p, r) => r[2] - r[0] >= QUADRA_MINIMA_PX || r[3] - r[1] >= QUADRA_MINIMA_PX : undefined);
   const pracas = daCidade ? "" : camada(deArquivos((b) => b.pracas));
   const agua = daCidade && cidade ? camada([{ a: cidade, itens: cidade.base.agua }]) : camada(deArquivos((b) => b.agua));
+  // Pontes: chão de rua por cima da água, uma forma só (o arquivo da cidade não tem pontes).
+  const pontes = daCidade ? "" : camada(deArquivos((b) => b.pontes ?? []));
 
   // O lote do imóvel: o que contém o centro do prédio, achado pela geometria.
   let loteDoImovel: { a: Arquivo; lote: LoteBase } | null = null;
@@ -357,8 +397,13 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
   // ---------- Rótulos: a rua do imóvel, depois os nomes de bairro, depois as outras ruas ----------
   const inset: Retangulo = [10 / zoom, 10 / zoom, largura - 10 / zoom, altura - 10 / zoom];
   const codigo = entrada.imovel?.codigoDoLogradouro ?? null;
+  // No nível de cidade as ruas vêm das avenidas da cidade; a rua do imóvel (que a cidade não tem) é procurada nos
+  // arquivos de bairro carregados.
   const ruas: { a: Arquivo; rua: RuaBase }[] = daCidade
-    ? (cidade ? cidade.base.vias.map((rua) => ({ a: cidade as Arquivo, rua })) : [])
+    ? [
+        ...(cidade ? cidade.base.vias.map((rua) => ({ a: cidade as Arquivo, rua })) : []),
+        ...(codigo === null ? [] : arquivos.flatMap((arq) => arq.base.ruas.filter((r) => r.codigo === codigo).map((rua) => ({ a: arq as Arquivo, rua })))),
+      ]
     : arquivos.flatMap((arq) => arq.base.ruas.map((rua) => ({ a: arq as Arquivo, rua })));
   const porNome = new Map<string, CandidatoDeRua & { trechos: number[][] }>();
   for (const { a, rua } of ruas) {
@@ -373,12 +418,19 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
     porNome.set(chave, item);
   }
   const candidatos = [...porNome.values()];
-  // O pino do imóvel (desenhado pelo mapa que hospeda) fica livre de texto.
+  // O pino do imóvel e os elementos do mapa que hospeda (selo, régua, crédito, botões) ficam livres de texto.
   const pino: Retangulo[] = [];
   if (entrada.imovel) {
     const [px, py] = paraDesenho(entrada.imovel.centro);
     const m = 13 / zoom;
     pino.push([px - m, py - m, px + m, py + m]);
+  }
+  const [dx, dy] = entrada.quadro.deslocamento ?? [0, 0];
+  const cx = largura / 2;
+  const cy = altura / 2;
+  // Tela → desenho: inverso de translate(cx + dx, cy + dy) scale(zoom) translate(-cx, -cy).
+  for (const o of entrada.quadro.obstaculos ?? []) {
+    pino.push([cx + (o[0] - cx - dx) / zoom, cy + (o[1] - cy - dy) / zoom, cx + (o[2] - cx - dx) / zoom, cy + (o[3] - cy - dy) / zoom]);
   }
   const rotulosDoImovel = posicionarRotulosDeRua(candidatos.filter((c) => c.tipo === "imovel"), zoom, pino, 0, inset);
   const ocupadas: Retangulo[] = [...pino, ...rotulosDoImovel.flatMap((r) => [...r.caixas])];
@@ -423,6 +475,7 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
     zoom,
     nivel,
     larguraEmMetros,
+    metrosPorPx,
     camadas: {
       hachura: caminhoDaHachura(largura, altura, PASSO_DA_HACHURA_PX / zoom),
       chao,
@@ -432,6 +485,7 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
       predios,
       pracas,
       agua,
+      pontes,
       vias,
       divisas: divisasOutras,
       divisaDoImovel,

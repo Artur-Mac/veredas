@@ -3,17 +3,22 @@
 import { afterEach, describe, expect, it } from "@jest/globals";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
-import { Path, Text as TextoSvg } from "react-native-svg";
+import { Defs, Path, Rect, Text as TextoSvg, TextPath } from "react-native-svg";
 import { FundoDoMapa, CreditoDaBase, SeloDoBairro } from "../src/componentes/mapa/FundoDoMapa";
 import {
   descreverFundoDoMapa,
+  LOTES_ATE_M_POR_PX,
   loteNoPonto,
   montarFundoDoMapa,
+  nivelDaEscala,
+  QUADRAS_ATE_M_POR_PX,
   rotuloDoLote,
   type CenaDoFundo,
   type EntradaDoFundo,
 } from "../src/componentes/mapa/fundoDoMapaCena";
 import { estiloDoFundo } from "../src/componentes/mapa/fundoDoMapaEstilo";
+import { pontoNosAneis } from "../src/componentes/mapa/fundoDoMapaGeometria";
+import { mapaBaseDaCidade, mapaBaseDoBairro } from "../src/dados/recife/mapaBase";
 import type { MapaBaseDaCidade, MapaBaseDoBairro, PoligonoBase } from "../src/dados/recife/mapaBaseContrato";
 import { TemaDoApp, TemaEscuro } from "../src/tema/Tema";
 import { CORES_CLARO, CORES_ESCURO, type Cores } from "../src/tema/tokens";
@@ -102,6 +107,22 @@ describe("nível pela escala na tela", () => {
     const c = montarFundoDoMapa(entrada([B], 340, 300, 1500, 3));
     expect(Math.round(c.larguraEmMetros)).toBe(500);
     expect(c.nivel).toBe("lote");
+  });
+  it("o nível vem de metros por pixel: 2,4 m/px (800 m em 340 px) e 8,8 m/px (3 km em 340 px)", () => {
+    expect([LOTES_ATE_M_POR_PX, QUADRAS_ATE_M_POR_PX]).toEqual([2.4, 8.8]);
+    expect([nivelDaEscala(2.4), nivelDaEscala(2.41), nivelDaEscala(8.8), nivelDaEscala(8.81)]).toEqual(["lote", "bairro", "bairro", "cidade"]);
+    const p = montarFundoDoMapa(entrada([B], 340, 300, 800));
+    expect(p.metrosPorPx).toBeCloseTo(800 / 340, 3);
+    expect(p.nivel).toBe("lote");
+  });
+  it("tela larga: num quadro de 1240 px a 802 m (0,65 m/px) os lotes aparecem", () => {
+    const c = montarFundoDoMapa(entrada([B], 1240, 600, 802));
+    expect(c.nivel).toBe("lote");
+    expect(c.camadas.lotes).not.toBe("");
+    expect(c.lotes.length).toBeGreaterThan(100);
+  });
+  it("o lote do imóvel continua no nível de quadras (camada sem restrição de nível na tabela)", () => {
+    expect(porPerto().camadas.loteDoImovel).not.toBe("");
   });
   it("mais de 3 km, com o arquivo da cidade: bairros, água e avenidas em linha; sem quadra", () => {
     const cidade: MapaBaseDaCidade = { versao: 1, origem: B.origem, bairros: [B.divisa], agua: B.agua, vias: B.ruas.filter((r) => r.avenida || r.corredor) };
@@ -287,13 +308,140 @@ describe("determinismo e custo", () => {
 describe("contraste dos rótulos (4,5:1) sobre o chão onde caem, claro e escuro", () => {
   for (const [nome, cores] of [["claro", CORES_CLARO], ["escuro", CORES_ESCURO]] as [string, Cores][]) {
     it(nome, () => {
-      const e = estiloDoFundo(cores);
-      // Rua: o texto fica na via (o chão) e tem halo da cor do chão.
+      const e = estiloDoFundo(cores, cores === CORES_ESCURO);
+      // Rua: o texto fica na via (o chão) e tem halo da cor do chão (o componente desenha o halo: ver os testes dele).
+      expect(e.halo).toBe(e.chao);
       for (const cor of [e.rua, e.avenida, e.ruaDoImovel]) expect(contraste(cor, e.chao)).toBeGreaterThanOrEqual(4.5);
       // Nome de bairro: o halo da cor do chão contorna cada letra; é o que fica colado ao texto.
       for (const cor of [e.bairro, e.bairroDoImovel]) expect(contraste(cor, e.halo)).toBeGreaterThanOrEqual(4.5);
     });
   }
+});
+
+/** Distância entre duas cores em RGB (0 a 441): separa tons de luminância parecida e matiz diferente (a água). */
+function distanciaRgb(a: string, b: string): number {
+  const v = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const [x, y] = [v(a), v(b)];
+  return Math.hypot(x[0]! - y[0]!, x[1]! - y[1]!, x[2]! - y[2]!);
+}
+
+describe("as camadas se distinguem nos dois temas", () => {
+  for (const [nome, cores] of [["claro", CORES_CLARO], ["escuro", CORES_ESCURO]] as [string, Cores][]) {
+    it(`${nome}: sem dado, rua, quadra e lote em degraus; avenida da cidade contra o chão; água separada`, () => {
+      const e = estiloDoFundo(cores, cores === CORES_ESCURO);
+      // Rua × quadra e quadra × lote: degrau de luminância medido.
+      expect(contraste(e.chao, e.quadra)).toBeGreaterThanOrEqual(1.25);
+      expect(contraste(e.quadra, e.lote)).toBeGreaterThanOrEqual(1.1);
+      // Sem dado × rua: a cor muda, e a hachura por cima separa ainda mais.
+      expect(e.semDado).not.toBe(e.chao);
+      expect(Math.max(contraste(e.semDado, e.chao), contraste(e.hachura, e.semDado))).toBeGreaterThanOrEqual(1.25);
+      expect(contraste(e.hachura, e.semDado)).toBeGreaterThanOrEqual(1.25);
+      // A avenida em linha no nível de cidade aparece sobre o chão (antes era a mesma cor).
+      expect(contraste(e.via, e.chao)).toBeGreaterThanOrEqual(1.6);
+      // O contorno do lote aparece sobre o lote.
+      expect(contraste(e.loteLinha, e.lote)).toBeGreaterThanOrEqual(1.15);
+      // A água não se confunde com quadra, lote nem prédio do índice.
+      for (const outra of [e.quadra, e.lote, e.predio, e.chao]) expect(distanciaRgb(e.agua, outra)).toBeGreaterThanOrEqual(30);
+    });
+  }
+  it("no claro, as cores das camadas são as da tabela da seção 4", () => {
+    const e = estiloDoFundo(CORES_CLARO);
+    expect([e.chao, e.semDado, e.quadra, e.lote, e.loteLinha, e.agua]).toEqual([
+      CORES_CLARO["cor-superficie"],
+      CORES_CLARO["cor-papel-claro"],
+      CORES_CLARO["cor-sutil"],
+      CORES_CLARO["cor-fundo"],
+      CORES_CLARO["cor-linha-forte"],
+      "#D3DEE8",
+    ]);
+  });
+});
+
+/** Uma ponte sintética: um tabuleiro de 60 × 12 m centrado num ponto que cai dentro da maior água do recorte B. */
+function comPonte(): { base: MapaBaseDoBairro; centro: [number, number] } {
+  const agua = [...B.agua].sort((a, b) => (b.caixa[2] - b.caixa[0]) * (b.caixa[3] - b.caixa[1]) - (a.caixa[2] - a.caixa[0]) * (a.caixa[3] - a.caixa[1]))[0]!;
+  let centro: [number, number] | null = null;
+  for (let i = 1; i < 20 && !centro; i++) {
+    for (let j = 1; j < 20 && !centro; j++) {
+      const x = agua.caixa[0] + ((agua.caixa[2] - agua.caixa[0]) * i) / 20;
+      const y = agua.caixa[1] + ((agua.caixa[3] - agua.caixa[1]) * j) / 20;
+      if (pontoNosAneis(x, y, agua.aneis)) centro = [Math.round(x), Math.round(y)];
+    }
+  }
+  const [x, y] = centro!;
+  const anel = Int32Array.from([x - 300, y - 60, x + 300, y - 60, x + 300, y + 60, x - 300, y + 60]);
+  return { base: { ...B, pontes: [{ aneis: [anel], caixa: [x - 300, y - 60, x + 300, y + 60] }] }, centro: [x, y] };
+}
+
+describe("pontes", () => {
+  it("chão de rua por cima da água, numa forma só, nos níveis de lote e de quadras; nada na cidade", () => {
+    const { base } = comPonte();
+    expect(porPerto().camadas.pontes).toBe("");
+    const quadras = montarFundoDoMapa(entrada([base], 340, 300, 1500));
+    const lote = montarFundoDoMapa(entrada([base], 340, 300, 1500, 3));
+    expect(quadras.nivel).toBe("bairro");
+    expect(lote.nivel).toBe("lote");
+    for (const c of [quadras, lote]) {
+      expect(contarSubcaminhos(c.camadas.pontes)).toBe(1);
+      expect(c.camadas.agua).not.toBe("");
+    }
+    const cidade: MapaBaseDaCidade = { versao: 1, origem: B.origem, bairros: [B.divisa], agua: B.agua, vias: [] };
+    expect(montarFundoDoMapa(entrada([base], 340, 300, 4000, 1, cidade)).camadas.pontes).toBe("");
+  });
+});
+
+describe("obstáculos do mapa que hospeda", () => {
+  it("rótulos de rua e nomes de bairro desviam do selo, da régua, do crédito e dos botões (px da tela, com zoom)", () => {
+    for (const [metros, zoom] of [[220, 1], [220, 3], [1500, 1]] as const) {
+      const livre = montarFundoDoMapa(entrada([metros > 800 ? B : A], 340, 300, metros, zoom));
+      // Os retângulos que cobrem as caixas dos rótulos da cena livre, em px da tela.
+      const tela = (x: number, y: number): [number, number] => [170 + (x - 170) * zoom, 150 + (y - 150) * zoom];
+      const ocupados = [...livre.rotulos.filter((r) => r.tipo !== "imovel").flatMap((r) => r.caixas), ...livre.bairros.filter((b) => !b.doImovel).map((b) => b.caixa)];
+      expect(ocupados.length).toBeGreaterThan(0);
+      const obstaculos = ocupados.map((c) => [...tela(c[0], c[1]), ...tela(c[2], c[3])] as [number, number, number, number]);
+      const e = entrada([metros > 800 ? B : A], 340, 300, metros, zoom);
+      const c = montarFundoDoMapa({ ...e, quadro: { ...e.quadro, obstaculos } });
+      const desenho = obstaculos.map(([x0, y0, x1, y1]) => [170 + (x0 - 170) / zoom, 150 + (y0 - 150) / zoom, 170 + (x1 - 170) / zoom, 150 + (y1 - 150) / zoom] as const);
+      for (const r of c.rotulos.filter((x) => x.tipo !== "imovel")) for (const cx of r.caixas) for (const o of desenho) expect(sobrepoe(cx, o)).toBe(false);
+      for (const b of c.bairros) for (const o of desenho) expect(sobrepoe(b.caixa, o)).toBe(false);
+    }
+  });
+  it("o deslocamento do grupo de zoom entra na conta", () => {
+    const e = entrada([A], 340, 300, 220, 2);
+    // Um obstáculo no canto superior direito da tela, com o desenho deslocado 40 px para a esquerda.
+    const c = montarFundoDoMapa({ ...e, quadro: { ...e.quadro, obstaculos: [[250, 0, 340, 60]], deslocamento: [-40, 0] } });
+    const o = [170 + (250 - 170 + 40) / 2, 150 + (0 - 150) / 2, 170 + (340 - 170 + 40) / 2, 150 + (60 - 150) / 2] as const;
+    for (const r of c.rotulos.filter((x) => x.tipo !== "imovel")) for (const cx of r.caixas) expect(sobrepoe(cx, o)).toBe(false);
+  });
+});
+
+const comArquivosReais = mapaBaseDoBairro("boa-viagem") !== null && mapaBaseDaCidade() !== null;
+
+(comArquivosReais ? describe : describe.skip)("arquivos reais: a rua do imóvel no nível de cidade", () => {
+  const real = (bairros: MapaBaseDoBairro[], largura: number, altura: number, metros: number): EntradaDoFundo => ({
+    ...entrada(bairros, largura, altura, metros, 1, mapaBaseDaCidade()),
+  });
+  it("com o arquivo de Boa Viagem carregado, a 5 e a 12 km: a rua vem do arquivo do bairro, entra na descrição e ganha rótulo se couber", () => {
+    const bv = mapaBaseDoBairro("boa-viagem")!;
+    for (const metros of [5000, 12000]) {
+      const c = montarFundoDoMapa(real([bv], 340, 300, metros));
+      expect(c.nivel).toBe("cidade");
+      expect(c.camadas.vias).not.toBe("");
+      expect(c.acessibilidade.rua).toBe("R. Major Armando de Souza Mello");
+      expect(descreverFundoDoMapa(c)).toContain("O imóvel fica na R. Major Armando de Souza Mello.");
+      // Rótulo só se couber: nunca por cima do pino (13 px em volta do centro).
+      for (const r of c.rotulos.filter((x) => x.tipo === "imovel")) {
+        expect(r.nome).toBe("R. Major Armando de Souza Mello");
+        for (const cx of r.caixas) expect(sobrepoe(cx, [157, 137, 183, 163])).toBe(false);
+      }
+    }
+  });
+  it("só com a cidade (nenhum arquivo de bairro), a rua não é conhecida: nem rótulo nem descrição, e nada quebra", () => {
+    const c = montarFundoDoMapa(real([], 340, 300, 220));
+    expect(c.temDado).toBe(true);
+    expect(c.acessibilidade.rua).toBeNull();
+    expect(c.rotulos.some((r) => r.tipo === "imovel")).toBe(false);
+  });
 });
 
 const montadas: TestRenderer.ReactTestRenderer[] = [];
@@ -310,13 +458,50 @@ describe("componente FundoDoMapa", () => {
           a = TestRenderer.create(React.createElement(Tema, null, React.createElement(FundoDoMapa, { cena: c })));
         });
         montadas.push(a);
+        const cores = nome === "claro" ? CORES_CLARO : CORES_ESCURO;
+        const e = estiloDoFundo(cores, nome === "escuro");
         const textos = a.root.findAllByType(TextoSvg);
         expect(textos).toHaveLength(2 * (c.rotulos.length + c.bairros.length));
-        const caminhos = a.root.findAllByType(Path).length - c.rotulos.length;
-        expect(caminhos).toBeLessThanOrEqual(13);
-        expect(caminhos).toBeGreaterThan(4);
-        const rua = textos.find((t) => !t.props.stroke && t.props.fill === (nome === "claro" ? CORES_CLARO : CORES_ESCURO)["cor-azul-cadastral"]);
-        if (c.nivel === "lote") expect(rua).toBeDefined();
+        // Contagem verdadeira: 13 Path de camada no máximo, mais 1 Path por rótulo de rua (no Defs); 1 Rect.
+        const defs = a.root.findAllByType(Defs);
+        const noDefs = defs.flatMap((d) => d.findAllByType(Path));
+        expect(noDefs).toHaveLength(c.rotulos.length);
+        const deCamada = a.root.findAllByType(Path).length - noDefs.length;
+        expect(deCamada).toBeLessThanOrEqual(13);
+        expect(deCamada).toBeGreaterThan(4);
+        expect(a.root.findAllByType(Rect)).toHaveLength(1);
+        // TextPath: href aponta para um id que existe no Defs, com o startOffset e o texto do rótulo.
+        const ids = new Set(noDefs.map((p) => p.props.id as string));
+        const caminhos = a.root.findAllByType(TextPath);
+        expect(caminhos).toHaveLength(2 * c.rotulos.length);
+        for (const tp of caminhos) {
+          const r = c.rotulos.find((x) => `#${x.id}` === tp.props.href)!;
+          expect(r).toBeDefined();
+          expect(ids.has(r.id)).toBe(true);
+          expect(noDefs.find((p) => p.props.id === r.id)!.props.d).toBe(r.caminho);
+          expect(tp.props.startOffset).toBe(r.inicio);
+          expect(tp.props.children).toBe(r.nome);
+        }
+        // Halo: todo rótulo tem o par com traço da cor do chão, desenhado antes (por baixo) do texto.
+        const comHalo = textos.filter((t) => t.props.stroke);
+        const semHalo = textos.filter((t) => !t.props.stroke);
+        expect(comHalo).toHaveLength(semHalo.length);
+        for (const h of comHalo) {
+          expect(h.props.stroke).toBe(e.chao);
+          expect(h.props.fill).toBe(e.chao);
+          expect(h.props.strokeWidth).toBeGreaterThan(0);
+        }
+        expect(textos.indexOf(comHalo[comHalo.length - 1]!)).toBeLessThan(textos.indexOf(semHalo[0]!));
+        for (const r of c.rotulos) {
+          const par = caminhos.filter((tp) => tp.props.href === `#${r.id}`);
+          expect(par).toHaveLength(2);
+        }
+        const rua = semHalo.find((t) => t.props.fill === cores["cor-azul-cadastral"]);
+        if (c.nivel === "lote") {
+          expect(rua).toBeDefined();
+          expect(rua!.props.fontWeight).toBe("700");
+          expect(rua!.props.textAnchor).toBe("middle");
+        }
       }
     });
   }

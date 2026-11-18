@@ -52,6 +52,21 @@ export function aplicar(a: Afim, x: number, y: number): [number, number] {
   return [a.ax * x + a.bx * y + a.cx, a.ay * x + a.by * y + a.cy];
 }
 
+/**
+ * O retângulo do desenho levado ao plano do arquivo (envolvente dos quatro cantos, pela inversa da afim): serve de
+ * pré-filtro barato sobre as caixas do plano, sem levar cada caixa ao desenho.
+ */
+export function retanguloNoPlano(a: Afim, r: Retangulo): Caixa {
+  const det = a.ax * a.by - a.bx * a.ay;
+  const xs: number[] = [];
+  const ys: number[] = [];
+  for (const [X, Y] of [[r[0], r[1]], [r[2], r[1]], [r[0], r[3]], [r[2], r[3]]] as const) {
+    xs.push((a.by * (X - a.cx) - a.bx * (Y - a.cy)) / det);
+    ys.push((-a.ay * (X - a.cx) + a.ax * (Y - a.cy)) / det);
+  }
+  return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
+}
+
 /** A caixa do plano levada ao desenho (envolvente dos quatro cantos). */
 export function caixaNoDesenho(a: Afim, c: Caixa): Retangulo {
   const xs = [a.ax * c[0] + a.bx * c[1], a.ax * c[2] + a.bx * c[1], a.ax * c[0] + a.bx * c[3], a.ax * c[2] + a.bx * c[3]];
@@ -235,6 +250,52 @@ export function recortarLinha(pts: Float64Array, r: Retangulo): number[][] {
   }
   fechar();
   return trechos;
+}
+
+/**
+ * Recorta um anel (no desenho) pelo retângulo (Sutherland–Hodgman) e pula pontos a menos de `tolerancia` do anterior.
+ * Para ponto dentro de `r`, o anel recortado diz o mesmo "dentro/fora" que o original; os lados novos ficam sobre a borda de
+ * `r`, então quem mede distância à divisa precisa de `r` com folga maior que a maior distância que interessa.
+ * Devolve null se nada do anel cai no retângulo.
+ */
+export function recortarAnel(anel: Float64Array, r: Retangulo, tolerancia: number): Float64Array | null {
+  let pts: number[] = Array.from(anel);
+  const lados: [number, number, boolean][] = [
+    [0, r[0], true],
+    [0, r[2], false],
+    [1, r[1], true],
+    [1, r[3], false],
+  ];
+  for (const [eixo, v, menor] of lados) {
+    const n = pts.length / 2;
+    if (n < 3) return null;
+    const saida: number[] = [];
+    const dentro = (i: number) => (menor ? pts[2 * i + eixo]! >= v : pts[2 * i + eixo]! <= v);
+    for (let i = 0; i < n; i++) {
+      const j = (i + n - 1) % n;
+      const di = dentro(i);
+      const dj = dentro(j);
+      if (di !== dj) {
+        const a = pts[2 * j + eixo]!;
+        const b = pts[2 * i + eixo]!;
+        const t = (v - a) / (b - a);
+        const x = pts[2 * j]! + t * (pts[2 * i]! - pts[2 * j]!);
+        const y = pts[2 * j + 1]! + t * (pts[2 * i + 1]! - pts[2 * j + 1]!);
+        saida.push(x, y);
+      }
+      if (di) saida.push(pts[2 * i]!, pts[2 * i + 1]!);
+    }
+    pts = saida;
+  }
+  if (pts.length < 6) return null;
+  const simples: number[] = [pts[0]!, pts[1]!];
+  for (let i = 2; i < pts.length; i += 2) {
+    const ux = simples[simples.length - 2]!;
+    const uy = simples[simples.length - 1]!;
+    if (Math.abs(pts[i]! - ux) + Math.abs(pts[i + 1]! - uy) < tolerancia) continue;
+    simples.push(pts[i]!, pts[i + 1]!);
+  }
+  return simples.length >= 6 ? Float64Array.from(simples) : null;
 }
 
 /** Hachura a 45° ("/") cobrindo o quadro, com `passo` entre linhas. Uma forma só. */

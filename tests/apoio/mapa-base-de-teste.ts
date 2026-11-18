@@ -187,7 +187,8 @@ export function svgDaCena(cena: CenaDoFundo, cores: Cores, extra = ""): string {
     p(c.predios, `fill="${e.predio}" stroke="${e.predioLinha}" stroke-opacity="${e.predioLinhaOpacidade}" stroke-width="${t(TRACO.predio)}" stroke-linejoin="round" fill-rule="evenodd"`) +
     p(c.pracas, `fill="${e.praca}" stroke="${e.pracaLinha}" stroke-width="${t(TRACO.praca)}" fill-rule="evenodd"`) +
     p(c.agua, `fill="${e.agua}" stroke="${e.aguaLinha}" stroke-width="${t(TRACO.agua)}" fill-rule="evenodd"`) +
-    p(c.vias, `fill="none" stroke="${e.via}" stroke-width="${t(TRACO.via)}" stroke-linecap="round" stroke-linejoin="round"`) +
+    p(c.pontes, `fill="${e.chao}" fill-rule="evenodd"`) +
+    p(c.vias,`fill="none" stroke="${e.via}" stroke-width="${t(TRACO.via)}" stroke-linecap="round" stroke-linejoin="round"`) +
     p(c.divisas, `fill="none" stroke="${e.divisa}" stroke-opacity="${e.divisaOpacidade}" stroke-width="${t(TRACO.divisa)}" stroke-dasharray="${TRACEJADO_DA_DIVISA.map(t).join(" ")}"`) +
     p(c.divisaDoImovel, `fill="none" stroke="${e.divisaDoImovel}" stroke-opacity="${e.divisaDoImovelOpacidade}" stroke-width="${t(TRACO.divisaDoImovel)}" stroke-linejoin="round"`) +
     p(c.loteDoImovel, `fill="${e.loteDoImovel}" fill-opacity="${e.loteDoImovelOpacidade}" stroke="${e.loteDoImovel}" stroke-width="${t(TRACO.loteDoImovel)}" stroke-linejoin="round" fill-rule="evenodd"`) +

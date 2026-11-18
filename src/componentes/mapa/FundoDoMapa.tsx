@@ -43,7 +43,8 @@ export function FundoDoMapa({ cena }: FundoDoMapaProps) {
       ) : null}
       {c.pracas ? <Path d={c.pracas} fill={e.praca} stroke={e.pracaLinha} strokeWidth={t(TRACO.praca)} fillRule="evenodd" /> : null}
       {c.agua ? <Path d={c.agua} fill={e.agua} stroke={e.aguaLinha} strokeWidth={t(TRACO.agua)} fillRule="evenodd" /> : null}
-      {c.vias ? <Path d={c.vias} fill="none" stroke={e.via} strokeWidth={t(TRACO.via)} strokeLinecap="round" strokeLinejoin="round" /> : null}
+      {c.pontes ? <Path d={c.pontes} fill={e.chao} fillRule="evenodd" /> : null}
+      {c.vias ?<Path d={c.vias} fill="none" stroke={e.via} strokeWidth={t(TRACO.via)} strokeLinecap="round" strokeLinejoin="round" /> : null}
       {c.divisas ? (
         <Path
           d={c.divisas}

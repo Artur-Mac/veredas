@@ -1,7 +1,7 @@
 // Rótulos do fundo do mapa: nomes de rua que deslizam pela via e nomes de bairro no ponto mais longe da borda.
 // Funções puras. Tudo em unidades do desenho na escala 1 (a cena), com tamanhos de texto já divididos pelo zoom: o texto
 // fica com o mesmo tamanho na tela em qualquer passo de zoom, e com zoom maior cabem mais nomes.
-import { distanciaAosAneis, pontoNosAneisDoDesenho, r1, type Retangulo } from "./fundoDoMapaGeometria";
+import { distanciaAosAneis, pontoNosAneisDoDesenho, r1, recortarAnel, type Retangulo } from "./fundoDoMapaGeometria";
 
 export type TipoDeRotulo = "imovel" | "avenida" | "rua";
 
@@ -179,7 +179,8 @@ const PESO: Record<TipoDeRotulo, number> = { imovel: 2, avenida: 1, rua: 0 };
 /**
  * Posiciona os nomes de rua. Ordem: rua do imóvel, depois avenidas e corredores, depois o trecho mais comprido. Cada
  * nome desliza pela via (50%, 35%, 65%, 22%, 78%…) até não colidir com outro rótulo nem com `obstaculos` (nomes de
- * bairro); se não couber, não aparece. A rua do imóvel aparece sempre que tiver trecho no quadro.
+ * bairro); se não couber, não aparece. A rua do imóvel vem primeiro e pode ser esticada ou correr ao lado da via, mas
+ * só aparece se couber sem colidir: o que o código garante é tentar, não rotular sempre.
  */
 export function posicionarRotulosDeRua(candidatos: readonly CandidatoDeRua[], zoom: number, obstaculos: readonly Retangulo[], primeiroId = 0, limite?: Retangulo): RotuloDeRua[] {
   const tamanho = TAMANHO_DA_RUA / zoom;
@@ -248,7 +249,9 @@ export function posicionarRotulosDeRua(candidatos: readonly CandidatoDeRua[], zo
   for (const item of doImovel) if (tentar(item, false)) imovelPosto.feito = true;
   if (!imovelPosto.feito && doImovel[0]) {
     const lado = tamanho * 0.75 + (obstaculos.length > 0 ? 13 / zoom : 0);
-    if (!tentar(doImovel[0], true) && !tentar(doImovel[0], true, false, -lado) && !tentar(doImovel[0], true, false, lado)) tentar(doImovel[0], true, true);
+    // Sem lugar livre nem ao lado da via, a rua fica sem rótulo (nunca por cima do pino, de outro rótulo ou dos
+    // controles do mapa); a descrição acessível continua dizendo a rua.
+    if (!tentar(doImovel[0], true)) if (!tentar(doImovel[0], true, false, -lado)) tentar(doImovel[0], true, false, lado);
   }
   for (const item of itens) {
     if (item.tipo !== "imovel") tentar(item, false);
@@ -272,6 +275,11 @@ export function posicionarNomesDeBairro(bairros: readonly BairroParaNome[], quad
   const nomes: NomeDeBairro[] = [];
   const ordem = [...bairros].sort((a, b) => Number(b.doImovel) - Number(a.doImovel));
   const passo = Math.max(5, 9 / zoom);
+  // A distância que interessa nunca passa da metade do menor lado do quadro (o ponto é limitado também pela borda do
+  // quadro): a divisa é recortada a um retângulo com essa folga e simplificada, e a busca fica no pedaço do bairro que
+  // cai no quadro, primeiro numa grade grossa e depois refinada em volta do melhor ponto.
+  const folgaDoRecorte = Math.min(quadro[2] - quadro[0], quadro[3] - quadro[1]) / 2 + 4;
+  const area: Retangulo = [quadro[0] - folgaDoRecorte, quadro[1] - folgaDoRecorte, quadro[2] + folgaDoRecorte, quadro[3] + folgaDoRecorte];
   for (const b of ordem) {
     const tamanho = (b.doImovel ? TAMANHO_DO_BAIRRO_DO_IMOVEL : TAMANHO_DO_BAIRRO) / zoom;
     const texto = b.nome.toLocaleUpperCase("pt-BR");
@@ -280,19 +288,56 @@ export function posicionarNomesDeBairro(bairros: readonly BairroParaNome[], quad
     const meiaL = largura / 2 + 4 / zoom;
     const meiaA = tamanho * 0.7 + 2 / zoom;
     const folga = 6 / zoom;
+    const aneis: Float64Array[] = [];
+    for (const anel of b.aneis) {
+      const r = recortarAnel(anel, area, 0.5 / zoom);
+      if (r) aneis.push(r);
+    }
+    if (aneis.length === 0) continue;
+    // Onde o centro do nome pode ficar: dentro do quadro (com a folga) e dentro da caixa do bairro recortado.
+    let bx0 = Infinity;
+    let by0 = Infinity;
+    let bx1 = -Infinity;
+    let by1 = -Infinity;
+    for (const a of aneis) {
+      for (let i = 0; i < a.length; i += 2) {
+        if (a[i]! < bx0) bx0 = a[i]!;
+        if (a[i]! > bx1) bx1 = a[i]!;
+        if (a[i + 1]! < by0) by0 = a[i + 1]!;
+        if (a[i + 1]! > by1) by1 = a[i + 1]!;
+      }
+    }
+    const x0 = Math.max(quadro[0] + meiaL + folga, bx0);
+    const x1 = Math.min(quadro[2] - meiaL - folga, bx1);
+    const y0 = Math.max(quadro[1] + meiaA + folga, by0);
+    const y1 = Math.min(quadro[3] - meiaA - folga, by1);
+    if (x0 > x1 || y0 > y1) continue;
     let melhor: { x: number; y: number; d: number } | null = null;
-    for (let x = quadro[0] + meiaL + folga; x <= quadro[2] - meiaL - folga; x += passo) {
-      for (let y = quadro[1] + meiaA + folga; y <= quadro[3] - meiaA - folga; y += passo) {
-        if (!pontoNosAneisDoDesenho(x, y, b.aneis)) continue;
-        const caixa: Retangulo = [x - meiaL, y - meiaA, x + meiaL, y + meiaA];
-        if (nomes.some((n) => sobrepoe(caixa, n.caixa)) || obstaculos.some((o) => sobrepoe(caixa, o))) continue;
-        const borda = distanciaAosAneis(x, y, b.aneis);
-        const d = Math.min(borda, x - quadro[0], quadro[2] - x, y - quadro[1], quadro[3] - y);
-        if (borda < meiaA + 2 / zoom) continue;
-        if (!melhor || d > melhor.d) melhor = { x, y, d };
+    const provar = (x: number, y: number) => {
+      if (x < x0 || x > x1 || y < y0 || y > y1) return;
+      const limiteDoQuadro = Math.min(x - quadro[0], quadro[2] - x, y - quadro[1], quadro[3] - y);
+      if (melhor && limiteDoQuadro <= melhor.d) return;
+      const caixa: Retangulo = [x - meiaL, y - meiaA, x + meiaL, y + meiaA];
+      if (nomes.some((n) => sobrepoe(caixa, n.caixa)) || obstaculos.some((o) => sobrepoe(caixa, o))) return;
+      if (!pontoNosAneisDoDesenho(x, y, aneis)) return;
+      const borda = distanciaAosAneis(x, y, aneis);
+      if (borda < meiaA + 2 / zoom) return;
+      const d = Math.min(borda, limiteDoQuadro);
+      if (!melhor || d > melhor.d) melhor = { x, y, d };
+    };
+    const grosso = Math.max(passo, Math.min(x1 - x0, y1 - y0) / 10);
+    for (let x = x0; x <= x1 + 1e-9; x += grosso) for (let y = y0; y <= y1 + 1e-9; y += grosso) provar(x, y);
+    if (grosso > passo) {
+      // Refino em volta do melhor ponto; sem nenhum ponto na grade grossa (bairro estreito), a grade fina inteira.
+      const achado = melhor as { x: number; y: number; d: number } | null;
+      if (achado) {
+        for (let x = achado.x - grosso; x <= achado.x + grosso; x += passo) for (let y = achado.y - grosso; y <= achado.y + grosso; y += passo) provar(x, y);
+      } else {
+        for (let x = x0; x <= x1 + 1e-9; x += passo) for (let y = y0; y <= y1 + 1e-9; y += passo) provar(x, y);
       }
     }
     if (!melhor) continue;
+    melhor = melhor as { x: number; y: number; d: number };
     nomes.push({
       slug: b.slug,
       nome: texto,
