@@ -31,7 +31,6 @@ import { useAnalises } from "../../estado/Analises";
 import { usePerfilDomicilio } from "../../estado/PerfilDomicilio";
 import { obterPosicaoDaVisita } from "../../plataforma/posicaoDaVisita";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 import { Botao } from "../Botao";
 import { useFocoDoCampo } from "../casca/foco";
 import { tituloDaRua } from "../comparar/Rotina";
@@ -141,7 +140,7 @@ export function BuscaUnificada() {
           Anúncio, prédio ou rua
         </Texto>
         <AlvoDeToque onPress={() => void colar()} style={{ minHeight: 44, minWidth: 44, justifyContent: "center" }} accessibilityRole="button" accessibilityLabel="Colar link">
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 12, paddingVertical: 7, backgroundColor: cor("cor-papel-claro"), borderRadius: 999, borderWidth: 1, borderColor: cor("cor-linha") }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 12, paddingVertical: 7, backgroundColor: cor("cor-sutil"), borderRadius: 999 }}>
             <Svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke={cor("cor-texto-apoio")} strokeWidth={1.8} aria-hidden>
               <Rect x={9} y={9} width={13} height={13} rx={2} />
               <Path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
@@ -279,13 +278,11 @@ function ResultadoDaBuscaUnificada({ estado, aoAbrir }: { estado: EstadoDaBusca;
                   minHeight: 44,
                   paddingHorizontal: 10,
                   borderRadius: 999,
-                  borderWidth: 1,
-                  borderColor: ativo ? cor("cor-acao") : cor("cor-linha"),
-                  backgroundColor: ativo ? cor("cor-acao") : cor("cor-papel-claro"),
+                  backgroundColor: ativo ? cor("cor-texto") : cor("cor-papel-claro"),
                   justifyContent: "center",
                 }}
               >
-                <Texto tipo="apoio" cor={ativo ? "cor-sobre-acao" : "cor-texto"} style={{ fontSize: 12, fontWeight: ativo ? "700" : "500" }}>
+                <Texto tipo="apoio" cor={ativo ? "cor-papel-claro" : "cor-texto"} style={{ fontSize: 12, fontWeight: ativo ? "700" : "500" }}>
                   {p.rotulo}
                 </Texto>
               </Pressionavel>
@@ -329,13 +326,17 @@ export function ExemplosAgora({ recolhido = false }: { recolhido?: boolean }) {
         <Texto tipo="secao" style={{ fontSize: 17, lineHeight: 23, fontWeight: "700" }}>{`Explorar um endereço exemplo agora ${aberto ? "−" : "+"}`}</Texto>
         <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13.5, lineHeight: 19 }}>Prédios reais para testar o dossiê em 1 toque.</Texto>
       </Pressionavel>
-      {aberto ? EXEMPLOS.map((x) => (
-        <Pressionavel key={x.id} onPress={() => void abrir(x)} accessibilityRole="button" accessibilityLabel={`Exemplo: ${x.titulo}. ${x.resumo}`}
-          style={{ minHeight: 58, padding: 14, borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha"), backgroundColor: cor("cor-superficie"), gap: 4 }}>
-          <Texto tipo="corpo" style={{ fontSize: 15, lineHeight: 20, fontWeight: "600" }}>{ocupado === x.id ? `${x.titulo} · abrindo…` : x.titulo}</Texto>
-          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 18 }}>{x.resumo}</Texto>
-        </Pressionavel>
-      )) : null}
+      {aberto ? (
+        <View style={{ borderRadius: 14, borderWidth: 1, borderColor: cor("cor-linha-forte"), backgroundColor: cor("cor-superficie"), overflow: "hidden" }}>
+          {EXEMPLOS.map((x, idx) => (
+            <Pressionavel key={x.id} onPress={() => void abrir(x)} accessibilityRole="button" accessibilityLabel={`Exemplo: ${x.titulo}. ${x.resumo}`}
+              style={{ minHeight: 58, padding: 14, borderTopWidth: idx === 0 ? 0 : 1, borderTopColor: cor("cor-linha"), gap: 4 }}>
+              <Texto tipo="corpo" style={{ fontSize: 15, lineHeight: 20, fontWeight: "600" }}>{ocupado === x.id ? `${x.titulo} · abrindo…` : x.titulo}</Texto>
+              <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 18 }}>{x.resumo}</Texto>
+            </Pressionavel>
+          ))}
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -360,7 +361,7 @@ export function OndeMaisProcurarNoPiloto() {
   const p = pronto === "ok" ? procura() : null;
   const r = p ? ondeMaisProcurar(p.ruas, p.bairros, destino, ateMin, [], { exigirMercado, limite: 5 }) : null;
   return (
-    <View style={{ gap: 8, padding: 14, borderRadius: 14, borderWidth: 1, borderColor: comAlfa(cor("cor-texto"), 0.09), backgroundColor: cor("cor-superficie") }} role="group" aria-label="Onde mais procurar no piloto">
+    <View style={{ gap: 8, padding: 14, borderRadius: 14, borderWidth: 1, borderColor: cor("cor-linha-forte"), backgroundColor: cor("cor-superficie") }} role="group" aria-label="Onde mais procurar no piloto">
       <Texto tipo="secao" style={{ fontSize: 16, lineHeight: 22, fontWeight: "600" }}>Onde mais procurar no piloto</Texto>
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>{`Ruas com ida de ônibus ou metrô às 7h até ${nomeDestino} (horário programado, dia útil).`}</Texto>
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
@@ -368,8 +369,8 @@ export function OndeMaisProcurarNoPiloto() {
           {LIMITES_DE_IDA.map((m) => (
             <AlvoDeToque key={m} onPress={() => setAteMin(m)} accessibilityRole="radio" accessibilityState={{ checked: ateMin === m }} aria-checked={ateMin === m}
               style={{ minHeight: 44, minWidth: 44, justifyContent: "center" }}>
-              <View style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, borderWidth: 1, borderColor: ateMin === m ? cor("cor-acao") : cor("cor-linha"), backgroundColor: ateMin === m ? comAlfa(cor("cor-acao"), 0.12) : "transparent" }}>
-                <Texto tipo="apoio" style={{ fontSize: 12, fontWeight: "600" }}>{`até ${m} min`}</Texto>
+              <View style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, backgroundColor: ateMin === m ? cor("cor-texto") : cor("cor-papel-claro") }}>
+                <Texto tipo="apoio" cor={ateMin === m ? "cor-papel-claro" : "cor-texto"} style={{ fontSize: 12, fontWeight: "600" }}>{`até ${m} min`}</Texto>
               </View>
             </AlvoDeToque>
           ))}
@@ -387,9 +388,7 @@ export function OndeMaisProcurarNoPiloto() {
               paddingHorizontal: 12,
               paddingVertical: 6,
               borderRadius: 999,
-              borderWidth: 1,
-              borderColor: exigirMercado ? cor("cor-salvia-escura") : cor("cor-linha"),
-              backgroundColor: exigirMercado ? cor("cor-salvia-suave") : "transparent",
+              backgroundColor: exigirMercado ? cor("cor-salvia-suave") : cor("cor-papel-claro"),
             }}
           >
             <Texto tipo="apoio" cor={exigirMercado ? "cor-salvia-escura" : "cor-texto"} style={{ fontSize: 12, fontWeight: "600" }}>
@@ -432,8 +431,8 @@ export function FiltroDeEtapas({ filtro, aoEscolher, contagem }: { filtro: Filtr
         return (
           <AlvoDeToque key={o.valor} onPress={() => aoEscolher(o.valor)} accessibilityRole="radio" accessibilityState={{ checked: ativo }} aria-checked={ativo}
             accessibilityLabel={`${o.rotulo} (${contagem(o.valor)})`} style={{ minHeight: 44, justifyContent: "center" }}>
-            <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999, borderWidth: 1, borderColor: ativo ? cor("cor-texto") : cor("cor-linha"), backgroundColor: ativo ? cor("cor-texto") : "transparent" }}>
-              <Texto tipo="apoio" style={{ fontSize: 11.5, fontWeight: "600", color: ativo ? cor("cor-superficie") : cor("cor-texto") }}>{`${o.rotulo} ${contagem(o.valor)}`}</Texto>
+            <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999, backgroundColor: ativo ? cor("cor-texto") : cor("cor-papel-claro") }}>
+              <Texto tipo="apoio" style={{ fontSize: 11.5, fontWeight: "600", color: ativo ? cor("cor-papel-claro") : cor("cor-texto") }}>{`${o.rotulo} ${contagem(o.valor)}`}</Texto>
             </View>
           </AlvoDeToque>
         );
@@ -456,7 +455,7 @@ export function TriagemDoCartao({ analise: a, aoDescartar }: { analise: AnaliseV
   };
   const botao = (rotulo: string, onPress: () => void, extra: object = {}) => (
     <AlvoDeToque onPress={onPress} accessibilityRole="button" style={{ minHeight: 44, minWidth: 44, justifyContent: "center" }} {...extra}>
-      <View style={{ paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999, borderWidth: 1, borderColor: cor("cor-linha") }}>
+      <View style={{ paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999, backgroundColor: cor("cor-papel-claro") }}>
         <Texto tipo="apoio" style={{ fontSize: 12, fontWeight: "600" }}>{rotulo}</Texto>
       </View>
     </AlvoDeToque>
@@ -475,8 +474,8 @@ export function TriagemDoCartao({ analise: a, aoDescartar }: { analise: AnaliseV
           return (
             <AlvoDeToque key={x.valor} onPress={() => void gravar(comEtapa(a, x.valor as EtapaDaBusca, new Date().toISOString()), `Etapa: ${x.rotulo}`)}
               accessibilityRole="radio" accessibilityState={{ checked: ativo }} aria-checked={ativo} accessibilityLabel={`Etapa ${x.rotulo}`} style={{ minHeight: 44, justifyContent: "center" }}>
-              <View style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6, backgroundColor: ativo ? comAlfa(cor("cor-azul-cadastral"), 0.14) : "transparent", borderWidth: 1, borderColor: ativo ? cor("cor-azul-cadastral") : cor("cor-linha") }}>
-                <Texto tipo="apoio" style={{ fontSize: 11, fontWeight: ativo ? "700" : "500" }}>{x.rotulo}</Texto>
+              <View style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6, backgroundColor: ativo ? cor("cor-azul-cadastral-suave") : cor("cor-papel-claro") }}>
+                <Texto tipo="apoio" cor={ativo ? "cor-azul-cadastral" : "cor-texto"} style={{ fontSize: 11, fontWeight: ativo ? "700" : "500" }}>{x.rotulo}</Texto>
               </View>
             </AlvoDeToque>
           );

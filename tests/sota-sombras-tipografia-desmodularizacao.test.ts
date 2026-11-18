@@ -2652,4 +2652,13 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(homeSrc).not.toContain("alvoDoMarcador");
     expect(paineisSrc).not.toMatch(/\bcomAlfa\b/);
   });
+
+  it("Explorar reduz borderWidth:1 para <=4 caixas e remove comAlfa (S63)", () => {
+    const explorarSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "inicio", "Explorar.tsx"),
+      "utf8",
+    );
+    expect(explorarSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((explorarSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(4);
+  });
 });
