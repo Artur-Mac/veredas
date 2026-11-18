@@ -9,6 +9,10 @@ import { PulsoDaQuadra } from "../src/componentes/visual/PulsoDaQuadra";
 import { TermometroConfortoTermico } from "../src/componentes/visual/TermometroConfortoTermico";
 import { VidaAPeNaQuadra } from "../src/componentes/visual/VidaAPeNaQuadra";
 import { avaliarConfortoTermico } from "../src/dados/clima/confortoTermico";
+import { lerMicroclimaDoPonto, SEM_MICROCLIMA } from "../src/dados/clima/microclima";
+import { edificiosDoBairro } from "../src/dados/recife/indice";
+import { inferirFachadasDoEdificio } from "../src/dados/sol/inferirFachadas";
+import { avaliarBioclimatico3d } from "../src/municipios/recife/motores/bioclimatico3d";
 import type { ObrasProximas } from "../src/dados/contratos";
 import { avaliarCaminhabilidadeEVidaNaRua, type ResultadoCaminhabilidadeEVida } from "../src/dados/dossie/caminhabilidadeEVidaNaRua";
 import { calcularPulsoDaQuadra } from "../src/dados/dossie/pulsoDaQuadra";
@@ -183,5 +187,33 @@ describe("R11: cada nota abre a ficha de método de 6 campos num toque", () => {
     expect(aberto).toContain("Mercado 30%");
     expect(aberto).toContain("minutos a pé pela rede de ruas");
     act(() => arvore.unmount());
+  });
+});
+
+describe("o mesmo prédio tem o mesmo selo de conforto no dossiê e no Comparar", () => {
+  it("o microclima do ponto é lido num lugar só e muda o selo: sem ele o Comparar dava outro resultado", () => {
+    const predios = edificiosDoBairro("boa-viagem");
+    const golden = predios.find((e) => e.id === "8001-216")!;
+    const inf = inferirFachadasDoEdificio({ edificio: golden, vizinhosDoBairro: predios, textoAnuncio: "Golden Tower" });
+    const fachada = inf.fachadas.find((f) => f.id === inf.fachadaSugeridaId) ?? inf.frente;
+    const micro = lerMicroclimaDoPonto(golden.centro, "boa-viagem");
+    expect(micro.tempDelta).not.toBeNull();
+    const calcular = (m: typeof micro) =>
+      avaliarConfortoTermico({
+        andar: 9,
+        pavimentosTotais: golden.pavimentos,
+        fachada,
+        fachadaAzimuteGraus: fachada.azimuteGraus,
+        bioclimatico: avaliarBioclimatico3d({ fachadaAzimuteGraus: fachada.azimuteGraus, andar: 9, lstDeltaIlhaCalorC: m.tempDelta }),
+        diferencaBairroCalorC: m.tempDelta,
+        tempQuadraC: m.tempQuadraC,
+        pracasAte300m: m.pracasAte300m,
+        possuiArvoreProxima: m.possuiArvore,
+        distanciaPraiaOuRioM: m.distanciaAgua,
+      });
+    // Com o microclima (as duas telas hoje) o índice de calor é menor do que sem ele (o Comparar de antes).
+    expect(calcular(micro).indiceCalor0a100).toBeLessThan(calcular(SEM_MICROCLIMA).indiceCalor0a100);
+    // Sem coordenada: sem leitura, nunca um valor fixo.
+    expect(lerMicroclimaDoPonto(null, "boa-viagem")).toEqual(SEM_MICROCLIMA);
   });
 });

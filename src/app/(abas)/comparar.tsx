@@ -57,6 +57,7 @@ import { RotinaDoisDestinosComparar } from "../../componentes/visual/RotinaDoisD
 import { estimarMinutosPicoIdaVolta } from "../../dados/mobilidade/rotinaCasal";
 import { inferirFachadasDoEdificio } from "../../dados/sol/inferirFachadas";
 import { avaliarConfortoTermico } from "../../dados/clima/confortoTermico";
+import { lerMicroclimaDoPonto } from "../../dados/clima/microclima";
 import { avaliarBioclimatico3d } from "../../municipios/recife/motores/bioclimatico3d";
 import { estimarRuido } from "../../dados/ruido/estimativa";
 import { acusticaDaEstimativa } from "../../dados/ruido/ponte";
@@ -191,13 +192,20 @@ function CompararComDados() {
       const fac = inf.fachadas.find((f) => f.id === inf.fachadaSugeridaId) ?? inf.frente;
       const az = item.visita.orientacaoGraus ?? fac.azimuteGraus;
       const andar = item.declarados.andar.valor ?? 4;
-      const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: az, andar });
+      // O mesmo microclima que o dossiê lê: sem ele, o selo de conforto do mesmo prédio saía diferente nas duas telas.
+      const microclima = lerMicroclimaDoPonto(ed?.centro ?? null, item.bairro);
+      const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: az, andar, lstDeltaIlhaCalorC: microclima.tempDelta });
       const conf = avaliarConfortoTermico({
         andar,
         pavimentosTotais: ed?.pavimentos ?? null,
         fachada: fac,
         fachadaAzimuteGraus: az,
         bioclimatico: bio,
+        diferencaBairroCalorC: microclima.tempDelta,
+        tempQuadraC: microclima.tempQuadraC,
+        pracasAte300m: microclima.pracasAte300m,
+        possuiArvoreProxima: microclima.possuiArvore,
+        distanciaPraiaOuRioM: microclima.distanciaAgua,
       });
       // 18/11/2026 (A1, R4): o sossego sai do modelo de ruído estimado do prédio, no andar e na fachada do anúncio:
       // a mesma nota do placar do dossiê. Sem prédio no cadastro, "sem leitura".

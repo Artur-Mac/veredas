@@ -60,11 +60,7 @@ import { avaliarHidroMare1m } from "../../municipios/recife/motores/hidroMare1m"
 import { avaliarResilienciaRedes } from "../../municipios/recife/motores/resilienciaRedes";
 import { inferirFachadasDoEdificio, type PapelFachada } from "../../dados/sol/inferirFachadas";
 import { carregarEntornoSolar } from "../../dados/sol/entorno";
-import {
-  lerAreasVerdesProximas,
-  lerRelevoECanalProximo,
-  lerTemperaturaSuperficie100m,
-} from "../../dados/recife/camadasAmbientais";
+import { lerMicroclimaDoPonto } from "../../dados/clima/microclima";
 import { avaliarConfortoTermico } from "../../dados/clima/confortoTermico";
 import { PlacarHeroi5Segundos } from "../../componentes/visual/PlacarHeroi5Segundos";
 import { CanvasSolSombraBrisa25D } from "../../componentes/visual/CanvasSolSombraBrisa25D";
@@ -294,23 +290,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
       (analise.caderno?.localizacaoDaVisita
         ? ([analise.caderno.localizacaoDaVisita.longitude, analise.caderno.localizacaoDaVisita.latitude] as [number, number])
         : null);
-    if (!coord) {
-      return { tempDelta: null, tempQuadraC: null, pracasAte300m: 0, possuiArvore: false, distanciaAgua: null };
-    }
-    try {
-      const lst = lerTemperaturaSuperficie100m(coord, analise.bairro);
-      const verde = lerAreasVerdesProximas(coord);
-      const hid = lerRelevoECanalProximo(coord);
-      return {
-        tempDelta: lst?.diferencaBairroC ?? null,
-        tempQuadraC: lst?.tempQuadraC ?? null,
-        pracasAte300m: verde.pracasAte300m,
-        possuiArvore: Boolean(verde.arvoreTombadaProxima),
-        distanciaAgua: hid.cursoDaguaMaisProximo?.distanciaM ?? null,
-      };
-    } catch {
-      return { tempDelta: null, tempQuadraC: null, pracasAte300m: 0, possuiArvore: false, distanciaAgua: null };
-    }
+    return lerMicroclimaDoPonto(coord, analise.bairro);
   }, [analise.bairro, analise.caderno, predio]);
 
   const bioclimatico = useMemo(
