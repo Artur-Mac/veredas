@@ -7,7 +7,7 @@ import { View } from "react-native";
 import type { Edificio, Pergunta, Visita } from "../../dados/contratos";
 import { derivarGuiaDeEstrutura } from "../../dados/dossie/guiaEstrutura";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { ESPACO, RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 import { Botao } from "../Botao";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
@@ -154,7 +154,6 @@ function Painel({ perguntas, controle, aoAbrirPergunta, aoAdicionarPergunta, pre
         paddingHorizontal: 15,
         borderWidth: 1,
         borderColor: cor("cor-linha-forte"),
-        boxShadow: `0 6px 20px -8px ${comAlfa(cor("cor-texto"), 0.12)}`,
       }}
     >
       <Faixa>

@@ -20,6 +20,57 @@ const PRIORIDADES_LEITOR = [
   { id: "onus_spu", rotulo: "Ônus e SPU", temas: ["gravames", "restricoes_matricula", "situacao_onus", "regime_spu", "acoes"] },
 ] as const;
 
+export type ResumoCoberturaDaLeitura = {
+  temasEncontrados: number;
+  temasAusentes: number;
+  prioridadesEncontradas: string[];
+  prioridadesAusentes: string[];
+  linhaResumo: string;
+  linhaPrioridades: string | null;
+};
+
+/**
+ * Síntese de cobertura do parser (`Cherre R27 §6.5`): quantos temas do roteiro apareceram no trecho,
+ * quantos esperados não apareceram e o saldo das prioridades marcadas pela pessoa.
+ */
+export function resumirCoberturaDaLeitura(
+  leitura: ReturnType<typeof lerAta>,
+  prioridadesIds: readonly string[],
+): ResumoCoberturaDaLeitura {
+  const temasPresentes = new Set<TemaDoAchado>(leitura.achados.map((a) => a.tema));
+  const temasEncontrados = temasPresentes.size;
+  const temasAusentes = leitura.ausentesEsperados.length;
+
+  const prioridadesEncontradas: string[] = [];
+  const prioridadesAusentes: string[] = [];
+  for (const p of PRIORIDADES_LEITOR) {
+    if (!prioridadesIds.includes(p.id)) continue;
+    const achou = p.temas.some((t) => temasPresentes.has(t));
+    if (achou) prioridadesEncontradas.push(p.rotulo);
+    else prioridadesAusentes.push(p.rotulo);
+  }
+
+  const linhaResumo = `Cobertura no trecho: ${temasEncontrados} ${temasEncontrados === 1 ? "tema localizado" : "temas localizados"} · ${temasAusentes} ${temasAusentes === 1 ? "esperado sem menção" : "esperados sem menção"}`;
+
+  let linhaPrioridades: string | null = null;
+  if (prioridadesEncontradas.length > 0 && prioridadesAusentes.length > 0) {
+    linhaPrioridades = `Prioridades marcadas: ${prioridadesEncontradas.join(", ")} com menção · ${prioridadesAusentes.join(", ")} sem menção neste trecho.`;
+  } else if (prioridadesEncontradas.length > 0) {
+    linhaPrioridades = `Prioridades marcadas com menção: ${prioridadesEncontradas.join(", ")}.`;
+  } else if (prioridadesAusentes.length > 0) {
+    linhaPrioridades = `Prioridades marcadas sem menção neste trecho: ${prioridadesAusentes.join(", ")}.`;
+  }
+
+  return {
+    temasEncontrados,
+    temasAusentes,
+    prioridadesEncontradas,
+    prioridadesAusentes,
+    linhaResumo,
+    linhaPrioridades,
+  };
+}
+
 type Salvar = (mudar: (c: Caderno) => Caderno) => Promise<boolean>;
 
 /** Escolher um .txt no navegador (sem biblioteca): input de arquivo criado na hora. */
@@ -81,6 +132,10 @@ export function LeitorDeAta({ salvar }: { salvar: Salvar }) {
     [...lista].sort((a, b) => Number(temasPrioritarios.has(b.tema)) - Number(temasPrioritarios.has(a.tema)));
   const regras = ordenarPorPrioridade(leitura?.achados.filter((a) => a.secao === "regras") ?? []);
   const financeiro = ordenarPorPrioridade(leitura?.achados.filter((a) => a.secao === "financeiro") ?? []);
+  const cobertura = useMemo(
+    () => (leitura ? resumirCoberturaDaLeitura(leitura, prioridades) : null),
+    [leitura, prioridades],
+  );
 
   const alternarPrioridade = (id: string) =>
     setPrioridades((atual) => (atual.includes(id) ? atual.filter((x) => x !== id) : [...atual, id]));
@@ -165,7 +220,27 @@ export function LeitorDeAta({ salvar }: { salvar: Salvar }) {
       </View>
       {leitura ? (
         <View style={{ gap: 12 }}>
-          <Texto tipo="apoio" role="status">{`${leitura.achados.length} trechos em ${leitura.paginas} página(s). Cada trecho é cópia literal do texto; confira no original.`}</Texto>
+          <Texto tipo="apoio" role="status" style={{ fontVariant: ["tabular-nums"] }}>{`${leitura.achados.length} trechos em ${leitura.paginas} página(s). Cada trecho é cópia literal do texto; confira no original.`}</Texto>
+          {cobertura ? (
+            <View
+              testID="leitor-resumo-cobertura"
+              style={{
+                paddingTop: 8,
+                borderTopWidth: 1,
+                borderTopColor: cor("cor-linha"),
+                gap: 2,
+              }}
+            >
+              <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 17, fontWeight: "700", fontVariant: ["tabular-nums"] }}>
+                {cobertura.linhaResumo}
+              </Texto>
+              {cobertura.linhaPrioridades ? (
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>
+                  {cobertura.linhaPrioridades}
+                </Texto>
+              ) : null}
+            </View>
+          ) : null}
           <View style={{ gap: 4 }} role="group" aria-label={tipo === "matricula" ? "Titularidade e restrições" : "Regras da casa"}>
             <Texto style={{ fontWeight: "700" }}>{tipo === "matricula" ? "1. Titularidade e restrições" : "1. Regras da casa"}</Texto>
             {regras.length ? regras.map((a, i) => <Trecho key={`r${i}`} a={a} prioritario={temasPrioritarios.has(a.tema)} />) : <Texto tipo="apoio">{tipo === "matricula" ? "Nenhum trecho sobre proprietário, fração ideal, usufruto ou cláusula restritiva." : "Nenhum trecho sobre animais, temporada, obras, vagas, mudança ou silêncio."}</Texto>}

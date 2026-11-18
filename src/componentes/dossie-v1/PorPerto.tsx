@@ -293,11 +293,9 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
       {verMapa && predioParaMapa ? (
         <View
           style={{
-            padding: 12,
-            borderRadius: 16,
-            borderWidth: 1,
-            borderColor: cor("cor-linha-forte"),
-            backgroundColor: cor("cor-superficie"),
+            paddingTop: 10,
+            borderTopWidth: 1,
+            borderTopColor: cor("cor-linha"),
             gap: 8,
           }}
         >
@@ -473,8 +471,8 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
                 minHeight: 44,
                 paddingHorizontal: 12,
                 borderRadius: 10,
-                borderWidth: 1,
-                borderColor: cor("cor-linha"),
+                borderBottomWidth: 1,
+                borderBottomColor: cor("cor-linha-forte"),
                 backgroundColor: cor("cor-papel-claro"),
                 color: cor("cor-texto"),
                 fontFamily: "PlusJakartaSans",
@@ -494,8 +492,8 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
                   minHeight: 44,
                   paddingHorizontal: 12,
                   borderRadius: 10,
-                  borderWidth: 1,
-                  borderColor: cor("cor-linha"),
+                  borderBottomWidth: 1,
+                  borderBottomColor: cor("cor-linha-forte"),
                   backgroundColor: cor("cor-papel-claro"),
                   color: cor("cor-texto"),
                   fontFamily: "PlusJakartaSans",

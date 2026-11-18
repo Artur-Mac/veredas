@@ -3414,4 +3414,39 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       tree.unmount();
     });
   });
+
+  it("LeitorDeAta, PorPerto, Explorar e NoImovel cumprem desmodularizacao e zero comAlfa (S87)", () => {
+    const leitorSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "caderno", "LeitorDeAta.tsx"),
+      "utf8",
+    );
+    const porPertoSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "PorPerto.tsx"),
+      "utf8",
+    );
+    const explorarSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "inicio", "Explorar.tsx"),
+      "utf8",
+    );
+    const noImovelSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "visita-v1", "NoImovel.tsx"),
+      "utf8",
+    );
+
+    expect(leitorSrc).toContain("resumirCoberturaDaLeitura");
+    expect(leitorSrc).toContain("leitor-resumo-cobertura");
+    expect(leitorSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((leitorSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    expect(leitorSrc).toContain("tabular-nums");
+
+    expect(porPertoSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((porPertoSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+
+    expect(explorarSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((explorarSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(2);
+    expect(explorarSrc).toContain("tabular-nums");
+
+    expect(noImovelSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((noImovelSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+  });
 });

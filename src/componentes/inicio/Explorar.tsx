@@ -327,10 +327,10 @@ export function ExemplosAgora({ recolhido = false }: { recolhido?: boolean }) {
         <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13.5, lineHeight: 19 }}>Prédios reais para testar o dossiê em 1 toque.</Texto>
       </Pressionavel>
       {aberto ? (
-        <View style={{ borderRadius: 14, borderWidth: 1, borderColor: cor("cor-linha-forte"), backgroundColor: cor("cor-superficie"), overflow: "hidden" }}>
-          {EXEMPLOS.map((x, idx) => (
+        <View style={{ borderBottomWidth: 1, borderBottomColor: cor("cor-linha") }}>
+          {EXEMPLOS.map((x) => (
             <Pressionavel key={x.id} onPress={() => void abrir(x)} accessibilityRole="button" accessibilityLabel={`Exemplo: ${x.titulo}. ${x.resumo}`}
-              style={{ minHeight: 58, padding: 14, borderTopWidth: idx === 0 ? 0 : 1, borderTopColor: cor("cor-linha"), gap: 4 }}>
+              style={{ minHeight: 58, paddingVertical: 12, paddingHorizontal: 4, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 4 }}>
               <Texto tipo="corpo" style={{ fontSize: 15, lineHeight: 20, fontWeight: "600" }}>{ocupado === x.id ? `${x.titulo} · abrindo…` : x.titulo}</Texto>
               <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 18 }}>{x.resumo}</Texto>
             </Pressionavel>
@@ -403,15 +403,15 @@ export function OndeMaisProcurarNoPiloto() {
       {r?.estado === "nenhuma" ? <Texto tipo="apoio">{`Nenhuma rua do piloto com ${exigirMercado ? "mercado perto e " : ""}ida até ${ateMin} min.`}</Texto> : null}
       {r?.estado === "ok" ? (
         <View role="list" style={{ gap: 0 }}>
-          <Texto testID="procura-contador-vivo" tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, fontWeight: "700", marginBottom: 4 }}>
+          <Texto testID="procura-contador-vivo" tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, fontWeight: "700", fontVariant: ["tabular-nums"], marginBottom: 4 }}>
             {`${r.total} ${r.total === 1 ? "rua atende" : "ruas atendem"} aos critérios`}
           </Texto>
           {r.ruas.map((x) => (
             <View key={x.c} role="listitem" style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingVertical: 6 }}>
-              <Texto style={{ fontSize: 13, lineHeight: 19 }}>{`${tituloDaRua(x.n)} (${bairroPorSlug(x.b)?.nome ?? x.b}) · ${x.minutos} min`}</Texto>
+              <Texto style={{ fontSize: 13, lineHeight: 19, fontVariant: ["tabular-nums"] }}>{`${tituloDaRua(x.n)} (${bairroPorSlug(x.b)?.nome ?? x.b}) · ${x.minutos} min`}</Texto>
             </View>
           ))}
-          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 16, paddingTop: 4 }}>
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 16, fontVariant: ["tabular-nums"], paddingTop: 4 }}>
             {`${r.total > r.ruas.length ? `Mais ${r.total - r.ruas.length} ruas também cabem. ` : ""}Preço e anúncios não entram: procure nessas ruas no portal que você usa.`}
           </Texto>
         </View>
@@ -432,7 +432,7 @@ export function FiltroDeEtapas({ filtro, aoEscolher, contagem }: { filtro: Filtr
           <AlvoDeToque key={o.valor} onPress={() => aoEscolher(o.valor)} accessibilityRole="radio" accessibilityState={{ checked: ativo }} aria-checked={ativo}
             accessibilityLabel={`${o.rotulo} (${contagem(o.valor)})`} style={{ minHeight: 44, justifyContent: "center" }}>
             <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999, backgroundColor: ativo ? cor("cor-texto") : cor("cor-papel-claro") }}>
-              <Texto tipo="apoio" style={{ fontSize: 11.5, fontWeight: "600", color: ativo ? cor("cor-papel-claro") : cor("cor-texto") }}>{`${o.rotulo} ${contagem(o.valor)}`}</Texto>
+              <Texto tipo="apoio" style={{ fontSize: 11.5, fontWeight: "600", fontVariant: ["tabular-nums"], color: ativo ? cor("cor-papel-claro") : cor("cor-texto") }}>{`${o.rotulo} ${contagem(o.valor)}`}</Texto>
             </View>
           </AlvoDeToque>
         );
@@ -484,7 +484,7 @@ export function TriagemDoCartao({ analise: a, aoDescartar }: { analise: AnaliseV
       {anotando ? (
         <View style={{ gap: 6 }}>
           <TextInput value={nota} onChangeText={setNota} maxLength={LIMITE_DA_NOTA} multiline accessibilityLabel={`Nota sobre ${a.nome}`} placeholder="Ex.: ligar para o corretor sobre o condomínio"
-            placeholderTextColor={cor("cor-texto-apoio")} style={{ minHeight: 44, padding: 10, borderRadius: 10, borderWidth: 1, borderColor: cor("cor-linha"), color: cor("cor-texto"), fontFamily: "PlusJakartaSans", fontSize: 13 }} />
+            placeholderTextColor={cor("cor-texto-apoio")} style={{ minHeight: 44, padding: 10, borderRadius: 10, backgroundColor: cor("cor-papel-claro"), borderBottomWidth: 1, borderBottomColor: cor("cor-linha-forte"), color: cor("cor-texto"), fontFamily: "PlusJakartaSans", fontSize: 13 }} />
           <Botao rotulo="Guardar nota" variante="secundario" desativado={!nota.trim()} onPress={() => void gravar(comNota(a, nota, new Date().toISOString()), "Nota guardada no caderno").then(() => { setNota(""); setAnotando(false); })} />
         </View>
       ) : null}

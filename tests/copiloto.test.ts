@@ -6,7 +6,7 @@ import { join } from "path";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
 import { Image, Modal, TextInput, View } from "react-native";
-import { LeitorDeAta } from "../src/componentes/caderno/LeitorDeAta";
+import { LeitorDeAta, resumirCoberturaDaLeitura } from "../src/componentes/caderno/LeitorDeAta";
 import { OrcamentoPessoal } from "../src/componentes/caderno/Orcamento";
 import { LinhaDoTempoEstrutural } from "../src/componentes/dossie-v1/FichaViva";
 import { Divergencias, montarTextoDivergenciasParaCorretor } from "../src/componentes/dossie-v1/Indicadores";
@@ -607,6 +607,16 @@ describe("por perto no mapa, rotina personalizada, comodidades e HTML editorial"
     expect(jsonLido).toContain("Sua prioridade");
     expect(jsonLido).toContain("O que não apareceu neste texto");
     expect(jsonLido).toContain("Copiar perguntas");
+    expect(arvore.root.find((n) => n.props.testID === "leitor-resumo-cobertura")).toBeDefined();
+    expect(jsonLido).toContain("Cobertura no trecho:");
+    expect(jsonLido).toContain("Prioridades marcadas com menção: Ônus e SPU.");
+
+    const resumoCov = resumirCoberturaDaLeitura(lerAta(matriculaTxt, "matricula"), ["onus_spu", "caixa"]);
+    expect(resumoCov.temasEncontrados).toBeGreaterThan(0);
+    expect(resumoCov.prioridadesEncontradas).toContain("Ônus e SPU");
+    expect(resumoCov.prioridadesAusentes).toContain("Caixa e rateio");
+    expect(resumoCov.linhaPrioridades).toContain("com menção");
+    expect(resumoCov.linhaPrioridades).toContain("sem menção neste trecho");
 
     const btnCopiarPerg = arvore.root
       .findAllByType(Pressionavel)
