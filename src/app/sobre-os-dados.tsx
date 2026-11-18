@@ -53,13 +53,21 @@ function nomesDosCobertos(): string {
 /** Só a data, como foi gravada ("2026-10-20T16:17:16Z" → "20/10/2026"). */
 const diaGravado = (iso: string | null) => (iso ? formatarData(iso.slice(0, 10)) : "Não informado");
 
-function lerFontes(): { fontes: Fonte[]; fontesDaRua: FonteDaRua[] } | { erro: string } {
+function lerFontes(): { fontes: Fonte[]; fontesDaRua: FonteDaRua[]; geradoEm: string } | { erro: string } {
   try {
-    return { fontes: META.fontes, fontesDaRua: META.fontesDaRua ?? [] };
+    return { fontes: META.fontes, fontesDaRua: META.fontesDaRua ?? [], geradoEm: META.geradoEm };
   } catch {
     return { erro: "Não deu para ler o registro das fontes deste aparelho. Os dados do índice não foram alterados." };
   }
 }
+
+const MATRIZ_COBERTURA_CAMADAS: readonly { camada: string; escopo: string; estado: string }[] = [
+  { camada: "Cadastro IPTU / ITBI / Lotes", escopo: "Bairros cobertos do Recife", estado: "Ativa" },
+  { camada: "Licenciamento de Obras (150 m)", escopo: "Construção, ampliação e demolição", estado: "Ativa" },
+  { camada: "Entorno e Rua (Censo 2022 / 156 / LUSE)", escopo: "Faces de quadra e logradouros casados", estado: "Parcial por rua" },
+  { camada: "Caminhabilidade em rede a pé", escopo: "Prédios com entrada ligada à malha", estado: "Ativa nos cobertos" },
+  { camada: "Microclima, Satélite 100 m e Relevo", escopo: "Temperatura de superfície e drenagem", estado: "Referência por ponto" },
+];
 
 function Fato({ rotulo, valor, numerico = false }: { rotulo: string; valor: string; numerico?: boolean }) {
   return (
@@ -312,6 +320,42 @@ export default function SobreOsDados() {
                   </View>
                   <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
                     {`Campos lidos: ${f.colunasUsadas.slice(0, 6).join(", ")}${f.colunasUsadas.length > 6 ? "…" : ""}`}
+                  </Texto>
+                </View>
+              ))}
+            </CaixaCreme>
+
+            <Texto tipo="secao" role="heading" aria-level={3} style={{ fontSize: 12, lineHeight: 16, fontWeight: "700", marginTop: 4 }}>
+              Versão do pacote e cobertura por camada
+            </Texto>
+            <CaixaCreme gap={6}>
+              <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 8 }}>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5 }}>
+                  Pacote publicado / esquema canônico
+                </Texto>
+                <Texto tipo="numero" style={{ fontSize: 11.5, fontWeight: "700", fontVariant: ["tabular-nums"] }}>
+                  {`${diaGravado(leitura.geradoEm)} · v2`}
+                </Texto>
+              </View>
+              {MATRIZ_COBERTURA_CAMADAS.map((row) => (
+                <View
+                  key={row.camada}
+                  style={{
+                    borderTopWidth: 1,
+                    borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+                    paddingTop: 6,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <View style={{ flex: 1, gap: 1 }}>
+                    <Texto tipo="etiqueta" style={{ fontSize: 12, fontWeight: "700" }}>{row.camada}</Texto>
+                    <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11 }}>{row.escopo}</Texto>
+                  </View>
+                  <Texto tipo="apoio" cor="cor-salvia-escura" style={{ fontSize: 11, fontWeight: "700" }}>
+                    {row.estado}
                   </Texto>
                 </View>
               ))}
