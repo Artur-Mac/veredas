@@ -13,6 +13,7 @@ import { estilosDoTema } from "../../componentes/revisao/estilosDoTema";
 import { Tela } from "../../componentes/Tela";
 import { Texto } from "../../componentes/Texto";
 import { ImportarExtensao } from "../../componentes/leitor/ImportarExtensao";
+import { SimuladorBolso15Segundos } from "../../componentes/visual/SimuladorBolso15Segundos";
 import { BuscaUnificada, ExemplosAgora, FiltroDeEtapas, OndeMaisProcurarNoPiloto, TriagemDoCartao } from "../../componentes/inicio/Explorar";
 import { GavetaDeDescarte } from "../../componentes/descarte/GavetaDeDescarte";
 import { passaNoFiltro, type FiltroDeEtapa } from "../../dados/triagem";
@@ -77,6 +78,7 @@ export default function ExplorarT1() {
           <OndeMaisProcurarNoPiloto />
 
           <ImportarExtensao />
+          <SimuladorBolso15Segundos />
           {/* `.saved-section-header` */}
           <View style={styles.secaoHeader}>
             <Texto tipo="titulo-tela" role="heading" style={[styles.secaoTitulo, styles.secaoTituloQueEncolhe]}>

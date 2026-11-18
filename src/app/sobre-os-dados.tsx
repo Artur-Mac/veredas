@@ -255,10 +255,10 @@ export default function SobreOsDados() {
 
         <CaixaCreme>
           <Texto tipo="secao" style={{ fontSize: 12.5, lineHeight: 18, fontWeight: "700" }}>
-            Privacidade:
+            Privacidade e amostra mínima:
           </Texto>
           <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 17 }}>
-            O Vereda não guarda nada sobre quem anuncia. A leitura do anúncio e o seu caderno ficam neste aparelho.
+            O Vereda não guarda nada sobre quem anuncia. Sem conta, sem sincronização em nuvem e sem perfilamento: toda análise e preferência fica apenas neste aparelho. Comparativos de bairro exigem amostra mínima de 20 edifícios; faixas fiscais exigem ao menos 3 transmissões em 36 meses.
           </Texto>
         </CaixaCreme>
 
