@@ -20,7 +20,7 @@
 ## 3. Milestone Checklist & Progress
 - [x] **M0:** Branch `feat/carbon-master-upgrade`, persist `docs/ARQUITETURA_MESTRE.md`, `PROGRESS_CARBON.md`, fix 5 lint warnings + `visita.test.ts` timeout -> green `npm run verificar`.
 - [x] **M1 (Pillar A.1 & A.2):** Data hygiene (`-3h` UTC APAC/CEMADEN, 156 hash deduplication, triplicate paraciclos cleanup, archive 2015/2016 CTTU & 2007 canopy keeping 49 heritage trees), single-keystroke `scripts/auditoria-humana.mjs`, 8 Canonical Contracts (Zod + TypeScript + SQLite DDL).
-- [ ] **M2 (Pillar A.3):** `EPSG:31985` SIRGAS 2000 UTM 25S analytical projection engine, ESIG ArcGIS REST deterministic `OBJECTID`-paginated extractor, PE3D LiDAR (`MDS - MDT`) reader, IBGE Censo 2022 Entorno priors + CNEFE point fusion.
+- [x] **M2 (Pillar A.3):** `EPSG:31985` SIRGAS 2000 UTM 25S analytical projection engine, ESIG ArcGIS REST deterministic `OBJECTID`-paginated extractor, PE3D LiDAR (`MDS - MDT`) reader, IBGE Censo 2022 Entorno priors + CNEFE point fusion.
 - [ ] **M3 (Pillar B.1, B.2, B.7):** `IND-01/#37` SPU Marine Lands & FGTS engine, `IND-02/IND-09/#42` Prédios-Caixão + NBR 15575-1:2025 + NBR 6118 + Law PE 13.032/06 + Tenancy Law, `IND-07/#40` NBR 14653-2 ITBI econometrics + Repeat-Sales + Recife closing tax optimizer.
 - [ ] **M4 (Pillar B.3–B.6, B.8):** `IND-03/#38` Tropical 3D Bioclimatic + 108-byte horizon + LPUOS 2025 radar, `IND-04/#15` 3D Acoustics + PEZR SBRF + NBR 15575-4, `IND-05` 1m Hydro-Tide `ST-DBSCAN` + `HAND/TWI`, `IND-06` PU-Learning EM 156 debiaser, `IND-08/#39` AQUA PE (23/11/2026) + Tapacurá + ANEEL + 5G.
 - [ ] **M5 (Pillar B.9 & B.10):** `IND-10/#41` ONR CNM 16-digit ISO 7064 MOD 97-10 + 100% deterministic citation entailment + DataJud client, `Fellegi-Sunter` EM + `pHash` deduplication + *Street Smart* walkability & GTFS calendar router.
@@ -33,4 +33,4 @@
 - Dual key identification (`DSQFL` + `CNM`) and 3 absence states will be surfaced cleanly in Layer 3 drawers while Layer 1 stays crisp 1-sentence `pt-BR` citizen impact.
 
 ## 5. Immediate Next Target
-Milestone 2: `EPSG:31985` SIRGAS 2000 UTM 25S projection engine, ESIG ArcGIS REST `OBJECTID`-paginated extractor, PE3D LiDAR (`MDS - MDT`), IBGE Censo 2022 Entorno priors + CNEFE point fusion.
+Milestone 3: `IND-01/#37` SPU Marine Lands & FGTS engine, `IND-02/IND-09/#42` Prédios-Caixão + NBR 15575-1:2025 + NBR 6118 + Law PE 13.032/06 + Tenancy Law, `IND-07/#40` NBR 14653-2 ITBI econometrics + Repeat-Sales + Recife closing tax optimizer.
