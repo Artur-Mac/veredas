@@ -119,7 +119,7 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
         borderRadius: 13,
         overflow: "hidden",
         borderWidth: 1,
-        borderColor: comAlfa(azul, 0.25),
+        borderColor: cor("cor-linha-forte"),
         backgroundColor: cor("cor-azul-cadastral-suave"),
       }}
     >
@@ -164,7 +164,7 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
           paddingVertical: 4,
           paddingHorizontal: 8,
           borderRadius: 6,
-          backgroundColor: comAlfa(cor("cor-superficie"), 0.92),
+          backgroundColor: cor("cor-superficie"),
         }}
       >
         <Texto tipo="apoio" style={{ color: azul, fontSize: 10, lineHeight: 14, fontWeight: "600", textAlign: "center" }}>

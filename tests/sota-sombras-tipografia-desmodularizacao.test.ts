@@ -3084,4 +3084,22 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       expect((s.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
     }
   });
+
+  it("DiaADia, RastroDeConfianca, Controles e MapaDoPredio zeram bordas extras e tokens comAlfa em bordas (S81)", () => {
+    const diaPath = join(__dirname, "..", "src", "componentes", "dossie-v1", "DiaADia.tsx");
+    const rastroPath = join(__dirname, "..", "src", "componentes", "fonte", "RastroDeConfianca.tsx");
+    const controlesPath = join(__dirname, "..", "src", "componentes", "Controles.tsx");
+    const mapaPredioPath = join(__dirname, "..", "src", "componentes", "predio", "MapaDoPredio.tsx");
+
+    for (const p of [diaPath, rastroPath]) {
+      const s = readFileSync(p, "utf8");
+      expect(s).not.toMatch(/\bcomAlfa\b/);
+      expect(s).not.toMatch(/\bborderWidth:\s*1(?!\.)\b/);
+    }
+    const controlesSrc = readFileSync(controlesPath, "utf8");
+    expect((controlesSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+
+    const mapaSrc = readFileSync(mapaPredioPath, "utf8");
+    expect(mapaSrc).not.toMatch(/border\w*Color:\s*comAlfa/);
+  });
 });

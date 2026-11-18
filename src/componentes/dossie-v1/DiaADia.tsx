@@ -5,7 +5,7 @@ import { View } from "react-native";
 import type { Edificio } from "../../dados/contratos";
 import { NOTA_DAS_FONTES, essenciaisDoPredio, fraseDaCadeia, linhasDoDia, ponteDoCaminho } from "../../dados/recife/essenciais";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, comAlfa } from "../../tema/tokens";
+import { ESPACO } from "../../tema/tokens";
 import { Texto } from "../Texto";
 import { Corpo, Nota, Sobretitulo, Titulo2 } from "./base";
 import { SeAlagar } from "./SeAlagar";
@@ -30,7 +30,7 @@ export function DiaADia({ edificio }: { edificio: Edificio | null }) {
             role="listitem"
             accessible
             accessibilityLabel={`${l.rotulo}: ${l.valor}. ${l.detalhe}`}
-            style={{ paddingBottom: ESPACO[3], borderBottomWidth: 1, borderBottomColor: comAlfa(cor("cor-texto"), 0.08), gap: 4 }}
+            style={{ paddingBottom: ESPACO[3], borderBottomWidth: 1, borderBottomColor: cor("cor-linha"), gap: 4 }}
           >
             <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 12 }}>
               <Texto style={{ fontSize: 14, fontWeight: "600" }}>{l.rotulo}</Texto>
