@@ -255,3 +255,11 @@ describe("revisão de 19/11/2026: sem prédio confirmado, sol e conforto ficam s
     act(() => { semPredio.unmount(); comPredio.unmount(); });
   });
 });
+
+describe("revisão de código de 19/11/2026: a ficha do conforto não cita o que a conta não lê", () => {
+  it("a fonte não fala em altura dos vizinhos, e o limite diz que a sombra deles não entra e que a nota tem piso e teto", () => {
+    expect(conforto.metodo.fonte).not.toMatch(/vizinhos/i);
+    expect(conforto.metodo.limite).toContain("a sombra dos prédios vizinhos não entra nesta conta");
+    expect(conforto.metodo.calculo).toContain("nunca abaixo de 1 nem acima de 9,8");
+  });
+});

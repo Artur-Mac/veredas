@@ -244,11 +244,11 @@ export function avaliarConfortoTermico(entrada: EntradaConfortoTermico): Veredit
     metodo: {
       oQueMede: "Se o apartamento tende a ser fresco ou quente, pela posição da fachada, o andar e a quadra.",
       fonte:
-        "Fachada e andar que você escolheu, altura dos vizinhos pelo cadastro da Prefeitura do Recife e, quando há leitura, a temperatura de superfície da quadra (Landsat).",
+        "Fachada e andar que você escolheu, número de andares do prédio pelo cadastro da Prefeitura do Recife e, quando há leitura, a temperatura de superfície da quadra (Landsat), as praças e a água por perto.",
       data: "Cadastro no recorte de 2026; a temperatura de superfície é a das cenas já publicadas na camada de calor.",
-      calculo: `Regra de pontos: parte de 46 e soma ou tira pontos por orientação do sol, brisa de sudeste, último andar ou andar baixo, calor da quadra, praça ou árvore perto e distância da água. Este apartamento ficou em ${indiceCalor0a100} de 100, e a nota é 10 menos esse índice dividido por 10 (${notaConforto0a10.toFixed(1).replace(".", ",")}).`,
+      calculo: `Regra de pontos: parte de 46 e soma ou tira pontos por orientação do sol, brisa de sudeste, último andar ou andar baixo, calor da quadra, praça ou árvore perto e distância da água. Este apartamento ficou em ${indiceCalor0a100} de 100, e a nota é 10 menos esse índice dividido por 10, nunca abaixo de 1 nem acima de 9,8 (${notaConforto0a10.toFixed(1).replace(".", ",")}).`,
       limite:
-        "Os pontos de luz e de ar são uma fórmula do Vereda, sem base medida: nenhuma temperatura foi medida dentro do apartamento. O gasto mensal com ar-condicionado também é fórmula (R$ 65 mais R$ 2,35 por ponto do índice), não leitura de conta de luz.",
+        "Os pontos de luz e de ar são uma fórmula do Vereda, sem base medida: nenhuma temperatura foi medida dentro do apartamento, e a sombra dos prédios vizinhos não entra nesta conta. O gasto mensal com ar-condicionado também é fórmula (R$ 65 mais R$ 2,35 por ponto do índice), não leitura de conta de luz.",
       naVisita: acaoVisita.replace(/^O que checar na visita: /, ""),
     },
   };

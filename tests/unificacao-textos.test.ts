@@ -107,3 +107,10 @@ describe("R10: a conta da taxa da União só é citada quando o valor do terreno
     expect(ind01.camada3ProvaMetodo.metodo6Campos.vintage).toBe("2026-11");
   });
 });
+
+describe("revisão de código de 19/11/2026: as frases descrevem a conta", () => {
+  it("rotina: a frase diz os minutos fixos por trecho e o mínimo, que empatam imóveis muito perto do destino", () => {
+    expect(fraseDoMetodoDaRotina("pico", 20)).toContain("mais 6 min por trecho, com mínimo de 12 min");
+    expect(fraseDoMetodoDaRotina("fora_pico", 12)).toContain("mais 4 min por trecho, com mínimo de 10 min");
+  });
+});

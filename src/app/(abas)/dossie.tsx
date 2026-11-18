@@ -410,6 +410,19 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     return { total: total > 0 ? total : null, composicao: entraram.map((i) => i.rotulo), luz };
   }, [analise.declarados.condominio.valor, analise.modalidade, partesDeCusto, predio?.iptuAnual?.mediana, visao.custo.principal.valor, visao.custo.totalMensalConhecido]);
 
+  // Revisão de 19/11/2026: entrada e ITBI de entrada numa conta só para o placar, o bolso e o resumo (antes o placar e o
+  // resumo caíam em 3% do preço quando não havia cenário SFH, e o bolso em 1,8%: R$ 24 mil de diferença em R$ 2 milhões).
+  const dinheiroParaEntrar = useMemo(() => {
+    const preco = analise.modalidade === "compra" ? analise.declarados.preco.valor : null;
+    if (!preco) return null;
+    const entrada = partesDeCusto.simulacaoCompra?.entradaReais ?? Math.round(preco * 0.2);
+    const itbi =
+      partesDeCusto.otimizacaoFechamento?.sfhOtimizado1Pct?.itbiReais ??
+      partesDeCusto.otimizacaoFechamento?.aVistaTempestivo18Pct.itbiReais ??
+      Math.round(preco * 0.018);
+    return { entrada, itbi, total: Math.round(entrada + itbi) };
+  }, [analise.declarados.preco.valor, analise.modalidade, partesDeCusto]);
+
   const entradaTco10Anos = useMemo((): EntradaTco10Anos | null => {
     if (analise.modalidade !== "compra" || !analise.declarados.preco.valor) return null;
     return {
@@ -671,15 +684,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             precoPrincipalReais={visao.custo.principal.valor}
             mensalBolsoRealReais={saidaMensalEstimada.total}
             composicaoMensal={saidaMensalEstimada.composicao}
-            dinheiroParaEntrarReais={
-              analise.modalidade === "compra" && analise.declarados.preco.valor
-                ? Math.round(
-                    (partesDeCusto.simulacaoCompra?.entradaReais ?? analise.declarados.preco.valor * 0.2) +
-                      (partesDeCusto.otimizacaoFechamento?.sfhOtimizado1Pct?.itbiReais ??
-                        analise.declarados.preco.valor * 0.03),
-                  )
-                : null
-            }
+            dinheiroParaEntrarReais={dinheiroParaEntrar?.total ?? null}
             comparacaoM2Pct={visao.posicao?.deltaPercentual ?? null}
             orientacaoCurta={fachadaAtiva.orientacaoSolar}
             conforto={predio ? confortoTermico : null}
@@ -822,15 +827,8 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                   condominioMensalReais={analise.declarados.condominio.valor ?? 0}
                   iptuMensalReais={Math.round((predio?.iptuAnual?.mediana ?? 0) / 12)}
                   prestacaoEstimadaReais={partesDeCusto.simulacaoCompra?.prestacaoPriceReais ?? 0}
-                  entradaReais={
-                    partesDeCusto.simulacaoCompra?.entradaReais ??
-                    Math.round((analise.declarados.preco.valor ?? 0) * 0.2)
-                  }
-                  itbiReais={
-                    partesDeCusto.otimizacaoFechamento?.sfhOtimizado1Pct?.itbiReais ??
-                    partesDeCusto.otimizacaoFechamento?.aVistaTempestivo18Pct.itbiReais ??
-                    Math.round((analise.declarados.preco.valor ?? 0) * 0.018)
-                  }
+                  entradaReais={dinheiroParaEntrar?.entrada ?? 0}
+                  itbiReais={dinheiroParaEntrar?.itbi ?? 0}
                   spuAnualReais={partesDeCusto.spuEstatutario?.encargoPatrimonialAnualVigenteReais ?? 0}
                   custoMensalArReais={saidaMensalEstimada.luz}
                   economiaLegalItbiReais={
@@ -888,16 +886,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                     modalidade: analise.modalidade,
                     precoPrincipalReais: visao.custo.principal.valor,
                     mensalBolsoRealReais: saidaMensalEstimada.total,
-                    dinheiroEntrarReais:
-                      analise.modalidade === "compra" && analise.declarados.preco.valor
-                        ? Math.round(
-                            (partesDeCusto.simulacaoCompra?.entradaReais ??
-                              analise.declarados.preco.valor * 0.2) +
-                              (partesDeCusto.otimizacaoFechamento?.sfhOtimizado1Pct
-                                ?.itbiReais ??
-                                analise.declarados.preco.valor * 0.03),
-                          )
-                        : null,
+                    dinheiroEntrarReais: dinheiroParaEntrar?.total ?? null,
                     fachadaResumo: predio ? `${fachadaAtiva.orientacaoSolar} (${andarSimulado}º andar)` : "Sem leitura (prédio não confirmado)",
                     conforto: predio ? confortoTermico : null,
                     sossegoNivel:
