@@ -30,7 +30,7 @@ import { CartaoResumoCompartilhado } from "../src/componentes/comparar/CartaoRes
 import { gerarLinkPrivadoSemServidor, gerarTextoResumoExecutivo } from "../src/dados/dossie/resumoExecutivo2Paginas";
 import { lerFragmento } from "../src/dados/salaDeDecisao";
 import { ondeMaisProcurar } from "../src/dados/escolha";
-import { DueloFinalistas } from "../src/componentes/cidadao/DueloFinalistas";
+import { avaliarSensibilidadeDuelo, DueloFinalistas } from "../src/componentes/cidadao/DueloFinalistas";
 import { ConvergenciaFamiliar } from "../src/componentes/cidadao/ConvergenciaFamiliar";
 import { compararRotinaDoisDestinos, estimarMinutosPicoIdaVolta } from "../src/dados/mobilidade/rotinaCasal";
 import {
@@ -3327,6 +3327,86 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(txt).toContain("1 construção nova");
     expect(txt).toContain("1 de impacto");
     expect(txt).toContain("Ritmo na janela: 2 nos últimos 12 meses · 1 nos 12 meses anteriores");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+
+    act(() => {
+      tree.unmount();
+    });
+  });
+
+  it("DueloFinalistas exibe 'O que mudaria esta comparação' com sensibilidade a pendências e andar (S86)", () => {
+    const dueloPath = join(__dirname, "..", "src", "componentes", "cidadao", "DueloFinalistas.tsx");
+    const dueloSrc = readFileSync(dueloPath, "utf8");
+    expect(dueloSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((dueloSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    expect(dueloSrc).toContain("tabular-nums");
+
+    const baseA = {
+      id: "A",
+      nomeExibicao: "Graças 95m²",
+      custoMensalTotalReais: 4200,
+      areaM2: 95,
+      deslocamentoMinDia: 25,
+      ruidoInternoDb: 34,
+      situacaoDocumentalResumo: "Matrícula limpa",
+      riscoAguaChuvaResumo: "Cota protegida",
+    };
+    const baseB = {
+      id: "B",
+      nomeExibicao: "Espinheiro 110m²",
+      custoMensalTotalReais: 4850,
+      areaM2: 110,
+      deslocamentoMinDia: 20,
+      ruidoInternoDb: 36,
+      situacaoDocumentalResumo: "Matrícula limpa",
+      riscoAguaChuvaResumo: "Checar garagem",
+    };
+
+    const sensPend = avaliarSensibilidadeDuelo(
+      { ...baseA, itensPendentesCusto: ["Condomínio"], andarInformado: true },
+      { ...baseB, itensPendentesCusto: [], andarInformado: true },
+    );
+    expect(sensPend.titulo).toBe("O que mudaria esta comparação");
+    expect(sensPend.diferencaMensalReais).toBe(650);
+    expect(sensPend.pontos[0]).toContain("Graças 95m²");
+    expect(sensPend.pontos[0]).toContain("Condomínio");
+    expect(sensPend.pontos[0]).toContain("650/mês");
+
+    const sensLimpaAndar = avaliarSensibilidadeDuelo(
+      { ...baseA, andarInformado: false },
+      { ...baseB, andarInformado: true },
+    );
+    expect(sensLimpaAndar.pontos).toHaveLength(2);
+    expect(sensLimpaAndar.pontos[0]).toContain("variação acima desse valor");
+    expect(sensLimpaAndar.pontos[1]).toContain("Confirmar o andar de Graças 95m²");
+
+    const sensEmpate = avaliarSensibilidadeDuelo(
+      { ...baseA, custoMensalTotalReais: 4500 },
+      { ...baseB, custoMensalTotalReais: 4520 },
+    );
+    expect(sensEmpate.pontos[0]).toContain("diferem em apenas R$ 20/mês");
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(DueloFinalistas, {
+            opcaoA: { ...baseA, itensPendentesCusto: ["Condomínio"], andarInformado: false },
+            opcaoB: { ...baseB, itensPendentesCusto: [], andarInformado: true },
+          }),
+        ),
+      );
+    });
+
+    const sec = tree.root.find((n) => n.props.testID === "duelo-sensibilidade");
+    expect(sec).toBeDefined();
+    const txt = extrairTextos(tree.toJSON()).join(" ");
+    expect(txt).toContain("O que mudaria esta comparação");
+    expect(txt).toContain("Condomínio");
+    expect(txt).toContain("Confirmar o andar de Graças 95m²");
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
 

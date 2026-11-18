@@ -14,7 +14,79 @@ export type EntradaDueloA_B = CandidatoDecisao & {
   situacaoDocumentalResumo: string;
   riscoAguaChuvaResumo: string;
   vpl10AnosReais?: number | null;
+  itensPendentesCusto?: readonly string[];
+  andarInformado?: boolean;
 };
+
+export type SensibilidadeDuelo = {
+  titulo: string;
+  diferencaMensalReais: number;
+  pontos: string[];
+};
+
+/**
+ * Estabilidade da comparação (`ClimateCheck R12 §6.5` / A25): aponta que lacunas de custo
+ * ou de andar ainda podem inverter a ordem observada entre os finalistas.
+ */
+export function avaliarSensibilidadeDuelo(
+  opcaoA: EntradaDueloA_B,
+  opcaoB: EntradaDueloA_B,
+): SensibilidadeDuelo {
+  const diff = Math.abs(Math.round(opcaoA.custoMensalTotalReais - opcaoB.custoMensalTotalReais));
+  const diffFmt = diff.toLocaleString("pt-BR");
+  const menorCusto =
+    diff >= 50
+      ? opcaoA.custoMensalTotalReais < opcaoB.custoMensalTotalReais
+        ? opcaoA
+        : opcaoB
+      : null;
+
+  const pendentesA = opcaoA.itensPendentesCusto ?? [];
+  const pendentesB = opcaoB.itensPendentesCusto ?? [];
+  const pontos: string[] = [];
+
+  if (menorCusto && (menorCusto.itensPendentesCusto?.length ?? 0) > 0) {
+    pontos.push(
+      `${menorCusto.nomeExibicao} aparece R$ ${diffFmt}/mês abaixo no conhecido, mas ainda tem ${menorCusto.itensPendentesCusto!.join(" e ")} a confirmar — acima de R$ ${diffFmt}/mês a ordem de custo se inverte.`,
+    );
+  } else if (pendentesA.length > 0 && pendentesB.length > 0) {
+    pontos.push(
+      `${opcaoA.nomeExibicao} (${pendentesA.join(" e ")}) e ${opcaoB.nomeExibicao} (${pendentesB.join(" e ")}) ainda têm itens a confirmar fora da conta conhecida.`,
+    );
+  } else if (pendentesA.length > 0 || pendentesB.length > 0) {
+    const comPendencia =
+      pendentesA.length > 0
+        ? { nome: opcaoA.nomeExibicao, itens: pendentesA }
+        : { nome: opcaoB.nomeExibicao, itens: pendentesB };
+    pontos.push(
+      `${comPendencia.nome} ainda tem ${comPendencia.itens.join(" e ")} a confirmar fora da conta conhecida.`,
+    );
+  } else if (diff >= 50) {
+    pontos.push(
+      `A diferença conhecida é de R$ ${diffFmt}/mês: só uma variação acima desse valor em negociação, condomínio ou reforma inverte o bolso mensal.`,
+    );
+  } else {
+    pontos.push(
+      `Os custos mensais conhecidos diferem em apenas R$ ${diffFmt}/mês; detalhes de condomínio, IPTU e estado de conservação desempatam o bolso.`,
+    );
+  }
+
+  const semAndar = [
+    opcaoA.andarInformado === false ? opcaoA.nomeExibicao : null,
+    opcaoB.andarInformado === false ? opcaoB.nomeExibicao : null,
+  ].filter((x): x is string => Boolean(x));
+  if (semAndar.length > 0) {
+    pontos.push(
+      `Confirmar o andar de ${semAndar.join(" e ")} pode alterar o sossego no quarto e a ventilação.`,
+    );
+  }
+
+  return {
+    titulo: "O que mudaria esta comparação",
+    diferencaMensalReais: diff,
+    pontos,
+  };
+}
 
 function linhaDiferenca(rotulo: string, valA: string, valB: string, igual: boolean) {
   return { rotulo, valA, valB, igual };
@@ -65,6 +137,7 @@ export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; o
     [Math.round(opcaoA.deslocamentoMinDia), Math.round(opcaoB.deslocamentoMinDia)],
     22,
   );
+  const sensibilidade = avaliarSensibilidadeDuelo(opcaoA, opcaoB);
 
   return (
     <View
@@ -154,6 +227,30 @@ export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; o
             {sinteseTroca.limiar}
           </Texto>
         ) : null}
+      </View>
+
+      <View
+        testID="duelo-sensibilidade"
+        style={{
+          borderTopWidth: 1,
+          borderTopColor: cor("cor-linha"),
+          paddingTop: 10,
+          gap: 4,
+        }}
+      >
+        <Texto tipo="etiqueta" style={{ fontSize: 12, fontWeight: "700" }}>
+          {sensibilidade.titulo}
+        </Texto>
+        {sensibilidade.pontos.map((ponto) => (
+          <Texto
+            key={ponto}
+            tipo="apoio"
+            cor="cor-texto-apoio"
+            style={{ fontSize: 12, lineHeight: 17, fontVariant: ["tabular-nums"] }}
+          >
+            {`• ${ponto}`}
+          </Texto>
+        ))}
       </View>
     </View>
   );

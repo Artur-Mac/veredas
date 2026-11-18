@@ -77,6 +77,13 @@ function faltaConfirmar(a: AnaliseV2): boolean {
   return eCoberto(a.bairro) && a.vinculo.estado !== "confirmado";
 }
 
+function pendenciasDeCustoDoAnuncio(a: AnaliseV2): string[] {
+  const pendentes: string[] = [];
+  if (a.declarados.condominio.valor === null || a.declarados.condominio.aConfirmar) pendentes.push("Condomínio");
+  if (a.declarados.iptu.valor === null || a.declarados.iptu.aConfirmar) pendentes.push("IPTU");
+  return pendentes;
+}
+
 /** D036: o Comparar lê o índice e o dia a dia a pé de cada bairro do caderno, fora do bundle; espera por eles. */
 export default function Comparar() {
   const { lista } = useAnalises();
@@ -403,6 +410,8 @@ function CompararComDados() {
                           (par[0].visita.ruido === "silencioso" ? 34 : par[0].visita.ruido === "alto" ? 54 : 40),
                         situacaoDocumentalResumo: partesDoPar[0].spuEstatutario?.regime ?? "A confirmar na matrícula",
                         riscoAguaChuvaResumo: ea ? "Checar garagem e cisterna na visita" : "Sem vínculo do prédio",
+                        itensPendentesCusto: pendenciasDeCustoDoAnuncio(par[0]),
+                        andarInformado: par[0].declarados.andar.valor !== null,
                       }}
                       opcaoB={{
                         id: par[1].id,
@@ -415,6 +424,8 @@ function CompararComDados() {
                           (par[1].visita.ruido === "silencioso" ? 34 : par[1].visita.ruido === "alto" ? 54 : 40),
                         situacaoDocumentalResumo: partesDoPar[1].spuEstatutario?.regime ?? "A confirmar na matrícula",
                         riscoAguaChuvaResumo: eb ? "Checar garagem e cisterna na visita" : "Sem vínculo do prédio",
+                        itensPendentesCusto: pendenciasDeCustoDoAnuncio(par[1]),
+                        andarInformado: par[1].declarados.andar.valor !== null,
                       }}
                     />
                     <ConvergenciaFamiliar
