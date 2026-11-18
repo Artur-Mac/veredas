@@ -74,8 +74,17 @@ export function analisarRadarVistaELote(params: {
   andar: number;
   vizinhos: readonly VizinhoParaFachada[];
   obrasProximas: ObrasProximas | null;
+  areaDeclaradaM2?: number | null;
 }): ResultadoRadarVistaELote {
-  const { centro, edificio, fachadaAtiva, andar, vizinhos, obrasProximas } = params;
+  const {
+    centro,
+    edificio,
+    fachadaAtiva,
+    andar,
+    vizinhos,
+    obrasProximas,
+    areaDeclaradaM2 = null,
+  } = params;
   const coneAz = fachadaAtiva.azimuteGraus;
 
   // 1. Cone visual da fachada (±42° ate 120 m) — R1 Localize.city (exclusivamente licencas oficiais e volume existente)
@@ -154,7 +163,7 @@ export function analisarRadarVistaELote(params: {
       for (const v of vizinhos) {
         const [dx, dy] = emMetros(v.centro, centro);
         const d = Math.hypot(dx, dy);
-        if (d >= 5 && d < min) min = d;
+        if (d >= 5 && d <= 150 && d < min) min = d;
       }
       return Number.isFinite(min) ? Math.max(4, Math.round(min - 8)) : null;
     })();
@@ -215,25 +224,43 @@ export function analisarRadarVistaELote(params: {
     }
   }
 
+  let estadoLote: NivelAlertaRadar = loteDeEsquinaProvavel ? "ok" : "sem_leitura";
+  let detalheLote = areaLoteM2
+    ? `Área estimada do terreno de ~${areaLoteM2.toLocaleString("pt-BR")} m²${
+        loteDeEsquinaProvavel
+          ? " com encontro próximo de outra via (duas frentes potenciais de vento)."
+          : " em quadra contínua."
+      }`
+    : loteDeEsquinaProvavel
+      ? "Há logradouro transversal próximo em até 48 m (potencial lote de esquina)."
+      : "Polígono de lote não carregado para medição de área.";
+
+  if (areaDeclaradaM2 && areaDeclaradaM2 > 0 && edificio && edificio.tipologias.length > 0) {
+    const maisProxima = [...edificio.tipologias].sort(
+      (a, b) => Math.abs(a.area - areaDeclaradaM2) - Math.abs(b.area - areaDeclaradaM2),
+    )[0]!;
+    const diffM2 = Math.abs(areaDeclaradaM2 - maisProxima.area);
+    const relPct = maisProxima.area > 0 ? Math.round((diffM2 / maisProxima.area) * 100) : 0;
+    const fmt = (n: number) => String(Math.round(n * 10) / 10).replace(".", ",");
+    if (diffM2 > 5 && relPct > 8) {
+      estadoLote = "atencao";
+      detalheLote = `${detalheLote} Anúncio informa ${fmt(areaDeclaradaM2)} m² × cadastro ${fmt(maisProxima.area)} m² (${relPct}% de diferença: confirmar metragem privativa vs área total).`;
+    } else {
+      detalheLote = `${detalheLote} Metragem compatível (anúncio ${fmt(areaDeclaradaM2)} m² × cadastro ${fmt(maisProxima.area)} m²).`;
+    }
+  }
+
   const itemLote: ItemRadarVistaELote = {
     id: "lote",
-    titulo: "Lote e esquina",
-    estado: loteDeEsquinaProvavel ? "ok" : "sem_leitura",
+    titulo: "Lote, área e esquina",
+    estado: estadoLote,
     valorCurto: [
       loteDeEsquinaProvavel ? "Possível esquina" : "Lote de meio de quadra",
       areaLoteM2 ? `${areaLoteM2.toLocaleString("pt-BR")} m²` : null,
     ]
       .filter(Boolean)
       .join(" · "),
-    detalhe: areaLoteM2
-      ? `Área estimada do terreno de ~${areaLoteM2.toLocaleString("pt-BR")} m²${
-          loteDeEsquinaProvavel
-            ? " com encontro próximo de outra via (duas frentes potenciais de vento)."
-            : " em quadra contínua."
-        }`
-      : loteDeEsquinaProvavel
-        ? "Há logradouro transversal próximo em até 48 m (potencial lote de esquina)."
-        : "Polígono de lote não carregado para medição de área.",
+    detalhe: detalheLote,
   };
 
   // 4. Classificacao deterministica de licencas a 150 m (Shovels R21)

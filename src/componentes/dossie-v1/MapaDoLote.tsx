@@ -33,12 +33,12 @@ export const COR_DA_OBRA: Record<Obra["categoria"], { fundo: TokenDeCor; texto: 
   demolicao: { fundo: "cor-barro", texto: "cor-sobre-barro" },
 };
 
-const ESTILO_EXTRA: Record<CategoriaPontoExtra, { sigla: string; nome: string; corHex: string }> = {
-  praca: { sigla: "P", nome: "Praça / área verde", corHex: "#1B5E40" },
-  metro: { sigla: "M", nome: "Metrô", corHex: "#2E5A85" },
-  ensino: { sigla: "E", nome: "Ensino (CNEFE)", corHex: "#8A4F0A" },
-  saude: { sigla: "S", nome: "Saúde", corHex: "#B94E36" },
-  rotina: { sigla: "★", nome: "Minha rotina", corHex: "#F47745" },
+const ESTILO_EXTRA: Record<CategoriaPontoExtra, { sigla: string; nome: string; fundo: TokenDeCor; texto: TokenDeCor }> = {
+  praca: { sigla: "P", nome: "Praça / área verde", fundo: "cor-salvia-escura", texto: "cor-superficie" },
+  metro: { sigla: "M", nome: "Metrô", fundo: "cor-azul-cadastral", texto: "cor-superficie" },
+  ensino: { sigla: "E", nome: "Ensino (CNEFE)", fundo: "cor-barro-texto", texto: "cor-superficie" },
+  saude: { sigla: "S", nome: "Saúde", fundo: "cor-barro", texto: "cor-sobre-barro" },
+  rotina: { sigla: "★", nome: "Minha rotina", fundo: "cor-acao", texto: "cor-sobre-acao" },
 };
 
 function formatarDistanciaCurta(m: number): string {
@@ -120,8 +120,8 @@ function CartaoDoPontoExtra({ ponto, aoFechar }: { ponto: PontoExtraCena; aoFech
     <View accessibilityLiveRegion="polite" style={{ padding: 12, gap: 4, borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha"), backgroundColor: cor("cor-superficie") }}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1 }}>
-          <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: est.corHex, alignItems: "center", justifyContent: "center" }}>
-            <Texto style={{ color: "#FFFFFF", fontSize: 11, fontWeight: "700" }}>{est.sigla}</Texto>
+          <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: cor(est.fundo), alignItems: "center", justifyContent: "center" }}>
+            <Texto style={{ color: cor(est.texto), fontSize: 11, fontWeight: "700" }}>{est.sigla}</Texto>
           </View>
           <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20, fontWeight: "700", flex: 1 }}>
             {ponto.rotulo}
@@ -278,14 +278,14 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                   paddingHorizontal: 10,
                   borderRadius: RAIO.pilula,
                   borderWidth: 1,
-                  borderColor: ativo ? est.corHex : cor("cor-linha"),
-                  backgroundColor: ativo ? comAlfa(est.corHex, 0.14) : cor("cor-superficie"),
+                  borderColor: ativo ? cor(est.fundo) : cor("cor-linha"),
+                  backgroundColor: ativo ? comAlfa(cor(est.fundo), 0.14) : cor("cor-superficie"),
                   flexDirection: "row",
                   alignItems: "center",
                   gap: 5,
                 }}
               >
-                <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: est.corHex }} />
+                <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: cor(est.fundo) }} />
                 <Texto style={{ fontSize: 11.5, fontWeight: ativo ? "700" : "500", color: cor("cor-texto") }}>
                   {`${cat === "praca" ? "Praças" : cat === "metro" ? "Metrô" : cat === "ensino" ? "Ensino" : cat === "saude" ? "Saúde" : "Minha rotina"} (${qtd})`}
                 </Texto>
@@ -398,8 +398,8 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
               return (
                 <G key={p.id} transform={`translate(${x}, ${y})`}>
                   {tocado ? <Circle cx={0} cy={0} r={15} fill="none" stroke={textoCor} strokeWidth={2} /> : null}
-                  <Circle cx={0} cy={0} r={raio} fill={est.corHex} stroke={cor("cor-superficie")} strokeWidth={2} />
-                  <TextoSvg x={0} y={3.5} fill="#FFFFFF" fontFamily="JetBrainsMono" fontSize={p.categoria === "rotina" ? 10 : 9.5} fontWeight="700" textAnchor="middle">
+                  <Circle cx={0} cy={0} r={raio} fill={cor(est.fundo)} stroke={cor("cor-superficie")} strokeWidth={2} />
+                  <TextoSvg x={0} y={3.5} fill={cor(est.texto)} fontFamily="PlusJakartaSans" fontSize={p.categoria === "rotina" ? 10 : 9.5} fontWeight="700" textAnchor="middle">
                     {est.sigla}
                   </TextoSvg>
                 </G>
@@ -501,7 +501,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                 backgroundColor: cor("cor-papel-claro"),
               }}
             >
-              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: ESTILO_EXTRA[f.categoria].corHex }} />
+              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: cor(ESTILO_EXTRA[f.categoria].fundo) }} />
               <Texto style={{ fontSize: 12, lineHeight: 16, color: cor("cor-texto") }}>
                 <Texto style={{ fontWeight: "700" }}>{f.rotulo}</Texto>
                 {` · ${formatarDistanciaCurta(f.distanciaM)} ${f.direcao}`}

@@ -372,8 +372,9 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
         andar: andarSimulado,
         vizinhos: cadastro.vizinhos,
         obrasProximas: visao.obras,
+        areaDeclaradaM2: analise.declarados.area.valor,
       }),
-    [andarSimulado, cadastro, centroParaRadar, fachadaAtiva, predio, visao],
+    [analise.declarados.area.valor, andarSimulado, cadastro, centroParaRadar, fachadaAtiva, predio, visao],
   );
 
   const hidroMare = useMemo(

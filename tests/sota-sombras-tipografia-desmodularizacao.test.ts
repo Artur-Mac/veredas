@@ -693,4 +693,45 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     expect(/\bseguro\b/i.test(txt)).toBe(false);
   });
+
+  it("audita área declarada × cadastral (Gridics) e garante zero hex no MapaDoLote", () => {
+    const mapaSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "MapaDoLote.tsx"),
+      "utf8",
+    )
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/^\s*\/\/.*$/gm, "");
+    expect(mapaSrc.match(/#[0-9A-Fa-f]{3,8}\b/g)).toBeNull();
+
+    const radarDiv = analisarRadarVistaELote({
+      centro,
+      edificio: {
+        id: "60461-120",
+        bairro: "boa-viagem",
+        logradouro: "AV BOA VIAGEM",
+        numero: "120",
+        dsqfl: "12345678901234",
+        nome: "Atlântico",
+        centro,
+        poligono,
+        unidades: 20,
+        tipologias: [{ area: 75, unidades: 20, iptuAnualMediano: 2400 }],
+        anoConstrucao: 2012,
+        pavimentos: 12,
+        ate4Pavimentos: false,
+        padrao: "Superior",
+        iptuAnual: null,
+        itbi: null,
+        obras150m: { licencasDeObra: 0, relevantes24m: 0, demolicoes24m: 0, recentes: [] },
+      },
+      fachadaAtiva: inf.frente,
+      andar: 4,
+      vizinhos: vizinhosMesmaRua,
+      obrasProximas: null,
+      areaDeclaradaM2: 112,
+    });
+    const loteItem = radarDiv.itens.find((i) => i.id === "lote")!;
+    expect(loteItem.estado).toBe("atencao");
+    expect(loteItem.detalhe).toContain("112 m² × cadastro 75 m²");
+  });
 });
