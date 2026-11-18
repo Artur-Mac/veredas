@@ -28,12 +28,12 @@ function baixar(nome: string, conteudo: string, tipo: string) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export function PacoteParaEspecialista({ analise, visao, ficha }: { analise: AnaliseV2; visao: VisaoDoDossie; ficha: readonly ItemDaFicha[] }) {
+export function PacoteParaEspecialista({ analise, visao, ficha, anoConstrucao = null }: { analise: AnaliseV2; visao: VisaoDoDossie; ficha: readonly ItemDaFicha[]; /** Ano de construção do prédio, para o prazo da vistoria predial (Lei PE 13.032/2006). */ anoConstrucao?: number | null }) {
   const { cor } = useTema();
   const [aviso, setAviso] = useState<{ texto: string; tipo: "ok" | "erro" } | null>(null);
   const [controleAberto, setControleAberto] = useState(false);
   const agoraIso = new Date().toISOString();
-  const auditoria = auditarConjuntoDocumental(analise, agoraIso);
+  const auditoria = auditarConjuntoDocumental(analise, agoraIso, { anoConstrucao });
   const pacote = () => montarPacote({ analise, visao, ficha, perguntas: visao.perguntas, agora: new Date().toISOString() });
   const nome = `vereda-pacote-${analise.id}`;
   const web = Platform.OS === "web" && typeof document !== "undefined";

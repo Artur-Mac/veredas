@@ -392,14 +392,14 @@ export function analisarRadarVistaELote(params: {
         id: "temporada",
         pergunta: "Posso alugar por curta temporada (Airbnb)?",
         respostaCurta: "Há trecho salvo nos documentos",
-        fundamentoEAritmetica: `Convenção ou ata registrada: “${clausulaLimpa.slice(0, 140)}” · STJ (REsp 1.819.075/RS): vale a redação expressa da convenção do edifício.`,
+        fundamentoEAritmetica: `Convenção ou ata registrada: “${clausulaLimpa.slice(0, 140)}” · STJ (REsp 2.121.055, Segunda Seção, 07/05/2026): a liberação depende de aprovação de dois terços dos condôminos.`,
       }
     : {
         id: "temporada",
         pergunta: "Posso alugar por curta temporada (Airbnb)?",
         respostaCurta: "Depende da convenção do condomínio",
         fundamentoEAritmetica:
-          "STJ (REsp 1.819.075/RS): convenção residencial com destinação exclusiva pode restringir locação por temporada; confira a convenção antes do sinal.",
+          "STJ (REsp 2.121.055, Segunda Seção, 07/05/2026): em condomínio residencial, oferecer a unidade para estadia de curta temporada depende de aprovação de dois terços dos condôminos em assembleia. Confira a convenção e as atas antes do sinal.",
       };
 
   const maxPavVizinho = vizinhos.reduce<number | null>((maior, v) => {

@@ -2,6 +2,8 @@
 
 Conferência feita em 18/11/2026, para a decisão A5 (18/11/2026). Branch lida: `integracao/2026-11-19`. Nenhum código foi alterado.
 
+As correções foram aplicadas em 19/11/2026, na branch `integracao/leis-conferidas`: ver a seção final, "Aplicado em 19/11/2026". Os números de linha da tabela são os do dia da conferência.
+
 ## Método
 
 Li os arquivos de `src/` indicados e procurei em todo o `src/` por "Lei", "LC", "Decreto", "Ato", "NBR", "Resolução", "Provimento", "Acordo", "Portaria", "art.", "REsp" e "Tema" em texto de tela. Para cada citação, abri a fonte oficial e comparei com o que o app afirma. Todas as fontes foram acessadas em 18/11/2026.
@@ -174,3 +176,61 @@ Coluna "Acesso": todas em 18/11/2026.
 16. `copilotoPreSinal.ts:186-188, 235`
     Novo título: "Transferência em terreno da União: certidão da SPU (CAT, vale 90 dias)"
     Novo detalhe: "Quando o terreno é da União, o vendedor paga o laudêmio (5% do valor do terreno na fração ideal da unidade) antes da escritura, e a SPU emite a Certidão de Autorização para Transferência (CAT), que vale 90 dias."
+
+## Aplicado em 19/11/2026
+
+Branch `integracao/leis-conferidas`, a partir de `integracao/2026-11-19`. Regra da decisão A5: o que se confirmou fica, com a fonte na ficha de método; o que diverge foi corrigido para o que a fonte diz; o que não se confirmou saiu da tela. Nenhuma fonte, número, artigo ou data foi acrescentado além do que este documento traz. Os testes das mudanças estão em `tests/leis-conferidas.test.ts`.
+
+Estados usados: **corrigido**, **saiu da tela**, **fica para decisão do dono**, **fica com a outra sessão**.
+
+### O que sai da tela (11 itens)
+
+| Item | Estado | O que foi feito | Commit |
+|---|---|---|---|
+| 1. Tema 1.124/STF e "inversão do ônus da prova" na LC 227 | saiu da tela | O campo virou `notaBaseDeCalculoLc227` (`econometriaItbi.ts`), com o texto da correção 5. Nenhuma tela lia o campo antigo; ele continua sem tela. | `8912ab75` |
+| 2. Prazos de 30 e 90 dias do ITBI | saiu da tela | Saíram do motor (a opção `modalidadePrazo` deixou de existir), do tradutor e do `Custo.tsx` ("À vista em 30 dias"). O prazo é 180 dias em todos os casos. | `8912ab75` |
+| 3. Piso de 2% do ITBI | saiu da tela | Mínimo de 0,02 para 0,018 em `custoPorPartes.ts` e `placarDoPar.ts`; textos "1,8% a 3%". | `8912ab75` |
+| 4. Valores de cartório por proporção e a "economia no fechamento" que os soma | saiu da tela | `simularOtimizacaoItbiRecife` não estima mais escritura e registro (`escrituraERegistroReais: null`). A economia ficou só com a diferença entre alíquotas de ITBI. Onde a tela somava cartório no "dinheiro para entrar" (`TresPerguntasDoBolso`, `PlacarHeroi5Segundos`, `SimuladorBolso15Segundos`, resumo executivo), o total é entrada + ITBI e o rótulo diz "sem cartório" ou "escritura e registro a confirmar no cartório". | `3feb412c` |
+| 5. Lei 19.389/2025 e Decretos 39.664 a 39.667/2026 | saiu da tela | Saíram de `bioclimatico3d.ts` e da ficha do IND-03. | `9d4b4c5d` |
+| 6. REsp 2.147.665 | saiu da tela | Saiu de `estruturaCondominio.ts`; fica o REsp 1.910.280. | `8cf2e1b7` |
+| 7. Lei 16.243/1996 como base do limite noturno de 50 dB | fica com a outra sessão | Não alterado. Continua em `tradutorCidadao.ts` (ficha do IND-04 e frase "Estimativa noturna tranquila no quarto") e em `src/nucleo/motores/acustica3d.ts` (`atendeLimiteNoturnoLei16243_50Db`), que a sessão do ruído está reescrevendo. O campo também é lido em `src/app/(abas)/dossie.tsx`. | — |
+| 8. "(Lei nº 8.245/1991)" ao lado dos 10% de fiança | saiu da tela | `SimuladorBolso15Segundos.tsx`, com o texto da correção 10. | `18a1030c` |
+| 9. Débitos de água "permanecem retidos na Compesa" | saiu da tela | Saiu de `copilotoPreSinal.ts`, `tradutorCidadao.ts` e `resilienciaRedes.ts`; entrou o texto da correção 6. | `01b9bfdd` |
+| 10. ANAC RBAC 161 | fica com a outra sessão | Não alterado. Continua na ficha do IND-04 (`tradutorCidadao.ts`) e em comentários de `acustica3d.ts` e `camadaZeroNacional.ts`. | — |
+| 11. Números atribuídos a NBR 15575-1, NBR 15575-4, NBR 6118, NBR 14653-2, EN 17037 e Anexo 14 da ICAO | fica para decisão do dono | Nada foi tirado nem alterado. Onde aparecem em texto de tela: `tradutorCidadao.ts` (fichas do IND-02, IND-03, IND-04 e IND-07), `src/dados/recife/aeroporto.ts` (`FONTE_DO_AEROPORTO`), `src/dados/recife/noite.ts` (nota do aeroporto) e `src/app/sobre-os-dados.tsx`. Nos motores: `estruturaCondominio.ts` (vida útil e maresia), `acustica3d.ts` (isolamento), `bioclimatico3d.ts` (1,5 h de sol) e `econometriaItbi.ts` (graus de precisão). | — |
+
+### O que precisa de correção de texto (16 itens)
+
+| Item | Estado | O que foi feito | Commit |
+|---|---|---|---|
+| 1. ITBI: frase do prazo | corrigido | Texto novo no impacto prático do IND-07, com o prazo vindo do motor (180 dias). | `8912ab75` |
+| 2. ITBI: ação concreta | corrigido | Texto novo na ação concreta do IND-07. | `8912ab75` |
+| 3. ITBI: base legal e conta | corrigido | Ficha de método do IND-07 com os arts. 51, 52 e 55 e as leis de redação; conta com "3% nos demais casos". No motor, `PRAZO_PEDIDO_LANCAMENTO_ITBI_DIAS = 180` nos dois cenários reduzidos; o cenário de 3% não tem prazo. | `8912ab75` |
+| 4. ITBI: faixa de 1,8% a 3% | corrigido | `estimarTransferencia` e placar do Comparar: texto, fonte e cálculo (0,018). | `8912ab75` |
+| 5. LC 227/2026 | corrigido | Texto novo em `notaBaseDeCalculoLc227`. | `8912ab75` |
+| 6. Água (AQUA Pernambuco) | corrigido | Título e detalhe novos no copiloto; textos novos no IND-08; "cerca de 150 municípios"; `avaliarResilienciaRedes` usa a data do aparelho quando não recebe outra, e o IND-08 diz "Compesa" antes de 23/11/2026 e "AQUA Pernambuco" a partir desse dia. Conferir de novo depois do dia 23, como a linha 10 da tabela pede. | `01b9bfdd` |
+| 7. LPUOS | corrigido | Lei nº 19.426/2025 no IND-03 e em `bioclimatico3d.ts`. "EN 17037" ficou na ficha (item 11, decisão do dono). O texto novo não cita mais o PBZPA. | `9d4b4c5d` |
+| 8. Vistoria predial | corrigido | Textos novos no copiloto, no tradutor e no pacote. No cálculo: `regraDaVistoriaPredialPe` (4 anos até 20 anos de construção, 3 depois; exigida com mais de 5 anos), usada por `avaliarEstruturaECondominio` e por `auditarConjuntoDocumental`. O app não tem a data do habite-se: usa o ano de construção do cadastro. | `87f157d7` |
+| 9. Lei 8.245/1991, alíneas | corrigido | Textos novos em `estruturaCondominio.ts` e na ficha do IND-02. | `18a1030c` |
+| 10. Fiança de 10% | corrigido | Texto novo em `SimuladorBolso15Segundos.tsx`. | `18a1030c` |
+| 11. Foro pelo Decreto-Lei 9.760/1946 | corrigido | `TresPerguntasDoBolso.tsx`, ficha do IND-01 e `boletimPreContrato.ts`. Na linha 32 da tabela (Lei 14.474/2022): `calcularTetoReajusteSpu` devolve 2× o IPCA do ano anterior e não usa mais os 10,06%; sem IPCA informado, o teto fica nulo. Nenhuma tela mostra esse teto hoje. | `96c6feea` |
+| 12. Curta temporada (REsp 2.121.055) | corrigido | Os dois textos de `radarVistaELote.ts`. | `18a1030c` |
+| 13. Isenção de IPTU | corrigido | Requisitos novos nas duas primeiras hipóteses; "Aposentado ou pensionista" com desconto de 50%. Cada hipótese ganhou a lista de benefícios. As hipóteses 3 e 4 (imóvel preservado e "outras") não entraram na conferência e ficaram como estavam. | `78d09455` |
+| 14. Acordo-Base nº 01/2024 | corrigido, com uma diferença | A ficha do IND-09 diz "Acordo-Base nº 01/2024, homologado pelo TRF5 em 19/06/2024, e Lei Estadual PE 13.032/2006.", sem "dos prédios-caixão": a palavra está na lista de palavras proibidas na tela (`PALAVRAS_PROIBIDAS_UI`). O texto de `estruturaCondominio.ts` entrou como proposto. | `8cf2e1b7` |
+| 15. Provimento 149/2023 e REsp 1.910.280 | corrigido | Ficha do IND-10 e `alertaPropterRemStj`. A referência da certidão trabalhista passou a "CLT, art. 642-A, § 4º" (linha 35 da tabela). | `8cf2e1b7` |
+| 16. CAT | corrigido | Título e detalhe novos no copiloto. A trava "Regime de terreno da União" pede o laudêmio pago pelo vendedor e a CAT, sem dizer que é o vendedor quem pede a certidão. | `96c6feea` |
+
+### Mudanças de cálculo e o efeito
+
+- **ITBI, imóvel de R$ 650 mil.** Faixa sobre o preço: de R$ 13.000 a R$ 19.500 (2% a 3%) para R$ 11.700 a R$ 19.500 (1,8% a 3%). Prazo do cenário de 1,8%: de 30 dias (ou 90) para 180 dias.
+- **Economia no fechamento, mesmo imóvel, 80% financiado pelo SFH.** De R$ 23.427,15 (ITBI mais cartório por proporção) para R$ 11.960 (só ITBI: R$ 19.500 a 3% menos R$ 7.540 com SFH). Sem SFH, a economia era e continua R$ 7.800.
+- **Dinheiro para entrar, mesmo imóvel, entrada de 20%.** De R$ 142.724,82 (entrada + ITBI + R$ 5.184,82 de cartório por proporção) para R$ 137.540 (entrada + ITBI), com o aviso de que escritura e registro ficam a confirmar.
+- **Vistoria predial.** Prédio de 2023 sem vistoria informada: de "vencida ou ausente" para "ainda não exigida". Prédio de 2010 com vistoria de 2022: de vencida (prazo de 3 anos) para em dia até 2026 (prazo de 4 anos).
+- **Água.** Antes de 23/11/2026 o app já mostrava "AQUA Pernambuco (Acciona + BRK)" como concessionária em distribuição; passa a mostrar "Compesa" até 22/11/2026.
+- **Teto de reajuste da SPU.** Com IPCA de 4,5%: de 10,06% para 9%.
+
+### O que esta rodada não cobriu
+
+- A conferência não leu estas citações, e elas ficaram como estavam: a frase do bolso sobre "aposentado / servidor / adimplência" (`TresPerguntasDoBolso.tsx`), as hipóteses 3 e 4 de isenção de IPTU, a Lei nº 14.011/2020 e os percentuais de conversão (83%) e remição (17%) de `spuMarinha.ts`, e o bloqueio de FGTS pela Caixa em regime de ocupação (IND-01).
+- `SimuladorTco10Anos.tsx` supõe um custo de fechamento de 2,5% do preço (ITBI e cartório juntos) quando ninguém informa outro. É uma suposição da conta de 10 anos, não um valor atribuído à tabela do TJPE, e não foi alterada. A frase da tela deixou de dizer "Inclui": a economia de ITBI é mostrada, mas não entra na conta.
+- O leitor de atas (`auditorDocumental.ts`) ainda procura a expressão "vistoria trienal vencida" nos documentos colados. É leitura de documento, não texto de tela.

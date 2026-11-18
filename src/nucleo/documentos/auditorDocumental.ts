@@ -8,7 +8,7 @@ import {
 
 /**
  * IND-10 & #41 — Auditor Documental Local-First:
- * - Validador e gerador de Código Nacional de Matrícula (CNM 16 dígitos, Provimento CNJ 143/2023, ISO 7064 MOD 97-10).
+ * - Validador e gerador de Código Nacional de Matrícula (CNM 16 dígitos, Provimento CNJ 143/2023, hoje no Código Nacional de Normas do Provimento 149/2023; ISO 7064 MOD 97-10).
  * - Checagem de validade de 30 dias da certidão (Decreto nº 93.240/1986).
  * - Análise da cadeia cronológica de registros (R-n) e averbações (AV-n) para ônus ativos não cancelados.
  * - Classificador de 6 classes documentais + pacote em 3 estados (`recebido | faltando | vencido`).

@@ -367,14 +367,14 @@ export function BlocoDeCusto({
               <View style={{ marginTop: 2, paddingTop: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 2 }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
                   <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600", flex: 1 }}>
-                    Economia legal no fechamento (ITBI + cartório)
+                    Economia possível de ITBI (sem cartório)
                   </Texto>
                   <Texto tipo="numero" cor="cor-salvia-escura" style={{ fontSize: 12, lineHeight: 17, fontWeight: "600" }}>
                     {`até ${formatarReais(partes.otimizacaoFechamento.melhorCenarioEconomiaReais)}`}
                   </Texto>
                 </View>
                 <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
-                  {`À vista em 30 dias (1,8%): economiza ${formatarReais(partes.otimizacaoFechamento.economiaAVistaTempestivoReais)}${partes.otimizacaoFechamento.economiaSfhReais ? ` · Financiado SFH (1,0% até R$ 1.036.600,71): economiza ${formatarReais(partes.otimizacaoFechamento.economiaSfhReais)}` : ""}.`}
+                  {`Lançamento pedido em até 180 dias da assinatura do contrato (1,8% em vez de 3%): economiza ${formatarReais(partes.otimizacaoFechamento.economiaAVistaTempestivoReais)}${partes.otimizacaoFechamento.economiaSfhReais ? ` · Financiado pelo SFH (1% sobre a parte financiada, até R$ 1.036.600,71 em 2026): economiza ${formatarReais(partes.otimizacaoFechamento.economiaSfhReais)}` : ""}. Escritura e registro: a confirmar no cartório.`}
                 </Texto>
               </View>
             ) : null}
@@ -418,7 +418,7 @@ export function BlocoDeCusto({
                   style={{ minHeight: 44, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}
                 >
                   <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600", flex: 1 }}>
-                    IPTU no Recife: conferir hipóteses legais de isenção
+                    IPTU no Recife: conferir hipóteses legais de isenção ou desconto
                   </Texto>
                   <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, fontWeight: "600" }}>
                     {mostrarIsencoesIptu ? "Ocultar" : "Ver regras"}

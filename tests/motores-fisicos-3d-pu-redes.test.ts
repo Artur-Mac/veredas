@@ -214,7 +214,7 @@ describe("Milestone 4 — Bioclimático 3D, Acústica 3D, Hidro-Maré 1m, PU-Lea
     expect(subnot.riscoLatenteCorrigidoTheta).toBeGreaterThan(seca.riscoLatenteCorrigidoTheta);
   });
 
-  test("IND-08 Resiliência de Redes: AQUA PE em 23/11/2026 + dívidas pré-transição Compesa + conjunto DEC real", () => {
+  test("IND-08 Resiliência de Redes: AQUA PE com início marcado para 23/11/2026 + conjunto DEC real", () => {
     const energiaPath = join(__dirname, "..", "docs/dados/raw/fontes-prioritarias-2026-11-14/energia-prova-conjuntos-dec-fec-2025.json");
     const energiaJson = JSON.parse(readFileSync(energiaPath, "utf-8")) as {
       contagens: { "boa-viagem": { conjuntos: Record<string, number> } };
@@ -252,7 +252,9 @@ describe("Milestone 4 — Bioclimático 3D, Acústica 3D, Hidro-Maré 1m, PU-Lea
       DATA_ASSUNCAO_AQUA_PERNAMBUCO,
     );
     expect(pos.hidrico.concessionariaDistribuicaoVigente).toBe("AQUA Pernambuco (Acciona + BRK)");
-    expect(pos.hidrico.alertaDividaAnterior23Nov2026).toMatch(/23\/11\/2026.*Compesa/);
+    expect(pos.hidrico.avisoMudancaNaDistribuicao).toMatch(/^A partir de 23\/11\/2026, data marcada pelo Governo de Pernambuco, a distribuição de água passa da Compesa para a concessionária AQUA Pernambuco em cerca de 150 municípios\./);
+    expect(pos.hidrico.avisoMudancaNaDistribuicao).not.toMatch(/151 municípios|permanecem/);
+    expect(pre.hidrico.avisoMudancaNaDistribuicao).toBe(pos.hidrico.avisoMudancaNaDistribuicao);
     expect(pos.hidrico.autonomiaReservaDias).toBe(5);
     expect(pos.eletrico.conjuntoCodId).toBe(codIdReal);
     expect(pos.eletrico.riscoInterrupcaoSemGerador).toBe("alto");

@@ -70,19 +70,25 @@ export type CustosDeTransferencia = {
   fonteCurta: string;
 };
 
+/** Faixa do ITBI do Recife sobre o preço: 1,8% com o lançamento pedido em até 180 dias, 3% depois disso. */
+export const ITBI_ALIQUOTA_MINIMA = 0.018;
+export const ITBI_ALIQUOTA_MAXIMA = 0.03;
+
 /**
- * ITBI do Recife numa faixa de 2% a 3% sobre o valor (Código Tributário Municipal, art. 52, II: 3%; redução temporária
- * para 2% anunciada em dez/2025; parte financiada pode ter alíquota menor). A base é o valor declarado ou o arbitrado
- * pela Prefeitura, o que for compatível (Lei 19.490/2026): por isso, sobre o preço é só uma referência.
+ * ITBI do Recife numa faixa de 1,8% a 3% sobre o valor (Código Tributário do Recife, Lei 15.563/1991: art. 52, II, 3%;
+ * art. 52, parágrafo único, e art. 55, § 1º, 1,8% com o lançamento pedido em até 180 dias; a parte financiada pelo SFH
+ * paga 1% até o limite de 2026). O benefício temporário de 2% (Lei 19.452/2025) venceu em 31/12/2025 e saiu da conta.
+ * A base é o valor declarado ou o arbitrado pela Prefeitura (art. 51, na redação da Lei 19.490/2026): por isso, sobre
+ * o preço é só uma referência.
  */
 export function estimarTransferencia(precoReais: number | null): CustosDeTransferencia | null {
   if (precoReais === null || !(precoReais > 0)) return null;
-  const itbiMinimoReais = Math.round(precoReais * 0.02), itbiMaximoReais = Math.round(precoReais * 0.03);
+  const itbiMinimoReais = Math.round(precoReais * ITBI_ALIQUOTA_MINIMA), itbiMaximoReais = Math.round(precoReais * ITBI_ALIQUOTA_MAXIMA);
   return {
     itbiMinimoReais, itbiMaximoReais, escrituraERegistroReais: null,
     totalMinimoReais: precoReais + itbiMinimoReais, totalMaximoReais: precoReais + itbiMaximoReais,
-    explicacao: `ITBI de ${formatarReais(itbiMinimoReais)} a ${formatarReais(itbiMaximoReais)} (2% a 3% do preço anunciado; confira a alíquota vigente e a base na Secretaria de Finanças). Escritura e registro: a confirmar no cartório (tabela de emolumentos do TJPE).`,
-    fonteCurta: "Código Tributário do Recife, art. 52; Lei municipal 19.490/2026",
+    explicacao: `ITBI de ${formatarReais(itbiMinimoReais)} a ${formatarReais(itbiMaximoReais)} (1,8% a 3% do preço anunciado: 1,8% se o lançamento for pedido em até 180 dias da assinatura do contrato, 3% depois disso; a parte financiada pelo SFH paga 1% até R$ 1.036.600,71 em 2026. A base é o valor declarado, se a Prefeitura aceitar). Escritura e registro: a confirmar no cartório (tabela de emolumentos do TJPE).`,
+    fonteCurta: "Código Tributário do Recife (Lei 15.563/1991), arts. 51, 52 e 55; Lei municipal 19.490/2026",
   };
 }
 
@@ -107,7 +113,7 @@ export type CustoPorPartes = {
   janelaPoenteConsiderada: boolean;
   /** Motor SPU estatutário (IND-01): laudêmio, taxa/foro e bloqueio de FGTS sobre fração ideal de terreno. */
   spuEstatutario?: ResultadoSpu | null;
-  /** Otimizador tributário e cartorário ITBI + TJPE (Art. 52 CTMR / Art. 290 LRP / LC 227/2026). */
+  /** Otimizador do ITBI (arts. 52 e 55 do Código Tributário do Recife). Só imposto: escritura e registro ficam a confirmar no cartório. */
   otimizacaoFechamento?: ResultadoOtimizadorItbiRecife | null;
   /** Triagem estrutural, ciclo VUP NBR 15575-1:2025 e maresia NBR 6118 (IND-02 & IND-09). */
   estruturaECondominio?: ResultadoEstruturaCondominio | null;

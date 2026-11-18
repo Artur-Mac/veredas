@@ -674,7 +674,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
               analise.modalidade === "compra" && analise.declarados.preco.valor
                 ? Math.round(
                     (partesDeCusto.simulacaoCompra?.entradaReais ?? analise.declarados.preco.valor * 0.2) +
-                      (partesDeCusto.otimizacaoFechamento?.sfhOtimizado1Pct?.totalFechamentoReais ??
+                      (partesDeCusto.otimizacaoFechamento?.sfhOtimizado1Pct?.itbiReais ??
                         analise.declarados.preco.valor * 0.03),
                   )
                 : null
@@ -827,14 +827,9 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                     partesDeCusto.otimizacaoFechamento?.aVistaTempestivo18Pct.itbiReais ??
                     Math.round((analise.declarados.preco.valor ?? 0) * 0.018)
                   }
-                  cartorioRegistroReais={
-                    partesDeCusto.otimizacaoFechamento?.sfhOtimizado1Pct?.emolumentosERegistroReais ??
-                    partesDeCusto.otimizacaoFechamento?.aVistaTempestivo18Pct.emolumentosERegistroReais ??
-                    Math.round((analise.declarados.preco.valor ?? 0) * 0.012)
-                  }
                   spuAnualReais={partesDeCusto.spuEstatutario?.encargoPatrimonialAnualVigenteReais ?? 0}
                   custoMensalArReais={confortoTermico.custoMensalArReais}
-                  economiaLegalItbiCartorioReais={
+                  economiaLegalItbiReais={
                     partesDeCusto.otimizacaoFechamento?.melhorCenarioEconomiaReais ?? 0
                   }
                   descontoRuidoReais={acustica.descontoHedonicoEstimadoReais ?? 0}
@@ -902,7 +897,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                             (partesDeCusto.simulacaoCompra?.entradaReais ??
                               analise.declarados.preco.valor * 0.2) +
                               (partesDeCusto.otimizacaoFechamento?.sfhOtimizado1Pct
-                                ?.totalFechamentoReais ??
+                                ?.itbiReais ??
                                 analise.declarados.preco.valor * 0.03),
                           )
                         : null,

@@ -62,7 +62,9 @@ export function gerarTextoResumoExecutivo(
     ...(ocultar
       ? ["• Caixa e saída mensal: Ocultados pelo usuário (modo técnico para vistoria/síndico)"]
       : [
-          `• Caixa estimado para entrar: ${entradaStr}`,
+          compra && e.dinheiroEntrarReais
+            ? `• Caixa estimado para entrar (entrada + ITBI; escritura e registro a confirmar no cartório): ${entradaStr}`
+            : `• Caixa estimado para entrar: ${entradaStr}`,
           `• Saída mensal estimada do bolso: ${mensalStr}`,
         ]),
     "",

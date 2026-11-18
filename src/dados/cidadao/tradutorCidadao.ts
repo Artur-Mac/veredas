@@ -10,6 +10,7 @@ import type { ResultadoAcustica3D } from "../../nucleo/motores/acustica3d";
 import type { ResultadoHidroMare1m } from "../../municipios/recife/motores/hidroMare1m";
 import type { ResultadoZeladoriaPu } from "../../nucleo/motores/zeladoriaPuLearning";
 import type { ResultadoEconometriaItbi } from "../../municipios/recife/motores/econometriaItbi";
+import type { ResultadoEstruturaCondominio } from "../../municipios/recife/motores/estruturaCondominio";
 import type { ResultadoResilienciaRedes } from "../../municipios/recife/motores/resilienciaRedes";
 import type { ResultadoAuditoriaDocumental } from "../../nucleo/documentos/auditorDocumental";
 
@@ -112,6 +113,16 @@ export function descreverAusenciaCidadao(estado: AbsenceState | null): EstadoAus
   };
 }
 
+/** Estado da vistoria predial periódica (Lei PE 13.032/2006) em palavras de gente. */
+function rotuloDaVistoriaPredial(v: ResultadoEstruturaCondominio["vistoriaPeriodicaLei13032"] | undefined): string {
+  if (!v || v.estado === "nao_sabemos") return "a confirmar";
+  if (v.estado === "em_dia") return v.proximaVistoriaAteAno !== null ? `em dia, a próxima até ${v.proximaVistoriaAteAno}` : "em dia";
+  if (v.estado === "ainda_nao_exigida") return "ainda não exigida (prédio com até 5 anos)";
+  return v.proximaVistoriaAteAno !== null
+    ? `vencida, o prazo ia até ${v.proximaVistoriaAteAno}`
+    : "sem laudo informado (exigida de prédio com mais de 5 anos)";
+}
+
 function fReais(v: number | null | undefined): string {
   if (v === null || v === undefined || !Number.isFinite(v)) return "a confirmar";
   return `R$ ${Math.round(v).toLocaleString("pt-BR")}`;
@@ -175,7 +186,7 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       chavesDuplas,
       metodo6Campos: {
         oQueMede: "Laudêmio (5%), ocupação (2% a.a.) ou foro (0,6% a.a.) e bloqueio de FGTS.",
-        baseLegalOuNormativa: "Decreto-Lei nº 2.398/1987, Leis nº 13.240/2015 e 14.474/2022.",
+        baseLegalOuNormativa: "Decreto-Lei nº 9.760/1946 (foro), Decreto-Lei nº 2.398/1987 (laudêmio e taxa de ocupação) e Lei nº 14.474/2022.",
         aritmeticaResumo: "Incide apenas sobre (Valor do Domínio Pleno do Terreno × Fração Ideal).",
         // R10 (19/11/2026): nenhuma tela informa o valor do terreno, então a conta pela fração ideal não roda. A ficha
         // diz isso em vez de citar uma fonte que não foi lida.
@@ -208,14 +219,14 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
         ? `Rateio estimado por unidade: ${fReais(est.choqueCotaExtraEstimadoPorUnidadeReais)} (considerando reserva e inadimplência).`
         : "Consulte o saldo atual do fundo de reserva nas últimas atas.",
     camada2AcaoConcreta:
-      "Solicite os últimos 3 balancetes, atas de assembleia e o laudo de vistoria predial trienal.",
+      "Solicite os últimos 3 balancetes, atas de assembleia e o último laudo de vistoria predial.",
     camada3ProvaMetodo: {
       epistemicTag: est?.epistemicTag ?? "nao_sabemos",
       ausencia: est ? null : descreverAusenciaCidadao("sem_leitura_publicada"),
       chavesDuplas,
       metodo6Campos: {
         oQueMede: "Ciclo de vida útil de fachada/impermeabilização, maresia costeira e divisão do boleto.",
-        baseLegalOuNormativa: "ABNT NBR 15575-1:2025, NBR 6118, Lei PE 13.032/2006 e Lei 8.245/1991 Art. 22 X.",
+        baseLegalOuNormativa: "ABNT NBR 15575-1:2025, NBR 6118, Lei PE 13.032/2006 e Lei 8.245/1991, art. 22, X e parágrafo único.",
         aritmeticaResumo: "(Orçamento da obra - Fundo de reserva) / Unidades / (1 - Inadimplência).",
         fontePrimaria: "IPTU Recife 2026 + atas condominiais",
         vintage: "2026-11",
@@ -251,7 +262,7 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       chavesDuplas,
       metodo6Campos: {
         oQueMede: "Horas de insolação solar, brisa alísia e gabarito construtivo aberto ao redor.",
-        baseLegalOuNormativa: "EN 17037, Lei Municipal Recife 19.389/2025 (LPUOS) e Decretos 39.664-39.667/2026.",
+        baseLegalOuNormativa: "EN 17037 e Lei municipal do Recife 19.426/2025 (LPUOS).",
         aritmeticaResumo: "Cálculo solar a 8,05° S descontado horizonte 108B; VPL 120m a 8% a.a.",
         fontePrimaria: "PE3D LiDAR + ESIG LPUOS + MapBiomas LST",
         vintage: "2026-11",
@@ -372,21 +383,21 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
   const melhorEco = itbiOpt?.melhorCenarioEconomiaReais ?? null;
   const ind07: CartaoCidadao3Camadas = {
     indicadorId: "IND-07",
-    tituloCurto: "Economia no fechamento e base de preço",
+    tituloCurto: "Economia de ITBI e base de preço",
     camada1Manchete: sanearTextoCamada1(
       entrada.modalidade === "aluguel"
-        ? "Economia de imposto de transferência e escritura se aplica apenas na compra."
+        ? "Economia de imposto de transferência (ITBI) se aplica apenas na compra."
         : melhorEco !== null
-          ? `Planejamento correto de prazo e financiamento economiza até ${fReais(melhorEco)} no fechamento.`
-          : "Confira histórico de transações do prédio e prazos para redução de ITBI no Recife.",
+          ? `Planejamento correto de prazo e financiamento economiza até ${fReais(melhorEco)} de ITBI; escritura e registro ficam a confirmar no cartório.`
+          : "Confira o histórico de transações do prédio e o prazo de 180 dias para pedir o ITBI com alíquota reduzida no Recife.",
     ),
     camada2ImpactoPratico: eco?.medianaReais
       ? `Avaliações fiscais recentes no prédio: mediana de ${fReais(eco.medianaReais)} em ${eco.amostraValidaN} transação(ões).`
-      : itbiOpt?.aVistaTempestivo18Pct
-        ? `Pagando à vista em até ${itbiOpt.aVistaTempestivo18Pct.prazoLegalDias} dias, ITBI cai de 3,0% para 1,8%.`
+      : itbiOpt?.aVistaTempestivo18Pct.prazoLegalDias
+        ? `Pedindo o lançamento do ITBI em até ${itbiOpt.aVistaTempestivo18Pct.prazoLegalDias} dias da assinatura do contrato, a alíquota cai de 3% para 1,8%.`
         : "Exija memória do ITBI para conferir se o valor fiscal diverge do preço pedido.",
     camada2AcaoConcreta:
-      "Protocolar guia de ITBI dentro de 30 dias (à vista), 90 dias (parcelado) ou 180 dias (SFH com 1%).",
+      "Peça o lançamento do ITBI em até 180 dias da assinatura do contrato (em imóvel novo, do habite-se ou do contrato) para pagar 1,8% em vez de 3%. No financiamento pelo SFH, a parte financiada paga 1% até R$ 1.036.600,71 (valor de 2026).",
     camada3ProvaMetodo: {
       epistemicTag: eco?.epistemicTag ?? (itbiOpt ? "registro_oficial" : "nao_sabemos"),
       ausencia:
@@ -397,10 +408,12 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
             : null,
       chavesDuplas,
       metodo6Campos: {
-        oQueMede: "Economia legal de ITBI + emolumentos cartoriais e estatística comparativa NBR 14653-2.",
-        baseLegalOuNormativa: "CTMR Recife Art. 52 (Lei 15.563/91), Lei 6.015/73 Art. 290, Ato TJPE 1.556/25, LC 227/2026.",
-        aritmeticaResumo: "1% na cota SFH até R$ 1.036.600,71; 1,8% tempestivo; expurgo de Chauvenet + IC 80%.",
-        fontePrimaria: "ITBI SEFIN Recife + Tabela TJPE",
+        oQueMede: "Economia legal de ITBI (diferença entre as alíquotas de 3%, 1,8% e 1%) e estatística comparativa NBR 14653-2. Escritura e registro não entram na conta.",
+        baseLegalOuNormativa:
+          "Código Tributário do Recife (Lei 15.563/1991), arts. 51, 52 e 55, com a redação das Leis 17.904/2013, 19.174/2023, 19.391/2025 e 19.490/2026; Lei federal 6.015/1973, art. 290; Ato TJPE 1.556/2025 (tabela de 2026); Lei Complementar federal 227/2026.",
+        aritmeticaResumo:
+          "1% sobre a parte financiada pelo SFH até R$ 1.036.600,71 (2026); 1,8% com pedido em até 180 dias; 3% nos demais casos. Expurgo de Chauvenet + IC 80%.",
+        fontePrimaria: "ITBI SEFIN Recife. Escritura e registro: tabela do TJPE, a confirmar no cartório",
         vintage: "2026-11",
         limiteEpistemologico:
           eco?.ressalvaLegalConselhos ??
@@ -415,12 +428,14 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
     tituloCurto: "Reserva de água, energia e sinal 5G",
     camada1Manchete: sanearTextoCamada1(
       res
-        ? `Reserva estimada para ${res.hidrico.autonomiaReservaDias ?? "?"} dias; atenção à transição AQUA Pernambuco (23/11/2026).`
+        ? `Reserva estimada para ${res.hidrico.autonomiaReservaDias ?? "?"} dias; início da AQUA Pernambuco na distribuição de água marcado para 23/11/2026.`
         : "Confirme capacidade da cisterna, gerador para elevadores e sinal celular nos quartos.",
     ),
     camada2ImpactoPratico: res
-      ? `Concessionária em distribuição: ${res.hidrico.concessionariaDistribuicaoVigente}.`
-      : "Débitos de água anteriores a 23/11/2026 continuam sendo cobrados pela Compesa.",
+      ? res.hidrico.concessionariaDistribuicaoVigente === "Compesa"
+        ? "Distribuição de água hoje: Compesa. A AQUA Pernambuco assume em 23/11/2026, data marcada pelo Governo de Pernambuco."
+        : `Distribuição de água: ${res.hidrico.concessionariaDistribuicaoVigente}, desde 23/11/2026, data marcada pelo Governo de Pernambuco.`
+      : "Peça ao vendedor a quitação das contas de água e pergunte à Compesa se há débito em aberto.",
     camada2AcaoConcreta: "Teste dados móveis no quarto dos fundos na visita e confira quitação de contas anteriores.",
     camada3ProvaMetodo: {
       epistemicTag: res?.eletrico.epistemicTag ?? "nao_sabemos",
@@ -428,9 +443,10 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       chavesDuplas,
       metodo6Campos: {
         oQueMede: "Autonomia da cisterna, interrupções de energia (DEC/FEC) e proximidade de torre 5G.",
-        baseLegalOuNormativa: "Concessão AQUA PE (23/11/2026) x Compesa Tapacurá + indicadores ANEEL/ANATEL.",
+        baseLegalOuNormativa:
+          "Concessão parcial do saneamento de Pernambuco (início da AQUA Pernambuco marcado para 23/11/2026) e indicadores ANEEL/ANATEL.",
         aritmeticaResumo: "Volume total (cisterna + caixa) / (Unidades × 2,6 hab × 165 L/dia).",
-        fontePrimaria: "ANEEL DEC/FEC + Anatel ERBs + Compesa/AQUA PE",
+        fontePrimaria: "ANEEL DEC/FEC + Anatel ERBs + nota da Secretaria de Recursos Hídricos e Saneamento de PE (23/10/2026)",
         vintage: "2026-11",
         limiteEpistemologico:
           res?.limiteEpistemologico ?? "Cisterna e gerador dependem de confirmação física na visita.",
@@ -453,17 +469,18 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
     camada2ImpactoPratico:
       est?.bloqueioSeguroECreditoProvavel
         ? "Financiamento habitacional e apólice patrimonial enfrentam bloqueio provável."
-        : `Vistoria trienal (Lei PE 13.032/06): ${est?.vistoriaTrienalLei13032.estado ?? "a confirmar"}.`,
+        : `Vistoria periódica (Lei PE 13.032/2006): ${rotuloDaVistoriaPredial(est?.vistoriaPeriodicaLei13032)}.`,
     camada2AcaoConcreta: "Peça o último Laudo Técnico de Vistoria Predial (ART/RRT) e a apólice condominial vigente.",
     camada3ProvaMetodo: {
       epistemicTag: est?.epistemicTag ?? "nao_sabemos",
       ausencia: est ? null : descreverAusenciaCidadao("sem_leitura_publicada"),
       chavesDuplas,
       metodo6Campos: {
-        oQueMede: "Triagem de alvenaria autoportante vulnerável, Acordo TRF5 (431 edifícios) e vistoria trienal.",
-        baseLegalOuNormativa: "Acordo-Base TRF5 01/2024 e Lei Estadual PE 13.032/2006.",
-        aritmeticaResumo: "Cruzamento da coluna 31 IPTU (estrutura) × gabarito <= 4 pav. × lista TRF5.",
-        fontePrimaria: "IPTU Recife Col. 31 + Acordo TRF5/Seduh",
+        oQueMede: "Triagem de alvenaria autoportante vulnerável, Acordo-Base nº 01/2024 (431 edifícios) e vistoria periódica (a cada 4 anos até 20 anos de construção, a cada 3 depois).",
+        // O texto da conferência dizia "dos prédios-caixão"; a palavra é proibida na tela (PALAVRAS_PROIBIDAS_UI) e ficou de fora.
+        baseLegalOuNormativa: "Acordo-Base nº 01/2024, homologado pelo TRF5 em 19/06/2024, e Lei Estadual PE 13.032/2006.",
+        aritmeticaResumo: "Cruzamento da coluna 31 IPTU (estrutura) × gabarito <= 4 pav. × lista do Acordo-Base nº 01/2024.",
+        fontePrimaria: "IPTU Recife Col. 31 + Acordo-Base nº 01/2024 (notícias do TRF5 de 11/06/2024 e 26/08/2026)",
         vintage: "2026-11",
         limiteEpistemologico: "A triagem cadastral não substitui exame de fundação por engenheiro habilitado.",
       },
@@ -492,7 +509,8 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       chavesDuplas: { dsqfl, cnm16: doc?.cnmEncontrado?.formatado ?? cnm16 },
       metodo6Campos: {
         oQueMede: "Validade de matrícula (30 dias), dígitos CNM ISO 7064, cadeia R-/AV- e alertas de atas.",
-        baseLegalOuNormativa: "Provimento CNJ 143/2023, Decreto 93.240/1986 e STJ dívida propter rem.",
+        baseLegalOuNormativa:
+          "Código Nacional de Normas do CNJ, Foro Extrajudicial (Provimento 149/2023, que incorporou o Provimento 143/2023); Decreto 93.240/1986; STJ, REsp 1.910.280.",
         aritmeticaResumo: "Toda citação passa por prova literal determinística na página de origem.",
         fontePrimaria: "Documentos inseridos no Cofre Privado + DataJud",
         vintage: "2026-11",

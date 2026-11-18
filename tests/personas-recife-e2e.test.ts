@@ -157,7 +157,7 @@ describe("Milestone 8 — Jornadas End-to-End de Personas Reais no Recife", () =
         financiamentoSfh: true,
       });
       expect(partesTorreAf.spuEstatutario?.elegivelFgtsCaixa).toBe(true);
-      expect(partesTorreAf.otimizacaoFechamento?.economiaSfhReais).toBe(23_427.15);
+      expect(partesTorreAf.otimizacaoFechamento?.economiaSfhReais).toBe(11_960);
 
       const cartoes = traduzirIndicadoresCidadao({
         modalidade: "compra",
@@ -199,6 +199,11 @@ describe("Milestone 8 — Jornadas End-to-End de Personas Reais no Recife", () =
     expect(est.segregacaoLei8245.totalOrdinarioInquilinoReais).toBe(680);
     expect(est.segregacaoLei8245.totalExtraordinarioLocadorReais).toBe(358);
     expect(est.segregacaoLei8245.itensCobrancaAbusivaNoBoleto).toHaveLength(2);
+    // As alíneas são do parágrafo único do art. 22: g para o fundo de reserva, a e b para obra de estrutura e pintura de fachada.
+    expect(est.segregacaoLei8245.itensCobrancaAbusivaNoBoleto.map((i) => i.artigoLegal)).toEqual([
+      "Art. 22, X e parágrafo único, alínea 'g', da Lei nº 8.245/1991 (fundo de reserva é despesa extraordinária, paga pelo locador)",
+      "Art. 22, X e parágrafo único, alíneas 'a' e 'b', da Lei nº 8.245/1991 (obra que interessa à estrutura e pintura de fachada são despesas extraordinárias, pagas pelo locador)",
+    ]);
 
     const hidro = avaliarHidroMare1m({
       handM: 1.0,
@@ -219,7 +224,8 @@ describe("Milestone 8 — Jornadas End-to-End de Personas Reais no Recife", () =
       "2026-11-24",
     );
     expect(redes.hidrico.concessionariaDistribuicaoVigente).toBe("AQUA Pernambuco (Acciona + BRK)");
-    expect(redes.hidrico.alertaDividaAnterior23Nov2026).toMatch(/23\/11\/2026.*Compesa/);
+    expect(redes.hidrico.avisoMudancaNaDistribuicao).toMatch(/pergunte à Compesa se há débito em aberto\.$/);
+    expect(redes.hidrico.avisoMudancaNaDistribuicao).not.toMatch(/permanecem|retidos/);
   });
 
   test("Persona 3: Família com idoso/cadeirante nas Graças integra semáforos sonoros, silêncio SBRF e partilha sem vazar dado sensível", () => {
@@ -294,7 +300,7 @@ describe("Milestone 8 — Jornadas End-to-End de Personas Reais no Recife", () =
     });
     expect(est.riscoPredioCaixao).toBe("suspeita_tipologica_alvenaria");
     expect(est.bloqueioSeguroECreditoProvavel).toBe(true);
-    expect(est.vistoriaTrienalLei13032.estado).toBe("vencida_ou_ausente");
+    expect(est.vistoriaPeriodicaLei13032.estado).toBe("vencida_ou_ausente");
 
     const cnm = gerarCnm16Formatado("077214", "2", "0099112");
     const aud = auditarDocumentoVereda({
