@@ -200,7 +200,7 @@ export function fecharResultadoAcustico(p: {
     atenuacaoFachadaFundosDb: p.atenuacaoFachadaFundosDb,
     isolamentoFachadaD2mnTwDb: d2mnTw,
     ruidoInternoDormitorioDbA: ruidoInterno,
-    atendeReferenciaNoturnaNbr10151: nivelVia <= 50 || ruidoInterno <= 40,
+    atendeReferenciaNoturnaNbr10151: nivelExternoCombinado <= 50, // do lado de fora e com o avião (revisão de 19/11/2026: antes valia pelo quarto com janela fechada e contradizia a comparação com a NBR na mesma tela)
     descontoHedonicoNelsonNsdiPct: descontoPct,
     descontoHedonicoEstimadoReais: descontoReais,
     agendaPiorHoraVisita: agenda,
