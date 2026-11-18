@@ -77,7 +77,8 @@ export function relacaoComOAeroporto(centro: readonly [number, number] | null | 
       trajetoria = {
         cabeceira: t < 0 ? "18" : "36",
         distanciaDaCabeceiraM: Math.round(alemDaCabeceira),
-        alturaEstimadaM: Math.round(alemDaCabeceira * Math.tan((RAMPA_GRAUS * Math.PI) / 180)),
+        // Arredondada a 10 m: é estimativa, e o destaque e o texto mostram o mesmo número.
+        alturaEstimadaM: Math.round((alemDaCabeceira * Math.tan((RAMPA_GRAUS * Math.PI) / 180)) / 10) * 10,
       };
     }
   }

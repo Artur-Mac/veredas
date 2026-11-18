@@ -45,7 +45,7 @@ describe("relacaoComOAeroporto", () => {
     expect(r.trajetoria?.cabeceira).toBe("18");
     expect(r.trajetoria?.distanciaDaCabeceiraM).toBeGreaterThan(1990);
     expect(r.trajetoria?.distanciaDaCabeceiraM).toBeLessThan(2010);
-    expect(r.trajetoria?.alturaEstimadaM).toBe(Math.round(r.trajetoria!.distanciaDaCabeceiraM * Math.tan((3 * Math.PI) / 180)));
+    expect(r.trajetoria?.alturaEstimadaM).toBe(Math.round((r.trajetoria!.distanciaDaCabeceiraM * Math.tan((3 * Math.PI) / 180)) / 10) * 10);
   });
 
   it("a faixa abre 15% para cada lado: dentro a 400 m de lado a 5 km, fora a 1.200 m", () => {

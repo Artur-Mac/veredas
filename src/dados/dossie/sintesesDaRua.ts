@@ -265,7 +265,8 @@ export function derivarSintesesInteligentes(opcoes: {
     } catch {
       aero = null;
     }
-    const textoAviao = aero ? ` Avião, de dia e à noite: ${fraseDoAeroporto(aero).frase}` : "";
+    const fraseAviao = aero ? fraseDoAeroporto(aero).frase : "";
+    const textoAviao = aero ? ` Avião, de dia e à noite: ${fraseAviao.charAt(0).toLowerCase()}${fraseAviao.slice(1)}` : "";
 
     let mancheteRuido: string;
     if (aero?.trajetoria) {
