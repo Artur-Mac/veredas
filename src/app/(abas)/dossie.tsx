@@ -51,7 +51,7 @@ import { useTema } from "../../tema/Tema";
 import { ESPACO, TOQUE_MINIMO } from "../../tema/tokens";
 import { traduzirIndicadoresCidadao } from "../../dados/cidadao/tradutorCidadao";
 import { CartaoCidadao3Camadas } from "../../componentes/cidadao/CartaoCidadao3Camadas";
-import { calcularTco10Anos, SimuladorTco10Anos } from "../../componentes/cidadao/SimuladorTco10Anos";
+import { SimuladorTco10Anos, type EntradaTco10Anos } from "../../componentes/cidadao/SimuladorTco10Anos";
 import { ResumoEvidenciaPartilhavel } from "../../componentes/cidadao/ResumoEvidenciaPartilhavel";
 import { avaliarBioclimatico3d } from "../../municipios/recife/motores/bioclimatico3d";
 import { avaliarAcustica3d } from "../../nucleo/motores/acustica3d";
@@ -413,9 +413,9 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     () => derivarCustoPorPartes(analise, predio, perfilDomicilio),
     [analise, predio, perfilDomicilio],
   );
-  const tco10Anos = useMemo(() => {
+  const entradaTco10Anos = useMemo((): EntradaTco10Anos | null => {
     if (analise.modalidade !== "compra" || !analise.declarados.preco.valor) return null;
-    return calcularTco10Anos({
+    return {
       precoCompraReais: analise.declarados.preco.valor,
       aluguelEquivalenteMensalReais: Math.round(analise.declarados.preco.valor * 0.0045),
       condominioMensalReais: analise.declarados.condominio.valor ?? 0,
@@ -423,7 +423,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
       spuAnualReais: partesDeCusto.spuEstatutario?.encargoPatrimonialAnualVigenteReais ?? 0,
       economiaOtimizacaoTributariaReais:
         partesDeCusto.otimizacaoFechamento?.melhorCenarioEconomiaReais ?? 0,
-    });
+    };
   }, [analise.declarados.condominio.valor, analise.declarados.preco.valor, analise.modalidade, partesDeCusto, predio?.iptuAnual?.mediana]);
 
   const pulsoDaQuadra = useMemo(
@@ -838,9 +838,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                         )
                       : 0
                   }
-                  saldo10AnosCompraVsAluguelReais={
-                    tco10Anos ? tco10Anos.saldoLiquidoCompraSobreAluguel10AnosReais : null
-                  }
+                  entradaTco10Anos={entradaTco10Anos}
                   pendenciaDocumentalResumo={
                     partesDeCusto.alertaMarinha
                       ? "Terreno da União pede certidão atualizada do regime (ocupação ou aforamento) antes de fechar financiamento."

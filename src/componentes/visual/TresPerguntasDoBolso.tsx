@@ -2,6 +2,14 @@ import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { formatarReais, formatarReaisCompacto } from "../../dados/formatos";
+import {
+  calcularTco10Anos,
+  fraseDasSuposicoesTco,
+  SeletorDeValorizacao,
+  VALORIZACAO_INICIAL,
+  type EntradaTco10Anos,
+  type ValorizacaoAnual,
+} from "../cidadao/SimuladorTco10Anos";
 import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
 import { RAIO, TOQUE_MINIMO, type TokenDeCor } from "../../tema/tokens";
@@ -25,7 +33,8 @@ export type PropsTresPerguntasDoBolso = {
   vplCalorPoenteReais: number;
   riscoManutencaoPredioReais: number;
   excedenteMedianaM2Reais: number;
-  saldo10AnosCompraVsAluguelReais?: number | null;
+  /** Dados da conta de 10 anos (comprar × alugar). A valorização é escolhida na tela, começando em 0% (decisão A4). */
+  entradaTco10Anos?: EntradaTco10Anos | null;
   pendenciaDocumentalResumo?: string | null;
 };
 
@@ -54,7 +63,7 @@ export function TresPerguntasDoBolso({
   vplCalorPoenteReais,
   riscoManutencaoPredioReais,
   excedenteMedianaM2Reais,
-  saldo10AnosCompraVsAluguelReais = null,
+  entradaTco10Anos = null,
   pendenciaDocumentalResumo = null,
 }: PropsTresPerguntasDoBolso) {
   const { cor } = useTema();
@@ -62,6 +71,7 @@ export function TresPerguntasDoBolso({
   const [verChecklistIptu, setVerChecklistIptu] = useState(false);
   const [verMetodoBolso, setVerMetodoBolso] = useState(false);
   const [modoBolso, setModoBolso] = useState<"morar" | "fechado">("morar");
+  const [valorizacao, setValorizacao] = useState<ValorizacaoAnual>(VALORIZACAO_INICIAL);
 
   const compra = modalidade === "compra";
   const baseMensal = compra ? prestacaoEstimadaReais : (aluguelAnunciadoReais ?? 0);
@@ -95,24 +105,18 @@ export function TresPerguntasDoBolso({
   ];
   const fatiasMes = fatiasMesBase.filter((f) => f.valor > 0);
 
-  const deducoesNegociacao: { motivo: string; valor: number }[] = [];
-  if (excedenteMedianaM2Reais > 3_000) {
-    deducoesNegociacao.push({ motivo: "Acima do preço médio do prédio/rua", valor: excedenteMedianaM2Reais });
-  }
-  if (vplCalorPoenteReais > 2_000) {
-    deducoesNegociacao.push({ motivo: "Impacto de calor à tarde (Poente em 10 anos)", valor: vplCalorPoenteReais });
-  }
-  if (descontoRuidoReais > 2_000) {
-    deducoesNegociacao.push({ motivo: "Ruído acima do padrão noturno", valor: descontoRuidoReais });
-  }
-  if (riscoManutencaoPredioReais > 2_000) {
-    deducoesNegociacao.push({ motivo: "Provisão para fachada e obras pela idade do prédio", valor: riscoManutencaoPredioReais });
-  }
-  const somaDescontos = deducoesNegociacao.reduce((s, d) => s + d.valor, 0);
+  // Decisão D4 (18/11/2026): o Vereda não sugere preço nem valor de proposta. Ficam os fatos, sem número de preço: os
+  // valores em reais abaixo só decidem se o fato entra na lista.
+  const argumentosDeNegociacao: string[] = [];
+  if (excedenteMedianaM2Reais > 3_000) argumentosDeNegociacao.push("Pedido acima da mediana das escrituras do prédio (ITBI)");
+  if (vplCalorPoenteReais > 2_000) argumentosDeNegociacao.push("Fachada poente: sol direto à tarde");
+  if (descontoRuidoReais > 2_000) argumentosDeNegociacao.push("Barulho estimado acima do padrão noturno");
+  if (riscoManutencaoPredioReais > 2_000) argumentosDeNegociacao.push("Prédio em idade de obra de fachada e impermeabilização: pergunte por cota extra");
   const precoBase = compra ? precoAnuncioReais : aluguelAnunciadoReais;
-  const tetoDesconto = precoBase ? Math.round(precoBase * 0.22) : somaDescontos;
-  const descontoSugerido = Math.min(somaDescontos, tetoDesconto);
-  const precoAlvoJusto = precoBase ? Math.max(Math.round(precoBase * 0.72), precoBase - descontoSugerido) : null;
+  const saldo10Anos =
+    compra && entradaTco10Anos
+      ? calcularTco10Anos({ ...entradaTco10Anos, valorizacaoImovelAnual: valorizacao }).saldoLiquidoCompraSobreAluguel10AnosReais
+      : null;
 
   const textoWhatsapp = [
     `Resumo VEREDA — ${nomeImovel} (${enderecoImovel})`,
@@ -128,9 +132,7 @@ export function TresPerguntasDoBolso({
     economiaLegalItbiCartorioReais > 500
       ? `• Economia legal prevista em ITBI/Cartório (SFH/180 dias): até ${formatarReais(economiaLegalItbiCartorioReais)}`
       : null,
-    deducoesNegociacao.length > 0 && precoAlvoJusto
-      ? `• Argumentos técnicos para contraproposta (${deducoesNegociacao.map((d) => `${d.motivo}: -${formatarReaisCompacto(d.valor)}`).join("; ")}) -> Alvo justo sugerido: ${formatarReais(precoAlvoJusto)}`
-      : null,
+    argumentosDeNegociacao.length > 0 ? `• Pontos para negociar: ${argumentosDeNegociacao.join("; ")}` : null,
   ]
     .filter(Boolean)
     .join("\n");
@@ -346,7 +348,7 @@ export function TresPerguntasDoBolso({
       </View>
 
       {/* Bloco 3: Visão de 10 anos */}
-      {compra && saldo10AnosCompraVsAluguelReais !== null ? (
+      {compra && entradaTco10Anos && saldo10Anos !== null ? (
         <View style={[styles.secao, { borderTopWidth: 1, borderTopColor: cor("cor-linha") }]}>
           <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.kicker}>
             Visão de 10 anos
@@ -354,23 +356,24 @@ export function TresPerguntasDoBolso({
           <Texto tipo="secao" style={styles.perguntaTitulo}>
             Comprar vs manter capital aplicado no CDI
           </Texto>
-          <View style={[styles.chamadaLateral, { borderLeftColor: cor("cor-azul-cadastral") }]}>
-            <Texto tipo="corpo" style={styles.textoDicaTitulo}>
-              {saldo10AnosCompraVsAluguelReais >= 0
-                ? `Comprar tende a deixar saldo líquido de ~${formatarReaisCompacto(saldo10AnosCompraVsAluguelReais)} à frente em 10 anos.`
-                : `Alugar e aplicar entrada + custos tende a deixar saldo líquido de ~${formatarReaisCompacto(Math.abs(saldo10AnosCompraVsAluguelReais))} à frente em 10 anos.`}
+          <SeletorDeValorizacao valor={valorizacao} aoMudar={setValorizacao} />
+          <View testID="bolso-visao-10-anos" style={[styles.chamadaLateral, { borderLeftColor: cor("cor-azul-cadastral") }]}>
+            <Texto tipo="corpo" style={[styles.textoDicaTitulo, { fontVariant: ["tabular-nums"] }]}>
+              {saldo10Anos >= 0
+                ? `Supondo valorização de ${Math.round(valorizacao * 100)}% ao ano, comprar deixa ~${formatarReaisCompacto(saldo10Anos)} à frente em 10 anos.`
+                : `Supondo valorização de ${Math.round(valorizacao * 100)}% ao ano, alugar e aplicar a entrada e os custos deixa ~${formatarReaisCompacto(Math.abs(saldo10Anos))} à frente em 10 anos.`}
             </Texto>
             <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
-              Considera prestação, condomínio, IPTU, taxa da União e juros compostos líquidos sobre a entrada.
+              {`Considera prestação, condomínio, IPTU, taxa da União e a entrada aplicada. A valorização é uma suposição sua: o Vereda não prevê preço. ${fraseDasSuposicoesTco(entradaTco10Anos)}`}
             </Texto>
           </View>
         </View>
       ) : null}
 
-      {/* Bloco 4: Cascata de contraproposta sem borda dupla */}
-      {compra && precoBase && precoAlvoJusto && deducoesNegociacao.length > 0 ? (
+      {/* Bloco 4: fatos para negociar, sem valor de proposta (decisão D4) */}
+      {compra && argumentosDeNegociacao.length > 0 ? (
         <View
-          testID="cascata-negociacao"
+          testID="argumentos-negociacao"
           style={[
             styles.secao,
             {
@@ -381,36 +384,22 @@ export function TresPerguntasDoBolso({
           ]}
         >
           <Texto tipo="etiqueta" cor="cor-barro-texto" style={styles.kicker}>
-            Calculadora de contraproposta
+            Para negociar
           </Texto>
           <Texto tipo="secao" style={styles.perguntaTitulo}>
-            Argumentos com conta feita para negociar o preço
+            Fatos que você pode levar à conversa
           </Texto>
 
           <View style={styles.cascataLista}>
-            <View style={styles.cascataLinha}>
-              <Texto tipo="corpo" style={styles.cascataRotulo}>Pedido no anúncio</Texto>
-              <Texto tipo="numero" style={styles.cascataValor}>{formatarReais(precoBase)}</Texto>
-            </View>
-            {deducoesNegociacao.map((d, i) => (
-              <View key={i} style={styles.cascataLinha}>
-                <Texto tipo="apoio" cor="cor-barro-texto" style={styles.cascataRotulo}>
-                  {`− ${d.motivo}`}
-                </Texto>
-                <Texto tipo="numero" cor="cor-barro-texto" style={styles.cascataValor}>
-                  {`-${formatarReaisCompacto(d.valor)}`}
-                </Texto>
-              </View>
+            {argumentosDeNegociacao.map((motivo) => (
+              <Texto key={motivo} tipo="corpo" style={styles.cascataRotulo}>
+                {`• ${motivo}`}
+              </Texto>
             ))}
-            <View style={[styles.cascataLinha, styles.cascataFinal, { borderTopColor: cor("cor-linha-forte") }]}>
-              <Texto tipo="etiqueta" cor="cor-salvia-escura" style={styles.cascataFinalRotulo}>
-                Alvo sugerido de proposta
-              </Texto>
-              <Texto tipo="numero" cor="cor-salvia-escura" style={styles.valorDestaque}>
-                {formatarReais(precoAlvoJusto)}
-              </Texto>
-            </View>
           </View>
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
+            O Vereda não sugere preço nem valor de proposta. Use os fatos para pedir documento, prazo ou desconto, na sua conta.
+          </Texto>
         </View>
       ) : null}
 
@@ -438,7 +427,7 @@ export function TresPerguntasDoBolso({
               • Terreno da União (Decreto-Lei nº 2.398/1987 e Leis nº 13.139/2015 e 13.240/2015): foro anual (0,6%) ou ocupação (2%) calculados apenas sobre a fração ideal do terreno, excluídas as benfeitorias.
             </Texto>
             <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
-              • Saída mensal e 10 anos: financiamento referencial Tabela Price com 20% de entrada e comparação líquida contra aplicação no CDI.
+              • Saída mensal e 10 anos: financiamento referencial Tabela Price com 20% de entrada e comparação líquida contra aplicação no CDI. A valorização do imóvel é uma suposição que você escolhe (0%, 3% ou 5% ao ano), começando em 0%.
             </Texto>
             <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
               • Limite: simulação educativa local neste aparelho; confirme valores finais na guia oficial da Prefeitura do Recife, cartório e agente financeiro.
@@ -466,7 +455,7 @@ export function TresPerguntasDoBolso({
             cor={copiado ? "cor-salvia-escura" : "cor-superficie"}
             style={styles.textoBotaoWhatsapp}
           >
-            {copiado ? "Resumo copiado! Cole direto no WhatsApp" : "Copiar resumo e proposta para WhatsApp"}
+            {copiado ? "Resumo copiado! Cole direto no WhatsApp" : "Copiar resumo para WhatsApp"}
           </Texto>
         </Pressable>
       </View>
@@ -550,29 +539,9 @@ const styles = StyleSheet.create({
   cascataLista: {
     gap: 6,
   },
-  cascataLinha: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "baseline",
-    gap: 10,
-  },
   cascataRotulo: {
     fontSize: 13,
-    flex: 1,
-  },
-  cascataValor: {
-    fontSize: 13.5,
-    fontWeight: "600",
-    fontVariant: ["tabular-nums"],
-  },
-  cascataFinal: {
-    marginTop: 4,
-    paddingTop: 8,
-    borderTopWidth: 1,
-  },
-  cascataFinalRotulo: {
-    fontSize: 13.5,
-    fontWeight: "700",
+    lineHeight: 18,
   },
   rodapeCta: {
     borderTopWidth: 1,

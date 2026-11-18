@@ -2280,7 +2280,7 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
             vplCalorPoenteReais: 0,
             riscoManutencaoPredioReais: 0,
             excedenteMedianaM2Reais: 0,
-            saldo10AnosCompraVsAluguelReais: 120_000,
+            entradaTco10Anos: { precoCompraReais: 650_000, aluguelEquivalenteMensalReais: 2_925, condominioMensalReais: 1_050, iptuAnualReais: 3_600 },
           }),
         ),
       );
@@ -3083,7 +3083,7 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
             vplCalorPoenteReais: 0,
             riscoManutencaoPredioReais: 0,
             excedenteMedianaM2Reais: 0,
-            saldo10AnosCompraVsAluguelReais: 120_000,
+            entradaTco10Anos: { precoCompraReais: 650_000, aluguelEquivalenteMensalReais: 2_925, condominioMensalReais: 1_050, iptuAnualReais: 3_600 },
           }),
         ),
       );

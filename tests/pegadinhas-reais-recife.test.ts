@@ -150,7 +150,9 @@ describe("3 Pegadinhas Reais do Mercado Imobiliário do Recife", () => {
     });
     const txt = textosDoNo(tree.toJSON());
     expect(txt).toContain("Taxa da União /12");
-    expect(txt).toContain("Alvo sugerido de proposta");
+    // Decisão D4 (18/11/2026): ficam os fatos para negociar, sem valor de proposta.
+    expect(txt).toContain("Fatos que você pode levar à conversa");
+    expect(txt).not.toMatch(/alvo (justo|sugerido)/i);
   });
 
   it("Pegadinha 2: Cobertura / último andar Poente em ilha de calor vira forno à tarde", () => {
