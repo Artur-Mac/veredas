@@ -48,7 +48,7 @@ import { bairroPorSlug, eCoberto } from "../../dados/recife/bairros";
 import { useAnalises } from "../../estado/Analises";
 import { usePerfilDomicilio } from "../../estado/PerfilDomicilio";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { ESPACO, TOQUE_MINIMO } from "../../tema/tokens";
 import { traduzirIndicadoresCidadao } from "../../dados/cidadao/tradutorCidadao";
 import { CartaoCidadao3Camadas } from "../../componentes/cidadao/CartaoCidadao3Camadas";
 import { calcularTco10Anos, SimuladorTco10Anos } from "../../componentes/cidadao/SimuladorTco10Anos";
@@ -618,7 +618,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             style={{
               borderRadius: 18,
               borderWidth: 1,
-              borderColor: comAlfa(cor("cor-texto"), 0.09),
+              borderColor: cor("cor-linha-forte"),
               backgroundColor: cor("cor-superficie"),
               overflow: "hidden",
             }}
@@ -712,7 +712,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                 paddingHorizontal: 18,
                 borderRadius: 16,
                 borderWidth: 1,
-                borderColor: comAlfa(cor("cor-texto"), 0.08),
+                borderColor: cor("cor-linha-forte"),
                 backgroundColor: cor("cor-superficie"),
               },
               focoDoPainel.estilo,

@@ -59,6 +59,7 @@ import {
   gerarPedidoDocumentosFaltantes,
 } from "../src/dados/pacoteEspecialista";
 import { montarTextoDivergenciasParaCorretor } from "../src/componentes/dossie-v1/Indicadores";
+import { descreverJanelaTemporalDaBase, GavetaDeFonte } from "../src/componentes/fonte/GavetaDeFonte";
 import { Entorno } from "../src/componentes/dossie-v1/Entorno";
 import { sintetizarPerfilObrasProximas } from "../src/componentes/dossie-v1/textos";
 import type { VisaoDoDossie } from "../src/dados/contratos";
@@ -67,6 +68,9 @@ import { TemaDoApp } from "../src/tema/Tema";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 jest.mock("@react-native-async-storage/async-storage", () => require("@react-native-async-storage/async-storage/jest/async-storage-mock"));
+jest.mock("react-native-safe-area-context", () => ({
+  useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
+}));
 
 function listarTsxRecursivo(dir: string): string[] {
   const arquivos: string[] = [];
@@ -3448,5 +3452,64 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
 
     expect(noImovelSrc).not.toMatch(/\bcomAlfa\b/);
     expect((noImovelSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+  });
+
+  it("GavetaDeFonte e dossie zeram comAlfa e exibem clareza temporal sem relogio do aparelho (S88)", () => {
+    const gavetaSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "fonte", "GavetaDeFonte.tsx"),
+      "utf8",
+    );
+    const dossieSrc = readFileSync(
+      join(__dirname, "..", "src", "app", "(abas)", "dossie.tsx"),
+      "utf8",
+    );
+
+    expect(gavetaSrc).not.toMatch(/\bcomAlfa\b/);
+    expect(gavetaSrc).not.toMatch(/\bborderWidth:\s*1(?!\.)\b/);
+    expect(gavetaSrc).toContain("tabular-nums");
+    expect(gavetaSrc).not.toContain("Date.now");
+
+    expect(dossieSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((dossieSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(2);
+
+    expect(descreverJanelaTemporalDaBase("03/10/2026", "20/10/2026")).toBe(
+      "Retrato local colhido no mesmo mês da publicação",
+    );
+    expect(descreverJanelaTemporalDaBase("2026-09-15", "2026-10-02")).toBe(
+      "Retrato local colhido 1 mês após a publicação",
+    );
+    expect(descreverJanelaTemporalDaBase("01/08/2026", "15/10/2026")).toBe(
+      "Retrato local colhido 2 meses após a publicação",
+    );
+    expect(descreverJanelaTemporalDaBase("A confirmar", "20/10/2026")).toBeNull();
+    expect(descreverJanelaTemporalDaBase("20/11/2026", "01/10/2026")).toBeNull();
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(GavetaDeFonte, {
+            visivel: true,
+            aoFechar: () => undefined,
+            fonte: "iptu_2026",
+            confianca: "oficial",
+            meta: META,
+            dado: { rotulo: "IPTU 2026 no prédio", valor: "R$ 328–R$ 371/mês" },
+          }),
+        ),
+      );
+    });
+
+    const txt = extrairTextos(tree.toJSON()).join(" ");
+    expect(txt).toContain("Ciclo do retrato");
+    expect(txt).toContain("Retrato local colhido");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+
+    act(() => {
+      tree.unmount();
+    });
   });
 });

@@ -50,6 +50,37 @@ function lerMeta(): MetaDaGaveta | null {
   }
 }
 
+function lerMesEAnoDaData(data: string): { ano: number; mes: number } | null {
+  const limpa = data.trim();
+  const br = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(limpa);
+  if (br) {
+    const mes = Number(br[2]);
+    const ano = Number(br[3]);
+    return mes >= 1 && mes <= 12 && ano >= 1900 && ano <= 2200 ? { ano, mes } : null;
+  }
+  const iso = /^(\d{4})-(\d{2})-(\d{2})/.exec(limpa);
+  if (iso) {
+    const ano = Number(iso[1]);
+    const mes = Number(iso[2]);
+    return mes >= 1 && mes <= 12 && ano >= 1900 && ano <= 2200 ? { ano, mes } : null;
+  }
+  return null;
+}
+
+/**
+ * Clareza temporal da fonte (`First Street R5 §6.3`): calcula a defasagem em meses
+ * entre a publicação da base e a coleta local sem depender do relógio do aparelho.
+ */
+export function descreverJanelaTemporalDaBase(modificadoEm: string, consultadoEm: string): string | null {
+  const mod = lerMesEAnoDaData(modificadoEm);
+  const cons = lerMesEAnoDaData(consultadoEm);
+  if (!mod || !cons) return null;
+  const diff = (cons.ano * 12 + cons.mes) - (mod.ano * 12 + mod.mes);
+  if (diff < 0) return null;
+  if (diff === 0) return "Retrato local colhido no mesmo mês da publicação";
+  return `Retrato local colhido ${diff} ${diff === 1 ? "mês" : "meses"} após a publicação`;
+}
+
 function LinhaDeDados({ rotulo, valor, mono = false }: { rotulo: string; valor: string; mono?: boolean }) {
   const { cor } = useTema();
   return (
@@ -63,7 +94,11 @@ function LinhaDeDados({ rotulo, valor, mono = false }: { rotulo: string; valor: 
       </Texto>
       <Texto
         tipo={mono ? "etiqueta" : "corpo"}
-        style={mono ? { fontFamily: "JetBrainsMono", fontSize: 12, lineHeight: 18 } : { fontSize: 13, lineHeight: 19, fontWeight: "600" }}
+        style={
+          mono
+            ? { fontFamily: "JetBrainsMono", fontSize: 12, lineHeight: 18, fontVariant: ["tabular-nums"] }
+            : { fontSize: 13, lineHeight: 19, fontWeight: "600", fontVariant: ["tabular-nums"] }
+        }
       >
         {valor}
       </Texto>
@@ -87,6 +122,10 @@ export function GavetaDeFonte({ visivel, aoFechar, fonte, confianca, dado = null
 
   const titulo = descricao ? descricao.titulo : "Fonte do dado";
   const subtitulo = descricao?.tipo === "base" ? descricao.subtitulo : undefined;
+  const janelaTemporal =
+    descricao?.tipo === "base"
+      ? descreverJanelaTemporalDaBase(descricao.modificadoEm, descricao.consultadoEm)
+      : null;
 
   return (
     <Gaveta visivel titulo={titulo} subtitulo={subtitulo} aoFechar={aoFechar}>
@@ -100,8 +139,8 @@ export function GavetaDeFonte({ visivel, aoFechar, fonte, confianca, dado = null
               padding: ESPACO[3],
               borderRadius: RAIO.icone,
               backgroundColor: cor("cor-creme"),
-              borderWidth: 1,
-              borderColor: cor("cor-linha"),
+              borderLeftWidth: 3,
+              borderLeftColor: cor("cor-azul-cadastral"),
             }}
           >
             <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 16 }}>
@@ -112,7 +151,7 @@ export function GavetaDeFonte({ visivel, aoFechar, fonte, confianca, dado = null
               tipo="corpo"
               style={
                 dado.valor.length <= 28
-                  ? { fontFamily: "JetBrainsMono", fontSize: 16, lineHeight: 22, fontWeight: "600" }
+                  ? { fontFamily: "JetBrainsMono", fontSize: 16, lineHeight: 22, fontWeight: "600", fontVariant: ["tabular-nums"] }
                   : { fontSize: 13, lineHeight: 19, fontWeight: "500" }
               }
             >
@@ -129,6 +168,7 @@ export function GavetaDeFonte({ visivel, aoFechar, fonte, confianca, dado = null
             <LinhaDeDados rotulo="Licença" valor={descricao.licenca} />
             <LinhaDeDados rotulo="Base modificada em" valor={descricao.modificadoEm} />
             <LinhaDeDados rotulo="Consultada pelo Vereda em" valor={descricao.consultadoEm} />
+            {janelaTemporal ? <LinhaDeDados rotulo="Ciclo do retrato" valor={janelaTemporal} /> : null}
             <LinhaDeDados rotulo="Recorte usado" valor={descricao.recorte} />
             <LinhaDeDados rotulo="Colunas usadas" valor={descricao.colunas.join(", ")} mono />
           </View>
