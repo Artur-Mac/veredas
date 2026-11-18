@@ -1795,4 +1795,65 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(respBlock).toContain("borderTopWidth");
     expect(respBlock).not.toMatch(/borderRadius:\s*12/);
   });
+
+  it("nomeia resolução por edifício e posição relativa explícita (Local Logic / ClimateCheck) em S40", () => {
+    const bv = edificiosDoBairro("boa-viagem");
+    const essBv = essenciaisDoBairro("boa-viagem")!;
+    const predioRede = bv.find((e) => essBv.predios[e.id]?.modo === "rede")!;
+    const cam = avaliarCaminhabilidadeEVidaNaRua({
+      predio: predioRede,
+      essenciais: essBv,
+      visaoRua: null,
+      nomeDoBairro: "Boa Viagem",
+    });
+    expect(cam.escopoGranularidade).toContain("não média de CEP ou esquina");
+    expect(cam.frasePercentil).toContain("Posição relativa:");
+
+    const inf = inferirFachadasDoEdificio({ edificio: predioRede, textoAnuncio: "" });
+    const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: 90, andar: 4 });
+    const conf = avaliarConfortoTermico({
+      andar: 4,
+      pavimentosTotais: 12,
+      fachada: inf.frente,
+      bioclimatico: bio,
+    });
+    const pulso = calcularPulsoDaQuadra({
+      conforto: conf,
+      acustica: avaliarAcustica3d({
+        andar: 4,
+        fachadaVoltadaParaVia: "frente",
+        tipologiaVia: "local",
+        distanciaViaM: 14,
+        anoConstrucao: 2010,
+        precoImovelReais: 750_000,
+      }),
+      anoConstrucao: 2010,
+      obrasProximas: null,
+      visaoRua: null,
+      vinculoConfirmado: true,
+      precoInformado: true,
+      condominioInformado: true,
+      comparacaoM2Pct: 0,
+      spuAtivo: false,
+    });
+    expect(pulso.escopoResolucao).toContain("escala deste edifício");
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(VidaAPeNaQuadra, { dados: cam }),
+          React.createElement(PulsoDaQuadra, { pulso }),
+        ),
+      );
+    });
+    expect(tree.root.find((n) => n.props.testID === "vida-a-pe-escopo-edificio")).toBeDefined();
+    expect(tree.root.find((n) => n.props.testID === "pulso-escopo-edificio")).toBeDefined();
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("Posição relativa:");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+  });
 });

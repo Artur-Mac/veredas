@@ -31,6 +31,7 @@ export type ResultadoPulsoDaQuadra = {
   mediaGeral0a10: number | null;
   eixosComLeitura: number;
   manchete: string;
+  escopoResolucao: string;
   eixos: [
     EixoPulsoDaQuadra,
     EixoPulsoDaQuadra,
@@ -249,6 +250,8 @@ export function calcularPulsoDaQuadra(params: {
     mediaGeral0a10,
     eixosComLeitura: validos.length,
     manchete,
+    escopoResolucao:
+      "Leitura na escala deste edifício e de sua face de quadra; eixos sem base ficam fora da média.",
     eixos,
     metodo: {
       oQueMede:

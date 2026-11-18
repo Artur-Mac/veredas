@@ -46,6 +46,9 @@ export function PulsoDaQuadra({ pulso }: { pulso: ResultadoPulsoDaQuadra }) {
         <Texto tipo="secao" style={styles.manchete}>
           {pulso.manchete}
         </Texto>
+        <Texto testID="pulso-escopo-edificio" tipo="apoio" cor="cor-texto-apoio" style={styles.escopoTxt}>
+          {pulso.escopoResolucao}
+        </Texto>
       </View>
 
       {pulso.eixos.map((eixo) => {
@@ -155,6 +158,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: -0.3,
     fontVariant: ["tabular-nums"],
+  },
+  escopoTxt: {
+    fontSize: 11.5,
+    lineHeight: 16,
   },
   linhaEixo: {
     borderTopWidth: 1,

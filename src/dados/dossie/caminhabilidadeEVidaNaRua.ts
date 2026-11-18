@@ -21,6 +21,7 @@ export type ResultadoCaminhabilidadeEVida = {
   amostraPredios: number;
   frasePercentil: string;
   fraseMalhaQuadra: string;
+  escopoGranularidade: string;
   microContextoSetor: string;
   vidaNaRuaResumo: string;
   categorias: [
@@ -81,6 +82,8 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
         "Amostra mínima declarada: 20 prédios com caminho medido em rede de ruas.",
       fraseMalhaQuadra:
         "Sem vínculo confirmado: a conectividade pelas esquinas e travessias da quadra ainda não foi medida.",
+      escopoGranularidade:
+        "Confirme o edifício para calcular tempos da portaria pela malha real de calçadas (não média de CEP).",
       microContextoSetor:
         "Escala do bairro (setor censitário do Censo 2022 sem leitura casada neste ponto).",
       vidaNaRuaResumo: "Sem leitura de face de quadra sem vínculo confirmado.",
@@ -166,7 +169,7 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
       leituraPredio.c.transporte.min;
     const pos = posicaoNoBairro(meuTotal, todosTempos, true);
     percentilNoBairro = Math.min(99, Math.max(1, Math.round(pos.piores * 100)));
-    frasePercentil = `Mais perto dos serviços a pé do que ${percentilNoBairro}% dos ${todosTempos.length} prédios medidos em ${nomeDoBairro}.`;
+    frasePercentil = `Posição relativa: mais perto dos serviços a pé do que ${percentilNoBairro}% dos ${todosTempos.length} prédios medidos em ${nomeDoBairro}.`;
   }
 
   // Proxy aberto de vida na rua (sem painel nem rastreamento de celulares — R49 Placer adaptado)
@@ -212,6 +215,11 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
       ? "Trajeto pela malha de quadra: os minutos consideram esquinas e ruas reais a pé, não linha reta."
       : "Entrada fora da rede viária validada: distâncias exibidas apenas em linha reta.";
 
+  const escopoGranularidade =
+    leituraPredio.modo === "rede"
+      ? "Nota calculada da portaria deste edifício pela malha real de calçadas, não média de CEP ou esquina."
+      : "Leitura em linha reta a partir deste edifício (fora da malha de calçadas validada).";
+
   return {
     notaAPe0a10,
     ausenciaNota: notaAPe0a10 === null ? "sem_leitura_publicada" : null,
@@ -220,6 +228,7 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
     amostraPredios: todosTempos.length,
     frasePercentil,
     fraseMalhaQuadra,
+    escopoGranularidade,
     microContextoSetor,
     vidaNaRuaResumo,
     categorias,

@@ -68,6 +68,9 @@ export function VidaAPeNaQuadra({
       ))}
 
       <View style={[styles.rodape, { borderTopColor: cor("cor-linha") }]}>
+        <Texto testID="vida-a-pe-escopo-edificio" tipo="apoio" cor="cor-texto-apoio" style={styles.vidaRua}>
+          {dados.escopoGranularidade}
+        </Texto>
         <Texto testID="vida-a-pe-malha-quadra" tipo="apoio" cor="cor-texto-apoio" style={styles.vidaRua}>
           {dados.fraseMalhaQuadra}
         </Texto>
