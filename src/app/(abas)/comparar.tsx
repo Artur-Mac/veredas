@@ -49,6 +49,9 @@ import { useTema } from "../../tema/Tema";
 import { ComparacaoDeTres } from "../../componentes/comparar/Tres";
 import { PrioridadesPessoais } from "../../componentes/comparar/Prioridades";
 import { ComparaveisPessoais } from "../../componentes/comparar/ComparaveisPessoais";
+import { DueloFinalistas } from "../../componentes/cidadao/DueloFinalistas";
+import { ConvergenciaFamiliar } from "../../componentes/cidadao/ConvergenciaFamiliar";
+import { filtrarDominanciaInvisivel } from "../../dados/cidadao/dominanciaInvisivel";
 
 const MODALIDADES: readonly { valor: Modalidade; rotulo: string }[] = [
   { valor: "aluguel", rotulo: "Alugar" },
@@ -100,6 +103,7 @@ function CompararComDados() {
   const [escolhendoVisita, setEscolhendoVisita] = useState(false);
   const [terceiroId, setTerceiroId] = useState<string | null>(null);
   const [tresAberto, setTresAberto] = useState(false);
+  const [superadasAbertas, setSuperadasAbertas] = useState(false);
   const [prioridade, setPrioridade] = useState<PrioridadeDaDecisao>("custo");
   // VE15: a frase do efeito da resposta, presa ao par (gravar a análise remonta o resumo; outro par não a herda).
   const [efeitoDaUltimaResposta, setEfeitoDaUltimaResposta] = useState<{ par: string; texto: string } | null>(null);
@@ -145,6 +149,20 @@ function CompararComDados() {
     ? [derivarCustoPorPartes(a, ea, perfilDomicilio), derivarCustoPorPartes(b, eb, perfilDomicilio)] : null;
 
   const naModalidade = elegiveis(lista, modalidade);
+  const resumoDominancia = useMemo(() => {
+    if (naModalidade.length < 3) return null;
+    return filtrarDominanciaInvisivel(
+      "caderno-comparar",
+      naModalidade.map((an) => ({
+        id: an.id,
+        nomeExibicao: an.nome,
+        custoMensalTotalReais: (an.declarados.preco.valor ?? 9_999_999) + (an.declarados.condominio.valor ?? 0),
+        areaM2: an.declarados.area.valor ?? 0,
+        deslocamentoMinDia: 35,
+        ruidoInternoDb: 40,
+      })),
+    );
+  }, [naModalidade]);
   const modoTres = tresAberto && naModalidade.some(a => a.id === terceiroId && !ids.includes(a.id));
   const outraModalidade: Modalidade = modalidade === "aluguel" ? "compra" : "aluguel";
   const nasDuasModalidadesTemPar = elegiveis(lista, outraModalidade).length >= 2;
@@ -289,6 +307,65 @@ function CompararComDados() {
 
               </> : null}
               <View style={{ marginTop: 18 }}>
+                {partesDoPar && comparacao ? (
+                  <View style={{ gap: 12, marginBottom: 14 }}>
+                    <DueloFinalistas
+                      opcaoA={{
+                        id: par[0].id,
+                        nomeExibicao: comparacao.rotulos[0],
+                        custoMensalTotalReais: partesDoPar[0].oficial.totalMensalConhecido ?? 0,
+                        areaM2: par[0].declarados.area.valor ?? 0,
+                        deslocamentoMinDia: 30,
+                        ruidoInternoDb:
+                          par[0].visita.ruido === "silencioso" ? 34 : par[0].visita.ruido === "alto" ? 54 : 40,
+                        situacaoDocumentalResumo: partesDoPar[0].spuEstatutario?.regime ?? "A confirmar na matrícula",
+                        riscoAguaChuvaResumo: ea ? "Checar garagem e cisterna na visita" : "Sem vínculo do prédio",
+                      }}
+                      opcaoB={{
+                        id: par[1].id,
+                        nomeExibicao: comparacao.rotulos[1],
+                        custoMensalTotalReais: partesDoPar[1].oficial.totalMensalConhecido ?? 0,
+                        areaM2: par[1].declarados.area.valor ?? 0,
+                        deslocamentoMinDia: 35,
+                        ruidoInternoDb:
+                          par[1].visita.ruido === "silencioso" ? 34 : par[1].visita.ruido === "alto" ? 54 : 40,
+                        situacaoDocumentalResumo: partesDoPar[1].spuEstatutario?.regime ?? "A confirmar na matrícula",
+                        riscoAguaChuvaResumo: eb ? "Checar garagem e cisterna na visita" : "Sem vínculo do prédio",
+                      }}
+                    />
+                    <ConvergenciaFamiliar
+                      perfilA={{
+                        pessoaNome: "Pessoa 1",
+                        imoveisFavoritosIds: [par[0].id, par[1].id],
+                        tetoMensalReais: perfilDomicilio.orcamentoMensalReais ?? 5000,
+                        exigeSilencioNoQuarto: true,
+                        exigeElevadorOuRampa: perfilDomicilio.necessidadesDeAcesso.includes("mobilidade"),
+                      }}
+                      perfilB={{
+                        pessoaNome: "Pessoa 2",
+                        imoveisFavoritosIds: [par[0].id],
+                        tetoMensalReais: perfilDomicilio.orcamentoMensalReais ?? 5000,
+                        exigeSilencioNoQuarto: false,
+                        exigeElevadorOuRampa: perfilDomicilio.necessidadesDeAcesso.includes("mobilidade"),
+                      }}
+                    />
+                    {resumoDominancia && resumoDominancia.opcoesSuperadas.length > 0 ? (
+                      <SuperficieVx>
+                        <LinkVx
+                          rotulo={superadasAbertas ? "Ocultar opções superadas" : resumoDominancia.tituloGavetaRecolhida}
+                          onPress={() => setSuperadasAbertas((v) => !v)}
+                        />
+                        {superadasAbertas
+                          ? resumoDominancia.opcoesSuperadas.map((sup) => (
+                              <Texto key={sup.candidato.id} tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, marginTop: 6 }}>
+                                {`${sup.candidato.nomeExibicao}: ${sup.explicacaoSimplesPtBr}`}
+                              </Texto>
+                            ))
+                          : null}
+                      </SuperficieVx>
+                    ) : null}
+                  </View>
+                ) : null}
                 <ComparacaoDeTres par={par} candidatas={naModalidade} id={terceiroId} aoEscolher={setTerceiroId} aoAlternar={setTresAberto} />
                 <PrioridadesPessoais analises={modoTres ? [...par, naModalidade.find(a => a.id === terceiroId)!] : par} />
                 <ComparaveisPessoais key={par[0].id} lista={lista} referencia={par[0]} />

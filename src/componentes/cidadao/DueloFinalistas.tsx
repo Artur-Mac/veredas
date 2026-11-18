@@ -1,0 +1,106 @@
+import { View } from "react-native";
+import type { CandidatoDecisao } from "../../dados/cidadao/dominanciaInvisivel";
+import { useTema } from "../../tema/Tema";
+import { RAIO, comAlfa } from "../../tema/tokens";
+import { Texto } from "../Texto";
+
+/**
+ * Duelo A × B entre dois finalistas nas 5 dimensões cidadãs concretas,
+ * destacando apenas onde há diferença material para a decisão.
+ */
+export type EntradaDueloA_B = CandidatoDecisao & {
+  situacaoDocumentalResumo: string;
+  riscoAguaChuvaResumo: string;
+  vpl10AnosReais?: number | null;
+};
+
+function linhaDiferenca(rotulo: string, valA: string, valB: string, igual: boolean) {
+  return { rotulo, valA, valB, igual };
+}
+
+export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; opcaoB: EntradaDueloA_B }) {
+  const { cor } = useTema();
+
+  const linhas = [
+    linhaDiferenca(
+      "Custo em 10 anos / mês",
+      `R$ ${Math.round(opcaoA.custoMensalTotalReais).toLocaleString("pt-BR")}/mês`,
+      `R$ ${Math.round(opcaoB.custoMensalTotalReais).toLocaleString("pt-BR")}/mês`,
+      Math.abs(opcaoA.custoMensalTotalReais - opcaoB.custoMensalTotalReais) < 50,
+    ),
+    linhaDiferenca(
+      "Conforto (ruído no quarto)",
+      `${opcaoA.ruidoInternoDb.toFixed(1)} dB`,
+      `${opcaoB.ruidoInternoDb.toFixed(1)} dB`,
+      Math.abs(opcaoA.ruidoInternoDb - opcaoB.ruidoInternoDb) < 2,
+    ),
+    linhaDiferenca(
+      "Segurança água e chuva",
+      opcaoA.riscoAguaChuvaResumo,
+      opcaoB.riscoAguaChuvaResumo,
+      opcaoA.riscoAguaChuvaResumo === opcaoB.riscoAguaChuvaResumo,
+    ),
+    linhaDiferenca(
+      "Situação documental",
+      opcaoA.situacaoDocumentalResumo,
+      opcaoB.situacaoDocumentalResumo,
+      opcaoA.situacaoDocumentalResumo === opcaoB.situacaoDocumentalResumo,
+    ),
+    linhaDiferenca(
+      "Rotina e deslocamento",
+      `${Math.round(opcaoA.deslocamentoMinDia)} min/dia · ${Math.round(opcaoA.areaM2)} m²`,
+      `${Math.round(opcaoB.deslocamentoMinDia)} min/dia · ${Math.round(opcaoB.areaM2)} m²`,
+      Math.abs(opcaoA.deslocamentoMinDia - opcaoB.deslocamentoMinDia) < 5 && Math.abs(opcaoA.areaM2 - opcaoB.areaM2) < 4,
+    ),
+  ];
+
+  const apenasDiferencas = linhas.filter((l) => !l.igual);
+  const exibidas = apenasDiferencas.length > 0 ? apenasDiferencas : linhas;
+
+  return (
+    <View
+      style={{
+        backgroundColor: cor("cor-superficie"),
+        borderWidth: 1,
+        borderColor: comAlfa(cor("cor-texto"), 0.14),
+        borderRadius: RAIO.cartao,
+        padding: 14,
+        gap: 10,
+      }}
+      accessibilityLabel={`Comparação direta entre ${opcaoA.nomeExibicao} e ${opcaoB.nomeExibicao}`}
+    >
+      <Texto tipo="secao" style={{ fontSize: 16 }}>
+        {`Duelo direto: ${opcaoA.nomeExibicao} × ${opcaoB.nomeExibicao}`}
+      </Texto>
+      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5 }}>
+        {apenasDiferencas.length > 0
+          ? `Mostrando os ${apenasDiferencas.length} pontos em que os dois finalistas realmente diferem.`
+          : "Os dois finalistas estão tecnicamente próximos em todas as dimensões medidas."}
+      </Texto>
+
+      {exibidas.map((l) => (
+        <View
+          key={l.rotulo}
+          style={{
+            backgroundColor: cor("cor-creme"),
+            borderRadius: RAIO.quadrado,
+            padding: 10,
+            gap: 4,
+          }}
+        >
+          <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 11.5 }}>
+            {l.rotulo}
+          </Texto>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 12 }}>
+            <Texto tipo="numero" style={{ flex: 1, fontSize: 13, fontVariant: ["tabular-nums"] }}>
+              {l.valA}
+            </Texto>
+            <Texto tipo="numero" style={{ flex: 1, fontSize: 13, fontVariant: ["tabular-nums"] }}>
+              {l.valB}
+            </Texto>
+          </View>
+        </View>
+      ))}
+    </View>
+  );
+}

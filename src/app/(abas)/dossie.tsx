@@ -48,7 +48,11 @@ import { bairroPorSlug, eCoberto } from "../../dados/recife/bairros";
 import { useAnalises } from "../../estado/Analises";
 import { usePerfilDomicilio } from "../../estado/PerfilDomicilio";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, comAlfa } from "../../tema/tokens";
+import { ESPACO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { traduzirIndicadoresCidadao } from "../../dados/cidadao/tradutorCidadao";
+import { CartaoCidadao3Camadas } from "../../componentes/cidadao/CartaoCidadao3Camadas";
+import { SimuladorTco10Anos } from "../../componentes/cidadao/SimuladorTco10Anos";
+import { ResumoEvidenciaPartilhavel } from "../../componentes/cidadao/ResumoEvidenciaPartilhavel";
 
 /** Recuo do painel (`.ds-panel`, padding 20 18): a posição de uma seção na tela soma este recuo ao topo do painel. */
 const RECUO_DO_PAINEL = 20;
@@ -193,6 +197,17 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     () => derivarCustoPorPartes(analise, predio, perfilDomicilio),
     [analise, predio, perfilDomicilio],
   );
+  const cartoesCidadao = useMemo(
+    () =>
+      traduzirIndicadoresCidadao({
+        modalidade: analise.modalidade,
+        dsqfl: predio?.dsqfl ?? null,
+        cnm16: null,
+        custoPorPartes: partesDeCusto,
+      }),
+    [analise.modalidade, predio, partesDeCusto],
+  );
+  const [mostrarPainelCidadao, setMostrarPainelCidadao] = useState(false);
 
   const fechar = useCallback(() => setGaveta(null), []);
 
@@ -458,6 +473,40 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             {aba === "destaques" ? <FichaViva analise={analise} predio={predio} lista={lista} visao={visao} nomeDoBairro={nomeDoBairro} /> : null}
             {aba === "entorno" ? <ServicosDeEntorno centro={predio?.centro ?? (analise.caderno?.localizacaoDaVisita ? [analise.caderno.localizacaoDaVisita.longitude, analise.caderno.localizacaoDaVisita.latitude] : null)} referenciaDaVisita={!predio ? analise.caderno?.localizacaoDaVisita : undefined} bairro={predio?.bairro ?? null} predioId={predio?.id ?? null} /> : null}
             {aba === "destaques" ? <PrepararNegociacao analise={analise} visao={visao} lista={lista} predio={predio} nomeDoBairro={nomeDoBairro} /> : null}
+            {aba === "destaques" ? (
+              <View style={{ gap: 10 }}>
+                <Botao
+                  rotulo={mostrarPainelCidadao ? "Ocultar leitura em 10 pontos e simulador 10 anos" : "Ver leitura em 10 pontos e simulador 10 anos"}
+                  variante="secundario"
+                  onPress={() => setMostrarPainelCidadao((v) => !v)}
+                />
+                {mostrarPainelCidadao ? (
+                  <View style={{ gap: 10, minHeight: TOQUE_MINIMO }}>
+                    {analise.modalidade === "compra" && analise.declarados.preco.valor ? (
+                      <SimuladorTco10Anos
+                        entrada={{
+                          precoCompraReais: analise.declarados.preco.valor,
+                          aluguelEquivalenteMensalReais: Math.round(analise.declarados.preco.valor * 0.0045),
+                          condominioMensalReais: analise.declarados.condominio.valor ?? 0,
+                          iptuAnualReais: predio?.iptuAnual?.mediana ?? 0,
+                          spuAnualReais: partesDeCusto.spuEstatutario?.encargoPatrimonialAnualVigenteReais ?? 0,
+                          economiaOtimizacaoTributariaReais:
+                            partesDeCusto.otimizacaoFechamento?.melhorCenarioEconomiaReais ?? 0,
+                        }}
+                      />
+                    ) : null}
+                    {cartoesCidadao.map((c) => (
+                      <CartaoCidadao3Camadas key={c.indicadorId} item={c} />
+                    ))}
+                    <ResumoEvidenciaPartilhavel
+                      tituloImovel={analise.nome}
+                      dsqfl={predio?.dsqfl ?? null}
+                      cartoes={cartoesCidadao}
+                    />
+                  </View>
+                ) : null}
+              </View>
+            ) : null}
             {aba === "destaques" ? <LinkComSeta rotulo="Orçamento e cenários" onPress={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "orcamento" } })} /> : null}
             {aba === "edificio" ? <SolNasFachadas analise={analise} predio={predio} aoLevarParaVisita={levarParaVisita} /> : null}
             {aba === "edificio" ? <LadoDoBarulho bairro={predio?.bairro ?? null} predioId={predio?.id ?? null} aoLevarParaVisita={levarParaVisita} /> : null}

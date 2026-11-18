@@ -314,6 +314,14 @@ export default function SobreOsDados() {
             ))}
             <View style={{ gap: 1 }}>
               <Texto tipo="secao" style={{ fontSize: 12.5, lineHeight: 18, fontWeight: "600" }}>
+                Identificação dupla e arquitetura offline por município
+              </Texto>
+              <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 17 }}>
+                Cada dossiê separa o identificador municipal de lote (DSQFL) da matrícula cartorária (CNM 16 dígitos) e distingue explicitamente “não se aplica”, “sem ocorrência no período” e “ainda não sabemos”. Os dados públicos operam em pacotes estáticos assinados com SHA-256 separados do cofre privado do aparelho.
+              </Texto>
+            </View>
+            <View style={{ gap: 1 }}>
+              <Texto tipo="secao" style={{ fontSize: 12.5, lineHeight: 18, fontWeight: "600" }}>
                 Cobertura por bairro e camada
               </Texto>
               <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 17 }}>

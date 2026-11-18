@@ -32,6 +32,7 @@ import { mensagemParaCorretor } from "../../dados/mensagem";
 import { useAnalises } from "../../estado/Analises";
 import { useTema } from "../../tema/Tema";
 import { ESPACO } from "../../tema/tokens";
+import { BussolaSolarBrisa } from "../../componentes/cidadao/BussolaSolarBrisa";
 
 type Aba = "preparar" | "campo" | "resumo";
 
@@ -297,16 +298,30 @@ function ConteudoDaVisita() {
               />
             ) : null}
             {abaAtual === "campo" ? (
-              <PainelDeCampo
-                analiseId={analise.id}
-                perguntas={perguntas}
-                controle={controle}
-                aoAbrirPergunta={(id) => definirGaveta({ tipo: "pergunta", id })}
-                aoAdicionarPergunta={() => definirGaveta({ tipo: "nova" })}
-                predio={predio}
-                vizinhos={vizinhos}
-                andar={andarConhecido}
-              />
+              <View style={{ gap: 12 }}>
+                <BussolaSolarBrisa
+                  azimuteGraus={visita.orientacaoGraus}
+                  ruidoDbAtual={
+                    visita.ruido === "silencioso"
+                      ? 34
+                      : visita.ruido === "moderado"
+                        ? 44
+                        : visita.ruido === "alto"
+                          ? 56
+                          : null
+                  }
+                />
+                <PainelDeCampo
+                  analiseId={analise.id}
+                  perguntas={perguntas}
+                  controle={controle}
+                  aoAbrirPergunta={(id) => definirGaveta({ tipo: "pergunta", id })}
+                  aoAdicionarPergunta={() => definirGaveta({ tipo: "nova" })}
+                  predio={predio}
+                  vizinhos={vizinhos}
+                  andar={andarConhecido}
+                />
+              </View>
             ) : null}
             {abaAtual === "resumo" ? (
               <Resumo resumo={resumirVisita(visita, perguntas)} aoReverRespostas={() => definirAba("campo")} janelas={registroSolar(analise).janelas} aoExplorarSol={() => router.push({ pathname: "/sol", params: { id: analise.id } })} />
