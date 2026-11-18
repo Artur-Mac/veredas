@@ -20,6 +20,11 @@ export type RotuloDeRua = {
   readonly tamanho: number;
   /** Caixas que o texto ocupa ao longo da via, para colisão e conferência. */
   readonly caixas: readonly Retangulo[];
+  /**
+   * Só na rua do imóvel: o nome caiu por cima do lote do imóvel (com o zoom no máximo o lote toma o quadro). O desenho
+   * inverte as cores (texto claro, halo no azul do lote): azul sobre azul não se lia.
+   */
+  readonly sobreOLote?: boolean;
 };
 
 export type NomeDeBairro = {
@@ -144,43 +149,82 @@ function caminhoDoTrecho(pts: number[]): string {
   return d;
 }
 
-/** Estica as pontas do trecho em linha reta, para o nome da rua do imóvel caber mesmo num trecho curto. */
-/** O trecho deslocado de lado (normal de cada segmento), para o nome correr ao lado da via e não sob o pino. */
-function aoLado(pts: number[], d: number): number[] {
-  const saida: number[] = [];
-  const n = pts.length / 2;
-  for (let i = 0; i < n; i++) {
-    const a = Math.max(0, i - 1);
-    const b = Math.min(n - 1, i + 1);
-    const dx = pts[2 * b]! - pts[2 * a]!;
-    const dy = pts[2 * b + 1]! - pts[2 * a + 1]!;
-    const l = Math.hypot(dx, dy) || 1;
-    saida.push(pts[2 * i]! - (dy / l) * d, pts[2 * i + 1]! + (dx / l) * d);
+/**
+ * O ponto dos trechos mais perto de `ancora` (sem âncora, o meio do trecho mais comprido), a direção da via ali, da
+ * esquerda para a direita (vetor unitário), e o comprimento do trecho. A direção é a da corda entre os pontos a até 40
+ * unidades para cada lado: o zigue-zague miúdo do traçado não conta.
+ */
+function pontoMaisPerto(trechos: readonly Trecho[], ancora?: readonly [number, number]): { x: number; y: number; ux: number; uy: number; comprimento: number } {
+  let melhor: { t: Trecho; s: number; d: number } | null = null;
+  for (const t of trechos) {
+    if (!ancora) {
+      if (!melhor || t.comprimento > melhor.t.comprimento) melhor = { t, s: t.comprimento / 2, d: 0 };
+      continue;
+    }
+    for (let i = 2; i < t.pts.length; i += 2) {
+      const [x0, y0, x1, y1] = [t.pts[i - 2]!, t.pts[i - 1]!, t.pts[i]!, t.pts[i + 1]!];
+      const dx = x1 - x0;
+      const dy = y1 - y0;
+      const l2 = dx * dx + dy * dy;
+      const f = l2 === 0 ? 0 : Math.max(0, Math.min(1, ((ancora[0] - x0) * dx + (ancora[1] - y0) * dy) / l2));
+      const d = Math.hypot(ancora[0] - (x0 + f * dx), ancora[1] - (y0 + f * dy));
+      if (!melhor || d < melhor.d) melhor = { t, s: t.acumulado[i / 2 - 1]! + f * Math.sqrt(l2), d };
+    }
   }
-  return saida;
-}
-
-function esticar(pts: number[], quanto: number): number[] {
-  const n = pts.length;
-  const [x0, y0, x1, y1] = [pts[0]!, pts[1]!, pts[2]!, pts[3]!];
-  const [xa, ya, xb, yb] = [pts[n - 4]!, pts[n - 3]!, pts[n - 2]!, pts[n - 1]!];
-  const d0 = Math.hypot(x1 - x0, y1 - y0) || 1;
-  const d1 = Math.hypot(xb - xa, yb - ya) || 1;
-  const saida = pts.slice();
-  saida[0] = x0 - ((x1 - x0) / d0) * quanto;
-  saida[1] = y0 - ((y1 - y0) / d0) * quanto;
-  saida[n - 2] = xb + ((xb - xa) / d1) * quanto;
-  saida[n - 1] = yb + ((yb - ya) / d1) * quanto;
-  return saida;
+  const { t, s } = melhor!;
+  const p = pontoEm(t, s);
+  const meia = Math.min(40, t.comprimento / 2);
+  const a = pontoEm(t, Math.max(0, s - meia));
+  const b = pontoEm(t, Math.min(t.comprimento, s + meia));
+  let ux = b.x - a.x;
+  let uy = b.y - a.y;
+  const l = Math.hypot(ux, uy);
+  if (l < 1e-9) return { x: p.x, y: p.y, ux: 1, uy: 0, comprimento: t.comprimento };
+  ux /= l;
+  uy /= l;
+  // Da esquerda para a direita; via vertical, de baixo para cima (como o texto de uma lombada).
+  if (ux < -1e-9 || (Math.abs(ux) <= 1e-9 && uy > 0)) {
+    ux = -ux;
+    uy = -uy;
+  }
+  return { x: p.x, y: p.y, ux, uy, comprimento: t.comprimento };
 }
 
 const PESO: Record<TipoDeRotulo, number> = { imovel: 2, avenida: 1, rua: 0 };
 
+/** O que a rua do imóvel tem de diferente das outras (decisão A11, 18/11/2026: o nome dela aparece SEMPRE). */
+export type RuaDoImovel = {
+  /** O ponto do imóvel no desenho (o pino): o nome fica o mais perto dele que der. Sem ele, vale o meio do trecho mais comprido. */
+  readonly ancora?: readonly [number, number];
+  /**
+   * Obstáculos que o nome só respeita enquanto há outro lugar: são desenho do próprio fundo (o lote do imóvel), ficam por
+   * BAIXO do texto e não o escondem. Os de `obstaculos` (pino, selo, botões, crédito, régua, pontos e obras) ficam por
+   * cima do desenho e nunca são cobertos.
+   */
+  readonly fracos?: readonly Retangulo[];
+};
+
+/** Passo da busca de lugar para a rua do imóvel, em em: desliza de 0,7 em 0,7 em (6 px na tela). */
+const PASSO_DA_BUSCA_EM = 0.7;
+/** Até onde o nome da rua do imóvel se afasta de lado da via, em em, antes de desistir de acompanhá-la (~34 px). */
+const AFASTAMENTO_MAXIMO_EM = 4;
+
 /**
  * Posiciona os nomes de rua. Ordem: rua do imóvel, depois avenidas e corredores, depois o trecho mais comprido. Cada
  * nome desliza pela via (50%, 35%, 65%, 22%, 78%…) até não colidir com outro rótulo nem com `obstaculos` (nomes de
- * bairro); se não couber, não aparece. A rua do imóvel vem primeiro e pode ser esticada ou correr ao lado da via, mas
- * só aparece se couber sem colidir: o que o código garante é tentar, não rotular sempre.
+ * bairro); se não couber, não aparece.
+ *
+ * A rua do imóvel é a exceção (A11): vem primeiro, os outros nomes desviam dela, e ela aparece sempre que tem trecho
+ * no quadro e existe um lugar livre para o texto dentro do limite. A busca vai do melhor lugar para o pior:
+ *   1. sobre a via, onde ela é reta e o nome cabe (como as outras ruas);
+ *   2. em linha reta na direção da via, pelo ponto dela mais perto do imóvel: desliza ao longo da linha e se afasta de
+ *      lado aos poucos (até AFASTAMENTO_MAXIMO_EM), escolhendo a posição mais perto do imóvel;
+ *   3. o mesmo, podendo passar por cima do lote do imóvel (`fracos`);
+ *   4. deitado (horizontal) e cruzando a via, com o meio do texto num ponto dela: é o que resta quando a via é
+ *      íngreme e o quadro é baixo (a tela do prédio tem 120 px livres de altura), e o nome continua em cima da rua certa;
+ *   5. deitado, no lugar livre mais perto do imóvel, em qualquer ponto do limite. É também o que vale quando a via
+ *      não tem trecho no limite (zoom máximo sobre um lote grande): o nome fica na tela, junto do pino.
+ * Nunca fica por baixo do pino nem do que o mapa põe por cima do desenho.
  */
 export function posicionarRotulosDeRua(
   candidatos: readonly CandidatoDeRua[],
@@ -195,6 +239,7 @@ export function posicionarRotulosDeRua(
    * deitado no rio parece outra coisa e fica espremido na curva da margem.
    */
   naAgua?: (x: number, y: number) => boolean,
+  doImovel: RuaDoImovel = {},
 ): RotuloDeRua[] {
   const tamanho = TAMANHO_DA_RUA / zoom;
   const vao = VAO_DA_REPETICAO_PX / zoom;
@@ -208,21 +253,19 @@ export function posicionarRotulosDeRua(
   }
   itens.sort((a, b) => PESO[b.tipo] - PESO[a.tipo] || b.trecho.comprimento - a.trecho.comprimento || (a.nome < b.nome ? -1 : a.nome > b.nome ? 1 : 0));
 
-  const ocupadas: Retangulo[] = [...obstaculos];
+  const fracos = doImovel.fracos ?? [];
+  // Enquanto a rua do imóvel procura lugar, os fracos contam como ocupados; os outros nomes sempre desviam deles.
+  const ocupadas: Retangulo[] = [...obstaculos, ...fracos];
   const meiosPorNome = new Map<string, [number, number][]>();
   const rotulos: RotuloDeRua[] = [];
   const imovelPosto = { feito: false };
 
-  const tentar = (item: Item, forcar: boolean, ignorarColisao = false, deslocamento = 0): boolean => {
+  /** Sobre a via: desliza pelas frações até achar um trecho reto, dentro do limite, sem colisão e fora da água. */
+  const tentar = (item: Item): boolean => {
     const negrito = item.tipo === "imovel";
     const largura = larguraDoTexto(item.nome, tamanho, negrito);
-    let trecho = item.trecho;
-    if (forcar) {
-      // Forçado (só a rua do imóvel): pontas esticadas em linha reta, com sobra para o nome escapar do pino.
-      trecho = medir(aoLado(esticar(trecho.pts, Math.max(0, (largura * 1.08 + tamanho - trecho.comprimento) / 2) + largura), deslocamento));
-    } else if (trecho.comprimento < largura * 1.08 + tamanho) {
-      return false;
-    }
+    const trecho = item.trecho;
+    if (trecho.comprimento < largura * 1.08 + tamanho) return false;
     const meiaFr = (largura / 2 + tamanho * 0.4) / trecho.comprimento;
     const maximo = Math.max(1, Math.floor(trecho.comprimento / (largura + vao)) + 1);
     let postos = 0;
@@ -234,11 +277,11 @@ export function posicionarRotulosDeRua(
       const anteriores = meiosPorNome.get(item.nome) ?? [];
       if (anteriores.some(([x, y]) => Math.hypot(x - meio.x, y - meio.y) < Math.max(vao, largura + tamanho * 4))) continue;
       const { caixas, reta } = caixasNoTrecho(trecho, s - largura / 2, s + largura / 2, tamanho);
-      if (!reta && !forcar) continue;
+      if (!reta) continue;
       // O texto inteiro dentro do limite (não só o meio de cada caixa): nenhum nome sai do quadro nem da janela.
       const lim = item.tipo === "imovel" && limiteDoImovel ? limiteDoImovel : limite;
       if (lim && caixas.some((c) => c[0] < lim[0] || c[2] > lim[2] || c[1] < lim[1] || c[3] > lim[3])) continue;
-      if (!ignorarColisao && caixas.some((c) => ocupadas.some((o) => sobrepoe(c, o)))) continue;
+      if (caixas.some((c) => ocupadas.some((o) => sobrepoe(c, o)))) continue;
       if (naAgua && caixas.some((c) => naAgua((c[0] + c[2]) / 2, (c[1] + c[3]) / 2))) continue;
       ocupadas.push(...caixas);
       anteriores.push([meio.x, meio.y]);
@@ -254,23 +297,86 @@ export function posicionarRotulosDeRua(
         caixas,
       });
       postos++;
-      if (forcar) break;
     }
     return postos > 0;
   };
 
-  // A rua do imóvel primeiro e sempre que tiver trecho no quadro: se o nome não cabe em nenhum trecho, vai no mais
-  // comprido, esticado em linha reta; se ainda colide com um nome de bairro, vai assim mesmo (é a rua que importa).
-  const doImovel = itens.filter((i) => i.tipo === "imovel");
-  for (const item of doImovel) if (tentar(item, false)) imovelPosto.feito = true;
-  if (!imovelPosto.feito && doImovel[0]) {
-    const lado = tamanho * 0.75 + (obstaculos.length > 0 ? 13 / zoom : 0);
-    // Sem lugar livre nem ao lado da via, a rua fica sem rótulo (nunca por cima do pino, de outro rótulo ou dos
-    // controles do mapa); a descrição acessível continua dizendo a rua.
-    if (!tentar(doImovel[0], true)) if (!tentar(doImovel[0], true, false, -lado)) tentar(doImovel[0], true, false, lado);
+  // A rua do imóvel primeiro. Passo 1: sobre a via, como qualquer rua.
+  const trechosDoImovel = itens.filter((i) => i.tipo === "imovel");
+  for (const item of trechosDoImovel) if (tentar(item)) imovelPosto.feito = true;
+  // O candidato existe mesmo sem trecho no limite (a via ficou fora da janela, com o zoom no máximo sobre um lote grande).
+  const item = candidatos.find((c) => c.tipo === "imovel");
+  if (!imovelPosto.feito && item) {
+    const largura = larguraDoTexto(item.nome, tamanho, true);
+    const lim = limiteDoImovel ?? limite;
+    const passo = tamanho * PASSO_DA_BUSCA_EM;
+    // O ponto da via mais perto do imóvel e a direção dela ali; null se a via não tem trecho no limite.
+    const perto = trechosDoImovel.length > 0 ? pontoMaisPerto(trechosDoImovel.map((i) => i.trecho), doImovel.ancora) : null;
+    const [ax, ay] = doImovel.ancora ?? (perto ? [perto.x, perto.y] : lim ? [(lim[0] + lim[2]) / 2, (lim[1] + lim[3]) / 2] : [0, 0]);
+    const serve = (caixas: Retangulo[], comFracos: boolean, comAgua: boolean): boolean => {
+      if (lim && caixas.some((c) => c[0] < lim[0] || c[2] > lim[2] || c[1] < lim[1] || c[3] > lim[3])) return false;
+      if (caixas.some((c) => obstaculos.some((o) => sobrepoe(c, o)))) return false;
+      if (comFracos && caixas.some((c) => fracos.some((o) => sobrepoe(c, o)))) return false;
+      if (comAgua && naAgua && caixas.some((c) => naAgua((c[0] + c[2]) / 2, (c[1] + c[3]) / 2))) return false;
+      return true;
+    };
+    /** Tenta o texto reto com o meio em (cx, cy) na direção (ux, uy); põe o rótulo se o lugar serve. */
+    const reto = (cx: number, cy: number, ux: number, uy: number, comFracos: boolean, comAgua: boolean): boolean => {
+      const meia = largura / 2 + tamanho * 0.4;
+      const trecho = medir([cx - ux * meia, cy - uy * meia, cx + ux * meia, cy + uy * meia]);
+      const { caixas } = caixasNoTrecho(trecho, meia - largura / 2, meia + largura / 2, tamanho);
+      if (!serve(caixas, comFracos, comAgua)) return false;
+      ocupadas.push(...caixas);
+      meiosPorNome.set(item.nome, [...(meiosPorNome.get(item.nome) ?? []), [cx, cy]]);
+      rotulos.push({ id: `fundo-rua-${primeiroId + rotulos.length}`, nome: item.nome, tipo: "imovel", caminho: caminhoDoTrecho(trecho.pts), inicio: Math.round(meia * 10) / 10, fracao: 0.5, tamanho, caixas });
+      return true;
+    };
+    if (perto) {
+      // Passos 2 e 3: na direção da via. Posições (ao longo, de lado) da mais perto do imóvel para a mais longe; o
+      // afastamento de lado pesa a mais, para o nome ficar sobre a via ou colado nela enquanto der.
+      const aoLongo = Math.max(largura, perto.comprimento / 2);
+      const deLado = tamanho * AFASTAMENTO_MAXIMO_EM;
+      const posicoes: { x: number; y: number; d: number; custo: number }[] = [];
+      for (let t = 0; t <= aoLongo + 1e-9; t += passo) {
+        for (let d = 0; d <= deLado + 1e-9; d += passo) {
+          for (const st of t === 0 ? [1] : [1, -1]) {
+            for (const sd of d === 0 ? [1] : [1, -1]) {
+              const x = perto.x + perto.ux * t * st - perto.uy * d * sd;
+              const y = perto.y + perto.uy * t * st + perto.ux * d * sd;
+              posicoes.push({ x, y, d, custo: Math.hypot(x - ax, y - ay) + 1.5 * d });
+            }
+          }
+        }
+      }
+      posicoes.sort((a, b) => a.custo - b.custo || a.d - b.d || a.y - b.y || a.x - b.x);
+      const naDirecaoDaVia = (comFracos: boolean): boolean => posicoes.some((p) => reto(p.x, p.y, perto.ux, perto.uy, comFracos, true));
+      imovelPosto.feito = naDirecaoDaVia(true) || naDirecaoDaVia(false);
+    }
+    // Passo 4: deitado, com o meio do texto num ponto da via (o mais perto do imóvel primeiro).
+    if (!imovelPosto.feito && perto) {
+      const naVia: { x: number; y: number; custo: number }[] = [];
+      for (const i of trechosDoImovel) {
+        for (let s = 0; s <= i.trecho.comprimento + 1e-9; s += passo) {
+          const p = pontoEm(i.trecho, s);
+          naVia.push({ x: p.x, y: p.y, custo: Math.hypot(p.x - ax, p.y - ay) });
+        }
+      }
+      naVia.sort((a, b) => a.custo - b.custo || a.y - b.y || a.x - b.x);
+      imovelPosto.feito = naVia.some((c) => reto(c.x, c.y, 1, 0, true, true)) || naVia.some((c) => reto(c.x, c.y, 1, 0, false, true));
+    }
+    // Passo 5: deitado, no lugar livre mais perto do imóvel (também quando a via ficou fora da janela: o nome continua
+    // na tela, junto do pino). Só os obstáculos de cima contam; a água, só se houver saída.
+    if (!imovelPosto.feito && lim) {
+      const centros: { x: number; y: number; custo: number }[] = [];
+      for (let x = lim[0] + largura / 2 + tamanho; x <= lim[2] - largura / 2 - tamanho + 1e-9; x += passo) {
+        for (let y = lim[1] + tamanho; y <= lim[3] - tamanho + 1e-9; y += passo) centros.push({ x, y, custo: Math.hypot(x - ax, y - ay) });
+      }
+      centros.sort((a, b) => a.custo - b.custo || a.y - b.y || a.x - b.x);
+      imovelPosto.feito = centros.some((c) => reto(c.x, c.y, 1, 0, false, true)) || centros.some((c) => reto(c.x, c.y, 1, 0, false, false));
+    }
   }
   for (const item of itens) {
-    if (item.tipo !== "imovel") tentar(item, false);
+    if (item.tipo !== "imovel") tentar(item);
   }
   return rotulos;
 }

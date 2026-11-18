@@ -63,7 +63,8 @@ export function FundoDoMapa({ cena, partes = "tudo" }: FundoDoMapaProps) {
   const z = cena.zoom;
   const t = (px: number) => px / z;
   const c = cena.camadas;
-  const corDaRua = (r: RotuloDeRua) => (r.tipo === "imovel" ? e.ruaDoImovel : r.tipo === "avenida" ? e.avenida : e.rua);
+  const corDaRua = (r: RotuloDeRua) => (r.sobreOLote ? e.ruaDoImovelSobreOLote : r.tipo === "imovel" ? e.ruaDoImovel : r.tipo === "avenida" ? e.avenida : e.rua);
+  const haloDaRua = (r: RotuloDeRua) => (r.sobreOLote ? e.haloSobreOLote : e.halo);
   const pesoDaRua = (r: RotuloDeRua) => (r.tipo === "imovel" ? "700" : "600");
   if (!cena.temDado) return null;
   // Emenda do chão do vizinho (divisa da cidade, 2 m) com a divisa fina do bairro: um traço de 3 m na cor do chão.
@@ -138,8 +139,8 @@ export function FundoDoMapa({ cena, partes = "tudo" }: FundoDoMapaProps) {
                   fontWeight={pesoDaRua(r)}
                   fontSize={r.tamanho}
                   textAnchor="middle"
-                  fill={halo ? e.halo : corDaRua(r)}
-                  stroke={halo ? e.halo : undefined}
+                  fill={halo ? haloDaRua(r) : corDaRua(r)}
+                  stroke={halo ? haloDaRua(r) : undefined}
                   strokeWidth={halo ? t(TRACO.haloDaRua) : undefined}
                   strokeLinejoin={halo ? "round" : undefined}
                 >

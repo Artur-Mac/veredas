@@ -56,6 +56,9 @@ export function estiloDoFundo(c: Cores, _escuro = false) {
     rua: c["cor-texto-apoio"],
     avenida: c["cor-texto"],
     ruaDoImovel: c["cor-azul-cadastral"],
+    /** O nome da rua do imóvel quando cai sobre o lote do imóvel (azul): texto na cor do chão, halo no azul do lote. */
+    ruaDoImovelSobreOLote: c["mapa-rua"],
+    haloSobreOLote: c["cor-azul-cadastral"],
     /** Halo dos rótulos: a cor do chão, que é o que fica atrás do texto na via. */
     halo: c["mapa-rua"],
     bairro: c["cor-texto-apoio"],

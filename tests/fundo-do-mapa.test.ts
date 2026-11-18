@@ -317,6 +317,9 @@ describe("contraste dos rótulos (4,5:1) sobre o chão onde caem, claro e escuro
       for (const cor of [e.rua, e.avenida, e.ruaDoImovel]) expect(contraste(cor, e.chao)).toBeGreaterThanOrEqual(4.5);
       // Nome de bairro: o halo da cor do chão contorna cada letra; é o que fica colado ao texto.
       for (const cor of [e.bairro, e.bairroDoImovel]) expect(contraste(cor, e.halo)).toBeGreaterThanOrEqual(4.5);
+      // M4: o nome da rua do imóvel que cai sobre o lote do imóvel inverte as cores (o halo é o azul do próprio lote).
+      expect(e.haloSobreOLote).toBe(e.loteDoImovel);
+      expect(contraste(e.ruaDoImovelSobreOLote, e.loteDoImovel)).toBeGreaterThanOrEqual(4.5);
     });
   }
 });
