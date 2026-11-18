@@ -162,6 +162,33 @@ export const PRAZOS_REFERENCIA_PRE_SINAL: readonly PrazoReferenciaPreSinal[] = [
   },
 ];
 
+export type AlertaDiligenciaRecife = {
+  id: string;
+  titulo: string;
+  detalhe: string;
+};
+
+export const ALERTAS_DILIGENCIA_RECIFE_2026: readonly AlertaDiligenciaRecife[] = [
+  {
+    id: "aqua_compesa_2026",
+    titulo: "Água e saneamento (transição 23/11/2026)",
+    detalhe:
+      "Na mudança operacional para a AQUA Pernambuco, eventuais débitos anteriores a 23/11/2026 permanecem retidos na Compesa: peça certidão de quitação nas duas frentes.",
+  },
+  {
+    id: "vistoria_trienal_pe",
+    titulo: "Inspeção predial periódica (Lei Estadual PE nº 13.032/2006)",
+    detalhe:
+      "Edifícios em Pernambuco devem manter vistoria técnica trienal registrada; em prédios entregues há mais de 5 anos, solicite cópia do último relatório ao síndico.",
+  },
+  {
+    id: "cat_spu_90_dias",
+    titulo: "Transferência em terreno da União — CAT (90 dias)",
+    detalhe:
+      "Quando há regime da União, o laudêmio (5% sobre o domínio pleno do terreno × fração ideal) e a emissão da CAT cabem ao vendedor antes da escritura, com validade de 90 dias.",
+  },
+];
+
 export type ResumoTextoColadoCidadao = {
   classeRotulo: string;
   cnmFormatada: string | null;

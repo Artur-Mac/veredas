@@ -2260,4 +2260,34 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });
+
+  it("expõe diligência estatutária do Recife (AQUA/Compesa, vistoria trienal PE e CAT 90 dias) em CopilotoDocumentosPreSinal em S50", () => {
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(CopilotoDocumentosPreSinal, {
+            nomeImovel: "Residencial Atlântico",
+            anoConstrucao: 2012,
+            unidades: 36,
+            chaveLote14: "12345678901234",
+            spuAtivo: true,
+          }),
+        ),
+      );
+    });
+    const toggle = tree.root.find((n) => n.props.testID === "toggle-prazos-pre-sinal");
+    act(() => {
+      toggle.props.onPress();
+    });
+    expect(tree.root.find((n) => n.props.testID === "alertas-diligencia-recife")).toBeDefined();
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("AQUA Pernambuco");
+    expect(txt).toContain("Lei Estadual PE nº 13.032/2006");
+    expect(txt).toContain("CAT");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+  });
 });

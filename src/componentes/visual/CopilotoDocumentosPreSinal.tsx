@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import type { EstadoItemPacoteDocumental } from "../../nucleo/documentos/auditorDocumental";
 import {
+  ALERTAS_DILIGENCIA_RECIFE_2026,
   AVISO_LEITURA_INDEPENDENTE,
   ORIENTACAO_CNIB_ONR,
   PACOTE_PRE_SINAL_ITENS,
@@ -493,6 +494,21 @@ export function CopilotoDocumentosPreSinal({
                 </Texto>
               </View>
             ))}
+            <View testID="alertas-diligencia-recife">
+              {ALERTAS_DILIGENCIA_RECIFE_2026.map((a) => (
+                <View
+                  key={a.id}
+                  style={[styles.linhaPrazo, { borderTopWidth: 1, borderTopColor: cor("cor-linha") }]}
+                >
+                  <Texto tipo="apoio" style={styles.pacoteTitulo}>
+                    {a.titulo}
+                  </Texto>
+                  <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoObs}>
+                    {a.detalhe}
+                  </Texto>
+                </View>
+              ))}
+            </View>
             <View style={[styles.linhaPrazo, { borderTopWidth: 1, borderTopColor: cor("cor-linha") }]}>
               <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoObs}>
                 {ORIENTACAO_CNIB_ONR}
