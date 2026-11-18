@@ -1415,4 +1415,15 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(blocoMarinha).not.toMatch(/\bborderWidth:\s*1\b/);
     expect(blocoMarinha).toContain("borderLeftWidth: 3");
   });
+
+  it("desmodulariza CaixaCreme de sobre-os-dados em hairlines, publica tabela ATTOM e cláusula local/não-treino Cherre/ONR", () => {
+    const sobreSrc = readFileSync(
+      join(__dirname, "..", "src", "app", "sobre-os-dados.tsx"),
+      "utf8",
+    );
+    expect(sobreSrc).not.toMatch(/\bborderWidth:\s*1\b/);
+    expect(sobreSrc).toContain("tabela-elementos-dados");
+    expect(sobreSrc).toContain("nada é usado para treinar modelos");
+    expect(sobreSrc).toContain("não substitui certidão oficial nem responsabiliza o app");
+  });
 });

@@ -110,18 +110,16 @@ function Fato({ rotulo, valor, numerico = false }: { rotulo: string; valor: stri
   );
 }
 
-/** `.ed-soft-box`: caixa de fundo creme, borda de 8% de tinta, raio 11. */
+/** Bloco editorial aberto em divisória hairline, eliminando caixas aninhadas fechadas. */
 function CaixaCreme({ children, gap = 4 }: { children: React.ReactNode; gap?: number }) {
   const { cor } = useTema();
   return (
     <View
       style={{
-        backgroundColor: cor("cor-creme"),
-        borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto"), 0.08),
-        borderRadius: 11,
-        paddingVertical: 11,
-        paddingHorizontal: 12,
+        borderTopWidth: 1,
+        borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+        paddingTop: 10,
+        paddingBottom: 4,
         gap,
       }}
     >
@@ -306,7 +304,7 @@ export default function SobreOsDados() {
             Privacidade e amostra mínima:
           </Texto>
           <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 17 }}>
-            O Vereda não guarda nada sobre quem anuncia. Sem conta, sem sincronização em nuvem e sem perfilamento: toda análise e preferência fica apenas neste aparelho. Comparativos de bairro exigem amostra mínima de 20 edifícios; faixas fiscais exigem ao menos 3 transmissões em 36 meses.
+            O Vereda não guarda nada sobre quem anuncia. Sem conta, sem sincronização em nuvem e sem perfilamento: toda análise, documento colado e preferência fica apenas neste aparelho, e nada é usado para treinar modelos. Esta leitura não substitui certidão oficial nem responsabiliza o app por divergências nas bases públicas de origem. Comparativos de bairro exigem amostra mínima de 20 edifícios; faixas fiscais exigem ao menos 3 transmissões em 36 meses.
           </Texto>
         </CaixaCreme>
 
@@ -340,29 +338,31 @@ export default function SobreOsDados() {
               Inventário público por camada
             </Texto>
             <CaixaCreme gap={6}>
-              {[...leitura.fontes, ...leitura.fontesDaRua].map((f, idx) => (
-                <View
-                  key={`inv-${f.chave}`}
-                  style={{
-                    borderTopWidth: idx === 0 ? 0 : 1,
-                    borderTopColor: comAlfa(cor("cor-texto"), 0.08),
-                    paddingTop: idx === 0 ? 0 : 6,
-                    gap: 2,
-                  }}
-                >
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 8 }}>
-                    <Texto tipo="etiqueta" style={{ fontSize: 12, fontWeight: "700", flex: 1 }}>
-                      {f.nome}
-                    </Texto>
-                    <Texto tipo="numero" cor="cor-texto-apoio" style={{ fontSize: 11.5, fontVariant: ["tabular-nums"] }}>
-                      {`${f.colunasUsadas.length} colunas · ${formatarNumero(f.registrosLidos)} reg.`}
+              <View testID="tabela-elementos-dados" style={{ gap: 6 }}>
+                {[...leitura.fontes, ...leitura.fontesDaRua].map((f, idx) => (
+                  <View
+                    key={`inv-${f.chave}`}
+                    style={{
+                      borderTopWidth: idx === 0 ? 0 : 1,
+                      borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+                      paddingTop: idx === 0 ? 0 : 6,
+                      gap: 2,
+                    }}
+                  >
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 8 }}>
+                      <Texto tipo="etiqueta" style={{ fontSize: 12, fontWeight: "700", flex: 1 }}>
+                        {f.nome}
+                      </Texto>
+                      <Texto tipo="numero" cor="cor-texto-apoio" style={{ fontSize: 11.5, fontVariant: ["tabular-nums"] }}>
+                        {`${diaGravado(f.modificadoEm ?? f.consultadoEm)} · ${f.colunasUsadas.length} col. · ${formatarNumero(f.registrosLidos)} reg.`}
+                      </Texto>
+                    </View>
+                    <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                      {`${f.orgao} · Campos lidos: ${f.colunasUsadas.slice(0, 6).join(", ")}${f.colunasUsadas.length > 6 ? "…" : ""}`}
                     </Texto>
                   </View>
-                  <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
-                    {`Campos lidos: ${f.colunasUsadas.slice(0, 6).join(", ")}${f.colunasUsadas.length > 6 ? "…" : ""}`}
-                  </Texto>
-                </View>
-              ))}
+                ))}
+              </View>
             </CaixaCreme>
 
             <Texto tipo="secao" role="heading" aria-level={3} style={{ fontSize: 12, lineHeight: 16, fontWeight: "700", marginTop: 4 }}>
