@@ -6,9 +6,16 @@ import { useState } from "react";
 import { Platform, View } from "react-native";
 import type { AnaliseV2, VisaoDoDossie } from "../../dados/contratos";
 import type { ItemDaFicha } from "../../dados/dossie/fichaViva";
-import { montarPacote, pacoteEmHtml, pacoteEmMarkdown } from "../../dados/pacoteEspecialista";
+import {
+  auditarConjuntoDocumental,
+  gerarPedidoDocumentosFaltantes,
+  montarPacote,
+  pacoteEmHtml,
+  pacoteEmMarkdown,
+} from "../../dados/pacoteEspecialista";
 import { useTema } from "../../tema/Tema";
 import { Botao } from "../Botao";
+import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { Nota } from "./base";
 
@@ -23,6 +30,9 @@ function baixar(nome: string, conteudo: string, tipo: string) {
 export function PacoteParaEspecialista({ analise, visao, ficha }: { analise: AnaliseV2; visao: VisaoDoDossie; ficha: readonly ItemDaFicha[] }) {
   const { cor } = useTema();
   const [aviso, setAviso] = useState<{ texto: string; tipo: "ok" | "erro" } | null>(null);
+  const [controleAberto, setControleAberto] = useState(false);
+  const agoraIso = new Date().toISOString();
+  const auditoria = auditarConjuntoDocumental(analise, agoraIso);
   const pacote = () => montarPacote({ analise, visao, ficha, perguntas: visao.perguntas, agora: new Date().toISOString() });
   const nome = `vereda-pacote-${analise.id}`;
   const web = Platform.OS === "web" && typeof document !== "undefined";
@@ -42,6 +52,13 @@ export function PacoteParaEspecialista({ analise, visao, ficha }: { analise: Ana
       setAviso({ texto: "Dossiê técnico (.md) copiado para colar ou enviar.", tipo: "ok" });
     } catch { setAviso({ texto: "Não foi possível copiar o texto agora.", tipo: "erro" }); }
   };
+  const copiarPedidoFaltantes = async () => {
+    try {
+      await Clipboard.setStringAsync(gerarPedidoDocumentosFaltantes(analise, auditoria));
+      setAviso({ texto: "Pedido de documentos pendentes copiado para enviar.", tipo: "ok" });
+    } catch { setAviso({ texto: "Não foi possível copiar o pedido agora.", tipo: "erro" }); }
+  };
+  const temPendencia = auditoria.faltantes > 0 || auditoria.desatualizados > 0;
   return (
     <View
       style={{
@@ -71,6 +88,92 @@ export function PacoteParaEspecialista({ analise, visao, ficha }: { analise: Ana
         <Botao rotulo="Copiar texto (.md)" variante="secundario" onPress={() => void copiar()} />
         {web ? <Botao rotulo="Baixar .html" variante="secundario" onPress={() => baixar(`${nome}.html`, pacoteEmHtml(pacote()), "text/html")} /> : null}
         {web ? <Botao rotulo="Baixar .md" variante="secundario" onPress={() => baixar(`${nome}.md`, pacoteEmMarkdown(pacote()), "text/markdown")} /> : null}
+      </View>
+      <View style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 10, marginTop: 2, gap: 6 }}>
+        <Pressionavel
+          testID="pacote-toggle-controle-documentos"
+          accessibilityRole="button"
+          accessibilityState={{ expanded: controleAberto }}
+          accessibilityLabel={`Controle do pacote: ${auditoria.guardados} de ${auditoria.totalObrigatorios} guardados. ${auditoria.resumoCurto}. ${controleAberto ? "Ocultar checklist" : "Conferir checklist"}`}
+          onPress={() => setControleAberto((v) => !v)}
+          style={{ minHeight: 44, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10, paddingVertical: 4 }}
+        >
+          <View style={{ flex: 1, gap: 2 }}>
+            <Texto tipo="apoio" style={{ fontSize: 13, lineHeight: 18, fontWeight: "700", fontVariant: ["tabular-nums"] }}>
+              {`Controle do pacote: ${auditoria.guardados} de ${auditoria.totalObrigatorios} guardados`}
+            </Texto>
+            <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17, fontVariant: ["tabular-nums"] }}>
+              {auditoria.resumoCurto}
+            </Texto>
+          </View>
+          <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 12.5, lineHeight: 17, fontWeight: "600" }}>
+            {controleAberto ? "Ocultar checklist" : "Conferir checklist"}
+          </Texto>
+        </Pressionavel>
+        {controleAberto ? (
+          <View testID="pacote-lista-documentos" style={{ gap: 2 }}>
+            {auditoria.itens.map((item) => {
+              const corPonto =
+                item.estado === "recebido"
+                  ? cor("cor-salvia-escura")
+                  : item.estado === "desatualizado"
+                    ? cor("cat-ipe-amarelo")
+                    : cor("cor-barro-texto");
+              const corRotulo =
+                item.estado === "recebido"
+                  ? "cor-salvia-escura"
+                  : item.estado === "desatualizado"
+                    ? "cor-barro-texto"
+                    : "cor-texto-apoio";
+              return (
+                <View
+                  key={item.id}
+                  style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingVertical: 8, gap: 2 }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 7, flex: 1, minWidth: 0 }}>
+                      <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: corPonto }} />
+                      <Texto tipo="apoio" style={{ fontSize: 13, lineHeight: 18, fontWeight: "600", flexShrink: 1 }}>
+                        {item.titulo}
+                      </Texto>
+                    </View>
+                    <Texto tipo="apoio" cor={corRotulo} style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700" }}>
+                      {item.rotuloEstado}
+                    </Texto>
+                  </View>
+                  <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17, fontVariant: ["tabular-nums"] }}>
+                    {item.detalhe}
+                  </Texto>
+                  <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 16 }}>
+                    {item.referencia}
+                  </Texto>
+                </View>
+              );
+            })}
+            {temPendencia ? (
+              <Pressionavel
+                testID="pacote-copiar-pedido-faltantes"
+                accessibilityRole="button"
+                accessibilityLabel="Copiar pedido do que falta"
+                onPress={() => void copiarPedidoFaltantes()}
+                style={{
+                  minHeight: 44,
+                  marginTop: 6,
+                  paddingHorizontal: 14,
+                  paddingVertical: 10,
+                  borderRadius: 10,
+                  backgroundColor: cor("cor-sutil"),
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 13, lineHeight: 18, fontWeight: "700" }}>
+                  Copiar pedido do que falta
+                </Texto>
+              </Pressionavel>
+            ) : null}
+          </View>
+        ) : null}
       </View>
       {aviso ? (
         <Texto

@@ -54,6 +54,11 @@ import {
   montarTextoNegociacaoPartilhavel,
   ResumoEvidenciaPartilhavel,
 } from "../src/componentes/cidadao/ResumoEvidenciaPartilhavel";
+import {
+  auditarConjuntoDocumental,
+  gerarPedidoDocumentosFaltantes,
+} from "../src/dados/pacoteEspecialista";
+import { analiseDoPredio } from "../src/dados/raioX";
 import { TemaDoApp } from "../src/tema/Tema";
 
 function listarTsxRecursivo(dir: string): string[] {
@@ -2795,5 +2800,31 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       expect((s.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(1);
     }
     expect(readFileSync(predioPath, "utf8")).toContain("tabular-nums");
+  });
+
+  it("Pacote e auditarConjuntoDocumental mantêm <=1 borda externa, zero comAlfa/jargão proibido e zero prazo inventado (S74)", () => {
+    const pacoteTsx = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "Pacote.tsx"),
+      "utf8",
+    );
+    expect(pacoteTsx).not.toMatch(/\bcomAlfa\b/);
+    expect((pacoteTsx.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    expect(pacoteTsx).toContain("tabular-nums");
+
+    const pBase = edificiosDoBairro("gracas")[0]!;
+    const analiseBase = analiseDoPredio(pBase, {
+      agora: "2026-11-15T12:00:00.000Z",
+      indiceGeradoEm: "2026-11-15T00:00:00Z",
+      origem: "busca",
+    });
+    const compra = { ...analiseBase, modalidade: "compra" as const };
+    const aud = auditarConjuntoDocumental(compra, "2026-11-15T12:00:00.000Z");
+    const pedido = gerarPedidoDocumentosFaltantes(compra, aud);
+    const todoTexto = [aud.resumoCurto, ...aud.itens.flatMap((i) => [i.titulo, i.rotuloEstado, i.detalhe, i.referencia]), pedido].join(" ");
+
+    expect(REGEX_JARGON_CAMADA1.test(todoTexto)).toBe(false);
+    for (const pat of PALAVRAS_PROIBIDAS_UI) {
+      expect(pat.test(todoTexto)).toBe(false);
+    }
   });
 });

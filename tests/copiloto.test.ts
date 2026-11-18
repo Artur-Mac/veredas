@@ -23,7 +23,13 @@ import { relacaoComAFachada, ROSA, simularUnidade } from "../src/dados/dossie/si
 import { lerAta } from "../src/dados/leitorDeAta";
 import { mensagemDeNegociacao, prepararNegociacao } from "../src/dados/negociacao";
 import { montarCenaComPontosExtras } from "../src/componentes/dossie-v1/mapa";
-import { montarPacote, pacoteEmHtml, pacoteEmMarkdown } from "../src/dados/pacoteEspecialista";
+import {
+  auditarConjuntoDocumental,
+  gerarPedidoDocumentosFaltantes,
+  montarPacote,
+  pacoteEmHtml,
+  pacoteEmMarkdown,
+} from "../src/dados/pacoteEspecialista";
 import { extrairDoTexto } from "../src/dados/extrator/texto";
 import { analiseDoPredio, EXEMPLOS, idDoRaioX } from "../src/dados/raioX";
 import { atritoDoPredio, direcaoDoRumo, fatosDeAtrito } from "../src/dados/recife/atrito";
@@ -728,6 +734,148 @@ describe("por perto no mapa, rotina personalizada, comodidades e HTML editorial"
       btnBarulho!.props.onPress?.();
     });
     expect(arvore.root.find((n) => n.props.testID === "simulador-acao-barulho")).toBeDefined();
+
+    act(() => {
+      arvore.unmount();
+    });
+  });
+
+  it("auditarConjuntoDocumental e PacoteParaEspecialista controlam faltantes, prazos e cópia de pedido sem inventar validade (S74)", async () => {
+    const aVazio = analise({ modalidade: "compra" });
+    const audVazio = auditarConjuntoDocumental(aVazio, AGORA);
+    expect(audVazio.totalObrigatorios).toBe(7);
+    expect(audVazio.guardados).toBe(0);
+    expect(audVazio.faltantes).toBe(7);
+    expect(audVazio.desatualizados).toBe(0);
+
+    const aAluguel = analise({ modalidade: "aluguel" });
+    expect(auditarConjuntoDocumental(aAluguel, AGORA).totalObrigatorios).toBe(4);
+
+    const aMisto = analise({
+      modalidade: "compra",
+      caderno: {
+        ...cadernoVazio(),
+        documentos: [
+          {
+            id: "doc-mat-antiga",
+            titulo: "Matrícula setembro",
+            tipo: "matricula",
+            inspecaoEm: null,
+            emitidoEm: "2026-09-10",
+            recebidoEm: AGORA,
+            origem: "Cartório",
+            escopo: "",
+            trecho: "",
+            pagina: 1,
+            vinculo: "confirmado",
+          },
+          {
+            id: "doc-laudo-sem-data",
+            titulo: "Laudo prédio",
+            tipo: "laudo",
+            inspecaoEm: null,
+            emitidoEm: null,
+            recebidoEm: AGORA,
+            origem: "Síndico",
+            escopo: "",
+            trecho: "",
+            pagina: null,
+            vinculo: "confirmado",
+          },
+          {
+            id: "doc-conv-outro",
+            titulo: "Convenção de outro prédio",
+            tipo: "convencao",
+            inspecaoEm: null,
+            emitidoEm: "2024-01-01",
+            recebidoEm: AGORA,
+            origem: "Outro",
+            escopo: "",
+            trecho: "",
+            pagina: null,
+            vinculo: "outro_imovel",
+          },
+        ],
+        balancetes: [
+          {
+            id: "bal-out",
+            documentoId: null,
+            periodo: "2026-10",
+            receitasCentavos: 100000,
+            despesasCentavos: 90000,
+            reservaCentavos: 500000,
+            inadimplenciaCentavos: null,
+            fonte: "Administradora",
+            pagina: 1,
+            registradoEm: AGORA,
+          },
+        ],
+      },
+    });
+
+    const audMisto = auditarConjuntoDocumental(aMisto, AGORA);
+    const mat = audMisto.itens.find((i) => i.id === "matricula")!;
+    const est = audMisto.itens.find((i) => i.id === "estrutura")!;
+    const conv = audMisto.itens.find((i) => i.id === "convencao")!;
+    const bal = audMisto.itens.find((i) => i.id === "balancete")!;
+    expect(mat.estado).toBe("desatualizado");
+    expect(mat.rotuloEstado).toBe("Data antiga");
+    expect(est.estado).toBe("recebido");
+    expect(est.detalhe).toBe("Recebido · sem data declarada");
+    expect(conv.estado).toBe("faltando");
+    expect(bal.estado).toBe("recebido");
+    expect(audMisto.guardados).toBe(3);
+    expect(audMisto.desatualizados).toBe(1);
+    expect(audMisto.faltantes).toBe(4);
+
+    const pedidoTxt = gerarPedidoDocumentosFaltantes(aMisto, audMisto);
+    expect(pedidoTxt).toContain("[Atualizar] Matrícula atualizada do imóvel");
+    expect(pedidoTxt).toContain("[Enviar] Convenção de condomínio");
+    expect(pedidoTxt).not.toContain("Balancete e saldo do fundo de reserva");
+
+    const visaoMinima = {
+      achados: { principal: null, apoio: [] },
+      perguntas: [],
+    } as unknown as Parameters<typeof PacoteParaEspecialista>[0]["visao"];
+
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(PacoteParaEspecialista, {
+            analise: aMisto,
+            visao: visaoMinima,
+            ficha: [],
+          }),
+        ),
+      );
+    });
+
+    const jsonInicial = JSON.stringify(arvore.toJSON());
+    expect(jsonInicial).toContain("Controle do pacote: 3 de 7 guardados");
+    expect(jsonInicial).toContain("4 faltando · 1 com data antiga");
+
+    const toggle = arvore.root.find((n) => n.props.testID === "pacote-toggle-controle-documentos");
+    act(() => {
+      toggle.props.onPress?.();
+    });
+
+    const lista = arvore.root.find((n) => n.props.testID === "pacote-lista-documentos");
+    expect(lista).toBeDefined();
+    const jsonAberto = JSON.stringify(arvore.toJSON());
+    expect(jsonAberto).toContain("Recebido · sem data declarada");
+    expect(jsonAberto).toContain("Matrícula atualizada do imóvel");
+
+    const clip = jest.requireMock("expo-clipboard") as { setStringAsync: jest.Mock };
+    clip.setStringAsync.mockClear();
+    const btnPedido = arvore.root.find((n) => n.props.testID === "pacote-copiar-pedido-faltantes");
+    await act(async () => {
+      await btnPedido.props.onPress?.();
+    });
+    expect(clip.setStringAsync).toHaveBeenCalledWith(expect.stringContaining("[Atualizar] Matrícula atualizada do imóvel"));
+    expect(JSON.stringify(arvore.toJSON())).toContain("Pedido de documentos pendentes copiado para enviar.");
 
     act(() => {
       arvore.unmount();

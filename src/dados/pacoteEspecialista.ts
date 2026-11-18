@@ -2,6 +2,7 @@
 // .html), com a ficha do prédio, as contradições entre anúncio e cadastro, a linha do tempo estrutural, os trechos de
 // ata guardados, o roteiro da visita (com o que foi conferido e respondido) e as perguntas jurídicas e técnicas em aberto.
 // Fica de fora, de propósito: o perfil da casa (acessibilidade, orçamento), fotos e o caderno pessoal (diário).
+import type { DocumentoPessoal } from "./caderno";
 import type { AnaliseV2, Pergunta, VisaoDoDossie } from "./contratos";
 import { estruturaDoCaderno, type ItemDaFicha } from "./dossie/fichaViva";
 import { ROTULO_DA_ETAPA } from "./estrutura/linhaDoTempo";
@@ -10,7 +11,265 @@ import { trechosDaAta } from "./negociacao";
 export type SecaoDoPacote = { titulo: string; linhas: string[] };
 export type Pacote = { titulo: string; geradoEm: string; secoes: SecaoDoPacote[] };
 
+export type EstadoDocDoPacote = "recebido" | "desatualizado" | "faltando";
+export type ItemControlePacote = {
+  id: string;
+  titulo: string;
+  estado: EstadoDocDoPacote;
+  rotuloEstado: "Recebido" | "Data antiga" | "Faltando";
+  detalhe: string;
+  referencia: string;
+};
+export type AuditoriaConjuntoDocumental = {
+  itens: readonly ItemControlePacote[];
+  totalObrigatorios: number;
+  guardados: number;
+  recebidosEmDia: number;
+  desatualizados: number;
+  faltantes: number;
+  resumoCurto: string;
+};
+
 const dataBr = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}`;
+
+function diasEntre(ymdInicio: string, ymdFim: string): number | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(ymdInicio) || !/^\d{4}-\d{2}-\d{2}$/.test(ymdFim)) return null;
+  const tIni = Date.parse(`${ymdInicio}T12:00:00Z`);
+  const tFim = Date.parse(`${ymdFim}T12:00:00Z`);
+  if (!Number.isFinite(tIni) || !Number.isFinite(tFim)) return null;
+  return Math.floor((tFim - tIni) / 86_400_000);
+}
+
+function ultimoDiaDoPeriodo(periodoYm: string): string | null {
+  const m = /^(\d{4})-(\d{2})$/.exec(periodoYm);
+  if (!m) return null;
+  const ano = Number(m[1]);
+  const mes = Number(m[2]);
+  const ultimoDia = new Date(Date.UTC(ano, mes, 0)).getUTCDate();
+  return `${m[1]}-${m[2]}-${String(ultimoDia).padStart(2, "0")}`;
+}
+
+type RequisitoDoc = {
+  id: string;
+  titulo: string;
+  tipos: readonly DocumentoPessoal["tipo"][];
+  incluirBalancetes?: boolean;
+  prefInspecao?: boolean;
+  maxDias: number | null;
+  referencia: string;
+};
+
+const REQUISITOS_COMPRA: readonly RequisitoDoc[] = [
+  {
+    id: "matricula",
+    titulo: "Matrícula atualizada do imóvel",
+    tipos: ["matricula"],
+    maxDias: 30,
+    referencia: "Certidão de ônus reais (até 30 dias · Dec. nº 93.240/1986)",
+  },
+  {
+    id: "convencao",
+    titulo: "Convenção de condomínio",
+    tipos: ["convencao"],
+    maxDias: null,
+    referencia: "Regras de uso, vagas, animais e locação por temporada",
+  },
+  {
+    id: "ata",
+    titulo: "Atas de assembleia (últimos 24 meses)",
+    tipos: ["ata"],
+    maxDias: 730,
+    referencia: "Obras aprovadas, chamadas extras e gestão",
+  },
+  {
+    id: "balancete",
+    titulo: "Balancete e saldo do fundo de reserva",
+    tipos: ["balancete"],
+    incluirBalancetes: true,
+    maxDias: 180,
+    referencia: "Receitas × despesas e reserva para obras",
+  },
+  {
+    id: "estrutura",
+    titulo: "Vistoria / laudo estrutural ou ART-RRT",
+    tipos: ["laudo", "art_rrt"],
+    prefInspecao: true,
+    maxDias: 1095,
+    referencia: "Inspeção periódica (Lei Estadual PE nº 13.032/2006 · 3 anos)",
+  },
+  {
+    id: "licenca",
+    titulo: "Licença / AVCB dos Bombeiros",
+    tipos: ["licenca"],
+    maxDias: 365,
+    referencia: "Regularidade de proteção contra incêndio do edifício",
+  },
+  {
+    id: "trabalhista",
+    titulo: "Certidão trabalhista do condomínio (CNDT)",
+    tipos: ["cndt", "acoes_trt6"],
+    maxDias: 180,
+    referencia: "Débitos e ações trabalhistas (CLT art. 642-A · 180 dias)",
+  },
+];
+
+const REQUISITOS_ALUGUEL: readonly RequisitoDoc[] = [
+  {
+    id: "convencao",
+    titulo: "Convenção / regimento interno",
+    tipos: ["convencao"],
+    maxDias: null,
+    referencia: "Regras de convivência, animais, mudança e garagem",
+  },
+  {
+    id: "balancete",
+    titulo: "Balancete recente",
+    tipos: ["balancete"],
+    incluirBalancetes: true,
+    maxDias: 180,
+    referencia: "Cota ordinária × fundo de reserva e rateios",
+  },
+  {
+    id: "licenca",
+    titulo: "Licença / AVCB dos Bombeiros",
+    tipos: ["licenca"],
+    maxDias: 365,
+    referencia: "Regularidade de proteção contra incêndio do edifício",
+  },
+  {
+    id: "estrutura",
+    titulo: "Vistoria / laudo estrutural",
+    tipos: ["laudo", "art_rrt"],
+    prefInspecao: true,
+    maxDias: 1095,
+    referencia: "Registro técnico de manutenção (Lei PE nº 13.032/2006)",
+  },
+];
+
+/**
+ * Controle determinístico de completude e atualidade documental (HomeWiseDocs R15 §6.1–§6.2).
+ * Nunca inventa validade quando a data declarada do documento está ausente.
+ */
+export function auditarConjuntoDocumental(analise: AnaliseV2, agoraIso: string): AuditoriaConjuntoDocumental {
+  const hojeYmd = agoraIso.slice(0, 10);
+  const docs = (analise.caderno?.documentos ?? []).filter((d) => d.vinculo !== "outro_imovel");
+  const balancetes = analise.caderno?.balancetes ?? [];
+  const requisitos = analise.modalidade === "aluguel" ? REQUISITOS_ALUGUEL : REQUISITOS_COMPRA;
+
+  const itens: ItemControlePacote[] = requisitos.map((req) => {
+    const candidatosDocs = docs.filter((d) => req.tipos.includes(d.tipo));
+    const registros = candidatosDocs.map((d) => {
+      const ymd = (req.prefInspecao ? d.inspecaoEm ?? d.emitidoEm : d.emitidoEm ?? d.inspecaoEm) ?? null;
+      const prefixo = req.prefInspecao && d.inspecaoEm ? "Inspecionado em" : "Emitido em";
+      return { ymd, rotuloOrigem: ymd ? `${prefixo} ${dataBr(ymd)}` : "" };
+    });
+
+    if (req.incluirBalancetes) {
+      for (const b of balancetes) {
+        const ymd = ultimoDiaDoPeriodo(b.periodo);
+        registros.push({
+          ymd,
+          rotuloOrigem: `Balancete ${b.periodo.slice(5, 7)}/${b.periodo.slice(0, 4)}`,
+        });
+      }
+    }
+
+    if (registros.length === 0) {
+      return {
+        id: req.id,
+        titulo: req.titulo,
+        estado: "faltando",
+        rotuloEstado: "Faltando",
+        detalhe: "Não guardado no caderno ainda",
+        referencia: req.referencia,
+      };
+    }
+
+    const comData = registros
+      .filter((r): r is { ymd: string; rotuloOrigem: string } => typeof r.ymd === "string")
+      .sort((a, b) => b.ymd.localeCompare(a.ymd));
+
+    const maisRecente = comData[0];
+    if (!maisRecente) {
+      return {
+        id: req.id,
+        titulo: req.titulo,
+        estado: "recebido",
+        rotuloEstado: "Recebido",
+        detalhe: "Recebido · sem data declarada",
+        referencia: req.referencia,
+      };
+    }
+
+    const dias = diasEntre(maisRecente.ymd, hojeYmd);
+    if (req.maxDias !== null && dias !== null && dias > req.maxDias) {
+      return {
+        id: req.id,
+        titulo: req.titulo,
+        estado: "desatualizado",
+        rotuloEstado: "Data antiga",
+        detalhe: `${maisRecente.rotuloOrigem} · ${dias} dias (referência: até ${req.maxDias} dias)`,
+        referencia: req.referencia,
+      };
+    }
+
+    return {
+      id: req.id,
+      titulo: req.titulo,
+      estado: "recebido",
+      rotuloEstado: "Recebido",
+      detalhe:
+        dias !== null && dias >= 0
+          ? `${maisRecente.rotuloOrigem} (${dias} ${dias === 1 ? "dia" : "dias"})`
+          : maisRecente.rotuloOrigem,
+      referencia: req.referencia,
+    };
+  });
+
+  const recebidosEmDia = itens.filter((i) => i.estado === "recebido").length;
+  const desatualizados = itens.filter((i) => i.estado === "desatualizado").length;
+  const faltantes = itens.filter((i) => i.estado === "faltando").length;
+  const guardados = recebidosEmDia + desatualizados;
+
+  let resumoCurto = "Todos os documentos de referência guardados e dentro dos prazos usuais.";
+  if (faltantes > 0 || desatualizados > 0) {
+    const partes: string[] = [];
+    if (faltantes > 0) partes.push(`${faltantes} faltando`);
+    if (desatualizados > 0) partes.push(`${desatualizados} com data antiga`);
+    resumoCurto = partes.join(" · ");
+  }
+
+  return {
+    itens,
+    totalObrigatorios: itens.length,
+    guardados,
+    recebidosEmDia,
+    desatualizados,
+    faltantes,
+    resumoCurto,
+  };
+}
+
+/** Gera texto objetivo para solicitar ao corretor, vendedor ou síndico apenas os itens faltantes ou antigos. */
+export function gerarPedidoDocumentosFaltantes(analise: AnaliseV2, auditoria: AuditoriaConjuntoDocumental): string {
+  const pendentes = auditoria.itens.filter((i) => i.estado !== "recebido");
+  if (pendentes.length === 0) {
+    return `Todos os documentos de referência para ${analise.nome} já constam guardados e atualizados no pacote.`;
+  }
+  const endereco = [analise.logradouro, analise.numero].filter(Boolean).join(", ");
+  const linhas = [
+    `Olá! Antes de avançar na conferência de ${analise.nome}${endereco ? ` (${endereco})` : ""}, poderia enviar ou atualizar os documentos abaixo?`,
+    "",
+    ...pendentes.map((item, idx) =>
+      item.estado === "desatualizado"
+        ? `${idx + 1}) [Atualizar] ${item.titulo} — ${item.detalhe}`
+        : `${idx + 1}) [Enviar] ${item.titulo} — ${item.referencia}`,
+    ),
+    "",
+    "Mensagem preparada com o VEREDA (leitura independente; não substitui certidões oficiais).",
+  ];
+  return linhas.join("\n");
+}
 
 export function montarPacote(x: { analise: AnaliseV2; visao: Pick<VisaoDoDossie, "achados">; ficha: readonly ItemDaFicha[]; perguntas: readonly Pergunta[]; agora: string }): Pacote {
   const { analise: a } = x;
