@@ -71,6 +71,9 @@ export function VidaAPeNaQuadra({
         <Texto testID="vida-a-pe-malha-quadra" tipo="apoio" cor="cor-texto-apoio" style={styles.vidaRua}>
           {dados.fraseMalhaQuadra}
         </Texto>
+        <Texto testID="vida-a-pe-micro-setor" tipo="apoio" cor="cor-texto-apoio" style={styles.vidaRua}>
+          {dados.microContextoSetor}
+        </Texto>
         <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.vidaRua}>
           {`Entorno da face de quadra: ${dados.vidaNaRuaResumo}`}
         </Texto>

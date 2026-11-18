@@ -43,4 +43,7 @@ Branch: `feat/vereda-visual-power-overhaul`
 - [x] **S23**: Numbered Pre-Contract Dispatch Bulletin (`DataZap R27`, zero valuation) + full 98-suite verification + live Android/Web Metro `200` verification (`98/98` suites, `2036/2036` tests, Android Metro `200`, Web Metro `200`).
 - [x] **S24**: Editorial Calm Typography (zero forced `uppercase` across all `.tsx` UI files) & internal hairline demodularization inside `CaixaCreme` and `CartaoDoIndicador` (`4/4` suites, `209/209` tests).
 - [x] **S25**: Real geodesic commute calculation in `DueloFinalistas` / dominance pruning (`rotinaCasal`) + live interactive toggles in `ConvergenciaFamiliar` + copy refinement (`"Terreno, cota e drenagem"`) (`3/3` suites, `66/66` tests).
-- [ ] **S26**: Micro census-tract vs neighborhood comparison context (`NeighborhoodScout R16`) + full 98-suite + live Metro `200` verification.
+- [x] **S26**: Micro census-tract vs neighborhood comparison context (`NeighborhoodScout R16`) + full 98-suite + live Metro `200` verification (`98/98` suites, `2039/2039` tests, Android Metro `200`, Web Metro `200`).
+- [ ] **S27**: End-to-end decoding & rendering for single-property private hash links `#v=` in `salaDeDecisao.ts`, `Sala.tsx`, and `sala.tsx` (`HomeWiseDocs R24` fix).
+- [ ] **S28**: Multi-criteria walkability search with live counter & walk-to-market filter in `OndeMaisProcurarNoPiloto` (`NeighborhoodScout app14` §6.2).
+- [ ] **S29**: Hairline demodularization & WCAG touch-target cleanup across `creditos.tsx` and `perfil-domicilio.tsx` + full 98-suite + live Metro `200` verification.

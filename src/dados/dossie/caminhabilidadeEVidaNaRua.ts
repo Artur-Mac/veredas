@@ -21,6 +21,7 @@ export type ResultadoCaminhabilidadeEVida = {
   amostraPredios: number;
   frasePercentil: string;
   fraseMalhaQuadra: string;
+  microContextoSetor: string;
   vidaNaRuaResumo: string;
   categorias: [
     CategoriaCaminhabilidade,
@@ -80,6 +81,8 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
         "Amostra mínima declarada: 20 prédios com caminho medido em rede de ruas.",
       fraseMalhaQuadra:
         "Sem vínculo confirmado: a conectividade pelas esquinas e travessias da quadra ainda não foi medida.",
+      microContextoSetor:
+        "Escala do bairro (setor censitário do Censo 2022 sem leitura casada neste ponto).",
       vidaNaRuaResumo: "Sem leitura de face de quadra sem vínculo confirmado.",
       categorias: categoriasVazias,
       decomposicaoResumo:
@@ -184,6 +187,19 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
       ? partesVida.join(" · ")
       : "Camada aberta de Censo 2022 e uso misto por face de quadra sem rastreamento pessoal.";
 
+  const calcMicro = temEntorno?.fatos.find((f) => /calçad/i.test(f.rotulo) && f.valor !== "A confirmar");
+  const arborMicro = temEntorno?.fatos.find((f) => /árvor/i.test(f.rotulo) && f.valor !== "A confirmar");
+  const alugMicro = visaoRua?.grupos.find((g) => g.id === "moradia")?.fatos[0];
+  const partesSetor = [
+    calcMicro ? `Calçada ${calcMicro.valor}` : null,
+    arborMicro ? `Arborização ${arborMicro.valor}` : null,
+    alugMicro && alugMicro.valor !== "A confirmar" ? `Alugados na região ${alugMicro.valor}` : null,
+  ].filter(Boolean);
+  const microContextoSetor =
+    partesSetor.length > 0
+      ? `Recorte micro (setor Censo 2022) + percentil de bairro: ${partesSetor.join(" · ")}.`
+      : "Escala do bairro (setor censitário do Censo 2022 sem leitura casada neste ponto).";
+
   const manchete =
     notaAPe0a10 !== null
       ? `Nota a pé ${notaAPe0a10.toFixed(1).replace(".", ",")} / 10${
@@ -204,6 +220,7 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
     amostraPredios: todosTempos.length,
     frasePercentil,
     fraseMalhaQuadra,
+    microContextoSetor,
     vidaNaRuaResumo,
     categorias,
     decomposicaoResumo:

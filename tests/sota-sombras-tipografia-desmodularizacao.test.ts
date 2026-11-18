@@ -1082,4 +1082,59 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(atualizado).toContain("Pessoa 2: silêncio à noite (sim)");
     expect(atualizado).toContain("5.500");
   });
+
+  it("expõe recorte micro de setor censitário (R16) e fallback de bairro em VidaAPeNaQuadra", () => {
+    const essBv = essenciaisDoBairro("boa-viagem");
+    const bv = edificiosDoBairro("boa-viagem");
+    const predioRede = bv.find((e) => essBv?.predios[e.id]?.modo === "rede")!;
+    expect(predioRede).toBeDefined();
+
+    const semSetor = avaliarCaminhabilidadeEVidaNaRua({
+      predio: predioRede,
+      essenciais: essBv,
+      visaoRua: null,
+      nomeDoBairro: "Boa Viagem",
+    });
+    expect(semSetor.microContextoSetor).toContain("Escala do bairro");
+
+    const comSetor = avaliarCaminhabilidadeEVidaNaRua({
+      predio: predioRede,
+      essenciais: essBv,
+      visaoRua: {
+        defesaCivil: null,
+        grupos: [
+          {
+            id: "entorno",
+            titulo: "Calçada e entorno da quadra",
+            nota: null,
+            fatos: [
+              { id: "c1", rotulo: "Calçada", valor: "96%", detalhe: "Setor 2022", fonte: "censo_entorno", confianca: "oficial", data: "Censo 2022" },
+              { id: "c2", rotulo: "Cinco ou mais árvores na face da quadra", valor: "72%", detalhe: "Setor 2022", fonte: "censo_entorno", confianca: "oficial", data: "Censo 2022" },
+            ],
+          },
+          {
+            id: "moradia",
+            titulo: "Moradia na região",
+            nota: null,
+            fatos: [
+              { id: "m1", rotulo: "Domicílios alugados", valor: "31%", detalhe: "Área de ponderação", fonte: "censo_amostra", confianca: "oficial", data: "Censo 2022" },
+            ],
+          },
+        ],
+      },
+      nomeDoBairro: "Boa Viagem",
+    });
+    expect(comSetor.microContextoSetor).toContain("Recorte micro (setor Censo 2022)");
+    expect(comSetor.microContextoSetor).toContain("Calçada 96%");
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(TemaDoApp, null, React.createElement(VidaAPeNaQuadra, { dados: comSetor })),
+      );
+    });
+    const elMicro = tree.root.find((n) => n.props.testID === "vida-a-pe-micro-setor");
+    expect(elMicro).toBeDefined();
+    expect(extrairTextos(tree.toJSON()).join("\n")).toContain("Calçada 96%");
+  });
 });
