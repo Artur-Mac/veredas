@@ -68,7 +68,7 @@ function LinhaDoVizinho({ v, primeira }: { v: LinhaDeSeguranca; primeira: boolea
         alignItems: "baseline",
         justifyContent: "space-between",
         gap: 10,
-        borderTopWidth: primeira ? 0 : 0.5,
+        borderTopWidth: primeira ? 0 : 1,
         borderTopColor: cor("cor-linha"),
       }}
     >
