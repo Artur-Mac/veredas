@@ -113,7 +113,6 @@ export function validarCamadasAmbientais(dados: unknown): BaseCamadasAmbientais 
 
 function carregar(): CacheDecodificado {
   if (!cache) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const dados = validarCamadasAmbientais(require("./camadas-ambientais.json") as unknown);
     cache = {
       dados,

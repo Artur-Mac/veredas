@@ -38,8 +38,6 @@ export function Segmentado<T extends string | number>({ opcoes, valor, aoMudar, 
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: ativo ? cor("cor-superficie") : undefined,
-              borderWidth: 1,
-              borderColor: ativo ? cor("cor-linha") : "transparent",
             }}
           >
             <Texto tipo={ativo ? "etiqueta" : "apoio"} cor={ativo ? "cor-texto" : "cor-texto-apoio"} numberOfLines={1}>

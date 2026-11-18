@@ -372,6 +372,67 @@ export function notaDasLicencas(obras: ObrasProximas): string | null {
   return `Desde 2018 há ${plural(obras.licencasDeObra, "licença de obra", "licenças de obra")} de qualquer tipo a até 150 m, com habite-se e reformas pequenas. Só as de construção, acréscimo e demolição contam como obras licenciadas.`;
 }
 
+export type PerfilObrasProximas = {
+  construcoes: number;
+  acrescimos: number;
+  demolicoes: number;
+  impacto: number;
+  etiquetas: string[];
+  ultimos12m: number;
+  anteriores12m: number;
+  ritmo12m: string | null;
+};
+
+/**
+ * Classificação determinística das obras licenciadas próximas e cadência 12m × 12m anteriores
+ * dentro da janela de 24 meses (`Shovels R13 §6.2` + `Placer R29 §6.4`), 100% pura.
+ */
+export function sintetizarPerfilObrasProximas(
+  obras: ObrasProximas | null,
+  referenciaAnoMes = "2026-11",
+): PerfilObrasProximas | null {
+  if (!obras || obras.relevantes24m <= 0) return null;
+  const recentes = obras.recentes ?? [];
+  const construcoes = recentes.filter((o) => o.categoria === "construcao").length;
+  const acrescimos = recentes.filter((o) => o.categoria === "acrescimo").length;
+  const demolicoes = Math.max(
+    obras.demolicoes24m,
+    recentes.filter((o) => o.categoria === "demolicao").length,
+  );
+  const impacto = recentes.filter((o) => o.licenca?.[2] === true).length;
+
+  const etiquetas: string[] = [];
+  if (construcoes > 0) etiquetas.push(plural(construcoes, "construção nova", "construções novas"));
+  if (acrescimos > 0) etiquetas.push(plural(acrescimos, "acréscimo", "acréscimos"));
+  if (demolicoes > 0) etiquetas.push(plural(demolicoes, "demolição", "demolições"));
+  if (impacto > 0) etiquetas.push(plural(impacto, "de impacto", "de impacto"));
+
+  const [refAnoStr, refMesStr] = referenciaAnoMes.split("-");
+  const refAno = Number(refAnoStr);
+  const refMes = Number(refMesStr);
+  let ultimos12m = 0;
+  let anteriores12m = 0;
+  if (Number.isInteger(refAno) && Number.isInteger(refMes) && refMes >= 1 && refMes <= 12) {
+    const refTotal = refAno * 12 + refMes;
+    for (const o of recentes) {
+      const [anoStr, mesStr] = o.data.split("-");
+      const ano = Number(anoStr);
+      const mes = Number(mesStr);
+      if (!Number.isInteger(ano) || !Number.isInteger(mes) || mes < 1 || mes > 12) continue;
+      const diffMeses = refTotal - (ano * 12 + mes);
+      if (diffMeses >= 0 && diffMeses < 12) ultimos12m += 1;
+      else if (diffMeses >= 12 && diffMeses < 24) anteriores12m += 1;
+    }
+  }
+
+  const ritmo12m =
+    ultimos12m + anteriores12m > 0
+      ? `Ritmo na janela: ${formatarNumero(ultimos12m)} nos últimos 12 meses · ${formatarNumero(anteriores12m)} nos 12 meses anteriores`
+      : null;
+
+  return { construcoes, acrescimos, demolicoes, impacto, etiquetas, ultimos12m, anteriores12m, ritmo12m };
+}
+
 export type LinhaDeContexto = {
   id: string;
   rotulo: string;

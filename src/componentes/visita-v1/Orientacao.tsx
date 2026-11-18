@@ -7,7 +7,7 @@ import Svg, { Circle, G, Path, Text as TextoSvg } from "react-native-svg";
 import type { Edificio } from "../../dados/contratos";
 import { analisarJanelaNoRecife } from "../../dados/dossie/solESombra";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { ESPACO, RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 import { Icone } from "../Icone";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
@@ -29,7 +29,7 @@ const ATALHOS_RECIFE: readonly { graus: number; rotulo: string }[] = [
 function Bussola({ graus }: { graus: number | null }) {
   const { cor } = useTema();
   const o = graus === null ? null : orientacaoDaJanela(graus);
-  const marca = { fontSize: 10, fill: cor("cor-texto-apoio"), textAnchor: "middle" as const, fontFamily: "PlusJakartaSans" };
+  const marca = { fontSize: 10, fill: cor("cor-texto-apoio"), textAnchor: "middle" as const, fontFamily: "PlusJakartaSans", fontWeight: "600" as const };
   return (
     <Svg
       width={TAMANHO_DA_BUSSOLA}
@@ -39,16 +39,16 @@ function Bussola({ graus }: { graus: number | null }) {
       aria-label={o ? `Janela voltada para ${o.nome}, ${o.graus} graus` : "Orientação da janela ainda não registrada"}
     >
       <Circle cx={55} cy={55} r={49} fill="none" stroke={cor("cor-linha-forte")} strokeWidth={1} />
-      <TextoSvg x={55} y={20} {...marca}>
+      <TextoSvg x={55} y={20} {...marca} fontFamily="PlusJakartaSans">
         N
       </TextoSvg>
-      <TextoSvg x={94} y={59} {...marca}>
+      <TextoSvg x={94} y={59} {...marca} fontFamily="PlusJakartaSans">
         L
       </TextoSvg>
-      <TextoSvg x={55} y={98} {...marca}>
+      <TextoSvg x={55} y={98} {...marca} fontFamily="PlusJakartaSans">
         S
       </TextoSvg>
-      <TextoSvg x={16} y={59} {...marca}>
+      <TextoSvg x={16} y={59} {...marca} fontFamily="PlusJakartaSans">
         O
       </TextoSvg>
       {o ? (
@@ -255,17 +255,15 @@ export function OrientacaoDaJanela({ graus, aoMudar, predio = null, vizinhos = [
               accessibilityState={{ selected: proximo }}
               onPress={() => aoMudar(a.graus)}
               style={{
-                minHeight: 34,
+                minHeight: 44,
                 paddingHorizontal: 10,
                 paddingVertical: 6,
                 borderRadius: RAIO.pilula,
-                borderWidth: 1,
-                borderColor: proximo ? cor("cor-acao") : cor("cor-linha-forte"),
-                backgroundColor: proximo ? comAlfa(cor("cor-acao"), 0.16) : undefined,
+                backgroundColor: proximo ? cor("cor-texto") : cor("cor-papel-claro"),
                 justifyContent: "center",
               }}
             >
-              <Texto tipo="etiqueta" cor={proximo ? "cor-acao" : "cor-texto-apoio"} style={{ fontSize: 11, fontWeight: proximo ? "700" : "500" }}>
+              <Texto tipo="etiqueta" cor={proximo ? "cor-papel-claro" : "cor-texto"} style={{ fontSize: 11, fontWeight: proximo ? "700" : "500" }}>
                 {a.rotulo}
               </Texto>
             </Pressionavel>
@@ -280,11 +278,10 @@ export function OrientacaoDaJanela({ graus, aoMudar, predio = null, vizinhos = [
           accessible
           accessibilityLabel={`${leitura.resumoHumano} ${leitura.dicaPratica}`}
           style={{
-            padding: 12,
-            borderRadius: 10,
-            borderWidth: 1,
-            borderColor: comAlfa(cor("cor-texto"), 0.14),
-            backgroundColor: comAlfa(cor("cor-texto"), 0.05),
+            paddingVertical: 4,
+            paddingLeft: 12,
+            borderLeftWidth: 3,
+            borderLeftColor: cor("cor-acao"),
             gap: 4,
           }}
         >

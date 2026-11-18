@@ -42,6 +42,7 @@ import Predio from "../src/app/(abas)/predio";
 import Salvos from "../src/app/(abas)/salvos";
 import Creditos from "../src/app/creditos";
 import SobreOsDados from "../src/app/sobre-os-dados";
+import { FONTES_DO_MAPA_BASE } from "../src/dados/recife/mapaBase";
 
 jest.mock("@react-native-async-storage/async-storage", () =>
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -183,6 +184,10 @@ afterEach(() => {
   for (const arvore of montadas.splice(0)) act(() => arvore.unmount());
 });
 afterAll(() => new Promise<void>((resolve) => setTimeout(resolve, 3200)));
+
+// T5 (18/11/2026): estas telas montam a árvore inteira do app e, com a máquina ocupada, passam dos 5 s padrão.
+// 15 s só nesta suíte; o limite global do Jest não muda.
+jest.setTimeout(15000);
 
 // ——— Gaveta de descarte ————————————————————————————————————————————————————————————
 
@@ -778,10 +783,29 @@ describe("Sobre os dados", () => {
     const arvore = await montar(React.createElement(SobreOsDados));
     const t = texto(arvore);
     expect(t).toContain("O que ainda não cobrimos");
-    for (const item of ["Aluguel de mercado", "Segurança por bairro", "Alagamento por endereço", "Fotos dos anúncios", "Cobertura por bairro e camada"]) {
+    for (const item of ["Aluguel de mercado", "Segurança por rua", "Alagamento por endereço", "Fotos dos anúncios", "Cobertura por bairro e camada"]) {
       expect(t).toContain(item);
     }
+    expect(t).toContain("O que lemos sozinhos vs. o que pede confirmação");
+    expect(t).toContain("Versão do pacote e cobertura por camada");
+    expect(t).toContain("Ver radar do pré-contrato");
     expect(t).toContain("72 bairros do Recife");
+  });
+
+  it("explica o desenho dos mapas com as bases lidas do mapa-base gerado", async () => {
+    await semear([], carteiraCom(3, [cota]));
+    const arvore = await montar(React.createElement(SobreOsDados));
+    const t = texto(arvore);
+    expect(t).toContain("O desenho dos mapas");
+    expect(FONTES_DO_MAPA_BASE.length).toBeGreaterThan(0);
+    for (const f of FONTES_DO_MAPA_BASE) {
+      expect(t).toContain(f.nome);
+      expect(t).toContain(f.conjunto);
+    }
+    expect(t).toContain("Base: Prefeitura do Recife (ODbL)");
+    expect(t).toContain("Não é foto de satélite");
+    expect(t).toContain("aparece só a quadra");
+    expect(t).toContain("não é a planta do prédio");
   });
 });
 
@@ -1248,7 +1272,7 @@ describe("Explorar: cartão da análise", () => {
     expect(toast()).toHaveLength(0);
     expect(faixa()).toHaveLength(1);
     expect(textoDoNo(faixa()[0] as ReactTestInstance)).toBe(fato);
-  }, 10000);
+  }, 15000);
 
   it("T2: com várias análises na quarentena o aviso diz quantas; sem quarentena não há faixa", async () => {
     await AsyncStorage.clear();

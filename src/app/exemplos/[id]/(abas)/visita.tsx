@@ -64,7 +64,7 @@ export default function TelaDaVisita() {
                   onSubmitEditing={adicionar}
                   accessibilityLabel="Adicionar item"
                   returnKeyType="done"
-                  style={[TIPOS.corpo, campo, { flex: 1, minHeight: 40, paddingHorizontal: ESPACO[3] }]}
+                  style={[TIPOS.corpo, campo, { flex: 1, minHeight: 44, paddingHorizontal: ESPACO[3] }]}
                 />
                 <BotaoIcone icone="plus" acessivel="Adicionar item" onPress={adicionar} />
               </View>

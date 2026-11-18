@@ -39,7 +39,7 @@ function LinhaDeValor({ rotulo, valor, apoio, aConfirmar = false }: { rotulo: st
         justifyContent: "space-between",
         gap: 12,
         paddingVertical: 9,
-        borderBottomWidth: 0.5,
+        borderBottomWidth: 1,
         borderBottomColor: cor("cor-linha"),
       }}
     >
@@ -188,7 +188,7 @@ export function GavetaDoCadastro({ visivel, aoFechar, visao, aoAbrirFonte }: Pro
                 {f.detalhe ? <Nota>{f.detalhe}</Nota> : null}
               </>
             );
-            const estilo = { paddingVertical: 10, borderBottomWidth: 0.5, borderBottomColor: cor("cor-linha"), gap: 4 } as const;
+            const estilo = { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: cor("cor-linha"), gap: 4 } as const;
             return pedido ? (
               <Pressionavel
                 key={f.id}
@@ -279,7 +279,7 @@ export function GavetaDoRoteiro({ visivel, aoFechar, perguntas, aoAbrirPergunta,
       <View style={CORPO_DA_GAVETA}>
         <View>
           {perguntas.map((p, i) => (
-            <View key={p.id} style={{ borderTopWidth: i === 0 ? 0 : 0.5, borderTopColor: cor("cor-linha") }}>
+            <View key={p.id} style={{ borderTopWidth: i === 0 ? 0 : 1, borderTopColor: cor("cor-linha") }}>
               <LinhaTocavel onPress={() => aoAbrirPergunta(p)} acessivel={`${p.titulo}. ${p.pista}`} minimo={58} estilo={{ paddingVertical: 12 }}>
                 <Texto tipo="corpo" style={{ fontSize: 16, lineHeight: 22, fontWeight: "600" }}>
                   {p.titulo}

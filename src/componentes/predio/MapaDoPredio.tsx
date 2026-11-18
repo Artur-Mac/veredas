@@ -2,11 +2,16 @@ import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Svg, { Circle, Defs, G, Path, Pattern, Polygon, Rect, Text as TextoSvg } from "react-native-svg";
 import type { Edificio } from "../../dados/contratos";
+import { bairroPorSlug } from "../../dados/recife/bairros";
 import { useTema } from "../../tema/Tema";
 import { RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
 import { useFocoDeTeclado } from "../casca/foco";
+import { AvisoDoFundoDoMapa } from "../mapa/AvisoDoFundoDoMapa";
+import { CreditoDaBase, FundoDoMapa, SeloDoBairro } from "../mapa/FundoDoMapa";
+import { cobreARuaDoImovel, descreverFundoDoMapa } from "../mapa/fundoDoMapaCena";
+import { useFundoDoMapa } from "../mapa/useFundoDoMapa";
 import { Texto } from "../Texto";
-import { montarCena, pontosDoSvg, raioSemPoligono, type Forma } from "./projecao";
+import { caixaDaCena, montarCena, paraDesenhoDaCena, pontosDoSvg, raioSemPoligono, type Forma } from "./projecao";
 import { rotuloDoLoteVizinho } from "./textos";
 
 type Props = {
@@ -18,7 +23,32 @@ type Props = {
 
 const ALTURA = 180;
 const LARGURA_ANTES_DA_MEDIDA = 340;
-const RESERVA_DA_LEGENDA = 40;
+/** Selo do bairro no canto de cima, à esquerda, por cima do desenho. */
+const MARGEM_DOS_SELOS = 6;
+const ALTURA_DO_SELO = 40;
+/**
+ * Pé do quadro (18/11/2026, revisão): a faixa "Toque nos lotes vizinhos…" embaixo e, numa linha própria logo acima
+ * dela, à direita, o crédito da base. Antes o crédito ficava no canto de cima e cobria números de lote e o nome do
+ * bairro vizinho. O prédio é enquadrado acima do pé inteiro, e o pé entra como obstáculo dos rótulos do fundo.
+ */
+const MARGEM_DO_PE = 8;
+const ALTURA_DO_CREDITO = 14;
+const VAO_DO_CREDITO = 2;
+const LINHA_DA_FAIXA = 14;
+const RECHEIO_DA_FAIXA = 8;
+/** Largura aproximada da frase da faixa a 10 px, para saber se ela quebra em duas linhas antes da medida. */
+const LARGURA_DA_FRASE = 380;
+/** Meia largura, em px, do número de um lote vizinho (até 4 algarismos a 9 px), para ele ceder ao nome da rua do imóvel. */
+const MEIA_LARGURA_DO_NUMERO = 12;
+const FRASE_DA_FAIXA = "Toque nos lotes vizinhos se o pino não estiver sobre o prédio correto";
+const INSTRUCAO =
+  "o prédio em azul, o pino laranja sobre ele e os lotes vizinhos tracejados. Use a busca ou o botão Não é este se o pino estiver fora do prédio.";
+
+/** Código do logradouro no id do índice ("8001-216" → 8001), para o fundo destacar a rua do prédio. */
+function codigoDoLogradouro(id: string): number | null {
+  const n = Number(id.split("-")[0]);
+  return Number.isInteger(n) ? n : null;
+}
 
 /** Retângulo, em pixels do desenho, que um lote tocável ocupa: o do próprio lote, no mínimo o toque mínimo do app. */
 function areaDeToque(f: Forma, raioDoCirculo: number): { left: number; top: number; width: number; height: number } {
@@ -30,6 +60,17 @@ function areaDeToque(f: Forma, raioDoCirculo: number): { left: number; top: numb
 }
 
 type AreaDoLote = ReturnType<typeof areaDeToque>;
+
+/**
+ * Altura, em px, do pé do quadro (faixa e, com o fundo, o crédito acima dela), contada da borda de baixo. A faixa tem
+ * uma linha quando a frase cabe na largura e duas quando não cabe.
+ */
+export function alturaDoPe(largura: number, comCredito: boolean): number {
+  const larguraDoTexto = largura - 24 - 16;
+  const linhas = larguraDoTexto >= LARGURA_DA_FRASE ? 1 : 2;
+  const faixa = linhas * LINHA_DA_FAIXA + RECHEIO_DA_FAIXA;
+  return MARGEM_DO_PE + faixa + (comCredito ? VAO_DO_CREDITO + ALTURA_DO_CREDITO : 0);
+}
 
 /** Botão transparente sobre um lote vizinho. Em componente próprio para levar o anel de foco de teclado. */
 function LoteTocavel({ rotulo, area, azul, aoEscolher }: { rotulo: string; area: AreaDoLote; azul: string; aoEscolher: () => void }) {
@@ -63,19 +104,52 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
   const { cor } = useTema();
   const azul = cor("cor-azul-cadastral");
   const [largura, setLargura] = useState(LARGURA_ANTES_DA_MEDIDA);
+  // O fundo só monta depois da primeira medida: com a largura provisória ele montaria e desenharia duas vezes.
+  const [medido, setMedido] = useState(false);
 
+  // O pé conta o crédito sempre (com ou sem o fundo): o enquadramento não muda quando o fundo chega.
+  const pe = alturaDoPe(largura, true);
   const cena = useMemo(
-    () => montarCena(selecionado, outros, { largura, altura: ALTURA, reservaInferior: RESERVA_DA_LEGENDA }),
-    [selecionado, outros, largura],
+    () => montarCena(selecionado, outros, { largura, altura: ALTURA, reservaInferior: pe }),
+    [selecionado, outros, largura, pe],
   );
   const porId = useMemo(() => new Map(outros.map((e) => [e.id, e])), [outros]);
 
+  // Fundo do mapa (mapa-base, 18/11/2026): quadras, lotes e ruas sob o desenho do índice, no mesmo quadro, sem zoom.
+  const nomeDoBairro = bairroPorSlug(selecionado.bairro)?.nome ?? null;
+  const paraDesenho = useMemo(() => paraDesenhoDaCena(cena), [cena]);
+  const caixa = useMemo(() => caixaDaCena(cena), [cena]);
+  const obstaculos = useMemo((): [number, number, number, number][] => {
+    const m = MARGEM_DOS_SELOS;
+    // O pé inteiro (faixa e crédito, na largura toda) é obstáculo: nenhum nome de rua ou de bairro fica por baixo.
+    const lista: [number, number, number, number][] = [[0, cena.altura - pe, cena.largura, cena.altura]];
+    if (nomeDoBairro) lista.push([m, m, m + Math.max(64, nomeDoBairro.length * 9 + 18), m + ALTURA_DO_SELO]);
+    return lista;
+  }, [cena.largura, cena.altura, nomeDoBairro, pe]);
+  const imovel = useMemo(
+    () => ({ centro: selecionado.centro, codigoDoLogradouro: codigoDoLogradouro(selecionado.id) }),
+    [selecionado.centro, selecionado.id],
+  );
+  const fundo = useFundoDoMapa({
+    bairro: selecionado.bairro,
+    imovel,
+    quadro: { largura: cena.largura, altura: cena.altura, paraDesenho, obstaculos },
+    caixa,
+    ativo: medido,
+  });
+  const comFundo = fundo.cena?.temDado ? fundo.cena : null;
+  // Um destaque só para o prédio: com o fundo, o lote do imóvel do fundo (azul forte, o mesmo do topo do dossiê e da
+  // gaveta) e o contorno do índice não é desenhado. Sem o lote no fundo, fica o contorno do índice, como antes.
+  const loteDoFundoNoLugar = comFundo !== null && comFundo.camadas.loteDoImovel !== "";
+  const cenaDoFundo = comFundo;
+
   const desenharForma = (f: Forma, escolhido: boolean) => {
+    if (escolhido && loteDoFundoNoLugar) return null;
     const raio = raioSemPoligono(cena, escolhido);
     const traco = escolhido
       ? { stroke: azul, strokeWidth: 2.5 }
       : { stroke: azul, strokeOpacity: 0.55, strokeWidth: 1.3, strokeDasharray: "4 3" };
-    const preenchimento = { fill: azul, fillOpacity: escolhido ? 0.22 : 0.06 };
+    const preenchimento = { fill: azul, fillOpacity: escolhido ? (cenaDoFundo ? 0.5 : 0.22) : cenaDoFundo ? 0.1 : 0.06 };
     return (
       <G key={f.id}>
         {f.pontos ? (
@@ -83,13 +157,14 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
         ) : (
           <Circle cx={f.centro[0]} cy={f.centro[1]} r={raio} {...preenchimento} {...traco} />
         )}
-        {escolhido ? null : (
+        {/* O número do lote vizinho cede o lugar ao nome da rua do imóvel (A11); o botão do lote continua com o endereço. */}
+        {escolhido || cobreARuaDoImovel(cenaDoFundo, [f.centro[0] - MEIA_LARGURA_DO_NUMERO, f.centro[1] - 7, f.centro[0] + MEIA_LARGURA_DO_NUMERO, f.centro[1] + 6]) ? null : (
           <TextoSvg
             x={f.centro[0]}
             y={f.centro[1] + 3}
             fill={azul}
             fillOpacity={0.8}
-            fontFamily="JetBrainsMono"
+            fontFamily="PlusJakartaSans"
             fontSize={9}
             fontWeight="600"
             textAnchor="middle"
@@ -108,10 +183,12 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
   });
 
   return (
+    <View style={{ gap: 6 }}>
     <View
       onLayout={(e) => {
         const medida = Math.round(e.nativeEvent.layout.width);
         if (medida > 0 && medida !== largura) setLargura(medida);
+        if (medida > 0) setMedido(true);
       }}
       style={{
         position: "relative",
@@ -119,24 +196,31 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
         borderRadius: 13,
         overflow: "hidden",
         borderWidth: 1,
-        borderColor: comAlfa(azul, 0.25),
+        borderColor: cor("cor-linha-forte"),
         backgroundColor: cor("cor-azul-cadastral-suave"),
       }}
     >
       <View
         accessible
         role="img"
-        accessibilityLabel="Mapa cadastral: o prédio em azul, o pino laranja sobre ele e os lotes vizinhos tracejados. Use a busca ou o botão Não é este se o pino estiver fora do prédio."
+        accessibilityLabel={cenaDoFundo ? `${descreverFundoDoMapa(cenaDoFundo)} No mapa, ${INSTRUCAO}` : `Mapa cadastral: ${INSTRUCAO}`}
         pointerEvents="none"
         style={StyleSheet.absoluteFill}
       >
-        <Svg width={cena.largura} height={cena.altura} viewBox={`0 0 ${cena.largura} ${cena.altura}`}>
-          <Defs>
-            <Pattern id="grade-do-mapa" width={24} height={24} patternUnits="userSpaceOnUse">
-              <Path d="M 24 0 L 0 0 0 24" fill="none" stroke={azul} strokeOpacity={0.08} strokeWidth={1} />
-            </Pattern>
-          </Defs>
-          <Rect width={cena.largura} height={cena.altura} fill="url(#grade-do-mapa)" />
+        {/* A descrição fica só no contêiner acima; o desenho não tem rótulo próprio e fica fora da acessibilidade. */}
+        <Svg aria-hidden width={cena.largura} height={cena.altura} viewBox={`0 0 ${cena.largura} ${cena.altura}`}>
+          {cenaDoFundo ? (
+            <FundoDoMapa cena={cenaDoFundo} />
+          ) : (
+            <>
+              <Defs>
+                <Pattern id="grade-do-mapa" width={24} height={24} patternUnits="userSpaceOnUse">
+                  <Path d="M 24 0 L 0 0 0 24" fill="none" stroke={azul} strokeOpacity={0.08} strokeWidth={1} />
+                </Pattern>
+              </Defs>
+              <Rect width={cena.largura} height={cena.altura} fill="url(#grade-do-mapa)" />
+            </>
+          )}
           {cena.vizinhos.map((f) => desenharForma(f, false))}
           {desenharForma(cena.selecionado, true)}
           <G transform={`translate(${cena.pino[0]}, ${cena.pino[1]})`}>
@@ -145,6 +229,14 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
           </G>
         </Svg>
       </View>
+      {cenaDoFundo ? (
+        <View
+          pointerEvents="none"
+          style={{ position: "absolute", top: MARGEM_DOS_SELOS, left: MARGEM_DOS_SELOS, flexDirection: "row", alignItems: "flex-start" }}
+        >
+          {cenaDoFundo.selo ? <SeloDoBairro nome={cenaDoFundo.selo} /> : null}
+        </View>
+      ) : null}
       {lotesTocaveis.map(({ forma, edificio }) => (
         <LoteTocavel
           key={forma.id}
@@ -155,22 +247,27 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
         />
       ))}
       <View
+        testID="pe-do-mapa-do-predio"
         pointerEvents="none"
-        style={{
-          position: "absolute",
-          left: 12,
-          right: 12,
-          bottom: 8,
-          paddingVertical: 4,
-          paddingHorizontal: 8,
-          borderRadius: 6,
-          backgroundColor: comAlfa(cor("cor-superficie"), 0.92),
-        }}
+        style={{ position: "absolute", left: 12, right: 12, bottom: MARGEM_DO_PE, gap: VAO_DO_CREDITO }}
       >
-        <Texto tipo="apoio" style={{ color: azul, fontSize: 10, lineHeight: 14, fontWeight: "600", textAlign: "center" }}>
-          Toque nos lotes vizinhos se o pino não estiver sobre o prédio correto
-        </Texto>
+        {cenaDoFundo ? <CreditoDaBase /> : null}
+        <View
+          style={{
+            paddingVertical: RECHEIO_DA_FAIXA / 2,
+            paddingHorizontal: 8,
+            borderRadius: 6,
+            // Fundo opaco (redesenho visual): a frase não disputa com as ruas do fundo do mapa.
+            backgroundColor: cor("cor-superficie"),
+          }}
+        >
+          <Texto tipo="apoio" style={{ color: azul, fontSize: 10, lineHeight: LINHA_DA_FAIXA, fontWeight: "600", textAlign: "center" }}>
+            {FRASE_DA_FAIXA}
+          </Texto>
+        </View>
       </View>
+    </View>
+    <AvisoDoFundoDoMapa estado={fundo.estado} tentarDeNovo={fundo.tentarDeNovo} />
     </View>
   );
 }

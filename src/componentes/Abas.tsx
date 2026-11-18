@@ -32,7 +32,7 @@ export function Abas({ atual, aoEscolher }: Props) {
         paddingTop: ESPACO[1],
         paddingHorizontal: ESPACO[2],
         paddingBottom: ESPACO[2] + insets.bottom,
-        borderTopWidth: 0.5,
+        borderTopWidth: 1,
         borderTopColor: cor("cor-linha"),
       }}
     >

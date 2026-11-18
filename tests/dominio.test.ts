@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@jest/globals";
-import { dentroDoPoligono, geometria } from "../src/componentes/mapa/geometria";
+import { celulasDeCalor, dentroDoPoligono } from "../src/componentes/mapa/geometria";
 import { acharFato, enderecoDoDossie, fontesDoApp, linhaDaFonte, recorteDoFato } from "../src/dados/consultas";
 import { resumoDosCreditos } from "../src/dados/creditos";
 import { IDS_DOSSIES, creditos, dossieOuErro, dossies } from "../src/dados/dossies";
@@ -90,12 +90,15 @@ describe("estado do fato", () => {
 });
 
 describe("mapa", () => {
-  it("gera a mesma geometria para o mesmo dossiê e acha o lote tocado", () => {
-    const g = geometria("casa-forte");
-    expect(geometria("casa-forte")).toBe(g);
-    expect(g.lotes).toHaveLength(9);
-    expect(dentroDoPoligono([0, 0], g.lotes[0] ?? [])).toBe(true);
-    expect(dentroDoPoligono([500, 500], g.lotes[0] ?? [])).toBe(false);
+  it("o calor de demonstração é o mesmo para o mesmo dossiê, e o ponto no polígono confere", () => {
+    // Ruas, praças, água e lotes inventados saíram (18/11/2026): o chão do mapa dos exemplos é o mapa-base.
+    const calor = celulasDeCalor("casa-forte");
+    expect(celulasDeCalor("casa-forte")).toBe(calor);
+    expect(calor).toHaveLength(22 * 22);
+    expect(calor.every((c) => c.v >= 0 && c.v <= 1)).toBe(true);
+    const quadrado: [number, number][] = [[-10, -10], [10, -10], [10, 10], [-10, 10]];
+    expect(dentroDoPoligono([0, 0], quadrado)).toBe(true);
+    expect(dentroDoPoligono([500, 500], quadrado)).toBe(false);
   });
 
   it("converte metros em coordenada e volta pela distância", () => {

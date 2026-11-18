@@ -6,7 +6,6 @@ import { type LeituraParcial, type Portal } from "../../dados/contratos";
 import { chavesDoAnuncio } from "../../dados/extrator/estado";
 import { DOMINIOS_DOS_PORTAIS, coletaEhDoAnuncio, esquemaColetaDaPagina, lerPagina } from "../../dados/extrator/pagina";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 import { Texto } from "../Texto";
 import { SCRIPT_COLETOR, paginaBloqueada } from "./coletor";
 import { resumoDaColeta } from "./diagnostico";
@@ -201,7 +200,7 @@ export function LeitorDePagina({ url, portal, idNoPortal, aoLer, aoFalhar }: Lei
       <View
         style={[
           styles.quadro,
-          { borderColor: comAlfa(cor("cor-texto"), 0.09), backgroundColor: cor("cor-superficie") },
+          { borderColor: cor("cor-linha-forte"), backgroundColor: cor("cor-superficie") },
           ampliada ? styles.quadroAmpliado : null,
         ]}
       >
@@ -266,7 +265,7 @@ function FaixaDeAviso({ texto }: { texto: string }) {
   return (
     <View
       accessibilityRole="alert"
-      style={[styles.faixaDeAviso, { backgroundColor: cor("cor-barro-suave"), borderColor: cor("cor-barro") }]}
+      style={[styles.faixaDeAviso, { backgroundColor: cor("cor-barro-suave"), borderLeftColor: cor("cor-barro") }]}
     >
       <Texto tipo="apoio" cor="cor-barro-texto" style={styles.textoDoAviso}>
         {texto}
@@ -293,8 +292,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     marginBottom: 8,
-    borderRadius: 11,
-    borderWidth: 1,
+    borderRadius: 8,
+    borderLeftWidth: 3,
   },
   textoDoAviso: {
     fontWeight: "600",

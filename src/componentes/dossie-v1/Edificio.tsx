@@ -1,8 +1,11 @@
+import * as Clipboard from "expo-clipboard";
+import { useState } from "react";
 import { View } from "react-native";
 import type { Edificio as EdificioDoIndice, Fato, Pergunta, Prioridade, VisaoDoDossie } from "../../dados/contratos";
+import { extrairChaveCnm } from "../../dados/documentos/copilotoPreSinal";
 import { derivarGuiaDeEstrutura } from "../../dados/dossie/guiaEstrutura";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, comAlfa } from "../../tema/tokens";
+import { ESPACO, RAIO } from "../../tema/tokens";
 import type { PedidoDeFonte } from "../fonte/GavetaDeFonte";
 import { TracoDeConfianca } from "../fonte/RastroDeConfianca";
 import { rotuloDaConfianca } from "../fonte/textos";
@@ -21,6 +24,8 @@ type Props = {
   coberto: boolean;
   vinculoConfirmado: boolean;
   prioridade: Prioridade;
+  chaveLote14?: string | null;
+  textosDocumentos?: readonly string[];
   aoMudarPrioridade: (p: Prioridade) => void;
   aoAbrirPergunta: (p: Pergunta) => void;
   aoAbrirRoteiro: () => void;
@@ -29,6 +34,55 @@ type Props = {
   aoConfirmarPredio: () => void;
   aoMedirSecao: (secao: SecaoDoEdificio, y: number) => void;
 };
+
+export type ChaveDuplaDoEdificio = {
+  loteFormatado: string;
+  loteConfirmado: boolean;
+  cnmFormatada: string;
+  cnmConfirmada: boolean;
+  textoParaCopiar: string;
+};
+
+/**
+ * Unifica lote municipal (14 dígitos da Prefeitura) e CNM (16 dígitos do Cartório, R42)
+ * sem expor siglas internas de banco na leitura do cidadão.
+ */
+export function sintetizarChaveDuplaDoEdificio(params: {
+  chaveLote14?: string | null;
+  textosDocumentos?: readonly string[];
+}): ChaveDuplaDoEdificio {
+  const brutoLote = (params.chaveLote14 ?? "").trim();
+  const loteConfirmado = brutoLote.length > 0;
+  const loteFormatado = /^\d{14}$/.test(brutoLote)
+    ? `${brutoLote.slice(0, 2)}.${brutoLote.slice(2, 6)}.${brutoLote.slice(6, 9)}.${brutoLote.slice(9, 11)}.${brutoLote.slice(11, 14)}`
+    : loteConfirmado
+      ? brutoLote
+      : "A confirmar no cadastro";
+
+  let cnmEncontrado: string | null = null;
+  for (const txt of params.textosDocumentos ?? []) {
+    const res = extrairChaveCnm(txt);
+    if (res.encontrada && res.validaDigito && res.formatada) {
+      cnmEncontrado = res.formatada;
+      break;
+    }
+  }
+
+  const cnmConfirmada = cnmEncontrado !== null;
+  const cnmFormatada = cnmEncontrado ?? "Pedir certidão de ônus (16 dígitos)";
+  const textoParaCopiar = [
+    `Lote municipal (Prefeitura): ${loteFormatado}`,
+    `Matrícula nacional (CNM): ${cnmFormatada}`,
+  ].join("\n");
+
+  return {
+    loteFormatado,
+    loteConfirmado,
+    cnmFormatada,
+    cnmConfirmada,
+    textoParaCopiar,
+  };
+}
 
 function Prioridades({ atual, aoMudar }: { atual: Prioridade; aoMudar: (p: Prioridade) => void }) {
   const { cor } = useTema();
@@ -50,12 +104,10 @@ function Prioridades({ atual, aoMudar }: { atual: Prioridade; aoMudar: (p: Prior
               alignItems: "center",
               justifyContent: "center",
               borderRadius: 7,
-              borderWidth: 1,
-              borderColor: ativa ? comAlfa(cor("cor-barro"), 0.5) : cor("cor-linha"),
-              backgroundColor: ativa ? cor("cor-barro-suave") : cor("cor-papel-claro"),
+              backgroundColor: ativa ? cor("cor-barro-suave") : cor("cor-sutil"),
             }}
           >
-            <Texto tipo="apoio" cor={ativa ? "cor-barro-texto" : "cor-texto-apoio"} style={{ fontSize: 12, lineHeight: 16, fontWeight: ativa ? "600" : "400" }}>
+            <Texto tipo="apoio" cor={ativa ? "cor-barro-texto" : "cor-texto-apoio"} style={{ fontSize: 12, lineHeight: 16, fontWeight: ativa ? "700" : "500" }}>
               {p.rotulo}
             </Texto>
           </Pressionavel>
@@ -91,7 +143,7 @@ function AntesDeDecidir({ visao, prioridade, aoMudarPrioridade, aoAbrirPergunta,
       <Prioridades atual={prioridade} aoMudar={aoMudarPrioridade} />
       <View>
         {primeiras.map((p, i) => (
-          <View key={p.id} style={{ borderTopWidth: i === 0 ? 0 : 0.5, borderTopColor: cor("cor-linha") }}>
+          <View key={p.id} style={{ borderTopWidth: i === 0 ? 0 : 1, borderTopColor: cor("cor-linha") }}>
             <LinhaTocavel onPress={() => aoAbrirPergunta(p)} acessivel={`${p.titulo}. ${p.pista}`} minimo={58} estilo={{ paddingVertical: 14 }}>
               <Texto tipo="corpo" style={{ fontSize: i === 0 ? 20 : 18, lineHeight: i === 0 ? 26 : 24, fontWeight: "600", letterSpacing: -0.45 }}>
                 {p.titulo}
@@ -146,8 +198,31 @@ function FatoDaGrade({ fato, aoAbrirFonte }: { fato: Fato; aoAbrirFonte: Props["
   );
 }
 
-function EstruturaECadastro({ visao, edificio, aoAbrirFonte, aoAbrirCadastro }: Pick<Props, "visao" | "edificio" | "aoAbrirFonte" | "aoAbrirCadastro">) {
+function EstruturaECadastro({
+  visao,
+  edificio,
+  chaveLote14,
+  textosDocumentos,
+  aoAbrirFonte,
+  aoAbrirCadastro,
+}: Pick<Props, "visao" | "edificio" | "chaveLote14" | "textosDocumentos" | "aoAbrirFonte" | "aoAbrirCadastro">) {
+  const { cor } = useTema();
+  const [copiado, setCopiado] = useState(false);
   const guia = derivarGuiaDeEstrutura(edificio, visao);
+  const chaves = sintetizarChaveDuplaDoEdificio({
+    chaveLote14: chaveLote14 ?? edificio?.dsqfl ?? null,
+    textosDocumentos,
+  });
+
+  const copiarChaves = async () => {
+    try {
+      await Clipboard.setStringAsync(chaves.textoParaCopiar);
+      setCopiado(true);
+    } catch {
+      setCopiado(false);
+    }
+  };
+
   return (
     <View>
       <Sobretitulo>Identidade cadastral</Sobretitulo>
@@ -156,6 +231,64 @@ function EstruturaECadastro({ visao, edificio, aoAbrirFonte, aoAbrirCadastro }: 
         {visao.cadastro.map((f) => (
           <FatoDaGrade key={f.id} fato={f} aoAbrirFonte={aoAbrirFonte} />
         ))}
+      </View>
+      <View
+        testID="edificio-chave-dupla"
+        style={{
+          borderTopWidth: 1,
+          borderTopColor: cor("cor-linha"),
+          marginTop: ESPACO[4],
+          paddingTop: ESPACO[3],
+          gap: 8,
+        }}
+      >
+        <Texto tipo="etiqueta" style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>
+          Chave dupla do imóvel (Prefeitura + Cartório)
+        </Texto>
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: 8 }}>
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 16 }}>
+            Lote municipal (14 dígitos)
+          </Texto>
+          <Texto tipo="apoio" style={{ fontSize: 12.5, lineHeight: 17, fontWeight: "600", fontVariant: ["tabular-nums"] }}>
+            {chaves.loteFormatado}
+          </Texto>
+        </View>
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: 8 }}>
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 16 }}>
+            Matrícula nacional (CNM · 16 dígitos)
+          </Texto>
+          <Texto
+            tipo="apoio"
+            cor={chaves.cnmConfirmada ? "cor-salvia-escura" : "cor-texto-apoio"}
+            style={{ fontSize: 12.5, lineHeight: 17, fontWeight: "600", fontVariant: ["tabular-nums"] }}
+          >
+            {chaves.cnmFormatada}
+          </Texto>
+        </View>
+        <Pressionavel
+          testID="edificio-copiar-chaves"
+          onPress={() => void copiarChaves()}
+          accessibilityRole="button"
+          accessibilityLabel="Copiar chaves do imóvel: lote municipal e matrícula CNM"
+          style={{
+            minHeight: 48,
+            borderRadius: RAIO.quadrado,
+            paddingHorizontal: 14,
+            paddingVertical: 10,
+            backgroundColor: cor("cor-sutil"),
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Texto tipo="etiqueta" style={{ fontSize: 12.5, lineHeight: 17, fontWeight: "700" }}>
+            Copiar chaves do imóvel
+          </Texto>
+        </Pressionavel>
+        {copiado ? (
+          <Texto tipo="apoio" role="status" cor="cor-salvia-escura" style={{ fontSize: 12, lineHeight: 16, fontWeight: "600" }}>
+            Chaves copiadas
+          </Texto>
+        ) : null}
       </View>
       {guia ? (
         <CaixaCreme estilo={{ marginTop: ESPACO[4] }}>
@@ -274,7 +407,14 @@ export function EdificioDoDossie(props: Props) {
       {visao.loteConfirmado ? (
         <>
           <Secao aoMedir={(y) => aoMedirSecao("cadastro", y)}>
-            <EstruturaECadastro visao={visao} edificio={props.edificio} aoAbrirFonte={props.aoAbrirFonte} aoAbrirCadastro={props.aoAbrirCadastro} />
+            <EstruturaECadastro
+              visao={visao}
+              edificio={props.edificio}
+              chaveLote14={props.chaveLote14}
+              textosDocumentos={props.textosDocumentos}
+              aoAbrirFonte={props.aoAbrirFonte}
+              aoAbrirCadastro={props.aoAbrirCadastro}
+            />
           </Secao>
           <Secao semBase aoMedir={(y) => aoMedirSecao("valor", y)}>
             <ValorEHistorico visao={visao} edificio={props.edificio} aoAbrirFonte={props.aoAbrirFonte} />

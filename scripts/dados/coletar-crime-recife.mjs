@@ -377,12 +377,12 @@ function distanciaAoSegmento(p, a, b, escala) {
 }
 
 /**
- * Para cada bairro-alvo, os outros bairros cujo limite acompanha o dele por pelo menos DIVISA_MINIMA_M metros.
+ * Para cada bairro de `alvos` (por padrão os 5 alvos), os outros bairros cujo limite acompanha o dele por pelo menos DIVISA_MINIMA_M metros.
  * Mede, no contorno do alvo, os segmentos com os dois extremos a até TOLERANCIA_M do contorno do outro bairro
  * (metros por grau na latitude do Recife). Devolve também o que ficou abaixo do mínimo, para o relatório.
  * `slugDaFeicao` liga cada feição da malha ao slug do bairros.ts (null se não achar).
  */
-function calcularDivisas(geojson, slugDaFeicao) {
+function calcularDivisas(geojson, slugDaFeicao, alvos = ALVOS) {
   const escala = { x: 111320 * Math.cos((-8.05 * Math.PI) / 180), y: 110574 };
   const bairros = geojson.features.map((f) => {
     const partes = f.geometry.type === "MultiPolygon" ? f.geometry.coordinates : [f.geometry.coordinates];
@@ -415,7 +415,7 @@ function calcularDivisas(geojson, slugDaFeicao) {
   };
 
   const resultado = {};
-  for (const alvo of ALVOS) {
+  for (const alvo of alvos) {
     const A = bairros.find((b) => b.slug === alvo);
     if (!A) throw new ErroDeColeta(`bairro-alvo "${alvo}" não achado na malha`);
     const vizinhos = [];
@@ -494,7 +494,10 @@ async function coletar() {
     if (!b) semCorrespondencia.push(nome);
     return b?.slug ?? null;
   };
-  const divisas = calcularDivisas(geojson, slugDaFeicao);
+  // Divisas de todos os 94 bairros (18/11/2026): o cartão "Segurança no bairro" mostra os vizinhos de divisa de
+  // qualquer bairro, não só dos 5 alvos. O escopo da coleta (papéis) continua o mesmo.
+  const divisas = calcularDivisas(geojson, slugDaFeicao, oficiais.map((o) => o.slug));
+  const vizinhosDeDivisa = (slug) => (divisas[slug] ?? []).filter((v) => v.metros >= DIVISA_MINIMA_M).map((v) => v.slug);
   console.log(`\nMalha oficial de bairros (${malha.modificadoEm}${malha.doCache ? ", cache" : ""}): 94 feições; feições sem correspondência em bairros.ts: ${semCorrespondencia.length ? [...new Set(semCorrespondencia)].join(", ") : "nenhuma"}`);
 
   /** slug → { papel, divisaComAlvos } */
@@ -589,6 +592,7 @@ async function coletar() {
       slug,
       papel: escopo.get(slug).papel,
       divisaComAlvos: escopo.get(slug).divisaComAlvos,
+      vizinhosDeDivisa: vizinhosDeDivisa(slug),
       janela: lido.janela,
       periodo: lido.periodo,
       total: lido.total,
@@ -688,7 +692,7 @@ async function coletar() {
         },
         licencaDeclaradaPeloCompilador: licencasDoSite.length === 1 ? licencasDoSite[0] : null,
         limitacoes: [
-          "Contagem bruta de registros de ocorrência por natureza: não é taxa por morador, ranking nem nota de bairro.",
+          "Contagem bruta de registros de ocorrência por natureza. A taxa por 1.000 moradores é calculada no app com a população do Censo 2022 (IBGE): conta quem mora no bairro, não quem passa por ele, e por isso sobe em bairros de comércio e serviço. Não é ranking nem nota de bairro.",
           "Subnotificação: só entra o que foi registrado; o que não chegou à polícia não aparece.",
           "Só bairro: sem rua e sem coordenada.",
           "Registros sem bairro preenchido ficam fora de qualquer bairro (a página da fonte fala em cerca de 4%).",
@@ -706,7 +710,7 @@ async function coletar() {
       },
       {
         chave: "bairros_malha",
-        nome: "Limites dos bairros do Recife (usados só para achar quais bairros fazem divisa com os cinco alvos)",
+        nome: "Limites dos bairros do Recife (usados só para achar quais bairros fazem divisa entre si)",
         orgao: "Prefeitura da Cidade do Recife · Secretaria de Infraestrutura",
         licenca: "ODbL",
         url: URL_DATASET_MALHA,

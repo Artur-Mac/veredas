@@ -11,6 +11,12 @@
       "slug": "boa-viagem",
       "papel": "alvo",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "imbiribeira",
+        "pina",
+        "ibura",
+        "jordao"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -62,6 +68,12 @@
       "slug": "casa-forte",
       "papel": "alvo",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "poco",
+        "parnamirim",
+        "casa-amarela",
+        "santana"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -116,6 +128,17 @@
         "espinheiro",
         "madalena"
       ],
+      "vizinhosDeDivisa": [
+        "espinheiro",
+        "aflitos",
+        "jaqueira",
+        "derby",
+        "madalena",
+        "torre",
+        "boa-vista",
+        "tamarineira",
+        "rosarinho"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -169,6 +192,14 @@
       "divisaComAlvos": [
         "gracas"
       ],
+      "vizinhosDeDivisa": [
+        "gracas",
+        "encruzilhada",
+        "santo-amaro",
+        "boa-vista",
+        "aflitos",
+        "torreao"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -220,6 +251,14 @@
       "slug": "madalena",
       "papel": "alvo",
       "divisaComAlvos": [
+        "gracas"
+      ],
+      "vizinhosDeDivisa": [
+        "prado",
+        "torre",
+        "derby",
+        "ilha-do-retiro",
+        "zumbi",
         "gracas"
       ],
       "janela": "12-meses",
@@ -276,6 +315,11 @@
         "gracas",
         "espinheiro"
       ],
+      "vizinhosDeDivisa": [
+        "gracas",
+        "encruzilhada",
+        "espinheiro"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -330,6 +374,17 @@
         "gracas",
         "espinheiro"
       ],
+      "vizinhosDeDivisa": [
+        "soledade",
+        "santo-amaro",
+        "paissandu",
+        "coelhos",
+        "santo-antonio",
+        "ilha-do-leite",
+        "espinheiro",
+        "derby",
+        "gracas"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -382,6 +437,19 @@
       "papel": "vizinho",
       "divisaComAlvos": [
         "casa-forte"
+      ],
+      "vizinhosDeDivisa": [
+        "vasco-da-gama",
+        "parnamirim",
+        "monteiro",
+        "morro-da-conceicao",
+        "tamarineira",
+        "casa-forte",
+        "alto-do-mandu",
+        "alto-jose-do-pinho",
+        "poco",
+        "nova-descoberta",
+        "mangabeira"
       ],
       "janela": "12-meses",
       "periodo": {
@@ -437,6 +505,12 @@
         "gracas",
         "madalena"
       ],
+      "vizinhosDeDivisa": [
+        "madalena",
+        "gracas",
+        "boa-vista",
+        "paissandu"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -489,6 +563,15 @@
       "papel": "vizinho",
       "divisaComAlvos": [
         "espinheiro"
+      ],
+      "vizinhosDeDivisa": [
+        "hipodromo",
+        "aflitos",
+        "espinheiro",
+        "ponto-de-parada",
+        "rosarinho",
+        "campo-grande",
+        "torreao"
       ],
       "janela": "12-meses",
       "periodo": {
@@ -543,6 +626,16 @@
       "divisaComAlvos": [
         "boa-viagem"
       ],
+      "vizinhosDeDivisa": [
+        "jordao",
+        "cohab",
+        "barro",
+        "ipsep",
+        "imbiribeira",
+        "boa-viagem",
+        "areias",
+        "cacote"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -595,6 +688,13 @@
       "papel": "vizinho",
       "divisaComAlvos": [
         "madalena"
+      ],
+      "vizinhosDeDivisa": [
+        "madalena",
+        "ilha-joana-bezerra",
+        "afogados",
+        "paissandu",
+        "prado"
       ],
       "janela": "12-meses",
       "periodo": {
@@ -649,6 +749,15 @@
       "divisaComAlvos": [
         "boa-viagem"
       ],
+      "vizinhosDeDivisa": [
+        "boa-viagem",
+        "pina",
+        "ipsep",
+        "afogados",
+        "ibura",
+        "jiquia",
+        "areias"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -702,6 +811,13 @@
       "divisaComAlvos": [
         "gracas"
       ],
+      "vizinhosDeDivisa": [
+        "gracas",
+        "torre",
+        "tamarineira",
+        "parnamirim",
+        "santana"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -745,6 +861,11 @@
       "slug": "jordao",
       "papel": "vizinho",
       "divisaComAlvos": [
+        "boa-viagem"
+      ],
+      "vizinhosDeDivisa": [
+        "ibura",
+        "cohab",
         "boa-viagem"
       ],
       "janela": "12-meses",
@@ -800,6 +921,13 @@
       "divisaComAlvos": [
         "casa-forte"
       ],
+      "vizinhosDeDivisa": [
+        "casa-amarela",
+        "casa-forte",
+        "jaqueira",
+        "santana",
+        "tamarineira"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -852,6 +980,14 @@
       "papel": "vizinho",
       "divisaComAlvos": [
         "boa-viagem"
+      ],
+      "vizinhosDeDivisa": [
+        "imbiribeira",
+        "boa-viagem",
+        "brasilia-teimosa",
+        "cabanga",
+        "sao-jose",
+        "afogados"
       ],
       "janela": "12-meses",
       "periodo": {
@@ -906,6 +1042,14 @@
       "divisaComAlvos": [
         "casa-forte"
       ],
+      "vizinhosDeDivisa": [
+        "casa-forte",
+        "iputinga",
+        "cordeiro",
+        "monteiro",
+        "santana",
+        "casa-amarela"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -958,6 +1102,15 @@
       "papel": "vizinho",
       "divisaComAlvos": [
         "madalena"
+      ],
+      "vizinhosDeDivisa": [
+        "bongi",
+        "madalena",
+        "cordeiro",
+        "zumbi",
+        "san-martin",
+        "afogados",
+        "ilha-do-retiro"
       ],
       "janela": "12-meses",
       "periodo": {
@@ -1012,6 +1165,13 @@
       "divisaComAlvos": [
         "gracas"
       ],
+      "vizinhosDeDivisa": [
+        "tamarineira",
+        "encruzilhada",
+        "ponto-de-parada",
+        "gracas",
+        "arruda"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1065,6 +1225,14 @@
       "divisaComAlvos": [
         "casa-forte"
       ],
+      "vizinhosDeDivisa": [
+        "torre",
+        "poco",
+        "parnamirim",
+        "cordeiro",
+        "casa-forte",
+        "jaqueira"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1113,6 +1281,15 @@
       "papel": "vizinho",
       "divisaComAlvos": [
         "espinheiro"
+      ],
+      "vizinhosDeDivisa": [
+        "recife",
+        "boa-vista",
+        "campo-grande",
+        "torreao",
+        "espinheiro",
+        "soledade",
+        "santo-antonio"
       ],
       "janela": "12-meses",
       "periodo": {
@@ -1165,6 +1342,15 @@
       "slug": "tamarineira",
       "papel": "vizinho",
       "divisaComAlvos": [
+        "gracas"
+      ],
+      "vizinhosDeDivisa": [
+        "rosarinho",
+        "jaqueira",
+        "casa-amarela",
+        "mangabeira",
+        "parnamirim",
+        "arruda",
         "gracas"
       ],
       "janela": "12-meses",
@@ -1221,6 +1407,14 @@
         "gracas",
         "madalena"
       ],
+      "vizinhosDeDivisa": [
+        "madalena",
+        "santana",
+        "jaqueira",
+        "cordeiro",
+        "gracas",
+        "zumbi"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1274,6 +1468,12 @@
       "divisaComAlvos": [
         "espinheiro"
       ],
+      "vizinhosDeDivisa": [
+        "campo-grande",
+        "santo-amaro",
+        "encruzilhada",
+        "espinheiro"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1322,6 +1522,12 @@
       "papel": "vizinho",
       "divisaComAlvos": [
         "madalena"
+      ],
+      "vizinhosDeDivisa": [
+        "cordeiro",
+        "madalena",
+        "prado",
+        "torre"
       ],
       "janela": "12-meses",
       "periodo": {
@@ -1374,6 +1580,19 @@
       "slug": "afogados",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "jiquia",
+        "imbiribeira",
+        "ilha-joana-bezerra",
+        "mustardinha",
+        "mangueira",
+        "bongi",
+        "ilha-do-retiro",
+        "sao-jose",
+        "cabanga",
+        "prado",
+        "pina"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1425,6 +1644,16 @@
       "slug": "agua-fria",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "fundao",
+        "bomba-do-hemeterio",
+        "arruda",
+        "linha-do-tiro",
+        "beberibe",
+        "alto-santa-terezinha",
+        "campina-do-barreto",
+        "porto-da-madeira"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1476,6 +1705,13 @@
       "slug": "alto-do-mandu",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "monteiro",
+        "casa-amarela",
+        "macaxeira",
+        "apipucos",
+        "nova-descoberta"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1527,6 +1763,14 @@
       "slug": "alto-jose-bonifacio",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "vasco-da-gama",
+        "linha-do-tiro",
+        "morro-da-conceicao",
+        "alto-santa-terezinha",
+        "brejo-de-beberibe",
+        "alto-jose-do-pinho"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1578,6 +1822,14 @@
       "slug": "alto-jose-do-pinho",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "mangabeira",
+        "casa-amarela",
+        "morro-da-conceicao",
+        "bomba-do-hemeterio",
+        "alto-santa-terezinha",
+        "alto-jose-bonifacio"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1629,6 +1881,13 @@
       "slug": "alto-santa-terezinha",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "linha-do-tiro",
+        "alto-jose-bonifacio",
+        "bomba-do-hemeterio",
+        "agua-fria",
+        "alto-jose-do-pinho"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1680,6 +1939,15 @@
       "slug": "apipucos",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "dois-irmaos",
+        "macaxeira",
+        "iputinga",
+        "corrego-do-jenipapo",
+        "caxanga",
+        "monteiro",
+        "alto-do-mandu"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1731,6 +1999,16 @@
       "slug": "areias",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "cacote",
+        "barro",
+        "estancia",
+        "ibura",
+        "imbiribeira",
+        "jiquia",
+        "ipsep",
+        "jardim-sao-paulo"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1782,6 +2060,17 @@
       "slug": "arruda",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "agua-fria",
+        "campo-grande",
+        "campina-do-barreto",
+        "ponto-de-parada",
+        "tamarineira",
+        "bomba-do-hemeterio",
+        "mangabeira",
+        "rosarinho",
+        "peixinhos"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1833,6 +2122,13 @@
       "slug": "barro",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "ibura",
+        "tejipio",
+        "areias",
+        "cohab",
+        "jardim-sao-paulo"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1884,6 +2180,12 @@
       "slug": "beberibe",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "linha-do-tiro",
+        "porto-da-madeira",
+        "agua-fria",
+        "dois-unidos"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1935,6 +2237,13 @@
       "slug": "bomba-do-hemeterio",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "agua-fria",
+        "mangabeira",
+        "alto-santa-terezinha",
+        "alto-jose-do-pinho",
+        "arruda"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -1986,6 +2295,12 @@
       "slug": "bongi",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "prado",
+        "mustardinha",
+        "san-martin",
+        "afogados"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2037,6 +2352,11 @@
       "slug": "brasilia-teimosa",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "pina",
+        "sao-jose",
+        "recife"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2088,6 +2408,13 @@
       "slug": "brejo-da-guabiraba",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "brejo-de-beberibe",
+        "guabiraba",
+        "nova-descoberta",
+        "corrego-do-jenipapo",
+        "passarinho"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2139,6 +2466,15 @@
       "slug": "brejo-de-beberibe",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "passarinho",
+        "dois-unidos",
+        "nova-descoberta",
+        "vasco-da-gama",
+        "brejo-da-guabiraba",
+        "linha-do-tiro",
+        "alto-jose-bonifacio"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2190,6 +2526,11 @@
       "slug": "cabanga",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "sao-jose",
+        "pina",
+        "afogados"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2241,6 +2582,10 @@
       "slug": "cacote",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "areias",
+        "ibura"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2292,6 +2637,11 @@
       "slug": "cajueiro",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "fundao",
+        "campina-do-barreto",
+        "porto-da-madeira"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2343,6 +2693,13 @@
       "slug": "campina-do-barreto",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "cajueiro",
+        "peixinhos",
+        "arruda",
+        "agua-fria",
+        "fundao"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2394,6 +2751,15 @@
       "slug": "campo-grande",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "arruda",
+        "hipodromo",
+        "santo-amaro",
+        "torreao",
+        "peixinhos",
+        "encruzilhada",
+        "ponto-de-parada"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2445,6 +2811,13 @@
       "slug": "caxanga",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "varzea",
+        "dois-irmaos",
+        "iputinga",
+        "sitio-dos-pintos",
+        "apipucos"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2496,6 +2869,12 @@
       "slug": "cidade-universitaria",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "varzea",
+        "curado",
+        "engenho-do-meio",
+        "iputinga"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2547,6 +2926,13 @@
       "slug": "coelhos",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "boa-vista",
+        "sao-jose",
+        "ilha-joana-bezerra",
+        "ilha-do-leite",
+        "santo-antonio"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2598,6 +2984,11 @@
       "slug": "cohab",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "ibura",
+        "barro",
+        "jordao"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2649,6 +3040,11 @@
       "slug": "coqueiral",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "toto",
+        "tejipio",
+        "sancho"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2700,6 +3096,17 @@
       "slug": "cordeiro",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "iputinga",
+        "torroes",
+        "zumbi",
+        "prado",
+        "poco",
+        "torre",
+        "san-martin",
+        "santana",
+        "engenho-do-meio"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2751,6 +3158,14 @@
       "slug": "corrego-do-jenipapo",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "dois-irmaos",
+        "nova-descoberta",
+        "macaxeira",
+        "brejo-da-guabiraba",
+        "apipucos",
+        "guabiraba"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2802,6 +3217,17 @@
       "slug": "curado",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "varzea",
+        "jardim-sao-paulo",
+        "cidade-universitaria",
+        "torroes",
+        "san-martin",
+        "sancho",
+        "toto",
+        "engenho-do-meio",
+        "tejipio"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2853,6 +3279,13 @@
       "slug": "dois-irmaos",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "sitio-dos-pintos",
+        "guabiraba",
+        "apipucos",
+        "caxanga",
+        "corrego-do-jenipapo"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2904,6 +3337,12 @@
       "slug": "dois-unidos",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "passarinho",
+        "brejo-de-beberibe",
+        "linha-do-tiro",
+        "beberibe"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -2955,6 +3394,13 @@
       "slug": "engenho-do-meio",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "torroes",
+        "cidade-universitaria",
+        "iputinga",
+        "curado",
+        "cordeiro"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3006,6 +3452,11 @@
       "slug": "estancia",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "jiquia",
+        "areias",
+        "jardim-sao-paulo"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3057,6 +3508,12 @@
       "slug": "fundao",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "agua-fria",
+        "cajueiro",
+        "porto-da-madeira",
+        "campina-do-barreto"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3108,6 +3565,14 @@
       "slug": "guabiraba",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "passarinho",
+        "pau-ferro",
+        "dois-irmaos",
+        "brejo-da-guabiraba",
+        "corrego-do-jenipapo",
+        "sitio-dos-pintos"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3159,6 +3624,11 @@
       "slug": "hipodromo",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "encruzilhada",
+        "campo-grande",
+        "ponto-de-parada"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3210,6 +3680,12 @@
       "slug": "ilha-do-leite",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "paissandu",
+        "boa-vista",
+        "coelhos",
+        "ilha-joana-bezerra"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3261,6 +3737,14 @@
       "slug": "ilha-joana-bezerra",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "sao-jose",
+        "afogados",
+        "ilha-do-retiro",
+        "coelhos",
+        "paissandu",
+        "ilha-do-leite"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3312,6 +3796,11 @@
       "slug": "ipsep",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "imbiribeira",
+        "ibura",
+        "areias"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3363,6 +3852,16 @@
       "slug": "iputinga",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "cordeiro",
+        "apipucos",
+        "monteiro",
+        "varzea",
+        "caxanga",
+        "poco",
+        "engenho-do-meio",
+        "cidade-universitaria"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3414,6 +3913,14 @@
       "slug": "jardim-sao-paulo",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "curado",
+        "barro",
+        "tejipio",
+        "estancia",
+        "areias",
+        "san-martin"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3465,6 +3972,14 @@
       "slug": "jiquia",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "estancia",
+        "afogados",
+        "san-martin",
+        "imbiribeira",
+        "areias",
+        "mangueira"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3516,6 +4031,14 @@
       "slug": "linha-do-tiro",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "dois-unidos",
+        "alto-jose-bonifacio",
+        "agua-fria",
+        "alto-santa-terezinha",
+        "beberibe",
+        "brejo-de-beberibe"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3567,6 +4090,12 @@
       "slug": "macaxeira",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "nova-descoberta",
+        "apipucos",
+        "corrego-do-jenipapo",
+        "alto-do-mandu"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3618,6 +4147,13 @@
       "slug": "mangabeira",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "alto-jose-do-pinho",
+        "bomba-do-hemeterio",
+        "tamarineira",
+        "arruda",
+        "casa-amarela"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3669,6 +4205,12 @@
       "slug": "mangueira",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "afogados",
+        "mustardinha",
+        "san-martin",
+        "jiquia"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3720,6 +4262,13 @@
       "slug": "monteiro",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "iputinga",
+        "alto-do-mandu",
+        "casa-amarela",
+        "poco",
+        "apipucos"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3771,6 +4320,12 @@
       "slug": "morro-da-conceicao",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "casa-amarela",
+        "alto-jose-bonifacio",
+        "vasco-da-gama",
+        "alto-jose-do-pinho"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3822,6 +4377,12 @@
       "slug": "mustardinha",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "bongi",
+        "afogados",
+        "mangueira",
+        "san-martin"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3873,6 +4434,15 @@
       "slug": "nova-descoberta",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "macaxeira",
+        "vasco-da-gama",
+        "brejo-de-beberibe",
+        "corrego-do-jenipapo",
+        "brejo-da-guabiraba",
+        "alto-do-mandu",
+        "casa-amarela"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3924,6 +4494,13 @@
       "slug": "paissandu",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "boa-vista",
+        "ilha-do-leite",
+        "ilha-do-retiro",
+        "derby",
+        "ilha-joana-bezerra"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -3975,6 +4552,12 @@
       "slug": "passarinho",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "guabiraba",
+        "dois-unidos",
+        "brejo-de-beberibe",
+        "brejo-da-guabiraba"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -4026,6 +4609,11 @@
       "slug": "peixinhos",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "campina-do-barreto",
+        "campo-grande",
+        "arruda"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -4045,6 +4633,13 @@
       "slug": "ponto-de-parada",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "encruzilhada",
+        "arruda",
+        "rosarinho",
+        "campo-grande",
+        "hipodromo"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -4088,6 +4683,12 @@
       "slug": "porto-da-madeira",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "cajueiro",
+        "beberibe",
+        "fundao",
+        "agua-fria"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -4139,6 +4740,12 @@
       "slug": "recife",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "santo-amaro",
+        "santo-antonio",
+        "sao-jose",
+        "brasilia-teimosa"
+      ],
       "janela": "todo-o-periodo",
       "periodo": null,
       "total": 112,
@@ -4159,6 +4766,17 @@
       "slug": "san-martin",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "jiquia",
+        "curado",
+        "torroes",
+        "bongi",
+        "mustardinha",
+        "cordeiro",
+        "prado",
+        "mangueira",
+        "jardim-sao-paulo"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -4210,6 +4828,12 @@
       "slug": "sancho",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "tejipio",
+        "curado",
+        "toto",
+        "coqueiral"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -4261,6 +4885,13 @@
       "slug": "santo-antonio",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "sao-jose",
+        "recife",
+        "boa-vista",
+        "santo-amaro",
+        "coelhos"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -4312,6 +4943,16 @@
       "slug": "sao-jose",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "cabanga",
+        "ilha-joana-bezerra",
+        "brasilia-teimosa",
+        "santo-antonio",
+        "coelhos",
+        "pina",
+        "afogados",
+        "recife"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -4363,6 +5004,11 @@
       "slug": "sitio-dos-pintos",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "dois-irmaos",
+        "caxanga",
+        "guabiraba"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -4414,6 +5060,10 @@
       "slug": "soledade",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "boa-vista",
+        "santo-amaro"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -4465,6 +5115,13 @@
       "slug": "tejipio",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "barro",
+        "sancho",
+        "jardim-sao-paulo",
+        "coqueiral",
+        "curado"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -4516,6 +5173,12 @@
       "slug": "torroes",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "cordeiro",
+        "engenho-do-meio",
+        "curado",
+        "san-martin"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -4567,6 +5230,11 @@
       "slug": "toto",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "coqueiral",
+        "curado",
+        "sancho"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -4618,6 +5286,12 @@
       "slug": "varzea",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "curado",
+        "caxanga",
+        "cidade-universitaria",
+        "iputinga"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",
@@ -4669,6 +5343,13 @@
       "slug": "vasco-da-gama",
       "papel": "outro",
       "divisaComAlvos": [],
+      "vizinhosDeDivisa": [
+        "nova-descoberta",
+        "alto-jose-bonifacio",
+        "brejo-de-beberibe",
+        "casa-amarela",
+        "morro-da-conceicao"
+      ],
       "janela": "12-meses",
       "periodo": {
         "inicio": "2025-11",

@@ -1,4 +1,33 @@
-# Instruções para agentes: motion do pitch VEREDA
+# Instruções para agentes
+
+## Fonte da verdade: o Enemyhub
+
+Vale para todo o repositório. Decisão do usuário de 16/11/2026, estruturada aqui em 18/11/2026.
+
+- O **Enemyhub** é a fonte da verdade do Vereda: negócio, escopo, features (com veredito e justificativa), impedimentos, decisões de produto, tarefas, documentos e roteiros de pitch. Projeto no hub: **Vereda**, id `8c0a06e6-76eb-4673-a858-d2dc65d0ea81`.
+- O acesso é pelo servidor MCP `enemyhub`, que fica no repositório `Mangue-Bit/EnemiesHub`, pasta `mcp/`. Cada pessoa gera o próprio token em **Minha conta** no hub e registra o servidor uma vez com `claude mcp add --scope user enemyhub ...` (passo a passo no `mcp/README.md` daquele repositório). **Nunca grave o token neste repositório**: nem em `.mcp.json`, nem em `.env` versionado, nem em doc ou log.
+- **Antes** de trabalhar em escopo, feature, PRD ou decisão, leia o projeto com `enemyhub_get_project` (use `sections`, por exemplo `["features"]`, porque o projeto inteiro estoura o limite de resposta).
+- **A cada feature**, atualize o hub no mesmo trabalho, com `enemyhub_apply_changes`:
+  - ao começar: a feature existe no hub, com a tarefa no quadro "Macro";
+  - ao mudar o escopo ou o veredito: registre o veredito **com a justificativa** (o porquê é o que o hub preserva). Se a decisão não foi tomada, a feature fica `em_aberto`, sem justificativa inventada;
+  - ao concluir: mova a tarefa e registre os impedimentos que ficaram;
+  - mostre ao usuário o que vai mudar e peça confirmação antes de gravar. Passe o `updatedAt` lido; se o hub responder 409, releia e refaça.
+- **Conflito entre `docs/` e o hub: vale o hub.** Corrija o doc ou aponte a divergência ao usuário. Decisão nova vai para o hub, não para um documento solto em `docs/`.
+- `docs/` continua guardando o que o hub não guarda: evidência e execução (`docs/aplicacao/execucoes/`, medições, logs, telas), dados (`docs/dados/`), planos técnicos e o pitch. O registro de features (`docs/aplicacao/FEATURE-REGISTER.md`) é um espelho técnico (código, dados, política de atualização): quando ele mudar, o hub muda junto.
+- Limites do MCP: só opera no quadro "Macro"; responsável de tarefa, colunas do kanban, áreas e imagens são alterados pela interface do hub.
+- No PR, preencha a seção "Hub" do modelo em `.github/pull_request_template.md`.
+
+## Notas e avaliações no app
+
+Decisão do usuário de 18/11/2026 (D1, D4, A13), registrada no hub.
+
+- Notas 0–10, selos e comparações de vantagem são permitidos quando cada nota mostra como foi calculada (ficha de método) e usa dado do imóvel, nunca valor fixo igual para todos. Sem dado, a tela diz "Sem leitura" e a nota fica fora de qualquer média.
+- Previsão de preço e preço-alvo continuam proibidos. Ranking de bairros e adjetivo sobre bairro ("seguro", "perigoso") também.
+- Todo dB(A) na tela é estimativa e vem com a palavra "estimativa".
+- A ficha de método é a de 6 campos: `src/dados/fichaDeMetodo.ts` e `src/componentes/visual/FichaDeMetodo.tsx`.
+- Núcleo offline (SQLite, Drizzle, PMTiles, MapLibre): não será feito agora (decisão de 18/11/2026). Está em `arquivo/nucleo-offline-2026-11-18`.
+
+## Motion do pitch VEREDA
 
 Vale para quem trabalha em `motion/`, `refs/`, `motion-references/` e nos docs de motion (`docs/pitch/motion-language.md`, `docs/pitch/storyboard.md`, `docs/pitch/ui-state-spec.md`, `docs/pitch/reference-analysis.md`, `docs/pitch/review-log.md`). Reescrito em 17/10/2026; a versão anterior estava errada (paleta e fontes que não são da marca) e foi arquivada em `motion-references/_descartado-ia-anterior/AGENTS.md`.
 

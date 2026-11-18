@@ -5,7 +5,7 @@ import { View } from "react-native";
 import { prestacaoPrice, type SimulacaoDeCompra } from "../../dados/custoPorPartes";
 import { formatarReais } from "../../dados/formatos";
 import { useTema } from "../../tema/Tema";
-import { RAIO, comAlfa } from "../../tema/tokens";
+import { RAIO } from "../../tema/tokens";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { Nota } from "./base";
@@ -34,12 +34,11 @@ function Atalho({ rotulo, ativo, aoTocar, acessivel }: { rotulo: string; ativo: 
       accessibilityState={{ selected: ativo, checked: ativo }}
       aria-checked={ativo}
       style={{
-        minHeight: 44, minWidth: 56, paddingHorizontal: 10, borderRadius: RAIO.pilula, borderWidth: 1, alignItems: "center", justifyContent: "center",
-        borderColor: ativo ? comAlfa(cor("cor-azul-cadastral"), 0.55) : cor("cor-linha"),
+        minHeight: 44, minWidth: 56, paddingHorizontal: 10, borderRadius: RAIO.pilula, alignItems: "center", justifyContent: "center",
         backgroundColor: ativo ? cor("cor-azul-cadastral-suave") : cor("cor-superficie"),
       }}
     >
-      <Texto tipo="apoio" cor={ativo ? "cor-azul-cadastral" : "cor-texto"} style={{ fontSize: 12.5, lineHeight: 16, fontWeight: ativo ? "700" : "500" }}>{rotulo}</Texto>
+      <Texto tipo="apoio" cor={ativo ? "cor-azul-cadastral" : "cor-texto"} style={{ fontSize: 12.5, lineHeight: 16, fontWeight: ativo ? "700" : "500", fontVariant: ["tabular-nums"] }}>{rotulo}</Texto>
     </Pressionavel>
   );
 }
@@ -55,7 +54,7 @@ export function SimuladorPrice({ simulacao, aoFechar }: { simulacao: SimulacaoDe
   return (
     <View role="group" aria-label="Simulador de financiamento" style={{ marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 8 }}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-        <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 10.5, lineHeight: 14, fontWeight: "700", letterSpacing: 0.5, textTransform: "uppercase" }}>
+        <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700" }}>
           Simulação de financiamento (à parte)
         </Texto>
         <Pressionavel onPress={aoFechar} accessibilityRole="button" accessibilityLabel="Fechar a simulação" style={{ minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center" }}>
@@ -72,10 +71,10 @@ export function SimuladorPrice({ simulacao, aoFechar }: { simulacao: SimulacaoDe
       </View>
       <View accessibilityLiveRegion="polite" style={{ gap: 2, marginTop: 2 }}>
         <Texto tipo="numero" style={{ fontSize: 20, lineHeight: 26, fontWeight: "600" }}>{`~${formatarReais(r.prestacaoReais)}/mês`}</Texto>
-        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>
+        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17, fontVariant: ["tabular-nums"] }}>
           {`Entrada de ${formatarReais(r.entradaReais)} · financiar ${formatarReais(r.financiadoReais)} em ${prazoAnos * 12} parcelas.`}
         </Texto>
-        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>
+        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17, fontVariant: ["tabular-nums"] }}>
           {`Total pago ao banco: ~${formatarReais(r.totalPagoReais)}, dos quais ~${formatarReais(r.jurosReais)} de juros.`}
         </Texto>
       </View>

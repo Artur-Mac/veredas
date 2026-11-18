@@ -121,7 +121,7 @@
       },
       "licencaDeclaradaPeloCompilador": "https://creativecommons.org/licenses/by/4.0/",
       "limitacoes": [
-        "Contagem bruta de registros de ocorrência por natureza: não é taxa por morador, ranking nem nota de bairro.",
+        "Contagem bruta de registros de ocorrência por natureza. A taxa por 1.000 moradores é calculada no app com a população do Censo 2022 (IBGE): conta quem mora no bairro, não quem passa por ele, e por isso sobe em bairros de comércio e serviço. Não é ranking nem nota de bairro.",
         "Subnotificação: só entra o que foi registrado; o que não chegou à polícia não aparece.",
         "Só bairro: sem rua e sem coordenada.",
         "Registros sem bairro preenchido ficam fora de qualquer bairro (a página da fonte fala em cerca de 4%).",
@@ -141,7 +141,7 @@
     },
     {
       "chave": "bairros_malha",
-      "nome": "Limites dos bairros do Recife (usados só para achar quais bairros fazem divisa com os cinco alvos)",
+      "nome": "Limites dos bairros do Recife (usados só para achar quais bairros fazem divisa entre si)",
       "orgao": "Prefeitura da Cidade do Recife · Secretaria de Infraestrutura",
       "licenca": "ODbL",
       "url": "https://dados.recife.pe.gov.br/dataset/area-urbana",

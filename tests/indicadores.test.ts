@@ -5,7 +5,7 @@ import { chuvaDoBairro } from "../src/dados/recife/chuva";
 import { essenciaisDoBairro } from "../src/dados/recife/essenciais";
 import { edificiosDoBairro } from "../src/dados/recife/indice";
 import { noiteDoBairro } from "../src/dados/recife/noite";
-import { placarDoPar } from "../src/componentes/comparar/placar";
+import { placarDoPar } from "../src/componentes/comparar/placarDoPar";
 import type { Comparacao } from "../src/componentes/comparar/comparar";
 
 const ind = (bairro: "boa-viagem" | "torre", id: string, nome: string) => {

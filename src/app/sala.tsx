@@ -23,7 +23,11 @@ export default function TelaSala() {
           <View style={{ gap: 12 }}>
             {lido.tipo === "erro" ? <Texto role="alert" cor="cor-barro-texto">{lido.motivo}</Texto> : null}
             {lido.tipo === "vazio" ? <Texto tipo="apoio">Abra esta tela pelo link de uma comparação compartilhada.</Texto> : null}
-            <TelaDaSala sala={lido.tipo === "sala" ? lido.sala : null} resposta={lido.tipo === "resposta" ? lido.resposta : null} />
+            <TelaDaSala
+              sala={lido.tipo === "sala" ? lido.sala : null}
+              resposta={lido.tipo === "resposta" ? lido.resposta : null}
+              resumo={lido.tipo === "resumo" ? lido.resumo : null}
+            />
           </View>
         </Coluna>
       </ScrollView>

@@ -1,0 +1,35 @@
+{
+ "textPaths": 12,
+ "exemplos": [
+  {
+   "href": "#fundo-rua-0",
+   "startOffset": "152.4",
+   "texto": "R. Major Armando de Souza Mello",
+   "alvoExiste": true,
+   "comp": 136.90625
+  },
+  {
+   "href": "#fundo-rua-1",
+   "startOffset": "122.6",
+   "texto": "R. Gal Salgado",
+   "alvoExiste": true,
+   "comp": 59.65625
+  },
+  {
+   "href": "#fundo-rua-2",
+   "startOffset": "125.5",
+   "texto": "R. Sa e Souza",
+   "alvoExiste": true,
+   "comp": 53.5625
+  }
+ ],
+ "fontes": [
+  "PlusJakartaSans|700|middle|normal",
+  "PlusJakartaSans|600|middle|normal"
+ ],
+ "fontesCarregadas": [
+  "Fraunces",
+  "PlusJakartaSans",
+  "JetBrainsMono"
+ ]
+}

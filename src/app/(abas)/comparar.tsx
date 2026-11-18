@@ -22,7 +22,7 @@ import { confirmarPredio, editarAnalise, useAbrirAnalise, usePrepararVisita } fr
 import { PainelDeCusto, PainelDeEntorno, PainelDeEspaco } from "../../componentes/comparar/Paineis";
 import { PainelDeRotina } from "../../componentes/comparar/Rotina";
 import { PlacarDoPar } from "../../componentes/comparar/Placar";
-import { placarDoPar } from "../../componentes/comparar/placar";
+import { placarDoPar } from "../../componentes/comparar/placarDoPar";
 import { extrasDoPar } from "../../componentes/comparar/extras";
 import { CompartilharSala } from "../../componentes/comparar/Sala";
 import { arquivoDaProcura } from "../../dados/recife/procura";
@@ -49,6 +49,18 @@ import { useTema } from "../../tema/Tema";
 import { ComparacaoDeTres } from "../../componentes/comparar/Tres";
 import { PrioridadesPessoais } from "../../componentes/comparar/Prioridades";
 import { ComparaveisPessoais } from "../../componentes/comparar/ComparaveisPessoais";
+import { DueloFinalistas } from "../../componentes/cidadao/DueloFinalistas";
+import { ConvergenciaFamiliar } from "../../componentes/cidadao/ConvergenciaFamiliar";
+import { filtrarDominanciaInvisivel } from "../../dados/cidadao/dominanciaInvisivel";
+import { MatrizVisualComparar, type ColunaMatrizComparar } from "../../componentes/visual/MatrizVisualComparar";
+import { RotinaDoisDestinosComparar } from "../../componentes/visual/RotinaDoisDestinosComparar";
+import { estimarMinutosPicoIdaVolta } from "../../dados/mobilidade/rotinaCasal";
+import { inferirFachadasDoEdificio } from "../../dados/sol/inferirFachadas";
+import { avaliarConfortoTermico } from "../../dados/clima/confortoTermico";
+import { lerMicroclimaDoPonto } from "../../dados/clima/microclima";
+import { avaliarBioclimatico3d } from "../../municipios/recife/motores/bioclimatico3d";
+import { estimarRuido } from "../../dados/ruido/estimativa";
+import { acusticaDaEstimativa } from "../../dados/ruido/ponte";
 
 const MODALIDADES: readonly { valor: Modalidade; rotulo: string }[] = [
   { valor: "aluguel", rotulo: "Alugar" },
@@ -65,6 +77,13 @@ const TOPICOS: readonly { valor: Topico; rotulo: string }[] = [
 /** O bairro tem cadastro e o prédio ainda não foi confirmado. */
 function faltaConfirmar(a: AnaliseV2): boolean {
   return eCoberto(a.bairro) && a.vinculo.estado !== "confirmado";
+}
+
+function pendenciasDeCustoDoAnuncio(a: AnaliseV2): string[] {
+  const pendentes: string[] = [];
+  if (a.declarados.condominio.valor === null || a.declarados.condominio.aConfirmar) pendentes.push("Condomínio");
+  if (a.declarados.iptu.valor === null || a.declarados.iptu.aConfirmar) pendentes.push("IPTU");
+  return pendentes;
 }
 
 /** D036: o Comparar lê o índice e o dia a dia a pé de cada bairro do caderno, fora do bundle; espera por eles. */
@@ -100,6 +119,7 @@ function CompararComDados() {
   const [escolhendoVisita, setEscolhendoVisita] = useState(false);
   const [terceiroId, setTerceiroId] = useState<string | null>(null);
   const [tresAberto, setTresAberto] = useState(false);
+  const [superadasAbertas, setSuperadasAbertas] = useState(false);
   const [prioridade, setPrioridade] = useState<PrioridadeDaDecisao>("custo");
   // VE15: a frase do efeito da resposta, presa ao par (gravar a análise remonta o resumo; outro par não a herda).
   const [efeitoDaUltimaResposta, setEfeitoDaUltimaResposta] = useState<{ par: string; texto: string } | null>(null);
@@ -144,7 +164,94 @@ function CompararComDados() {
   const partesDoPar: Par<ReturnType<typeof derivarCustoPorPartes>> | null = a && b
     ? [derivarCustoPorPartes(a, ea, perfilDomicilio), derivarCustoPorPartes(b, eb, perfilDomicilio)] : null;
 
+  const matrizComparar: [ColunaMatrizComparar, ColunaMatrizComparar] | null = (() => {
+    if (!a || !b || !comparacao || !partesDoPar) return null;
+    const vizinhosDe = (e: Edificio): Edificio[] => {
+      try {
+        return edificiosDoBairro(e.bairro);
+      } catch {
+        return [];
+      }
+    };
+    const montar = (item: AnaliseV2, ed: Edificio | null, pt: ReturnType<typeof derivarCustoPorPartes>, nomeCurto: string): ColunaMatrizComparar => {
+      const inf = inferirFachadasDoEdificio({
+        edificio: ed ?? {
+          id: item.id,
+          bairro: item.bairro ?? "boa-viagem",
+          logradouro: item.logradouro || item.bairroTexto || "Via local",
+          centro: [-34.896, -8.121],
+          poligono: null,
+        },
+        // Os mesmos vizinhos que o dossiê usa para achar a frente do prédio: sem eles a fachada inferida (e, com ela, a
+        // nota de sossego e o rótulo do sol) saía diferente da do placar do dossiê.
+        vizinhosDoBairro: ed ? vizinhosDe(ed) : undefined,
+        textoAnuncio: [item.nome, item.nomeEdificio, ...(item.extracao?.campos.comodidades ?? [])]
+          .filter(Boolean)
+          .join(" "),
+      });
+      const fac = inf.fachadas.find((f) => f.id === inf.fachadaSugeridaId) ?? inf.frente;
+      const az = item.visita.orientacaoGraus ?? fac.azimuteGraus;
+      const andar = item.declarados.andar.valor ?? 4;
+      // O mesmo microclima que o dossiê lê: sem ele, o selo de conforto do mesmo prédio saía diferente nas duas telas.
+      const microclima = lerMicroclimaDoPonto(ed?.centro ?? null, item.bairro);
+      const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: az, andar, lstDeltaIlhaCalorC: microclima.tempDelta });
+      const conf = avaliarConfortoTermico({
+        andar,
+        pavimentosTotais: ed?.pavimentos ?? null,
+        fachada: fac,
+        fachadaAzimuteGraus: az,
+        bioclimatico: bio,
+        diferencaBairroCalorC: microclima.tempDelta,
+        tempQuadraC: microclima.tempQuadraC,
+        pracasAte300m: microclima.pracasAte300m,
+        possuiArvoreProxima: microclima.possuiArvore,
+        distanciaPraiaOuRioM: microclima.distanciaAgua,
+      });
+      // 18/11/2026 (A1, R4): o sossego sai do modelo de ruído estimado do prédio, no andar e na fachada do anúncio:
+      // a mesma nota do placar do dossiê. Sem prédio no cadastro, "sem leitura".
+      const ruido = estimarRuido(ed, { andar, fachadaGraus: az, janelaFechada: true });
+      const acu = acusticaDaEstimativa(ruido, { anoConstrucao: ed?.anoConstrucao ?? null });
+      // A mesma soma do dossiê: a luz é a "Luz estimada" do custo (perfil da casa), não o gasto de ar da regra de conforto.
+      const luz = pt.fatiasDaRotina.find((f) => f.id === "energia")?.valorMensalReais ?? 0;
+      const baseMensal =
+        item.modalidade === "compra"
+          ? (pt.simulacaoCompra?.prestacaoPriceReais ?? 0) +
+            (item.declarados.condominio.valor ?? 0) +
+            Math.round((ed?.iptuAnual?.mediana ?? 0) / 12) +
+            luz
+          : (pt.oficial.totalMensalConhecido ?? item.declarados.preco.valor ?? 0) + luz;
+      return {
+        nome: nomeCurto,
+        precoPrincipalReais: item.declarados.preco.valor ?? null,
+        areaM2: item.declarados.area.valor ?? null,
+        mensalBolsoRealReais: baseMensal > 0 ? Math.round(baseMensal) : null,
+        orientacaoCurta: fac.orientacaoSolar,
+        climaSelo: conf.selo,
+        confortoQuente: conf.zona === "quente_tarde" || conf.zona === "tende_abafar",
+        ruidoInternoDb: acu?.ruidoInternoDormitorioDbA ?? null,
+        sossego: ruido.estado === "estimado" ? { nota0a10: ruido.notaDeSossego, nivel: ruido.nivelDeSossego, noiteDb: ruido.naJanela.noiteDb } : null,
+        anoConstrucao: ed?.anoConstrucao ?? null,
+        spuAlerta: Boolean(pt.alertaMarinha),
+      };
+    };
+    return [montar(a, ea, partesDoPar[0], comparacao.rotulos[0]), montar(b, eb, partesDoPar[1], comparacao.rotulos[1])];
+  })();
+
   const naModalidade = elegiveis(lista, modalidade);
+  const resumoDominancia = useMemo(() => {
+    if (naModalidade.length < 3) return null;
+    return filtrarDominanciaInvisivel(
+      "caderno-comparar",
+      naModalidade.map((an) => ({
+        id: an.id,
+        nomeExibicao: an.nome,
+        custoMensalTotalReais: (an.declarados.preco.valor ?? 9_999_999) + (an.declarados.condominio.valor ?? 0),
+        areaM2: an.declarados.area.valor ?? 0,
+        deslocamentoMinDia: estimarMinutosPicoIdaVolta(null, an.bairro),
+        ruidoInternoDb: 40,
+      })),
+    );
+  }, [naModalidade]);
   const modoTres = tresAberto && naModalidade.some(a => a.id === terceiroId && !ids.includes(a.id));
   const outraModalidade: Modalidade = modalidade === "aluguel" ? "compra" : "aluguel";
   const nasDuasModalidadesTemPar = elegiveis(lista, outraModalidade).length >= 2;
@@ -187,8 +294,43 @@ function CompararComDados() {
           ) : par && comparacao ? (
             <View style={{ marginTop: 17 }}>
               {!modoTres ? <>
+              <View style={{ flexDirection: "row", gap: 12, marginBottom: 14 }}>
+                {([0, 1] as const).map((i) => {
+                  const edificio = i === 0 ? ea : eb;
+                  return (
+                    <CartaoDoImovel
+                      key={par[i].id}
+                      indice={i}
+                      analise={par[i]}
+                      poligono={edificio ? poligonoDoEdificio(edificio) : null}
+                      resumo={comparacao.resumos[i]}
+                      aoTrocar={() => setTrocando(i)}
+                      aoVerDossie={() => void abrirAnalise(par[i])}
+                    />
+                  );
+                })}
+              </View>
+
+              {matrizComparar ? (
+                <>
+                  <MatrizVisualComparar
+                    modalidade={modalidade}
+                    opcaoA={matrizComparar[0]}
+                    opcaoB={matrizComparar[1]}
+                  />
+                  <RotinaDoisDestinosComparar
+                    nomeOpcaoA={matrizComparar[0].nome}
+                    centroA={ea?.centro ?? null}
+                    bairroA={par[0].bairro ?? null}
+                    nomeOpcaoB={matrizComparar[1].nome}
+                    centroB={eb?.centro ?? null}
+                    bairroB={par[1].bairro ?? null}
+                  />
+                </>
+              ) : null}
+
               {decisao?.estado === "pronta" ? (
-                <View style={{ marginTop: -17, marginBottom: 16 }}>
+                <View style={{ marginBottom: 16 }}>
                   <ResumoDaDecisao
                     projecao={decisao}
                     aoMudarPrioridade={(v) => {
@@ -225,22 +367,6 @@ function CompararComDados() {
                   />
                 </View>
               ) : null}
-              <View style={{ flexDirection: "row", gap: 12 }}>
-                {([0, 1] as const).map((i) => {
-                  const edificio = i === 0 ? ea : eb;
-                  return (
-                    <CartaoDoImovel
-                      key={par[i].id}
-                      indice={i}
-                      analise={par[i]}
-                      poligono={edificio ? poligonoDoEdificio(edificio) : null}
-                      resumo={comparacao.resumos[i]}
-                      aoTrocar={() => setTrocando(i)}
-                      aoVerDossie={() => void abrirAnalise(par[i])}
-                    />
-                  );
-                })}
-              </View>
 
               {placar.length ? (
                 <View style={{ marginTop: 16 }}>
@@ -289,6 +415,73 @@ function CompararComDados() {
 
               </> : null}
               <View style={{ marginTop: 18 }}>
+                {partesDoPar && comparacao ? (
+                  <View style={{ gap: 12, marginBottom: 14 }}>
+                    <DueloFinalistas
+                      opcaoA={{
+                        id: par[0].id,
+                        nomeExibicao: comparacao.rotulos[0],
+                        custoMensalTotalReais: partesDoPar[0].oficial.totalMensalConhecido ?? 0,
+                        areaM2: par[0].declarados.area.valor ?? 0,
+                        deslocamentoMinDia: estimarMinutosPicoIdaVolta(ea?.centro, par[0].bairro),
+                        ruidoInternoDb:
+                          matrizComparar?.[0].ruidoInternoDb ??
+                          (par[0].visita.ruido === "silencioso" ? 34 : par[0].visita.ruido === "alto" ? 54 : 40),
+                        sossego: matrizComparar?.[0].sossego ?? null,
+                        situacaoDocumentalResumo: partesDoPar[0].spuEstatutario?.regime ?? "A confirmar na matrícula",
+                        riscoAguaChuvaResumo: ea ? "Checar garagem e cisterna na visita" : "Sem vínculo do prédio",
+                        itensPendentesCusto: pendenciasDeCustoDoAnuncio(par[0]),
+                        andarInformado: par[0].declarados.andar.valor !== null,
+                      }}
+                      opcaoB={{
+                        id: par[1].id,
+                        nomeExibicao: comparacao.rotulos[1],
+                        custoMensalTotalReais: partesDoPar[1].oficial.totalMensalConhecido ?? 0,
+                        areaM2: par[1].declarados.area.valor ?? 0,
+                        deslocamentoMinDia: estimarMinutosPicoIdaVolta(eb?.centro, par[1].bairro),
+                        ruidoInternoDb:
+                          matrizComparar?.[1].ruidoInternoDb ??
+                          (par[1].visita.ruido === "silencioso" ? 34 : par[1].visita.ruido === "alto" ? 54 : 40),
+                        sossego: matrizComparar?.[1].sossego ?? null,
+                        situacaoDocumentalResumo: partesDoPar[1].spuEstatutario?.regime ?? "A confirmar na matrícula",
+                        riscoAguaChuvaResumo: eb ? "Checar garagem e cisterna na visita" : "Sem vínculo do prédio",
+                        itensPendentesCusto: pendenciasDeCustoDoAnuncio(par[1]),
+                        andarInformado: par[1].declarados.andar.valor !== null,
+                      }}
+                    />
+                    <ConvergenciaFamiliar
+                      perfilA={{
+                        pessoaNome: "Pessoa 1",
+                        imoveisFavoritosIds: [par[0].id, par[1].id],
+                        tetoMensalReais: perfilDomicilio.orcamentoMensalReais ?? 5000,
+                        exigeSilencioNoQuarto: true,
+                        exigeElevadorOuRampa: perfilDomicilio.necessidadesDeAcesso.includes("mobilidade"),
+                      }}
+                      perfilB={{
+                        pessoaNome: "Pessoa 2",
+                        imoveisFavoritosIds: [par[0].id],
+                        tetoMensalReais: perfilDomicilio.orcamentoMensalReais ?? 5000,
+                        exigeSilencioNoQuarto: false,
+                        exigeElevadorOuRampa: perfilDomicilio.necessidadesDeAcesso.includes("mobilidade"),
+                      }}
+                    />
+                    {resumoDominancia && resumoDominancia.opcoesSuperadas.length > 0 ? (
+                      <SuperficieVx>
+                        <LinkVx
+                          rotulo={superadasAbertas ? "Ocultar opções superadas" : resumoDominancia.tituloGavetaRecolhida}
+                          onPress={() => setSuperadasAbertas((v) => !v)}
+                        />
+                        {superadasAbertas
+                          ? resumoDominancia.opcoesSuperadas.map((sup) => (
+                              <Texto key={sup.candidato.id} tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, marginTop: 6 }}>
+                                {`${sup.candidato.nomeExibicao}: ${sup.explicacaoSimplesPtBr}`}
+                              </Texto>
+                            ))
+                          : null}
+                      </SuperficieVx>
+                    ) : null}
+                  </View>
+                ) : null}
                 <ComparacaoDeTres par={par} candidatas={naModalidade} id={terceiroId} aoEscolher={setTerceiroId} aoAlternar={setTresAberto} />
                 <PrioridadesPessoais analises={modoTres ? [...par, naModalidade.find(a => a.id === terceiroId)!] : par} />
                 <ComparaveisPessoais key={par[0].id} lista={lista} referencia={par[0]} />

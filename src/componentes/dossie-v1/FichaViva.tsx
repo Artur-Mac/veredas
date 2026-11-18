@@ -7,7 +7,6 @@ import type { AnaliseV2, Edificio, VisaoDoDossie } from "../../dados/contratos";
 import { estruturaDoCaderno, fichaDoDossie, type ItemDaFicha } from "../../dados/dossie/fichaViva";
 import { ORDEM_DAS_ETAPAS, ROTULO_DA_ETAPA } from "../../dados/estrutura/linhaDoTempo";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { Nota, Seta } from "./base";
@@ -37,7 +36,7 @@ function resumoCondominioSimples(item: ItemDaFicha): string {
   if (item.valor === "A confirmar") return "O anúncio não informou condomínio e área completos para calcular o valor por m².";
   if (item.atencao) return `${item.valor} · ${item.atencao}`;
   if (item.leitura?.startsWith("Sem leitura")) {
-    return `${item.valor} — salve outros imóveis deste bairro no Explorar para comparar com a média local.`;
+    return `${item.valor} — salve ao menos 5 imóveis deste bairro no Explorar para comparar com a mediana local.`;
   }
   return item.leitura ?? item.valor;
 }
@@ -57,7 +56,7 @@ function LinhaDaFicha({ item, primeira }: { item: ItemDaFicha; primeira: boolean
       : meta?.resumo ?? item.leitura;
 
   return (
-    <View style={{ borderTopWidth: primeira ? 0 : 0.5, borderTopColor: cor("cor-linha") }}>
+    <View style={{ borderTopWidth: primeira ? 0 : 1, borderTopColor: cor("cor-linha") }}>
       <Pressionavel onPress={() => setAberta((v) => !v)} accessibilityRole="button" accessibilityState={{ expanded: aberta }} aria-expanded={aberta}
         accessibilityLabel={`${titulo}: ${valorPrincipal}.${item.atencao ? ` ${item.atencao}` : ""} ${aberta ? "Fechar" : "Ver detalhes e fonte"}`}
         style={{ minHeight: 52, paddingVertical: 12, gap: 4 }}>
@@ -65,7 +64,7 @@ function LinhaDaFicha({ item, primeira }: { item: ItemDaFicha; primeira: boolean
           <Texto tipo="corpo" style={{ fontSize: 14.5, lineHeight: 20, fontWeight: "700", flexShrink: 1 }}>{titulo}</Texto>
           <Seta tamanho={13} />
         </View>
-        <Texto tipo="corpo" style={{ fontSize: 15, lineHeight: 21, fontWeight: "600", color: cor("cor-texto") }}>
+        <Texto tipo="corpo" style={{ fontSize: 15, lineHeight: 21, fontWeight: "600", fontVariant: ["tabular-nums"], color: cor("cor-texto") }}>
           {valorPrincipal}
         </Texto>
         {explicacaoCurta ? (
@@ -82,7 +81,7 @@ function LinhaDaFicha({ item, primeira }: { item: ItemDaFicha; primeira: boolean
           {item.leitura && item.id === "itbi" ? <Texto tipo="corpo" style={{ fontSize: 13.5, lineHeight: 20 }}>{item.leitura}</Texto> : null}
           {item.detalhes.map((d) => <Texto key={d} tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 18 }}>{d}</Texto>)}
           {item.pergunta ? (
-            <View style={{ padding: 12, borderRadius: 10, backgroundColor: comAlfa(cor("cor-azul-cadastral"), 0.08) }}>
+            <View style={{ paddingVertical: 2, paddingLeft: 10, borderLeftWidth: 3, borderLeftColor: cor("cor-azul-cadastral") }}>
               <Texto tipo="apoio" style={{ fontSize: 13, lineHeight: 19, fontWeight: "500" }}>{`Pergunte na visita: ${item.pergunta}`}</Texto>
             </View>
           ) : null}
@@ -95,11 +94,11 @@ function LinhaDaFicha({ item, primeira }: { item: ItemDaFicha; primeira: boolean
 
 function IndicadorVisual({ rotulo, estado, detalhe, tom }: { rotulo: string; estado: string; detalhe: string; tom: TomIndicador }) {
   const { cor } = useTema();
-  const coresPorTom: Record<TomIndicador, { fundo: string; ponto: string; texto: string }> = {
-    bom: { fundo: cor("cor-salvia-suave"), ponto: cor("cor-salvia-escura"), texto: cor("cor-salvia-escura") },
-    medio: { fundo: "#FDF3E4", ponto: "#B86B11", texto: "#8A4F0A" },
-    atencao: { fundo: cor("cor-barro-suave"), ponto: cor("cor-barro-texto"), texto: cor("cor-barro-texto") },
-    neutro: { fundo: cor("cor-papel-claro"), ponto: cor("cor-texto-apoio"), texto: cor("cor-texto") },
+  const coresPorTom: Record<TomIndicador, { ponto: string; texto: string }> = {
+    bom: { ponto: cor("cor-salvia-escura"), texto: cor("cor-salvia-escura") },
+    medio: { ponto: cor("cat-ipe-amarelo"), texto: cor("cor-barro-texto") },
+    atencao: { ponto: cor("cor-barro-texto"), texto: cor("cor-barro-texto") },
+    neutro: { ponto: cor("cor-texto-apoio"), texto: cor("cor-texto") },
   };
   const c = coresPorTom[tom];
   return (
@@ -110,21 +109,20 @@ function IndicadorVisual({ rotulo, estado, detalhe, tom }: { rotulo: string; est
         flexGrow: 1,
         flexBasis: 170,
         minWidth: 165,
-        padding: 12,
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: tom === "neutro" ? cor("cor-linha") : comAlfa(c.ponto, 0.25),
-        backgroundColor: c.fundo,
-        gap: 4,
+        paddingTop: 10,
+        paddingBottom: 6,
+        borderTopWidth: 2,
+        borderTopColor: tom === "neutro" ? cor("cor-linha") : c.ponto,
+        gap: 3,
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
         <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: c.ponto }} />
-        <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 15, fontWeight: "700", color: c.texto, flexShrink: 1 }}>
+        <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 16, fontWeight: "700", color: c.texto, flexShrink: 1 }}>
           {rotulo}
         </Texto>
       </View>
-      <Texto tipo="corpo" style={{ fontSize: 14.5, lineHeight: 19, fontWeight: "700", color: c.texto }}>
+      <Texto tipo="corpo" style={{ fontSize: 14.5, lineHeight: 19, fontWeight: "700", fontVariant: ["tabular-nums"], color: c.texto }}>
         {estado}
       </Texto>
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, lineHeight: 17 }}>
@@ -204,12 +202,12 @@ export function FichaViva({ analise, predio, lista, visao, nomeDoBairro }: { ana
   const itensVisiveis = predio ? itens.filter((i) => i.id !== "escala") : itens;
 
   return (
-    <View role="region" aria-label="Raio-X do imóvel e edifício" style={{ marginTop: 18, padding: 18, borderRadius: 16, borderWidth: 1, borderColor: comAlfa(cor("cor-texto"), 0.09), backgroundColor: cor("cor-superficie"), gap: 12 }}>
+    <View role="region" aria-label="Raio-X do imóvel e edifício" style={{ marginTop: 18, padding: 18, borderRadius: 16, borderWidth: 1, borderColor: cor("cor-linha-forte"), backgroundColor: cor("cor-superficie"), gap: 12 }}>
       <View style={{ gap: 3 }}>
-        <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11, lineHeight: 15, fontWeight: "700", letterSpacing: 0.7, textTransform: "uppercase" }}>Raio-X do edifício</Texto>
+        <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>Raio-X do edifício</Texto>
         <Texto tipo="secao" role="heading" style={{ fontSize: 18, lineHeight: 24, fontWeight: "700" }}>Condições físicas, imposto e prédio</Texto>
       </View>
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 14 }}>
         <IndicadorVisual rotulo="Temperatura da quadra" estado={estadoCalor} detalhe={detalheCalor} tom={tomCalor} />
         <IndicadorVisual rotulo="Altura do terreno e água" estado={estadoAgua} detalhe={detalheAgua} tom={tomAgua} />
         <IndicadorVisual rotulo="Movimento e barulho" estado={estadoRuido} detalhe={detalheRuido} tom={tomRuido} />
@@ -238,12 +236,12 @@ export function LinhaDoTempoEstrutural({ analise, aoRegistrar }: { analise: Anal
         {ORDEM_DAS_ETAPAS.map((etapa, i) => {
           const atos = l.atos.filter((a) => a.etapa === etapa);
           return (
-            <View key={etapa} role="listitem" style={{ flexDirection: "row", gap: 10, paddingVertical: 6, borderTopWidth: i ? 0.5 : 0, borderTopColor: cor("cor-linha") }}>
-              <View style={{ width: 10, height: 10, borderRadius: 5, marginTop: 5, backgroundColor: atos.length ? cor("cor-azul-cadastral") : "transparent", borderWidth: 1, borderColor: cor("cor-azul-cadastral") }} />
+            <View key={etapa} role="listitem" style={{ flexDirection: "row", gap: 10, paddingVertical: 6, borderTopWidth: i ? 1 : 0, borderTopColor: cor("cor-linha") }}>
+              <View style={{ width: 10, height: 10, borderRadius: 5, marginTop: 5, backgroundColor: atos.length ? cor("cor-azul-cadastral") : cor("cor-linha-forte") }} />
               <View style={{ flex: 1, gap: 1 }}>
                 <Texto tipo="apoio" style={{ fontSize: 12.5, lineHeight: 17, fontWeight: "600" }}>{`${ROTULO_DA_ETAPA[etapa]}${atos.length ? "" : " · sem documento"}`}</Texto>
                 {atos.map((a, k) => (
-                  <Texto key={`${etapa}-${k}`} tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 16, fontFamily: "JetBrainsMono" }}>
+                  <Texto key={`${etapa}-${k}`} tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 16, fontVariant: ["tabular-nums"] }}>
                     {`${a.data ? `${a.data.slice(8, 10)}/${a.data.slice(5, 7)}/${a.data.slice(0, 4)}` : "sem data"} · ${a.documento}${a.numero ? ` · nº ${a.numero}` : ""}`}
                   </Texto>
                 ))}
@@ -254,7 +252,7 @@ export function LinhaDoTempoEstrutural({ analise, aoRegistrar }: { analise: Anal
       </View>
       {l.mostrarDesabamento ? <Texto tipo="apoio" role="alert" cor="cor-barro-texto">Há documento de desabamento ligado a este lote e bloco.</Texto> : null}
       <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 17 }}>{l.checagemQueFalta}</Texto>
-      <View style={{ padding: 10, borderRadius: 10, backgroundColor: comAlfa(cor("cor-azul-cadastral"), 0.07) }}>
+      <View style={{ paddingVertical: 2, paddingLeft: 10, borderLeftWidth: 3, borderLeftColor: cor("cor-azul-cadastral") }}>
         <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 17 }}>{`Pergunta para o síndico: ${l.perguntaAoSindico}`}</Texto>
       </View>
       {l.descartados ? <Nota>{`${l.descartados} registro(s) sem vínculo confirmado com este imóvel não entram na linha do tempo.`}</Nota> : null}

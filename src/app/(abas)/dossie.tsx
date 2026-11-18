@@ -41,14 +41,42 @@ import { derivarDossie } from "../../dados/dossie/derivar";
 import { indicadoresDoPredio, type Indicador } from "../../dados/dossie/indicadores";
 import { referenciaDoCadastro } from "../../dados/iptuDoAnuncio";
 import { chuvaDoBairro } from "../../dados/recife/chuva";
-import { essenciaisDoBairro } from "../../dados/recife/essenciais";
+import { essenciaisDoBairro, type EssenciaisDoBairro } from "../../dados/recife/essenciais";
 import { edificiosDoBairro, indiceDoBairro } from "../../dados/recife/indice";
 import { noiteDoBairro } from "../../dados/recife/noite";
 import { bairroPorSlug, eCoberto } from "../../dados/recife/bairros";
 import { useAnalises } from "../../estado/Analises";
 import { usePerfilDomicilio } from "../../estado/PerfilDomicilio";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, comAlfa } from "../../tema/tokens";
+import { ESPACO, TOQUE_MINIMO } from "../../tema/tokens";
+import { traduzirIndicadoresCidadao } from "../../dados/cidadao/tradutorCidadao";
+import { CartaoCidadao3Camadas } from "../../componentes/cidadao/CartaoCidadao3Camadas";
+import { SimuladorTco10Anos, type EntradaTco10Anos } from "../../componentes/cidadao/SimuladorTco10Anos";
+import { ResumoEvidenciaPartilhavel } from "../../componentes/cidadao/ResumoEvidenciaPartilhavel";
+import { avaliarBioclimatico3d } from "../../municipios/recife/motores/bioclimatico3d";
+import { estimarRuido } from "../../dados/ruido/estimativa";
+import { acusticaDaEstimativa } from "../../dados/ruido/ponte";
+import { avaliarHidroMare1m } from "../../municipios/recife/motores/hidroMare1m";
+import { avaliarResilienciaRedes } from "../../municipios/recife/motores/resilienciaRedes";
+import { inferirFachadasDoEdificio, type PapelFachada } from "../../dados/sol/inferirFachadas";
+import { carregarEntornoSolar } from "../../dados/sol/entorno";
+import { lerMicroclimaDoPonto } from "../../dados/clima/microclima";
+import { avaliarConfortoTermico } from "../../dados/clima/confortoTermico";
+import { PlacarHeroi5Segundos } from "../../componentes/visual/PlacarHeroi5Segundos";
+import { CanvasSolSombraBrisa25D } from "../../componentes/visual/CanvasSolSombraBrisa25D";
+import { TermometroConfortoTermico } from "../../componentes/visual/TermometroConfortoTermico";
+import { TresPerguntasDoBolso } from "../../componentes/visual/TresPerguntasDoBolso";
+import { EscalaDeRuidoHumana, RelogioDoPredio, SilencioInteligente } from "../../componentes/visual/EscalasVisuais";
+import { analisarRadarVistaELote } from "../../dados/entorno/radarVistaELote";
+import { RadarVistaELote } from "../../componentes/visual/RadarVistaELote";
+import { CopilotoDocumentosPreSinal } from "../../componentes/visual/CopilotoDocumentosPreSinal";
+import { calcularPulsoDaQuadra } from "../../dados/dossie/pulsoDaQuadra";
+import { PulsoDaQuadra } from "../../componentes/visual/PulsoDaQuadra";
+import { ExportarResumoExecutivo } from "../../componentes/visual/ExportarResumoExecutivo";
+import { avaliarCaminhabilidadeEVidaNaRua } from "../../dados/dossie/caminhabilidadeEVidaNaRua";
+import { VidaAPeNaQuadra } from "../../componentes/visual/VidaAPeNaQuadra";
+import { construirLinhaUnificadaDoLote } from "../../dados/dossie/linhaUnificadaDoLote";
+import { LinhaUnificadaDoLote } from "../../componentes/visual/LinhaUnificadaDoLote";
 
 /** Recuo do painel (`.ds-panel`, padding 20 18): a posição de uma seção na tela soma este recuo ao topo do painel. */
 const RECUO_DO_PAINEL = 20;
@@ -189,10 +217,300 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     }
   }, [predio, analise.bairro, nomeDoBairro]);
 
+  const caminhabilidade = useMemo(() => {
+    let ess: EssenciaisDoBairro | null = null;
+    if (predio && analise.bairro) {
+      try {
+        ess = essenciaisDoBairro(analise.bairro);
+      } catch {
+        ess = null;
+      }
+    }
+    return avaliarCaminhabilidadeEVidaNaRua({
+      predio,
+      essenciais: ess,
+      visaoRua: visao.rua ?? null,
+      nomeDoBairro,
+    });
+  }, [analise.bairro, nomeDoBairro, predio, visao]);
+
+  const [andarSimulado, setAndarSimulado] = useState<number>(analise.declarados.andar.valor ?? 4);
+  const [fachadaSelecionada, setFachadaSelecionada] = useState<PapelFachada | null>(null);
+
+  const inferenciaFachadas = useMemo(() => {
+    const centroRef: [number, number] =
+      predio?.centro ??
+      (analise.caderno?.localizacaoDaVisita
+        ? [analise.caderno.localizacaoDaVisita.longitude, analise.caderno.localizacaoDaVisita.latitude]
+        : [-34.896, -8.121]);
+    return inferirFachadasDoEdificio({
+      edificio: predio ?? {
+        id: analise.id,
+        bairro: analise.bairro ?? "boa-viagem",
+        logradouro: analise.logradouro || analise.bairroTexto || "Via local",
+        centro: centroRef,
+        poligono: null,
+      },
+      vizinhosDoBairro: cadastro.vizinhos,
+      textoAnuncio: [analise.nome, analise.nomeEdificio, ...(analise.extracao?.campos.comodidades ?? [])]
+        .filter(Boolean)
+        .join(" "),
+    });
+  }, [analise.bairro, analise.bairroTexto, analise.caderno, analise.extracao, analise.id, analise.logradouro, analise.nome, analise.nomeEdificio, cadastro.vizinhos, predio]);
+
+  const fachadaAtiva = useMemo(() => {
+    if (fachadaSelecionada) {
+      return inferenciaFachadas.fachadas.find((f) => f.id === fachadaSelecionada) ?? inferenciaFachadas.frente;
+    }
+    if (analise.visita.orientacaoGraus !== null) {
+      const g = analise.visita.orientacaoGraus;
+      return [...inferenciaFachadas.fachadas].sort(
+        (a, b) =>
+          Math.abs(((a.azimuteGraus - g + 540) % 360) - 180) -
+          Math.abs(((b.azimuteGraus - g + 540) % 360) - 180),
+      )[0]!;
+    }
+    return inferenciaFachadas.fachadas.find((f) => f.id === inferenciaFachadas.fachadaSugeridaId) ?? inferenciaFachadas.frente;
+  }, [analise.visita.orientacaoGraus, fachadaSelecionada, inferenciaFachadas]);
+
+  const fachadaGrausAtiva = fachadaAtiva.azimuteGraus;
+
+  const entornoSolar = useMemo(() => {
+    if (!predio) return null;
+    try {
+      return carregarEntornoSolar(predio);
+    } catch {
+      return null;
+    }
+  }, [predio]);
+
+  const microclima = useMemo(() => {
+    const coord =
+      predio?.centro ??
+      (analise.caderno?.localizacaoDaVisita
+        ? ([analise.caderno.localizacaoDaVisita.longitude, analise.caderno.localizacaoDaVisita.latitude] as [number, number])
+        : null);
+    return lerMicroclimaDoPonto(coord, analise.bairro);
+  }, [analise.bairro, analise.caderno, predio]);
+
+  const bioclimatico = useMemo(
+    () =>
+      avaliarBioclimatico3d({
+        fachadaAzimuteGraus: fachadaGrausAtiva,
+        andar: andarSimulado,
+        lstDeltaIlhaCalorC: microclima.tempDelta,
+      }),
+    [andarSimulado, fachadaGrausAtiva, microclima.tempDelta],
+  );
+
+  // 18/11/2026 (decisões A1 e A2): o barulho sai do modelo estimado do prédio (src/dados/ruido), no andar e na fachada
+  // simulados; sem prédio ou sem camada, "sem leitura". Os cartões da frente visual recebem o resultado pela ponte.
+  const ruido = useMemo(
+    () => estimarRuido(predio, { andar: andarSimulado, fachadaGraus: fachadaGrausAtiva, janelaFechada: true }),
+    [andarSimulado, fachadaGrausAtiva, predio],
+  );
+  const acustica = useMemo(
+    () => acusticaDaEstimativa(ruido, { anoConstrucao: predio?.anoConstrucao ?? null, precoImovelReais: analise.declarados.preco.valor ?? null }),
+    [analise.declarados.preco.valor, predio?.anoConstrucao, ruido],
+  );
+
+  const confortoTermico = useMemo(
+    () =>
+      avaliarConfortoTermico({
+        andar: andarSimulado,
+        pavimentosTotais: predio?.pavimentos ?? null,
+        fachada: fachadaAtiva,
+        bioclimatico,
+        diferencaBairroCalorC: microclima.tempDelta,
+        tempQuadraC: microclima.tempQuadraC,
+        pracasAte300m: microclima.pracasAte300m,
+        possuiArvoreProxima: microclima.possuiArvore,
+        distanciaPraiaOuRioM: microclima.distanciaAgua,
+      }),
+    [andarSimulado, bioclimatico, fachadaAtiva, microclima, predio?.pavimentos],
+  );
+
+  const centroParaRadar = useMemo<readonly [number, number]>(() => {
+    if (predio?.centro) return predio.centro;
+    if (analise.caderno?.localizacaoDaVisita) {
+      return [
+        analise.caderno.localizacaoDaVisita.longitude,
+        analise.caderno.localizacaoDaVisita.latitude,
+      ];
+    }
+    return [-34.896, -8.121];
+  }, [analise.caderno, predio]);
+
+  const clausulaTemporadaNaConvencao = useMemo(() => {
+    const docs = analise.caderno?.documentos ?? [];
+    const docRelevante = docs.find(
+      (d) =>
+        d.vinculo !== "outro_imovel" &&
+        (d.tipo === "convencao" || d.tipo === "ata") &&
+        /temporada|airbnb|hospedagem/i.test(`${d.trecho} ${d.escopo}`),
+    );
+    return docRelevante ? docRelevante.trecho.trim() || docRelevante.escopo.trim() : null;
+  }, [analise.caderno]);
+
+  const radarVistaELote = useMemo(
+    () =>
+      analisarRadarVistaELote({
+        centro: centroParaRadar,
+        edificio: predio,
+        fachadaAtiva,
+        andar: andarSimulado,
+        vizinhos: cadastro.vizinhos,
+        obrasProximas: visao.obras,
+        areaDeclaradaM2: analise.declarados.area.valor,
+        clausulaTemporadaNaConvencao,
+      }),
+    [analise.declarados.area.valor, andarSimulado, cadastro, centroParaRadar, clausulaTemporadaNaConvencao, fachadaAtiva, predio, visao],
+  );
+
+  const hidroMare = useMemo(
+    () =>
+      avaliarHidroMare1m({
+        handM: null,
+        areaDrenadaM2: null,
+        declividadeTangente: null,
+      }),
+    [],
+  );
+
+  const resiliencia = useMemo(
+    () =>
+      avaliarResilienciaRedes({
+        bairroSlug: analise.bairro ?? "recife",
+        unidadesCondominio: predio?.unidades ?? null,
+        andar: andarSimulado,
+      }),
+    [analise.bairro, andarSimulado, predio?.unidades],
+  );
+
   const partesDeCusto = useMemo(
     () => derivarCustoPorPartes(analise, predio, perfilDomicilio),
     [analise, predio, perfilDomicilio],
   );
+  // Revisão de 19/11/2026: a saída mensal estimada é uma soma só para o placar, o bolso e o resumo. A luz é a "Luz
+  // estimada" do custo (perfil da casa), a mesma do topo do dossiê; antes o bolso somava o gasto de ar da regra de conforto
+  // e a tela mostrava dois valores de luz. A legenda diz só o que entrou.
+  const saidaMensalEstimada = useMemo(() => {
+    const compra = analise.modalidade === "compra";
+    const itens: { rotulo: string; valor: number }[] = compra
+      ? [
+          { rotulo: "Parcela", valor: partesDeCusto.simulacaoCompra?.prestacaoPriceReais ?? 0 },
+          { rotulo: "cond.", valor: analise.declarados.condominio.valor ?? 0 },
+          { rotulo: "IPTU", valor: Math.round((predio?.iptuAnual?.mediana ?? 0) / 12) },
+        ]
+      : [{ rotulo: "Mensal conhecido", valor: visao.custo.totalMensalConhecido ?? visao.custo.principal.valor ?? 0 }];
+    const luz = partesDeCusto.fatiasDaRotina.find((f) => f.id === "energia")?.valorMensalReais ?? 0;
+    itens.push({ rotulo: "luz", valor: luz });
+    const entraram = itens.filter((i) => i.valor > 0);
+    const total = Math.round(entraram.reduce((s, i) => s + i.valor, 0));
+    return { total: total > 0 ? total : null, composicao: entraram.map((i) => i.rotulo), luz };
+  }, [analise.declarados.condominio.valor, analise.modalidade, partesDeCusto, predio?.iptuAnual?.mediana, visao.custo.principal.valor, visao.custo.totalMensalConhecido]);
+
+  // Revisão de 19/11/2026: entrada e ITBI de entrada numa conta só para o placar, o bolso e o resumo (antes o placar e o
+  // resumo caíam em 3% do preço quando não havia cenário SFH, e o bolso em 1,8%: R$ 24 mil de diferença em R$ 2 milhões).
+  const dinheiroParaEntrar = useMemo(() => {
+    const preco = analise.modalidade === "compra" ? analise.declarados.preco.valor : null;
+    if (!preco) return null;
+    const entrada = partesDeCusto.simulacaoCompra?.entradaReais ?? Math.round(preco * 0.2);
+    const itbi =
+      partesDeCusto.otimizacaoFechamento?.sfhOtimizado1Pct?.itbiReais ??
+      partesDeCusto.otimizacaoFechamento?.aVistaTempestivo18Pct.itbiReais ??
+      Math.round(preco * 0.018);
+    return { entrada, itbi, total: Math.round(entrada + itbi) };
+  }, [analise.declarados.preco.valor, analise.modalidade, partesDeCusto]);
+
+  const entradaTco10Anos = useMemo((): EntradaTco10Anos | null => {
+    if (analise.modalidade !== "compra" || !analise.declarados.preco.valor) return null;
+    return {
+      precoCompraReais: analise.declarados.preco.valor,
+      aluguelEquivalenteMensalReais: Math.round(analise.declarados.preco.valor * 0.0045),
+      condominioMensalReais: analise.declarados.condominio.valor ?? 0,
+      iptuAnualReais: predio?.iptuAnual?.mediana ?? 0,
+      spuAnualReais: partesDeCusto.spuEstatutario?.encargoPatrimonialAnualVigenteReais ?? 0,
+      economiaOtimizacaoTributariaReais:
+        partesDeCusto.otimizacaoFechamento?.melhorCenarioEconomiaReais ?? 0,
+      // O mesmo prazo e os mesmos juros da simulação de financiamento do custo (antes a conta de 10 anos supunha 15 anos
+      // a 10,5% enquanto o topo dizia "Financiar 80% em 30 anos").
+      ...(partesDeCusto.simulacaoCompra
+        ? {
+            entradaPct: partesDeCusto.simulacaoCompra.entradaPct,
+            prazoFinanciamentoAnos: partesDeCusto.simulacaoCompra.prazoAnos,
+            jurosFinanciamentoAnual: partesDeCusto.simulacaoCompra.taxaEfetivaAnualPct / 100,
+          }
+        : {}),
+    };
+  }, [analise.declarados.condominio.valor, analise.declarados.preco.valor, analise.modalidade, partesDeCusto, predio?.iptuAnual?.mediana]);
+
+  const pulsoDaQuadra = useMemo(
+    () =>
+      calcularPulsoDaQuadra({
+        // Sem prédio confirmado não há fachada nem vizinhos: o eixo de sol fica sem leitura.
+        conforto: predio ? confortoTermico : null,
+        // O eixo de sossego usa a nota do modelo de ruído estimado; sem leitura, fica fora da média.
+        acustica,
+        anoConstrucao: predio?.anoConstrucao ?? null,
+        obrasProximas: visao.obras,
+        visaoRua: visao.rua ?? null,
+        vinculoConfirmado,
+        precoInformado: analise.declarados.preco.valor !== null,
+        condominioInformado: analise.declarados.condominio.valor !== null,
+        iptuConhecido: analise.declarados.iptu.valor !== null,
+        spuAtivo: Boolean(partesDeCusto.alertaMarinha),
+        caminhabilidade,
+      }),
+    [
+      acustica,
+      analise.declarados.condominio.valor,
+      analise.declarados.iptu.valor,
+      analise.declarados.preco.valor,
+      caminhabilidade,
+      confortoTermico,
+      partesDeCusto,
+      predio,
+      vinculoConfirmado,
+      visao,
+    ],
+  );
+
+  const linhaUnificada = useMemo(
+    () =>
+      construirLinhaUnificadaDoLote({
+        edificio: predio,
+        obrasProximas: visao.obras,
+        visaoRua: visao.rua ?? null,
+        spuAtivo: Boolean(partesDeCusto.alertaMarinha),
+      }),
+    [partesDeCusto, predio, visao],
+  );
+
+  const cartoesCidadao = useMemo(
+    () =>
+      traduzirIndicadoresCidadao({
+        modalidade: analise.modalidade,
+        dsqfl: predio?.dsqfl ?? null,
+        cnm16: null,
+        custoPorPartes: partesDeCusto,
+        bioclimatico,
+        acustica,
+        hidroMare,
+        resiliencia,
+      }),
+    [analise.modalidade, predio, partesDeCusto, bioclimatico, acustica, hidroMare, resiliencia],
+  );
+  const [mostrarPainelCidadao, setMostrarPainelCidadao] = useState(false);
+
+  const itensSilencio = useMemo(() => {
+    const listaOk: { rotulo: string; detalhe?: string }[] = [];
+    if (vinculoConfirmado) listaOk.push({ rotulo: "Prédio confirmado no cadastro do Recife", detalhe: predio?.nome ?? undefined });
+    if (predio?.iptuAnual) listaOk.push({ rotulo: "Referência oficial de IPTU localizada no edifício" });
+    if (acustica?.atendeReferenciaNoturnaNbr10151) listaOk.push({ rotulo: "Ruído noturno estimado dentro da referência da norma técnica" });
+    if (!partesDeCusto.alertaMarinha) listaOk.push({ rotulo: "Fora da área típica de Terreno de Marinha" });
+    return listaOk;
+  }, [acustica?.atendeReferenciaNoturnaNbr10151, partesDeCusto.alertaMarinha, predio?.iptuAnual, predio?.nome, vinculoConfirmado]);
 
   const fechar = useCallback(() => setGaveta(null), []);
 
@@ -324,7 +642,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             style={{
               borderRadius: 18,
               borderWidth: 1,
-              borderColor: comAlfa(cor("cor-texto"), 0.09),
+              borderColor: cor("cor-linha-forte"),
               backgroundColor: cor("cor-superficie"),
               overflow: "hidden",
             }}
@@ -361,6 +679,23 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             />
           </View>
 
+          <PlacarHeroi5Segundos
+            modalidade={analise.modalidade}
+            precoPrincipalReais={visao.custo.principal.valor}
+            mensalBolsoRealReais={saidaMensalEstimada.total}
+            composicaoMensal={saidaMensalEstimada.composicao}
+            dinheiroParaEntrarReais={dinheiroParaEntrar?.total ?? null}
+            comparacaoM2Pct={visao.posicao?.deltaPercentual ?? null}
+            orientacaoCurta={fachadaAtiva.orientacaoSolar}
+            conforto={predio ? confortoTermico : null}
+            ruidoDormitorioDb={acustica?.ruidoInternoDormitorioDbA ?? null}
+            sossego={{ ...ruido.textos.placar, ficha: ruido.estado === "estimado" ? ruido.textos.ficha : null }}
+            spuAtivo={Boolean(partesDeCusto.alertaMarinha)}
+            aoTocarMetrica={(alvo) => {
+              setAba(alvo === "predio" ? "edificio" : "destaques");
+            }}
+          />
+
           {cadastro.falhou ? (
             <CaixaCreme estilo={{ marginTop: ESPACO[3] }}>
               <Texto tipo="corpo" role="alert" style={{ fontSize: 13, lineHeight: 19, fontWeight: "600" }}>
@@ -388,7 +723,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                 paddingHorizontal: 18,
                 borderRadius: 16,
                 borderWidth: 1,
-                borderColor: comAlfa(cor("cor-texto"), 0.08),
+                borderColor: cor("cor-linha-forte"),
                 backgroundColor: cor("cor-superficie"),
               },
               focoDoPainel.estilo,
@@ -442,6 +777,8 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                 coberto={coberto}
                 vinculoConfirmado={vinculoConfirmado}
                 prioridade={prioridade}
+                chaveLote14={predio?.dsqfl ?? null}
+                textosDocumentos={(analise.caderno?.documentos ?? []).map((d) => `${d.titulo} ${d.escopo} ${d.trecho}`)}
                 aoMudarPrioridade={setPrioridade}
                 aoAbrirPergunta={(pergunta) => setGaveta({ tipo: "pergunta", pergunta })}
                 aoAbrirRoteiro={() => setGaveta({ tipo: "roteiro" })}
@@ -453,14 +790,179 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             )}
           </View>
 
-          {/* `.ds-after-panel`: Raio-X vem depois dos destaques (ordem pedida pelo usuário), depois negociação e ações. */}
+          {/* `.ds-after-panel`: Visual Story Canvas, Conforto Termico, Bolso e Escalas antes do detalhamento. */}
           <View style={styles.depoisDoPainel}>
+            {aba === "destaques" ? (
+              <View style={{ gap: 12 }}>
+                {/* R9 (19/11/2026): sem prédio confirmado não há ponto para desenhar; antes o volume caía num ponto fixo de
+                    Boa Viagem. */}
+                {predio ? (
+                  <CanvasSolSombraBrisa25D
+                    inferencia={inferenciaFachadas}
+                    fachadaSelecionada={fachadaAtiva.id}
+                    aoSelecionarFachada={setFachadaSelecionada}
+                    andar={andarSimulado}
+                    aoAlterarAndar={setAndarSimulado}
+                    pavimentosTotais={predio.pavimentos ?? null}
+                    centro={predio.centro}
+                    volumesEntorno={entornoSolar?.recorte.volumes}
+                    vizinhosLotes={cadastro.vizinhos}
+                    obrasEntorno={visao.obras}
+                  />
+                ) : (
+                  <Texto testID="canvas-25d-sem-predio" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 19 }}>
+                    Confirme o prédio para ver o volume com sol, sombra e brisa, o conforto térmico e o horizonte da janela neste endereço.
+                  </Texto>
+                )}
+                {/* Revisão de 19/11/2026: sem prédio confirmado, o conforto e o horizonte saíam de um ponto fictício (a mesma
+                    nota para qualquer anúncio sem vínculo). Agora só aparecem com o prédio. */}
+                {predio ? <TermometroConfortoTermico conforto={confortoTermico} andar={andarSimulado} /> : null}
+                {predio ? <RadarVistaELote radar={radarVistaELote} /> : null}
+                <TresPerguntasDoBolso
+                  modalidade={analise.modalidade}
+                  nomeImovel={analise.nome}
+                  enderecoImovel={visao.endereco || nomeDoBairro}
+                  precoAnuncioReais={analise.declarados.preco.valor}
+                  aluguelAnunciadoReais={analise.modalidade === "aluguel" ? visao.custo.principal.valor : null}
+                  condominioMensalReais={analise.declarados.condominio.valor ?? 0}
+                  iptuMensalReais={Math.round((predio?.iptuAnual?.mediana ?? 0) / 12)}
+                  prestacaoEstimadaReais={partesDeCusto.simulacaoCompra?.prestacaoPriceReais ?? 0}
+                  entradaReais={dinheiroParaEntrar?.entrada ?? 0}
+                  itbiReais={dinheiroParaEntrar?.itbi ?? 0}
+                  spuAnualReais={partesDeCusto.spuEstatutario?.encargoPatrimonialAnualVigenteReais ?? 0}
+                  custoMensalArReais={saidaMensalEstimada.luz}
+                  economiaLegalItbiReais={
+                    partesDeCusto.otimizacaoFechamento?.melhorCenarioEconomiaReais ?? 0
+                  }
+                  descontoRuidoReais={acustica?.descontoHedonicoEstimadoReais ?? 0}
+                  vplCalorPoenteReais={bioclimatico.exposicaoPoente ? bioclimatico.vpl10AnosPoenteReais : 0}
+                  riscoManutencaoPredioReais={
+                    partesDeCusto.estruturaECondominio?.choqueCotaExtraEstimadoPorUnidadeReais ?? 0
+                  }
+                  excedenteMedianaM2Reais={
+                    visao.posicao && visao.posicao.deltaPercentual > 3 && analise.declarados.preco.valor
+                      ? Math.round(
+                          analise.declarados.preco.valor *
+                            (visao.posicao.deltaPercentual / (100 + visao.posicao.deltaPercentual)),
+                        )
+                      : 0
+                  }
+                  entradaTco10Anos={entradaTco10Anos}
+                  pendenciaDocumentalResumo={
+                    partesDeCusto.alertaMarinha
+                      ? "Terreno da União pede certidão atualizada do regime (ocupação ou aforamento) antes de fechar financiamento."
+                      : !vinculoConfirmado
+                        ? "Confirme o prédio no cadastro do Recife para cruzar IPTU oficial, matrícula e obras próximas."
+                        : analise.declarados.condominio.aConfirmar
+                          ? "Condomínio marcado para confirmação: peça o último boleto completo antes de enviar proposta."
+                          : predio?.anoConstrucao &&
+                              new Date().getFullYear() - predio.anoConstrucao >= 15
+                            ? "Antes do sinal, solicite a última ata de assembleia e o saldo atual do fundo de reserva."
+                            : null
+                  }
+                />
+                <EscalaDeRuidoHumana acustica={acustica} anoConstrucao={predio?.anoConstrucao ?? null} ruido={ruido} />
+                <RelogioDoPredio
+                  anoConstrucao={predio?.anoConstrucao ?? null}
+                  unidades={predio?.unidades ?? null}
+                  pavimentos={predio?.pavimentos ?? null}
+                  exibirSemLeitura
+                />
+                <CopilotoDocumentosPreSinal
+                  nomeImovel={analise.nome}
+                  anoConstrucao={predio?.anoConstrucao ?? null}
+                  unidades={predio?.unidades ?? null}
+                  chaveLote14={predio?.dsqfl ?? null}
+                  textoAnuncio={analise.extracao ? JSON.stringify(analise.extracao.campos) : analise.nome}
+                  spuAtivo={Boolean(partesDeCusto.alertaMarinha)}
+                />
+                <SilencioInteligente itensNormais={itensSilencio} />
+                <ExportarResumoExecutivo
+                  analisePrincipal={analise}
+                  outrasAnalises={outras}
+                  entrada={{
+                    nomeImovel: analise.nome,
+                    endereco: visao.endereco || nomeDoBairro,
+                    modalidade: analise.modalidade,
+                    precoPrincipalReais: visao.custo.principal.valor,
+                    mensalBolsoRealReais: saidaMensalEstimada.total,
+                    dinheiroEntrarReais: dinheiroParaEntrar?.total ?? null,
+                    fachadaResumo: predio ? `${fachadaAtiva.orientacaoSolar} (${andarSimulado}º andar)` : "Sem leitura (prédio não confirmado)",
+                    conforto: predio ? confortoTermico : null,
+                    sossegoNivel:
+                      ruido.estado === "estimado"
+                        ? `${ruido.nivelDeSossego} (~${Math.round(ruido.naJanela.noiteDb)} dB(A) à noite na janela, estimativa)`
+                        : ruido.textos.placar.valor,
+                    radar: predio ? radarVistaELote : null,
+                    pulso: pulsoDaQuadra,
+                    anoConstrucao: predio?.anoConstrucao ?? null,
+                    unidades: predio?.unidades ?? null,
+                    chaveLote14: predio?.dsqfl ?? null,
+                    spuAtivo: Boolean(partesDeCusto.alertaMarinha),
+                  }}
+                />
+              </View>
+            ) : null}
             {aba === "destaques" ? <FichaViva analise={analise} predio={predio} lista={lista} visao={visao} nomeDoBairro={nomeDoBairro} /> : null}
-            {aba === "entorno" ? <ServicosDeEntorno centro={predio?.centro ?? (analise.caderno?.localizacaoDaVisita ? [analise.caderno.localizacaoDaVisita.longitude, analise.caderno.localizacaoDaVisita.latitude] : null)} referenciaDaVisita={!predio ? analise.caderno?.localizacaoDaVisita : undefined} bairro={predio?.bairro ?? null} predioId={predio?.id ?? null} /> : null}
+            {aba === "entorno" ? (
+              <View style={{ gap: 12, marginTop: 8 }}>
+                <VidaAPeNaQuadra dados={caminhabilidade} />
+                <PulsoDaQuadra pulso={pulsoDaQuadra} />
+                <ServicosDeEntorno
+                  centro={
+                    predio?.centro ??
+                    (analise.caderno?.localizacaoDaVisita
+                      ? [
+                          analise.caderno.localizacaoDaVisita.longitude,
+                          analise.caderno.localizacaoDaVisita.latitude,
+                        ]
+                      : null)
+                  }
+                  referenciaDaVisita={!predio ? analise.caderno?.localizacaoDaVisita : undefined}
+                  bairro={predio?.bairro ?? null}
+                  predioId={predio?.id ?? null}
+                />
+              </View>
+            ) : null}
             {aba === "destaques" ? <PrepararNegociacao analise={analise} visao={visao} lista={lista} predio={predio} nomeDoBairro={nomeDoBairro} /> : null}
+            {aba === "destaques" ? (
+              <View style={{ gap: 10 }}>
+                <Botao
+                  rotulo={mostrarPainelCidadao ? "Ocultar auditoria detalhada em 10 pontos" : "Ver auditoria detalhada em 10 pontos e simulador"}
+                  variante="secundario"
+                  onPress={() => setMostrarPainelCidadao((v) => !v)}
+                />
+                {mostrarPainelCidadao ? (
+                  <View style={{ gap: 10, minHeight: TOQUE_MINIMO }}>
+                    {analise.modalidade === "compra" && analise.declarados.preco.valor ? (
+                      <SimuladorTco10Anos
+                        entrada={{
+                          precoCompraReais: analise.declarados.preco.valor,
+                          aluguelEquivalenteMensalReais: Math.round(analise.declarados.preco.valor * 0.0045),
+                          condominioMensalReais: analise.declarados.condominio.valor ?? 0,
+                          iptuAnualReais: predio?.iptuAnual?.mediana ?? 0,
+                          spuAnualReais: partesDeCusto.spuEstatutario?.encargoPatrimonialAnualVigenteReais ?? 0,
+                          economiaOtimizacaoTributariaReais:
+                            partesDeCusto.otimizacaoFechamento?.melhorCenarioEconomiaReais ?? 0,
+                        }}
+                      />
+                    ) : null}
+                    {cartoesCidadao.map((c) => (
+                      <CartaoCidadao3Camadas key={c.indicadorId} item={c} />
+                    ))}
+                    <ResumoEvidenciaPartilhavel
+                      tituloImovel={analise.nome}
+                      dsqfl={predio?.dsqfl ?? null}
+                      cartoes={cartoesCidadao}
+                    />
+                  </View>
+                ) : null}
+              </View>
+            ) : null}
             {aba === "destaques" ? <LinkComSeta rotulo="Orçamento e cenários" onPress={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "orcamento" } })} /> : null}
+            {aba === "edificio" ? <LinhaUnificadaDoLote linha={linhaUnificada} /> : null}
             {aba === "edificio" ? <SolNasFachadas analise={analise} predio={predio} aoLevarParaVisita={levarParaVisita} /> : null}
-            {aba === "edificio" ? <LadoDoBarulho bairro={predio?.bairro ?? null} predioId={predio?.id ?? null} aoLevarParaVisita={levarParaVisita} /> : null}
+            {aba === "edificio" ? <LadoDoBarulho bairro={predio?.bairro ?? null} predioId={predio?.id ?? null} centro={predio?.centro ?? null} aoLevarParaVisita={levarParaVisita} /> : null}
             {aba === "edificio" ? <LinhaDoTempoEstrutural analise={analise} aoRegistrar={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "edificio" } })} /> : null}
             {aba === "edificio" ? <LinkComSeta rotulo="Documentos e CNPJ do edifício" onPress={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "edificio" } })} /> : null}
             <LinkComSeta rotulo="Observações e histórico de visitas" onPress={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "campo" } })} />

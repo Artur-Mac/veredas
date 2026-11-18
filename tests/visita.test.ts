@@ -9,7 +9,8 @@ import { router } from "expo-router";
 import React from "react";
 import { Linking, StyleSheet } from "react-native";
 import TestRenderer, { act, type ReactTestInstance } from "react-test-renderer";
-import { adicionarPropria, alternarVerificada, definirResposta, duracaoPorExtenso, enderecoDoImovel, formatarCronometro, idDaPropria, limitarGraus, orientacaoDaJanela, perguntasDaVisita, resumirVisita, roteiroDaVisita, segundosDoRelogio, subtituloDoImovel, urlDoWhatsapp } from "../src/componentes/visita-v1/logica";
+import { adicionarPropria, alternarVerificada, definirResposta, duracaoPorExtenso, enderecoDoImovel, formatarCronometro, idDaPropria, limitarGraus, orientacaoDaJanela, perguntasDaVisita, resumirVisita, resumoDaVisitaEmTexto, roteiroDaVisita, segundosDoRelogio, subtituloDoImovel, urlDoWhatsapp } from "../src/componentes/visita-v1/logica";
+import { Resumo } from "../src/componentes/visita-v1/Resumo";
 import TelaVisita from "../src/app/(abas)/visita";
 import { Pressionavel } from "../src/componentes/Pressionavel";
 import { AVISO_DE_FALHA_AO_SALVAR } from "../src/componentes/visita-v1/useVisita";
@@ -91,6 +92,10 @@ function analise(mudancas: Partial<AnaliseV2> = {}): AnaliseV2 {
 const pergunta = (id: string, titulo = `Título de ${id}`): Pergunta => ({
   id, titulo, pista: "Pista", textoParaMensagem: `Texto de ${id}?`, origem: "padrao", prioridade: "conforto",
 });
+
+// T5 (18/11/2026): estas telas montam a árvore inteira do app e, com a máquina ocupada, passam dos 5 s padrão.
+// 15 s só nesta suíte; o limite global do Jest não muda.
+jest.setTimeout(15000);
 
 // ——— Lógica pura ————————————————————————————————————————————————————————————————————
 
@@ -394,7 +399,7 @@ describe("a tela Visita", () => {
     expect(todoOTexto(arvore)).toContain("Nenhum dossiê aberto. Cole um link em Explorar.");
     await tocar(arvore, porTexto("Ir para Explorar"));
     expect(empurrar).toHaveBeenCalledWith("/");
-  });
+  }, 15_000);
 
   it("com análise ativa, mostra Preparar: contagem, as três primeiras numeradas, roteiro e mensagem", async () => {
     const a = analise();
@@ -846,5 +851,60 @@ describe("a tela Visita", () => {
     abas.push(todoOTexto(arvore));
     const proibidas = /melhor op[cç][aã]o|recomend|nota\s*\d|selo|imperd[ií]vel|excelente|ótimo|otimo|bom neg[oó]cio/i;
     for (const texto of abas) expect(texto).not.toMatch(proibidas);
+  });
+
+  it("resumoDaVisitaEmTexto e Resumo copiam síntese protegendo impressões pessoais por padrão (S65)", async () => {
+    const perguntas: Pergunta[] = [
+      pergunta("q1", "Confirmar taxa de reserva"),
+      pergunta("q2", "Checar pressão do chuveiro"),
+    ];
+    const visita: Visita = {
+      ...VISITA_VAZIA,
+      verificadas: ["q1"],
+      respostas: { q1: "R$ 45/mês" },
+      ruido: "silencioso",
+      orientacaoGraus: 90,
+      notas: "Rua bem silenciosa, mas teto precisa repintura",
+      segundos: 420,
+    };
+    const resumo = resumirVisita(visita, perguntas);
+
+    const privado = resumoDaVisitaEmTexto(resumo);
+    expect(privado).toContain("RESUMO DA VISITA — VEREDA");
+    expect(privado).toContain("Conferidas: 1 de 2 perguntas");
+    expect(privado).toContain("Confirmar taxa de reserva");
+    expect(privado).toContain("R$ 45/mês");
+    expect(privado).toContain("Leste (L) · 90°");
+    expect(privado).toContain("Ainda para confirmar:");
+    expect(privado).not.toContain("teto precisa repintura");
+
+    const comNotas = resumoDaVisitaEmTexto(resumo, { incluirImpressoesPessoais: true });
+    expect(comNotas).toContain("Impressões pessoais: Rua bem silenciosa, mas teto precisa repintura");
+
+    setStringAsync.mockClear();
+    let arvore!: TestRenderer.ReactTestRenderer;
+    await act(async () => {
+      arvore = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(Resumo, { resumo, aoReverRespostas: () => undefined }),
+        ),
+      );
+    });
+    montadas.push(arvore);
+
+    await tocar(arvore, porTexto("Copiar resumo da visita"));
+    expect(setStringAsync).toHaveBeenCalledTimes(1);
+    expect(setStringAsync.mock.calls[0]?.[0]).not.toContain("teto precisa repintura");
+    expect(todoOTexto(arvore)).toContain("Resumo da visita copiado para colar ou guardar.");
+
+    const toggle = achar(arvore, (i) => podeTocar(i) && i.props.testID === "visita-toggle-impressoes-copia");
+    await act(async () => {
+      toggle.props.onPress?.();
+    });
+    await tocar(arvore, porTexto("Copiar resumo da visita"));
+    expect(setStringAsync).toHaveBeenCalledTimes(2);
+    expect(setStringAsync.mock.calls[1]?.[0]).toContain("Impressões pessoais: Rua bem silenciosa, mas teto precisa repintura");
   });
 });

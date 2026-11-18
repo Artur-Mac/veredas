@@ -4,6 +4,7 @@ import { ShareIntentProvider } from "expo-share-intent";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { Platform } from "react-native";
 import { DadosNoAparelho, useAparelho } from "../estado/Aparelho";
 import { PreferenciasDoMock, usePreferencias } from "../estado/Preferencias";
 import { SessaoDoApp } from "../estado/Sessao";
@@ -36,6 +37,15 @@ function Pilha() {
   // D036: na web, depois das fontes, guarda a casca do app para reabrir sem rede (nada no nativo).
   useEffect(() => {
     if (!pronto) return;
+    if (Platform.OS === "web" && typeof document !== "undefined") {
+      if (!document.getElementById("vereda-svg-sans")) {
+        const tag = document.createElement("style");
+        tag.id = "vereda-svg-sans";
+        tag.textContent =
+          'svg text, svg tspan { font-family: "PlusJakartaSans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-variant-numeric: tabular-nums; }';
+        document.head.appendChild(tag);
+      }
+    }
     const t = setTimeout(iniciarModoOffline, 2000);
     return () => clearTimeout(t);
   }, [pronto]);

@@ -39,6 +39,7 @@ import {
   nomeSugerido,
   resumoDePrecoECustos,
   rotuloDaTipologia,
+  rotuloDoBairroEscolhido,
   tituloDeForaDeCobertura,
   tituloPadraoDoAnuncio,
   type EstadoDoFormulario,
@@ -46,7 +47,6 @@ import {
 import { useAnalises } from "../../estado/Analises";
 import { coletaDoId, recebeuDesde, registrarLinkAberto } from "../../estado/compartilhamento";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 
 const VISITA_VAZIA: AnaliseV2["visita"] = {
   verificadas: [],
@@ -428,8 +428,7 @@ function LeituraDoAnuncio() {
   // continua aberto (não some no meio da edição quando uma leitura nova traz o bairro).
   const formularioPrecisa = !temDados || foraDeCobertura || semBairro;
   const mostrarFormulario = abriuEdicao || formularioPrecisa;
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { if (formularioPrecisa) setAbriuEdicao(true); }, [formularioPrecisa]);
+  const acaoRapidaNoTopo = temDados && !mostrarFormulario && !semBairro && !foraDeCobertura;
   const mostrarCartaoDeTexto = !noCelular || pediuTexto;
   const bloqueado = motivoDaFalha === "bloqueio";
   /** No celular, quando a página não pôde ser lida, o caminho principal é o navegador do aparelho. */
@@ -507,6 +506,45 @@ function LeituraDoAnuncio() {
                 </View>
               )}
 
+              {acaoRapidaNoTopo ? (
+                <View style={{ gap: 10 }}>
+                  <AlvoDeToque
+                    accessibilityRole="button"
+                    accessibilityLabel="Bairro"
+                    accessibilityValue={{ text: rotuloDoBairroEscolhido(form) ?? "Nenhum escolhido" }}
+                    onPress={() => setAbriuEdicao(true)}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      paddingVertical: 10,
+                      borderTopWidth: 1,
+                      borderBottomWidth: 1,
+                      borderColor: cor("cor-linha"),
+                    }}
+                  >
+                    <Texto tipo="etiqueta" style={{ fontSize: 12.5 }}>
+                      {`Bairro: ${rotuloDoBairroEscolhido(form) ?? "A escolher"}`}
+                    </Texto>
+                    <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 12, fontWeight: "600" }}>
+                      Alterar dados
+                    </Texto>
+                  </AlvoDeToque>
+                  <PredioProvavel
+                    analise={previa}
+                    bairro={form.bairro as SlugCoberto}
+                    trabalhando={salvando || confirmando}
+                    aoConfirmar={(e) => void confirmarDaqui(e)}
+                    aoEscolherOutro={() => void encontrarOPredio()}
+                  />
+                  {erroAoSalvar ? (
+                    <Texto tipo="apoio" role="alert" style={styles.erro}>
+                      {erroAoSalvar}
+                    </Texto>
+                  ) : null}
+                </View>
+              ) : null}
+
               {avisoDeTipologia(form.tipologia) ? (
                 <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.avisoDaCopia}>
                   {avisoDeTipologia(form.tipologia)}
@@ -577,6 +615,7 @@ function LeituraDoAnuncio() {
             </Cartao>
           ) : null}
 
+          {acaoRapidaNoTopo ? null : (
           <Cartao style={styles.cartao}>
             <CorpoDoCartao style={styles.corpo}>
               {mostrarFormulario ? (
@@ -584,7 +623,15 @@ function LeituraDoAnuncio() {
                   <Texto tipo="titulo-tela" role="heading" style={styles.tituloDoFormulario}>
                     Revise antes de salvar
                   </Texto>
-                  <FormularioDeRevisao essencial estado={form} anomalias={anomaliasDaRevisao(extracao, form)} aoAlterar={setForm} />
+                  <FormularioDeRevisao
+                    essencial
+                    estado={form}
+                    anomalias={anomaliasDaRevisao(extracao, form)}
+                    aoAlterar={(novoForm) => {
+                      setForm(novoForm);
+                      setAbriuEdicao(true);
+                    }}
+                  />
                 </>
               ) : null}
 
@@ -606,6 +653,7 @@ function LeituraDoAnuncio() {
               ) : null}
             </CorpoDoCartao>
           </Cartao>
+          )}
 
           {foraDeCobertura ? (
             <Cartao style={styles.cartao}>
@@ -709,10 +757,8 @@ const useEstilos = estilosDoTema((cor) =>
       minHeight: 44,
       justifyContent: "center",
       paddingHorizontal: 12,
-      backgroundColor: cor("cor-papel-claro"),
+      backgroundColor: cor("cor-sutil"),
       borderRadius: 11,
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
     },
     textoCancelar: {
       color: cor("cor-texto"),
@@ -725,7 +771,7 @@ const useEstilos = estilosDoTema((cor) =>
       marginBottom: 0,
       borderRadius: 18,
       borderWidth: 1,
-      borderColor: cor("cor-linha"),
+      borderColor: cor("cor-linha-forte"),
     },
     corpo: {
       paddingVertical: 16,
@@ -783,22 +829,18 @@ const useEstilos = estilosDoTema((cor) =>
       textDecorationLine: "underline",
     },
     checklist: {
-      gap: 7,
+      gap: 0,
     },
     linhaDoChecklist: {
       flexDirection: "row",
       alignItems: "flex-start",
       gap: 11,
       paddingVertical: 10,
-      paddingHorizontal: 12,
-      borderRadius: 11,
-      backgroundColor: cor("cor-creme"),
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
+      borderTopWidth: 1,
+      borderTopColor: cor("cor-linha"),
     },
     linhaLida: {
-      backgroundColor: cor("cor-superficie"),
-      borderColor: cor("cor-salvia"),
+      borderTopColor: cor("cor-linha"),
     },
     circulo: {
       width: 22,
@@ -808,20 +850,19 @@ const useEstilos = estilosDoTema((cor) =>
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: cor("cor-sutil"),
-      borderWidth: 1,
-      borderColor: cor("cor-linha-forte"),
     },
     circuloLido: {
       backgroundColor: cor("cor-salvia-escura"),
-      borderColor: cor("cor-salvia-escura"),
     },
     numeroPendente: {
+      fontVariant: ["tabular-nums"],
       fontSize: 11,
       lineHeight: 14,
       color: cor("cor-texto-apoio"),
       fontWeight: "700",
     },
     numeroLido: {
+      fontVariant: ["tabular-nums"],
       fontSize: 11,
       lineHeight: 14,
       color: cor("cor-superficie"),
@@ -851,7 +892,7 @@ const useEstilos = estilosDoTema((cor) =>
       rowGap: 2,
       paddingTop: 10,
       borderTopWidth: 1,
-      borderTopColor: comAlfa(cor("cor-texto"), 0.07),
+      borderTopColor: cor("cor-linha"),
     },
     textoDePrivacidade: {
       flexShrink: 1,
@@ -907,11 +948,11 @@ const useEstilos = estilosDoTema((cor) =>
       fontWeight: "700",
     },
     caixaCreme: {
-      padding: 12,
-      borderRadius: 12,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
       backgroundColor: cor("cor-creme"),
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
+      borderLeftWidth: 2,
+      borderLeftColor: cor("cor-linha-forte"),
     },
     textoDaCaixaCreme: {
       color: cor("cor-texto-apoio"),

@@ -40,6 +40,9 @@ export const PASSOS = [
   { id: "equipamentos", script: "scripts/dados/equipamentos/rodar-equipamentos.mjs", publicacoes: [], gerados: ["src/dados/recife/equipamentosGerado.ts"] },
   // Atrito e conveniência (15/11/2026): CNEFE do Censo 2022 (zip oficial do IBGE, SHA-256 fixo), só categorias e contagens.
   { id: "atrito", script: "scripts/dados/atrito/rodar-atrito.mjs", publicacoes: [], gerados: ["src/dados/recife/atritoGerado.ts"] },
+  // Ruído estimado (18/11/2026, decisão A2): vias do OpenStreetMap (extrato Geofabrik em .cache/osm, SHA-256 fixo no
+  // script), ônibus, trilho, LUSE e a camada de atrito; por isso vem depois do passo "atrito".
+  { id: "ruido", script: "scripts/dados/ruido/rodar-ruido.mjs", publicacoes: [], gerados: ["src/dados/recife/ruidoGerado.ts"] },
   // Recortes solares (VE07): só arquivos locais (.cache/sol-fontes, hashes no relatório de geometrias).
   { id: "sol", python: "scripts/dados/preparar-sol-recife.py", publicacoes: [], gerados: ["src/dados/sol/fontesGeradas.ts"] },
 ];
@@ -82,7 +85,7 @@ function listar(dir, filtro = () => true) {
 function impressaoDasEntradas() {
   const h = createHash("sha256");
   // Código: conteúdo inteiro (pequeno). Dados brutos: tamanho + data de modificação (grandes; uma nova cópia muda a data).
-  const codigo = [...listar(join(RAIZ, "scripts/dados"), (p) => /\.(mjs|cjs|json|py)$/.test(p) && !p.includes("/ciclo")), ...listar(join(RAIZ, "src/dados/transito")),
+  const codigo = [...listar(join(RAIZ, "scripts/dados"), (p) => /\.(mjs|cjs|json|py|ts)$/.test(p) && !p.includes("/ciclo")), ...listar(join(RAIZ, "src/dados/transito")), ...listar(join(RAIZ, "src/dados/ruido")),
     join(RAIZ, "src/dados/observacao.ts")];
   for (const f of codigo) h.update(`${relative(RAIZ, f)}\0${sha(readFileSync(f))}\n`);
   const dir = /DIRETORIO_DO_INDICE = "([^"]+)"/.exec(readFileSync(join(RAIZ, "src/dados/recife/publicacaoGerada.ts"), "utf8"))[1];
@@ -98,7 +101,7 @@ const chaveDoPasso = (passo, entradas, e) => sha(JSON.stringify([passo.id, entra
 const saidaDoPasso = (passo, e) => sha(JSON.stringify([passo.publicacoes.map((p) => e.ponteiros[p]?.versao ?? null), passo.gerados.map((g) => e.gerados[g])]));
 
 // ——— O que muda para a pessoa: prédios por área e camada ————————————————————————————————————————————————
-const CAMADA = /^recife\/(essenciais|transito|chuva|noite|equipamentos|atrito)\/[0-9a-f]{16}\/([a-z-]+)\.json$/;
+const CAMADA = /^recife\/(essenciais|transito|chuva|noite|equipamentos|atrito|ruido)\/[0-9a-f]{16}\/([a-z-]+)\.json$/;
 function porCamada(e) {
   const m = {};
   for (const c of Object.keys(e.arquivos)) { const x = CAMADA.exec(c); if (x && x[2] !== "grade") (m[x[1]] ??= {})[x[2]] = c; }

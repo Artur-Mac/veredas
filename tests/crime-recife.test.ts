@@ -131,7 +131,7 @@ const camposComuns = {
 };
 const janelaCoerente = (b: { janela: string; periodo: unknown }) => (b.janela === "12-meses") === (b.periodo !== null);
 
-const esquemaBairro = z.strictObject({ ...camposComuns, divisaComAlvos: z.array(z.string()) }).refine(janelaCoerente, "janela e período incoerentes");
+const esquemaBairro = z.strictObject({ ...camposComuns, divisaComAlvos: z.array(z.string()), vizinhosDeDivisa: z.array(z.string()) }).refine(janelaCoerente, "janela e período incoerentes");
 
 /** Rótulo do site que não é um dos 94 bairros oficiais: não tem divisa calculada nem grafia de bairros.ts. */
 const esquemaForaDaLista = z.strictObject({ ...camposComuns, motivo: z.string().min(1) }).refine(janelaCoerente, "janela e período incoerentes");
@@ -220,6 +220,19 @@ describe("src/dados/recife/crime/ocorrencias.json", () => {
       if (b.papel === "vizinho") expect(b.divisaComAlvos.length).toBeGreaterThan(0);
       if (b.papel === "outro") expect(b.divisaComAlvos).toEqual([]);
     }
+  });
+
+  it("vizinhos de divisa: slugs de bairros.ts, sem o próprio bairro, e todo alvo lista os vizinhos do papel", () => {
+    const oficiais = new Set(BAIRROS_DO_RECIFE.map((o) => o.slug));
+    for (const b of ocorrencias.bairros) {
+      for (const v of b.vizinhosDeDivisa) {
+        expect(oficiais.has(v)).toBe(true);
+        expect(v).not.toBe(b.slug);
+      }
+      for (const a of b.divisaComAlvos) expect(b.vizinhosDeDivisa).toContain(a);
+    }
+    // 18/11/2026: Madalena e Paissandu só se tocam num ponto (2 m de trecho comum); não são vizinhos.
+    expect(ocorrencias.bairros.find((b) => b.slug === "madalena")?.vizinhosDeDivisa).not.toContain("paissandu");
   });
 
   it("os 94 bairros de bairros.ts estão no JSON ou em pendencias, nunca nos dois nem em nenhum", () => {

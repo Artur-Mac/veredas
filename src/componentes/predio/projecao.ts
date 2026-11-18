@@ -22,6 +22,8 @@ export type Cena = {
   pino: PontoPlano;
   /** Metros por unidade do desenho. */
   metrosPorUnidade: number;
+  /** Os números da conta [lon, lat] → pixel (ver `paraDesenhoDaCena` e `caixaDaCena`, para o fundo do mapa). */
+  geo: { origem: [number, number]; porMetro: number; meio: PontoPlano; centroDaArea: PontoPlano };
 };
 
 export type OpcoesDaCena = {
@@ -131,7 +133,27 @@ export function montarCena(selecionado: Edificio, outros: readonly Edificio[], o
     vizinhos: proximos.map(forma).filter(aparece),
     pino: desenhoPrincipal.centro,
     metrosPorUnidade: 1 / porMetro,
+    geo: { origem: [selecionado.centro[0], selecionado.centro[1]], porMetro, meio: [meioX, meioY], centroDaArea },
   };
+}
+
+/** A conta [lon, lat] → [x, y] do desenho da cena (linear em lon e lat). Uma função nova a cada chamada: guarde com useMemo. */
+export function paraDesenhoDaCena(cena: Cena): (ponto: readonly [number, number]) => PontoPlano {
+  const { origem, porMetro, meio, centroDaArea } = cena.geo;
+  const projetar = projetorLocal(origem);
+  return (ponto) => {
+    const [x, y] = projetar(ponto);
+    return [centroDaArea[0] + (x - meio[0]) * porMetro, centroDaArea[1] + (y - meio[1]) * porMetro];
+  };
+}
+
+/** Caixa [oeste, sul, leste, norte], em graus, do desenho inteiro da cena (largura × altura). */
+export function caixaDaCena(cena: Cena): [number, number, number, number] {
+  const { origem, porMetro, meio, centroDaArea } = cena.geo;
+  const cosseno = Math.cos((origem[1] * Math.PI) / 180);
+  const lon = (px: number) => origem[0] + ((px - centroDaArea[0]) / porMetro + meio[0]) / (METROS_POR_GRAU * cosseno);
+  const lat = (py: number) => origem[1] - ((py - centroDaArea[1]) / porMetro + meio[1]) / METROS_POR_GRAU;
+  return [lon(0), lat(cena.altura), lon(cena.largura), lat(0)];
 }
 
 /** Pontos de um polígono no formato do atributo `points` do SVG. */

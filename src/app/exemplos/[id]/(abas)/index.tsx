@@ -10,6 +10,10 @@ import { AreaDeBotoes, Cabecalho, Rolagem, Tela } from "../../../../componentes/
 import { secaoDoFato } from "../../../../dados/consultas";
 import { useSessao } from "../../../../estado/Sessao";
 import { useDossie } from "../../../../navegacao/useDossie";
+import { Pressionavel } from "../../../../componentes/Pressionavel";
+import { Texto } from "../../../../componentes/Texto";
+import { useTema } from "../../../../tema/Tema";
+import { RAIO } from "../../../../tema/tokens";
 
 export default function TelaDoDossie() {
   const dossie = useDossie();
@@ -49,6 +53,7 @@ export default function TelaDoDossie() {
     }, [recebido, dossie.id, irPara, abrirFato]),
   );
 
+  const { cor } = useTema();
   const compartilhar = () => {
     void Share.share({ message: Linking.createURL(`/exemplos/${dossie.id}`) });
   };
@@ -57,6 +62,23 @@ export default function TelaDoDossie() {
     <Tela comAbas>
       <Cabecalho titulo="Dossiê" pai="/" direita={<BotaoIcone icone="share" acessivel="Compartilhar" onPress={compartilhar} />} />
       <Rolagem ref={rolagem}>
+        <Pressionavel
+          accessibilityRole="button"
+          onPress={() => router.navigate("/dossie")}
+          style={{
+            marginBottom: 12,
+            paddingHorizontal: 14,
+            paddingVertical: 10,
+            borderRadius: RAIO.quadrado,
+            borderWidth: 1,
+            borderColor: cor("cor-azul-cadastral"),
+            backgroundColor: cor("cor-azul-cadastral-suave"),
+          }}
+        >
+          <Texto tipo="etiqueta" cor="cor-azul-cadastral" style={{ fontSize: 12.5 }}>
+            Exemplo do catálogo · Toque para abrir seu Dossiê interativo atual →
+          </Texto>
+        </Pressionavel>
         <TopoDoDossie dossie={dossie} />
         <View onLayout={(e) => medir("imovel", e.nativeEvent.layout.y)}>
           <CartaoDoAnuncio dossie={dossie} />

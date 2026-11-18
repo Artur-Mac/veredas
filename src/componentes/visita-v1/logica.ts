@@ -274,3 +274,36 @@ export function resumirVisita(v: Visita, perguntas: readonly Pergunta[]): Resumo
     segundos: v.segundos,
   };
 }
+
+/** Resumo em texto plano do que foi conferido na visita; impressões pessoais ficam fora por padrão. */
+export function resumoDaVisitaEmTexto(
+  resumo: ResumoDaVisita,
+  opts?: { incluirImpressoesPessoais?: boolean; janelasTexto?: readonly string[] },
+): string {
+  const linhas: string[] = [
+    "RESUMO DA VISITA — VEREDA",
+    `Conferidas: ${resumo.conferidas.length} de ${resumo.total} ${resumo.total === 1 ? "pergunta" : "perguntas"}${resumo.segundos > 0 ? ` (${duracaoPorExtenso(resumo.segundos)})` : ""}`,
+  ];
+  if (resumo.conferidas.length > 0) {
+    linhas.push("", "Conferido na visita:", ...resumo.conferidas.map((p) => `✓ ${p.titulo}`));
+  }
+  if (resumo.respostas.length > 0) {
+    linhas.push("", "Respostas anotadas:", ...resumo.respostas.map((r) => `• ${r.titulo}: ${r.texto}`));
+  }
+  if (opts?.janelasTexto && opts.janelasTexto.length > 0) {
+    linhas.push("", "Sol nas janelas:", ...opts.janelasTexto.map((j) => `• ${j}`));
+  } else if (resumo.orientacao) {
+    linhas.push("", `Luz na janela: ${resumo.orientacao.nome} (${resumo.orientacao.rotulo}) · ${resumo.orientacao.graus}°`);
+  }
+  if (resumo.ruido) {
+    linhas.push("", `Ruído percebido: ${resumo.ruido}`);
+  }
+  if (opts?.incluirImpressoesPessoais === true && resumo.notas.trim() !== "") {
+    linhas.push("", `Impressões pessoais: ${resumo.notas.trim()}`);
+  }
+  if (resumo.pendentes.length > 0) {
+    linhas.push("", "Ainda para confirmar:", ...resumo.pendentes.map((p) => `- ${p.titulo}`));
+  }
+  linhas.push("", "Resumo registrado no seu aparelho com o VEREDA.");
+  return linhas.join("\n");
+}

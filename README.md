@@ -5,6 +5,8 @@
 
 ---
 
+> **Fonte da verdade:** escopo, features, decisões e tarefas do Vereda vivem no **Enemyhub** (projeto "Vereda"), acessado pelo servidor MCP `enemyhub`. O hub é atualizado a cada feature; quando `docs/` e o hub divergem, vale o hub. Regras em [`AGENTS.md`](./AGENTS.md#fonte-da-verdade-o-enemyhub).
+
 ## Prova de conceito em execução
 
 **Plano vigente da próxima rodada ampla (Recife):** [15 épocas, catálogo de funcionalidades e instruções para execução](./docs/plano-recife/README.md). Consolida e resolve conflitos dos planos anteriores; o [prompt da IA operária](./docs/plano-recife/08-PROMPT-OPERARIA.md) começa pela conferência do código atual. As seções históricas abaixo não certificam funcionalidades ou sensores como entregues.

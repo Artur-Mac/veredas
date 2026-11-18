@@ -10,7 +10,6 @@ import {
   type OpcaoDeBairro,
 } from "../../dados/formulario";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 import { useFocoDoCampo } from "../casca/foco";
 import { AlvoDeToque } from "../Pressionavel";
 import { Texto } from "../Texto";
@@ -145,7 +144,7 @@ const useEstilos = estilosDoTema((cor) =>
       gap: 10,
       minHeight: 46,
       borderWidth: 1,
-      borderColor: cor("cor-linha"),
+      borderColor: cor("cor-linha-forte"),
       borderRadius: 12,
       paddingHorizontal: 13,
       paddingVertical: 10,
@@ -154,7 +153,6 @@ const useEstilos = estilosDoTema((cor) =>
     gatilhoAberto: {
       backgroundColor: cor("cor-superficie"),
       borderColor: cor("cor-acao"),
-      boxShadow: `0 0 0 3px ${comAlfa(cor("cor-acao"), 0.15)}`,
     },
     textoEscolhido: {
       flex: 1,
@@ -171,15 +169,11 @@ const useEstilos = estilosDoTema((cor) =>
     painel: {
       gap: 8,
       padding: 8,
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
       borderRadius: 12,
-      backgroundColor: cor("cor-superficie"),
+      backgroundColor: cor("cor-papel-claro"),
     },
     busca: {
-      minHeight: 42,
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
+      minHeight: 44,
       borderRadius: 10,
       paddingHorizontal: 12,
       paddingVertical: 8,

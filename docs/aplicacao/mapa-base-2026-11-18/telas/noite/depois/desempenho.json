@@ -1,0 +1,769 @@
+{
+ "geradoEm": "2026-11-18T08:45:04.327Z",
+ "base": "http://localhost:8098",
+ "caso": "golden-tower",
+ "largura": 375,
+ "cpu": "4x (Emulation.setCPUThrottlingRate)",
+ "vezes": 9,
+ "superficies": {
+  "gaveta": {
+   "toqueAoQuadroMs": {
+    "mediana": 299.3,
+    "pior": 311.7,
+    "todas": [
+     271,
+     297.3,
+     299.3,
+     295.8,
+     299.8,
+     311.7,
+     298.7,
+     302,
+     304.5
+    ]
+   },
+   "toqueAoDomMs": [
+    258.3,
+    282.5,
+    285,
+    281.1,
+    284.9,
+    295.5,
+    282.3,
+    288.2,
+    289
+   ],
+   "fundoDoMapaMs": {
+    "mediana": 12,
+    "pior": 14,
+    "todas": [
+     14,
+     11.3,
+     11.3,
+     12,
+     11.5,
+     12.1,
+     12,
+     12.4,
+     11.7
+    ]
+   },
+   "erros": [],
+   "errosDeConsole": 0,
+   "requisicoesFalhas": 0,
+   "externasBloqueadas": 0,
+   "aberturas": {
+    "comFundo": {
+     "primeira": {
+      "toqueAoQuadroMs": {
+       "mediana": 299.3,
+       "pior": 311.7,
+       "todas": [
+        271,
+        297.3,
+        299.3,
+        295.8,
+        299.8,
+        311.7,
+        298.7,
+        302,
+        304.5
+       ]
+      },
+      "toqueAoDomMs": {
+       "mediana": 284.9,
+       "pior": 295.5,
+       "todas": [
+        258.3,
+        282.5,
+        285,
+        281.1,
+        284.9,
+        295.5,
+        282.3,
+        288.2,
+        289
+       ]
+      },
+      "erros": [],
+      "toqueAoFundoMs": {
+       "mediana": 412.2,
+       "pior": 428,
+       "todas": [
+        376,
+        407.5,
+        406.3,
+        405,
+        413.2,
+        428,
+        412.2,
+        414.5,
+        420.1
+       ]
+      },
+      "etapasMs": {
+       "fundo-do-mapa:ler": {
+        "medianaDaSoma": 0,
+        "vezesPorAbertura": [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        "somas": [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ]
+       },
+       "fundo-do-mapa": {
+        "medianaDaSoma": 12,
+        "vezesPorAbertura": [
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1
+        ],
+        "somas": [
+         14,
+         11.3,
+         11.3,
+         12,
+         11.5,
+         12.1,
+         12,
+         12.4,
+         11.7
+        ]
+       },
+       "fundo-do-mapa:desenhar": {
+        "medianaDaSoma": 91,
+        "vezesPorAbertura": [
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1
+        ],
+        "somas": [
+         82.6,
+         90.5,
+         86.8,
+         87.5,
+         92.3,
+         95.4,
+         91,
+         91.1,
+         93.7
+        ]
+       }
+      }
+     },
+     "segunda": {
+      "toqueAoQuadroMs": {
+       "mediana": 260,
+       "pior": 274.2,
+       "todas": [
+        260,
+        274.2,
+        272.1,
+        257.6,
+        262.5,
+        256.2,
+        258.1,
+        255.9,
+        272.7
+       ]
+      },
+      "toqueAoDomMs": {
+       "mediana": 244.4,
+       "pior": 257.5,
+       "todas": [
+        244.4,
+        257.1,
+        256.1,
+        242.4,
+        247.3,
+        240.2,
+        243.3,
+        240,
+        257.5
+       ]
+      },
+      "erros": [],
+      "toqueAoFundoMs": {
+       "mediana": 260,
+       "pior": 274.2,
+       "todas": [
+        260,
+        274.2,
+        272.1,
+        257.6,
+        262.5,
+        256.2,
+        258.1,
+        255.9,
+        272.7
+       ]
+      },
+      "etapasMs": {
+       "fundo-do-mapa:ler": {
+        "medianaDaSoma": 0,
+        "vezesPorAbertura": [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        "somas": [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ]
+       },
+       "fundo-do-mapa": {
+        "medianaDaSoma": 0,
+        "vezesPorAbertura": [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        "somas": [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ]
+       },
+       "fundo-do-mapa:desenhar": {
+        "medianaDaSoma": 24.5,
+        "vezesPorAbertura": [
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1
+        ],
+        "somas": [
+         26.3,
+         28.2,
+         25.9,
+         23.5,
+         23.3,
+         22.6,
+         24.5,
+         22.6,
+         25.3
+        ]
+       }
+      }
+     },
+     "errosDeConsole": 0,
+     "requisicoesFalhas": 0,
+     "externasBloqueadas": 0
+    },
+    "semFundo": {
+     "primeira": {
+      "toqueAoQuadroMs": {
+       "mediana": 272.7,
+       "pior": 276.3,
+       "todas": [
+        262.3,
+        272.7,
+        273.2,
+        270.9,
+        276.3,
+        274.5,
+        271.5,
+        272.3,
+        276.3
+       ]
+      },
+      "toqueAoDomMs": {
+       "mediana": 259.7,
+       "pior": 263.8,
+       "todas": [
+        249.3,
+        259.7,
+        260.3,
+        257.9,
+        263.4,
+        260.3,
+        258.5,
+        259.6,
+        263.8
+       ]
+      },
+      "erros": []
+     },
+     "segunda": {
+      "toqueAoQuadroMs": {
+       "mediana": 240.8,
+       "pior": 248.5,
+       "todas": [
+        243.9,
+        235.7,
+        241.1,
+        241.6,
+        237.7,
+        240,
+        240.8,
+        234.4,
+        248.5
+       ]
+      },
+      "toqueAoDomMs": {
+       "mediana": 228,
+       "pior": 236.5,
+       "todas": [
+        231.6,
+        224.8,
+        228.8,
+        228.9,
+        225.2,
+        227.3,
+        228,
+        223.4,
+        236.5
+       ]
+      },
+      "erros": []
+     },
+     "errosDeConsole": 0,
+     "requisicoesFalhas": 0,
+     "externasBloqueadas": 0
+    }
+   },
+   "custoDoFundoMs": {
+    "segunda": 19.2,
+    "primeira": 139.5
+   }
+  },
+  "por-perto": {
+   "toqueAoQuadroMs": {
+    "mediana": 183.3,
+    "pior": 207.4,
+    "todas": [
+     207.4,
+     192.9,
+     182.8,
+     180.9,
+     184.1,
+     182.9,
+     181.6,
+     183.3,
+     187.9
+    ]
+   },
+   "toqueAoDomMs": [
+    191.6,
+    178.5,
+    168.1,
+    165.5,
+    168.4,
+    167.8,
+    167.1,
+    168,
+    173
+   ],
+   "fundoDoMapaMs": {
+    "mediana": 28.4,
+    "pior": 36.1,
+    "todas": [
+     36.1,
+     27.7,
+     27.4,
+     28.2,
+     30.2,
+     26.9,
+     30.5,
+     28.4,
+     28.8
+    ]
+   },
+   "erros": [],
+   "errosDeConsole": 0,
+   "requisicoesFalhas": 0,
+   "externasBloqueadas": 0,
+   "aberturas": {
+    "comFundo": {
+     "primeira": {
+      "toqueAoQuadroMs": {
+       "mediana": 183.3,
+       "pior": 207.4,
+       "todas": [
+        207.4,
+        192.9,
+        182.8,
+        180.9,
+        184.1,
+        182.9,
+        181.6,
+        183.3,
+        187.9
+       ]
+      },
+      "toqueAoDomMs": {
+       "mediana": 168.1,
+       "pior": 191.6,
+       "todas": [
+        191.6,
+        178.5,
+        168.1,
+        165.5,
+        168.4,
+        167.8,
+        167.1,
+        168,
+        173
+       ]
+      },
+      "erros": [],
+      "toqueAoFundoMs": {
+       "mediana": 886.9,
+       "pior": 983.4,
+       "todas": [
+        983.4,
+        886.9,
+        900.5,
+        857.8,
+        875.7,
+        894.9,
+        857.8,
+        878.2,
+        890
+       ]
+      },
+      "etapasMs": {
+       "fundo-do-mapa:ler": {
+        "medianaDaSoma": 14.9,
+        "vezesPorAbertura": [
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4,
+         4
+        ],
+        "somas": [
+         16.1,
+         13.2,
+         13.8,
+         15.1,
+         15.6,
+         13.8,
+         14.9,
+         14.9,
+         15.1
+        ]
+       },
+       "fundo-do-mapa": {
+        "medianaDaSoma": 28.4,
+        "vezesPorAbertura": [
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1
+        ],
+        "somas": [
+         36.1,
+         27.7,
+         27.4,
+         28.2,
+         30.2,
+         26.9,
+         30.5,
+         28.4,
+         28.8
+        ]
+       },
+       "fundo-do-mapa:desenhar": {
+        "medianaDaSoma": 114.4,
+        "vezesPorAbertura": [
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1
+        ],
+        "somas": [
+         103.2,
+         115.7,
+         112.1,
+         110.7,
+         117.4,
+         111.2,
+         116.9,
+         114.4,
+         114.9
+        ]
+       }
+      }
+     },
+     "segunda": {
+      "toqueAoQuadroMs": {
+       "mediana": 159.9,
+       "pior": 178.1,
+       "todas": [
+        169.8,
+        169.9,
+        158.9,
+        159.7,
+        161.6,
+        156.3,
+        156.9,
+        159.9,
+        178.1
+       ]
+      },
+      "toqueAoDomMs": {
+       "mediana": 145,
+       "pior": 162.6,
+       "todas": [
+        154.3,
+        153,
+        145,
+        143.9,
+        145.6,
+        141,
+        142.2,
+        144.4,
+        162.6
+       ]
+      },
+      "erros": [],
+      "toqueAoFundoMs": {
+       "mediana": 159.9,
+       "pior": 178.1,
+       "todas": [
+        169.8,
+        169.9,
+        158.9,
+        159.7,
+        161.6,
+        156.3,
+        156.9,
+        159.9,
+        178.1
+       ]
+      },
+      "etapasMs": {
+       "fundo-do-mapa:ler": {
+        "medianaDaSoma": 0,
+        "vezesPorAbertura": [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        "somas": [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ]
+       },
+       "fundo-do-mapa": {
+        "medianaDaSoma": 0,
+        "vezesPorAbertura": [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ],
+        "somas": [
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0,
+         0
+        ]
+       },
+       "fundo-do-mapa:desenhar": {
+        "medianaDaSoma": 21.6,
+        "vezesPorAbertura": [
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1,
+         1
+        ],
+        "somas": [
+         22.5,
+         22.6,
+         21.3,
+         21.6,
+         21.6,
+         19.9,
+         20.9,
+         22,
+         21.8
+        ]
+       }
+      }
+     },
+     "errosDeConsole": 0,
+     "requisicoesFalhas": 0,
+     "externasBloqueadas": 0
+    },
+    "semFundo": {
+     "primeira": {
+      "toqueAoQuadroMs": {
+       "mediana": 178.4,
+       "pior": 192.2,
+       "todas": [
+        192.2,
+        180,
+        178.4,
+        173,
+        175,
+        176.7,
+        178.1,
+        181.7,
+        182.1
+       ]
+      },
+      "toqueAoDomMs": {
+       "mediana": 164.5,
+       "pior": 178.4,
+       "todas": [
+        178.4,
+        165.5,
+        164.5,
+        159.5,
+        161.8,
+        163.2,
+        163.4,
+        167.4,
+        165.6
+       ]
+      },
+      "erros": []
+     },
+     "segunda": {
+      "toqueAoQuadroMs": {
+       "mediana": 141.3,
+       "pior": 158,
+       "todas": [
+        158,
+        137.9,
+        141.3,
+        143.2,
+        137.9,
+        141.1,
+        144.4,
+        143.2,
+        139.7
+       ]
+      },
+      "toqueAoDomMs": {
+       "mediana": 128.9,
+       "pior": 145,
+       "todas": [
+        145,
+        126.5,
+        128.4,
+        130.7,
+        126.4,
+        128.9,
+        131.4,
+        131.5,
+        127.5
+       ]
+      },
+      "erros": []
+     },
+     "errosDeConsole": 0,
+     "requisicoesFalhas": 0,
+     "externasBloqueadas": 0
+    }
+   },
+   "custoDoFundoMs": {
+    "segunda": 18.6,
+    "primeira": 708.5
+   }
+  }
+ },
+ "comoLer": "toqueAoQuadroMs: do toque ao primeiro quadro pintado com o mapa (sem esperar o fundo). toqueAoFundoMs: do toque ao quadro pintado com o fundo do mapa-base. primeira: abertura logo depois de recarregar (baixa e lê os arquivos); segunda: reabertura na mesma página. semFundo: com globalThis.__veredaSemFundoDoMapa. custoDoFundoMs = mediana(segunda com fundo, toqueAoFundoMs) − mediana(segunda sem fundo, toqueAoQuadroMs): o número do portão."
+}

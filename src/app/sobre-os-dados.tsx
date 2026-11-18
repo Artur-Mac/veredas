@@ -17,11 +17,14 @@ import { Pressionavel } from "../componentes/Pressionavel";
 import { voltarOu } from "../componentes/Tela";
 import { Texto } from "../componentes/Texto";
 import type { Confianca, FonteDaRua, MetaDoIndice } from "../dados/contratos";
+import { FONTES_DO_RUIDO } from "../dados/recife/ruidoGerado";
+import { montarBoletimPreContrato } from "../dados/recife/boletimPreContrato";
 import { formatarData, formatarNumero } from "../dados/formatos";
 import { BAIRROS_COBERTOS, bairroPorSlug } from "../dados/recife/bairros";
 import { META } from "../dados/recife/indice";
+import { FONTES_DO_MAPA_BASE } from "../dados/recife/mapaBase";
 import { useTema } from "../tema/Tema";
-import { RAIO, TOQUE_MINIMO, comAlfa } from "../tema/tokens";
+import { RAIO, TOQUE_MINIMO } from "../tema/tokens";
 
 type Fonte = MetaDoIndice["fontes"][number] | FonteDaRua;
 
@@ -39,7 +42,7 @@ const ORIGENS: { confianca: Confianca; texto: string }[] = [
 
 const NAO_COBRIMOS: { titulo: string; texto: string }[] = [
   { titulo: "Aluguel de mercado", texto: "Ainda não usamos dados de aluguel de outros imóveis do bairro." },
-  { titulo: "Segurança por bairro", texto: "Ainda não mostramos dados de segurança." },
+  { titulo: "Segurança por rua", texto: "As ocorrências só vêm por bairro, sem rua nem ponto no mapa." },
   { titulo: "Alagamento por endereço", texto: "Ainda não sabemos se o endereço alaga." },
   { titulo: "Fotos dos anúncios", texto: "Não guardamos nem analisamos as fotos." },
 ];
@@ -53,13 +56,48 @@ function nomesDosCobertos(): string {
 /** Só a data, como foi gravada ("2026-10-20T16:17:16Z" → "20/10/2026"). */
 const diaGravado = (iso: string | null) => (iso ? formatarData(iso.slice(0, 10)) : "Não informado");
 
-function lerFontes(): { fontes: Fonte[]; fontesDaRua: FonteDaRua[] } | { erro: string } {
+function lerFontes(): { fontes: Fonte[]; fontesDaRua: FonteDaRua[]; geradoEm: string } | { erro: string } {
   try {
-    return { fontes: META.fontes, fontesDaRua: META.fontesDaRua ?? [] };
+    return { fontes: META.fontes, fontesDaRua: META.fontesDaRua ?? [], geradoEm: META.geradoEm };
   } catch {
     return { erro: "Não deu para ler o registro das fontes deste aparelho. Os dados do índice não foram alterados." };
   }
 }
+
+const MATRIZ_COBERTURA_CAMADAS: readonly { camada: string; escopo: string; estado: string }[] = [
+  { camada: "Cadastro IPTU / ITBI / Lotes", escopo: "Bairros cobertos do Recife", estado: "Ativa" },
+  { camada: "Licenciamento de Obras (150 m)", escopo: "Construção, ampliação e demolição", estado: "Ativa" },
+  { camada: "Entorno e Rua (Censo 2022 / 156 / LUSE)", escopo: "Faces de quadra e logradouros casados", estado: "Parcial por rua" },
+  { camada: "Caminhabilidade em rede a pé", escopo: "Prédios com entrada ligada à malha", estado: "Ativa nos cobertos" },
+  { camada: "Microclima, Satélite 100 m e Relevo", escopo: "Temperatura de superfície e drenagem", estado: "Referência por ponto" },
+];
+
+const ESCOPO_QUALIDADE_LEITURAS: readonly {
+  campo: string;
+  extracao: string;
+  confirmacao: string;
+}[] = [
+  {
+    campo: "Preço, condomínio, área e quartos",
+    extracao: "Leitura automática determinística do texto ou página do anúncio",
+    confirmacao: "Sempre revisável antes de confirmar o vínculo do prédio",
+  },
+  {
+    campo: "Andar, vagas e período do IPTU (mês ou ano)",
+    extracao: "Lido só quando explícito; sem inventar nem assumir período",
+    confirmacao: "Marcado como a confirmar sempre que omitido pelo anúncio",
+  },
+  {
+    campo: "Orientação solar e frentes da torre",
+    extracao: "Inferida pela geometria do polígono e direção da via pública",
+    confirmacao: "Conferir na planta ou tocando a fachada desejada no 2.5D",
+  },
+  {
+    campo: "Atas de condomínio, editais e matrículas",
+    extracao: "Varredura por palavras-chave no aparelho citando trecho e página",
+    confirmacao: "Leitura humana indispensável; sem percentual estatístico sem amostra rotulada",
+  },
+];
 
 function Fato({ rotulo, valor, numerico = false }: { rotulo: string; valor: string; numerico?: boolean }) {
   return (
@@ -74,18 +112,16 @@ function Fato({ rotulo, valor, numerico = false }: { rotulo: string; valor: stri
   );
 }
 
-/** `.ed-soft-box`: caixa de fundo creme, borda de 8% de tinta, raio 11. */
+/** Bloco editorial aberto em divisória hairline, eliminando caixas aninhadas fechadas. */
 function CaixaCreme({ children, gap = 4 }: { children: React.ReactNode; gap?: number }) {
   const { cor } = useTema();
   return (
     <View
       style={{
-        backgroundColor: cor("cor-creme"),
-        borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto"), 0.08),
-        borderRadius: 11,
-        paddingVertical: 11,
-        paddingHorizontal: 12,
+        borderTopWidth: 1,
+        borderTopColor: cor("cor-linha"),
+        paddingTop: 10,
+        paddingBottom: 4,
         gap,
       }}
     >
@@ -227,9 +263,74 @@ function ApagarMeusDados() {
   );
 }
 
+/** O que o desenho dos mapas não é: cada item evita uma leitura errada do fundo. */
+const O_MAPA_NAO_E: string[] = [
+  "Não é foto de satélite: é um desenho feito com o cadastro da Prefeitura.",
+  "Onde a base não tem o lote, aparece só a quadra. É comum nos morros e na periferia.",
+  "A forma do lote não é a planta do prédio: mostra o terreno, não a construção.",
+];
+
+/** Nomes das bases do mapa, com a data mais recente de modificação, lidos do módulo gerado (nada escrito à mão). */
+function resumoDasBasesDoMapa(): { nomes: string; conjuntos: string; modificadoEm: string } {
+  const nomes = FONTES_DO_MAPA_BASE.map((f) => f.nome);
+  const conjuntos = [...new Set(FONTES_DO_MAPA_BASE.map((f) => f.conjunto))];
+  const juntar = (l: string[]) => (l.length <= 1 ? l.join("") : `${l.slice(0, -1).join(", ")} e ${l[l.length - 1]}`);
+  const datas = FONTES_DO_MAPA_BASE.map((f) => f.lastModified).filter((d): d is string => !!d).sort();
+  return {
+    nomes: juntar(nomes),
+    conjuntos: juntar(conjuntos.map((c) => `"${c}"`)),
+    modificadoEm: datas.length ? diaGravado(datas[datas.length - 1] ?? null) : "Não informado",
+  };
+}
+
+/** O fundo dos mapas: ruas, quadras, lotes, bairros, água, praças e pontes. */
+function MapaBase() {
+  const r = resumoDasBasesDoMapa();
+  return (
+    <View style={{ gap: 8 }}>
+      <Texto tipo="secao" role="heading" aria-level={3} style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>
+        O desenho dos mapas
+      </Texto>
+      <CaixaCreme gap={6}>
+        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 17 }}>
+          {`O fundo dos mapas mostra ruas com nome, quadras, lotes, bairros, rios e canais, praças e pontes. Vem das bases ${r.nomes}, nos conjuntos ${r.conjuntos} do portal de dados abertos da Prefeitura do Recife.`}
+        </Texto>
+        <View style={{ gap: 3 }}>
+          <Fato rotulo="Licença" valor="ODbL" />
+          <Fato rotulo="Modificado em" valor={r.modificadoEm} numerico={r.modificadoEm !== "Não informado"} />
+          <Fato rotulo="Crédito no mapa" valor="Base: Prefeitura do Recife (ODbL)" />
+        </View>
+        <View style={{ gap: 3, marginTop: 4 }}>
+          <Texto tipo="secao" style={{ fontSize: 12.5, lineHeight: 18, fontWeight: "600" }}>
+            O que o desenho não é
+          </Texto>
+          {O_MAPA_NAO_E.map((t) => (
+            <Texto key={t} tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 17 }}>
+              {t}
+            </Texto>
+          ))}
+        </View>
+      </CaixaCreme>
+    </View>
+  );
+}
+
 export default function SobreOsDados() {
+  const { cor } = useTema();
   const [mostrarBairros, definirMostrarBairros] = useState(false);
+  const [mostrarBoletim, definirMostrarBoletim] = useState(false);
   const leitura = lerFontes();
+  const boletim =
+    "fontes" in leitura
+      ? montarBoletimPreContrato({
+          meta: {
+            geradoEm: leitura.geradoEm,
+            fontes: leitura.fontes as MetaDoIndice["fontes"],
+            fontesDaRua: leitura.fontesDaRua,
+          },
+          bairrosCobertos: BAIRROS_COBERTOS.length,
+        })
+      : null;
   return (
     <Gaveta visivel titulo="Sobre os dados públicos" aoFechar={() => voltarOu("/")}>
       <View style={{ gap: 14, paddingTop: RESPIRO_NO_TOPO_DA_GAVETA }}>
@@ -254,10 +355,10 @@ export default function SobreOsDados() {
 
         <CaixaCreme>
           <Texto tipo="secao" style={{ fontSize: 12.5, lineHeight: 18, fontWeight: "700" }}>
-            Privacidade:
+            Privacidade e amostra mínima:
           </Texto>
           <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 17 }}>
-            O Vereda não guarda nada sobre quem anuncia. A leitura do anúncio e o seu caderno ficam neste aparelho.
+            O Vereda não guarda nada sobre quem anuncia. Sem conta, sem sincronização em nuvem e sem perfilamento: toda análise, documento colado e preferência fica apenas neste aparelho, e nada é usado para treinar modelos. Esta leitura não substitui certidão oficial nem responsabiliza o app por divergências nas bases públicas de origem. Comparativos de bairro exigem amostra mínima de 20 edifícios; faixas fiscais exigem ao menos 3 transmissões em 36 meses.
           </Texto>
         </CaixaCreme>
 
@@ -285,6 +386,138 @@ export default function SobreOsDados() {
           </View>
         ) : null}
 
+        {"fontes" in leitura ? (
+          <View style={{ gap: 8 }}>
+            <Texto tipo="secao" role="heading" aria-level={3} style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>
+              Inventário público por camada
+            </Texto>
+            <CaixaCreme gap={6}>
+              <View testID="tabela-elementos-dados" style={{ gap: 6 }}>
+                {[...leitura.fontes, ...leitura.fontesDaRua].map((f, idx) => (
+                  <View
+                    key={`inv-${f.chave}`}
+                    style={{
+                      borderTopWidth: idx === 0 ? 0 : 1,
+                      borderTopColor: cor("cor-linha"),
+                      paddingTop: idx === 0 ? 0 : 6,
+                      gap: 2,
+                    }}
+                  >
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 8 }}>
+                      <Texto tipo="etiqueta" style={{ fontSize: 12, fontWeight: "700", flex: 1 }}>
+                        {f.nome}
+                      </Texto>
+                      <Texto tipo="numero" cor="cor-texto-apoio" style={{ fontSize: 11.5, fontVariant: ["tabular-nums"] }}>
+                        {`${diaGravado(f.modificadoEm ?? f.consultadoEm)} · ${f.colunasUsadas.length} col. · ${formatarNumero(f.registrosLidos)} reg.`}
+                      </Texto>
+                    </View>
+                    <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                      {`${f.orgao} · Campos lidos: ${f.colunasUsadas.slice(0, 6).join(", ")}${f.colunasUsadas.length > 6 ? "…" : ""}`}
+                    </Texto>
+                  </View>
+                ))}
+              </View>
+            </CaixaCreme>
+
+            <Texto tipo="secao" role="heading" aria-level={3} style={{ fontSize: 12, lineHeight: 16, fontWeight: "700", marginTop: 4 }}>
+              Versão do pacote e cobertura por camada
+            </Texto>
+            <CaixaCreme gap={6}>
+              <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 8 }}>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5 }}>
+                  Pacote de dados publicado em
+                </Texto>
+                <Texto tipo="numero" style={{ fontSize: 11.5, fontWeight: "700", fontVariant: ["tabular-nums"] }}>
+                  {diaGravado(leitura.geradoEm)}
+                </Texto>
+              </View>
+              {MATRIZ_COBERTURA_CAMADAS.map((row) => (
+                <View
+                  key={row.camada}
+                  style={{
+                    borderTopWidth: 1,
+                    borderTopColor: cor("cor-linha"),
+                    paddingTop: 6,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <View style={{ flex: 1, gap: 1 }}>
+                    <Texto tipo="etiqueta" style={{ fontSize: 12, fontWeight: "700" }}>{row.camada}</Texto>
+                    <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11 }}>{row.escopo}</Texto>
+                  </View>
+                  <Texto tipo="apoio" cor="cor-salvia-escura" style={{ fontSize: 11, fontWeight: "700" }}>
+                    {row.estado}
+                  </Texto>
+                </View>
+              ))}
+            </CaixaCreme>
+
+            <Texto testID="escopo-qualidade-leituras" tipo="secao" role="heading" aria-level={3} style={{ fontSize: 12, lineHeight: 16, fontWeight: "700", marginTop: 4 }}>
+              O que lemos sozinhos vs. o que pede confirmação
+            </Texto>
+            <CaixaCreme gap={6}>
+              {ESCOPO_QUALIDADE_LEITURAS.map((item, idx) => (
+                <View
+                  key={item.campo}
+                  style={{
+                    borderTopWidth: idx === 0 ? 0 : 1,
+                    borderTopColor: cor("cor-linha"),
+                    paddingTop: idx === 0 ? 0 : 6,
+                    gap: 2,
+                  }}
+                >
+                  <Texto tipo="etiqueta" style={{ fontSize: 12, fontWeight: "700" }}>
+                    {item.campo}
+                  </Texto>
+                  <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16 }}>
+                    {`${item.extracao}. ${item.confirmacao}.`}
+                  </Texto>
+                </View>
+              ))}
+            </CaixaCreme>
+            <Botao
+              rotulo={mostrarBoletim ? "Ocultar radar do pré-contrato (Edição 1)" : "Ver radar do pré-contrato · Edição 1 (sem preço)"}
+              variante="secundario"
+              onPress={() => definirMostrarBoletim((v) => !v)}
+            />
+            {mostrarBoletim && boletim ? (
+              <CaixaCreme gap={6}>
+                <View testID="boletim-pre-contrato" style={{ gap: 6 }}>
+                  <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11.5, fontWeight: "700" }}>
+                    {`${boletim.titulo} · ${boletim.edicao}`}
+                  </Texto>
+                  <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16 }}>
+                    {boletim.subtitulo}
+                  </Texto>
+                  {boletim.itens.map((b) => (
+                    <View
+                      key={b.numero}
+                      style={{
+                        borderTopWidth: 1,
+                        borderTopColor: cor("cor-linha"),
+                        paddingTop: 6,
+                        gap: 2,
+                      }}
+                    >
+                      <Texto tipo="etiqueta" style={{ fontSize: 11.5, fontWeight: "700" }}>
+                        {`${b.numero} · ${b.titulo}`}
+                      </Texto>
+                      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16 }}>
+                        {b.resumo}
+                      </Texto>
+                    </View>
+                  ))}
+                </View>
+              </CaixaCreme>
+            ) : null}
+          </View>
+        ) : null}
+
+        <MapaBase />
+
         <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
           {ATRIBUICAO}
         </Texto>
@@ -295,6 +528,15 @@ export default function SobreOsDados() {
         ) : null}
         <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
           Sínteses cruzadas e custos de referência usam bases abertas oficiais sem parcerias comerciais: USGS Landsat 8/9 ST_B10 (Domínio Público), Copernicus DEM GLO-30 (CC-BY 4.0 ESA), Secretaria de Saúde do Recife / SINAN (ODbL), Grande Recife / CBTU (GTFS), IBGE Censo 2022 Renda por Setor, Banco Central (SGS 20774) e ANEEL Tarifas Homologadas.
+        </Texto>
+        <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
+          Segurança no bairro: registros da SDS-PE compilados pelo Crime Brasil (CC BY 4.0), janela de 12 meses por bairro; a taxa por 1.000 moradores usa a população do IBGE, Censo 2022 (variável V0001). É o que chegou à polícia, pelo bairro informado no registro.
+        </Texto>
+        <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
+          Aeroporto: eixo da pista 18/36 do Aeroporto dos Guararapes no OpenStreetMap (ODbL, © colaboradores do OpenStreetMap). A linha de pouso e decolagem segue a superfície de aproximação do Anexo 14 da ICAO, até 10 km da cabeceira; a altura do avião é estimada pela rampa padrão de 3°. As curvas oficiais de ruído da ANAC ainda não estão no app: o nível do avião entra só como estimativa, no ruído estimado abaixo.
+        </Texto>
+        <Texto testID="sobre-ruido-estimado" tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
+          {`Ruído estimado (dB(A) de dia e à noite e nota de sossego): estimativa com dados abertos, não medição, pelo método publicado pelo Mapa Sossego (mapasossego.com.br/sobre). Vias: © colaboradores do OpenStreetMap, sob a Open Database License (ODbL), extrato do Geofabrik de ${formatarData(FONTES_DO_RUIDO.vias.dadosDe)}. Ônibus: partidas do GTFS Grande Recife. Metrô e VLT: traçado da CBTU. Som licenciado: LUSE da Prefeitura do Recife. Bares, oficinas e mercados: CNEFE do Censo 2022 (IBGE). A estimativa tem faixa de erro de ±5 dB; a comparação com 55 dB(A) de dia e 50 à noite usa a ABNT NBR 10151, norma técnica, não lei municipal.`}
         </Texto>
 
         <View style={{ gap: 8 }}>
@@ -312,6 +554,14 @@ export default function SobreOsDados() {
                 </Texto>
               </View>
             ))}
+            <View style={{ gap: 1 }}>
+              <Texto tipo="secao" style={{ fontSize: 12.5, lineHeight: 18, fontWeight: "600" }}>
+                Identificação dupla e arquitetura offline por município
+              </Texto>
+              <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 17 }}>
+                Cada dossiê separa o identificador municipal de lote (DSQFL) da matrícula cartorária (CNM 16 dígitos) e distingue explicitamente “não se aplica”, “sem ocorrência no período” e “ainda não sabemos”. Os dados públicos vêm em arquivos estáticos, separados do que você guarda no aparelho; a cada leitura o app confere o tamanho do arquivo e, na web, o resumo SHA-256 com o manifesto publicado (é conferência de integridade, não assinatura).
+              </Texto>
+            </View>
             <View style={{ gap: 1 }}>
               <Texto tipo="secao" style={{ fontSize: 12.5, lineHeight: 18, fontWeight: "600" }}>
                 Cobertura por bairro e camada

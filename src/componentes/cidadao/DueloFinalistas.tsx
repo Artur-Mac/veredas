@@ -1,0 +1,295 @@
+import { FATOR_DE_DESVIO_DA_LINHA_RETA } from "../../dados/mobilidade/rotinaCasal";
+import { View } from "react-native";
+import { classificarNivelSossegoPorDbInterno } from "../../dados/acustica/decomporSossego";
+import type { CandidatoDecisao } from "../../dados/cidadao/dominanciaInvisivel";
+import { trocaCustoTempo } from "../../dados/escolha";
+import { useTema } from "../../tema/Tema";
+import { RAIO } from "../../tema/tokens";
+import { Texto } from "../Texto";
+
+/**
+ * Duelo A × B entre dois finalistas nas 5 dimensões cidadãs concretas,
+ * destacando apenas onde há diferença material para a decisão.
+ */
+export type EntradaDueloA_B = CandidatoDecisao & {
+  situacaoDocumentalResumo: string;
+  riscoAguaChuvaResumo: string;
+  vpl10AnosReais?: number | null;
+  itensPendentesCusto?: readonly string[];
+  andarInformado?: boolean;
+  /**
+   * A nota de sossego do modelo de ruído estimado (a mesma do placar e da matriz); `null` = sem leitura para o prédio.
+   * Ausente só quando o duelo é montado sem o modelo: aí vale a palavra pelo dB do quarto.
+   */
+  sossego?: { nota0a10: number; nivel: string } | null;
+};
+
+const sossegoDoDuelo = (o: EntradaDueloA_B): string =>
+  o.sossego === undefined
+    ? classificarNivelSossegoPorDbInterno(o.ruidoInternoDb).rotuloComparar
+    : o.sossego
+      ? `${o.sossego.nivel} à noite (estimativa)`
+      : "Sem leitura";
+
+export type SensibilidadeDuelo = {
+  titulo: string;
+  diferencaMensalReais: number;
+  pontos: string[];
+};
+
+/**
+ * Estabilidade da comparação (`ClimateCheck R12 §6.5` / A25): aponta que lacunas de custo
+ * ou de andar ainda podem inverter a ordem observada entre os finalistas.
+ */
+export function avaliarSensibilidadeDuelo(
+  opcaoA: EntradaDueloA_B,
+  opcaoB: EntradaDueloA_B,
+): SensibilidadeDuelo {
+  const diff = Math.abs(Math.round(opcaoA.custoMensalTotalReais - opcaoB.custoMensalTotalReais));
+  const diffFmt = diff.toLocaleString("pt-BR");
+  const menorCusto =
+    diff >= 50
+      ? opcaoA.custoMensalTotalReais < opcaoB.custoMensalTotalReais
+        ? opcaoA
+        : opcaoB
+      : null;
+
+  const pendentesA = opcaoA.itensPendentesCusto ?? [];
+  const pendentesB = opcaoB.itensPendentesCusto ?? [];
+  const pontos: string[] = [];
+
+  if (menorCusto && (menorCusto.itensPendentesCusto?.length ?? 0) > 0) {
+    pontos.push(
+      `${menorCusto.nomeExibicao} aparece R$ ${diffFmt}/mês abaixo no conhecido, mas ainda tem ${menorCusto.itensPendentesCusto!.join(" e ")} a confirmar — acima de R$ ${diffFmt}/mês a ordem de custo se inverte.`,
+    );
+  } else if (pendentesA.length > 0 && pendentesB.length > 0) {
+    pontos.push(
+      `${opcaoA.nomeExibicao} (${pendentesA.join(" e ")}) e ${opcaoB.nomeExibicao} (${pendentesB.join(" e ")}) ainda têm itens a confirmar fora da conta conhecida.`,
+    );
+  } else if (pendentesA.length > 0 || pendentesB.length > 0) {
+    const comPendencia =
+      pendentesA.length > 0
+        ? { nome: opcaoA.nomeExibicao, itens: pendentesA }
+        : { nome: opcaoB.nomeExibicao, itens: pendentesB };
+    pontos.push(
+      `${comPendencia.nome} ainda tem ${comPendencia.itens.join(" e ")} a confirmar fora da conta conhecida.`,
+    );
+  } else if (diff >= 50) {
+    pontos.push(
+      `A diferença conhecida é de R$ ${diffFmt}/mês: só uma variação acima desse valor em negociação, condomínio ou reforma inverte o bolso mensal.`,
+    );
+  } else {
+    pontos.push(
+      `Os custos mensais conhecidos diferem em apenas R$ ${diffFmt}/mês; detalhes de condomínio, IPTU e estado de conservação desempatam o bolso.`,
+    );
+  }
+
+  const semAndar = [
+    opcaoA.andarInformado === false ? opcaoA.nomeExibicao : null,
+    opcaoB.andarInformado === false ? opcaoB.nomeExibicao : null,
+  ].filter((x): x is string => Boolean(x));
+  if (semAndar.length > 0) {
+    pontos.push(
+      `Confirmar o andar de ${semAndar.join(" e ")} pode alterar o sossego no quarto e a ventilação.`,
+    );
+  }
+
+  return {
+    titulo: "O que mudaria esta comparação",
+    diferencaMensalReais: diff,
+    pontos,
+  };
+}
+
+function linhaDiferenca(rotulo: string, valA: string, valB: string, igual: boolean) {
+  return { rotulo, valA, valB, igual };
+}
+
+export function DueloFinalistas({
+  opcaoA,
+  opcaoB,
+  destinoDoTrajeto = "Recife Antigo",
+}: {
+  opcaoA: EntradaDueloA_B;
+  opcaoB: EntradaDueloA_B;
+  /** Para onde o tempo de trajeto foi contado (um destino só). A tela diz, para não se confundir com a rotina de dois destinos. */
+  destinoDoTrajeto?: string;
+}) {
+  const { cor } = useTema();
+
+  const linhas = [
+    linhaDiferenca(
+      // Revisão de 19/11/2026: o rótulo dizia "Custo em 10 anos / mês", mas o número é o mensal conhecido do anúncio.
+      "Mensal conhecido (do anúncio)",
+      `R$ ${Math.round(opcaoA.custoMensalTotalReais).toLocaleString("pt-BR")}/mês`,
+      `R$ ${Math.round(opcaoB.custoMensalTotalReais).toLocaleString("pt-BR")}/mês`,
+      Math.abs(opcaoA.custoMensalTotalReais - opcaoB.custoMensalTotalReais) < 50,
+    ),
+    linhaDiferenca(
+      "Sossego no quarto",
+      sossegoDoDuelo(opcaoA),
+      sossegoDoDuelo(opcaoB),
+      opcaoA.sossego !== undefined && opcaoB.sossego !== undefined
+        ? opcaoA.sossego && opcaoB.sossego
+          ? Math.abs(opcaoA.sossego.nota0a10 - opcaoB.sossego.nota0a10) < 0.5
+          : opcaoA.sossego === opcaoB.sossego
+        : Math.abs(opcaoA.ruidoInternoDb - opcaoB.ruidoInternoDb) < 2,
+    ),
+    linhaDiferenca(
+      "Terreno, cota e drenagem",
+      opcaoA.riscoAguaChuvaResumo,
+      opcaoB.riscoAguaChuvaResumo,
+      opcaoA.riscoAguaChuvaResumo === opcaoB.riscoAguaChuvaResumo,
+    ),
+    linhaDiferenca(
+      "Situação documental",
+      opcaoA.situacaoDocumentalResumo,
+      opcaoB.situacaoDocumentalResumo,
+      opcaoA.situacaoDocumentalResumo === opcaoB.situacaoDocumentalResumo,
+    ),
+    // Revisão de 19/11/2026: tempo e área eram uma linha só ("96 min/dia · 112 m²") e o destino não era dito; o cartão da
+    // rotina de dois destinos, logo acima, dava outro vencedor sem a tela explicar por quê.
+    linhaDiferenca(
+      `Ida e volta até ${destinoDoTrajeto}, no pico (estimativa)`,
+      `~${Math.round(opcaoA.deslocamentoMinDia)} min/dia`,
+      `~${Math.round(opcaoB.deslocamentoMinDia)} min/dia`,
+      Math.abs(opcaoA.deslocamentoMinDia - opcaoB.deslocamentoMinDia) < 5,
+    ),
+    linhaDiferenca(
+      "Área anunciada",
+      `${Math.round(opcaoA.areaM2)} m²`,
+      `${Math.round(opcaoB.areaM2)} m²`,
+      Math.abs(opcaoA.areaM2 - opcaoB.areaM2) < 4,
+    ),
+  ];
+
+  const apenasDiferencas = linhas.filter((l) => !l.igual);
+  const exibidas = apenasDiferencas.length > 0 ? apenasDiferencas : linhas;
+  const sinteseTroca = trocaCustoTempo(
+    [opcaoA.nomeExibicao, opcaoB.nomeExibicao],
+    [Math.round(opcaoA.custoMensalTotalReais), Math.round(opcaoB.custoMensalTotalReais)],
+    [opcaoA.itensPendentesCusto?.length ?? 0, opcaoB.itensPendentesCusto?.length ?? 0],
+    [Math.round(opcaoA.deslocamentoMinDia), Math.round(opcaoB.deslocamentoMinDia)],
+    22,
+  );
+  const sensibilidade = avaliarSensibilidadeDuelo(opcaoA, opcaoB);
+
+  return (
+    <View
+      style={{
+        backgroundColor: cor("cor-superficie"),
+        borderWidth: 1,
+        borderColor: cor("cor-linha-forte"),
+        borderRadius: RAIO.cartao,
+        padding: 14,
+        gap: 10,
+      }}
+      accessibilityLabel={`Comparação direta entre ${opcaoA.nomeExibicao} e ${opcaoB.nomeExibicao}`}
+    >
+      <Texto tipo="secao" style={{ fontSize: 16 }}>
+        {`Duelo direto: ${opcaoA.nomeExibicao} × ${opcaoB.nomeExibicao}`}
+      </Texto>
+      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5 }}>
+        {apenasDiferencas.length > 0
+          ? `Mostrando os ${apenasDiferencas.length} pontos em que os dois finalistas realmente diferem.`
+          : "Os dois finalistas estão tecnicamente próximos em todas as dimensões medidas."}
+      </Texto>
+
+      <View
+        testID="duelo-cabecalho-colunas"
+        style={{
+          borderTopWidth: 1,
+          borderTopColor: cor("cor-linha"),
+          paddingTop: 8,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          gap: 12,
+        }}
+      >
+        <Texto tipo="etiqueta" style={{ flex: 1, fontSize: 12, fontWeight: "700" }} numberOfLines={2}>
+          {opcaoA.nomeExibicao}
+        </Texto>
+        <Texto tipo="etiqueta" style={{ flex: 1, fontSize: 12, fontWeight: "700" }} numberOfLines={2}>
+          {opcaoB.nomeExibicao}
+        </Texto>
+      </View>
+
+      {exibidas.map((l) => (
+        <View
+          key={l.rotulo}
+          style={{
+            borderTopWidth: 1,
+            borderTopColor: cor("cor-linha"),
+            paddingTop: 10,
+            gap: 4,
+          }}
+        >
+          <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 11.5 }}>
+            {l.rotulo}
+          </Texto>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 12 }}>
+            <Texto tipo="numero" style={{ flex: 1, fontSize: 13, fontVariant: ["tabular-nums"] }}>
+              {l.valA}
+            </Texto>
+            <Texto tipo="numero" style={{ flex: 1, fontSize: 13, fontVariant: ["tabular-nums"] }}>
+              {l.valB}
+            </Texto>
+          </View>
+        </View>
+      ))}
+
+      <View
+        testID="duelo-sintese-troca"
+        style={{
+          borderTopWidth: 1,
+          borderTopColor: cor("cor-linha"),
+          paddingTop: 10,
+          gap: 3,
+        }}
+      >
+        <Texto
+          tipo="apoio"
+          style={{ fontSize: 12.5, lineHeight: 18, fontWeight: "600", fontVariant: ["tabular-nums"] }}
+        >
+          {sinteseTroca.frase}
+        </Texto>
+        <Texto testID="duelo-metodo-do-trajeto" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>
+          {`O trajeto aqui é só até ${destinoDoTrajeto}, em linha reta × ${String(FATOR_DE_DESVIO_DA_LINHA_RETA).replace(".", ",")} (estimativa, 22 dias por mês). Com outros destinos o resultado muda: escolha os seus na rotina de dois destinos.`}
+        </Texto>
+        {sinteseTroca.tipo === "troca" ? (
+          <Texto
+            tipo="apoio"
+            cor="cor-texto-apoio"
+            style={{ fontSize: 12, lineHeight: 17, fontVariant: ["tabular-nums"] }}
+          >
+            {sinteseTroca.limiar}
+          </Texto>
+        ) : null}
+      </View>
+
+      <View
+        testID="duelo-sensibilidade"
+        style={{
+          borderTopWidth: 1,
+          borderTopColor: cor("cor-linha"),
+          paddingTop: 10,
+          gap: 4,
+        }}
+      >
+        <Texto tipo="etiqueta" style={{ fontSize: 12, fontWeight: "700" }}>
+          {sensibilidade.titulo}
+        </Texto>
+        {sensibilidade.pontos.map((ponto) => (
+          <Texto
+            key={ponto}
+            tipo="apoio"
+            cor="cor-texto-apoio"
+            style={{ fontSize: 12, lineHeight: 17, fontVariant: ["tabular-nums"] }}
+          >
+            {`• ${ponto}`}
+          </Texto>
+        ))}
+      </View>
+    </View>
+  );
+}

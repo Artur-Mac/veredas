@@ -21,6 +21,7 @@ node --max-old-space-size=8000 --disable-warning=MODULE_TYPELESS_PACKAGE_JSON sc
 | procura | `scripts/dados/transito/onde-procurar.mjs` | — | `procuraGerado.ts` |
 | equipamentos | `scripts/dados/equipamentos/rodar-equipamentos.mjs` (reads the audited hub, SHA-256 checked) | — | `equipamentosGerado.ts` |
 | atrito | `scripts/dados/atrito/rodar-atrito.mjs` (IBGE CNEFE 2022 zip in `.cache/dados-recife/cnefe-completo/`, fixed SHA-256; category and counts only, never the establishment name, complement or CEP) | — | `atritoGerado.ts` |
+| ruido | `scripts/dados/ruido/rodar-ruido.mjs` (estimated noise per building: OpenStreetMap `highway` from the dated Geofabrik Nordeste extract in `.cache/osm/`, MD5 and SHA-256 pinned in `EXTRATO`; `--baixar` fetches it when missing; plus GTFS departures, CBTU track, LUSE and the atrito layer; streets, points and counts only) | — | `ruidoGerado.ts` |
 | sol | `scripts/dados/preparar-sol-recife.py` | — | `sol/fontesGeradas.ts` |
 
 - Areas come from `scripts/dados/areas.json` (pilot first, then expansion). The municipal building index is separate and covers every enabled bairro.
@@ -57,6 +58,8 @@ What changes with a refresh, and what to read before activating:
 The three Explorar examples (`EXEMPLOS` in `src/dados/raioX.ts`: `11720-2290` Boa Viagem, `59382-537` Graças, `1880-186` Madalena) point at fixed building ids. After activating an index, `tests/copiloto.test.ts` fails if one of them disappeared; pick a replacement with the criterion written next to it, never silently.
 
 **CNEFE (atrito):** the IBGE file is the 2022 Census survey (published 17 May 2024). If IBGE republishes it, the pipeline stops on the SHA-256 check; download the new zip from the URL in `rodar-atrito.mjs`, update `SHA_DO_ZIP` on purpose, and rerun the cycle.
+
+**OpenStreetMap (ruído estimado):** the extract is pinned by file name, MD5 and SHA-256 in `EXTRATO` (`scripts/dados/ruido/rodar-ruido.mjs`). To move to a newer dated extract from Geofabrik, change that block on purpose, run the pipeline with `--baixar`, then `node scripts/dados/ruido/conferir-ruido.mjs` and compare the six pilot bairros with `docs/aplicacao/unificacao-2026-11-19/ruido-conferencia.md` before publishing. Running the pipeline twice must give the same version and files (immutable version folders).
 
 ## 2. Recovery
 
@@ -112,3 +115,37 @@ No review has been worked yet (0 minutes). Before the next expansion, time one s
 | Cost per useful decision | not measurable without participants |
 
 Known limits: the code fingerprint is global (editing any pipeline script re-runs every step); raw files are fingerprinted by size and modification time; GTFS and the building index are outside the cycle; the hub extraction is a dated snapshot (re-run `extrair-hub-recife.py` and `extrair-hub-complementar.py` to refresh it, then this whole section).
+
+## 6. Base map (mapa-base, outside the cycle)
+
+The drawing behind every map (blocks, lots, named streets, bairro limits, water, squares, bridges) comes from Prefeitura do Recife open data ("Área urbana" and "Parques e praças", ODbL). Sources, `lastModified`, SHA-256 and sizes are recorded in `FONTES_DO_MAPA_BASE` (`src/dados/recife/mapaBaseGerado.ts`); files live in `src/dados/recife/mapa-base/<sha>/` (one per bairro plus `cidade.json`). Raw downloads stay in `.cache/dados-recife/mapa-base/` (outside git). The legal opinion on ODbL (derived base in the repository, visible credit) is still pending: nothing leaves branch `feat/mapa-base` until it is in.
+
+**When to regenerate**
+
+| Trigger | Why |
+|---|---|
+| After activating a new municipal index (section 1b) | the "building the Vereda knows" mark depends on the active index; `tests/mapa-base.test.ts` fails when `INDICE_DO_MAPA_BASE` no longer matches it |
+| When the portal republishes a source | `--atualizar` rereads portal metadata, downloads what changed (`last_modified` or size) and recomputes SHA-256 |
+
+**Commands** (run from the repository root; flags as in the script header)
+
+| Step | Command |
+|---|---|
+| Try first in a scratch folder (does not touch the published version, does not call `publicar-camadas`) | `node --max-old-space-size=4096 scripts/dados/construir-mapa-base.mjs --todos --saida .cache/mapa-base-teste --relatorio .cache/mapa-base-teste/relatorio.json` |
+| Refresh sources from the portal (all, or a list of resource keys from `mapa-base/fontes.mjs`) | add `--atualizar` or `--atualizar <a,b>` |
+| Publish every bairro (always replaces the whole version) | `node --max-old-space-size=4096 scripts/dados/construir-mapa-base.mjs --todos` |
+| Only some bairros | `--bairros a,b` (refused if it would drop published bairros; list them too, or pass `--substituir` to drop the others on purpose) |
+| Different clip border (experiments only) | `--borda <m>` is accepted only with `--saida`; the app assumes 300 m |
+
+Write order on publish: new version files, then the module (atomic switch), then `publicar-camadas`, and last the previous version folder is removed.
+
+**What to check**
+
+1. Determinism: run the scratch build twice into two folders; every file SHA-256 must match (no generation date or absolute path is written).
+2. Size: each bairro file at most 250 kB gzip (level 9). The report lists offenders in `acimaDoTeto`; `tests/mapa-base.test.ts` enforces it. Imbiribeira is about 2 kB below the cap today.
+3. `npx jest tests/mapa-base tests/lgpd-artefatos.test.ts`
+4. `node scripts/dados/publicar-camadas.cjs --conferir` (exit 1 if anything is stale or missing)
+
+**Measured (18 Nov 2026, all 94 bairros)**: 12–13 s, about 650 MB peak memory; 21 MB raw, 7.6 MB gzip in total. The total is twice the planned 3.8 MB because the 300 m border repeats boundary features in both neighbours' files.
+
+**If a bairro goes over the cap**: do not publish. Inspect its per-section weights in the `--relatorio` output, then try a smaller border in a scratch folder (`--saida ... --borda 150` measured 5.8 MB total and 197 kB for Imbiribeira). Changing the published border also changes what the app reads (it assumes 300 m), so it is a product and code decision, not a runbook step; record it before acting.

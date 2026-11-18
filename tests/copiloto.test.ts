@@ -5,21 +5,33 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
-import { Image, Modal, View } from "react-native";
+import { Image, Modal, TextInput, View } from "react-native";
+import { LeitorDeAta, resumirCoberturaDaLeitura } from "../src/componentes/caderno/LeitorDeAta";
+import { OrcamentoPessoal } from "../src/componentes/caderno/Orcamento";
 import { LinhaDoTempoEstrutural } from "../src/componentes/dossie-v1/FichaViva";
+import { Divergencias, montarTextoDivergenciasParaCorretor } from "../src/componentes/dossie-v1/Indicadores";
+import { PacoteParaEspecialista } from "../src/componentes/dossie-v1/Pacote";
+import { SimuladorDaUnidade } from "../src/componentes/dossie-v1/SimuladorDaUnidade";
 import { TopoDoDossie } from "../src/componentes/dossie-v1/Topo";
 import { Pressionavel } from "../src/componentes/Pressionavel";
-import { placarDoPar, type ExtrasDoPlacar } from "../src/componentes/comparar/placar";
+import { placarDoPar, type ExtrasDoPlacar } from "../src/componentes/comparar/placarDoPar";
 import { fraseDaDiferenca, nivelRelativoDb } from "../src/componentes/visita-v1/MedidorDeRuido";
 import { cadernoVazio, type Caderno } from "../src/dados/caderno";
 import { CAMADAS_PUBLICADAS } from "../src/dados/camadasGeradas";
-import { esquemaAnaliseV2, type AnaliseV2, type Edificio } from "../src/dados/contratos";
+import { esquemaAnaliseV2, type Achado, type AnaliseV2, type Edificio, type Pergunta } from "../src/dados/contratos";
 import { compararCondominio, estruturaDoCaderno, fichaViva, mad, mediana, SEM_LEITURA } from "../src/dados/dossie/fichaViva";
 import { relacaoComAFachada, ROSA, simularUnidade } from "../src/dados/dossie/simuladorDaUnidade";
 import { lerAta } from "../src/dados/leitorDeAta";
 import { mensagemDeNegociacao, prepararNegociacao } from "../src/dados/negociacao";
 import { montarCenaComPontosExtras } from "../src/componentes/dossie-v1/mapa";
-import { montarPacote, pacoteEmHtml, pacoteEmMarkdown } from "../src/dados/pacoteEspecialista";
+import {
+  auditarConjuntoDocumental,
+  gerarPedidoDocumentosFaltantes,
+  gerarRoteiroTresPerguntasSindico,
+  montarPacote,
+  pacoteEmHtml,
+  pacoteEmMarkdown,
+} from "../src/dados/pacoteEspecialista";
 import { extrairDoTexto } from "../src/dados/extrator/texto";
 import { analiseDoPredio, EXEMPLOS, idDoRaioX } from "../src/dados/raioX";
 import { atritoDoPredio, direcaoDoRumo, fatosDeAtrito } from "../src/dados/recife/atrito";
@@ -33,6 +45,8 @@ import { TemaDoApp } from "../src/tema/Tema";
 
 jest.mock("@react-native-async-storage/async-storage", () => require("@react-native-async-storage/async-storage/jest/async-storage-mock"));
 jest.mock("expo-router", () => ({ router: { push: jest.fn() } }));
+jest.mock("expo-print", () => ({ printAsync: jest.fn(async () => undefined) }));
+jest.mock("expo-clipboard", () => ({ setStringAsync: jest.fn(async () => true) }));
 
 const AGORA = "2026-11-15T12:00:00.000Z";
 const gracas = edificiosDoBairro("gracas");
@@ -168,11 +182,21 @@ describe("simulador andar × fachada", () => {
     expect(relacaoComAFachada(90, 270)).toBe("de_costas");
     expect(relacaoComAFachada(null, 270)).toBe("sem_fachada");
   });
-  it("sem dB inventado; recalcula com andar e fachada; casa fica no térreo", () => {
+  // Decisão A2 do Samuel (18/11/2026), que reabre a de 15/11: o dB(A) aparece, ESTIMADO e dito como estimativa; sem
+  // camada de ruído para o prédio continua "Sem leitura publicada", nunca um valor fixo.
+  it("dB só como estimativa (e sem leitura fora da camada); recalcula com andar e fachada; casa fica no térreo", () => {
     const leste = simularUnidade({ predio: comNome, vizinhos, tipo: "apartamento", andar: 2, fachadaGraus: 90 });
     const oeste = simularUnidade({ predio: comNome, vizinhos, tipo: "apartamento", andar: 2, fachadaGraus: 270 });
-    expect(leste.barulho.decibeis).toContain(SEM_LEITURA);
+    expect(leste.barulho.estimativa.estado).toBe("estimado");
+    expect(leste.barulho.decibeis).toMatch(/^Na janela do 2º andar, fachada leste: ~\d+ dB\(A\) de dia · ~\d+ à noite \(estimativa\)\. Estimativa com dados abertos, não medição\.$/);
+    expect(oeste.barulho.decibeis).not.toBe(leste.barulho.decibeis);
+    const foraDaCamada = simularUnidade({ predio: { ...comNome, id: "nao-existe" }, vizinhos, tipo: "apartamento", andar: 2, fachadaGraus: 90 });
+    expect(foraDaCamada.barulho.estimativa.estado).toBe("sem_leitura");
+    expect(foraDaCamada.barulho.decibeis).toContain(SEM_LEITURA);
+    expect(foraDaCamada.barulho.decibeis).not.toMatch(/\d+\s*dB/);
     expect(JSON.stringify(leste.barulho.fontes)).not.toMatch(/\d+\s*dB/);
+    expect(leste.barulho.consequenciaPorFace.length).toBeGreaterThan(15);
+    expect(leste.barulho.consequenciaPorFace).not.toMatch(/\d+\s*dB/);
     expect(leste.barulho.fontes.length).toBeLessThanOrEqual(3);
     expect(leste.sol?.fachada).not.toBe(oeste.sol?.fachada);
     const alto = simularUnidade({ predio: comNome, vizinhos, tipo: "apartamento", andar: 10, fachadaGraus: 90 });
@@ -198,8 +222,9 @@ describe("placar ampliado", () => {
     const ids = l.map((x) => x.id);
     expect(ids.indexOf("custo_total")).toBe(ids.indexOf("custo") + 1);
     const total = l.find((x) => x.id === "custo_total")!;
-    expect(total.frase).toContain("R$ 510.000 a R$ 515.000");
-    expect(total.frase).toContain("escritura e registro a confirmar");
+    expect(total.frase).toContain("R$ 509.000 a R$ 515.000");
+    expect(total.frase).toContain("Preço + ITBI de 1,8% a 3%");
+    expect(total.frase).toContain("escritura e registro a confirmar no cartório");
     const rotina = l.find((x) => x.id === "rotina")!;
     expect(rotina.vencedor).toBe(0);
     expect(rotina.frase).toContain("~10,0 h por mês");
@@ -296,8 +321,12 @@ describe("negociação com argumentos marcáveis e pacote para especialista", ()
     const html = pacoteEmHtml(p);
     expect(html).not.toContain("<script>");
     expect(html).toContain("&lt;script&gt;");
+    expect(html).toContain("Modelo v2");
+    expect(html).toContain("CNM 16 dígitos");
     const md = pacoteEmMarkdown(p);
     expect(md).toContain("## Trechos de ata");
+    expect(md).toContain("Modelo v2");
+    expect(md).toContain("nenhum dado enviado a servidor");
     expect(md).not.toMatch(/mobilidade|baixa visão|orçamento mensal/i);
   });
 });
@@ -430,6 +459,532 @@ describe("por perto no mapa, rotina personalizada, comodidades e HTML editorial"
       fecharBtn.props.onPress();
     });
     expect(arvore.root.findByType(Modal).props.visible).toBe(false);
+    act(() => {
+      arvore.unmount();
+    });
+  });
+
+  it("SimuladorDaUnidade renderiza painel único hairline em volta dos 3 tópicos (S45)", () => {
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(SimuladorDaUnidade, {
+            predio: comNome,
+            vizinhos: gracas,
+            tipologia: "apartamento",
+            andarDoAnuncio: 4,
+            orientacaoGraus: 90,
+          }),
+        ),
+      );
+    });
+    expect(arvore.root.find((n) => n.props.testID === "simulador-painel-unificado")).toBeDefined();
+    act(() => {
+      arvore.unmount();
+    });
+  });
+
+  it("PacoteParaEspecialista oferece cópia direta em Markdown no celular/web sem comAlfa (S57)", async () => {
+    const pacoteSrc = readFileSync(join(__dirname, "..", "src", "componentes", "dossie-v1", "Pacote.tsx"), "utf8");
+    expect(pacoteSrc).not.toMatch(/\bcomAlfa\b/);
+
+    const visaoMinima = {
+      achados: { principal: null, apoio: [] },
+      perguntas: [],
+    } as unknown as Parameters<typeof PacoteParaEspecialista>[0]["visao"];
+
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(PacoteParaEspecialista, {
+            analise: analise(),
+            visao: visaoMinima,
+            ficha: [],
+          }),
+        ),
+      );
+    });
+
+    const jsonInicial = JSON.stringify(arvore.toJSON());
+    expect(jsonInicial).toContain("Copiar texto (.md)");
+
+    const botaoCopiar = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.includes("Copiar texto (.md)")).length > 0);
+    expect(botaoCopiar).toBeDefined();
+
+    await act(async () => {
+      await botaoCopiar!.props.onPress?.();
+    });
+
+    const jsonAposCopiar = JSON.stringify(arvore.toJSON());
+    expect(jsonAposCopiar).toContain("Dossiê técnico (.md) copiado para colar ou enviar.");
+    expect(jsonAposCopiar).toContain('"role":"status"');
+
+    act(() => {
+      arvore.unmount();
+    });
+  });
+
+  it("leitor de ata lê matrícula (gravames/SPU), déficits, ausências esperadas e integra com negociação (S59)", async () => {
+    const leitorSrc = readFileSync(join(__dirname, "..", "src", "componentes", "caderno", "LeitorDeAta.tsx"), "utf8");
+    expect(leitorSrc).not.toMatch(/borderTopWidth:\s*0\.5/);
+
+    const matriculaTxt = [
+      "Página 1",
+      "Imóvel edificado em terreno de marinha sob regime de ocupação na SPU.",
+      "Página 2",
+      "R-4: Consta hipoteca e penhora judicial averbada sobre a unidade.",
+    ].join("\n");
+    const lMat = lerAta(matriculaTxt, "matricula");
+    expect(lMat.achados.find((x) => x.tema === "regime_spu")?.pagina).toBe(1);
+    expect(lMat.achados.find((x) => x.tema === "gravames")?.pagina).toBe(2);
+    expect(lMat.ausentesEsperados.some((x) => x.tema === "situacao_onus")).toBe(true);
+    expect(lMat.perguntas.join(" ")).toMatch(/terreno de marinha|CAT/i);
+    expect(lMat.perguntas.join(" ")).toMatch(/gravame ou garantia/i);
+
+    const lBal = lerAta("As despesas superaram as receitas e o exercício fechou com déficit recorrente.\nHouve troca de administradora em maio.", "balancete");
+    expect(lBal.achados.some((x) => x.tema === "deficit_orcamentario")).toBe(true);
+    expect(lBal.achados.some((x) => x.tema === "troca_administradora")).toBe(true);
+
+    const aMat = analise({
+      caderno: {
+        ...cadernoVazio(),
+        documentos: [{
+          id: "doc-mat",
+          titulo: "Matrícula (trechos do leitor)",
+          tipo: "matricula",
+          inspecaoEm: null,
+          emitidoEm: null,
+          recebidoEm: AGORA,
+          origem: "Texto colado",
+          escopo: "",
+          trecho: "[Gravames e garantias · p. 2] R-4: Consta hipoteca e penhora judicial averbada.",
+          pagina: 2,
+          vinculo: "a_confirmar",
+        }],
+      },
+    }, { preco: 750000 });
+    const negMat = prepararNegociacao(aMat, { achados: { principal: null, apoio: [] }, perguntas: [] } as unknown as Parameters<typeof prepararNegociacao>[1], [aMat], { predio: null, calor: null, barulho: [] });
+    expect(negMat.argumentos.some((x) => x.id === "ata:0" && x.pergunta?.includes("baixa do gravame"))).toBe(true);
+
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(TemaDoApp, null, React.createElement(LeitorDeAta, { salvar: async () => true })),
+      );
+    });
+
+    const abrirGrupo = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.some((c) => typeof c === "string" && c.includes("Ler ata, convenção"))).length > 0);
+    expect(abrirGrupo).toBeDefined();
+    act(() => {
+      abrirGrupo!.props.onPress?.();
+    });
+
+    expect(JSON.stringify(arvore.toJSON())).toContain("Matrícula / ônus");
+    expect(arvore.root.find((n) => n.props.testID === "leitor-prioridades-intake")).toBeDefined();
+
+    const btnMat = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.some((c) => typeof c === "string" && c.includes("Matrícula / ônus"))).length > 0);
+    const pillPrioridade = arvore.root.find(
+      (n) => n.props.testID === "leitor-prioridade-onus_spu" && typeof n.props.onPress === "function",
+    );
+    const campo = arvore.root.findByType(TextInput);
+
+    act(() => {
+      btnMat!.props.onPress?.();
+      pillPrioridade.props.onPress?.();
+      campo.props.onChangeText?.(matriculaTxt);
+    });
+
+    const btnLer = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.some((c) => typeof c === "string" && c.includes("Ler o texto"))).length > 0);
+    act(() => {
+      btnLer!.props.onPress?.();
+    });
+
+    const jsonLido = JSON.stringify(arvore.toJSON());
+    expect(jsonLido).toContain("Sua prioridade");
+    expect(jsonLido).toContain("O que não apareceu neste texto");
+    expect(jsonLido).toContain("Copiar perguntas");
+    expect(arvore.root.find((n) => n.props.testID === "leitor-resumo-cobertura")).toBeDefined();
+    expect(jsonLido).toContain("Cobertura no trecho:");
+    expect(jsonLido).toContain("Prioridades marcadas com menção: Ônus e SPU.");
+
+    const resumoCov = resumirCoberturaDaLeitura(lerAta(matriculaTxt, "matricula"), ["onus_spu", "caixa"]);
+    expect(resumoCov.temasEncontrados).toBeGreaterThan(0);
+    expect(resumoCov.prioridadesEncontradas).toContain("Ônus e SPU");
+    expect(resumoCov.prioridadesAusentes).toContain("Caixa e rateio");
+    expect(resumoCov.linhaPrioridades).toContain("com menção");
+    expect(resumoCov.linhaPrioridades).toContain("sem menção neste trecho");
+
+    const btnCopiarPerg = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.some((c) => typeof c === "string" && c.includes("Copiar perguntas"))).length > 0);
+    expect(btnCopiarPerg).toBeDefined();
+    await act(async () => {
+      await btnCopiarPerg!.props.onPress?.();
+    });
+    expect(JSON.stringify(arvore.toJSON())).toContain("Perguntas copiadas para enviar ao síndico ou corretor.");
+
+    act(() => {
+      arvore.unmount();
+    });
+  });
+
+  it("OrcamentoPessoal simula rateio de obra contra fundo de reserva do balancete sem R$ 0 isolado (S62)", () => {
+    const aComBalancete = analise({
+      caderno: {
+        ...cadernoVazio(),
+        balancetes: [{
+          id: "bal-1",
+          documentoId: null,
+          periodo: "2026-10",
+          receitasCentavos: 2500000,
+          despesasCentavos: 2400000,
+          reservaCentavos: 4000000,
+          inadimplenciaCentavos: 100000,
+          fonte: "Balancete out/2026",
+          pagina: 1,
+          registradoEm: AGORA,
+        }],
+      },
+    });
+
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(TemaDoApp, null, React.createElement(OrcamentoPessoal, { analise: aComBalancete, salvar: async () => true })),
+      );
+    });
+
+    const abrirRateio = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.some((c) => typeof c === "string" && c.includes("Simular obra e fundo de reserva"))).length > 0);
+    expect(abrirRateio).toBeDefined();
+    act(() => {
+      abrirRateio!.props.onPress?.();
+    });
+
+    const usarBalancete = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.some((c) => typeof c === "string" && c.includes("Usar reserva do último balancete"))).length > 0);
+    expect(usarBalancete).toBeDefined();
+
+    const campoObra = arvore.root
+      .findAllByType(TextInput)
+      .find((n) => n.props.accessibilityLabel === "Custo previsto da obra em R$");
+    expect(campoObra).toBeDefined();
+
+    act(() => {
+      usarBalancete!.props.onPress?.();
+      campoObra!.props.onChangeText?.("160000");
+    });
+
+    const calcular = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.some((c) => typeof c === "string" && c.includes("Calcular impacto por unidade"))).length > 0);
+    expect(calcular).toBeDefined();
+    act(() => {
+      calcular!.props.onPress?.();
+    });
+
+    const blocoRes = arvore.root.find((n) => n.props.testID === "orcamento-resultado-rateio");
+    const txt = blocoRes
+      .findAll((sub) => sub.children.some((c) => typeof c === "string"))
+      .flatMap((sub) => sub.children.filter((c): c is string => typeof c === "string"))
+      .join(" ");
+    expect(txt).toContain("5.000");
+    expect(txt).toContain("417");
+    expect(txt).not.toMatch(/R\$\s*0\b/);
+
+    act(() => {
+      arvore.unmount();
+    });
+  });
+
+  it("SimuladorDaUnidade zera comAlfa/caixas aninhadas e entrega atalhos de andar e ação na visita (S68)", () => {
+    const simSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "SimuladorDaUnidade.tsx"),
+      "utf8",
+    );
+    expect(simSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((simSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(2);
+
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(SimuladorDaUnidade, {
+            predio: { ...comNome, pavimentos: 12 },
+            vizinhos: gracas,
+            tipologia: "apartamento",
+            andarDoAnuncio: 4,
+            orientacaoGraus: 270,
+          }),
+        ),
+      );
+    });
+
+    const atalhos = arvore.root.find((n) => n.props.testID === "simulador-atalhos-andar");
+    expect(atalhos).toBeDefined();
+    const btnTopo = atalhos
+      .findAll((n) => typeof n.props.onPress === "function" && n.findAll((sub) => sub.children.includes("Topo (11º)")).length > 0)[0];
+    expect(btnTopo).toBeDefined();
+    act(() => {
+      btnTopo!.props.onPress?.();
+    });
+    expect(JSON.stringify(arvore.toJSON())).toContain("11º andar");
+
+    const btnBarulho = arvore.root
+      .findAll((n) => typeof n.props.onPress === "function" && typeof n.props.accessibilityLabel === "string" && n.props.accessibilityLabel.startsWith("Barulho por perto:"))[0];
+    expect(btnBarulho).toBeDefined();
+    act(() => {
+      btnBarulho!.props.onPress?.();
+    });
+    expect(arvore.root.find((n) => n.props.testID === "simulador-acao-barulho")).toBeDefined();
+    expect(arvore.root.find((n) => n.props.testID === "simulador-causas-barulho")).toBeDefined();
+    const jsonBarulho = JSON.stringify(arvore.toJSON());
+    expect(jsonBarulho).toContain("Tráfego e transporte");
+    expect(jsonBarulho).toContain("Comércio e serviços diurnos");
+    expect(jsonBarulho).toContain("Movimento noturno");
+
+    act(() => {
+      arvore.unmount();
+    });
+  });
+
+  it("auditarConjuntoDocumental e PacoteParaEspecialista controlam faltantes, prazos e cópia de pedido sem inventar validade (S74)", async () => {
+    const aVazio = analise({ modalidade: "compra" });
+    const audVazio = auditarConjuntoDocumental(aVazio, AGORA);
+    expect(audVazio.totalObrigatorios).toBe(7);
+    expect(audVazio.guardados).toBe(0);
+    expect(audVazio.faltantes).toBe(7);
+    expect(audVazio.desatualizados).toBe(0);
+
+    const aAluguel = analise({ modalidade: "aluguel" });
+    expect(auditarConjuntoDocumental(aAluguel, AGORA).totalObrigatorios).toBe(4);
+
+    const aMisto = analise({
+      modalidade: "compra",
+      caderno: {
+        ...cadernoVazio(),
+        documentos: [
+          {
+            id: "doc-mat-antiga",
+            titulo: "Matrícula setembro",
+            tipo: "matricula",
+            inspecaoEm: null,
+            emitidoEm: "2026-09-10",
+            recebidoEm: AGORA,
+            origem: "Cartório",
+            escopo: "",
+            trecho: "",
+            pagina: 1,
+            vinculo: "confirmado",
+          },
+          {
+            id: "doc-laudo-sem-data",
+            titulo: "Laudo prédio",
+            tipo: "laudo",
+            inspecaoEm: null,
+            emitidoEm: null,
+            recebidoEm: AGORA,
+            origem: "Síndico",
+            escopo: "",
+            trecho: "",
+            pagina: null,
+            vinculo: "confirmado",
+          },
+          {
+            id: "doc-conv-outro",
+            titulo: "Convenção de outro prédio",
+            tipo: "convencao",
+            inspecaoEm: null,
+            emitidoEm: "2024-01-01",
+            recebidoEm: AGORA,
+            origem: "Outro",
+            escopo: "",
+            trecho: "",
+            pagina: null,
+            vinculo: "outro_imovel",
+          },
+        ],
+        balancetes: [
+          {
+            id: "bal-out",
+            documentoId: null,
+            periodo: "2026-10",
+            receitasCentavos: 100000,
+            despesasCentavos: 90000,
+            reservaCentavos: 500000,
+            inadimplenciaCentavos: null,
+            fonte: "Administradora",
+            pagina: 1,
+            registradoEm: AGORA,
+          },
+        ],
+      },
+    });
+
+    const audMisto = auditarConjuntoDocumental(aMisto, AGORA);
+    const mat = audMisto.itens.find((i) => i.id === "matricula")!;
+    const est = audMisto.itens.find((i) => i.id === "estrutura")!;
+    const conv = audMisto.itens.find((i) => i.id === "convencao")!;
+    const bal = audMisto.itens.find((i) => i.id === "balancete")!;
+    expect(mat.estado).toBe("desatualizado");
+    expect(mat.rotuloEstado).toBe("Data antiga");
+    expect(est.estado).toBe("recebido");
+    expect(est.detalhe).toBe("Recebido · sem data declarada");
+    expect(conv.estado).toBe("faltando");
+    expect(bal.estado).toBe("recebido");
+    expect(audMisto.guardados).toBe(3);
+    expect(audMisto.desatualizados).toBe(1);
+    expect(audMisto.faltantes).toBe(4);
+
+    const pedidoTxt = gerarPedidoDocumentosFaltantes(aMisto, audMisto);
+    expect(pedidoTxt).toContain("[Atualizar] Matrícula atualizada do imóvel");
+    expect(pedidoTxt).toContain("[Enviar] Convenção de condomínio");
+    expect(pedidoTxt).not.toContain("Balancete e saldo do fundo de reserva");
+
+    const visaoMinima = {
+      achados: { principal: null, apoio: [] },
+      perguntas: [],
+    } as unknown as Parameters<typeof PacoteParaEspecialista>[0]["visao"];
+
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(PacoteParaEspecialista, {
+            analise: aMisto,
+            visao: visaoMinima,
+            ficha: [],
+          }),
+        ),
+      );
+    });
+
+    const jsonInicial = JSON.stringify(arvore.toJSON());
+    expect(jsonInicial).toContain("Controle do pacote: 3 de 7 guardados");
+    expect(jsonInicial).toContain("4 faltando · 1 com data antiga");
+
+    const toggle = arvore.root.find((n) => n.props.testID === "pacote-toggle-controle-documentos");
+    act(() => {
+      toggle.props.onPress?.();
+    });
+
+    const lista = arvore.root.find((n) => n.props.testID === "pacote-lista-documentos");
+    expect(lista).toBeDefined();
+    const jsonAberto = JSON.stringify(arvore.toJSON());
+    expect(jsonAberto).toContain("Recebido · sem data declarada");
+    expect(jsonAberto).toContain("Matrícula atualizada do imóvel");
+
+    const clip = jest.requireMock("expo-clipboard") as { setStringAsync: jest.Mock };
+    clip.setStringAsync.mockClear();
+    const btnPedido = arvore.root.find((n) => n.props.testID === "pacote-copiar-pedido-faltantes");
+    await act(async () => {
+      await btnPedido.props.onPress?.();
+    });
+    expect(clip.setStringAsync).toHaveBeenCalledWith(expect.stringContaining("[Atualizar] Matrícula atualizada do imóvel"));
+    expect(JSON.stringify(arvore.toJSON())).toContain("Pedido de documentos pendentes copiado para enviar.");
+
+    clip.setStringAsync.mockClear();
+    const btnSindico = arvore.root.find((n) => n.props.testID === "pacote-copiar-perguntas-sindico");
+    await act(async () => {
+      await btnSindico.props.onPress?.();
+    });
+    expect(clip.setStringAsync).toHaveBeenCalledWith(expect.stringContaining("(2) Qual o saldo atual do fundo de reserva"));
+    expect(JSON.stringify(arvore.toJSON())).toContain("3 perguntas rápidas para o síndico copiadas.");
+
+    const roteiroComTaxa = gerarRoteiroTresPerguntasSindico("Apt Casa Forte", 920);
+    expect(roteiroComTaxa).toContain("920/mês");
+    expect(roteiroComTaxa).toContain("(3) Há alguma obra ou rateio extra aprovado");
+
+    act(() => {
+      arvore.unmount();
+    });
+  });
+
+  it("Divergencias copia em 1 toque todas as divergências anúncio×cadastro para o corretor (S83)", async () => {
+    const perguntasExemplo: Pergunta[] = [
+      {
+        id: "perg-area",
+        titulo: "Qual a área privativa na matrícula?",
+        pista: "Anúncio 110 m² vs cadastro 92 m²",
+        textoParaMensagem: "Confirmar área privativa",
+        origem: "achado",
+        prioridade: "documentos",
+      },
+    ];
+    const achadosExemplo: Achado[] = [
+      {
+        id: "ach-area",
+        tipo: "area",
+        titulo: "Área anunciada acima do cadastro",
+        medida: { numero: "18", unidade: "m² de diferença" },
+        texto: "O anúncio informa 110 m², enquanto o cadastro registra 92 m².",
+        confianca: "oficial",
+        fonte: "iptu_2026",
+        perguntaId: "perg-area",
+      },
+      {
+        id: "ach-iptu",
+        tipo: "iptu",
+        titulo: "Período do IPTU não informado",
+        medida: null,
+        texto: "Valor informado sem indicar se é mensal ou anual.",
+        confianca: "nao_sabemos",
+        fonte: "anuncio",
+        perguntaId: null,
+      },
+    ];
+
+    const textoGerado = montarTextoDivergenciasParaCorretor(achadosExemplo, perguntasExemplo);
+    expect(textoGerado).toContain("Área anunciada acima do cadastro");
+    expect(textoGerado).toContain("→ Confirmar: Qual a área privativa na matrícula?");
+    expect(textoGerado).toContain("Conferência pré-visita preparada com o VEREDA.");
+
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(Divergencias, {
+            achados: achadosExemplo,
+            perguntas: perguntasExemplo,
+            aoAbrirPergunta: jest.fn(),
+          }),
+        ),
+      );
+    });
+
+    const clip = jest.requireMock("expo-clipboard") as { setStringAsync: jest.Mock };
+    clip.setStringAsync.mockClear();
+
+    const btnCopiar = arvore.root.find((n) => n.props.testID === "divergencias-copiar-corretor");
+    await act(async () => {
+      await btnCopiar.props.onPress?.();
+    });
+
+    expect(clip.setStringAsync).toHaveBeenCalledWith(textoGerado);
+    expect(JSON.stringify(arvore.toJSON())).toContain("Divergências copiadas para enviar ao corretor.");
+
     act(() => {
       arvore.unmount();
     });

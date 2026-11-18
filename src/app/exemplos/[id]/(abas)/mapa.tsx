@@ -29,11 +29,11 @@ const CATEGORIAS: { id: string; nome: string; icone: NomeIcone; cor: TokenDeCor 
   { id: "estacoes", nome: "Estações", icone: "train", cor: "cat-mare" },
 ];
 
+// "Alagamento" não é oferecida (M2, 18/11/2026): não tinha desenho. `?camada=alagamento` de um link antigo cai em "Ruas".
 const CAMADAS: { valor: Camada; nome: string }[] = [
   { valor: "ruas", nome: "Ruas" },
   { valor: "3d", nome: "3D e sombra" },
   { valor: "calor", nome: "Calor" },
-  { valor: "alagamento", nome: "Alagamento" },
 ];
 
 function eCamada(valor: string | undefined): valor is Camada {
@@ -88,10 +88,6 @@ function PainelDaCamada({ dossie, camada }: { dossie: Dossie; camada: Camada }) 
       </View>
     );
   }
-  if (camada === "alagamento") {
-    const faixa = fatoDe(dossie, "alagamento", "faixa_marginal");
-    return faixa ? <LinhaDeValor dossie={dossie} fato={faixa} secao={secaoDe(dossie, "alagamento")} /> : null;
-  }
   return null;
 }
 
@@ -127,7 +123,7 @@ export default function TelaDoMapa() {
                   flexDirection: "row",
                   alignItems: "center",
                   gap: ESPACO[1],
-                  minHeight: 40,
+                  minHeight: 44,
                   paddingHorizontal: ESPACO[3],
                   borderRadius: RAIO.pilula,
                   backgroundColor: cor("cor-superficie"),

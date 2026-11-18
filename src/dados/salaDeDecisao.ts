@@ -106,17 +106,34 @@ export function montarSala(analises: readonly AnaliseV2[], criadaEm: string): Sa
 export const fragmentoDaSala = (s: Sala) => `s=${paraBase64Url(JSON.stringify(s))}`;
 export const fragmentoDaResposta = (r: RespostaDaSala) => `r=${paraBase64Url(JSON.stringify(esquemaResposta.parse(r)))}`;
 
-export type LidoDoLink = { tipo: "sala"; sala: Sala } | { tipo: "resposta"; resposta: RespostaDaSala } | { tipo: "erro"; motivo: string } | { tipo: "vazio" };
-/** Lê `#s=…` ou `#r=…` (ou `s=`/`r=` sem o #). Nada fora do esquema passa. */
+export const esquemaResumoCompartilhado = z.strictObject({
+  v: z.literal(1),
+  n: z.string().max(80),
+  e: z.string().max(120),
+  m: z.enum(["aluguel", "compra"]),
+  p: z.number().finite().nullable(),
+  mb: z.number().finite().nullable(),
+  s: z.string().max(100),
+});
+export type ResumoCompartilhado = z.infer<typeof esquemaResumoCompartilhado>;
+
+export type LidoDoLink =
+  | { tipo: "sala"; sala: Sala }
+  | { tipo: "resposta"; resposta: RespostaDaSala }
+  | { tipo: "resumo"; resumo: ResumoCompartilhado }
+  | { tipo: "erro"; motivo: string }
+  | { tipo: "vazio" };
+/** Lê `#s=…`, `#r=…` ou `#v=…` (ou `s=`/`r=`/`v=` sem o #). Nada fora do esquema passa. */
 export function lerFragmento(fragmento: string): LidoDoLink {
   const f = fragmento.replace(/^#/, "").trim();
   if (!f) return { tipo: "vazio" };
   if (f.length > LIMITE_DO_LINK) return { tipo: "erro", motivo: "Link grande demais para uma sala de decisão." };
-  const m = /^(s|r)=([A-Za-z0-9_-]+)$/.exec(f);
+  const m = /^(s|r|v)=([A-Za-z0-9_-]+)$/.exec(f);
   if (!m) return { tipo: "erro", motivo: "Este link não é de uma sala de decisão do Vereda." };
   try {
     const dados = JSON.parse(deBase64Url(m[2]!)) as unknown;
     if (m[1] === "s") { const p = esquemaSala.safeParse(dados); return p.success ? { tipo: "sala", sala: p.data } : { tipo: "erro", motivo: "Link de sala incompleto ou alterado." }; }
+    if (m[1] === "v") { const p = esquemaResumoCompartilhado.safeParse(dados); return p.success ? { tipo: "resumo", resumo: p.data } : { tipo: "erro", motivo: "Link de dossiê resumido incompleto ou alterado." }; }
     const p = esquemaResposta.safeParse(dados);
     return p.success ? { tipo: "resposta", resposta: p.data } : { tipo: "erro", motivo: "Link de resposta incompleto ou alterado." };
   } catch {

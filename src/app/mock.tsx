@@ -41,7 +41,7 @@ function telas(id: string): { tela: string; nome: string; href: Href; final?: bo
     { tela: "T1", nome: "Meus dossiês", href: "/" },
     { tela: "T2", nome: "Lendo o anúncio", href: { pathname: "/ler", params: { url: `https://exemplo.test/${id}` } } },
     { tela: "T3", nome: "Confirmar o lote", href: { pathname: "/exemplos/[id]/confirmar-lote", params: { id } } },
-    { tela: "T4", nome: "Dossiê", href: { pathname: "/exemplos/[id]", params: { id } } },
+    { tela: "T4", nome: "Dossiê (exemplo clássico)", href: { pathname: "/exemplos/[id]", params: { id } } },
     { tela: "T5", nome: "Mapa", href: { pathname: "/exemplos/[id]/mapa", params: { id } } },
     { tela: "T6", nome: "Visita", href: { pathname: "/exemplos/[id]/visita", params: { id } } },
     { tela: "T7", nome: "Modo visita", href: { pathname: "/exemplos/[id]/visita/ao-vivo", params: { id } } },
@@ -61,7 +61,7 @@ function LinkDeTela({ tela, nome, href, recuo = false }: { tela: string; nome: s
     <Pressionavel
       role="link"
       onPress={() => router.push(href)}
-      style={{ flexDirection: "row", alignItems: "center", gap: ESPACO[2], minHeight: 40, paddingLeft: recuo ? 36 : 0 }}
+      style={{ flexDirection: "row", alignItems: "center", gap: ESPACO[2], minHeight: 44, paddingLeft: recuo ? 36 : 0 }}
     >
       {tela ? (
         <Texto cor="cor-texto-apoio" style={{ minWidth: 28 }}>
@@ -109,7 +109,7 @@ export default function ControlesDoMock() {
                   accessibilityState={{ checked: d === id }}
                   aria-checked={d === id}
                   onPress={() => setId(d)}
-                  style={{ minHeight: 40, justifyContent: "center" }}
+                  style={{ minHeight: 44, justifyContent: "center" }}
                 >
                   <Texto tipo={d === id ? "secao" : "corpo"}>{dossieOuErro(d).bairro}</Texto>
                 </Pressionavel>
