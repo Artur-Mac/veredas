@@ -109,37 +109,49 @@ export function TelaDaSala({
   return (
     <View style={{ gap: 12 }}>
       <Texto tipo="secao" role="heading" style={{ fontSize: 18, fontWeight: "600" }}>Sala de decisão</Texto>
-      <Texto tipo="apoio" cor="cor-texto-apoio">Marque o que faz sentido em cada imóvel e devolva o link de resposta para quem compartilhou. Nada fica salvo em servidor.</Texto>
-      {sala.imoveis.map((i) => {
-        const v = votos[i.id] ?? { reacao: null, nota: "" };
-        return (
-          <View key={i.id} style={{ padding: 12, borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha-forte"), backgroundColor: cor("cor-superficie"), gap: 6 }} role="group" aria-label={i.nome}>
-            <Texto style={{ fontWeight: "600", fontSize: 15 }}>{i.nome}</Texto>
-            <Texto tipo="apoio" cor="cor-texto-apoio">{[i.bairro, i.modalidade === "compra" ? "Compra" : "Aluguel"].filter(Boolean).join(" · ")}</Texto>
-            <Texto tipo="apoio" style={{ fontVariant: ["tabular-nums"], fontSize: 12 }}>
-              {`${i.modalidade === "compra" ? "Preço" : "Aluguel"}: ${valor(i.preco, formatarReais)} · Condomínio: ${valor(i.condominio, formatarReais)} · IPTU: ${valor(i.iptu, formatarReais)}`}
-            </Texto>
-            <Texto tipo="apoio" style={{ fontVariant: ["tabular-nums"], fontSize: 12 }}>
-              {`Área: ${valor(i.area, (n) => `${formatarNumero(n)} m²`)} · Quartos: ${valor(i.quartos, String)} · Vagas: ${valor(i.vagas, String)} · Andar: ${valor(i.andar, (n) => `${n}º`)}`}
-            </Texto>
-            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }} accessibilityRole="radiogroup" aria-label={`Reação a ${i.nome}`}>
-              {REACOES.map((r) => {
-                const ativo = v.reacao === r.valor;
-                return (
-                  <AlvoDeToque key={r.valor} onPress={() => setVotos((x) => ({ ...x, [i.id]: { ...v, reacao: ativo ? null : r.valor } }))} accessibilityRole="radio" accessibilityState={{ checked: ativo }} aria-checked={ativo}
-                    style={{ minHeight: 44, justifyContent: "center", paddingHorizontal: 12, borderRadius: 999, backgroundColor: ativo ? cor("cor-texto") : cor("cor-papel-claro") }}>
-                    <Texto tipo="apoio" cor={ativo ? "cor-papel-claro" : "cor-texto"} style={{ fontWeight: "600" }}>{r.rotulo}</Texto>
-                  </AlvoDeToque>
-                );
-              })}
+      <Texto tipo="apoio" cor="cor-texto-apoio">Marque o que faz sentido em cada imóvel e devolva o link de resposta para quem compartilhou. Sem conta, sem nuvem e sem servidor: tudo viaja apenas no fragmento # do link.</Texto>
+      <View style={{ padding: 14, borderRadius: 14, borderWidth: 1, borderColor: cor("cor-linha-forte"), backgroundColor: cor("cor-superficie"), gap: 12 }}>
+        {sala.imoveis.map((i, idx) => {
+          const v = votos[i.id] ?? { reacao: null, nota: "" };
+          return (
+            <View
+              key={i.id}
+              style={{
+                paddingTop: idx === 0 ? 0 : 12,
+                borderTopWidth: idx === 0 ? 0 : 1,
+                borderTopColor: cor("cor-linha"),
+                gap: 6,
+              }}
+              role="group"
+              aria-label={i.nome}
+            >
+              <Texto style={{ fontWeight: "600", fontSize: 15 }}>{i.nome}</Texto>
+              <Texto tipo="apoio" cor="cor-texto-apoio">{[i.bairro, i.modalidade === "compra" ? "Compra" : "Aluguel"].filter(Boolean).join(" · ")}</Texto>
+              <Texto tipo="apoio" style={{ fontVariant: ["tabular-nums"], fontSize: 12 }}>
+                {`${i.modalidade === "compra" ? "Preço" : "Aluguel"}: ${valor(i.preco, formatarReais)} · Condomínio: ${valor(i.condominio, formatarReais)} · IPTU: ${valor(i.iptu, formatarReais)}`}
+              </Texto>
+              <Texto tipo="apoio" style={{ fontVariant: ["tabular-nums"], fontSize: 12 }}>
+                {`Área: ${valor(i.area, (n) => `${formatarNumero(n)} m²`)} · Quartos: ${valor(i.quartos, String)} · Vagas: ${valor(i.vagas, String)} · Andar: ${valor(i.andar, (n) => `${n}º`)}`}
+              </Texto>
+              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }} accessibilityRole="radiogroup" aria-label={`Reação a ${i.nome}`}>
+                {REACOES.map((r) => {
+                  const ativo = v.reacao === r.valor;
+                  return (
+                    <AlvoDeToque key={r.valor} onPress={() => setVotos((x) => ({ ...x, [i.id]: { ...v, reacao: ativo ? null : r.valor } }))} accessibilityRole="radio" accessibilityState={{ checked: ativo }} aria-checked={ativo}
+                      style={{ minHeight: 44, justifyContent: "center", paddingHorizontal: 12, borderRadius: 999, backgroundColor: ativo ? cor("cor-texto") : cor("cor-papel-claro") }}>
+                      <Texto tipo="apoio" cor={ativo ? "cor-papel-claro" : "cor-texto"} style={{ fontWeight: "600" }}>{r.rotulo}</Texto>
+                    </AlvoDeToque>
+                  );
+                })}
+              </View>
+              <TextInput value={v.nota} onChangeText={(t) => setVotos((x) => ({ ...x, [i.id]: { ...v, nota: t } }))} maxLength={500} multiline accessibilityLabel={`Nota sobre ${i.nome}`} placeholder="Nota (opcional)" placeholderTextColor={cor("cor-texto-apoio")}
+                style={{ minHeight: 44, padding: 10, borderRadius: 10, backgroundColor: cor("cor-papel-claro"), borderBottomWidth: 1, borderBottomColor: cor("cor-linha-forte"), color: cor("cor-texto"), fontFamily: "PlusJakartaSans", fontSize: 13 }} />
             </View>
-            <TextInput value={v.nota} onChangeText={(t) => setVotos((x) => ({ ...x, [i.id]: { ...v, nota: t } }))} maxLength={500} multiline accessibilityLabel={`Nota sobre ${i.nome}`} placeholder="Nota (opcional)" placeholderTextColor={cor("cor-texto-apoio")}
-              style={{ minHeight: 44, padding: 10, borderRadius: 10, borderWidth: 1, borderColor: cor("cor-linha"), color: cor("cor-texto"), fontFamily: "PlusJakartaSans", fontSize: 13 }} />
-          </View>
-        );
-      })}
+          );
+        })}
+      </View>
       <TextInput value={autor} onChangeText={setAutor} maxLength={40} accessibilityLabel="Seu nome ou apelido (opcional)" placeholder="Seu nome ou apelido (opcional)" placeholderTextColor={cor("cor-texto-apoio")}
-        style={{ minHeight: 44, padding: 10, borderRadius: 10, borderWidth: 1, borderColor: cor("cor-linha"), color: cor("cor-texto"), fontFamily: "PlusJakartaSans", fontSize: 13 }} />
+        style={{ minHeight: 44, padding: 10, borderRadius: 10, backgroundColor: cor("cor-papel-claro"), borderBottomWidth: 1, borderBottomColor: cor("cor-linha-forte"), color: cor("cor-texto"), fontFamily: "PlusJakartaSans", fontSize: 13 }} />
       <Botao rotulo="Gerar link de resposta" variante="principal" onPress={gerar} />
       {link ? <CaixaDoLink link={link} rotulo="Minha resposta à comparação no Vereda." /> : null}
     </View>

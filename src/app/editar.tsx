@@ -255,8 +255,6 @@ const useEstilos = estilosDoTema((cor) =>
       backgroundColor: cor("cor-superficie"),
       borderRadius: 12,
       padding: 20,
-      borderWidth: 1,
-      borderColor: cor("cor-linha-forte"),
     },
     modalTitulo: {
       color: cor("cor-barro-texto"),

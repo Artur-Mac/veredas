@@ -36,7 +36,7 @@ function resumoCondominioSimples(item: ItemDaFicha): string {
   if (item.valor === "A confirmar") return "O anúncio não informou condomínio e área completos para calcular o valor por m².";
   if (item.atencao) return `${item.valor} · ${item.atencao}`;
   if (item.leitura?.startsWith("Sem leitura")) {
-    return `${item.valor} — salve outros imóveis deste bairro no Explorar para comparar com a média local.`;
+    return `${item.valor} — salve ao menos 5 imóveis deste bairro no Explorar para comparar com a mediana local.`;
   }
   return item.leitura ?? item.valor;
 }
@@ -237,7 +237,7 @@ export function LinhaDoTempoEstrutural({ analise, aoRegistrar }: { analise: Anal
           const atos = l.atos.filter((a) => a.etapa === etapa);
           return (
             <View key={etapa} role="listitem" style={{ flexDirection: "row", gap: 10, paddingVertical: 6, borderTopWidth: i ? 1 : 0, borderTopColor: cor("cor-linha") }}>
-              <View style={{ width: 10, height: 10, borderRadius: 5, marginTop: 5, backgroundColor: atos.length ? cor("cor-azul-cadastral") : "transparent", borderWidth: 1, borderColor: cor("cor-azul-cadastral") }} />
+              <View style={{ width: 10, height: 10, borderRadius: 5, marginTop: 5, backgroundColor: atos.length ? cor("cor-azul-cadastral") : cor("cor-linha-forte") }} />
               <View style={{ flex: 1, gap: 1 }}>
                 <Texto tipo="apoio" style={{ fontSize: 12.5, lineHeight: 17, fontWeight: "600" }}>{`${ROTULO_DA_ETAPA[etapa]}${atos.length ? "" : " · sem documento"}`}</Texto>
                 {atos.map((a, k) => (

@@ -3698,4 +3698,39 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       tree.unmount();
     });
   });
+
+  it("Sala, FichaViva, salvos e editar reduzem para <=1 borderWidth:1 e explicitam amostra/privacidade (S93)", () => {
+    const salaSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "comparar", "Sala.tsx"),
+      "utf8",
+    );
+    const fichaSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "FichaViva.tsx"),
+      "utf8",
+    );
+    const salvosSrc = readFileSync(
+      join(__dirname, "..", "src", "app", "(abas)", "salvos.tsx"),
+      "utf8",
+    );
+    const editarSrc = readFileSync(
+      join(__dirname, "..", "src", "app", "editar.tsx"),
+      "utf8",
+    );
+
+    expect(salaSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((salaSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    expect(salaSrc).toContain("Sem conta, sem nuvem e sem servidor");
+    expect(salaSrc).toContain("tabular-nums");
+
+    expect(fichaSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((fichaSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    expect(fichaSrc).toContain("salve ao menos 5 imóveis deste bairro");
+    expect(fichaSrc).toContain("tabular-nums");
+
+    expect(salvosSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((salvosSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    expect(salvosSrc).toContain("tabular-nums");
+
+    expect((editarSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+  });
 });

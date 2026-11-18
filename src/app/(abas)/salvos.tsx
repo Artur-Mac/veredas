@@ -222,12 +222,9 @@ function CartaoDescartado({ analise, aoRestaurar }: { analise: AnaliseV2; aoRest
   return (
     <View
       style={{
-        backgroundColor: cor("cor-superficie"),
-        borderWidth: 1,
-        borderColor: cor("cor-linha-forte"),
-        borderRadius: 15,
-        padding: 14,
-        marginBottom: 10,
+        borderTopWidth: 1,
+        borderTopColor: cor("cor-linha"),
+        paddingVertical: 12,
         gap: 4,
       }}
     >
