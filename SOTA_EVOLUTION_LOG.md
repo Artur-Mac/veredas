@@ -1,0 +1,27 @@
+# VEREDA — SOTA Evolution Log & Product Discovery Matrix
+
+Branch: `feat/vereda-visual-power-overhaul`
+
+## 1. Competitive & Architectural Intelligence Audit (`docs/projetosraiox`, `docs/ARQUITETURA_MESTRE.md`, `/home/v/Documents/mcphub/EnemiesHub`)
+
+| Source / Platform | High-Leverage Pattern Extracted | Adapted VEREDA Constraint | Wave |
+|---|---|---|---|
+| Visual Typography Audit | Browser fallback serif (`Times`/`Georgia`) leaking in `<SvgText>` / `<TextoSvg>` (`CanvasSolSombraBrisa25D`, `EntornoSolar`, `Ilustracao`, `Orientacao`) and noisy ALL-CAPS labels | Unify `PlusJakartaSans` + strict `tabular-nums` (keeping `Fraunces` solely in existing `NumeroEditorial` contract); zero raw serif fallbacks | **S1** |
+| Solar Canvas 2.5D & Container UX Audit | "Box inside box inside box", lifeless flat white focal building casting zero ground shadow, no self-shadowing on walls, sun ray piercing through `12p` neighbor tower, floating pin instead of lit wall | Max 1 bordered container per block, `1px` hairline dividers, clickable 3D shaded building walls, ground cast shadows for BOTH focal tower + neighbors, ray clipping at neighbor occlusion floor height, curved E-SE wind streamlines | **S2** |
+| **HowLoud** (`app16`) + **Mapa Sossego** (`app1`) | Source-decomposed quietness (`Trânsito`, `Movimento e comércio`, `Janela do prédio`) with calm/moderate/active word labels (`R10`, `R11`) | `FEATURE-REGISTER.md` forbids uncalibrated `dB(A)` on Layer-1 citizen screens; keep numeric dB out of primary citizen noise cards and expose source causes instead | **S3** |
+| **Localize.city** (`app4`) + **Shovels** (`app13`) + **HouseCanary** (`app9`) + **Gridics** (`app24`) | "View to be blocked" cone alerts (`R1`), deterministic license classification (`R21`), window-to-window privacy distance (`R22`), corner lot + geometric area (`R39`, `R40`) | Never predict unapproved private construction; only cross official licensed works (`obras`) and existing zoning setbacks factually | **S4** |
+| **Eli Report** (`app2`) + **CondoScan** (`app3`) + **Winker** (`app22`) + **Docket** (`app20`) + **ONR** (`app26`) | Closed 3-question síndico WhatsApp script (`R23`), reserve deficit calculator `(obra - reserva)/unidades` (`R5`), matrícula/CNM extraction (`R31`), Dual Key `DSQFL + CNM` (`R42`), independent reading disclaimer (`R32`), doc nudge near monthly cost (`R34`) | Local-first only, verbatim excerpts with page citations, zero invented claims | **S5** |
+| **Local Logic** (`app8`) + **Walk Score** (`app6`) + **Ownwell** (`app30`) + **ATTOM** (`app23`) + **Jupiter** (`app28`) + **Regrid** (`app18`) | 6-axis `0–10` location pulse (`R6`) with `3 absence states` (`R17`: `nao_se_aplica`, `sem_leitura`, `sem_ocorrencia`), 6-field method card (`R44`), IPTU exemption checklist (`R46`), public layer inventory (`R37`) | Every `0–10` score exposes formula/sources behind 1 tap and never invents readings where data is missing | **S6** |
+| **EnemiesHub** (`mcphub/EnemiesHub`) | Verdict-with-rationale discipline, explicit scope boundaries ("Fora de escopo"), Work Packages aligned to citizen questions ("Quanto custa morar?", "Minha vista fecha?"), zero-training interface | Never send messages or embed unrelated social workflows; keep app UI strictly consumer/adquirente focused | **S0–S8** |
+| **NeighborhoodScout** (`app14`) + **TravelTime** (`app17`) + **ClimateCheck** (`app12`) | Couples/dual-destination commute & time intersection (`R33`), non-dominated search, 15-sec entry simplification across `Explorar`, `Comparar`, `Visita`, `Salvos` | Zero telemetry; routines remain strictly on-device | **S7+** |
+
+## 2. Continuous Wave Tracker
+
+- [x] **S0**: Audited `projetosraiox/` + `ARQUITETURA_MESTRE.md` + `mcphub/EnemiesHub`; initialized `SOTA_EVOLUTION_LOG.md`.
+- [ ] **S1**: Zero-serif SVG/Web typography unification + calm `PlusJakartaSans` hierarchy + `tabular-nums`.
+- [ ] **S2**: 3-layer 2.5D Shadow Engine (`motorSombra25D.ts`) + clickable walls + curved E-SE wind vectors + radical "1 container max" demodularization across visual blocks.
+- [ ] **S3**: Source-decomposed quietness (`decomporSossego.ts`, HowLoud + Mapa Sossego) removing raw dB clutter from Layer-1 cards.
+- [ ] **S4**: Sightline obstruction radar, privacy distance, corner-lot detection & typed permits (`radarVistaELote.ts`).
+- [ ] **S5**: Pre-signal document co-pilot (3-question síndico script, reserve calculator, CNM + DSQFL dual key, pending-doc nudge).
+- [ ] **S6**: Block Pulse `0–10` (`pulsoDaQuadra.ts`), IPTU exemption checklist, public Data Inventory table (`sobre-os-dados.tsx`), and strict geometric shadow + SVG font verification tests (`sota-sombras-tipografia-desmodularizacao.test.ts`).
+- [ ] **S7+**: Cross-screen simplification pass (`Explorar`, `MapaDoLote` licensed works overlay, `Comparar` couple destination view, `Resumo` 2-page export).
