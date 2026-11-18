@@ -5,7 +5,8 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 import type { CenaDoFundo } from "../../src/componentes/mapa/fundoDoMapaCena";
-import { estiloDoFundo, FONTES_DO_FUNDO, TRACEJADO_DA_DIVISA, TRACO } from "../../src/componentes/mapa/fundoDoMapaEstilo";
+import { estiloDoFundo } from "../../src/componentes/mapa/fundoDoMapaEstilo";
+import { marcacaoDoFundo } from "../../src/componentes/mapa/fundoDoMapaMarcacao";
 import {
   METROS_POR_GRAU,
   UNIDADES_POR_METRO,
@@ -155,47 +156,7 @@ export function paraDesenhoCentrado(centro: readonly [number, number], largura: 
 
 // ---------- Prova visual: a cena como SVG, com a mesma tabela de estilo do componente ----------
 
-const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
-
+/** A cena como SVG: a mesma marcação que o FundoDoMapa desenha na web (src/componentes/mapa/fundoDoMapaMarcacao.ts). */
 export function svgDaCena(cena: CenaDoFundo, cores: Cores, extra = ""): string {
-  const e = estiloDoFundo(cores, cores === CORES_ESCURO);
-  const t = (px: number) => +(px / cena.zoom).toFixed(3);
-  const c = cena.camadas;
-  const p = (d: string, attrs: string) => (d ? `<path d="${d}" ${attrs}/>` : "");
-  const corRua = (tipo: string) => (tipo === "imovel" ? e.ruaDoImovel : tipo === "avenida" ? e.avenida : e.rua);
-  const textos = (halo: boolean) =>
-    cena.rotulos
-      .map(
-        (r) =>
-          `<text font-family="${FONTES_DO_FUNDO.rua}" font-weight="${r.tipo === "imovel" ? 700 : 600}" font-size="${r.tamanho}" text-anchor="middle" fill="${halo ? e.halo : corRua(r.tipo)}"${halo ? ` stroke="${e.halo}" stroke-width="${t(TRACO.haloDaRua)}" stroke-linejoin="round"` : ""}><textPath href="#${r.id}" startOffset="${r.inicio}">${esc(r.nome)}</textPath></text>`,
-      )
-      .join("") +
-    cena.bairros
-      .map(
-        (b) =>
-          `<text x="${b.x}" y="${+(b.y + b.tamanho * 0.36).toFixed(2)}" font-family="${FONTES_DO_FUNDO.bairro}" font-weight="600" font-size="${b.tamanho}" letter-spacing="${b.espacamento}" text-anchor="middle" fill="${halo ? e.halo : b.doImovel ? e.bairroDoImovel : e.bairro}"${halo ? ` stroke="${e.halo}" stroke-width="${t(TRACO.haloDoBairro)}" stroke-linejoin="round"` : ""}>${esc(b.nome)}</text>`,
-      )
-      .join("");
-  return (
-    `<g>` +
-    `<rect x="0" y="0" width="${cena.largura}" height="${cena.altura}" fill="${e.semDado}"/>` +
-    p(c.hachura, `stroke="${e.hachura}" stroke-width="${t(TRACO.hachura)}" fill="none"`) +
-    p(c.chao, `fill="${e.chao}" fill-rule="evenodd"`) +
-    p(c.chaoDaCidade ?? "", `fill="${e.chao}" stroke="${e.chao}" stroke-width="${+(3 / (cena.metrosPorPx * cena.zoom)).toFixed(3)}" stroke-linejoin="round" fill-rule="evenodd"`) +
-    p(c.tintaDoBairro, `fill="${e.tinta}" fill-opacity="${e.tintaOpacidade}" fill-rule="evenodd"`) +
-    p(c.quadras, `fill="${e.quadra}" fill-rule="evenodd"`) +
-    p(c.lotes, `fill="${e.lote}" stroke="${e.loteLinha}" stroke-width="${t(TRACO.lote)}" stroke-linejoin="round" fill-rule="evenodd"`) +
-    p(c.predios, `fill="${e.predio}" stroke="${e.predioLinha}" stroke-opacity="${e.predioLinhaOpacidade}" stroke-width="${t(TRACO.predio)}" stroke-linejoin="round" fill-rule="evenodd"`) +
-    p(c.pracas, `fill="${e.praca}" stroke="${e.pracaLinha}" stroke-width="${t(TRACO.praca)}" fill-rule="evenodd"`) +
-    p(c.agua, `fill="${e.agua}" stroke="${e.aguaLinha}" stroke-width="${t(TRACO.agua)}" fill-rule="evenodd"`) +
-    p(c.pontes, `fill="${e.chao}" fill-rule="evenodd"`) +
-    p(c.vias,`fill="none" stroke="${e.via}" stroke-width="${t(TRACO.via)}" stroke-linecap="round" stroke-linejoin="round"`) +
-    p(c.divisas, `fill="none" stroke="${e.divisa}" stroke-opacity="${e.divisaOpacidade}" stroke-width="${t(TRACO.divisa)}" stroke-dasharray="${TRACEJADO_DA_DIVISA.map(t).join(" ")}"`) +
-    p(c.divisaDoImovel, `fill="none" stroke="${e.divisaDoImovel}" stroke-opacity="${e.divisaDoImovelOpacidade}" stroke-width="${t(TRACO.divisaDoImovel)}" stroke-linejoin="round"`) +
-    p(c.loteDoImovel, `fill="${e.loteDoImovel}" fill-opacity="${e.loteDoImovelOpacidade}" stroke="${e.loteDoImovel}" stroke-width="${t(TRACO.loteDoImovel)}" stroke-linejoin="round" fill-rule="evenodd"`) +
-    `<defs>${cena.rotulos.map((r) => `<path id="${r.id}" d="${r.caminho}"/>`).join("")}</defs>` +
-    `<g>${textos(true)}</g><g>${textos(false)}</g>` +
-    extra +
-    `</g>`
-  );
+  return `<g>${marcacaoDoFundo(cena, estiloDoFundo(cores, cores === CORES_ESCURO), "tudo", "prova")}${extra}</g>`;
 }

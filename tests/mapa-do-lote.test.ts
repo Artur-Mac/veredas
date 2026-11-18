@@ -3,7 +3,7 @@
 import { afterEach, describe, expect, it, jest } from "@jest/globals";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
-import { daTelaParaODesenho, ehToque, etiquetaLongeDoPino, LARGURA_PARA_RECENTRAR_COM_TEXTO, larguraDaColunaDeBotoes, LIMIAR_DO_TOQUE_PX, MapaDoLote, obstaculosDosPontos } from "../src/componentes/dossie-v1/MapaDoLote";
+import { daTelaParaODesenho, ehToque, esquecerLargurasDoMapaDoLote, etiquetaLongeDoPino, LARGURA_PARA_RECENTRAR_COM_TEXTO, larguraDaColunaDeBotoes, LIMIAR_DO_TOQUE_PX, MapaDoLote, obstaculosDosPontos } from "../src/componentes/dossie-v1/MapaDoLote";
 import { ESTADO_INICIAL, afastar, aproximar, arrastar, deslocamentoDoZoom, naTela, recentrar, tocarObra, transformacao, trocarModo } from "../src/componentes/dossie-v1/mapaInterativo";
 import { caixaDoQuadro, comVolumesDoChao, montarCena25DDoLote, montarCenaDoLote, paraDesenhoDoQuadro, VAO_MINIMO_DA_GAVETA_M, VAO_MINIMO_VERTICAL_DA_GAVETA_M } from "../src/componentes/dossie-v1/mapa";
 import { CreditoDaBase, FundoDoMapa, SeloDoBairro } from "../src/componentes/mapa/FundoDoMapa";
@@ -397,6 +397,7 @@ describe("MapaDoLote: o fundo só depois de medir a largura", () => {
   it("antes do onLayout não há fundo nem crédito e o gancho não pediu arquivo; depois, uma cena só", () => {
     const pedidos = jest.spyOn(mapaBase, "arquivosDoMapaBaseParaOQuadro");
     const bairros = jest.spyOn(mapaBase, "mapaBaseDoBairro");
+    esquecerLargurasDoMapaDoLote();
     try {
       let a!: TestRenderer.ReactTestRenderer;
       act(() => { a = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(MapaDoLote, { predio: golden, obras: [], vizinhos: edificiosDoBairro("boa-viagem") }))); });
@@ -414,5 +415,24 @@ describe("MapaDoLote: o fundo só depois de medir a largura", () => {
       pedidos.mockRestore();
       bairros.mockRestore();
     }
+  });
+
+  // Desempenho (18/11/2026): a reabertura começa com a última largura medida e já pede o fundo no primeiro render.
+  it("na reabertura, a largura lembrada já vale como medida: o fundo vem no primeiro render, com essa largura", () => {
+    esquecerLargurasDoMapaDoLote();
+    const criar = () => {
+      let a!: TestRenderer.ReactTestRenderer;
+      act(() => { a = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(MapaDoLote, { predio: golden, obras: [], vizinhos: edificiosDoBairro("boa-viagem") }))); });
+      montadas.push(a);
+      return a;
+    };
+    const primeira = criar();
+    medirOQuadro(primeira, 352);
+    act(() => primeira.unmount());
+    const segunda = criar();
+    const fundos = segunda.root.findAllByType(FundoDoMapa);
+    expect(fundos).toHaveLength(1);
+    expect(fundos[0]!.props.cena.largura).toBe(352);
+    esquecerLargurasDoMapaDoLote();
   });
 });

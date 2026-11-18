@@ -62,6 +62,16 @@ const LARGURA_DO_CREDITO = 172;
 const MARCA_DO_FUNDO = { "data-fundo-do-mapa": "1" } as object;
 const LARGURA_ANTES_DA_MEDIDA = 320;
 /**
+ * A última largura medida, por tipo de mapa (gaveta ou Por perto): a reabertura começa com ela e já pede o fundo no
+ * primeiro render, sem esperar o onLayout (desempenho, 18/11/2026). Se a medida vier diferente, o mapa remonta com ela.
+ */
+const largurasMedidas = new Map<string, number>();
+
+/** Só para testes: esquece as larguras medidas. */
+export function esquecerLargurasDoMapaDoLote(): void {
+  largurasMedidas.clear();
+}
+/**
  * Abaixo desta largura do mapa, o "Recentrar" vira um botão quadrado de 44 px com ícone (rótulo acessível "Voltar ao
  * enquadramento inicial"): a 360 px, a coluna larga cobria o pino e o lote com o zoom máximo (revisão de 18/11/2026).
  */
@@ -239,9 +249,11 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
   const azul = cor("cor-azul-cadastral");
   const acao = cor("cor-acao");
   const textoCor = cor("cor-texto");
-  const [largura, setLargura] = useState(LARGURA_ANTES_DA_MEDIDA);
-  // O fundo só monta depois da primeira medida: com a largura provisória ele montaria e desenharia duas vezes.
-  const [medido, setMedido] = useState(false);
+  const tipoDeMapa = pontosExtras.length > 0 ? "por-perto" : "gaveta";
+  const [largura, setLargura] = useState(() => largurasMedidas.get(tipoDeMapa) ?? LARGURA_ANTES_DA_MEDIDA);
+  // O fundo só monta depois da primeira medida: com a largura provisória ele montaria e desenharia duas vezes. Na
+  // reabertura, a largura lembrada já é uma medida.
+  const [medido, setMedido] = useState(() => largurasMedidas.has(tipoDeMapa));
   const [estado, setEstado] = useState<EstadoDoMapa>({ ...ESTADO_INICIAL, modo: modoInicial });
   const [filtroExtra, setFiltroExtra] = useState<"todos" | CategoriaPontoExtra>("todos");
   const [extraTocadoId, setExtraTocadoId] = useState<string | null>(null);
@@ -477,7 +489,10 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
         onLayout={(e) => {
           const medida = Math.round(e.nativeEvent.layout.width);
           if (medida > 0 && medida !== largura) setLargura(medida);
-          if (medida > 0) setMedido(true);
+          if (medida > 0) {
+            setMedido(true);
+            largurasMedidas.set(tipoDeMapa, medida);
+          }
         }}
         {...arraste}
         style={{

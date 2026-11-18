@@ -9,7 +9,7 @@
 //   para não depender do cálculo de porcentagem de cada plataforma); textAnchor vem do <Text> pai; letterSpacing entra
 //   nos dados de fonte; traço em texto funciona, então o halo também é um texto com traço por baixo.
 // - nos dois: fontWeight com família própria depende de a fonte carregada ter o peso (os .ttf do app são variáveis).
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useMemo, useRef } from "react";
 import { Platform, StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import { Defs, G, Path, Rect, Text as TextoSvg, TextPath } from "react-native-svg";
 import { useTema } from "../../tema/Tema";
@@ -18,6 +18,7 @@ import { Texto } from "../Texto";
 import { desempenhoDoAmbiente, registrarMedida, tomarFimDaMontagem, type CenaDoFundo } from "./fundoDoMapaCena";
 import { estiloDoFundo, FONTES_DO_FUNDO, TRACEJADO_DA_DIVISA, TRACO } from "./fundoDoMapaEstilo";
 import type { RotuloDeRua } from "./fundoDoMapaRotulos";
+import { MarcacaoDoFundo } from "./MarcacaoDoFundo";
 
 /**
  * Que parte do fundo desenhar. "tudo" (padrão): o fundo inteiro. "chao": todas as camadas menos os rótulos de rua e os
@@ -52,7 +53,13 @@ export function FundoDoMapa({ cena, partes = "tudo" }: FundoDoMapaProps) {
   // gaveta abertos juntos) não podem apontar um para o caminho do outro.
   const prefixo = "f" + useId().replace(/[^A-Za-z0-9_-]/g, "");
   const idDe = (r: RotuloDeRua) => `${prefixo}-${r.id}`;
-  const e = estiloDoFundo(cores, escuro);
+  const e = useMemo(() => estiloDoFundo(cores, escuro), [cores, escuro]);
+  // Na web (desempenho, 18/11/2026): o fundo inteiro vira marcação SVG crua num único <g>, com os mesmos atributos.
+  if (MarcacaoDoFundo) {
+    if (!cena.temDado) return null;
+    const marcaWeb: Record<string, string> = partes === "rotulos" ? { "data-testid": "fundo-do-mapa-rotulos" } : { "data-testid": "fundo-do-mapa", "data-fundo-do-mapa-raiz": "" };
+    return <MarcacaoDoFundo cena={cena} estilo={e} partes={partes} prefixo={prefixo} marca={marcaWeb} />;
+  }
   const z = cena.zoom;
   const t = (px: number) => px / z;
   const c = cena.camadas;
