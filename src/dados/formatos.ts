@@ -61,7 +61,9 @@ export function formatarCentavos(valor: number): string {
 }
 
 export function formatarDistancia(metros: number): string {
-  if (metros < 1000) return `${formatarNumero(Math.round(metros / 10) * 10)} m`;
+  // Arredonda antes de escolher a unidade: 996 m dava "1.000 m" ao lado de "1 km" (pendência 5 do HANDOFF, 19/11/2026).
+  const dezenas = Math.round(metros / 10) * 10;
+  if (dezenas < 1000) return `${formatarNumero(dezenas)} m`;
   const km = Math.round(metros / 100) / 10;
   return `${formatarNumero(km, Number.isInteger(km) ? 0 : 1)} km`;
 }

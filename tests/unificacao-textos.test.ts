@@ -1,5 +1,5 @@
 // Unificação de 19/11/2026: textos que prometiam mais do que o cálculo entrega (itens R8 e R10 do plano).
-import { pl } from "../src/dados/formatos";
+import { formatarDistancia, pl } from "../src/dados/formatos";
 import { describe, expect, it } from "@jest/globals";
 import { derivarCustoPorPartes } from "../src/dados/custoPorPartes";
 import { traduzirIndicadoresCidadao } from "../src/dados/cidadao/tradutorCidadao";
@@ -132,5 +132,13 @@ describe("plural real", () => {
     expect(pl(1, "obra relevante", "obras relevantes")).toBe("1 obra relevante");
     expect(pl(0, "obra relevante", "obras relevantes")).toBe("0 obras relevantes");
     expect(pl(3, "transmissão", "transmissões")).toBe("3 transmissões");
+  });
+});
+
+describe("distância numa unidade só", () => {
+  it("996 m vira 1 km, não 1.000 m", () => {
+    expect(formatarDistancia(996)).toBe("1 km");
+    expect(formatarDistancia(994)).toBe("990 m");
+    expect(formatarDistancia(1250)).toBe("1,3 km");
   });
 });
