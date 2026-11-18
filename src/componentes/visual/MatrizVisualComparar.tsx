@@ -1,7 +1,10 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { classificarNivelSossegoPorDbInterno } from "../../dados/acustica/decomporSossego";
+import type { FichaDeMetodo6Campos } from "../../dados/fichaDeMetodo";
+import { fichaGeralDoRuido } from "../../dados/ruido/estimativa";
 import { formatarReais, formatarReaisCompacto } from "../../dados/formatos";
+import { FichaDeMetodo } from "./FichaDeMetodo";
 import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
 import { RAIO } from "../../tema/tokens";
@@ -28,6 +31,28 @@ export type ColunaMatrizComparar = {
 /** Diferença de nota que conta como vantagem no sossego: 1 ponto, perto dos 4 dB que o critério usava. */
 const VANTAGEM_NA_NOTA = 1;
 const notaTexto = (n: number) => `${n.toFixed(1).replace(".", ",")}/10`;
+
+/**
+ * Como cada um dos 6 pontos é comparado e quando dá empate (decisões D2 e A13): a ficha de método da matriz.
+ * `comNotaDeSossego` diz se o sossego veio da nota do modelo de ruído estimado.
+ */
+export function fichaDaMatrizComparar(compra: boolean, comNotaDeSossego: boolean): FichaDeMetodo6Campos {
+  const ruido = fichaGeralDoRuido();
+  return {
+    oQueMede: "Seis pontos lado a lado, com a mesma régua nos dois imóveis: preço por m², saída mensal, sol e conforto, sossego no quarto, idade do prédio e terreno. “Leva vantagem em N de 6” conta em quantos pontos um imóvel fica à frente; não é nota do imóvel.",
+    fonte: `O anúncio e o que você informou (preço, área, condomínio), o cadastro do Recife (IPTU, ano do prédio), o cálculo de sol do Vereda e, no sossego, o ruído estimado. ${ruido.fonte}`,
+    data: `Cadastro do Recife de 2026. ${ruido.data}`,
+    calculo:
+      `${compra ? "Preço" : "Aluguel"} por m²: menor vence; empate com diferença de até 4%. Saída mensal: menor vence; empate com diferença abaixo de R$ 150. ` +
+      "Sol e conforto: vence o que não fica na faixa quente; empate quando os dois estão do mesmo lado. " +
+      (comNotaDeSossego
+        ? `Sossego no quarto: maior nota de sossego vence (a nota do ruído estimado à noite na janela); empate com diferença abaixo de ${VANTAGEM_NA_NOTA} ponto ou sem leitura num dos lados. `
+        : "Sossego no quarto: menor ruído estimado no quarto vence; empate com diferença abaixo de 4 dB (estimativa) ou sem leitura num dos lados. ") +
+      "Idade do prédio: o mais novo vence; empate com menos de 5 anos de diferença ou sem ano no cadastro. Terreno: vence o que não tem alerta de terreno da União; empate quando os dois têm ou nenhum tem.",
+    limite: `Cada ponto pesa igual e os cortes de empate são escolhas do Vereda, não medições; um ponto sem dado vira empate. No sossego: ${ruido.limite}`,
+    naVisita: "Confira no local os pontos em que deu empate e os que estão “A confirmar” ou “Sem leitura”: são eles que podem virar a comparação.",
+  };
+}
 
 /** A linha "Sossego no quarto": pela nota do modelo estimado quando os dois lados a trazem; senão, pelo dB do quarto. */
 function linhaDeSossego(a: ColunaMatrizComparar, b: ColunaMatrizComparar): LinhaComparacao {
@@ -229,6 +254,7 @@ export function MatrizVisualComparar({
         <Texto testID="matriz-aviso-escala" tipo="apoio" cor="cor-texto-apoio" style={styles.avisoEscala}>
           Critérios objetivos calculados com a mesma régua nos dois imóveis; empate quando a diferença fica dentro da margem prática.
         </Texto>
+        <FichaDeMetodo ficha={fichaDaMatrizComparar(compra, opcaoA.sossego !== undefined && opcaoB.sossego !== undefined)} testID="matriz-metodo" rotulo="Como cada ponto é comparado" />
         {opcaoA.sossego || opcaoB.sossego ? (
           <Texto testID="matriz-sossego-estimativa" tipo="apoio" cor="cor-texto-apoio" style={[styles.avisoEscala, { fontVariant: ["tabular-nums"] }]}>
             {`Sossego: nota 0–10 pelo ruído estimado à noite na janela (${[opcaoA, opcaoB].map((o) => `${o.nome}: ${o.sossego ? `~${Math.round(o.sossego.noiteDb)} dB(A)` : "sem leitura"}`).join("; ")}). Estimativa com dados abertos, não medição.`}

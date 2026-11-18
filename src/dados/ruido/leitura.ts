@@ -3,6 +3,7 @@
 // devolve os dB(A) estimados de dia e à noite, a faixa, a comparação com a NBR 10151, a nota de sossego, as fontes que
 // mais pesam e os textos prontos. Regra de tela: toda frase com "dB" traz "estimativa" ou "estimado".
 import { resolverIsolamentoD2mnTw, somarComOAviao } from "../../nucleo/motores/acustica3d";
+import type { FichaDeMetodo6Campos } from "../fichaDeMetodo";
 import {
   TIPOS_DE_FONTE,
   compararComANbr10151,
@@ -22,6 +23,8 @@ import {
 import {
   AVISO_DE_ESTIMATIVA,
   BARREIRA_DOS_FUNDOS_DB,
+  DB_DA_NOTA_0,
+  DB_DA_NOTA_10,
   ERRO_MEDIO_ABSOLUTO_DO_MAPA_SOSSEGO_DB,
   FAIXA_DB,
   FAIXAS_DA_NOTA,
@@ -73,9 +76,6 @@ export type FonteQuePesa = {
   texto: string;
 };
 
-/** A ficha "como foi calculado", nos 6 campos da ficha de método. */
-export type FichaDoRuido = { oQueMede: string; fonte: string; data: string; calculo: string; limite: string; naVisita: string };
-
 export type RuidoEstimado = {
   estado: "estimado";
   andar: number;
@@ -116,7 +116,8 @@ export type RuidoEstimado = {
     vieses: string[];
     /** Para o placar: a palavra da nota e "~61 dB(A) à noite (estimativa) · 6,6/10". */
     placar: { valor: string; subtitulo: string };
-    ficha: FichaDoRuido;
+    /** A ficha "como foi calculada" (ficha de método de 6 campos), com as fontes que mais pesam neste prédio. */
+    ficha: FichaDeMetodo6Campos;
   };
 };
 
@@ -181,14 +182,18 @@ export const VIESES_CONHECIDOS: readonly string[] = [
 
 const dataBr = (iso: string): string => `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}`;
 
-/** A ficha de método: o que mede, fonte, data, cálculo, limite e o que fazer na visita. */
-export function fichaDoRuido(datas: { viasDe: string; metodologiaLidaEm: string }): FichaDoRuido {
+/**
+ * A ficha de método (decisão A13): o que mede, fonte, data, cálculo, limite e o que fazer na visita. `fontes` são as
+ * frases das fontes que mais pesam neste prédio; sem elas, a ficha é a geral.
+ */
+export function fichaDoRuido(datas: { viasDe: string; metodologiaLidaEm: string }, fontes: readonly string[]): FichaDeMetodo6Campos {
+  const noPredio = fontes.length ? ` Neste prédio, as fontes que mais pesam: ${fontes.join("; ")}.` : "";
   return {
-    oQueMede: "O barulho médio do lado de fora, em dB(A) estimados, de dia (7h–22h) e à noite (22h–7h): na rua em frente ao prédio e, com andar e fachada, na janela.",
+    oQueMede: "O barulho médio do lado de fora, em dB(A) estimados, de dia (7h–22h) e à noite (22h–7h): na rua em frente ao prédio e, com andar e fachada, na janela. A nota de sossego de 0 a 10 sai do nível estimado à noite.",
     fonte: "Vias e pista do aeroporto: OpenStreetMap (© colaboradores do OpenStreetMap, ODbL). Ônibus: partidas do GTFS Grande Recife. Metrô e VLT: traçado da CBTU. Som licenciado: Licenciamento Ambiental do Recife (LUSE). Bares, oficinas e mercados: CNEFE do Censo 2022 (IBGE).",
     data: `Vias do mapa de ${dataBr(datas.viasDe)}; CNEFE de 2022; método publicado pelo Mapa Sossego, lido em ${dataBr(datas.metodologiaLidaEm)}.`,
-    calculo: `Estimativa com dados abertos: cada via parte de um nível pela classe no mapa (de ${NIVEL_DA_VIA_DB.residencial} dB(A) numa rua residencial a ${NIVEL_DA_VIA_DB.rodovia} numa rodovia, a 10 m), somado aos ônibus que passam nela. O som cai com a distância, as fontes somam-se em energia e entra um piso de ${PISO_DE_DIA_DB} dB(A) de dia e ${PISO_A_NOITE_DB} à noite. O andar afasta a janela da rua, a fachada dos fundos tira ${BARREIRA_DOS_FUNDOS_DB} dB e o avião entra por cima, sem desconto.`,
-    limite: `É estimativa, não medição: não vê muros, prédios vizinhos, relevo, obras, festas nem o trânsito de cada hora, e não há contagem de carros. Nos ${PONTOS_DE_VALIDACAO_DO_MAPA_SOSSEGO} pontos em que o Mapa Sossego comparou com medições, o erro médio foi de ${virgula(ERRO_MEDIO_ABSOLUTO_DO_MAPA_SOSSEGO_DB)} dB. ${VIESES_CONHECIDOS.join(" ")}`,
+    calculo: `Estimativa com dados abertos: cada via parte de um nível pela classe no mapa (de ${NIVEL_DA_VIA_DB.residencial} dB(A) numa rua residencial a ${NIVEL_DA_VIA_DB.rodovia} numa via expressa, a 10 m), somado aos ônibus que passam nela. O som cai com a distância, as fontes somam-se em energia e entra um piso de ${PISO_DE_DIA_DB} dB(A) de dia e ${PISO_A_NOITE_DB} à noite. O andar afasta a janela da rua, a fachada dos fundos tira ${BARREIRA_DOS_FUNDOS_DB} dB e o avião entra por cima, sem desconto. Nota: 10 com ${DB_DA_NOTA_10} dB(A) ou menos, 0 com ${DB_DA_NOTA_0} ou mais, em linha reta entre os dois.${noPredio}`,
+    limite: `${AVISO_DE_ESTIMATIVA}: não vê muros, prédios vizinhos, relevo, obras, festas nem o trânsito de cada hora, e não há contagem de carros. Nos ${PONTOS_DE_VALIDACAO_DO_MAPA_SOSSEGO} pontos em que o Mapa Sossego comparou com medições, o erro médio da estimativa foi de ${virgula(ERRO_MEDIO_ABSOLUTO_DO_MAPA_SOSSEGO_DB)} dB. ${VIESES_CONHECIDOS.join(" ")} A comparação com ${LIMITE_NBR_10151_DE_DIA_DB} dB(A) de dia e ${LIMITE_NBR_10151_A_NOITE_DB} à noite usa a referência da ABNT NBR 10151 para área residencial: norma técnica, não lei municipal.`,
     naVisita: "Ouça da janela do quarto, aberta e fechada, num dia útil por volta das 18h e numa sexta ou sábado depois das 22h. Use o medidor da visita para comparar aberta e fechada e responda “Isso bate com a rua hoje?”.",
   };
 }
@@ -284,13 +289,13 @@ export function montarEstimativa(entrada: {
       janela: textoDaJanela(andar, fachadaGraus, naJanela),
       quarto,
       faixa: `Faixa da estimativa: ±${FAIXA_DB} dB (na rua, de dia, entre ~${inteiro(naRua.diaDb - FAIXA_DB)} e ~${inteiro(naRua.diaDb + FAIXA_DB)} dB(A)).`,
-      nbr: textoDaNbr(nbr10151.dia.diferencaDb, nbr10151.noite.diferencaDb),
+      nbr: `${textoDaNbr(nbr10151.dia.diferencaDb, nbr10151.noite.diferencaDb)} É referência de norma técnica, não lei municipal.`,
       nota: `Nota de sossego ${virgula(nota)}/10 à noite (${nivel.toLowerCase()}); de dia, ${virgula(notaDeSossego(naJanela.diaDb))}/10.`,
       aviso: `${AVISO_DE_ESTIMATIVA}.`,
       fontes: fontes.map((f) => f.texto),
       vieses: [...VIESES_CONHECIDOS],
       placar: { valor: nivel, subtitulo: `~${inteiro(naJanela.noiteDb)} dB(A) à noite (estimativa) · ${virgula(nota)}/10` },
-      ficha: fichaDoRuido(entrada.datas),
+      ficha: fichaDoRuido(entrada.datas, fontes.map((f) => f.texto)),
     },
   };
 }

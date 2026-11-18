@@ -17,7 +17,8 @@ export type EntradaTco10Anos = {
   iptuAnualReais: number;
   entradaPct?: number;
   taxaCdiLiquidaAnual?: number; // ex.: 0.095 (9,5% a.a. líquida)
-  valorizacaoImovelAnual?: number; // ex.: 0.05 (5% a.a.)
+  /** Suposição escolhida pela pessoa: 0, 0.03 ou 0.05 ao ano. Sem escolha, vale 0 (o Vereda não prevê preço). */
+  valorizacaoImovelAnual?: number;
   custoFechamentoItbiCartorioReais?: number;
   spuAnualReais?: number;
   cotaExtraProvavel10AnosReais?: number;
@@ -33,12 +34,84 @@ export type ResultadoTco10Anos = {
   custoMensalEquivalenteCompra10AnosReais: number;
 };
 
+/** Valorização do imóvel ao ano que a pessoa pode supor (decisão A4, 18/11/2026). Começa em 0%. */
+export const VALORIZACOES_ANUAIS = [0, 0.03, 0.05] as const;
+export type ValorizacaoAnual = (typeof VALORIZACOES_ANUAIS)[number];
+export const VALORIZACAO_INICIAL: ValorizacaoAnual = 0;
+
+/** As outras suposições da conta, fixas, para a tela dizer quais são. */
+export const SUPOSICOES_FIXAS_TCO = {
+  cdiLiquidoAnual: 0.095,
+  jurosFinanciamentoAnual: 0.105,
+  prazoFinanciamentoAnos: 15,
+  reajusteAnual: 0.045,
+} as const;
+
+const pct = (fracao: number) => `${(fracao * 100).toFixed(1).replace(".", ",").replace(",0", "")}%`;
+
+/** Frase com as suposições fixas da conta de 10 anos (CDI, juros, prazo, reajuste e aluguel equivalente). */
+export function fraseDasSuposicoesTco(e: Pick<EntradaTco10Anos, "precoCompraReais" | "aluguelEquivalenteMensalReais">): string {
+  const s = SUPOSICOES_FIXAS_TCO;
+  const aluguel = e.precoCompraReais > 0 ? (e.aluguelEquivalenteMensalReais / e.precoCompraReais) * 100 : 0;
+  return (
+    `Suposições fixas: CDI líquido de ${pct(s.cdiLiquidoAnual)} ao ano, financiamento a ${pct(s.jurosFinanciamentoAnual)} ao ano em ${s.prazoFinanciamentoAnos} anos, ` +
+    `reajustes de ${pct(s.reajusteAnual)} ao ano e aluguel equivalente de ${aluguel.toFixed(2).replace(".", ",")}% do preço ao mês. Mude qualquer uma e o resultado muda.`
+  );
+}
+
+/** Seletor da valorização suposta: 0%, 3% ou 5% ao ano. */
+export function SeletorDeValorizacao({ valor, aoMudar }: { valor: ValorizacaoAnual; aoMudar: (v: ValorizacaoAnual) => void }) {
+  const { cor } = useTema();
+  return (
+    <View style={{ gap: 4 }}>
+      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 16 }}>
+        Valorização do imóvel ao ano (suposição sua)
+      </Texto>
+      <View
+        style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}
+        accessibilityRole="radiogroup"
+        accessibilityLabel="Valorização do imóvel ao ano, uma suposição"
+      >
+        {VALORIZACOES_ANUAIS.map((v) => {
+          const ativa = valor === v;
+          return (
+            <Pressable
+              key={v}
+              testID={`tco-valorizacao-${Math.round(v * 100)}`}
+              accessibilityRole="radio"
+              accessibilityLabel={`Supor valorização de ${Math.round(v * 100)}% ao ano`}
+              accessibilityState={{ checked: ativa }}
+              onPress={() => aoMudar(v)}
+              style={{
+                minHeight: TOQUE_MINIMO,
+                paddingHorizontal: 12,
+                borderRadius: RAIO.pilula,
+                backgroundColor: ativa ? cor("cor-texto") : cor("cor-papel-claro"),
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Texto
+                tipo="apoio"
+                cor={ativa ? "cor-superficie" : "cor-texto"}
+                style={{ fontSize: 12, fontWeight: "600", fontVariant: ["tabular-nums"] }}
+              >
+                {`${Math.round(v * 100)}% ao ano`}
+              </Texto>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
 export function calcularTco10Anos(e: EntradaTco10Anos): ResultadoTco10Anos {
   const entFrac = (e.entradaPct ?? 20) / 100;
   const entrada = e.precoCompraReais * entFrac;
   const fechamento = e.custoFechamentoItbiCartorioReais ?? e.precoCompraReais * 0.025;
-  const taxaCdi = e.taxaCdiLiquidaAnual ?? 0.095;
-  const taxaVal = e.valorizacaoImovelAnual ?? 0.05;
+  const taxaCdi = e.taxaCdiLiquidaAnual ?? SUPOSICOES_FIXAS_TCO.cdiLiquidoAnual;
+  const taxaVal = e.valorizacaoImovelAnual ?? VALORIZACAO_INICIAL;
 
   // Capital inicial imobilizado (entrada + custos de transferência/registro) rendendo no CDI se locatário
   const capitalInicialAluguel = entrada + fechamento;
@@ -46,14 +119,14 @@ export function calcularTco10Anos(e: EntradaTco10Anos): ResultadoTco10Anos {
 
   // Na compra: 120 meses de prestação financiada estimada + condomínio + IPTU + SPU + obras extraordinárias
   const valorFin = Math.max(0, e.precoCompraReais - entrada);
-  const jurosMensalFin = Math.pow(1 + 0.105, 1 / 12) - 1;
+  const jurosMensalFin = Math.pow(1 + SUPOSICOES_FIXAS_TCO.jurosFinanciamentoAnual, 1 / 12) - 1;
   const prestacao =
-    valorFin > 0 ? (valorFin * jurosMensalFin) / (1 - Math.pow(1 + jurosMensalFin, -180)) : 0;
+    valorFin > 0 ? (valorFin * jurosMensalFin) / (1 - Math.pow(1 + jurosMensalFin, -SUPOSICOES_FIXAS_TCO.prazoFinanciamentoAnos * 12)) : 0;
 
   let desembolsoCompra = entrada + fechamento + (e.cotaExtraProvavel10AnosReais ?? 0);
   let desembolsoAluguel = 0;
   for (let ano = 0; ano < 10; ano += 1) {
-    const fatorInflacao = Math.pow(1.045, ano);
+    const fatorInflacao = Math.pow(1 + SUPOSICOES_FIXAS_TCO.reajusteAnual, ano);
     desembolsoCompra +=
       prestacao * 12 +
       (e.condominioMensalReais * 12 + e.iptuAnualReais + (e.spuAnualReais ?? 0)) * fatorInflacao;
@@ -82,7 +155,8 @@ export function calcularTco10Anos(e: EntradaTco10Anos): ResultadoTco10Anos {
 export function SimuladorTco10Anos({ entrada }: { entrada: EntradaTco10Anos }) {
   const { cor } = useTema();
   const [entradaPctAtiva, setEntradaPctAtiva] = useState<number>(entrada.entradaPct ?? 20);
-  const sim = calcularTco10Anos({ ...entrada, entradaPct: entradaPctAtiva });
+  const [valorizacao, setValorizacao] = useState<ValorizacaoAnual>(VALORIZACAO_INICIAL);
+  const sim = calcularTco10Anos({ ...entrada, entradaPct: entradaPctAtiva, valorizacaoImovelAnual: valorizacao });
   const favoreceCompra = sim.saldoLiquidoCompraSobreAluguel10AnosReais >= 0;
 
   return (
@@ -132,6 +206,7 @@ export function SimuladorTco10Anos({ entrada }: { entrada: EntradaTco10Anos }) {
           </Pressable>
         ))}
       </View>
+      <SeletorDeValorizacao valor={valorizacao} aoMudar={setValorizacao} />
       <Texto tipo="corpo" style={{ fontSize: 13.5, lineHeight: 19 }}>
         {favoreceCompra
           ? `Em 10 anos, considerando custo de oportunidade da entrada no CDI, a compra projeta patrimônio líquido R$ ${Math.abs(sim.saldoLiquidoCompraSobreAluguel10AnosReais).toLocaleString("pt-BR")} maior que permanecer alugando.`
@@ -143,6 +218,9 @@ export function SimuladorTco10Anos({ entrada }: { entrada: EntradaTco10Anos }) {
         </Texto>
         <Texto tipo="numero" cor="cor-texto-apoio" style={{ fontSize: 12, fontVariant: ["tabular-nums"] }}>
           {`Saída acumulada aluguel (10a): R$ ${sim.desembolsoLiquidoAluguel10AnosReais.toLocaleString("pt-BR")} · Reserva investida: R$ ${sim.patrimonioFinalInvestindoDiferencaAluguelReais.toLocaleString("pt-BR")}`}
+        </Texto>
+        <Texto testID="tco-suposicoes" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>
+          {`Conta com valorização de ${Math.round(valorizacao * 100)}% ao ano, uma suposição sua: o Vereda não prevê preço. ${fraseDasSuposicoesTco(entrada)}`}
         </Texto>
         {entrada.economiaOtimizacaoTributariaReais ? (
           <Texto tipo="apoio" cor="cor-salvia-escura" style={{ fontSize: 12 }}>

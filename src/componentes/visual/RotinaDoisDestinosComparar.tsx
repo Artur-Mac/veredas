@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import {
   POLOS_RECIFE,
   compararRotinaDoisDestinos,
+  fraseDoMetodoDaRotina,
   type FaixaHorarioTrajeto,
   type PoloDestinoRecife,
 } from "../../dados/mobilidade/rotinaCasal";
@@ -251,7 +252,7 @@ export function RotinaDoisDestinosComparar({
             }
             style={styles.valorTotal}
           >
-            {`${resultado.minutosDiaOpcaoA} min/dia`}
+            {`~${resultado.minutosDiaOpcaoA} min/dia`}
           </Texto>
           <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.detalheTrajeto}>
             {`${resultado.destino1.nomeCurto} ${resultado.pessoa1OpcaoAMin}m · ${resultado.destino2.nomeCurto} ${resultado.pessoa2OpcaoAMin}m`}
@@ -273,7 +274,7 @@ export function RotinaDoisDestinosComparar({
             }
             style={styles.valorTotal}
           >
-            {`${resultado.minutosDiaOpcaoB} min/dia`}
+            {`~${resultado.minutosDiaOpcaoB} min/dia`}
           </Texto>
           <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.detalheTrajeto}>
             {`${resultado.destino1.nomeCurto} ${resultado.pessoa1OpcaoBMin}m · ${resultado.destino2.nomeCurto} ${resultado.pessoa2OpcaoBMin}m`}
@@ -301,9 +302,7 @@ export function RotinaDoisDestinosComparar({
         }}
       >
         <Texto testID="rotina-aviso-tabela" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15, fontVariant: ["tabular-nums"] }}>
-          {faixaHorario === "pico"
-            ? `Estimativa em horário de pico (~19 km/h · ${diasPresenciais} dias/mês); calculada localmente sem rastreamento GPS pessoal.`
-            : `Estimativa fora de pico (~28 km/h · ${diasPresenciais} dias/mês); calculada localmente sem rastreamento GPS pessoal.`}
+          {fraseDoMetodoDaRotina(faixaHorario, diasPresenciais)}
         </Texto>
       </View>
     </View>

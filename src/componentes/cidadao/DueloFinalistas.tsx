@@ -27,7 +27,7 @@ const sossegoDoDuelo = (o: EntradaDueloA_B): string =>
   o.sossego === undefined
     ? classificarNivelSossegoPorDbInterno(o.ruidoInternoDb).rotuloComparar
     : o.sossego
-      ? `${o.sossego.nivel} · ${o.sossego.nota0a10.toFixed(1).replace(".", ",")}/10`
+      ? `${o.sossego.nivel} à noite (estimativa)`
       : "Sem leitura";
 
 export type SensibilidadeDuelo = {

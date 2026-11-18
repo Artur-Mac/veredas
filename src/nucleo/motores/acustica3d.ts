@@ -1,13 +1,17 @@
 import type { EpistemicTag } from "../contratosCanonicos";
+import { notaDeSossego } from "../../dados/ruido/modelo";
 
 /**
- * IND-04 & #15 — Motor Acústico 3D por Andar e Fachada, PEZR SBRF (RBAC 161),
- * Isolamento de Dormitório ABNT NBR 15575-4, Lei Municipal nº 16.243/1996 e NSDI.
+ * IND-04 & #15 — Motor Acústico 3D por Andar e Fachada, isolamento de dormitório (ABNT NBR 15575-4) e NSDI.
+ * A conferência de leis de 18/11/2026 (docs/aplicacao/unificacao-2026-11-19/leis-conferidas.md) tirou daqui duas
+ * citações: a Lei municipal 16.243/1996 não fixa 50 dB à noite (o art. 51 diz 70 dB(A) de dia e 60 à noite, para som
+ * de atividades) e o RBAC 161 da ANAC não pode ser citado enquanto o app não usar as curvas oficiais. A referência de
+ * 50 dB(A) à noite é a da ABNT NBR 10151 para área residencial: norma técnica, não lei municipal.
  *
  * REGRAS DE ENGENHARIA E PRIVACIDADE (P3):
  * - Ruído rodoviário/boate: sofre atenuação geométrica 3D pela altura do andar e
  *   atenuação por difração (-8 a -12 dB(A)) na fachada de fundos.
- * - Ruído aeronáutico (PEZR SBRF): ZERO atenuação por altura ou fachada de fundos.
+ * - Ruído de avião: ZERO atenuação por altura ou fachada de fundos (o som vem de cima).
  * - Corte normativo julho/2013 (NBR 15575-4): 65 dB(A) externos viram 47,2 dB(A)
  *   em dormitório pré-norma (~17,8 dB isolamento) vs 32,2 dB(A) em esquadria superior (~32,8 dB).
  * - Decibelímetro na visita opera exclusivamente em memória calculando SPL dB(A),
@@ -30,7 +34,7 @@ export type EntradaAcustica3D = {
   distanciaViaM: number;
   anoConstrucao: number | null;
   classeIsolamentoDeclarada?: ClasseIsolamentoNbr15575;
-  curvaPezrAeroportoDb?: number | null; // Ex.: 65, 70, 75 em PEZR SBRF
+  curvaPezrAeroportoDb?: number | null; // nível do avião informado à mão (só no motor aposentado)
   distanciaFonteLuseM?: number | null; // bares / casas de show / templos a até 150 m
   precoImovelReais?: number | null;
 };
@@ -44,7 +48,8 @@ export type ResultadoAcustica3D = {
   atenuacaoFachadaFundosDb: number;
   isolamentoFachadaD2mnTwDb: number;
   ruidoInternoDormitorioDbA: number;
-  atendeLimiteNoturnoLei16243_50Db: boolean;
+  /** Fora, à noite, até 50 dB(A) (referência da NBR 10151 para área residencial) ou, no quarto, até 40. */
+  atendeReferenciaNoturnaNbr10151: boolean;
   descontoHedonicoNelsonNsdiPct: number;
   descontoHedonicoEstimadoReais: number | null;
   agendaPiorHoraVisita: string[];
@@ -55,10 +60,11 @@ export type ResultadoAcustica3D = {
   epistemicTag: EpistemicTag;
   limiteEpistemologico: string;
   /**
-   * Nota de sossego 0–10 do modelo de ruído estimado (src/dados/ruido), quando o resultado veio dele. Quem mostra nota
-   * usa esta; sem ela (motor aposentado, só em teste) vale a conta antiga de cada cartão.
+   * Nota de sossego 0–10, a única do app: a escala do modelo de ruído estimado (48 dB(A) ou menos = 10; 86 ou mais = 0)
+   * sobre o nível de fora. Vinda do modelo (src/dados/ruido), é a da noite na janela; no motor aposentado, a do nível
+   * combinado. Placar, pulso da quadra, "Sossego à noite por fonte" e Comparar mostram esta.
    */
-  notaSossego0a10?: number;
+  notaSossego0a10: number;
 };
 
 const RUÍDO_BASE_VIA_DB: Record<TipologiaVia, number> = {
@@ -121,7 +127,7 @@ export function avaliarAcustica3d(entrada: EntradaAcustica3D): ResultadoAcustica
 
   nivelVia = somaLogaritmicaDb(niveisSolo);
 
-  // PEZR SBRF (RBAC 161): ruído de sobrevoo NÃO é atenuado por andar alto nem por fundos
+  // Ruído de sobrevoo NÃO é atenuado por andar alto nem por fundos
   const nivelPezr =
     typeof entrada.curvaPezrAeroportoDb === "number" && entrada.curvaPezrAeroportoDb > 0
       ? entrada.curvaPezrAeroportoDb
@@ -179,7 +185,7 @@ export function fecharResultadoAcustico(p: {
     agenda.push("Sexta ou sábado entre 22h30 e 00h30 (teste real de som de bares/eventos LUSE)");
   }
   if (nivelPezr >= 60) {
-    agenda.push("Janelas de aproximação/decolagem SBRF: 07h00–09h00 ou 19h00–21h30");
+    agenda.push("Horários de mais pousos e decolagens no aeroporto: 07h00–09h00 ou 19h00–21h30");
   }
   if (agenda.length === 0) {
     agenda.push("Noite de dia útil após 22h00 para checar ruído de fundo residencial");
@@ -194,7 +200,7 @@ export function fecharResultadoAcustico(p: {
     atenuacaoFachadaFundosDb: p.atenuacaoFachadaFundosDb,
     isolamentoFachadaD2mnTwDb: d2mnTw,
     ruidoInternoDormitorioDbA: ruidoInterno,
-    atendeLimiteNoturnoLei16243_50Db: nivelVia <= 50 || ruidoInterno <= 40,
+    atendeReferenciaNoturnaNbr10151: nivelVia <= 50 || ruidoInterno <= 40,
     descontoHedonicoNelsonNsdiPct: descontoPct,
     descontoHedonicoEstimadoReais: descontoReais,
     agendaPiorHoraVisita: agenda,
@@ -206,6 +212,6 @@ export function fecharResultadoAcustico(p: {
     limiteEpistemologico:
       p.limiteEpistemologico ??
       "Estimativa acústica 3D por geometria e marco temporal (2013); vedação real da esquadria instalada exige medição pontual no dormitório.",
-    ...(typeof p.notaSossego0a10 === "number" ? { notaSossego0a10: p.notaSossego0a10 } : {}),
+    notaSossego0a10: p.notaSossego0a10 ?? notaDeSossego(nivelExternoCombinado),
   };
 }

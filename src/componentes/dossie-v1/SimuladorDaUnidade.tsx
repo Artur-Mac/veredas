@@ -1,6 +1,6 @@
 // "Andar × Fachada" (15/11/2026): casa ou apartamento, andar e a rosa 3×3 da fachada; tudo recalcula no aparelho.
 // Barulho por fontes nomeadas e, desde 18/11/2026 (decisão A2), o dB(A) estimado de dia e à noite nesse andar e nessa
-// fachada, sempre dito como estimativa, com a ficha "Como foi calculado" a um toque; sol direto na fachada nessa altura
+// fachada, sempre dito como estimativa, com a ficha de método a um toque; sol direto na fachada nessa altura
 // e brisa de sudeste. E, no fim do Entorno,
 // "Isso bate com a rua hoje?": resposta anônima, guardada só neste aparelho, com motivo opcional.
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,7 +11,7 @@ import { ROSA, simularUnidade, type TipoDeImovel } from "../../dados/dossie/simu
 import { useTema } from "../../tema/Tema";
 import { Botao } from "../Botao";
 import { AlvoDeToque } from "../Pressionavel";
-import { FichaComoFoiCalculado, LeituraDoRuido } from "../ruido/RuidoEstimado";
+import { FichaDoRuidoEstimado, LeituraDoRuido } from "../ruido/RuidoEstimado";
 import { Texto } from "../Texto";
 import { Nota } from "./base";
 
@@ -144,7 +144,7 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
           {aberto === "barulho" ? (
             <View style={{ paddingHorizontal: 13, paddingBottom: 14, gap: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 10 }}>
               <LeituraDoRuido estimativa={ruido} testID="simulador-ruido-estimado" />
-              <FichaComoFoiCalculado estimativa={ruido} testID="simulador-ruido-ficha" />
+              <FichaDoRuidoEstimado estimativa={ruido} testID="simulador-ruido-metodo" />
               <Texto testID="simulador-consequencia-face" tipo="corpo" style={{ fontSize: 13.5, lineHeight: 19, fontWeight: "600", color: cor("cor-texto") }}>
                 {s.barulho.consequenciaPorFace}
               </Texto>

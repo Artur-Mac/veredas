@@ -2,6 +2,10 @@ import type { AbsenceState } from "../../nucleo/contratosCanonicos";
 import type { ObrasProximas, VisaoDaRua } from "../contratos";
 import type { VereditoConfortoTermico } from "../clima/confortoTermico";
 import type { ResultadoAcustica3D } from "../../nucleo/motores/acustica3d";
+import type { FichaDeMetodo6Campos } from "../fichaDeMetodo";
+import type { ResultadoCaminhabilidadeEVida } from "./caminhabilidadeEVidaNaRua";
+import { nivelDeSossego } from "../ruido/leitura";
+import { DB_DA_NOTA_0, DB_DA_NOTA_10 } from "../ruido/parametros";
 
 export type EixoPulsoDaQuadra = {
   id:
@@ -16,15 +20,8 @@ export type EixoPulsoDaQuadra = {
   ausencia: AbsenceState | null;
   rotuloValor: string;
   resumo: string;
-};
-
-export type CartaoMetodoPulso = {
-  oQueMede: string;
-  fonte: string;
-  data: string;
-  contaResumida: string;
-  cobertura: string;
-  limite: string;
+  /** Como a nota deste eixo foi calculada, com os números do imóvel (entra na ficha de método). */
+  conta: string;
 };
 
 export type ResultadoPulsoDaQuadra = {
@@ -40,12 +37,23 @@ export type ResultadoPulsoDaQuadra = {
     EixoPulsoDaQuadra,
     EixoPulsoDaQuadra,
   ];
-  metodo: CartaoMetodoPulso;
+  metodo: FichaDeMetodo6Campos;
 };
 
 function clampNota(v: number): number {
   return Math.max(1, Math.min(9.8, Math.round(v * 10) / 10));
 }
+
+/** Nota de 0 a 10 com uma casa, sem piso nem teto artificial. */
+function nota0a10(v: number): number {
+  return Math.max(0, Math.min(10, Math.round(v * 10) / 10));
+}
+
+const virgula = (n: number) => n.toFixed(1).replace(".", ",");
+
+/** Cada obra relevante em 24 meses tira este tanto da nota; cada demolição, o outro. */
+export const PONTOS_POR_OBRA_RELEVANTE = 1.1;
+export const PONTOS_POR_DEMOLICAO = 0.9;
 
 export function rotuloAusencia(ausencia: AbsenceState): string {
   if (ausencia === "sem_ocorrencia_no_periodo") return "Sem ocorrência";
@@ -55,15 +63,19 @@ export function rotuloAusencia(ausencia: AbsenceState): string {
 
 export function calcularPulsoDaQuadra(params: {
   conforto: VereditoConfortoTermico;
-  acustica: ResultadoAcustica3D;
+  /** O resultado acústico do prédio pelo modelo de ruído estimado; `null` = sem leitura (o eixo sai da média). */
+  acustica: ResultadoAcustica3D | null;
   anoConstrucao: number | null;
   obrasProximas: ObrasProximas | null;
   visaoRua: VisaoDaRua | null;
   vinculoConfirmado: boolean;
   precoInformado: boolean;
   condominioInformado: boolean;
-  comparacaoM2Pct: number | null;
+  /** IPTU conhecido (do anúncio ou do cadastro do prédio). */
+  iptuConhecido?: boolean;
   spuAtivo: boolean;
+  /** Nota a pé do prédio pela rede de ruas; sem ela, o eixo de serviços fica sem leitura. */
+  caminhabilidade?: Pick<ResultadoCaminhabilidadeEVida, "notaAPe0a10" | "categorias"> | null;
 }): ResultadoPulsoDaQuadra {
   const {
     conforto,
@@ -74,8 +86,9 @@ export function calcularPulsoDaQuadra(params: {
     vinculoConfirmado,
     precoInformado,
     condominioInformado,
-    comparacaoM2Pct,
+    iptuConhecido = false,
     spuAtivo,
+    caminhabilidade = null,
   } = params;
 
   // 1. Sol e brisa (derivado do indice termico 0-100)
@@ -87,78 +100,97 @@ export function calcularPulsoDaQuadra(params: {
     ausencia: null,
     rotuloValor: `${notaSol.toFixed(1).replace(".", ",")} / 10`,
     resumo: conforto.selo,
+    conta: `10 menos o índice de calor (${conforto.indiceCalor0a100} de 100) dividido por 10`,
   };
 
-  // 2. Sossego noturno
-  const notaSossego = clampNota((64 - acustica.ruidoInternoDormitorioDbA) / 3.4);
-  const eixoSossego: EixoPulsoDaQuadra = {
-    id: "sossego",
-    titulo: "Sossego noturno",
-    nota0a10: notaSossego,
-    ausencia: null,
-    rotuloValor: `${notaSossego.toFixed(1).replace(".", ",")} / 10`,
-    resumo:
-      acustica.ruidoInternoDormitorioDbA <= 40
-        ? "Tendência calma no quarto à noite"
-        : acustica.ruidoInternoDormitorioDbA <= 45
-          ? "Movimento urbano moderado"
-          : "Janela pede atenção para vedação",
-  };
-
-  // 3. Rua, sombra arborea e transporte (camada A rua)
-  const gruposRua = visaoRua?.grupos.length ?? 0;
-  const eixoRua: EixoPulsoDaQuadra =
-    !vinculoConfirmado || gruposRua === 0
+  // 2. Sossego noturno: a mesma nota do placar e do Comparar, a do modelo de ruído estimado (18/11/2026, A1 e A2).
+  // Antes era (64 − dB no quarto) ÷ 3,4, com uma via fixa igual para todo prédio. Sem leitura, fora da média.
+  const eixoSossego: EixoPulsoDaQuadra =
+    acustica === null
       ? {
-          id: "rua_servicos",
-          titulo: "Rua e serviços",
+          id: "sossego",
+          titulo: "Sossego noturno",
           nota0a10: null,
           ausencia: "sem_leitura_publicada",
           rotuloValor: "Sem leitura",
-          resumo: vinculoConfirmado
-            ? "Camada de rua do bairro indisponível nesta sessão"
-            : "Confirme o prédio para ler entorno, arborização e coleta da rua",
+          resumo: "Sem estimativa de ruído para este prédio",
+          conta: "sem estimativa de ruído para o prédio, o eixo fica fora da média",
+        }
+      : {
+          id: "sossego",
+          titulo: "Sossego noturno",
+          nota0a10: acustica.notaSossego0a10,
+          ausencia: null,
+          rotuloValor: `${virgula(acustica.notaSossego0a10)} / 10`,
+          resumo: `${nivelDeSossego(acustica.notaSossego0a10)} à noite pelo ruído estimado`,
+          conta: `a nota de sossego do ruído estimado à noite na janela (${Math.round(acustica.ruidoExternoCombinadoDbA)} dB(A), estimativa com dados abertos, não medição): 10 com ${DB_DA_NOTA_10} dB(A) ou menos, 0 com ${DB_DA_NOTA_0} ou mais, em linha reta entre os dois`,
+        };
+
+  // 3. Serviços a pé: a nota a pé do prédio pela rede de ruas (R2, 19/11/2026: antes era 6,8 fixo mais um tanto por
+  // bloco de dado lido, igual para qualquer prédio com a camada da rua). `visaoRua` fica só para dizer por que não há leitura.
+  const notaAPe = caminhabilidade?.notaAPe0a10 ?? null;
+  const tempos = (caminhabilidade?.categorias ?? [])
+    .filter((c) => c.minutosAPe !== null)
+    .map((c) => `${c.titulo} ~${c.minutosAPe} min`);
+  const eixoRua: EixoPulsoDaQuadra =
+    notaAPe === null
+      ? {
+          id: "rua_servicos",
+          titulo: "Serviços a pé",
+          nota0a10: null,
+          ausencia: "sem_leitura_publicada",
+          rotuloValor: "Sem leitura",
+          resumo: !vinculoConfirmado
+            ? "Confirme o prédio para medir a caminhada até mercado, farmácia, transporte e praça"
+            : (visaoRua?.grupos.length ?? 0) === 0
+              ? "Camada de rua do bairro indisponível nesta sessão"
+              : "Sem caminho medido pela rede de ruas para este prédio",
+          conta: "sem caminho medido pela rede de ruas, o eixo fica fora da média",
         }
       : {
           id: "rua_servicos",
-          titulo: "Rua e serviços",
-          nota0a10: clampNota(6.8 + Math.min(2.4, gruposRua * 0.45)),
+          titulo: "Serviços a pé",
+          nota0a10: nota0a10(notaAPe),
           ausencia: null,
-          rotuloValor: `${clampNota(6.8 + Math.min(2.4, gruposRua * 0.45))
-            .toFixed(1)
-            .replace(".", ",")} / 10`,
-          resumo: `${gruposRua} blocos oficiais lidos para esta face de quadra`,
+          rotuloValor: `${virgula(nota0a10(notaAPe))} / 10`,
+          resumo: tempos.length > 0 ? `${tempos.join(" · ")} a pé` : "Caminhada medida pela rede de ruas",
+          conta: "a nota a pé do prédio: média das notas por minuto de caminhada, com pesos de mercado 30%, farmácia 25%, transporte 25% e praça 20%",
         };
 
-  // 4. Previsibilidade de custos e terreno
+  // 4. Itens do custo conhecidos (R2: antes partia de 8,8 fixo e tirava pontos). A nota é a parte do custo que já se sabe.
+  const itensDoCusto: { nome: string; conhecido: boolean }[] = [
+    { nome: "preço", conhecido: precoInformado },
+    { nome: "condomínio", conhecido: condominioInformado },
+    { nome: "IPTU", conhecido: iptuConhecido },
+    // O regime do terreno só entra quando há indício de terreno da União; aí ele é um item em aberto.
+    ...(spuAtivo ? [{ nome: "regime do terreno da União", conhecido: false }] : []),
+  ];
+  const conhecidos = itensDoCusto.filter((i) => i.conhecido);
+  const emAberto = itensDoCusto.filter((i) => !i.conhecido);
   let eixoCustos: EixoPulsoDaQuadra;
   if (!precoInformado && !condominioInformado) {
     eixoCustos = {
       id: "custos",
-      titulo: "Previsibilidade de custo",
+      titulo: "Custo conhecido",
       nota0a10: null,
       ausencia: "sem_leitura_publicada",
       rotuloValor: "Sem leitura",
-      resumo: "Faltam preço e condomínio declarados para compor a previsibilidade",
+      resumo: "Faltam preço e condomínio declarados para compor a leitura do custo",
+      conta: "sem preço e sem condomínio, o eixo fica fora da média",
     };
   } else {
-    let baseCusto = 8.8;
-    if (spuAtivo) baseCusto -= 2.4;
-    if (!condominioInformado) baseCusto -= 1.6;
-    if (!precoInformado) baseCusto -= 1.2;
-    if (comparacaoM2Pct !== null && comparacaoM2Pct >= 10) baseCusto -= 1.4;
-    const notaCusto = clampNota(baseCusto);
+    const notaCusto = nota0a10((10 * conhecidos.length) / itensDoCusto.length);
     eixoCustos = {
       id: "custos",
-      titulo: "Previsibilidade de custo",
+      titulo: "Custo conhecido",
       nota0a10: notaCusto,
       ausencia: null,
-      rotuloValor: `${notaCusto.toFixed(1).replace(".", ",")} / 10`,
-      resumo: spuAtivo
-        ? "Terreno da União exige atenção à taxa anual e regra bancária"
-        : condominioInformado
-          ? "Parcelas principais preenchidas sem alerta de terreno da União"
-          : "Condomínio ainda não confirmado no anúncio",
+      rotuloValor: `${virgula(notaCusto)} / 10`,
+      resumo:
+        emAberto.length === 0
+          ? `${conhecidos.length} de ${itensDoCusto.length} itens do custo conhecidos`
+          : `${conhecidos.length} de ${itensDoCusto.length} itens do custo conhecidos; falta ${emAberto.map((i) => i.nome).join(", ")}`,
+      conta: `10 × ${conhecidos.length} itens conhecidos ÷ ${itensDoCusto.length} itens considerados (${itensDoCusto.map((i) => i.nome).join(", ")})`,
     };
   }
 
@@ -174,6 +206,7 @@ export function calcularPulsoDaQuadra(params: {
       ausencia: "sem_leitura_publicada",
       rotuloValor: "Sem leitura",
       resumo: "Ano de construção não confirmado no cadastro do edifício",
+      conta: "sem ano de construção, o eixo fica fora da média",
     };
   } else {
     const notaCons = clampNota(
@@ -186,6 +219,7 @@ export function calcularPulsoDaQuadra(params: {
       ausencia: null,
       rotuloValor: `${notaCons.toFixed(1).replace(".", ",")} / 10`,
       resumo: `${idade} anos de uso (${anoConstrucao})`,
+      conta: `pela idade do prédio (${idade} anos): até 7 anos, 9,1; de 8 a 17, 7,6; de 18 a 31, 6,0; 32 ou mais, 4,8`,
     };
   }
 
@@ -199,20 +233,23 @@ export function calcularPulsoDaQuadra(params: {
       ausencia: vinculoConfirmado ? "nao_se_aplica" : "sem_leitura_publicada",
       rotuloValor: vinculoConfirmado ? "Não se aplica" : "Sem leitura",
       resumo: "Sem base de alvarás vinculada ao endereço neste recorte",
+      conta: "sem a base de licenças para o endereço, o eixo fica fora da média",
     };
   } else if (obrasProximas.relevantes24m === 0) {
     eixoObras = {
       id: "obras_entorno",
       titulo: "Obras a 150 m",
-      nota0a10: 9.2,
+      // R2: antes 9,2 fixo. Zero obra em 24 meses é um dado do imóvel e entra na mesma conta das outras: 10 − 0.
+      nota0a10: 10,
       ausencia: "sem_ocorrencia_no_periodo",
       rotuloValor: "Sem ocorrência",
       resumo: "Nenhuma obra nova, ampliação ou demolição relevante nos últimos 24 meses",
+      conta: "10 menos 0 (nenhuma obra relevante nem demolição em 24 meses a 150 m)",
     };
   } else {
     const pen =
-      obrasProximas.relevantes24m * 1.1 + obrasProximas.demolicoes24m * 0.9;
-    const notaObr = clampNota(8.8 - pen);
+      obrasProximas.relevantes24m * PONTOS_POR_OBRA_RELEVANTE + obrasProximas.demolicoes24m * PONTOS_POR_DEMOLICAO;
+    const notaObr = nota0a10(10 - pen);
     eixoObras = {
       id: "obras_entorno",
       titulo: "Obras a 150 m",
@@ -220,6 +257,7 @@ export function calcularPulsoDaQuadra(params: {
       ausencia: null,
       rotuloValor: `${notaObr.toFixed(1).replace(".", ",")} / 10`,
       resumo: `${obrasProximas.relevantes24m} licença(s) relevante(s) em 24 meses num raio de 150 m`,
+      conta: `10 menos 1,1 por obra relevante (${obrasProximas.relevantes24m}) e 0,9 por demolição (${obrasProximas.demolicoes24m}) em 24 meses a 150 m`,
     };
   }
 
@@ -255,16 +293,14 @@ export function calcularPulsoDaQuadra(params: {
     eixos,
     metodo: {
       oQueMede:
-        "Agrega 6 dimensões físicas e cadastrais (sol/brisa, sossego noturno, serviços da rua, previsibilidade de gastos, ciclo construtivo e licenças próximas) sem atribuir nota subjetiva nem média escondida.",
+        "Seis leituras do imóvel e da quadra, cada uma de 0 a 10: sol e ventilação, sossego à noite, serviços a pé, itens do custo conhecidos, idade do prédio e obras licenciadas a 150 m.",
       fonte:
-        "Cadastro Imobiliário Recife (IPTU), Lotes Cadastrais, Licenciamento de Obras, IBGE Censo 2022 e motores físicos locais.",
-      data: "Recorte cadastral consolidado 2026 + Censo 2022.",
-      contaResumida:
-        "Cada eixo usa escala transparente de 0 a 10 apenas quando há dados reais; campos ausentes exibem estado explícito (Sem leitura / Sem ocorrência / Não se aplica) e ficam fora da média.",
-      cobertura:
-        "Bairros com índice ativo do Recife (leitura degradada com avisos fora do vínculo confirmado).",
+        "Cadastro Imobiliário Recife (IPTU), Lotes Cadastrais, Licenciamento de Obras, rede de ruas a pé (OpenStreetMap), o anúncio que você informou e os cálculos de sol e de ruído do Vereda.",
+      data: "Recorte cadastral consolidado de 2026.",
+      calculo: `${eixos.map((e) => `${e.titulo}: ${e.conta}`).join(". ")}. Pulso médio: média simples dos eixos com leitura (${validos.length} de 6).`,
       limite:
-        "Mede probabilidade cadastral e física da quadra; não substitui vistoria técnica da unidade nem atas de condomínio.",
+        "As faixas e os pesos são escolhas do Vereda, não medições; eixo sem dado fica fora da média. Não substitui vistoria da unidade nem atas de condomínio.",
+      naVisita: "Confira no local os eixos de nota mais baixa e os que ficaram sem leitura.",
     },
   };
 }

@@ -18,7 +18,7 @@ import type { ResultadoAuditoriaDocumental } from "../../nucleo/documentos/audit
  * - Camada 1: Manchete clara em 1 frase sem jargão técnico nem palavras de julgamento proibidas.
  * - Camada 2: Impacto financeiro/rotina + ação prática recomendada.
  * - Camada 3: Gaveta recolhida de prova e método com Cartão de Método (6 campos), chaves duplas (DSQFL + CNM),
- *             artigo legal + conta exata e os 3 estados distintos de ausência.
+ *             artigo legal + a conta e os 3 estados distintos de ausência.
  */
 
 export type EstadoAusenciaCidadao =
@@ -177,8 +177,13 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
         oQueMede: "Laudêmio (5%), ocupação (2% a.a.) ou foro (0,6% a.a.) e bloqueio de FGTS.",
         baseLegalOuNormativa: "Decreto-Lei nº 2.398/1987, Leis nº 13.240/2015 e 14.474/2022.",
         aritmeticaResumo: "Incide apenas sobre (Valor do Domínio Pleno do Terreno × Fração Ideal).",
-        fontePrimaria: "Geoportal SPU / ESIG Lotes",
-        vintage: "2026-11",
+        // R10 (19/11/2026): nenhuma tela informa o valor do terreno, então a conta pela fração ideal não roda. A ficha
+        // diz isso em vez de citar uma fonte que não foi lida.
+        fontePrimaria:
+          spu?.baseTerrenoUnidadeReais != null
+            ? "Valor do domínio pleno do terreno informado para esta análise (certidão do RIP na SPU)"
+            : "Nenhum valor de terreno da SPU foi lido: a conta só roda com o valor do domínio pleno, que vem da certidão do RIP",
+        vintage: spu?.baseTerrenoUnidadeReais != null ? "2026-11" : "sem leitura",
         limiteEpistemologico:
           spu?.limiteEpistemologico ?? "Exige certidão do RIP na SPU para confirmar o regime individual.",
       },
@@ -263,10 +268,10 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
     camada1Manchete: sanearTextoCamada1(
       acu
         ? acu.ruidoExternoAeronavePezrDb > 0
-          ? `Rota de aviões gera cerca de ${acu.ruidoExternoAeronavePezrDb} dB externos mesmo em andares altos.`
-          : acu.atendeLimiteNoturnoLei16243_50Db
-            ? `Estimativa noturna tranquila no quarto (${acu.ruidoInternoDormitorioDbA.toFixed(1)} dB internos).`
-            : `Ruído estimado de ${acu.ruidoInternoDormitorioDbA.toFixed(1)} dB no quarto pede atenção às janelas.`
+          ? `Rota de aviões: cerca de ${Math.round(acu.ruidoExternoAeronavePezrDb)} dB(A) estimados à noite, mesmo em andares altos.`
+          : acu.atendeReferenciaNoturnaNbr10151
+            ? `Estimativa noturna tranquila no quarto (~${Math.round(acu.ruidoInternoDormitorioDbA)} dB(A) com a janela fechada).`
+            : `Ruído estimado de ~${Math.round(acu.ruidoInternoDormitorioDbA)} dB(A) no quarto à noite pede atenção às janelas.`
         : "Silêncio do quarto depende da fachada, distância da via e esquadrias.",
     ),
     camada2ImpactoPratico: acu
@@ -278,10 +283,12 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       ausencia: acu ? null : descreverAusenciaCidadao("sem_leitura_publicada"),
       chavesDuplas,
       metodo6Campos: {
-        oQueMede: "Ruído externo combinado (via + eventos noturnos + rota aérea) e isolamento do quarto.",
-        baseLegalOuNormativa: "ABNT NBR 15575-4 (corte 2013), ANAC RBAC 161 e Lei Recife 16.243/1996.",
-        aritmeticaResumo: "Soma energética logarítmica menos isolamento D2m,nT,w por idade da obra.",
-        fontePrimaria: "CTTU vias + LUSE 150m + ANAC/DECEA SBRF",
+        oQueMede: "Ruído estimado de fora à noite (vias, ônibus, som licenciado e avião) e o que a janela fechada tira.",
+        // 18/11/2026 (conferência de leis): saem a Lei Recife 16.243/1996 (não fixa 50 dB à noite) e o RBAC 161 (o app
+        // não usa as curvas oficiais). Fica a norma técnica, dita como referência e não como lei municipal.
+        baseLegalOuNormativa: "Referência de norma técnica, não lei municipal: ABNT NBR 10151 (área residencial, 55 dB(A) de dia e 50 à noite) e ABNT NBR 15575-4 (janela).",
+        aritmeticaResumo: "Estimativa com dados abertos, não medição: soma em energia das fontes menos o isolamento da janela pelo ano do prédio.",
+        fontePrimaria: "Vias do OpenStreetMap (ODbL), GTFS Grande Recife, LUSE da Prefeitura, CNEFE (IBGE) e pista do aeroporto (OpenStreetMap)",
         vintage: "2026-11",
         limiteEpistemologico: acu?.limiteEpistemologico ?? "Esquadrias trocadas pelos moradores melhoram a vedação.",
       },

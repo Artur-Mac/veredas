@@ -4,6 +4,7 @@ import type {
   VereditoConfortoTermico,
   ZonaConfortoTermico,
 } from "../../dados/clima/confortoTermico";
+import { FichaDeMetodo } from "./FichaDeMetodo";
 import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
 import { RAIO, type TokenDeCor } from "../../tema/tokens";
@@ -128,7 +129,7 @@ export function TermometroConfortoTermico({ conforto }: Props) {
       >
         <View style={styles.energiaItem}>
           <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.rotuloMini}>
-            Climatização estimada
+            Ar-condicionado (fórmula, não medição)
           </Texto>
           <Texto tipo="secao" style={styles.valorEnergia}>
             {`~R$ ${conforto.custoMensalArReais}/mês`}
@@ -190,6 +191,8 @@ export function TermometroConfortoTermico({ conforto }: Props) {
           {conforto.acaoVisita}
         </Texto>
       </View>
+      {/* R6 e R11: a nota e o selo ficam; a ficha diz que a regra de pontos e o gasto com ar não têm base medida. */}
+      <FichaDeMetodo ficha={conforto.metodo} testID="termometro-metodo" />
     </View>
   );
 }

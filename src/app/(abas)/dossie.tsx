@@ -51,12 +51,11 @@ import { useTema } from "../../tema/Tema";
 import { ESPACO, TOQUE_MINIMO } from "../../tema/tokens";
 import { traduzirIndicadoresCidadao } from "../../dados/cidadao/tradutorCidadao";
 import { CartaoCidadao3Camadas } from "../../componentes/cidadao/CartaoCidadao3Camadas";
-import { calcularTco10Anos, SimuladorTco10Anos } from "../../componentes/cidadao/SimuladorTco10Anos";
+import { SimuladorTco10Anos, type EntradaTco10Anos } from "../../componentes/cidadao/SimuladorTco10Anos";
 import { ResumoEvidenciaPartilhavel } from "../../componentes/cidadao/ResumoEvidenciaPartilhavel";
 import { avaliarBioclimatico3d } from "../../municipios/recife/motores/bioclimatico3d";
 import { estimarRuido } from "../../dados/ruido/estimativa";
-import { acusticaDaEstimativa, pulsoDaQuadraComRuidoEstimado } from "../../dados/ruido/ponte";
-import { FichaComoFoiCalculado } from "../../componentes/ruido/RuidoEstimado";
+import { acusticaDaEstimativa } from "../../dados/ruido/ponte";
 import { avaliarHidroMare1m } from "../../municipios/recife/motores/hidroMare1m";
 import { avaliarResilienciaRedes } from "../../municipios/recife/motores/resilienciaRedes";
 import { inferirFachadasDoEdificio, type PapelFachada } from "../../dados/sol/inferirFachadas";
@@ -75,6 +74,7 @@ import { EscalaDeRuidoHumana, RelogioDoPredio, SilencioInteligente } from "../..
 import { analisarRadarVistaELote } from "../../dados/entorno/radarVistaELote";
 import { RadarVistaELote } from "../../componentes/visual/RadarVistaELote";
 import { CopilotoDocumentosPreSinal } from "../../componentes/visual/CopilotoDocumentosPreSinal";
+import { calcularPulsoDaQuadra } from "../../dados/dossie/pulsoDaQuadra";
 import { PulsoDaQuadra } from "../../componentes/visual/PulsoDaQuadra";
 import { ExportarResumoExecutivo } from "../../componentes/visual/ExportarResumoExecutivo";
 import { avaliarCaminhabilidadeEVidaNaRua } from "../../dados/dossie/caminhabilidadeEVidaNaRua";
@@ -333,7 +333,6 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     () => acusticaDaEstimativa(ruido, { anoConstrucao: predio?.anoConstrucao ?? null, precoImovelReais: analise.declarados.preco.valor ?? null }),
     [analise.declarados.preco.valor, predio?.anoConstrucao, ruido],
   );
-  const [fichaDoRuidoAberta, setFichaDoRuidoAberta] = useState(false);
 
   const confortoTermico = useMemo(
     () =>
@@ -412,9 +411,9 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     () => derivarCustoPorPartes(analise, predio, perfilDomicilio),
     [analise, predio, perfilDomicilio],
   );
-  const tco10Anos = useMemo(() => {
+  const entradaTco10Anos = useMemo((): EntradaTco10Anos | null => {
     if (analise.modalidade !== "compra" || !analise.declarados.preco.valor) return null;
-    return calcularTco10Anos({
+    return {
       precoCompraReais: analise.declarados.preco.valor,
       aluguelEquivalenteMensalReais: Math.round(analise.declarados.preco.valor * 0.0045),
       condominioMensalReais: analise.declarados.condominio.valor ?? 0,
@@ -422,34 +421,35 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
       spuAnualReais: partesDeCusto.spuEstatutario?.encargoPatrimonialAnualVigenteReais ?? 0,
       economiaOtimizacaoTributariaReais:
         partesDeCusto.otimizacaoFechamento?.melhorCenarioEconomiaReais ?? 0,
-    });
+    };
   }, [analise.declarados.condominio.valor, analise.declarados.preco.valor, analise.modalidade, partesDeCusto, predio?.iptuAnual?.mediana]);
 
   const pulsoDaQuadra = useMemo(
     () =>
-      pulsoDaQuadraComRuidoEstimado(
-        {
-          conforto: confortoTermico,
-          anoConstrucao: predio?.anoConstrucao ?? null,
-          obrasProximas: visao.obras,
-          visaoRua: visao.rua ?? null,
-          vinculoConfirmado,
-          precoInformado: analise.declarados.preco.valor !== null,
-          condominioInformado: analise.declarados.condominio.valor !== null,
-          comparacaoM2Pct: visao.posicao?.deltaPercentual ?? null,
-          spuAtivo: Boolean(partesDeCusto.alertaMarinha),
-        },
-        ruido,
+      calcularPulsoDaQuadra({
+        conforto: confortoTermico,
+        // O eixo de sossego usa a nota do modelo de ruído estimado; sem leitura, fica fora da média.
         acustica,
-      ),
+        anoConstrucao: predio?.anoConstrucao ?? null,
+        obrasProximas: visao.obras,
+        visaoRua: visao.rua ?? null,
+        vinculoConfirmado,
+        precoInformado: analise.declarados.preco.valor !== null,
+        condominioInformado: analise.declarados.condominio.valor !== null,
+        iptuConhecido: analise.declarados.iptu.valor !== null || (predio?.iptuAnual?.mediana ?? null) !== null,
+        spuAtivo: Boolean(partesDeCusto.alertaMarinha),
+        caminhabilidade,
+      }),
     [
       acustica,
-      ruido,
       analise.declarados.condominio.valor,
+      analise.declarados.iptu.valor,
       analise.declarados.preco.valor,
+      caminhabilidade,
       confortoTermico,
       partesDeCusto,
       predio?.anoConstrucao,
+      predio?.iptuAnual?.mediana,
       vinculoConfirmado,
       visao,
     ],
@@ -486,10 +486,10 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     const listaOk: { rotulo: string; detalhe?: string }[] = [];
     if (vinculoConfirmado) listaOk.push({ rotulo: "Prédio confirmado no cadastro do Recife", detalhe: predio?.nome ?? undefined });
     if (predio?.iptuAnual) listaOk.push({ rotulo: "Referência oficial de IPTU localizada no edifício" });
-    if (acustica?.atendeLimiteNoturnoLei16243_50Db) listaOk.push({ rotulo: "Ruído noturno dentro do conforto esperado" });
+    if (acustica?.atendeReferenciaNoturnaNbr10151) listaOk.push({ rotulo: "Ruído noturno estimado dentro da referência da norma técnica" });
     if (!partesDeCusto.alertaMarinha) listaOk.push({ rotulo: "Fora da área típica de Terreno de Marinha" });
     return listaOk;
-  }, [acustica?.atendeLimiteNoturnoLei16243_50Db, partesDeCusto.alertaMarinha, predio?.iptuAnual, predio?.nome, vinculoConfirmado]);
+  }, [acustica?.atendeReferenciaNoturnaNbr10151, partesDeCusto.alertaMarinha, predio?.iptuAnual, predio?.nome, vinculoConfirmado]);
 
   const fechar = useCallback(() => setGaveta(null), []);
 
@@ -682,22 +682,12 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             orientacaoCurta={fachadaAtiva.orientacaoSolar}
             conforto={confortoTermico}
             ruidoDormitorioDb={acustica?.ruidoInternoDormitorioDbA ?? null}
-            sossego={ruido.textos.placar}
+            sossego={{ ...ruido.textos.placar, ficha: ruido.estado === "estimado" ? ruido.textos.ficha : null }}
             spuAtivo={Boolean(partesDeCusto.alertaMarinha)}
             aoTocarMetrica={(alvo) => {
-              // A nota de sossego abre a ficha "Como foi calculado" logo abaixo do placar (A13).
-              if (alvo === "ruido") setFichaDoRuidoAberta((v) => !v);
-              else setAba(alvo === "predio" ? "edificio" : "destaques");
+              setAba(alvo === "predio" ? "edificio" : "destaques");
             }}
           />
-          {fichaDoRuidoAberta && ruido.estado === "estimado" ? (
-            <View testID="placar-ficha-do-ruido" style={{ marginTop: ESPACO[2] }}>
-              <Texto tipo="apoio" style={{ fontSize: 13, lineHeight: 19, fontWeight: "600", fontVariant: ["tabular-nums"] }}>
-                {`${ruido.textos.janela ?? ruido.textos.manchete}. ${ruido.textos.aviso}`}
-              </Texto>
-              <FichaComoFoiCalculado estimativa={ruido} testID="placar-ruido-ficha" abertaDeInicio />
-            </View>
-          ) : null}
 
           {cadastro.falhou ? (
             <CaixaCreme estilo={{ marginTop: ESPACO[3] }}>
@@ -797,18 +787,26 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
           <View style={styles.depoisDoPainel}>
             {aba === "destaques" ? (
               <View style={{ gap: 12 }}>
-                <CanvasSolSombraBrisa25D
-                  inferencia={inferenciaFachadas}
-                  fachadaSelecionada={fachadaAtiva.id}
-                  aoSelecionarFachada={setFachadaSelecionada}
-                  andar={andarSimulado}
-                  aoAlterarAndar={setAndarSimulado}
-                  pavimentosTotais={predio?.pavimentos ?? null}
-                  centro={predio?.centro ?? [-34.896, -8.121]}
-                  volumesEntorno={entornoSolar?.recorte.volumes}
-                  vizinhosLotes={cadastro.vizinhos}
-                  obrasEntorno={visao.obras}
-                />
+                {/* R9 (19/11/2026): sem prédio confirmado não há ponto para desenhar; antes o volume caía num ponto fixo de
+                    Boa Viagem. */}
+                {predio ? (
+                  <CanvasSolSombraBrisa25D
+                    inferencia={inferenciaFachadas}
+                    fachadaSelecionada={fachadaAtiva.id}
+                    aoSelecionarFachada={setFachadaSelecionada}
+                    andar={andarSimulado}
+                    aoAlterarAndar={setAndarSimulado}
+                    pavimentosTotais={predio.pavimentos ?? null}
+                    centro={predio.centro}
+                    volumesEntorno={entornoSolar?.recorte.volumes}
+                    vizinhosLotes={cadastro.vizinhos}
+                    obrasEntorno={visao.obras}
+                  />
+                ) : (
+                  <Texto testID="canvas-25d-sem-predio" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 19 }}>
+                    Confirme o prédio para ver o volume com sol, sombra e brisa neste endereço.
+                  </Texto>
+                )}
                 <TermometroConfortoTermico conforto={confortoTermico} andar={andarSimulado} />
                 <RadarVistaELote radar={radarVistaELote} />
                 <TresPerguntasDoBolso
@@ -852,9 +850,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                         )
                       : 0
                   }
-                  saldo10AnosCompraVsAluguelReais={
-                    tco10Anos ? tco10Anos.saldoLiquidoCompraSobreAluguel10AnosReais : null
-                  }
+                  entradaTco10Anos={entradaTco10Anos}
                   pendenciaDocumentalResumo={
                     partesDeCusto.alertaMarinha
                       ? "Terreno da União pede certidão atualizada do regime (ocupação ou aforamento) antes de fechar financiamento."
@@ -914,7 +910,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                     conforto: confortoTermico,
                     sossegoNivel:
                       ruido.estado === "estimado"
-                        ? `${ruido.nivelDeSossego} (nota ${ruido.notaDeSossego.toFixed(1).replace(".", ",")}/10 pela estimativa de ruído)`
+                        ? `${ruido.nivelDeSossego} (~${Math.round(ruido.naJanela.noiteDb)} dB(A) à noite na janela, estimativa)`
                         : ruido.textos.placar.valor,
                     radar: radarVistaELote,
                     pulso: pulsoDaQuadra,

@@ -338,8 +338,8 @@ export function CanvasSolSombraBrisa25D({
         : `${String(hora).padStart(2, "0")}h · Sol direto na face ${fachadaAtiva.orientacaoSolar} (${andar}º andar)`;
 
   const textoBrisa = cena.bloqueioBrisa
-    ? "Brisa E-SE barrada"
-    : "Brisa E-SE livre";
+    ? "Brisa SE barrada"
+    : "Brisa SE livre";
 
   // Rastrear ids de parede que ja receberam testID para evitar duplicidade
   const idsParedeAtribuidos = new Set<PapelFachada>();

@@ -3,7 +3,8 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { decomporSossego, type NivelSossego } from "../../dados/acustica/decomporSossego";
 import type { ResultadoAcustica3D } from "../../nucleo/motores/acustica3d";
 import type { EstimativaDeRuido } from "../../dados/ruido/estimativa";
-import { FichaComoFoiCalculado, LeituraDoRuido } from "../ruido/RuidoEstimado";
+import { LeituraDoRuido } from "../ruido/RuidoEstimado";
+import { FichaDeMetodo } from "./FichaDeMetodo";
 import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
 import { RAIO, TOQUE_MINIMO, type TokenDeCor } from "../../tema/tokens";
@@ -29,7 +30,7 @@ export function EscalaDeRuidoHumana({
   /** `null` = sem leitura de ruído para o prédio: o cartão diz isso, sem número. */
   acustica: ResultadoAcustica3D | null;
   anoConstrucao: number | null;
-  /** A estimativa do modelo (src/dados/ruido): mostra os dB(A) estimados e a ficha "Como foi calculado". */
+  /** A estimativa do modelo (src/dados/ruido): mostra os dB(A) estimados e põe as fontes do prédio na ficha de método. */
   ruido?: EstimativaDeRuido;
 }) {
   const { cor } = useTema();
@@ -51,7 +52,7 @@ export function EscalaDeRuidoHumana({
       </View>
     );
   }
-  const sintese = decomporSossego(acustica, anoConstrucao);
+  const sintese = decomporSossego(acustica, anoConstrucao, ruido?.estado === "estimado" ? ruido.textos.ficha : null);
   const silencioso = sintese.nivelQuarto !== "Intenso";
 
   return (
@@ -130,8 +131,7 @@ export function EscalaDeRuidoHumana({
 
       {ruido ? (
         <View style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 8 }}>
-          <LeituraDoRuido estimativa={ruido} testID="escala-ruido-estimado" />
-          <FichaComoFoiCalculado estimativa={ruido} testID="escala-ruido-ficha" />
+          <LeituraDoRuido estimativa={ruido} testID="escala-ruido-estimado" comNota={false} />
         </View>
       ) : null}
 
@@ -185,6 +185,8 @@ export function EscalaDeRuidoHumana({
       <Texto testID="escala-ruido-aviso-metodo" tipo="apoio" cor="cor-texto-apoio" style={styles.avisoMetodo}>
         {sintese.avisoEstimativaSemLaudo}
       </Texto>
+      {/* A nota de sossego nunca aparece sem a ficha "como foi calculada" a um toque (A13). */}
+      <FichaDeMetodo ficha={sintese.metodo} testID="escala-ruido-metodo" />
     </View>
   );
 }

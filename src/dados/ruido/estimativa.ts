@@ -6,9 +6,14 @@ import { z } from "zod";
 import { faltaCamada, lerCamada } from "../camadas";
 import { relacaoComOAeroporto } from "../recife/aeroporto";
 import { ARQUIVOS_DO_RUIDO, FONTES_DO_RUIDO, VERSAO_DO_RUIDO } from "../recife/ruidoGerado";
-import { montarEstimativa, semLeituraDeRuido, type AviaoSobreOPredio, type EstimativaDeRuido, type OpcoesDeRuido } from "./leitura";
+import type { FichaDeMetodo6Campos } from "../fichaDeMetodo";
+import { fichaDoRuido, montarEstimativa, semLeituraDeRuido, type AviaoSobreOPredio, type EstimativaDeRuido, type OpcoesDeRuido } from "./leitura";
 
-export type { EstimativaDeRuido, FichaDoRuido, FonteQuePesa, OpcoesDeRuido, RuidoEstimado, SemLeituraDeRuido } from "./leitura";
+export type { EstimativaDeRuido, FonteQuePesa, OpcoesDeRuido, RuidoEstimado, SemLeituraDeRuido } from "./leitura";
+
+const DATAS = { viasDe: FONTES_DO_RUIDO.vias.dadosDe, metodologiaLidaEm: FONTES_DO_RUIDO.metodologia.lidaEm };
+/** A ficha de método do ruído sem as fontes de um prédio: o que mede, de onde vem, de quando é, a conta e o limite. */
+export const fichaGeralDoRuido = (): FichaDeMetodo6Campos => fichaDoRuido(DATAS, []);
 
 /** O arquivo de camada do bairro (fora do bundle, D036), ou null onde a estimativa não foi publicada. */
 export const arquivoDoRuido = (bairro: string | null | undefined): string | null => (bairro ? ARQUIVOS_DO_RUIDO[bairro] ?? null : null);
@@ -71,7 +76,7 @@ export function estimarRuido(predio: PredioParaORuido | null | undefined, opcoes
     nomes: camada.nomes,
     aviao: aviaoSobre(predio.centro),
     anoConstrucao: predio.anoConstrucao ?? null,
-    datas: { viasDe: FONTES_DO_RUIDO.vias.dadosDe, metodologiaLidaEm: FONTES_DO_RUIDO.metodologia.lidaEm },
+    datas: DATAS,
     opcoes,
   });
 }
