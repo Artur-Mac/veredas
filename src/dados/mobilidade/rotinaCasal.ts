@@ -73,11 +73,18 @@ function haversineKm(
   return 2 * R * Math.asin(Math.min(1, Math.sqrt(a)));
 }
 
+export type FaixaHorarioTrajeto = "pico" | "fora_pico";
+
 function minutosIdaEVolta(
   origem: readonly [number, number],
   destino: readonly [number, number],
+  faixaHorario: FaixaHorarioTrajeto = "pico",
 ): number {
   const kmRota = haversineKm(origem, destino) * 1.38;
+  if (faixaHorario === "fora_pico") {
+    const minutosTrecho = Math.round((kmRota / 28) * 60 + 4);
+    return Math.max(10, Math.min(95, minutosTrecho)) * 2;
+  }
   const minutosTrecho = Math.round((kmRota / 19) * 60 + 6);
   return Math.max(12, Math.min(95, minutosTrecho)) * 2;
 }
@@ -85,6 +92,8 @@ function minutosIdaEVolta(
 export type ResultadoRotinaDoisDestinos = {
   destino1: PoloDestinoRecife;
   destino2: PoloDestinoRecife;
+  faixaHorario: FaixaHorarioTrajeto;
+  diasPresenciaisMes: number;
   minutosDiaOpcaoA: number;
   minutosDiaOpcaoB: number;
   pessoa1OpcaoAMin: number;
@@ -109,10 +118,11 @@ export function estimarMinutosPicoIdaVolta(
   centro: readonly [number, number] | null | undefined,
   bairro: string | null | undefined,
   destinoId: PoloDestinoRecife["id"] = "polo_porto_digital",
+  faixaHorario: FaixaHorarioTrajeto = "pico",
 ): number {
   const origem = resolverCentroImovel(centro, bairro);
   const destino = POLOS_RECIFE.find((p) => p.id === destinoId) ?? POLOS_RECIFE[0]!;
-  return minutosIdaEVolta(origem, destino.centro);
+  return minutosIdaEVolta(origem, destino.centro, faixaHorario);
 }
 
 export function compararRotinaDoisDestinos(params: {
@@ -125,7 +135,9 @@ export function compararRotinaDoisDestinos(params: {
   destino1Id: PoloDestinoRecife["id"];
   destino2Id: PoloDestinoRecife["id"];
   diasPresenciaisMes?: number;
+  faixaHorario?: FaixaHorarioTrajeto;
 }): ResultadoRotinaDoisDestinos {
+  const faixaHorario = params.faixaHorario ?? "pico";
   const destino1 =
     POLOS_RECIFE.find((p) => p.id === params.destino1Id) ?? POLOS_RECIFE[0]!;
   const destino2 =
@@ -133,10 +145,10 @@ export function compararRotinaDoisDestinos(params: {
   const origA = resolverCentroImovel(params.centroA, params.bairroA);
   const origB = resolverCentroImovel(params.centroB, params.bairroB);
 
-  const p1A = minutosIdaEVolta(origA, destino1.centro);
-  const p2A = minutosIdaEVolta(origA, destino2.centro);
-  const p1B = minutosIdaEVolta(origB, destino1.centro);
-  const p2B = minutosIdaEVolta(origB, destino2.centro);
+  const p1A = minutosIdaEVolta(origA, destino1.centro, faixaHorario);
+  const p2A = minutosIdaEVolta(origA, destino2.centro, faixaHorario);
+  const p1B = minutosIdaEVolta(origB, destino1.centro, faixaHorario);
+  const p2B = minutosIdaEVolta(origB, destino2.centro, faixaHorario);
 
   const totalA = p1A + p2A;
   const totalB = p1B + p2B;
@@ -157,6 +169,8 @@ export function compararRotinaDoisDestinos(params: {
   return {
     destino1,
     destino2,
+    faixaHorario,
+    diasPresenciaisMes: dias,
     minutosDiaOpcaoA: totalA,
     minutosDiaOpcaoB: totalB,
     pessoa1OpcaoAMin: p1A,

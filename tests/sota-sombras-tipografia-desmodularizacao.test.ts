@@ -3102,4 +3102,81 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     const mapaSrc = readFileSync(mapaPredioPath, "utf8");
     expect(mapaSrc).not.toMatch(/border\w*Color:\s*comAlfa/);
   });
+
+  it("RotinaDoisDestinosComparar expõe premissa explícita pico × fora de pico e regime híbrido (S82)", () => {
+    const rPico = compararRotinaDoisDestinos({
+      nomeOpcaoA: "Opção Boa Viagem",
+      centroA: null,
+      bairroA: "boa-viagem",
+      nomeOpcaoB: "Opção Graças",
+      centroB: null,
+      bairroB: "gracas",
+      destino1Id: "polo_porto_digital",
+      destino2Id: "polo_ufpe",
+      diasPresenciaisMes: 20,
+      faixaHorario: "pico",
+    });
+    const rFora = compararRotinaDoisDestinos({
+      nomeOpcaoA: "Opção Boa Viagem",
+      centroA: null,
+      bairroA: "boa-viagem",
+      nomeOpcaoB: "Opção Graças",
+      centroB: null,
+      bairroB: "gracas",
+      destino1Id: "polo_porto_digital",
+      destino2Id: "polo_ufpe",
+      diasPresenciaisMes: 12,
+      faixaHorario: "fora_pico",
+    });
+    expect(rFora.minutosDiaOpcaoA).toBeLessThan(rPico.minutosDiaOpcaoA);
+    expect(rFora.faixaHorario).toBe("fora_pico");
+    expect(rFora.diasPresenciaisMes).toBe(12);
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(RotinaDoisDestinosComparar, {
+            nomeOpcaoA: "Opção Boa Viagem",
+            centroA: null,
+            bairroA: "boa-viagem",
+            nomeOpcaoB: "Opção Graças",
+            centroB: null,
+            bairroB: "gracas",
+          }),
+        ),
+      );
+    });
+
+    const txtPico = extrairTextos(tree.toJSON()).join("\n");
+    expect(txtPico).toContain("ida e volta no pico");
+    expect(txtPico).toContain("~19 km/h · 20 dias/mês");
+
+    const btnFora = tree.root.find((n) => n.props.testID === "rotina-faixa-fora-pico");
+    const btnHibrido = tree.root.find((n) => n.props.testID === "rotina-dias-12");
+    act(() => {
+      btnFora.props.onPress();
+      btnHibrido.props.onPress();
+    });
+
+    const txtFora = extrairTextos(tree.toJSON()).join("\n");
+    expect(txtFora).toContain("ida e volta fora de pico");
+    expect(txtFora).toContain("~28 km/h · 12 dias/mês");
+    expect(txtFora).toContain("considerando 12 dias presenciais");
+    expect(REGEX_JARGON_CAMADA1.test(txtFora)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txtFora)).toBe(false);
+
+    const src = readFileSync(
+      join(__dirname, "..", "src", "componentes", "visual", "RotinaDoisDestinosComparar.tsx"),
+      "utf8",
+    );
+    expect(src).not.toMatch(/\bcomAlfa\b/);
+    expect((src.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+
+    act(() => {
+      tree.unmount();
+    });
+  });
 });

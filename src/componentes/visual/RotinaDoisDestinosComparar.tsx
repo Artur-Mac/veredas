@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import {
   POLOS_RECIFE,
   compararRotinaDoisDestinos,
+  type FaixaHorarioTrajeto,
   type PoloDestinoRecife,
 } from "../../dados/mobilidade/rotinaCasal";
 import { Texto } from "../Texto";
@@ -31,6 +32,8 @@ export function RotinaDoisDestinosComparar({
     useState<PoloDestinoRecife["id"]>("polo_porto_digital");
   const [destino2Id, setDestino2Id] =
     useState<PoloDestinoRecife["id"]>("polo_boa_viagem");
+  const [faixaHorario, setFaixaHorario] = useState<FaixaHorarioTrajeto>("pico");
+  const [diasPresenciais, setDiasPresenciais] = useState<20 | 12>(20);
 
   const resultado = compararRotinaDoisDestinos({
     nomeOpcaoA,
@@ -41,10 +44,11 @@ export function RotinaDoisDestinosComparar({
     bairroB,
     destino1Id,
     destino2Id,
-    diasPresenciaisMes: 20,
+    diasPresenciaisMes: diasPresenciais,
+    faixaHorario,
   });
   const difMinDia = Math.abs(resultado.minutosDiaOpcaoA - resultado.minutosDiaOpcaoB);
-  const horasMesMenos = Math.round(((difMinDia * 20) / 60) * 10) / 10;
+  const horasMesMenos = Math.round(((difMinDia * diasPresenciais) / 60) * 10) / 10;
   const diasUteisAnoMenos = Math.round(((horasMesMenos * 12) / 8) * 10) / 10;
 
   return (
@@ -60,7 +64,9 @@ export function RotinaDoisDestinosComparar({
     >
       <View style={styles.cabecalho}>
         <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.kicker}>
-          Rotina a dois destinos (ida e volta no pico)
+          {faixaHorario === "pico"
+            ? "Rotina a dois destinos (ida e volta no pico)"
+            : "Rotina a dois destinos (ida e volta fora de pico)"}
         </Texto>
         <Texto tipo="secao" style={styles.manchete}>
           {resultado.resumoRotina}
@@ -136,6 +142,100 @@ export function RotinaDoisDestinosComparar({
             );
           })}
         </View>
+
+        <Texto
+          tipo="apoio"
+          cor="cor-texto-apoio"
+          style={[styles.rotuloPolo, { marginTop: 4 }]}
+        >
+          Premissa de horário e frequência
+        </Texto>
+        <View style={styles.chipsRow}>
+          <Pressable
+            testID="rotina-faixa-pico"
+            accessibilityRole="radio"
+            accessibilityState={{ checked: faixaHorario === "pico" }}
+            onPress={() => setFaixaHorario("pico")}
+            style={[
+              styles.chip,
+              {
+                backgroundColor:
+                  faixaHorario === "pico" ? cor("cor-texto") : cor("cor-papel-claro"),
+              },
+            ]}
+          >
+            <Texto
+              tipo="apoio"
+              cor={faixaHorario === "pico" ? "cor-superficie" : "cor-texto"}
+              style={[styles.textoChip, { fontVariant: ["tabular-nums"] }]}
+            >
+              Pico (7h30 / 18h)
+            </Texto>
+          </Pressable>
+          <Pressable
+            testID="rotina-faixa-fora-pico"
+            accessibilityRole="radio"
+            accessibilityState={{ checked: faixaHorario === "fora_pico" }}
+            onPress={() => setFaixaHorario("fora_pico")}
+            style={[
+              styles.chip,
+              {
+                backgroundColor:
+                  faixaHorario === "fora_pico" ? cor("cor-texto") : cor("cor-papel-claro"),
+              },
+            ]}
+          >
+            <Texto
+              tipo="apoio"
+              cor={faixaHorario === "fora_pico" ? "cor-superficie" : "cor-texto"}
+              style={[styles.textoChip, { fontVariant: ["tabular-nums"] }]}
+            >
+              Fora de pico (10h / 15h)
+            </Texto>
+          </Pressable>
+          <Pressable
+            testID="rotina-dias-20"
+            accessibilityRole="radio"
+            accessibilityState={{ checked: diasPresenciais === 20 }}
+            onPress={() => setDiasPresenciais(20)}
+            style={[
+              styles.chip,
+              {
+                backgroundColor:
+                  diasPresenciais === 20 ? cor("cor-azul-cadastral") : cor("cor-papel-claro"),
+              },
+            ]}
+          >
+            <Texto
+              tipo="apoio"
+              cor={diasPresenciais === 20 ? "cor-superficie" : "cor-texto"}
+              style={[styles.textoChip, { fontVariant: ["tabular-nums"] }]}
+            >
+              20 dias/mês
+            </Texto>
+          </Pressable>
+          <Pressable
+            testID="rotina-dias-12"
+            accessibilityRole="radio"
+            accessibilityState={{ checked: diasPresenciais === 12 }}
+            onPress={() => setDiasPresenciais(12)}
+            style={[
+              styles.chip,
+              {
+                backgroundColor:
+                  diasPresenciais === 12 ? cor("cor-azul-cadastral") : cor("cor-papel-claro"),
+              },
+            ]}
+          >
+            <Texto
+              tipo="apoio"
+              cor={diasPresenciais === 12 ? "cor-superficie" : "cor-texto"}
+              style={[styles.textoChip, { fontVariant: ["tabular-nums"] }]}
+            >
+              Híbrido (12 dias)
+            </Texto>
+          </Pressable>
+        </View>
       </View>
 
       {/* Comparativo lado a lado por hairline */}
@@ -187,7 +287,7 @@ export function RotinaDoisDestinosComparar({
           style={[styles.faixaEconomia, { borderTopColor: cor("cor-linha") }]}
         >
           <Texto tipo="apoio" cor="cor-salvia-escura" style={styles.textoEconomia}>
-            {`~${String(horasMesMenos).replace(".", ",")} h/mês a menos no trânsito (~${String(diasUteisAnoMenos).replace(".", ",")} dias úteis de 8h por ano) em ${resultado.vencedorRotina === "A" ? nomeOpcaoA : nomeOpcaoB} considerando 20 dias presenciais.`}
+            {`~${String(horasMesMenos).replace(".", ",")} h/mês a menos no trânsito (~${String(diasUteisAnoMenos).replace(".", ",")} dias úteis de 8h por ano) em ${resultado.vencedorRotina === "A" ? nomeOpcaoA : nomeOpcaoB} considerando ${diasPresenciais} dias presenciais.`}
           </Texto>
         </View>
       ) : null}
@@ -200,8 +300,10 @@ export function RotinaDoisDestinosComparar({
           paddingVertical: 8,
         }}
       >
-        <Texto testID="rotina-aviso-tabela" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
-          Estimativa em horário de pico programado; calculada localmente sem rastreamento GPS pessoal.
+        <Texto testID="rotina-aviso-tabela" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15, fontVariant: ["tabular-nums"] }}>
+          {faixaHorario === "pico"
+            ? `Estimativa em horário de pico (~19 km/h · ${diasPresenciais} dias/mês); calculada localmente sem rastreamento GPS pessoal.`
+            : `Estimativa fora de pico (~28 km/h · ${diasPresenciais} dias/mês); calculada localmente sem rastreamento GPS pessoal.`}
         </Texto>
       </View>
     </View>
