@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { COMO_GANHAR, NOMES_DE_MOVIMENTO, resumoDosCreditos, textoDeDisponiveis } from "../../dados/creditos";
 import { creditos } from "../../dados/dossies";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO } from "../../tema/tokens";
+import { ESPACO, RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 import { LinkDeLinha } from "../Botao";
 import { Cartao, CorpoDoCartao, Divisor, IconeDeSecao } from "../Cartao";
 import { Icone } from "../Icone";
@@ -32,7 +32,7 @@ export function PilulaDeCredito() {
         flexDirection: "row",
         alignItems: "center",
         gap: ESPACO[1],
-        minHeight: 36,
+        minHeight: TOQUE_MINIMO,
         paddingLeft: 10,
         paddingRight: 12,
         borderRadius: RAIO.pilula,
@@ -83,7 +83,7 @@ export function CartaoDeCreditos() {
           {COMO_GANHAR.map((g, i) => (
             <View key={g.tipo}>
               {i > 0 ? <Divisor /> : null}
-              <View style={{ flexDirection: "row", alignItems: "center", gap: ESPACO[3], minHeight: 40 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: ESPACO[3], minHeight: 44 }}>
                 <IconeDeSecao nome={g.icone} pequeno />
                 <Texto style={{ flex: 1 }}>{NOMES_DE_MOVIMENTO[g.tipo]}</Texto>
                 <Texto tipo="secao">{`+${g.mais}`}</Texto>
@@ -92,8 +92,8 @@ export function CartaoDeCreditos() {
           ))}
         </View>
         <View style={{ flexDirection: "row", flexWrap: "wrap", columnGap: ESPACO[4] }}>
-          <LinkDeLinha rotulo="Ver extrato" altura={40} onPress={() => router.push("/creditos")} />
-          <LinkDeLinha rotulo="Comprar créditos" altura={40} onPress={() => router.push("/creditos")} />
+          <LinkDeLinha rotulo="Ver extrato" onPress={() => router.push("/creditos")} />
+          <LinkDeLinha rotulo="Comprar créditos" onPress={() => router.push("/creditos")} />
         </View>
       </CorpoDoCartao>
     </Cartao>

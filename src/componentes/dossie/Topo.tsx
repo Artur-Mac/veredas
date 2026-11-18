@@ -7,7 +7,7 @@ import { chaveDoFato } from "../../estado/Aparelho";
 import { useCarregando, useEstadoDoFato, useLoteConfirmado } from "../../estado/fatos";
 import { useSessao } from "../../estado/Sessao";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, comAlfa } from "../../tema/tokens";
+import { ESPACO, RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
 import { Botao, LinkDeLinha } from "../Botao";
 import { Cartao, CorpoDoCartao } from "../Cartao";
 import { PilulaIlustrativo } from "../Etiquetas";
@@ -58,7 +58,7 @@ function MapaDeContexto({ dossie, estilo }: { dossie: Dossie; estilo: { height: 
             <Pressionavel
               role="link"
               onPress={() => irParaConfirmarLote(dossie)}
-              style={{ minHeight: 28, paddingHorizontal: 10, borderRadius: RAIO.pilula, backgroundColor: cor("cor-superficie"), justifyContent: "center" }}
+              style={{ minHeight: TOQUE_MINIMO, paddingHorizontal: 10, borderRadius: RAIO.pilula, backgroundColor: cor("cor-superficie"), justifyContent: "center" }}
             >
               <Texto tipo="apoio" style={{ textDecorationLine: "underline" }}>
                 Confirmar o lote

@@ -2585,4 +2585,40 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     const cartaoSrc = readFileSync(join(pastaCidadao, "CartaoCidadao3Camadas.tsx"), "utf8");
     expect(cartaoSrc).toContain("cartao-3camadas-toggle-");
   });
+
+  it("auditoria global de toque WCAG (>=44px) garante zero LinkDeLinha/controles <44px nos módulos corrigidos (S58)", () => {
+    const srcRoot = join(__dirname, "..", "src");
+    const arqs: string[] = [];
+    const empilhar = (dir: string) => {
+      for (const nome of readdirSync(dir)) {
+        const p = join(dir, nome);
+        if (statSync(p).isDirectory()) empilhar(p);
+        else if (p.endsWith(".tsx")) arqs.push(p);
+      }
+    };
+    empilhar(srcRoot);
+    expect(arqs.length).toBeGreaterThan(50);
+
+    for (const p of arqs) {
+      const s = readFileSync(p, "utf8");
+      expect(s).not.toMatch(/altura=\{(?:[123]\d|4[0-3])\}/);
+    }
+
+    const alvos = [
+      "componentes/inicio/Creditos.tsx",
+      "componentes/revisao/SeletorDeBairro.tsx",
+      "app/exemplos/[id]/(abas)/mapa.tsx",
+      "app/exemplos/[id]/(abas)/visita.tsx",
+      "app/exemplos/[id]/caminhos.tsx",
+      "app/mock.tsx",
+    ];
+    for (const rel of alvos) {
+      const s = readFileSync(join(srcRoot, rel), "utf8");
+      expect(s).not.toMatch(/minHeight:\s*(?:[123]\d|4[0-3])\b/);
+    }
+
+    const topoLegacy = readFileSync(join(srcRoot, "componentes", "dossie", "Topo.tsx"), "utf8");
+    expect(topoLegacy).not.toMatch(/minHeight:\s*28\b/);
+    expect(topoLegacy).toContain("minHeight: TOQUE_MINIMO");
+  });
 });

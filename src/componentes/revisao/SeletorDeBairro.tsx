@@ -177,7 +177,7 @@ const useEstilos = estilosDoTema((cor) =>
       backgroundColor: cor("cor-superficie"),
     },
     busca: {
-      minHeight: 42,
+      minHeight: 44,
       borderWidth: 1,
       borderColor: cor("cor-linha"),
       borderRadius: 10,

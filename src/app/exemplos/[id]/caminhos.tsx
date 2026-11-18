@@ -76,7 +76,7 @@ export default function CaminhosDiarios() {
                   style={[
                     TIPOS.corpo,
                     {
-                      minHeight: 40,
+                      minHeight: 44,
                       paddingHorizontal: ESPACO[3],
                       backgroundColor: cor("cor-fundo"),
                       borderWidth: 1,

@@ -127,7 +127,7 @@ export default function TelaDoMapa() {
                   flexDirection: "row",
                   alignItems: "center",
                   gap: ESPACO[1],
-                  minHeight: 40,
+                  minHeight: 44,
                   paddingHorizontal: ESPACO[3],
                   borderRadius: RAIO.pilula,
                   backgroundColor: cor("cor-superficie"),
