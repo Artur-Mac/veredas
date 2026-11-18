@@ -10,6 +10,7 @@ export type EventoLinhaUnificada = {
 
 export type ResultadoLinhaUnificadaDoLote = {
   manchete: string;
+  resumoTresSeriesPassado: string | null;
   eventos: EventoLinhaUnificada[];
   comparativoTemporal: string | null;
   acoesConcretas: string[];
@@ -143,8 +144,29 @@ export function construirLinhaUnificadaDoLote(params: {
       ? `Linha unificada com ${eventos.length} marco(s) oficiais do prédio e da quadra`
       : "Confirme o prédio para montar a linha do tempo unificada de entregas, licenças e registros";
 
+  const totalItbi = (edificio?.itbi?.porAno ?? []).reduce((acc, [, q]) => acc + q, 0);
+  const resumoTresSeriesPassado =
+    !edificio && !obrasProximas && !visaoRua?.defesaCivil
+      ? null
+      : `Três séries até hoje — Prédio: ${
+          edificio?.anoConstrucao ? `entrega em ${edificio.anoConstrucao}` : "ano a confirmar"
+        } · Registro fiscal: ${
+          totalItbi > 0
+            ? `${totalItbi} transmissão(ões) na série ITBI`
+            : "sem série publicada"
+        } · Rua (150 m): ${
+          obrasProximas
+            ? `${obrasProximas.relevantes24m} obra(s) relevante(s) em 24m`
+            : "sem alvarás lidos"
+        }${
+          visaoRua?.defesaCivil
+            ? ` e ${visaoRua.defesaCivil.atendimentos} chamado(s) na via`
+            : ""
+        }.`;
+
   return {
     manchete,
+    resumoTresSeriesPassado,
     eventos,
     comparativoTemporal,
     acoesConcretas: acoesConcretas.slice(0, 3),

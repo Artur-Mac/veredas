@@ -31,6 +31,16 @@ export function VidaAPeNaQuadra({
         <Texto tipo="secao" style={styles.manchete}>
           {dados.manchete}
         </Texto>
+        {dados.faixaDescritivaAPe ? (
+          <Texto
+            testID="vida-a-pe-faixa-descritiva"
+            tipo="apoio"
+            cor="cor-salvia-escura"
+            style={styles.faixaDescritiva}
+          >
+            {dados.faixaDescritivaAPe}
+          </Texto>
+        ) : null}
         <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.sub}>
           {dados.frasePercentil}
         </Texto>
@@ -131,6 +141,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 17,
     fontVariant: ["tabular-nums"],
+  },
+  faixaDescritiva: {
+    fontSize: 12.5,
+    lineHeight: 17,
+    fontWeight: "600",
   },
   linhaCat: {
     borderTopWidth: 1,

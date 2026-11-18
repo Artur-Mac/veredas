@@ -16,6 +16,7 @@ export type CategoriaCaminhabilidade = {
 export type ResultadoCaminhabilidadeEVida = {
   notaAPe0a10: number | null;
   ausenciaNota: AbsenceState | null;
+  faixaDescritivaAPe: string | null;
   manchete: string;
   percentilNoBairro: number | null;
   amostraPredios: number;
@@ -75,6 +76,7 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
     return {
       notaAPe0a10: null,
       ausenciaNota: "sem_leitura_publicada",
+      faixaDescritivaAPe: null,
       manchete: "Confirme o prédio para calcular caminhabilidade a pé e percentil do bairro",
       percentilNoBairro: null,
       amostraPredios: 0,
@@ -220,9 +222,21 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
       ? "Nota calculada da portaria deste edifício pela malha real de calçadas, não média de CEP ou esquina."
       : "Leitura em linha reta a partir deste edifício (fora da malha de calçadas validada).";
 
+  const faixaDescritivaAPe =
+    notaAPe0a10 === null
+      ? null
+      : notaAPe0a10 >= 8.5
+        ? "Rotina majoritariamente a pé: comércio essencial e transporte a poucos minutos da portaria"
+        : notaAPe0a10 >= 6.5
+          ? "Boa parte das tarefas do dia a dia resolvida a pé pela malha de calçadas"
+          : notaAPe0a10 >= 4.5
+            ? "Algumas tarefas a pé, combinadas com transporte coletivo ou veículo"
+            : "Deslocamento motorizado necessário para a maior parte das compras e serviços";
+
   return {
     notaAPe0a10,
     ausenciaNota: notaAPe0a10 === null ? "sem_leitura_publicada" : null,
+    faixaDescritivaAPe,
     manchete,
     percentilNoBairro,
     amostraPredios: todosTempos.length,

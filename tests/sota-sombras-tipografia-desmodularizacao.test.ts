@@ -1966,4 +1966,61 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });
+
+  it("adiciona faixa descritiva de caminhabilidade (Walk Score) e resumo de 3 séries passado→hoje (ClimateCheck) em S44", () => {
+    const bv = edificiosDoBairro("boa-viagem");
+    const essBv = essenciaisDoBairro("boa-viagem")!;
+    const predioRede = bv.find((e) => essBv.predios[e.id]?.modo === "rede")!;
+    const cam = avaliarCaminhabilidadeEVidaNaRua({
+      predio: predioRede,
+      essenciais: essBv,
+      visaoRua: null,
+      nomeDoBairro: "Boa Viagem",
+    });
+    expect(cam.faixaDescritivaAPe).toBeTruthy();
+
+    const camSemPredio = avaliarCaminhabilidadeEVidaNaRua({
+      predio: null,
+      essenciais: essBv,
+      visaoRua: null,
+      nomeDoBairro: "Boa Viagem",
+    });
+    expect(camSemPredio.faixaDescritivaAPe).toBeNull();
+
+    const linha = construirLinhaUnificadaDoLote({
+      edificio: predioRede,
+      obrasProximas: { licencasDeObra: 3, relevantes24m: 1, demolicoes24m: 0, recentes: [] },
+      visaoRua: null,
+      spuAtivo: false,
+    });
+    expect(linha.resumoTresSeriesPassado).toContain("Três séries até hoje —");
+
+    const linhaVazia = construirLinhaUnificadaDoLote({
+      edificio: null,
+      obrasProximas: null,
+      visaoRua: null,
+      spuAtivo: false,
+    });
+    expect(linhaVazia.resumoTresSeriesPassado).toBeNull();
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(VidaAPeNaQuadra, { dados: cam }),
+          React.createElement(LinhaUnificadaDoLote, { linha }),
+        ),
+      );
+    });
+    expect(tree.root.find((n) => n.props.testID === "vida-a-pe-faixa-descritiva")).toBeDefined();
+    expect(tree.root.find((n) => n.props.testID === "linha-tres-series-historico")).toBeDefined();
+
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain(cam.faixaDescritivaAPe!);
+    expect(txt).toContain("Três séries até hoje —");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+  });
 });

@@ -40,6 +40,16 @@ export function LinhaUnificadaDoLote({
         <Texto tipo="secao" style={styles.manchete}>
           {linha.manchete}
         </Texto>
+        {linha.resumoTresSeriesPassado ? (
+          <Texto
+            testID="linha-tres-series-historico"
+            tipo="apoio"
+            cor="cor-texto-apoio"
+            style={styles.tresSeries}
+          >
+            {linha.resumoTresSeriesPassado}
+          </Texto>
+        ) : null}
       </View>
 
       {linha.eventos.map((ev, idx) => (
@@ -121,6 +131,11 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     fontWeight: "700",
     letterSpacing: -0.3,
+  },
+  tresSeries: {
+    fontSize: 12,
+    lineHeight: 17,
+    fontVariant: ["tabular-nums"],
   },
   linhaEvento: {
     borderTopWidth: 1,
