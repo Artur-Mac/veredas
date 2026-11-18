@@ -2709,4 +2709,13 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(salvosSrc).not.toMatch(/\bcomAlfa\b/);
     expect(salvosSrc).toContain("tabular-nums");
   });
+
+  it("MapaDoLote reduz borderWidth:1 para <=4 caixas com pílulas planas e tipografia tabular (S69)", () => {
+    const mapaSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "MapaDoLote.tsx"),
+      "utf8",
+    );
+    expect((mapaSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(4);
+    expect(mapaSrc).toContain("fontVariant: [\"tabular-nums\"]");
+  });
 });

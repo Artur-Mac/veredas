@@ -93,14 +93,14 @@ function CartaoDaObra({ numero, obra, aoFechar }: { numero: number; obra: ObrasP
   const { cor } = useTema();
   const licenca = textoDaLicenca(obra.licenca);
   return (
-    <View accessibilityLiveRegion="polite" style={{ padding: 12, gap: 4, borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha"), backgroundColor: cor("cor-superficie") }}>
+    <View accessibilityLiveRegion="polite" style={{ padding: 12, gap: 4, borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha-forte"), backgroundColor: cor("cor-superficie") }}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-        <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20, fontWeight: "600", flex: 1 }}>{`${numero}. ${categoriaDaObra(obra.categoria)} ${distanciaDaObra(obra.distanciaM)}`}</Texto>
+        <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20, fontWeight: "600", flex: 1, fontVariant: ["tabular-nums"] }}>{`${numero}. ${categoriaDaObra(obra.categoria)} ${distanciaDaObra(obra.distanciaM)}`}</Texto>
         <Pressionavel onPress={aoFechar} accessibilityRole="button" accessibilityLabel="Fechar o detalhe da obra" style={{ minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center" }}>
           <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 16, lineHeight: 20 }}>✕</Texto>
         </Pressionavel>
       </View>
-      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, lineHeight: 18 }}>{`Pedido em ${mesDaObra(obra.data)} · ${obra.descricao}`}</Texto>
+      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, lineHeight: 18, fontVariant: ["tabular-nums"] }}>{`Pedido em ${mesDaObra(obra.data)} · ${obra.descricao}`}</Texto>
       <Texto tipo="apoio" cor={licenca ? "cor-texto" : "cor-texto-apoio"} style={{ fontSize: 12.5, lineHeight: 18 }}>
         {licenca ?? "Estado da licença não publicado nesta versão do índice."}
       </Texto>
@@ -117,7 +117,7 @@ function CartaoDoPontoExtra({ ponto, aoFechar }: { ponto: PontoExtraCena; aoFech
   const est = ESTILO_EXTRA[ponto.categoria];
   const minPe = ponto.distanciaM <= 2500 ? Math.max(1, Math.round(ponto.distanciaM / 75)) : null;
   return (
-    <View accessibilityLiveRegion="polite" style={{ padding: 12, gap: 4, borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha"), backgroundColor: cor("cor-superficie") }}>
+    <View accessibilityLiveRegion="polite" style={{ padding: 12, gap: 4, borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha-forte"), backgroundColor: cor("cor-superficie") }}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1 }}>
           <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: cor(est.fundo), alignItems: "center", justifyContent: "center" }}>
@@ -131,7 +131,7 @@ function CartaoDoPontoExtra({ ponto, aoFechar }: { ponto: PontoExtraCena; aoFech
           <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 16, lineHeight: 20 }}>✕</Texto>
         </Pressionavel>
       </View>
-      <Texto tipo="corpo" style={{ fontSize: 13, lineHeight: 18 }}>
+      <Texto tipo="corpo" style={{ fontSize: 13, lineHeight: 18, fontVariant: ["tabular-nums"] }}>
         {`${formatarDistanciaCurta(ponto.distanciaM)} em linha reta${minPe ? ` · ~${minPe} min a pé` : ""}`}
       </Texto>
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>
@@ -230,13 +230,11 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                 minHeight: 44,
                 paddingHorizontal: 10,
                 borderRadius: RAIO.pilula,
-                borderWidth: 1,
-                borderColor: ativa ? comAlfa(azul, 0.55) : cor("cor-linha"),
-                backgroundColor: ativa ? cor("cor-azul-cadastral-suave") : cor("cor-papel-claro"),
+                backgroundColor: ativa ? cor("cor-texto") : cor("cor-papel-claro"),
                 justifyContent: "center",
               }}
             >
-              <Texto tipo="apoio" cor={ativa ? "cor-azul-cadastral" : "cor-texto-apoio"} style={{ fontSize: 11.5, lineHeight: 15, fontWeight: ativa ? "700" : "500" }}>
+              <Texto tipo="apoio" cor={ativa ? "cor-papel-claro" : "cor-texto"} style={{ fontSize: 11.5, lineHeight: 15, fontWeight: ativa ? "700" : "500" }}>
                 {op.rotulo}
               </Texto>
             </Pressionavel>
@@ -253,13 +251,11 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
               minHeight: 44,
               paddingHorizontal: 10,
               borderRadius: RAIO.pilula,
-              borderWidth: 1,
-              borderColor: filtroExtra === "todos" ? cor("cor-texto") : cor("cor-linha"),
-              backgroundColor: filtroExtra === "todos" ? cor("cor-texto") : cor("cor-superficie"),
+              backgroundColor: filtroExtra === "todos" ? cor("cor-texto") : cor("cor-papel-claro"),
               justifyContent: "center",
             }}
           >
-            <Texto style={{ fontSize: 11.5, fontWeight: "700", color: filtroExtra === "todos" ? cor("cor-superficie") : cor("cor-texto") }}>
+            <Texto style={{ fontSize: 11.5, fontWeight: "700", color: filtroExtra === "todos" ? cor("cor-papel-claro") : cor("cor-texto") }}>
               Todos ({pontosExtras.length})
             </Texto>
           </Pressionavel>
@@ -277,9 +273,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                   minHeight: 44,
                   paddingHorizontal: 10,
                   borderRadius: RAIO.pilula,
-                  borderWidth: 1,
-                  borderColor: ativo ? cor(est.fundo) : cor("cor-linha"),
-                  backgroundColor: ativo ? comAlfa(cor(est.fundo), 0.14) : cor("cor-superficie"),
+                  backgroundColor: ativo ? cor("cor-sutil") : cor("cor-papel-claro"),
                   flexDirection: "row",
                   alignItems: "center",
                   gap: 5,
@@ -496,8 +490,6 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                 paddingHorizontal: 10,
                 paddingVertical: 5,
                 borderRadius: RAIO.pilula,
-                borderWidth: 1,
-                borderColor: cor("cor-linha"),
                 backgroundColor: cor("cor-papel-claro"),
               }}
             >
