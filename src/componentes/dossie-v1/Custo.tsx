@@ -35,14 +35,15 @@ type PropsDoValor = {
 };
 
 function ValorGrande({ rotulo, texto, sufixo, apoio, aoMedir, largura }: PropsDoValor) {
-  const corpo = corpoQueCabe(texto, largura - (sufixo ? 34 : 0), 24);
+  const larguraUtil = Math.max(96, largura - (sufixo ? 38 : 6));
+  const corpo = corpoQueCabe(texto, larguraUtil, 22, 13);
   return (
     <View style={{ flex: 1, minWidth: 0 }} onLayout={(e) => aoMedir(e.nativeEvent.layout.width)}>
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16 }}>
         {rotulo}
       </Texto>
       <View style={{ flexDirection: "row", alignItems: "baseline", flexWrap: "wrap", gap: 4, marginTop: 5 }}>
-        <Numero tamanho={corpo} peso="600">
+        <Numero tamanho={corpo} peso="600" estilo={{ flexShrink: 1 }}>
           {texto}
         </Numero>
         {sufixo ? (
@@ -55,7 +56,7 @@ function ValorGrande({ rotulo, texto, sufixo, apoio, aoMedir, largura }: PropsDo
         <Texto
           tipo="apoio"
           cor={apoio.ferrugem ? "cor-barro-texto" : "cor-texto"}
-          style={{ marginTop: 5, fontSize: 11, lineHeight: 16, fontWeight: apoio.ferrugem ? "500" : "600" }}
+          style={{ marginTop: 5, fontSize: 11.5, lineHeight: 16, fontWeight: apoio.ferrugem ? "500" : "600" }}
         >
           {apoio.texto}
         </Texto>

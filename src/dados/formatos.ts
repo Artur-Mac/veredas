@@ -31,6 +31,26 @@ export function formatarNumero(valor: number, casas = 0): string {
 export function formatarReais(valor: number): string {
   return `R$ ${formatarNumero(Math.round(valor))}`;
 }
+
+/**
+ * Formato compacto legível sem truncamento ("R$ 536 mil", "R$ 1,2 milhão", "R$ 3.850")
+ * para cabeçalhos estreitos, cartões salvos e matrizes comparativas.
+ */
+export function formatarReaisCompacto(valor: number): string {
+  const sinal = valor < 0 ? "-" : "";
+  const abs = Math.abs(Math.round(valor));
+  if (abs < 10_000) return `${sinal}R$ ${formatarNumero(abs)}`;
+  if (abs < 999_500) {
+    const mil = Math.round(abs / 1000);
+    return `${sinal}R$ ${formatarNumero(mil)} mil`;
+  }
+  const milhoes = Math.round(abs / 100_000) / 10;
+  const textoMilhoes = Number.isInteger(milhoes)
+    ? formatarNumero(milhoes, 0)
+    : formatarNumero(milhoes, 1);
+  const unidade = milhoes >= 2 ? "milhões" : "milhão";
+  return `${sinal}R$ ${textoMilhoes} ${unidade}`;
+}
 /** Para simulações e tarifas, não esconder centavos que mudam o resultado. */
 export function formatarCentavos(valor: number): string {
   if (!Number.isSafeInteger(valor)) throw new Error("Valor monetário fora da precisão segura.");

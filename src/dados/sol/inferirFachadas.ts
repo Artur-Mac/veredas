@@ -244,7 +244,7 @@ type CandidataFace = {
  * usando o polígono cadastral do imóvel e os edifícios vizinhos no mesmo logradouro.
  */
 export function inferirFachadasDoEdificio(params: {
-  edificio: Pick<Edificio, "id" | "bairro" | "logradouro" | "centro" | "poligono">;
+  edificio: Pick<Edificio, "id" | "logradouro" | "centro" | "poligono"> & { bairro?: string | null };
   vizinhosDoBairro?: readonly VizinhoParaFachada[];
   textoAnuncio?: string | null;
 }): InferenciaDeFachadas {
