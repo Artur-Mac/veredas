@@ -685,6 +685,54 @@ describe("por perto no mapa, rotina personalizada, comodidades e HTML editorial"
       arvore.unmount();
     });
   });
+
+  it("SimuladorDaUnidade zera comAlfa/caixas aninhadas e entrega atalhos de andar e ação na visita (S68)", () => {
+    const simSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "SimuladorDaUnidade.tsx"),
+      "utf8",
+    );
+    expect(simSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((simSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(2);
+
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(SimuladorDaUnidade, {
+            predio: { ...comNome, pavimentos: 12 },
+            vizinhos: gracas,
+            tipologia: "apartamento",
+            andarDoAnuncio: 4,
+            orientacaoGraus: 270,
+          }),
+        ),
+      );
+    });
+
+    const atalhos = arvore.root.find((n) => n.props.testID === "simulador-atalhos-andar");
+    expect(atalhos).toBeDefined();
+    const btnTopo = atalhos
+      .findAll((n) => typeof n.props.onPress === "function" && n.findAll((sub) => sub.children.includes("Topo (11º)")).length > 0)[0];
+    expect(btnTopo).toBeDefined();
+    act(() => {
+      btnTopo!.props.onPress?.();
+    });
+    expect(JSON.stringify(arvore.toJSON())).toContain("11º andar");
+
+    const btnBarulho = arvore.root
+      .findAll((n) => typeof n.props.onPress === "function" && typeof n.props.accessibilityLabel === "string" && n.props.accessibilityLabel.startsWith("Barulho por perto:"))[0];
+    expect(btnBarulho).toBeDefined();
+    act(() => {
+      btnBarulho!.props.onPress?.();
+    });
+    expect(arvore.root.find((n) => n.props.testID === "simulador-acao-barulho")).toBeDefined();
+
+    act(() => {
+      arvore.unmount();
+    });
+  });
 });
 
 // Garante que o tipo Edificio usado acima é o do índice (sem dado inventado).

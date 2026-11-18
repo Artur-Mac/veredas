@@ -7,7 +7,6 @@ import { TextInput, View } from "react-native";
 import type { Edificio } from "../../dados/contratos";
 import { ROSA, simularUnidade, type TipoDeImovel } from "../../dados/dossie/simuladorDaUnidade";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 import { Botao } from "../Botao";
 import { AlvoDeToque } from "../Pressionavel";
 import { Texto } from "../Texto";
@@ -29,8 +28,8 @@ function Escolha({ ativo, rotulo, onPress, acessivel, botao = false }: { ativo: 
   const papel = botao ? { accessibilityRole: "button" as const } : { accessibilityRole: "radio" as const, accessibilityState: { checked: ativo }, "aria-checked": ativo };
   return (
     <AlvoDeToque onPress={onPress} {...papel} accessibilityLabel={acessivel ?? rotulo}
-      style={{ minHeight: 44, minWidth: 44, alignItems: "center", justifyContent: "center", borderRadius: 10, borderWidth: 1, borderColor: ativo ? cor("cor-acao") : cor("cor-linha"), backgroundColor: ativo ? comAlfa(cor("cor-acao"), 0.12) : cor("cor-superficie"), paddingHorizontal: 12 }}>
-      <Texto tipo="corpo" style={{ fontSize: 13.5, fontWeight: ativo ? "700" : "500", color: ativo ? cor("cor-acao") : cor("cor-texto") }}>{rotulo}</Texto>
+      style={{ minHeight: 44, minWidth: 44, alignItems: "center", justifyContent: "center", borderRadius: 10, backgroundColor: ativo ? cor("cor-texto") : cor("cor-papel-claro"), paddingHorizontal: 12 }}>
+      <Texto tipo="corpo" cor={ativo ? "cor-papel-claro" : "cor-texto"} style={{ fontSize: 13.5, fontWeight: ativo ? "700" : "500" }}>{rotulo}</Texto>
     </AlvoDeToque>
   );
 }
@@ -69,6 +68,20 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
           </View>
         ) : null}
       </View>
+      {tipo === "apartamento" && maxAndar >= 4 ? (
+        <View testID="simulador-atalhos-andar" style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+          {(() => {
+            const andarMeio = Math.max(2, Math.round(maxAndar / 2));
+            return (
+              <>
+                <Escolha ativo={andar === 1} rotulo="Baixo (1º)" acessivel="Simular andar baixo, 1º andar" onPress={() => setAndar(1)} />
+                <Escolha ativo={andar === andarMeio} rotulo={`Meio (${andarMeio}º)`} acessivel={`Simular andar médio, ${andarMeio}º andar`} onPress={() => setAndar(andarMeio)} />
+                <Escolha ativo={andar === maxAndar} rotulo={`Topo (${maxAndar}º)`} acessivel={`Simular andar mais alto, ${maxAndar}º andar`} onPress={() => setAndar(maxAndar)} />
+              </>
+            );
+          })()}
+        </View>
+      ) : null}
 
       <View style={{ gap: 6 }}>
         <Texto tipo="corpo" style={{ fontSize: 13.5, fontWeight: "600" }}>Para qual lado fica a janela principal?</Texto>
@@ -111,7 +124,7 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
               alignItems: "center",
               justifyContent: "space-between",
               gap: 10,
-              backgroundColor: aberto === "barulho" ? comAlfa(cor("cor-acao"), 0.04) : "transparent",
+              backgroundColor: aberto === "barulho" ? cor("cor-creme") : "transparent",
             }}
           >
             <View style={{ flex: 1, gap: 2 }}>
@@ -150,6 +163,11 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
               <Texto testID="simulador-atenuacao-distancia" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, lineHeight: 18 }}>
                 {`${s.barulho.decibeis} ${s.barulho.nota}`}
               </Texto>
+              <View style={{ borderLeftWidth: 3, borderLeftColor: cor("cor-salvia-escura"), paddingLeft: 10, marginTop: 2 }}>
+                <Texto testID="simulador-acao-barulho" tipo="apoio" style={{ fontSize: 12.5, lineHeight: 18, color: cor("cor-texto") }}>
+                  {s.barulho.acaoConcreta}
+                </Texto>
+              </View>
             </View>
           ) : null}
         </View>
@@ -167,7 +185,7 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
               alignItems: "center",
               justifyContent: "space-between",
               gap: 10,
-              backgroundColor: aberto === "sol" ? comAlfa(cor("cor-acao"), 0.04) : "transparent",
+              backgroundColor: aberto === "sol" ? cor("cor-creme") : "transparent",
             }}
           >
             <View style={{ flex: 1, gap: 2 }}>
@@ -184,6 +202,13 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
                     {`${s.sol.fachada}: ~${s.sol.horasSolDireto.toFixed(1).replace(".", ",")} h de sol direto no equinócio nessa altura${s.sol.horasSemVizinhos > s.sol.horasSolDireto ? ` (seriam ~${s.sol.horasSemVizinhos.toFixed(1).replace(".", ",")} h sem prédios vizinhos)` : ""}.`}
                   </Texto>
                   <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 19 }}>{s.sol.resumoHumano}</Texto>
+                  {s.acaoSol ? (
+                    <View style={{ borderLeftWidth: 3, borderLeftColor: cor("cor-salvia-escura"), paddingLeft: 10, marginTop: 2 }}>
+                      <Texto testID="simulador-acao-sol" tipo="apoio" style={{ fontSize: 12.5, lineHeight: 18, color: cor("cor-texto") }}>
+                        {s.acaoSol}
+                      </Texto>
+                    </View>
+                  ) : null}
                 </>
               ) : (
                 <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20 }}>
@@ -207,7 +232,7 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
               alignItems: "center",
               justifyContent: "space-between",
               gap: 10,
-              backgroundColor: aberto === "brisa" ? comAlfa(cor("cor-acao"), 0.04) : "transparent",
+              backgroundColor: aberto === "brisa" ? cor("cor-creme") : "transparent",
             }}
           >
             <View style={{ flex: 1, gap: 2 }}>
@@ -220,6 +245,11 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
             <View style={{ paddingHorizontal: 13, paddingBottom: 14, gap: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 10 }}>
               <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20 }}>{s.vento.frase}</Texto>
               {s.vento.barreira ? <Texto tipo="apoio" style={{ fontSize: 13, lineHeight: 19 }}>{s.vento.barreira}</Texto> : null}
+              <View style={{ borderLeftWidth: 3, borderLeftColor: cor("cor-salvia-escura"), paddingLeft: 10, marginTop: 2 }}>
+                <Texto testID="simulador-acao-vento" tipo="apoio" style={{ fontSize: 12.5, lineHeight: 18, color: cor("cor-texto") }}>
+                  {s.vento.acaoConcreta}
+                </Texto>
+              </View>
               <Nota>{s.vento.superficie3d}</Nota>
             </View>
           ) : null}

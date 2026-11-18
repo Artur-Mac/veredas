@@ -90,9 +90,11 @@ export type SimulacaoDaUnidade = {
     consequenciaPorFace: string;
     decibeis: string;
     nota: string;
+    acaoConcreta: string;
   };
   sol: LeituraDaJanela | null;
-  vento: { frase: string; barreira: string | null; superficie3d: string };
+  acaoSol: string | null;
+  vento: { frase: string; barreira: string | null; superficie3d: string; acaoConcreta: string };
 };
 
 export function simularUnidade(opcoes: { predio: Edificio; vizinhos: readonly Edificio[]; tipo: TipoDeImovel; andar: number; fachadaGraus: number | null }): SimulacaoDaUnidade {
@@ -138,6 +140,22 @@ export function simularUnidade(opcoes: { predio: Edificio; vizinhos: readonly Ed
       : sol?.recebeBrisaSudeste === "reduzida_por_vizinho" ? "A fachada fica voltada para a brisa de sudeste, mas um vizinho mais alto fica no caminho."
         : "A fachada não fica voltada para a brisa de sudeste: o vento chega mais pelos outros lados.";
 
+  const acaoBarulho = fontes.some((f) => f.relacao === "de_frente")
+    ? "Na visita: feche as janelas da sala e do quarto principal no horário de movimento e cheque se a esquadria tem vedação íntegra."
+    : fontes.length > 0
+      ? "Na visita: ouça dos quartos e da varanda com a janela aberta e fechada para confirmar o isolamento do prédio."
+      : "Na visita: confira ruídos internos ou imediatos não mapeados (gerador, bombas hidráulicas ou rampa de garagem).";
+  const acaoSol =
+    sol === null
+      ? null
+      : /oeste|sudoeste|noroeste/i.test(sol.fachada)
+        ? "Na visita: se possível agende após 15h para sentir o calor da parede e pergunte se o condomínio permite película ou proteção solar na varanda."
+        : "Na visita: confira pela manhã a luz natural nos quartos e se há umidade em armários de paredes pouco ensolaradas.";
+  const acaoVento =
+    barreira !== null
+      ? "Na visita: abra duas janelas opostas da unidade para testar se há corrente de ar mesmo com o vizinho a sudeste."
+      : "Na visita: teste a abertura das folhas voltadas para sudeste/leste e a circulação de ar entre sala e serviço.";
+
   return {
     alturaDaJanelaM, explicacaoDaAltura,
     barulho: {
@@ -145,8 +163,10 @@ export function simularUnidade(opcoes: { predio: Edificio; vizinhos: readonly Ed
       consequenciaPorFace,
       decibeis: `Nível em dB(A): ${SEM_LEITURA} (nenhuma medição calibrada no Recife).`,
       nota: "Distâncias em linha reta, do centro do lote; dobrar a distância reduz de forma relevante o efeito da fonte. Para comparar, ouça na visita com a janela aberta e fechada, num dia útil às 18h e numa sexta à noite.",
+      acaoConcreta: acaoBarulho,
     },
     sol,
-    vento: { frase, barreira, superficie3d: `Altura real dos obstáculos (PE3D, MDS − MDT): ${SEM_LEITURA}; usamos os pavimentos do cadastro.` },
+    acaoSol,
+    vento: { frase, barreira, superficie3d: `Altura real dos obstáculos (PE3D, MDS − MDT): ${SEM_LEITURA}; usamos os pavimentos do cadastro.`, acaoConcreta: acaoVento },
   };
 }
