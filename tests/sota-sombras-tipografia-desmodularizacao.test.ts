@@ -351,7 +351,10 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(layout).toContain("PlusJakartaSans");
   });
 
-  it("novos módulos visuais (Radar, Copiloto, Pulso, Checklist IPTU) seguem anti-jargão, zero dB, zero R$ 0 e zero palavras proibidas", () => {
+  // Decisão A2 do Samuel (18/11/2026): o dB(A) pode aparecer, desde que estimado e dito como estimativa. A ficha do
+  // pulso traz a conta do eixo de sossego com o nível estimado; a regra deixa de ser "zero dB" e passa a ser "dB só
+  // com estimativa".
+  it("novos módulos visuais (Radar, Copiloto, Pulso, Checklist IPTU) seguem anti-jargão, dB só com estimativa, zero R$ 0 e zero palavras proibidas", () => {
     const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: 90, andar: 6 });
     const conf = avaliarConfortoTermico({
       andar: 6,
@@ -437,7 +440,9 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(texto).toContain("revisão cadastral na Prefeitura do Recife");
     expect(texto).toContain("Cadastro Imobiliário Recife");
     expect(texto).not.toMatch(/R\$ 0(?![\d.,])/);
-    expect(texto).not.toMatch(/\d\s*dB\b/i);
+    const comDb = extrairTextos(tree.toJSON()).filter((t) => /\d\s*dB\b/i.test(t));
+    expect(comDb.length).toBeGreaterThan(0);
+    for (const t of comDb) expect(t).toMatch(/estimativ|estimad/i);
     expect(REGEX_JARGON_CAMADA1.test(texto)).toBe(false);
     for (const r of PALAVRAS_PROIBIDAS_UI) {
       expect(r.test(texto)).toBe(false);

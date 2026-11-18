@@ -1,5 +1,5 @@
 {
- "executadoEm": "2026-11-18T18:37:23.896Z",
+ "executadoEm": "2026-11-18T20:47:12.879Z",
  "versao": "5e3b4b7941ed75ee",
  "formato": 1,
  "indice": "indice-municipal/faa40c969275e6b5",
@@ -13,7 +13,7 @@
   "sha256": "4b1b5e2eae02e04f29db98c88ce93c484816ace1484ed3238f920a684aa7a43d",
   "bytes": 445617687
  },
- "viasDoCache": true,
+ "viasDoCache": false,
  "leitura": {
   "blocos": 9110,
   "nos": 66441837,
@@ -550,6 +550,6 @@
    "fontesPorPredio": 3.81
   }
  },
- "ms": 20702,
- "memoriaPicoMB": 319
+ "ms": 68410,
+ "memoriaPicoMB": 934
 }

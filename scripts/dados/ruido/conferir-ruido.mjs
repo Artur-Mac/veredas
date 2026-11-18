@@ -46,7 +46,7 @@ const MAPA_SOSSEGO = {
   torre: { dia: [60, 63], noite: [79, 56], transito: 61, aeroportos: 42, locais: 38, vizinhanca: 52, habPorHa: 188, sha256: "2c569b18d6c06d549e92cbf8662dd2bbf45b920a0ac7595fecefbbec21fd0ec9" },
 };
 /** Os três prédios do aceite: [bairro, id no índice]. */
-const PREDIOS = [["boa-viagem", "8001-216"], ["torre", "10944-232"], ["casa-forte", "19526-1070"]];
+const PREDIOS = [["boa-viagem", "8001-216"], ["torre", "31950-280"], ["casa-forte", "19526-1070"]];
 
 const um = (x) => Math.round(x * 10) / 10;
 const quantil = (xs, p) => { const s = [...xs].sort((a, b) => a - b); return s[Math.min(s.length - 1, Math.floor(s.length * p))]; };

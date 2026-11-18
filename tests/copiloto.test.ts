@@ -182,10 +182,18 @@ describe("simulador andar × fachada", () => {
     expect(relacaoComAFachada(90, 270)).toBe("de_costas");
     expect(relacaoComAFachada(null, 270)).toBe("sem_fachada");
   });
-  it("sem dB inventado; recalcula com andar e fachada; casa fica no térreo", () => {
+  // Decisão A2 do Samuel (18/11/2026), que reabre a de 15/11: o dB(A) aparece, ESTIMADO e dito como estimativa; sem
+  // camada de ruído para o prédio continua "Sem leitura publicada", nunca um valor fixo.
+  it("dB só como estimativa (e sem leitura fora da camada); recalcula com andar e fachada; casa fica no térreo", () => {
     const leste = simularUnidade({ predio: comNome, vizinhos, tipo: "apartamento", andar: 2, fachadaGraus: 90 });
     const oeste = simularUnidade({ predio: comNome, vizinhos, tipo: "apartamento", andar: 2, fachadaGraus: 270 });
-    expect(leste.barulho.decibeis).toContain(SEM_LEITURA);
+    expect(leste.barulho.estimativa.estado).toBe("estimado");
+    expect(leste.barulho.decibeis).toMatch(/^Na janela do 2º andar, fachada leste: ~\d+ dB\(A\) de dia · ~\d+ à noite \(estimativa\)\. Estimativa com dados abertos, não medição\.$/);
+    expect(oeste.barulho.decibeis).not.toBe(leste.barulho.decibeis);
+    const foraDaCamada = simularUnidade({ predio: { ...comNome, id: "nao-existe" }, vizinhos, tipo: "apartamento", andar: 2, fachadaGraus: 90 });
+    expect(foraDaCamada.barulho.estimativa.estado).toBe("sem_leitura");
+    expect(foraDaCamada.barulho.decibeis).toContain(SEM_LEITURA);
+    expect(foraDaCamada.barulho.decibeis).not.toMatch(/\d+\s*dB/);
     expect(JSON.stringify(leste.barulho.fontes)).not.toMatch(/\d+\s*dB/);
     expect(leste.barulho.consequenciaPorFace.length).toBeGreaterThan(15);
     expect(leste.barulho.consequenciaPorFace).not.toMatch(/\d+\s*dB/);

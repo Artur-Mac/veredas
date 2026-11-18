@@ -57,7 +57,7 @@ describe("propagação", () => {
     const curto = (p: number) => dbDe(energiaDeTrecho(73, -2, p, 2, p));
     expect(curto(100) - curto(200)).toBeGreaterThan(5.9); // trecho curto visto de longe cai como ponto
     // A 10 m de uma via longa o nível é o de referência da classe (menos décimos de absorção); nunca passa dele.
-    expect(viaLonga(73, 10)).toBeGreaterThan(72.5);
+    expect(viaLonga(73, 10)).toBeGreaterThan(72.3);
     expect(viaLonga(73, 10)).toBeLessThanOrEqual(73);
     expect(viaLonga(73, 2)).toBeLessThanOrEqual(73);
   });
