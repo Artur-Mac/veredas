@@ -896,7 +896,7 @@ describe("tela do dossiê", () => {
       expect(t).toContain("IPTU: O anúncio informa R$ 288, sem periodicidade.");
       // 15/11/2026: o IPTU sem período mostra a referência do cadastro no mesmo lugar ("~R$ X", fora da soma).
       expect(t.filter((x) => x === "A confirmar").length).toBeGreaterThanOrEqual(1);
-      expect(t).toContain("pelo cadastro, fora da soma");
+      expect(t).toContain("referência do cadastro do prédio, fora do total conhecido até o boleto confirmar");
       expect(t).toContain("Ver composição e ajustar valores");
     });
 
@@ -1425,5 +1425,22 @@ describe("tela do dossiê: o placar usa o ruído estimado na unidade ativa", () 
     expect(t).toContain(`Sol e sossego calculados para: ${unidade.descricao}.`);
     // Nenhum rastro da via fixa antiga ("coletora a 18 m").
     expect(t).not.toMatch(/coletora a 18 m/);
+  });
+});
+
+// Revisão visual de 19/11/2026: o IPTU não aparece como "não informado" sem dizer que o cadastro tem a referência.
+describe("IPTU: anúncio e cadastro ditos cada um pelo nome", () => {
+  it("sem IPTU no anúncio e com o do cadastro, a pergunta diz os dois e a saída estimada diz 'IPTU do cadastro'", () => {
+    const e = indiceDoBairro("boa-viagem").edificios.find((x) => x.id === "8001-216")!;
+    expect(e.iptuAnual?.mediana ?? 0).toBeGreaterThan(0);
+    const a = analise({ modalidade: "compra", bairro: "boa-viagem", vinculo: confirmadoEm(e.id), declarados: { preco: v(890_000), iptu: { ...vazio, periodo: "desconhecido" } } });
+    const visao = derivar(a, e);
+    const pergunta = visao.perguntas.find((p) => p.id === "lacuna-iptu")!;
+    expect(pergunta.pista).toBe(`Não informado no anúncio; o cadastro dá ~${formatarReais(Math.round(e.iptuAnual!.mediana / 12))}/mês para o prédio`);
+    G.__router = { push: jest.fn(), replace: jest.fn(), navigate: jest.fn(), back: jest.fn(), canGoBack: jest.fn(() => false), setParams: jest.fn() };
+    prepararEstado([a], a.id);
+    const t = todosOsTextos(abrirTela()).join("\n");
+    expect(t).toContain("IPTU do cadastro");
+    expect(t).not.toContain("pelo cadastro, fora da soma");
   });
 });

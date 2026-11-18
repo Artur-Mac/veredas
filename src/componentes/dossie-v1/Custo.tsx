@@ -98,7 +98,7 @@ export function textoDaParcela(p: ParcelaDoCusto, referenciaIptu: { mensal: numb
     const difere = ref !== null && ref > 0 && Math.abs(p.valorMensal - ref) / ref > 0.2;
     return { valor: formatarReais(p.valorMensal), apoio: difere ? `cadastro: ~${formatarReais(Math.round(ref!))}` : null };
   }
-  if (iptuDoPredio !== null) return { valor: `~${formatarReais(iptuDoPredio)}`, apoio: "pelo cadastro, fora da soma" };
+  if (iptuDoPredio !== null) return { valor: `~${formatarReais(iptuDoPredio)}`, apoio: "referência do cadastro do prédio, fora do total conhecido até o boleto confirmar" };
   return { valor: textoDoValorMensal(p), apoio: null };
 }
 

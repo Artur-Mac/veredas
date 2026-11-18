@@ -357,7 +357,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
       ? [
           { rotulo: "Parcela", valor: partesDeCusto.simulacaoCompra?.prestacaoPriceReais ?? 0 },
           { rotulo: "cond.", valor: analise.declarados.condominio.valor ?? 0 },
-          { rotulo: "IPTU", valor: Math.round((predio?.iptuAnual?.mediana ?? 0) / 12) },
+          { rotulo: "IPTU do cadastro", valor: Math.round((predio?.iptuAnual?.mediana ?? 0) / 12) },
         ]
       : [{ rotulo: "Mensal conhecido", valor: visao.custo.totalMensalConhecido ?? visao.custo.principal.valor ?? 0 }];
     const luz = partesDeCusto.fatiasDaRotina.find((f) => f.id === "energia")?.valorMensalReais ?? 0;
@@ -415,7 +415,9 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
         vinculoConfirmado,
         precoInformado: analise.declarados.preco.valor !== null,
         condominioInformado: analise.declarados.condominio.valor !== null,
-        iptuConhecido: analise.declarados.iptu.valor !== null,
+        // O IPTU conta como conhecido com o valor do anúncio ou com a referência do cadastro do prédio (a mesma que entra
+        // na saída estimada do placar); antes o pulso dizia "falta IPTU" ao lado dela.
+        iptuConhecido: analise.declarados.iptu.valor !== null || (predio?.iptuAnual?.mediana ?? 0) > 0,
         spuAtivo: Boolean(partesDeCusto.alertaMarinha),
         caminhabilidade,
       }),
