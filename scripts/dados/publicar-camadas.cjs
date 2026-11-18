@@ -30,6 +30,7 @@ const MODULOS_GERADOS = [
   "recife/procuraGerado.ts",
   "recife/equipamentosGerado.ts",
   "recife/atritoGerado.ts",
+  "recife/mapaBaseGerado.ts",
   "sol/fontesGeradas.ts",
 ];
 const CAMINHO_DE_CAMADA = /"((?:recife|sol)\/[a-z0-9_./-]+\.json)"/g;
