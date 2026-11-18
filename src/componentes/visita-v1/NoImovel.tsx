@@ -1,12 +1,12 @@
 // "No imóvel": o painel escuro de campo (`.field-dark-panel` e `.field-dark-row`, index.html 2625–2642) com
 // cronômetro, roteiro conferível, "Sinta o espaço" (luz e ruído) e impressões. Sob `TemaEscuro`, todas as peças
 // leem os tokens escuros; o fundo é `cor-campo` e o texto, `cor-texto-campo`.
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { router } from "expo-router";
 import { View } from "react-native";
 import type { Edificio, Pergunta, Visita } from "../../dados/contratos";
 import { derivarGuiaDeEstrutura } from "../../dados/dossie/guiaEstrutura";
-import { TemaEscuro, useTema } from "../../tema/Tema";
+import { useTema } from "../../tema/Tema";
 import { ESPACO, RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
 import { Botao } from "../Botao";
 import { Pressionavel } from "../Pressionavel";
@@ -17,7 +17,6 @@ import { MedidorDeRuido } from "./MedidorDeRuido";
 import { OPCOES_DE_RUIDO, MAX_NOTAS, formatarCronometro } from "./logica";
 import type { ControleDaVisita } from "./useVisita";
 
-/** `.field-dark-row`: faixa de 12 px de respiro com divisória fina embaixo, menos na última. */
 function Faixa({ children, ultima = false }: { children: ReactNode; ultima?: boolean }) {
   const { cor } = useTema();
   return (
@@ -25,7 +24,7 @@ function Faixa({ children, ultima = false }: { children: ReactNode; ultima?: boo
       style={{
         paddingVertical: ESPACO[3],
         borderBottomWidth: ultima ? 0 : 1,
-        borderBottomColor: comAlfa(cor("cor-texto-campo"), 0.1),
+        borderBottomColor: cor("cor-linha"),
       }}
     >
       {children}
@@ -42,7 +41,7 @@ function Cronometro({ controle }: { controle: ControleDaVisita }) {
       <View style={{ flexShrink: 1 }}>
         <Texto
           tipo="numero"
-          cor="cor-texto-campo"
+          cor="cor-texto"
           accessibilityRole="timer"
           accessibilityLabel={`Tempo da visita ${formatarCronometro(segundos)}`}
           style={{ fontSize: 32, lineHeight: 38, letterSpacing: -1.3 }}
@@ -121,22 +120,43 @@ type PropsDoPainel = {
   andar?: number | null;
 };
 
+type ComodoFiltro = "todos" | "janelas" | "hidraulica" | "predio";
+
+const COMODOS: readonly { id: ComodoFiltro; rotulo: string }[] = [
+  { id: "todos", rotulo: "Todos" },
+  { id: "janelas", rotulo: "Sol & Janelas" },
+  { id: "hidraulica", rotulo: "Água & Cheiro" },
+  { id: "predio", rotulo: "Prédio & Atas" },
+];
+
+function casaComodo(p: Pergunta, comodo: ComodoFiltro): boolean {
+  if (comodo === "todos") return true;
+  const texto = `${p.titulo} ${p.pista} ${p.textoParaMensagem}`.toLowerCase();
+  if (comodo === "janelas") return /sol|janela|barulho|ru[ií]do|vento|calor|varanda/.test(texto);
+  if (comodo === "hidraulica") return /infiltr|mofo|[aá]gua|press[aã]o|vazamento|umidade|banheiro|ralo/.test(texto);
+  return /ata|cota|condom[ií]nio|elevador|garagem|portaria|fachada|reforma|taxa|marinha|iptu/.test(texto);
+}
+
 function Painel({ perguntas, controle, aoAbrirPergunta, aoAdicionarPergunta, predio = null, analiseId }: PropsDoPainel) {
   const { cor } = useTema();
+  const [comodo, setComodo] = useState<ComodoFiltro>("todos");
   const { visita } = controle;
   if (!visita) return null;
   const conferidas = perguntas.filter((p) => visita.verificadas.includes(p.id)).length;
   const guiaEstrutura = derivarGuiaDeEstrutura(predio);
+  const visiveis = perguntas.filter((p) => casaComodo(p, comodo));
+  const perguntasExibidas = visiveis.length > 0 ? visiveis : perguntas;
   return (
     <View
+      testID="painel-visita-editorial"
       style={{
-        backgroundColor: cor("cor-campo"),
+        backgroundColor: cor("cor-superficie"),
         borderRadius: 18,
         paddingVertical: 16,
         paddingHorizontal: 15,
         borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto-campo"), 0.12),
-        boxShadow: `0 10px 28px -8px ${comAlfa(cor("cor-campo"), 0.35)}`,
+        borderColor: cor("cor-linha-forte"),
+        boxShadow: `0 6px 20px -8px ${comAlfa(cor("cor-texto"), 0.12)}`,
       }}
     >
       <Faixa>
@@ -151,7 +171,33 @@ function Painel({ perguntas, controle, aoAbrirPergunta, aoAdicionarPergunta, pre
           </Texto>
         </View>
         <BarraDeProgresso feitas={conferidas} total={perguntas.length} rotulo="Perguntas conferidas" />
-        {perguntas.map((p) => (
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 10, marginBottom: 6 }}>
+          {COMODOS.map((c) => {
+            const ativo = comodo === c.id;
+            return (
+              <Pressionavel
+                key={c.id}
+                accessibilityRole="button"
+                accessibilityState={{ selected: ativo }}
+                onPress={() => setComodo(c.id)}
+                style={{
+                  minHeight: 38,
+                  paddingHorizontal: 11,
+                  borderRadius: RAIO.pilula,
+                  borderWidth: 1,
+                  borderColor: ativo ? cor("cor-acao") : cor("cor-linha-forte"),
+                  backgroundColor: ativo ? cor("cor-acao") : cor("cor-papel-claro"),
+                  justifyContent: "center",
+                }}
+              >
+                <Texto tipo="etiqueta" cor={ativo ? "cor-sobre-acao" : "cor-texto"} style={{ fontSize: 12 }}>
+                  {c.rotulo}
+                </Texto>
+              </Pressionavel>
+            );
+          })}
+        </View>
+        {perguntasExibidas.map((p) => (
           <LinhaDePergunta
             key={p.id}
             pergunta={p}
@@ -219,11 +265,7 @@ function Painel({ perguntas, controle, aoAbrirPergunta, aoAdicionarPergunta, pre
   );
 }
 
-/** O painel de campo: sempre escuro, em qualquer tema do app. */
+/** O painel de campo claro e legível à luz do dia (cartões editoriais por cômodo). */
 export function PainelDeCampo(props: PropsDoPainel) {
-  return (
-    <TemaEscuro>
-      <Painel {...props} />
-    </TemaEscuro>
-  );
+  return <Painel {...props} />;
 }

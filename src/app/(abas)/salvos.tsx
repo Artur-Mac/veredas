@@ -19,7 +19,8 @@ import type { AnaliseV2, Modalidade } from "../../dados/contratos";
 import { derivarCustoPorPartes } from "../../dados/custoPorPartes";
 import { custoMensal, ROTULO_MENSAL_CONHECIDO, avisoDeValoresPendentes } from "../../dados/custos";
 import { restaurarAnalise, rotuloDoMotivo } from "../../dados/descarte";
-import { formatarData, formatarReais, hojeIso } from "../../dados/formatos";
+import { formatarData, formatarReais, formatarReaisCompacto, hojeIso } from "../../dados/formatos";
+import { inferirFachadasDoEdificio } from "../../dados/sol/inferirFachadas";
 import { useAnalises } from "../../estado/Analises";
 import { useCarteira } from "../../estado/Carteira";
 import { usePerfilDomicilio, type PerfilDoDomicilio } from "../../estado/PerfilDomicilio";
@@ -95,6 +96,25 @@ function CartaoSalvo({ analise, perfilDomicilio, aoAbrir, aoRemover, aoPrepararV
   const resumoRotina = partes.fatiasDaRotina
     .map((f) => `${f.id === "energia" ? "luz" : "deslocamento"} ${f.valorMensalReais > 0 ? `~${formatarReais(f.valorMensalReais)}` : "sem gasto"}`)
     .join(" · ");
+  const inferenciaSalvo = inferirFachadasDoEdificio({
+    edificio: {
+      id: analise.id,
+      bairro: analise.bairro ?? "boa-viagem",
+      logradouro: analise.logradouro || analise.bairroTexto || "Via local",
+      centro: [-34.896, -8.121],
+      poligono: null,
+    },
+    textoAnuncio: [analise.nome, analise.nomeEdificio, ...(analise.extracao?.campos.comodidades ?? [])]
+      .filter(Boolean)
+      .join(" "),
+  });
+  const facSalvo =
+    inferenciaSalvo.fachadas.find((f) => f.id === inferenciaSalvo.fachadaSugeridaId) ?? inferenciaSalvo.frente;
+  const bolsoMesSalvo =
+    (aluguel
+      ? (custo.totalMensalConhecido ?? custo.principal.valor ?? 0)
+      : (partes.simulacaoCompra?.prestacaoPriceReais ?? 0) + (analise.declarados.condominio.valor ?? 0)) +
+    partes.somaRotinaEstimadaReais;
   return (
     <View
       style={{
@@ -138,6 +158,21 @@ function CartaoSalvo({ analise, perfilDomicilio, aoAbrir, aoRemover, aoPrepararV
       <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 11.5, lineHeight: 17, marginTop: 2 }}>
         {`Rotina à parte: ${resumoRotina}/mês`}
       </Texto>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 8, marginBottom: 4 }}>
+        {bolsoMesSalvo > 0 ? (
+          <View style={{ borderRadius: RAIO.pilula, backgroundColor: cor("cor-papel-claro"), borderWidth: 1, borderColor: cor("cor-linha-forte"), paddingHorizontal: 8, paddingVertical: 3 }}>
+            <Texto tipo="etiqueta" style={{ fontSize: 11 }}>{`Bolso ~${formatarReaisCompacto(bolsoMesSalvo)}/mês`}</Texto>
+          </View>
+        ) : null}
+        <View style={{ borderRadius: RAIO.pilula, backgroundColor: cor(facSalvo.grupoSolar === "Poente" ? "cor-barro-suave" : "cor-salvia-suave"), borderWidth: 1, borderColor: cor(facSalvo.grupoSolar === "Poente" ? "cor-barro" : "cor-salvia"), paddingHorizontal: 8, paddingVertical: 3 }}>
+          <Texto tipo="etiqueta" cor={facSalvo.grupoSolar === "Poente" ? "cor-barro-texto" : "cor-salvia-escura"} style={{ fontSize: 11 }}>{`Sol: ${facSalvo.orientacaoSolar}`}</Texto>
+        </View>
+        {partes.alertaMarinha ? (
+          <View style={{ borderRadius: RAIO.pilula, backgroundColor: cor("cor-barro-suave"), borderWidth: 1, borderColor: cor("cor-barro"), paddingHorizontal: 8, paddingVertical: 3 }}>
+            <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11 }}>Terreno da União</Texto>
+          </View>
+        ) : null}
+      </View>
       {avisoDeValoresPendentes(custo) ? (
         <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 11, lineHeight: 17 }}>{avisoDeValoresPendentes(custo)}</Texto>
       ) : null}

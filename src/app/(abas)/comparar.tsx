@@ -52,6 +52,11 @@ import { ComparaveisPessoais } from "../../componentes/comparar/ComparaveisPesso
 import { DueloFinalistas } from "../../componentes/cidadao/DueloFinalistas";
 import { ConvergenciaFamiliar } from "../../componentes/cidadao/ConvergenciaFamiliar";
 import { filtrarDominanciaInvisivel } from "../../dados/cidadao/dominanciaInvisivel";
+import { MatrizVisualComparar, type ColunaMatrizComparar } from "../../componentes/visual/MatrizVisualComparar";
+import { inferirFachadasDoEdificio } from "../../dados/sol/inferirFachadas";
+import { avaliarConfortoTermico } from "../../dados/clima/confortoTermico";
+import { avaliarBioclimatico3d } from "../../municipios/recife/motores/bioclimatico3d";
+import { avaliarAcustica3d } from "../../nucleo/motores/acustica3d";
 
 const MODALIDADES: readonly { valor: Modalidade; rotulo: string }[] = [
   { valor: "aluguel", rotulo: "Alugar" },
@@ -148,6 +153,62 @@ function CompararComDados() {
   const partesDoPar: Par<ReturnType<typeof derivarCustoPorPartes>> | null = a && b
     ? [derivarCustoPorPartes(a, ea, perfilDomicilio), derivarCustoPorPartes(b, eb, perfilDomicilio)] : null;
 
+  const matrizComparar: [ColunaMatrizComparar, ColunaMatrizComparar] | null = (() => {
+    if (!a || !b || !comparacao || !partesDoPar) return null;
+    const montar = (item: AnaliseV2, ed: Edificio | null, pt: ReturnType<typeof derivarCustoPorPartes>, nomeCurto: string): ColunaMatrizComparar => {
+      const inf = inferirFachadasDoEdificio({
+        edificio: ed ?? {
+          id: item.id,
+          bairro: item.bairro ?? "boa-viagem",
+          logradouro: item.logradouro || item.bairroTexto || "Via local",
+          centro: [-34.896, -8.121],
+          poligono: null,
+        },
+        textoAnuncio: [item.nome, item.nomeEdificio, ...(item.extracao?.campos.comodidades ?? [])]
+          .filter(Boolean)
+          .join(" "),
+      });
+      const fac = inf.fachadas.find((f) => f.id === inf.fachadaSugeridaId) ?? inf.frente;
+      const az = item.visita.orientacaoGraus ?? fac.azimuteGraus;
+      const andar = item.declarados.andar.valor ?? 4;
+      const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: az, andar });
+      const conf = avaliarConfortoTermico({
+        andar,
+        pavimentosTotais: ed?.pavimentos ?? null,
+        fachada: fac,
+        fachadaAzimuteGraus: az,
+        bioclimatico: bio,
+      });
+      const acu = avaliarAcustica3d({
+        andar,
+        fachadaVoltadaParaVia: fac.id === "fundos" ? "fundos" : "frente",
+        tipologiaVia: "coletora",
+        distanciaViaM: 18,
+        anoConstrucao: ed?.anoConstrucao ?? null,
+      });
+      const baseMensal =
+        item.modalidade === "compra"
+          ? (pt.simulacaoCompra?.prestacaoPriceReais ?? 0) +
+            (item.declarados.condominio.valor ?? 0) +
+            Math.round((ed?.iptuAnual?.mediana ?? 0) / 12) +
+            conf.custoMensalArReais
+          : (pt.oficial.totalMensalConhecido ?? item.declarados.preco.valor ?? 0) + conf.custoMensalArReais;
+      return {
+        nome: nomeCurto,
+        precoPrincipalReais: item.declarados.preco.valor ?? null,
+        areaM2: item.declarados.area.valor ?? null,
+        mensalBolsoRealReais: baseMensal > 0 ? Math.round(baseMensal) : null,
+        orientacaoCurta: fac.orientacaoSolar,
+        climaSelo: conf.selo,
+        confortoQuente: conf.zona === "quente_tarde" || conf.zona === "tende_abafar",
+        ruidoInternoDb: acu.ruidoInternoDormitorioDbA,
+        anoConstrucao: ed?.anoConstrucao ?? null,
+        spuAlerta: Boolean(pt.alertaMarinha),
+      };
+    };
+    return [montar(a, ea, partesDoPar[0], comparacao.rotulos[0]), montar(b, eb, partesDoPar[1], comparacao.rotulos[1])];
+  })();
+
   const naModalidade = elegiveis(lista, modalidade);
   const resumoDominancia = useMemo(() => {
     if (naModalidade.length < 3) return null;
@@ -205,8 +266,33 @@ function CompararComDados() {
           ) : par && comparacao ? (
             <View style={{ marginTop: 17 }}>
               {!modoTres ? <>
+              <View style={{ flexDirection: "row", gap: 12, marginBottom: 14 }}>
+                {([0, 1] as const).map((i) => {
+                  const edificio = i === 0 ? ea : eb;
+                  return (
+                    <CartaoDoImovel
+                      key={par[i].id}
+                      indice={i}
+                      analise={par[i]}
+                      poligono={edificio ? poligonoDoEdificio(edificio) : null}
+                      resumo={comparacao.resumos[i]}
+                      aoTrocar={() => setTrocando(i)}
+                      aoVerDossie={() => void abrirAnalise(par[i])}
+                    />
+                  );
+                })}
+              </View>
+
+              {matrizComparar ? (
+                <MatrizVisualComparar
+                  modalidade={modalidade}
+                  opcaoA={matrizComparar[0]}
+                  opcaoB={matrizComparar[1]}
+                />
+              ) : null}
+
               {decisao?.estado === "pronta" ? (
-                <View style={{ marginTop: -17, marginBottom: 16 }}>
+                <View style={{ marginBottom: 16 }}>
                   <ResumoDaDecisao
                     projecao={decisao}
                     aoMudarPrioridade={(v) => {
@@ -243,22 +329,6 @@ function CompararComDados() {
                   />
                 </View>
               ) : null}
-              <View style={{ flexDirection: "row", gap: 12 }}>
-                {([0, 1] as const).map((i) => {
-                  const edificio = i === 0 ? ea : eb;
-                  return (
-                    <CartaoDoImovel
-                      key={par[i].id}
-                      indice={i}
-                      analise={par[i]}
-                      poligono={edificio ? poligonoDoEdificio(edificio) : null}
-                      resumo={comparacao.resumos[i]}
-                      aoTrocar={() => setTrocando(i)}
-                      aoVerDossie={() => void abrirAnalise(par[i])}
-                    />
-                  );
-                })}
-              </View>
 
               {placar.length ? (
                 <View style={{ marginTop: 16 }}>

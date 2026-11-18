@@ -39,6 +39,7 @@ import {
   nomeSugerido,
   resumoDePrecoECustos,
   rotuloDaTipologia,
+  rotuloDoBairroEscolhido,
   tituloDeForaDeCobertura,
   tituloPadraoDoAnuncio,
   type EstadoDoFormulario,
@@ -428,8 +429,7 @@ function LeituraDoAnuncio() {
   // continua aberto (não some no meio da edição quando uma leitura nova traz o bairro).
   const formularioPrecisa = !temDados || foraDeCobertura || semBairro;
   const mostrarFormulario = abriuEdicao || formularioPrecisa;
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { if (formularioPrecisa) setAbriuEdicao(true); }, [formularioPrecisa]);
+  const acaoRapidaNoTopo = temDados && !mostrarFormulario && !semBairro && !foraDeCobertura;
   const mostrarCartaoDeTexto = !noCelular || pediuTexto;
   const bloqueado = motivoDaFalha === "bloqueio";
   /** No celular, quando a página não pôde ser lida, o caminho principal é o navegador do aparelho. */
@@ -507,6 +507,47 @@ function LeituraDoAnuncio() {
                 </View>
               )}
 
+              {acaoRapidaNoTopo ? (
+                <View style={{ gap: 10 }}>
+                  <AlvoDeToque
+                    accessibilityRole="button"
+                    accessibilityLabel="Bairro"
+                    accessibilityValue={{ text: rotuloDoBairroEscolhido(form) ?? "Nenhum escolhido" }}
+                    onPress={() => setAbriuEdicao(true)}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      paddingHorizontal: 12,
+                      paddingVertical: 8,
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: cor("cor-linha-forte"),
+                      backgroundColor: cor("cor-papel-claro"),
+                    }}
+                  >
+                    <Texto tipo="etiqueta" style={{ fontSize: 12.5 }}>
+                      {`Bairro: ${rotuloDoBairroEscolhido(form) ?? "A escolher"}`}
+                    </Texto>
+                    <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 12, fontWeight: "600" }}>
+                      Alterar dados
+                    </Texto>
+                  </AlvoDeToque>
+                  <PredioProvavel
+                    analise={previa}
+                    bairro={form.bairro as SlugCoberto}
+                    trabalhando={salvando || confirmando}
+                    aoConfirmar={(e) => void confirmarDaqui(e)}
+                    aoEscolherOutro={() => void encontrarOPredio()}
+                  />
+                  {erroAoSalvar ? (
+                    <Texto tipo="apoio" role="alert" style={styles.erro}>
+                      {erroAoSalvar}
+                    </Texto>
+                  ) : null}
+                </View>
+              ) : null}
+
               {avisoDeTipologia(form.tipologia) ? (
                 <Texto tipo="apoio" accessibilityLiveRegion="polite" style={styles.avisoDaCopia}>
                   {avisoDeTipologia(form.tipologia)}
@@ -577,6 +618,7 @@ function LeituraDoAnuncio() {
             </Cartao>
           ) : null}
 
+          {acaoRapidaNoTopo ? null : (
           <Cartao style={styles.cartao}>
             <CorpoDoCartao style={styles.corpo}>
               {mostrarFormulario ? (
@@ -584,7 +626,15 @@ function LeituraDoAnuncio() {
                   <Texto tipo="titulo-tela" role="heading" style={styles.tituloDoFormulario}>
                     Revise antes de salvar
                   </Texto>
-                  <FormularioDeRevisao essencial estado={form} anomalias={anomaliasDaRevisao(extracao, form)} aoAlterar={setForm} />
+                  <FormularioDeRevisao
+                    essencial
+                    estado={form}
+                    anomalias={anomaliasDaRevisao(extracao, form)}
+                    aoAlterar={(novoForm) => {
+                      setForm(novoForm);
+                      setAbriuEdicao(true);
+                    }}
+                  />
                 </>
               ) : null}
 
@@ -606,6 +656,7 @@ function LeituraDoAnuncio() {
               ) : null}
             </CorpoDoCartao>
           </Cartao>
+          )}
 
           {foraDeCobertura ? (
             <Cartao style={styles.cartao}>

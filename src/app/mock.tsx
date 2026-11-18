@@ -41,7 +41,7 @@ function telas(id: string): { tela: string; nome: string; href: Href; final?: bo
     { tela: "T1", nome: "Meus dossiês", href: "/" },
     { tela: "T2", nome: "Lendo o anúncio", href: { pathname: "/ler", params: { url: `https://exemplo.test/${id}` } } },
     { tela: "T3", nome: "Confirmar o lote", href: { pathname: "/exemplos/[id]/confirmar-lote", params: { id } } },
-    { tela: "T4", nome: "Dossiê", href: { pathname: "/exemplos/[id]", params: { id } } },
+    { tela: "T4", nome: "Dossiê (exemplo clássico)", href: { pathname: "/exemplos/[id]", params: { id } } },
     { tela: "T5", nome: "Mapa", href: { pathname: "/exemplos/[id]/mapa", params: { id } } },
     { tela: "T6", nome: "Visita", href: { pathname: "/exemplos/[id]/visita", params: { id } } },
     { tela: "T7", nome: "Modo visita", href: { pathname: "/exemplos/[id]/visita/ao-vivo", params: { id } } },
