@@ -2827,4 +2827,22 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       expect(pat.test(todoTexto)).toBe(false);
     }
   });
+
+  it("sobre-os-dados, SimuladorPrice, visita-v1/CartaoDoImovel e SeletorDeBairro zeram comAlfa/bordas extras (S76)", () => {
+    const sobrePath = join(__dirname, "..", "src", "app", "sobre-os-dados.tsx");
+    const pricePath = join(__dirname, "..", "src", "componentes", "dossie-v1", "SimuladorPrice.tsx");
+    const cartaoVisitaPath = join(__dirname, "..", "src", "componentes", "visita-v1", "CartaoDoImovel.tsx");
+    const bairroPath = join(__dirname, "..", "src", "componentes", "revisao", "SeletorDeBairro.tsx");
+
+    for (const p of [sobrePath, pricePath, cartaoVisitaPath]) {
+      expect(readFileSync(p, "utf8")).not.toMatch(/\bcomAlfa\b/);
+    }
+    expect(readFileSync(sobrePath, "utf8")).not.toMatch(/borderWidth:\s*1\b/);
+    expect(readFileSync(pricePath, "utf8")).not.toMatch(/borderWidth:\s*1\b/);
+    expect(readFileSync(pricePath, "utf8")).toContain("tabular-nums");
+    expect(readFileSync(cartaoVisitaPath, "utf8")).toContain("tabular-nums");
+
+    const bairroSrc = readFileSync(bairroPath, "utf8");
+    expect((bairroSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(2);
+  });
 });

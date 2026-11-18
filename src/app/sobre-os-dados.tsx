@@ -22,7 +22,7 @@ import { formatarData, formatarNumero } from "../dados/formatos";
 import { BAIRROS_COBERTOS, bairroPorSlug } from "../dados/recife/bairros";
 import { META } from "../dados/recife/indice";
 import { useTema } from "../tema/Tema";
-import { RAIO, TOQUE_MINIMO, comAlfa } from "../tema/tokens";
+import { RAIO, TOQUE_MINIMO } from "../tema/tokens";
 
 type Fonte = MetaDoIndice["fontes"][number] | FonteDaRua;
 
@@ -117,7 +117,7 @@ function CaixaCreme({ children, gap = 4 }: { children: React.ReactNode; gap?: nu
     <View
       style={{
         borderTopWidth: 1,
-        borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+        borderTopColor: cor("cor-linha"),
         paddingTop: 10,
         paddingBottom: 4,
         gap,
@@ -344,7 +344,7 @@ export default function SobreOsDados() {
                     key={`inv-${f.chave}`}
                     style={{
                       borderTopWidth: idx === 0 ? 0 : 1,
-                      borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+                      borderTopColor: cor("cor-linha"),
                       paddingTop: idx === 0 ? 0 : 6,
                       gap: 2,
                     }}
@@ -382,7 +382,7 @@ export default function SobreOsDados() {
                   key={row.camada}
                   style={{
                     borderTopWidth: 1,
-                    borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+                    borderTopColor: cor("cor-linha"),
                     paddingTop: 6,
                     flexDirection: "row",
                     justifyContent: "space-between",
@@ -410,7 +410,7 @@ export default function SobreOsDados() {
                   key={item.campo}
                   style={{
                     borderTopWidth: idx === 0 ? 0 : 1,
-                    borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+                    borderTopColor: cor("cor-linha"),
                     paddingTop: idx === 0 ? 0 : 6,
                     gap: 2,
                   }}
@@ -443,7 +443,7 @@ export default function SobreOsDados() {
                       key={b.numero}
                       style={{
                         borderTopWidth: 1,
-                        borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+                        borderTopColor: cor("cor-linha"),
                         paddingTop: 6,
                         gap: 2,
                       }}
