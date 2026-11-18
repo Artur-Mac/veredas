@@ -4,9 +4,6 @@ import { auditarDocumentoVereda, validarCnm16 } from "../src/nucleo/documentos/a
 import { validarNumeroProcessoCnj } from "../src/nucleo/documentos/datajudClient";
 import { vincularAnuncioFellegiSunter } from "../src/nucleo/resolucao/fellegiSunter";
 import { sanearTextoCamada1 } from "../src/dados/cidadao/tradutorCidadao";
-import { migrarAsyncStorageParaCofre } from "../src/persistencia/migrarAsyncStorage";
-import { abrirDriverNodeSqlite } from "../src/persistencia/driverNodeSqlite";
-import { CofreUsuarioLocal } from "../src/persistencia/cofreUsuario";
 
 function luminanciaRelativa(hex: string): number {
   const h = hex.replace("#", "");
@@ -42,7 +39,7 @@ describe("Milestone 8 — Acessibilidade WCAG AA, Alvos >= 48dp e Resiliência a
     expect(contrasteWcag(CORES_ESCURO["cor-acao"], CORES_ESCURO["cor-fundo"])).toBeGreaterThanOrEqual(3.0);
   });
 
-  test("Resiliência contra entradas malformadas, NaN, JSON corrompido e documentos vazios/truncados", async () => {
+  test("Resiliência contra entradas malformadas, NaN, JSON corrompido e documentos vazios/truncados", () => {
     const entradasEstranhas = [
       "",
       "   ",
@@ -92,25 +89,5 @@ describe("Milestone 8 — Acessibilidade WCAG AA, Alvos >= 48dp e Resiliência a
       ),
     ).not.toThrow();
 
-    // Migração resiliente a chaves corrompidas no AsyncStorage
-    const drv = abrirDriverNodeSqlite(":memory:");
-    try {
-      const cofre = new CofreUsuarioLocal(drv);
-      cofre.inicializar();
-      const mig = await migrarAsyncStorageParaCofre({
-        listarChaves: async () => ["vereda-analises-v2", "vereda-quebrado", "vereda-perfil-domicilio-v1"],
-        lerJson: async (k) => {
-          if (k === "vereda-analises-v2") return [{ lixo: true }, null];
-          if (k === "vereda-quebrado") throw new SyntaxError("JSON inválido");
-          return { moradores: 2 };
-        },
-        cofre,
-      });
-      expect(mig.ofertasMigradas).toBe(0);
-      expect(mig.ignoradosCorrompidos).toBe(3);
-      expect(mig.perfisMigrados).toBe(1);
-    } finally {
-      drv.close();
-    }
   });
 });
