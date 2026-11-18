@@ -783,18 +783,26 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
           <View style={styles.depoisDoPainel}>
             {aba === "destaques" ? (
               <View style={{ gap: 12 }}>
-                <CanvasSolSombraBrisa25D
-                  inferencia={inferenciaFachadas}
-                  fachadaSelecionada={fachadaAtiva.id}
-                  aoSelecionarFachada={setFachadaSelecionada}
-                  andar={andarSimulado}
-                  aoAlterarAndar={setAndarSimulado}
-                  pavimentosTotais={predio?.pavimentos ?? null}
-                  centro={predio?.centro ?? [-34.896, -8.121]}
-                  volumesEntorno={entornoSolar?.recorte.volumes}
-                  vizinhosLotes={cadastro.vizinhos}
-                  obrasEntorno={visao.obras}
-                />
+                {/* R9 (19/11/2026): sem prédio confirmado não há ponto para desenhar; antes o volume caía num ponto fixo de
+                    Boa Viagem. */}
+                {predio ? (
+                  <CanvasSolSombraBrisa25D
+                    inferencia={inferenciaFachadas}
+                    fachadaSelecionada={fachadaAtiva.id}
+                    aoSelecionarFachada={setFachadaSelecionada}
+                    andar={andarSimulado}
+                    aoAlterarAndar={setAndarSimulado}
+                    pavimentosTotais={predio.pavimentos ?? null}
+                    centro={predio.centro}
+                    volumesEntorno={entornoSolar?.recorte.volumes}
+                    vizinhosLotes={cadastro.vizinhos}
+                    obrasEntorno={visao.obras}
+                  />
+                ) : (
+                  <Texto testID="canvas-25d-sem-predio" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 19 }}>
+                    Confirme o prédio para ver o volume com sol, sombra e brisa neste endereço.
+                  </Texto>
+                )}
                 <TermometroConfortoTermico conforto={confortoTermico} andar={andarSimulado} />
                 <RadarVistaELote radar={radarVistaELote} />
                 <TresPerguntasDoBolso

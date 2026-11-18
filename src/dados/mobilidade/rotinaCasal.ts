@@ -75,17 +75,33 @@ function haversineKm(
 
 export type FaixaHorarioTrajeto = "pico" | "fora_pico";
 
+/**
+ * O tempo da rotina é uma estimativa, não um trajeto calculado por rua: distância em linha reta vezes este fator de
+ * desvio, a uma velocidade média fixa por faixa de horário. A tela diz isso (unificação de 19/11/2026, item R8).
+ */
+export const FATOR_DE_DESVIO_DA_LINHA_RETA = 1.38;
+export const VELOCIDADE_MEDIA_KMH: Record<FaixaHorarioTrajeto, number> = { pico: 19, fora_pico: 28 };
+
+/** Frase do método, para a tela: de onde sai o tempo e o que ele não é. */
+export function fraseDoMetodoDaRotina(faixaHorario: FaixaHorarioTrajeto, diasPresenciaisMes: number): string {
+  const fator = String(FATOR_DE_DESVIO_DA_LINHA_RETA).replace(".", ",");
+  return (
+    `Estimativa ${faixaHorario === "pico" ? "em horário de pico" : "fora de pico"}: distância em linha reta × ${fator} ` +
+    `(~${VELOCIDADE_MEDIA_KMH[faixaHorario]} km/h · ${diasPresenciaisMes} dias/mês). Não é o trajeto pelas ruas nem o trânsito do dia; calculada localmente sem rastreamento GPS pessoal.`
+  );
+}
+
 function minutosIdaEVolta(
   origem: readonly [number, number],
   destino: readonly [number, number],
   faixaHorario: FaixaHorarioTrajeto = "pico",
 ): number {
-  const kmRota = haversineKm(origem, destino) * 1.38;
+  const kmRota = haversineKm(origem, destino) * FATOR_DE_DESVIO_DA_LINHA_RETA;
   if (faixaHorario === "fora_pico") {
-    const minutosTrecho = Math.round((kmRota / 28) * 60 + 4);
+    const minutosTrecho = Math.round((kmRota / VELOCIDADE_MEDIA_KMH.fora_pico) * 60 + 4);
     return Math.max(10, Math.min(95, minutosTrecho)) * 2;
   }
-  const minutosTrecho = Math.round((kmRota / 19) * 60 + 6);
+  const minutosTrecho = Math.round((kmRota / VELOCIDADE_MEDIA_KMH.pico) * 60 + 6);
   return Math.max(12, Math.min(95, minutosTrecho)) * 2;
 }
 

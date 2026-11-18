@@ -337,6 +337,8 @@ export function derivarCustoPorPartes(
     }
     const indicioMarinha = verificarFaixaDeMarinha(predio?.centro ?? null, analise.bairro);
     if (indicioMarinha.emFaixaDeAtencao || opcoes?.regimeSpu) {
+      // R10 (19/11/2026): nenhuma tela passa `valorDominioPlenoTerrenoReais` nem `regimeSpu`; sem eles, os valores em
+      // reais ficam nulos e a tela mostra só o teto de 5% sobre o preço e a pergunta para a matrícula.
       spuEstatutario = calcularSpuEstatutario({
         regime: opcoes?.regimeSpu ?? "nao_sabemos",
         valorDominioPlenoTerrenoReais: opcoes?.valorDominioPlenoTerrenoReais ?? null,

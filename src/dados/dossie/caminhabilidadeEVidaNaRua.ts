@@ -85,13 +85,13 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
       fraseMalhaQuadra:
         "Sem vínculo confirmado: a conectividade pelas esquinas e travessias da quadra ainda não foi medida.",
       escopoGranularidade:
-        "Confirme o edifício para calcular tempos da portaria pela malha real de calçadas (não média de CEP).",
+        "Confirme o edifício para calcular tempos da portaria pela rede de ruas a pé (não média de CEP).",
       microContextoSetor:
         "Escala do bairro (setor censitário do Censo 2022 sem leitura casada neste ponto).",
       vidaNaRuaResumo: "Sem leitura de face de quadra sem vínculo confirmado.",
       categorias: categoriasVazias,
       decomposicaoResumo:
-        "Pesos abertos: Mercado 30% · Farmácia 25% · Transporte 25% · Praça 20%, com decaimento exponencial por tempo real de caminhada.",
+        "Pesos abertos: Mercado 30% · Farmácia 25% · Transporte 25% · Praça 20%, com decaimento exponencial pelo tempo de caminhada na rede de ruas.",
     };
   }
 
@@ -214,12 +214,12 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
 
   const fraseMalhaQuadra =
     leituraPredio.modo === "rede"
-      ? "Trajeto pela malha de quadra: os minutos consideram esquinas e ruas reais a pé, não linha reta."
+      ? "Trajeto pela malha de quadra: os minutos seguem as ruas e esquinas mapeadas, não a linha reta."
       : "Entrada fora da rede viária validada: distâncias exibidas apenas em linha reta.";
 
   const escopoGranularidade =
     leituraPredio.modo === "rede"
-      ? "Nota calculada da portaria deste edifício pela malha real de calçadas, não média de CEP ou esquina."
+      ? "Nota calculada da portaria deste edifício pela rede de ruas a pé, não média de CEP ou esquina."
       : "Leitura em linha reta a partir deste edifício (fora da malha de calçadas validada).";
 
   const faixaDescritivaAPe =
