@@ -5,10 +5,10 @@ import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
 import type { Edificio } from "../src/dados/contratos";
 import { edificiosDoBairro } from "../src/dados/recife/indice";
-import { TopoDoDossie } from "../src/componentes/dossie-v1/Topo";
+import { FOLGA_EM_VOLTA_DO_LOTE_M, METROS_MINIMOS_NA_LARGURA, metrosNaLarguraDoTopo, quadroDoTopo, TopoDoDossie } from "../src/componentes/dossie-v1/Topo";
 import { FundoDoMapa, CreditoDaBase } from "../src/componentes/mapa/FundoDoMapa";
-import { MapaDoPredio } from "../src/componentes/predio/MapaDoPredio";
-import { caixaDaCena, montarCena, paraDesenhoDaCena } from "../src/componentes/predio/projecao";
+import { alturaDoPe, MapaDoPredio } from "../src/componentes/predio/MapaDoPredio";
+import { caixaDaCena, montarCena, paraDesenhoDaCena, projetorLocal } from "../src/componentes/predio/projecao";
 import { GradeArquitetonica } from "../src/componentes/GradeArquitetonica";
 import { TemaDoApp } from "../src/tema/Tema";
 
@@ -118,5 +118,74 @@ describe("Topo do dossiê com o fundo", () => {
     expect(a.root.findAllByType(FundoDoMapa)).toHaveLength(0);
     expect(a.root.findAllByType(GradeArquitetonica)).toHaveLength(1);
     expect(a.root.find((n) => n.props.role === "img").props.accessibilityLabel).toBe("Contorno do lote do prédio, a partir do cadastro da Prefeitura");
+  });
+});
+
+// Revisão de 18/11/2026: crédito embaixo no /predio, descrição num nó só e enquadramento do topo com lote grande.
+describe("revisão do mapa-base no /predio e no topo", () => {
+  const TORRE = edificiosDoBairro("torre").find((e) => e.id === "31950-280")!;
+  const comRotulo = (a: TestRenderer.ReactTestRenderer) =>
+    a.root.findAll((n) => typeof n.type !== "string" && typeof n.props.accessibilityLabel === "string" && n.props.accessibilityLabel.includes("Mapa do entorno"));
+
+  it("/predio: o crédito fica embaixo, junto da faixa, e o pé inteiro é obstáculo e fica fora do enquadramento", () => {
+    const a = montar(React.createElement(MapaDoPredio, { selecionado: GOLDEN, outros: BOA_VIAGEM, aoEscolher: () => undefined }));
+    const pe = a.root.find((n) => n.props.testID === "pe-do-mapa-do-predio" && typeof n.type !== "string");
+    expect(pe.findAllByType(CreditoDaBase)).toHaveLength(1);
+    expect(pe.props.style).toMatchObject({ position: "absolute", bottom: 8 });
+    expect(JSON.stringify(pe.props.style)).not.toContain('"top"');
+    // A 340 px a frase quebra em duas linhas: 8 de margem + 36 da faixa + 2 + 14 do crédito.
+    expect(alturaDoPe(340, true)).toBe(60);
+    expect(alturaDoPe(1200, true)).toBe(46);
+    const fundo = a.root.findByType(FundoDoMapa).props.cena;
+    const altura = fundo.altura as number;
+    // Nenhum nome de rua ou de bairro entra na faixa do pé.
+    for (const b of fundo.bairros as { y: number; tamanho: number }[]) expect(b.y + b.tamanho / 2).toBeLessThanOrEqual(altura - alturaDoPe(340, true) + 1);
+    // O pino fica acima do pé.
+    const cena = montarCena(GOLDEN, BOA_VIAGEM, { largura: 340, altura: 180, reservaInferior: alturaDoPe(340, true) });
+    expect(cena.pino[1]).toBeLessThan(180 - alturaDoPe(340, true));
+  });
+
+  it("/predio e topo: a descrição do entorno fica num nó só e o desenho fica escondido da acessibilidade", () => {
+    const p = montar(React.createElement(MapaDoPredio, { selecionado: GOLDEN, outros: BOA_VIAGEM, aoEscolher: () => undefined }));
+    expect(comRotulo(p)).toHaveLength(1);
+    expect(comRotulo(p)[0]!.findAll((n) => n.props["aria-hidden"] === true && typeof n.type !== "string").length).toBeGreaterThan(0);
+    const t = montar(React.createElement(TopoDoDossie, { salva: false, aoVoltar: () => undefined, aoAlternarSalvo: () => undefined, aoAbrirMapa: () => undefined, predio: GOLDEN }));
+    act(() => t.root.find((n) => typeof n.props.onLayout === "function" && n.props.style?.aspectRatio === 16 / 10).props.onLayout({ nativeEvent: { layout: { width: 375, height: 234 } } }));
+    expect(comRotulo(t)).toHaveLength(1);
+    expect(comRotulo(t)[0]!.findAll((n) => n.props["aria-hidden"] === true && typeof n.type !== "string").length).toBeGreaterThan(0);
+  });
+
+  it("topo: lote pequeno fica em 220 m; lote grande cabe inteiro com folga para a rua em volta", () => {
+    expect(metrosNaLarguraDoTopo(GOLDEN.centro, GOLDEN.poligono, 375, 234)).toBe(METROS_MINIMOS_NA_LARGURA);
+    expect(metrosNaLarguraDoTopo(GOLDEN.centro, null, 375, 234)).toBe(METROS_MINIMOS_NA_LARGURA);
+    // Um lote de 300 m × 200 m: o quadro passa de 220 m e o lote cabe com a folga dos dois lados.
+    const [lon, lat] = GOLDEN.centro;
+    const g = 1 / 111195;
+    const grande: [number, number][] = [[lon - 150 * g, lat - 100 * g], [lon + 150 * g, lat - 100 * g], [lon + 150 * g, lat + 100 * g], [lon - 150 * g, lat + 100 * g]];
+    const m = metrosNaLarguraDoTopo(GOLDEN.centro, grande, 375, 234);
+    expect(m).toBeGreaterThan(300 + 2 * FOLGA_EM_VOLTA_DO_LOTE_M - 10);
+    const { paraDesenho } = quadroDoTopo(GOLDEN.centro, 375, 234, m);
+    for (const p of grande) {
+      const [x, y] = paraDesenho(p);
+      expect(x).toBeGreaterThan(0); expect(x).toBeLessThan(375);
+      expect(y).toBeGreaterThan(0); expect(y).toBeLessThan(234);
+    }
+  });
+
+  it("topo da Torre (lote grande do caso de teste): o lote cabe no quadro com folga e algum nome de rua aparece", () => {
+    expect(TORRE).toBeDefined();
+    const m = metrosNaLarguraDoTopo(TORRE.centro, TORRE.poligono, 375, 234);
+    const { paraDesenho } = quadroDoTopo(TORRE.centro, 375, 234, m);
+    const porMetro = 375 / m;
+    const projetar = projetorLocal(TORRE.centro);
+    for (const p of TORRE.poligono!) {
+      const [x, y] = paraDesenho(p);
+      expect(Math.min(x, 375 - x, y, 234 - y)).toBeGreaterThanOrEqual(FOLGA_EM_VOLTA_DO_LOTE_M * porMetro - 1);
+      expect(projetar(p)).toBeDefined();
+    }
+    const a = montar(React.createElement(TopoDoDossie, { salva: false, aoVoltar: () => undefined, aoAlternarSalvo: () => undefined, aoAbrirMapa: () => undefined, predio: TORRE }));
+    act(() => a.root.find((n) => typeof n.props.onLayout === "function" && n.props.style?.aspectRatio === 16 / 10).props.onLayout({ nativeEvent: { layout: { width: 375, height: 234 } } }));
+    const cena = a.root.findByType(FundoDoMapa).props.cena;
+    expect(cena.rotulos.length).toBeGreaterThan(0);
   });
 });

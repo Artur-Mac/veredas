@@ -61,6 +61,30 @@ const ALTURA_DOS_BOTOES = 8 + 44 * 3 + 6 * 2 + 4;
 const LARGURA_DO_CREDITO = 172;
 const MARCA_DO_FUNDO = { "data-fundo-do-mapa": "1" } as object;
 const LARGURA_ANTES_DA_MEDIDA = 320;
+/**
+ * Abaixo desta largura do mapa, o "Recentrar" vira um botão quadrado de 44 px com ícone (rótulo acessível "Voltar ao
+ * enquadramento inicial"): a 360 px, a coluna larga cobria o pino e o lote com o zoom máximo (revisão de 18/11/2026).
+ */
+export const LARGURA_PARA_RECENTRAR_COM_TEXTO = 480;
+/** Largura, em px, da coluna de botões (com a margem da borda), para os rótulos do fundo desviarem dela. */
+export function larguraDaColunaDeBotoes(larguraDoMapa: number, comRecentrar: boolean): number {
+  return 8 + (comRecentrar && larguraDoMapa >= LARGURA_PARA_RECENTRAR_COM_TEXTO ? 100 : 44) + 8;
+}
+/**
+ * Etiqueta de altura do prédio do imóvel: se cair sobre o pino (halo de 11 px), sobe para logo acima dele. Tudo em px de
+ * tela; `zoom` converte de volta para o desenho.
+ */
+export function etiquetaLongeDoPino(
+  etiqueta: { x: number; y: number },
+  pino: readonly [number, number],
+  zoom: number,
+): { x: number; y: number } {
+  const dx = (etiqueta.x - pino[0]) * zoom;
+  const dy = (etiqueta.y - pino[1]) * zoom;
+  // A etiqueta tem uns 22 px de largura e 10 de altura acima da linha de base; o halo do pino tem raio 11.
+  if (Math.abs(dx) > 11 + 14 || dy < -11 || dy > 11 + 10) return etiqueta;
+  return { x: pino[0], y: pino[1] - 14 / zoom };
+}
 
 /** 15/11/2026: o seletor volta a aparecer; o volume é estimado (altura do cadastro sobre o contorno do lote). */
 const OPCOES_DO_MAPA: readonly { id: ModoDoMapa; rotulo: string }[] = [
@@ -82,8 +106,9 @@ type Props = {
 };
 
 /** Botão quadrado de 44 px sobre o mapa (zoom e recentrar). */
-function BotaoDoMapa({ rotulo, acessivel, onPress, desligado = false }: { rotulo: string; acessivel: string; onPress: () => void; desligado?: boolean }) {
+function BotaoDoMapa({ rotulo, acessivel, onPress, desligado = false, icone = false }: { rotulo: string; acessivel: string; onPress: () => void; desligado?: boolean; icone?: boolean }) {
   const { cor } = useTema();
+  const corDoSinal = desligado ? cor("cor-texto-apoio") : cor("cor-texto");
   return (
     <Pressionavel
       onPress={onPress}
@@ -97,7 +122,15 @@ function BotaoDoMapa({ rotulo, acessivel, onPress, desligado = false }: { rotulo
         backgroundColor: desligado ? cor("cor-papel-claro") : cor("cor-superficie"), borderWidth: 1, borderColor: cor("cor-linha"),
       }}
     >
-      <Texto tipo="corpo" cor={desligado ? "cor-texto-apoio" : "cor-texto"} style={{ fontSize: rotulo.length > 2 ? 12 : 18, lineHeight: 20, fontWeight: "700" }}>{rotulo}</Texto>
+      {icone ? (
+        // Mira (enquadramento inicial): um círculo com quatro traços, do tamanho do "+" e do "−".
+        <Svg aria-hidden width={20} height={20} viewBox="0 0 20 20">
+          <Circle cx={10} cy={10} r={5} fill="none" stroke={corDoSinal} strokeWidth={1.8} />
+          <Path d="M10 1 V5 M10 15 V19 M1 10 H5 M15 10 H19" stroke={corDoSinal} strokeWidth={1.8} strokeLinecap="round" />
+        </Svg>
+      ) : (
+        <Texto tipo="corpo" cor={desligado ? "cor-texto-apoio" : "cor-texto"} style={{ fontSize: rotulo.length > 2 ? 12 : 18, lineHeight: 20, fontWeight: "700" }}>{rotulo}</Texto>
+      )}
     </Pressionavel>
   );
 }
@@ -263,7 +296,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
   const obstaculos: [number, number, number, number][] = [
     [0, 0, 8 + seloEstimado, 8 + 46],
     // Os botões de zoom e, com zoom, o "Recentrar" (mais largo).
-    [largura - 8 - (estado.zoom > 1 ? 100 : 52), 0, largura, ALTURA_DOS_BOTOES],
+    [largura - larguraDaColunaDeBotoes(largura, estado.zoom > 1), 0, largura, ALTURA_DOS_BOTOES],
     [0, ALTURA - 40, 12 + Math.max(larguraDaRegua, 40) + 12, ALTURA],
     [largura - LARGURA_DO_CREDITO, ALTURA - 22, largura, ALTURA],
     // As obras numeradas ficam por cima do desenho: os nomes de rua desviam delas (na vista sem arraste).
@@ -454,13 +487,15 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
       >
         {cenaDoFundo ? null : <GradeArquitetonica />}
         <View accessible role="img" accessibilityLabel={descricao} pointerEvents="none" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}>
-          <Svg width={cena.largura} height={cena.altura} viewBox={`0 0 ${cena.largura} ${cena.altura}`}>
+          {/* A descrição (com a do fundo) fica só neste contêiner; o desenho fica fora da acessibilidade. */}
+          <Svg aria-hidden width={cena.largura} height={cena.altura} viewBox={`0 0 ${cena.largura} ${cena.altura}`}>
             <G transform={transformacao(estado, cena.largura, cena.altura)}>
-              {/* O fundo (ruas, quadras, lotes, água) é o primeiro filho do grupo de zoom: tudo o mais fica por cima. */}
+              {/* O fundo (ruas, quadras, lotes, água) é o primeiro filho do grupo de zoom: tudo o mais fica por cima. No
+                  volume, só o chão vai aqui; os nomes de rua e de bairro vão depois dos volumes, para não sumirem atrás deles. */}
               {cenaDoFundo ? (
                 // A marca serve ao roteiro de capturas (conta os elementos do fundo); no nativo é ignorada.
                 <G {...MARCA_DO_FUNDO}>
-                  <FundoDoMapa cena={fundoDesenhado ?? cenaDoFundo} />
+                  <FundoDoMapa cena={fundoDesenhado ?? cenaDoFundo} partes={cena25d ? "chao" : "tudo"} />
                 </G>
               ) : null}
               {cena25d ? (
@@ -490,12 +525,14 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                       />
                       {v.faixaDoAndar ? <Path d={v.faixaDoAndar} fill="none" stroke={acao} strokeWidth={2.4 / estado.zoom} strokeLinejoin="round" /> : null}
                       {v.etiquetaAltura ? (
-                        <TextoSvg x={v.etiquetaAltura.x} y={v.etiquetaAltura.y} fill={v.alvo ? azul : cor("cor-texto-apoio")} fontFamily="JetBrainsMono" fontSize={9.5 / estado.zoom} fontWeight={v.alvo ? "700" : "600"} textAnchor="middle">
+                        <TextoSvg {...(v.alvo ? etiquetaLongeDoPino(v.etiquetaAltura, cena25d.pino, estado.zoom) : { x: v.etiquetaAltura.x, y: v.etiquetaAltura.y })} fill={v.alvo ? azul : cor("cor-texto-apoio")} fontFamily="JetBrainsMono" fontSize={9.5 / estado.zoom} fontWeight={v.alvo ? "700" : "600"} textAnchor="middle">
                           {v.etiquetaAltura.texto}
                         </TextoSvg>
                       ) : null}
                     </G>
                   ))}
+                  {/* 3. Nomes de rua e de bairro do fundo, por cima dos volumes. */}
+                  {cenaDoFundo ? <FundoDoMapa cena={fundoDesenhado ?? cenaDoFundo} partes="rotulos" /> : null}
                 </>
               ) : (
                 <>
@@ -635,10 +672,17 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
         })}
         {cenaDoFundo?.selo ? <SeloDoBairro nome={cenaDoFundo.selo} style={{ position: "absolute", top: 8, left: 8 }} /> : null}
         {cenaDoFundo ? <CreditoDaBase style={{ position: "absolute", right: 4, bottom: 4 }} /> : null}
-        <View style={{ position: "absolute", top: 8, right: 8, gap: 6 }}>
+        <View style={{ position: "absolute", top: 8, right: 8, gap: 6, alignItems: "flex-end" }}>
           <BotaoDoMapa rotulo="+" acessivel="Aproximar o mapa" onPress={() => setEstado((e) => aproximar(e, largura, ALTURA, cena.pino))} desligado={estado.zoom >= ZOOMS[ZOOMS.length - 1]!} />
           <BotaoDoMapa rotulo="−" acessivel="Afastar o mapa" onPress={() => setEstado((e) => afastar(e, largura, ALTURA, cena.pino))} desligado={estado.zoom <= ZOOMS[0]!} />
-          {comZoom ? <BotaoDoMapa rotulo="Recentrar" acessivel="Voltar ao enquadramento inicial" onPress={() => setEstado(recentrar)} /> : null}
+          {comZoom ? (
+            <BotaoDoMapa
+              rotulo="Recentrar"
+              icone={largura < LARGURA_PARA_RECENTRAR_COM_TEXTO}
+              acessivel="Voltar ao enquadramento inicial"
+              onPress={() => setEstado(recentrar)}
+            />
+          ) : null}
         </View>
       </View>
       <AvisoDoFundoDoMapa estado={fundo.estado} tentarDeNovo={fundo.tentarDeNovo} />

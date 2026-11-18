@@ -3,7 +3,7 @@
 import { afterEach, describe, expect, it, jest } from "@jest/globals";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
-import { daTelaParaODesenho, ehToque, LIMIAR_DO_TOQUE_PX, MapaDoLote, obstaculosDosPontos } from "../src/componentes/dossie-v1/MapaDoLote";
+import { daTelaParaODesenho, ehToque, etiquetaLongeDoPino, LARGURA_PARA_RECENTRAR_COM_TEXTO, larguraDaColunaDeBotoes, LIMIAR_DO_TOQUE_PX, MapaDoLote, obstaculosDosPontos } from "../src/componentes/dossie-v1/MapaDoLote";
 import { ESTADO_INICIAL, afastar, aproximar, arrastar, deslocamentoDoZoom, naTela, recentrar, tocarObra, transformacao, trocarModo } from "../src/componentes/dossie-v1/mapaInterativo";
 import { caixaDoQuadro, comVolumesDoChao, montarCena25DDoLote, montarCenaDoLote, paraDesenhoDoQuadro, VAO_MINIMO_DA_GAVETA_M, VAO_MINIMO_VERTICAL_DA_GAVETA_M } from "../src/componentes/dossie-v1/mapa";
 import { CreditoDaBase, FundoDoMapa, SeloDoBairro } from "../src/componentes/mapa/FundoDoMapa";
@@ -188,8 +188,9 @@ describe("MapaDoLote com o fundo do mapa", () => {
   // Mudou em 18/11/2026 (Por perto e volume): o volume passa a ter o fundo como chão, sem o lote do imóvel em dobro.
   it("o modo Volume tem o fundo por baixo, sem a camada do lote do imóvel, e continua com o limite de 60 vizinhos", () => {
     const a = montar({ modoInicial: "tarde" });
+    // Revisão de 18/11/2026: o chão vai antes dos volumes e os nomes de rua e de bairro depois deles.
     const fundos = a.root.findAllByType(FundoDoMapa);
-    expect(fundos).toHaveLength(1);
+    expect(fundos.map((f) => f.props.partes)).toEqual(["chao", "rotulos"]);
     expect(fundos[0]!.props.cena.camadas.loteDoImovel).toBe("");
     expect(fundos[0]!.props.cena.camadas.quadras.length).toBeGreaterThan(0);
     expect(a.root.findAllByType(CreditoDaBase)).toHaveLength(1);
@@ -308,5 +309,71 @@ describe("MapaDoLote com o fundo do mapa", () => {
     expect(x1).toBeCloseTo(320, 6); expect(y1).toBeCloseTo(280, 6);
     const [px, py] = para(golden.centro);
     expect(px).toBeCloseTo(cena.pino[0], 6); expect(py).toBeCloseTo(cena.pino[1], 6);
+  });
+});
+
+// Revisão de 18/11/2026: ordem das camadas no volume, descrição num nó só, botão de recentrar estreito e etiqueta de
+// altura longe do pino.
+describe("MapaDoLote, revisão do mapa-base", () => {
+  const golden = edificioPorId("8001-216", "boa-viagem")!;
+  const vizinhosBV = edificiosDoBairro("boa-viagem");
+  function montar(props: Partial<React.ComponentProps<typeof MapaDoLote>> = {}) {
+    let a!: TestRenderer.ReactTestRenderer;
+    act(() => { a = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(MapaDoLote, { predio: golden, obras: [], vizinhos: vizinhosBV, ...props }))); });
+    montadas.push(a);
+    return a;
+  }
+  /** Os filhos do grupo de zoom, na ordem do desenho, como "chao", "volume", "rotulos" ou "outro". */
+  function ordemNoVolume(a: TestRenderer.ReactTestRenderer): string[] {
+    const fundos = a.root.findAllByType(FundoDoMapa);
+    // O grupo de zoom: o primeiro ancestral do chão que também contém os rótulos.
+    let grupo = fundos[0]!.parent!;
+    while (!grupo.findAllByType(FundoDoMapa).some((f) => f.props.partes === "rotulos") && grupo.parent) grupo = grupo.parent;
+    const ordem: string[] = [];
+    const visitar = (n: TestRenderer.ReactTestInstance) => {
+      if (n.type === FundoDoMapa) { ordem.push(String(n.props.partes)); return; }
+      if (typeof n.type !== "string" && typeof n.props.d === "string" && n.props.fillOpacity === 0.72) { ordem.push("volume"); return; }
+      for (const f of n.children) if (typeof f !== "string") visitar(f);
+    };
+    visitar(grupo);
+    return ordem.filter((x, i) => i === 0 || x !== ordem[i - 1]);
+  }
+
+  it("no volume, o chão vem antes dos volumes e os rótulos do fundo depois deles", () => {
+    expect(ordemNoVolume(montar({ modoInicial: "tarde" }))).toEqual(["chao", "volume", "rotulos"]);
+  });
+
+  it("na planta, o fundo é desenhado inteiro, uma vez", () => {
+    const fundos = montar().root.findAllByType(FundoDoMapa);
+    expect(fundos.map((f) => f.props.partes)).toEqual(["tudo"]);
+  });
+
+  it("a descrição do mapa fica num nó só; o desenho de dentro fica escondido da acessibilidade", () => {
+    const a = montar();
+    const comDescricao = a.root.findAll((n) => typeof n.props.accessibilityLabel === "string" && n.props.accessibilityLabel.includes("Mapa do entorno"));
+    // O View acessível e o host dele (react-test-renderer mostra os dois níveis): um só componente com o rótulo.
+    expect(comDescricao.filter((n) => typeof n.type !== "string")).toHaveLength(1);
+    const svg = a.root.findAll((n) => n.props["aria-hidden"] === true && typeof n.type !== "string" && n.props.viewBox?.startsWith("0 0 3"));
+    expect(svg.length).toBeGreaterThan(0);
+  });
+
+  it("em tela estreita, Recentrar é um botão de 44 px com ícone e rótulo acessível; a área dos botões acompanha", () => {
+    expect(larguraDaColunaDeBotoes(328, true)).toBe(60);
+    expect(larguraDaColunaDeBotoes(328, false)).toBe(60);
+    expect(larguraDaColunaDeBotoes(LARGURA_PARA_RECENTRAR_COM_TEXTO, true)).toBe(116);
+    const a = montar();
+    act(() => porRotulo(a, /^Aproximar o mapa$/)!.props.onPress());
+    const recentrar = porRotulo(a, /^Voltar ao enquadramento inicial$/)!;
+    expect(recentrar).toBeDefined();
+    // A largura antes da medida é 320: o botão não tem texto "Recentrar" (só o ícone).
+    expect(recentrar.findAll((n) => n.props.children === "Recentrar")).toHaveLength(0);
+  });
+
+  it("a etiqueta de altura do prédio do imóvel sai de baixo do pino", () => {
+    expect(etiquetaLongeDoPino({ x: 100, y: 104 }, [100, 100], 1)).toEqual({ x: 100, y: 86 });
+    expect(etiquetaLongeDoPino({ x: 100, y: 104 }, [100, 100], 2)).toEqual({ x: 100, y: 93 });
+    // Longe do pino, fica onde está.
+    expect(etiquetaLongeDoPino({ x: 160, y: 104 }, [100, 100], 1)).toEqual({ x: 160, y: 104 });
+    expect(etiquetaLongeDoPino({ x: 100, y: 60 }, [100, 100], 1)).toEqual({ x: 100, y: 60 });
   });
 });
