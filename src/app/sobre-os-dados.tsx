@@ -424,10 +424,10 @@ export default function SobreOsDados() {
             <CaixaCreme gap={6}>
               <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 8 }}>
                 <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5 }}>
-                  Pacote publicado / esquema canônico
+                  Pacote de dados publicado em
                 </Texto>
                 <Texto tipo="numero" style={{ fontSize: 11.5, fontWeight: "700", fontVariant: ["tabular-nums"] }}>
-                  {`${diaGravado(leitura.geradoEm)} · v2`}
+                  {diaGravado(leitura.geradoEm)}
                 </Texto>
               </View>
               {MATRIZ_COBERTURA_CAMADAS.map((row) => (
@@ -555,7 +555,7 @@ export default function SobreOsDados() {
                 Identificação dupla e arquitetura offline por município
               </Texto>
               <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 17 }}>
-                Cada dossiê separa o identificador municipal de lote (DSQFL) da matrícula cartorária (CNM 16 dígitos) e distingue explicitamente “não se aplica”, “sem ocorrência no período” e “ainda não sabemos”. Os dados públicos operam em pacotes estáticos assinados com SHA-256 separados do cofre privado do aparelho.
+                Cada dossiê separa o identificador municipal de lote (DSQFL) da matrícula cartorária (CNM 16 dígitos) e distingue explicitamente “não se aplica”, “sem ocorrência no período” e “ainda não sabemos”. Os dados públicos vêm em arquivos estáticos, separados do que você guarda no aparelho; a cada leitura o app confere o tamanho do arquivo e, na web, o resumo SHA-256 com o manifesto publicado (é conferência de integridade, não assinatura).
               </Texto>
             </View>
             <View style={{ gap: 1 }}>
