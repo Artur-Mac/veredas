@@ -1,10 +1,12 @@
-// "Ruído do aeroporto" (hub, 18/11/2026): o Aeroporto dos Guararapes como fonte de ruído com nome, sem decibéis.
+// "Ruído do aeroporto" (hub, 18/11/2026): o Aeroporto dos Guararapes como fonte de ruído com nome. Este módulo só dá a
+// geometria (distância, trajetória, altura do avião); o nível em dB(A) estimado sai dela em src/dados/ruido (decisão A3,
+// 18/11/2026: um cálculo só, cone daqui + soma em energia de acustica3d.ts), sempre marcado como estimativa.
 // Dado: o eixo da pista 18/36 no OpenStreetMap (scripts/dados/pista-aeroporto-recife.mjs, ODbL). Para cada ponto:
 // - a distância em linha reta até a pista;
 // - se o ponto fica sob a trajetória de pouso e decolagem: no prolongamento do eixo, até 10 km da cabeceira, dentro da
 //   superfície de aproximação do Anexo 14 da ICAO (150 m para cada lado a 60 m da cabeceira, abrindo 15% para cada
 //   lado). A altura do avião é a da rampa padrão de 3°, uma estimativa: o voo real varia.
-// Nenhum número de decibéis: as curvas oficiais de ruído (plano de zoneamento da ANAC) não estão georreferenciadas.
+// As frases daqui não trazem decibéis: as curvas oficiais de ruído (plano de zoneamento da ANAC) não estão georreferenciadas.
 import { z } from "zod";
 
 export const FONTE_DO_AEROPORTO = "OpenStreetMap (pista, ODbL) · faixa de aproximação pelo Anexo 14 da ICAO";
@@ -42,8 +44,8 @@ export type RelacaoComOAeroporto = {
   distanciaM: number;
   /** Rumo, a partir do prédio, do ponto mais perto da pista (0 = norte). */
   rumoGraus: number;
-  /** Sob a trajetória: qual cabeceira, a que distância dela e a altura estimada do avião. */
-  trajetoria: { cabeceira: "18" | "36"; distanciaDaCabeceiraM: number; alturaEstimadaM: number } | null;
+  /** Sob a trajetória: qual cabeceira, a que distância dela, a altura estimada do avião e o afastamento do eixo da pista. */
+  trajetoria: { cabeceira: "18" | "36"; distanciaDaCabeceiraM: number; alturaEstimadaM: number; afastamentoDoEixoM: number } | null;
   urlFonte: string;
 };
 
@@ -79,6 +81,7 @@ export function relacaoComOAeroporto(centro: readonly [number, number] | null | 
         distanciaDaCabeceiraM: Math.round(alemDaCabeceira),
         // Arredondada a 10 m: é estimativa, e o destaque e o texto mostram o mesmo número.
         alturaEstimadaM: Math.round((alemDaCabeceira * Math.tan((RAMPA_GRAUS * Math.PI) / 180)) / 10) * 10,
+        afastamentoDoEixoM: Math.round(Math.abs(c)),
       };
     }
   }

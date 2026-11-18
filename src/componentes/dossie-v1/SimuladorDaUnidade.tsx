@@ -1,5 +1,7 @@
 // "Andar × Fachada" (15/11/2026): casa ou apartamento, andar e a rosa 3×3 da fachada; tudo recalcula no aparelho.
-// Barulho por fontes nomeadas (sem dB), sol direto na fachada nessa altura e brisa de sudeste. E, no fim do Entorno,
+// Barulho por fontes nomeadas e, desde 18/11/2026 (decisão A2), o dB(A) estimado de dia e à noite nesse andar e nessa
+// fachada, sempre dito como estimativa, com a ficha "Como foi calculado" a um toque; sol direto na fachada nessa altura
+// e brisa de sudeste. E, no fim do Entorno,
 // "Isso bate com a rua hoje?": resposta anônima, guardada só neste aparelho, com motivo opcional.
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useMemo, useState } from "react";
@@ -9,6 +11,7 @@ import { ROSA, simularUnidade, type TipoDeImovel } from "../../dados/dossie/simu
 import { useTema } from "../../tema/Tema";
 import { Botao } from "../Botao";
 import { AlvoDeToque } from "../Pressionavel";
+import { FichaComoFoiCalculado, LeituraDoRuido } from "../ruido/RuidoEstimado";
 import { Texto } from "../Texto";
 import { Nota } from "./base";
 
@@ -47,9 +50,14 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
 
   const alternar = (t: TopicoSimulador) => setAberto((atual) => (atual === t ? null : t));
 
-  const resumoBarulho = s.barulho.semFontes
+  const fontesPerto = s.barulho.semFontes
     ? "Nenhuma fonte ruidosa mapeada perto"
     : `${s.barulho.fontes.length} ${s.barulho.fontes.length === 1 ? "fonte perto" : "fontes perto"} (${s.barulho.fontes[0]!.nome.split(" (")[0]} a ~${s.barulho.fontes[0]!.distanciaM} m)`;
+  // A estimativa na janela escolhida abre o resumo; as fontes nomeadas continuam logo depois.
+  const ruido = s.barulho.estimativa;
+  const resumoBarulho = ruido.estado === "estimado"
+    ? `~${Math.round(ruido.naJanela.diaDb)} dB(A) de dia · ~${Math.round(ruido.naJanela.noiteDb)} à noite (estimativa) · ${fontesPerto}`
+    : fontesPerto;
   const resumoSol = s.sol
     ? `${s.sol.fachada}: ~${s.sol.horasSolDireto.toFixed(1).replace(".", ",")} h/dia`
     : "Toque na direção da janela acima";
@@ -129,12 +137,14 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
           >
             <View style={{ flex: 1, gap: 2 }}>
               <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, fontWeight: "700" }}>Barulho por perto</Texto>
-              <Texto tipo="corpo" style={{ fontSize: 14.5, lineHeight: 20, fontWeight: "600" }}>{resumoBarulho}</Texto>
+              <Texto tipo="corpo" style={{ fontSize: 14.5, lineHeight: 20, fontWeight: "600", fontVariant: ["tabular-nums"] }}>{resumoBarulho}</Texto>
             </View>
             <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 13, fontWeight: "600" }}>{aberto === "barulho" ? "Fechar −" : "Ver +"}</Texto>
           </AlvoDeToque>
           {aberto === "barulho" ? (
             <View style={{ paddingHorizontal: 13, paddingBottom: 14, gap: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 10 }}>
+              <LeituraDoRuido estimativa={ruido} testID="simulador-ruido-estimado" />
+              <FichaComoFoiCalculado estimativa={ruido} testID="simulador-ruido-ficha" />
               <Texto testID="simulador-consequencia-face" tipo="corpo" style={{ fontSize: 13.5, lineHeight: 19, fontWeight: "600", color: cor("cor-texto") }}>
                 {s.barulho.consequenciaPorFace}
               </Texto>
@@ -187,7 +197,7 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
                   </View>
                 ))}
               </View>
-              <Texto testID="simulador-atenuacao-distancia" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, lineHeight: 18 }}>
+              <Texto testID="simulador-atenuacao-distancia" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, lineHeight: 18, fontVariant: ["tabular-nums"] }}>
                 {`${s.barulho.decibeis} ${s.barulho.nota}`}
               </Texto>
               <View style={{ borderLeftWidth: 3, borderLeftColor: cor("cor-salvia-escura"), paddingLeft: 10, marginTop: 2 }}>

@@ -166,10 +166,11 @@ export function decomporSossego(
     });
   }
 
-  const notaSossego0a10 = Math.max(
-    1,
-    Math.min(9.8, Math.round(((64 - internoDb) / 3.4) * 10) / 10),
-  );
+  // 18/11/2026 (A1): com o resultado vindo do modelo de ruído estimado, a nota é a dele (a mesma do placar e do
+  // Comparar). A conta abaixo só vale para o motor aposentado, em teste.
+  const notaSossego0a10 =
+    acustica.notaSossego0a10 ??
+    Math.max(1, Math.min(9.8, Math.round(((64 - internoDb) / 3.4) * 10) / 10));
   const avisoEstimativaSemLaudo =
     "Estimativa por proximidade de fontes e época construtiva; não equivale a medição acústica no local.";
 

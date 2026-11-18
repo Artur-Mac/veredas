@@ -16,7 +16,19 @@ export type EntradaDueloA_B = CandidatoDecisao & {
   vpl10AnosReais?: number | null;
   itensPendentesCusto?: readonly string[];
   andarInformado?: boolean;
+  /**
+   * A nota de sossego do modelo de ruído estimado (a mesma do placar e da matriz); `null` = sem leitura para o prédio.
+   * Ausente só quando o duelo é montado sem o modelo: aí vale a palavra pelo dB do quarto.
+   */
+  sossego?: { nota0a10: number; nivel: string } | null;
 };
+
+const sossegoDoDuelo = (o: EntradaDueloA_B): string =>
+  o.sossego === undefined
+    ? classificarNivelSossegoPorDbInterno(o.ruidoInternoDb).rotuloComparar
+    : o.sossego
+      ? `${o.sossego.nivel} · ${o.sossego.nota0a10.toFixed(1).replace(".", ",")}/10`
+      : "Sem leitura";
 
 export type SensibilidadeDuelo = {
   titulo: string;
@@ -104,9 +116,13 @@ export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; o
     ),
     linhaDiferenca(
       "Sossego no quarto",
-      classificarNivelSossegoPorDbInterno(opcaoA.ruidoInternoDb).rotuloComparar,
-      classificarNivelSossegoPorDbInterno(opcaoB.ruidoInternoDb).rotuloComparar,
-      Math.abs(opcaoA.ruidoInternoDb - opcaoB.ruidoInternoDb) < 2,
+      sossegoDoDuelo(opcaoA),
+      sossegoDoDuelo(opcaoB),
+      opcaoA.sossego !== undefined && opcaoB.sossego !== undefined
+        ? opcaoA.sossego && opcaoB.sossego
+          ? Math.abs(opcaoA.sossego.nota0a10 - opcaoB.sossego.nota0a10) < 0.5
+          : opcaoA.sossego === opcaoB.sossego
+        : Math.abs(opcaoA.ruidoInternoDb - opcaoB.ruidoInternoDb) < 2,
     ),
     linhaDiferenca(
       "Terreno, cota e drenagem",
