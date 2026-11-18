@@ -1,6 +1,7 @@
 import { View } from "react-native";
 import { classificarNivelSossegoPorDbInterno } from "../../dados/acustica/decomporSossego";
 import type { CandidatoDecisao } from "../../dados/cidadao/dominanciaInvisivel";
+import { trocaCustoTempo } from "../../dados/escolha";
 import { useTema } from "../../tema/Tema";
 import { RAIO } from "../../tema/tokens";
 import { Texto } from "../Texto";
@@ -57,6 +58,13 @@ export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; o
 
   const apenasDiferencas = linhas.filter((l) => !l.igual);
   const exibidas = apenasDiferencas.length > 0 ? apenasDiferencas : linhas;
+  const sinteseTroca = trocaCustoTempo(
+    [opcaoA.nomeExibicao, opcaoB.nomeExibicao],
+    [Math.round(opcaoA.custoMensalTotalReais), Math.round(opcaoB.custoMensalTotalReais)],
+    [0, 0],
+    [Math.round(opcaoA.deslocamentoMinDia), Math.round(opcaoB.deslocamentoMinDia)],
+    22,
+  );
 
   return (
     <View
@@ -121,6 +129,32 @@ export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; o
           </View>
         </View>
       ))}
+
+      <View
+        testID="duelo-sintese-troca"
+        style={{
+          borderTopWidth: 1,
+          borderTopColor: cor("cor-linha"),
+          paddingTop: 10,
+          gap: 3,
+        }}
+      >
+        <Texto
+          tipo="apoio"
+          style={{ fontSize: 12.5, lineHeight: 18, fontWeight: "600", fontVariant: ["tabular-nums"] }}
+        >
+          {sinteseTroca.frase}
+        </Texto>
+        {sinteseTroca.tipo === "troca" ? (
+          <Texto
+            tipo="apoio"
+            cor="cor-texto-apoio"
+            style={{ fontSize: 12, lineHeight: 17, fontVariant: ["tabular-nums"] }}
+          >
+            {sinteseTroca.limiar}
+          </Texto>
+        ) : null}
+      </View>
     </View>
   );
 }

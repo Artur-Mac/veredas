@@ -2949,4 +2949,139 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect((formSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
     expect(formSrc).toContain("tabular-nums");
   });
+
+  it("DueloFinalistas mostra síntese não dominada custo×tempo e TresPerguntasDoBolso simula imóvel fechado/obra (S79)", () => {
+    let arvoreTroca!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvoreTroca = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(DueloFinalistas, {
+            opcaoA: {
+              id: "A",
+              nomeExibicao: "Graças 95m²",
+              custoMensalTotalReais: 4_800,
+              areaM2: 95,
+              deslocamentoMinDia: 24,
+              ruidoInternoDb: 37,
+              situacaoDocumentalResumo: "Terreno alodial",
+              riscoAguaChuvaResumo: "Cota acima da média",
+            },
+            opcaoB: {
+              id: "B",
+              nomeExibicao: "Torre 95m²",
+              custoMensalTotalReais: 3_700,
+              areaM2: 95,
+              deslocamentoMinDia: 54,
+              ruidoInternoDb: 38,
+              situacaoDocumentalResumo: "Terreno alodial",
+              riscoAguaChuvaResumo: "Cota acima da média",
+            },
+          }),
+        ),
+      );
+    });
+    const sinteseTrocaEl = arvoreTroca.root.find((n) => n.props.testID === "duelo-sintese-troca");
+    expect(sinteseTrocaEl).toBeDefined();
+    const txtTroca = extrairTextos(arvoreTroca.toJSON()).join("\n");
+    expect(txtTroca).toContain("por hora poupada");
+    expect(txtTroca).toContain("Se uma hora sua vale mais que");
+    expect(REGEX_JARGON_CAMADA1.test(txtTroca)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txtTroca)).toBe(false);
+    act(() => {
+      arvoreTroca.unmount();
+    });
+
+    let arvoreDom!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvoreDom = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(DueloFinalistas, {
+            opcaoA: {
+              id: "A",
+              nomeExibicao: "Casa Forte 100m²",
+              custoMensalTotalReais: 3_900,
+              areaM2: 100,
+              deslocamentoMinDia: 20,
+              ruidoInternoDb: 36,
+              situacaoDocumentalResumo: "Terreno alodial",
+              riscoAguaChuvaResumo: "Cota acima da média",
+            },
+            opcaoB: {
+              id: "B",
+              nomeExibicao: "Boa Viagem 100m²",
+              custoMensalTotalReais: 4_500,
+              areaM2: 100,
+              deslocamentoMinDia: 48,
+              ruidoInternoDb: 39,
+              situacaoDocumentalResumo: "Terreno alodial",
+              riscoAguaChuvaResumo: "Cota acima da média",
+            },
+          }),
+        ),
+      );
+    });
+    const txtDom = extrairTextos(arvoreDom.toJSON()).join("\n");
+    expect(txtDom).toContain("não há troca a fazer entre custo e tempo");
+    act(() => {
+      arvoreDom.unmount();
+    });
+
+    let arvoreBolso!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvoreBolso = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(TresPerguntasDoBolso, {
+            modalidade: "compra",
+            nomeImovel: "Residencial Mar Azul",
+            enderecoImovel: "Boa Viagem",
+            precoAnuncioReais: 850_000,
+            aluguelAnunciadoReais: null,
+            condominioMensalReais: 950,
+            iptuMensalReais: 260,
+            prestacaoEstimadaReais: 5_100,
+            entradaReais: 170_000,
+            itbiReais: 10_000,
+            cartorioRegistroReais: 6_500,
+            spuAnualReais: 2_400,
+            custoMensalArReais: 140,
+            economiaLegalItbiCartorioReais: 15_000,
+            descontoRuidoReais: 0,
+            vplCalorPoenteReais: 0,
+            riscoManutencaoPredioReais: 0,
+            excedenteMedianaM2Reais: 0,
+            saldo10AnosCompraVsAluguelReais: 120_000,
+          }),
+        ),
+      );
+    });
+    expect(() => arvoreBolso.root.find((n) => n.props.testID === "bolso-resumo-imovel-fechado")).toThrow();
+    const btnFechado = arvoreBolso.root.find((n) => n.props.testID === "bolso-modo-imovel-fechado");
+    act(() => {
+      btnFechado.props.onPress();
+    });
+    expect(arvoreBolso.root.find((n) => n.props.testID === "bolso-resumo-imovel-fechado")).toBeDefined();
+    const txtBolso = extrairTextos(arvoreBolso.toJSON()).join("\n");
+    expect(txtBolso).toContain("Sem morador (obra ou transição):");
+    expect(txtBolso).toContain("encargos fixos do imóvel (condomínio + IPTU + União)");
+    expect(REGEX_JARGON_CAMADA1.test(txtBolso)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txtBolso)).toBe(false);
+    act(() => {
+      arvoreBolso.unmount();
+    });
+
+    for (const rel of [
+      "src/componentes/cidadao/DueloFinalistas.tsx",
+      "src/componentes/visual/TresPerguntasDoBolso.tsx",
+    ]) {
+      const s = readFileSync(join(__dirname, "..", rel), "utf8");
+      expect(s).not.toMatch(/\bcomAlfa\b/);
+      expect((s.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    }
+  });
 });

@@ -61,6 +61,7 @@ export function TresPerguntasDoBolso({
   const [copiado, setCopiado] = useState(false);
   const [verChecklistIptu, setVerChecklistIptu] = useState(false);
   const [verMetodoBolso, setVerMetodoBolso] = useState(false);
+  const [modoBolso, setModoBolso] = useState<"morar" | "fechado">("morar");
 
   const compra = modalidade === "compra";
   const baseMensal = compra ? prestacaoEstimadaReais : (aluguelAnunciadoReais ?? 0);
@@ -69,6 +70,8 @@ export function TresPerguntasDoBolso({
     0,
     Math.round(baseMensal + condominioMensalReais + iptuMensalReais + custoMensalArReais + spuMensal),
   );
+  const fixoSemMorador = Math.round(condominioMensalReais + iptuMensalReais + spuMensal);
+  const fixoComParcela = Math.round(prestacaoEstimadaReais + fixoSemMorador);
 
   const dinheiroEntrarBase: FatiaBarra[] = compra
     ? [
@@ -242,6 +245,62 @@ export function TresPerguntasDoBolso({
             </View>
           ))}
         </View>
+
+        {compra && totalMensalReal > 0 ? (
+          <View role="radiogroup" accessibilityLabel="Cenário de uso do imóvel" style={styles.linhaModoUso}>
+            <Pressable
+              testID="bolso-modo-morar"
+              accessibilityRole="radio"
+              accessibilityState={{ checked: modoBolso === "morar" }}
+              onPress={() => setModoBolso("morar")}
+              style={[
+                styles.pilulaModoUso,
+                { backgroundColor: modoBolso === "morar" ? cor("cor-texto") : cor("cor-sutil") },
+              ]}
+            >
+              <Texto
+                tipo="apoio"
+                cor={modoBolso === "morar" ? "cor-papel-claro" : "cor-texto-apoio"}
+                style={styles.textoModoUso}
+              >
+                Morando no imóvel
+              </Texto>
+            </Pressable>
+            <Pressable
+              testID="bolso-modo-imovel-fechado"
+              accessibilityRole="radio"
+              accessibilityState={{ checked: modoBolso === "fechado" }}
+              onPress={() => setModoBolso("fechado")}
+              style={[
+                styles.pilulaModoUso,
+                { backgroundColor: modoBolso === "fechado" ? cor("cor-texto") : cor("cor-sutil") },
+              ]}
+            >
+              <Texto
+                tipo="apoio"
+                cor={modoBolso === "fechado" ? "cor-papel-claro" : "cor-texto-apoio"}
+                style={styles.textoModoUso}
+              >
+                Fechado / em reforma
+              </Texto>
+            </Pressable>
+          </View>
+        ) : null}
+
+        {compra && totalMensalReal > 0 && modoBolso === "fechado" ? (
+          <View
+            testID="bolso-resumo-imovel-fechado"
+            style={[styles.chamadaLateral, { borderLeftColor: cor("cor-azul-cadastral") }]}
+          >
+            <Texto
+              tipo="apoio"
+              cor="cor-texto"
+              style={[styles.textoDicaDetalhe, { fontVariant: ["tabular-nums"] }]}
+            >
+              {`Sem morador (obra ou transição): ~${formatarReais(fixoSemMorador)}/mês de encargos fixos do imóvel (condomínio + IPTU${spuMensal > 0 ? " + União" : ""})${prestacaoEstimadaReais > 0 ? `, ou ~${formatarReais(fixoComParcela)}/mês somando a prestação` : ""} — sem contar consumo de climatização.`}
+            </Texto>
+          </View>
+        ) : null}
 
         {pendenciaDocumentalResumo ? (
           <View
@@ -546,5 +605,23 @@ const styles = StyleSheet.create({
   blocoMetodo: {
     paddingBottom: 10,
     gap: 4,
+  },
+  linhaModoUso: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 2,
+  },
+  pilulaModoUso: {
+    flex: 1,
+    minHeight: TOQUE_MINIMO,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  textoModoUso: {
+    fontSize: 12,
+    fontWeight: "700",
   },
 });
