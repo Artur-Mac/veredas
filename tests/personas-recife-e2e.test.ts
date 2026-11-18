@@ -199,6 +199,11 @@ describe("Milestone 8 — Jornadas End-to-End de Personas Reais no Recife", () =
     expect(est.segregacaoLei8245.totalOrdinarioInquilinoReais).toBe(680);
     expect(est.segregacaoLei8245.totalExtraordinarioLocadorReais).toBe(358);
     expect(est.segregacaoLei8245.itensCobrancaAbusivaNoBoleto).toHaveLength(2);
+    // As alíneas são do parágrafo único do art. 22: g para o fundo de reserva, a e b para obra de estrutura e pintura de fachada.
+    expect(est.segregacaoLei8245.itensCobrancaAbusivaNoBoleto.map((i) => i.artigoLegal)).toEqual([
+      "Art. 22, X e parágrafo único, alínea 'g', da Lei nº 8.245/1991 (fundo de reserva é despesa extraordinária, paga pelo locador)",
+      "Art. 22, X e parágrafo único, alíneas 'a' e 'b', da Lei nº 8.245/1991 (obra que interessa à estrutura e pintura de fachada são despesas extraordinárias, pagas pelo locador)",
+    ]);
 
     const hidro = avaliarHidroMare1m({
       handM: 1.0,

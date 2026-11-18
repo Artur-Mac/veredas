@@ -280,7 +280,7 @@ export function SimuladorBolso15Segundos({
             {compra
               ? "Origem de cada linha: financiamento pela taxa média Banco Central · entrada + ITBI pelas regras do Recife (escritura e registro a confirmar no cartório, fora da conta) · condomínio, IPTU e energia por estimativa parametrizada."
               : garantiaAluguel === "fianca"
-                ? "Origem de cada linha: entrada sem caução tripla · fiança locatícia estimada em ~10%/mês (Lei nº 8.245/1991) · condomínio, IPTU e energia parametrizados."
+                ? "Origem de cada linha: entrada sem caução tripla · fiança locatícia estimada em cerca de 10% do aluguel por mês (estimativa de mercado, não é valor de lei) · condomínio, IPTU e energia parametrizados."
                 : "Origem de cada linha: caução estimada em 3 meses de aluguel · condomínio, IPTU e energia por estimativa parametrizada do anúncio."}
           </Texto>
 

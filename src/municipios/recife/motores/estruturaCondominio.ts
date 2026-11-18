@@ -3,7 +3,7 @@ import type { EpistemicTag } from "../../../nucleo/contratosCanonicos";
 /**
  * IND-02, IND-09 & #42 — Triagem Estrutural (Prédios-Caixão), Maresia (ABNT NBR 6118 CAA-III/IV),
  * Relógio de Vida Útil (ABNT NBR 15575-1:2025), Vistoria Predial Periódica (Lei PE 13.032/2006) e
- * Segregação da Lei do Inquilinato (Lei 8.245/1991, Arts. 22 X e 23).
+ * Segregação da Lei do Inquilinato (Lei 8.245/1991, art. 22, X e parágrafo único, e art. 23).
  */
 
 export type ClasseAgressividadeMarinha = "CAA-IV" | "CAA-III" | "CAA-II";
@@ -241,7 +241,8 @@ export function avaliarEstruturaECondominio(entrada: EntradaEstruturaCondominio)
     choquePorUnidade = Math.round((deficit / entrada.unidadesCondominio) * fatorInadimplencia * 100) / 100;
   }
 
-  // Segregação da Lei do Inquilinato (Lei 8.245/1991, Arts. 22 X vs. 23)
+  // Segregação da Lei do Inquilinato (Lei 8.245/1991, art. 22, X vs. art. 23). As alíneas são do parágrafo único do
+  // art. 22 (o inciso X não tem alíneas): a, obra que interessa à estrutura; b, pintura de fachada; g, fundo de reserva.
   let totalOrdinario = 0;
   let totalExtraordinario = 0;
   const abusivos: { descricao: string; valorReais: number; artigoLegal: string }[] = [];
@@ -253,8 +254,8 @@ export function avaliarEstruturaECondominio(entrada: EntradaEstruturaCondominio)
       totalExtraordinario += item.valorReais;
       const artigo =
         item.categoria === "fundo_reserva"
-          ? "Art. 22, inciso X, alínea 'g' da Lei nº 8.245/1991 (constituição de fundo de reserva compete ao locador)"
-          : "Art. 22, inciso X, alínea 'a' da Lei nº 8.245/1991 (reformas estruturais e pintura de fachada por desgaste natural competem ao locador)";
+          ? "Art. 22, X e parágrafo único, alínea 'g', da Lei nº 8.245/1991 (fundo de reserva é despesa extraordinária, paga pelo locador)"
+          : "Art. 22, X e parágrafo único, alíneas 'a' e 'b', da Lei nº 8.245/1991 (obra que interessa à estrutura e pintura de fachada são despesas extraordinárias, pagas pelo locador)";
       abusivos.push({ descricao: item.descricao, valorReais: item.valorReais, artigoLegal: artigo });
     }
   }

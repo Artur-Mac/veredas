@@ -471,3 +471,40 @@ describe("terreno da União: teto de reajuste, foro pelo Decreto-Lei 9.760/1946 
     );
   });
 });
+
+describe("aluguel: alíneas do art. 22 da Lei 8.245/1991, fiança sem citar a lei e curta temporada pelo REsp 2.121.055", () => {
+  test("fundo de reserva é a alínea g; obra de estrutura e pintura de fachada, as alíneas a e b do parágrafo único", () => {
+    const est = avaliarEstruturaECondominio({
+      buildingId: "p", bairroSlug: "torre", anoConstrucao: 2012, anoReferencia: 2026, pavimentos: 12, tipoEstruturaIptu: "Concreto Armado",
+      distanciaCostaOuEstuarioM: 600,
+      itensBoleto: [
+        { descricao: "Taxa ordinária", valorReais: 680, categoria: "ordinaria" },
+        { descricao: "Fundo de reserva", valorReais: 68, categoria: "fundo_reserva" },
+        { descricao: "Reforma estrutural", valorReais: 320, categoria: "obra_estrutural" },
+        { descricao: "Pintura da fachada", valorReais: 290, categoria: "pintura_externa_desgaste" },
+      ],
+    });
+    const FUNDO = "Art. 22, X e parágrafo único, alínea 'g', da Lei nº 8.245/1991 (fundo de reserva é despesa extraordinária, paga pelo locador)";
+    const OBRA = "Art. 22, X e parágrafo único, alíneas 'a' e 'b', da Lei nº 8.245/1991 (obra que interessa à estrutura e pintura de fachada são despesas extraordinárias, pagas pelo locador)";
+    expect(est.segregacaoLei8245.itensCobrancaAbusivaNoBoleto.map((i) => i.artigoLegal)).toEqual([FUNDO, OBRA, OBRA]);
+    expect(est.segregacaoLei8245.totalOrdinarioInquilinoReais).toBe(680);
+    expect(est.segregacaoLei8245.totalExtraordinarioLocadorReais).toBe(678);
+    expect(JSON.stringify(est)).not.toMatch(/inciso X, alínea/);
+    expect(cartao(cartoes({ estruturaECondominio: est }), "IND-02").camada3ProvaMetodo.metodo6Campos.baseLegalOuNormativa).toBe(
+      "ABNT NBR 15575-1:2025, NBR 6118, Lei PE 13.032/2006 e Lei 8.245/1991, art. 22, X e parágrafo único.",
+    );
+  });
+
+  test("os 10% da fiança são ditos como estimativa de mercado, sem a Lei 8.245/1991 ao lado", () => {
+    const simulador = fonteDe("componentes", "visual", "SimuladorBolso15Segundos.tsx");
+    expect(simulador).toContain("fiança locatícia estimada em cerca de 10% do aluguel por mês (estimativa de mercado, não é valor de lei)");
+    expect(simulador).not.toMatch(/8\.245/);
+  });
+
+  test("curta temporada cita a decisão da Segunda Seção do STJ de 07/05/2026, não o REsp 1.819.075", () => {
+    const radar = fonteDe("dados", "entorno", "radarVistaELote.ts");
+    expect(radar).toContain("STJ (REsp 2.121.055, Segunda Seção, 07/05/2026): em condomínio residencial, oferecer a unidade para estadia de curta temporada depende de aprovação de dois terços dos condôminos em assembleia. Confira a convenção e as atas antes do sinal.");
+    expect(radar).toContain("STJ (REsp 2.121.055, Segunda Seção, 07/05/2026): a liberação depende de aprovação de dois terços dos condôminos.");
+    expect(radar).not.toMatch(/1\.819\.075/);
+  });
+});

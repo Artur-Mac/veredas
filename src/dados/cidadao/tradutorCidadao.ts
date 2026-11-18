@@ -226,7 +226,7 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       chavesDuplas,
       metodo6Campos: {
         oQueMede: "Ciclo de vida útil de fachada/impermeabilização, maresia costeira e divisão do boleto.",
-        baseLegalOuNormativa: "ABNT NBR 15575-1:2025, NBR 6118, Lei PE 13.032/2006 e Lei 8.245/1991 Art. 22 X.",
+        baseLegalOuNormativa: "ABNT NBR 15575-1:2025, NBR 6118, Lei PE 13.032/2006 e Lei 8.245/1991, art. 22, X e parágrafo único.",
         aritmeticaResumo: "(Orçamento da obra - Fundo de reserva) / Unidades / (1 - Inadimplência).",
         fontePrimaria: "IPTU Recife 2026 + atas condominiais",
         vintage: "2026-11",

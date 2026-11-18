@@ -2571,7 +2571,8 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     });
     const aluguelFiancaTxt = extrairTextos(tree.toJSON()).join("\n");
     expect(aluguelFiancaTxt).not.toBe(aluguelCaucaoTxt);
-    expect(aluguelFiancaTxt).toContain("fiança locatícia estimada");
+    expect(aluguelFiancaTxt).toContain("fiança locatícia estimada em cerca de 10% do aluguel por mês (estimativa de mercado, não é valor de lei)");
+    expect(aluguelFiancaTxt).not.toMatch(/8\.245/);
 
     expect(REGEX_JARGON_CAMADA1.test(aluguelFiancaTxt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(aluguelFiancaTxt)).toBe(false);
@@ -2886,6 +2887,9 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       "fracao_terreno",
     ]);
     expect(radarSemClausula.perguntasDeUsoELote[0]?.respostaCurta).toBe("Depende da convenção do condomínio");
+    expect(radarSemClausula.perguntasDeUsoELote[0]?.fundamentoEAritmetica).toBe(
+      "STJ (REsp 2.121.055, Segunda Seção, 07/05/2026): em condomínio residencial, oferecer a unidade para estadia de curta temporada depende de aprovação de dois terços dos condôminos em assembleia. Confira a convenção e as atas antes do sinal.",
+    );
     expect(radarSemClausula.perguntasDeUsoELote[1]?.fundamentoEAritmetica).toContain("LC Municipal nº 2/2021");
     expect(radarSemClausula.perguntasDeUsoELote[2]?.respostaCurta).toContain("m² de lote por unidade");
 
@@ -2899,7 +2903,9 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       clausulaTemporadaNaConvencao: "Permitida locação por temporada mediante registro na portaria.",
     });
     expect(radarComClausula.perguntasDeUsoELote[0]?.respostaCurta).toBe("Há trecho salvo nos documentos");
-    expect(radarComClausula.perguntasDeUsoELote[0]?.fundamentoEAritmetica).toContain("Permitida locação por temporada");
+    expect(radarComClausula.perguntasDeUsoELote[0]?.fundamentoEAritmetica).toBe(
+      "Convenção ou ata registrada: “Permitida locação por temporada mediante registro na portaria.” · STJ (REsp 2.121.055, Segunda Seção, 07/05/2026): a liberação depende de aprovação de dois terços dos condôminos.",
+    );
 
     const radarSemPredio = analisarRadarVistaELote({
       centro: predioComDados.centro,
