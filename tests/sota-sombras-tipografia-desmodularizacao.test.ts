@@ -2680,4 +2680,20 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       expect(s).not.toMatch(/border(?:Top|Bottom|Left|Right)?Width:\s*0\.5\b/);
     }
   });
+
+  it("NoImovel e Orientacao mantem no maximo 1 borderWidth:1 e Orientacao zera comAlfa (S66)", () => {
+    const noImovelSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "visita-v1", "NoImovel.tsx"),
+      "utf8",
+    );
+    const orientacaoSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "visita-v1", "Orientacao.tsx"),
+      "utf8",
+    );
+
+    expect((noImovelSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    expect(noImovelSrc).toContain("tabular-nums");
+    expect((orientacaoSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    expect(orientacaoSrc).not.toMatch(/\bcomAlfa\b/);
+  });
 });

@@ -92,9 +92,7 @@ function RuidoDeFora({ ruido, aoEscolher, aoGuardarMedida }: { ruido: Visita["ru
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: RAIO.icone,
-                borderWidth: 1,
-                borderColor: escolhida ? cor("cor-acao") : cor("cor-linha-forte"),
-                backgroundColor: escolhida ? cor("cor-acao") : undefined,
+                backgroundColor: escolhida ? cor("cor-acao") : cor("cor-papel-claro"),
               }}
             >
               <Texto tipo="etiqueta" cor={escolhida ? "cor-sobre-acao" : "cor-texto"} style={{ fontWeight: escolhida ? "700" : "500" }} numberOfLines={1}>
@@ -166,7 +164,7 @@ function Painel({ perguntas, controle, aoAbrirPergunta, aoAdicionarPergunta, pre
       <Faixa>
         <View style={{ flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", gap: ESPACO[3] }}>
           <TituloDeSecao>Seu roteiro</TituloDeSecao>
-          <Texto tipo="apoio" cor="cor-texto-apoio" accessibilityLabel={`${conferidas} de ${perguntas.length} conferidas`}>
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontVariant: ["tabular-nums"] }} accessibilityLabel={`${conferidas} de ${perguntas.length} conferidas`}>
             {`${conferidas} de ${perguntas.length}`}
           </Texto>
         </View>
@@ -184,13 +182,11 @@ function Painel({ perguntas, controle, aoAbrirPergunta, aoAdicionarPergunta, pre
                   minHeight: TOQUE_MINIMO,
                   paddingHorizontal: 11,
                   borderRadius: RAIO.pilula,
-                  borderWidth: 1,
-                  borderColor: ativo ? cor("cor-acao") : cor("cor-linha-forte"),
-                  backgroundColor: ativo ? cor("cor-acao") : cor("cor-papel-claro"),
+                  backgroundColor: ativo ? cor("cor-texto") : cor("cor-papel-claro"),
                   justifyContent: "center",
                 }}
               >
-                <Texto tipo="etiqueta" cor={ativo ? "cor-sobre-acao" : "cor-texto"} style={{ fontSize: 12 }}>
+                <Texto tipo="etiqueta" cor={ativo ? "cor-papel-claro" : "cor-texto"} style={{ fontSize: 12, fontWeight: ativo ? "700" : "500" }}>
                   {c.rotulo}
                 </Texto>
               </Pressionavel>

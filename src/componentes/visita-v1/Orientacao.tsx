@@ -7,7 +7,7 @@ import Svg, { Circle, G, Path, Text as TextoSvg } from "react-native-svg";
 import type { Edificio } from "../../dados/contratos";
 import { analisarJanelaNoRecife } from "../../dados/dossie/solESombra";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { ESPACO, RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 import { Icone } from "../Icone";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
@@ -259,13 +259,11 @@ export function OrientacaoDaJanela({ graus, aoMudar, predio = null, vizinhos = [
                 paddingHorizontal: 10,
                 paddingVertical: 6,
                 borderRadius: RAIO.pilula,
-                borderWidth: 1,
-                borderColor: proximo ? cor("cor-acao") : cor("cor-linha-forte"),
-                backgroundColor: proximo ? comAlfa(cor("cor-acao"), 0.16) : undefined,
+                backgroundColor: proximo ? cor("cor-texto") : cor("cor-papel-claro"),
                 justifyContent: "center",
               }}
             >
-              <Texto tipo="etiqueta" cor={proximo ? "cor-acao" : "cor-texto-apoio"} style={{ fontSize: 11, fontWeight: proximo ? "700" : "500" }}>
+              <Texto tipo="etiqueta" cor={proximo ? "cor-papel-claro" : "cor-texto"} style={{ fontSize: 11, fontWeight: proximo ? "700" : "500" }}>
                 {a.rotulo}
               </Texto>
             </Pressionavel>
@@ -280,11 +278,10 @@ export function OrientacaoDaJanela({ graus, aoMudar, predio = null, vizinhos = [
           accessible
           accessibilityLabel={`${leitura.resumoHumano} ${leitura.dicaPratica}`}
           style={{
-            padding: 12,
-            borderRadius: 10,
-            borderWidth: 1,
-            borderColor: comAlfa(cor("cor-texto"), 0.14),
-            backgroundColor: comAlfa(cor("cor-texto"), 0.05),
+            paddingVertical: 4,
+            paddingLeft: 12,
+            borderLeftWidth: 3,
+            borderLeftColor: cor("cor-acao"),
             gap: 4,
           }}
         >
