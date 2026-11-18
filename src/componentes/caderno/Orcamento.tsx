@@ -4,6 +4,7 @@ import type { AnaliseV2 } from "../../dados/contratos";
 import { cadernoVazio, esquemaCenario, type Caderno } from "../../dados/caderno";
 import { custoMensal } from "../../dados/custos";
 import { formatarReais, formatarCentavos } from "../../dados/formatos";
+import { calcularRateioReserva, type RateioReservaResultado } from "../../dados/documentos/copilotoPreSinal";
 import { comprarOuAlugar, horizonte, price, taxaMensalEfetiva } from "../../dados/orcamento";
 import { Botao } from "../Botao";
 import { Texto } from "../Texto";
@@ -31,12 +32,50 @@ export function OrcamentoPessoal({ analise, salvar }: Props) {
   const [valorizacao, setValorizacao] = useState("");
   const [venda, setVenda] = useState("");
   const [comparacaoGuardada, setComparacaoGuardada] = useState<{ chave: string; valor: ReturnType<typeof comprarOuAlugar> } | null>(null);
+  const ultimoReservaCentavos = [...(caderno.balancetes ?? [])].reverse().find((b) => b.reservaCentavos !== null)?.reservaCentavos ?? null;
+  const [custoObra, setCustoObra] = useState("");
+  const [saldoFundo, setSaldoFundo] = useState("");
+  const [unidadesPredio, setUnidadesPredio] = useState("24");
+  const [mesesRateio, setMesesRateio] = useState("12");
+  const [rateioGuardado, setRateioGuardado] = useState<{ chave: string; valor: RateioReservaResultado; meses: number } | null>(null);
   const chavePrice = JSON.stringify([analise.declarados.preco, entrada, taxa, prazo]);
   const chaveComparacao = JSON.stringify([chavePrice, analise.declarados, meses, aluguel, aquisicao, retorno, valorizacao, venda]);
+  const chaveRateio = JSON.stringify([custoObra, saldoFundo, unidadesPredio, mesesRateio]);
   const resultado = priceGuardada?.chave === chavePrice ? priceGuardada.valor : null;
   const comparacao = comparacaoGuardada?.chave === chaveComparacao ? comparacaoGuardada.valor : null;
+  const rateio = rateioGuardado?.chave === chaveRateio ? rateioGuardado : null;
   const setResultado = (valor: ReturnType<typeof price> | null) => setPriceGuardada(valor ? { chave: chavePrice, valor } : null);
   const setComparacao = (valor: ReturnType<typeof comprarOuAlugar> | null) => setComparacaoGuardada(valor ? { chave: chaveComparacao, valor } : null);
+  const simularRateio = () => {
+    try {
+      const custoCent = centavosDaEntrada(custoObra);
+      const saldoCent = centavosDaEntrada(saldoFundo);
+      const unidades = Number(unidadesPredio.trim());
+      const mesesNum = Number(mesesRateio.trim());
+      if (
+        custoCent === null ||
+        saldoCent === null ||
+        !Number.isInteger(unidades) ||
+        unidades < 1 ||
+        unidades > 5000 ||
+        !Number.isInteger(mesesNum) ||
+        mesesNum < 1 ||
+        mesesNum > 120
+      ) {
+        throw new Error();
+      }
+      const valor = calcularRateioReserva({
+        custoObraReais: Math.round(custoCent / 100),
+        saldoReservaReais: Math.round(saldoCent / 100),
+        unidades,
+      });
+      setRateioGuardado({ chave: chaveRateio, valor, meses: mesesNum });
+      setErro("");
+    } catch {
+      setRateioGuardado(null);
+      setErro("Informe custo previsto da obra, saldo atual do fundo, unidades (>= 1) e parcelas (1 a 120 meses). Zero no saldo é válido.");
+    }
+  };
   const guardar = async () => {
     try {
       const c = esquemaCenario.parse({ id: `cenario-${Date.now().toString(36)}`, nome, meses: Number(meses),
@@ -119,6 +158,33 @@ export function OrcamentoPessoal({ analise, salvar }: Props) {
         <Texto tipo="apoio">Diferenças mensais de caixa são investidas no cenário com menor desembolso. Hipóteses nominais constantes; inflação, reajustes, seguros e custos não preenchidos não são inferidos. Altere as hipóteses para avaliar sensibilidade.</Texto>
       </> : null}
     </GrupoLocal> : null}
+    <GrupoLocal
+      titulo="Simular obra e fundo de reserva (rateio por unidade)"
+      apoio="Conta aberta no aparelho: compara o custo previsto da obra ou laudo com o saldo atual do fundo de reserva e divide eventual diferença pelo número de unidades."
+    >
+      {ultimoReservaCentavos !== null ? (
+        <Botao
+          variante="secundario"
+          rotulo={`Usar reserva do último balancete (${formatarCentavos(ultimoReservaCentavos)})`}
+          onPress={() => setSaldoFundo((ultimoReservaCentavos / 100).toFixed(2).replace(".", ","))}
+        />
+      ) : null}
+      <CampoLocal rotulo="Custo previsto da obra em R$" value={custoObra} onChangeText={setCustoObra} keyboardType="decimal-pad" />
+      <CampoLocal rotulo="Saldo atual do fundo de reserva em R$" value={saldoFundo} onChangeText={setSaldoFundo} keyboardType="decimal-pad" />
+      <CampoLocal rotulo="Unidades pagantes no prédio" value={unidadesPredio} onChangeText={setUnidadesPredio} keyboardType="number-pad" />
+      <CampoLocal rotulo="Parcelas do rateio em meses" value={mesesRateio} onChangeText={setMesesRateio} keyboardType="number-pad" />
+      <Botao rotulo="Calcular impacto por unidade" onPress={simularRateio} />
+      {rateio ? (
+        <View testID="orcamento-resultado-rateio" style={{ gap: 4 }}>
+          <Texto style={{ fontVariant: ["tabular-nums"] }}>{rateio.valor.resumoCurto}</Texto>
+          <Texto tipo="apoio" style={{ fontVariant: ["tabular-nums"] }}>
+            {!rateio.valor.cobertoPelaReserva
+              ? `Em ${rateio.meses} parcelas mensais: ~${formatarReais(Math.max(1, Math.round(rateio.valor.cotaExtraPorUnidadeReais / rateio.meses)))}/mês por apartamento.`
+              : "Sem chamada extra estimada para esta obra."}
+          </Texto>
+        </View>
+      ) : null}
+    </GrupoLocal>
     {erro ? <Texto role="alert">{erro}</Texto> : null}
   </View>;
 }

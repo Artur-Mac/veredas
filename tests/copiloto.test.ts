@@ -7,6 +7,7 @@ import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
 import { Image, Modal, TextInput, View } from "react-native";
 import { LeitorDeAta } from "../src/componentes/caderno/LeitorDeAta";
+import { OrcamentoPessoal } from "../src/componentes/caderno/Orcamento";
 import { LinhaDoTempoEstrutural } from "../src/componentes/dossie-v1/FichaViva";
 import { PacoteParaEspecialista } from "../src/componentes/dossie-v1/Pacote";
 import { SimuladorDaUnidade } from "../src/componentes/dossie-v1/SimuladorDaUnidade";
@@ -608,6 +609,77 @@ describe("por perto no mapa, rotina personalizada, comodidades e HTML editorial"
       await btnCopiarPerg!.props.onPress?.();
     });
     expect(JSON.stringify(arvore.toJSON())).toContain("Perguntas copiadas para enviar ao síndico ou corretor.");
+
+    act(() => {
+      arvore.unmount();
+    });
+  });
+
+  it("OrcamentoPessoal simula rateio de obra contra fundo de reserva do balancete sem R$ 0 isolado (S62)", () => {
+    const aComBalancete = analise({
+      caderno: {
+        ...cadernoVazio(),
+        balancetes: [{
+          id: "bal-1",
+          documentoId: null,
+          periodo: "2026-10",
+          receitasCentavos: 2500000,
+          despesasCentavos: 2400000,
+          reservaCentavos: 4000000,
+          inadimplenciaCentavos: 100000,
+          fonte: "Balancete out/2026",
+          pagina: 1,
+          registradoEm: AGORA,
+        }],
+      },
+    });
+
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(TemaDoApp, null, React.createElement(OrcamentoPessoal, { analise: aComBalancete, salvar: async () => true })),
+      );
+    });
+
+    const abrirRateio = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.some((c) => typeof c === "string" && c.includes("Simular obra e fundo de reserva"))).length > 0);
+    expect(abrirRateio).toBeDefined();
+    act(() => {
+      abrirRateio!.props.onPress?.();
+    });
+
+    const usarBalancete = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.some((c) => typeof c === "string" && c.includes("Usar reserva do último balancete"))).length > 0);
+    expect(usarBalancete).toBeDefined();
+
+    const campoObra = arvore.root
+      .findAllByType(TextInput)
+      .find((n) => n.props.accessibilityLabel === "Custo previsto da obra em R$");
+    expect(campoObra).toBeDefined();
+
+    act(() => {
+      usarBalancete!.props.onPress?.();
+      campoObra!.props.onChangeText?.("160000");
+    });
+
+    const calcular = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.some((c) => typeof c === "string" && c.includes("Calcular impacto por unidade"))).length > 0);
+    expect(calcular).toBeDefined();
+    act(() => {
+      calcular!.props.onPress?.();
+    });
+
+    const blocoRes = arvore.root.find((n) => n.props.testID === "orcamento-resultado-rateio");
+    const txt = blocoRes
+      .findAll((sub) => sub.children.some((c) => typeof c === "string"))
+      .flatMap((sub) => sub.children.filter((c): c is string => typeof c === "string"))
+      .join(" ");
+    expect(txt).toContain("5.000");
+    expect(txt).toContain("417");
+    expect(txt).not.toMatch(/R\$\s*0\b/);
 
     act(() => {
       arvore.unmount();
