@@ -135,9 +135,29 @@ Defeitos que o orquestrador viu ao abrir as fotos da etapa A (e mandou corrigir 
 - No Por perto de Casa Forte apareciam PARNAMIRIM, SANTANA e TORRE, mas não o nome do bairro do imóvel; e os pontos de interesse cobriam nomes.
 - O rótulo da rua do imóvel passava por baixo de um botão no zoom máximo e saía cortado em tela larga.
 
-### Etapa B
+### Etapa B: dois agentes em paralelo
 
-_A preencher._
+**Arquivos comuns do fundo** (`git log --grep "chão do vizinho"`), corrigindo o que as fotos da etapa A mostraram:
+
+- Junto à divisa, o chão passa a cobrir também os bairros do arquivo da cidade, que o gancho pede sempre que o quadro cruza a divisa. Só vale quando a borda de 300 m dos arquivos carregados cobre o quadro inteiro, para nunca sobrar chão de rua sem quadra. As divisas e os nomes dos vizinhos aparecem ali também no nível de lote.
+- O nome do bairro do imóvel tem prioridade no nível de quadras e procura outro lugar quando o melhor está tomado.
+- A rua do imóvel fica dentro da janela visível com zoom; nenhum rótulo sai do quadro; o lote do imóvel pequeno conta como obstáculo. A largura do texto foi medida no Chrome com as fontes do app: a estimativa do código já fica acima do texto pintado.
+- "Tentar de novo" depois de arquivo recusado refaz leitura e montagem (teste que falha sem a correção). Cena sem dado nenhum vira "sem cobertura".
+- Custo depois das correções, em node, mediana: gaveta 2,4 ms; Por perto 10,8 ms; quadro de 1240 px até 27,6 ms.
+
+**Mapa do lote** (`git log --grep "Por perto, volume 2.5D"`):
+
+- Por perto: o pino e os pontos de interesse passam como obstáculos; os nomes de bairro deixaram de ficar atrás deles.
+- Volume 2.5D: o chão é o mapa-base, na projeção do próprio volume. Volumes só para prédios com altura conhecida, os mais perto primeiro, até 60; o prédio do índice do outro lado da divisa entra pelo lote do fundo (visto em Casa Forte: um prédio de 37 m em Parnamirim). Planta e volume abrem na mesma escala (220 m).
+- Toque nos lotes (ver F4).
+
+O que o orquestrador olhou antes de commitar: a folha de contato com os arquivos reais de oito bairros (`telas/noite/f2-bairros/folha-de-contato.png`: lotes dentro das quadras, ruas no vão, água por cima, pontes nas travessias, quadra sem lote só como quadra) e as fotos de Casa Forte na gaveta, no Por perto e no volume: a hachura saiu das ruas de Parnamirim e CASA FORTE aparece no Por perto.
+
+Suíte depois da etapa B: `tsc` sem erros; `eslint` sem erros; `jest` com 91 suítes, **2.379 testes passando**, 0 falhas; `publicar-camadas --conferir` sem problemas.
+
+Ficou de fora nesta etapa (dito pelos agentes): fotos com zoom máximo no Por perto; o percurso por Tab conferido na tela; os nomes de rua e de bairro ficam por baixo dos volumes no 2.5D; a 360 px com zoom máximo a rua do imóvel pode ficar sem rótulo (não há lugar livre que não passe por baixo de um botão).
+
+**Problema de dado visto na folha de contato:** no bairro do Recife (o do porto), a área de água entre o cais e o molhe está dentro da divisa do bairro e não tem polígono na base de Recursos Hídricos. Como rua é o que sobra entre quadras, essa água aparece como chão de rua. Não há como corrigir sem inventar dado; fica registrado para decisão.
 
 ### Revisão da F2
 
@@ -179,7 +199,14 @@ Problemas de dados encontrados:
 - `docs/aplicacao/FEATURE-REGISTER.md` (em inglês, como o arquivo): linha do mapa-base na seção Platform, com o estado "construído na branch, pendente de revisão humana, teste em celular físico e parecer jurídico sobre a ODbL".
 - `docs/aplicacao/RUNBOOK-ATUALIZACAO.md` (em inglês): seção "6. Base map", com quando e como gerar de novo, o que conferir e o que fazer se um bairro passar do teto.
 
-**Interação e acessibilidade:** _a preencher._
+**Interação e acessibilidade** (feitas junto com a etapa B da F2, no Mapa do lote):
+
+- Tocar num lote da planta mostra, abaixo do mapa, "Lote vizinho · N pavimentos" quando a base traz pavimentos, "Lote vizinho" quando não traz e "Lote do imóvel · N pavimentos" no lote do imóvel, com o contorno do lote tocado e a origem do número (base de Lotes da Prefeitura). Tocar de novo ou no ✕ fecha. Arrastar mais de 8 px não conta como toque. O cartão é uma região viva para leitor de tela.
+- O rótulo de acessibilidade de cada mapa com o fundo diz a rua do imóvel, o bairro e a distância até a divisa mais próxima (568 m no Golden Tower; 39 m no prédio da Torre). O do Mapa do lote diz também quantos lotes há no quadro e quantos são de prédio conhecido: quem usa leitor de tela não alcança o toque livre no mapa.
+- Filtros do Por perto com 44 px; botões de zoom desligados legíveis sobre o mapa.
+- Contraste dos rótulos calculado e testado nos dois temas (4,5:1 ou mais, contra o halo).
+
+O que a revisão conferiu ou não disso: ver "Revisão da F2".
 
 ## F5 Verificação final
 
