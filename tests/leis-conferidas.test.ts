@@ -10,6 +10,8 @@ import { ITBI_MAXIMO, ITBI_MINIMO, placarDoPar, type ExtrasDoPlacar } from "../s
 import { SimuladorBolso15Segundos } from "../src/componentes/visual/SimuladorBolso15Segundos";
 import { TresPerguntasDoBolso, type PropsTresPerguntasDoBolso } from "../src/componentes/visual/TresPerguntasDoBolso";
 import { TemaDoApp } from "../src/tema/Tema";
+import { PlacarHeroi5Segundos } from "../src/componentes/visual/PlacarHeroi5Segundos";
+import { formatarReaisCompacto } from "../src/dados/formatos";
 import { traduzirIndicadoresCidadao, type EntradaTradutorCidadao } from "../src/dados/cidadao/tradutorCidadao";
 import { ITBI_ALIQUOTA_MAXIMA, ITBI_ALIQUOTA_MINIMA, estimarTransferencia, type CustoPorPartes } from "../src/dados/custoPorPartes";
 import { COMO_PEDIR_ISENCAO_RECIFE, HIPOTESES_ISENCAO_IPTU_RECIFE } from "../src/dados/recife/isencaoIptuRecife";
@@ -181,12 +183,16 @@ describe("cartório: sem valor calculado por proporção; a economia é só de I
     }
   });
 
-  test("R$ 650 mil com 80% financiado: a economia era R$ 23.427,15 (com cartório por proporção) e passa a R$ 11.960 (só ITBI)", () => {
+  test("R$ 650 mil com 80% financiado: a economia era R$ 23.427,15 (com cartório por proporção); só ITBI, R$ 10.400 do SFH e R$ 11.960 no melhor cenário", () => {
     const sim = simularOtimizacaoItbiRecife({ precoImovelReais: 650_000, financiamentoSfh: true, percentualFinanciado: 0.8 });
     expect(sim.economiaAVistaTempestivoReais).toBe(7_800);
-    expect(sim.economiaSfhReais).toBe(11_960);
+    // Pendência 5 do HANDOFF (19/11/2026): a economia do SFH é só a do SFH, 2% sobre a parte financiada (3% − 1%),
+    // contra 1% no financiado + 3% no resto; antes (R$ 11.960) somava o 1,8% do resto, que é a economia do pedido no prazo.
+    expect(sim.economiaSfhReais).toBe(10_400);
+    expect(sim.economiaSfhReais).toBe(650_000 * 0.8 * 0.02);
+    // O melhor cenário são os dois juntos: 1% no financiado e 1,8% no resto, com o pedido em 180 dias.
     expect(sim.melhorCenarioEconomiaReais).toBe(11_960);
-    expect(sim.economiaSfhReais).toBe(sim.semOrientacao3Pct.itbiReais - sim.sfhOtimizado1Pct!.itbiReais);
+    expect(sim.melhorCenarioEconomiaReais).toBe(sim.semOrientacao3Pct.itbiReais - sim.sfhOtimizado1Pct!.itbiReais);
     expect(sim.ressalvaLegalConselhos).toMatch(/não inclui escritura e registro \(tabela do TJPE, Ato nº 1\.556\/2025, a confirmar no cartório\)/);
   });
 
@@ -227,16 +233,24 @@ describe("cartório: sem valor calculado por proporção; a economia é só de I
     act(() => arvore.unmount());
   });
 
+  // Pendência 5 do HANDOFF (19/11/2026): pela tela montada, não por regex sobre o código.
   test("o placar de 5 segundos e o simulador de 15 segundos dizem que o total não inclui cartório", () => {
-    const fonteDoPlacar = fonteDe("componentes", "visual", "PlacarHeroi5Segundos.tsx");
-    expect(fonteDoPlacar).toContain("`Entrada + ITBI ~${formatarReaisCompacto(dinheiroParaEntrarReais)} (sem cartório)`");
-    expect(fonteDoPlacar).not.toContain("Entrada + cartório");
+    const placar = montar(React.createElement(PlacarHeroi5Segundos, {
+      modalidade: "compra", precoPrincipalReais: 650_000, mensalBolsoRealReais: 5_000, dinheiroParaEntrarReais: 141_700,
+      comparacaoM2Pct: null, orientacaoCurta: "Nascente", conforto: null, ruidoDormitorioDb: null,
+    }));
+    const textoDoPlacar = textos(placar.toJSON());
+    expect(textoDoPlacar).toContain(`Entrada + ITBI ~${formatarReaisCompacto(141_700)} (sem cartório)`);
+    expect(textoDoPlacar).not.toMatch(/Entrada \+ cartório|escritura|emolumentos/i);
 
-    const fonteDoSimulador = fonteDe("componentes", "visual", "SimuladorBolso15Segundos.tsx");
-    expect(fonteDoSimulador).toContain("Caixa para entrar (sem cartório)");
-    expect(fonteDoSimulador).toContain("escritura e registro a confirmar no cartório, fora da conta");
-    expect(fonteDoSimulador).not.toMatch(/totalFechamentoReais|emolumentos/);
-    expect(SimuladorBolso15Segundos).toBeDefined();
+    const simulador = montar(React.createElement(SimuladorBolso15Segundos));
+    const abrirSimulador = simulador.root.find((n) => n.props.testID === "simulador-15s-toggle" && typeof n.props.onPress === "function");
+    act(() => abrirSimulador.props.onPress());
+    const textoDoSimulador = textos(simulador.toJSON());
+    expect(textoDoSimulador).toContain("Caixa para entrar (sem cartório)");
+    expect(textoDoSimulador).toContain("escritura e registro a confirmar no cartório, fora da conta");
+    expect(textoDoSimulador).not.toMatch(/emolumentos/i);
+    act(() => { placar.unmount(); simulador.unmount(); });
   });
 });
 

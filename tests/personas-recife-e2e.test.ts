@@ -157,7 +157,8 @@ describe("Milestone 8 — Jornadas End-to-End de Personas Reais no Recife", () =
         financiamentoSfh: true,
       });
       expect(partesTorreAf.spuEstatutario?.elegivelFgtsCaixa).toBe(true);
-      expect(partesTorreAf.otimizacaoFechamento?.economiaSfhReais).toBe(11_960);
+      expect(partesTorreAf.otimizacaoFechamento?.economiaSfhReais).toBe(10_400);
+      expect(partesTorreAf.otimizacaoFechamento?.melhorCenarioEconomiaReais).toBe(11_960);
 
       const cartoes = traduzirIndicadoresCidadao({
         modalidade: "compra",

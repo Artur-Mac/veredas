@@ -85,7 +85,8 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
     expect(sim.sfhOtimizado1Pct!.itbiReais).toBe(7_540);
     expect(sim.sfhOtimizado1Pct!.prazoLegalDias).toBe(180);
     expect(sim.sfhOtimizado1Pct!.escrituraERegistroReais).toBeNull();
-    expect(sim.economiaSfhReais).toBe(11_960);
+    // Só o SFH: 2% sobre os R$ 520 mil financiados (pendência 5 do HANDOFF, 19/11/2026); o melhor cenário soma o prazo.
+    expect(sim.economiaSfhReais).toBe(10_400);
     expect(sim.melhorCenarioEconomiaReais).toBe(11_960);
     expect(sim.notaBaseDeCalculoLc227).toMatch(/Lei Complementar federal 227\/2026, de 13\/01\/2026, mudou o art\. 38 do Código Tributário Nacional/);
     expect(sim.notaBaseDeCalculoLc227).toMatch(/Lei 19\.490\/2026/);
@@ -242,7 +243,8 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
 
     expect(partes.alertaMarinha?.laudemioReferencia5PctReais).toBe(15_300);
     expect(partes.spuEstatutario?.foroMensalReais).toBe(153);
-    expect(partes.otimizacaoFechamento?.economiaSfhReais).toBe(11_960);
+    expect(partes.otimizacaoFechamento?.economiaSfhReais).toBe(10_400);
+    expect(partes.otimizacaoFechamento?.melhorCenarioEconomiaReais).toBe(11_960);
     expect(partes.estruturaECondominio?.classeAgressividade).toBe("CAA-IV");
   });
 });

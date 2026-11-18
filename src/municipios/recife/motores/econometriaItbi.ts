@@ -332,14 +332,17 @@ export function simularOtimizacaoItbiRecife(entrada: EntradaOtimizadorItbiRecife
       escrituraERegistroReais: null,
       prazoLegalDias: PRAZO_PEDIDO_LANCAMENTO_ITBI_DIAS,
     };
-    economiaSfh = r2(itbi3 - itbiSfh);
+    // Pendência 5 do HANDOFF (19/11/2026): a economia do SFH é só a do SFH, 1% em vez de 3% na parte financiada (contra
+    // 1% no financiado + 3% no resto). Antes media contra 3% sobre tudo com o resto a 1,8%, e somava a economia do pedido
+    // em 180 dias, que a tela já mostra à parte. O melhor cenário continua sendo os dois juntos (SFH + pedido no prazo).
+    economiaSfh = r2(itbi3 - (parcelaFinanciada * 0.01 + parcelaEntradaOuExcedente * 0.03));
   }
 
   return {
     semOrientacao3Pct,
     aVistaTempestivo18Pct,
     sfhOtimizado1Pct: sfhOtimizado,
-    melhorCenarioEconomiaReais: economiaSfh !== null ? Math.max(economiaAVista, economiaSfh) : economiaAVista,
+    melhorCenarioEconomiaReais: sfhOtimizado !== null ? Math.max(economiaAVista, r2(itbi3 - sfhOtimizado.itbiReais)) : economiaAVista,
     economiaAVistaTempestivoReais: economiaAVista,
     economiaSfhReais: economiaSfh,
     notaBaseDeCalculoLc227:
