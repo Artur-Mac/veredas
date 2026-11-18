@@ -17,6 +17,7 @@ import { Pressionavel } from "../componentes/Pressionavel";
 import { voltarOu } from "../componentes/Tela";
 import { Texto } from "../componentes/Texto";
 import type { Confianca, FonteDaRua, MetaDoIndice } from "../dados/contratos";
+import { FONTES_DO_RUIDO } from "../dados/recife/ruidoGerado";
 import { montarBoletimPreContrato } from "../dados/recife/boletimPreContrato";
 import { formatarData, formatarNumero } from "../dados/formatos";
 import { BAIRROS_COBERTOS, bairroPorSlug } from "../dados/recife/bairros";
@@ -532,7 +533,10 @@ export default function SobreOsDados() {
           Segurança no bairro: registros da SDS-PE compilados pelo Crime Brasil (CC BY 4.0), janela de 12 meses por bairro; a taxa por 1.000 moradores usa a população do IBGE, Censo 2022 (variável V0001). É o que chegou à polícia, pelo bairro informado no registro.
         </Texto>
         <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
-          Aeroporto: eixo da pista 18/36 do Aeroporto dos Guararapes no OpenStreetMap (ODbL, © colaboradores do OpenStreetMap). A linha de pouso e decolagem segue a superfície de aproximação do Anexo 14 da ICAO, até 10 km da cabeceira; a altura do avião é estimada pela rampa padrão de 3°. Sem decibéis: as curvas oficiais de ruído da ANAC ainda não estão no app.
+          Aeroporto: eixo da pista 18/36 do Aeroporto dos Guararapes no OpenStreetMap (ODbL, © colaboradores do OpenStreetMap). A linha de pouso e decolagem segue a superfície de aproximação do Anexo 14 da ICAO, até 10 km da cabeceira; a altura do avião é estimada pela rampa padrão de 3°. As curvas oficiais de ruído da ANAC ainda não estão no app: o nível do avião entra só como estimativa, no ruído estimado abaixo.
+        </Texto>
+        <Texto testID="sobre-ruido-estimado" tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
+          {`Ruído estimado (dB(A) de dia e à noite e nota de sossego): estimativa com dados abertos, não medição, pelo método publicado pelo Mapa Sossego (mapasossego.com.br/sobre). Vias: © colaboradores do OpenStreetMap, sob a Open Database License (ODbL), extrato do Geofabrik de ${formatarData(FONTES_DO_RUIDO.vias.dadosDe)}. Ônibus: partidas do GTFS Grande Recife. Metrô e VLT: traçado da CBTU. Som licenciado: LUSE da Prefeitura do Recife. Bares, oficinas e mercados: CNEFE do Censo 2022 (IBGE). A estimativa tem faixa de erro de ±5 dB; a comparação com 55 dB(A) de dia e 50 à noite usa a ABNT NBR 10151, norma técnica, não lei municipal.`}
         </Texto>
 
         <View style={{ gap: 8 }}>
