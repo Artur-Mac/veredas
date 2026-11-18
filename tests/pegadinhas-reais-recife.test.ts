@@ -195,7 +195,7 @@ describe("3 Pegadinhas Reais do Mercado Imobiliário do Recife", () => {
     });
 
     expect(acuCorredor.isolamentoFachadaD2mnTwDb).toBeLessThan(20);
-    expect(acuCorredor.atendeLimiteNoturnoLei16243_50Db).toBe(false);
+    expect(acuCorredor.atendeReferenciaNoturnaNbr10151).toBe(false);
     expect(acuCorredor.ruidoInternoDormitorioDbA).toBeGreaterThan(50);
     expect(acuCorredor.descontoHedonicoEstimadoReais).toBeGreaterThan(0);
 

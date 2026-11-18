@@ -4,6 +4,8 @@ import type { VereditoConfortoTermico } from "../clima/confortoTermico";
 import type { ResultadoAcustica3D } from "../../nucleo/motores/acustica3d";
 import type { FichaDeMetodo6Campos } from "../fichaDeMetodo";
 import type { ResultadoCaminhabilidadeEVida } from "./caminhabilidadeEVidaNaRua";
+import { nivelDeSossego } from "../ruido/leitura";
+import { DB_DA_NOTA_0, DB_DA_NOTA_10 } from "../ruido/parametros";
 
 export type EixoPulsoDaQuadra = {
   id:
@@ -61,7 +63,8 @@ export function rotuloAusencia(ausencia: AbsenceState): string {
 
 export function calcularPulsoDaQuadra(params: {
   conforto: VereditoConfortoTermico;
-  acustica: ResultadoAcustica3D;
+  /** O resultado acústico do prédio pelo modelo de ruído estimado; `null` = sem leitura (o eixo sai da média). */
+  acustica: ResultadoAcustica3D | null;
   anoConstrucao: number | null;
   obrasProximas: ObrasProximas | null;
   visaoRua: VisaoDaRua | null;
@@ -100,22 +103,28 @@ export function calcularPulsoDaQuadra(params: {
     conta: `10 menos o índice de calor (${conforto.indiceCalor0a100} de 100) dividido por 10`,
   };
 
-  // 2. Sossego noturno
-  const notaSossego = clampNota((64 - acustica.ruidoInternoDormitorioDbA) / 3.4);
-  const eixoSossego: EixoPulsoDaQuadra = {
-    id: "sossego",
-    titulo: "Sossego noturno",
-    nota0a10: notaSossego,
-    ausencia: null,
-    rotuloValor: `${notaSossego.toFixed(1).replace(".", ",")} / 10`,
-    resumo:
-      acustica.ruidoInternoDormitorioDbA <= 40
-        ? "Tendência calma no quarto à noite"
-        : acustica.ruidoInternoDormitorioDbA <= 45
-          ? "Movimento urbano moderado"
-          : "Janela pede atenção para vedação",
-    conta: "a mesma nota de sossego do placar, tirada do barulho estimado no quarto",
-  };
+  // 2. Sossego noturno: a mesma nota do placar e do Comparar, a do modelo de ruído estimado (18/11/2026, A1 e A2).
+  // Antes era (64 − dB no quarto) ÷ 3,4, com uma via fixa igual para todo prédio. Sem leitura, fora da média.
+  const eixoSossego: EixoPulsoDaQuadra =
+    acustica === null
+      ? {
+          id: "sossego",
+          titulo: "Sossego noturno",
+          nota0a10: null,
+          ausencia: "sem_leitura_publicada",
+          rotuloValor: "Sem leitura",
+          resumo: "Sem estimativa de ruído para este prédio",
+          conta: "sem estimativa de ruído para o prédio, o eixo fica fora da média",
+        }
+      : {
+          id: "sossego",
+          titulo: "Sossego noturno",
+          nota0a10: acustica.notaSossego0a10,
+          ausencia: null,
+          rotuloValor: `${virgula(acustica.notaSossego0a10)} / 10`,
+          resumo: `${nivelDeSossego(acustica.notaSossego0a10)} à noite pelo ruído estimado`,
+          conta: `a nota de sossego do ruído estimado à noite na janela (${Math.round(acustica.ruidoExternoCombinadoDbA)} dB(A), estimativa com dados abertos, não medição): 10 com ${DB_DA_NOTA_10} dB(A) ou menos, 0 com ${DB_DA_NOTA_0} ou mais, em linha reta entre os dois`,
+        };
 
   // 3. Serviços a pé: a nota a pé do prédio pela rede de ruas (R2, 19/11/2026: antes era 6,8 fixo mais um tanto por
   // bloco de dado lido, igual para qualquer prédio com a camada da rua). `visaoRua` fica só para dizer por que não há leitura.

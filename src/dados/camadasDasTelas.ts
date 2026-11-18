@@ -8,14 +8,15 @@ import { arquivoDoIndice } from "./recife/indice";
 import { arquivoDaCidade, arquivoDoMapaBase, bairrosNaCaixa } from "./recife/mapaBase";
 import { arquivoDaNoite } from "./recife/noite";
 import { arquivoDaProcura } from "./recife/procura";
+import { arquivoDoRuido } from "./ruido/estimativa";
 import { arquivosDoTransito } from "./recife/transito";
 import { arquivoSolar } from "./sol/entorno";
 
 const definidos = (xs: readonly (string | null)[]): string[] => [...new Set(xs.filter((x): x is string => !!x))];
 
-/** O que o dossiê de uma análise lê ao abrir: índice do bairro, dia a dia a pé, noite, chuva, equipamentos e atrito por perto. */
+/** O que o dossiê de uma análise lê ao abrir: índice do bairro, dia a dia a pé, noite, chuva, equipamentos, atrito por perto e ruído estimado. */
 export function camadasDoBairro(bairro: string | null | undefined): string[] {
-  return definidos([arquivoDoIndice(bairro), arquivoDosEssenciais(bairro), arquivoDaNoite(bairro), arquivoDaChuva(bairro), arquivoDosEquipamentos(bairro), arquivoDoAtrito(bairro)]);
+  return definidos([arquivoDoIndice(bairro), arquivoDosEssenciais(bairro), arquivoDaNoite(bairro), arquivoDaChuva(bairro), arquivoDosEquipamentos(bairro), arquivoDoAtrito(bairro), arquivoDoRuido(bairro)]);
 }
 
 /** Telas que leem várias análises (Visita, Comparar, detalhes, Sol): as camadas do dossiê de cada bairro do caderno. */

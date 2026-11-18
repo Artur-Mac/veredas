@@ -54,7 +54,8 @@ import { CartaoCidadao3Camadas } from "../../componentes/cidadao/CartaoCidadao3C
 import { SimuladorTco10Anos, type EntradaTco10Anos } from "../../componentes/cidadao/SimuladorTco10Anos";
 import { ResumoEvidenciaPartilhavel } from "../../componentes/cidadao/ResumoEvidenciaPartilhavel";
 import { avaliarBioclimatico3d } from "../../municipios/recife/motores/bioclimatico3d";
-import { avaliarAcustica3d } from "../../nucleo/motores/acustica3d";
+import { estimarRuido } from "../../dados/ruido/estimativa";
+import { acusticaDaEstimativa } from "../../dados/ruido/ponte";
 import { avaliarHidroMare1m } from "../../municipios/recife/motores/hidroMare1m";
 import { avaliarResilienciaRedes } from "../../municipios/recife/motores/resilienciaRedes";
 import { inferirFachadasDoEdificio, type PapelFachada } from "../../dados/sol/inferirFachadas";
@@ -76,7 +77,6 @@ import { CopilotoDocumentosPreSinal } from "../../componentes/visual/CopilotoDoc
 import { calcularPulsoDaQuadra } from "../../dados/dossie/pulsoDaQuadra";
 import { PulsoDaQuadra } from "../../componentes/visual/PulsoDaQuadra";
 import { ExportarResumoExecutivo } from "../../componentes/visual/ExportarResumoExecutivo";
-import { classificarNivelSossegoPorDbInterno } from "../../dados/acustica/decomporSossego";
 import { avaliarCaminhabilidadeEVidaNaRua } from "../../dados/dossie/caminhabilidadeEVidaNaRua";
 import { VidaAPeNaQuadra } from "../../componentes/visual/VidaAPeNaQuadra";
 import { construirLinhaUnificadaDoLote } from "../../dados/dossie/linhaUnificadaDoLote";
@@ -323,17 +323,15 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     [andarSimulado, fachadaGrausAtiva, microclima.tempDelta],
   );
 
+  // 18/11/2026 (decisões A1 e A2): o barulho sai do modelo estimado do prédio (src/dados/ruido), no andar e na fachada
+  // simulados; sem prédio ou sem camada, "sem leitura". Os cartões da frente visual recebem o resultado pela ponte.
+  const ruido = useMemo(
+    () => estimarRuido(predio, { andar: andarSimulado, fachadaGraus: fachadaGrausAtiva, janelaFechada: true }),
+    [andarSimulado, fachadaGrausAtiva, predio],
+  );
   const acustica = useMemo(
-    () =>
-      avaliarAcustica3d({
-        andar: andarSimulado,
-        fachadaVoltadaParaVia: fachadaAtiva.id === "fundos" ? "fundos" : fachadaAtiva.id === "frente_rua" ? "frente" : "lateral",
-        tipologiaVia: "coletora",
-        distanciaViaM: 18,
-        anoConstrucao: predio?.anoConstrucao ?? null,
-        precoImovelReais: analise.declarados.preco.valor ?? null,
-      }),
-    [analise.declarados.preco.valor, andarSimulado, fachadaAtiva.id, predio?.anoConstrucao],
+    () => acusticaDaEstimativa(ruido, { anoConstrucao: predio?.anoConstrucao ?? null, precoImovelReais: analise.declarados.preco.valor ?? null }),
+    [analise.declarados.preco.valor, predio?.anoConstrucao, ruido],
   );
 
   const confortoTermico = useMemo(
@@ -430,6 +428,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     () =>
       calcularPulsoDaQuadra({
         conforto: confortoTermico,
+        // O eixo de sossego usa a nota do modelo de ruído estimado; sem leitura, fica fora da média.
         acustica,
         anoConstrucao: predio?.anoConstrucao ?? null,
         obrasProximas: visao.obras,
@@ -487,10 +486,10 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     const listaOk: { rotulo: string; detalhe?: string }[] = [];
     if (vinculoConfirmado) listaOk.push({ rotulo: "Prédio confirmado no cadastro do Recife", detalhe: predio?.nome ?? undefined });
     if (predio?.iptuAnual) listaOk.push({ rotulo: "Referência oficial de IPTU localizada no edifício" });
-    if (acustica.atendeLimiteNoturnoLei16243_50Db) listaOk.push({ rotulo: "Ruído noturno dentro do conforto esperado" });
+    if (acustica?.atendeReferenciaNoturnaNbr10151) listaOk.push({ rotulo: "Ruído noturno estimado dentro da referência da norma técnica" });
     if (!partesDeCusto.alertaMarinha) listaOk.push({ rotulo: "Fora da área típica de Terreno de Marinha" });
     return listaOk;
-  }, [acustica.atendeLimiteNoturnoLei16243_50Db, partesDeCusto.alertaMarinha, predio?.iptuAnual, predio?.nome, vinculoConfirmado]);
+  }, [acustica?.atendeReferenciaNoturnaNbr10151, partesDeCusto.alertaMarinha, predio?.iptuAnual, predio?.nome, vinculoConfirmado]);
 
   const fechar = useCallback(() => setGaveta(null), []);
 
@@ -682,7 +681,8 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             comparacaoM2Pct={visao.posicao?.deltaPercentual ?? null}
             orientacaoCurta={fachadaAtiva.orientacaoSolar}
             conforto={confortoTermico}
-            ruidoDormitorioDb={acustica.ruidoInternoDormitorioDbA}
+            ruidoDormitorioDb={acustica?.ruidoInternoDormitorioDbA ?? null}
+            sossego={{ ...ruido.textos.placar, ficha: ruido.estado === "estimado" ? ruido.textos.ficha : null }}
             spuAtivo={Boolean(partesDeCusto.alertaMarinha)}
             aoTocarMetrica={(alvo) => {
               setAba(alvo === "predio" ? "edificio" : "destaques");
@@ -832,7 +832,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                   economiaLegalItbiReais={
                     partesDeCusto.otimizacaoFechamento?.melhorCenarioEconomiaReais ?? 0
                   }
-                  descontoRuidoReais={acustica.descontoHedonicoEstimadoReais ?? 0}
+                  descontoRuidoReais={acustica?.descontoHedonicoEstimadoReais ?? 0}
                   vplCalorPoenteReais={bioclimatico.exposicaoPoente ? bioclimatico.vpl10AnosPoenteReais : 0}
                   riscoManutencaoPredioReais={
                     partesDeCusto.estruturaECondominio?.choqueCotaExtraEstimadoPorUnidadeReais ?? 0
@@ -859,7 +859,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                             : null
                   }
                 />
-                <EscalaDeRuidoHumana acustica={acustica} anoConstrucao={predio?.anoConstrucao ?? null} />
+                <EscalaDeRuidoHumana acustica={acustica} anoConstrucao={predio?.anoConstrucao ?? null} ruido={ruido} />
                 <RelogioDoPredio
                   anoConstrucao={predio?.anoConstrucao ?? null}
                   unidades={predio?.unidades ?? null}
@@ -903,9 +903,10 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                         : null,
                     fachadaResumo: `${fachadaAtiva.orientacaoSolar} (${andarSimulado}º andar)`,
                     conforto: confortoTermico,
-                    sossegoNivel: classificarNivelSossegoPorDbInterno(
-                      acustica.ruidoInternoDormitorioDbA,
-                    ).rotuloComparar,
+                    sossegoNivel:
+                      ruido.estado === "estimado"
+                        ? `${ruido.nivelDeSossego} (~${Math.round(ruido.naJanela.noiteDb)} dB(A) à noite na janela, estimativa)`
+                        : ruido.textos.placar.valor,
                     radar: radarVistaELote,
                     pulso: pulsoDaQuadra,
                     anoConstrucao: predio?.anoConstrucao ?? null,

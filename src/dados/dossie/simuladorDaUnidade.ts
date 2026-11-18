@@ -1,8 +1,10 @@
 // Simulador "Andar × Fachada" (15/11/2026): a pessoa escolhe casa ou apartamento, o andar e a fachada da janela (rosa
 // de 8 direções) e o app recalcula, no aparelho, sem nota de 0 a 100:
 // - barulho: as 3 fontes nomeadas mais perto (via principal, corredor de ônibus, metrô, bar, local com licença de som,
-//   oficina, aeroporto), com distância e se a janela fica de frente, de lado ou de costas para cada uma. SEM decibéis (decisão do
-//   usuário, 15/11/2026): nenhuma fonte do Recife foi medida ou calibrada; o dB(A) fica "Sem leitura publicada";
+//   oficina, aeroporto), com distância e se a janela fica de frente, de lado ou de costas para cada uma. Desde
+//   18/11/2026 (decisão A2 do Samuel, que reabre a de 15/11): o dB(A) ESTIMADO de dia e à noite, nesse andar e nessa
+//   fachada, pelo modelo de src/dados/ruido (dados abertos, não medição), sempre dito como estimativa; sem camada para
+//   o prédio continua "Sem leitura publicada";
 // - sol: horas de sol direto nessa fachada nessa altura no equinócio, descontando prédios vizinhos mais altos
 //   (analisarJanelaNoRecife, o mesmo cálculo da visita);
 // - vento: se a fachada recebe a brisa de sudeste e se um vizinho mais alto que a janela fica no caminho (altura pelos
@@ -13,6 +15,8 @@ import { baseDeCamadasAmbientais } from "../recife/camadasAmbientais";
 import { noiteDoBairro } from "../recife/noite";
 import { FONTE_DO_AEROPORTO, relacaoComOAeroporto } from "../recife/aeroporto";
 import { distanciaMetros } from "../geo";
+import { estimarRuido, type EstimativaDeRuido } from "../ruido/estimativa";
+import { relacaoComAFachada as relacaoPeloModelo, type RelacaoComAFachada as RelacaoPeloModelo } from "../ruido/modelo";
 import { SEM_LEITURA } from "./fichaViva";
 import { alturaDoAndarM, analisarJanelaNoRecife, METROS_POR_PAVIMENTO, type LeituraDaJanela } from "./solESombra";
 
@@ -26,7 +30,6 @@ export const ROSA: readonly (readonly ({ rotulo: string; graus: number | null })
 const DIRS = ["norte", "nordeste", "leste", "sudeste", "sul", "sudoeste", "oeste", "noroeste"];
 export const nomeDaDirecao = (g: number) => DIRS[Math.round((((g % 360) + 360) % 360) / 45) % 8]!;
 const grausDaPalavra = (lado: string): number | null => { const i = DIRS.indexOf(lado.toLowerCase()); return i >= 0 ? i * 45 : null; };
-const difAngulo = (a: number, b: number) => Math.abs(((a - b + 540) % 360) - 180);
 const rumo = (de: readonly [number, number], para: readonly [number, number]) => {
   const x = (para[0] - de[0]) * Math.cos((((de[1] + para[1]) / 2) * Math.PI) / 180), y = para[1] - de[1];
   return ((Math.atan2(x, y) * 180) / Math.PI + 360) % 360;
@@ -94,9 +97,9 @@ export function decomporCausasDeBarulhoSemDb(todasFontes: readonly FonteDeBarulh
     };
   });
 }
-export type RelacaoComAFachada = "de_frente" | "de_lado" | "de_costas" | "sem_fachada";
-export const relacaoComAFachada = (fachada: number | null, rumoDaFonte: number): RelacaoComAFachada =>
-  fachada === null ? "sem_fachada" : difAngulo(fachada, rumoDaFonte) <= 60 ? "de_frente" : difAngulo(fachada, rumoDaFonte) <= 120 ? "de_lado" : "de_costas";
+/** De frente (até 60°), de lado (até 120°) ou de costas: a mesma regra que o modelo de ruído usa para descontar a fachada. */
+export type RelacaoComAFachada = RelacaoPeloModelo;
+export const relacaoComAFachada = (fachada: number | null, rumoDaFonte: number): RelacaoComAFachada => relacaoPeloModelo(fachada, rumoDaFonte);
 const TEXTO_DA_RELACAO: Record<RelacaoComAFachada, string> = {
   de_frente: "a janela fica de frente para ela",
   de_lado: "a janela fica de lado para ela",
@@ -163,6 +166,9 @@ export type SimulacaoDaUnidade = {
     porCausa: CausaDeBarulho[];
     semFontes: boolean;
     consequenciaPorFace: string;
+    /** O ruído estimado nesse andar e nessa fachada (ou "sem leitura"); a tela mostra os textos e a ficha de método. */
+    estimativa: EstimativaDeRuido;
+    /** A frase dos dB(A): sempre com "(estimativa)"; sem camada para o prédio, "Sem leitura publicada". */
     decibeis: string;
     nota: string;
     acaoConcreta: string;
@@ -227,6 +233,13 @@ export function simularUnidade(opcoes: { predio: Edificio; vizinhos: readonly Ed
       : sol?.recebeBrisaSudeste === "reduzida_por_vizinho" ? "A fachada fica voltada para a brisa de sudeste, mas um vizinho mais alto fica no caminho."
         : "A fachada não fica voltada para a brisa de sudeste: o vento chega mais pelos outros lados.";
 
+  // 18/11/2026 (A2): dB(A) estimado nesse andar e nessa fachada, com a janela fechada pela NBR 15575-4. Na casa, térreo.
+  const estimativa = estimarRuido(predio, { andar, fachadaGraus, janelaFechada: true });
+  const decibeis =
+    estimativa.estado === "estimado"
+      ? `${estimativa.textos.janela ?? estimativa.textos.manchete}. ${estimativa.textos.aviso}`
+      : `Nível em dB(A): ${SEM_LEITURA} (sem estimativa de ruído para este prédio).`;
+
   const acaoBarulho = doChao.some((f) => f.relacao === "de_frente")
     ? "Na visita: feche as janelas da sala e do quarto principal no horário de movimento e cheque se a esquadria tem vedação íntegra."
     : fontes.length > 0
@@ -248,7 +261,8 @@ export function simularUnidade(opcoes: { predio: Edificio; vizinhos: readonly Ed
     barulho: {
       fontes, porCausa, semFontes: fontes.length === 0,
       consequenciaPorFace,
-      decibeis: `Nível em dB(A): ${SEM_LEITURA} (nenhuma medição calibrada no Recife).`,
+      estimativa,
+      decibeis,
       nota: "Distâncias em linha reta, do centro do lote; dobrar a distância reduz de forma relevante o efeito da fonte. Para comparar, ouça na visita com a janela aberta e fechada, num dia útil às 18h e numa sexta à noite.",
       acaoConcreta: acaoBarulho,
     },

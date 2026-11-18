@@ -279,10 +279,10 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
     camada1Manchete: sanearTextoCamada1(
       acu
         ? acu.ruidoExternoAeronavePezrDb > 0
-          ? `Rota de aviões gera cerca de ${acu.ruidoExternoAeronavePezrDb} dB externos mesmo em andares altos.`
-          : acu.atendeLimiteNoturnoLei16243_50Db
-            ? `Estimativa noturna tranquila no quarto (${acu.ruidoInternoDormitorioDbA.toFixed(1)} dB internos).`
-            : `Ruído estimado de ${acu.ruidoInternoDormitorioDbA.toFixed(1)} dB no quarto pede atenção às janelas.`
+          ? `Rota de aviões: cerca de ${Math.round(acu.ruidoExternoAeronavePezrDb)} dB(A) estimados à noite, mesmo em andares altos.`
+          : acu.atendeReferenciaNoturnaNbr10151
+            ? `Estimativa noturna tranquila no quarto (~${Math.round(acu.ruidoInternoDormitorioDbA)} dB(A) com a janela fechada).`
+            : `Ruído estimado de ~${Math.round(acu.ruidoInternoDormitorioDbA)} dB(A) no quarto à noite pede atenção às janelas.`
         : "Silêncio do quarto depende da fachada, distância da via e esquadrias.",
     ),
     camada2ImpactoPratico: acu
@@ -294,10 +294,12 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       ausencia: acu ? null : descreverAusenciaCidadao("sem_leitura_publicada"),
       chavesDuplas,
       metodo6Campos: {
-        oQueMede: "Ruído externo combinado (via + eventos noturnos + rota aérea) e isolamento do quarto.",
-        baseLegalOuNormativa: "ABNT NBR 15575-4 (corte 2013), ANAC RBAC 161 e Lei Recife 16.243/1996.",
-        aritmeticaResumo: "Soma energética logarítmica menos isolamento D2m,nT,w por idade da obra.",
-        fontePrimaria: "CTTU vias + LUSE 150m + ANAC/DECEA SBRF",
+        oQueMede: "Ruído estimado de fora à noite (vias, ônibus, som licenciado e avião) e o que a janela fechada tira.",
+        // 18/11/2026 (conferência de leis): saem a Lei Recife 16.243/1996 (não fixa 50 dB à noite) e o RBAC 161 (o app
+        // não usa as curvas oficiais). Fica a norma técnica, dita como referência e não como lei municipal.
+        baseLegalOuNormativa: "Referência de norma técnica, não lei municipal: ABNT NBR 10151 (área residencial, 55 dB(A) de dia e 50 à noite) e ABNT NBR 15575-4 (janela).",
+        aritmeticaResumo: "Estimativa com dados abertos, não medição: soma em energia das fontes menos o isolamento da janela pelo ano do prédio.",
+        fontePrimaria: "Vias do OpenStreetMap (ODbL), GTFS Grande Recife, LUSE da Prefeitura, CNEFE (IBGE) e pista do aeroporto (OpenStreetMap)",
         vintage: "2026-11",
         limiteEpistemologico: acu?.limiteEpistemologico ?? "Esquadrias trocadas pelos moradores melhoram a vedação.",
       },

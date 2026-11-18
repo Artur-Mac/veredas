@@ -1,4 +1,6 @@
 import type { ResultadoAcustica3D } from "../../nucleo/motores/acustica3d";
+import type { FichaDeMetodo6Campos } from "../fichaDeMetodo";
+import { fichaGeralDoRuido } from "../ruido/estimativa";
 
 export type NivelSossego = "Calmo" | "Moderado" | "Intenso";
 
@@ -21,6 +23,8 @@ export type SinteseSossego = {
   notaJanela: string;
   avisoEstimativaSemLaudo: string;
   fontes: FonteDeSossego[];
+  /** A ficha "como foi calculada" da nota de sossego (decisão A13): a do prédio, quando veio da estimativa; senão, a geral. */
+  metodo: FichaDeMetodo6Campos;
 };
 
 export function classificarNivelSossegoPorDbInterno(dbInterno: number): {
@@ -58,6 +62,7 @@ function nivelPorExterno(dbExterno: number): NivelSossego {
 export function decomporSossego(
   acustica: ResultadoAcustica3D,
   anoConstrucao: number | null,
+  fichaDoPredio?: FichaDeMetodo6Campos | null,
 ): SinteseSossego {
   const internoDb = acustica.ruidoInternoDormitorioDbA;
   const externoDb = acustica.ruidoExternoCombinadoDbA;
@@ -166,10 +171,8 @@ export function decomporSossego(
     });
   }
 
-  const notaSossego0a10 = Math.max(
-    1,
-    Math.min(9.8, Math.round(((64 - internoDb) / 3.4) * 10) / 10),
-  );
+  // 18/11/2026 (A1): uma nota só no app, a do modelo de ruído estimado (a mesma do placar, do pulso e do Comparar).
+  const notaSossego0a10 = acustica.notaSossego0a10;
   const avisoEstimativaSemLaudo =
     "Estimativa por proximidade de fontes e época construtiva; não equivale a medição acústica no local.";
 
@@ -185,5 +188,6 @@ export function decomporSossego(
     notaJanela,
     avisoEstimativaSemLaudo,
     fontes,
+    metodo: fichaDoPredio ?? fichaGeralDoRuido(),
   };
 }

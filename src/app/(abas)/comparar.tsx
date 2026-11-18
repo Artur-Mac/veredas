@@ -58,7 +58,8 @@ import { estimarMinutosPicoIdaVolta } from "../../dados/mobilidade/rotinaCasal";
 import { inferirFachadasDoEdificio } from "../../dados/sol/inferirFachadas";
 import { avaliarConfortoTermico } from "../../dados/clima/confortoTermico";
 import { avaliarBioclimatico3d } from "../../municipios/recife/motores/bioclimatico3d";
-import { avaliarAcustica3d } from "../../nucleo/motores/acustica3d";
+import { estimarRuido } from "../../dados/ruido/estimativa";
+import { acusticaDaEstimativa } from "../../dados/ruido/ponte";
 
 const MODALIDADES: readonly { valor: Modalidade; rotulo: string }[] = [
   { valor: "aluguel", rotulo: "Alugar" },
@@ -164,6 +165,13 @@ function CompararComDados() {
 
   const matrizComparar: [ColunaMatrizComparar, ColunaMatrizComparar] | null = (() => {
     if (!a || !b || !comparacao || !partesDoPar) return null;
+    const vizinhosDe = (e: Edificio): Edificio[] => {
+      try {
+        return edificiosDoBairro(e.bairro);
+      } catch {
+        return [];
+      }
+    };
     const montar = (item: AnaliseV2, ed: Edificio | null, pt: ReturnType<typeof derivarCustoPorPartes>, nomeCurto: string): ColunaMatrizComparar => {
       const inf = inferirFachadasDoEdificio({
         edificio: ed ?? {
@@ -173,6 +181,9 @@ function CompararComDados() {
           centro: [-34.896, -8.121],
           poligono: null,
         },
+        // Os mesmos vizinhos que o dossiê usa para achar a frente do prédio: sem eles a fachada inferida (e, com ela, a
+        // nota de sossego e o rótulo do sol) saía diferente da do placar do dossiê.
+        vizinhosDoBairro: ed ? vizinhosDe(ed) : undefined,
         textoAnuncio: [item.nome, item.nomeEdificio, ...(item.extracao?.campos.comodidades ?? [])]
           .filter(Boolean)
           .join(" "),
@@ -188,13 +199,10 @@ function CompararComDados() {
         fachadaAzimuteGraus: az,
         bioclimatico: bio,
       });
-      const acu = avaliarAcustica3d({
-        andar,
-        fachadaVoltadaParaVia: fac.id === "fundos" ? "fundos" : "frente",
-        tipologiaVia: "coletora",
-        distanciaViaM: 18,
-        anoConstrucao: ed?.anoConstrucao ?? null,
-      });
+      // 18/11/2026 (A1, R4): o sossego sai do modelo de ruído estimado do prédio, no andar e na fachada do anúncio:
+      // a mesma nota do placar do dossiê. Sem prédio no cadastro, "sem leitura".
+      const ruido = estimarRuido(ed, { andar, fachadaGraus: az, janelaFechada: true });
+      const acu = acusticaDaEstimativa(ruido, { anoConstrucao: ed?.anoConstrucao ?? null });
       const baseMensal =
         item.modalidade === "compra"
           ? (pt.simulacaoCompra?.prestacaoPriceReais ?? 0) +
@@ -210,7 +218,8 @@ function CompararComDados() {
         orientacaoCurta: fac.orientacaoSolar,
         climaSelo: conf.selo,
         confortoQuente: conf.zona === "quente_tarde" || conf.zona === "tende_abafar",
-        ruidoInternoDb: acu.ruidoInternoDormitorioDbA,
+        ruidoInternoDb: acu?.ruidoInternoDormitorioDbA ?? null,
+        sossego: ruido.estado === "estimado" ? { nota0a10: ruido.notaDeSossego, nivel: ruido.nivelDeSossego, noiteDb: ruido.naJanela.noiteDb } : null,
         anoConstrucao: ed?.anoConstrucao ?? null,
         spuAlerta: Boolean(pt.alertaMarinha),
       };
@@ -408,6 +417,7 @@ function CompararComDados() {
                         ruidoInternoDb:
                           matrizComparar?.[0].ruidoInternoDb ??
                           (par[0].visita.ruido === "silencioso" ? 34 : par[0].visita.ruido === "alto" ? 54 : 40),
+                        sossego: matrizComparar?.[0].sossego ?? null,
                         situacaoDocumentalResumo: partesDoPar[0].spuEstatutario?.regime ?? "A confirmar na matrícula",
                         riscoAguaChuvaResumo: ea ? "Checar garagem e cisterna na visita" : "Sem vínculo do prédio",
                         itensPendentesCusto: pendenciasDeCustoDoAnuncio(par[0]),
@@ -422,6 +432,7 @@ function CompararComDados() {
                         ruidoInternoDb:
                           matrizComparar?.[1].ruidoInternoDb ??
                           (par[1].visita.ruido === "silencioso" ? 34 : par[1].visita.ruido === "alto" ? 54 : 40),
+                        sossego: matrizComparar?.[1].sossego ?? null,
                         situacaoDocumentalResumo: partesDoPar[1].spuEstatutario?.regime ?? "A confirmar na matrícula",
                         riscoAguaChuvaResumo: eb ? "Checar garagem e cisterna na visita" : "Sem vínculo do prédio",
                         itensPendentesCusto: pendenciasDeCustoDoAnuncio(par[1]),
