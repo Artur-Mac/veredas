@@ -4,6 +4,19 @@ Feita em 18/11/2026, na branch `integracao/ruido-estimado`, sobre a camada `reci
 
 Tudo aqui é estimativa com dados abertos, não medição. Nenhum ponto do Recife foi medido.
 
+## Atualização de 19/11/2026: o avião fora do cone (pendência 2 do HANDOFF)
+
+Refeita na branch `fix/pendencias-unificacao` com o mesmo script (saída em `docs/aplicacao/execucoes/ruido-2026-11-19/conferencia.json`). A camada não mudou; mudou a parcela do avião, que é calculada no app.
+
+- **Antes:** o avião só entrava dentro do cone de aproximação (639 prédios). Dos 322 prédios a até 1 km da pista, nenhum recebia avião fora do cone; 237 saíam "Tranquilo" ou "Muito tranquilo", e havia um degrau na borda (prédio `64823-1080`: 0 fora, ~69 dB(A) 27 m para dentro).
+- **Agora, além das cabeceiras (até 10 km delas):** o nível do avião é o da altura na rampa de 3°, com 9 dB a menos por km para o lado da linha de pouso, dentro e fora do cone ("uns 9 dB a menos 1 km para o lado", página de metodologia do Mapa Sossego). Abaixo de 35 dB(A) de dia, fora do cone, não entra (decisão do app; muda o total em menos de 2 dB). Na borda do cone o nível passa de 69,2 para 68,9 dB(A); o `64823-1080` recebe ~69 dB(A) de dia.
+- **Ao lado da pista (entre as cabeceiras, até 3 km dela):** a página não publica o nível da pista, e o Vereda não inventa. A estimativa não soma avião, e a tela ("Sossego à noite por fonte"), o placar ("piso, sem a pista ao lado") e a ficha de método dizem que a pista não entra e que a nota é um piso. São 1.172 prédios.
+- **Os 322 a até 1 km da pista:** 108 com avião na conta, 214 com o aviso de piso, nenhum sem um dos dois.
+- **Cidade:** 2.304 prédios com avião na conta (eram 639). Mediana na rua 64,4 dB(A) de dia e 57,8 à noite (eram 64,1 e 57,5); nota mediana 7,4 (era 7,5).
+- **Boa Viagem:** mediana 66,6 de dia e 59,7 à noite (eram 66,3 e 59,4); diferença para o Mapa Sossego +0,6 e −1,3, dentro de ±5 dB. Os outros cinco bairros não mudaram.
+- **Golden Tower (`8001-216`) mudou de faixa:** fica a ~570 m além da cabeceira 18 e 1,1 km para o lado da linha de pouso. O avião passa a ser a fonte que mais pesa (~61 dB(A) de dia, ~54 à noite), e na rua o prédio vai de 59,6 / 52,4 (8,8, "Muito tranquilo") a 63,4 / 56,3 (7,8, "Tranquilo"). Como o avião vem de cima, frente e fundos ficam mais perto (+1,4 / +1,5 dB, eram +4,6 / +5,2). As fotos e os números de 18/11 abaixo são de antes desta mudança.
+- **O que continua de fora:** o aeroporto além de 10 km da cabeceira e o ruído da pista ao lado dela.
+
 ## O que foi comparado
 
 - **Vereda:** o nível na rua (térreo, sem fachada) no centro do lote de cada prédio do índice; a tabela dá a mediana dos prédios do bairro.
@@ -43,7 +56,7 @@ O site publica, por bairro, as parcelas de "O que compõe o índice". Duas não 
 | Torre | ~61 | ~42 | ~38 | ~52 | 188 |
 
 - **Vizinhança (densidade de moradores do Censo 2022).** O repositório tem a população por bairro e os domicílios por setor, mas não a área dos setores censitários. Sem densidade por setor, vale só o piso fixo (38 dB(A) de dia, 33 à noite), como o pedido manda. Somando a parcela de vizinhança que o próprio site publica para o bairro, as diferenças ficam: Boa Viagem +0,6 / −0,9; Casa Forte −2,4 / −2,5; Graças +0,2 / +0,6; Espinheiro +1,4 / +0,7; Madalena 0,0 / +0,2; Torre +3,0 / +3,0. Muda pouco: nos seis bairros o trânsito domina.
-- **Aeroporto fora da linha de pouso.** O site dá uma parcela de aeroporto a todo bairro num raio de 15 km (pista como linha de alcance curto e queda de ~9 dB por km de lado). O Vereda só soma o avião sob o cone de aproximação (`src/dados/recife/aeroporto.ts`): 639 dos 7.203 prédios, 4 deles em Boa Viagem. A página não publica o nível da pista, então fora do cone o aeroporto continua como fonte com nome, sem número.
+- **Aeroporto ao lado da pista.** O site dá uma parcela de aeroporto a todo bairro num raio de 15 km (pista como linha de alcance curto e queda de ~9 dB por km de lado). Em 18/11 o Vereda só somava o avião sob o cone de aproximação (639 prédios); desde 19/11 soma também fora do cone, além das cabeceiras, com a queda de 9 dB por km de lado (2.304 prédios, ver a atualização no topo). A página não publica o nível da pista, então ao lado dela o aeroporto não entra e a tela diz que a nota é um piso.
 
 E o contrário, o que o Vereda soma e o site não: as partidas de ônibus do GTFS (entram nas fontes de 6.685 dos 7.203 prédios), os locais com licença de som (LUSE vigente, 19 pontos, 181 prédios) e os bares, oficinas e mercados do CNEFE (o site usa os pontos do OpenStreetMap).
 

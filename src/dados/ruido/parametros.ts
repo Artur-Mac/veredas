@@ -140,8 +140,17 @@ export const NIVEL_DO_AVIAO_A_60_M_DB = 71;
 export const ALTURA_DE_REFERENCIA_DO_AVIAO_M = 60;
 /** Parcela linear da curva acima: 1 dB a cada 60 m de altura (ajuste aos três pontos da página). */
 export const QUEDA_DO_AVIAO_POR_60_M_DB = 1;
-/** [MS] "uns 9 dB a menos 1 km para o lado". Aplicado em proporção ao afastamento do eixo dentro do cone. */
+/**
+ * [MS] "uns 9 dB a menos 1 km para o lado". Aplicado em proporção ao afastamento do eixo, dentro e fora do cone de
+ * aproximação, de cada lado da rota além das cabeceiras (até 10 km delas): sem degrau na borda do cone. Ao lado da pista,
+ * entre as cabeceiras, não há número (a página não publica o nível da pista); ver `aoLadoDaPista`.
+ */
 export const QUEDA_DO_AVIAO_POR_KM_DE_LADO_DB = 9;
+/**
+ * Abaixo deste nível de dia o avião fora do cone não entra nem aparece como fonte: decisão do app (19/11/2026), não do
+ * Mapa Sossego. Somado ao piso de dia (38 dB(A)), 35 dB(A) muda o total em menos de 2 dB, dentro da faixa de ±5 dB.
+ */
+export const NIVEL_MINIMO_DO_AVIAO_DB = 35;
 /** [MS] "Aeroportos de grande movimento e de voo regular perdem 7 dB" à noite. */
 export const QUEDA_DO_AVIAO_A_NOITE_DB = 7;
 

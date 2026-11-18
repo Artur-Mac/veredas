@@ -33,7 +33,9 @@ import {
   NIVEL_DA_VIA_DB,
   PISO_A_NOITE_DB,
   PISO_DE_DIA_DB,
+  NIVEL_MINIMO_DO_AVIAO_DB,
   PONTOS_DE_VALIDACAO_DO_MAPA_SOSSEGO,
+  QUEDA_DO_AVIAO_POR_KM_DE_LADO_DB,
   ROTULO_DA_CLASSE,
   VIES_EM_RUA_RESIDENCIAL_COM_PASSAGEM_DB,
   VIES_PERTO_DE_AVENIDA_DB,
@@ -42,7 +44,7 @@ import {
 /** O registro de um prédio na camada (ver `PredioGravado` em scripts/dados/ruido/nucleo.ts). */
 export type RegistroDeRuido = { f: readonly (readonly number[])[]; d?: readonly number[]; n?: readonly number[] };
 /** O prédio sob a linha de pouso e decolagem (src/dados/recife/aeroporto.ts), ou null. */
-export type AviaoSobreOPredio = { alturaEstimadaM: number; afastamentoDoEixoM: number; distanciaDaCabeceiraM: number } | null;
+export type AviaoSobreOPredio = { alturaEstimadaM: number; afastamentoDoEixoM: number; distanciaDaCabeceiraM: number; dentroDoCone?: boolean } | null;
 
 export type OpcoesDeRuido = {
   /** Andar da janela; 0, null ou ausente = térreo (o nível "na rua"). */
@@ -99,6 +101,8 @@ export type RuidoEstimado = {
   nivelDeSossego: string;
   /** As fontes que mais pesam, da mais forte para a mais fraca de dia. */
   fontes: FonteQuePesa[];
+  /** O prédio fica ao lado da pista do aeroporto: o barulho dela não entra na conta e a nota é um piso. */
+  pistaAoLado: { distanciaM: number } | null;
   /** O que entra na conta, para quem liga o modelo às telas antigas (src/dados/ruido/ponte.ts). */
   partes: { doChao: NivelDiaENoite; doAviao: NivelDiaENoite | null; quedaDoAndarDb: number; quedaDaFachadaDb: number };
   textos: {
@@ -107,6 +111,8 @@ export type RuidoEstimado = {
     /** "Na janela do 8º andar, fachada leste: ~60 dB(A) de dia · ~54 à noite (estimativa)"; null sem andar nem fachada. */
     janela: string | null;
     quarto: string | null;
+    /** "A pista do aeroporto fica a ~600 m, ao lado do prédio…": só quando `pistaAoLado`. */
+    aeroporto: string | null;
     faixa: string;
     nbr: string;
     nota: string;
@@ -186,14 +192,14 @@ const dataBr = (iso: string): string => `${iso.slice(8, 10)}/${iso.slice(5, 7)}/
  * A ficha de método (decisão A13): o que mede, fonte, data, cálculo, limite e o que fazer na visita. `fontes` são as
  * frases das fontes que mais pesam neste prédio; sem elas, a ficha é a geral.
  */
-export function fichaDoRuido(datas: { viasDe: string; metodologiaLidaEm: string }, fontes: readonly string[]): FichaDeMetodo6Campos {
+export function fichaDoRuido(datas: { viasDe: string; metodologiaLidaEm: string }, fontes: readonly string[], limiteDoPredio: string | null = null): FichaDeMetodo6Campos {
   const noPredio = fontes.length ? ` Neste prédio, as fontes que mais pesam: ${fontes.join("; ")}.` : "";
   return {
     oQueMede: "O barulho médio do lado de fora, em dB(A) estimados, de dia (7h–22h) e à noite (22h–7h): na rua em frente ao prédio e, com andar e fachada, na janela. A nota de sossego de 0 a 10 sai do nível estimado à noite.",
     fonte: "Vias e pista do aeroporto: OpenStreetMap (© colaboradores do OpenStreetMap, ODbL). Ônibus: partidas do GTFS Grande Recife. Metrô e VLT: traçado da CBTU. Som licenciado: Licenciamento Ambiental do Recife (LUSE). Bares, oficinas e mercados: CNEFE do Censo 2022 (IBGE).",
     data: `Vias do mapa de ${dataBr(datas.viasDe)}; CNEFE de 2022; método publicado pelo Mapa Sossego, lido em ${dataBr(datas.metodologiaLidaEm)}.`,
-    calculo: `Estimativa com dados abertos: cada via parte de um nível pela classe no mapa (de ${NIVEL_DA_VIA_DB.residencial} dB(A) numa rua residencial a ${NIVEL_DA_VIA_DB.rodovia} numa via expressa, a 10 m), somado aos ônibus que passam nela. O som cai com a distância, as fontes somam-se em energia e entra um piso de ${PISO_DE_DIA_DB} dB(A) de dia e ${PISO_A_NOITE_DB} à noite. O andar afasta a janela da rua, a fachada dos fundos tira ${BARREIRA_DOS_FUNDOS_DB} dB e o avião entra por cima, sem desconto. Nota: 10 com ${DB_DA_NOTA_10} dB(A) ou menos, 0 com ${DB_DA_NOTA_0} ou mais, em linha reta entre os dois.${noPredio}`,
-    limite: `${AVISO_DE_ESTIMATIVA}: não vê muros, prédios vizinhos, relevo, obras, festas nem o trânsito de cada hora, e não há contagem de carros. Nos ${PONTOS_DE_VALIDACAO_DO_MAPA_SOSSEGO} pontos em que o Mapa Sossego comparou com medições, o erro médio da estimativa foi de ${virgula(ERRO_MEDIO_ABSOLUTO_DO_MAPA_SOSSEGO_DB)} dB. ${VIESES_CONHECIDOS.join(" ")} A comparação com ${LIMITE_NBR_10151_DE_DIA_DB} dB(A) de dia e ${LIMITE_NBR_10151_A_NOITE_DB} à noite usa a referência da ABNT NBR 10151 para área residencial: norma técnica, não lei municipal.`,
+    calculo: `Estimativa com dados abertos: cada via parte de um nível pela classe no mapa (de ${NIVEL_DA_VIA_DB.residencial} dB(A) numa rua residencial a ${NIVEL_DA_VIA_DB.rodovia} numa via expressa, a 10 m), somado aos ônibus que passam nela. O som cai com a distância, as fontes somam-se em energia e entra um piso de ${PISO_DE_DIA_DB} dB(A) de dia e ${PISO_A_NOITE_DB} à noite. O andar afasta a janela da rua, a fachada dos fundos tira ${BARREIRA_DOS_FUNDOS_DB} dB e o avião entra por cima, sem desconto: além das cabeceiras, até 10 km, pela altura na rampa de 3°, com ${QUEDA_DO_AVIAO_POR_KM_DE_LADO_DB} dB a menos por km para o lado da linha de pouso. Ao lado da pista, entre as cabeceiras, o aeroporto não entra. Nota: 10 com ${DB_DA_NOTA_10} dB(A) ou menos, 0 com ${DB_DA_NOTA_0} ou mais, em linha reta entre os dois.${noPredio}`,
+    limite: `${AVISO_DE_ESTIMATIVA}: não vê muros, prédios vizinhos, relevo, obras, festas nem o trânsito de cada hora, e não há contagem de carros. Nos ${PONTOS_DE_VALIDACAO_DO_MAPA_SOSSEGO} pontos em que o Mapa Sossego comparou com medições, o erro médio da estimativa foi de ${virgula(ERRO_MEDIO_ABSOLUTO_DO_MAPA_SOSSEGO_DB)} dB. ${VIESES_CONHECIDOS.join(" ")} A comparação com ${LIMITE_NBR_10151_DE_DIA_DB} dB(A) de dia e ${LIMITE_NBR_10151_A_NOITE_DB} à noite usa a referência da ABNT NBR 10151 para área residencial: norma técnica, não lei municipal.${limiteDoPredio ? ` ${limiteDoPredio}` : ""}`,
     naVisita: "Ouça da janela do quarto, aberta e fechada, num dia útil por volta das 18h e numa sexta ou sábado depois das 22h. Use o medidor da visita para comparar aberta e fechada e responda “Isso bate com a rua hoje?”.",
   };
 }
@@ -206,6 +212,8 @@ export function montarEstimativa(entrada: {
   registro: RegistroDeRuido;
   nomes: readonly string[];
   aviao: AviaoSobreOPredio;
+  /** O prédio fica ao lado da pista (src/dados/recife/aeroporto.ts, `aoLadoDaPista`); ausente = não. */
+  pistaAoLado?: { distanciaM: number } | null;
   anoConstrucao: number | null;
   datas: { viasDe: string; metodologiaLidaEm: string };
   opcoes?: OpcoesDeRuido;
@@ -225,7 +233,10 @@ export function montarEstimativa(entrada: {
   const resto = (periodo: Periodo, g: number | null): number => decimosParaDb((periodo === "dia" ? registro.d : registro.n)?.[posicao(g)]);
   const doChao = (periodo: Periodo, a: number, g: number | null): number => nivelDoChao(fontesDoChao, resto(periodo, g), periodo, a, g);
 
-  const aviaoDeDia = aviao ? nivelDoAviao(aviao.alturaEstimadaM, aviao.afastamentoDoEixoM) : null;
+  // Fora do cone o avião só entra a partir de NIVEL_MINIMO_DO_AVIAO_DB; dentro dele, sempre (como antes).
+  const nivelBrutoDoAviao = aviao ? nivelDoAviao(aviao.alturaEstimadaM, aviao.afastamentoDoEixoM) : null;
+  const aviaoDeDia = nivelBrutoDoAviao !== null && (aviao?.dentroDoCone !== false || nivelBrutoDoAviao >= NIVEL_MINIMO_DO_AVIAO_DB) ? nivelBrutoDoAviao : null;
+  const pistaAoLado = entrada.pistaAoLado ?? null;
   const doAviao: NivelDiaENoite | null = aviaoDeDia === null ? null : { diaDb: um(aviaoDeDia), noiteDb: um(nivelDoAviaoANoite(aviaoDeDia)) };
   const total = (a: number, g: number | null): NivelDiaENoite => ({
     diaDb: um(somarComOAviao(doChao("dia", a, g), doAviao?.diaDb)),
@@ -258,7 +269,9 @@ export function montarEstimativa(entrada: {
     fontes.push({
       tipo: "aviao", nome: "Aeroporto dos Guararapes", classe: null, distanciaM: null, rumoGraus: null, relacao: "de_cima",
       nivelDeDiaDb: doAviao.diaDb, nivelANoiteDb: doAviao.noiteDb, partidasDeOnibus: null,
-      texto: `Aeroporto dos Guararapes, avião a ~${Math.round(aviao.alturaEstimadaM)} m de altura na linha de pouso e decolagem: ${diaENoite(doAviao)}`,
+      texto: aviao.dentroDoCone === false
+        ? `Aeroporto dos Guararapes, avião a ~${Math.round(aviao.alturaEstimadaM)} m de altura, ${metros(aviao.afastamentoDoEixoM)} para o lado da linha de pouso e decolagem: ${diaENoite(doAviao)}`
+        : `Aeroporto dos Guararapes, avião a ~${Math.round(aviao.alturaEstimadaM)} m de altura na linha de pouso e decolagem: ${diaENoite(doAviao)}`,
     });
   }
   fontes.sort((a, b) => b.nivelDeDiaDb - a.nivelDeDiaDb || b.nivelANoiteDb - a.nivelANoiteDb);
@@ -268,6 +281,9 @@ export function montarEstimativa(entrada: {
     ? `No quarto, com a janela fechada: ${diaENoite(noQuarto)}. A janela ${ano ? `de um prédio de ${ano}` : "sem ano de construção no cadastro"} tira cerca de ${inteiro(isolamentoDb)} dB pela NBR 15575-4; a vedação real pede teste na visita.`
     : null;
   const nivel = nivelDeSossego(nota);
+  const textoDaPista = pistaAoLado
+    ? `A pista do Aeroporto dos Guararapes fica a ~${metros(pistaAoLado.distanciaM)}, ao lado do prédio. O barulho de pousos, decolagens e do movimento no solo ao lado da pista não entra nesta estimativa, porque o método publicado não dá esse nível: leia a nota como piso, o real tende a ser mais alto.`
+    : null;
 
   return {
     estado: "estimado",
@@ -279,6 +295,7 @@ export function montarEstimativa(entrada: {
     notaDeDia: notaDeSossego(naJanela.diaDb),
     nivelDeSossego: nivel,
     fontes,
+    pistaAoLado,
     partes: {
       doChao: chaoNaJanela, doAviao,
       quedaDoAndarDb: um(doChao("noite", 0, fachadaGraus) - doChao("noite", andar, fachadaGraus)),
@@ -288,14 +305,15 @@ export function montarEstimativa(entrada: {
       manchete: diaENoite(naRua, " na rua"),
       janela: textoDaJanela(andar, fachadaGraus, naJanela),
       quarto,
+      aeroporto: textoDaPista,
       faixa: `Faixa da estimativa: ±${FAIXA_DB} dB (na rua, de dia, entre ~${inteiro(naRua.diaDb - FAIXA_DB)} e ~${inteiro(naRua.diaDb + FAIXA_DB)} dB(A)).`,
       nbr: `${textoDaNbr(nbr10151.dia.diferencaDb, nbr10151.noite.diferencaDb)} É referência de norma técnica, não lei municipal.`,
-      nota: `Nota de sossego ${virgula(nota)}/10 à noite (${nivel.toLowerCase()}); de dia, ${virgula(notaDeSossego(naJanela.diaDb))}/10.`,
+      nota: `Nota de sossego ${virgula(nota)}/10 à noite (${nivel.toLowerCase()}); de dia, ${virgula(notaDeSossego(naJanela.diaDb))}/10.${pistaAoLado ? " É um piso: a pista do aeroporto ao lado não entra." : ""}`,
       aviso: `${AVISO_DE_ESTIMATIVA}.`,
       fontes: fontes.map((f) => f.texto),
       vieses: [...VIESES_CONHECIDOS],
-      placar: { valor: nivel, subtitulo: `~${inteiro(naJanela.noiteDb)} dB(A) à noite (estimativa) · ${virgula(nota)}/10` },
-      ficha: fichaDoRuido(entrada.datas, fontes.map((f) => f.texto)),
+      placar: { valor: nivel, subtitulo: `~${inteiro(naJanela.noiteDb)} dB(A) à noite (estimativa) · ${virgula(nota)}/10${pistaAoLado ? " · piso, sem a pista ao lado" : ""}` },
+      ficha: fichaDoRuido(entrada.datas, fontes.map((f) => f.texto), textoDaPista),
     },
   };
 }

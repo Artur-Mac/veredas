@@ -21,7 +21,7 @@ registerHooks({
   },
 });
 const { montarEstimativa } = await import("../../../src/dados/ruido/leitura.ts");
-const { relacaoComOAeroporto, validarAeroporto } = await import("../../../src/dados/recife/aeroporto.ts");
+const { aoLadoDaPista, aviaoNoPonto, relacaoComOAeroporto, validarAeroporto } = await import("../../../src/dados/recife/aeroporto.ts");
 
 const RAIZ = process.cwd();
 const arg = (n) => { const i = process.argv.indexOf(n); return i >= 0 ? process.argv[i + 1] : null; };
@@ -61,7 +61,7 @@ function carregar(bairro) {
 function estimar(camada, predio, opcoes = {}) {
   const registro = camada.predios[predio.id];
   if (!registro) return null;
-  return montarEstimativa({ registro, nomes: camada.nomes, aviao: relacaoComOAeroporto(predio.centro, aeroporto)?.trajetoria ?? null, anoConstrucao: predio.anoConstrucao ?? null, datas, opcoes });
+  return montarEstimativa({ registro, nomes: camada.nomes, aviao: aviaoNoPonto(predio.centro, aeroporto), pistaAoLado: aoLadoDaPista(predio.centro, aeroporto), anoConstrucao: predio.anoConstrucao ?? null, datas, opcoes });
 }
 
 // ——— (a) Bairros ————————————————————————————————————————————————————————————————————————————————————
@@ -108,7 +108,9 @@ const predios = PREDIOS.map(([bairro, id]) => {
 // ——— Cidade inteira: cobertura e distribuição ———————————————————————————————————————————————————————————
 const pub = ler("src/dados/recife/publicacaoGerada.ts");
 const todos = [...pub.matchAll(/"([a-z-]+)": "recife\/indice-municipal\/[0-9a-f]+\/[a-z-]+\.json"/g)].map((m) => m[1]);
-let total = 0, comLeitura = 0, sobLinha = 0;
+let total = 0, comLeitura = 0, sobLinha = 0, comAviao = 0, pistaAoLado = 0;
+// Pendência 2 do HANDOFF (19/11/2026): os prédios a até 1 km da pista, com e sem avião na conta, e a palavra da nota.
+const ate1km = { predios: 0, comAviao: 0, pistaAoLado: 0, semAviaoNemAviso: 0, tranquiloOuMuitoSemAviso: 0 };
 const diaCidade = [], noiteCidade = [], notas = [];
 for (const b of todos) {
   const { indice, camada } = carregar(b);
@@ -117,12 +119,24 @@ for (const b of todos) {
     const l = estimar(camada, p);
     if (!l) continue;
     comLeitura++;
-    if (l.partes.doAviao) sobLinha++;
+    if (relacaoComOAeroporto(p.centro, aeroporto)?.trajetoria) sobLinha++;
+    if (l.partes.doAviao) comAviao++;
+    if (l.pistaAoLado) pistaAoLado++;
+    const rel = relacaoComOAeroporto(p.centro, aeroporto);
+    if (rel && rel.distanciaM <= 1000) {
+      ate1km.predios++;
+      if (l.partes.doAviao) ate1km.comAviao++;
+      if (l.pistaAoLado) ate1km.pistaAoLado++;
+      if (!l.partes.doAviao && !l.pistaAoLado) {
+        ate1km.semAviaoNemAviso++;
+        if (/tranquilo/i.test(l.nivelDeSossego)) ate1km.tranquiloOuMuitoSemAviso++;
+      }
+    }
     diaCidade.push(l.naRua.diaDb); noiteCidade.push(l.naRua.noiteDb); notas.push(l.notaDeSossego);
   }
 }
 const cidade = {
-  bairros: todos.length, predios: total, comLeitura, sobALinhaDePouso: sobLinha,
+  bairros: todos.length, predios: total, comLeitura, sobALinhaDePouso: sobLinha, comAviaoNaConta: comAviao, pistaAoLadoSemNumero: pistaAoLado, ate1kmDaPista: ate1km,
   dia: { p10: quantil(diaCidade, 0.1), mediana: um(mediana(diaCidade)), p90: quantil(diaCidade, 0.9), minimo: Math.min(...diaCidade), maximo: Math.max(...diaCidade) },
   noite: { p10: quantil(noiteCidade, 0.1), mediana: um(mediana(noiteCidade)), p90: quantil(noiteCidade, 0.9), minimo: Math.min(...noiteCidade), maximo: Math.max(...noiteCidade) },
   nota: { p10: quantil(notas, 0.1), mediana: um(mediana(notas)), p90: quantil(notas, 0.9) },
