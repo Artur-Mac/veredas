@@ -19,6 +19,7 @@ import type {
   PoligonoBase,
   RuaBase,
 } from "../../dados/recife/mapaBaseContrato";
+import { ondeFica, ruaPorExtenso } from "./fundoDoMapaAbreviacoes";
 import {
   afimDoArquivo,
   anelNoDesenho,
@@ -455,7 +456,8 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
     const eDoImovel = codigo !== null && rua.codigo === codigo;
     const grande = rua.avenida || rua.corredor || rua.perimetral;
     if (!eDoImovel && nivel !== "lote" && !grande) continue;
-    if (!naCena(a, rua.caixa)) continue;
+    // A rua do imóvel é candidata mesmo fora do quadro (sem trecho): o nome dela aparece sempre (A11).
+    if (!eDoImovel && !naCena(a, rua.caixa)) continue;
     // A mesma rua vinda de dois arquivos (borda) é um candidato só; os trechos repetidos caem na regra de repetição.
     const chave = `${rua.codigo ?? ""}|${rua.nome}`;
     const item = porNome.get(chave) ?? { nome: rua.nome, tipo: eDoImovel ? "imovel" : grande ? "avenida" : "rua", trechos: [] };
@@ -476,7 +478,9 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
   }
   // O lote do imóvel pequeno na vista também fica livre de nome de rua; o lote enorme (um conjunto que toma metade da
   // vista, ou qualquer lote no zoom máximo) não: bloquearia a vista toda, e o pino já protege o imóvel.
-  const obstaculosDeRua: Retangulo[] = [...pino];
+  // O lote do imóvel é desenho do fundo e fica por baixo do texto: a rua do imóvel só passa por cima dele quando não
+  // há outro lugar (A11); os outros nomes de rua sempre desviam.
+  const celulasDoLoteDoImovel: Retangulo[] = [];
   if (loteDoImovel) {
     const r = caixaNoDesenho(loteDoImovel.a.afim, loteDoImovel.lote.caixa);
     const w = Math.min(r[2], visivel[2]) - Math.max(r[0], visivel[0]);
@@ -484,7 +488,7 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
     const fracao = w > 0 && h > 0 ? (w * h) / ((visivel[2] - visivel[0]) * (visivel[3] - visivel[1])) : 0;
     // O lote vira células pequenas dentro do polígono (não a caixa: a caixa de um lote torto cobre a via da frente,
     // onde o nome da rua do imóvel corre).
-    if (fracao > 0 && fracao <= FRACAO_DO_LOTE_OBSTACULO) obstaculosDeRua.push(...celulasDoLote(loteDoImovel.lote.aneis.map((a) => anelNoDesenho(a, loteDoImovel!.a.afim)), r, 4 / zoom));
+    if (fracao > 0 && fracao <= FRACAO_DO_LOTE_OBSTACULO) celulasDoLoteDoImovel.push(...celulasDoLote(loteDoImovel.lote.aneis.map((a) => anelNoDesenho(a, loteDoImovel!.a.afim)), r, 4 / zoom));
   }
   // A água da cena no desenho, para nenhum nome de rua cair dentro dela. Um ponto a menos de 1,5 px da margem não conta:
   // a via que corre na beira do rio continua rotulável.
@@ -501,8 +505,22 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
   const margemDaAgua = 1.5 / zoom;
   const naAgua = (x: number, y: number): boolean =>
     aguaNoDesenho.some((w) => x >= w.caixa[0] && x <= w.caixa[2] && y >= w.caixa[1] && y <= w.caixa[3] && pontoNosAneisDoDesenho(x, y, w.aneis()) && distanciaAosAneis(x, y, w.aneis()) > margemDaAgua);
-  const rotulosDoImovel = posicionarRotulosDeRua(candidatos.filter((c) => c.tipo === "imovel"), zoom, obstaculosDeRua, 0, inset, limiteDoImovel, naAgua);
-  const ocupadas: Retangulo[] = [...obstaculosDeRua, ...rotulosDoImovel.flatMap((r) => [...r.caixas])];
+  const obstaculosDeRua: Retangulo[] = [...pino, ...celulasDoLoteDoImovel];
+  // A rua do imóvel aparece sempre (A11): tem o seu próprio limite (a janela visível), a âncora no imóvel e os fracos.
+  const posicionados = posicionarRotulosDeRua(candidatos.filter((c) => c.tipo === "imovel"), zoom, pino, 0, inset, limiteDoImovel, naAgua, {
+    ancora: entrada.imovel ? paraDesenho(entrada.imovel.centro) : undefined,
+    fracos: celulasDoLoteDoImovel,
+  });
+  // O nome que caiu sobre o lote do imóvel (mais da metade do texto dentro dele) é marcado: o desenho inverte as cores.
+  const aneisDoLoteDoImovel = loteDoImovel ? loteDoImovel.lote.aneis.map((a) => anelNoDesenho(a, loteDoImovel!.a.afim)) : null;
+  const rotulosDoImovel = aneisDoLoteDoImovel
+    ? posicionados.map((r) => {
+        const dentro = r.caixas.filter((c) => pontoNosAneisDoDesenho((c[0] + c[2]) / 2, (c[1] + c[3]) / 2, aneisDoLoteDoImovel)).length;
+        return dentro * 2 > r.caixas.length ? { ...r, sobreOLote: true } : r;
+      })
+    : posicionados;
+  const caixasDaRuaDoImovel = rotulosDoImovel.flatMap((r) => [...r.caixas]);
+  const ocupadas: Retangulo[] = [...obstaculosDeRua, ...caixasDaRuaDoImovel];
   let nomes: NomeDeBairro[] = [];
   // No nível de lote o bairro do imóvel está no selo; com a cidade carregada, os vizinhos junto à divisa levam o nome.
   const comNome = nivel !== "lote" ? divisasNaCena : cidade && !daCidade ? divisasNaCena.filter((d) => d !== doImovel) : [];
@@ -513,7 +531,9 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
       doImovel: d === doImovel,
       aneis: d.divisa.partes.flatMap((p) => p.aneis.map((anel) => anelNoDesenho(anel, d.a.afim))),
     }));
-    nomes = posicionarNomesDeBairro(paraNome, quadro, zoom, pino, rotulosDoImovel.flatMap((r) => [...r.caixas]));
+    // Os nomes de bairro cedem à rua do imóvel: as caixas dela são obstáculo que nunca afrouxa (antes eram "fracos", e
+  // o nome do bairro do imóvel podia cair por cima dela em último caso).
+    nomes = posicionarNomesDeBairro(paraNome, quadro, zoom, [...pino, ...caixasDaRuaDoImovel]);
   }
   const outras = posicionarRotulosDeRua(
     candidatos.filter((c) => c.tipo !== "imovel"),
@@ -609,21 +629,34 @@ function metros(n: number): string {
   return `${String(inteiro).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} m`;
 }
 
-/** Para o leitor de tela: "R." vira "Rua" e "Av." vira "Avenida" no começo do nome; o resto fica como a base publica. */
-export function ruaPorExtenso(nome: string): string {
-  return nome.replace(/^R\.\s*/, "Rua ").replace(/^Av\.\s*/, "Avenida ");
-}
+// O nome da rua por extenso para o leitor de tela ("Trv" → "Travessa", "Vdo" → "Viaduto"…): fundoDoMapaAbreviacoes.ts.
+export { ruaPorExtenso };
 
 /** Descrição do mapa para o leitor de tela: rua do imóvel, bairro e distância até a divisa mais próxima do bairro. */
 export function descreverFundoDoMapa(cena: CenaDoFundo): string {
   const { rua, bairro, distanciaDaDivisaM } = cena.acessibilidade;
   const partes: string[] = [];
   partes.push(bairro ? `Mapa do entorno, bairro ${bairro}.` : "Mapa do entorno.");
-  if (rua) partes.push(`O imóvel fica na ${ruaPorExtenso(rua)}.`);
+  // "na Rua", "no Viaduto"; tipo de logradouro que a tabela não conhece: "em", com o nome como a base publica.
+  if (rua) partes.push(`O imóvel fica ${ondeFica(rua)}.`);
   if (bairro && distanciaDaDivisaM !== null) {
     partes.push(distanciaDaDivisaM < 10 ? `O imóvel fica junto à divisa de ${bairro}.` : `A divisa mais próxima de ${bairro} fica a ${metros(distanciaDaDivisaM)} do imóvel.`);
   }
   return partes.join(" ");
+}
+
+/**
+ * O retângulo [x0, y0, x1, y1] (no desenho da cena, escala 1) cai sobre o nome da rua do imóvel? Quem desenha texto por
+ * cima do fundo (número de lote vizinho, etiqueta de altura) pergunta antes e cede o lugar: a rua do imóvel aparece
+ * sempre e legível (decisão A11).
+ */
+export function cobreARuaDoImovel(cena: Pick<CenaDoFundo, "rotulos"> | null, r: readonly [number, number, number, number]): boolean {
+  if (!cena) return false;
+  for (const rotulo of cena.rotulos) {
+    if (rotulo.tipo !== "imovel") continue;
+    for (const c of rotulo.caixas) if (r[0] < c[2] && c[0] < r[2] && r[1] < c[3] && c[1] < r[3]) return true;
+  }
+  return false;
 }
 
 /** O lote num ponto do desenho (escala 1), para o toque; null fora de lote ou fora do nível de lote. */

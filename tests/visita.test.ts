@@ -93,6 +93,10 @@ const pergunta = (id: string, titulo = `Título de ${id}`): Pergunta => ({
   id, titulo, pista: "Pista", textoParaMensagem: `Texto de ${id}?`, origem: "padrao", prioridade: "conforto",
 });
 
+// T5 (18/11/2026): estas telas montam a árvore inteira do app e, com a máquina ocupada, passam dos 5 s padrão.
+// 15 s só nesta suíte; o limite global do Jest não muda.
+jest.setTimeout(15000);
+
 // ——— Lógica pura ————————————————————————————————————————————————————————————————————
 
 describe("orientação da janela", () => {

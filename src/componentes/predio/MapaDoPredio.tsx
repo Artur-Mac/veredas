@@ -8,7 +8,7 @@ import { RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
 import { useFocoDeTeclado } from "../casca/foco";
 import { AvisoDoFundoDoMapa } from "../mapa/AvisoDoFundoDoMapa";
 import { CreditoDaBase, FundoDoMapa, SeloDoBairro } from "../mapa/FundoDoMapa";
-import { descreverFundoDoMapa } from "../mapa/fundoDoMapaCena";
+import { cobreARuaDoImovel, descreverFundoDoMapa } from "../mapa/fundoDoMapaCena";
 import { useFundoDoMapa } from "../mapa/useFundoDoMapa";
 import { Texto } from "../Texto";
 import { caixaDaCena, montarCena, paraDesenhoDaCena, pontosDoSvg, raioSemPoligono, type Forma } from "./projecao";
@@ -38,6 +38,8 @@ const LINHA_DA_FAIXA = 14;
 const RECHEIO_DA_FAIXA = 8;
 /** Largura aproximada da frase da faixa a 10 px, para saber se ela quebra em duas linhas antes da medida. */
 const LARGURA_DA_FRASE = 380;
+/** Meia largura, em px, do número de um lote vizinho (até 4 algarismos a 9 px), para ele ceder ao nome da rua do imóvel. */
+const MEIA_LARGURA_DO_NUMERO = 12;
 const FRASE_DA_FAIXA = "Toque nos lotes vizinhos se o pino não estiver sobre o prédio correto";
 const INSTRUCAO =
   "o prédio em azul, o pino laranja sobre ele e os lotes vizinhos tracejados. Use a busca ou o botão Não é este se o pino estiver fora do prédio.";
@@ -155,7 +157,8 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
         ) : (
           <Circle cx={f.centro[0]} cy={f.centro[1]} r={raio} {...preenchimento} {...traco} />
         )}
-        {escolhido ? null : (
+        {/* O número do lote vizinho cede o lugar ao nome da rua do imóvel (A11); o botão do lote continua com o endereço. */}
+        {escolhido || cobreARuaDoImovel(cenaDoFundo, [f.centro[0] - MEIA_LARGURA_DO_NUMERO, f.centro[1] - 7, f.centro[0] + MEIA_LARGURA_DO_NUMERO, f.centro[1] + 6]) ? null : (
           <TextoSvg
             x={f.centro[0]}
             y={f.centro[1] + 3}

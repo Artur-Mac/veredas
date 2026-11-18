@@ -317,6 +317,9 @@ describe("contraste dos rótulos (4,5:1) sobre o chão onde caem, claro e escuro
       for (const cor of [e.rua, e.avenida, e.ruaDoImovel]) expect(contraste(cor, e.chao)).toBeGreaterThanOrEqual(4.5);
       // Nome de bairro: o halo da cor do chão contorna cada letra; é o que fica colado ao texto.
       for (const cor of [e.bairro, e.bairroDoImovel]) expect(contraste(cor, e.halo)).toBeGreaterThanOrEqual(4.5);
+      // M4: o nome da rua do imóvel que cai sobre o lote do imóvel inverte as cores (o halo é o azul do próprio lote).
+      expect(e.haloSobreOLote).toBe(e.loteDoImovel);
+      expect(contraste(e.ruaDoImovelSobreOLote, e.loteDoImovel)).toBeGreaterThanOrEqual(4.5);
     });
   }
 });
@@ -579,11 +582,12 @@ describe("componente FundoDoMapa", () => {
     expect(outro).not.toContain("O lote e os pontos");
   });
 
-  it('leitor de tela: "R." vira "Rua" e "Av." vira "Avenida" só no começo; os outros prefixos ficam como a base publica', () => {
+  // M5 (18/11/2026): a tabela completa (travessa, praça, viaduto, títulos) está em tests/fundo-do-mapa-abreviacoes.test.ts.
+  it('leitor de tela: "R." vira "Rua", "Av." vira "Avenida" e "Trv" vira "Travessa"; o que a tabela não conhece fica como a base publica', () => {
     expect(ruaPorExtenso("R. Frei Jaboatao")).toBe("Rua Frei Jaboatao");
     expect(ruaPorExtenso("Av. Boa Viagem")).toBe("Avenida Boa Viagem");
-    expect(ruaPorExtenso("Tv. do R. Novo")).toBe("Tv. do R. Novo");
-    expect(ruaPorExtenso("Pc. Av. Central")).toBe("Pc. Av. Central");
+    expect(ruaPorExtenso("Trv da R. Guapua")).toBe("Travessa da Rua Guapua");
+    expect(ruaPorExtenso("Ref Campos da Ufpe")).toBe("Ref Campos da Ufpe");
     expect(ruaPorExtenso("Rua Nova")).toBe("Rua Nova");
   });
 });

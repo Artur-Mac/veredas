@@ -52,13 +52,14 @@ export function marcacaoDoFundo(cena: CenaDoFundo, e: EstiloDoFundo, partes: Par
   if (partes !== "chao") {
     const id = (r: RotuloDeRua) => escaparMarcacao(`${prefixo}-${r.id}`);
     if (cena.rotulos.length > 0) s.push(`<defs>${cena.rotulos.map((r) => `<path id="${id(r)}" d="${r.caminho}"/>`).join("")}</defs>`);
-    const corDaRua = (r: RotuloDeRua) => (r.tipo === "imovel" ? e.ruaDoImovel : r.tipo === "avenida" ? e.avenida : e.rua);
+    const corDaRua = (r: RotuloDeRua) => (r.sobreOLote ? e.ruaDoImovelSobreOLote : r.tipo === "imovel" ? e.ruaDoImovel : r.tipo === "avenida" ? e.avenida : e.rua);
+    const haloDaRua = (r: RotuloDeRua) => (r.sobreOLote ? e.haloSobreOLote : e.halo);
     for (const halo of [true, false]) {
       s.push("<g>");
       for (const r of cena.rotulos) {
-        const traco = halo ? ` stroke="${e.halo}" stroke-width="${t(TRACO.haloDaRua)}" stroke-linejoin="round"` : "";
+        const traco = halo ? ` stroke="${haloDaRua(r)}" stroke-width="${t(TRACO.haloDaRua)}" stroke-linejoin="round"` : "";
         s.push(
-          `<text text-anchor="middle" fill="${halo ? e.halo : corDaRua(r)}"${traco} style="font-family:${FONTES_DO_FUNDO.rua};font-size:${num(r.tamanho)}px;font-weight:${r.tipo === "imovel" ? 700 : 600}">` +
+          `<text text-anchor="middle" fill="${halo ? haloDaRua(r) : corDaRua(r)}"${traco} style="font-family:${FONTES_DO_FUNDO.rua};font-size:${num(r.tamanho)}px;font-weight:${r.tipo === "imovel" ? 700 : 600}">` +
             `<textPath href="#${id(r)}" startOffset="${num(r.inicio)}">${escaparMarcacao(r.nome)}</textPath></text>`,
         );
       }

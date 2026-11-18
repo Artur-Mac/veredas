@@ -8,7 +8,7 @@ import { ESPACO, RAIO, type TokenDeCor } from "../../tema/tokens";
 import { GradeArquitetonica } from "../GradeArquitetonica";
 import { AvisoDoFundoDoMapa } from "../mapa/AvisoDoFundoDoMapa";
 import { CreditoDaBase, FundoDoMapa, SeloDoBairro } from "../mapa/FundoDoMapa";
-import { descreverFundoDoMapa, loteNoPonto, rotuloDoLote, type CenaDoFundo, type LoteNoDesenho } from "../mapa/fundoDoMapaCena";
+import { cobreARuaDoImovel, descreverFundoDoMapa, loteNoPonto, rotuloDoLote, type CenaDoFundo, type LoteNoDesenho } from "../mapa/fundoDoMapaCena";
 import { useFundoDoMapa } from "../mapa/useFundoDoMapa";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
@@ -89,6 +89,18 @@ const LARGURA_ANTES_DA_MEDIDA = 320;
  * primeiro render, sem esperar o onLayout (desempenho, 18/11/2026). Se a medida vier diferente, o mapa remonta com ela.
  */
 const largurasMedidas = new Map<string, number>();
+
+/**
+ * O quadro (caixa em graus e largura) que o mapa do Por perto vai pedir ao fundo para estes pontos e esta largura, e a
+ * largura fica lembrada: quem conhece a largura antes de o mapa existir (o Por perto mede a própria caixa quando a aba
+ * Entorno abre) pré-aquece o fundo com `aquecerFundoDoMapa` e o mapa já pede o fundo no primeiro render (M7).
+ */
+export function quadroDoPorPerto(predio: Edificio, obras: ObrasProximas["recentes"], pontosExtras: readonly EntradaPontoExtraMapa[], largura: number): { caixa: [number, number, number, number]; largura: number } {
+  largurasMedidas.set("por-perto", largura);
+  // Os vizinhos não mudam o enquadramento: só o lote, as obras e os pontos.
+  const { cena } = montarCenaComPontosExtras(predio, obras, [], largura, ALTURA, pontosExtras, undefined, { limiteDeVizinhos: null });
+  return { caixa: caixaDoQuadro(cena), largura: cena.largura };
+}
 
 /** Só para testes: esquece as larguras medidas. */
 export function esquecerLargurasDoMapaDoLote(): void {
@@ -598,7 +610,8 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                         strokeLinejoin="round"
                       />
                       {v.faixaDoAndar ? <Path d={v.faixaDoAndar} fill="none" stroke={acao} strokeWidth={2.4 / estado.zoom} strokeLinejoin="round" /> : null}
-                      {v.etiquetaAltura ? (
+                      {/* A etiqueta de altura de um vizinho cede o lugar ao nome da rua do imóvel (A11). */}
+                      {v.etiquetaAltura && (v.alvo || !cobreARuaDoImovel(cenaDoFundo, caixaDaEtiquetaDeAltura(v.etiquetaAltura, estado.zoom))) ? (
                         <TextoSvg {...(v.alvo ? etiquetaLongeDoPino(v.etiquetaAltura, cena25d.pino, estado.zoom) : { x: v.etiquetaAltura.x, y: v.etiquetaAltura.y })} fill={v.alvo ? azul : cor("cor-texto-apoio")} fontFamily="PlusJakartaSans" fontSize={9.5 / estado.zoom} fontWeight={v.alvo ? "700" : "600"} textAnchor="middle">
                           {v.etiquetaAltura.texto}
                         </TextoSvg>
@@ -806,6 +819,11 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
       ) : null}
     </View>
   );
+}
+
+/** A caixa [x0, y0, x1, y1], no desenho, de uma etiqueta de altura ("112m": ~26 × 12 px na tela, centrada em x, linha de base em y). */
+export function caixaDaEtiquetaDeAltura(etiqueta: { x: number; y: number }, zoom: number): [number, number, number, number] {
+  return [etiqueta.x - 13 / zoom, etiqueta.y - 9 / zoom, etiqueta.x + 13 / zoom, etiqueta.y + 3 / zoom];
 }
 
 /** Retângulos [x0, y0, x1, y1] na tela do pino e dos pontos de interesse: obstáculos para os rótulos do fundo. */

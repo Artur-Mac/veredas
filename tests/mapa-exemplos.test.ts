@@ -3,6 +3,7 @@
 // geometria inventada, e a cena é remontada por janela. O leitor de camadas é síncrono nos testes (configurar-camadas.ts).
 import { describe, expect, it, jest } from "@jest/globals";
 import React from "react";
+import { G as GrupoSvg, Mask, Path, Rect } from "react-native-svg";
 import TestRenderer, { act, type ReactTestInstance } from "react-test-renderer";
 import {
   Mapa,
@@ -29,19 +30,37 @@ import { TemaDoApp } from "../src/tema/Tema";
 jest.mock("react-native-safe-area-context", () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
 }));
+// O exemplo da tela "Confirmar o lote", o que ela grava no aparelho e para onde ela vai: lidos pelos testes do M1.
+type Globais = { __exemplo?: string; __gravado: unknown[]; __destinos: unknown[] };
+const G = globalThis as unknown as Globais;
+G.__gravado = [];
+G.__destinos = [];
+
 jest.mock("expo-router", () => ({
-  router: { canDismiss: () => false, dismissTo: () => undefined, replace: () => undefined, back: () => undefined, navigate: () => undefined },
+  router: {
+    canDismiss: () => false,
+    dismissTo: () => undefined,
+    replace: (destino: unknown) => void (globalThis as unknown as Globais).__destinos.push(destino),
+    back: () => undefined,
+    navigate: () => undefined,
+  },
   Link: () => null,
 }));
 jest.mock("../src/navegacao/useDossie", () => ({
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  useDossie: () => (require("../src/dados/dossies") as typeof import("../src/dados/dossies")).dossies.get("boa-viagem"),
+  useDossie: () =>
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    (require("../src/dados/dossies") as typeof import("../src/dados/dossies")).dossies.get((globalThis as unknown as Globais).__exemplo ?? "boa-viagem"),
 }));
 jest.mock("@react-native-async-storage/async-storage", () =>
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   require("@react-native-async-storage/async-storage/jest/async-storage-mock"),
 );
-jest.mock("../src/estado/Aparelho", () => ({ useAparelho: () => ({ mudar: () => undefined }) }));
+jest.mock("../src/estado/Aparelho", () => ({
+  useAparelho: () => ({
+    mudar: (mudanca: (atuais: { lotesConfirmados: Record<string, boolean> }) => unknown) =>
+      void (globalThis as unknown as Globais).__gravado.push(mudanca({ lotesConfirmados: {} })),
+  }),
+}));
 
 const CREDITO = "Base: Prefeitura do Recife (ODbL)";
 
@@ -219,19 +238,27 @@ describe("rótulos dentro da parte visível", () => {
   });
 });
 
-function montarConfirmar(): TestRenderer.ReactTestRenderer {
+/** A tela "Confirmar o lote" do exemplo. `medir: false` deixa o mapa sem tamanho: o fundo nem começou a carregar. */
+function montarConfirmar(exemplo = "boa-viagem", medir = true): TestRenderer.ReactTestRenderer {
+  G.__exemplo = exemplo;
+  G.__gravado = [];
+  G.__destinos = [];
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const Tela = (require("../src/app/exemplos/[id]/confirmar-lote") as { default: React.ComponentType }).default;
   let r!: TestRenderer.ReactTestRenderer;
   act(() => {
     r = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(Tela)));
   });
+  if (!medir) return r;
   const raiz = r.root.find((n) => typeof n.props.onLayout === "function" && typeof n.props.accessibilityLabel === "string");
   act(() => {
     (raiz.props.onLayout as (e: unknown) => void)({ nativeEvent: { layout: { x: 0, y: 0, width: 375, height: 420 } } });
   });
   return r;
 }
+
+const botaoDe = (r: TestRenderer.ReactTestRenderer, nome: string) => r.root.find((n) => n.props.rotulo === nome && typeof n.type !== "string");
+const tocarBotao = (r: TestRenderer.ReactTestRenderer, nome: string) => act(() => (botaoDe(r, nome).props.onPress as () => void)());
 
 describe("sem o fundo, nos exemplos", () => {
   const g = globalThis as { __veredaLerCamadaEmTeste?: (c: string) => unknown };
@@ -279,26 +306,185 @@ describe("sem o fundo, nos exemplos", () => {
       act(() => r.unmount());
     }));
 
-  it("É este o prédio?: diz que não dá para escolher agora, com Tentar de novo, e desliga os dois botões", () =>
+  // M1 (18/11/2026): a resposta é sobre o prédio do endereço e não depende de o fundo carregar. Os exemplos de compra
+  // (Casa Forte, Graças, Madalena) não tinham "Pular": com os dois botões desligados, a pessoa ficava presa na tela.
+  it.each(["casa-forte", "gracas", "madalena", "boa-viagem", "espinheiro"])("%s sem o fundo: os três botões ligados, a tela diz o que falta e oferece Tentar de novo", (id) =>
     semFundo(() => {
-      const r = montarConfirmar();
+      const r = montarConfirmar(id);
       const t = textoCorrido(r);
-      expect(t).toContain("Não dá para escolher o lote agora");
+      expect(t).toContain("Os lotes do cadastro não carregaram. Dá para responder pelo endereço acima.");
       expect(t).toContain("Tentar de novo");
-      const botao = (nome: string) => r.root.find((n) => n.props.rotulo === nome && typeof n.type !== "string");
-      expect(botao("É este prédio").props.desativado).toBe(true);
-      expect(botao("Não é este").props.desativado).toBe(true);
-      expect(botao("Pular por agora").props.desativado).toBeUndefined();
+      expect(t).toContain("a resposta pelo endereço continua valendo");
+      for (const nome of ["É este prédio", "Não é este", "Pular por agora"]) expect(Boolean(botaoDe(r, nome).props.desativado)).toBe(false);
+      // Sem o fundo não há lote desenhado para confirmar: nada inventado.
+      expect(r.root.findAll((n) => n.props.strokeDasharray === "4 3")).toHaveLength(0);
       act(() => r.unmount());
     }));
 
-  it("com o fundo: a linha que explica os tracejados e o escolhido, e os dois botões ligados", () => {
-    const r = montarConfirmar();
+  it("sem o fundo, num exemplo de compra: É este prédio grava a confirmação e volta ao dossiê", () =>
+    semFundo(() => {
+      const r = montarConfirmar("casa-forte");
+      tocarBotao(r, "É este prédio");
+      expect(G.__gravado).toEqual([{ lotesConfirmados: { "casa-forte": true } }]);
+      expect(G.__destinos).toEqual([{ pathname: "/exemplos/[id]", params: { id: "casa-forte" } }]);
+      act(() => r.unmount());
+    }));
+
+  it("sem o fundo, num exemplo de compra: Pular por agora é a saída (grava que não confirmou e volta)", () =>
+    semFundo(() => {
+      const r = montarConfirmar("gracas");
+      tocarBotao(r, "Pular por agora");
+      expect(G.__gravado).toEqual([{ lotesConfirmados: { gracas: false } }]);
+      expect(G.__destinos).toEqual([{ pathname: "/exemplos/[id]", params: { id: "gracas" } }]);
+      act(() => r.unmount());
+    }));
+
+  it("sem o fundo: Não é este não promete escolha no mapa; diz por que não dá e aponta as saídas", () =>
+    semFundo(() => {
+      const r = montarConfirmar("madalena");
+      expect(textoCorrido(r)).not.toContain("Sem os lotes do cadastro não dá para escolher outro prédio no mapa");
+      tocarBotao(r, "Não é este");
+      const t = textoCorrido(r);
+      expect(t).toContain("Sem os lotes do cadastro não dá para escolher outro prédio no mapa. Use “Tentar de novo” no mapa ou “Pular por agora”.");
+      expect(t).not.toContain("Escolha o prédio no mapa.");
+      // Uma linha só: a que dizia "dá para responder pelo endereço" dá lugar a esta, não se soma a ela.
+      expect(t).not.toContain("Dá para responder pelo endereço acima.");
+      // Nada foi gravado nem a tela saiu: a pessoa ainda decide.
+      expect(G.__gravado).toEqual([]);
+      expect(G.__destinos).toEqual([]);
+      act(() => r.unmount());
+    }));
+
+  it("enquanto o fundo não chegou (o mapa nem foi medido): os botões já estão ligados e dá para responder", () => {
+    const r = montarConfirmar("casa-forte", false);
+    expect(textoCorrido(r)).toContain("Carregando os lotes do cadastro… Dá para responder pelo endereço sem esperar o mapa.");
+    for (const nome of ["É este prédio", "Não é este", "Pular por agora"]) expect(Boolean(botaoDe(r, nome).props.desativado)).toBe(false);
+    tocarBotao(r, "É este prédio");
+    expect(G.__gravado).toEqual([{ lotesConfirmados: { "casa-forte": true } }]);
+    act(() => r.unmount());
+  });
+
+  it("com o fundo: a linha que explica os tracejados, os botões ligados e Não é este pede a escolha no mapa", () => {
+    const r = montarConfirmar("casa-forte");
     expect(textos(r)).toContain("cadastro da Prefeitura");
-    const botao = (nome: string) => r.root.find((n) => n.props.rotulo === nome && typeof n.type !== "string");
-    expect(botao("É este prédio").props.desativado).toBe(false);
-    expect(botao("Não é este").props.desativado).toBe(false);
+    for (const nome of ["É este prédio", "Não é este", "Pular por agora"]) expect(Boolean(botaoDe(r, nome).props.desativado)).toBe(false);
+    expect(r.root.findAll((n) => n.props.strokeDasharray === "4 3" && typeof n.props.d === "string" && n.type !== "path").length).toBeGreaterThan(0);
+    tocarBotao(r, "Não é este");
+    expect(textoCorrido(r)).toContain("Escolha o prédio no mapa.");
+    act(() => r.unmount());
+  });
+
+  it("com o fundo, em Boa Viagem: o lote do centro do imóvel é o escolhido, em azul cadastral", () => {
+    const r = montarConfirmar("boa-viagem");
+    expect(textoCorrido(r)).toContain("Em azul, o lote escolhido");
     expect(r.root.findAll((n) => n.props.fill === "#2E5A85" && n.props.fillOpacity === 0.85 && n.type !== "path").length).toBeGreaterThan(0);
+    act(() => r.unmount());
+  });
+});
+
+// M3 (18/11/2026): a camada "Calor" de demonstração pintava o mar de Boa Viagem e os rios. As células passam por uma
+// máscara feita com o mesmo caminho da camada de água do fundo.
+describe("calor dos exemplos: não pinta a água do mapa-base", () => {
+  /** Anéis ([x, y][]) de um caminho "Mx yLx y…Z" da cena. */
+  const aneisDoCaminho = (d: string): [number, number][][] =>
+    d
+      .split("Z")
+      .filter((p) => p.trim() !== "")
+      .map((p) => (p.match(/-?\d+(?:\.\d+)?/g) ?? []).map(Number))
+      .map((n) => n.reduce<[number, number][]>((pares, v, i) => (i % 2 === 0 ? [...pares, [v, n[i + 1]!]] : pares), []));
+  /** Par-ímpar sobre todos os anéis, como o fundo pinta a água (fillRule evenodd). */
+  const naAgua = (aneis: [number, number][][], x: number, y: number): boolean => {
+    let dentro = false;
+    for (const anel of aneis) {
+      for (let i = 0, j = anel.length - 1; i < anel.length; j = i++) {
+        const [xi, yi] = anel[i]!;
+        const [xj, yj] = anel[j]!;
+        if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) dentro = !dentro;
+      }
+    }
+    return dentro;
+  };
+  const montarCalor = (id: string) => montar({ dossie: dossie(id), ajustar: 1550, raios: [500, 1000, 1500], camada: "calor", comCalor: true, acessivel: "x" }, 375, 470);
+  const grupoDoCalor = (r: TestRenderer.ReactTestRenderer) => r.root.find((n) => n.type === GrupoSvg && n.props.testID === "calor-do-mapa");
+  const mascaraDe = (r: TestRenderer.ReactTestRenderer) => {
+    const referencia = grupoDoCalor(r).props.mask as string | undefined;
+    const id = /^url\(#(.+)\)$/.exec(referencia ?? "")?.[1];
+    return id ? (r.root.findAll((n) => n.type === Mask && n.props.id === id)[0] ?? null) : null;
+  };
+
+  it("Boa Viagem (o mar ao lado): o calor passa por uma máscara que apaga exatamente a água que o fundo desenha", () => {
+    const r = montarCalor("boa-viagem");
+    const fundos = r.root.findAllByType(FundoDoMapa);
+    const cena = fundos[0]!.props.cena as CenaDoFundo;
+    expect(cena.camadas.agua).not.toBe("");
+    const mascara = mascaraDe(r);
+    expect(mascara).not.toBeNull();
+    // Na máscara: branco em tudo (mostra o calor), a água em preto (apaga) com a regra par-ímpar do fundo.
+    const branco = mascara!.findAllByType(Rect)[0]!;
+    const agua = mascara!.findAll((n) => n.type === Path && n.props.d === cena.camadas.agua)[0]!;
+    expect(branco.props.fill).toBe("white");
+    expect(agua.props.fill).toBe("black");
+    expect(agua.props.fillRule).toBe("evenodd");
+    // A água da máscara fica no mesmo lugar do mundo que a água do fundo: a mesma conta de transformação do grupo da cena.
+    const grupoDaAgua = mascara!.findAll((n) => n.type === GrupoSvg && typeof n.props.transform === "string")[0]!;
+    let grupoDoFundo: ReactTestInstance | null = fundos[0]!.parent;
+    while (grupoDoFundo && grupoDoFundo.type !== GrupoSvg) grupoDoFundo = grupoDoFundo.parent;
+    expect(grupoDoFundo).not.toBeNull();
+    expect(grupoDaAgua.props.transform).toBe(grupoDoFundo!.props.transform);
+    // O caso é de verdade: sem a máscara, dezenas de células de calor cairiam com o centro no mar.
+    const m = /translate\(([-\d.]+) ([-\d.]+)\) scale\(([-\d.]+)\)/.exec(grupoDaAgua.props.transform as string)!;
+    const [ox, oy, k] = [Number(m[1]), Number(m[2]), Number(m[3])];
+    const aneis = aneisDoCaminho(cena.camadas.agua);
+    const celulas = grupoDoCalor(r).findAllByType(Rect);
+    expect(celulas).toHaveLength(22 * 22);
+    const noMar = celulas.filter((c) => naAgua(aneis, ((c.props.x as number) + 50 - ox) / k, ((c.props.y as number) + 50 - oy) / k));
+    expect(noMar.length).toBeGreaterThan(20);
+    // A máscara cobre todas as células (nenhuma fica de fora dela, onde não haveria recorte).
+    const [mx, my, ml] = [mascara!.props.x as number, mascara!.props.y as number, mascara!.props.width as number];
+    for (const c of celulas) {
+      expect(c.props.x as number).toBeGreaterThanOrEqual(mx);
+      expect(c.props.y as number).toBeGreaterThanOrEqual(my);
+      expect((c.props.x as number) + 100).toBeLessThanOrEqual(mx + ml);
+      expect((c.props.y as number) + 100).toBeLessThanOrEqual(my + ml);
+    }
+    act(() => r.unmount());
+  });
+
+  it("com o calor ligado, os nomes de rua e de bairro ficam por cima das células (chão, calor, rótulos)", () => {
+    const r = montarCalor("boa-viagem");
+    const partes = r.root.findAllByType(FundoDoMapa).map((f) => f.props.partes as string);
+    expect(partes).toEqual(["chao", "rotulos"]);
+    const ordem = r.root
+      .findAll((n) => n.type === FundoDoMapa || (n.type === GrupoSvg && n.props.testID === "calor-do-mapa"))
+      .map((n) => (n.type === FundoDoMapa ? (n.props.partes as string) : "calor"));
+    expect(ordem).toEqual(["chao", "calor", "rotulos"]);
+    act(() => r.unmount());
+  });
+
+  it("nos cinco exemplos a máscara leva a água da cena; onde a cena não tem água, as células ficam inteiras", () => {
+    for (const id of ["boa-viagem", "casa-forte", "gracas", "espinheiro", "madalena"]) {
+      const r = montarCalor(id);
+      const cena = r.root.findAllByType(FundoDoMapa)[0]!.props.cena as CenaDoFundo;
+      const mascara = mascaraDe(r);
+      if (cena.camadas.agua === "") expect(mascara).toBeNull();
+      else expect(mascara!.findAll((n) => n.type === Path && n.props.d === cena.camadas.agua)).toHaveLength(1);
+      act(() => r.unmount());
+    }
+  });
+
+  it("sem o fundo (não se sabe onde há água): sem máscara, as células continuam desenhadas", () => {
+    const base = dossie("casa-forte");
+    const fora: Dossie = { ...base, id: "fora-calor", bairro: "Lugar Nenhum", lote: { ...base.lote, centro: [-46.63, -23.55] } };
+    const r = montar({ dossie: fora, ajustar: 1550, camada: "calor", comCalor: true, acessivel: "Fora" });
+    expect(grupoDoCalor(r).props.mask).toBeUndefined();
+    expect(grupoDoCalor(r).findAllByType(Rect)).toHaveLength(22 * 22);
+    act(() => r.unmount());
+  });
+
+  it("fora da camada de calor, o mapa não desenha células nem máscara e o fundo vem inteiro, uma vez", () => {
+    const r = montar({ dossie: dossie("boa-viagem"), ajustar: 1550, raios: [500], camada: "ruas", comCalor: true, acessivel: "x" });
+    expect(r.root.findAll((n) => n.type === GrupoSvg && n.props.testID === "calor-do-mapa")).toHaveLength(0);
+    expect(r.root.findAllByType(FundoDoMapa).map((f) => f.props.partes)).toEqual(["tudo"]);
     act(() => r.unmount());
   });
 });

@@ -18,12 +18,15 @@ import { usePerfilDomicilio, type LocalDeRotina } from "../../estado/PerfilDomic
 import { obterPosicaoDaVisita } from "../../plataforma/posicaoDaVisita";
 import { useTema } from "../../tema/Tema";
 import { ESPACO, RAIO } from "../../tema/tokens";
+import { aquecerFundoDoMapa } from "../mapa/useFundoDoMapa";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { Corpo, LinkComSeta, Nota, Sobretitulo, Titulo2 } from "./base";
-import { MapaDoLote, type EntradaPontoExtraMapa } from "./MapaDoLote";
+import { MapaDoLote, quadroDoPorPerto, type EntradaPontoExtraMapa } from "./MapaDoLote";
 
 const VISIVEIS = 4;
+/** Espera, depois de a aba Entorno desenhar, para começar a ler o fundo do mapa em segundo plano. */
+export const ESPERA_DO_AQUECIMENTO_MS = 250;
 const PAPEIS_RAPIDOS = ["Trabalho", "Academia", "Escola", "Família", "Mercado"] as const;
 
 type OpcaoDeLugar = {
@@ -146,6 +149,26 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
     }
     return lista;
   }, [centroReferencia, perfil.locaisRotina]);
+
+  // Pré-aquecimento do "Ver no mapa" (M7, 18/11/2026): quando a aba Entorno abre, o Por perto mede a própria largura
+  // (é a do mapa) e, pouco depois, lê para a memória os arquivos do fundo que esse mapa vai pedir. Não bloqueia a tela
+  // (assíncrono, um arquivo por vez) e é cancelado se a pessoa sai da aba antes.
+  const [larguraDoMapa, setLarguraDoMapa] = useState(0);
+  useEffect(() => {
+    // O mesmo prédio que o mapa recebe (ver predioParaMapa, mais abaixo).
+    const predioDoMapa = edificio ?? (centroReferencia ? predioSintetico(centroReferencia, bairro) : null);
+    if (!predioDoMapa || larguraDoMapa <= 0) return;
+    let cancelado = false;
+    const espera = setTimeout(() => {
+      const quadro = quadroDoPorPerto(predioDoMapa, obras, pontosExtras, larguraDoMapa);
+      void aquecerFundoDoMapa(predioDoMapa.bairro, [quadro], () => cancelado);
+    }, ESPERA_DO_AQUECIMENTO_MS);
+    return () => {
+      cancelado = true;
+      clearTimeout(espera);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- o enquadramento só muda com o centro, os pontos e a largura
+  }, [chaveDoCentro, pontosExtras, larguraDoMapa]);
 
   if (!fatos.length && !centroReferencia) return null;
 
@@ -272,7 +295,15 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
       : null;
 
   return (
-    <View role="group" aria-label="Por perto, no cadastro da Prefeitura" style={{ gap: ESPACO[2] }}>
+    <View
+      role="group"
+      aria-label="Por perto, no cadastro da Prefeitura"
+      onLayout={(e) => {
+        const medida = Math.round(e.nativeEvent.layout.width);
+        if (medida > 0 && medida !== larguraDoMapa) setLarguraDoMapa(medida);
+      }}
+      style={{ gap: ESPACO[2] }}
+    >
       <View style={{ flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
         <View style={{ flex: 1, minWidth: 180 }}>
           <Sobretitulo>Por perto</Sobretitulo>
