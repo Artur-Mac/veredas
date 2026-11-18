@@ -24,6 +24,7 @@ function corValorRadar(estado: NivelAlertaRadar): TokenDeCor {
 export function RadarVistaELote({ radar }: { radar: ResultadoRadarVistaELote }) {
   const { cor } = useTema();
   const [mostrarMetodo, setMostrarMetodo] = useState(false);
+  const [mostrarUsoLote, setMostrarUsoLote] = useState(false);
 
   return (
     <View
@@ -101,6 +102,49 @@ export function RadarVistaELote({ radar }: { radar: ResultadoRadarVistaELote }) 
         >
           {radar.fundamentoNormativoEAritmetica}
         </Texto>
+      </View>
+
+      <View style={[styles.rodapeMetodo, { borderTopColor: cor("cor-linha") }]}>
+        <Pressable
+          testID="radar-toggle-uso-lote"
+          accessibilityRole="button"
+          accessibilityState={{ expanded: mostrarUsoLote }}
+          onPress={() => setMostrarUsoLote((v) => !v)}
+          style={styles.botaoMetodo}
+        >
+          <Texto tipo="apoio" cor="cor-azul-cadastral" style={styles.textoBotaoMetodo}>
+            {mostrarUsoLote
+              ? "Ocultar perguntas do lote"
+              : "O que a regra e o lote dizem aqui"}
+          </Texto>
+        </Pressable>
+        {mostrarUsoLote ? (
+          <View testID="radar-lista-uso-lote" style={styles.blocoFichaMetodo}>
+            {radar.perguntasDeUsoELote.map((item, idx) => (
+              <View
+                key={item.id}
+                style={[
+                  styles.linhaUsoLote,
+                  {
+                    borderTopWidth: idx === 0 ? 0 : 1,
+                    borderTopColor: cor("cor-linha"),
+                    paddingTop: idx === 0 ? 2 : 8,
+                  },
+                ]}
+              >
+                <Texto tipo="apoio" style={styles.rotuloUsoLote}>
+                  {item.pergunta}
+                </Texto>
+                <Texto tipo="apoio" cor="cor-azul-cadastral" style={styles.respostaUsoLote}>
+                  {item.respostaCurta}
+                </Texto>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.contaUsoLote}>
+                  {item.fundamentoEAritmetica}
+                </Texto>
+              </View>
+            ))}
+          </View>
+        ) : null}
       </View>
 
       <View style={[styles.rodapeMetodo, { borderTopColor: cor("cor-linha") }]}>
@@ -248,5 +292,25 @@ const styles = StyleSheet.create({
   valorMetodoCampo: {
     fontSize: 11.5,
     lineHeight: 16,
+  },
+  linhaUsoLote: {
+    gap: 2,
+    paddingBottom: 4,
+  },
+  rotuloUsoLote: {
+    fontSize: 12.5,
+    lineHeight: 17,
+    fontWeight: "600",
+  },
+  respostaUsoLote: {
+    fontSize: 12.5,
+    lineHeight: 17,
+    fontWeight: "700",
+    fontVariant: ["tabular-nums"],
+  },
+  contaUsoLote: {
+    fontSize: 11.5,
+    lineHeight: 16,
+    fontVariant: ["tabular-nums"],
   },
 });

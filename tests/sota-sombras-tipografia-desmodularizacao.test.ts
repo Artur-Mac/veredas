@@ -2845,4 +2845,85 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     const bairroSrc = readFileSync(bairroPath, "utf8");
     expect((bairroSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(2);
   });
+
+  it("RadarVistaELote responde perguntas de uso, escala e fração do lote sem jargão proibido nem caixas extras (S77)", () => {
+    const bv = edificiosDoBairro("boa-viagem");
+    const predioComDados = bv.find(
+      (e) => e.poligono && e.poligono.length >= 3 && (e.unidades ?? 0) >= 2 && (e.pavimentos ?? 0) >= 2,
+    )!;
+    expect(predioComDados).toBeDefined();
+    const inf = inferirFachadasDoEdificio({ edificio: predioComDados, textoAnuncio: "" });
+
+    const radarSemClausula = analisarRadarVistaELote({
+      centro: predioComDados.centro,
+      edificio: predioComDados,
+      fachadaAtiva: inf.frente,
+      andar: 4,
+      vizinhos: bv,
+      obrasProximas: null,
+    });
+    expect(radarSemClausula.perguntasDeUsoELote.map((p) => p.id)).toEqual([
+      "temporada",
+      "escala_vertical",
+      "fracao_terreno",
+    ]);
+    expect(radarSemClausula.perguntasDeUsoELote[0]?.respostaCurta).toBe("Depende da convenção do condomínio");
+    expect(radarSemClausula.perguntasDeUsoELote[1]?.fundamentoEAritmetica).toContain("LC Municipal nº 2/2021");
+    expect(radarSemClausula.perguntasDeUsoELote[2]?.respostaCurta).toContain("m² de lote por unidade");
+
+    const radarComClausula = analisarRadarVistaELote({
+      centro: predioComDados.centro,
+      edificio: predioComDados,
+      fachadaAtiva: inf.frente,
+      andar: 4,
+      vizinhos: bv,
+      obrasProximas: null,
+      clausulaTemporadaNaConvencao: "Permitida locação por temporada mediante registro na portaria.",
+    });
+    expect(radarComClausula.perguntasDeUsoELote[0]?.respostaCurta).toBe("Há trecho salvo nos documentos");
+    expect(radarComClausula.perguntasDeUsoELote[0]?.fundamentoEAritmetica).toContain("Permitida locação por temporada");
+
+    const radarSemPredio = analisarRadarVistaELote({
+      centro: predioComDados.centro,
+      edificio: null,
+      fachadaAtiva: inf.frente,
+      andar: 4,
+      vizinhos: [],
+      obrasProximas: null,
+    });
+    expect(radarSemPredio.perguntasDeUsoELote[1]?.respostaCurta).toBe("Sem gabarito completo no raio de 120 m");
+    expect(radarSemPredio.perguntasDeUsoELote[2]?.respostaCurta).toBe("A confirmar na matrícula");
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(TemaDoApp, null, React.createElement(RadarVistaELote, { radar: radarComClausula })),
+      );
+    });
+    expect(() => tree.root.find((n) => n.props.testID === "radar-lista-uso-lote")).toThrow();
+
+    const toggleUso = tree.root.find((n) => n.props.testID === "radar-toggle-uso-lote");
+    act(() => {
+      toggleUso.props.onPress();
+    });
+    expect(tree.root.find((n) => n.props.testID === "radar-lista-uso-lote")).toBeDefined();
+
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("Posso alugar por curta temporada (Airbnb)?");
+    expect(txt).toContain("Quanto de terreno corresponde a cada unidade?");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+
+    const radarSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "visual", "RadarVistaELote.tsx"),
+      "utf8",
+    );
+    expect(radarSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((radarSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    expect(radarSrc).toContain("tabular-nums");
+
+    act(() => {
+      tree.unmount();
+    });
+  });
 });

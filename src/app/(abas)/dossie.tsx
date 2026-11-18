@@ -363,6 +363,17 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     return [-34.896, -8.121];
   }, [analise.caderno, predio]);
 
+  const clausulaTemporadaNaConvencao = useMemo(() => {
+    const docs = analise.caderno?.documentos ?? [];
+    const docRelevante = docs.find(
+      (d) =>
+        d.vinculo !== "outro_imovel" &&
+        (d.tipo === "convencao" || d.tipo === "ata") &&
+        /temporada|airbnb|hospedagem/i.test(`${d.trecho} ${d.escopo}`),
+    );
+    return docRelevante ? docRelevante.trecho.trim() || docRelevante.escopo.trim() : null;
+  }, [analise.caderno]);
+
   const radarVistaELote = useMemo(
     () =>
       analisarRadarVistaELote({
@@ -373,8 +384,9 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
         vizinhos: cadastro.vizinhos,
         obrasProximas: visao.obras,
         areaDeclaradaM2: analise.declarados.area.valor,
+        clausulaTemporadaNaConvencao,
       }),
-    [analise.declarados.area.valor, andarSimulado, cadastro, centroParaRadar, fachadaAtiva, predio, visao],
+    [analise.declarados.area.valor, andarSimulado, cadastro, centroParaRadar, clausulaTemporadaNaConvencao, fachadaAtiva, predio, visao],
   );
 
   const hidroMare = useMemo(

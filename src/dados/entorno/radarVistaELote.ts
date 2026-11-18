@@ -21,6 +21,13 @@ export type FichaMetodoRadar = {
   janelaTemporal: string;
 };
 
+export type ItemUsoECapacidadeLote = {
+  id: "temporada" | "escala_vertical" | "fracao_terreno";
+  pergunta: string;
+  respostaCurta: string;
+  fundamentoEAritmetica: string;
+};
+
 export type ResultadoRadarVistaELote = {
   manchete: string;
   areaLoteM2: number | null;
@@ -35,6 +42,7 @@ export type ResultadoRadarVistaELote = {
   ];
   acoesPraticas: readonly string[];
   fundamentoNormativoEAritmetica: string;
+  perguntasDeUsoELote: readonly ItemUsoECapacidadeLote[];
   fichaMetodo: FichaMetodoRadar;
 };
 
@@ -87,6 +95,7 @@ export function analisarRadarVistaELote(params: {
   vizinhos: readonly VizinhoParaFachada[];
   obrasProximas: ObrasProximas | null;
   areaDeclaradaM2?: number | null;
+  clausulaTemporadaNaConvencao?: string | null;
 }): ResultadoRadarVistaELote {
   const {
     centro,
@@ -96,6 +105,7 @@ export function analisarRadarVistaELote(params: {
     vizinhos,
     obrasProximas,
     areaDeclaradaM2 = null,
+    clausulaTemporadaNaConvencao = null,
   } = params;
   const coneAz = fachadaAtiva.azimuteGraus;
 
@@ -375,6 +385,83 @@ export function analisarRadarVistaELote(params: {
       ? `Aritmética do recuo: ~${distMinGeral} m livres (distância entre centros cadastrais menos ~8 m de meia-projeção das fachadas; cone visual ±42° até 120 m${areaLoteM2 ? `; polígono de ~${areaLoteM2.toLocaleString("pt-BR")} m²` : ""}). Referência normativa: Plano Diretor do Recife (LC Municipal nº 2/2021) e licenciamento urbanístico municipal; leitura informativa que não substitui certidão de uso e ocupação do solo.`
       : `Aritmética do recuo: cone visual ±42° até 120 m a partir da fachada ${fachadaAtiva.orientacaoSolar} (sem vizinho indexado até 150 m para subtração de vão). Referência normativa: Plano Diretor do Recife (LC Municipal nº 2/2021) e licenciamento urbanístico municipal; leitura informativa que não substitui certidão de uso e ocupação do solo.`;
 
+  // 5. Respostas de 3 partes (Symbium R25 §6.1 + Zoneomics R19 §6.1 + Gridics R24 §6.2)
+  const clausulaLimpa = clausulaTemporadaNaConvencao?.trim() ?? "";
+  const itemTemporada: ItemUsoECapacidadeLote = clausulaLimpa
+    ? {
+        id: "temporada",
+        pergunta: "Posso alugar por curta temporada (Airbnb)?",
+        respostaCurta: "Há trecho salvo nos documentos",
+        fundamentoEAritmetica: `Convenção ou ata registrada: “${clausulaLimpa.slice(0, 140)}” · STJ (REsp 1.819.075/RS): vale a redação expressa da convenção do edifício.`,
+      }
+    : {
+        id: "temporada",
+        pergunta: "Posso alugar por curta temporada (Airbnb)?",
+        respostaCurta: "Depende da convenção do condomínio",
+        fundamentoEAritmetica:
+          "STJ (REsp 1.819.075/RS): convenção residencial com destinação exclusiva pode restringir locação por temporada; confira a convenção antes do sinal.",
+      };
+
+  const maxPavVizinho = vizinhos.reduce<number | null>((maior, v) => {
+    if (v.pavimentos === null || v.pavimentos === undefined) return maior;
+    const [dx, dy] = emMetros(v.centro, centro);
+    const d = Math.hypot(dx, dy);
+    if (d < 5 || d > 120) return maior;
+    return maior === null ? v.pavimentos : Math.max(maior, v.pavimentos);
+  }, null);
+
+  let itemEscalaVertical: ItemUsoECapacidadeLote;
+  if (edificio?.pavimentos && maxPavVizinho !== null) {
+    const diff = edificio.pavimentos - maxPavVizinho;
+    const relacaoTopo =
+      diff > 0
+        ? `+${diff} acima do maior vizinho em 120 m`
+        : diff < 0
+          ? `${Math.abs(diff)} abaixo do maior vizinho em 120 m`
+          : "mesma altura máxima dos vizinhos em 120 m";
+    itemEscalaVertical = {
+      id: "escala_vertical",
+      pergunta: "Qual o porte deste prédio frente à vizinhança imediata?",
+      respostaCurta: `Prédio de ${edificio.pavimentos}p · vizinhos até ${maxPavVizinho}p em 120 m`,
+      fundamentoEAritmetica: `Seu andar selecionado: ${andar}º de ${edificio.pavimentos}p · diferença para o topo vizinho em 120 m: ${relacaoTopo} · referência: Plano Diretor do Recife (LC Municipal nº 2/2021).`,
+    };
+  } else if (edificio?.pavimentos) {
+    itemEscalaVertical = {
+      id: "escala_vertical",
+      pergunta: "Qual o porte deste prédio frente à vizinhança imediata?",
+      respostaCurta: `Prédio de ${edificio.pavimentos}p`,
+      fundamentoEAritmetica: `Seu andar selecionado: ${andar}º de ${edificio.pavimentos}p (sem gabarito vizinho completo no raio de 120 m) · referência: Plano Diretor do Recife (LC Municipal nº 2/2021).`,
+    };
+  } else {
+    itemEscalaVertical = {
+      id: "escala_vertical",
+      pergunta: "Qual o porte deste prédio frente à vizinhança imediata?",
+      respostaCurta: "Sem gabarito completo no raio de 120 m",
+      fundamentoEAritmetica:
+        "Confirme o edifício no cadastro municipal para comparar altura com as torres vizinhas em 120 m · Plano Diretor do Recife (LC Municipal nº 2/2021).",
+    };
+  }
+
+  let itemFracaoTerreno: ItemUsoECapacidadeLote;
+  if (areaLoteM2 !== null && edificio?.unidades && edificio.unidades >= 2) {
+    const m2PorUnid = Math.round((areaLoteM2 / edificio.unidades) * 10) / 10;
+    const m2Texto = String(m2PorUnid).replace(".", ",");
+    itemFracaoTerreno = {
+      id: "fracao_terreno",
+      pergunta: "Quanto de terreno corresponde a cada unidade?",
+      respostaCurta: `~${m2Texto} m² de lote por unidade`,
+      fundamentoEAritmetica: `Polígono de ~${areaLoteM2.toLocaleString("pt-BR")} m² ÷ ${edificio.unidades} unidades = ~${m2Texto} m²/unid. (quanto menor o rateio por apartamento, mais diluídos ficam encargos de terreno e obras comuns).`,
+    };
+  } else {
+    itemFracaoTerreno = {
+      id: "fracao_terreno",
+      pergunta: "Quanto de terreno corresponde a cada unidade?",
+      respostaCurta: "A confirmar na matrícula",
+      fundamentoEAritmetica:
+        "Sem polígono de lote e contagem oficial de unidades juntos; confira a fração ideal na matrícula atualizada do imóvel.",
+    };
+  }
+
   return {
     manchete,
     areaLoteM2,
@@ -385,6 +472,7 @@ export function analisarRadarVistaELote(params: {
     itens: [itemCone, itemLote, itemPrivacidade, itemObras],
     acoesPraticas: acoesPraticas.slice(0, 3),
     fundamentoNormativoEAritmetica,
+    perguntasDeUsoELote: [itemTemporada, itemEscalaVertical, itemFracaoTerreno],
     fichaMetodo,
   };
 }
