@@ -14,7 +14,7 @@ Refeita na branch `fix/pendencias-unificacao` com o mesmo script (saída em `doc
 - **Os 322 a até 1 km da pista:** todos com avião na conta; 214 deles com o aviso de piso.
 - **Cidade:** 3.831 prédios com avião na conta (eram 639). Mediana na rua 64,7 dB(A) de dia e 58,0 à noite (eram 64,1 e 57,5); nota mediana 7,4 (era 7,5). O aeroporto aparece com nome (cartão Dia × Noite, simulador, "De que lado vem o barulho") sempre que a estimativa soma o avião.
 - **Boa Viagem:** mediana 66,8 de dia e 59,9 à noite (eram 66,3 e 59,4); diferença para o Mapa Sossego +0,8 e −1,1, dentro de ±5 dB. Os outros cinco bairros não mudaram.
-- **Golden Tower (`8001-216`) mudou de faixa:** fica a ~570 m além da cabeceira 18 e 1,1 km para o lado da linha de pouso. O avião passa a ser a fonte que mais pesa (~61 dB(A) de dia, ~54 à noite), e na rua o prédio vai de 59,6 / 52,4 (8,8, "Muito tranquilo") a 63,4 / 56,3 (7,8, "Tranquilo"). Como o avião vem de cima, frente e fundos ficam mais perto (+1,4 / +1,5 dB, eram +4,6 / +5,2). As fotos e os números de 18/11 abaixo são de antes desta mudança.
+- **Golden Tower (`8001-216`) mudou de faixa:** fica ~650 m além da cabeceira 36 e 1,1 km para o lado da linha de pouso. O avião passa a ser a fonte que mais pesa (~61 dB(A) de dia, ~54 à noite), e na rua o prédio vai de 59,6 / 52,4 (8,8, "Muito tranquilo") a 63,4 / 56,3 (7,8, "Tranquilo"). Como o avião vem de cima, frente e fundos ficam mais perto (+1,4 / +1,5 dB, eram +4,6 / +5,2). As fotos e os números de 18/11 abaixo são de antes desta mudança.
 - **O que continua de fora:** o aeroporto além de 10 km da cabeceira e o ruído da pista ao lado dela.
 
 ## O que foi comparado
