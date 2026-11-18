@@ -428,12 +428,14 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
     tituloCurto: "Reserva de água, energia e sinal 5G",
     camada1Manchete: sanearTextoCamada1(
       res
-        ? `Reserva estimada para ${res.hidrico.autonomiaReservaDias ?? "?"} dias; atenção à transição AQUA Pernambuco (23/11/2026).`
+        ? `Reserva estimada para ${res.hidrico.autonomiaReservaDias ?? "?"} dias; início da AQUA Pernambuco na distribuição de água marcado para 23/11/2026.`
         : "Confirme capacidade da cisterna, gerador para elevadores e sinal celular nos quartos.",
     ),
     camada2ImpactoPratico: res
-      ? `Concessionária em distribuição: ${res.hidrico.concessionariaDistribuicaoVigente}.`
-      : "Débitos de água anteriores a 23/11/2026 continuam sendo cobrados pela Compesa.",
+      ? res.hidrico.concessionariaDistribuicaoVigente === "Compesa"
+        ? "Distribuição de água hoje: Compesa. A AQUA Pernambuco assume em 23/11/2026, data marcada pelo Governo de Pernambuco."
+        : `Distribuição de água: ${res.hidrico.concessionariaDistribuicaoVigente}, desde 23/11/2026, data marcada pelo Governo de Pernambuco.`
+      : "Peça ao vendedor a quitação das contas de água e pergunte à Compesa se há débito em aberto.",
     camada2AcaoConcreta: "Teste dados móveis no quarto dos fundos na visita e confira quitação de contas anteriores.",
     camada3ProvaMetodo: {
       epistemicTag: res?.eletrico.epistemicTag ?? "nao_sabemos",
@@ -441,9 +443,10 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       chavesDuplas,
       metodo6Campos: {
         oQueMede: "Autonomia da cisterna, interrupções de energia (DEC/FEC) e proximidade de torre 5G.",
-        baseLegalOuNormativa: "Concessão AQUA PE (23/11/2026) x Compesa Tapacurá + indicadores ANEEL/ANATEL.",
+        baseLegalOuNormativa:
+          "Concessão parcial do saneamento de Pernambuco (início da AQUA Pernambuco marcado para 23/11/2026) e indicadores ANEEL/ANATEL.",
         aritmeticaResumo: "Volume total (cisterna + caixa) / (Unidades × 2,6 hab × 165 L/dia).",
-        fontePrimaria: "ANEEL DEC/FEC + Anatel ERBs + Compesa/AQUA PE",
+        fontePrimaria: "ANEEL DEC/FEC + Anatel ERBs + nota da Secretaria de Recursos Hídricos e Saneamento de PE (23/10/2026)",
         vintage: "2026-11",
         limiteEpistemologico:
           res?.limiteEpistemologico ?? "Cisterna e gerador dependem de confirmação física na visita.",

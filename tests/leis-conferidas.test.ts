@@ -1,7 +1,7 @@
 // Conferência de leis de 18/11/2026 (docs/aplicacao/unificacao-2026-11-19/leis-conferidas.md), decisão A5: o que a fonte
 // oficial confirma fica; o que diverge é corrigido; o que não se confirmou sai da tela. Estes testes prendem as mudanças
 // de cálculo e de texto que a conferência pediu.
-import { describe, expect, test } from "@jest/globals";
+import { afterEach, describe, expect, jest, test } from "@jest/globals";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import React from "react";
@@ -12,6 +12,7 @@ import { TresPerguntasDoBolso, type PropsTresPerguntasDoBolso } from "../src/com
 import { TemaDoApp } from "../src/tema/Tema";
 import { traduzirIndicadoresCidadao, type EntradaTradutorCidadao } from "../src/dados/cidadao/tradutorCidadao";
 import { ITBI_ALIQUOTA_MAXIMA, ITBI_ALIQUOTA_MINIMA, estimarTransferencia, type CustoPorPartes } from "../src/dados/custoPorPartes";
+import { avaliarResilienciaRedes, DATA_ASSUNCAO_AQUA_PERNAMBUCO, hojeNoAparelhoIso } from "../src/municipios/recife/motores/resilienciaRedes";
 import { cadernoVazio, type DocumentoPessoal } from "../src/dados/caderno";
 import { esquemaAnaliseV2, type AnaliseV2 } from "../src/dados/contratos";
 import { ALERTAS_DILIGENCIA_RECIFE_2026 } from "../src/dados/documentos/copilotoPreSinal";
@@ -349,5 +350,68 @@ describe("vistoria predial periódica (Lei PE 13.032/2006): 4 anos até 20 anos 
     expect(estrutura(laudoVelho, 2010)!.estado).toBe("desatualizado");
     // Prédio novo que já tem laudo guardado continua aparecendo.
     expect(estrutura(analiseDeTeste("compra", [laudo("2025-05-16")]), 2023)!.estado).toBe("recebido");
+  });
+});
+
+describe("água: início da AQUA Pernambuco marcado para 23/11/2026, pela data real do aparelho", () => {
+  const ENTRADA_REDES = { bairroSlug: "gracas", unidadesCondominio: 28, volumeCisternaLitros: 35_000 };
+  const AVISO =
+    "A partir de 23/11/2026, data marcada pelo Governo de Pernambuco, a distribuição de água passa da Compesa para a concessionária AQUA Pernambuco em cerca de 150 municípios. A Compesa continua produzindo a água. Peça ao vendedor a quitação das contas de água e pergunte à Compesa se há débito em aberto.";
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  test("com a data injetada: Compesa até 22/11/2026, AQUA Pernambuco a partir de 23/11/2026", () => {
+    expect(DATA_ASSUNCAO_AQUA_PERNAMBUCO).toBe("2026-11-23");
+    expect(avaliarResilienciaRedes(ENTRADA_REDES, "2026-11-19").hidrico.concessionariaDistribuicaoVigente).toBe("Compesa");
+    expect(avaliarResilienciaRedes(ENTRADA_REDES, "2026-11-22").hidrico.concessionariaDistribuicaoVigente).toBe("Compesa");
+    expect(avaliarResilienciaRedes(ENTRADA_REDES, "2026-11-23").hidrico.concessionariaDistribuicaoVigente).toBe("AQUA Pernambuco (Acciona + BRK)");
+    expect(avaliarResilienciaRedes(ENTRADA_REDES, "2027-01-10").hidrico.concessionariaDistribuicaoVigente).toBe("AQUA Pernambuco (Acciona + BRK)");
+  });
+
+  test("sem data informada, vale o relógio do aparelho (antes era 24/11/2026 fixo, e a AQUA aparecia antes da hora)", () => {
+    // 22/11/2026 às 23h30 no aparelho: ainda é a Compesa.
+    jest.useFakeTimers().setSystemTime(new Date(2026, 10, 22, 23, 30));
+    expect(hojeNoAparelhoIso()).toBe("2026-11-22");
+    expect(avaliarResilienciaRedes(ENTRADA_REDES).hidrico.concessionariaDistribuicaoVigente).toBe("Compesa");
+    // 23/11/2026 à 0h30 no aparelho: a AQUA Pernambuco assume.
+    jest.setSystemTime(new Date(2026, 10, 23, 0, 30));
+    expect(hojeNoAparelhoIso()).toBe("2026-11-23");
+    expect(avaliarResilienciaRedes(ENTRADA_REDES).hidrico.concessionariaDistribuicaoVigente).toBe("AQUA Pernambuco (Acciona + BRK)");
+    // Hoje, 19/11/2026: Compesa.
+    jest.setSystemTime(new Date(2026, 10, 19, 12, 0));
+    expect(avaliarResilienciaRedes(ENTRADA_REDES).hidrico.concessionariaDistribuicaoVigente).toBe("Compesa");
+  });
+
+  test("o aviso não afirma que o débito antigo fica retido na Compesa nem fala em 151 municípios", () => {
+    for (const data of ["2026-11-19", "2026-11-23"]) {
+      const { hidrico } = avaliarResilienciaRedes(ENTRADA_REDES, data);
+      expect(hidrico.avisoMudancaNaDistribuicao).toBe(AVISO);
+      expect(hidrico.dataMarcoTransicao).toBe("2026-11-23");
+    }
+    const alerta = ALERTAS_DILIGENCIA_RECIFE_2026.find((a) => a.id === "aqua_compesa_2026")!;
+    expect(alerta.titulo).toBe("Água e saneamento (mudança marcada para 23/11/2026)");
+    expect(alerta.detalhe).toBe(AVISO);
+    expect(JSON.stringify(ALERTAS_DILIGENCIA_RECIFE_2026)).not.toMatch(/permanecem retidos|151 municípios/);
+  });
+
+  test("a ficha do IND-08 muda com a data e diz a fonte", () => {
+    const ind08 = (data: string) => cartao(cartoes({}, { resiliencia: avaliarResilienciaRedes(ENTRADA_REDES, data) }), "IND-08");
+    const antes = ind08("2026-11-19");
+    expect(antes.camada1Manchete).toBe("Reserva estimada para 2.91 dias; início da AQUA Pernambuco na distribuição de água marcado para 23/11/2026.");
+    expect(antes.camada2ImpactoPratico).toBe(
+      "Distribuição de água hoje: Compesa. A AQUA Pernambuco assume em 23/11/2026, data marcada pelo Governo de Pernambuco.",
+    );
+    expect(ind08("2026-11-23").camada2ImpactoPratico).toBe(
+      "Distribuição de água: AQUA Pernambuco (Acciona + BRK), desde 23/11/2026, data marcada pelo Governo de Pernambuco.",
+    );
+    expect(antes.camada3ProvaMetodo.metodo6Campos.baseLegalOuNormativa).toBe(
+      "Concessão parcial do saneamento de Pernambuco (início da AQUA Pernambuco marcado para 23/11/2026) e indicadores ANEEL/ANATEL.",
+    );
+    // Sem a leitura das redes, sai a afirmação de que o débito antigo "continua sendo cobrado pela Compesa".
+    const semRedes = cartao(cartoes({}), "IND-08");
+    expect(semRedes.camada2ImpactoPratico).toBe("Peça ao vendedor a quitação das contas de água e pergunte à Compesa se há débito em aberto.");
+    expect(JSON.stringify([antes, semRedes])).not.toMatch(/continuam sendo cobrados|permanecem|Tapacurá/);
   });
 });

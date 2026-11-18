@@ -219,7 +219,8 @@ describe("Milestone 8 — Jornadas End-to-End de Personas Reais no Recife", () =
       "2026-11-24",
     );
     expect(redes.hidrico.concessionariaDistribuicaoVigente).toBe("AQUA Pernambuco (Acciona + BRK)");
-    expect(redes.hidrico.alertaDividaAnterior23Nov2026).toMatch(/23\/11\/2026.*Compesa/);
+    expect(redes.hidrico.avisoMudancaNaDistribuicao).toMatch(/pergunte à Compesa se há débito em aberto\.$/);
+    expect(redes.hidrico.avisoMudancaNaDistribuicao).not.toMatch(/permanecem|retidos/);
   });
 
   test("Persona 3: Família com idoso/cadeirante nas Graças integra semáforos sonoros, silêncio SBRF e partilha sem vazar dado sensível", () => {
