@@ -144,7 +144,7 @@ export function simularUnidade(opcoes: { predio: Edificio; vizinhos: readonly Ed
       fontes, semFontes: fontes.length === 0,
       consequenciaPorFace,
       decibeis: `Nível em dB(A): ${SEM_LEITURA} (nenhuma medição calibrada no Recife).`,
-      nota: "Distâncias em linha reta, do centro do lote. Para comparar, ouça na visita com a janela aberta e fechada, num dia útil às 18h e numa sexta à noite.",
+      nota: "Distâncias em linha reta, do centro do lote; dobrar a distância reduz de forma relevante o efeito da fonte. Para comparar, ouça na visita com a janela aberta e fechada, num dia útil às 18h e numa sexta à noite.",
     },
     sol,
     vento: { frase, barreira, superficie3d: `Altura real dos obstáculos (PE3D, MDS − MDT): ${SEM_LEITURA}; usamos os pavimentos do cadastro.` },

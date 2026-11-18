@@ -130,7 +130,9 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
                   );
                 })
               )}
-              <Nota>{`${s.barulho.decibeis} Na visita, abra e feche a janela para testar o isolamento real.`}</Nota>
+              <Texto testID="simulador-atenuacao-distancia" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, lineHeight: 18 }}>
+                {`${s.barulho.decibeis} ${s.barulho.nota}`}
+              </Texto>
             </View>
           ) : null}
         </View>

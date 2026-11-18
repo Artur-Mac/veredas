@@ -415,6 +415,18 @@ export function CanvasSolSombraBrisa25D({
         <Texto tipo="secao" style={styles.resumoTitulo}>
           {inferencia.resumoAutomatico}
         </Texto>
+        {inferencia.pistas.resumoPistas ? (
+          <Texto
+            testID="canvas-checagem-anuncio"
+            tipo="apoio"
+            cor={fachadaAtiva.compativelComAnuncio ? "cor-salvia-escura" : "cor-barro-texto"}
+            style={styles.checagemAnuncio}
+          >
+            {fachadaAtiva.compativelComAnuncio
+              ? `Anúncio cita “${inferencia.pistas.resumoPistas}” — compatível com esta face (${fachadaAtiva.orientacaoSolar}).`
+              : `Anúncio cita “${inferencia.pistas.resumoPistas}”, diferente desta face (${fachadaAtiva.orientacaoSolar}): confira a planta.`}
+          </Texto>
+        ) : null}
       </View>
 
       {/* Seletor segmentado em faixa unica sem caixas aninhadas */}
@@ -1053,6 +1065,11 @@ const styles = StyleSheet.create({
     paddingTop: 14,
     paddingBottom: 10,
     gap: 6,
+  },
+  checagemAnuncio: {
+    fontSize: 12,
+    lineHeight: 17,
+    fontWeight: "600",
   },
   topoCabecalho: {
     flexDirection: "row",
