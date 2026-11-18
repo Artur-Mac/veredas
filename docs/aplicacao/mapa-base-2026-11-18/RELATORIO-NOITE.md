@@ -19,6 +19,12 @@ Escrito pelo orquestrador ao longo da noite. Estado de cada parte no fim de cada
 
 **Como a noite andou.** 27 agentes em Opus 5.5, no máximo 5 ao mesmo tempo, em workflows por fase. Cada fase teve revisores independentes em duas rodadas, e o orquestrador conferiu os números antes de cada commit. Três vezes a conferência desmentiu um relatório: um teste de custo que só passava com a máquina livre; uma nota dizendo que a bacia do porto não tinha polígono de água (tinha); e o custo do fundo, medido em 35 ms por quem corrigiu e em 127 ms pelo revisor seguinte.
 
+## Entrega
+
+- **PR rascunho:** https://github.com/Artur-Mac/veredas/pull/5, de `feat/mapa-base` contra `fix/mapas-e-leitura-de-anuncios` (o PR #4 continuava aberto às 06:00). Segue o modelo de PR do repositório, com a seção "Hub" preenchida.
+- **Hub:** a tarefa "Mapa-base: ruas, quadras, lotes e bairros em todos os mapas" foi movida para "Fazendo" e ganhou um bloco "ATUALIZAÇÃO 18/11/2026" no fim da descrição, com o resumo, o link do PR e as pendências. O texto que já estava lá foi mantido. O pedido falava em comentar na tarefa: o hub só aceita comentário em feature e em impedimento, então o resumo foi para a descrição, como nas outras tarefas do quadro. Nada mais foi gravado no hub (nenhuma feature, veredito, impedimento ou documento).
+- **Relatório:** este arquivo. **Capturas:** `telas/noite/antes/` e `telas/noite/depois/`.
+
 ## Antes de tudo: o que aconteceu com a pasta do repositório
 
 Às 01:36, durante a preparação, outra sessão trocou a branch da pasta `C:\Users\ssamu\OneDrive\Desktop\repos\veredas` de `feat/mapa-base` para `feat/seguranca-aeroporto-limpeza`. O primeiro commit da noite (plano e contrato de dados) foi feito às 01:44 sem conferir a branch de novo e **caiu na branch da outra sessão** como `fc5ad83`; ela commitou por cima (`7f834d2`).
