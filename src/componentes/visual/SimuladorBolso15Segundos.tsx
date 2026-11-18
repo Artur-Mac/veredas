@@ -262,7 +262,7 @@ export function SimuladorBolso15Segundos({
             />
             <View style={styles.colRes}>
               <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.rotuloRes}>
-                Saída real por mês
+                Saída estimada por mês
               </Texto>
               <Texto tipo="numero" style={styles.valorRes}>
                 {`~${formatarReais(mensalEstimado)}/mês`}

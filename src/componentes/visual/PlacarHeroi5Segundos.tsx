@@ -13,6 +13,8 @@ type Props = {
   modalidade: "compra" | "aluguel";
   precoPrincipalReais: number | null;
   mensalBolsoRealReais: number | null;
+  /** O que entrou na soma mensal, na ordem (ex.: ["Parcela", "cond.", "IPTU", "luz"]). Sem ela, vale a legenda completa. */
+  composicaoMensal?: readonly string[];
   dinheiroParaEntrarReais: number | null;
   comparacaoM2Pct: number | null;
   orientacaoCurta: string;
@@ -42,6 +44,7 @@ export function PlacarHeroi5Segundos({
   modalidade,
   precoPrincipalReais,
   mensalBolsoRealReais,
+  composicaoMensal,
   dinheiroParaEntrarReais,
   comparacaoM2Pct,
   orientacaoCurta,
@@ -101,13 +104,15 @@ export function PlacarHeroi5Segundos({
     },
     {
       id: "predio",
-      rotulo: compra ? "Saída real por mês" : "Total mensal real",
+      rotulo: compra ? "Saída estimada por mês" : "Total mensal estimado",
       valorGrande: mensalTxt,
       subtitulo: spuAtivo
         ? "Terreno da União (ver regra)"
-        : compra
-          ? "Parcela + cond. + IPTU + luz"
-          : "Aluguel + cond. + IPTU + luz",
+        : composicaoMensal && composicaoMensal.length > 0
+          ? composicaoMensal.join(" + ")
+          : compra
+            ? "Parcela + cond. + IPTU + luz"
+            : "Aluguel + cond. + IPTU + luz",
       corPonto: spuAtivo ? "cor-barro" : "cor-azul-cadastral",
       corDestaque: spuAtivo ? "cor-barro-texto" : "cor-texto",
     },

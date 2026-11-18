@@ -20,6 +20,9 @@ export type EntradaTco10Anos = {
   /** Suposição escolhida pela pessoa: 0, 0.03 ou 0.05 ao ano. Sem escolha, vale 0 (o Vereda não prevê preço). */
   valorizacaoImovelAnual?: number;
   custoFechamentoItbiCartorioReais?: number;
+  /** Prazo e juros do financiamento: os mesmos da simulação do custo (perfil da casa e taxa média do BCB). Sem eles, valem as suposições fixas. */
+  prazoFinanciamentoAnos?: number;
+  jurosFinanciamentoAnual?: number;
   spuAnualReais?: number;
   cotaExtraProvavel10AnosReais?: number;
   economiaOtimizacaoTributariaReais?: number;
@@ -52,8 +55,14 @@ export const SUPOSICOES_FIXAS_TCO = {
 const pct = (fracao: number) => `${(fracao * 100).toFixed(1).replace(".", ",").replace(",0", "")}%`;
 
 /** Frase com as suposições fixas da conta de 10 anos (CDI, juros, prazo, reajuste e aluguel equivalente). */
-export function fraseDasSuposicoesTco(e: Pick<EntradaTco10Anos, "precoCompraReais" | "aluguelEquivalenteMensalReais">): string {
-  const s = SUPOSICOES_FIXAS_TCO;
+export function fraseDasSuposicoesTco(
+  e: Pick<EntradaTco10Anos, "precoCompraReais" | "aluguelEquivalenteMensalReais" | "prazoFinanciamentoAnos" | "jurosFinanciamentoAnual">,
+): string {
+  const s = {
+    ...SUPOSICOES_FIXAS_TCO,
+    jurosFinanciamentoAnual: e.jurosFinanciamentoAnual ?? SUPOSICOES_FIXAS_TCO.jurosFinanciamentoAnual,
+    prazoFinanciamentoAnos: e.prazoFinanciamentoAnos ?? SUPOSICOES_FIXAS_TCO.prazoFinanciamentoAnos,
+  };
   const aluguel = e.precoCompraReais > 0 ? (e.aluguelEquivalenteMensalReais / e.precoCompraReais) * 100 : 0;
   return (
     `Suposições fixas: CDI líquido de ${pct(s.cdiLiquidoAnual)} ao ano, financiamento a ${pct(s.jurosFinanciamentoAnual)} ao ano em ${s.prazoFinanciamentoAnos} anos, ` +
@@ -121,22 +130,27 @@ export function calcularTco10Anos(e: EntradaTco10Anos): ResultadoTco10Anos {
 
   // Na compra: 120 meses de prestação financiada estimada + condomínio + IPTU + SPU + obras extraordinárias
   const valorFin = Math.max(0, e.precoCompraReais - entrada);
-  const jurosMensalFin = Math.pow(1 + SUPOSICOES_FIXAS_TCO.jurosFinanciamentoAnual, 1 / 12) - 1;
-  const prestacao =
-    valorFin > 0 ? (valorFin * jurosMensalFin) / (1 - Math.pow(1 + jurosMensalFin, -SUPOSICOES_FIXAS_TCO.prazoFinanciamentoAnos * 12)) : 0;
+  const jurosAnual = e.jurosFinanciamentoAnual ?? SUPOSICOES_FIXAS_TCO.jurosFinanciamentoAnual;
+  const prazoMeses = Math.max(12, Math.round((e.prazoFinanciamentoAnos ?? SUPOSICOES_FIXAS_TCO.prazoFinanciamentoAnos) * 12));
+  const jurosMensalFin = Math.pow(1 + jurosAnual, 1 / 12) - 1;
+  const fatorPrice = (meses: number) => (jurosMensalFin > 0 ? (1 - Math.pow(1 + jurosMensalFin, -meses)) / jurosMensalFin : meses);
+  const prestacao = valorFin > 0 ? valorFin / fatorPrice(prazoMeses) : 0;
+  // Em 10 anos pagam-se 120 prestações, ou menos se o prazo for mais curto.
+  const prestacoesPagas = Math.min(120, prazoMeses);
 
   let desembolsoCompra = entrada + fechamento + (e.cotaExtraProvavel10AnosReais ?? 0);
   let desembolsoAluguel = 0;
   for (let ano = 0; ano < 10; ano += 1) {
     const fatorInflacao = Math.pow(1 + SUPOSICOES_FIXAS_TCO.reajusteAnual, ano);
     desembolsoCompra +=
-      prestacao * 12 +
+      prestacao * Math.max(0, Math.min(12, prestacoesPagas - ano * 12)) +
       (e.condominioMensalReais * 12 + e.iptuAnualReais + (e.spuAnualReais ?? 0)) * fatorInflacao;
     desembolsoAluguel += e.aluguelEquivalenteMensalReais * 12 * fatorInflacao + e.condominioMensalReais * 12 * fatorInflacao;
   }
 
-  // Saldo devedor aproximado após 10 anos de financiamento em 15 anos (33% restante)
-  const saldoDevedorAno10 = valorFin * 0.34;
+  // Saldo devedor depois de 10 anos, pela Tabela Price: o valor presente das prestações que faltam. (Antes era 34% do
+  // financiado, fixo; num prazo de 15 anos a 10,5% ao ano o saldo certo é cerca de 51%, e em 30 anos, cerca de 91%.)
+  const saldoDevedorAno10 = prazoMeses > 120 ? prestacao * fatorPrice(prazoMeses - 120) : 0;
   const imovelAno10 = e.precoCompraReais * Math.pow(1 + taxaVal, 10);
   const patrimonioCompra = Math.max(0, imovelAno10 - saldoDevedorAno10);
 
