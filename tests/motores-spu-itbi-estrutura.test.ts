@@ -74,9 +74,10 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
 
     expect(sim.semOrientacao3Pct.itbiReais).toBe(19_500);
     expect(sim.semOrientacao3Pct.totalFechamentoReais).toBe(36_151.97);
+    expect(sim.semOrientacao3Pct.prazoLegalDias).toBeNull();
 
     expect(sim.aVistaTempestivo18Pct.itbiReais).toBe(11_700);
-    expect(sim.aVistaTempestivo18Pct.prazoLegalDias).toBe(30);
+    expect(sim.aVistaTempestivo18Pct.prazoLegalDias).toBe(180);
     expect(sim.economiaAVistaTempestivoReais).toBe(7_800);
 
     expect(sim.sfhOtimizado1Pct).not.toBeNull();
@@ -84,7 +85,9 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
     expect(sim.sfhOtimizado1Pct!.prazoLegalDias).toBe(180);
     expect(sim.sfhOtimizado1Pct!.totalFechamentoReais).toBe(12_724.82);
     expect(sim.economiaSfhReais).toBe(23_427.15);
-    expect(sim.anexoContenciosoLc227VsTema1113).toMatch(/LC nº 227\/2026.*Tema 1\.113/);
+    expect(sim.notaBaseDeCalculoLc227).toMatch(/Lei Complementar federal 227\/2026, de 13\/01\/2026, mudou o art\. 38 do Código Tributário Nacional/);
+    expect(sim.notaBaseDeCalculoLc227).toMatch(/Lei 19\.490\/2026/);
+    expect(sim.notaBaseDeCalculoLc227).not.toMatch(/Tema 1\.124|Tema 1\.113|ônus da prova/);
   });
 
   test("IND-07 Econometria NBR 14653-2 aplica expurgo de fração parcial, Chauvenet, IC 80% (Grau I–III) e Repeat-Sales", () => {

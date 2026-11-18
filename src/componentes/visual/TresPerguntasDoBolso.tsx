@@ -202,7 +202,7 @@ export function TresPerguntasDoBolso({
               {`Economia legal no fechamento: até ${formatarReais(economiaLegalItbiCartorioReais)}`}
             </Texto>
             <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
-              Pela regra municipal do Recife (1% na faixa financiada e 1,8% pagando no prazo certo de até 180 dias).
+              Pela regra municipal do Recife: 1% sobre a parte financiada pelo SFH e 1,8% com o lançamento pedido em até 180 dias da assinatura do contrato.
             </Texto>
           </View>
         ) : null}
@@ -421,7 +421,7 @@ export function TresPerguntasDoBolso({
         {verMetodoBolso ? (
           <View testID="bolso-ficha-metodo" style={styles.blocoMetodo}>
             <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
-              • ITBI Recife (CTM / LC nº 227/2026): 1% sobre a parcela financiada pelo SFH e 1,8% sobre recursos próprios pagando em até 180 dias (alíquota cheia de 3% fora do prazo).
+              • ITBI no Recife (Código Tributário do Recife, Lei 15.563/1991, arts. 52 e 55): 1% sobre a parte financiada pelo SFH, até R$ 1.036.600,71 (valor de 2026), e 1,8% sobre o restante com o lançamento pedido em até 180 dias da assinatura do contrato (3% fora do prazo).
             </Texto>
             <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
               • Terreno da União (Decreto-Lei nº 2.398/1987 e Leis nº 13.139/2015 e 13.240/2015): foro anual (0,6%) ou ocupação (2%) calculados apenas sobre a fração ideal do terreno, excluídas as benfeitorias.

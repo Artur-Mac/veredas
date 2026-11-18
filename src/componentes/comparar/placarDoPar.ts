@@ -28,8 +28,8 @@ const atencoes = (ind: readonly Indicador[] | null) => (ind ?? []).filter((i) =>
 
 /**
  * 15/11/2026 (copiloto): o que mais entra no placar, calculado pela tela.
- * - custo total da compra: preço + ITBI numa faixa de 2% a 3% (Código Tributário do Recife, art. 52, II: 3%; redução
- *   temporária para 2% anunciada em dez/2025; financiado pode ter 1%: confira a alíquota vigente) + escritura e registro
+ * - custo total da compra: preço + ITBI numa faixa de 1,8% a 3% (Código Tributário do Recife, arts. 52 e 55: 3% na regra
+ *   comum, 1,8% com o lançamento pedido em até 180 dias; a parte financiada pelo SFH paga 1%) + escritura e registro
  *   a confirmar (nunca 0);
  * - rotina: ida programada das 7h até o bairro de destino (camada "Onde mais procurar"), em horas por mês e dias úteis de
  *   8 h por ano, dizendo que a volta foi suposta igual à ida;
@@ -42,7 +42,7 @@ export type ExtrasDoPlacar = {
   ambiente: Par<{ calorC: number | null; cotaM: number | null }>;
   condominioM2: Par<number | null>;
 };
-export const ITBI_MINIMO = 0.02;
+export const ITBI_MINIMO = 0.018;
 export const ITBI_MAXIMO = 0.03;
 const decimal = (v: number, casas = 1) => v.toFixed(casas).replace(".", ",");
 
@@ -54,7 +54,7 @@ function linhasExtras(r: Par<string>, x: ExtrasDoPlacar): LinhaDoPlacar[] {
       const v: 0 | 1 | null = Math.abs(pa - pb) < 1 ? null : pa < pb ? 0 : 1;
       const faixa = (p: number) => `${formatarReais(p * (1 + ITBI_MINIMO))} a ${formatarReais(p * (1 + ITBI_MAXIMO))}`;
       linhas.push({ id: "custo_total", secao: "Custo total da compra", vencedor: v, topico: "custo",
-        frase: `${r[0]}: ${faixa(pa)}; ${r[1]}: ${faixa(pb)}. Preço + ITBI de 2% a 3% (confira a alíquota vigente na Prefeitura); escritura e registro a confirmar.` });
+        frase: `${r[0]}: ${faixa(pa)}; ${r[1]}: ${faixa(pb)}. Preço + ITBI de 1,8% a 3% (1,8% se o lançamento for pedido em até 180 dias da assinatura do contrato, 3% depois disso); escritura e registro a confirmar no cartório.` });
     } else linhas.push({ id: "custo_total", secao: "Custo total da compra", vencedor: null, topico: "custo", frase: "Falta o preço de um dos dois para somar ITBI." });
   }
   if (x.rotina) {

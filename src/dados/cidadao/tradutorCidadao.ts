@@ -378,15 +378,15 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
         ? "Economia de imposto de transferência e escritura se aplica apenas na compra."
         : melhorEco !== null
           ? `Planejamento correto de prazo e financiamento economiza até ${fReais(melhorEco)} no fechamento.`
-          : "Confira histórico de transações do prédio e prazos para redução de ITBI no Recife.",
+          : "Confira o histórico de transações do prédio e o prazo de 180 dias para pedir o ITBI com alíquota reduzida no Recife.",
     ),
     camada2ImpactoPratico: eco?.medianaReais
       ? `Avaliações fiscais recentes no prédio: mediana de ${fReais(eco.medianaReais)} em ${eco.amostraValidaN} transação(ões).`
-      : itbiOpt?.aVistaTempestivo18Pct
-        ? `Pagando à vista em até ${itbiOpt.aVistaTempestivo18Pct.prazoLegalDias} dias, ITBI cai de 3,0% para 1,8%.`
+      : itbiOpt?.aVistaTempestivo18Pct.prazoLegalDias
+        ? `Pedindo o lançamento do ITBI em até ${itbiOpt.aVistaTempestivo18Pct.prazoLegalDias} dias da assinatura do contrato, a alíquota cai de 3% para 1,8%.`
         : "Exija memória do ITBI para conferir se o valor fiscal diverge do preço pedido.",
     camada2AcaoConcreta:
-      "Protocolar guia de ITBI dentro de 30 dias (à vista), 90 dias (parcelado) ou 180 dias (SFH com 1%).",
+      "Peça o lançamento do ITBI em até 180 dias da assinatura do contrato (em imóvel novo, do habite-se ou do contrato) para pagar 1,8% em vez de 3%. No financiamento pelo SFH, a parte financiada paga 1% até R$ 1.036.600,71 (valor de 2026).",
     camada3ProvaMetodo: {
       epistemicTag: eco?.epistemicTag ?? (itbiOpt ? "registro_oficial" : "nao_sabemos"),
       ausencia:
@@ -398,8 +398,10 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       chavesDuplas,
       metodo6Campos: {
         oQueMede: "Economia legal de ITBI + emolumentos cartoriais e estatística comparativa NBR 14653-2.",
-        baseLegalOuNormativa: "CTMR Recife Art. 52 (Lei 15.563/91), Lei 6.015/73 Art. 290, Ato TJPE 1.556/25, LC 227/2026.",
-        aritmeticaResumo: "1% na cota SFH até R$ 1.036.600,71; 1,8% tempestivo; expurgo de Chauvenet + IC 80%.",
+        baseLegalOuNormativa:
+          "Código Tributário do Recife (Lei 15.563/1991), arts. 51, 52 e 55, com a redação das Leis 17.904/2013, 19.174/2023, 19.391/2025 e 19.490/2026; Lei federal 6.015/1973, art. 290; Ato TJPE 1.556/2025 (tabela de 2026); Lei Complementar federal 227/2026.",
+        aritmeticaResumo:
+          "1% sobre a parte financiada pelo SFH até R$ 1.036.600,71 (2026); 1,8% com pedido em até 180 dias; 3% nos demais casos. Expurgo de Chauvenet + IC 80%.",
         fontePrimaria: "ITBI SEFIN Recife + Tabela TJPE",
         vintage: "2026-11",
         limiteEpistemologico:

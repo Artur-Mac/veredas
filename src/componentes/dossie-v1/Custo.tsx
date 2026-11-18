@@ -374,7 +374,7 @@ export function BlocoDeCusto({
                   </Texto>
                 </View>
                 <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
-                  {`À vista em 30 dias (1,8%): economiza ${formatarReais(partes.otimizacaoFechamento.economiaAVistaTempestivoReais)}${partes.otimizacaoFechamento.economiaSfhReais ? ` · Financiado SFH (1,0% até R$ 1.036.600,71): economiza ${formatarReais(partes.otimizacaoFechamento.economiaSfhReais)}` : ""}.`}
+                  {`Lançamento pedido em até 180 dias da assinatura do contrato (1,8% em vez de 3%): economiza ${formatarReais(partes.otimizacaoFechamento.economiaAVistaTempestivoReais)}${partes.otimizacaoFechamento.economiaSfhReais ? ` · Financiado pelo SFH (1% sobre a parte financiada, até R$ 1.036.600,71 em 2026): economiza ${formatarReais(partes.otimizacaoFechamento.economiaSfhReais)}` : ""}.`}
                 </Texto>
               </View>
             ) : null}
