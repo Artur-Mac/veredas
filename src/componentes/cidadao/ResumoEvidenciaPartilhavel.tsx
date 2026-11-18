@@ -1,8 +1,9 @@
-import { useState } from "react";
+import * as Clipboard from "expo-clipboard";
+import { useEffect, useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import type { CartaoCidadao3Camadas } from "../../dados/cidadao/tradutorCidadao";
 import { useTema } from "../../tema/Tema";
-import { RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 import { Texto } from "../Texto";
 
 /**
@@ -18,14 +19,14 @@ export function montarTextoNegociacaoPartilhavel(opts: {
 }): string {
   const cab = [
     `RESUMO DE VERIFICAÇÃO — ${opts.tituloImovel}`,
-    `Identificação cadastral: DSQFL ${opts.dsqfl ?? "a confirmar"} | Matrícula CNM ${opts.cnm16 ?? "a confirmar"}`,
+    `Identificação cadastral: Lote municipal ${opts.dsqfl ?? "a confirmar"} | Matrícula CNM ${opts.cnm16 ?? "a confirmar"}`,
     "",
   ];
   const corpo = opts.cartoes.map(
     (c, idx) =>
       `${idx + 1}. ${c.tituloCurto}: ${c.camada1Manchete}\n   Pedido/Verificação: ${c.camada2AcaoConcreta}`,
   );
-  return [...cab, ...corpo].join("\n");
+  return [...cab, ...corpo, "", "Mensagem preparada com o VEREDA."].join("\n");
 }
 
 export function ResumoEvidenciaPartilhavel({
@@ -41,14 +42,33 @@ export function ResumoEvidenciaPartilhavel({
 }) {
   const { cor } = useTema();
   const [copiadoOuExpandido, setCopiadoOuExpandido] = useState(false);
+  const [copiado, setCopiado] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const texto = montarTextoNegociacaoPartilhavel({ tituloImovel, dsqfl, cnm16, cartoes });
+
+  useEffect(
+    () => () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    },
+    [],
+  );
+
+  const copiarRoteiro = () => {
+    void Clipboard.setStringAsync(texto)
+      .then(() => {
+        setCopiado(true);
+        if (timerRef.current) clearTimeout(timerRef.current);
+        timerRef.current = setTimeout(() => setCopiado(false), 3000);
+      })
+      .catch(() => setCopiado(false));
+  };
 
   return (
     <View
       style={{
         backgroundColor: cor("cor-superficie"),
         borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto"), 0.12),
+        borderColor: cor("cor-linha-forte"),
         borderRadius: RAIO.cartao,
         padding: 14,
         gap: 8,
@@ -63,8 +83,28 @@ export function ResumoEvidenciaPartilhavel({
       </Texto>
 
       <Pressable
+        testID="botao-copiar-roteiro-evidencia"
+        onPress={copiarRoteiro}
+        accessibilityRole="button"
+        style={{
+          minHeight: TOQUE_MINIMO,
+          backgroundColor: copiado ? cor("cor-salvia-suave") : cor("cor-texto"),
+          borderRadius: RAIO.quadrado,
+          paddingHorizontal: 14,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Texto tipo="etiqueta" cor={copiado ? "cor-salvia-escura" : "cor-superficie"} style={{ fontSize: 13 }}>
+          {copiado ? "Roteiro copiado para a área de transferência!" : "Copiar roteiro pronto para WhatsApp ou e-mail"}
+        </Texto>
+      </Pressable>
+
+      <Pressable
+        testID="botao-alternar-previa-roteiro"
         onPress={() => setCopiadoOuExpandido((v) => !v)}
         accessibilityRole="button"
+        accessibilityState={{ expanded: copiadoOuExpandido }}
         style={{
           minHeight: TOQUE_MINIMO,
           backgroundColor: cor("cor-azul-cadastral-suave"),
@@ -75,12 +115,12 @@ export function ResumoEvidenciaPartilhavel({
         }}
       >
         <Texto tipo="etiqueta" cor="cor-azul-cadastral" style={{ fontSize: 13 }}>
-          {copiadoOuExpandido ? "Ocultar roteiro pronto" : "Visualizar roteiro pronto para copiar"}
+          {copiadoOuExpandido ? "Ocultar prévia do roteiro" : "Ler prévia do roteiro antes de copiar"}
         </Texto>
       </Pressable>
 
       {copiadoOuExpandido ? (
-        <View style={{ backgroundColor: cor("cor-papel-claro"), borderRadius: RAIO.quadrado, padding: 10 }}>
+        <View style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 8 }}>
           <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 17 }}>
             {texto}
           </Texto>

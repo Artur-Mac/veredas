@@ -50,6 +50,10 @@ import { MatrizVisualComparar } from "../src/componentes/visual/MatrizVisualComp
 import { PlacarHeroi5Segundos } from "../src/componentes/visual/PlacarHeroi5Segundos";
 import { BussolaSolarBrisa } from "../src/componentes/cidadao/BussolaSolarBrisa";
 import { SimuladorTco10Anos } from "../src/componentes/cidadao/SimuladorTco10Anos";
+import {
+  montarTextoNegociacaoPartilhavel,
+  ResumoEvidenciaPartilhavel,
+} from "../src/componentes/cidadao/ResumoEvidenciaPartilhavel";
 import { TemaDoApp } from "../src/tema/Tema";
 
 function listarTsxRecursivo(dir: string): string[] {
@@ -2464,6 +2468,49 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(txt).toContain("Modo técnico ativo: valores financeiros ocultos");
     expect(txt).not.toContain("R$ 850.000");
     expect(txt).toContain("Ocultado pelo usuário neste envio");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+  });
+
+  it("adiciona cópia em 1 toque, assinatura VEREDA e divisória hairline em ResumoEvidenciaPartilhavel em S54", () => {
+    const src = readFileSync(
+      join(__dirname, "..", "src", "componentes", "cidadao", "ResumoEvidenciaPartilhavel.tsx"),
+      "utf8",
+    );
+    expect(src).not.toContain("comAlfa");
+    expect(src).not.toContain('backgroundColor: cor("cor-papel-claro"), borderRadius:');
+
+    const texto = montarTextoNegociacaoPartilhavel({
+      tituloImovel: "Residencial Capibaribe",
+      dsqfl: "11223344556677",
+      cnm16: "077214.2.0045123-71",
+      cartoes: [],
+    });
+    expect(texto).toContain("Mensagem preparada com o VEREDA.");
+    expect(texto).not.toMatch(/mobilidade|vis[aã]o|cadeirante|idoso/i);
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(ResumoEvidenciaPartilhavel, {
+            tituloImovel: "Residencial Capibaribe",
+            dsqfl: "11223344556677",
+            cnm16: "077214.2.0045123-71",
+            cartoes: [],
+          }),
+        ),
+      );
+    });
+    expect(tree.root.find((n) => n.props.testID === "botao-copiar-roteiro-evidencia")).toBeDefined();
+    const previaBtn = tree.root.find((n) => n.props.testID === "botao-alternar-previa-roteiro");
+    act(() => {
+      previaBtn.props.onPress();
+    });
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("Mensagem preparada com o VEREDA.");
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });
