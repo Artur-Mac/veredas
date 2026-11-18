@@ -13,9 +13,9 @@ export type EntradaResumoExecutivo = {
   mensalBolsoRealReais: number | null;
   dinheiroEntrarReais: number | null;
   fachadaResumo: string;
-  conforto: VereditoConfortoTermico;
+  conforto: VereditoConfortoTermico | null;
   sossegoNivel: string;
-  radar: ResultadoRadarVistaELote;
+  radar: ResultadoRadarVistaELote | null;
   pulso: ResultadoPulsoDaQuadra;
   anoConstrucao: number | null;
   unidades: number | null;
@@ -70,12 +70,13 @@ export function gerarTextoResumoExecutivo(
     "",
     "3. SOL, VENTO E CONFORTO TÉRMICO",
     `• Orientação ativa: ${e.fachadaResumo}`,
-    `• Conforto térmico: ${e.conforto.selo} — ${e.conforto.vereditoUmaLinha}`,
-    `• Climatização estimada: ~R$ ${e.conforto.custoMensalArReais}/mês`,
+    ...(e.conforto
+      ? [`• Conforto térmico: ${e.conforto.selo} — ${e.conforto.vereditoUmaLinha}`, `• Ar-condicionado (fórmula, não medição): ~R$ ${e.conforto.custoMensalArReais}/mês`]
+      : ["• Conforto térmico: sem leitura (confirme o prédio)"]),
     "",
     "4. SOSSEGO E HORIZONTE DA JANELA",
     `• Sossego noturno no quarto: ${e.sossegoNivel}`,
-    `• Radar do horizonte e lote: ${e.radar.manchete}`,
+    `• Radar do horizonte e lote: ${e.radar ? e.radar.manchete : "sem leitura (confirme o prédio)"}`,
     "",
     "5. PULSO DA QUADRA (6 DIMENSÕES 0–10)",
     `• Síntese: ${e.pulso.manchete}`,

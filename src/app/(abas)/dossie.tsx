@@ -435,7 +435,8 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
   const pulsoDaQuadra = useMemo(
     () =>
       calcularPulsoDaQuadra({
-        conforto: confortoTermico,
+        // Sem prédio confirmado não há fachada nem vizinhos: o eixo de sol fica sem leitura.
+        conforto: predio ? confortoTermico : null,
         // O eixo de sossego usa a nota do modelo de ruído estimado; sem leitura, fica fora da média.
         acustica,
         anoConstrucao: predio?.anoConstrucao ?? null,
@@ -456,7 +457,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
       caminhabilidade,
       confortoTermico,
       partesDeCusto,
-      predio?.anoConstrucao,
+      predio,
       vinculoConfirmado,
       visao,
     ],
@@ -681,7 +682,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             }
             comparacaoM2Pct={visao.posicao?.deltaPercentual ?? null}
             orientacaoCurta={fachadaAtiva.orientacaoSolar}
-            conforto={confortoTermico}
+            conforto={predio ? confortoTermico : null}
             ruidoDormitorioDb={acustica?.ruidoInternoDormitorioDbA ?? null}
             sossego={{ ...ruido.textos.placar, ficha: ruido.estado === "estimado" ? ruido.textos.ficha : null }}
             spuAtivo={Boolean(partesDeCusto.alertaMarinha)}
@@ -805,11 +806,13 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                   />
                 ) : (
                   <Texto testID="canvas-25d-sem-predio" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 19 }}>
-                    Confirme o prédio para ver o volume com sol, sombra e brisa neste endereço.
+                    Confirme o prédio para ver o volume com sol, sombra e brisa, o conforto térmico e o horizonte da janela neste endereço.
                   </Texto>
                 )}
-                <TermometroConfortoTermico conforto={confortoTermico} andar={andarSimulado} />
-                <RadarVistaELote radar={radarVistaELote} />
+                {/* Revisão de 19/11/2026: sem prédio confirmado, o conforto e o horizonte saíam de um ponto fictício (a mesma
+                    nota para qualquer anúncio sem vínculo). Agora só aparecem com o prédio. */}
+                {predio ? <TermometroConfortoTermico conforto={confortoTermico} andar={andarSimulado} /> : null}
+                {predio ? <RadarVistaELote radar={radarVistaELote} /> : null}
                 <TresPerguntasDoBolso
                   modalidade={analise.modalidade}
                   nomeImovel={analise.nome}
@@ -895,13 +898,13 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                                 analise.declarados.preco.valor * 0.03),
                           )
                         : null,
-                    fachadaResumo: `${fachadaAtiva.orientacaoSolar} (${andarSimulado}º andar)`,
-                    conforto: confortoTermico,
+                    fachadaResumo: predio ? `${fachadaAtiva.orientacaoSolar} (${andarSimulado}º andar)` : "Sem leitura (prédio não confirmado)",
+                    conforto: predio ? confortoTermico : null,
                     sossegoNivel:
                       ruido.estado === "estimado"
                         ? `${ruido.nivelDeSossego} (~${Math.round(ruido.naJanela.noiteDb)} dB(A) à noite na janela, estimativa)`
                         : ruido.textos.placar.valor,
-                    radar: radarVistaELote,
+                    radar: predio ? radarVistaELote : null,
                     pulso: pulsoDaQuadra,
                     anoConstrucao: predio?.anoConstrucao ?? null,
                     unidades: predio?.unidades ?? null,
