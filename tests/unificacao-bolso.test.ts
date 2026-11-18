@@ -74,6 +74,7 @@ describe("R3: bolso sem alvo de preço e conta de 10 anos com valorização esco
     expect(frase).toContain("CDI líquido de 9,5% ao ano");
     expect(frase).toContain("10,5% ao ano em 15 anos");
     expect(frase).toContain("4,5% ao ano");
+    expect(frase).toContain("custo de fechamento (ITBI, escritura e registro) de 2,5% do preço");
     expect(frase).toContain("0,45% do preço ao mês");
   });
 

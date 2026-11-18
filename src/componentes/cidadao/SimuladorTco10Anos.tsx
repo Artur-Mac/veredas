@@ -45,6 +45,8 @@ export const SUPOSICOES_FIXAS_TCO = {
   jurosFinanciamentoAnual: 0.105,
   prazoFinanciamentoAnos: 15,
   reajusteAnual: 0.045,
+  /** ITBI, escritura e registro juntos, como fração do preço, quando a tela não informa o valor. */
+  custoDeFechamento: 0.025,
 } as const;
 
 const pct = (fracao: number) => `${(fracao * 100).toFixed(1).replace(".", ",").replace(",0", "")}%`;
@@ -55,7 +57,7 @@ export function fraseDasSuposicoesTco(e: Pick<EntradaTco10Anos, "precoCompraReai
   const aluguel = e.precoCompraReais > 0 ? (e.aluguelEquivalenteMensalReais / e.precoCompraReais) * 100 : 0;
   return (
     `Suposições fixas: CDI líquido de ${pct(s.cdiLiquidoAnual)} ao ano, financiamento a ${pct(s.jurosFinanciamentoAnual)} ao ano em ${s.prazoFinanciamentoAnos} anos, ` +
-    `reajustes de ${pct(s.reajusteAnual)} ao ano e aluguel equivalente de ${aluguel.toFixed(2).replace(".", ",")}% do preço ao mês. Mude qualquer uma e o resultado muda.`
+    `reajustes de ${pct(s.reajusteAnual)} ao ano, custo de fechamento (ITBI, escritura e registro) de ${pct(s.custoDeFechamento)} do preço e aluguel equivalente de ${aluguel.toFixed(2).replace(".", ",")}% do preço ao mês. Mude qualquer uma e o resultado muda.`
   );
 }
 
@@ -109,7 +111,7 @@ export function SeletorDeValorizacao({ valor, aoMudar }: { valor: ValorizacaoAnu
 export function calcularTco10Anos(e: EntradaTco10Anos): ResultadoTco10Anos {
   const entFrac = (e.entradaPct ?? 20) / 100;
   const entrada = e.precoCompraReais * entFrac;
-  const fechamento = e.custoFechamentoItbiCartorioReais ?? e.precoCompraReais * 0.025;
+  const fechamento = e.custoFechamentoItbiCartorioReais ?? e.precoCompraReais * SUPOSICOES_FIXAS_TCO.custoDeFechamento;
   const taxaCdi = e.taxaCdiLiquidaAnual ?? SUPOSICOES_FIXAS_TCO.cdiLiquidoAnual;
   const taxaVal = e.valorizacaoImovelAnual ?? VALORIZACAO_INICIAL;
 
