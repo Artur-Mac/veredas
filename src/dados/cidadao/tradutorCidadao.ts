@@ -13,6 +13,7 @@ import type { ResultadoEconometriaItbi } from "../../municipios/recife/motores/e
 import type { ResultadoEstruturaCondominio } from "../../municipios/recife/motores/estruturaCondominio";
 import type { ResultadoResilienciaRedes } from "../../municipios/recife/motores/resilienciaRedes";
 import type { ResultadoAuditoriaDocumental } from "../../nucleo/documentos/auditorDocumental";
+import { pl } from "../formatos";
 
 /**
  * Tradutor Cidadão em 3 Camadas Progressivas (IND-01..IND-10):
@@ -209,9 +210,9 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
     tituloCurto: "Obras do prédio e boleto",
     camada1Manchete: sanearTextoCamada1(
       entrada.modalidade === "aluguel" && abusivos > 0
-        ? `Boleto inclui ${abusivos} item(ns) extraordinário(s) que competem ao proprietário.`
+        ? `Boleto inclui ${pl(abusivos, "item extraordinário que compete", "itens extraordinários que competem")} ao proprietário.`
         : sistemasCrit > 0
-          ? `${sistemasCrit} sistema(s) do edifício entraram em janela de reforma pelo tempo de construção.`
+          ? `${pl(sistemasCrit, "sistema do edifício entrou", "sistemas do edifício entraram")} em janela de reforma pelo tempo de construção.`
           : "Sem alerta imediato de obras extraordinárias além do ciclo normal.",
     ),
     camada2ImpactoPratico:
@@ -321,7 +322,7 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
         ? hid.classificacaoExposicao === "critica_lote_baixo"
           ? "Lote em cota baixa com histórico próximo de acúmulo de água em chuva e maré alta."
           : hid.classificacaoExposicao === "atencao_via_entorno"
-            ? `Foram agrupados ${hid.eventosDistintosAgrupados} episódio(s) distintos de chuva no entorno.`
+            ? `${hid.eventosDistintosAgrupados === 1 ? "Foi registrado 1 episódio" : `Foram agrupados ${hid.eventosDistintosAgrupados} episódios distintos`} de chuva no entorno.`
             : "Cota do terreno fica acima dos pontos baixos mapeados ao redor."
         : "Confirme na portaria se a rampa da garagem já teve entrada de água.",
     ),
@@ -400,7 +401,7 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
           : "Confira o histórico de transações do prédio e o prazo de 180 dias para pedir o ITBI com alíquota reduzida no Recife.",
     ),
     camada2ImpactoPratico: eco?.medianaReais
-      ? `Avaliações fiscais recentes no prédio: mediana de ${fReais(eco.medianaReais)} em ${eco.amostraValidaN} transação(ões).`
+      ? `Avaliações fiscais recentes no prédio: mediana de ${fReais(eco.medianaReais)} em ${pl(eco.amostraValidaN, "transação", "transações")}.`
       : itbiOpt?.aVistaTempestivo18Pct.prazoLegalDias
         ? `Pedindo o lançamento do ITBI em até ${itbiOpt.aVistaTempestivo18Pct.prazoLegalDias} dias da assinatura do contrato, a alíquota cai de 3% para 1,8%.`
         : "Exija memória do ITBI para conferir se o valor fiscal diverge do preço pedido.",
@@ -503,7 +504,7 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
     camada1Manchete: sanearTextoCamada1(
       doc
         ? qtdAtivos! > 0
-          ? `Encontrados ${qtdAtivos} registro(s) ativo(s) de gravame ou condição na matrícula.`
+          ? `${qtdAtivos === 1 ? "Encontrado 1 registro ativo" : `Encontrados ${qtdAtivos} registros ativos`} de gravame ou condição na matrícula.`
           : "Nenhum gravame ativo detectado nas páginas lidas; confira validade de 30 dias da certidão."
         : "Suba a matrícula e a última ata para checar gravames, penhoras e decisões de condomínio.",
     ),

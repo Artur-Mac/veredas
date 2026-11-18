@@ -1,6 +1,7 @@
 import type { Edificio, ObrasProximas } from "../contratos";
 import { emMetros } from "../sol/geometria";
 import type { FachadaInferida, VizinhoParaFachada } from "../sol/inferirFachadas";
+import { pl } from "../formatos";
 
 export type NivelAlertaRadar = "ok" | "moderado" | "atencao" | "sem_leitura";
 
@@ -155,7 +156,7 @@ export function analisarRadarVistaELote(params: {
       id: "cone_vista",
       titulo: `Horizonte ${fachadaAtiva.orientacaoSolar}`,
       estado: "atencao",
-      valorCurto: `${obrasNoCone.length} licença(s) no eixo`,
+      valorCurto: `${pl(obrasNoCone.length, "licença", "licenças")} no eixo`,
       detalhe: `${rotuloCategoriaObra(primeira.categoria)} licenciada a ~${Math.round(primeira.distanciaM)} m na direção da janela (${primeira.data}).`,
     };
   } else if (vizinhoMaisAltoNaFrente) {
@@ -314,24 +315,24 @@ export function analisarRadarVistaELote(params: {
     };
   } else {
     const partes = [
-      novas > 0 ? `${novas} construção(ões)` : null,
-      ampliacoes > 0 ? `${ampliacoes} ampliação(ões)` : null,
-      demolicoes > 0 ? `${demolicoes} demolição(ões)` : null,
+      novas > 0 ? pl(novas, "construção", "construções") : null,
+      ampliacoes > 0 ? pl(ampliacoes, "ampliação", "ampliações") : null,
+      demolicoes > 0 ? pl(demolicoes, "demolição", "demolições") : null,
     ].filter(Boolean);
     itemObras = {
       id: "obras",
       titulo: "Licenças de obra (150 m)",
       estado: novas + demolicoes >= 2 ? "atencao" : "moderado",
-      valorCurto: `${obrasProximas.relevantes24m} relevante(s) em 24m`,
+      valorCurto: `${pl(obrasProximas.relevantes24m, "relevante", "relevantes")} em 24 meses`,
       detalhe: `Tipologia oficial recente: ${
-        partes.length > 0 ? partes.join(", ") : `${obrasProximas.relevantes24m} licença(s)`
+        partes.length > 0 ? partes.join(", ") : pl(obrasProximas.relevantes24m, "licença", "licenças")
       } num raio de 150 m.`,
     };
   }
 
   const manchete =
     obrasNoCone.length > 0
-      ? `Há ${obrasNoCone.length} licença(s) oficial(is) no horizonte da face ${fachadaAtiva.orientacaoSolar}`
+      ? `Há ${pl(obrasNoCone.length, "licença oficial", "licenças oficiais")} no horizonte da face ${fachadaAtiva.orientacaoSolar}`
       : vizinhoMaisAltoNaFrente
         ? `Edifício vizinho ocupa o campo visual desta face (${vizinhoMaisAltoNaFrente.distVaoM} m)`
         : distMinGeral !== null && distMinGeral < 12

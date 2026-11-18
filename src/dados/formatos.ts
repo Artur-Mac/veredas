@@ -1,5 +1,8 @@
 const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 
+/** "1 obra" / "3 obras": o número com a palavra no singular ou no plural (sem "obra(s)" na tela). */
+export const pl = (n: number, singular: string, plural: string): string => `${n} ${n === 1 ? singular : plural}`;
+
 export function maiuscula(texto: string): string {
   return texto ? texto.charAt(0).toUpperCase() + texto.slice(1) : texto;
 }

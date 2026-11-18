@@ -1723,7 +1723,7 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       visaoRua: null,
       spuAtivo: false,
     });
-    expect(linhaObras.comparativoTemporal).toContain("2 relevante(s) nos últimos 24 meses frente a 5");
+    expect(linhaObras.comparativoTemporal).toContain("2 relevantes nos últimos 24 meses frente a 5 registros");
 
     let tree!: TestRenderer.ReactTestRenderer;
     act(() => {

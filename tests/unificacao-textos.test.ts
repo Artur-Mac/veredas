@@ -1,4 +1,5 @@
 // Unificação de 19/11/2026: textos que prometiam mais do que o cálculo entrega (itens R8 e R10 do plano).
+import { pl } from "../src/dados/formatos";
 import { describe, expect, it } from "@jest/globals";
 import { derivarCustoPorPartes } from "../src/dados/custoPorPartes";
 import { traduzirIndicadoresCidadao } from "../src/dados/cidadao/tradutorCidadao";
@@ -112,5 +113,14 @@ describe("revisão de código de 19/11/2026: as frases descrevem a conta", () =>
   it("rotina: a frase diz os minutos fixos por trecho e o mínimo, que empatam imóveis muito perto do destino", () => {
     expect(fraseDoMetodoDaRotina("pico", 20)).toContain("mais 6 min por trecho, com mínimo de 12 min");
     expect(fraseDoMetodoDaRotina("fora_pico", 12)).toContain("mais 4 min por trecho, com mínimo de 10 min");
+  });
+});
+
+// Pendência 5 do HANDOFF (19/11/2026): plural real, sem "obra(s)" na tela.
+describe("plural real", () => {
+  it("pl diz 1 no singular e o resto no plural", () => {
+    expect(pl(1, "obra relevante", "obras relevantes")).toBe("1 obra relevante");
+    expect(pl(0, "obra relevante", "obras relevantes")).toBe("0 obras relevantes");
+    expect(pl(3, "transmissão", "transmissões")).toBe("3 transmissões");
   });
 });
