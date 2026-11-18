@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { View, type StyleProp, type TextStyle, type ViewStyle } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, TOQUE_MINIMO, comAlfa, type TokenDeCor } from "../../tema/tokens";
+import { ESPACO, RAIO, TOQUE_MINIMO, type TokenDeCor } from "../../tema/tokens";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 
@@ -25,7 +25,7 @@ export function Sobretitulo({ children }: { children: string }) {
     <Texto
       tipo="etiqueta"
       cor="cor-barro-texto"
-      style={{ fontSize: 10, lineHeight: 14, fontWeight: "700", letterSpacing: 0.9, textTransform: "uppercase", marginBottom: 7 }}
+      style={{ fontSize: 12, lineHeight: 16, fontWeight: "700", marginBottom: 6 }}
     >
       {children}
     </Texto>
@@ -186,20 +186,19 @@ export function Secao({
   );
 }
 
-/** Cartão creme com borda à esquerda laranja (`.ds-primary-finding`) ou simples (`.ds-note`). */
+/** Chamada editorial com filete lateral laranja ou neutro (substitui caixas fechadas aninhadas). */
 export function CaixaCreme({ children, laranja = false, estilo }: { children: ReactNode; laranja?: boolean; estilo?: StyleProp<ViewStyle> }) {
   const { cor } = useTema();
   return (
     <View
       style={[
         {
-          padding: ESPACO[4],
-          borderRadius: 11,
-          backgroundColor: cor("cor-papel-claro"),
-          borderLeftWidth: laranja ? 3 : 0,
-          borderLeftColor: cor("cor-acao"),
-          borderWidth: laranja ? 0 : 1,
-          borderColor: comAlfa(cor("cor-texto"), 0.06),
+          paddingVertical: 10,
+          paddingLeft: 12,
+          paddingRight: 8,
+          backgroundColor: laranja ? cor("cor-papel-claro") : "transparent",
+          borderLeftWidth: laranja ? 3 : 2,
+          borderLeftColor: laranja ? cor("cor-acao") : cor("cor-linha-forte"),
           gap: ESPACO[2],
         },
         estilo,

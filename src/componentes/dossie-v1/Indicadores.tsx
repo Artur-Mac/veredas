@@ -23,16 +23,16 @@ export function CartaoDoIndicador({ indicador: i, aoInvestigar }: { indicador: I
   const [aberto, setAberto] = useState(false);
   const c = CORES[i.classe];
   return (
-    <View style={{ borderRadius: 14, borderWidth: 1, borderColor: cor("cor-linha"), backgroundColor: cor("cor-superficie"), overflow: "hidden" }}>
+    <View style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha") }}>
       <Pressionavel
         onPress={() => setAberto((x) => !x)}
         accessibilityRole="button"
         accessibilityState={{ expanded: aberto }}
         accessibilityLabel={`${i.tema}: ${i.rotulo}. ${i.comparacao} ${aberto ? "Fechar" : "Ver o porquê"}`}
-        style={{ padding: 14, gap: 6 }}
+        style={{ paddingVertical: 12, gap: 6 }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 10.5, lineHeight: 14, fontWeight: "700", letterSpacing: 0.6, textTransform: "uppercase" }}>{i.tema}</Texto>
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700" }}>{i.tema}</Texto>
           <View style={{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 999, backgroundColor: cor(c.fundo) }}>
             <Texto tipo="apoio" cor={c.texto} style={{ fontSize: 11, lineHeight: 15, fontWeight: "700" }}>
               {i.classe === "melhor" ? "Acima do bairro" : i.classe === "pior" ? "Atenção" : "Como o bairro"}
@@ -55,7 +55,7 @@ export function CartaoDoIndicador({ indicador: i, aoInvestigar }: { indicador: I
         )}
       </Pressionavel>
       {aberto && aoInvestigar ? (
-        <View style={{ paddingHorizontal: 14, paddingBottom: 10 }}>
+        <View style={{ paddingBottom: 8 }}>
           <LinkComSeta rotulo="Investigar no Entorno" onPress={() => aoInvestigar(i.id)} />
         </View>
       ) : null}

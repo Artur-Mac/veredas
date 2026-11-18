@@ -270,7 +270,7 @@ export function BlocoDeCusto({
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
-            <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 10.5, lineHeight: 14, fontWeight: "700", letterSpacing: 0.5, textTransform: "uppercase" }}>
+            <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700" }}>
               {perfilConfigurado ? "Sua rotina neste endereço (à parte)" : "Estimativa de rotina padrão (à parte)"}
             </Texto>
           </View>

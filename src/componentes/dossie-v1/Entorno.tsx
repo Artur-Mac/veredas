@@ -74,7 +74,7 @@ function CartaoSintese({ cartao }: { cartao: CartaoDeSinteseHumana }) {
       <Pressionavel onPress={() => setAberto(true)} accessibilityRole="button" accessibilityLabel={`${cartao.sobretitulo}: ${cartao.manchete}. Ver detalhes`}>
         <CaixaCreme estilo={{ gap: 4 }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-            <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 10, lineHeight: 14, fontWeight: "700", letterSpacing: 0.7, textTransform: "uppercase", flexShrink: 1 }}>{cartao.sobretitulo}</Texto>
+            <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700", flexShrink: 1 }}>{cartao.sobretitulo}</Texto>
             <Seta tamanho={11} />
           </View>
           <Texto tipo="secao" style={{ fontSize: 14.5, lineHeight: 20, fontWeight: "600" }}>{cartao.manchete}</Texto>
@@ -88,7 +88,7 @@ function CartaoSintese({ cartao }: { cartao: CartaoDeSinteseHumana }) {
         <Texto
           tipo="etiqueta"
           cor="cor-barro-texto"
-          style={{ fontSize: 10, lineHeight: 14, fontWeight: "700", letterSpacing: 0.7, textTransform: "uppercase", flexShrink: 1 }}
+          style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700", flexShrink: 1 }}
         >
           {cartao.sobretitulo}
         </Texto>

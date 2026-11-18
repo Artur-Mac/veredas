@@ -998,4 +998,21 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       expect(r.test(texto)).toBe(false);
     }
   });
+
+  it("elimina textTransform: uppercase em toda a árvore UI (.tsx)", () => {
+    const pastas = [
+      join(__dirname, "..", "src", "componentes"),
+      join(__dirname, "..", "src", "app"),
+    ];
+    const violacoes: string[] = [];
+    for (const pasta of pastas) {
+      for (const arquivo of listarTsxRecursivo(pasta)) {
+        const src = readFileSync(arquivo, "utf8");
+        if (/textTransform:\s*["']uppercase["']/.test(src)) {
+          violacoes.push(arquivo);
+        }
+      }
+    }
+    expect(violacoes).toEqual([]);
+  });
 });

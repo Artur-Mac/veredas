@@ -83,7 +83,7 @@ export function Chamada({ children }: { children: string }) {
     <Texto
       tipo="apoio"
       cor="cor-barro-texto"
-      style={{ fontSize: 10, lineHeight: 14, fontWeight: "600", letterSpacing: 0.7, textTransform: "uppercase" }}
+      style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600" }}
     >
       {children}
     </Texto>

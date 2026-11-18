@@ -35,7 +35,7 @@ export function SetaVx({ cor = "cor-barro-texto", tamanho = 14 }: { cor?: TokenD
 /** `.vx-kicker`: 10 px, 600, caixa alta, 0,07em, ferrugem. */
 export function KickerVx({ children }: { children: string }) {
   return (
-    <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 10, lineHeight: 14, fontWeight: "600", letterSpacing: 0.7, textTransform: "uppercase" }}>
+    <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600" }}>
       {children}
     </Texto>
   );

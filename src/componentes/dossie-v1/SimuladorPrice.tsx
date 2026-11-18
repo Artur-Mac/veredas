@@ -55,7 +55,7 @@ export function SimuladorPrice({ simulacao, aoFechar }: { simulacao: SimulacaoDe
   return (
     <View role="group" aria-label="Simulador de financiamento" style={{ marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 8 }}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-        <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 10.5, lineHeight: 14, fontWeight: "700", letterSpacing: 0.5, textTransform: "uppercase" }}>
+        <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700" }}>
           Simulação de financiamento (à parte)
         </Texto>
         <Pressionavel onPress={aoFechar} accessibilityRole="button" accessibilityLabel="Fechar a simulação" style={{ minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center" }}>

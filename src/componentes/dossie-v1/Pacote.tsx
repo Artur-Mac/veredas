@@ -50,7 +50,7 @@ export function PacoteParaEspecialista({ analise, visao, ficha }: { analise: Ana
       aria-label="Pacote para especialista"
     >
       <View style={{ gap: 3 }}>
-        <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11, lineHeight: 15, fontWeight: "700", letterSpacing: 0.7, textTransform: "uppercase" }}>
+        <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>
           Para advogado ou vistoriador
         </Texto>
         <Texto tipo="secao" style={{ fontSize: 18, lineHeight: 24, fontWeight: "700" }}>

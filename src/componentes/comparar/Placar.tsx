@@ -13,7 +13,7 @@ export function PlacarDoPar({ linhas, rotulos, aoAbrir }: { linhas: readonly Lin
   return (
     <View role="group" aria-label="Quem ganha em cada parte" style={{ borderRadius: 16, borderWidth: 1, borderColor: cor("cor-linha"), backgroundColor: cor("cor-superficie"), overflow: "hidden" }}>
       <View style={{ paddingHorizontal: 14, paddingTop: 12, paddingBottom: 4 }}>
-        <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 10.5, lineHeight: 14, fontWeight: "700", letterSpacing: 0.6, textTransform: "uppercase" }}>Quem ganha em cada parte</Texto>
+        <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700" }}>Quem ganha em cada parte</Texto>
       </View>
       {linhas.map((l, i) => (
         <Pressionavel key={l.id} onPress={() => aoAbrir(l.topico)} accessibilityRole="button"
