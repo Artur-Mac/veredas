@@ -1,0 +1,4772 @@
+{
+  "geradoEm": "2026-11-17T01:14:11Z",
+  "atribuicao": "registros da SDS-PE compilados pelo Crime Brasil",
+  "periodo": {
+    "inicio": "2025-11",
+    "fim": "2026-10"
+  },
+  "bairros": [
+    {
+      "nome": "Boa Viagem",
+      "slug": "boa-viagem",
+      "papel": "alvo",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 2148,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 601
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 587
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 206
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 198
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 159
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 127
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 78
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 49
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 143
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/boa-viagem"
+    },
+    {
+      "nome": "Casa Forte",
+      "slug": "casa-forte",
+      "papel": "alvo",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 154,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 52
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 38
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 19
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 17
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 7
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/casa-forte"
+    },
+    {
+      "nome": "Graças",
+      "slug": "gracas",
+      "papel": "alvo",
+      "divisaComAlvos": [
+        "espinheiro",
+        "madalena"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 178,
+      "naturezas": [
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 63
+        },
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 54
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 18
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 16
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 7
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/gracas"
+    },
+    {
+      "nome": "Espinheiro",
+      "slug": "espinheiro",
+      "papel": "alvo",
+      "divisaComAlvos": [
+        "gracas"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 191,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 80
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 42
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 13
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 17
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/espinheiro"
+    },
+    {
+      "nome": "Madalena",
+      "slug": "madalena",
+      "papel": "alvo",
+      "divisaComAlvos": [
+        "gracas"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 406,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 133
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 89
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 41
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 37
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 30
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 29
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 25
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/madalena"
+    },
+    {
+      "nome": "Aflitos",
+      "slug": "aflitos",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "gracas",
+        "espinheiro"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 88,
+      "naturezas": [
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 28
+        },
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 23
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 6
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/aflitos"
+    },
+    {
+      "nome": "Boa Vista",
+      "slug": "boa-vista",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "gracas",
+        "espinheiro"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 868,
+      "naturezas": [
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 380
+        },
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 237
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 74
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 36
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 36
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 22
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 21
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 48
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/boa-vista"
+    },
+    {
+      "nome": "Casa Amarela",
+      "slug": "casa-amarela",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "casa-forte"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 487,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 186
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 113
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 44
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 40
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 24
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 15
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 11
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 46
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/casa-amarela"
+    },
+    {
+      "nome": "Derby",
+      "slug": "derby",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "gracas",
+        "madalena"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 195,
+      "naturezas": [
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 78
+        },
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 57
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 19
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Morte a Esclarecer Sem Indicio de Crime",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 8
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/derby"
+    },
+    {
+      "nome": "Encruzilhada",
+      "slug": "encruzilhada",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "espinheiro"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 195,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 61
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 54
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 16
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 11
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 20
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/encruzilhada"
+    },
+    {
+      "nome": "Ibura",
+      "slug": "ibura",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "boa-viagem"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 796,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 267
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 163
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 118
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 70
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 46
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 28
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 22
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 18
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 64
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/ibura"
+    },
+    {
+      "nome": "Ilha do Retiro",
+      "slug": "ilha-do-retiro",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "madalena"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 75,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 27
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 15
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Maus Tratos",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 5
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/ilha-do-retiro"
+    },
+    {
+      "nome": "Imbiribeira",
+      "slug": "imbiribeira",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "boa-viagem"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 890,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 263
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 160
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 126
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 125
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 67
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 28
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 27
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 20
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 74
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/imbiribeira"
+    },
+    {
+      "nome": "Jaqueira",
+      "slug": "jaqueira",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "gracas"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 33,
+      "naturezas": [
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 13
+        },
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 1
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/jaqueira"
+    },
+    {
+      "nome": "Jordão",
+      "slug": "jordao",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "boa-viagem"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 266,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 124
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 37
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 26
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 24
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 22
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/jordao"
+    },
+    {
+      "nome": "Parnamirim",
+      "slug": "parnamirim",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "casa-forte"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 88,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 25
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 22
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 2
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/parnamirim"
+    },
+    {
+      "nome": "Pina",
+      "slug": "pina",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "boa-viagem"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 644,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 220
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 162
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 79
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 47
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 32
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 15
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 13
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 64
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/pina"
+    },
+    {
+      "nome": "Poço da Panela",
+      "slug": "poco",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "casa-forte"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 41,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 15
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Perturbação do Sossego",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 1
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/poco-da-panela"
+    },
+    {
+      "nome": "Prado",
+      "slug": "prado",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "madalena"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 188,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 73
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 28
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 21
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 18
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 18
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 14
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/prado"
+    },
+    {
+      "nome": "Rosarinho",
+      "slug": "rosarinho",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "gracas"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 102,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 35
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 21
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 13
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 7
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/rosarinho"
+    },
+    {
+      "nome": "Santana",
+      "slug": "santana",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "casa-forte"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 41,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 13
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 11
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Maus-tratos",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 1
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/santana"
+    },
+    {
+      "nome": "Santo Amaro",
+      "slug": "santo-amaro",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "espinheiro"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 835,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 286
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 260
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 86
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 37
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 34
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 24
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 19
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 17
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 72
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/santo-amaro"
+    },
+    {
+      "nome": "Tamarineira",
+      "slug": "tamarineira",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "gracas"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 161,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 55
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 33
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 25
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 16
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 11
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/tamarineira"
+    },
+    {
+      "nome": "Torre",
+      "slug": "torre",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "gracas",
+        "madalena"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 249,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 104
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 37
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 26
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 15
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 23
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/torre"
+    },
+    {
+      "nome": "Torreão",
+      "slug": "torreao",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "espinheiro"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 29,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 15
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Maus Tratos",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 1
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/torreao"
+    },
+    {
+      "nome": "Zumbi",
+      "slug": "zumbi",
+      "papel": "vizinho",
+      "divisaComAlvos": [
+        "madalena"
+      ],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 70,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 32
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Maus Tratos",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 7
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/zumbi"
+    },
+    {
+      "nome": "Afogados",
+      "slug": "afogados",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 814,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 300
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 212
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 80
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 40
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 39
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 33
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 30
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 19
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 61
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/afogados"
+    },
+    {
+      "nome": "Água Fria",
+      "slug": "agua-fria",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 712,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 352
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 91
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 76
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 38
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 32
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 22
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 21
+        },
+        {
+          "natureza": "Dano",
+          "ocorrencias": 15
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 65
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/agua-fria"
+    },
+    {
+      "nome": "Alto do Mandu",
+      "slug": "alto-do-mandu",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 75,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 36
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 5
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/alto-do-mandu"
+    },
+    {
+      "nome": "Alto José Bonifácio",
+      "slug": "alto-jose-bonifacio",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 151,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 88
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 19
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Lesão Corporal Decorrente de Intervenção Policial",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 11
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/alto-jose-bonifacio"
+    },
+    {
+      "nome": "Alto José do Pinho",
+      "slug": "alto-jose-do-pinho",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 161,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 84
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 18
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 18
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/alto-jose-do-pinho"
+    },
+    {
+      "nome": "Alto Santa Terezinha",
+      "slug": "alto-santa-terezinha",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 71,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 27
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 6
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/alto-santa-terezinha"
+    },
+    {
+      "nome": "Apipucos",
+      "slug": "apipucos",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 65,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 19
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 17
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Morte Por Intervenção Legal de Agente do Estado",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 5
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/apipucos"
+    },
+    {
+      "nome": "Areias",
+      "slug": "areias",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 491,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 180
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 85
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 70
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 34
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 34
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 20
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 42
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/areias"
+    },
+    {
+      "nome": "Arruda",
+      "slug": "arruda",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 231,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 97
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 40
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 28
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 22
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 11
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/arruda"
+    },
+    {
+      "nome": "Barro",
+      "slug": "barro",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 336,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 137
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 59
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 48
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 32
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 16
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 22
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/barro"
+    },
+    {
+      "nome": "Beberibe",
+      "slug": "beberibe",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 147,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 49
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 43
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 15
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 6
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/beberibe"
+    },
+    {
+      "nome": "Bomba do Hemetério",
+      "slug": "bomba-do-hemeterio",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 215,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 95
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 29
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 26
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 27
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/bomba-do-hemeterio"
+    },
+    {
+      "nome": "Bongi",
+      "slug": "bongi",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 156,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 74
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 26
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 18
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 11
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/bongi"
+    },
+    {
+      "nome": "Brasília Teimosa",
+      "slug": "brasilia-teimosa",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 242,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 144
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 21
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 20
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 17
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 15
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/brasilia-teimosa"
+    },
+    {
+      "nome": "Brejo da Guabiraba",
+      "slug": "brejo-da-guabiraba",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 138,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 54
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 18
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 16
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/brejo-da-guabiraba"
+    },
+    {
+      "nome": "Brejo de Beberibe",
+      "slug": "brejo-de-beberibe",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 136,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 64
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 16
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 11
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 18
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/brejo-de-beberibe"
+    },
+    {
+      "nome": "Cabanga",
+      "slug": "cabanga",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 84,
+      "naturezas": [
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 38
+        },
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 24
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 3
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/cabanga"
+    },
+    {
+      "nome": "Caçote",
+      "slug": "cacote",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 85,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 37
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 10
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/cacote"
+    },
+    {
+      "nome": "Cajueiro",
+      "slug": "cajueiro",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 112,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 41
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 17
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 16
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 13
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 5
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/cajueiro"
+    },
+    {
+      "nome": "Campina do Barreto",
+      "slug": "campina-do-barreto",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 165,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 85
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 24
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 20
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Dano",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 13
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/campina-do-barreto"
+    },
+    {
+      "nome": "Campo Grande",
+      "slug": "campo-grande",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 615,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 293
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 96
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 63
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 33
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 33
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 24
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 18
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 16
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 39
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/campo-grande"
+    },
+    {
+      "nome": "Caxangá",
+      "slug": "caxanga",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 244,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 71
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 61
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 43
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 18
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 15
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 17
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/caxanga"
+    },
+    {
+      "nome": "Cidade Universitária",
+      "slug": "cidade-universitaria",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 154,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 41
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 28
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 24
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 23
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Morte a Esclarecer Sem Indicio de Crime",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 9
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/cidade-universitaria"
+    },
+    {
+      "nome": "Coelhos",
+      "slug": "coelhos",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 102,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 59
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 16
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Calúnia",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 3
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/coelhos"
+    },
+    {
+      "nome": "Cohab",
+      "slug": "cohab",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 666,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 307
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 96
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 57
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 48
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 35
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 23
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 23
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 17
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 60
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/cohab"
+    },
+    {
+      "nome": "Coqueiral",
+      "slug": "coqueiral",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 105,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 55
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Maus-tratos",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 10
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/coqueiral"
+    },
+    {
+      "nome": "Cordeiro",
+      "slug": "cordeiro",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 811,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 254
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 146
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 137
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 85
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 63
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 31
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 69
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/cordeiro"
+    },
+    {
+      "nome": "Córrego do Jenipapo",
+      "slug": "corrego-do-jenipapo",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 82,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 36
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 11
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Maus Tratos",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 6
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/corrego-do-jenipapo"
+    },
+    {
+      "nome": "Curado",
+      "slug": "curado",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 286,
+      "naturezas": [
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 110
+        },
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 68
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 32
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 23
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 19
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/curado"
+    },
+    {
+      "nome": "Dois Irmãos",
+      "slug": "dois-irmaos",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 142,
+      "naturezas": [
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 43
+        },
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 32
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 25
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 13
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 8
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/dois-irmaos"
+    },
+    {
+      "nome": "Dois Unidos",
+      "slug": "dois-unidos",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 483,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 206
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 69
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 60
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 38
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 27
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 16
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 41
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/dois-unidos"
+    },
+    {
+      "nome": "Engenho do Meio",
+      "slug": "engenho-do-meio",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 217,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 61
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 50
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 37
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 30
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 12
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/engenho-do-meio"
+    },
+    {
+      "nome": "Estância",
+      "slug": "estancia",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 159,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 44
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 32
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 26
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 22
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 10
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/estancia"
+    },
+    {
+      "nome": "Fundão",
+      "slug": "fundao",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 108,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 48
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 22
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 3
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/fundao"
+    },
+    {
+      "nome": "Guabiraba",
+      "slug": "guabiraba",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 228,
+      "naturezas": [
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 82
+        },
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 58
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 31
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 15
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/guabiraba"
+    },
+    {
+      "nome": "Hipódromo",
+      "slug": "hipodromo",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 45,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 13
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 13
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Difamação",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Roubo (Saída de Banco/Instituição Financeira)",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 1
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/hipodromo"
+    },
+    {
+      "nome": "Ilha do Leite",
+      "slug": "ilha-do-leite",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 113,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 36
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 33
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 13
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Morte a Esclarecer Sem Indicio de Crime",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Difamação",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 6
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/ilha-do-leite"
+    },
+    {
+      "nome": "Ilha Joana Bezerra",
+      "slug": "ilha-joana-bezerra",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 312,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 148
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 46
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 37
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 18
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 15
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 21
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/ilha-joana-bezerra"
+    },
+    {
+      "nome": "Ipsep",
+      "slug": "ipsep",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 395,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 118
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 59
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 58
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 48
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 39
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 18
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 13
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 32
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/ipsep"
+    },
+    {
+      "nome": "Iputinga",
+      "slug": "iputinga",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 874,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 349
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 113
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 112
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 86
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 66
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 27
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 25
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 24
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 72
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/iputinga"
+    },
+    {
+      "nome": "Jardim São Paulo",
+      "slug": "jardim-sao-paulo",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 666,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 218
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 148
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 92
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 52
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 36
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 22
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 20
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 18
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 60
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/jardim-sao-paulo"
+    },
+    {
+      "nome": "Jiquiá",
+      "slug": "jiquia",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 161,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 63
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 24
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 20
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Dano",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 13
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/jiquia"
+    },
+    {
+      "nome": "Linha do Tiro",
+      "slug": "linha-do-tiro",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 195,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 107
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 22
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 19
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 16
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/linha-do-tiro"
+    },
+    {
+      "nome": "Macaxeira",
+      "slug": "macaxeira",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 403,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 149
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 85
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 73
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 25
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 19
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Dano",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 25
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/macaxeira"
+    },
+    {
+      "nome": "Mangabeira",
+      "slug": "mangabeira",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 54,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 26
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Maus Tratos",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Dano",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 4
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/mangabeira"
+    },
+    {
+      "nome": "Mangueira",
+      "slug": "mangueira",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 95,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 44
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 20
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Maus Tratos",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 5
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/mangueira"
+    },
+    {
+      "nome": "Monteiro",
+      "slug": "monteiro",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 38,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 17
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 1
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/monteiro"
+    },
+    {
+      "nome": "Morro da Conceição",
+      "slug": "morro-da-conceicao",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 76,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 36
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Maus Tratos",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 4
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/morro-da-conceicao"
+    },
+    {
+      "nome": "Mustardinha",
+      "slug": "mustardinha",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 150,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 77
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 22
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 10
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/mustardinha"
+    },
+    {
+      "nome": "Nova Descoberta",
+      "slug": "nova-descoberta",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 417,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 209
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 52
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 32
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 31
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 18
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 11
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 38
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/nova-descoberta"
+    },
+    {
+      "nome": "Paissandu",
+      "slug": "paissandu",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 51,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 20
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 11
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 1
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/paissandu"
+    },
+    {
+      "nome": "Passarinho",
+      "slug": "passarinho",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 223,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 77
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 38
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 29
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 20
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 13
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 13
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 18
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/passarinho"
+    },
+    {
+      "nome": "Peixinhos",
+      "slug": "peixinhos",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 2,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 2
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/peixinhos"
+    },
+    {
+      "nome": "Ponto de Parada",
+      "slug": "ponto-de-parada",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 21,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 11
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Roubo em Estabelecimento Comercial ou de Serviços",
+          "ocorrencias": 1
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/ponto-de-parada"
+    },
+    {
+      "nome": "Porto da Madeira",
+      "slug": "porto-da-madeira",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 86,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 34
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 13
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 5
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/porto-da-madeira"
+    },
+    {
+      "nome": "Recife (bairro)",
+      "slug": "recife",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "todo-o-periodo",
+      "periodo": null,
+      "total": 112,
+      "naturezas": [
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 67
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 45
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/recife"
+    },
+    {
+      "nome": "San Martin",
+      "slug": "san-martin",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 449,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 180
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 54
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 48
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 43
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 42
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 19
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 16
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 35
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/san-martin"
+    },
+    {
+      "nome": "Sancho",
+      "slug": "sancho",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 104,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 40
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 15
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 7
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/sancho"
+    },
+    {
+      "nome": "Santo Antônio",
+      "slug": "santo-antonio",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 321,
+      "naturezas": [
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 197
+        },
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 58
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 30
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 4
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 6
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/santo-antonio"
+    },
+    {
+      "nome": "São José",
+      "slug": "sao-jose",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 451,
+      "naturezas": [
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 184
+        },
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 139
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 46
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 17
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 11
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 21
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/sao-jose"
+    },
+    {
+      "nome": "Sítio dos Pintos",
+      "slug": "sitio-dos-pintos",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 65,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 25
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 6
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/sitio-dos-pintos"
+    },
+    {
+      "nome": "Soledade",
+      "slug": "soledade",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 72,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 26
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 19
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 10
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 3
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 1
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/soledade"
+    },
+    {
+      "nome": "Tejipió",
+      "slug": "tejipio",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 197,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 76
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 40
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 18
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 16
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Morte a Esclarecer Sem Indicio de Crime",
+          "ocorrencias": 5
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 13
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/tejipio"
+    },
+    {
+      "nome": "Torrões",
+      "slug": "torroes",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 464,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 228
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 63
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 34
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 27
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 21
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 19
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 16
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 12
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 44
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/torroes"
+    },
+    {
+      "nome": "Totó",
+      "slug": "toto",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 68,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 25
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 11
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 8
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 2
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 1
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 1
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/toto"
+    },
+    {
+      "nome": "Várzea",
+      "slug": "varzea",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 901,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 360
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 121
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 112
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 81
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 79
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 34
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 27
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 21
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 66
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/varzea"
+    },
+    {
+      "nome": "Vasco da Gama",
+      "slug": "vasco-da-gama",
+      "papel": "outro",
+      "divisaComAlvos": [],
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 309,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 143
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 35
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 30
+        },
+        {
+          "natureza": "Injúria",
+          "ocorrencias": 21
+        },
+        {
+          "natureza": "Homicídio",
+          "ocorrencias": 15
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 9
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 28
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/vasco-da-gama"
+    }
+  ],
+  "foraDaListaOficial": [
+    {
+      "nome": "Centro",
+      "slug": "centro",
+      "papel": "outro",
+      "motivo": "rótulo do site; não consta na lista oficial de 94 bairros da Prefeitura",
+      "janela": "12-meses",
+      "periodo": {
+        "inicio": "2025-11",
+        "fim": "2026-10"
+      },
+      "total": 333,
+      "naturezas": [
+        {
+          "natureza": "Ameaça",
+          "ocorrencias": 112
+        },
+        {
+          "natureza": "Roubo a Transeunte",
+          "ocorrencias": 83
+        },
+        {
+          "natureza": "Lesão Corporal",
+          "ocorrencias": 65
+        },
+        {
+          "natureza": "Roubo",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Outros Roubos",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Furto",
+          "ocorrencias": 14
+        },
+        {
+          "natureza": "Vias de Fatos",
+          "ocorrencias": 7
+        },
+        {
+          "natureza": "Outros Crimes",
+          "ocorrencias": 6
+        },
+        {
+          "natureza": "Outros tipos",
+          "ocorrencias": 18
+        }
+      ],
+      "url": "https://crimebrasil.com.br/bairro/pe/recife/centro"
+    }
+  ]
+}
