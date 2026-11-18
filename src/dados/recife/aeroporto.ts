@@ -32,7 +32,6 @@ export function validarAeroporto(dados: unknown): BaseDoAeroporto {
   return esquema.parse(dados);
 }
 export function baseDoAeroporto(): BaseDoAeroporto {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   if (!cache) cache = validarAeroporto(require("./aeroporto.json") as unknown);
   return cache;
 }

@@ -87,9 +87,7 @@ export function validarSeguranca(ocorrenciasBrutas: unknown, populacaoBruta: unk
 function base() {
   if (!cache) {
     cache = validarSeguranca(
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       require("./crime/ocorrencias.json") as unknown,
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       require("./populacao-bairros.json") as unknown,
     );
   }
