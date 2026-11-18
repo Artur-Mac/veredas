@@ -1238,4 +1238,16 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(explorarSrc).toContain("procura-contador-vivo");
     expect(explorarSrc).toContain("exigirMercado");
   });
+
+  it("desmodulariza Créditos e Perfil do Domicílio em linhas hairline e alvos de toque >= 44px", () => {
+    const creditosSrc = readFileSync(join(__dirname, "..", "src", "app", "creditos.tsx"), "utf8");
+    expect(creditosSrc).toContain("borderTopWidth: 1");
+    expect(creditosSrc).not.toMatch(/accessibilityLabel="Extrato"[\s\S]*borderRadius:\s*8/);
+
+    const perfilSrc = readFileSync(join(__dirname, "..", "src", "app", "perfil-domicilio.tsx"), "utf8");
+    const secaoMatch = perfilSrc.match(/function SecaoDoPerfil[\s\S]*?return\s*\([\s\S]*?>/)?.[0] ?? "";
+    expect(secaoMatch).toContain("borderTopWidth: 1");
+    expect(secaoMatch).not.toMatch(/\bborderWidth:\s*1\b/);
+    expect(perfilSrc).not.toMatch(/minHeight:\s*40\b/);
+  });
 });

@@ -46,4 +46,6 @@ Branch: `feat/vereda-visual-power-overhaul`
 - [x] **S26**: Micro census-tract vs neighborhood comparison context (`NeighborhoodScout R16`) + full 98-suite + live Metro `200` verification (`98/98` suites, `2039/2039` tests, Android Metro `200`, Web Metro `200`).
 - [x] **S27**: End-to-end decoding & rendering for single-property private hash links `#v=` in `salaDeDecisao.ts`, `CartaoResumoCompartilhado.tsx`, `Sala.tsx`, and `sala.tsx` (`HomeWiseDocs R24` fix; `4/4` suites, `196/196` tests).
 - [x] **S28**: Multi-criteria walkability search with live counter & walk-to-market filter in `OndeMaisProcurarNoPiloto` (`NeighborhoodScout app14` §6.2; `4/4` suites, `177/177` tests).
-- [ ] **S29**: Hairline demodularization & WCAG touch-target cleanup across `creditos.tsx` and `perfil-domicilio.tsx` + full 98-suite + live Metro `200` verification.
+- [x] **S29**: Hairline demodularization & WCAG touch-target cleanup across `creditos.tsx` and `perfil-domicilio.tsx` + full 98-suite (`2043/2043` tests) & live Metro (`ANDROID 200 6681173`, `WEB 200 3901350`) verification.
+- [ ] **S30**: Pre-contract statutory validity windows (`B4` / `HomeWiseDocs` / `Eli`) in `CopilotoDocumentosPreSinal.tsx` & `copilotoPreSinal.ts` + `caderno/` / `visita-v1/` demodularization audit.
+- [ ] **S31**: Competitive discovery wave from `docs/projetosraiox/` (`app18`–`app30`) and `/home/v/Documents/mcphub/EnemiesHub` (read-only product/UX).

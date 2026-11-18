@@ -72,7 +72,7 @@ function PilulaDeEscolha({
       accessibilityState={{ selected: ativa }}
       aria-pressed={ativa}
       style={{
-        minHeight: 40,
+        minHeight: 44,
         paddingHorizontal: 13,
         paddingVertical: 8,
         borderRadius: RAIO.pilula,
@@ -98,11 +98,9 @@ function SecaoDoPerfil({ titulo, apoio, children }: { titulo: string; apoio?: st
   return (
     <View
       style={{
-        backgroundColor: cor("cor-creme"),
-        borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto"), 0.08),
-        borderRadius: 13,
-        padding: 14,
+        borderTopWidth: 1,
+        borderTopColor: cor("cor-linha"),
+        paddingTop: 14,
         gap: 10,
       }}
     >
@@ -297,7 +295,7 @@ export default function TelaPerfilDomicilio() {
               placeholderTextColor={cor("cor-texto-apoio")}
               accessibilityLabel="Buscar bairro de destino no Recife"
               style={{
-                minHeight: 42,
+                minHeight: 44,
                 paddingHorizontal: 12,
                 borderRadius: 10,
                 borderWidth: 1,
@@ -402,7 +400,7 @@ export default function TelaPerfilDomicilio() {
             placeholderTextColor={cor("cor-texto-apoio")}
             accessibilityLabel="Teto mensal opcional em reais"
             style={{
-              minHeight: 42,
+              minHeight: 44,
               paddingHorizontal: 12,
               borderRadius: 10,
               borderWidth: 1,
