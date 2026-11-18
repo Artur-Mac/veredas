@@ -54,6 +54,7 @@ import { ConvergenciaFamiliar } from "../../componentes/cidadao/ConvergenciaFami
 import { filtrarDominanciaInvisivel } from "../../dados/cidadao/dominanciaInvisivel";
 import { MatrizVisualComparar, type ColunaMatrizComparar } from "../../componentes/visual/MatrizVisualComparar";
 import { RotinaDoisDestinosComparar } from "../../componentes/visual/RotinaDoisDestinosComparar";
+import { estimarMinutosPicoIdaVolta } from "../../dados/mobilidade/rotinaCasal";
 import { inferirFachadasDoEdificio } from "../../dados/sol/inferirFachadas";
 import { avaliarConfortoTermico } from "../../dados/clima/confortoTermico";
 import { avaliarBioclimatico3d } from "../../municipios/recife/motores/bioclimatico3d";
@@ -220,7 +221,7 @@ function CompararComDados() {
         nomeExibicao: an.nome,
         custoMensalTotalReais: (an.declarados.preco.valor ?? 9_999_999) + (an.declarados.condominio.valor ?? 0),
         areaM2: an.declarados.area.valor ?? 0,
-        deslocamentoMinDia: 35,
+        deslocamentoMinDia: estimarMinutosPicoIdaVolta(null, an.bairro),
         ruidoInternoDb: 40,
       })),
     );
@@ -396,9 +397,10 @@ function CompararComDados() {
                         nomeExibicao: comparacao.rotulos[0],
                         custoMensalTotalReais: partesDoPar[0].oficial.totalMensalConhecido ?? 0,
                         areaM2: par[0].declarados.area.valor ?? 0,
-                        deslocamentoMinDia: 30,
+                        deslocamentoMinDia: estimarMinutosPicoIdaVolta(ea?.centro, par[0].bairro),
                         ruidoInternoDb:
-                          par[0].visita.ruido === "silencioso" ? 34 : par[0].visita.ruido === "alto" ? 54 : 40,
+                          matrizComparar?.[0].ruidoInternoDb ??
+                          (par[0].visita.ruido === "silencioso" ? 34 : par[0].visita.ruido === "alto" ? 54 : 40),
                         situacaoDocumentalResumo: partesDoPar[0].spuEstatutario?.regime ?? "A confirmar na matrícula",
                         riscoAguaChuvaResumo: ea ? "Checar garagem e cisterna na visita" : "Sem vínculo do prédio",
                       }}
@@ -407,9 +409,10 @@ function CompararComDados() {
                         nomeExibicao: comparacao.rotulos[1],
                         custoMensalTotalReais: partesDoPar[1].oficial.totalMensalConhecido ?? 0,
                         areaM2: par[1].declarados.area.valor ?? 0,
-                        deslocamentoMinDia: 35,
+                        deslocamentoMinDia: estimarMinutosPicoIdaVolta(eb?.centro, par[1].bairro),
                         ruidoInternoDb:
-                          par[1].visita.ruido === "silencioso" ? 34 : par[1].visita.ruido === "alto" ? 54 : 40,
+                          matrizComparar?.[1].ruidoInternoDb ??
+                          (par[1].visita.ruido === "silencioso" ? 34 : par[1].visita.ruido === "alto" ? 54 : 40),
                         situacaoDocumentalResumo: partesDoPar[1].spuEstatutario?.regime ?? "A confirmar na matrícula",
                         riscoAguaChuvaResumo: eb ? "Checar garagem e cisterna na visita" : "Sem vínculo do prédio",
                       }}

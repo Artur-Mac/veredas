@@ -24,7 +24,9 @@ import { PulsoDaQuadra } from "../src/componentes/visual/PulsoDaQuadra";
 import { TresPerguntasDoBolso } from "../src/componentes/visual/TresPerguntasDoBolso";
 import { RotinaDoisDestinosComparar } from "../src/componentes/visual/RotinaDoisDestinosComparar";
 import { ExportarResumoExecutivo } from "../src/componentes/visual/ExportarResumoExecutivo";
-import { compararRotinaDoisDestinos } from "../src/dados/mobilidade/rotinaCasal";
+import { DueloFinalistas } from "../src/componentes/cidadao/DueloFinalistas";
+import { ConvergenciaFamiliar } from "../src/componentes/cidadao/ConvergenciaFamiliar";
+import { compararRotinaDoisDestinos, estimarMinutosPicoIdaVolta } from "../src/dados/mobilidade/rotinaCasal";
 import { auditarTextoColadoCidadao } from "../src/dados/documentos/copilotoPreSinal";
 import { avaliarCaminhabilidadeEVidaNaRua } from "../src/dados/dossie/caminhabilidadeEVidaNaRua";
 import { VidaAPeNaQuadra } from "../src/componentes/visual/VidaAPeNaQuadra";
@@ -1014,5 +1016,70 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       }
     }
     expect(violacoes).toEqual([]);
+  });
+
+  it("calcula deslocamento geodésico real no Comparar e alterna critérios ao vivo na ConvergenciaFamiliar", () => {
+    const bvMin = estimarMinutosPicoIdaVolta(null, "boa-viagem", "polo_porto_digital");
+    const espMin = estimarMinutosPicoIdaVolta(null, "espinheiro", "polo_porto_digital");
+    expect(bvMin).toBeGreaterThan(espMin);
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(DueloFinalistas, {
+            opcaoA: {
+              id: "A",
+              nomeExibicao: "Espinheiro 90m²",
+              custoMensalTotalReais: 4200,
+              areaM2: 90,
+              deslocamentoMinDia: espMin,
+              ruidoInternoDb: 38,
+              situacaoDocumentalResumo: "Terreno alodial",
+              riscoAguaChuvaResumo: "Cota acima da média",
+            },
+            opcaoB: {
+              id: "B",
+              nomeExibicao: "Boa Viagem 90m²",
+              custoMensalTotalReais: 4600,
+              areaM2: 90,
+              deslocamentoMinDia: bvMin,
+              ruidoInternoDb: 42,
+              situacaoDocumentalResumo: "Terreno alodial",
+              riscoAguaChuvaResumo: "Checar garagem na chuva",
+            },
+          }),
+          React.createElement(ConvergenciaFamiliar, {
+            perfilA: {
+              pessoaNome: "Pessoa 1",
+              imoveisFavoritosIds: ["A"],
+              tetoMensalReais: 5000,
+              exigeSilencioNoQuarto: true,
+              exigeElevadorOuRampa: false,
+            },
+            perfilB: {
+              pessoaNome: "Pessoa 2",
+              imoveisFavoritosIds: ["A"],
+              tetoMensalReais: 5000,
+              exigeSilencioNoQuarto: false,
+              exigeElevadorOuRampa: false,
+            },
+          }),
+        ),
+      );
+    });
+
+    expect(extrairTextos(tree.toJSON()).join("\n")).toContain("Terreno, cota e drenagem");
+    const toggleSilencio = tree.root.find((n) => n.props.testID === "convergencia-toggle-silencio-b");
+    const ajusteMais = tree.root.find((n) => n.props.testID === "convergencia-ajuste-teto-b");
+    act(() => {
+      toggleSilencio.props.onPress();
+      ajusteMais.props.onPress();
+    });
+    const atualizado = extrairTextos(tree.toJSON()).join("\n");
+    expect(atualizado).toContain("Pessoa 2: silêncio à noite (sim)");
+    expect(atualizado).toContain("5.500");
   });
 });

@@ -105,6 +105,16 @@ export function resolverCentroImovel(
   return [-34.896, -8.055];
 }
 
+export function estimarMinutosPicoIdaVolta(
+  centro: readonly [number, number] | null | undefined,
+  bairro: string | null | undefined,
+  destinoId: PoloDestinoRecife["id"] = "polo_porto_digital",
+): number {
+  const origem = resolverCentroImovel(centro, bairro);
+  const destino = POLOS_RECIFE.find((p) => p.id === destinoId) ?? POLOS_RECIFE[0]!;
+  return minutosIdaEVolta(origem, destino.centro);
+}
+
 export function compararRotinaDoisDestinos(params: {
   nomeOpcaoA: string;
   centroA: readonly [number, number] | null;

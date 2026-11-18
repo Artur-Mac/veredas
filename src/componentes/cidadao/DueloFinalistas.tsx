@@ -36,7 +36,7 @@ export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; o
       Math.abs(opcaoA.ruidoInternoDb - opcaoB.ruidoInternoDb) < 2,
     ),
     linhaDiferenca(
-      "Segurança água e chuva",
+      "Terreno, cota e drenagem",
       opcaoA.riscoAguaChuvaResumo,
       opcaoB.riscoAguaChuvaResumo,
       opcaoA.riscoAguaChuvaResumo === opcaoB.riscoAguaChuvaResumo,
