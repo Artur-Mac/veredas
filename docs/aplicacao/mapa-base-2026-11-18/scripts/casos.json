@@ -1,0 +1,57 @@
+{
+  "_leia": "Casos fixos da régua visual do mapa-base. Prédios do índice municipal ativo (src/dados/recife/publicacaoGerada.ts, indice-municipal/faa40c969275e6b5, geradoEm 2026-11-15T00:00:00Z). O roteiro monta para cada caso uma AnaliseV2 sem foto, com o vínculo confirmado nesse prédio, e a injeta no localStorage. Distância até a divisa: menor distância do centro do prédio ao contorno do próprio bairro em bairros-do-recife.geojson (portal da Prefeitura), calculada em 18/11/2026.",
+  "indiceGeradoEm": "2026-11-15T00:00:00Z",
+  "casos": [
+    {
+      "id": "golden-tower",
+      "edificioId": "8001-216",
+      "bairro": "boa-viagem",
+      "bairroTexto": "Boa Viagem",
+      "nome": "Golden Tower",
+      "logradouro": "RUA MAJOR ARMANDO DE SOUZA MELLO",
+      "numero": "216",
+      "dsqfl": "61845335020347",
+      "centro": [-34.907539, -8.141503],
+      "porque": "Caso de referência do plano e do modelo visual (recortes janela-A e janela-B são em volta dele). Bairro denso, com lotes, obras e avenida. Está a ~568 m da divisa de Boa Viagem."
+    },
+    {
+      "id": "torre",
+      "edificioId": "31950-280",
+      "bairro": "torre",
+      "bairroTexto": "Torre",
+      "nome": "Conj Resid Privê Bosque da Torre",
+      "logradouro": "RUA FREI JABOATAO",
+      "numero": "280",
+      "dsqfl": "41480029011790",
+      "centro": [-34.906362, -8.039968],
+      "porque": "Bairro do piloto do pipeline junto com Boa Viagem. Maior prédio da Torre no índice (386 unidades), perto do Capibaribe (~151 m da divisa): água e divisa devem entrar no quadro."
+    },
+    {
+      "id": "casa-forte-divisa",
+      "edificioId": "2453-108",
+      "bairro": "casa-forte",
+      "bairroTexto": "Casa Forte",
+      "nome": "Professor João Ribeiro",
+      "logradouro": "RUA ALFREDO FERNANDES",
+      "numero": "108",
+      "dsqfl": "31405220030370",
+      "centro": [-34.914433, -8.035775],
+      "porque": "Na borda da nuvem de prédios de Casa Forte: o prédio do índice de outro bairro mais próximo (Parnamirim) fica a ~62 m, e o centro está a ~15 m da divisa do bairro. Prova que o fundo não fica vazio do outro lado da divisa e que a divisa aparece."
+    },
+    {
+      "id": "pina-sem-lote",
+      "edificioId": "32948-160",
+      "bairro": "pina",
+      "bairroTexto": "Pina",
+      "nome": "Habitacional Projeto Via Mangue",
+      "logradouro": "AV JEMIL ASFORA",
+      "numero": "160",
+      "dsqfl": "61710010040013",
+      "centro": [-34.892671, -8.087688],
+      "porque": "Pina tem ~33% da área de quadra sem lote (PROMPT seção 7). Escolhido o maior conjunto habitacional do Pina no índice (320 unidades), junto ao mangue e à Via Mangue, onde se esperam quadras sem lote e água. Não conferido contra a base de Lotes (ainda não baixada nesta fase): a fase depois deve olhar a foto e confirmar que há quadra sem lote no quadro."
+    }
+  ],
+  "exemplos": ["boa-viagem", "casa-forte", "gracas", "espinheiro", "madalena"],
+  "exemploDeDetalhe": "boa-viagem",
+  "larguras": [375, 360, 1280]
+}
