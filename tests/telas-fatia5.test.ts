@@ -185,6 +185,10 @@ afterEach(() => {
 });
 afterAll(() => new Promise<void>((resolve) => setTimeout(resolve, 3200)));
 
+// T5 (18/11/2026): estas telas montam a árvore inteira do app e, com a máquina ocupada, passam dos 5 s padrão.
+// 15 s só nesta suíte; o limite global do Jest não muda.
+jest.setTimeout(15000);
+
 // ——— Gaveta de descarte ————————————————————————————————————————————————————————————
 
 describe("GavetaDeDescarte", () => {
@@ -1268,7 +1272,7 @@ describe("Explorar: cartão da análise", () => {
     expect(toast()).toHaveLength(0);
     expect(faixa()).toHaveLength(1);
     expect(textoDoNo(faixa()[0] as ReactTestInstance)).toBe(fato);
-  }, 10000);
+  }, 15000);
 
   it("T2: com várias análises na quarentena o aviso diz quantas; sem quarentena não há faixa", async () => {
     await AsyncStorage.clear();

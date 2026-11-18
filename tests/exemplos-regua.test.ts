@@ -83,6 +83,10 @@ async function tudoQueAparece(d: Dossie, elemento: React.ReactElement): Promise<
   return saida.join(" | ");
 }
 
+// T5 (18/11/2026): estas telas montam a árvore inteira do app e, com a máquina ocupada, passam dos 5 s padrão.
+// 15 s só nesta suíte; o limite global do Jest não muda.
+jest.setTimeout(15000);
+
 describe("exemplos: a régua do ITBI por m² saiu (L3)", () => {
   it("a frase é a pedida, palavra por palavra", () => {
     expect(FRASE_DA_REGUA_DO_ITBI_RETIRADA).toBe(
