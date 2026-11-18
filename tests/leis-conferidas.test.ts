@@ -12,6 +12,7 @@ import { TresPerguntasDoBolso, type PropsTresPerguntasDoBolso } from "../src/com
 import { TemaDoApp } from "../src/tema/Tema";
 import { traduzirIndicadoresCidadao, type EntradaTradutorCidadao } from "../src/dados/cidadao/tradutorCidadao";
 import { ITBI_ALIQUOTA_MAXIMA, ITBI_ALIQUOTA_MINIMA, estimarTransferencia, type CustoPorPartes } from "../src/dados/custoPorPartes";
+import { COMO_PEDIR_ISENCAO_RECIFE, HIPOTESES_ISENCAO_IPTU_RECIFE } from "../src/dados/recife/isencaoIptuRecife";
 import { avaliarBioclimatico3d } from "../src/municipios/recife/motores/bioclimatico3d";
 import { calcularSpuEstatutario, calcularTetoReajusteSpu } from "../src/nucleo/motores/spuMarinha";
 import { avaliarResilienciaRedes, DATA_ASSUNCAO_AQUA_PERNAMBUCO, hojeNoAparelhoIso } from "../src/municipios/recife/motores/resilienciaRedes";
@@ -556,5 +557,37 @@ describe("LPUOS do Recife: Lei 19.426/2025; saem a Lei 19.389/2025 e os Decretos
       expect(fonteDe(...arquivo)).not.toMatch(/19\.389|39\.66[4-7]/);
     }
     expect(fonteDe("nucleo", "higiene", "arquivosLegados.ts")).toContain("Plano Diretor (LC 2/2021) e LPUOS (Lei 19.426/2025)");
+  });
+});
+
+describe("IPTU do Recife: aposentado ou pensionista tem desconto de 50%, não isenção (Lei 15.563/1991, arts. 17 e 18)", () => {
+  const hipotese = (id: string) => HIPOTESES_ISENCAO_IPTU_RECIFE.find((h) => h.id === id)!;
+
+  test("aposentado ou pensionista: desconto de 50%; a lei não fala em idoso nem em decreto anual", () => {
+    const h = hipotese("aposentado_pensionista");
+    expect(h.titulo).toBe("Aposentado ou pensionista");
+    expect(h.beneficios).toEqual([{ tipo: "desconto", percentual: 50 }]);
+    expect(h.requisito).toBe(
+      "Aposentado ou pensionista da previdência social com um único imóvel residencial de valor venal até R$ 98.640,00 e renda líquida mensal até R$ 5.356,15 (valores de 2026): desconto de 50% no IPTU (Lei 15.563/1991, art. 18, I, b, e § 4º).",
+    );
+    expect(`${h.titulo} ${h.requisito}`).not.toMatch(/idoso|decreto anual|isenção/i);
+    expect(HIPOTESES_ISENCAO_IPTU_RECIFE.some((x) => x.id === "idoso_aposentado")).toBe(false);
+  });
+
+  test("imóvel único: isenção total só até 50 m² e com renda até o limite; fora disso, desconto de 25%", () => {
+    const h = hipotese("unico_imovel_popular");
+    expect(h.beneficios).toEqual([{ tipo: "isencao_total" }, { tipo: "desconto", percentual: 25 }]);
+    expect(h.requisito).toBe(
+      "Único imóvel residencial do contribuinte, com até 50 m² de área construída, e renda mensal até o limite da lei (R$ 1.071,22 em 2026): isenção total (Lei 15.563/1991, art. 17, III). Para imóvel único de valor venal até R$ 98.640,00 e renda líquida até R$ 5.356,15 (valores de 2026), desconto de 25% (art. 18, II, a).",
+    );
+  });
+
+  test("só a primeira hipótese dá isenção total; as que a conferência não cobriu não afirmam benefício", () => {
+    const comIsencaoTotal = HIPOTESES_ISENCAO_IPTU_RECIFE.filter((h) => h.beneficios.some((b) => b.tipo === "isencao_total")).map((h) => h.id);
+    expect(comIsencaoTotal).toEqual(["unico_imovel_popular"]);
+    expect(hipotese("imovel_preservado").beneficios).toEqual([]);
+    expect(hipotese("outras_hipoteses").beneficios).toEqual([]);
+    expect(COMO_PEDIR_ISENCAO_RECIFE).toMatch(/são os de 2026 e mudam todo ano/);
+    expect(fonteDe("componentes", "dossie-v1", "Custo.tsx")).toContain("IPTU no Recife: conferir hipóteses legais de isenção ou desconto");
   });
 });

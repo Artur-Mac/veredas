@@ -418,7 +418,7 @@ export function BlocoDeCusto({
                   style={{ minHeight: 44, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}
                 >
                   <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600", flex: 1 }}>
-                    IPTU no Recife: conferir hipóteses legais de isenção
+                    IPTU no Recife: conferir hipóteses legais de isenção ou desconto
                   </Texto>
                   <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, fontWeight: "600" }}>
                     {mostrarIsencoesIptu ? "Ocultar" : "Ver regras"}
