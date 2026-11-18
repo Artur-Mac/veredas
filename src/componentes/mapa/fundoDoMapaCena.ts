@@ -19,6 +19,7 @@ import type {
   PoligonoBase,
   RuaBase,
 } from "../../dados/recife/mapaBaseContrato";
+import { ondeFica, ruaPorExtenso } from "./fundoDoMapaAbreviacoes";
 import {
   afimDoArquivo,
   anelNoDesenho,
@@ -609,17 +610,16 @@ function metros(n: number): string {
   return `${String(inteiro).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} m`;
 }
 
-/** Para o leitor de tela: "R." vira "Rua" e "Av." vira "Avenida" no começo do nome; o resto fica como a base publica. */
-export function ruaPorExtenso(nome: string): string {
-  return nome.replace(/^R\.\s*/, "Rua ").replace(/^Av\.\s*/, "Avenida ");
-}
+// O nome da rua por extenso para o leitor de tela ("Trv" → "Travessa", "Vdo" → "Viaduto"…): fundoDoMapaAbreviacoes.ts.
+export { ruaPorExtenso };
 
 /** Descrição do mapa para o leitor de tela: rua do imóvel, bairro e distância até a divisa mais próxima do bairro. */
 export function descreverFundoDoMapa(cena: CenaDoFundo): string {
   const { rua, bairro, distanciaDaDivisaM } = cena.acessibilidade;
   const partes: string[] = [];
   partes.push(bairro ? `Mapa do entorno, bairro ${bairro}.` : "Mapa do entorno.");
-  if (rua) partes.push(`O imóvel fica na ${ruaPorExtenso(rua)}.`);
+  // "na Rua", "no Viaduto"; tipo de logradouro que a tabela não conhece: "em", com o nome como a base publica.
+  if (rua) partes.push(`O imóvel fica ${ondeFica(rua)}.`);
   if (bairro && distanciaDaDivisaM !== null) {
     partes.push(distanciaDaDivisaM < 10 ? `O imóvel fica junto à divisa de ${bairro}.` : `A divisa mais próxima de ${bairro} fica a ${metros(distanciaDaDivisaM)} do imóvel.`);
   }
