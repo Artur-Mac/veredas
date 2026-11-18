@@ -60,6 +60,15 @@ if (BORDA_M !== 300 && !SAIDA_PROPRIA) throw new Error("--borda diferente de 300
 const FOLGA_RUA_M = 60;
 /** Água maior que isto (em área de caixa, vezes a caixa do recorte) é cortada à caixa do recorte. */
 const AGUA_GRANDE = 4;
+/**
+ * O oceano é cortado mais longe que o resto da água, para o quadro afastado ou largo não mostrar a borda reta do
+ * corte no meio do mar. Nos bairros a caixa só se afasta para leste (mar adentro: o Atlântico fica a leste da costa
+ * do Recife), então nenhum trecho de praia a mais entra no arquivo. Na cidade, a caixa da cidade mais 15 km já
+ * contém o polígono inteiro da base (uma faixa de cerca de 6 km de largura ao longo da costa, que acaba numa borda
+ * reta da própria base), então o corte vira a própria base. Além dela não há dado, e o mar não é inventado.
+ */
+const MAR_ADENTRO_BAIRRO_M = 4000;
+const MAR_ADENTRO_CIDADE_M = 15_000;
 /** Na cidade: água com área de pelo menos isto (m²), ou oceano. */
 const AGUA_DA_CIDADE_M2 = 30_000;
 const PAVIMENTOS_MAX = 80;
@@ -341,9 +350,10 @@ function gerarBairro(b) {
     if (!tocaRegiao(reg, b, w, w.aneis)) continue;
     let aneis = w.aneis;
     if (areaCaixa(w.caixa) > AGUA_GRANDE * areaCaixa(caixaRec)) {
-      const c = recortarAnel(aneis[0], caixaRec);
+      const cx = w.tipo === "oceano" ? [caixaRec[0], caixaRec[1], alargar(caixaRec, MAR_ADENTRO_BAIRRO_M)[2], caixaRec[3]] : caixaRec;
+      const c = recortarAnel(aneis[0], cx);
       if (degenerado(c)) continue;
-      aneis = [c, ...aneis.slice(1).map((f) => recortarAnel(f, caixaRec)).filter((f) => !degenerado(f))];
+      aneis = [c, ...aneis.slice(1).map((f) => recortarAnel(f, cx)).filter((f) => !degenerado(f))];
     }
     const g = poligonoQuantizado(aneis, proj);
     if (g) as.push({ w, g, k: chaveEspacial(g[0][0]) });
@@ -405,7 +415,7 @@ function gerarCidade() {
     if (!caixasTocam(w.caixa, caixaCidade)) continue;
     let aneis = w.aneis.map((a) => simplificar(a, TOL_CIDADE.agua, true)).filter((a, i) => i === 0 || !degenerado(a));
     if (degenerado(aneis[0])) continue;
-    if (w.tipo === "oceano") aneis = [recortarAnel(aneis[0], caixaCidade), ...aneis.slice(1)];
+    if (w.tipo === "oceano") aneis = [recortarAnel(aneis[0], alargar(c, MAR_ADENTRO_CIDADE_M)), ...aneis.slice(1)];
     const g = poligonoQuantizado(aneis, proj);
     if (g) as.push({ w, g, k: chaveEspacial(g[0][0]) });
   }

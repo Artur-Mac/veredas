@@ -238,6 +238,26 @@ describe("conteúdo", () => {
     if (PILOTO.includes(slug)) expect(m.lotes.filter((l) => l.quadra >= 0).length / m.lotes.length).toBeGreaterThan(0.95);
   });
 
+  it("o oceano vai mar adentro: sem borda reta perto da costa (cidade a 5 km, Boa Viagem a 2 km)", () => {
+    // Golden Tower fica na Av. Boa Viagem, de frente para a praia; leste é mar aberto.
+    const centro = [-34.907539, -8.141503] as const;
+    const aLeste = (m: number): [number, number] => [centro[0] + m / (METROS_POR_GRAU * Math.cos((centro[1] * Math.PI) / 180)), centro[1]];
+    const cobre = (mapa: { origem: readonly [number, number]; agua: readonly (PoligonoBase & { tipo: string })[] }, metros: number) => {
+      const [lon, lat] = aLeste(metros);
+      const [x, y] = noPlano(mapa.origem, lon, lat);
+      return mapa.agua.some((w) => w.tipo === "oceano" && dentro(x, y, w));
+    };
+    const c = mapaBaseDaCidade()!;
+    expect(cobre(c, 5000)).toBe(true);
+    // A própria base acaba numa borda reta a cerca de 6 km da costa (aqui, ~5,5 km a leste): o mar não é inventado.
+    expect(cobre(c, 7000)).toBe(false);
+    const bv = mapaBaseDoBairro("boa-viagem")!;
+    // A linha da costa fica ~480 m a leste do centro; 2,5 km a leste são ~2 km mar adentro.
+    expect(cobre(bv, 1000)).toBe(true);
+    expect(cobre(bv, 2500)).toBe(true);
+    expect(cobre(bv, 4000)).toBe(true);
+  });
+
   it("Boa Viagem tem água do oceano, cortada, e praças", () => {
     const m = mapaBaseDoBairro("boa-viagem")!;
     expect(m.agua.some((w) => w.tipo === "oceano")).toBe(true);
