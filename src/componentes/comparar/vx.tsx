@@ -125,8 +125,6 @@ export function SegmentosVx<T extends string>({ opcoes, valor, aoMudar, rotulo, 
         gap: 4,
         padding: 4,
         backgroundColor: cor("cor-sutil"),
-        borderWidth: 1,
-        borderColor: cor("cor-linha"),
         borderRadius: 11,
         marginBottom: margemInferior,
       }}
@@ -162,13 +160,13 @@ export function SegmentosVx<T extends string>({ opcoes, valor, aoMudar, rotulo, 
   );
 }
 
-/** `.vx-surface`: branca, borda de 7% de tinta, 16 px de raio. */
+/** `.vx-surface`: branca, borda sutil forte, 16 px de raio. */
 export function SuperficieVx({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
   const { cor } = useTema();
   return (
     <View
       style={[
-        { backgroundColor: cor("cor-superficie"), borderWidth: 1, borderColor: comAlfa(cor("cor-texto"), 0.07), borderRadius: RAIO.cartao, paddingVertical: 21, paddingHorizontal: 18 },
+        { backgroundColor: cor("cor-superficie"), borderWidth: 1, borderColor: cor("cor-linha-forte"), borderRadius: RAIO.cartao, paddingVertical: 21, paddingHorizontal: 18 },
         style,
       ]}
     >

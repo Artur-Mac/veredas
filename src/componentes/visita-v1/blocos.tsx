@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { TextInput, View, type StyleProp, type TextInputProps, type ViewProps, type ViewStyle } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, TOQUE_MINIMO, comAlfa, type TokenDeCor } from "../../tema/tokens";
+import { ESPACO, RAIO, TOQUE_MINIMO, type TokenDeCor } from "../../tema/tokens";
 import { useFocoDoCampo } from "../casca/foco";
 import { abaPorTecla, focarElemento, teclaDoEvento, type EventoDeTecla } from "../dossie-v1/teclado";
 import { Icone } from "../Icone";
@@ -99,7 +99,7 @@ export function Superficie({ children, style }: { children: ReactNode; style?: S
         {
           backgroundColor: cor("cor-superficie"),
           borderWidth: 1,
-          borderColor: comAlfa(cor("cor-texto"), 0.07),
+          borderColor: cor("cor-linha-forte"),
           borderRadius: RAIO.cartao,
           paddingVertical: 21,
           paddingHorizontal: 18,
@@ -165,8 +165,6 @@ export function Etapas<T extends string>({
         padding: 4,
         marginBottom: ESPACO[4],
         backgroundColor: cor("cor-sutil"),
-        borderWidth: 1,
-        borderColor: cor("cor-linha"),
         borderRadius: 11,
       }}
     >
@@ -190,7 +188,6 @@ export function Etapas<T extends string>({
               padding: ESPACO[2],
               borderRadius: 7,
               backgroundColor: ativa ? cor("cor-superficie") : undefined,
-              boxShadow: ativa ? `0 1px 3px ${comAlfa(cor("cor-texto"), 0.05)}` : undefined,
             }}
           >
             <Texto

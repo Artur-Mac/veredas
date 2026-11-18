@@ -2728,4 +2728,20 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect((perfilSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(2);
     expect(perfilSrc).toContain("perfil-resumo-mensal-vivo");
   });
+
+  it("ler.tsx e visita-v1/blocos.tsx zeram comAlfa e comparar/vx.tsx mantém só a sombra de segmento em <=2 caixas (S71)", () => {
+    const lerPath = join(__dirname, "..", "src", "app", "(abas)", "ler.tsx");
+    const blocosPath = join(__dirname, "..", "src", "componentes", "visita-v1", "blocos.tsx");
+    const vxPath = join(__dirname, "..", "src", "componentes", "comparar", "vx.tsx");
+    for (const p of [lerPath, blocosPath]) {
+      const s = readFileSync(p, "utf8");
+      expect(s).not.toMatch(/\bcomAlfa\b/);
+      expect((s.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(2);
+    }
+    const vxSrc = readFileSync(vxPath, "utf8");
+    expect(vxSrc).not.toMatch(/borderColor:\s*comAlfa/);
+    expect((vxSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    const lerSrc = readFileSync(lerPath, "utf8");
+    expect(lerSrc).toContain("tabular-nums");
+  });
 });

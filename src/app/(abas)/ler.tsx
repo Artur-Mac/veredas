@@ -47,7 +47,6 @@ import {
 import { useAnalises } from "../../estado/Analises";
 import { coletaDoId, recebeuDesde, registrarLinkAberto } from "../../estado/compartilhamento";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 
 const VISITA_VAZIA: AnaliseV2["visita"] = {
   verificadas: [],
@@ -758,10 +757,8 @@ const useEstilos = estilosDoTema((cor) =>
       minHeight: 44,
       justifyContent: "center",
       paddingHorizontal: 12,
-      backgroundColor: cor("cor-papel-claro"),
+      backgroundColor: cor("cor-sutil"),
       borderRadius: 11,
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
     },
     textoCancelar: {
       color: cor("cor-texto"),
@@ -774,7 +771,7 @@ const useEstilos = estilosDoTema((cor) =>
       marginBottom: 0,
       borderRadius: 18,
       borderWidth: 1,
-      borderColor: cor("cor-linha"),
+      borderColor: cor("cor-linha-forte"),
     },
     corpo: {
       paddingVertical: 16,
@@ -843,7 +840,7 @@ const useEstilos = estilosDoTema((cor) =>
       borderTopColor: cor("cor-linha"),
     },
     linhaLida: {
-      borderTopColor: comAlfa(cor("cor-salvia"), 0.45),
+      borderTopColor: cor("cor-linha"),
     },
     circulo: {
       width: 22,
@@ -853,20 +850,19 @@ const useEstilos = estilosDoTema((cor) =>
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: cor("cor-sutil"),
-      borderWidth: 1,
-      borderColor: cor("cor-linha-forte"),
     },
     circuloLido: {
       backgroundColor: cor("cor-salvia-escura"),
-      borderColor: cor("cor-salvia-escura"),
     },
     numeroPendente: {
+      fontVariant: ["tabular-nums"],
       fontSize: 11,
       lineHeight: 14,
       color: cor("cor-texto-apoio"),
       fontWeight: "700",
     },
     numeroLido: {
+      fontVariant: ["tabular-nums"],
       fontSize: 11,
       lineHeight: 14,
       color: cor("cor-superficie"),
@@ -896,7 +892,7 @@ const useEstilos = estilosDoTema((cor) =>
       rowGap: 2,
       paddingTop: 10,
       borderTopWidth: 1,
-      borderTopColor: comAlfa(cor("cor-texto"), 0.07),
+      borderTopColor: cor("cor-linha"),
     },
     textoDePrivacidade: {
       flexShrink: 1,
