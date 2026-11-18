@@ -4,7 +4,7 @@ import { View } from "react-native";
 import type { CustoPorPartes } from "../../dados/custoPorPartes";
 import { formatarReais } from "../../dados/formatos";
 import { useTema } from "../../tema/Tema";
-import { comAlfa, type TokenDeCor } from "../../tema/tokens";
+import { type TokenDeCor } from "../../tema/tokens";
 import { Texto } from "../Texto";
 import {
   formatarArea,
@@ -61,7 +61,7 @@ export function LinhaDeDois({ rotulo, celulas, colunas, chave = false, primeira 
       style={[
         { paddingVertical: 15 },
         chave ? { backgroundColor: cor("cor-creme"), marginHorizontal: -17, paddingHorizontal: 17 } : null,
-        primeira ? null : { borderTopWidth: 1, borderTopColor: comAlfa(cor("cor-linha"), 0.7) },
+        primeira ? null : { borderTopWidth: 1, borderTopColor: cor("cor-linha") },
       ]}
     >
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16, marginBottom: 9 }}>

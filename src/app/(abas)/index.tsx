@@ -469,8 +469,6 @@ const useEstilos = estilosDoTema((cor) => {
       paddingVertical: 5,
       backgroundColor: cor("cor-papel-claro"),
       borderRadius: 999,
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
     },
     textoBtnColar: {
       fontSize: 11.5,
@@ -537,8 +535,6 @@ const useEstilos = estilosDoTema((cor) => {
       flexDirection: "row",
       backgroundColor: cor("cor-sutil"),
       borderRadius: 10,
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
       padding: 2,
       gap: 2,
     },
@@ -613,8 +609,6 @@ const useEstilos = estilosDoTema((cor) => {
       left: 10,
       maxWidth: "70%",
       backgroundColor: comAlfa(cor("cor-campo"), 0.65),
-      borderWidth: 1,
-      borderColor: comAlfa(cor("cor-superficie"), 0.15),
       paddingHorizontal: 9,
       paddingVertical: 3.5,
       borderRadius: 6,
@@ -624,28 +618,6 @@ const useEstilos = estilosDoTema((cor) => {
       fontSize: 11,
       lineHeight: 15,
       fontWeight: "600",
-    },
-    // Alvo de 44 px (48 com o token) no canto do topo; o círculo de 32 px de `.card-bookmark-btn` fica a 10 px das bordas.
-    alvoDoMarcador: {
-      position: "absolute",
-      top: 4,
-      right: 4,
-      width: 44,
-      height: 44,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    btnBookmark: {
-      width: 32,
-      height: 32,
-      borderRadius: 16,
-      backgroundColor: comAlfa(cor("cor-campo"), 0.4),
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    btnBookmarkSalvo: {
-      backgroundColor: cor("cor-superficie"),
-      boxShadow: `0 2px 6px ${comAlfa(cor("cor-texto"), 0.18)}`,
     },
     photoPriceBar: {
       position: "absolute",
@@ -659,8 +631,6 @@ const useEstilos = estilosDoTema((cor) => {
       columnGap: 8,
       rowGap: 6,
       backgroundColor: comAlfa(cor("cor-campo"), 0.82),
-      borderWidth: 1,
-      borderColor: comAlfa(cor("cor-superficie"), 0.16),
       borderRadius: 12,
       paddingVertical: 8,
       paddingHorizontal: 12,
@@ -671,12 +641,14 @@ const useEstilos = estilosDoTema((cor) => {
     },
     precoLinha: {
       color: comAlfa(cor("cor-texto-campo"), 0.72),
+      fontVariant: ["tabular-nums"],
       fontSize: 11,
       lineHeight: 14,
       fontWeight: "500",
     },
     precoDestaque: {
       color: cor("cor-texto-campo"),
+      fontVariant: ["tabular-nums"],
       fontSize: 15,
       lineHeight: 18,
       fontWeight: "700",
@@ -687,11 +659,9 @@ const useEstilos = estilosDoTema((cor) => {
       flexWrap: "wrap",
       gap: 6,
     },
-    // `.visor-delta-pill.alert`: o laranja só no preenchimento e na borda; o texto fica claro sobre a barra escura.
+    // `.visor-delta-pill.alert`: o laranja só no preenchimento; o texto fica claro sobre a barra escura.
     etiquetaAlerta: {
       backgroundColor: comAlfa(cor("cor-acao"), 0.24),
-      borderWidth: 1,
-      borderColor: comAlfa(cor("cor-acao"), 0.52),
       borderRadius: 7,
       paddingVertical: 4.5,
       paddingHorizontal: 9,
@@ -735,6 +705,7 @@ const useEstilos = estilosDoTema((cor) => {
     },
     specTexto: {
       color: cor("cor-texto-apoio"),
+      fontVariant: ["tabular-nums"],
       fontSize: 12,
       lineHeight: 16,
       fontWeight: "500",
