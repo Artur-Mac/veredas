@@ -323,6 +323,18 @@ export function posicionarRotulosDeRua(
     /** Tenta o texto reto com o meio em (cx, cy) na direção (ux, uy); põe o rótulo se o lugar serve. */
     const reto = (cx: number, cy: number, ux: number, uy: number, comFracos: boolean, comAgua: boolean): boolean => {
       const meia = largura / 2 + tamanho * 0.4;
+      // Descarte barato, sem alocar nada, antes de montar as caixas de verdade (a busca prova centenas de posições):
+      // quadradinhos do tamanho das caixas ao longo do texto contra o limite e os obstáculos.
+      const lado = tamanho * 0.62;
+      const n = Math.ceil(largura / 2 / (tamanho * 0.8));
+      for (let k = -n; k <= n; k++) {
+        const s = Math.max(-largura / 2, Math.min(largura / 2, k * tamanho * 0.8));
+        const x = cx + ux * s;
+        const y = cy + uy * s;
+        if (lim && (x - lado < lim[0] || x + lado > lim[2] || y - lado < lim[1] || y + lado > lim[3])) return false;
+        for (const o of obstaculos) if (x - lado < o[2] && o[0] < x + lado && y - lado < o[3] && o[1] < y + lado) return false;
+        if (comFracos) for (const o of fracos) if (x - lado < o[2] && o[0] < x + lado && y - lado < o[3] && o[1] < y + lado) return false;
+      }
       const trecho = medir([cx - ux * meia, cy - uy * meia, cx + ux * meia, cy + uy * meia]);
       const { caixas } = caixasNoTrecho(trecho, meia - largura / 2, meia + largura / 2, tamanho);
       if (!serve(caixas, comFracos, comAgua)) return false;
