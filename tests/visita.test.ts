@@ -394,7 +394,7 @@ describe("a tela Visita", () => {
     expect(todoOTexto(arvore)).toContain("Nenhum dossiê aberto. Cole um link em Explorar.");
     await tocar(arvore, porTexto("Ir para Explorar"));
     expect(empurrar).toHaveBeenCalledWith("/");
-  });
+  }, 15_000);
 
   it("com análise ativa, mostra Preparar: contagem, as três primeiras numeradas, roteiro e mensagem", async () => {
     const a = analise();

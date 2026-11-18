@@ -1,6 +1,7 @@
 // Os três painéis do Comparar (`renderCompare`, index.html 5964–5989; CSS `.vc-*` 3077–3108): Custo, Espaço e
 // Entorno. Cada painel só desenha o que `comparar.ts` já calculou e formatou; nenhum valor é somado aqui.
 import { View } from "react-native";
+import type { CustoPorPartes } from "../../dados/custoPorPartes";
 import { formatarReais } from "../../dados/formatos";
 import { useTema } from "../../tema/Tema";
 import { comAlfa, type TokenDeCor } from "../../tema/tokens";
@@ -152,8 +153,6 @@ export const PAINEL = { paddingTop: 22, paddingHorizontal: 17, paddingBottom: 15
 const moeda = (valor: number | null, sufixo = "") => (valor === null ? "A confirmar" : `${formatarReais(valor)}${sufixo}`);
 
 // ——— Painéis ————————————————————————————————————————————————————————————————————————
-
-import type { CustoPorPartes } from "../../dados/custoPorPartes";
 
 type PropsDoPainelDeCusto = {
   custo: ComparacaoDeCusto;

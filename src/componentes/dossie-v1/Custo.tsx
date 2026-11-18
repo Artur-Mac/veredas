@@ -1,8 +1,9 @@
-import { avisoDeValoresPendentes } from "../../dados/custos";
 import { useState } from "react";
 import { View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import type { ParcelaDoCusto, Posicao, VisaoDoDossie } from "../../dados/contratos";
+import type { CustoPorPartes } from "../../dados/custoPorPartes";
+import { avisoDeValoresPendentes } from "../../dados/custos";
 import { formatarReais } from "../../dados/formatos";
 import { useTema } from "../../tema/Tema";
 import { ESPACO, type TokenDeCor } from "../../tema/tokens";
@@ -71,8 +72,6 @@ function IconeDeTendencia({ cor }: { cor: TokenDeCor }) {
     </Svg>
   );
 }
-
-import type { CustoPorPartes } from "../../dados/custoPorPartes";
 
 type Props = {
   custo: VisaoDoDossie["custo"];
