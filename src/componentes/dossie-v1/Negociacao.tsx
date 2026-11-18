@@ -9,7 +9,6 @@ import { fichaDoDossie } from "../../dados/dossie/fichaViva";
 import { fontesDeBarulho } from "../../dados/dossie/simuladorDaUnidade";
 import { mensagemDeNegociacao, prepararNegociacao } from "../../dados/negociacao";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 import { Botao } from "../Botao";
 import { AlvoDeToque } from "../Pressionavel";
 import { Texto } from "../Texto";
@@ -87,7 +86,7 @@ export function PrepararNegociacao({ analise, visao, lista, predio = null, nomeD
             padding: 18,
             borderRadius: 16,
             borderWidth: 1,
-            borderColor: comAlfa(cor("cor-texto"), 0.09),
+            borderColor: cor("cor-linha-forte"),
             backgroundColor: cor("cor-superficie"),
             gap: 12,
           }}
@@ -119,7 +118,7 @@ export function PrepararNegociacao({ analise, visao, lista, predio = null, nomeD
           </View>
 
           {n.mesmoImovel.length ? (
-            <View style={{ paddingVertical: 10, paddingHorizontal: 12, borderLeftWidth: 3, borderLeftColor: cor("cat-ipe-amarelo"), backgroundColor: comAlfa(cor("cat-ipe-amarelo"), 0.08) }}>
+            <View style={{ paddingVertical: 10, paddingHorizontal: 12, borderLeftWidth: 3, borderLeftColor: cor("cat-ipe-amarelo"), backgroundColor: cor("cor-creme") }}>
               <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 13, lineHeight: 19 }}>
                 {`Possível duplicata: ${n.mesmoImovel.map((m) => `"${m.nome}" (${m.motivo})`).join("; ")}.`}
               </Texto>

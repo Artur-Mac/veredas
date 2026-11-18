@@ -16,7 +16,7 @@ import { baseDeServicos, servicosProximos } from "../../dados/recife/servicos";
 import { usePerfilDomicilio, type LocalDeRotina } from "../../estado/PerfilDomicilio";
 import { obterPosicaoDaVisita } from "../../plataforma/posicaoDaVisita";
 import { useTema } from "../../tema/Tema";
-import { comAlfa, ESPACO, RAIO } from "../../tema/tokens";
+import { ESPACO, RAIO } from "../../tema/tokens";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { Corpo, LinkComSeta, Nota, Sobretitulo, Titulo2 } from "./base";
@@ -278,9 +278,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
               minHeight: 44,
               paddingHorizontal: 14,
               borderRadius: RAIO.pilula,
-              borderWidth: 1,
-              borderColor: verMapa ? cor("cor-acao") : cor("cor-linha"),
-              backgroundColor: verMapa ? cor("cor-acao") : cor("cor-superficie"),
+              backgroundColor: verMapa ? cor("cor-acao") : cor("cor-sutil"),
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -298,7 +296,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
             padding: 12,
             borderRadius: 16,
             borderWidth: 1,
-            borderColor: cor("cor-linha"),
+            borderColor: cor("cor-linha-forte"),
             backgroundColor: cor("cor-superficie"),
             gap: 8,
           }}
@@ -321,7 +319,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
           padding: 14,
           borderRadius: 16,
           borderWidth: 1,
-          borderColor: cor("cor-linha"),
+          borderColor: cor("cor-linha-forte"),
           backgroundColor: cor("cor-superficie"),
           gap: 10,
         }}
@@ -348,14 +346,12 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
               minHeight: 44,
               paddingHorizontal: 12,
               borderRadius: RAIO.pilula,
-              borderWidth: 1,
-              borderColor: adicionando ? cor("cor-linha") : comAlfa(cor("cor-acao"), 0.5),
-              backgroundColor: adicionando ? cor("cor-papel-claro") : comAlfa(cor("cor-acao"), 0.12),
+              backgroundColor: adicionando ? cor("cor-papel-claro") : cor("cor-sutil"),
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Texto style={{ fontSize: 12.5, fontWeight: "700", color: adicionando ? cor("cor-texto-apoio") : cor("cor-acao") }}>
+            <Texto style={{ fontSize: 12.5, fontWeight: "700", color: adicionando ? cor("cor-texto-apoio") : cor("cor-texto") }}>
               {adicionando ? "Cancelar" : "+ Adicionar lugar"}
             </Texto>
           </Pressionavel>
@@ -368,7 +364,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
               alignItems: "center",
               justifyContent: "space-between",
               paddingTop: 8,
-              borderTopWidth: 0.5,
+              borderTopWidth: 1,
               borderTopColor: cor("cor-linha"),
             }}
           >
@@ -394,7 +390,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
                     alignItems: "center",
                     gap: 10,
                     paddingVertical: 8,
-                    borderTopWidth: idx === 0 ? 0 : 0.5,
+                    borderTopWidth: idx === 0 ? 0 : 1,
                     borderTopColor: cor("cor-linha"),
                   }}
                 >
@@ -441,7 +437,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
         ) : null}
 
         {adicionando ? (
-          <View style={{ gap: 10, paddingTop: 10, borderTopWidth: 0.5, borderTopColor: cor("cor-linha") }}>
+          <View style={{ gap: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: cor("cor-linha") }}>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
               {PAPEIS_RAPIDOS.map((papel) => {
                 const ativo = nomeLugar === papel;
@@ -454,13 +450,11 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
                       minHeight: 44,
                       paddingHorizontal: 10,
                       borderRadius: RAIO.pilula,
-                      borderWidth: 1,
-                      borderColor: ativo ? cor("cor-acao") : cor("cor-linha"),
-                      backgroundColor: ativo ? comAlfa(cor("cor-acao"), 0.12) : cor("cor-papel-claro"),
+                      backgroundColor: ativo ? cor("cor-texto") : cor("cor-papel-claro"),
                       justifyContent: "center",
                     }}
                   >
-                    <Texto style={{ fontSize: 12.5, fontWeight: ativo ? "700" : "500", color: ativo ? cor("cor-acao") : cor("cor-texto") }}>
+                    <Texto style={{ fontSize: 12.5, fontWeight: ativo ? "700" : "500", color: ativo ? cor("cor-papel-claro") : cor("cor-texto") }}>
                       {papel}
                     </Texto>
                   </Pressionavel>
@@ -517,8 +511,6 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
                   minHeight: 44,
                   paddingHorizontal: 12,
                   borderRadius: 10,
-                  borderWidth: 1,
-                  borderColor: cor("cor-azul-cadastral"),
                   backgroundColor: cor("cor-azul-cadastral-suave"),
                   justifyContent: "center",
                 }}
@@ -530,7 +522,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
             </View>
 
             {opcoesBusca.length > 0 ? (
-              <View style={{ borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha"), backgroundColor: cor("cor-papel-claro"), overflow: "hidden" }}>
+              <View style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha"), backgroundColor: cor("cor-papel-claro") }}>
                 {opcoesBusca.map((op, i) => (
                   <Pressionavel
                     key={op.chave}
@@ -544,7 +536,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
                       minHeight: 44,
                       paddingHorizontal: 12,
                       paddingVertical: 8,
-                      borderTopWidth: i === 0 ? 0 : 0.5,
+                      borderTopWidth: i === 0 ? 0 : 1,
                       borderTopColor: cor("cor-linha"),
                       flexDirection: "row",
                       alignItems: "center",
@@ -615,7 +607,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
                 accessibilityRole="button"
                 accessibilityState={{ expanded: estaAberto }}
                 accessibilityLabel={`${f.frase} ${estaAberto ? f.detalhe : "Ver nome e distância."}`}
-                style={{ minHeight: 48, paddingVertical: 10, gap: 3, borderTopWidth: i === 0 ? 0 : 0.5, borderTopColor: cor("cor-linha") }}
+                style={{ minHeight: 48, paddingVertical: 10, gap: 3, borderTopWidth: i === 0 ? 0 : 1, borderTopColor: cor("cor-linha") }}
               >
                 <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20 }}>{f.frase}</Texto>
                 {estaAberto ? <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, lineHeight: 18 }}>{f.detalhe}</Texto> : null}

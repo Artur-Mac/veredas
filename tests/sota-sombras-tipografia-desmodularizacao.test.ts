@@ -2621,4 +2621,22 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(topoLegacy).not.toMatch(/minHeight:\s*28\b/);
     expect(topoLegacy).toContain("minHeight: TOQUE_MINIMO");
   });
+
+  it("PorPerto e Negociacao removem comAlfa, meio-pixel 0.5 e caixas aninhadas (S60)", () => {
+    const porPertoSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "PorPerto.tsx"),
+      "utf8",
+    );
+    const negociacaoSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "Negociacao.tsx"),
+      "utf8",
+    );
+
+    expect(porPertoSrc).not.toMatch(/\bcomAlfa\b/);
+    expect(porPertoSrc).not.toMatch(/borderTopWidth:[^,\n]*0\.5\b/);
+    expect((porPertoSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(4);
+
+    expect(negociacaoSrc).not.toMatch(/\bcomAlfa\b/);
+    expect(negociacaoSrc).not.toMatch(/borderTopWidth:[^,\n]*0\.5\b/);
+  });
 });
