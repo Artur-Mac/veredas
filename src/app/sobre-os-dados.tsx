@@ -20,6 +20,7 @@ import type { Confianca, FonteDaRua, MetaDoIndice } from "../dados/contratos";
 import { formatarData, formatarNumero } from "../dados/formatos";
 import { BAIRROS_COBERTOS, bairroPorSlug } from "../dados/recife/bairros";
 import { META } from "../dados/recife/indice";
+import { FONTES_DO_MAPA_BASE } from "../dados/recife/mapaBase";
 import { useTema } from "../tema/Tema";
 import { RAIO, TOQUE_MINIMO, comAlfa } from "../tema/tokens";
 
@@ -227,6 +228,58 @@ function ApagarMeusDados() {
   );
 }
 
+/** O que o desenho dos mapas não é: cada item evita uma leitura errada do fundo. */
+const O_MAPA_NAO_E: string[] = [
+  "Não é foto de satélite: é um desenho feito com o cadastro da Prefeitura.",
+  "Onde a base não tem o lote, aparece só a quadra. É comum nos morros e na periferia.",
+  "A forma do lote não é a planta do prédio: mostra o terreno, não a construção.",
+];
+
+/** Nomes das bases do mapa, com a data mais recente de modificação, lidos do módulo gerado (nada escrito à mão). */
+function resumoDasBasesDoMapa(): { nomes: string; conjuntos: string; modificadoEm: string } {
+  const nomes = FONTES_DO_MAPA_BASE.map((f) => f.nome);
+  const conjuntos = [...new Set(FONTES_DO_MAPA_BASE.map((f) => f.conjunto))];
+  const juntar = (l: string[]) => (l.length <= 1 ? l.join("") : `${l.slice(0, -1).join(", ")} e ${l[l.length - 1]}`);
+  const datas = FONTES_DO_MAPA_BASE.map((f) => f.lastModified).filter((d): d is string => !!d).sort();
+  return {
+    nomes: juntar(nomes),
+    conjuntos: juntar(conjuntos.map((c) => `"${c}"`)),
+    modificadoEm: datas.length ? diaGravado(datas[datas.length - 1] ?? null) : "Não informado",
+  };
+}
+
+/** O fundo dos mapas: ruas, quadras, lotes, bairros, água, praças e pontes. */
+function MapaBase() {
+  const r = resumoDasBasesDoMapa();
+  return (
+    <View style={{ gap: 8 }}>
+      <Texto tipo="secao" role="heading" aria-level={3} style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>
+        O desenho dos mapas
+      </Texto>
+      <CaixaCreme gap={6}>
+        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 17 }}>
+          {`O fundo dos mapas mostra ruas com nome, quadras, lotes, bairros, rios e canais, praças e pontes. Vem das bases ${r.nomes}, nos conjuntos ${r.conjuntos} do portal de dados abertos da Prefeitura do Recife.`}
+        </Texto>
+        <View style={{ gap: 3 }}>
+          <Fato rotulo="Licença" valor="ODbL" />
+          <Fato rotulo="Modificado em" valor={r.modificadoEm} numerico={r.modificadoEm !== "Não informado"} />
+          <Fato rotulo="Crédito no mapa" valor="Base: Prefeitura do Recife (ODbL)" />
+        </View>
+        <View style={{ gap: 3, marginTop: 4 }}>
+          <Texto tipo="secao" style={{ fontSize: 12.5, lineHeight: 18, fontWeight: "600" }}>
+            O que o desenho não é
+          </Texto>
+          {O_MAPA_NAO_E.map((t) => (
+            <Texto key={t} tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 17 }}>
+              {t}
+            </Texto>
+          ))}
+        </View>
+      </CaixaCreme>
+    </View>
+  );
+}
+
 export default function SobreOsDados() {
   const [mostrarBairros, definirMostrarBairros] = useState(false);
   const leitura = lerFontes();
@@ -284,6 +337,8 @@ export default function SobreOsDados() {
             ))}
           </View>
         ) : null}
+
+        <MapaBase />
 
         <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
           {ATRIBUICAO}
