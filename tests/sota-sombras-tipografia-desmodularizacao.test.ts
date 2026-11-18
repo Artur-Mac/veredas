@@ -31,7 +31,11 @@ import { ondeMaisProcurar } from "../src/dados/escolha";
 import { DueloFinalistas } from "../src/componentes/cidadao/DueloFinalistas";
 import { ConvergenciaFamiliar } from "../src/componentes/cidadao/ConvergenciaFamiliar";
 import { compararRotinaDoisDestinos, estimarMinutosPicoIdaVolta } from "../src/dados/mobilidade/rotinaCasal";
-import { auditarTextoColadoCidadao } from "../src/dados/documentos/copilotoPreSinal";
+import {
+  ORIENTACAO_CNIB_ONR,
+  PRAZOS_REFERENCIA_PRE_SINAL,
+  auditarTextoColadoCidadao,
+} from "../src/dados/documentos/copilotoPreSinal";
 import { avaliarCaminhabilidadeEVidaNaRua } from "../src/dados/dossie/caminhabilidadeEVidaNaRua";
 import { VidaAPeNaQuadra } from "../src/componentes/visual/VidaAPeNaQuadra";
 import { SimuladorBolso15Segundos } from "../src/componentes/visual/SimuladorBolso15Segundos";
@@ -1249,5 +1253,69 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(secaoMatch).toContain("borderTopWidth: 1");
     expect(secaoMatch).not.toMatch(/\bborderWidth:\s*1\b/);
     expect(perfilSrc).not.toMatch(/minHeight:\s*40\b/);
+  });
+
+  it("exibe janelas de validade B4, orientação CNIB, observabilidade Cherre e alvos >= 44px em CopilotoDocumentosPreSinal", () => {
+    expect(PRAZOS_REFERENCIA_PRE_SINAL).toHaveLength(4);
+    expect(PRAZOS_REFERENCIA_PRE_SINAL.some((p) => /30 dias/i.test(p.prazo))).toBe(true);
+    expect(PRAZOS_REFERENCIA_PRE_SINAL.some((p) => /180 dias/i.test(p.prazo))).toBe(true);
+    expect(ORIENTACAO_CNIB_ONR).toContain("não coleta nem consulta CPF");
+
+    const vazio = auditarTextoColadoCidadao("   ");
+    expect(vazio.camposReconhecidos).toEqual([]);
+    expect(vazio.camposAusentesNoTrecho).toEqual([]);
+
+    const parcial = auditarTextoColadoCidadao("Ata de assembleia aprova cota extra.");
+    expect(parcial.camposReconhecidos).toContain("Atos R-n / AV-n ou cláusulas de condomínio");
+    expect(parcial.camposAusentesNoTrecho).toContain("Chave CNM (16 dígitos)");
+    expect(parcial.camposAusentesNoTrecho).toContain("Data de emissão");
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(CopilotoDocumentosPreSinal, {
+            nomeImovel: "Edifício Solar",
+            anoConstrucao: 2012,
+            unidades: 28,
+            chaveLote14: "12345678901234",
+          }),
+        ),
+      );
+    });
+
+    const togglePrazos = tree.root.find((n) => n.props.testID === "toggle-prazos-pre-sinal");
+    act(() => {
+      togglePrazos.props.onPress();
+    });
+    const listaPrazos = tree.root.find((n) => n.props.testID === "lista-prazos-pre-sinal");
+    expect(listaPrazos).toBeDefined();
+    const txtPrazos = extrairTextos(tree.toJSON()).join("\n");
+    expect(txtPrazos).toContain("Até 30 dias da emissão");
+    expect(txtPrazos).toContain("180 dias da emissão");
+    expect(txtPrazos).toContain("onr.org.br");
+
+    const toggleLeitor = tree.root.find((n) => n.props.testID === "toggle-leitor-rapido-doc");
+    act(() => {
+      toggleLeitor.props.onPress();
+    });
+    const inputDoc = tree.root.find((n) => n.props.testID === "input-texto-documento");
+    act(() => {
+      inputDoc.props.onChangeText("Ata de assembleia aprova cota extra.");
+    });
+    const obsNode = tree.root.find((n) => n.props.testID === "observabilidade-leitura-doc");
+    expect(obsNode).toBeDefined();
+    const obsTxt = extrairTextos(tree.toJSON()).join("\n");
+    expect(obsTxt).toContain("Lido neste recorte");
+    expect(obsTxt).toContain("Ausente neste recorte");
+
+    const copSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "visual", "CopilotoDocumentosPreSinal.tsx"),
+      "utf8",
+    );
+    expect(copSrc).not.toMatch(/minHeight:\s*(?:38|42)\b/);
+    expect(copSrc).not.toContain("TOQUE_MINIMO - 6");
   });
 });

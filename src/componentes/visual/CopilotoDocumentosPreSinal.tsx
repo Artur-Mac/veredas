@@ -4,7 +4,9 @@ import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import type { EstadoItemPacoteDocumental } from "../../nucleo/documentos/auditorDocumental";
 import {
   AVISO_LEITURA_INDEPENDENTE,
+  ORIENTACAO_CNIB_ONR,
   PACOTE_PRE_SINAL_ITENS,
+  PRAZOS_REFERENCIA_PRE_SINAL,
   auditarTextoColadoCidadao,
   calcularRateioReserva,
   extrairChaveCnm,
@@ -63,6 +65,7 @@ export function CopilotoDocumentosPreSinal({
   const [saldoReserva, setSaldoReserva] = useState<number>(50_000);
   const [verPerguntas, setVerPerguntas] = useState<boolean>(false);
   const [verLeitorDoc, setVerLeitorDoc] = useState<boolean>(false);
+  const [verPrazos, setVerPrazos] = useState<boolean>(false);
   const [textoColado, setTextoColado] = useState<string>("");
   const [copiado, setCopiado] = useState<boolean>(false);
   const [estadosPacote, setEstadosPacote] = useState<
@@ -249,6 +252,20 @@ export function CopilotoDocumentosPreSinal({
                     leituraDoc.cnmFormatada ? ` · CNM ${leituraDoc.cnmFormatada}` : ""
                   }`}
                 </Texto>
+                <View testID="observabilidade-leitura-doc" style={styles.blocoObservabilidade}>
+                  <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoObs}>
+                    {`Lido neste recorte: ${
+                      leituraDoc.camposReconhecidos.length > 0
+                        ? leituraDoc.camposReconhecidos.join(", ")
+                        : "somente texto corrido sem identificação estruturada"
+                    }.`}
+                  </Texto>
+                  {leituraDoc.camposAusentesNoTrecho.length > 0 ? (
+                    <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoObs}>
+                      {`Ausente neste recorte: ${leituraDoc.camposAusentesNoTrecho.join(", ")}.`}
+                    </Texto>
+                  ) : null}
+                </View>
                 {leituraDoc.onusAtivosResumo.map((o, i) => (
                   <View
                     key={`onus-${i}`}
@@ -433,6 +450,57 @@ export function CopilotoDocumentosPreSinal({
           {AVISO_LEITURA_INDEPENDENTE}
         </Texto>
       </View>
+
+      {/* Prazos de referência pré-sinal e orientação CNIB / ONR (B4 / ONR app26) */}
+      <View style={[styles.secao, { borderTopWidth: 1, borderTopColor: cor("cor-linha") }]}>
+        <Pressable
+          testID="toggle-prazos-pre-sinal"
+          accessibilityRole="button"
+          accessibilityState={{ expanded: verPrazos }}
+          onPress={() => setVerPrazos((v) => !v)}
+          style={styles.botaoVerScript}
+        >
+          <Texto tipo="etiqueta" style={styles.subTitulo}>
+            Prazos de referência das certidões e CNIB
+          </Texto>
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.acaoVer}>
+            {verPrazos ? "Ocultar" : "Ver prazos"}
+          </Texto>
+        </Pressable>
+
+        {verPrazos ? (
+          <View testID="lista-prazos-pre-sinal" style={styles.listaPrazos}>
+            {PRAZOS_REFERENCIA_PRE_SINAL.map((p, idx) => (
+              <View
+                key={p.id}
+                style={[
+                  styles.linhaPrazo,
+                  idx > 0
+                    ? { borderTopWidth: 1, borderTopColor: cor("cor-linha") }
+                    : undefined,
+                ]}
+              >
+                <View style={styles.linhaTopoCalc}>
+                  <Texto tipo="apoio" style={styles.pacoteTitulo}>
+                    {p.titulo}
+                  </Texto>
+                  <Texto tipo="numero" cor="cor-azul-cadastral" style={styles.prazoValor}>
+                    {p.prazo}
+                  </Texto>
+                </View>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.pacoteSub}>
+                  {`Referência processual antes do sinal · ${p.origem}`}
+                </Texto>
+              </View>
+            ))}
+            <View style={[styles.linhaPrazo, { borderTopWidth: 1, borderTopColor: cor("cor-linha") }]}>
+              <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoObs}>
+                {ORIENTACAO_CNIB_ONR}
+              </Texto>
+            </View>
+          </View>
+        ) : null}
+      </View>
     </View>
   );
 }
@@ -484,7 +552,7 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   linhaPacote: {
-    minHeight: 42,
+    minHeight: TOQUE_MINIMO,
     paddingVertical: 7,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -555,7 +623,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   chip: {
-    minHeight: 38,
+    minHeight: TOQUE_MINIMO,
     borderRadius: RAIO.pilula,
     paddingHorizontal: 11,
     alignItems: "center",
@@ -572,11 +640,31 @@ const styles = StyleSheet.create({
     fontVariant: ["tabular-nums"],
   },
   botaoVerScript: {
-    minHeight: TOQUE_MINIMO - 6,
+    minHeight: TOQUE_MINIMO,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     gap: 8,
+  },
+  blocoObservabilidade: {
+    gap: 2,
+    paddingBottom: 2,
+  },
+  textoObs: {
+    fontSize: 11.5,
+    lineHeight: 16,
+  },
+  listaPrazos: {
+    gap: 0,
+  },
+  linhaPrazo: {
+    paddingVertical: 7,
+    gap: 2,
+  },
+  prazoValor: {
+    fontSize: 11.5,
+    fontWeight: "700",
+    fontVariant: ["tabular-nums"],
   },
   acaoVer: {
     fontSize: 12,

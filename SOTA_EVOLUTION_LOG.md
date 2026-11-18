@@ -47,5 +47,5 @@ Branch: `feat/vereda-visual-power-overhaul`
 - [x] **S27**: End-to-end decoding & rendering for single-property private hash links `#v=` in `salaDeDecisao.ts`, `CartaoResumoCompartilhado.tsx`, `Sala.tsx`, and `sala.tsx` (`HomeWiseDocs R24` fix; `4/4` suites, `196/196` tests).
 - [x] **S28**: Multi-criteria walkability search with live counter & walk-to-market filter in `OndeMaisProcurarNoPiloto` (`NeighborhoodScout app14` §6.2; `4/4` suites, `177/177` tests).
 - [x] **S29**: Hairline demodularization & WCAG touch-target cleanup across `creditos.tsx` and `perfil-domicilio.tsx` + full 98-suite (`2043/2043` tests) & live Metro (`ANDROID 200 6681173`, `WEB 200 3901350`) verification.
-- [ ] **S30**: Pre-contract statutory validity windows (`B4` / `HomeWiseDocs` / `Eli`) in `CopilotoDocumentosPreSinal.tsx` & `copilotoPreSinal.ts` + `caderno/` / `visita-v1/` demodularization audit.
-- [ ] **S31**: Competitive discovery wave from `docs/projetosraiox/` (`app18`–`app30`) and `/home/v/Documents/mcphub/EnemiesHub` (read-only product/UX).
+- [x] **S30**: Pre-contract statutory validity windows (`B4` / `HomeWiseDocs` / `ONR app26` CNIB guidance), honest scanner observability (`Cherre app27` §6.5), and WCAG >= 44px touch targets in `copilotoPreSinal.ts` & `CopilotoDocumentosPreSinal.tsx` (`3/3` suites, `62/62` tests).
+- [ ] **S31**: Deterministic IPTU exemption checklist (`Ownwell app30` §6.1 / `B7`), pre-sinal billing reminder (`Winker app22` §6.4), and `alertaMarinha` demodularization in `Custo.tsx`.

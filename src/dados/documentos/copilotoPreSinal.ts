@@ -125,11 +125,50 @@ export const PACOTE_PRE_SINAL_ITENS: readonly ItemPacotePreSinal[] = [
   },
 ];
 
+export const ORIENTACAO_CNIB_ONR =
+  "Indisponibilidade de bens do vendedor (CNIB / ONR): consulte diretamente no portal oficial onr.org.br; este app não coleta nem consulta CPF.";
+
+export type PrazoReferenciaPreSinal = {
+  id: string;
+  titulo: string;
+  prazo: string;
+  origem: string;
+};
+
+export const PRAZOS_REFERENCIA_PRE_SINAL: readonly PrazoReferenciaPreSinal[] = [
+  {
+    id: "matricula_30",
+    titulo: "Matrícula de ônus reais",
+    prazo: "Até 30 dias da emissão",
+    origem: "Cartório de Registro / ONR",
+  },
+  {
+    id: "certidoes_municipais",
+    titulo: "Certidões fiscais municipais (IPTU)",
+    prazo: "60 a 90 dias conforme emissão",
+    origem: "Portal Recife em Dia",
+  },
+  {
+    id: "cndt_tst",
+    titulo: "Certidão negativa trabalhista (CNDT)",
+    prazo: "180 dias da emissão",
+    origem: "Justiça do Trabalho (TST)",
+  },
+  {
+    id: "quitacao_condo",
+    titulo: "Declaração de quitação condominial",
+    prazo: "Mês vigente antes do sinal",
+    origem: "Síndico ou administradora",
+  },
+];
+
 export type ResumoTextoColadoCidadao = {
   classeRotulo: string;
   cnmFormatada: string | null;
   cnmValida: boolean;
   validade30DiasRotulo: string;
+  camposReconhecidos: string[];
+  camposAusentesNoTrecho: string[];
   onusAtivosResumo: { atoNumero: string; titulo: string; citacao: string }[];
   alertasCondoScanResumo: {
     codigo: AlertaCondoScan["codigo"];
@@ -181,6 +220,8 @@ export function auditarTextoColadoCidadao(
       cnmFormatada: null,
       cnmValida: false,
       validade30DiasRotulo: "Sem data informada",
+      camposReconhecidos: [],
+      camposAusentesNoTrecho: [],
       onusAtivosResumo: [],
       alertasCondoScanResumo: [],
     };
@@ -200,11 +241,38 @@ export function auditarTextoColadoCidadao(
         ? "Acima de 30 dias (pedir certidão atualizada)"
         : "Sem data informada";
 
+  const camposReconhecidos: string[] = [];
+  const camposAusentesNoTrecho: string[] = [];
+
+  if (audit.cnmEncontrado) {
+    camposReconhecidos.push("Chave CNM (16 dígitos)");
+  } else {
+    camposAusentesNoTrecho.push("Chave CNM (16 dígitos)");
+  }
+
+  if (dataEmissaoIso || /\b\d{2}\/\d{2}\/\d{4}\b|\b20\d{2}\b/.test(limpo)) {
+    camposReconhecidos.push("Data ou ano de referência");
+  } else {
+    camposAusentesNoTrecho.push("Data de emissão");
+  }
+
+  if (
+    audit.onusAtivos.length > 0 ||
+    audit.alertasCondoScan.length > 0 ||
+    /\b(?:R|AV)-?\d+\b|\bassembleia\b|\bfundo de reserva\b/i.test(limpo)
+  ) {
+    camposReconhecidos.push("Atos R-n / AV-n ou cláusulas de condomínio");
+  } else {
+    camposAusentesNoTrecho.push("Atos R-n / AV-n ou regras condominiais");
+  }
+
   return {
     classeRotulo: rotuloClasseDoc(audit.classeDocumental),
     cnmFormatada: audit.cnmEncontrado?.formatado ?? null,
     cnmValida: Boolean(audit.cnmEncontrado?.valido),
     validade30DiasRotulo,
+    camposReconhecidos,
+    camposAusentesNoTrecho,
     onusAtivosResumo: audit.onusAtivos.map((o) => ({
       atoNumero: o.atoNumero,
       titulo: rotuloOnusCidadao(o.tipo),
