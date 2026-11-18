@@ -1,5 +1,6 @@
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
+import { classificarNivelSossegoPorDbInterno } from "../../dados/acustica/decomporSossego";
 import type { VereditoConfortoTermico } from "../../dados/clima/confortoTermico";
 import { formatarReaisCompacto } from "../../dados/formatos";
 import { Texto } from "../Texto";
@@ -69,6 +70,7 @@ export function PlacarHeroi5Segundos({
   const confortoQuente =
     conforto.zona === "quente_tarde" || conforto.zona === "tende_abafar";
 
+  const sossego = classificarNivelSossegoPorDbInterno(ruidoDormitorioDb);
   const ruidoAlto = ruidoDormitorioDb > 45;
   const precoAcima = comparacaoM2Pct !== null && comparacaoM2Pct >= 10;
 
@@ -104,8 +106,8 @@ export function PlacarHeroi5Segundos({
     {
       id: "ruido",
       rotulo: "Sossego à noite",
-      valorGrande: `~${Math.round(ruidoDormitorioDb)} dB`,
-      subtitulo: ruidoAlto ? "Acima do silêncio noturno" : "Ambiente noturno calmo",
+      valorGrande: sossego.nivel,
+      subtitulo: sossego.subtituloPlacar,
       corPonto: ruidoAlto ? "cor-barro" : "cat-mare",
       corDestaque: ruidoAlto ? "cor-barro-texto" : "cor-azul-cadastral",
     },

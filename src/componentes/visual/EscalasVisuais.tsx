@@ -1,16 +1,23 @@
 import React, { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
+import { decomporSossego, type NivelSossego } from "../../dados/acustica/decomporSossego";
 import type { ResultadoAcustica3D } from "../../nucleo/motores/acustica3d";
 import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
 import { RAIO, TOQUE_MINIMO, type TokenDeCor } from "../../tema/tokens";
 
-const MARCOS_RUIDO = [
-  { db: 30, rotulo: "Biblioteca\n30 dB", corToken: "cat-mare" as TokenDeCor },
-  { db: 45, rotulo: "Conversa calma\n45 dB", corToken: "cor-salvia" as TokenDeCor },
-  { db: 65, rotulo: "Rua ativa\n65 dB", corToken: "cor-acao" as TokenDeCor },
-  { db: 80, rotulo: "Avenida / obra\n80 dB", corToken: "cor-barro" as TokenDeCor },
+const FAIXAS_SOSSEGO = [
+  { id: "silencioso", rotulo: "Silencioso\nmadrugada", corToken: "cat-mare" as TokenDeCor },
+  { id: "calmo", rotulo: "Calmo\nrua local", corToken: "cor-salvia" as TokenDeCor },
+  { id: "moderado", rotulo: "Moderado\nvia mista", corToken: "cor-acao" as TokenDeCor },
+  { id: "intenso", rotulo: "Intenso\ncorredor", corToken: "cor-barro" as TokenDeCor },
 ];
+
+function corNivelSossego(nivel: NivelSossego): TokenDeCor {
+  if (nivel === "Calmo") return "cor-salvia";
+  if (nivel === "Moderado") return "cor-acao";
+  return "cor-barro";
+}
 
 export function EscalaDeRuidoHumana({
   acustica,
@@ -20,16 +27,8 @@ export function EscalaDeRuidoHumana({
   anoConstrucao: number | null;
 }) {
   const { cor } = useTema();
-  const extDb = Math.round(acustica.ruidoExternoCombinadoDbA);
-  const intDb = Math.round(acustica.ruidoInternoDormitorioDbA);
-  const silencioso = intDb <= 45;
-  const pctInterno = Math.max(4, Math.min(94, ((intDb - 25) / 60) * 100));
-  const pctExterno = Math.max(4, Math.min(96, ((extDb - 25) / 60) * 100));
-
-  const janelaInfo =
-    anoConstrucao !== null && anoConstrucao < 2013
-      ? `Prédio de ${anoConstrucao}: janelas antigas filtram cerca de ${Math.round(acustica.isolamentoFachadaD2mnTwDb)} dB (vale checar vedação na visita).`
-      : `Isolamento estimado da janela reduz ~${Math.round(acustica.isolamentoFachadaD2mnTwDb)} dB para dentro do quarto.`;
+  const sintese = decomporSossego(acustica, anoConstrucao);
+  const silencioso = sintese.nivelQuarto !== "Intenso";
 
   return (
     <View
@@ -42,12 +41,10 @@ export function EscalaDeRuidoHumana({
       <View style={styles.topoRow}>
         <View style={{ flex: 1, gap: 2 }}>
           <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.kicker}>
-            Barulho na fachada e no quarto
+            Sossego à noite por fonte
           </Texto>
           <Texto tipo="secao" style={styles.titulo}>
-            {silencioso
-              ? `Quarto calmo à noite (~${intDb} dB)`
-              : `Ruído noturno acima do conforto (~${intDb} dB)`}
+            {sintese.tituloQuarto}
           </Texto>
         </View>
         <View
@@ -56,8 +53,12 @@ export function EscalaDeRuidoHumana({
             { backgroundColor: cor(silencioso ? "cor-salvia-suave" : "cor-barro-suave") },
           ]}
         >
-          <Texto tipo="etiqueta" cor={silencioso ? "cor-salvia-escura" : "cor-barro-texto"} style={styles.textoPilula}>
-            {silencioso ? "Tranquilo" : "Atenção à janela"}
+          <Texto
+            tipo="etiqueta"
+            cor={silencioso ? "cor-salvia-escura" : "cor-barro-texto"}
+            style={styles.textoPilula}
+          >
+            {sintese.rotuloSelo}
           </Texto>
         </View>
       </View>
@@ -67,19 +68,22 @@ export function EscalaDeRuidoHumana({
           <View
             style={[
               styles.ponteiroExterno,
-              { left: `${pctExterno}%`, backgroundColor: cor("cor-traco") },
+              { left: `${sintese.indice0a100Externo}%`, backgroundColor: cor("cor-traco") },
             ]}
           />
           <View
             style={[
               styles.ponteiroInterno,
-              { left: `${pctInterno}%`, backgroundColor: cor(silencioso ? "cor-salvia-escura" : "cor-barro") },
+              {
+                left: `${sintese.indice0a100Interno}%`,
+                backgroundColor: cor(silencioso ? "cor-salvia-escura" : "cor-barro"),
+              },
             ]}
           />
         </View>
         <View style={styles.faixas}>
-          {MARCOS_RUIDO.map((m) => (
-            <View key={m.db} style={styles.faixaCol}>
+          {FAIXAS_SOSSEGO.map((m) => (
+            <View key={m.id} style={styles.faixaCol}>
               <View style={[styles.faixaCor, { backgroundColor: cor(m.corToken) }]} />
               <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoFaixa}>
                 {m.rotulo}
@@ -88,12 +92,56 @@ export function EscalaDeRuidoHumana({
           ))}
         </View>
         <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.legendaPinos}>
-          {`Ponto forte: dentro do quarto (${intDb} dB) · Ponto cinza: na rua fora da janela (${extDb} dB)`}
+          Ponto forte: dentro do quarto · Ponto cinza: na rua fora da janela
         </Texto>
       </View>
 
+      {/* Decomposição por fonte sem caixas aninhadas (HowLoud + Mapa Sossego) */}
+      <View style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 8, gap: 7 }}>
+        {sintese.fontes.map((f) => (
+          <View
+            key={f.id}
+            style={{ flexDirection: "row", alignItems: "flex-start", gap: 8 }}
+          >
+            <View
+              style={{
+                width: 7,
+                height: 7,
+                borderRadius: 3.5,
+                marginTop: 5,
+                backgroundColor: cor(corNivelSossego(f.nivel)),
+              }}
+            />
+            <View style={{ flex: 1, gap: 1 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                  gap: 8,
+                }}
+              >
+                <Texto tipo="etiqueta" style={{ fontSize: 12.5, fontWeight: "700" }}>
+                  {f.titulo}
+                </Texto>
+                <Texto
+                  tipo="apoio"
+                  cor={f.nivel === "Intenso" ? "cor-barro-texto" : "cor-texto-apoio"}
+                  style={{ fontSize: 11.5, fontWeight: "600" }}
+                >
+                  {f.nivel}
+                </Texto>
+              </View>
+              <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 16 }}>
+                {f.resumo}
+              </Texto>
+            </View>
+          </View>
+        ))}
+      </View>
+
       <Texto tipo="corpo" style={styles.descricao}>
-        {janelaInfo}
+        {sintese.notaJanela}
       </Texto>
     </View>
   );

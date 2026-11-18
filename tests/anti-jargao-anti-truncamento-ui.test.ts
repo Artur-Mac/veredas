@@ -171,8 +171,9 @@ describe("Anti-Jargão, Anti-Truncamento e Tokens Puros na Nova Camada Visual", 
     expect(completo).not.toMatch(/R\$\s*[\d.,]+(?:\.\.\.|…)/);
     expect(completo).toContain("R$ 1,9 milhão");
 
-    // 2. Zero jargao tecnico de camada 3 exposto ao cidadao
+    // 2. Zero jargao tecnico de camada 3 nem dB bruto exposto ao cidadao
     expect(REGEX_JARGON_CAMADA1.test(completo)).toBe(false);
+    expect(completo).not.toMatch(/\d\s*dB\b/i);
 
     // 3. Zero palavras proibidas e zero uso solto de "seguro"
     for (const regra of PALAVRAS_PROIBIDAS_UI) {

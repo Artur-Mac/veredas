@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { classificarNivelSossegoPorDbInterno } from "../../dados/acustica/decomporSossego";
 import { formatarReais, formatarReaisCompacto } from "../../dados/formatos";
 import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
@@ -92,9 +93,9 @@ export function MatrizVisualComparar({
           : "empate",
     },
     {
-      criterio: "Ruído no quarto",
-      valorA: `~${Math.round(opcaoA.ruidoInternoDb)} dB`,
-      valorB: `~${Math.round(opcaoB.ruidoInternoDb)} dB`,
+      criterio: "Sossego no quarto",
+      valorA: classificarNivelSossegoPorDbInterno(opcaoA.ruidoInternoDb).rotuloComparar,
+      valorB: classificarNivelSossegoPorDbInterno(opcaoB.ruidoInternoDb).rotuloComparar,
       vencedor:
         Math.abs(opcaoA.ruidoInternoDb - opcaoB.ruidoInternoDb) >= 4
           ? opcaoA.ruidoInternoDb < opcaoB.ruidoInternoDb

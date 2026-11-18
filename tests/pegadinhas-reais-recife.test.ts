@@ -206,6 +206,8 @@ describe("3 Pegadinhas Reais do Mercado Imobiliário do Recife", () => {
     });
     const txt = textosDoNo(tree.toJSON());
     expect(txt).toContain("Atenção à janela");
-    expect(txt).toContain("Prédio de 1995: janelas antigas filtram cerca de");
+    expect(txt).toContain("Prédio de 1995: janelas antigas filtram menos o som da rua");
+    expect(txt).toContain("Trânsito da via");
+    expect(txt).not.toMatch(/\d\s*dB\b/i);
   });
 });

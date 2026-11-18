@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { classificarNivelSossegoPorDbInterno } from "../../dados/acustica/decomporSossego";
 import type { CandidatoDecisao } from "../../dados/cidadao/dominanciaInvisivel";
 import { useTema } from "../../tema/Tema";
 import { RAIO, comAlfa } from "../../tema/tokens";
@@ -29,9 +30,9 @@ export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; o
       Math.abs(opcaoA.custoMensalTotalReais - opcaoB.custoMensalTotalReais) < 50,
     ),
     linhaDiferenca(
-      "Conforto (ruído no quarto)",
-      `${opcaoA.ruidoInternoDb.toFixed(1)} dB`,
-      `${opcaoB.ruidoInternoDb.toFixed(1)} dB`,
+      "Sossego no quarto",
+      classificarNivelSossegoPorDbInterno(opcaoA.ruidoInternoDb).rotuloComparar,
+      classificarNivelSossegoPorDbInterno(opcaoB.ruidoInternoDb).rotuloComparar,
       Math.abs(opcaoA.ruidoInternoDb - opcaoB.ruidoInternoDb) < 2,
     ),
     linhaDiferenca(
@@ -78,13 +79,13 @@ export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; o
           : "Os dois finalistas estão tecnicamente próximos em todas as dimensões medidas."}
       </Texto>
 
-      {exibidas.map((l) => (
+      {exibidas.map((l, idx) => (
         <View
           key={l.rotulo}
           style={{
-            backgroundColor: cor("cor-creme"),
-            borderRadius: RAIO.quadrado,
-            padding: 10,
+            borderTopWidth: idx === 0 ? 1 : 1,
+            borderTopColor: cor("cor-linha"),
+            paddingTop: 10,
             gap: 4,
           }}
         >
