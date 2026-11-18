@@ -2362,4 +2362,109 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     );
     expect(explorarSrc).not.toMatch(/borderTopWidth:\s*0\.5/);
   });
+
+  it("permite ocultar valores financeiros e exclui notas privadas por padrão no Resumo Executivo em S53", () => {
+    const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: 90, andar: 5 });
+    const conf = avaliarConfortoTermico({
+      andar: 5,
+      pavimentosTotais: 12,
+      fachadaAzimuteGraus: 90,
+      bioclimatico: bio,
+    });
+    const radar = analisarRadarVistaELote({
+      centro: [-34.896, -8.121],
+      edificio: null,
+      fachadaAtiva: inferirFachadasDoEdificio({
+        edificio: { id: "x", bairro: "boa-viagem", logradouro: "Rua X", centro: [-34.896, -8.121], poligono: null },
+        textoAnuncio: "",
+      }).frente,
+      andar: 5,
+      vizinhos: [],
+      obrasProximas: null,
+    });
+    const pulso = calcularPulsoDaQuadra({
+      conforto: conf,
+      acustica: avaliarAcustica3d({
+        andar: 5,
+        fachadaVoltadaParaVia: "frente",
+        tipologiaVia: "local",
+        distanciaViaM: 12,
+        anoConstrucao: 2016,
+        precoImovelReais: 850_000,
+      }),
+      anoConstrucao: 2016,
+      obrasProximas: null,
+      visaoRua: null,
+      vinculoConfirmado: true,
+      precoInformado: true,
+      condominioInformado: true,
+      comparacaoM2Pct: 0,
+      spuAtivo: false,
+    });
+
+    const entradaResumo = {
+      nomeImovel: "Residencial Privacidade",
+      endereco: "Boa Viagem, Recife",
+      modalidade: "compra" as const,
+      precoPrincipalReais: 850_000,
+      mensalBolsoRealReais: 5_400,
+      dinheiroEntrarReais: 195_000,
+      fachadaResumo: "Nascente (5º andar)",
+      conforto: conf,
+      sossegoNivel: "Calmo",
+      radar,
+      pulso,
+      anoConstrucao: 2016,
+      unidades: 24,
+      chaveLote14: "12345678901234",
+      spuAtivo: false,
+    };
+
+    const textoOculto = gerarTextoResumoExecutivo(entradaResumo, {
+      ocultarValoresFinanceiros: true,
+    });
+    expect(textoOculto).not.toContain("R$ 850.000");
+    expect(textoOculto).toContain("Ocultado pelo usuário neste envio");
+    expect(textoOculto).toContain("Ocultados pelo usuário");
+    expect(textoOculto).toContain("notas privadas do seu caderno ficam de fora por padrão");
+
+    const linkOculto = gerarLinkPrivadoSemServidor({
+      entrada: entradaResumo,
+      ocultarValoresFinanceiros: true,
+    });
+    const hash = linkOculto.split("#")[1]!;
+    const dec = lerFragmento(`#${hash}`);
+    expect(dec.tipo).toBe("resumo");
+    if (dec.tipo === "resumo") {
+      expect(dec.resumo.p).toBeNull();
+      expect(dec.resumo.mb).toBeNull();
+    }
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(ExportarResumoExecutivo, { entrada: entradaResumo }),
+        ),
+      );
+    });
+    const toggleValores = tree.root.find(
+      (n) => n.props.testID === "toggle-ocultar-valores-resumo",
+    );
+    const botaoPrevia = tree.root
+      .findAll((n) => typeof n.props.onPress === "function" && n.props.accessibilityState?.expanded !== undefined)[0]!;
+    act(() => {
+      toggleValores.props.onPress();
+      botaoPrevia.props.onPress();
+    });
+
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("Modo técnico ativo: valores financeiros ocultos");
+    expect(txt).not.toContain("R$ 850.000");
+    expect(txt).toContain("Ocultado pelo usuário neste envio");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+  });
 });

@@ -25,6 +25,7 @@ export function ExportarResumoExecutivo({
   const [linkCopiado, setLinkCopiado] = useState(false);
   const [linkGerado, setLinkGerado] = useState<string | null>(null);
   const [mostrarPrevia, setMostrarPrevia] = useState(false);
+  const [ocultarValores, setOcultarValores] = useState(false);
   const timerTextoRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const timerLinkRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -36,7 +37,9 @@ export function ExportarResumoExecutivo({
     [],
   );
 
-  const resumo = gerarTextoResumoExecutivo(entrada);
+  const resumo = gerarTextoResumoExecutivo(entrada, {
+    ocultarValoresFinanceiros: ocultarValores,
+  });
 
   const copiar = () => {
     void Clipboard.setStringAsync(resumo)
@@ -60,6 +63,7 @@ export function ExportarResumoExecutivo({
       analisePrincipal,
       outrasAnalises,
       origemWeb,
+      ocultarValoresFinanceiros: ocultarValores,
     });
     setLinkGerado(url);
     void Clipboard.setStringAsync(url)
@@ -94,6 +98,31 @@ export function ExportarResumoExecutivo({
       </View>
 
       <View style={[styles.rodape, { borderTopColor: cor("cor-linha") }]}>
+        <Pressable
+          testID="toggle-ocultar-valores-resumo"
+          accessibilityRole="switch"
+          accessibilityState={{ checked: ocultarValores }}
+          onPress={() => setOcultarValores((v) => !v)}
+          style={[
+            styles.botaoPrivacidade,
+            {
+              backgroundColor: ocultarValores
+                ? cor("cor-azul-cadastral-suave")
+                : cor("cor-papel-claro"),
+            },
+          ]}
+        >
+          <Texto
+            tipo="apoio"
+            cor={ocultarValores ? "cor-azul-cadastral" : "cor-texto-apoio"}
+            style={styles.textoPrivacidade}
+          >
+            {ocultarValores
+              ? "Modo técnico ativo: valores financeiros ocultos"
+              : "Ocultar valores financeiros ao enviar para vistoria ou síndico"}
+          </Texto>
+        </Pressable>
+
         <Pressable
           testID="botao-exportar-resumo-executivo"
           accessibilityRole="button"
@@ -226,5 +255,18 @@ const styles = StyleSheet.create({
     fontSize: 11.5,
     lineHeight: 16.5,
     fontVariant: ["tabular-nums"],
+  },
+  botaoPrivacidade: {
+    minHeight: TOQUE_MINIMO,
+    borderRadius: RAIO.pilula,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  textoPrivacidade: {
+    fontSize: 12,
+    fontWeight: "600",
+    textAlign: "center",
   },
 });

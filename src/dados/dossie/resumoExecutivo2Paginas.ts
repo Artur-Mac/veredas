@@ -23,7 +23,11 @@ export type EntradaResumoExecutivo = {
   spuAtivo: boolean;
 };
 
-export function gerarTextoResumoExecutivo(e: EntradaResumoExecutivo): string {
+export function gerarTextoResumoExecutivo(
+  e: EntradaResumoExecutivo,
+  opcoes?: { ocultarValoresFinanceiros?: boolean },
+): string {
+  const ocultar = Boolean(opcoes?.ocultarValoresFinanceiros);
   const compra = e.modalidade === "compra";
   const precoStr =
     e.precoPrincipalReais !== null
@@ -39,8 +43,8 @@ export function gerarTextoResumoExecutivo(e: EntradaResumoExecutivo): string {
       : "Caução / garantias conforme contrato";
 
   const pendenciasLista: string[] = [];
-  if (e.precoPrincipalReais === null) pendenciasLista.push("preço anunciado");
-  if (e.mensalBolsoRealReais === null) pendenciasLista.push("parcelas mensais completas");
+  if (!ocultar && e.precoPrincipalReais === null) pendenciasLista.push("preço anunciado");
+  if (!ocultar && e.mensalBolsoRealReais === null) pendenciasLista.push("parcelas mensais completas");
   if (!e.chaveLote14) pendenciasLista.push("chave municipal do lote");
   if (!e.anoConstrucao) pendenciasLista.push("ano de construção do prédio");
 
@@ -50,13 +54,17 @@ export function gerarTextoResumoExecutivo(e: EntradaResumoExecutivo): string {
     `Endereço de referência: ${e.endereco}`,
     "",
     "1. IDENTIFICAÇÃO E VALOR",
-    `• Pedido no anúncio: ${precoStr}`,
+    `• Pedido no anúncio: ${ocultar ? "Ocultado pelo usuário neste envio" : precoStr}`,
     `• Identificador municipal do lote: ${e.chaveLote14 ?? "A confirmar no vínculo"}`,
     `• Prédio: ${e.anoConstrucao ? `ano ${e.anoConstrucao}` : "ano a confirmar"}${e.unidades ? ` · ${e.unidades} unidades` : ""}${e.spuAtivo ? " · Terreno da União" : ""}`,
     "",
     "2. CAIXA DE ENTRADA E SAÍDA MENSAL REAL",
-    `• Caixa estimado para entrar: ${entradaStr}`,
-    `• Saída mensal estimada do bolso: ${mensalStr}`,
+    ...(ocultar
+      ? ["• Caixa e saída mensal: Ocultados pelo usuário (modo técnico para vistoria/síndico)"]
+      : [
+          `• Caixa estimado para entrar: ${entradaStr}`,
+          `• Saída mensal estimada do bolso: ${mensalStr}`,
+        ]),
     "",
     "3. SOL, VENTO E CONFORTO TÉRMICO",
     `• Orientação ativa: ${e.fachadaResumo}`,
@@ -76,6 +84,7 @@ export function gerarTextoResumoExecutivo(e: EntradaResumoExecutivo): string {
       ? `• Itens faltantes visíveis antes do sinal: ${pendenciasLista.join(", ")}.`
       : "• Campos estruturais deste resumo preenchidos; confirmar matrícula atualizada (CNM 16 dígitos) e atas antes do sinal.",
     "• Leitura independente baseada em cadastro municipal, geometria do lote e valores declarados. Não substitui certidão oficial nem vistoria presencial.",
+    "• Privacidade: notas privadas do seu caderno ficam de fora por padrão e nenhum dado passa por servidor.",
   ];
 
   return linhas.join("\n");
@@ -86,6 +95,7 @@ export function gerarLinkPrivadoSemServidor(params: {
   analisePrincipal?: AnaliseV2 | null;
   outrasAnalises?: readonly AnaliseV2[];
   origemWeb?: string;
+  ocultarValoresFinanceiros?: boolean;
 }): string {
   const origem = params.origemWeb ?? "https://vereda.local";
   const compativel = (params.outrasAnalises ?? []).find(
@@ -108,8 +118,8 @@ export function gerarLinkPrivadoSemServidor(params: {
     n: params.entrada.nomeImovel.slice(0, 60),
     e: params.entrada.endereco.slice(0, 80),
     m: params.entrada.modalidade,
-    p: params.entrada.precoPrincipalReais,
-    mb: params.entrada.mensalBolsoRealReais,
+    p: params.ocultarValoresFinanceiros ? null : params.entrada.precoPrincipalReais,
+    mb: params.ocultarValoresFinanceiros ? null : params.entrada.mensalBolsoRealReais,
     s: params.entrada.fachadaResumo,
   };
   return `${origem}/sala#v=${paraBase64Url(JSON.stringify(compacto))}`;
