@@ -72,6 +72,7 @@ import { TresPerguntasDoBolso } from "../../componentes/visual/TresPerguntasDoBo
 import { EscalaDeRuidoHumana, RelogioDoPredio, SilencioInteligente } from "../../componentes/visual/EscalasVisuais";
 import { analisarRadarVistaELote } from "../../dados/entorno/radarVistaELote";
 import { RadarVistaELote } from "../../componentes/visual/RadarVistaELote";
+import { CopilotoDocumentosPreSinal } from "../../componentes/visual/CopilotoDocumentosPreSinal";
 
 /** Recuo do painel (`.ds-panel`, padding 20 18): a posição de uma seção na tela soma este recuo ao topo do painel. */
 const RECUO_DO_PAINEL = 20;
@@ -762,12 +763,32 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                   saldo10AnosCompraVsAluguelReais={
                     tco10Anos ? tco10Anos.saldoLiquidoCompraSobreAluguel10AnosReais : null
                   }
+                  pendenciaDocumentalResumo={
+                    partesDeCusto.alertaMarinha
+                      ? "Terreno da União pede certidão atualizada do regime (ocupação ou aforamento) antes de fechar financiamento."
+                      : !vinculoConfirmado
+                        ? "Confirme o prédio no cadastro do Recife para cruzar IPTU oficial, matrícula e obras próximas."
+                        : analise.declarados.condominio.aConfirmar
+                          ? "Condomínio marcado para confirmação: peça o último boleto completo antes de enviar proposta."
+                          : predio?.anoConstrucao &&
+                              new Date().getFullYear() - predio.anoConstrucao >= 15
+                            ? "Antes do sinal, solicite a última ata de assembleia e o saldo atual do fundo de reserva."
+                            : null
+                  }
                 />
                 <EscalaDeRuidoHumana acustica={acustica} anoConstrucao={predio?.anoConstrucao ?? null} />
                 <RelogioDoPredio
                   anoConstrucao={predio?.anoConstrucao ?? null}
                   unidades={predio?.unidades ?? null}
                   pavimentos={predio?.pavimentos ?? null}
+                />
+                <CopilotoDocumentosPreSinal
+                  nomeImovel={analise.nome}
+                  anoConstrucao={predio?.anoConstrucao ?? null}
+                  unidades={predio?.unidades ?? null}
+                  chaveLote14={predio?.dsqfl ?? null}
+                  textoAnuncio={analise.extracao ? JSON.stringify(analise.extracao.campos) : analise.nome}
+                  spuAtivo={Boolean(partesDeCusto.alertaMarinha)}
                 />
                 <SilencioInteligente itensNormais={itensSilencio} />
               </View>

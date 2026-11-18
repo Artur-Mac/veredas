@@ -26,6 +26,7 @@ export type PropsTresPerguntasDoBolso = {
   riscoManutencaoPredioReais: number;
   excedenteMedianaM2Reais: number;
   saldo10AnosCompraVsAluguelReais?: number | null;
+  pendenciaDocumentalResumo?: string | null;
 };
 
 type FatiaBarra = {
@@ -54,6 +55,7 @@ export function TresPerguntasDoBolso({
   riscoManutencaoPredioReais,
   excedenteMedianaM2Reais,
   saldo10AnosCompraVsAluguelReais = null,
+  pendenciaDocumentalResumo = null,
 }: PropsTresPerguntasDoBolso) {
   const { cor } = useTema();
   const [copiado, setCopiado] = useState(false);
@@ -238,6 +240,20 @@ export function TresPerguntasDoBolso({
             </View>
           ))}
         </View>
+
+        {pendenciaDocumentalResumo ? (
+          <View
+            testID="nudge-pendencia-documental"
+            style={[styles.chamadaLateral, { borderLeftColor: cor("cor-acao") }]}
+          >
+            <Texto tipo="etiqueta" cor="cor-barro-texto" style={styles.textoDicaTitulo}>
+              Documentação para conferir junto deste custo
+            </Texto>
+            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
+              {pendenciaDocumentalResumo}
+            </Texto>
+          </View>
+        ) : null}
       </View>
 
       {/* Bloco 3: Visão de 10 anos */}
