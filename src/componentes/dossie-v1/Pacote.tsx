@@ -9,6 +9,7 @@ import type { ItemDaFicha } from "../../dados/dossie/fichaViva";
 import {
   auditarConjuntoDocumental,
   gerarPedidoDocumentosFaltantes,
+  gerarRoteiroTresPerguntasSindico,
   montarPacote,
   pacoteEmHtml,
   pacoteEmMarkdown,
@@ -57,6 +58,14 @@ export function PacoteParaEspecialista({ analise, visao, ficha }: { analise: Ana
       await Clipboard.setStringAsync(gerarPedidoDocumentosFaltantes(analise, auditoria));
       setAviso({ texto: "Pedido de documentos pendentes copiado para enviar.", tipo: "ok" });
     } catch { setAviso({ texto: "Não foi possível copiar o pedido agora.", tipo: "erro" }); }
+  };
+  const copiarPerguntasSindico = async () => {
+    try {
+      await Clipboard.setStringAsync(
+        gerarRoteiroTresPerguntasSindico(analise.nome, analise.declarados.condominio.valor),
+      );
+      setAviso({ texto: "3 perguntas rápidas para o síndico copiadas.", tipo: "ok" });
+    } catch { setAviso({ texto: "Não foi possível copiar o roteiro agora.", tipo: "erro" }); }
   };
   const temPendencia = auditoria.faltantes > 0 || auditoria.desatualizados > 0;
   return (
@@ -172,6 +181,26 @@ export function PacoteParaEspecialista({ analise, visao, ficha }: { analise: Ana
                 </Texto>
               </Pressionavel>
             ) : null}
+            <Pressionavel
+              testID="pacote-copiar-perguntas-sindico"
+              accessibilityRole="button"
+              accessibilityLabel="Copiar 3 perguntas rápidas para o síndico"
+              onPress={() => void copiarPerguntasSindico()}
+              style={{
+                minHeight: 44,
+                marginTop: 6,
+                paddingHorizontal: 14,
+                paddingVertical: 10,
+                borderRadius: 10,
+                backgroundColor: cor("cor-papel-claro"),
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Texto tipo="apoio" cor="cor-texto" style={{ fontSize: 13, lineHeight: 18, fontWeight: "700", fontVariant: ["tabular-nums"] }}>
+                Copiar 3 perguntas para o síndico
+              </Texto>
+            </Pressionavel>
           </View>
         ) : null}
       </View>

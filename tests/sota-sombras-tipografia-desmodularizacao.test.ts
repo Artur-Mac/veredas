@@ -57,6 +57,7 @@ import {
 import {
   auditarConjuntoDocumental,
   gerarPedidoDocumentosFaltantes,
+  gerarRoteiroTresPerguntasSindico,
 } from "../src/dados/pacoteEspecialista";
 import { montarTextoDivergenciasParaCorretor } from "../src/componentes/dossie-v1/Indicadores";
 import { descreverJanelaTemporalDaBase, GavetaDeFonte } from "../src/componentes/fonte/GavetaDeFonte";
@@ -3554,5 +3555,84 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     const txt = composto.map((c) => `${c.rotulo} ${c.nivel} ${c.detalhe}`).join(" ");
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+  });
+
+  it("Pacote gera 3 perguntas ao sindico e BlocoDeCusto mostra alerta de boleto ao lado do condominio (S91)", () => {
+    const custoSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "Custo.tsx"),
+      "utf8",
+    );
+    const pacoteSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "Pacote.tsx"),
+      "utf8",
+    );
+    expect(custoSrc).not.toMatch(/\bcomAlfa\b/);
+    expect(custoSrc).not.toMatch(/\bborderWidth:\s*1(?!\.)\b/);
+    expect(custoSrc).toContain("custo-alerta-doc-boleto");
+    expect(pacoteSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((pacoteSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    expect(pacoteSrc).toContain("pacote-copiar-perguntas-sindico");
+
+    const rSem = gerarRoteiroTresPerguntasSindico("Apt Teste", null);
+    const rCom = gerarRoteiroTresPerguntasSindico("Apt Teste", 850);
+    expect(rSem).toContain("(1) Qual o valor atual da taxa condominial");
+    expect(rCom).toContain("850/mês");
+    for (const t of [rSem, rCom]) {
+      expect(REGEX_JARGON_CAMADA1.test(t)).toBe(false);
+      for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(t)).toBe(false);
+    }
+
+    const montarCusto = (estadoCondominio: "a_confirmar" | "conhecido") => {
+      const custoObj = {
+        principal: { rotulo: "Preço anunciado", valor: 650000, unidade: "R$", porM2: 7222 },
+        totalMensalConhecido: estadoCondominio === "conhecido" ? 1100 : 250,
+        alemDoPrincipal: null,
+        parcelas: [
+          {
+            nome: "Condomínio" as const,
+            valorMensal: estadoCondominio === "conhecido" ? 850 : null,
+            estado: estadoCondominio,
+            nota: estadoCondominio === "a_confirmar" ? "não informado no anúncio" : null,
+          },
+          { nome: "IPTU" as const, valorMensal: 250, estado: "conhecido" as const, nota: null },
+        ],
+        pendencias: estadoCondominio === "a_confirmar" ? 1 : 0,
+        notaForaDaSoma: null,
+      } as unknown as VisaoDoDossie["custo"];
+
+      let tree!: TestRenderer.ReactTestRenderer;
+      act(() => {
+        tree = TestRenderer.create(
+          React.createElement(
+            TemaDoApp,
+            null,
+            React.createElement(BlocoDeCusto, {
+              custo: custoObj,
+              area: 90,
+              posicao: null,
+              aoAbrirPosicao: () => undefined,
+              aoAjustar: () => undefined,
+            }),
+          ),
+        );
+      });
+      return tree;
+    };
+
+    const tPendente = montarCusto("a_confirmar");
+    const alertaPendente = tPendente.root.find((n) => n.props.testID === "custo-alerta-doc-boleto");
+    expect(extrairTextos(alertaPendente.props ? tPendente.toJSON() : null).join(" ")).toContain(
+      "peça o boleto vigente do condomínio",
+    );
+    const tConhecido = montarCusto("conhecido");
+    const txtConhecido = extrairTextos(tConhecido.toJSON()).join(" ");
+    expect(txtConhecido).toContain("valide também o saldo do fundo de reserva");
+    expect(REGEX_JARGON_CAMADA1.test(txtConhecido)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txtConhecido)).toBe(false);
+
+    act(() => {
+      tPendente.unmount();
+      tConhecido.unmount();
+    });
   });
 });

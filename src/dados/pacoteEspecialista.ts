@@ -6,6 +6,7 @@ import type { DocumentoPessoal } from "./caderno";
 import type { AnaliseV2, Pergunta, VisaoDoDossie } from "./contratos";
 import { estruturaDoCaderno, type ItemDaFicha } from "./dossie/fichaViva";
 import { ROTULO_DA_ETAPA } from "./estrutura/linhaDoTempo";
+import { formatarReais } from "./formatos";
 import { trechosDaAta } from "./negociacao";
 
 export type SecaoDoPacote = { titulo: string; linhas: string[] };
@@ -269,6 +270,29 @@ export function gerarPedidoDocumentosFaltantes(analise: AnaliseV2, auditoria: Au
     "Mensagem preparada com o VEREDA (leitura independente; não substitui certidões oficiais).",
   ];
   return linhas.join("\n");
+}
+
+/**
+ * Roteiro objetivo de 3 perguntas fechadas para o síndico ou administradora (`R23` / Winker R22 §6.2),
+ * substituindo pedidos longos que raramente recebem resposta.
+ */
+export function gerarRoteiroTresPerguntasSindico(
+  nomeImovel: string,
+  condominioMensalReais: number | null,
+): string {
+  const q1 =
+    condominioMensalReais !== null && condominioMensalReais > 0
+      ? `(1) A taxa ordinária mensal vigente desta unidade confere com ${formatarReais(condominioMensalReais)}/mês?`
+      : "(1) Qual o valor atual da taxa condominial ordinária mensal desta unidade?";
+  return [
+    `Bom dia! Sobre ${nomeImovel}, poderia me confirmar três pontos rápidos?`,
+    "",
+    q1,
+    "(2) Qual o saldo atual do fundo de reserva do condomínio?",
+    "(3) Há alguma obra ou rateio extra aprovado ou em pauta para os próximos 12 meses?",
+    "",
+    "Obrigado!",
+  ].join("\n");
 }
 
 export function montarPacote(x: { analise: AnaliseV2; visao: Pick<VisaoDoDossie, "achados">; ficha: readonly ItemDaFicha[]; perguntas: readonly Pergunta[]; agora: string }): Pacote {

@@ -27,6 +27,7 @@ import { montarCenaComPontosExtras } from "../src/componentes/dossie-v1/mapa";
 import {
   auditarConjuntoDocumental,
   gerarPedidoDocumentosFaltantes,
+  gerarRoteiroTresPerguntasSindico,
   montarPacote,
   pacoteEmHtml,
   pacoteEmMarkdown,
@@ -892,6 +893,18 @@ describe("por perto no mapa, rotina personalizada, comodidades e HTML editorial"
     });
     expect(clip.setStringAsync).toHaveBeenCalledWith(expect.stringContaining("[Atualizar] Matrícula atualizada do imóvel"));
     expect(JSON.stringify(arvore.toJSON())).toContain("Pedido de documentos pendentes copiado para enviar.");
+
+    clip.setStringAsync.mockClear();
+    const btnSindico = arvore.root.find((n) => n.props.testID === "pacote-copiar-perguntas-sindico");
+    await act(async () => {
+      await btnSindico.props.onPress?.();
+    });
+    expect(clip.setStringAsync).toHaveBeenCalledWith(expect.stringContaining("(2) Qual o saldo atual do fundo de reserva"));
+    expect(JSON.stringify(arvore.toJSON())).toContain("3 perguntas rápidas para o síndico copiadas.");
+
+    const roteiroComTaxa = gerarRoteiroTresPerguntasSindico("Apt Casa Forte", 920);
+    expect(roteiroComTaxa).toContain("920/mês");
+    expect(roteiroComTaxa).toContain("(3) Há alguma obra ou rateio extra aprovado");
 
     act(() => {
       arvore.unmount();

@@ -132,6 +132,7 @@ export function BlocoDeCusto({
   const segmentos = segmentosDaBarra(custo.parcelas);
   const alem = aluguel && custo.alemDoPrincipal !== null && custo.alemDoPrincipal > 0 ? custo.alemDoPrincipal : null;
   const notas = notasDasParcelas(custo.parcelas);
+  const parcelaCondominio = custo.parcelas.find((p) => p.nome === "Condomínio");
   const descricaoDaBarra = `Composição dos ${total} mensais conhecidos: ${segmentos.map((s) => `${s.nome} ${formatarReais(s.valor)}`).join(", ")}`;
 
   return (
@@ -224,6 +225,25 @@ export function BlocoDeCusto({
         {partes?.comparacaoComTetoPessoal ? <Nota>{partes.comparacaoComTetoPessoal}</Nota> : null}
         {!aluguel ? <Nota>Preço de compra e financiamento não entram nesta soma.</Nota> : null}
       </View>
+
+      {parcelaCondominio ? (
+        <View
+          testID="custo-alerta-doc-boleto"
+          style={{
+            marginTop: 6,
+            paddingTop: 8,
+            borderTopWidth: 1,
+            borderTopColor: cor("cor-linha"),
+            gap: 2,
+          }}
+        >
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 16, fontVariant: ["tabular-nums"] }}>
+            {parcelaCondominio.estado === "a_confirmar"
+              ? "Documento ao lado do custo: peça o boleto vigente do condomínio, o saldo do fundo de reserva e se há rateio aprovado."
+              : "Ao conferir o boleto do condomínio, valide também o saldo do fundo de reserva e a quitação da unidade."}
+          </Texto>
+        </View>
+      ) : null}
 
       {partes && !estimativasAbertas ? (
         <View style={{ marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 8 }}>
