@@ -1,18 +1,22 @@
 // Aba "Resumo" (index.html: renderLiveVisit 5908–5913, CSS .vv-summary-* 3198–3206): o que a pessoa conferiu,
 // respondeu e percebeu. Sem nota nem veredito sobre o imóvel.
-import type { ReactNode } from "react";
+import * as Clipboard from "expo-clipboard";
+import { useState, type ReactNode } from "react";
 import type { JanelaSolar } from "../../dados/sol/contratos";
 import { nomeDaDirecao, origemDaJanela } from "../../dados/sol/janelas";
-import { View } from "react-native";
-import { ESPACO } from "../../tema/tokens";
+import { Pressable, View } from "react-native";
+import { useTema } from "../../tema/Tema";
+import { ESPACO, RAIO, TOQUE_MINIMO } from "../../tema/tokens";
+import { Botao } from "../Botao";
 import { Icone } from "../Icone";
 import { Texto } from "../Texto";
 import { Chamada, LinkDeAcao, Superficie } from "./blocos";
-import { duracaoPorExtenso, type ResumoDaVisita } from "./logica";
+import { duracaoPorExtenso, resumoDaVisitaEmTexto, type ResumoDaVisita } from "./logica";
 
 function Nota({ titulo, children }: { titulo: string; children: ReactNode }) {
+  const { cor } = useTema();
   return (
-    <View style={{ paddingVertical: 17, gap: 6 }}>
+    <View style={{ paddingVertical: 17, gap: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha") }}>
       <Texto style={{ fontSize: 14, lineHeight: 21, fontWeight: "600" }}>{titulo}</Texto>
       {children}
     </View>
@@ -28,7 +32,23 @@ function TextoDaNota({ children }: { children: string }) {
 }
 
 export function Resumo({ resumo, aoReverRespostas, janelas, aoExplorarSol }: { resumo: ResumoDaVisita; aoReverRespostas: () => void; janelas?: JanelaSolar[]; aoExplorarSol?: () => void }) {
+  const { cor } = useTema();
+  const [incluirImpressoes, setIncluirImpressoes] = useState(false);
+  const [avisoCopia, setAvisoCopia] = useState<{ texto: string; erro?: boolean } | null>(null);
   const faltam = resumo.pendentes.length;
+  const janelasTexto = (janelas ?? []).map(
+    (j) => `${j.nome}${j.graus !== null ? ` · ${nomeDaDirecao(j.graus)}` : " · direção a conferir"} (${origemDaJanela(j)})`,
+  );
+  const copiarResumo = async () => {
+    try {
+      await Clipboard.setStringAsync(
+        resumoDaVisitaEmTexto(resumo, { incluirImpressoesPessoais: incluirImpressoes, janelasTexto }),
+      );
+      setAvisoCopia({ texto: "Resumo da visita copiado para colar ou guardar." });
+    } catch {
+      setAvisoCopia({ texto: "Não foi possível copiar o resumo agora.", erro: true });
+    }
+  };
   return (
     <Superficie>
       <Chamada>Visita salva neste aparelho</Chamada>
@@ -103,6 +123,47 @@ export function Resumo({ resumo, aoReverRespostas, janelas, aoExplorarSol }: { r
           </View>
         </Nota>
       ) : null}
+
+      <View style={{ paddingTop: 14, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 8 }}>
+        {resumo.notas ? (
+          <Pressable
+            testID="visita-toggle-impressoes-copia"
+            onPress={() => {
+              setIncluirImpressoes((v) => !v);
+              setAvisoCopia(null);
+            }}
+            accessibilityRole="switch"
+            accessibilityState={{ checked: incluirImpressoes }}
+            style={{
+              minHeight: TOQUE_MINIMO,
+              paddingHorizontal: 12,
+              borderRadius: RAIO.pilula,
+              backgroundColor: incluirImpressoes ? cor("cor-texto") : cor("cor-papel-claro"),
+              justifyContent: "center",
+              alignSelf: "flex-start",
+            }}
+          >
+            <Texto
+              tipo="apoio"
+              cor={incluirImpressoes ? "cor-papel-claro" : "cor-texto"}
+              style={{ fontSize: 12.5, fontWeight: "600" }}
+            >
+              {`Incluir minhas impressões na cópia: ${incluirImpressoes ? "sim" : "não (padrão privado)"}`}
+            </Texto>
+          </Pressable>
+        ) : null}
+        <Botao rotulo="Copiar resumo da visita" variante="secundario" onPress={() => void copiarResumo()} />
+        {avisoCopia ? (
+          <Texto
+            tipo="apoio"
+            cor={avisoCopia.erro ? "cor-barro-texto" : "cor-salvia-escura"}
+            role={avisoCopia.erro ? "alert" : "status"}
+            style={{ fontSize: 12.5, fontWeight: "600" }}
+          >
+            {avisoCopia.texto}
+          </Texto>
+        ) : null}
+      </View>
 
       <LinkDeAcao rotulo="Rever respostas" onPress={aoReverRespostas} />
     </Superficie>
