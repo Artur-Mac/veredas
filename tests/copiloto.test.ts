@@ -7,6 +7,7 @@ import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
 import { Image, Modal, View } from "react-native";
 import { LinhaDoTempoEstrutural } from "../src/componentes/dossie-v1/FichaViva";
+import { SimuladorDaUnidade } from "../src/componentes/dossie-v1/SimuladorDaUnidade";
 import { TopoDoDossie } from "../src/componentes/dossie-v1/Topo";
 import { Pressionavel } from "../src/componentes/Pressionavel";
 import { placarDoPar, type ExtrasDoPlacar } from "../src/componentes/comparar/placar";
@@ -436,6 +437,29 @@ describe("por perto no mapa, rotina personalizada, comodidades e HTML editorial"
       fecharBtn.props.onPress();
     });
     expect(arvore.root.findByType(Modal).props.visible).toBe(false);
+    act(() => {
+      arvore.unmount();
+    });
+  });
+
+  it("SimuladorDaUnidade renderiza painel único hairline em volta dos 3 tópicos (S45)", () => {
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(SimuladorDaUnidade, {
+            predio: comNome,
+            vizinhos: gracas,
+            tipologia: "apartamento",
+            andarDoAnuncio: 4,
+            orientacaoGraus: 90,
+          }),
+        ),
+      );
+    });
+    expect(arvore.root.find((n) => n.props.testID === "simulador-painel-unificado")).toBeDefined();
     act(() => {
       arvore.unmount();
     });

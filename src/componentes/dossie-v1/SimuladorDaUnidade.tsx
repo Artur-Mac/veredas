@@ -88,14 +88,31 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
         </View>
       </View>
 
-      <View style={{ gap: 8 }}>
-        <View style={{ borderRadius: 12, borderWidth: 1, borderColor: aberto === "barulho" ? cor("cor-acao") : cor("cor-linha"), backgroundColor: cor("cor-papel-claro"), overflow: "hidden" }}>
+      <View
+        testID="simulador-painel-unificado"
+        style={{
+          borderRadius: 12,
+          borderWidth: 1,
+          borderColor: cor("cor-linha-forte"),
+          backgroundColor: cor("cor-superficie"),
+          overflow: "hidden",
+        }}
+      >
+        <View>
           <AlvoDeToque
             onPress={() => alternar("barulho")}
             accessibilityRole="button"
             accessibilityState={{ expanded: aberto === "barulho" }}
             accessibilityLabel={`Barulho por perto: ${resumoBarulho}. Toque para ${aberto === "barulho" ? "recolher" : "ver detalhes"}`}
-            style={{ padding: 13, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 }}
+            style={{
+              minHeight: 48,
+              padding: 13,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
+              backgroundColor: aberto === "barulho" ? comAlfa(cor("cor-acao"), 0.04) : "transparent",
+            }}
           >
             <View style={{ flex: 1, gap: 2 }}>
               <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, fontWeight: "700" }}>Barulho por perto</Texto>
@@ -137,13 +154,21 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
           ) : null}
         </View>
 
-        <View style={{ borderRadius: 12, borderWidth: 1, borderColor: aberto === "sol" ? cor("cor-acao") : cor("cor-linha"), backgroundColor: cor("cor-papel-claro"), overflow: "hidden" }}>
+        <View style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha") }}>
           <AlvoDeToque
             onPress={() => alternar("sol")}
             accessibilityRole="button"
             accessibilityState={{ expanded: aberto === "sol" }}
             accessibilityLabel={`Sol na fachada: ${resumoSol}`}
-            style={{ padding: 13, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 }}
+            style={{
+              minHeight: 48,
+              padding: 13,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
+              backgroundColor: aberto === "sol" ? comAlfa(cor("cor-acao"), 0.04) : "transparent",
+            }}
           >
             <View style={{ flex: 1, gap: 2 }}>
               <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, fontWeight: "700" }}>Sol na janela</Texto>
@@ -152,7 +177,7 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
             <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 13, fontWeight: "600" }}>{aberto === "sol" ? "Fechar −" : "Ver +"}</Texto>
           </AlvoDeToque>
           {aberto === "sol" ? (
-            <View style={{ paddingHorizontal: 13, paddingBottom: 14, gap: 6, borderTopWidth: 0.5, borderTopColor: cor("cor-linha"), paddingTop: 10 }}>
+            <View style={{ paddingHorizontal: 13, paddingBottom: 14, gap: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 10 }}>
               {s.sol ? (
                 <>
                   <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20 }}>
@@ -169,13 +194,21 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
           ) : null}
         </View>
 
-        <View style={{ borderRadius: 12, borderWidth: 1, borderColor: aberto === "brisa" ? cor("cor-acao") : cor("cor-linha"), backgroundColor: cor("cor-papel-claro"), overflow: "hidden" }}>
+        <View style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha") }}>
           <AlvoDeToque
             onPress={() => alternar("brisa")}
             accessibilityRole="button"
             accessibilityState={{ expanded: aberto === "brisa" }}
             accessibilityLabel={`Brisa de sudeste: ${resumoBrisa}`}
-            style={{ padding: 13, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 }}
+            style={{
+              minHeight: 48,
+              padding: 13,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
+              backgroundColor: aberto === "brisa" ? comAlfa(cor("cor-acao"), 0.04) : "transparent",
+            }}
           >
             <View style={{ flex: 1, gap: 2 }}>
               <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, fontWeight: "700" }}>Vento e brisa</Texto>
@@ -184,7 +217,7 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
             <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 13, fontWeight: "600" }}>{aberto === "brisa" ? "Fechar −" : "Ver +"}</Texto>
           </AlvoDeToque>
           {aberto === "brisa" ? (
-            <View style={{ paddingHorizontal: 13, paddingBottom: 14, gap: 6, borderTopWidth: 0.5, borderTopColor: cor("cor-linha"), paddingTop: 10 }}>
+            <View style={{ paddingHorizontal: 13, paddingBottom: 14, gap: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 10 }}>
               <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20 }}>{s.vento.frase}</Texto>
               {s.vento.barreira ? <Texto tipo="apoio" style={{ fontSize: 13, lineHeight: 19 }}>{s.vento.barreira}</Texto> : null}
               <Nota>{s.vento.superficie3d}</Nota>

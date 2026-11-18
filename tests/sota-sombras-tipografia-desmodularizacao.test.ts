@@ -46,6 +46,7 @@ import { LinhaUnificadaDoLote } from "../src/componentes/visual/LinhaUnificadaDo
 import { decomporSossego } from "../src/dados/acustica/decomporSossego";
 import { EscalaDeRuidoHumana, RelogioDoPredio } from "../src/componentes/visual/EscalasVisuais";
 import { TermometroConfortoTermico } from "../src/componentes/visual/TermometroConfortoTermico";
+import { MatrizVisualComparar } from "../src/componentes/visual/MatrizVisualComparar";
 import { TemaDoApp } from "../src/tema/Tema";
 
 function listarTsxRecursivo(dir: string): string[] {
@@ -2020,6 +2021,83 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     const txt = extrairTextos(tree.toJSON()).join("\n");
     expect(txt).toContain(cam.faixaDescritivaAPe!);
     expect(txt).toContain("Três séries até hoje —");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+  });
+
+  it("desmodulariza acordeões do SimuladorDaUnidade e nomeia colunas A×B e régua única em Comparar em S45", () => {
+    const simSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "SimuladorDaUnidade.tsx"),
+      "utf8",
+    );
+    expect(simSrc).toContain("simulador-painel-unificado");
+    expect((simSrc.match(/borderWidth:\s*1/g) ?? []).length).toBeLessThanOrEqual(3);
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(DueloFinalistas, {
+            opcaoA: {
+              id: "A",
+              nomeExibicao: "Graças 95m²",
+              custoMensalTotalReais: 4100,
+              areaM2: 95,
+              deslocamentoMinDia: 32,
+              ruidoInternoDb: 38,
+              situacaoDocumentalResumo: "Terreno alodial",
+              riscoAguaChuvaResumo: "Cota acima da média",
+            },
+            opcaoB: {
+              id: "B",
+              nomeExibicao: "Boa Viagem 95m²",
+              custoMensalTotalReais: 4550,
+              areaM2: 95,
+              deslocamentoMinDia: 48,
+              ruidoInternoDb: 44,
+              situacaoDocumentalResumo: "Terreno de Marinha",
+              riscoAguaChuvaResumo: "Checar garagem na chuva",
+            },
+          }),
+          React.createElement(MatrizVisualComparar, {
+            modalidade: "compra",
+            opcaoA: {
+              nome: "Graças 95m²",
+              precoPrincipalReais: 780_000,
+              areaM2: 95,
+              mensalBolsoRealReais: 4100,
+              orientacaoCurta: "Nascente",
+              climaSelo: "Fresco e ventilado",
+              confortoQuente: false,
+              ruidoInternoDb: 38,
+              anoConstrucao: 2016,
+              spuAlerta: false,
+            },
+            opcaoB: {
+              nome: "Boa Viagem 95m²",
+              precoPrincipalReais: 850_000,
+              areaM2: 95,
+              mensalBolsoRealReais: 4550,
+              orientacaoCurta: "Poente",
+              climaSelo: "Tende a abafar",
+              confortoQuente: true,
+              ruidoInternoDb: 44,
+              anoConstrucao: 2005,
+              spuAlerta: true,
+            },
+          }),
+        ),
+      );
+    });
+
+    expect(tree.root.find((n) => n.props.testID === "duelo-cabecalho-colunas")).toBeDefined();
+    expect(tree.root.find((n) => n.props.testID === "matriz-aviso-escala")).toBeDefined();
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("Graças 95m²");
+    expect(txt).toContain("Boa Viagem 95m²");
+    expect(txt).toContain("mesma régua nos dois imóveis");
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });

@@ -79,11 +79,30 @@ export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; o
           : "Os dois finalistas estão tecnicamente próximos em todas as dimensões medidas."}
       </Texto>
 
-      {exibidas.map((l, idx) => (
+      <View
+        testID="duelo-cabecalho-colunas"
+        style={{
+          borderTopWidth: 1,
+          borderTopColor: cor("cor-linha"),
+          paddingTop: 8,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          gap: 12,
+        }}
+      >
+        <Texto tipo="etiqueta" style={{ flex: 1, fontSize: 12, fontWeight: "700" }} numberOfLines={2}>
+          {opcaoA.nomeExibicao}
+        </Texto>
+        <Texto tipo="etiqueta" style={{ flex: 1, fontSize: 12, fontWeight: "700" }} numberOfLines={2}>
+          {opcaoB.nomeExibicao}
+        </Texto>
+      </View>
+
+      {exibidas.map((l) => (
         <View
           key={l.rotulo}
           style={{
-            borderTopWidth: idx === 0 ? 1 : 1,
+            borderTopWidth: 1,
             borderTopColor: cor("cor-linha"),
             paddingTop: 10,
             gap: 4,

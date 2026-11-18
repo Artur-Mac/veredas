@@ -211,6 +211,12 @@ export function MatrizVisualComparar({
           </View>
         </View>
       ))}
+
+      <View style={[styles.rodapeEscala, { borderTopColor: cor("cor-linha") }]}>
+        <Texto testID="matriz-aviso-escala" tipo="apoio" cor="cor-texto-apoio" style={styles.avisoEscala}>
+          Critérios objetivos calculados com a mesma régua nos dois imóveis; empate quando a diferença fica dentro da margem prática.
+        </Texto>
+      </View>
     </View>
   );
 }
@@ -278,5 +284,14 @@ const styles = StyleSheet.create({
   },
   textoVencedor: {
     fontWeight: "700",
+  },
+  rodapeEscala: {
+    borderTopWidth: 1,
+    paddingTop: 8,
+    marginTop: 2,
+  },
+  avisoEscala: {
+    fontSize: 11.5,
+    lineHeight: 16,
   },
 });
