@@ -1,12 +1,13 @@
-import React, { useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import React from "react";
+import { StyleSheet, View } from "react-native";
 import type {
   EixoPulsoDaQuadra,
   ResultadoPulsoDaQuadra,
 } from "../../dados/dossie/pulsoDaQuadra";
+import { FichaDeMetodo } from "./FichaDeMetodo";
 import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
-import { RAIO, TOQUE_MINIMO, type TokenDeCor } from "../../tema/tokens";
+import { RAIO, type TokenDeCor } from "../../tema/tokens";
 
 function corNota(eixo: EixoPulsoDaQuadra): TokenDeCor {
   if (eixo.ausencia === "sem_ocorrencia_no_periodo") return "cor-salvia";
@@ -26,7 +27,6 @@ function corTextoNota(eixo: EixoPulsoDaQuadra): TokenDeCor {
 
 export function PulsoDaQuadra({ pulso }: { pulso: ResultadoPulsoDaQuadra }) {
   const { cor } = useTema();
-  const [verMetodo, setVerMetodo] = useState(false);
 
   return (
     <View
@@ -95,43 +95,9 @@ export function PulsoDaQuadra({ pulso }: { pulso: ResultadoPulsoDaQuadra }) {
         );
       })}
 
-      <View style={[styles.rodapeMetodo, { borderTopColor: cor("cor-linha") }]}>
-        <Pressable
-          testID="pulso-metodo-toggle"
-          accessibilityRole="button"
-          accessibilityState={{ expanded: verMetodo }}
-          onPress={() => setVerMetodo((v) => !v)}
-          style={styles.botaoMetodo}
-        >
-          <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoBotaoMetodo}>
-            {verMetodo
-              ? "Ocultar método e fontes deste painel"
-              : "Ver método em 6 campos (fonte, data e conta)"}
-          </Texto>
-        </Pressable>
-
-        {verMetodo ? (
-          <View style={styles.blocoMetodo}>
-            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.linhaMetodo}>
-              {`O que mede: ${pulso.metodo.oQueMede}`}
-            </Texto>
-            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.linhaMetodo}>
-              {`Fonte: ${pulso.metodo.fonte}`}
-            </Texto>
-            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.linhaMetodo}>
-              {`Data de referência: ${pulso.metodo.data}`}
-            </Texto>
-            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.linhaMetodo}>
-              {`Como calculamos: ${pulso.metodo.contaResumida}`}
-            </Texto>
-            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.linhaMetodo}>
-              {`Cobertura: ${pulso.metodo.cobertura}`}
-            </Texto>
-            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.linhaMetodo}>
-              {`Limite: ${pulso.metodo.limite}`}
-            </Texto>
-          </View>
-        ) : null}
+      {/* R11: cada nota do pulso abre, num toque, a ficha de 6 campos com a conta de cada eixo. */}
+      <View style={styles.rodapeMetodo}>
+        <FichaDeMetodo ficha={pulso.metodo} testID="pulso-metodo" rotulo="Como cada nota foi calculada" />
       </View>
     </View>
   );
@@ -198,24 +164,6 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   rodapeMetodo: {
-    borderTopWidth: 1,
     paddingHorizontal: 16,
-    paddingVertical: 4,
-  },
-  botaoMetodo: {
-    minHeight: TOQUE_MINIMO,
-    justifyContent: "center",
-  },
-  textoBotaoMetodo: {
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  blocoMetodo: {
-    paddingBottom: 10,
-    gap: 4,
-  },
-  linhaMetodo: {
-    fontSize: 11.5,
-    lineHeight: 16,
   },
 });

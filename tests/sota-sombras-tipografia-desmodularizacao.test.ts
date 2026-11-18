@@ -384,7 +384,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: false,
       precoInformado: true,
       condominioInformado: true,
-      comparacaoM2Pct: 0,
       spuAtivo: false,
     });
 
@@ -534,7 +533,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: true,
       precoInformado: true,
       condominioInformado: true,
-      comparacaoM2Pct: 0,
       spuAtivo: false,
     });
 
@@ -857,7 +855,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: true,
       precoInformado: true,
       condominioInformado: true,
-      comparacaoM2Pct: 0,
       spuAtivo: false,
     });
 
@@ -1225,7 +1222,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: true,
       precoInformado: true,
       condominioInformado: true,
-      comparacaoM2Pct: 0,
       spuAtivo: false,
     });
     const link = gerarLinkPrivadoSemServidor({
@@ -1597,7 +1593,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: false,
       precoInformado: false,
       condominioInformado: false,
-      comparacaoM2Pct: null,
       spuAtivo: false,
     });
 
@@ -1877,7 +1872,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: true,
       precoInformado: true,
       condominioInformado: true,
-      comparacaoM2Pct: 0,
       spuAtivo: false,
     });
     expect(pulso.escopoResolucao).toContain("escala deste edifício");
@@ -1969,7 +1963,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: true,
       precoInformado: true,
       condominioInformado: true,
-      comparacaoM2Pct: 0,
       spuAtivo: false,
     });
     const sintese = decomporSossego(acu, 2005);
@@ -2435,7 +2428,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: true,
       precoInformado: true,
       condominioInformado: true,
-      comparacaoM2Pct: 0,
       spuAtivo: false,
     });
 

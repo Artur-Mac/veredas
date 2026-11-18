@@ -1,5 +1,6 @@
 import type { AbsenceState } from "../../nucleo/contratosCanonicos";
 import type { Edificio, VisaoDaRua } from "../contratos";
+import type { FichaDeMetodo6Campos } from "../fichaDeMetodo";
 import type { EssenciaisDoBairro } from "../recife/essenciais";
 import { posicaoNoBairro } from "./indicadores";
 
@@ -32,6 +33,8 @@ export type ResultadoCaminhabilidadeEVida = {
     CategoriaCaminhabilidade,
   ];
   decomposicaoResumo: string;
+  /** Ficha "como foi calculada" da nota a pé (decisão A13). */
+  metodo: FichaDeMetodo6Campos;
 };
 
 const PESOS: readonly {
@@ -46,6 +49,20 @@ const PESOS: readonly {
 ];
 
 const BASE_MINIMA_PERCENTIL = 20;
+
+const PESOS_EM_TEXTO = "Mercado 30% · Farmácia 25% · Transporte 25% · Praça 20%";
+
+function fichaDaNotaAPe(calculoDoPredio: string): FichaDeMetodo6Campos {
+  return {
+    oQueMede: "Quanto do dia a dia se resolve a pé a partir da portaria: mercado, farmácia, ônibus ou metrô e praça.",
+    fonte: "Rede de ruas a pé do OpenStreetMap (ODbL), endereços do CNEFE (Censo 2022, IBGE) e paradas do GTFS do Grande Recife.",
+    data: "Censo 2022 e a rede de ruas do último ciclo de dados do Vereda.",
+    calculo: `Para cada serviço, a nota é 10 × e^(−0,082 × minutos a pé pela rede de ruas), entre 1 e 9,9. A nota a pé é a média com os pesos ${PESOS_EM_TEXTO}, só quando mais da metade do peso tem caminho medido. ${calculoDoPredio}`,
+    limite:
+      "Os pesos e a curva são escolhas do Vereda. A rede não sabe de calçada quebrada, travessia difícil nem portão fechado, e o ponto mais perto pode não ser o que você usaria.",
+    naVisita: "Faça a pé o caminho até o mercado e até a parada, no horário em que você costuma sair.",
+  };
+}
 
 function notaPorMinutos(min: number): number {
   const n = 10 * Math.exp(-0.082 * Math.max(0, min));
@@ -92,6 +109,7 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
       categorias: categoriasVazias,
       decomposicaoResumo:
         "Pesos abertos: Mercado 30% · Farmácia 25% · Transporte 25% · Praça 20%, com decaimento exponencial pelo tempo de caminhada na rede de ruas.",
+      metodo: fichaDaNotaAPe("Este prédio ainda não tem caminho medido."),
     };
   }
 
@@ -233,6 +251,13 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
             ? "Algumas tarefas a pé, combinadas com transporte coletivo ou veículo"
             : "Deslocamento motorizado necessário para a maior parte das compras e serviços";
 
+  const minutosDoPredio = categorias
+    .filter((c) => c.minutosAPe !== null)
+    .map((c) => `${c.titulo} ~${c.minutosAPe} min (nota ${c.nota0a10 !== null ? c.nota0a10.toFixed(1).replace(".", ",") : "sem leitura"})`);
+  const metodo = fichaDaNotaAPe(
+    minutosDoPredio.length > 0 ? `Neste prédio: ${minutosDoPredio.join("; ")}.` : "Este prédio está fora da rede de ruas validada: só há distância em linha reta, sem nota.",
+  );
+
   return {
     notaAPe0a10,
     ausenciaNota: notaAPe0a10 === null ? "sem_leitura_publicada" : null,
@@ -248,5 +273,6 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
     categorias,
     decomposicaoResumo:
       "Pesos transparentes: Mercado 30% · Farmácia 25% · Transporte público 25% · Praça 20%, usando tempo de caminhada na malha viária oficial.",
+    metodo,
   };
 }

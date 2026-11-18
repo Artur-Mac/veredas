@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import React from "react";
+import { StyleSheet, View } from "react-native";
 import type { ResultadoCaminhabilidadeEVida } from "../../dados/dossie/caminhabilidadeEVidaNaRua";
+import { FichaDeMetodo } from "./FichaDeMetodo";
 import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
 import { RAIO, TOQUE_MINIMO } from "../../tema/tokens";
@@ -11,7 +12,6 @@ export function VidaAPeNaQuadra({
   dados: ResultadoCaminhabilidadeEVida;
 }) {
   const { cor } = useTema();
-  const [verPesos, setVerPesos] = useState(false);
 
   return (
     <View
@@ -91,25 +91,8 @@ export function VidaAPeNaQuadra({
           {`Entorno da face de quadra: ${dados.vidaNaRuaResumo}`}
         </Texto>
 
-        <Pressable
-          testID="vida-a-pe-pesos-toggle"
-          accessibilityRole="button"
-          accessibilityState={{ expanded: verPesos }}
-          onPress={() => setVerPesos((v) => !v)}
-          style={styles.botaoPesos}
-        >
-          <Texto tipo="apoio" cor="cor-azul-cadastral" style={styles.textoBotaoPesos}>
-            {verPesos
-              ? "Ocultar decomposição e pesos"
-              : "Ver pesos e decomposição desta nota"}
-          </Texto>
-        </Pressable>
-
-        {verPesos ? (
-          <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoPesos}>
-            {dados.decomposicaoResumo}
-          </Texto>
-        ) : null}
+        {/* R11: a nota a pé abre, num toque, a ficha de 6 campos (com os pesos e os minutos deste prédio). */}
+        <FichaDeMetodo ficha={dados.metodo} testID="vida-a-pe-pesos" rotulo="Como esta nota foi calculada" />
       </View>
     </View>
   );
