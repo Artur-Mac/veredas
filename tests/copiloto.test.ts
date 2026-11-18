@@ -298,8 +298,12 @@ describe("negociação com argumentos marcáveis e pacote para especialista", ()
     const html = pacoteEmHtml(p);
     expect(html).not.toContain("<script>");
     expect(html).toContain("&lt;script&gt;");
+    expect(html).toContain("Modelo v2");
+    expect(html).toContain("CNM 16 dígitos");
     const md = pacoteEmMarkdown(p);
     expect(md).toContain("## Trechos de ata");
+    expect(md).toContain("Modelo v2");
+    expect(md).toContain("nenhum dado enviado a servidor");
     expect(md).not.toMatch(/mobilidade|baixa visão|orçamento mensal/i);
   });
 });

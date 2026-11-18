@@ -58,5 +58,5 @@ Branch: `feat/vereda-visual-power-overhaul`
 - [x] **S38**: 2.5D future shadow projection for real licensed neighboring builds (`Localize.city app4` §6.2) in `CanvasSolSombraBrisa25D.tsx` (`4/4` suites, `52/52` tests).
 - [x] **S39**: Final citizen typography & hairline cleanup across `Sala.tsx`, `FichaViva.tsx`, `EntornoSolar.tsx`, `MapaDoPredio.tsx`, and `perfil-domicilio.tsx` + full 98-suite (`2053/2053` tests) & live Metro (`ANDROID 200 6681193`, `WEB 200 3901360`) verification.
 - [x] **S40**: Building-level resolution & explicit relative-position labeling (`Local Logic app8` §6.5 + `ClimateCheck app12` §6.1) across `PulsoDaQuadra` & `VidaAPeNaQuadra` (`2/2` suites, `41/41` tests).
-- [ ] **S41**: Provenance, dual IDs (`CNM 16 dígitos`), and `Modelo v2` metadata in `pacoteEspecialista.ts` (`Gridics app24` §6.5 + `ONR app26` §6.1 + `Cherre app27` §6.4).
-- [ ] **S42**: Listing-vs-registry claim checks (`HouseCanary app9` §6.1) and distance-attenuation hint without dB (`Mapa Sossego app1` §6.2) in `SimuladorDaUnidade`.
+- [x] **S41**: Provenance, dual IDs (`CNM 16 dígitos`), and `Modelo v2` metadata in `pacoteEspecialista.ts` (`Gridics app24` §6.5 + `ONR app26` §6.1 + `Cherre app27` §6.4) (`2/2` suites, `69/69` tests).
+- [ ] **S42**: Distance-attenuation acoustic hint without dB (`Mapa Sossego app1` §6.2) in `simuladorDaUnidade.ts` / `SimuladorDaUnidade.tsx` + final claim/consistency polish & full 98-suite + live Metro verification.

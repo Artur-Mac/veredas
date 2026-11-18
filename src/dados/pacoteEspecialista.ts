@@ -18,6 +18,8 @@ export function montarPacote(x: { analise: AnaliseV2; visao: Pick<VisaoDoDossie,
   secoes.push({ titulo: "Imóvel", linhas: [
     a.nome, [a.logradouro, a.numero].filter(Boolean).join(", ") || "Endereço não informado", a.bairroTexto || a.bairro || "Bairro não informado",
     a.url ? `Anúncio: ${a.url}` : "Sem anúncio (Raio-X do prédio)", a.modalidade === "compra" ? "Modalidade: compra" : "Modalidade: aluguel",
+    a.vinculo.estado === "confirmado" ? `Vínculo municipal confirmado (${a.vinculo.edificioId})` : "Vínculo municipal do lote pendente de confirmação",
+    "Matrícula cartorária (CNM 16 dígitos): solicitar certidão atualizada (30 dias) ao vendedor",
   ] });
   secoes.push({ titulo: "Ficha do edifício", linhas: x.ficha.map((i) => `${i.rotulo}: ${i.valor}${i.leitura ? ` — ${i.leitura}` : ""}${i.atencao ? ` [${i.atencao}]` : ""} (Fonte: ${i.fonte})`) });
   const contradicoes = [x.visao.achados.principal, ...x.visao.achados.apoio].filter((c): c is NonNullable<typeof c> => !!c && ["anomalia", "area", "iptu", "itbi"].includes(c.tipo));
@@ -47,7 +49,7 @@ export function montarPacote(x: { analise: AnaliseV2; visao: Pick<VisaoDoDossie,
 }
 
 export function pacoteEmMarkdown(p: Pacote): string {
-  return [`# ${p.titulo}`, "", `Gerado pelo VEREDA em ${dataBr(p.geradoEm)}. Fatos com fonte; nenhuma nota ou veredito.`, "",
+  return [`# ${p.titulo}`, "", `Gerado pelo VEREDA em ${dataBr(p.geradoEm)} · Modelo v2 · Processado localmente no aparelho (nenhum dado enviado a servidor ou usado para treinar modelos). Fatos com fonte; nenhuma nota ou veredito.`, "",
     ...p.secoes.flatMap((s) => [`## ${s.titulo}`, "", ...s.linhas.map((l) => `- ${l}`), ""])].join("\n");
 }
 
@@ -72,7 +74,7 @@ li{margin:6px 0}
 @media print{body{background:#fff;padding:0}.folha{border:0;border-radius:0;max-width:none}@page{margin:16mm}}
 </style></head>
 <body><main class="folha">
-<header class="cab"><p class="marca">VEREDA · Dossiê Técnico</p><h1>${esc(p.titulo)}</h1><p class="nota">Gerado em ${dataBr(p.geradoEm)} · Apenas fatos com fonte pública ou declarada; nenhuma nota ou veredito.</p></header>
+<header class="cab"><p class="marca">VEREDA · Dossiê Técnico</p><h1>${esc(p.titulo)}</h1><p class="nota">Gerado em ${dataBr(p.geradoEm)} · Modelo v2 · Processado localmente no aparelho (nenhum dado enviado a servidor ou usado para treinar modelos). Apenas fatos com fonte pública ou declarada; nenhuma nota ou veredito.</p></header>
 <div class="corpo">${p.secoes.map((s) => `<section><h2>${esc(s.titulo)}</h2><ul>${s.linhas.map((l) => `<li>${esc(l)}</li>`).join("")}</ul></section>`).join("\n")}</div>
 </main></body></html>`;
 }
