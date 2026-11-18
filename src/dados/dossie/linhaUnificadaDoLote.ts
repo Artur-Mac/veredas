@@ -11,6 +11,7 @@ export type EventoLinhaUnificada = {
 export type ResultadoLinhaUnificadaDoLote = {
   manchete: string;
   eventos: EventoLinhaUnificada[];
+  comparativoTemporal: string | null;
   acoesConcretas: string[];
 };
 
@@ -123,6 +124,20 @@ export function construirLinhaUnificadaDoLote(params: {
     );
   }
 
+  const anosItbiOrdenados = [...(edificio?.itbi?.porAno ?? [])].sort(
+    (a, b) => b[0] - a[0],
+  );
+  let comparativoTemporal: string | null = null;
+  if (anosItbiOrdenados.length >= 2) {
+    const [anoAtualItbi, qtdAtualItbi] = anosItbiOrdenados[0]!;
+    const [anoAntItbi, qtdAntItbi] = anosItbiOrdenados[1]!;
+    comparativoTemporal = `Ritmo fiscal no edifício: ${qtdAtualItbi} ${
+      qtdAtualItbi === 1 ? "transmissão" : "transmissões"
+    } em ${anoAtualItbi} contra ${qtdAntItbi} em ${anoAntItbi}.`;
+  } else if (obrasProximas) {
+    comparativoTemporal = `Janela de obras no entorno: ${obrasProximas.relevantes24m} relevante(s) nos últimos 24 meses frente a ${obrasProximas.licencasDeObra} registro(s) totais na série 2018–2026.`;
+  }
+
   const manchete =
     eventos.length > 0
       ? `Linha unificada com ${eventos.length} marco(s) oficiais do prédio e da quadra`
@@ -131,6 +146,7 @@ export function construirLinhaUnificadaDoLote(params: {
   return {
     manchete,
     eventos,
+    comparativoTemporal,
     acoesConcretas: acoesConcretas.slice(0, 3),
   };
 }

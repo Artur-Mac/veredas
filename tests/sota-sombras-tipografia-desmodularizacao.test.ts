@@ -1657,4 +1657,45 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(REGEX_JARGON_CAMADA1.test(rotinaTxt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(rotinaTxt)).toBe(false);
   });
+
+  it("exibe comparativo temporal ano contra ano ou série 2018–2026 em LinhaUnificadaDoLote", () => {
+    const bv = edificiosDoBairro("boa-viagem");
+    const comItbi = bv.find((e) => (e.itbi?.porAno?.length ?? 0) >= 2)!;
+    const linhaItbi = construirLinhaUnificadaDoLote({
+      edificio: comItbi,
+      obrasProximas: null,
+      visaoRua: null,
+      spuAtivo: false,
+    });
+    expect(linhaItbi.comparativoTemporal).toMatch(/Ritmo fiscal no edifício: \d+ transmiss/);
+
+    const linhaObras = construirLinhaUnificadaDoLote({
+      edificio: null,
+      obrasProximas: {
+        licencasDeObra: 5,
+        relevantes24m: 2,
+        demolicoes24m: 1,
+        recentes: [],
+      },
+      visaoRua: null,
+      spuAtivo: false,
+    });
+    expect(linhaObras.comparativoTemporal).toContain("2 relevante(s) nos últimos 24 meses frente a 5");
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(LinhaUnificadaDoLote, { linha: linhaItbi }),
+        ),
+      );
+    });
+    expect(tree.root.find((n) => n.props.testID === "linha-comparativo-temporal")).toBeDefined();
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("Ritmo fiscal no edifício");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+  });
 });

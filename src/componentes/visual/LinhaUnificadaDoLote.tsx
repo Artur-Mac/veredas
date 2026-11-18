@@ -69,6 +69,18 @@ export function LinhaUnificadaDoLote({
         </View>
       ))}
 
+      {/* Comparação temporal explícita ano contra ano / série 2018–2026 (Placer app29 / Jupiter app28) */}
+      {linha.comparativoTemporal ? (
+        <View
+          testID="linha-comparativo-temporal"
+          style={[styles.blocoComparativo, { borderTopColor: cor("cor-linha") }]}
+        >
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoComparativo}>
+            {linha.comparativoTemporal}
+          </Texto>
+        </View>
+      ) : null}
+
       {/* R45: Bloco objetivo "O que fazer com isso" */}
       <View style={[styles.blocoAcoes, { borderTopColor: cor("cor-linha") }]}>
         <Texto tipo="etiqueta" cor="cor-salvia-escura" style={styles.tituloAcoes}>
@@ -146,6 +158,16 @@ const styles = StyleSheet.create({
   detalheEvento: {
     fontSize: 12,
     lineHeight: 16.5,
+  },
+  blocoComparativo: {
+    borderTopWidth: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  textoComparativo: {
+    fontSize: 12,
+    lineHeight: 16.5,
+    fontVariant: ["tabular-nums"],
   },
   blocoAcoes: {
     borderTopWidth: 1,
