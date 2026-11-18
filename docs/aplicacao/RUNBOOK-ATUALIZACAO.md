@@ -21,6 +21,7 @@ node --max-old-space-size=8000 --disable-warning=MODULE_TYPELESS_PACKAGE_JSON sc
 | procura | `scripts/dados/transito/onde-procurar.mjs` | — | `procuraGerado.ts` |
 | equipamentos | `scripts/dados/equipamentos/rodar-equipamentos.mjs` (reads the audited hub, SHA-256 checked) | — | `equipamentosGerado.ts` |
 | atrito | `scripts/dados/atrito/rodar-atrito.mjs` (IBGE CNEFE 2022 zip in `.cache/dados-recife/cnefe-completo/`, fixed SHA-256; category and counts only, never the establishment name, complement or CEP) | — | `atritoGerado.ts` |
+| ruido | `scripts/dados/ruido/rodar-ruido.mjs` (estimated noise per building: OpenStreetMap `highway` from the dated Geofabrik Nordeste extract in `.cache/osm/`, MD5 and SHA-256 pinned in `EXTRATO`; `--baixar` fetches it when missing; plus GTFS departures, CBTU track, LUSE and the atrito layer; streets, points and counts only) | — | `ruidoGerado.ts` |
 | sol | `scripts/dados/preparar-sol-recife.py` | — | `sol/fontesGeradas.ts` |
 
 - Areas come from `scripts/dados/areas.json` (pilot first, then expansion). The municipal building index is separate and covers every enabled bairro.
@@ -57,6 +58,8 @@ What changes with a refresh, and what to read before activating:
 The three Explorar examples (`EXEMPLOS` in `src/dados/raioX.ts`: `11720-2290` Boa Viagem, `59382-537` Graças, `1880-186` Madalena) point at fixed building ids. After activating an index, `tests/copiloto.test.ts` fails if one of them disappeared; pick a replacement with the criterion written next to it, never silently.
 
 **CNEFE (atrito):** the IBGE file is the 2022 Census survey (published 17 May 2024). If IBGE republishes it, the pipeline stops on the SHA-256 check; download the new zip from the URL in `rodar-atrito.mjs`, update `SHA_DO_ZIP` on purpose, and rerun the cycle.
+
+**OpenStreetMap (ruído estimado):** the extract is pinned by file name, MD5 and SHA-256 in `EXTRATO` (`scripts/dados/ruido/rodar-ruido.mjs`). To move to a newer dated extract from Geofabrik, change that block on purpose, run the pipeline with `--baixar`, then `node scripts/dados/ruido/conferir-ruido.mjs` and compare the six pilot bairros with `docs/aplicacao/unificacao-2026-11-19/ruido-conferencia.md` before publishing. Running the pipeline twice must give the same version and files (immutable version folders).
 
 ## 2. Recovery
 

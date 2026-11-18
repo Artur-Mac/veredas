@@ -3,6 +3,7 @@
 // aqui ele passa a sair do modelo estimado do prédio, e não mais de uma via fixa ("coletora a 18 m").
 import { fecharResultadoAcustico, resolverIsolamentoD2mnTw, type ResultadoAcustica3D } from "../../nucleo/motores/acustica3d";
 import type { EstimativaDeRuido } from "./leitura";
+import { FAIXA_DB, LIMITE_NBR_10151_A_NOITE_DB } from "./parametros";
 
 /**
  * O resultado acústico dos cartões, pelo modelo estimado: o que vem do chão e o avião à NOITE, na janela (andar e
@@ -19,7 +20,9 @@ export function acusticaDaEstimativa(e: EstimativaDeRuido, p: { anoConstrucao: n
     isolamentoD2mnTwDb: resolverIsolamentoD2mnTw(p.anoConstrucao),
     precoImovelReais: p.precoImovelReais,
     viaMovimentada: perto(["rodovia", "arterial", "coletora"], 150),
-    somNoturnoPerto: perto(["luse", "bar"], 150),
+    // Bar ou som licenciado só conta como movimento noturno quando a parcela dele, à noite na janela, chega perto da
+    // referência da NBR 10151 (50 dB(A) menos a faixa de erro): um bar que mal passa do piso não vira "intenso".
+    somNoturnoPerto: e.fontes.some((f) => (f.tipo === "luse" || f.tipo === "bar") && f.nivelANoiteDb >= LIMITE_NBR_10151_A_NOITE_DB - FAIXA_DB),
     epistemicTag: "inferencia",
     limiteEpistemologico: "Estimativa com dados abertos, não medição; a vedação real da janela pede teste no quarto durante a visita.",
     notaSossego0a10: e.notaDeSossego,

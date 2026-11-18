@@ -165,6 +165,13 @@ function CompararComDados() {
 
   const matrizComparar: [ColunaMatrizComparar, ColunaMatrizComparar] | null = (() => {
     if (!a || !b || !comparacao || !partesDoPar) return null;
+    const vizinhosDe = (e: Edificio): Edificio[] => {
+      try {
+        return edificiosDoBairro(e.bairro);
+      } catch {
+        return [];
+      }
+    };
     const montar = (item: AnaliseV2, ed: Edificio | null, pt: ReturnType<typeof derivarCustoPorPartes>, nomeCurto: string): ColunaMatrizComparar => {
       const inf = inferirFachadasDoEdificio({
         edificio: ed ?? {
@@ -174,6 +181,9 @@ function CompararComDados() {
           centro: [-34.896, -8.121],
           poligono: null,
         },
+        // Os mesmos vizinhos que o dossiê usa para achar a frente do prédio: sem eles a fachada inferida (e, com ela, a
+        // nota de sossego e o rótulo do sol) saía diferente da do placar do dossiê.
+        vizinhosDoBairro: ed ? vizinhosDe(ed) : undefined,
         textoAnuncio: [item.nome, item.nomeEdificio, ...(item.extracao?.campos.comodidades ?? [])]
           .filter(Boolean)
           .join(" "),
