@@ -39,16 +39,16 @@ function Bussola({ graus }: { graus: number | null }) {
       aria-label={o ? `Janela voltada para ${o.nome}, ${o.graus} graus` : "Orientação da janela ainda não registrada"}
     >
       <Circle cx={55} cy={55} r={49} fill="none" stroke={cor("cor-linha-forte")} strokeWidth={1} />
-      <TextoSvg x={55} y={20} {...marca}>
+      <TextoSvg x={55} y={20} {...marca} fontFamily="PlusJakartaSans">
         N
       </TextoSvg>
-      <TextoSvg x={94} y={59} {...marca}>
+      <TextoSvg x={94} y={59} {...marca} fontFamily="PlusJakartaSans">
         L
       </TextoSvg>
-      <TextoSvg x={55} y={98} {...marca}>
+      <TextoSvg x={55} y={98} {...marca} fontFamily="PlusJakartaSans">
         S
       </TextoSvg>
-      <TextoSvg x={16} y={59} {...marca}>
+      <TextoSvg x={16} y={59} {...marca} fontFamily="PlusJakartaSans">
         O
       </TextoSvg>
       {o ? (

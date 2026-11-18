@@ -259,6 +259,7 @@ export function SilencioInteligente({
       ]}
     >
       <Pressable
+        testID="silencio-inteligente-toggle"
         accessibilityRole="button"
         accessibilityState={{ expanded: aberto }}
         onPress={() => setAberto((v) => !v)}

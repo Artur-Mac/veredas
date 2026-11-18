@@ -59,6 +59,7 @@ export function TresPerguntasDoBolso({
 }: PropsTresPerguntasDoBolso) {
   const { cor } = useTema();
   const [copiado, setCopiado] = useState(false);
+  const [verChecklistIptu, setVerChecklistIptu] = useState(false);
 
   const compra = modalidade === "compra";
   const baseMensal = compra ? prestacaoEstimadaReais : (aluguelAnunciadoReais ?? 0);
@@ -251,6 +252,34 @@ export function TresPerguntasDoBolso({
             </Texto>
             <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
               {pendenciaDocumentalResumo}
+            </Texto>
+          </View>
+        ) : null}
+
+        <Pressable
+          testID="iptu-revisao-toggle"
+          accessibilityRole="button"
+          accessibilityState={{ expanded: verChecklistIptu }}
+          onPress={() => setVerChecklistIptu((v) => !v)}
+          style={styles.botaoChecklistIptu}
+        >
+          <Texto tipo="apoio" cor="cor-azul-cadastral" style={styles.textoChecklistIptu}>
+            {verChecklistIptu
+              ? "Ocultar conferência de revisão e isenção de IPTU"
+              : "Conferir área e hipóteses de revisão ou isenção do IPTU"}
+          </Texto>
+        </Pressable>
+
+        {verChecklistIptu ? (
+          <View style={[styles.chamadaLateral, { borderLeftColor: cor("cor-azul-cadastral") }]}>
+            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
+              • Área privativa no carnê vs matrícula: divergência relevante permite pedido formal de revisão cadastral na Prefeitura do Recife.
+            </Texto>
+            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
+              • Único imóvel residencial: verifique se o valor venal ou regras específicas (aposentado / servidor / adimplência) geram isenção ou desconto parcial.
+            </Texto>
+            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
+              • Cota única anual costuma conceder abatimento oficial em relação ao pagamento parcelado em 10 vezes.
             </Texto>
           </View>
         ) : null}
@@ -466,5 +495,13 @@ const styles = StyleSheet.create({
   textoBotaoWhatsapp: {
     fontSize: 14,
     fontWeight: "700",
+  },
+  botaoChecklistIptu: {
+    minHeight: 38,
+    justifyContent: "center",
+  },
+  textoChecklistIptu: {
+    fontSize: 12,
+    fontWeight: "600",
   },
 });

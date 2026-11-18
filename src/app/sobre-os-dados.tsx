@@ -228,6 +228,7 @@ function ApagarMeusDados() {
 }
 
 export default function SobreOsDados() {
+  const { cor } = useTema();
   const [mostrarBairros, definirMostrarBairros] = useState(false);
   const leitura = lerFontes();
   return (
@@ -282,6 +283,39 @@ export default function SobreOsDados() {
             {leitura.fontesDaRua.map((f) => (
               <CartaoDaFonte key={f.chave} fonte={f} />
             ))}
+          </View>
+        ) : null}
+
+        {"fontes" in leitura ? (
+          <View style={{ gap: 8 }}>
+            <Texto tipo="secao" role="heading" aria-level={3} style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>
+              Inventário público por camada
+            </Texto>
+            <CaixaCreme gap={6}>
+              {[...leitura.fontes, ...leitura.fontesDaRua].map((f, idx) => (
+                <View
+                  key={`inv-${f.chave}`}
+                  style={{
+                    borderTopWidth: idx === 0 ? 0 : 1,
+                    borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+                    paddingTop: idx === 0 ? 0 : 6,
+                    gap: 2,
+                  }}
+                >
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 8 }}>
+                    <Texto tipo="etiqueta" style={{ fontSize: 12, fontWeight: "700", flex: 1 }}>
+                      {f.nome}
+                    </Texto>
+                    <Texto tipo="numero" cor="cor-texto-apoio" style={{ fontSize: 11.5, fontVariant: ["tabular-nums"] }}>
+                      {`${f.colunasUsadas.length} colunas · ${formatarNumero(f.registrosLidos)} reg.`}
+                    </Texto>
+                  </View>
+                  <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                    {`Campos lidos: ${f.colunasUsadas.slice(0, 6).join(", ")}${f.colunasUsadas.length > 6 ? "…" : ""}`}
+                  </Texto>
+                </View>
+              ))}
+            </CaixaCreme>
           </View>
         ) : null}
 

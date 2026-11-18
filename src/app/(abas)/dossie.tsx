@@ -73,6 +73,8 @@ import { EscalaDeRuidoHumana, RelogioDoPredio, SilencioInteligente } from "../..
 import { analisarRadarVistaELote } from "../../dados/entorno/radarVistaELote";
 import { RadarVistaELote } from "../../componentes/visual/RadarVistaELote";
 import { CopilotoDocumentosPreSinal } from "../../componentes/visual/CopilotoDocumentosPreSinal";
+import { calcularPulsoDaQuadra } from "../../dados/dossie/pulsoDaQuadra";
+import { PulsoDaQuadra } from "../../componentes/visual/PulsoDaQuadra";
 
 /** Recuo do painel (`.ds-panel`, padding 20 18): a posição de uma seção na tela soma este recuo ao topo do painel. */
 const RECUO_DO_PAINEL = 20;
@@ -387,6 +389,32 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
         partesDeCusto.otimizacaoFechamento?.melhorCenarioEconomiaReais ?? 0,
     });
   }, [analise.declarados.condominio.valor, analise.declarados.preco.valor, analise.modalidade, partesDeCusto, predio?.iptuAnual?.mediana]);
+
+  const pulsoDaQuadra = useMemo(
+    () =>
+      calcularPulsoDaQuadra({
+        conforto: confortoTermico,
+        acustica,
+        anoConstrucao: predio?.anoConstrucao ?? null,
+        obrasProximas: visao.obras,
+        visaoRua: visao.rua ?? null,
+        vinculoConfirmado,
+        precoInformado: analise.declarados.preco.valor !== null,
+        condominioInformado: analise.declarados.condominio.valor !== null,
+        comparacaoM2Pct: visao.posicao?.deltaPercentual ?? null,
+        spuAtivo: Boolean(partesDeCusto.alertaMarinha),
+      }),
+    [
+      acustica,
+      analise.declarados.condominio.valor,
+      analise.declarados.preco.valor,
+      confortoTermico,
+      partesDeCusto,
+      predio?.anoConstrucao,
+      vinculoConfirmado,
+      visao,
+    ],
+  );
 
   const cartoesCidadao = useMemo(
     () =>
@@ -794,7 +822,25 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
               </View>
             ) : null}
             {aba === "destaques" ? <FichaViva analise={analise} predio={predio} lista={lista} visao={visao} nomeDoBairro={nomeDoBairro} /> : null}
-            {aba === "entorno" ? <ServicosDeEntorno centro={predio?.centro ?? (analise.caderno?.localizacaoDaVisita ? [analise.caderno.localizacaoDaVisita.longitude, analise.caderno.localizacaoDaVisita.latitude] : null)} referenciaDaVisita={!predio ? analise.caderno?.localizacaoDaVisita : undefined} bairro={predio?.bairro ?? null} predioId={predio?.id ?? null} /> : null}
+            {aba === "entorno" ? (
+              <View style={{ gap: 12, marginTop: 8 }}>
+                <PulsoDaQuadra pulso={pulsoDaQuadra} />
+                <ServicosDeEntorno
+                  centro={
+                    predio?.centro ??
+                    (analise.caderno?.localizacaoDaVisita
+                      ? [
+                          analise.caderno.localizacaoDaVisita.longitude,
+                          analise.caderno.localizacaoDaVisita.latitude,
+                        ]
+                      : null)
+                  }
+                  referenciaDaVisita={!predio ? analise.caderno?.localizacaoDaVisita : undefined}
+                  bairro={predio?.bairro ?? null}
+                  predioId={predio?.id ?? null}
+                />
+              </View>
+            ) : null}
             {aba === "destaques" ? <PrepararNegociacao analise={analise} visao={visao} lista={lista} predio={predio} nomeDoBairro={nomeDoBairro} /> : null}
             {aba === "destaques" ? (
               <View style={{ gap: 10 }}>

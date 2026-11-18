@@ -184,9 +184,7 @@ describe("Anti-Jargão, Anti-Truncamento e Tokens Puros na Nova Camada Visual", 
 
     // 4. SilencioInteligente começa recolhido e abre ao toque
     expect(completo).not.toContain("Matrícula conferida");
-    const silencioBotao = tree.root.findAll(
-      (n) => typeof n.type !== "string" && n.props.accessibilityRole === "button" && typeof n.props.accessibilityState?.expanded === "boolean",
-    )[0];
+    const silencioBotao = tree.root.find((n) => n.props.testID === "silencio-inteligente-toggle");
     expect(silencioBotao).toBeDefined();
     act(() => {
       silencioBotao?.props.onPress();
