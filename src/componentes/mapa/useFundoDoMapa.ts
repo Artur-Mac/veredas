@@ -10,7 +10,7 @@
 import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 import { ouvirCamadas } from "../../dados/camadas";
 import { METROS_POR_GRAU } from "../../dados/recife/mapaBaseContrato";
-import { arquivoDaCidade, arquivoDoMapaBase, arquivosDoMapaBaseParaOQuadro, mapaBaseDaCidade, mapaBaseDoBairro, type CaixaEmGraus } from "../../dados/recife/mapaBase";
+import { arquivoDaCidade, arquivoDoMapaBase, arquivosDoMapaBaseParaOQuadro, geracaoDoMapaBase, mapaBaseDaCidade, mapaBaseDoBairro, type CaixaEmGraus } from "../../dados/recife/mapaBase";
 import type { MapaBaseDoBairro } from "../../dados/recife/mapaBaseContrato";
 import { useCamadas } from "../EsperaDasCamadas";
 import { montarFundoDoMapa, nivelDaEscala, type CenaDoFundo, type ImovelDoFundo, type QuadroDoFundo } from "./fundoDoMapaCena";
@@ -88,25 +88,65 @@ function planoSemProtecao(bairro: string | null, caixa: CaixaEmGraus, largura: n
   return arquivosDoMapaBaseParaOQuadro({ bairro, caixa });
 }
 
+/**
+ * Chave de medição: com `globalThis.__veredaSemFundoDoMapa === true` o gancho fica "desligado" (nada carregado, nenhuma
+ * cena). Só o roteiro de medição (medir.mjs, por addInitScript) a liga, para medir o mapa sem o fundo; nenhuma tela a lê.
+ */
+function fundoDesligadoParaMedir(): boolean {
+  return (globalThis as { __veredaSemFundoDoMapa?: unknown }).__veredaSemFundoDoMapa === true;
+}
+
+/**
+ * Cenas já montadas, pela chave do pedido (arquivos, imóvel, quadro e a conta paraDesenho tomada em três pontos), para
+ * a gaveta reabrir sem remontar. Poucas: cada cena guarda os lotes do toque. A mais antiga sai primeiro.
+ */
+// 6: o dossiê abre o topo (1 cena), a gaveta e o Por perto (2 cada: as telas montam com uma largura provisória e de novo
+// com a medida). Com 4, a reabertura do Por perto já não achava a sua.
+export const CENAS_GUARDADAS = 6;
+const cenasGuardadas = new Map<string, CenaDoFundo>();
+
+function guardarCena(chave: string, cena: CenaDoFundo): void {
+  cenasGuardadas.delete(chave);
+  cenasGuardadas.set(chave, cena);
+  while (cenasGuardadas.size > CENAS_GUARDADAS) {
+    const maisAntiga = cenasGuardadas.keys().next().value;
+    if (maisAntiga === undefined) break;
+    cenasGuardadas.delete(maisAntiga);
+  }
+}
+
+/** Só para testes: esquece as cenas guardadas. */
+export function esquecerCenasDoFundo(): void {
+  cenasGuardadas.clear();
+}
+
+const SEPARADOR = "\n";
+const r6 =(n: number): string => (Number.isFinite(n) ? n.toFixed(4) : String(n));
+
 function slugDoArquivo(caminho: string): string {
   return (caminho.split("/").pop() ?? "").replace(/\.json$/, "");
 }
 
 export function useFundoDoMapa(pedido: PedidoDoFundo): FundoDoMapaCarregado {
   const { bairro, imovel, quadro, caixa } = pedido;
-  const ativo = pedido.ativo !== false;
+  const ativo = pedido.ativo !== false && !fundoDesligadoParaMedir();
   const zoom = quadro.zoom ?? 1;
   const [oeste, sul, leste, norte] = caixa;
 
   const tique = useSyncExternalStore(ouvirCamadas, lerRelogio, lerRelogio);
   // Cada "tentar de novo" refaz o plano, a leitura e a montagem (o arquivo recusado não fica guardado em memória).
   const [tentativa, setTentativa] = useState(0);
-  const plano = useMemo(
+  const planoNovo = useMemo(
     () => (ativo ? planoDeCargaDoFundo(bairro, [oeste, sul, leste, norte], quadro.largura, zoom) : { arquivos: [] as string[], completo: true }),
     // `tique` entra de propósito: o plano depende do que já está em memória.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [ativo, bairro, oeste, sul, leste, norte, quadro.largura, zoom, tique, tentativa],
   );
+  // O relógio anda a cada arquivo de qualquer camada do app; o plano refeito com a mesma lista é o mesmo plano (mesma
+  // identidade), para nada abaixo recalcular por causa de uma camada alheia.
+  const chaveDoPlano = `${planoNovo.completo ? 1 : 0}|${planoNovo.arquivos.join(SEPARADOR)}`;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const plano = useMemo(() => planoNovo, [chaveDoPlano]);
   const { estado, tentarDeNovo: tentarAsCamadas } = useCamadas(ativo ? plano.arquivos : SEM_ARQUIVOS);
   const tentarDeNovo = useCallback(() => {
     setTentativa((n) => n + 1);
@@ -120,13 +160,26 @@ export function useFundoDoMapa(pedido: PedidoDoFundo): FundoDoMapaCarregado {
   const dx = quadro.deslocamento?.[0] ?? 0;
   const dy = quadro.deslocamento?.[1] ?? 0;
   const pronto = ativo && estado === "pronta" && plano.completo && plano.arquivos.length > 0;
-  const chaveDosArquivos = plano.arquivos.join("\n");
+  const chaveDosArquivos = plano.arquivos.join(SEPARADOR);
+  // A conta paraDesenho é linear em lon e lat: três pontos a determinam. Entra na chave por valor, não por identidade.
+  const conta = pronto
+    ? [quadro.paraDesenho([oeste, sul]), quadro.paraDesenho([leste, sul]), quadro.paraDesenho([oeste, norte])].map(([x, y]) => `${r6(x)},${r6(y)}`).join(";")
+    : "";
+  const chaveDaCena = pronto
+    ? [geracaoDoMapaBase(), chaveDosArquivos, bairro, centroLon, centroLat, codigo, quadro.largura, quadro.altura, zoom, chaveDosObstaculos, dx, dy, conta].join("|")
+    : "";
+  const paraDesenho = quadro.paraDesenho;
 
   const montada = useMemo((): { cena: CenaDoFundo | null; falhou: boolean } => {
     if (!pronto) return { cena: null, falhou: false };
+    const guardada = cenasGuardadas.get(chaveDaCena);
+    if (guardada) {
+      guardarCena(chaveDaCena, guardada);
+      return { cena: guardada, falhou: false };
+    }
     try {
       const cidadeArquivo = arquivoDaCidade();
-      const arquivos = chaveDosArquivos ? chaveDosArquivos.split("\n") : [];
+      const arquivos = chaveDosArquivos ? chaveDosArquivos.split(SEPARADOR) : [];
       const bairros: MapaBaseDoBairro[] = [];
       for (const a of arquivos) {
         if (a === cidadeArquivo) continue;
@@ -142,21 +195,22 @@ export function useFundoDoMapa(pedido: PedidoDoFundo): FundoDoMapaCarregado {
         quadro: {
           largura: quadro.largura,
           altura: quadro.altura,
-          paraDesenho: quadro.paraDesenho,
+          paraDesenho,
           zoom,
           obstaculos: JSON.parse(chaveDosObstaculos) as [number, number, number, number][],
           deslocamento: [dx, dy],
         },
       });
+      guardarCena(chaveDaCena, cena);
       return { cena, falhou: false };
     } catch {
       // Arquivo inválido ou de outra versão: a leitura recusa. O mapa fica sem fundo, como em qualquer falha de carga.
       return { cena: null, falhou: true };
     }
-    // `tentativa` entra de propósito: tentar de novo relê e remonta mesmo com a mesma entrada.
+    // A chave da cena resume a entrada (paraDesenho por valor); `tentativa` entra de propósito: tentar de novo relê e
+    // remonta mesmo com a mesma entrada.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pronto, chaveDosArquivos, bairro, centroLon, centroLat, codigo, quadro.largura, quadro.altura, quadro.paraDesenho, zoom, chaveDosObstaculos, dx, dy, tentativa]);
-
+  }, [pronto, chaveDaCena, tentativa]);
   // A última cena pronta, para `manterAnterior` (estado ajustado durante o render, o padrão do React para "valor anterior").
   const [anterior, setAnterior] = useState<CenaDoFundo | null>(null);
   const cenaPronta = ativo && plano.arquivos.length > 0 && estado !== "falhou" && !montada.falhou && pronto && montada.cena?.temDado ? montada.cena : null;

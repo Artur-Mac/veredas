@@ -253,8 +253,11 @@ export function validarArquivoDaCidade(dados: unknown): ArquivoDaCidade {
   return checarArquivoDaCidadeRaso(r.data);
 }
 
-/** Decodifica um arquivo de bairro já conferido. Os lotes são decodificados só no primeiro acesso a `lotes`. */
-export function decodificarArquivoDoBairro(a: ArquivoDoBairro): MapaBaseDoBairro {
+/**
+ * Decodifica um arquivo de bairro já conferido. Os lotes são decodificados só no primeiro acesso a `lotes` (dentro de
+ * `medir`, que a leitura em memória usa para marcar "fundo-do-mapa:ler"; cai dentro da montagem da cena).
+ */
+export function decodificarArquivoDoBairro(a: ArquivoDoBairro, medir: <T>(f: () => T) => T = (f) => f()): MapaBaseDoBairro {
   const onde = `${a.bairro}.json`;
   const quadras: QuadraBase[] = decodificarPoligonos(a.quadras.g, null, `${onde} quadras`);
   const nLotes = a.lotes.pavimentos.length;
@@ -262,7 +265,7 @@ export function decodificarArquivoDoBairro(a: ArquivoDoBairro): MapaBaseDoBairro
   const lerLotes = (): LoteBase[] => {
     if (lotes) return lotes;
     const marcados = new Set(a.lotes.noIndice);
-    const formas = decodificarPoligonos(a.lotes.g, nLotes, `${onde} lotes`);
+    const formas = medir(() => decodificarPoligonos(a.lotes.g, nLotes, `${onde} lotes`));
     lotes = formas.map((f, i) => {
       const q = a.lotes.quadra[i]!;
       if (q >= quadras.length) recusar(onde, `lote ${i} aponta para a quadra ${q}, que não existe`);
@@ -326,21 +329,63 @@ export function bairrosNaCaixa(caixa: CaixaEmGraus): string[] {
   return Object.keys(CAIXAS).filter((s) => ARQUIVOS[s] && tocam(CAIXAS[s]!, caixa));
 }
 
+/**
+ * Quantos bairros decodificados ficam em memória. Passando disso, sai o usado há mais tempo; pedido de novo, é
+ * decodificado outra vez a partir do arquivo bruto, que continua no sistema de camadas.
+ */
+export const BAIRROS_DECODIFICADOS_EM_MEMORIA = 8;
+
+// Map guarda a ordem de inserção: o primeiro é o usado há mais tempo (cada uso reinsere no fim).
 const bairrosEmMemoria = new Map<string, MapaBaseDoBairro>();
 let cidadeEmMemoria: MapaBaseDaCidade | null = null;
 
+type Desempenho = { now?: () => number; mark?: (n: string) => unknown; measure?: (n: string, o: { start: number; end: number }) => unknown };
+const desempenho = (): Desempenho | null => {
+  const p = (globalThis as { performance?: Desempenho }).performance;
+  return p && typeof p.mark === "function" && typeof p.measure === "function" && typeof p.now === "function" ? p : null;
+};
+
+/** Mede `f` como "fundo-do-mapa:ler" (performance.measure), só quando o ambiente tem a API. */
+function medindoALeitura<T>(f: () => T): T {
+  const p = desempenho();
+  if (!p) return f();
+  const inicio = p.now!();
+  const r = f();
+  try {
+    p.measure!("fundo-do-mapa:ler", { start: inicio, end: p.now!() });
+  } catch {
+    // medir é só para a verificação, nunca quebra a leitura
+  }
+  return r;
+}
+
 /**
- * O mapa-base do bairro, decodificado uma vez por arquivo (lotes só no primeiro acesso). null se o bairro não tem
- * arquivo. Lança se o arquivo não carregou ainda (CamadaPendente/CamadaIndisponivel: nada é guardado) ou é inválido.
+ * O mapa-base do bairro, decodificado uma vez por arquivo (lotes só no primeiro acesso) enquanto estiver entre os
+ * BAIRROS_DECODIFICADOS_EM_MEMORIA usados por último. null se o bairro não tem arquivo. Lança se o arquivo não carregou
+ * ainda (CamadaPendente/CamadaIndisponivel: nada é guardado) ou é inválido.
  */
 export function mapaBaseDoBairro(slug: string): MapaBaseDoBairro | null {
   const guardado = bairrosEmMemoria.get(slug);
-  if (guardado) return guardado;
+  if (guardado) {
+    bairrosEmMemoria.delete(slug);
+    bairrosEmMemoria.set(slug, guardado);
+    return guardado;
+  }
   const arquivo = arquivoDoMapaBase(slug);
   if (!arquivo) return null;
-  const mapa = decodificarArquivoDoBairro(checarArquivoDoBairroRaso(slug, lerCamada(arquivo)));
+  const mapa = medindoALeitura(() => decodificarArquivoDoBairro(checarArquivoDoBairroRaso(slug, lerCamada(arquivo)), medindoALeitura));
   bairrosEmMemoria.set(slug, mapa);
+  while (bairrosEmMemoria.size > BAIRROS_DECODIFICADOS_EM_MEMORIA) {
+    const maisAntigo = bairrosEmMemoria.keys().next().value;
+    if (maisAntigo === undefined) break;
+    bairrosEmMemoria.delete(maisAntigo);
+  }
   return mapa;
+}
+
+/** Os slugs decodificados em memória, do usado há mais tempo ao último (para os testes). */
+export function bairrosDecodificadosEmMemoria(): string[] {
+  return [...bairrosEmMemoria.keys()];
 }
 
 /** O mapa-base da cidade, decodificado uma vez. Mesmas regras de mapaBaseDoBairro. */
@@ -348,7 +393,7 @@ export function mapaBaseDaCidade(): MapaBaseDaCidade | null {
   if (cidadeEmMemoria) return cidadeEmMemoria;
   const arquivo = arquivoDaCidade();
   if (!arquivo) return null;
-  cidadeEmMemoria = decodificarArquivoDaCidade(checarArquivoDaCidadeRaso(lerCamada(arquivo)));
+  cidadeEmMemoria = medindoALeitura(() => decodificarArquivoDaCidade(checarArquivoDaCidadeRaso(lerCamada(arquivo))));
   return cidadeEmMemoria;
 }
 
@@ -356,6 +401,13 @@ export function mapaBaseDaCidade(): MapaBaseDaCidade | null {
 export function esquecerMapaBase(): void {
   bairrosEmMemoria.clear();
   cidadeEmMemoria = null;
+  geracao += 1;
+}
+
+let geracao = 0;
+/** Muda a cada esquecerMapaBase: quem guarda algo montado a partir do mapa-base (as cenas do fundo) põe na chave. */
+export function geracaoDoMapaBase(): number {
+  return geracao;
 }
 
 // ——— Carga em dois tempos ———————————————————————————————————————————————————————————————————————————

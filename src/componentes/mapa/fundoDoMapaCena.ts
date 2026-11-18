@@ -208,35 +208,51 @@ function pontosTotais(p: PoligonoBase): number {
   return n;
 }
 
-function marcar(nome: string): boolean {
-  const p = (globalThis as { performance?: { mark?: (n: string) => unknown } }).performance;
-  if (!p || typeof p.mark !== "function") return false;
-  p.mark(nome);
-  return true;
+type Desempenho = { now: () => number; mark: (n: string) => unknown; measure: (n: string, o: { start: number; end: number }) => unknown };
+
+/** A API performance, só quando existe por inteiro (web, Node recente); senão null e nada é medido. */
+export function desempenhoDoAmbiente(): Desempenho | null {
+  const p = (globalThis as { performance?: Partial<Desempenho> }).performance;
+  return p && typeof p.mark === "function" && typeof p.measure === "function" && typeof p.now === "function" ? (p as Desempenho) : null;
 }
 
-function medirMarca(): void {
-  const p = (globalThis as {
-    performance?: { measure?: (n: string, a: string, b: string) => unknown; clearMarks?: (n?: string) => void };
-  }).performance;
-  if (!p || typeof p.measure !== "function") return;
+/** performance.measure(nome) de `inicio` até agora; nunca lança (medir é só para a verificação). */
+export function registrarMedida(nome: string, inicio: number): void {
+  const p = desempenhoDoAmbiente();
+  if (!p) return;
   try {
-    p.measure("fundo-do-mapa", "fundo-do-mapa:inicio", "fundo-do-mapa:fim");
-    p.clearMarks?.("fundo-do-mapa:inicio");
-    p.clearMarks?.("fundo-do-mapa:fim");
+    p.measure(nome, { start: inicio, end: p.now() });
   } catch {
-    // marca ausente: medir é só para a verificação, nunca quebra o desenho
+    // ambiente sem measure com opções: sem medida
   }
 }
 
-/** Monta a cena do fundo. Mesma entrada, mesma cena. */
+// Fim da montagem de cada cena (performance.now), para "fundo-do-mapa:desenhar" começar dali. Lido uma vez só.
+const fimDaMontagem = new WeakMap<CenaDoFundo, number>();
+
+/** O instante em que a cena acabou de ser montada, só na primeira consulta (depois, null). */
+export function tomarFimDaMontagem(cena: CenaDoFundo): number | null {
+  const t = fimDaMontagem.get(cena);
+  if (t === undefined) return null;
+  fimDaMontagem.delete(cena);
+  return t;
+}
+
+let montagens = 0;
+/** Quantas cenas foram montadas desde o início (para os testes: uma montagem por abertura do mapa). */
+export function contarMontagensDoFundo(): number {
+  return montagens;
+}
+
+/** Monta a cena do fundo. Mesma entrada, mesma cena. Mede "fundo-do-mapa" quando há a API performance. */
 export function montarFundoDoMapa(entrada: EntradaDoFundo): CenaDoFundo {
-  const marcou = marcar("fundo-do-mapa:inicio");
+  montagens += 1;
+  const p = desempenhoDoAmbiente();
+  if (!p) return montar(entrada);
+  const inicio = p.now();
   const cena = montar(entrada);
-  if (marcou) {
-    marcar("fundo-do-mapa:fim");
-    medirMarca();
-  }
+  registrarMedida("fundo-do-mapa", inicio);
+  fimDaMontagem.set(cena, p.now());
   return cena;
 }
 
@@ -360,7 +376,8 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
     ? ""
     : camada(deArquivos((b) => b.quadras), nivel === "bairro" ? (_p, r) => r[2] - r[0] >= QUADRA_MINIMA_PX || r[3] - r[1] >= QUADRA_MINIMA_PX : undefined);
   const pracas = daCidade ? "" : camada(deArquivos((b) => b.pracas));
-  const agua = daCidade && cidade ? camada([{ a: cidade, itens: cidade.base.agua }]) : camada(deArquivos((b) => b.agua));
+  const fontesDaAgua = daCidade && cidade ? [{ a: cidade as Arquivo, itens: cidade.base.agua }] : deArquivos((b) => b.agua);
+  const agua = camada(fontesDaAgua);
   // Pontes: chão de rua por cima da água, uma forma só (o arquivo da cidade não tem pontes).
   const pontes = daCidade ? "" : camada(deArquivos((b) => b.pontes ?? []));
 
@@ -469,7 +486,22 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
     // onde o nome da rua do imóvel corre).
     if (fracao > 0 && fracao <= FRACAO_DO_LOTE_OBSTACULO) obstaculosDeRua.push(...celulasDoLote(loteDoImovel.lote.aneis.map((a) => anelNoDesenho(a, loteDoImovel!.a.afim)), r, 4 / zoom));
   }
-  const rotulosDoImovel = posicionarRotulosDeRua(candidatos.filter((c) => c.tipo === "imovel"), zoom, obstaculosDeRua, 0, inset, limiteDoImovel);
+  // A água da cena no desenho, para nenhum nome de rua cair dentro dela. Um ponto a menos de 1,5 px da margem não conta:
+  // a via que corre na beira do rio continua rotulável.
+  // Só a caixa no começo; os anéis passam para o desenho na primeira pergunta que cai dentro da caixa.
+  const aguaNoDesenho: { caixa: Retangulo; aneis: () => Float64Array[] }[] = [];
+  for (const { a, itens } of fontesDaAgua) {
+    for (const p of itens) {
+      const caixa = naCena(a, p.caixa);
+      if (!caixa) continue;
+      let aneis: Float64Array[] | null = null;
+      aguaNoDesenho.push({ caixa, aneis: () => (aneis ??= p.aneis.map((anel) => anelNoDesenho(anel, a.afim))) });
+    }
+  }
+  const margemDaAgua = 1.5 / zoom;
+  const naAgua = (x: number, y: number): boolean =>
+    aguaNoDesenho.some((w) => x >= w.caixa[0] && x <= w.caixa[2] && y >= w.caixa[1] && y <= w.caixa[3] && pontoNosAneisDoDesenho(x, y, w.aneis()) && distanciaAosAneis(x, y, w.aneis()) > margemDaAgua);
+  const rotulosDoImovel = posicionarRotulosDeRua(candidatos.filter((c) => c.tipo === "imovel"), zoom, obstaculosDeRua, 0, inset, limiteDoImovel, naAgua);
   const ocupadas: Retangulo[] = [...obstaculosDeRua, ...rotulosDoImovel.flatMap((r) => [...r.caixas])];
   let nomes: NomeDeBairro[] = [];
   // No nível de lote o bairro do imóvel está no selo; com a cidade carregada, os vizinhos junto à divisa levam o nome.
@@ -489,6 +521,8 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
     [...ocupadas, ...nomes.map((n) => n.caixa)],
     rotulosDoImovel.length,
     inset,
+    undefined,
+    naAgua,
   );
   const rotulos = [...rotulosDoImovel, ...outras];
 
@@ -575,12 +609,17 @@ function metros(n: number): string {
   return `${String(inteiro).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} m`;
 }
 
+/** Para o leitor de tela: "R." vira "Rua" e "Av." vira "Avenida" no começo do nome; o resto fica como a base publica. */
+export function ruaPorExtenso(nome: string): string {
+  return nome.replace(/^R\.\s*/, "Rua ").replace(/^Av\.\s*/, "Avenida ");
+}
+
 /** Descrição do mapa para o leitor de tela: rua do imóvel, bairro e distância até a divisa mais próxima do bairro. */
 export function descreverFundoDoMapa(cena: CenaDoFundo): string {
   const { rua, bairro, distanciaDaDivisaM } = cena.acessibilidade;
   const partes: string[] = [];
   partes.push(bairro ? `Mapa do entorno, bairro ${bairro}.` : "Mapa do entorno.");
-  if (rua) partes.push(`O imóvel fica na ${rua}.`);
+  if (rua) partes.push(`O imóvel fica na ${ruaPorExtenso(rua)}.`);
   if (bairro && distanciaDaDivisaM !== null) {
     partes.push(distanciaDaDivisaM < 10 ? `O imóvel fica junto à divisa de ${bairro}.` : `A divisa mais próxima de ${bairro} fica a ${metros(distanciaDaDivisaM)} do imóvel.`);
   }

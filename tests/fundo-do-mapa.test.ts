@@ -5,6 +5,7 @@ import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
 import { Defs, Path, Rect, Text as TextoSvg, TextPath } from "react-native-svg";
 import { FundoDoMapa, CreditoDaBase, SeloDoBairro } from "../src/componentes/mapa/FundoDoMapa";
+import { AvisoDoFundoDoMapa } from "../src/componentes/mapa/AvisoDoFundoDoMapa";
 import {
   descreverFundoDoMapa,
   LOTES_ATE_M_POR_PX,
@@ -13,6 +14,7 @@ import {
   nivelDaEscala,
   QUADRAS_ATE_M_POR_PX,
   rotuloDoLote,
+  ruaPorExtenso,
   type CenaDoFundo,
   type EntradaDoFundo,
 } from "../src/componentes/mapa/fundoDoMapaCena";
@@ -285,7 +287,7 @@ describe("lote do imóvel, toque e acessibilidade", () => {
     const c = porPerto();
     const texto = descreverFundoDoMapa(c);
     expect(texto).toContain("bairro Boa Viagem");
-    expect(texto).toContain("R. Major Armando de Souza Mello");
+    expect(texto).toContain("Rua Major Armando de Souza Mello");
     expect(texto).toMatch(/A divisa mais próxima de Boa Viagem fica a [\d.]+ m do imóvel\./);
     expect(c.acessibilidade.distanciaDaDivisaM).toBeGreaterThan(0);
   });
@@ -429,7 +431,7 @@ const comArquivosReais = mapaBaseDoBairro("boa-viagem") !== null && mapaBaseDaCi
       expect(c.nivel).toBe("cidade");
       expect(c.camadas.vias).not.toBe("");
       expect(c.acessibilidade.rua).toBe("R. Major Armando de Souza Mello");
-      expect(descreverFundoDoMapa(c)).toContain("O imóvel fica na R. Major Armando de Souza Mello.");
+      expect(descreverFundoDoMapa(c)).toContain("O imóvel fica na Rua Major Armando de Souza Mello.");
       // Rótulo só se couber: nunca por cima do pino (13 px em volta do centro).
       for (const r of c.rotulos.filter((x) => x.tipo === "imovel")) {
         expect(r.nome).toBe("R. Major Armando de Souza Mello");
@@ -518,6 +520,71 @@ describe("componente FundoDoMapa", () => {
     expect(json).toContain("BAIRRO");
     expect(json).toContain("Boa Viagem");
     expect(json).toContain("Base: Prefeitura do Recife (ODbL)");
+  });
+
+  it('partes: "chao" desenha tudo menos os textos, "rotulos" só os textos; juntos, o mesmo que "tudo"', () => {
+    const c = porPerto();
+    expect(c.rotulos.length + c.bairros.length).toBeGreaterThan(0);
+    const contar = (partes?: "tudo" | "chao" | "rotulos") => {
+      let a!: TestRenderer.ReactTestRenderer;
+      act(() => {
+        a = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(FundoDoMapa, { cena: c, partes })));
+      });
+      montadas.push(a);
+      return { textos: a.root.findAllByType(TextoSvg).length, caminhos: a.root.findAllByType(Path).length, rects: a.root.findAllByType(Rect).length, raiz: a.root.findAll((n) => n.props.testID === "fundo-do-mapa").length };
+    };
+    const tudo = contar();
+    const chao = contar("chao");
+    const rotulos = contar("rotulos");
+    expect(contar("tudo")).toEqual(tudo);
+    expect(chao.textos).toBe(0);
+    expect(chao.rects).toBe(1);
+    expect(rotulos.textos).toBe(tudo.textos);
+    expect(rotulos.rects).toBe(0);
+    expect(rotulos.caminhos).toBe(c.rotulos.length);
+    expect(chao.caminhos + rotulos.caminhos).toBe(tudo.caminhos);
+    // A marca do fundo (para as capturas) vai só na parte de baixo.
+    expect(rotulos.raiz).toBe(0);
+    expect(chao.raiz).toBeGreaterThan(0);
+  });
+
+  it("ordem das camadas (seção 4): tinta do bairro abaixo da água; a divisa do bairro do imóvel acima da água", () => {
+    const c = porPerto();
+    let a!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      a = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(FundoDoMapa, { cena: c })));
+    });
+    montadas.push(a);
+    const ds = a.root.findAllByType(Path).map((p) => p.props.d as string);
+    const i = (d: string) => (d ? ds.indexOf(d) : -1);
+    expect(i(c.camadas.agua)).toBeGreaterThan(-1);
+    if (c.camadas.tintaDoBairro) expect(i(c.camadas.tintaDoBairro)).toBeLessThan(i(c.camadas.agua));
+    // A tinta e a divisa do imóvel são o mesmo contorno: a divisa é a última ocorrência.
+    expect(ds.lastIndexOf(c.camadas.divisaDoImovel)).toBeGreaterThan(i(c.camadas.agua));
+    expect(i(c.camadas.quadras)).toBeLessThan(i(c.camadas.agua));
+  });
+
+  it("aviso de falha: completa a frase com oQueContinua, e o padrão continua o de antes", () => {
+    const texto = (props: Partial<React.ComponentProps<typeof AvisoDoFundoDoMapa>>) => {
+      let a!: TestRenderer.ReactTestRenderer;
+      act(() => {
+        a = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(AvisoDoFundoDoMapa, { estado: "falhou", tentarDeNovo: () => undefined, ...props })));
+      });
+      montadas.push(a);
+      return JSON.stringify(a.toJSON());
+    };
+    expect(texto({})).toContain("Não foi possível carregar as ruas e quadras deste mapa. O lote e os pontos continuam valendo.");
+    const outro = texto({ oQueContinua: "Os pontos do exemplo continuam valendo." });
+    expect(outro).toContain("deste mapa. Os pontos do exemplo continuam valendo.");
+    expect(outro).not.toContain("O lote e os pontos");
+  });
+
+  it('leitor de tela: "R." vira "Rua" e "Av." vira "Avenida" só no começo; os outros prefixos ficam como a base publica', () => {
+    expect(ruaPorExtenso("R. Frei Jaboatao")).toBe("Rua Frei Jaboatao");
+    expect(ruaPorExtenso("Av. Boa Viagem")).toBe("Avenida Boa Viagem");
+    expect(ruaPorExtenso("Tv. do R. Novo")).toBe("Tv. do R. Novo");
+    expect(ruaPorExtenso("Pc. Av. Central")).toBe("Pc. Av. Central");
+    expect(ruaPorExtenso("Rua Nova")).toBe("Rua Nova");
   });
 });
 

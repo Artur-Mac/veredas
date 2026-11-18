@@ -5,8 +5,11 @@
 //   node .../medir.mjs --fase depois --modo offline
 //
 // Desempenho: CPU 4× mais lenta (CDP Emulation.setCPUThrottlingRate), dossiê do Golden Tower já carregado; mede do toque
-// (timeStamp do pointerdown) até o primeiro quadro (requestAnimationFrame) em que o svg do mapa tem formas desenhadas, e
-// lê as marcas performance "fundo-do-mapa" quando existirem. Cada repetição recarrega a página (abre a frio a superfície).
+// (timeStamp do pointerdown) até o primeiro quadro (requestAnimationFrame) em que o svg do mapa tem formas desenhadas e até
+// o quadro com o fundo do mapa-base, e lê as medidas performance de cada etapa ("fundo-do-mapa:ler", "fundo-do-mapa",
+// "fundo-do-mapa:desenhar"). Cada repetição recarrega a página e abre a superfície duas vezes (primeira e segunda
+// abertura); tudo de novo com o fundo desligado pela chave de medição globalThis.__veredaSemFundoDoMapa (addInitScript).
+// O custo do fundo é a segunda abertura com o fundo menos a segunda sem ele.
 // Sem rede: abre o dossiê e a gaveta com rede, fecha, corta a rede (context.setOffline) e reabre a gaveta e o Por perto.
 // Grava desempenho.json e offline.json (e as fotos do offline) na pasta da fase.
 import { mkdir, writeFile } from "node:fs/promises";
@@ -37,8 +40,12 @@ await mkdir(saida, { recursive: true });
 
 const BOTAO_GAVETA = "Abrir mapa do lote e das obras próximas";
 
-/** Na página: arma a medição antes do toque. Resolve em window.__medida com o tempo do toque ao primeiro quadro com mapa. */
-function armar({ escopo, minimo }) {
+/**
+ * Na página: arma a medição antes do toque. Resolve em window.__medida com o tempo do toque ao primeiro quadro com mapa
+ * (toqueAoQuadroMs, como sempre foi) e, com `esperarFundo`, ao primeiro quadro com o fundo do mapa-base na tela
+ * (toqueAoFundoMs: o grupo marcado data-fundo-do-mapa-raiz dentro de um svg novo).
+ */
+function armar({ escopo, minimo, esperarFundo }) {
   window.__medida = null;
   let toque = null;
   const aoTocar = (e) => {
@@ -48,7 +55,7 @@ function armar({ escopo, minimo }) {
   const limite = performance.now() + 60000;
   // Só conta svg que nasceu depois do toque: um mapa que já estava na tela não vale como "desenhado".
   const jaExistiam = new Set(document.querySelectorAll("svg"));
-  const formas = () => {
+  const maior = () => {
     const raizes = escopo ? [...document.querySelectorAll(escopo)] : [document];
     let melhor = 0;
     let svgMaior = null;
@@ -61,17 +68,32 @@ function armar({ escopo, minimo }) {
           svgMaior = s;
         }
       }
-    return svgMaior && melhor > 20000 ? svgMaior.querySelectorAll("path,polygon,polyline,rect,circle,line,text").length : 0;
+    return svgMaior && melhor > 20000 ? svgMaior : null;
   };
+  const r1 = (x) => Math.round(x * 10) / 10;
+  let mapa = null;
+  let fundo = null;
   const quadro = (t) => {
-    if (toque !== null && formas() >= minimo) {
-      // O svg está no DOM neste quadro; o quadro seguinte começa depois de ele ter sido pintado.
-      const noDom = performance.now();
-      requestAnimationFrame(() => {
-        const pintado = performance.now();
-        window.__medida = { toqueAoQuadroMs: Math.round((pintado - toque) * 10) / 10, toqueAoDomMs: Math.round((noDom - toque) * 10) / 10 };
-      });
-      return;
+    if (toque !== null) {
+      const svg = maior();
+      const agora = performance.now();
+      if (mapa === null && svg && svg.querySelectorAll("path,polygon,polyline,rect,circle,line,text").length >= minimo) mapa = { dom: agora };
+      if (esperarFundo && fundo === null && svg && svg.querySelector("[data-fundo-do-mapa-raiz], [data-testid='fundo-do-mapa']")) fundo = { dom: agora };
+      const pronto = mapa !== null && (!esperarFundo || fundo !== null);
+      if (pronto) {
+        // O svg está no DOM neste quadro; o quadro seguinte começa depois de ele ter sido pintado.
+        requestAnimationFrame(() => {
+          const pintado = performance.now();
+          window.__medida = {
+            toqueAoDomMs: r1(mapa.dom - toque),
+            toqueAoQuadroMs: r1((mapa.pintado ?? pintado) - toque),
+            toqueAoFundoMs: fundo ? r1(pintado - toque) : null,
+            toqueAoFundoNoDomMs: fundo ? r1(fundo.dom - toque) : null,
+          };
+        });
+        return;
+      }
+      if (mapa !== null && mapa.pintado === undefined && mapa.dom < agora) mapa.pintado = agora;
     }
     if (t > limite) {
       window.__medida = { erro: "tempo esgotado" };
@@ -82,34 +104,76 @@ function armar({ escopo, minimo }) {
   requestAnimationFrame(quadro);
 }
 
-async function medirUma(pagina, cdp, superficie) {
-  await pagina.goto(`${base}/dossie?id=${id}`, { waitUntil: "load" });
-  await pagina.getByRole("button", { name: BOTAO_GAVETA }).waitFor({ timeout: 120000 });
-  await pagina.waitForTimeout(1500); // o dossiê termina de assentar antes de ligar o freio de CPU
-  let botao;
-  let escopo;
+const ETAPAS = ["fundo-do-mapa:ler", "fundo-do-mapa", "fundo-do-mapa:desenhar"];
+
+/** As medidas performance de cada etapa do fundo desde a última limpeza (soma e lista por etapa). */
+async function etapasDoFundo(pagina) {
+  return pagina.evaluate((nomes) => {
+    const r = {};
+    for (const n of nomes) {
+      const d = performance.getEntriesByName(n, "measure").map((e) => Math.round(e.duration * 10) / 10);
+      r[n] = { vezes: d.length, somaMs: Math.round(d.reduce((a, b) => a + b, 0) * 10) / 10, todas: d };
+    }
+    return r;
+  }, ETAPAS);
+}
+
+async function abrirSuperficie(pagina, superficie) {
+  if (superficie === "gaveta") return { botao: pagina.getByRole("button", { name: BOTAO_GAVETA }), escopo: '[role="dialog"]' };
+  const aba = pagina.getByRole("tab", { name: "Entorno", exact: true });
+  if ((await aba.getAttribute("aria-selected").catch(() => null)) !== "true") await aba.click();
+  const botao = pagina.getByRole("button", { name: "Ver pontos por perto no mapa" });
+  await botao.waitFor({ timeout: 60000 });
+  await botao.scrollIntoViewIfNeeded();
+  await pagina.waitForTimeout(800);
+  return { botao, escopo: null };
+}
+
+async function fecharSuperficie(pagina, superficie) {
   if (superficie === "gaveta") {
-    botao = pagina.getByRole("button", { name: BOTAO_GAVETA });
-    escopo = '[role="dialog"]';
+    await fecharGaveta(pagina);
+    await pagina.locator('[role="dialog"]').first().waitFor({ state: "detached", timeout: 10000 }).catch(() => undefined);
   } else {
-    await pagina.getByRole("tab", { name: "Entorno", exact: true }).click();
-    botao = pagina.getByRole("button", { name: "Ver pontos por perto no mapa" });
-    await botao.waitFor({ timeout: 60000 });
-    await botao.scrollIntoViewIfNeeded();
-    await pagina.waitForTimeout(800);
-    escopo = null;
+    await pagina.getByRole("button", { name: "Ocultar mapa do entorno" }).click();
   }
-  await pagina.evaluate(() => performance.clearMarks?.("fundo-do-mapa") ?? undefined).catch(() => undefined);
+  await pagina.waitForTimeout(800);
+}
+
+/** Uma abertura medida, com a CPU 4× mais lenta só durante o toque e o desenho. */
+async function medirAbertura(pagina, cdp, superficie, comFundo) {
+  const { botao, escopo } = await abrirSuperficie(pagina, superficie);
+  await pagina.evaluate(() => {
+    performance.clearMarks?.();
+    performance.clearMeasures?.();
+  });
   await cdp.send("Emulation.setCPUThrottlingRate", { rate: 4 });
   try {
-    await pagina.evaluate(armar, { escopo, minimo: 2 });
+    await pagina.evaluate(armar, { escopo, minimo: 2, esperarFundo: comFundo });
     await botao.click();
     await pagina.waitForFunction(() => window.__medida !== null, null, { timeout: 120000 });
     const medida = await pagina.evaluate(() => window.__medida);
-    return { ...medida, fundoDoMapa: await medidasDoFundo(pagina) };
+    // "fundo-do-mapa:desenhar" fecha no quadro seguinte ao do desenho: espera um pouco por ela.
+    if (comFundo) await pagina.waitForFunction(() => performance.getEntriesByName("fundo-do-mapa:desenhar").length > 0, null, { timeout: 3000 }).catch(() => undefined);
+    return { ...medida, etapas: await etapasDoFundo(pagina), fundoDoMapa: await medidasDoFundo(pagina) };
   } finally {
     await cdp.send("Emulation.setCPUThrottlingRate", { rate: 1 });
   }
+}
+
+/**
+ * Cada repetição recarrega a página e abre a superfície duas vezes: a primeira (inclui baixar e ler os arquivos do
+ * mapa-base) e a segunda, na mesma página (arquivos já em memória; a cena pode vir da memória do gancho).
+ */
+async function medirRepeticao(pagina, cdp, superficie, comFundo) {
+  await pagina.goto(`${base}/dossie?id=${id}`, { waitUntil: "load" });
+  await pagina.getByRole("button", { name: BOTAO_GAVETA }).waitFor({ timeout: 120000 });
+  await pagina.waitForTimeout(1500); // o dossiê termina de assentar antes de ligar o freio de CPU
+  const primeira = await medirAbertura(pagina, cdp, superficie, comFundo);
+  await pagina.waitForTimeout(comFundo ? 1500 : 500);
+  await fecharSuperficie(pagina, superficie);
+  const segunda = await medirAbertura(pagina, cdp, superficie, comFundo);
+  await fecharSuperficie(pagina, superficie).catch(() => undefined);
+  return { primeira, segunda };
 }
 
 /** Fecha a gaveta pelo teclado (Esc), como a gaveta prevê; o fundo que fecha por toque não é botão. */
@@ -120,35 +184,88 @@ async function fecharGaveta(pagina) {
 }
 
 const mediana = (v) => {
-  const s = [...v].sort((a, b) => a - b);
+  const s = [...v].filter((x) => typeof x === "number").sort((a, b) => a - b);
   return s.length ? Math.round((s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2) * 10) / 10 : null;
 };
+const resumo = (v) => {
+  const n = v.filter((x) => typeof x === "number");
+  return { mediana: mediana(n), pior: n.length ? Math.max(...n) : null, todas: v };
+};
+
+/** Resumo de uma série de aberturas: do toque ao mapa, ao fundo, e cada etapa do fundo (soma por abertura). */
+function resumir(aberturas, comFundo) {
+  const r = {
+    toqueAoQuadroMs: resumo(aberturas.map((a) => a.toqueAoQuadroMs ?? null)),
+    toqueAoDomMs: resumo(aberturas.map((a) => a.toqueAoDomMs ?? null)),
+    erros: aberturas.filter((a) => a.erro).map((a) => a.erro),
+  };
+  if (comFundo) {
+    r.toqueAoFundoMs = resumo(aberturas.map((a) => a.toqueAoFundoMs ?? null));
+    r.etapasMs = Object.fromEntries(
+      ETAPAS.map((n) => [n, { medianaDaSoma: mediana(aberturas.map((a) => a.etapas?.[n]?.somaMs ?? null)), vezesPorAbertura: aberturas.map((a) => a.etapas?.[n]?.vezes ?? 0), somas: aberturas.map((a) => a.etapas?.[n]?.somaMs ?? null) }]),
+    );
+  }
+  return r;
+}
 
 const navegador = await abrirNavegador();
 try {
   if (modo === "tudo" || modo === "desempenho") {
-    const resultado = { geradoEm: new Date().toISOString(), base, caso: caso.id, largura, cpu: "4x (Emulation.setCPUThrottlingRate)", vezes, superficies: {} };
+    const resultado = {
+      geradoEm: new Date().toISOString(),
+      base,
+      caso: caso.id,
+      largura,
+      cpu: "4x (Emulation.setCPUThrottlingRate)",
+      vezes,
+      superficies: {},
+      comoLer:
+        "toqueAoQuadroMs: do toque ao primeiro quadro pintado com o mapa (sem esperar o fundo). toqueAoFundoMs: do toque ao quadro pintado com o fundo do mapa-base. " +
+        "primeira: abertura logo depois de recarregar (baixa e lê os arquivos); segunda: reabertura na mesma página. semFundo: com globalThis.__veredaSemFundoDoMapa. " +
+        "custoDoFundoMs = mediana(segunda com fundo, toqueAoFundoMs) − mediana(segunda sem fundo, toqueAoQuadroMs): o número do portão.",
+    };
     for (const superficie of ["gaveta", "por-perto"]) {
-      const { contexto, pagina, registro } = await novoContexto(navegador, { base, largura, analises, ativa: id });
-      const cdp = await contexto.newCDPSession(pagina);
-      const rodadas = [];
-      try {
-        for (let i = 0; i < vezes; i++) rodadas.push(await medirUma(pagina, cdp, superficie));
-      } finally {
-        await contexto.close();
+      const sup = {};
+      for (const comFundo of [true, false]) {
+        const { contexto, pagina, registro } = await novoContexto(navegador, { base, largura, analises, ativa: id });
+        if (!comFundo) await contexto.addInitScript(() => { globalThis.__veredaSemFundoDoMapa = true; });
+        const cdp = await contexto.newCDPSession(pagina);
+        const rodadas = [];
+        try {
+          for (let i = 0; i < vezes; i++) rodadas.push(await medirRepeticao(pagina, cdp, superficie, comFundo));
+        } finally {
+          await contexto.close();
+        }
+        const chave = comFundo ? "comFundo" : "semFundo";
+        sup[chave] = {
+          primeira: resumir(rodadas.map((r) => r.primeira), comFundo),
+          segunda: resumir(rodadas.map((r) => r.segunda), comFundo),
+          errosDeConsole: registro.console.length,
+          requisicoesFalhas: registro.falhas.length,
+          externasBloqueadas: registro.externas.length,
+        };
+        console.log(superficie, chave, "1ª", JSON.stringify(sup[chave].primeira.toqueAoFundoMs ?? sup[chave].primeira.toqueAoQuadroMs), "2ª", JSON.stringify(sup[chave].segunda.toqueAoFundoMs ?? sup[chave].segunda.toqueAoQuadroMs));
+        if (comFundo) console.log("  etapas 1ª", JSON.stringify(sup[chave].primeira.etapasMs), "\n  etapas 2ª", JSON.stringify(sup[chave].segunda.etapasMs));
       }
-      const tempos = rodadas.map((r) => r.toqueAoQuadroMs).filter((x) => typeof x === "number");
-      const fundos = rodadas.flatMap((r) => r.fundoDoMapa.map((f) => f.duracao));
+      const com = sup.comFundo;
+      const fundos = [...com.primeira.etapasMs["fundo-do-mapa"].somas, ...com.segunda.etapasMs["fundo-do-mapa"].somas].filter((x) => typeof x === "number" && x > 0);
       resultado.superficies[superficie] = {
-        toqueAoQuadroMs: { mediana: mediana(tempos), pior: tempos.length ? Math.max(...tempos) : null, todas: tempos },
-        toqueAoDomMs: rodadas.map((r) => r.toqueAoDomMs ?? null),
+        // Chaves de antes (primeira abertura com o fundo, cada repetição recarrega a página), com o mesmo sentido.
+        toqueAoQuadroMs: com.primeira.toqueAoQuadroMs,
+        toqueAoDomMs: com.primeira.toqueAoDomMs.todas,
         fundoDoMapaMs: fundos.length ? { mediana: mediana(fundos), pior: Math.max(...fundos), todas: fundos } : null,
-        erros: rodadas.filter((r) => r.erro).map((r) => r.erro),
-        errosDeConsole: registro.console.length,
-        requisicoesFalhas: registro.falhas.length,
-        externasBloqueadas: registro.externas.length,
+        erros: [...com.primeira.erros, ...com.segunda.erros, ...sup.semFundo.primeira.erros, ...sup.semFundo.segunda.erros],
+        errosDeConsole: com.errosDeConsole + sup.semFundo.errosDeConsole,
+        requisicoesFalhas: com.requisicoesFalhas + sup.semFundo.requisicoesFalhas,
+        externasBloqueadas: com.externasBloqueadas + sup.semFundo.externasBloqueadas,
+        // Novas (desempenho, 18/11/2026).
+        aberturas: sup,
+        custoDoFundoMs: {
+          segunda: com.segunda.toqueAoFundoMs.mediana !== null && sup.semFundo.segunda.toqueAoQuadroMs.mediana !== null ? Math.round((com.segunda.toqueAoFundoMs.mediana - sup.semFundo.segunda.toqueAoQuadroMs.mediana) * 10) / 10 : null,
+          primeira: com.primeira.toqueAoFundoMs.mediana !== null && sup.semFundo.primeira.toqueAoQuadroMs.mediana !== null ? Math.round((com.primeira.toqueAoFundoMs.mediana - sup.semFundo.primeira.toqueAoQuadroMs.mediana) * 10) / 10 : null,
+        },
       };
-      console.log(superficie, JSON.stringify(resultado.superficies[superficie].toqueAoQuadroMs), "fundo:", JSON.stringify(resultado.superficies[superficie].fundoDoMapaMs));
+      console.log(superficie, "custo do fundo", JSON.stringify(resultado.superficies[superficie].custoDoFundoMs));
     }
     await writeFile(path.join(saida, "desempenho.json"), JSON.stringify(resultado, null, 1) + "\n");
   }

@@ -190,6 +190,11 @@ export function posicionarRotulosDeRua(
   limite?: Retangulo,
   /** Limite só para a rua do imóvel (a janela visível sem arraste, com zoom); omitido, vale `limite`. */
   limiteDoImovel?: Retangulo,
+  /**
+   * O ponto do desenho cai na água (rio, canal, mar)? A posição cujo trajeto passa pela água é descartada: um nome
+   * deitado no rio parece outra coisa e fica espremido na curva da margem.
+   */
+  naAgua?: (x: number, y: number) => boolean,
 ): RotuloDeRua[] {
   const tamanho = TAMANHO_DA_RUA / zoom;
   const vao = VAO_DA_REPETICAO_PX / zoom;
@@ -234,6 +239,7 @@ export function posicionarRotulosDeRua(
       const lim = item.tipo === "imovel" && limiteDoImovel ? limiteDoImovel : limite;
       if (lim && caixas.some((c) => c[0] < lim[0] || c[2] > lim[2] || c[1] < lim[1] || c[3] > lim[3])) continue;
       if (!ignorarColisao && caixas.some((c) => ocupadas.some((o) => sobrepoe(c, o)))) continue;
+      if (naAgua && caixas.some((c) => naAgua((c[0] + c[2]) / 2, (c[1] + c[3]) / 2))) continue;
       ocupadas.push(...caixas);
       anteriores.push([meio.x, meio.y]);
       meiosPorNome.set(item.nome, anteriores);

@@ -9,21 +9,45 @@
 //   para não depender do cálculo de porcentagem de cada plataforma); textAnchor vem do <Text> pai; letterSpacing entra
 //   nos dados de fonte; traço em texto funciona, então o halo também é um texto com traço por baixo.
 // - nos dois: fontWeight com família própria depende de a fonte carregada ter o peso (os .ttf do app são variáveis).
-import { useId } from "react";
-import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
+import { useEffect, useId, useRef } from "react";
+import { Platform, StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import { Defs, G, Path, Rect, Text as TextoSvg, TextPath } from "react-native-svg";
 import { useTema } from "../../tema/Tema";
 import { comAlfa } from "../../tema/tokens";
 import { Texto } from "../Texto";
-import type { CenaDoFundo } from "./fundoDoMapaCena";
+import { desempenhoDoAmbiente, registrarMedida, tomarFimDaMontagem, type CenaDoFundo } from "./fundoDoMapaCena";
 import { estiloDoFundo, FONTES_DO_FUNDO, TRACEJADO_DA_DIVISA, TRACO } from "./fundoDoMapaEstilo";
 import type { RotuloDeRua } from "./fundoDoMapaRotulos";
 
-export type FundoDoMapaProps = { cena: CenaDoFundo };
+/**
+ * Que parte do fundo desenhar. "tudo" (padrão): o fundo inteiro. "chao": todas as camadas menos os rótulos de rua e os
+ * nomes de bairro. "rotulos": só eles. O mapa com volumes (2.5D) desenha "chao", os volumes e, por cima, "rotulos".
+ */
+export type PartesDoFundo = "tudo" | "chao" | "rotulos";
+
+export type FundoDoMapaProps = { cena: CenaDoFundo; partes?: PartesDoFundo };
+
+/**
+ * "fundo-do-mapa:desenhar" (só na web, só com a API performance): do fim da montagem da cena (ou, para uma cena já
+ * guardada, do render que a trouxe) até o quadro seguinte ao que a pôs na tela.
+ */
+function useMedirODesenho(cena: CenaDoFundo, ligado: boolean): void {
+  const medir = ligado && Platform.OS === "web" && desempenhoDoAmbiente() !== null;
+  const inicio = useRef<{ cena: CenaDoFundo; t: number } | null>(null);
+  useEffect(() => {
+    if (!medir || typeof requestAnimationFrame !== "function") return;
+    if (inicio.current?.cena !== cena) inicio.current = { cena, t: tomarFimDaMontagem(cena) ?? desempenhoDoAmbiente()!.now() };
+    const t = inicio.current.t;
+    const id = requestAnimationFrame(() => registrarMedida("fundo-do-mapa:desenhar", t));
+    return () => cancelAnimationFrame(id);
+  }, [cena, medir]);
+}
 
 /** Os elementos do fundo, para pôr dentro do <Svg> (e do grupo de zoom) do mapa que hospeda. */
-export function FundoDoMapa({ cena }: FundoDoMapaProps) {
+export function FundoDoMapa({ cena, partes = "tudo" }: FundoDoMapaProps) {
   const { cores, escuro } = useTema();
+  // A medida do desenho vai com a parte de baixo (a que existe sempre).
+  useMedirODesenho(cena, partes !== "rotulos");
   // Os ids dos caminhos dos rótulos são do documento inteiro na web: dois fundos na mesma página (topo do dossiê e
   // gaveta abertos juntos) não podem apontar um para o caminho do outro.
   const prefixo = "f" + useId().replace(/[^A-Za-z0-9_-]/g, "");
@@ -39,95 +63,106 @@ export function FundoDoMapa({ cena }: FundoDoMapaProps) {
   const emenda = Number.isFinite(cena.metrosPorPx) && cena.metrosPorPx > 0 ? 3 / (cena.metrosPorPx * z) : t(2);
   // Marca estável do grupo raiz (testID e, na web, data-fundo-do-mapa-raiz) para as capturas acharem o fundo em
   // qualquer tela. Não é data-fundo-do-mapa: quem hospeda já pode marcar o embrulho com ele, e a contagem dobraria.
-  const marca = { testID: "fundo-do-mapa", "data-fundo-do-mapa-raiz": "" } as object;
+  // Só a parte de baixo ("tudo" ou "chao") leva a marca: com o fundo em duas partes, as capturas contam um fundo só.
+  const marca = (partes === "rotulos" ? { testID: "fundo-do-mapa-rotulos" } : { testID: "fundo-do-mapa", "data-fundo-do-mapa-raiz": "" }) as object;
+  const chao = partes !== "rotulos";
+  const rotulos = partes !== "chao";
   return (
     <G {...marca}>
-      <Rect x={0} y={0} width={cena.largura} height={cena.altura} fill={e.semDado} />
-      <Path d={c.hachura} stroke={e.hachura} strokeWidth={t(TRACO.hachura)} fill="none" />
-      {c.chao ? <Path d={c.chao} fill={e.chao} fillRule="evenodd" /> : null}
-      {c.chaoDaCidade ? (
-        <Path d={c.chaoDaCidade} fill={e.chao} stroke={e.chao} strokeWidth={emenda} strokeLinejoin="round" fillRule="evenodd" />
+      {chao ? (
+        <>
+          <Rect x={0} y={0} width={cena.largura} height={cena.altura} fill={e.semDado} />
+          <Path d={c.hachura} stroke={e.hachura} strokeWidth={t(TRACO.hachura)} fill="none" />
+          {c.chao ? <Path d={c.chao} fill={e.chao} fillRule="evenodd" /> : null}
+          {c.chaoDaCidade ? (
+            <Path d={c.chaoDaCidade} fill={e.chao} stroke={e.chao} strokeWidth={emenda} strokeLinejoin="round" fillRule="evenodd" />
+          ) : null}
+          {c.tintaDoBairro ? <Path d={c.tintaDoBairro} fill={e.tinta} fillOpacity={e.tintaOpacidade} fillRule="evenodd" /> : null}
+          {c.quadras ? <Path d={c.quadras} fill={e.quadra} fillRule="evenodd" /> : null}
+          {c.lotes ? <Path d={c.lotes} fill={e.lote} stroke={e.loteLinha} strokeWidth={t(TRACO.lote)} strokeLinejoin="round" fillRule="evenodd" /> : null}
+          {c.predios ? (
+            <Path d={c.predios} fill={e.predio} stroke={e.predioLinha} strokeOpacity={e.predioLinhaOpacidade} strokeWidth={t(TRACO.predio)} strokeLinejoin="round" fillRule="evenodd" />
+          ) : null}
+          {c.pracas ? <Path d={c.pracas} fill={e.praca} stroke={e.pracaLinha} strokeWidth={t(TRACO.praca)} fillRule="evenodd" /> : null}
+          {c.agua ? <Path d={c.agua} fill={e.agua} stroke={e.aguaLinha} strokeWidth={t(TRACO.agua)} fillRule="evenodd" /> : null}
+          {c.pontes ? <Path d={c.pontes} fill={e.chao} fillRule="evenodd" /> : null}
+          {c.vias ?<Path d={c.vias} fill="none" stroke={e.via} strokeWidth={t(TRACO.via)} strokeLinecap="round" strokeLinejoin="round" /> : null}
+          {c.divisas ? (
+            <Path
+              d={c.divisas}
+              fill="none"
+              stroke={e.divisa}
+              strokeOpacity={e.divisaOpacidade}
+              strokeWidth={t(TRACO.divisa)}
+              strokeDasharray={TRACEJADO_DA_DIVISA.map(t)}
+            />
+          ) : null}
+          {c.divisaDoImovel ? (
+            <Path d={c.divisaDoImovel} fill="none" stroke={e.divisaDoImovel} strokeOpacity={e.divisaDoImovelOpacidade} strokeWidth={t(TRACO.divisaDoImovel)} strokeLinejoin="round" />
+          ) : null}
+          {c.loteDoImovel ? (
+            <Path
+              d={c.loteDoImovel}
+              fill={e.loteDoImovel}
+              fillOpacity={e.loteDoImovelOpacidade}
+              stroke={e.loteDoImovel}
+              strokeWidth={t(TRACO.loteDoImovel)}
+              strokeLinejoin="round"
+              fillRule="evenodd"
+            />
+          ) : null}
+        </>
       ) : null}
-      {c.tintaDoBairro ? <Path d={c.tintaDoBairro} fill={e.tinta} fillOpacity={e.tintaOpacidade} fillRule="evenodd" /> : null}
-      {c.quadras ? <Path d={c.quadras} fill={e.quadra} fillRule="evenodd" /> : null}
-      {c.lotes ? <Path d={c.lotes} fill={e.lote} stroke={e.loteLinha} strokeWidth={t(TRACO.lote)} strokeLinejoin="round" fillRule="evenodd" /> : null}
-      {c.predios ? (
-        <Path d={c.predios} fill={e.predio} stroke={e.predioLinha} strokeOpacity={e.predioLinhaOpacidade} strokeWidth={t(TRACO.predio)} strokeLinejoin="round" fillRule="evenodd" />
-      ) : null}
-      {c.pracas ? <Path d={c.pracas} fill={e.praca} stroke={e.pracaLinha} strokeWidth={t(TRACO.praca)} fillRule="evenodd" /> : null}
-      {c.agua ? <Path d={c.agua} fill={e.agua} stroke={e.aguaLinha} strokeWidth={t(TRACO.agua)} fillRule="evenodd" /> : null}
-      {c.pontes ? <Path d={c.pontes} fill={e.chao} fillRule="evenodd" /> : null}
-      {c.vias ?<Path d={c.vias} fill="none" stroke={e.via} strokeWidth={t(TRACO.via)} strokeLinecap="round" strokeLinejoin="round" /> : null}
-      {c.divisas ? (
-        <Path
-          d={c.divisas}
-          fill="none"
-          stroke={e.divisa}
-          strokeOpacity={e.divisaOpacidade}
-          strokeWidth={t(TRACO.divisa)}
-          strokeDasharray={TRACEJADO_DA_DIVISA.map(t)}
-        />
-      ) : null}
-      {c.divisaDoImovel ? (
-        <Path d={c.divisaDoImovel} fill="none" stroke={e.divisaDoImovel} strokeOpacity={e.divisaDoImovelOpacidade} strokeWidth={t(TRACO.divisaDoImovel)} strokeLinejoin="round" />
-      ) : null}
-      {c.loteDoImovel ? (
-        <Path
-          d={c.loteDoImovel}
-          fill={e.loteDoImovel}
-          fillOpacity={e.loteDoImovelOpacidade}
-          stroke={e.loteDoImovel}
-          strokeWidth={t(TRACO.loteDoImovel)}
-          strokeLinejoin="round"
-          fillRule="evenodd"
-        />
-      ) : null}
-      {cena.rotulos.length > 0 ? (
-        <Defs>
-          {cena.rotulos.map((r) => (
-            <Path key={r.id} id={idDe(r)} d={r.caminho} />
+      {rotulos ? (
+        <>
+          {cena.rotulos.length > 0 ? (
+            <Defs>
+              {cena.rotulos.map((r) => (
+                <Path key={r.id} id={idDe(r)} d={r.caminho} />
+              ))}
+            </Defs>
+          ) : null}
+          {[true, false].map((halo) => (
+            <G key={halo ? "halo" : "texto"}>
+              {cena.rotulos.map((r) => (
+                <TextoSvg
+                  key={r.id}
+                  fontFamily={FONTES_DO_FUNDO.rua}
+                  fontWeight={pesoDaRua(r)}
+                  fontSize={r.tamanho}
+                  textAnchor="middle"
+                  fill={halo ? e.halo : corDaRua(r)}
+                  stroke={halo ? e.halo : undefined}
+                  strokeWidth={halo ? t(TRACO.haloDaRua) : undefined}
+                  strokeLinejoin={halo ? "round" : undefined}
+                >
+                  <TextPath href={`#${idDe(r)}`} startOffset={r.inicio}>
+                    {r.nome}
+                  </TextPath>
+                </TextoSvg>
+              ))}
+              {cena.bairros.map((b) => (
+                <TextoSvg
+                  key={b.slug}
+                  x={b.x}
+                  y={b.y + b.tamanho * 0.36}
+                  fontFamily={FONTES_DO_FUNDO.bairro}
+                  fontWeight="600"
+                  fontSize={b.tamanho}
+                  letterSpacing={b.espacamento}
+                  textAnchor="middle"
+                  fill={halo ? e.halo : b.doImovel ? e.bairroDoImovel : e.bairro}
+                  stroke={halo ? e.halo : undefined}
+                  strokeWidth={halo ? t(TRACO.haloDoBairro) : undefined}
+                  strokeLinejoin={halo ? "round" : undefined}
+                >
+                  {b.nome}
+                </TextoSvg>
+              ))}
+            </G>
           ))}
-        </Defs>
+        </>
       ) : null}
-      {[true, false].map((halo) => (
-        <G key={halo ? "halo" : "texto"}>
-          {cena.rotulos.map((r) => (
-            <TextoSvg
-              key={r.id}
-              fontFamily={FONTES_DO_FUNDO.rua}
-              fontWeight={pesoDaRua(r)}
-              fontSize={r.tamanho}
-              textAnchor="middle"
-              fill={halo ? e.halo : corDaRua(r)}
-              stroke={halo ? e.halo : undefined}
-              strokeWidth={halo ? t(TRACO.haloDaRua) : undefined}
-              strokeLinejoin={halo ? "round" : undefined}
-            >
-              <TextPath href={`#${idDe(r)}`} startOffset={r.inicio}>
-                {r.nome}
-              </TextPath>
-            </TextoSvg>
-          ))}
-          {cena.bairros.map((b) => (
-            <TextoSvg
-              key={b.slug}
-              x={b.x}
-              y={b.y + b.tamanho * 0.36}
-              fontFamily={FONTES_DO_FUNDO.bairro}
-              fontWeight="600"
-              fontSize={b.tamanho}
-              letterSpacing={b.espacamento}
-              textAnchor="middle"
-              fill={halo ? e.halo : b.doImovel ? e.bairroDoImovel : e.bairro}
-              stroke={halo ? e.halo : undefined}
-              strokeWidth={halo ? t(TRACO.haloDoBairro) : undefined}
-              strokeLinejoin={halo ? "round" : undefined}
-            >
-              {b.nome}
-            </TextoSvg>
-          ))}
-        </G>
-      ))}
     </G>
   );
 }

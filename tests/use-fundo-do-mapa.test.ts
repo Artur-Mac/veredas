@@ -3,9 +3,10 @@
 import { afterEach, describe, expect, it, jest } from "@jest/globals";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
-import { metrosPorPixelDoQuadro, planoDeCargaDoFundo, useFundoDoMapa, type FundoDoMapaCarregado, type PedidoDoFundo } from "../src/componentes/mapa/useFundoDoMapa";
-import { arquivoDaCidade, arquivoDoMapaBase, esquecerMapaBase, type CaixaEmGraus } from "../src/dados/recife/mapaBase";
-import { esquecerCamadas } from "../src/dados/camadas";
+import { contarMontagensDoFundo } from "../src/componentes/mapa/fundoDoMapaCena";
+import { esquecerCenasDoFundo, metrosPorPixelDoQuadro, planoDeCargaDoFundo, useFundoDoMapa, type FundoDoMapaCarregado, type PedidoDoFundo } from "../src/componentes/mapa/useFundoDoMapa";
+import { arquivoDaCidade, arquivoDoMapaBase, BAIRROS_DECODIFICADOS_EM_MEMORIA, bairrosDecodificadosEmMemoria, bairrosNaCaixa, esquecerMapaBase, mapaBaseDoBairro, type CaixaEmGraus } from "../src/dados/recife/mapaBase";
+import { esquecerCamadas, garantirCamadas } from "../src/dados/camadas";
 import * as plataforma from "../src/plataforma/camadas";
 import { METROS_POR_GRAU } from "../src/dados/recife/mapaBaseContrato";
 import { CENTRO_DO_IMOVEL, LOGRADOURO_DO_IMOVEL, paraDesenhoCentrado } from "./apoio/mapa-base-de-teste";
@@ -219,5 +220,75 @@ describe("useFundoDoMapa", () => {
       g.__veredaLerCamadaEmTeste = original;
       act(() => { esquecerMapaBase(); esquecerCamadas(); });
     }
+  });
+});
+
+describe("uma montagem por abertura (desempenho, 18/11/2026)", () => {
+  it("abrir o mapa monta a cena uma vez; a chegada de uma camada alheia não remonta nem troca a cena", async () => {
+    act(() => { esquecerCenasDoFundo(); });
+    let saida!: FundoDoMapaCarregado;
+    // Um pedido novo a cada render (paraDesenho com identidade nova), como um mapa que não memoriza a conta.
+    const Sonda = () => {
+      saida = useFundoDoMapa(pedido(221));
+      return null;
+    };
+    const antes = contarMontagensDoFundo();
+    act(() => { montadas.push(TestRenderer.create(React.createElement(Sonda))); });
+    expect(saida.estado).toBe("pronta");
+    const cena = saida.cena;
+    expect(contarMontagensDoFundo() - antes).toBe(1);
+    // Outra camada do app chega (o relógio das camadas anda): nem remonta nem troca a identidade da cena.
+    const alheio = arquivoDoMapaBase("pina")!;
+    await act(async () => { await garantirCamadas([alheio]); });
+    act(() => { montadas[montadas.length - 1]!.update(React.createElement(Sonda)); });
+    expect(saida.cena).toBe(cena);
+    expect(contarMontagensDoFundo() - antes).toBe(1);
+  });
+
+  it("fechar e reabrir com o mesmo quadro reaproveita a cena guardada, sem montar de novo", () => {
+    act(() => { esquecerCenasDoFundo(); });
+    const antes = contarMontagensDoFundo();
+    const primeira = usar(pedido(222)).cena;
+    act(() => { for (const m of montadas.splice(0)) m.unmount(); });
+    const segunda = usar(pedido(222)).cena;
+    expect(primeira).not.toBeNull();
+    expect(segunda).toBe(primeira);
+    expect(contarMontagensDoFundo() - antes).toBe(1);
+  });
+
+  it("com a chave de medição ligada o gancho fica desligado: nada carregado, nenhuma cena", () => {
+    const g = globalThis as { __veredaSemFundoDoMapa?: boolean };
+    g.__veredaSemFundoDoMapa = true;
+    try {
+      const r = usar(pedido(223));
+      expect(r.estado).toBe("desligado");
+      expect(r.cena).toBeNull();
+    } finally {
+      delete g.__veredaSemFundoDoMapa;
+    }
+  });
+});
+
+describe("memória do mapa-base", () => {
+  it(`guarda só os ${BAIRROS_DECODIFICADOS_EM_MEMORIA} bairros usados por último; o descartado é decodificado de novo`, () => {
+    act(() => { esquecerMapaBase(); });
+    const slugs = bairrosNaCaixa([-35.1, -8.2, -34.8, -7.9]).slice(0, BAIRROS_DECODIFICADOS_EM_MEMORIA + 2);
+    expect(slugs.length).toBe(BAIRROS_DECODIFICADOS_EM_MEMORIA + 2);
+    const primeiro = mapaBaseDoBairro(slugs[0]!);
+    for (const s of slugs.slice(1, BAIRROS_DECODIFICADOS_EM_MEMORIA)) mapaBaseDoBairro(s);
+    // Usar o primeiro de novo o põe no fim da fila.
+    expect(mapaBaseDoBairro(slugs[0]!)).toBe(primeiro);
+    mapaBaseDoBairro(slugs[BAIRROS_DECODIFICADOS_EM_MEMORIA]!);
+    mapaBaseDoBairro(slugs[BAIRROS_DECODIFICADOS_EM_MEMORIA + 1]!);
+    const guardados = bairrosDecodificadosEmMemoria();
+    expect(guardados.length).toBe(BAIRROS_DECODIFICADOS_EM_MEMORIA);
+    expect(guardados).toContain(slugs[0]);
+    // Saíram os dois usados há mais tempo (o segundo e o terceiro).
+    expect(guardados).not.toContain(slugs[1]);
+    expect(guardados).not.toContain(slugs[2]);
+    const relido = mapaBaseDoBairro(slugs[1]!);
+    expect(relido?.bairro).toBe(slugs[1]);
+    expect(bairrosDecodificadosEmMemoria().at(-1)).toBe(slugs[1]);
+    act(() => { esquecerMapaBase(); });
   });
 });

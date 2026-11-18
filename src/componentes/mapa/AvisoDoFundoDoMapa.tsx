@@ -9,10 +9,12 @@ type Props = {
   estado: EstadoDoFundo;
   tentarDeNovo: () => void;
   style?: StyleProp<ViewStyle>;
+  /** O que completa a frase da falha (o que continua valendo no mapa). Padrão: "O lote e os pontos continuam valendo.". */
+  oQueContinua?: string;
 };
 
 /** Uma linha discreta enquanto carrega; a falha dita em claro, com "Tentar de novo". Nada nos outros estados. */
-export function AvisoDoFundoDoMapa({ estado, tentarDeNovo, style }: Props) {
+export function AvisoDoFundoDoMapa({ estado, tentarDeNovo, style, oQueContinua = "O lote e os pontos continuam valendo." }: Props) {
   if (estado === "carregando") {
     return (
       <View style={style}>
@@ -26,7 +28,7 @@ export function AvisoDoFundoDoMapa({ estado, tentarDeNovo, style }: Props) {
   return (
     <View style={[{ gap: 6, alignItems: "flex-start" }, style]}>
       <Texto role="alert" tipo="apoio" style={{ fontSize: 12.5, lineHeight: 18 }}>
-        Não foi possível carregar as ruas e quadras deste mapa. O lote e os pontos continuam valendo.
+        {`Não foi possível carregar as ruas e quadras deste mapa. ${oQueContinua}`}
       </Texto>
       <Botao rotulo="Tentar de novo" variante="secundario" onPress={tentarDeNovo} />
     </View>
