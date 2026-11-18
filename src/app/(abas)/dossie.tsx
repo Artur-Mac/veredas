@@ -70,6 +70,8 @@ import { CanvasSolSombraBrisa25D } from "../../componentes/visual/CanvasSolSombr
 import { TermometroConfortoTermico } from "../../componentes/visual/TermometroConfortoTermico";
 import { TresPerguntasDoBolso } from "../../componentes/visual/TresPerguntasDoBolso";
 import { EscalaDeRuidoHumana, RelogioDoPredio, SilencioInteligente } from "../../componentes/visual/EscalasVisuais";
+import { analisarRadarVistaELote } from "../../dados/entorno/radarVistaELote";
+import { RadarVistaELote } from "../../componentes/visual/RadarVistaELote";
 
 /** Recuo do painel (`.ds-panel`, padding 20 18): a posição de uma seção na tela soma este recuo ao topo do painel. */
 const RECUO_DO_PAINEL = 20;
@@ -322,6 +324,30 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
         distanciaPraiaOuRioM: microclima.distanciaAgua,
       }),
     [andarSimulado, bioclimatico, fachadaAtiva, microclima, predio?.pavimentos],
+  );
+
+  const centroParaRadar = useMemo<readonly [number, number]>(() => {
+    if (predio?.centro) return predio.centro;
+    if (analise.caderno?.localizacaoDaVisita) {
+      return [
+        analise.caderno.localizacaoDaVisita.longitude,
+        analise.caderno.localizacaoDaVisita.latitude,
+      ];
+    }
+    return [-34.896, -8.121];
+  }, [analise.caderno, predio]);
+
+  const radarVistaELote = useMemo(
+    () =>
+      analisarRadarVistaELote({
+        centro: centroParaRadar,
+        edificio: predio,
+        fachadaAtiva,
+        andar: andarSimulado,
+        vizinhos: cadastro.vizinhos,
+        obrasProximas: visao.obras,
+      }),
+    [andarSimulado, cadastro, centroParaRadar, fachadaAtiva, predio, visao],
   );
 
   const hidroMare = useMemo(
@@ -691,6 +717,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                   vizinhosLotes={cadastro.vizinhos}
                 />
                 <TermometroConfortoTermico conforto={confortoTermico} andar={andarSimulado} />
+                <RadarVistaELote radar={radarVistaELote} />
                 <TresPerguntasDoBolso
                   modalidade={analise.modalidade}
                   nomeImovel={analise.nome}
