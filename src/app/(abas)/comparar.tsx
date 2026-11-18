@@ -53,6 +53,7 @@ import { DueloFinalistas } from "../../componentes/cidadao/DueloFinalistas";
 import { ConvergenciaFamiliar } from "../../componentes/cidadao/ConvergenciaFamiliar";
 import { filtrarDominanciaInvisivel } from "../../dados/cidadao/dominanciaInvisivel";
 import { MatrizVisualComparar, type ColunaMatrizComparar } from "../../componentes/visual/MatrizVisualComparar";
+import { RotinaDoisDestinosComparar } from "../../componentes/visual/RotinaDoisDestinosComparar";
 import { inferirFachadasDoEdificio } from "../../dados/sol/inferirFachadas";
 import { avaliarConfortoTermico } from "../../dados/clima/confortoTermico";
 import { avaliarBioclimatico3d } from "../../municipios/recife/motores/bioclimatico3d";
@@ -284,11 +285,21 @@ function CompararComDados() {
               </View>
 
               {matrizComparar ? (
-                <MatrizVisualComparar
-                  modalidade={modalidade}
-                  opcaoA={matrizComparar[0]}
-                  opcaoB={matrizComparar[1]}
-                />
+                <>
+                  <MatrizVisualComparar
+                    modalidade={modalidade}
+                    opcaoA={matrizComparar[0]}
+                    opcaoB={matrizComparar[1]}
+                  />
+                  <RotinaDoisDestinosComparar
+                    nomeOpcaoA={matrizComparar[0].nome}
+                    centroA={ea?.centro ?? null}
+                    bairroA={par[0].bairro ?? null}
+                    nomeOpcaoB={matrizComparar[1].nome}
+                    centroB={eb?.centro ?? null}
+                    bairroB={par[1].bairro ?? null}
+                  />
+                </>
               ) : null}
 
               {decisao?.estado === "pronta" ? (

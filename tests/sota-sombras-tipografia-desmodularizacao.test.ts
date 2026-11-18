@@ -16,6 +16,8 @@ import { RadarVistaELote } from "../src/componentes/visual/RadarVistaELote";
 import { CopilotoDocumentosPreSinal } from "../src/componentes/visual/CopilotoDocumentosPreSinal";
 import { PulsoDaQuadra } from "../src/componentes/visual/PulsoDaQuadra";
 import { TresPerguntasDoBolso } from "../src/componentes/visual/TresPerguntasDoBolso";
+import { RotinaDoisDestinosComparar } from "../src/componentes/visual/RotinaDoisDestinosComparar";
+import { compararRotinaDoisDestinos } from "../src/dados/mobilidade/rotinaCasal";
 import { TemaDoApp } from "../src/tema/Tema";
 
 function listarTsxRecursivo(dir: string): string[] {
@@ -376,5 +378,42 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       .replace(/seguro incêndio/gi, "")
       .replace(/seguro fiança/gi, "");
     expect(/\bseguro\b/i.test(semSeguroPermitido)).toBe(false);
+  });
+
+  it("calcula interseção de rotina a dois destinos sem jargão nem palavras proibidas", () => {
+    const rot = compararRotinaDoisDestinos({
+      nomeOpcaoA: "Casa Forte 95m²",
+      centroA: null,
+      bairroA: "casa-forte",
+      nomeOpcaoB: "Boa Viagem 90m²",
+      centroB: null,
+      bairroB: "boa-viagem",
+      destino1Id: "polo_casa_forte",
+      destino2Id: "polo_ufpe",
+    });
+    expect(rot.vencedorRotina).toBe("A");
+    expect(rot.minutosDiaOpcaoA).toBeLessThan(rot.minutosDiaOpcaoB);
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(RotinaDoisDestinosComparar, {
+            nomeOpcaoA: "Casa Forte 95m²",
+            centroA: null,
+            bairroA: "casa-forte",
+            nomeOpcaoB: "Boa Viagem 90m²",
+            centroB: null,
+            bairroB: "boa-viagem",
+          }),
+        ),
+      );
+    });
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("min/dia");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    expect(/\bseguro\b/i.test(txt)).toBe(false);
   });
 });
