@@ -18,7 +18,7 @@ export function PlacarDoPar({ linhas, rotulos, aoAbrir }: { linhas: readonly Lin
       {linhas.map((l, i) => (
         <Pressionavel key={l.id} onPress={() => aoAbrir(l.topico)} accessibilityRole="button"
           accessibilityLabel={`${l.secao}: ${l.vencedor === null ? "empate ou sem dado" : `ganha ${rotulos[l.vencedor]}`}. ${l.frase} Ver detalhe`}
-          style={{ paddingHorizontal: 14, paddingVertical: 10, borderTopWidth: i === 0 ? 0 : 1, borderTopColor: cor("cor-linha"), flexDirection: "row", alignItems: "center", gap: 10 }}>
+          style={{ minHeight: 48, paddingHorizontal: 14, paddingVertical: 10, borderTopWidth: i === 0 ? 0 : 1, borderTopColor: cor("cor-linha"), flexDirection: "row", alignItems: "center", gap: 10 }}>
           <View style={{ flex: 1, gap: 2 }}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
               <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 19, fontWeight: "600" }}>{l.secao}</Texto>

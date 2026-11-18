@@ -57,7 +57,7 @@ function LinhaDaFicha({ item, primeira }: { item: ItemDaFicha; primeira: boolean
       : meta?.resumo ?? item.leitura;
 
   return (
-    <View style={{ borderTopWidth: primeira ? 0 : 0.5, borderTopColor: cor("cor-linha") }}>
+    <View style={{ borderTopWidth: primeira ? 0 : 1, borderTopColor: cor("cor-linha") }}>
       <Pressionavel onPress={() => setAberta((v) => !v)} accessibilityRole="button" accessibilityState={{ expanded: aberta }} aria-expanded={aberta}
         accessibilityLabel={`${titulo}: ${valorPrincipal}.${item.atencao ? ` ${item.atencao}` : ""} ${aberta ? "Fechar" : "Ver detalhes e fonte"}`}
         style={{ minHeight: 52, paddingVertical: 12, gap: 4 }}>
@@ -82,7 +82,7 @@ function LinhaDaFicha({ item, primeira }: { item: ItemDaFicha; primeira: boolean
           {item.leitura && item.id === "itbi" ? <Texto tipo="corpo" style={{ fontSize: 13.5, lineHeight: 20 }}>{item.leitura}</Texto> : null}
           {item.detalhes.map((d) => <Texto key={d} tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 18 }}>{d}</Texto>)}
           {item.pergunta ? (
-            <View style={{ padding: 12, borderRadius: 10, backgroundColor: comAlfa(cor("cor-azul-cadastral"), 0.08) }}>
+            <View style={{ paddingVertical: 2, paddingLeft: 10, borderLeftWidth: 3, borderLeftColor: cor("cor-azul-cadastral") }}>
               <Texto tipo="apoio" style={{ fontSize: 13, lineHeight: 19, fontWeight: "500" }}>{`Pergunte na visita: ${item.pergunta}`}</Texto>
             </View>
           ) : null}
@@ -237,7 +237,7 @@ export function LinhaDoTempoEstrutural({ analise, aoRegistrar }: { analise: Anal
         {ORDEM_DAS_ETAPAS.map((etapa, i) => {
           const atos = l.atos.filter((a) => a.etapa === etapa);
           return (
-            <View key={etapa} role="listitem" style={{ flexDirection: "row", gap: 10, paddingVertical: 6, borderTopWidth: i ? 0.5 : 0, borderTopColor: cor("cor-linha") }}>
+            <View key={etapa} role="listitem" style={{ flexDirection: "row", gap: 10, paddingVertical: 6, borderTopWidth: i ? 1 : 0, borderTopColor: cor("cor-linha") }}>
               <View style={{ width: 10, height: 10, borderRadius: 5, marginTop: 5, backgroundColor: atos.length ? cor("cor-azul-cadastral") : "transparent", borderWidth: 1, borderColor: cor("cor-azul-cadastral") }} />
               <View style={{ flex: 1, gap: 1 }}>
                 <Texto tipo="apoio" style={{ fontSize: 12.5, lineHeight: 17, fontWeight: "600" }}>{`${ROTULO_DA_ETAPA[etapa]}${atos.length ? "" : " · sem documento"}`}</Texto>
@@ -253,7 +253,7 @@ export function LinhaDoTempoEstrutural({ analise, aoRegistrar }: { analise: Anal
       </View>
       {l.mostrarDesabamento ? <Texto tipo="apoio" role="alert" cor="cor-barro-texto">Há documento de desabamento ligado a este lote e bloco.</Texto> : null}
       <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 17 }}>{l.checagemQueFalta}</Texto>
-      <View style={{ padding: 10, borderRadius: 10, backgroundColor: comAlfa(cor("cor-azul-cadastral"), 0.07) }}>
+      <View style={{ paddingVertical: 2, paddingLeft: 10, borderLeftWidth: 3, borderLeftColor: cor("cor-azul-cadastral") }}>
         <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 17 }}>{`Pergunta para o síndico: ${l.perguntaAoSindico}`}</Texto>
       </View>
       {l.descartados ? <Nota>{`${l.descartados} registro(s) sem vínculo confirmado com este imóvel não entram na linha do tempo.`}</Nota> : null}

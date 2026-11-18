@@ -187,7 +187,7 @@ function LinhaDePredio({ e, detalhe, aoAbrir }: { e: Edificio; detalhe: string; 
   const nome = nomeDoPredio(e);
   return (
     <Pressionavel onPress={aoAbrir} accessibilityRole="button" accessibilityLabel={`Abrir o Raio-X: ${nome}. ${detalhe}`}
-      style={{ minHeight: 52, paddingVertical: 10, borderTopWidth: 0.5, borderTopColor: cor("cor-linha"), justifyContent: "center" }}>
+      style={{ minHeight: 52, paddingVertical: 10, borderTopWidth: 1, borderTopColor: cor("cor-linha"), justifyContent: "center" }}>
       <Texto tipo="corpo" style={{ fontSize: 15, lineHeight: 20, fontWeight: "600" }}>{nome}</Texto>
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 18 }}>{detalhe}</Texto>
     </Pressionavel>

@@ -71,7 +71,7 @@ function CartaoSintese({ cartao }: { cartao: CartaoDeSinteseHumana }) {
   const [aberto, setAberto] = useState(false);
   if (!aberto) {
     return (
-      <Pressionavel onPress={() => setAberto(true)} accessibilityRole="button" accessibilityLabel={`${cartao.sobretitulo}: ${cartao.manchete}. Ver detalhes`}>
+      <Pressionavel onPress={() => setAberto(true)} accessibilityRole="button" accessibilityLabel={`${cartao.sobretitulo}: ${cartao.manchete}. Ver detalhes`} style={{ minHeight: 48, justifyContent: "center" }}>
         <CaixaCreme estilo={{ gap: 4 }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
             <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700", flexShrink: 1 }}>{cartao.sobretitulo}</Texto>
@@ -110,7 +110,7 @@ function CartaoSintese({ cartao }: { cartao: CartaoDeSinteseHumana }) {
         {cartao.explicacaoHumana}
       </Texto>
       {cartao.dicaPratica ? (
-        <View style={{ paddingTop: 6, borderTopWidth: 0.5, borderTopColor: cor("cor-linha") }}>
+        <View style={{ paddingTop: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha") }}>
           <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 17.5 }}>
             {cartao.dicaPratica}
           </Texto>
@@ -292,7 +292,7 @@ function ContextoDoBairroSecao({ contexto, aoAbrirFonte }: { contexto: ContextoD
           style={{
             minHeight: 48,
             paddingVertical: 10,
-            borderTopWidth: i === 0 ? 0 : 0.5,
+            borderTopWidth: i === 0 ? 0 : 1,
             borderTopColor: cor("cor-linha"),
             borderRadius: RAIO.quadrado,
           }}

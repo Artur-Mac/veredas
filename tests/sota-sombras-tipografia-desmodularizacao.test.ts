@@ -2333,4 +2333,33 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(REGEX_JARGON_CAMADA1.test(depoisTxt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(depoisTxt)).toBe(false);
   });
+
+  it("unifica hairlines 1px, substitui caixa interna em FichaViva e garante minHeight >= 44 em Placar/Entorno em S52", () => {
+    const fichaSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "FichaViva.tsx"),
+      "utf8",
+    );
+    expect(fichaSrc).toContain('borderLeftWidth: 3, borderLeftColor: cor("cor-azul-cadastral")');
+    expect(fichaSrc).not.toContain("borderRadius: 10, backgroundColor:");
+    expect(fichaSrc).not.toMatch(/borderTopWidth:\s*[^,\n]*0\.5/);
+
+    const entornoSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "Entorno.tsx"),
+      "utf8",
+    );
+    expect(entornoSrc).toContain("minHeight: 48");
+    expect(entornoSrc).not.toMatch(/borderTopWidth:\s*[^,\n]*0\.5/);
+
+    const placarSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "comparar", "Placar.tsx"),
+      "utf8",
+    );
+    expect(placarSrc).toContain("minHeight: 48");
+
+    const explorarSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "inicio", "Explorar.tsx"),
+      "utf8",
+    );
+    expect(explorarSrc).not.toMatch(/borderTopWidth:\s*0\.5/);
+  });
 });
