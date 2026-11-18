@@ -666,6 +666,17 @@ export const RECURSO_156_PARCIAL = "06872af2-9350-4c34-aa39-6337a1822ff7";
  * número, bairro e dia) pode estar nos dois arquivos, ou repetido no mesmo: fica uma vez, com a situação mais recente
  * (no empate, a linha com coordenada). `arquivos`: [{ id, registros }] na ordem de leitura.
  */
+export function hashProtocolo156(assinatura) {
+  let h1 = 0xcbf29ce484222325n;
+  const prime = 0x100000001b3n;
+  const mask = 0xffffffffffffffffn;
+  for (let i = 0; i < assinatura.length; i += 1) {
+    h1 ^= BigInt(assinatura.charCodeAt(i));
+    h1 = (h1 * prime) & mask;
+  }
+  return `p156_${h1.toString(16).padStart(16, "0")}`;
+}
+
 export function selecionarPedidos156(arquivos, ate, meses = 12) {
   for (const a of arquivos) if (a.id === RECURSO_156_PARCIAL) throw new Error(`156: o recurso ${RECURSO_156_PARCIAL} é a cópia parcial de 2025 e não pode ser somado`);
   let fim = "0000-00-00";
@@ -688,6 +699,7 @@ export function selecionarPedidos156(arquivos, ate, meses = 12) {
       if (data < inicio) { contar("antes da janela"); continue; }
       if (data > fim) { contar("depois da janela"); continue; }
       const chave = [categoria, dobrar(r.SERVICO_DESCRICAO), dobrar(String(r.LOGRADOURO ?? "").replace(/\s+/g, " ")), dobrar(r.NUMERO), dobrar(r.BAIRRO), data].join("|");
+      const protocoloHash = hashProtocolo156(chave);
       const ultima = dataIso(r.DATA_ULT_SITUACAO) ?? "";
       const comPosicao = coordenadaNoRecife(r.latitude, r.longitude) ? 1 : 0;
       const atual = linhas.get(chave);
@@ -695,7 +707,7 @@ export function selecionarPedidos156(arquivos, ate, meses = 12) {
         contar(atual.id === id ? "repetido no mesmo arquivo" : "repetido entre arquivos");
         if (atual.ultima > ultima || (atual.ultima === ultima && atual.comPosicao >= comPosicao)) continue;
       }
-      linhas.set(chave, { r, id, categoria, data, ultima, comPosicao });
+      linhas.set(chave, { r, id, categoria, data, ultima, comPosicao, protocoloHash });
     }
   }
   return { inicio, fim, linhas, vias };
