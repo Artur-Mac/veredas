@@ -275,7 +275,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
             accessibilityState={{ expanded: verMapa }}
             accessibilityLabel={verMapa ? "Ocultar mapa do entorno" : "Ver pontos por perto no mapa"}
             style={{
-              minHeight: 40,
+              minHeight: 44,
               paddingHorizontal: 14,
               borderRadius: RAIO.pilula,
               borderWidth: 1,
@@ -345,7 +345,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
             accessibilityRole="button"
             accessibilityState={{ expanded: adicionando }}
             style={{
-              minHeight: 38,
+              minHeight: 44,
               paddingHorizontal: 12,
               borderRadius: RAIO.pilula,
               borderWidth: 1,
@@ -451,7 +451,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
                     onPress={() => setNomeLugar(papel)}
                     accessibilityRole="button"
                     style={{
-                      minHeight: 34,
+                      minHeight: 44,
                       paddingHorizontal: 10,
                       borderRadius: RAIO.pilula,
                       borderWidth: 1,

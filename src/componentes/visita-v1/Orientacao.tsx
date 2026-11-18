@@ -255,7 +255,7 @@ export function OrientacaoDaJanela({ graus, aoMudar, predio = null, vizinhos = [
               accessibilityState={{ selected: proximo }}
               onPress={() => aoMudar(a.graus)}
               style={{
-                minHeight: 34,
+                minHeight: 44,
                 paddingHorizontal: 10,
                 paddingVertical: 6,
                 borderRadius: RAIO.pilula,

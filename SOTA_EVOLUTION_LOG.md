@@ -54,6 +54,6 @@ Branch: `feat/vereda-visual-power-overhaul`
 - [x] **S34**: Unified citizen typography (`PlusJakartaSans` + `tabular-nums`), package versioning metadata (`Gridics app24` §6.5), line-item sources (`Ownwell app30` §6.2), and WCAG 44px cleanup across `LeitorDeAta`, `PorPerto`, `MapaDoLote`, `ExportarResumoExecutivo`, and `SimuladorBolso15Segundos` (`5/5` suites, `179/179` tests).
 - [x] **S35**: Visual 2.5D floor elevation line (`CanvasSolSombraBrisa25D.tsx`), monthly commute savings (`TravelTime app17`), and global WCAG >= 44px guard across `src/componentes/visual/` (`4/4` suites, `79/79` tests).
 - [x] **S36**: Year-over-year cadence comparison in `LinhaUnificadaDoLote` (`Placer app29` §6.4 + `Jupiter app28` §6.3) + full 98-suite (`2050/2050` tests) & live Metro (`ANDROID 200 6681193`, `WEB 200 3901360`) verification.
-- [ ] **S37**: WCAG >= 44px touch-target cleanup across `visita-v1/` (`NoImovel`, `Orientacao`) and `dossie-v1/` (`MapaDoLote`, `PorPerto`, `Topo`).
+- [x] **S37**: WCAG >= 44px touch-target cleanup across `visita-v1/` (`NoImovel`, `Orientacao`) and `dossie-v1/` (`MapaDoLote`, `PorPerto`, `Topo`) (`4/4` suites, `192/192` tests).
 - [ ] **S38**: 2.5D future shadow projection for real licensed neighboring builds (`Localize.city app4` §6.2) in `CanvasSolSombraBrisa25D.tsx`.
 - [ ] **S39**: Final citizen typography & hairline cleanup across `Sala.tsx`, `FichaViva.tsx`, `EntornoSolar.tsx`, `MapaDoPredio.tsx`, and `perfil-domicilio.tsx` + full 98-suite & live Metro verification.

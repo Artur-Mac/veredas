@@ -250,7 +250,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
             accessibilityRole="button"
             accessibilityState={{ selected: filtroExtra === "todos" }}
             style={{
-              minHeight: 34,
+              minHeight: 44,
               paddingHorizontal: 10,
               borderRadius: RAIO.pilula,
               borderWidth: 1,
@@ -274,7 +274,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                 accessibilityRole="button"
                 accessibilityState={{ selected: ativo }}
                 style={{
-                  minHeight: 34,
+                  minHeight: 44,
                   paddingHorizontal: 10,
                   borderRadius: RAIO.pilula,
                   borderWidth: 1,

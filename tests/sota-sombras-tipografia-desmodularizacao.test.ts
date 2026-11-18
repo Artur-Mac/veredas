@@ -1698,4 +1698,18 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });
+
+  it("elimina minHeight < 44px em controles interativos de visita-v1 e dossie-v1 (S37)", () => {
+    const alvos = [
+      "src/componentes/visita-v1/NoImovel.tsx",
+      "src/componentes/visita-v1/Orientacao.tsx",
+      "src/componentes/dossie-v1/MapaDoLote.tsx",
+      "src/componentes/dossie-v1/PorPerto.tsx",
+      "src/componentes/dossie-v1/Topo.tsx",
+    ];
+    for (const rel of alvos) {
+      const src = readFileSync(join(__dirname, "..", rel), "utf8");
+      expect(src).not.toMatch(/\bminHeight:\s*(?:34|36|38|40)\b/);
+    }
+  });
 });

@@ -181,7 +181,7 @@ function Painel({ perguntas, controle, aoAbrirPergunta, aoAdicionarPergunta, pre
                 accessibilityState={{ selected: ativo }}
                 onPress={() => setComodo(c.id)}
                 style={{
-                  minHeight: 38,
+                  minHeight: TOQUE_MINIMO,
                   paddingHorizontal: 11,
                   borderRadius: RAIO.pilula,
                   borderWidth: 1,

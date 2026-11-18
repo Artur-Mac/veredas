@@ -82,7 +82,7 @@ export function TopoDoDossie({ predio, salva, aoVoltar, aoAlternarSalvo, aoAbrir
             onPress={() => setFotoAmpliada(Math.min(atual, fotos.length - 1))}
             accessibilityRole="button"
             accessibilityLabel={`Ver foto ${Math.min(atual + 1, fotos.length)} de ${fotos.length} em tela cheia`}
-            style={{ position: "absolute", left: 12, bottom: 12, minHeight: 36, justifyContent: "center", paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, backgroundColor: comAlfa(cor("cor-superficie"), 0.94) }}
+            style={{ position: "absolute", left: 12, bottom: 12, minHeight: 44, justifyContent: "center", paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, backgroundColor: comAlfa(cor("cor-superficie"), 0.94) }}
           >
             <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 16, fontWeight: "600" }}>{`${Math.min(atual + 1, fotos.length)}/${fotos.length} · tocar para ampliar`}</Texto>
           </Pressionavel>
