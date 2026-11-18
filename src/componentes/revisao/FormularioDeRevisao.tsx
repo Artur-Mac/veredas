@@ -578,7 +578,7 @@ const useEstilos = estilosDoTema((cor) =>
     input: {
       minHeight: 46,
       borderWidth: 1,
-      borderColor: cor("cor-linha"),
+      borderColor: cor("cor-linha-forte"),
       borderRadius: 12,
       paddingHorizontal: 13,
       paddingVertical: 10,
@@ -587,6 +587,7 @@ const useEstilos = estilosDoTema((cor) =>
       fontFamily: "PlusJakartaSans",
       fontSize: 14,
       fontWeight: "500",
+      fontVariant: ["tabular-nums"],
       outlineWidth: 0,
     },
     // O contorno (2 px em azul cadastral) vem de `useFocoDoCampo`; aqui só o fundo branco do protótipo.
@@ -601,8 +602,6 @@ const useEstilos = estilosDoTema((cor) =>
     segmentado: {
       flexDirection: "row",
       backgroundColor: cor("cor-sutil"),
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
       padding: 2,
       borderRadius: 10,
       gap: 2,
@@ -701,13 +700,10 @@ const useEstilos = estilosDoTema((cor) =>
       paddingHorizontal: 11,
       paddingVertical: 6,
       borderRadius: 999,
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
-      backgroundColor: cor("cor-superficie"),
+      backgroundColor: cor("cor-sutil"),
     },
     pilulaPeriodoAtiva: {
       backgroundColor: cor("cor-texto"),
-      borderColor: cor("cor-texto"),
     },
     textoPeriodo: {
       fontSize: 11.5,

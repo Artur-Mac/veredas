@@ -2926,4 +2926,27 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       tree.unmount();
     });
   });
+
+  it("casca (CabecalhoDoApp, Gaveta, MenuRapido, DockInferior) e FormularioDeRevisao removem bordas extras e comAlfa (S78)", () => {
+    const cabPath = join(__dirname, "..", "src", "componentes", "casca", "CabecalhoDoApp.tsx");
+    const dockPath = join(__dirname, "..", "src", "componentes", "casca", "DockInferior.tsx");
+    const gavetaPath = join(__dirname, "..", "src", "componentes", "casca", "Gaveta.tsx");
+    const menuPath = join(__dirname, "..", "src", "componentes", "casca", "MenuRapido.tsx");
+    const formPath = join(__dirname, "..", "src", "componentes", "revisao", "FormularioDeRevisao.tsx");
+
+    for (const p of [cabPath, dockPath]) {
+      const s = readFileSync(p, "utf8");
+      expect(s).not.toMatch(/\bcomAlfa\b/);
+      expect(s).not.toMatch(/\bborderWidth:\s*1(?!\.)\b/);
+    }
+    for (const p of [gavetaPath, menuPath]) {
+      const s = readFileSync(p, "utf8");
+      expect(s).not.toMatch(/border\w*Color:\s*comAlfa/);
+    }
+    expect(readFileSync(menuPath, "utf8")).toContain("tabular-nums");
+
+    const formSrc = readFileSync(formPath, "utf8");
+    expect((formSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    expect(formSrc).toContain("tabular-nums");
+  });
 });
