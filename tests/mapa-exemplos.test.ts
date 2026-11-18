@@ -3,6 +3,7 @@
 // geometria inventada, e a cena é remontada por janela. O leitor de camadas é síncrono nos testes (configurar-camadas.ts).
 import { describe, expect, it, jest } from "@jest/globals";
 import React from "react";
+import { G as GrupoSvg, Mask, Path, Rect } from "react-native-svg";
 import TestRenderer, { act, type ReactTestInstance } from "react-test-renderer";
 import {
   Mapa,
@@ -377,6 +378,113 @@ describe("sem o fundo, nos exemplos", () => {
     const r = montarConfirmar("boa-viagem");
     expect(textoCorrido(r)).toContain("Em azul, o lote escolhido");
     expect(r.root.findAll((n) => n.props.fill === "#2E5A85" && n.props.fillOpacity === 0.85 && n.type !== "path").length).toBeGreaterThan(0);
+    act(() => r.unmount());
+  });
+});
+
+// M3 (18/11/2026): a camada "Calor" de demonstração pintava o mar de Boa Viagem e os rios. As células passam por uma
+// máscara feita com o mesmo caminho da camada de água do fundo.
+describe("calor dos exemplos: não pinta a água do mapa-base", () => {
+  /** Anéis ([x, y][]) de um caminho "Mx yLx y…Z" da cena. */
+  const aneisDoCaminho = (d: string): [number, number][][] =>
+    d
+      .split("Z")
+      .filter((p) => p.trim() !== "")
+      .map((p) => (p.match(/-?\d+(?:\.\d+)?/g) ?? []).map(Number))
+      .map((n) => n.reduce<[number, number][]>((pares, v, i) => (i % 2 === 0 ? [...pares, [v, n[i + 1]!]] : pares), []));
+  /** Par-ímpar sobre todos os anéis, como o fundo pinta a água (fillRule evenodd). */
+  const naAgua = (aneis: [number, number][][], x: number, y: number): boolean => {
+    let dentro = false;
+    for (const anel of aneis) {
+      for (let i = 0, j = anel.length - 1; i < anel.length; j = i++) {
+        const [xi, yi] = anel[i]!;
+        const [xj, yj] = anel[j]!;
+        if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) dentro = !dentro;
+      }
+    }
+    return dentro;
+  };
+  const montarCalor = (id: string) => montar({ dossie: dossie(id), ajustar: 1550, raios: [500, 1000, 1500], camada: "calor", comCalor: true, acessivel: "x" }, 375, 470);
+  const grupoDoCalor = (r: TestRenderer.ReactTestRenderer) => r.root.find((n) => n.type === GrupoSvg && n.props.testID === "calor-do-mapa");
+  const mascaraDe = (r: TestRenderer.ReactTestRenderer) => {
+    const referencia = grupoDoCalor(r).props.mask as string | undefined;
+    const id = /^url\(#(.+)\)$/.exec(referencia ?? "")?.[1];
+    return id ? (r.root.findAll((n) => n.type === Mask && n.props.id === id)[0] ?? null) : null;
+  };
+
+  it("Boa Viagem (o mar ao lado): o calor passa por uma máscara que apaga exatamente a água que o fundo desenha", () => {
+    const r = montarCalor("boa-viagem");
+    const fundos = r.root.findAllByType(FundoDoMapa);
+    const cena = fundos[0]!.props.cena as CenaDoFundo;
+    expect(cena.camadas.agua).not.toBe("");
+    const mascara = mascaraDe(r);
+    expect(mascara).not.toBeNull();
+    // Na máscara: branco em tudo (mostra o calor), a água em preto (apaga) com a regra par-ímpar do fundo.
+    const branco = mascara!.findAllByType(Rect)[0]!;
+    const agua = mascara!.findAll((n) => n.type === Path && n.props.d === cena.camadas.agua)[0]!;
+    expect(branco.props.fill).toBe("#FFFFFF");
+    expect(agua.props.fill).toBe("#000000");
+    expect(agua.props.fillRule).toBe("evenodd");
+    // A água da máscara fica no mesmo lugar do mundo que a água do fundo: a mesma conta de transformação do grupo da cena.
+    const grupoDaAgua = mascara!.findAll((n) => n.type === GrupoSvg && typeof n.props.transform === "string")[0]!;
+    let grupoDoFundo: ReactTestInstance | null = fundos[0]!.parent;
+    while (grupoDoFundo && grupoDoFundo.type !== GrupoSvg) grupoDoFundo = grupoDoFundo.parent;
+    expect(grupoDoFundo).not.toBeNull();
+    expect(grupoDaAgua.props.transform).toBe(grupoDoFundo!.props.transform);
+    // O caso é de verdade: sem a máscara, dezenas de células de calor cairiam com o centro no mar.
+    const m = /translate\(([-\d.]+) ([-\d.]+)\) scale\(([-\d.]+)\)/.exec(grupoDaAgua.props.transform as string)!;
+    const [ox, oy, k] = [Number(m[1]), Number(m[2]), Number(m[3])];
+    const aneis = aneisDoCaminho(cena.camadas.agua);
+    const celulas = grupoDoCalor(r).findAllByType(Rect);
+    expect(celulas).toHaveLength(22 * 22);
+    const noMar = celulas.filter((c) => naAgua(aneis, ((c.props.x as number) + 50 - ox) / k, ((c.props.y as number) + 50 - oy) / k));
+    expect(noMar.length).toBeGreaterThan(20);
+    // A máscara cobre todas as células (nenhuma fica de fora dela, onde não haveria recorte).
+    const [mx, my, ml] = [mascara!.props.x as number, mascara!.props.y as number, mascara!.props.width as number];
+    for (const c of celulas) {
+      expect(c.props.x as number).toBeGreaterThanOrEqual(mx);
+      expect(c.props.y as number).toBeGreaterThanOrEqual(my);
+      expect((c.props.x as number) + 100).toBeLessThanOrEqual(mx + ml);
+      expect((c.props.y as number) + 100).toBeLessThanOrEqual(my + ml);
+    }
+    act(() => r.unmount());
+  });
+
+  it("com o calor ligado, os nomes de rua e de bairro ficam por cima das células (chão, calor, rótulos)", () => {
+    const r = montarCalor("boa-viagem");
+    const partes = r.root.findAllByType(FundoDoMapa).map((f) => f.props.partes as string);
+    expect(partes).toEqual(["chao", "rotulos"]);
+    const ordem = r.root
+      .findAll((n) => n.type === FundoDoMapa || (n.type === GrupoSvg && n.props.testID === "calor-do-mapa"))
+      .map((n) => (n.type === FundoDoMapa ? (n.props.partes as string) : "calor"));
+    expect(ordem).toEqual(["chao", "calor", "rotulos"]);
+    act(() => r.unmount());
+  });
+
+  it("nos cinco exemplos a máscara leva a água da cena; onde a cena não tem água, as células ficam inteiras", () => {
+    for (const id of ["boa-viagem", "casa-forte", "gracas", "espinheiro", "madalena"]) {
+      const r = montarCalor(id);
+      const cena = r.root.findAllByType(FundoDoMapa)[0]!.props.cena as CenaDoFundo;
+      const mascara = mascaraDe(r);
+      if (cena.camadas.agua === "") expect(mascara).toBeNull();
+      else expect(mascara!.findAll((n) => n.type === Path && n.props.d === cena.camadas.agua)).toHaveLength(1);
+      act(() => r.unmount());
+    }
+  });
+
+  it("sem o fundo (não se sabe onde há água): sem máscara, as células continuam desenhadas", () => {
+    const base = dossie("casa-forte");
+    const fora: Dossie = { ...base, id: "fora-calor", bairro: "Lugar Nenhum", lote: { ...base.lote, centro: [-46.63, -23.55] } };
+    const r = montar({ dossie: fora, ajustar: 1550, camada: "calor", comCalor: true, acessivel: "Fora" });
+    expect(grupoDoCalor(r).props.mask).toBeUndefined();
+    expect(grupoDoCalor(r).findAllByType(Rect)).toHaveLength(22 * 22);
+    act(() => r.unmount());
+  });
+
+  it("fora da camada de calor, o mapa não desenha células nem máscara e o fundo vem inteiro, uma vez", () => {
+    const r = montar({ dossie: dossie("boa-viagem"), ajustar: 1550, raios: [500], camada: "ruas", comCalor: true, acessivel: "x" });
+    expect(r.root.findAll((n) => n.type === GrupoSvg && n.props.testID === "calor-do-mapa")).toHaveLength(0);
+    expect(r.root.findAllByType(FundoDoMapa).map((f) => f.props.partes)).toEqual(["tudo"]);
     act(() => r.unmount());
   });
 });

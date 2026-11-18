@@ -1,6 +1,6 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { memo, useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { Platform, Pressable, View, type GestureResponderEvent, type StyleProp, type ViewStyle } from "react-native";
-import Svg, { Circle, G, Path, Rect } from "react-native-svg";
+import Svg, { Circle, Defs, G, Mask, Path, Rect } from "react-native-svg";
 import type { Coordenada, Dossie } from "../../dados/esquema";
 import { formatarDistancia } from "../../dados/formatos";
 import { slugDoBairroPorTexto } from "../../dados/formulario";
@@ -63,15 +63,60 @@ const NAO_ESCALA = "non-scaling-stroke" as const;
 const SEM_OBSTACULOS = (): [number, number, number, number][] => [];
 const semDesenho: ParaDesenho = () => [0, 0];
 
-/** Calor de demonstração, raios e destinos: em metros, por cima do chão (o fundo ou a terra lisa). */
-const Sobreposto = memo(function Sobreposto({ calor, o, cores }: { calor: CelulaDeCalor[]; o: OpcoesDoMundo; cores: Cores }) {
+/** A água (e as pontes por cima dela) da cena que está na tela, com a conta que a leva ao mundo do mapa, em metros. */
+export type AguaDoMapa = { readonly agua: string; readonly pontes: string; readonly transformacao: string };
+
+/**
+ * Calor de demonstração: células de 100 m, em metros em volta do imóvel. Onde a base tem água (mar, rio, canal) a célula
+ * é recortada por uma máscara com o MESMO caminho e a mesma regra de preenchimento da camada de água do fundo: o calor
+ * não pinta o mar (M3, 18/11/2026). As pontes, que o fundo desenha como chão por cima da água, continuam com calor.
+ * Sem o fundo não se sabe onde há água, e as células ficam inteiras sobre a terra lisa.
+ */
+const Calor = memo(function Calor({ calor, agua, cores }: { calor: CelulaDeCalor[]; agua: AguaDoMapa | null; cores: Cores }) {
+  // O id da máscara é do documento inteiro na web: dois mapas na mesma página não podem dividir a mesma.
+  const id = "calor-sem-agua-" + useId().replace(/[^A-Za-z0-9_-]/g, "");
+  const [x0, y0, lado] = extensaoDoCalor(calor);
   return (
     <>
-      {o.camada === "calor" && o.comCalor
-        ? calor.map((c) => (
-            <Rect key={`${c.x},${c.y}`} x={c.x} y={c.y} width={100} height={100} fill={cores["cor-texto"]} fillOpacity={0.06 + c.v * 0.54} />
-          ))
-        : null}
+      {agua ? (
+        <Defs>
+          <Mask id={id} maskUnits="userSpaceOnUse" x={x0} y={y0} width={lado} height={lado}>
+            <Rect x={x0} y={y0} width={lado} height={lado} fill="#FFFFFF" />
+            <G transform={agua.transformacao}>
+              <Path d={agua.agua} fill="#000000" fillRule="evenodd" />
+              {agua.pontes ? <Path d={agua.pontes} fill="#FFFFFF" fillRule="evenodd" /> : null}
+            </G>
+          </Mask>
+        </Defs>
+      ) : null}
+      <G testID="calor-do-mapa" mask={agua ? `url(#${id})` : undefined}>
+        {calor.map((c) => (
+          <Rect key={`${c.x},${c.y}`} x={c.x} y={c.y} width={100} height={100} fill={cores["cor-texto"]} fillOpacity={0.06 + c.v * 0.54} />
+        ))}
+      </G>
+    </>
+  );
+});
+
+/** O quadrado [x, y, lado], em metros, que contém todas as células de calor. */
+function extensaoDoCalor(calor: readonly CelulaDeCalor[]): [number, number, number] {
+  let x0 = Infinity;
+  let y0 = Infinity;
+  let x1 = -Infinity;
+  let y1 = -Infinity;
+  for (const c of calor) {
+    if (c.x < x0) x0 = c.x;
+    if (c.y < y0) y0 = c.y;
+    if (c.x + 100 > x1) x1 = c.x + 100;
+    if (c.y + 100 > y1) y1 = c.y + 100;
+  }
+  return Number.isFinite(x0) ? [x0, y0, Math.max(x1 - x0, y1 - y0)] : [0, 0, 0];
+}
+
+/** Raios e destinos: em metros, por cima do chão (o fundo ou a terra lisa). */
+const Sobreposto = memo(function Sobreposto({ o, cores }: { o: OpcoesDoMundo; cores: Cores }) {
+  return (
+    <>
       {o.raios.map((raio) => (
         <Circle
           key={raio}
@@ -583,6 +628,16 @@ export function Mapa(props: Props) {
   const mostrarSelo = comSelo && tamanho !== null && tamanho.altura >= ALTURA_PARA_O_SELO;
   const rotulo = cena ? `${acessivel}. ${descreverFundoDoMapa(cena)}` : acessivel;
   const origemMostrada = mostrada ? origemDaJanela(mostrada.janela) : null;
+  // Do desenho da cena (px da janela em que foi montada) para o mundo do mapa (metros em volta do imóvel).
+  const transformacaoDaCena =
+    mostrada && origemMostrada ? `translate(${origemMostrada[0].toFixed(3)} ${origemMostrada[1].toFixed(3)}) scale(${(1 / mostrada.janela.escala).toFixed(7)})` : null;
+  const calorLigado = camada === "calor" && comCalor;
+  const aguaDaCena = cenaNaTela?.camadas.agua ?? "";
+  const pontesDaCena = cenaNaTela?.camadas.pontes ?? "";
+  const aguaDoMapa = useMemo<AguaDoMapa | null>(
+    () => (aguaDaCena && transformacaoDaCena ? { agua: aguaDaCena, pontes: pontesDaCena, transformacao: transformacaoDaCena } : null),
+    [aguaDaCena, pontesDaCena, transformacaoDaCena],
+  );
 
   return (
     <View
@@ -610,15 +665,20 @@ export function Mapa(props: Props) {
                   vista.centro[1] * vista.escala
                 ).toFixed(2)}) scale(${vista.escala.toFixed(5)})`}
               >
-                {mostrada && cenaNaTela && origemMostrada && centroNoDesenho ? (
-                  <G
-                    transform={`translate(${origemMostrada[0].toFixed(3)} ${origemMostrada[1].toFixed(3)}) scale(${(1 / mostrada.janela.escala).toFixed(7)})`}
-                  >
-                    <FundoDoMapa cena={cenaNaTela} />
+                {/* Com o calor ligado, a ordem é chão, calor e, por cima, os nomes de rua e de bairro (antes o calor os cobria). */}
+                {mostrada && cenaNaTela && transformacaoDaCena ? (
+                  <G transform={transformacaoDaCena}>
+                    <FundoDoMapa cena={cenaNaTela} partes={calorLigado ? "chao" : "tudo"} />
+                  </G>
+                ) : null}
+                {calorLigado ? <Calor calor={calor} agua={aguaDoMapa} cores={cores} /> : null}
+                {mostrada && cenaNaTela && transformacaoDaCena && centroNoDesenho ? (
+                  <G transform={transformacaoDaCena}>
+                    {calorLigado ? <FundoDoMapa cena={cenaNaTela} partes="rotulos" /> : null}
                     <SobreOFundo cena={mostrada.cena} escala={mostrada.janela.escala} centro={centroNoDesenho} o={opcoes} cores={cores} />
                   </G>
                 ) : null}
-                <Sobreposto calor={calor} o={opcoes} cores={cores} />
+                <Sobreposto o={opcoes} cores={cores} />
               </G>
             </Svg>
           </View>
