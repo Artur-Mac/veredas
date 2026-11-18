@@ -37,6 +37,7 @@ import {
   ORIENTACAO_CNIB_ONR,
   PRAZOS_REFERENCIA_PRE_SINAL,
   auditarTextoColadoCidadao,
+  derivarImpedimentosPreSinal,
 } from "../src/dados/documentos/copilotoPreSinal";
 import { avaliarCaminhabilidadeEVidaNaRua } from "../src/dados/dossie/caminhabilidadeEVidaNaRua";
 import { VidaAPeNaQuadra } from "../src/componentes/visual/VidaAPeNaQuadra";
@@ -3823,6 +3824,93 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     }
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+
+    act(() => {
+      tree.unmount();
+    });
+  });
+
+  it("onda S96: expõe 6 campos da matrícula (Docket R31) e travas causais tipadas bloqueia/depende_de em CopilotoDocumentosPreSinal", () => {
+    const leitura = auditarTextoColadoCidadao(
+      "Matrícula proprietário João. R-3 compra e venda. Hipoteca ativa R$ 180.000,00. Fração ideal 0,021. Certidão negativa de ônus.",
+    );
+    expect(leitura.esquemaMatricula6Campos).toHaveLength(6);
+    const porId = Object.fromEntries(leitura.esquemaMatricula6Campos.map((c) => [c.id, c.presente]));
+    expect(porId.proprietario).toBe(true);
+    expect(porId.historico).toBe(true);
+    expect(porId.gravames).toBe(true);
+    expect(porId.onus_situacao).toBe(true);
+    expect(porId.fracao_divida).toBe(true);
+
+    const impedimentos = derivarImpedimentosPreSinal({
+      spuAtivo: true,
+      onusAtivos: [
+        { atoNumero: "AV-4", titulo: "Penhora registrada", citacao: "AV-4 penhora" },
+        { atoNumero: "R-5", titulo: "Alienação fiduciária", citacao: "R-5 alienação" },
+      ],
+      alertas: [
+        {
+          codigo: "chamada_cota_extra",
+          titulo: "Chamada de cota extra",
+          severidade: "atencao",
+          citacao: "rateio",
+        },
+      ],
+      estadosPacote: { matricula: "faltando" },
+    });
+
+    const bloqueios = impedimentos.filter((i) => i.relacao === "bloqueia").map((i) => i.id);
+    const dependencias = impedimentos.filter((i) => i.relacao === "depende_de").map((i) => i.id);
+    expect(bloqueios).toEqual(["spu-uniao", "onus-restricao"]);
+    expect(dependencias).toEqual(["onus-garantia", "matricula-pendente", "condo-rateio-acao"]);
+    const textoImp = impedimentos.map((i) => `${i.titulo} ${i.impacto} ${i.comoDestravar}`).join(" ");
+    expect(REGEX_JARGON_CAMADA1.test(textoImp)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(textoImp)).toBe(false);
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(CopilotoDocumentosPreSinal, {
+            nomeImovel: "Ed. Atlântico",
+            anoConstrucao: 2014,
+            unidades: 40,
+            chaveLote14: "12345678901234",
+            spuAtivo: true,
+          }),
+        ),
+      );
+    });
+
+    expect(tree.root.find((n) => n.props.testID === "copiloto-cadeia-impedimentos")).toBeDefined();
+    let txt = extrairTextos(tree.toJSON()).join(" ");
+    expect(txt).toContain("Bloqueia");
+    expect(txt).toContain("Depende de");
+
+    const toggleLeitor = tree.root.find((n) => n.props.testID === "toggle-leitor-rapido-doc");
+    act(() => {
+      toggleLeitor.props.onPress();
+    });
+    const input = tree.root.find((n) => n.props.testID === "input-texto-documento");
+    act(() => {
+      input.props.onChangeText(
+        "Matrícula proprietário João. R-3 compra e venda. Hipoteca ativa R$ 180.000,00. Fração ideal 0,021. Certidão negativa de ônus.",
+      );
+    });
+
+    expect(tree.root.find((n) => n.props.testID === "copiloto-schema-matricula-6")).toBeDefined();
+    txt = extrairTextos(tree.toJSON()).join(" ");
+    expect(txt).toContain("6 campos essenciais da matrícula");
+    expect(txt).toContain("presente");
+
+    const copSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "visual", "CopilotoDocumentosPreSinal.tsx"),
+      "utf8",
+    );
+    expect(copSrc.match(/\bborderWidth:\s*1(?!\.)\b/g)?.length ?? 0).toBeLessThanOrEqual(1);
+    expect(copSrc).not.toContain("comAlfa(");
 
     act(() => {
       tree.unmount();

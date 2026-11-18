@@ -196,6 +196,7 @@ export type ResumoTextoColadoCidadao = {
   validade30DiasRotulo: string;
   camposReconhecidos: string[];
   camposAusentesNoTrecho: string[];
+  esquemaMatricula6Campos: { id: string; rotulo: string; presente: boolean }[];
   onusAtivosResumo: { atoNumero: string; titulo: string; citacao: string }[];
   alertasCondoScanResumo: {
     codigo: AlertaCondoScan["codigo"];
@@ -204,6 +205,88 @@ export type ResumoTextoColadoCidadao = {
     citacao: string;
   }[];
 };
+
+export type ImpedimentoTipadoPreSinal = {
+  id: string;
+  relacao: "bloqueia" | "depende_de";
+  titulo: string;
+  impacto: string;
+  comoDestravar: string;
+};
+
+/**
+ * Mapeamento causal determinístico de travas pré-sinal (`bloqueia` vs. `depende_de`,
+ * padrão de grafos tipados EnemiesHub + auditoria SPU/ONR).
+ */
+export function derivarImpedimentosPreSinal(params: {
+  spuAtivo: boolean;
+  onusAtivos: readonly ResumoTextoColadoCidadao["onusAtivosResumo"][number][];
+  alertas: readonly ResumoTextoColadoCidadao["alertasCondoScanResumo"][number][];
+  estadosPacote: Record<string, EstadoItemPacoteDocumental>;
+}): ImpedimentoTipadoPreSinal[] {
+  const lista: ImpedimentoTipadoPreSinal[] = [];
+  const temSpuNoTexto = params.onusAtivos.some((o) => /uni[ãa]o|marinha/i.test(o.titulo));
+  if (params.spuAtivo || temSpuNoTexto) {
+    lista.push({
+      id: "spu-uniao",
+      relacao: "bloqueia",
+      titulo: "Regime de terreno da União (marinha)",
+      impacto: "Ocupação sem aforamento impede uso de FGTS na Caixa, e a escritura exige CAT vigente.",
+      comoDestravar: "Conferir se é aforamento ou ocupação e exigir CAT (90 dias) e laudêmio pagos pelo vendedor.",
+    });
+  }
+
+  const temRestricaoForte = params.onusAtivos.some((o) =>
+    /penhora|indisponibilidade|inalienabilidade/i.test(o.titulo),
+  );
+  if (temRestricaoForte) {
+    lista.push({
+      id: "onus-restricao",
+      relacao: "bloqueia",
+      titulo: "Restrição judicial ou penhora ativa na matrícula",
+      impacto: "Impede transferência livre do imóvel até a baixa averbada.",
+      comoDestravar: "Não pagar sinal sem certidão de objeto e pé e averbação de levantamento no cartório.",
+    });
+  }
+
+  const temGarantiaBancaria = params.onusAtivos.some((o) =>
+    /hipoteca|aliena[çc][ãa]o/i.test(o.titulo),
+  );
+  if (temGarantiaBancaria) {
+    lista.push({
+      id: "onus-garantia",
+      relacao: "depende_de",
+      titulo: "Garantia bancária ativa (alienação ou hipoteca)",
+      impacto: "A venda depende de quitação concomitante ou interveniente quitante.",
+      comoDestravar: "Solicitar saldo devedor atualizado ao banco credor e prever retenção direta no contrato.",
+    });
+  }
+
+  if (params.estadosPacote.matricula !== "recebido") {
+    lista.push({
+      id: "matricula-pendente",
+      relacao: "depende_de",
+      titulo: "Matrícula de ônus reais pendente ou vencida",
+      impacto: "Sem certidão emitida há até 30 dias não há confirmação registral de propriedade e gravames.",
+      comoDestravar: "Pedir matrícula atualizada (16 dígitos CNM) antes de assinar promessa.",
+    });
+  }
+
+  const temAlertaFinanceiro = params.alertas.some(
+    (a) => a.codigo === "chamada_cota_extra" || a.codigo === "litigio_estrutural_ou_trabalhista",
+  );
+  if (temAlertaFinanceiro) {
+    lista.push({
+      id: "condo-rateio-acao",
+      relacao: "depende_de",
+      titulo: "Cota extra ou ação citada na leitura do condomínio",
+      impacto: "A conta mensal após a compra depende do rateio aprovado em assembleia.",
+      comoDestravar: "Pedir última ata e declaração de quitação condominial ao síndico antes do sinal.",
+    });
+  }
+
+  return lista;
+}
 
 function rotuloClasseDoc(classe: ClasseDocumentalVereda): string {
   if (classe === "matricula_onr") return "Matrícula do imóvel";
@@ -249,6 +332,14 @@ export function auditarTextoColadoCidadao(
       validade30DiasRotulo: "Sem data informada",
       camposReconhecidos: [],
       camposAusentesNoTrecho: [],
+      esquemaMatricula6Campos: [
+        { id: "proprietario", rotulo: "Proprietário / titular", presente: false },
+        { id: "historico", rotulo: "Histórico de transmissões (R-n)", presente: false },
+        { id: "gravames", rotulo: "Gravames e garantias", presente: false },
+        { id: "restricoes", rotulo: "Restrições ou usufruto", presente: false },
+        { id: "onus_situacao", rotulo: "Situação / certidão de ônus", presente: false },
+        { id: "fracao_divida", rotulo: "Fração ideal ou valor de dívida", presente: false },
+      ],
       onusAtivosResumo: [],
       alertasCondoScanResumo: [],
     };
@@ -293,6 +384,44 @@ export function auditarTextoColadoCidadao(
     camposAusentesNoTrecho.push("Atos R-n / AV-n ou regras condominiais");
   }
 
+  const esquemaMatricula6Campos: ResumoTextoColadoCidadao["esquemaMatricula6Campos"] = [
+    {
+      id: "proprietario",
+      rotulo: "Proprietário / titular",
+      presente: /\b(?:propriet[aá]ri[oa]|titular(?:idade|es)?|adquirente|comprador(?:a)?|vendedor(?:a)?|transmitente)\b/i.test(limpo),
+    },
+    {
+      id: "historico",
+      rotulo: "Histórico de transmissões (R-n)",
+      presente: /\b(?:R-?\d+|compra e venda|transmiss[aã]o|averba[çc][aã]o|AV-?\d+)\b/i.test(limpo),
+    },
+    {
+      id: "gravames",
+      rotulo: "Gravames e garantias",
+      presente:
+        audit.onusAtivos.some((o) => o.tipo === "hipoteca" || o.tipo === "alienacao_fiduciaria") ||
+        /\b(?:hipoteca|aliena[çc][aã]o\s+fiduci[aá]ria|gravame|c[eé]dula)\b/i.test(limpo),
+    },
+    {
+      id: "restricoes",
+      rotulo: "Restrições ou usufruto",
+      presente:
+        audit.onusAtivos.some((o) =>
+          ["penhora", "usufruto", "indisponibilidade", "clausula_inalienabilidade"].includes(o.tipo),
+        ) || /\b(?:penhora|usufruto|indisponibilidade|inalienabilidade|impenhorabilidade|cl[aá]usula)\b/i.test(limpo),
+    },
+    {
+      id: "onus_situacao",
+      rotulo: "Situação / certidão de ônus",
+      presente: /\b(?:negativa de [oô]nus|positiva de [oô]nus|livre e desembara[çc]ad[oa]|certid[aã]o\s+de\s+[oô]nus|nada consta)\b/i.test(limpo),
+    },
+    {
+      id: "fracao_divida",
+      rotulo: "Fração ideal ou valor de dívida",
+      presente: /\b(?:fra[çc][aã]o\s+ideal|saldo\s+devedor|valor\s+da\s+d[ií]vida|R\$\s*\d|0,\d+)\b/i.test(limpo),
+    },
+  ];
+
   return {
     classeRotulo: rotuloClasseDoc(audit.classeDocumental),
     cnmFormatada: audit.cnmEncontrado?.formatado ?? null,
@@ -300,6 +429,7 @@ export function auditarTextoColadoCidadao(
     validade30DiasRotulo,
     camposReconhecidos,
     camposAusentesNoTrecho,
+    esquemaMatricula6Campos,
     onusAtivosResumo: audit.onusAtivos.map((o) => ({
       atoNumero: o.atoNumero,
       titulo: rotuloOnusCidadao(o.tipo),

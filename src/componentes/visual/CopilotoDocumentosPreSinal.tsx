@@ -10,6 +10,7 @@ import {
   PRAZOS_REFERENCIA_PRE_SINAL,
   auditarTextoColadoCidadao,
   calcularRateioReserva,
+  derivarImpedimentosPreSinal,
   extrairChaveCnm,
   gerarScriptSindico3Perguntas,
 } from "../../dados/documentos/copilotoPreSinal";
@@ -110,6 +111,12 @@ export function CopilotoDocumentosPreSinal({
   const recebidosCount = PACOTE_PRE_SINAL_ITENS.filter(
     (item) => estadosPacote[item.id] === "recebido",
   ).length;
+  const impedimentos = derivarImpedimentosPreSinal({
+    spuAtivo,
+    onusAtivos: leituraDoc.onusAtivosResumo,
+    alertas: leituraDoc.alertasCondoScanResumo,
+    estadosPacote,
+  });
 
   return (
     <View
@@ -211,6 +218,59 @@ export function CopilotoDocumentosPreSinal({
         </View>
       </View>
 
+      {impedimentos.length > 0 ? (
+        <View
+          testID="copiloto-cadeia-impedimentos"
+          style={[styles.secao, { borderTopWidth: 1, borderTopColor: cor("cor-linha") }]}
+        >
+          <Texto tipo="etiqueta" style={styles.subTitulo}>
+            {`Travas e dependências pré-sinal (${impedimentos.length})`}
+          </Texto>
+          {impedimentos.map((imp, idx) => {
+            const bloqueia = imp.relacao === "bloqueia";
+            return (
+              <View
+                key={imp.id}
+                style={{
+                  paddingTop: idx === 0 ? 2 : 8,
+                  borderTopWidth: idx === 0 ? 0 : 1,
+                  borderTopColor: cor("cor-linha"),
+                  gap: 3,
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                  <Texto tipo="apoio" style={{ fontSize: 12.5, fontWeight: "700", flex: 1 }}>
+                    {imp.titulo}
+                  </Texto>
+                  <View
+                    style={{
+                      paddingHorizontal: 8,
+                      paddingVertical: 2,
+                      borderRadius: 999,
+                      backgroundColor: cor(bloqueia ? "cor-barro-suave" : "cor-azul-cadastral-suave"),
+                    }}
+                  >
+                    <Texto
+                      tipo="etiqueta"
+                      cor={bloqueia ? "cor-barro-texto" : "cor-azul-cadastral"}
+                      style={{ fontSize: 10.5, fontWeight: "700" }}
+                    >
+                      {bloqueia ? "Bloqueia" : "Depende de"}
+                    </Texto>
+                  </View>
+                </View>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoObs}>
+                  {imp.impacto}
+                </Texto>
+                <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600", fontVariant: ["tabular-nums"] }}>
+                  {`Para destravar: ${imp.comoDestravar}`}
+                </Texto>
+              </View>
+            );
+          })}
+        </View>
+      ) : null}
+
       {/* Scanner local de matricula, ata ou convencao colada */}
       <View style={[styles.secao, { borderTopWidth: 1, borderTopColor: cor("cor-linha") }]}>
         <Pressable
@@ -266,6 +326,31 @@ export function CopilotoDocumentosPreSinal({
                       {`Ausente neste recorte: ${leituraDoc.camposAusentesNoTrecho.join(", ")}.`}
                     </Texto>
                   ) : null}
+                </View>
+                <View
+                  testID="copiloto-schema-matricula-6"
+                  style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 6, gap: 3 }}
+                >
+                  <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 11, fontWeight: "700" }}>
+                    6 campos essenciais da matrícula
+                  </Texto>
+                  {leituraDoc.esquemaMatricula6Campos.map((campo) => (
+                    <View
+                      key={campo.id}
+                      style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 }}
+                    >
+                      <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 16, flex: 1 }}>
+                        {campo.rotulo}
+                      </Texto>
+                      <Texto
+                        tipo="etiqueta"
+                        cor={campo.presente ? "cor-salvia-escura" : "cor-texto-apoio"}
+                        style={{ fontSize: 11, fontWeight: "600", fontVariant: ["tabular-nums"] }}
+                      >
+                        {campo.presente ? "presente" : "não consta"}
+                      </Texto>
+                    </View>
+                  ))}
                 </View>
                 {leituraDoc.onusAtivosResumo.map((o, i) => (
                   <View
