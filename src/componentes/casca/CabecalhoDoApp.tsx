@@ -7,7 +7,7 @@ import { StyleSheet, View } from "react-native";
 import Svg, { Line, Path } from "react-native-svg";
 import { useCarteira } from "../../estado/Carteira";
 import { useTema } from "../../tema/Tema";
-import { RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 import { desenhoDoSimbolo } from "../desenhoDaMarca";
 import { AlvoDeToque } from "../Pressionavel";
 import { Texto } from "../Texto";
@@ -29,7 +29,7 @@ export function CabecalhoDoApp() {
   const rotulo = pronto ? rotuloDeCreditos(saldo) : "— créditos";
 
   return (
-    <View style={[styles.cabecalho, { backgroundColor: cor("cor-fundo"), borderBottomColor: comAlfa(cor("cor-texto"), 0.08) }]}>
+    <View style={[styles.cabecalho, { backgroundColor: cor("cor-fundo"), borderBottomColor: cor("cor-linha") }]}>
       {/* A faixa vai de ponta a ponta; marca e ações ficam na coluna do app, alinhadas aos cartões das telas. */}
       <Coluna style={styles.conteudo}>
         {/* `.brand-lockup`: ninho do João-de-barro e VEREDA em Fraunces 500, com 0,18em de espaçamento. */}
@@ -61,7 +61,6 @@ export function CabecalhoDoApp() {
                   styles.pilula,
                   {
                     backgroundColor: pressed ? cor("cor-superficie") : cor("cor-creme"),
-                    borderColor: comAlfa(cor("cor-texto"), 0.11),
                   },
                 ]}
               >
@@ -87,8 +86,7 @@ export function CabecalhoDoApp() {
                 style={[
                   styles.botaoDoMenu,
                   {
-                    backgroundColor: pressed || menuAberto ? cor("cor-superficie") : comAlfa(cor("cor-superficie"), 0.65),
-                    borderColor: comAlfa(cor("cor-texto"), 0.11),
+                    backgroundColor: pressed || menuAberto ? cor("cor-superficie") : cor("cor-creme"),
                   },
                 ]}
               >
@@ -155,7 +153,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: RAIO.pilula,
-    borderWidth: 1,
   },
   ponto: {
     width: 6,
@@ -180,6 +177,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 11,
-    borderWidth: 1,
   },
 });

@@ -10,6 +10,19 @@ import {
   type BaseReferenciasPublicas,
 } from "./recife/referenciasPublicas";
 import type { ModoDeTransporte, PerfilDoDomicilio, UsoArCondicionado } from "../estado/PerfilDomicilio";
+import {
+  calcularSpuEstatutario,
+  type RegimeSpu,
+  type ResultadoSpu,
+} from "../nucleo/motores/spuMarinha";
+import {
+  simularOtimizacaoItbiRecife,
+  type ResultadoOtimizadorItbiRecife,
+} from "../municipios/recife/motores/econometriaItbi";
+import {
+  avaliarEstruturaECondominio,
+  type ResultadoEstruturaCondominio,
+} from "../municipios/recife/motores/estruturaCondominio";
 
 export type FatiaEstimadaDaRotina = {
   id: "energia" | "deslocamento";
@@ -92,6 +105,12 @@ export type CustoPorPartes = {
   comparacaoComTetoPessoal: string | null;
   /** Compatibilidade: a direção da janela não altera o consumo estimado. */
   janelaPoenteConsiderada: boolean;
+  /** Motor SPU estatutário (IND-01): laudêmio, taxa/foro e bloqueio de FGTS sobre fração ideal de terreno. */
+  spuEstatutario?: ResultadoSpu | null;
+  /** Otimizador tributário e cartorário ITBI + TJPE (Art. 52 CTMR / Art. 290 LRP / LC 227/2026). */
+  otimizacaoFechamento?: ResultadoOtimizadorItbiRecife | null;
+  /** Triagem estrutural, ciclo VUP NBR 15575-1:2025 e maresia NBR 6118 (IND-02 & IND-09). */
+  estruturaECondominio?: ResultadoEstruturaCondominio | null;
 };
 
 const KWH_BASE_POR_MORADOR = 55;
@@ -241,6 +260,29 @@ export function simularFinanciamentoPrice(
   };
 }
 
+function estimarDistanciaCostaRecifeM(centro: [number, number] | null): number | null {
+  if (!centro) return null;
+  // Pontos de referência da linha de preamar na Orla de Boa Viagem / Pina
+  const orlaRef: [number, number][] = [
+    [-34.881, -8.086],
+    [-34.889, -8.116],
+    [-34.901, -8.138],
+  ];
+  let menor = Number.POSITIVE_INFINITY;
+  for (const pt of orlaRef) {
+    const d = distanciaMetros(centro, pt);
+    if (d < menor) menor = d;
+  }
+  return Number.isFinite(menor) ? Math.round(menor) : null;
+}
+
+export type OpcoesMotorEconomico = {
+  regimeSpu?: RegimeSpu;
+  valorDominioPlenoTerrenoReais?: number | null;
+  fracaoIdeal?: number | null;
+  financiamentoSfh?: boolean;
+};
+
 /**
  * Monta o quadro de Custo por Partes respeitando estritamente a separação entre:
  * 1) Encargos fixos conhecidos do imóvel (`oficial`), e
@@ -250,6 +292,7 @@ export function derivarCustoPorPartes(
   analise: AnaliseV2,
   predio: Edificio | null,
   perfil: PerfilDoDomicilio,
+  opcoes?: OpcoesMotorEconomico,
 ): CustoPorPartes {
   const refs = baseDeReferenciasPublicas();
   const oficial = custoMensal(analise);
@@ -280,15 +323,33 @@ export function derivarCustoPorPartes(
 
   let simulacaoCompra: SimulacaoDeCompra | null = null;
   let alertaMarinha: AlertaMarinhaCompra | null = null;
+  let spuEstatutario: ResultadoSpu | null = null;
+  let otimizacaoFechamento: ResultadoOtimizadorItbiRecife | null = null;
 
   if (analise.modalidade === "compra") {
     if (oficial.principal.valor !== null && oficial.principal.valor > 0) {
       simulacaoCompra = simularFinanciamentoPrice(oficial.principal.valor, perfil, refs);
+      otimizacaoFechamento = simularOtimizacaoItbiRecife({
+        precoImovelReais: oficial.principal.valor,
+        financiamentoSfh: opcoes?.financiamentoSfh ?? oficial.principal.valor <= 1_500_000,
+        percentualFinanciado: Math.max(0.1, 1 - perfil.entradaPercentualCompra / 100),
+      });
     }
     const indicioMarinha = verificarFaixaDeMarinha(predio?.centro ?? null, analise.bairro);
+    if (indicioMarinha.emFaixaDeAtencao || opcoes?.regimeSpu) {
+      spuEstatutario = calcularSpuEstatutario({
+        regime: opcoes?.regimeSpu ?? "nao_sabemos",
+        valorDominioPlenoTerrenoReais: opcoes?.valorDominioPlenoTerrenoReais ?? null,
+        fracaoIdeal: opcoes?.fracaoIdeal ?? (predio?.unidades ? 1 / predio.unidades : null),
+        precoImovelReais: oficial.principal.valor,
+        emPoligonalMarinha: indicioMarinha.emFaixaDeAtencao,
+      });
+    }
     if (indicioMarinha.emFaixaDeAtencao) {
       const preco = oficial.principal.valor;
-      const laudemio5Pct = preco !== null && preco > 0 ? Math.round(preco * 0.05) : null;
+      const laudemioEstatutario = spuEstatutario?.laudemio5PctVendedorReais ?? null;
+      const laudemio5Pct =
+        laudemioEstatutario ?? (preco !== null && preco > 0 ? Math.round(preco * 0.05) : null);
       const localTexto =
         indicioMarinha.motivo === "orla_atlantica"
           ? "faixa próxima à orla marítima"
@@ -299,15 +360,29 @@ export function derivarCustoPorPartes(
         titulo: "Conferir regime de Terreno de Marinha (SPU) na matrícula",
         laudemioReferencia5PctReais: laudemio5Pct,
         explicacaoHumana:
-          laudemio5Pct !== null
-            ? `Imóvel em ${localTexto}, onde parte dos lotes tem domínio da União (SPU). Se a matrícula for de ocupação ou aforamento, a transferência cobra laudêmio de 5% (${formatarReais(laudemio5Pct)} sobre o valor anunciado, além do ITBI municipal) e taxa/foro anual.`
-            : `Imóvel em ${localTexto}, onde parte dos lotes tem domínio da União (SPU). Se a matrícula for de ocupação ou aforamento, há cobrança de laudêmio de 5% na compra e taxa/foro anual.`,
+          laudemioEstatutario !== null
+            ? `Imóvel em ${localTexto}. Pela fração ideal sobre o valor do terreno (Decreto-Lei nº 2.398/1987, excluídas benfeitorias), o laudêmio de 5% equivale a ${formatarReais(laudemioEstatutario)}, além da taxa de ocupação (2% a.a.) ou foro (0,6% a.a.).`
+            : laudemio5Pct !== null
+              ? `Imóvel em ${localTexto}, onde parte dos lotes tem domínio da União (SPU). Por lei (Decreto-Lei nº 2.398/1987), o laudêmio de 5% incide apenas sobre o valor do terreno pela fração ideal; sem essa base cadastral, 5% sobre o preço anunciado seria teto máximo de ${formatarReais(laudemio5Pct)}.`
+              : `Imóvel em ${localTexto}, onde parte dos lotes tem domínio da União (SPU). Se a matrícula for de ocupação ou aforamento, há cobrança de laudêmio de 5% sobre o terreno e taxa/foro anual.`,
         perguntaParaCorretor:
           "Na certidão de matrícula deste imóvel, o terreno consta como alodial (livre de marinha) ou tem inscrição na SPU com laudêmio e foro/taxa de ocupação?",
-        fonteCurta: `${refs.marinha.normaReferencia} · Geometria hídrica ESIG Recife (ODbL)`,
+        fonteCurta: `${refs.marinha.normaReferencia} · Decreto-Lei nº 2.398/1987 · Geometria hídrica ESIG Recife (ODbL)`,
       };
     }
   }
+
+  const estruturaECondominio = predio
+    ? avaliarEstruturaECondominio({
+        buildingId: predio.id,
+        bairroSlug: analise.bairro ?? predio.bairro,
+        anoConstrucao: predio.anoConstrucao,
+        pavimentos: predio.pavimentos,
+        tipoEstruturaIptu: predio.ate4Pavimentos ? "Apartamento <= 4 Pavimentos" : "Concreto Armado",
+        distanciaCostaOuEstuarioM: estimarDistanciaCostaRecifeM(predio.centro),
+        unidadesCondominio: predio.unidades,
+      })
+    : null;
 
   const transferencia = analise.modalidade === "compra" ? estimarTransferencia(oficial.principal.valor) : null;
 
@@ -337,5 +412,8 @@ export function derivarCustoPorPartes(
     transferencia,
     comparacaoComTetoPessoal,
     janelaPoenteConsiderada: poente,
+    spuEstatutario,
+    otimizacaoFechamento,
+    estruturaECondominio,
   };
 }

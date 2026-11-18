@@ -92,7 +92,7 @@ export function Gaveta({ visivel, titulo, subtitulo, children, aoFechar }: Props
             backgroundColor: cor("cor-superficie"),
             borderTopLeftRadius: RAIO.cartao,
             borderTopRightRadius: RAIO.cartao,
-            borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+            borderTopColor: cor("cor-linha-forte"),
             boxShadow: `0 -4px 16px ${comAlfa(cor("cor-campo"), 0.16)}`,
             transform: [{ translateY: deslocamento }],
           },
@@ -104,7 +104,7 @@ export function Gaveta({ visivel, titulo, subtitulo, children, aoFechar }: Props
         </View>
 
         {/* Cabeçalho da Gaveta */}
-        <View style={[styles.cabecalho, { borderBottomColor: comAlfa(cor("cor-texto"), 0.06) }]}>
+        <View style={[styles.cabecalho, { borderBottomColor: cor("cor-linha") }]}>
           <View style={{ flex: 1, gap: 2 }}>
             <Texto tipo="secao" role="heading" style={styles.titulo}>
               {titulo}

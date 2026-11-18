@@ -53,12 +53,12 @@ export default function Creditos() {
 
         <View
           style={{
-            backgroundColor: cor("cor-creme"),
-            borderWidth: 1,
-            borderColor: cor("cor-linha"),
-            borderRadius: 13,
-            paddingVertical: 13,
-            paddingHorizontal: 14,
+            backgroundColor: cor("cor-papel-claro"),
+            borderLeftWidth: 2,
+            borderLeftColor: cor("cor-linha-forte"),
+            paddingVertical: 10,
+            paddingLeft: 12,
+            paddingRight: 8,
             gap: 6,
           }}
         >
@@ -77,7 +77,7 @@ export default function Creditos() {
           <Texto tipo="secao" role="heading" aria-level={3} style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>
             Extrato de uso e contribuições
           </Texto>
-          <View accessibilityLabel="Extrato" style={{ gap: 6 }}>
+          <View accessibilityLabel="Extrato" style={{ gap: 0 }}>
             {carteira.extrato.map((m, i) => (
               <View
                 key={`${m.em}-${m.tipo}-${m.analiseId ?? "-"}-${i}`}
@@ -86,10 +86,9 @@ export default function Creditos() {
                   alignItems: "center",
                   justifyContent: "space-between",
                   gap: 12,
-                  paddingVertical: 8,
-                  paddingHorizontal: 10,
-                  backgroundColor: cor("cor-creme"),
-                  borderRadius: 8,
+                  paddingVertical: 9,
+                  borderTopWidth: 1,
+                  borderTopColor: cor("cor-linha"),
                 }}
               >
                 <View style={{ flex: 1, minWidth: 0 }}>

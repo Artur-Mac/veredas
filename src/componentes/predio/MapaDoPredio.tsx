@@ -161,7 +161,7 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
             y={f.centro[1] + 3}
             fill={azul}
             fillOpacity={0.8}
-            fontFamily="JetBrainsMono"
+            fontFamily="PlusJakartaSans"
             fontSize={9}
             fontWeight="600"
             textAnchor="middle"
@@ -193,7 +193,7 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
         borderRadius: 13,
         overflow: "hidden",
         borderWidth: 1,
-        borderColor: comAlfa(azul, 0.25),
+        borderColor: cor("cor-linha-forte"),
         backgroundColor: cor("cor-azul-cadastral-suave"),
       }}
     >
@@ -254,7 +254,8 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
             paddingVertical: RECHEIO_DA_FAIXA / 2,
             paddingHorizontal: 8,
             borderRadius: 6,
-            backgroundColor: comAlfa(cor("cor-superficie"), 0.92),
+            // Fundo opaco (redesenho visual): a frase não disputa com as ruas do fundo do mapa.
+            backgroundColor: cor("cor-superficie"),
           }}
         >
           <Texto tipo="apoio" style={{ color: azul, fontSize: 10, lineHeight: LINHA_DA_FAIXA, fontWeight: "600", textAlign: "center" }}>

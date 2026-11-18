@@ -6,7 +6,6 @@ import { FotoRemota } from "../FotoRemota";
 import Svg, { Path } from "react-native-svg";
 import type { AnaliseV2 } from "../../dados/contratos";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 import { GradeArquitetonica } from "../GradeArquitetonica";
 import { Icone } from "../Icone";
 import { caminho, poligonoNaCaixa, type Poligono } from "../mapa/geometria";
@@ -37,7 +36,7 @@ export function CartaoDoImovel({ indice, analise, poligono, resumo, aoTrocar, ao
         borderRadius: 13,
         overflow: "hidden",
         borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto"), 0.07),
+        borderColor: cor("cor-linha-forte"),
       }}
     >
       <View style={{ width: "100%", aspectRatio: 1.8, backgroundColor: cor("cor-sutil"), overflow: "hidden" }}>
@@ -81,7 +80,7 @@ export function CartaoDoImovel({ indice, analise, poligono, resumo, aoTrocar, ao
           <Icone nome="chevron-down" tamanho="p" cor="cor-texto-apoio" />
         </Pressionavel>
         {resumo ? (
-          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16, marginTop: 7 }}>
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16, marginTop: 7, fontVariant: ["tabular-nums"] }}>
             {resumo}
           </Texto>
         ) : null}

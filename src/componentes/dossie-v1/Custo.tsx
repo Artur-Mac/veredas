@@ -1,9 +1,11 @@
-import { avisoDeValoresPendentes } from "../../dados/custos";
 import { useState } from "react";
 import { View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import type { ParcelaDoCusto, Posicao, VisaoDoDossie } from "../../dados/contratos";
+import type { CustoPorPartes } from "../../dados/custoPorPartes";
+import { avisoDeValoresPendentes } from "../../dados/custos";
 import { formatarReais } from "../../dados/formatos";
+import { COMO_PEDIR_ISENCAO_RECIFE, HIPOTESES_ISENCAO_IPTU_RECIFE } from "../../dados/recife/isencaoIptuRecife";
 import { useTema } from "../../tema/Tema";
 import { ESPACO, type TokenDeCor } from "../../tema/tokens";
 import { Pressionavel } from "../Pressionavel";
@@ -34,14 +36,15 @@ type PropsDoValor = {
 };
 
 function ValorGrande({ rotulo, texto, sufixo, apoio, aoMedir, largura }: PropsDoValor) {
-  const corpo = corpoQueCabe(texto, largura - (sufixo ? 34 : 0), 24);
+  const larguraUtil = Math.max(96, largura - (sufixo ? 38 : 6));
+  const corpo = corpoQueCabe(texto, larguraUtil, 22, 13);
   return (
     <View style={{ flex: 1, minWidth: 0 }} onLayout={(e) => aoMedir(e.nativeEvent.layout.width)}>
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16 }}>
         {rotulo}
       </Texto>
       <View style={{ flexDirection: "row", alignItems: "baseline", flexWrap: "wrap", gap: 4, marginTop: 5 }}>
-        <Numero tamanho={corpo} peso="600">
+        <Numero tamanho={corpo} peso="600" estilo={{ flexShrink: 1 }}>
           {texto}
         </Numero>
         {sufixo ? (
@@ -54,7 +57,7 @@ function ValorGrande({ rotulo, texto, sufixo, apoio, aoMedir, largura }: PropsDo
         <Texto
           tipo="apoio"
           cor={apoio.ferrugem ? "cor-barro-texto" : "cor-texto"}
-          style={{ marginTop: 5, fontSize: 11, lineHeight: 16, fontWeight: apoio.ferrugem ? "500" : "600" }}
+          style={{ marginTop: 5, fontSize: 11.5, lineHeight: 16, fontWeight: apoio.ferrugem ? "500" : "600" }}
         >
           {apoio.texto}
         </Texto>
@@ -71,8 +74,6 @@ function IconeDeTendencia({ cor }: { cor: TokenDeCor }) {
     </Svg>
   );
 }
-
-import type { CustoPorPartes } from "../../dados/custoPorPartes";
 
 type Props = {
   custo: VisaoDoDossie["custo"];
@@ -123,6 +124,7 @@ export function BlocoDeCusto({
   const [estimativasAbertas, setEstimativasAbertas] = useState(false);
   // 15/11/2026: a pílula do financiamento abre o simulador Price aqui mesmo.
   const [simuladorAberto, setSimuladorAberto] = useState(false);
+  const [mostrarIsencoesIptu, setMostrarIsencoesIptu] = useState(false);
   const iptuDoPredio = partes?.referenciaIptuDoPredio?.mensalMedianoReais ?? null;
   const aluguel = custo.principal.rotulo === "Aluguel anunciado";
   const principal = custo.principal.valor !== null ? formatarReais(custo.principal.valor) : "A confirmar";
@@ -130,6 +132,7 @@ export function BlocoDeCusto({
   const segmentos = segmentosDaBarra(custo.parcelas);
   const alem = aluguel && custo.alemDoPrincipal !== null && custo.alemDoPrincipal > 0 ? custo.alemDoPrincipal : null;
   const notas = notasDasParcelas(custo.parcelas);
+  const parcelaCondominio = custo.parcelas.find((p) => p.nome === "Condomínio");
   const descricaoDaBarra = `Composição dos ${total} mensais conhecidos: ${segmentos.map((s) => `${s.nome} ${formatarReais(s.valor)}`).join(", ")}`;
 
   return (
@@ -223,6 +226,25 @@ export function BlocoDeCusto({
         {!aluguel ? <Nota>Preço de compra e financiamento não entram nesta soma.</Nota> : null}
       </View>
 
+      {parcelaCondominio ? (
+        <View
+          testID="custo-alerta-doc-boleto"
+          style={{
+            marginTop: 6,
+            paddingTop: 8,
+            borderTopWidth: 1,
+            borderTopColor: cor("cor-linha"),
+            gap: 2,
+          }}
+        >
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 16, fontVariant: ["tabular-nums"] }}>
+            {parcelaCondominio.estado === "a_confirmar"
+              ? "Documento ao lado do custo: peça o boleto vigente do condomínio, o saldo do fundo de reserva e se há rateio aprovado."
+              : "Ao conferir o boleto do condomínio, valide também o saldo do fundo de reserva e a quitação da unidade."}
+          </Texto>
+        </View>
+      ) : null}
+
       {partes && !estimativasAbertas ? (
         <View style={{ marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 8 }}>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
@@ -252,7 +274,7 @@ export function BlocoDeCusto({
             ) : null}
           </View>
           {simuladorAberto && partes.simulacaoCompra ? <SimuladorPrice simulacao={partes.simulacaoCompra} aoFechar={() => setSimuladorAberto(false)} /> : null}
-          <Pressionavel onPress={() => setEstimativasAbertas(true)} accessibilityRole="button" accessibilityLabel="Estimativas à parte: luz e financiamento. Toque para ver e ajustar" style={{ minHeight: 32, flexDirection: "row", alignItems: "center", gap: 4 }}>
+          <Pressionavel onPress={() => setEstimativasAbertas(true)} accessibilityRole="button" accessibilityLabel="Estimativas à parte: luz e financiamento. Toque para ver e ajustar" style={{ minHeight: 44, flexDirection: "row", alignItems: "center", gap: 4 }}>
             <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 12, lineHeight: 16, fontWeight: "600" }}>Estimativas à parte · toque para ver e ajustar</Texto>
             <Seta tamanho={11} />
           </Pressionavel>
@@ -270,7 +292,7 @@ export function BlocoDeCusto({
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
-            <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 10.5, lineHeight: 14, fontWeight: "700", letterSpacing: 0.5, textTransform: "uppercase" }}>
+            <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700" }}>
               {perfilConfigurado ? "Sua rotina neste endereço (à parte)" : "Estimativa de rotina padrão (à parte)"}
             </Texto>
           </View>
@@ -341,15 +363,30 @@ export function BlocoDeCusto({
               </View>
             ) : null}
 
+            {partes.otimizacaoFechamento ? (
+              <View style={{ marginTop: 2, paddingTop: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 2 }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                  <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600", flex: 1 }}>
+                    Economia legal no fechamento (ITBI + cartório)
+                  </Texto>
+                  <Texto tipo="numero" cor="cor-salvia-escura" style={{ fontSize: 12, lineHeight: 17, fontWeight: "600" }}>
+                    {`até ${formatarReais(partes.otimizacaoFechamento.melhorCenarioEconomiaReais)}`}
+                  </Texto>
+                </View>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                  {`À vista em 30 dias (1,8%): economiza ${formatarReais(partes.otimizacaoFechamento.economiaAVistaTempestivoReais)}${partes.otimizacaoFechamento.economiaSfhReais ? ` · Financiado SFH (1,0% até R$ 1.036.600,71): economiza ${formatarReais(partes.otimizacaoFechamento.economiaSfhReais)}` : ""}.`}
+                </Texto>
+              </View>
+            ) : null}
+
             {partes.alertaMarinha ? (
               <View
                 style={{
                   marginTop: 4,
-                  padding: 10,
-                  borderRadius: 9,
-                  backgroundColor: cor("cor-superficie"),
-                  borderWidth: 1,
-                  borderColor: cor("cor-linha"),
+                  borderLeftWidth: 3,
+                  borderLeftColor: cor("cor-barro"),
+                  paddingLeft: 10,
+                  paddingVertical: 4,
                   gap: 3,
                 }}
               >
@@ -359,6 +396,59 @@ export function BlocoDeCusto({
                 <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16 }}>
                   {partes.alertaMarinha.explicacaoHumana}
                 </Texto>
+              </View>
+            ) : null}
+
+            <View testID="custo-lembrete-doc-condominio" style={{ marginTop: 2, paddingTop: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 2 }}>
+              <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600" }}>
+                Documento que acompanha este boleto antes do sinal
+              </Texto>
+              <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                Antes de fechar: confira junto ao boleto vigente o saldo do fundo de reserva e a declaração de quitação do condomínio.
+              </Texto>
+            </View>
+
+            {!aluguel ? (
+              <View style={{ marginTop: 2, paddingTop: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 6 }}>
+                <Pressionavel
+                  testID="toggle-isencao-iptu-recife"
+                  accessibilityRole="button"
+                  accessibilityState={{ expanded: mostrarIsencoesIptu }}
+                  onPress={() => setMostrarIsencoesIptu((x) => !x)}
+                  style={{ minHeight: 44, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}
+                >
+                  <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600", flex: 1 }}>
+                    IPTU no Recife: conferir hipóteses legais de isenção
+                  </Texto>
+                  <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, fontWeight: "600" }}>
+                    {mostrarIsencoesIptu ? "Ocultar" : "Ver regras"}
+                  </Texto>
+                </Pressionavel>
+                {mostrarIsencoesIptu ? (
+                  <View testID="lista-isencao-iptu-recife" style={{ gap: 6 }}>
+                    {HIPOTESES_ISENCAO_IPTU_RECIFE.map((h, i) => (
+                      <View
+                        key={h.id}
+                        style={{
+                          borderTopWidth: i > 0 ? 1 : 0,
+                          borderTopColor: cor("cor-linha"),
+                          paddingTop: i > 0 ? 6 : 0,
+                          gap: 2,
+                        }}
+                      >
+                        <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600" }}>
+                          {h.titulo}
+                        </Texto>
+                        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                          {`${h.requisito} ${h.comoConferir}`}
+                        </Texto>
+                      </View>
+                    ))}
+                    <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                      {COMO_PEDIR_ISENCAO_RECIFE}
+                    </Texto>
+                  </View>
+                ) : null}
               </View>
             ) : null}
           </View>

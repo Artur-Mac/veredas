@@ -4,7 +4,7 @@ import { View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import type { AnaliseV2, Edificio } from "../../dados/contratos";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, comAlfa } from "../../tema/tokens";
+import { ESPACO, RAIO } from "../../tema/tokens";
 import { GradeArquitetonica } from "../GradeArquitetonica";
 import { Icone } from "../Icone";
 import { caminho, poligonoNaCaixa } from "../mapa/geometria";
@@ -66,7 +66,7 @@ export function IdentificacaoDoImovel({ analise, predio }: { analise: AnaliseV2;
             {endereco}
           </Texto>
         ) : null}
-        <Texto tipo="apoio" cor="cor-texto-apoio" numberOfLines={2} style={{ fontSize: 11, lineHeight: 17, marginTop: endereco ? 0 : 4 }}>
+        <Texto tipo="apoio" cor="cor-texto-apoio" numberOfLines={2} style={{ fontSize: 11, lineHeight: 17, marginTop: endereco ? 0 : 4, fontVariant: ["tabular-nums"] }}>
           {subtituloDoImovel(analise)}
         </Texto>
       </View>
@@ -95,7 +95,7 @@ export function CartaoDoImovel({
         marginBottom: 17,
         backgroundColor: cor("cor-superficie"),
         borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto"), 0.07),
+        borderColor: cor("cor-linha-forte"),
         borderRadius: 13,
       }}
     >

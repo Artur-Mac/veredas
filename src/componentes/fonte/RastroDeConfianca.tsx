@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import Svg, { Line } from "react-native-svg";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, comAlfa, type TokenDeCor } from "../../tema/tokens";
+import { ESPACO, RAIO, type TokenDeCor } from "../../tema/tokens";
 import type { Confianca } from "../../dados/contratos";
 import { Texto } from "../Texto";
 import { ORDEM_DA_CONFIANCA, explicacaoDaConfianca, rotuloDaConfianca, type FonteDoDado } from "./textos";
@@ -76,8 +76,8 @@ export function RastroCompleto({ atual, fonte = null, idDoDado = null }: { atual
               paddingVertical: ESPACO[2] + 2,
               paddingHorizontal: ESPACO[3],
               borderRadius: RAIO.icone,
-              borderWidth: 1,
-              borderColor: ativa ? cor("cor-linha-forte") : "transparent",
+              borderLeftWidth: ativa ? 3 : 0,
+              borderLeftColor: cor(t.cor),
               backgroundColor: ativa ? cor("cor-creme") : "transparent",
             }}
           >
@@ -97,7 +97,7 @@ export function RastroCompleto({ atual, fonte = null, idDoDado = null }: { atual
                     paddingHorizontal: 8,
                     paddingVertical: 2,
                     borderRadius: RAIO.pilula,
-                    backgroundColor: comAlfa(cor(t.cor), 0.14),
+                    backgroundColor: cor(c === "oficial" ? "cor-azul-cadastral-suave" : "cor-sutil"),
                   }}
                 >
                   <Texto tipo="etiqueta" cor="cor-texto" style={{ fontSize: 11, lineHeight: 14, fontWeight: "600" }}>

@@ -4,7 +4,7 @@ import Svg, { Circle, G, Line, Path, Rect, Text as TextoSvg } from "react-native
 import type { Edificio, Obra, ObrasProximas } from "../../dados/contratos";
 import { HORARIOS_DO_MAPA } from "../../dados/dossie/solESombra";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, comAlfa, type TokenDeCor } from "../../tema/tokens";
+import { ESPACO, RAIO, type TokenDeCor } from "../../tema/tokens";
 import { GradeArquitetonica } from "../GradeArquitetonica";
 import { AvisoDoFundoDoMapa } from "../mapa/AvisoDoFundoDoMapa";
 import { CreditoDaBase, FundoDoMapa, SeloDoBairro } from "../mapa/FundoDoMapa";
@@ -42,17 +42,40 @@ export const COR_DA_OBRA: Record<Obra["categoria"], { fundo: TokenDeCor; texto: 
   demolicao: { fundo: "cor-barro", texto: "cor-sobre-barro" },
 };
 
-const ESTILO_EXTRA: Record<CategoriaPontoExtra, { sigla: string; nome: string; corHex: string }> = {
-  praca: { sigla: "P", nome: "Praça / área verde", corHex: "#1B5E40" },
-  metro: { sigla: "M", nome: "Metrô", corHex: "#2E5A85" },
-  ensino: { sigla: "E", nome: "Ensino (CNEFE)", corHex: "#8A4F0A" },
-  saude: { sigla: "S", nome: "Saúde", corHex: "#B94E36" },
-  rotina: { sigla: "★", nome: "Minha rotina", corHex: "#F47745" },
+const ESTILO_EXTRA: Record<CategoriaPontoExtra, { sigla: string; nome: string; fundo: TokenDeCor; texto: TokenDeCor }> = {
+  praca: { sigla: "P", nome: "Praça / área verde", fundo: "cor-salvia-escura", texto: "cor-superficie" },
+  metro: { sigla: "M", nome: "Metrô", fundo: "cor-azul-cadastral", texto: "cor-superficie" },
+  ensino: { sigla: "E", nome: "Ensino (CNEFE)", fundo: "cor-barro-texto", texto: "cor-superficie" },
+  saude: { sigla: "S", nome: "Saúde", fundo: "cor-barro", texto: "cor-sobre-barro" },
+  rotina: { sigla: "★", nome: "Minha rotina", fundo: "cor-acao", texto: "cor-sobre-acao" },
 };
 
 function formatarDistanciaCurta(m: number): string {
   if (m >= 1000) return `${(m / 1000).toFixed(1).replace(".", ",")} km`;
   return `${Math.round(m)} m`;
+}
+
+/** Área aproximada de projeção (m²) pelo contorno cadastral do lote via Shoelace equiretangular (R39). */
+export function calcularAreaPoligonoM2(poligono: Edificio["poligono"]): number | null {
+  if (!poligono || poligono.length < 3) return null;
+  let latSum = 0;
+  for (const [, lat] of poligono) latSum += lat;
+  const latMediaRad = ((latSum / poligono.length) * Math.PI) / 180;
+  const mPorGrauLat = 111_320;
+  const mPorGrauLon = 111_320 * Math.cos(latMediaRad);
+  const [lon0, lat0] = poligono[0]!;
+  let soma = 0;
+  for (let i = 0; i < poligono.length; i += 1) {
+    const [lonA, latA] = poligono[i]!;
+    const [lonB, latB] = poligono[(i + 1) % poligono.length]!;
+    const xA = (lonA - lon0) * mPorGrauLon;
+    const yA = (latA - lat0) * mPorGrauLat;
+    const xB = (lonB - lon0) * mPorGrauLon;
+    const yB = (latB - lat0) * mPorGrauLat;
+    soma += xA * yB - xB * yA;
+  }
+  const area = Math.round(Math.abs(soma) / 2);
+  return Number.isFinite(area) && area > 0 ? area : null;
 }
 
 const ALTURA = 280;
@@ -128,8 +151,9 @@ function BotaoDoMapa({ rotulo, acessivel, onPress, desligado = false, icone = fa
       accessibilityState={{ disabled: desligado }}
       style={{
         minWidth: 44, height: 44, paddingHorizontal: 10, borderRadius: 10, alignItems: "center", justifyContent: "center",
-        // Desligado: fundo opaco e sinal em cinza legível (com opacidade, o botão sumia sobre o fundo do mapa).
-        backgroundColor: desligado ? cor("cor-papel-claro") : cor("cor-superficie"), borderWidth: 1, borderColor: cor("cor-linha"),
+        // Desligado: fundo opaco e sinal em cinza legível (com opacidade, o botão sumia sobre o fundo do mapa). Sem borda,
+        // como os outros controles do redesenho visual.
+        backgroundColor: desligado ? cor("cor-papel-claro") : cor("cor-superficie"),
       }}
     >
       {icone ? (
@@ -150,14 +174,26 @@ function CartaoDaObra({ numero, obra, aoFechar }: { numero: number; obra: ObrasP
   const { cor } = useTema();
   const licenca = textoDaLicenca(obra.licenca);
   return (
-    <View accessibilityLiveRegion="polite" style={{ padding: 12, gap: 4, borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha"), backgroundColor: cor("cor-superficie") }}>
+    <View
+      accessibilityLiveRegion="polite"
+      style={{
+        padding: 12,
+        gap: 4,
+        borderRadius: 8,
+        borderTopWidth: 1,
+        borderTopColor: cor("cor-linha"),
+        borderLeftWidth: 3,
+        borderLeftColor: cor("cor-acao"),
+        backgroundColor: cor("cor-creme"),
+      }}
+    >
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-        <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20, fontWeight: "600", flex: 1 }}>{`${numero}. ${categoriaDaObra(obra.categoria)} ${distanciaDaObra(obra.distanciaM)}`}</Texto>
+        <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20, fontWeight: "600", flex: 1, fontVariant: ["tabular-nums"] }}>{`${numero}. ${categoriaDaObra(obra.categoria)} ${distanciaDaObra(obra.distanciaM)}`}</Texto>
         <Pressionavel onPress={aoFechar} accessibilityRole="button" accessibilityLabel="Fechar o detalhe da obra" style={{ minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center" }}>
           <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 16, lineHeight: 20 }}>✕</Texto>
         </Pressionavel>
       </View>
-      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, lineHeight: 18 }}>{`Pedido em ${mesDaObra(obra.data)} · ${obra.descricao}`}</Texto>
+      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, lineHeight: 18, fontVariant: ["tabular-nums"] }}>{`Pedido em ${mesDaObra(obra.data)} · ${obra.descricao}`}</Texto>
       <Texto tipo="apoio" cor={licenca ? "cor-texto" : "cor-texto-apoio"} style={{ fontSize: 12.5, lineHeight: 18 }}>
         {licenca ?? "Estado da licença não publicado nesta versão do índice."}
       </Texto>
@@ -172,7 +208,19 @@ function CartaoDaObra({ numero, obra, aoFechar }: { numero: number; obra: ObrasP
 function CartaoDoLote({ lote, aoFechar }: { lote: LoteNoDesenho; aoFechar: () => void }) {
   const { cor } = useTema();
   return (
-    <View accessibilityLiveRegion="polite" style={{ padding: 12, gap: 4, borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha"), backgroundColor: cor("cor-superficie") }}>
+    <View
+      accessibilityLiveRegion="polite"
+      style={{
+        padding: 12,
+        gap: 4,
+        borderRadius: 8,
+        borderTopWidth: 1,
+        borderTopColor: cor("cor-linha"),
+        borderLeftWidth: 3,
+        borderLeftColor: cor("cor-azul-cadastral"),
+        backgroundColor: cor("cor-creme"),
+      }}
+    >
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
         <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20, fontWeight: "600", flex: 1 }}>{rotuloDoLote(lote)}</Texto>
         <Pressionavel onPress={aoFechar} accessibilityRole="button" accessibilityLabel="Fechar o detalhe do lote" style={{ minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center" }}>
@@ -216,11 +264,23 @@ function CartaoDoPontoExtra({ ponto, aoFechar }: { ponto: PontoExtraCena; aoFech
   const est = ESTILO_EXTRA[ponto.categoria];
   const minPe = ponto.distanciaM <= 2500 ? Math.max(1, Math.round(ponto.distanciaM / 75)) : null;
   return (
-    <View accessibilityLiveRegion="polite" style={{ padding: 12, gap: 4, borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha"), backgroundColor: cor("cor-superficie") }}>
+    <View
+      accessibilityLiveRegion="polite"
+      style={{
+        padding: 12,
+        gap: 4,
+        borderRadius: 8,
+        borderTopWidth: 1,
+        borderTopColor: cor("cor-linha"),
+        borderLeftWidth: 3,
+        borderLeftColor: cor(est.fundo),
+        backgroundColor: cor("cor-creme"),
+      }}
+    >
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1 }}>
-          <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: est.corHex, alignItems: "center", justifyContent: "center" }}>
-            <Texto style={{ color: "#FFFFFF", fontSize: 11, fontWeight: "700" }}>{est.sigla}</Texto>
+          <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: cor(est.fundo), alignItems: "center", justifyContent: "center" }}>
+            <Texto style={{ color: cor(est.texto), fontSize: 11, fontWeight: "700" }}>{est.sigla}</Texto>
           </View>
           <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20, fontWeight: "700", flex: 1 }}>
             {ponto.rotulo}
@@ -230,7 +290,7 @@ function CartaoDoPontoExtra({ ponto, aoFechar }: { ponto: PontoExtraCena; aoFech
           <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 16, lineHeight: 20 }}>✕</Texto>
         </Pressionavel>
       </View>
-      <Texto tipo="corpo" style={{ fontSize: 13, lineHeight: 18 }}>
+      <Texto tipo="corpo" style={{ fontSize: 13, lineHeight: 18, fontVariant: ["tabular-nums"] }}>
         {`${formatarDistanciaCurta(ponto.distanciaM)} em linha reta${minPe ? ` · ~${minPe} min a pé` : ""}`}
       </Texto>
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>
@@ -345,6 +405,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
   const vizinhosJuntos = useMemo(() => [...new Set(cenaPlanta.vizinhos)].join(" "), [cenaPlanta]);
 
   const pontoExtraTocado = extraTocadoId ? pontosNoMapa.find((p) => p.id === extraTocadoId) ?? null : null;
+  const areaPoligonoM2 = useMemo(() => calcularAreaPoligonoM2(predio.poligono), [predio.poligono]);
 
   // Arraste só com zoom: sem ele, o gesto vertical continua rolando a gaveta. Os toques do arraste são lidos pelos
   // eventos de responder da própria View (funcionam no celular e na web).
@@ -415,13 +476,11 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                 minHeight: 44,
                 paddingHorizontal: 10,
                 borderRadius: RAIO.pilula,
-                borderWidth: 1,
-                borderColor: ativa ? comAlfa(azul, 0.55) : cor("cor-linha"),
-                backgroundColor: ativa ? cor("cor-azul-cadastral-suave") : cor("cor-papel-claro"),
+                backgroundColor: ativa ? cor("cor-texto") : cor("cor-papel-claro"),
                 justifyContent: "center",
               }}
             >
-              <Texto tipo="apoio" cor={ativa ? "cor-azul-cadastral" : "cor-texto-apoio"} style={{ fontSize: 11.5, lineHeight: 15, fontWeight: ativa ? "700" : "500" }}>
+              <Texto tipo="apoio" cor={ativa ? "cor-papel-claro" : "cor-texto"} style={{ fontSize: 11.5, lineHeight: 15, fontWeight: ativa ? "700" : "500" }}>
                 {op.rotulo}
               </Texto>
             </Pressionavel>
@@ -438,13 +497,11 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
               minHeight: 44,
               paddingHorizontal: 10,
               borderRadius: RAIO.pilula,
-              borderWidth: 1,
-              borderColor: filtroExtra === "todos" ? cor("cor-texto") : cor("cor-linha"),
-              backgroundColor: filtroExtra === "todos" ? cor("cor-texto") : cor("cor-superficie"),
+              backgroundColor: filtroExtra === "todos" ? cor("cor-texto") : cor("cor-papel-claro"),
               justifyContent: "center",
             }}
           >
-            <Texto style={{ fontSize: 11.5, fontWeight: "700", color: filtroExtra === "todos" ? cor("cor-superficie") : cor("cor-texto") }}>
+            <Texto style={{ fontSize: 11.5, fontWeight: "700", fontVariant: ["tabular-nums"], color: filtroExtra === "todos" ? cor("cor-papel-claro") : cor("cor-texto") }}>
               Todos ({pontosExtras.length})
             </Texto>
           </Pressionavel>
@@ -462,16 +519,14 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                   minHeight: 44,
                   paddingHorizontal: 10,
                   borderRadius: RAIO.pilula,
-                  borderWidth: 1,
-                  borderColor: ativo ? est.corHex : cor("cor-linha"),
-                  backgroundColor: ativo ? comAlfa(est.corHex, 0.14) : cor("cor-superficie"),
+                  backgroundColor: ativo ? cor("cor-sutil") : cor("cor-papel-claro"),
                   flexDirection: "row",
                   alignItems: "center",
                   gap: 5,
                 }}
               >
-                <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: est.corHex }} />
-                <Texto style={{ fontSize: 11.5, fontWeight: ativo ? "700" : "500", color: cor("cor-texto") }}>
+                <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: cor(est.fundo) }} />
+                <Texto style={{ fontSize: 11.5, fontWeight: ativo ? "700" : "500", fontVariant: ["tabular-nums"], color: cor("cor-texto") }}>
                   {`${cat === "praca" ? "Praças" : cat === "metro" ? "Metrô" : cat === "ensino" ? "Ensino" : cat === "saude" ? "Saúde" : "Minha rotina"} (${qtd})`}
                 </Texto>
               </Pressionavel>
@@ -500,7 +555,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
           borderRadius: 13,
           overflow: "hidden",
           borderWidth: 1,
-          borderColor: comAlfa(azul, 0.25),
+          borderColor: cor("cor-linha-forte"),
           backgroundColor: cor("cor-azul-cadastral-suave"),
         }}
       >
@@ -544,7 +599,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                       />
                       {v.faixaDoAndar ? <Path d={v.faixaDoAndar} fill="none" stroke={acao} strokeWidth={2.4 / estado.zoom} strokeLinejoin="round" /> : null}
                       {v.etiquetaAltura ? (
-                        <TextoSvg {...(v.alvo ? etiquetaLongeDoPino(v.etiquetaAltura, cena25d.pino, estado.zoom) : { x: v.etiquetaAltura.x, y: v.etiquetaAltura.y })} fill={v.alvo ? azul : cor("cor-texto-apoio")} fontFamily="JetBrainsMono" fontSize={9.5 / estado.zoom} fontWeight={v.alvo ? "700" : "600"} textAnchor="middle">
+                        <TextoSvg {...(v.alvo ? etiquetaLongeDoPino(v.etiquetaAltura, cena25d.pino, estado.zoom) : { x: v.etiquetaAltura.x, y: v.etiquetaAltura.y })} fill={v.alvo ? azul : cor("cor-texto-apoio")} fontFamily="PlusJakartaSans" fontSize={9.5 / estado.zoom} fontWeight={v.alvo ? "700" : "600"} textAnchor="middle">
                           {v.etiquetaAltura.texto}
                         </TextoSvg>
                       ) : null}
@@ -603,8 +658,8 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
               return (
                 <G key={p.id} transform={`translate(${x}, ${y})`}>
                   {tocado ? <Circle cx={0} cy={0} r={15} fill="none" stroke={textoCor} strokeWidth={2} /> : null}
-                  <Circle cx={0} cy={0} r={raio} fill={est.corHex} stroke={cor("cor-superficie")} strokeWidth={2} />
-                  <TextoSvg x={0} y={3.5} fill="#FFFFFF" fontFamily="JetBrainsMono" fontSize={p.categoria === "rotina" ? 10 : 9.5} fontWeight="700" textAnchor="middle">
+                  <Circle cx={0} cy={0} r={raio} fill={cor(est.fundo)} stroke={cor("cor-superficie")} strokeWidth={2} />
+                  <TextoSvg x={0} y={3.5} fill={cor(est.texto)} fontFamily="PlusJakartaSans" fontSize={p.categoria === "rotina" ? 10 : 9.5} fontWeight="700" textAnchor="middle">
                     {est.sigla}
                   </TextoSvg>
                 </G>
@@ -617,7 +672,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                 <G key={o.numero} transform={`translate(${x}, ${y})`}>
                   {tocada ? <Circle cx={0} cy={0} r={15} fill="none" stroke={textoCor} strokeWidth={2} /> : null}
                   <Circle cx={0} cy={0} r={10} fill={cor(COR_DA_OBRA[o.categoria].fundo)} stroke={cor("cor-superficie")} strokeWidth={2} />
-                  <TextoSvg x={0} y={3.5} fill={cor(COR_DA_OBRA[o.categoria].texto)} fontFamily="JetBrainsMono" fontSize={10} fontWeight="700" textAnchor="middle">
+                  <TextoSvg x={0} y={3.5} fill={cor(COR_DA_OBRA[o.categoria].texto)} fontFamily="PlusJakartaSans" fontSize={10} fontWeight="700" textAnchor="middle">
                     {String(o.numero)}
                   </TextoSvg>
                 </G>
@@ -628,7 +683,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
               <G transform={`translate(${cena.largura - 56}, ${cena.altura - (cenaDoFundo ? 44 : 22)})`}>
                 <Line x1={38} y1={10} x2={22} y2={-4} stroke={azul} strokeWidth={1.5} strokeLinecap="round" />
                 <Path d="M22 -4 L28 -3 L23 2 Z" fill={azul} />
-                <TextoSvg x={4} y={12} fill={azul} fontFamily="JetBrainsMono" fontSize={9.5} fontWeight="600">
+                <TextoSvg x={4} y={12} fill={azul} fontFamily="PlusJakartaSans" fontSize={9.5} fontWeight="600">
                   Brisa SE
                 </TextoSvg>
               </G>
@@ -640,7 +695,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
               <Line x1={12} y1={cena.altura - 14} x2={12 + regua.pixels} y2={cena.altura - 14} stroke={textoCor} strokeWidth={2} />
               <Line x1={12} y1={cena.altura - 18} x2={12} y2={cena.altura - 10} stroke={textoCor} strokeWidth={2} />
               <Line x1={12 + regua.pixels} y1={cena.altura - 18} x2={12 + regua.pixels} y2={cena.altura - 10} stroke={textoCor} strokeWidth={2} />
-              <TextoSvg x={12} y={cena.altura - 22} fill={textoCor} fontFamily="JetBrainsMono" fontSize={10} fontWeight="600">
+              <TextoSvg x={12} y={cena.altura - 22} fill={textoCor} fontFamily="PlusJakartaSans" fontSize={10} fontWeight="600">
                 {regua.rotulo}
               </TextoSvg>
             </G>
@@ -717,19 +772,27 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                 paddingHorizontal: 10,
                 paddingVertical: 5,
                 borderRadius: RAIO.pilula,
-                borderWidth: 1,
-                borderColor: cor("cor-linha"),
                 backgroundColor: cor("cor-papel-claro"),
               }}
             >
-              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: ESTILO_EXTRA[f.categoria].corHex }} />
-              <Texto style={{ fontSize: 12, lineHeight: 16, color: cor("cor-texto") }}>
+              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: cor(ESTILO_EXTRA[f.categoria].fundo) }} />
+              <Texto style={{ fontSize: 12, lineHeight: 16, fontVariant: ["tabular-nums"], color: cor("cor-texto") }}>
                 <Texto style={{ fontWeight: "700" }}>{f.rotulo}</Texto>
                 {` · ${formatarDistanciaCurta(f.distanciaM)} ${f.direcao}`}
               </Texto>
             </View>
           ))}
         </View>
+      ) : null}
+      {areaPoligonoM2 !== null && predio.poligono ? (
+        <Texto
+          testID="mapa-geometria-lote"
+          tipo="apoio"
+          cor="cor-texto-apoio"
+          style={{ fontSize: 11.5, lineHeight: 16, fontVariant: ["tabular-nums"] }}
+        >
+          {`Área do lote no cadastro: ~${areaPoligonoM2.toLocaleString("pt-BR")} m²`}
+        </Texto>
       ) : null}
       {estado.zoom > 1 ? (
         <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>Arraste o mapa para ver em volta.</Texto>
@@ -795,10 +858,10 @@ export function LinhaDeObraNumerada({
     <View
       accessible
       accessibilityLabel={rotulo}
-      style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12, borderTopWidth: 0.5, borderTopColor: cor("cor-linha") }}
+      style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12, borderTopWidth: 1, borderTopColor: cor("cor-linha") }}
     >
       <View style={{ width: 26, height: 26, borderRadius: RAIO.pilula, alignItems: "center", justifyContent: "center", backgroundColor: cor(cores.fundo) }}>
-        <Texto tipo="etiqueta" cor={cores.texto} style={{ fontFamily: "JetBrainsMono", fontSize: 11, lineHeight: 14, fontWeight: "700" }}>
+        <Texto tipo="numero" cor={cores.texto} style={{ fontVariant: ["tabular-nums"], fontSize: 11, lineHeight: 14, fontWeight: "700" }}>
           {String(numero)}
         </Texto>
       </View>
@@ -826,20 +889,20 @@ export function LegendaDoMapa({ categorias, temAndar = false, temSombra = false 
   return (
     <View style={{ flexDirection: "row", flexWrap: "wrap", columnGap: 16, rowGap: 6 }}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-        <View style={{ width: 14, height: 10, borderRadius: 2, borderWidth: 2, borderColor: cor("cor-azul-cadastral"), backgroundColor: comAlfa(cor("cor-azul-cadastral"), 0.22) }} />
+        <View style={{ width: 14, height: 10, borderRadius: 2, borderWidth: 2, borderColor: cor("cor-azul-cadastral"), backgroundColor: cor("cor-azul-cadastral-suave") }} />
         <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
           Lote do prédio
         </Texto>
       </View>
       {/* 18/11/2026: o azul claro do mapa (com ou sem o fundo) são os prédios do índice do Vereda. */}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-        <View style={{ width: 14, height: 10, borderRadius: 2, borderWidth: 1, borderColor: comAlfa(cor("cor-azul-cadastral"), 0.45), backgroundColor: cor("cor-azul-cadastral-suave") }} />
+        <View style={{ width: 14, height: 10, borderRadius: 2, borderWidth: 1, borderColor: cor("cor-azul-cadastral"), backgroundColor: cor("cor-azul-cadastral-suave") }} />
         <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
           Prédios que o Vereda conhece
         </Texto>
       </View>
       {temSombra ? <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-        <View style={{ width: 12, height: 8, borderRadius: 2, backgroundColor: comAlfa(cor("cor-texto"), 0.16) }} />
+        <View style={{ width: 12, height: 8, borderRadius: 2, backgroundColor: cor("cor-sutil") }} />
         <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
           Sombra estimada
         </Texto>

@@ -27,7 +27,7 @@ export function Rodape({ dossie, fatos, recorte = null, escalasExtras = [], trac
   const escalas = [...new Set([...fatos.map((f) => f.escala).filter((e): e is string => Boolean(e)), ...escalasExtras])];
   const borda = {
     paddingTop: ESPACO[3],
-    borderTopWidth: 0.5,
+    borderTopWidth: 1,
     borderStyle: tracejado ? ("dashed" as const) : ("solid" as const),
     borderTopColor: cor("cor-linha"),
     gap: ESPACO[1],
@@ -62,12 +62,10 @@ export function Rodape({ dossie, fatos, recorte = null, escalasExtras = [], trac
       <View style={{ flexDirection: "row", flexWrap: "wrap", columnGap: ESPACO[4] }}>
         <LinkDeLinha
           rotulo="Ver fonte"
-          altura={40}
           onPress={() => router.push({ pathname: "/exemplos/[id]/fonte/[fato]", params: { id: dossie.id, fato: principal.id } })}
         />
         <LinkDeLinha
           rotulo="Isso está errado"
-          altura={40}
           onPress={() =>
             router.push({ pathname: "/exemplos/[id]/contestar/[fato]", params: { id: dossie.id, fato: principal.id } })
           }

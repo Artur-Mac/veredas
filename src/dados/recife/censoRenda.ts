@@ -51,7 +51,6 @@ export function validarCensoRenda(dados: unknown): BaseCensoRenda {
 
 export function baseDeCensoRenda(): BaseCensoRenda {
   if (!cache) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     cache = validarCensoRenda(require("./censo-renda-setores.json") as unknown);
   }
   return cache;

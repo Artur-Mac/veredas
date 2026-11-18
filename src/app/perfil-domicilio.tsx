@@ -9,6 +9,7 @@ import { Gaveta, RESPIRO_NO_TOPO_DA_GAVETA } from "../componentes/casca/Gaveta";
 import { Pressionavel } from "../componentes/Pressionavel";
 import { voltarOu } from "../componentes/Tela";
 import { Texto } from "../componentes/Texto";
+import { estimarEnergiaMensal } from "../dados/custoPorPartes";
 import { formatarReais } from "../dados/formatos";
 import { BAIRROS_DO_RECIFE, bairroPorSlug } from "../dados/recife/bairros";
 import { baseDeReferenciasPublicas } from "../dados/recife/referenciasPublicas";
@@ -19,7 +20,7 @@ import {
   type UsoArCondicionado,
 } from "../estado/PerfilDomicilio";
 import { useTema } from "../tema/Tema";
-import { ESPACO, RAIO, comAlfa } from "../tema/tokens";
+import { ESPACO, RAIO } from "../tema/tokens";
 
 const OPCOES_MORADORES = [1, 2, 3, 4, 5] as const;
 
@@ -63,7 +64,6 @@ function PilulaDeEscolha({
   acessivel?: string;
 }) {
   const { cor } = useTema();
-  const azul = cor("cor-azul-cadastral");
   return (
     <Pressionavel
       onPress={aoTocar}
@@ -72,19 +72,17 @@ function PilulaDeEscolha({
       accessibilityState={{ selected: ativa }}
       aria-pressed={ativa}
       style={{
-        minHeight: 40,
+        minHeight: 44,
         paddingHorizontal: 13,
         paddingVertical: 8,
         borderRadius: RAIO.pilula,
-        borderWidth: 1,
-        borderColor: ativa ? comAlfa(azul, 0.65) : cor("cor-linha"),
-        backgroundColor: ativa ? cor("cor-azul-cadastral-suave") : cor("cor-superficie"),
+        backgroundColor: ativa ? cor("cor-texto") : cor("cor-papel-claro"),
         justifyContent: "center",
       }}
     >
       <Texto
         tipo="apoio"
-        cor={ativa ? "cor-azul-cadastral" : "cor-texto"}
+        cor={ativa ? "cor-papel-claro" : "cor-texto"}
         style={{ fontSize: 12.5, lineHeight: 17, fontWeight: ativa ? "700" : "500" }}
       >
         {rotulo}
@@ -98,11 +96,9 @@ function SecaoDoPerfil({ titulo, apoio, children }: { titulo: string; apoio?: st
   return (
     <View
       style={{
-        backgroundColor: cor("cor-creme"),
-        borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto"), 0.08),
-        borderRadius: 13,
-        padding: 14,
+        borderTopWidth: 1,
+        borderTopColor: cor("cor-linha"),
+        paddingTop: 14,
         gap: 10,
       }}
     >
@@ -201,6 +197,21 @@ export default function TelaPerfilDomicilio() {
   };
 
   const nomeDestinoAtual = destinoBairro ? bairroPorSlug(destinoBairro)?.nome ?? destinoBairro : null;
+  const luzVivaReais = estimarEnergiaMensal(
+    {
+      ...perfil,
+      moradores,
+      usoArCondicionado: usoAr,
+      destinoBairro,
+      modoTransporte,
+      diasPresenciaisMes: diasMes,
+    },
+    refs,
+  ).fatia.valorMensalReais;
+  const transportePublicoVivoReais =
+    destinoBairro !== null && modoTransporte === "transporte_publico" && diasMes > 0
+      ? Math.round(diasMes * 2 * refs.transportePublico.tarifaAnelAReais)
+      : null;
 
   return (
     <Gaveta visivel aoFechar={fechar} titulo="Perfil da sua casa">
@@ -208,6 +219,29 @@ export default function TelaPerfilDomicilio() {
         <Texto tipo="corpo" cor="cor-texto-apoio" style={{ fontSize: 13.5, lineHeight: 20 }}>
           Preencha uma única vez. O Vereda usa essas escolhas para estimar luz, deslocamento e financiamento em todos os imóveis — sempre em fatias separadas, sem misturar com o valor oficial do anúncio.
         </Texto>
+        <View
+          testID="perfil-resumo-mensal-vivo"
+          style={{
+            paddingVertical: 10,
+            paddingHorizontal: 12,
+            borderRadius: 12,
+            backgroundColor: cor("cor-papel-claro"),
+            gap: 3,
+          }}
+        >
+          <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11.5, fontWeight: "700" }}>
+            Prévia mensal desta rotina (separada do aluguel ou preço)
+          </Texto>
+          <Texto style={{ fontSize: 13.5, lineHeight: 19, fontWeight: "600", fontVariant: ["tabular-nums"] }}>
+            {`Luz estimada ~${formatarReais(luzVivaReais)}/mês${
+              transportePublicoVivoReais !== null
+                ? ` · Ônibus/Metrô ~${formatarReais(transportePublicoVivoReais)}/mês`
+                : destinoBairro !== null
+                  ? " · Deslocamento calculado por distância em cada imóvel"
+                  : ""
+            }`}
+          </Texto>
+        </View>
 
         <SecaoDoPerfil titulo="Quantas pessoas vão morar?" apoio="Ajuda a estimar o consumo básico mensal de energia da casa.">
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
@@ -238,12 +272,12 @@ export default function TelaPerfilDomicilio() {
                   accessibilityState={{ selected: ativa }}
                   aria-pressed={ativa}
                   style={{
+                    minHeight: 48,
                     paddingVertical: 10,
                     paddingHorizontal: 12,
                     borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: ativa ? comAlfa(cor("cor-azul-cadastral"), 0.65) : cor("cor-linha"),
-                    backgroundColor: ativa ? cor("cor-azul-cadastral-suave") : cor("cor-superficie"),
+                    backgroundColor: ativa ? cor("cor-azul-cadastral-suave") : cor("cor-papel-claro"),
+                    justifyContent: "center",
                     gap: 2,
                   }}
                 >
@@ -297,7 +331,7 @@ export default function TelaPerfilDomicilio() {
               placeholderTextColor={cor("cor-texto-apoio")}
               accessibilityLabel="Buscar bairro de destino no Recife"
               style={{
-                minHeight: 42,
+                minHeight: 44,
                 paddingHorizontal: 12,
                 borderRadius: 10,
                 borderWidth: 1,
@@ -402,14 +436,14 @@ export default function TelaPerfilDomicilio() {
             placeholderTextColor={cor("cor-texto-apoio")}
             accessibilityLabel="Teto mensal opcional em reais"
             style={{
-              minHeight: 42,
+              minHeight: 44,
               paddingHorizontal: 12,
               borderRadius: 10,
               borderWidth: 1,
               borderColor: cor("cor-linha"),
               backgroundColor: cor("cor-superficie"),
               color: cor("cor-texto"),
-              fontFamily: "JetBrainsMono",
+              fontVariant: ["tabular-nums"],
               fontSize: 13.5,
             }}
           />

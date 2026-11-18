@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle, Line, Path, Polygon, Rect } from "react-native-svg";
 import { useTema } from "../../tema/Tema";
-import { TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { TOQUE_MINIMO } from "../../tema/tokens";
 import { AlvoDeToque } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { Coluna } from "./Coluna";
@@ -86,8 +86,8 @@ export function DockInferior() {
         styles.dock,
         {
           paddingBottom: Math.max(10, insets.bottom),
-          backgroundColor: comAlfa(cor("cor-papel-claro"), 0.94),
-          borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+          backgroundColor: cor("cor-papel-claro"),
+          borderTopColor: cor("cor-linha"),
         },
       ]}
     >

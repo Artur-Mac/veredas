@@ -3,7 +3,7 @@ import { TextInput, View } from "react-native";
 import type { Edificio } from "../../dados/contratos";
 import { buscarPorEndereco } from "../../dados/recife/buscar";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, comAlfa } from "../../tema/tokens";
+import { ESPACO, RAIO } from "../../tema/tokens";
 import { useFocoDoCampo } from "../casca/foco";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
@@ -44,7 +44,7 @@ export function BuscaDePredio({ edificios, aoEscolher }: Props) {
             paddingHorizontal: 12,
             borderRadius: 8,
             borderWidth: 1,
-            borderColor: comAlfa(cor("cor-texto"), 0.12),
+            borderColor: cor("cor-linha-forte"),
             backgroundColor: cor("cor-superficie"),
             color: cor("cor-texto"),
             fontFamily: "PlusJakartaSans",
@@ -61,8 +61,6 @@ export function BuscaDePredio({ edificios, aoEscolher }: Props) {
             role="list"
             style={{
               borderRadius: 11,
-              borderWidth: 1,
-              borderColor: comAlfa(cor("cor-texto"), 0.08),
               backgroundColor: cor("cor-creme"),
               overflow: "hidden",
             }}
@@ -81,7 +79,7 @@ export function BuscaDePredio({ edificios, aoEscolher }: Props) {
                   justifyContent: "center",
                   paddingHorizontal: 13,
                   paddingVertical: 8,
-                  borderTopWidth: i === 0 ? 0 : 0.5,
+                  borderTopWidth: i === 0 ? 0 : 1,
                   borderTopColor: cor("cor-linha"),
                 }}
               >

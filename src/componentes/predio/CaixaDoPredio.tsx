@@ -13,12 +13,12 @@ export function CaixaDoPredio({ edificio, motivos }: Props) {
   return (
     <View
       style={{
-        paddingVertical: 11,
+        paddingVertical: 10,
         paddingHorizontal: 13,
-        borderRadius: 11,
+        borderRadius: 8,
         backgroundColor: cor("cor-creme"),
-        borderWidth: 1,
-        borderColor: "rgba(23, 23, 23, 0.08)",
+        borderLeftWidth: 3,
+        borderLeftColor: cor("cor-azul-cadastral"),
         gap: 2,
       }}
     >
@@ -30,7 +30,7 @@ export function CaixaDoPredio({ edificio, motivos }: Props) {
           {endereco}
         </Texto>
       ) : null}
-      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>
+      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17, fontVariant: ["tabular-nums"] }}>
         {resumoDoPredio(edificio)}
       </Texto>
       {motivos.length > 0 ? (

@@ -35,7 +35,7 @@ export function SetaVx({ cor = "cor-barro-texto", tamanho = 14 }: { cor?: TokenD
 /** `.vx-kicker`: 10 px, 600, caixa alta, 0,07em, ferrugem. */
 export function KickerVx({ children }: { children: string }) {
   return (
-    <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 10, lineHeight: 14, fontWeight: "600", letterSpacing: 0.7, textTransform: "uppercase" }}>
+    <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600" }}>
       {children}
     </Texto>
   );
@@ -125,8 +125,6 @@ export function SegmentosVx<T extends string>({ opcoes, valor, aoMudar, rotulo, 
         gap: 4,
         padding: 4,
         backgroundColor: cor("cor-sutil"),
-        borderWidth: 1,
-        borderColor: cor("cor-linha"),
         borderRadius: 11,
         marginBottom: margemInferior,
       }}
@@ -162,13 +160,13 @@ export function SegmentosVx<T extends string>({ opcoes, valor, aoMudar, rotulo, 
   );
 }
 
-/** `.vx-surface`: branca, borda de 7% de tinta, 16 px de raio. */
+/** `.vx-surface`: branca, borda sutil forte, 16 px de raio. */
 export function SuperficieVx({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
   const { cor } = useTema();
   return (
     <View
       style={[
-        { backgroundColor: cor("cor-superficie"), borderWidth: 1, borderColor: comAlfa(cor("cor-texto"), 0.07), borderRadius: RAIO.cartao, paddingVertical: 21, paddingHorizontal: 18 },
+        { backgroundColor: cor("cor-superficie"), borderWidth: 1, borderColor: cor("cor-linha-forte"), borderRadius: RAIO.cartao, paddingVertical: 21, paddingHorizontal: 18 },
         style,
       ]}
     >

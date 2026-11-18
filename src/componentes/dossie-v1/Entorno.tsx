@@ -6,7 +6,7 @@ import { View } from "react-native";
 import type { ContextoDoBairro, Edificio, Posicao, RuaDoBairro, VisaoDoDossie } from "../../dados/contratos";
 import { derivarSintesesInteligentes, type CartaoDeSinteseHumana } from "../../dados/dossie/sintesesDaRua";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, comAlfa, type TokenDeCor } from "../../tema/tokens";
+import { ESPACO, RAIO, type TokenDeCor } from "../../tema/tokens";
 import type { PedidoDeFonte } from "../fonte/GavetaDeFonte";
 import { RastroDeConfianca } from "../fonte/RastroDeConfianca";
 import { nomeCurtoDaFonte, rotuloDaConfianca } from "../fonte/textos";
@@ -31,6 +31,7 @@ import {
   notaDasLicencas,
   posicoesDoBullet,
   resumoDasObras,
+  sintetizarPerfilObrasProximas,
   textoSemPosicao,
   valorDaPosicao,
 } from "./textos";
@@ -73,10 +74,10 @@ function CartaoSintese({ cartao }: { cartao: CartaoDeSinteseHumana }) {
   const [aberto, setAberto] = useState(false);
   if (!aberto) {
     return (
-      <Pressionavel onPress={() => setAberto(true)} accessibilityRole="button" accessibilityLabel={`${cartao.sobretitulo}: ${cartao.manchete}. Ver detalhes`}>
+      <Pressionavel onPress={() => setAberto(true)} accessibilityRole="button" accessibilityLabel={`${cartao.sobretitulo}: ${cartao.manchete}. Ver detalhes`} style={{ minHeight: 48, justifyContent: "center" }}>
         <CaixaCreme estilo={{ gap: 4 }}>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-            <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 10, lineHeight: 14, fontWeight: "700", letterSpacing: 0.7, textTransform: "uppercase", flexShrink: 1 }}>{cartao.sobretitulo}</Texto>
+            <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700", flexShrink: 1 }}>{cartao.sobretitulo}</Texto>
             <Seta tamanho={11} />
           </View>
           <Texto tipo="secao" style={{ fontSize: 14.5, lineHeight: 20, fontWeight: "600" }}>{cartao.manchete}</Texto>
@@ -90,7 +91,7 @@ function CartaoSintese({ cartao }: { cartao: CartaoDeSinteseHumana }) {
         <Texto
           tipo="etiqueta"
           cor="cor-barro-texto"
-          style={{ fontSize: 10, lineHeight: 14, fontWeight: "700", letterSpacing: 0.7, textTransform: "uppercase", flexShrink: 1 }}
+          style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700", flexShrink: 1 }}
         >
           {cartao.sobretitulo}
         </Texto>
@@ -99,7 +100,7 @@ function CartaoSintese({ cartao }: { cartao: CartaoDeSinteseHumana }) {
             paddingHorizontal: 8,
             paddingVertical: 3,
             borderRadius: 6,
-            backgroundColor: comAlfa(cor("cor-texto"), 0.06),
+            backgroundColor: cor("cor-sutil"),
           }}
         >
           <Numero tamanho={11.5}>{cartao.medidaDestaque}</Numero>
@@ -112,7 +113,7 @@ function CartaoSintese({ cartao }: { cartao: CartaoDeSinteseHumana }) {
         {cartao.explicacaoHumana}
       </Texto>
       {cartao.dicaPratica ? (
-        <View style={{ paddingTop: 6, borderTopWidth: 0.5, borderTopColor: cor("cor-linha") }}>
+        <View style={{ paddingTop: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha") }}>
           <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 17.5 }}>
             {cartao.dicaPratica}
           </Texto>
@@ -230,10 +231,12 @@ function PrecoNoContexto({ visao, edificio, aoAbrirFonte }: Pick<Props, "visao" 
 }
 
 function ObrasProximas({ visao, aoAbrirFonte, aoAbrirMapa, indicador }: Pick<Props, "visao" | "aoAbrirFonte" | "aoAbrirMapa"> & { indicador: Indicador | null }) {
+  const { cor } = useTema();
   const obras = visao.obras;
   const [lista, setLista] = useState(false);
   if (!obras) return null;
   const linhas = linhasDeObras(obras);
+  const perfilObras = sintetizarPerfilObrasProximas(obras);
   const nota = notaDasLicencas(obras);
   const pedido: PedidoDeFonte = {
     fonte: "licenciamento",
@@ -257,6 +260,34 @@ function ObrasProximas({ visao, aoAbrirFonte, aoAbrirMapa, indicador }: Pick<Pro
           <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17, marginTop: 4 }}>{indicador.comparacao}</Texto>
         </>
       ) : <Corpo estilo={{ marginTop: ESPACO[2] }}>{resumoDasObras(obras)}</Corpo>}
+      {perfilObras && (perfilObras.etiquetas.length > 0 || perfilObras.ritmo12m) ? (
+        <View style={{ marginTop: ESPACO[2], gap: 6 }}>
+          {perfilObras.etiquetas.length > 0 ? (
+            <View testID="obras-resumo-categorias" style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+              {perfilObras.etiquetas.map((etiqueta) => (
+                <View
+                  key={etiqueta}
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 4,
+                    borderRadius: RAIO.pilula,
+                    backgroundColor: cor("cor-sutil"),
+                  }}
+                >
+                  <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 15, fontWeight: "600", fontVariant: ["tabular-nums"] }}>
+                    {etiqueta}
+                  </Texto>
+                </View>
+              ))}
+            </View>
+          ) : null}
+          {perfilObras.ritmo12m ? (
+            <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 16, fontVariant: ["tabular-nums"] }}>
+              {perfilObras.ritmo12m}
+            </Texto>
+          ) : null}
+        </View>
+      ) : null}
       {linhas.length > 0 && !lista ? <LinkComSeta rotulo={`Ver ${linhas.length === 1 ? "a obra" : `as ${linhas.length} obras`}`} onPress={() => setLista(true)} /> : null}
       {linhas.length > 0 && lista ? (
         <View style={{ marginTop: ESPACO[3] }}>
@@ -294,7 +325,7 @@ function ContextoDoBairroSecao({ contexto, aoAbrirFonte }: { contexto: ContextoD
           style={{
             minHeight: 48,
             paddingVertical: 10,
-            borderTopWidth: i === 0 ? 0 : 0.5,
+            borderTopWidth: i === 0 ? 0 : 1,
             borderTopColor: cor("cor-linha"),
             borderRadius: RAIO.quadrado,
           }}

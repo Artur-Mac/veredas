@@ -33,13 +33,67 @@ const rumo = (de: readonly [number, number], para: readonly [number, number]) =>
 };
 
 export type FonteDeBarulho = {
-  id: "via" | "onibus" | "metro" | "bar" | "luse" | "oficina" | "aeroporto";
+  id: "via" | "onibus" | "metro" | "bar" | "luse" | "oficina" | "mercado" | "aeroporto";
   nome: string;
   quando: "de dia" | "à noite" | "de dia e à noite";
   distanciaM: number;
   rumoGraus: number;
   fonte: string;
+  /** O som vem de cima (avião na linha de pouso e decolagem): chega a todas as fachadas, e a relação com a janela não se aplica. */
+  deCima?: boolean;
 };
+
+export type CausaDeBarulho = {
+  id: "trafego" | "comercio" | "noturno" | "aereo";
+  rotulo: string;
+  nivel: "Presença próxima" | "Presença moderada" | "Sem registro próximo";
+  detalhe: string;
+};
+
+const BALDES_DE_CAUSA: readonly {
+  id: CausaDeBarulho["id"];
+  rotulo: string;
+  fontesIds: readonly FonteDeBarulho["id"][];
+}[] = [
+  { id: "trafego", rotulo: "Tráfego e transporte", fontesIds: ["via", "onibus", "metro"] },
+  { id: "comercio", rotulo: "Comércio e serviços diurnos", fontesIds: ["mercado", "oficina"] },
+  { id: "noturno", rotulo: "Movimento noturno", fontesIds: ["bar", "luse"] },
+  { id: "aereo", rotulo: "Avião", fontesIds: ["aeroporto"] },
+];
+
+/**
+ * Decomposição de ruído por tipo de fonte sem afirmar dB(A) absoluto (`R10` / HowLoud R16 §6.1).
+ */
+export function decomporCausasDeBarulhoSemDb(todasFontes: readonly FonteDeBarulho[]): CausaDeBarulho[] {
+  return BALDES_DE_CAUSA.map((balde) => {
+    let maisPerto: FonteDeBarulho | null = null;
+    for (const f of todasFontes) {
+      if (!balde.fontesIds.includes(f.id)) continue;
+      if (!maisPerto || f.distanciaM < maisPerto.distanciaM) maisPerto = f;
+    }
+    if (!maisPerto) {
+      return {
+        id: balde.id,
+        rotulo: balde.rotulo,
+        nivel: "Sem registro próximo",
+        detalhe: "Nenhuma fonte mapeada no raio",
+      };
+    }
+    // O avião não se mede pelos 80 m das fontes do chão: pesa mais sob a linha de pouso e decolagem que perto da pista.
+    const proxima = maisPerto.id === "aeroporto" ? maisPerto.deCima === true : maisPerto.distanciaM <= 80;
+    return {
+      id: balde.id,
+      rotulo: balde.rotulo,
+      nivel: proxima ? "Presença próxima" : "Presença moderada",
+      detalhe:
+        maisPerto.id === "aeroporto"
+          ? maisPerto.deCima
+            ? "Sob a linha de pouso e decolagem do Aeroporto dos Guararapes"
+            : `Pista do Aeroporto dos Guararapes a ~${maisPerto.distanciaM} m`
+          : `${maisPerto.nome.split(" (")[0]} a ~${maisPerto.distanciaM} m`,
+    };
+  });
+}
 export type RelacaoComAFachada = "de_frente" | "de_lado" | "de_costas" | "sem_fachada";
 export const relacaoComAFachada = (fachada: number | null, rumoDaFonte: number): RelacaoComAFachada =>
   fachada === null ? "sem_fachada" : difAngulo(fachada, rumoDaFonte) <= 60 ? "de_frente" : difAngulo(fachada, rumoDaFonte) <= 120 ? "de_lado" : "de_costas";
@@ -59,6 +113,7 @@ export function fontesDeBarulho(predio: Edificio): FonteDeBarulho[] {
   const a = atritoDoPredio(predio.bairro, predio.id);
   if (a?.n && a.n[1] <= 300) fontes.push({ id: "bar", nome: "Bar ou venda de bebida", quando: "à noite", distanciaM: a.n[1], rumoGraus: a.n[2], fonte: "CNEFE, Censo 2022 (IBGE)" });
   if (a?.o && a.o[1] <= 150) fontes.push({ id: "oficina", nome: "Oficina, borracharia ou serralheria", quando: "de dia", distanciaM: a.o[1], rumoGraus: a.o[2], fonte: "CNEFE, Censo 2022 (IBGE)" });
+  if (a?.m && a.m[1] <= 200) fontes.push({ id: "mercado", nome: "Supermercado ou carga e descarga", quando: "de dia", distanciaM: a.m[1], rumoGraus: a.m[2], fonte: "CNEFE, Censo 2022 (IBGE)" });
   try {
     const r = baseDeCamadasAmbientais().ruidoCorredores;
     let onibus: { d: number; g: number; v: number } | null = null;
@@ -91,6 +146,7 @@ export function fontesDeBarulho(predio: Edificio): FonteDeBarulho[] {
         distanciaM: aero.distanciaM,
         rumoGraus: aero.rumoGraus,
         fonte: FONTE_DO_AEROPORTO,
+        ...(aero.trajetoria ? { deCima: true } : {}),
       });
     }
   } catch {
@@ -102,9 +158,18 @@ export function fontesDeBarulho(predio: Edificio): FonteDeBarulho[] {
 export type SimulacaoDaUnidade = {
   alturaDaJanelaM: number;
   explicacaoDaAltura: string;
-  barulho: { fontes: (FonteDeBarulho & { relacao: RelacaoComAFachada; frase: string })[]; semFontes: boolean; decibeis: string; nota: string };
+  barulho: {
+    fontes: (FonteDeBarulho & { relacao: RelacaoComAFachada; frase: string })[];
+    porCausa: CausaDeBarulho[];
+    semFontes: boolean;
+    consequenciaPorFace: string;
+    decibeis: string;
+    nota: string;
+    acaoConcreta: string;
+  };
   sol: LeituraDaJanela | null;
-  vento: { frase: string; barreira: string | null; superficie3d: string };
+  acaoSol: string | null;
+  vento: { frase: string; barreira: string | null; superficie3d: string; acaoConcreta: string };
 };
 
 export function simularUnidade(opcoes: { predio: Edificio; vizinhos: readonly Edificio[]; tipo: TipoDeImovel; andar: number; fachadaGraus: number | null }): SimulacaoDaUnidade {
@@ -114,13 +179,33 @@ export function simularUnidade(opcoes: { predio: Edificio; vizinhos: readonly Ed
   const explicacaoDaAltura = tipo === "casa" || andar === 0 ? "Janela no térreo (~1,6 m do chão)." : `Janela a ~${alturaDaJanelaM.toFixed(1).replace(".", ",")} m do chão (${andar}º andar × ${METROS_POR_PAVIMENTO.toFixed(1).replace(".", ",")} m + 1,5 m).`;
 
   // As 3 fontes mais perto; o aeroporto, quando entra, fica mesmo se estiver mais longe (som que vem de cima).
-  const lista = fontesDeBarulho(predio);
-  const aeroporto = lista.find((f) => f.id === "aeroporto");
-  const todas = [...lista.filter((f) => f.id !== "aeroporto").slice(0, 3), ...(aeroporto ? [aeroporto] : [])];
+  const todasFontes = fontesDeBarulho(predio);
+  const aeroporto = todasFontes.find((f) => f.id === "aeroporto");
+  const todas = [...todasFontes.filter((f) => f.id !== "aeroporto").slice(0, 3), ...(aeroporto ? [aeroporto] : [])];
+  const porCausa = decomporCausasDeBarulhoSemDb(todasFontes);
   const fontes = todas.map((f) => {
     const relacao = relacaoComAFachada(fachadaGraus, f.rumoGraus);
-    return { ...f, relacao, frase: `${f.nome}, ${f.quando}, a ~${f.distanciaM} m para o ${nomeDaDirecao(f.rumoGraus)}: ${TEXTO_DA_RELACAO[relacao]}.` };
+    // Avião na linha de pouso e decolagem: o som vem de cima; "de frente" ou "de costas" não descreve o que acontece.
+    const posicao = f.deCima ? "o som vem de cima e chega a todas as fachadas" : TEXTO_DA_RELACAO[relacao];
+    return { ...f, relacao, frase: `${f.nome}, ${f.quando}, a ~${f.distanciaM} m para o ${nomeDaDirecao(f.rumoGraus)}: ${posicao}.` };
   });
+
+  // A fachada só muda o que vem do chão; o avião que passa por cima entra como frase à parte.
+  const doChao = fontes.filter((f) => !f.deCima);
+  const fraseDoAviao = fontes.some((f) => f.deCima) ? "O avião passa por cima: o som chega a todas as fachadas, e trocar de lado muda pouco." : "";
+  const consequenciaDoChao =
+    doChao.length === 0
+      ? fraseDoAviao
+        ? ""
+        : "Nenhuma fonte ruidosa mapeada perto em qualquer fachada deste prédio."
+      : fachadaGraus === null
+        ? "Toque numa direção da rosa acima para comparar se a janela fica de frente para a rua ou protegida nos fundos."
+        : doChao.some((f) => f.relacao === "de_frente")
+          ? "Janela de frente para a fonte principal: o som chega direto à esquadria; feche o vidro na visita para testar a vedação."
+          : doChao.every((f) => f.relacao === "de_costas")
+            ? "Janela nos fundos em relação às fontes mapeadas: o próprio corpo do prédio funciona como barreira acústica."
+            : "Janela lateral à fonte principal: o som incide de viés, com exposição reduzida em relação à frente.";
+  const consequenciaPorFace = [consequenciaDoChao, fraseDoAviao].filter(Boolean).join(" ");
 
   const sol = fachadaGraus === null ? null : analisarJanelaNoRecife(fachadaGraus, { predio, vizinhos, andar });
 
@@ -142,14 +227,33 @@ export function simularUnidade(opcoes: { predio: Edificio; vizinhos: readonly Ed
       : sol?.recebeBrisaSudeste === "reduzida_por_vizinho" ? "A fachada fica voltada para a brisa de sudeste, mas um vizinho mais alto fica no caminho."
         : "A fachada não fica voltada para a brisa de sudeste: o vento chega mais pelos outros lados.";
 
+  const acaoBarulho = doChao.some((f) => f.relacao === "de_frente")
+    ? "Na visita: feche as janelas da sala e do quarto principal no horário de movimento e cheque se a esquadria tem vedação íntegra."
+    : fontes.length > 0
+      ? "Na visita: ouça dos quartos e da varanda com a janela aberta e fechada para confirmar o isolamento do prédio."
+      : "Na visita: confira ruídos internos ou imediatos não mapeados (gerador, bombas hidráulicas ou rampa de garagem).";
+  const acaoSol =
+    sol === null
+      ? null
+      : /oeste|sudoeste|noroeste/i.test(sol.fachada)
+        ? "Na visita: se possível agende após 15h para sentir o calor da parede e pergunte se o condomínio permite película ou proteção solar na varanda."
+        : "Na visita: confira pela manhã a luz natural nos quartos e se há umidade em armários de paredes pouco ensolaradas.";
+  const acaoVento =
+    barreira !== null
+      ? "Na visita: abra duas janelas opostas da unidade para testar se há corrente de ar mesmo com o vizinho a sudeste."
+      : "Na visita: teste a abertura das folhas voltadas para sudeste/leste e a circulação de ar entre sala e serviço.";
+
   return {
     alturaDaJanelaM, explicacaoDaAltura,
     barulho: {
-      fontes, semFontes: fontes.length === 0,
+      fontes, porCausa, semFontes: fontes.length === 0,
+      consequenciaPorFace,
       decibeis: `Nível em dB(A): ${SEM_LEITURA} (nenhuma medição calibrada no Recife).`,
-      nota: "Distâncias em linha reta, do centro do lote. Para comparar, ouça na visita com a janela aberta e fechada, num dia útil às 18h e numa sexta à noite.",
+      nota: "Distâncias em linha reta, do centro do lote; dobrar a distância reduz de forma relevante o efeito da fonte. Para comparar, ouça na visita com a janela aberta e fechada, num dia útil às 18h e numa sexta à noite.",
+      acaoConcreta: acaoBarulho,
     },
     sol,
-    vento: { frase, barreira, superficie3d: `Altura real dos obstáculos (PE3D, MDS − MDT): ${SEM_LEITURA}; usamos os pavimentos do cadastro.` },
+    acaoSol,
+    vento: { frase, barreira, superficie3d: `Altura real dos obstáculos (PE3D, MDS − MDT): ${SEM_LEITURA}; usamos os pavimentos do cadastro.`, acaoConcreta: acaoVento },
   };
 }

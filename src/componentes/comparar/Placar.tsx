@@ -13,12 +13,12 @@ export function PlacarDoPar({ linhas, rotulos, aoAbrir }: { linhas: readonly Lin
   return (
     <View role="group" aria-label="Quem ganha em cada parte" style={{ borderRadius: 16, borderWidth: 1, borderColor: cor("cor-linha"), backgroundColor: cor("cor-superficie"), overflow: "hidden" }}>
       <View style={{ paddingHorizontal: 14, paddingTop: 12, paddingBottom: 4 }}>
-        <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 10.5, lineHeight: 14, fontWeight: "700", letterSpacing: 0.6, textTransform: "uppercase" }}>Quem ganha em cada parte</Texto>
+        <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700" }}>Quem ganha em cada parte</Texto>
       </View>
       {linhas.map((l, i) => (
         <Pressionavel key={l.id} onPress={() => aoAbrir(l.topico)} accessibilityRole="button"
           accessibilityLabel={`${l.secao}: ${l.vencedor === null ? "empate ou sem dado" : `ganha ${rotulos[l.vencedor]}`}. ${l.frase} Ver detalhe`}
-          style={{ paddingHorizontal: 14, paddingVertical: 10, borderTopWidth: i === 0 ? 0 : 1, borderTopColor: cor("cor-linha"), flexDirection: "row", alignItems: "center", gap: 10 }}>
+          style={{ minHeight: 48, paddingHorizontal: 14, paddingVertical: 10, borderTopWidth: i === 0 ? 0 : 1, borderTopColor: cor("cor-linha"), flexDirection: "row", alignItems: "center", gap: 10 }}>
           <View style={{ flex: 1, gap: 2 }}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
               <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 19, fontWeight: "600" }}>{l.secao}</Texto>

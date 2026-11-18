@@ -54,7 +54,7 @@ export function MenuRapido({ aberto, aoFechar, saldo }: Props) {
           {
             right: direita,
             backgroundColor: cor("cor-papel-claro"),
-            borderColor: comAlfa(cor("cor-texto"), 0.12),
+            borderColor: cor("cor-linha-forte"),
             boxShadow: `0 18px 40px -10px ${comAlfa(cor("cor-texto"), 0.18)}`,
           },
         ]}
@@ -78,7 +78,7 @@ function LinhaDoMenu({ item, saldo, aoAbrir }: { item: ItemDoMenu; saldo: number
       onPress={() => aoAbrir(item.rota)}
       onFocus={foco.aoFocar}
       onBlur={foco.aoDesfocar}
-      style={({ pressed }) => [styles.item, { backgroundColor: pressed ? comAlfa(cor("cor-texto"), 0.06) : "transparent" }, foco.estilo]}
+      style={({ pressed }) => [styles.item, { backgroundColor: pressed ? cor("cor-sutil") : "transparent" }, foco.estilo]}
     >
       <Texto tipo="apoio" style={styles.rotuloDoItem}>
         {item.rotulo}
@@ -121,5 +121,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 16,
     fontWeight: "500",
+    fontVariant: ["tabular-nums"],
   },
 });

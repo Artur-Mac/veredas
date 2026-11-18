@@ -59,7 +59,6 @@ export function validarReferenciasPublicas(dados: unknown): BaseReferenciasPubli
 
 export function baseDeReferenciasPublicas(): BaseReferenciasPublicas {
   if (!cache) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     cache = validarReferenciasPublicas(require("./referencias-publicas.json") as unknown);
   }
   return cache;
