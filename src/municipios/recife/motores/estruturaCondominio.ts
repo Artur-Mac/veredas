@@ -34,7 +34,7 @@ export type EntradaEstruturaCondominio = {
   tipoEstruturaIptu: string | null;
   distanciaCostaOuEstuarioM: number | null;
   emSoloAluvionarOuMangue?: boolean;
-  /** Código de identificação oficial presente na lista dos 431 prédios do Acordo-Base 01/2024 TRF5/Seduh. */
+  /** Prédio presente na lista dos 431 do Acordo-Base nº 01/2024, homologado pelo TRF5 em 19/06/2024. */
   constaAcordoTrf5_431?: boolean;
   faseAcordoTrf5?: "fase_1" | "fase_2_ago_set_2026" | null;
   /** Ano da última vistoria técnica com ART/RRT (Lei PE 13.032/2006), se informado em documentos. */
@@ -279,7 +279,7 @@ export function avaliarEstruturaECondominio(entrada: EntradaEstruturaCondominio)
     alertaInadimplenciaNordestePct: INADIMPLENCIA_NE_1S2026_PCT,
     inadimplenciaCondominioPct: inadimplencia,
     alertaPropterRemStj:
-      "Dívidas condominiais têm natureza propter rem (STJ REsp 2.147.665 e REsp 1.910.280): quem figura na matrícula responde pelos débitos do prédio. Exija certidão negativa de débitos condominiais antes do sinal.",
+      "Dívida de condomínio acompanha o imóvel (STJ, REsp 1.910.280, Segunda Seção, 2025): quem figura na matrícula responde pelos débitos da unidade. Exija certidão negativa de débitos condominiais antes do sinal.",
     segregacaoLei8245: {
       totalOrdinarioInquilinoReais: Math.round(totalOrdinario * 100) / 100,
       totalExtraordinarioLocadorReais: Math.round(totalExtraordinario * 100) / 100,
@@ -287,6 +287,6 @@ export function avaliarEstruturaECondominio(entrada: EntradaEstruturaCondominio)
     },
     epistemicTag: caixao.epistemic === "registro_oficial" ? "registro_oficial" : idade !== null ? "inferencia" : "nao_sabemos",
     limiteEpistemologico:
-      "A ausência nas listas do Acordo TRF5 (431 edifícios) e o relógio VUP não substituem vistoria presencial com ART/RRT (Lei PE nº 13.032/2006).",
+      "Não estar na lista dos 431 prédios do Acordo-Base nº 01/2024 e o relógio de vida útil não substituem vistoria presencial com ART/RRT (Lei PE nº 13.032/2006).",
   };
 }

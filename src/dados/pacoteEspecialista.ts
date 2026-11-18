@@ -117,7 +117,7 @@ const REQUISITOS_COMPRA: readonly RequisitoDoc[] = [
     titulo: "Certidão trabalhista do condomínio (CNDT)",
     tipos: ["cndt", "acoes_trt6"],
     maxDias: 180,
-    referencia: "Débitos e ações trabalhistas (CLT art. 642-A · 180 dias)",
+    referencia: "Débitos e ações trabalhistas (CLT, art. 642-A, § 4º · 180 dias)",
   },
 ];
 

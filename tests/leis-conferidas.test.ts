@@ -508,3 +508,38 @@ describe("aluguel: alíneas do art. 22 da Lei 8.245/1991, fiança sem citar a le
     expect(radar).not.toMatch(/1\.819\.075/);
   });
 });
+
+describe("condomínio e documentos: Acordo-Base nº 01/2024, REsp 1.910.280 e Código Nacional de Normas do CNJ", () => {
+  const est = avaliarEstruturaECondominio({
+    buildingId: "p", bairroSlug: "torre", anoConstrucao: 1980, anoReferencia: 2026, pavimentos: 4, tipoEstruturaIptu: "Alvenaria Autoportante",
+    distanciaCostaOuEstuarioM: 600, constaAcordoTrf5_431: true,
+  });
+
+  test("o acordo é o Acordo-Base nº 01/2024, homologado pelo TRF5, e a indenização é um teto", () => {
+    expect(est.riscoPredioCaixao).toBe("confirmado_acordo_trf5");
+    expect(est.indenizacaoReferenciaTrf5TetoReais).toBe(120_000);
+    expect(est.limiteEpistemologico).toBe(
+      "Não estar na lista dos 431 prédios do Acordo-Base nº 01/2024 e o relógio de vida útil não substituem vistoria presencial com ART/RRT (Lei PE nº 13.032/2006).",
+    );
+    const ficha = cartao(cartoes({ estruturaECondominio: est }), "IND-09").camada3ProvaMetodo.metodo6Campos;
+    expect(ficha.baseLegalOuNormativa).toBe("Acordo-Base nº 01/2024, homologado pelo TRF5 em 19/06/2024, e Lei Estadual PE 13.032/2006.");
+    expect(ficha.oQueMede).toMatch(/Acordo-Base nº 01\/2024 \(431 edifícios\)/);
+    expect(JSON.stringify(ficha)).not.toMatch(/Acordo-Base TRF5|Acordo TRF5/);
+  });
+
+  test("dívida de condomínio cita só o REsp 1.910.280; o REsp 2.147.665 não foi achado no STJ e saiu", () => {
+    expect(est.alertaPropterRemStj).toBe(
+      "Dívida de condomínio acompanha o imóvel (STJ, REsp 1.910.280, Segunda Seção, 2025): quem figura na matrícula responde pelos débitos da unidade. Exija certidão negativa de débitos condominiais antes do sinal.",
+    );
+    expect(fonteDe("municipios", "recife", "motores", "estruturaCondominio.ts")).not.toMatch(/2\.147\.665/);
+  });
+
+  test("a ficha da documentação cita o Código Nacional de Normas (Provimento 149/2023) e o art. 642-A, § 4º, da CLT", () => {
+    expect(cartao(cartoes({}), "IND-10").camada3ProvaMetodo.metodo6Campos.baseLegalOuNormativa).toBe(
+      "Código Nacional de Normas do CNJ, Foro Extrajudicial (Provimento 149/2023, que incorporou o Provimento 143/2023); Decreto 93.240/1986; STJ, REsp 1.910.280.",
+    );
+    const itens = auditarConjuntoDocumental(analiseDeTeste("compra"), "2026-11-19T12:00:00.000Z").itens;
+    expect(itens.find((i) => i.id === "trabalhista")!.referencia).toBe("Débitos e ações trabalhistas (CLT, art. 642-A, § 4º · 180 dias)");
+    expect(itens.find((i) => i.id === "matricula")!.referencia).toBe("Certidão de ônus reais (até 30 dias · Dec. nº 93.240/1986)");
+  });
+});

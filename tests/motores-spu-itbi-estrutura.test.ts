@@ -155,7 +155,10 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
     expect(caixaoTrf5.segregacaoLei8245.totalOrdinarioInquilinoReais).toBe(750);
     expect(caixaoTrf5.segregacaoLei8245.totalExtraordinarioLocadorReais).toBe(395);
     expect(caixaoTrf5.segregacaoLei8245.itensCobrancaAbusivaNoBoleto).toHaveLength(2);
-    expect(caixaoTrf5.alertaPropterRemStj).toMatch(/propter rem/);
+    expect(caixaoTrf5.alertaPropterRemStj).toBe(
+      "Dívida de condomínio acompanha o imóvel (STJ, REsp 1.910.280, Segunda Seção, 2025): quem figura na matrícula responde pelos débitos da unidade. Exija certidão negativa de débitos condominiais antes do sinal.",
+    );
+    expect(caixaoTrf5.alertaPropterRemStj).not.toMatch(/2\.147\.665/);
   });
 
   test("derivarCustoPorPartes integra spuEstatutario, otimizacaoFechamento e estruturaECondominio sem quebrar contrato anterior", () => {

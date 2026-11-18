@@ -476,10 +476,11 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       ausencia: est ? null : descreverAusenciaCidadao("sem_leitura_publicada"),
       chavesDuplas,
       metodo6Campos: {
-        oQueMede: "Triagem de alvenaria autoportante vulnerável, Acordo TRF5 (431 edifícios) e vistoria periódica (a cada 4 anos até 20 anos de construção, a cada 3 depois).",
-        baseLegalOuNormativa: "Acordo-Base TRF5 01/2024 e Lei Estadual PE 13.032/2006.",
-        aritmeticaResumo: "Cruzamento da coluna 31 IPTU (estrutura) × gabarito <= 4 pav. × lista TRF5.",
-        fontePrimaria: "IPTU Recife Col. 31 + Acordo TRF5/Seduh",
+        oQueMede: "Triagem de alvenaria autoportante vulnerável, Acordo-Base nº 01/2024 (431 edifícios) e vistoria periódica (a cada 4 anos até 20 anos de construção, a cada 3 depois).",
+        // O texto da conferência dizia "dos prédios-caixão"; a palavra é proibida na tela (PALAVRAS_PROIBIDAS_UI) e ficou de fora.
+        baseLegalOuNormativa: "Acordo-Base nº 01/2024, homologado pelo TRF5 em 19/06/2024, e Lei Estadual PE 13.032/2006.",
+        aritmeticaResumo: "Cruzamento da coluna 31 IPTU (estrutura) × gabarito <= 4 pav. × lista do Acordo-Base nº 01/2024.",
+        fontePrimaria: "IPTU Recife Col. 31 + Acordo-Base nº 01/2024 (notícias do TRF5 de 11/06/2024 e 26/08/2026)",
         vintage: "2026-11",
         limiteEpistemologico: "A triagem cadastral não substitui exame de fundação por engenheiro habilitado.",
       },
@@ -508,7 +509,8 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       chavesDuplas: { dsqfl, cnm16: doc?.cnmEncontrado?.formatado ?? cnm16 },
       metodo6Campos: {
         oQueMede: "Validade de matrícula (30 dias), dígitos CNM ISO 7064, cadeia R-/AV- e alertas de atas.",
-        baseLegalOuNormativa: "Provimento CNJ 143/2023, Decreto 93.240/1986 e STJ dívida propter rem.",
+        baseLegalOuNormativa:
+          "Código Nacional de Normas do CNJ, Foro Extrajudicial (Provimento 149/2023, que incorporou o Provimento 143/2023); Decreto 93.240/1986; STJ, REsp 1.910.280.",
         aritmeticaResumo: "Toda citação passa por prova literal determinística na página de origem.",
         fontePrimaria: "Documentos inseridos no Cofre Privado + DataJud",
         vintage: "2026-11",
