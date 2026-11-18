@@ -49,6 +49,7 @@ export function FichaDeMetodo({
         testID={`${testID}-toggle`}
         accessibilityRole="button"
         accessibilityState={{ expanded: aberta }}
+        aria-expanded={aberta}
         accessibilityLabel={aberta ? `Ocultar: ${rotulo}` : rotulo}
         onPress={() => setAberta((v) => !v)}
         style={styles.botao}
