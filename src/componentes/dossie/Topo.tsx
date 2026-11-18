@@ -44,11 +44,28 @@ export function TopoDoDossie({ dossie }: { dossie: Dossie }) {
   );
 }
 
+/** Onde ficam as pílulas (em cima, à esquerda) e o botão "Abrir mapa" (embaixo, à direita): os rótulos do fundo desviam. */
+function obstaculosDoTopo(largura: number, altura: number): [number, number, number, number][] {
+  return [
+    [0, 0, Math.min(largura, 300), 48],
+    [largura - 150, altura - 56, largura, altura],
+  ];
+}
+
 function MapaDeContexto({ dossie, estilo }: { dossie: Dossie; estilo: { height: number; borderRadius: number; marginHorizontal: number; marginBottom: number } }) {
   const { cor } = useTema();
   const confirmado = useLoteConfirmado(dossie);
   return (
-    <Mapa dossie={dossie} raios={[500]} lotes={confirmado ? "confirmado" : "nenhum"} ajustar={500} acessivel={enderecoDoDossie(dossie)} style={estilo}>
+    <Mapa
+      dossie={dossie}
+      raios={[500]}
+      lotes={confirmado ? "confirmado" : "nenhum"}
+      ajustar={500}
+      acessivel={enderecoDoDossie(dossie)}
+      selo={false}
+      obstaculos={obstaculosDoTopo}
+      style={estilo}
+    >
       <View style={{ position: "absolute", left: ESPACO[3], top: ESPACO[3], flexDirection: "row", flexWrap: "wrap", gap: ESPACO[2] }}>
         {confirmado ? (
           dossie.lote.ilustrativo_poligono ? <PilulaIlustrativo fundo="cor-superficie" /> : null

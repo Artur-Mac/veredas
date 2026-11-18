@@ -1,21 +1,10 @@
+// Utilitários de geometria plana dos mapas e as células de calor de demonstração do mapa dos exemplos.
+// Ruas, praças, água, lotes e prédios inventados saíram em 18/11/2026: o chão do mapa dos exemplos é o mapa-base de verdade
+// (FundoDoMapa). As células de calor continuam: são da camada "Calor", de demonstração, rotulada como ilustrativa.
 export type Ponto = [number, number];
 export type Poligono = Ponto[];
 
-export type Rua = { x1: number; y1: number; x2: number; y2: number; largura: number };
-export type Praca = { x: number; y: number; largura: number; altura: number };
-export type Agua = { tipo: "mar"; pontos: Ponto[] } | { tipo: "rio"; d: string; largura: number };
-export type Predio = { poligono: Poligono; altura: number };
 export type CelulaDeCalor = { x: number; y: number; v: number };
-
-export type Geometria = {
-  angulo: number;
-  lotes: Poligono[];
-  ruas: Rua[];
-  pracas: Praca[];
-  agua: Agua;
-  predios: Predio[];
-  calor: CelulaDeCalor[];
-};
 
 export function semente(texto: string): () => number {
   let h = 2166136261;
@@ -30,75 +19,22 @@ export function semente(texto: string): () => number {
   };
 }
 
-function girar([x, y]: Ponto, angulo: number): Ponto {
-  const c = Math.cos(angulo);
-  const s = Math.sin(angulo);
-  return [x * c - y * s, x * s + y * c];
-}
+const cacheDoCalor = new Map<string, CelulaDeCalor[]>();
 
-function retangulo(cx: number, cy: number, largura: number, altura: number, angulo: number, rand: () => number): Poligono {
-  const meiaL = largura / 2;
-  const meiaA = altura / 2;
-  const cantos: Ponto[] = [[-meiaL, -meiaA], [meiaL, -meiaA], [meiaL, meiaA], [-meiaL, meiaA]];
-  return cantos.map(([x, y]) => girar([cx + x + (rand() - 0.5) * 3, cy + y + (rand() - 0.5) * 3], angulo));
-}
-
-const cache = new Map<string, Geometria>();
-
-export function geometria(idDossie: string): Geometria {
-  const guardada = cache.get(idDossie);
-  if (guardada) return guardada;
-  const rand = semente(idDossie);
-  const angulo = ((rand() * 24 - 12) * Math.PI) / 180;
-  const passoX = 140;
-  const passoY = 150;
-  const posicoes: Ponto[] = [[0, 0], [-44, 0], [44, 0], [0, -48], [0, 48], [-44, -48], [44, -48], [-44, 48], [44, 48]];
-  const lotes = posicoes.map(([x, y]) => retangulo(x, y, 34 + rand() * 4, 38 + rand() * 6, angulo, rand));
-  const ruas: Rua[] = [];
-  for (let k = -20; k <= 20; k += 1) {
-    ruas.push({ x1: passoX / 2 + k * passoX, y1: -3200, x2: passoX / 2 + k * passoX, y2: 3200, largura: k % 4 === 0 ? 20 : 9 });
-    ruas.push({ x1: -3200, y1: passoY / 2 + k * passoY, x2: 3200, y2: passoY / 2 + k * passoY, largura: k % 4 === 1 ? 20 : 9 });
-  }
-  const pracas: Praca[] = [];
-  while (pracas.length < 4) {
-    const i = Math.round((rand() - 0.5) * 14);
-    const j = Math.round((rand() - 0.5) * 12);
-    if (Math.abs(i) < 2 && Math.abs(j) < 2) continue;
-    pracas.push({ x: i * passoX - passoX / 2 + 12, y: j * passoY - passoY / 2 + 12, largura: passoX - 24, altura: passoY - 24 });
-  }
-  const litoral = idDossie === "boa-viagem";
-  let agua: Agua;
-  if (litoral) {
-    const pontos: Ponto[] = [];
-    for (let y = -3400; y <= 3400; y += 200) pontos.push([1650 + 70 * Math.sin(y / 700), y]);
-    agua = { tipo: "mar", pontos };
-  } else {
-    const lado = rand() < 0.5 ? -1 : 1;
-    const base = lado * (520 + rand() * 420);
-    agua = { tipo: "rio", d: `M -3400 ${base + 300} C -1200 ${base - 400}, 900 ${base + 500}, 3400 ${base - 200}`, largura: 110 };
-  }
-  const predios: Predio[] = [];
-  for (let i = -5; i <= 5; i += 1) {
-    for (let j = -5; j <= 5; j += 1) {
-      if (i === 0 && j === 0) continue;
-      const quantos = 1 + Math.floor(rand() * 3);
-      for (let n = 0; n < quantos; n += 1) {
-        const cx = i * passoX + (rand() - 0.5) * 60;
-        const cy = j * passoY + (rand() - 0.5) * 70;
-        predios.push({ poligono: retangulo(cx, cy, 22 + rand() * 18, 22 + rand() * 18, angulo, rand), altura: 10 + rand() * 50 });
-      }
-    }
-  }
+/** Células de 100 m (em metros em volta do imóvel) da camada "Calor" de demonstração; as mesmas para o mesmo dossiê. */
+export function celulasDeCalor(idDossie: string): CelulaDeCalor[] {
+  const guardadas = cacheDoCalor.get(idDossie);
+  if (guardadas) return guardadas;
+  const rand = semente(`${idDossie}:calor`);
   const calor: CelulaDeCalor[] = [];
   for (let x = -1100; x < 1100; x += 100) {
     for (let y = -1100; y < 1100; y += 100) {
       const ruido = 0.5 + 0.35 * Math.sin(x / 380 + rand()) * Math.cos(y / 460) + (rand() - 0.5) * 0.3;
-      calor.push({ x, y, v: Math.min(1, Math.max(0, litoral && x > 1200 ? 0.05 : ruido)) });
+      calor.push({ x, y, v: Math.min(1, Math.max(0, ruido)) });
     }
   }
-  const resultado = { angulo, lotes, ruas, pracas, agua, predios, calor };
-  cache.set(idDossie, resultado);
-  return resultado;
+  cacheDoCalor.set(idDossie, calor);
+  return calor;
 }
 
 export function caminho(pontos: Poligono): string {
