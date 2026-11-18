@@ -59,32 +59,37 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
     });
     expect(alodial.laudemio5PctVendedorReais).toBe(0);
     expect(alodial.elegivelFgtsCaixa).toBe(true);
-    expect(calcularTetoReajusteSpu(0.045)).toBe(0.1006);
+    // Lei 14.474/2022: o teto é 2× o IPCA do ano anterior; os 10,06% valeram só em 2022.
+    expect(calcularTetoReajusteSpu(0.045)).toBe(0.09);
+    expect(alodial.tetoReajusteAnualPct).toBeNull();
   });
 
-  test("Otimizador ITBI + TJPE (Art. 52 CTMR / Art. 290 LRP) reproduz exatamente cenários de R$ 650 mil e limites SFH 2026", () => {
+  test("Otimizador do ITBI (arts. 52 e 55 do Código Tributário do Recife) reproduz os cenários de R$ 650 mil e o limite do SFH de 2026, sem valor de cartório", () => {
     expect(TETO_SFH_RECIFE_2026_REAIS).toBe(1_036_600.71);
 
     const sim = simularOtimizacaoItbiRecife({
       precoImovelReais: 650_000,
       financiamentoSfh: true,
       percentualFinanciado: 0.8,
-      primeiroImovelResidencialSfh: true,
     });
 
     expect(sim.semOrientacao3Pct.itbiReais).toBe(19_500);
-    expect(sim.semOrientacao3Pct.totalFechamentoReais).toBe(36_151.97);
+    expect(sim.semOrientacao3Pct.escrituraERegistroReais).toBeNull();
+    expect(sim.semOrientacao3Pct.prazoLegalDias).toBeNull();
 
     expect(sim.aVistaTempestivo18Pct.itbiReais).toBe(11_700);
-    expect(sim.aVistaTempestivo18Pct.prazoLegalDias).toBe(30);
+    expect(sim.aVistaTempestivo18Pct.prazoLegalDias).toBe(180);
     expect(sim.economiaAVistaTempestivoReais).toBe(7_800);
 
     expect(sim.sfhOtimizado1Pct).not.toBeNull();
     expect(sim.sfhOtimizado1Pct!.itbiReais).toBe(7_540);
     expect(sim.sfhOtimizado1Pct!.prazoLegalDias).toBe(180);
-    expect(sim.sfhOtimizado1Pct!.totalFechamentoReais).toBe(12_724.82);
-    expect(sim.economiaSfhReais).toBe(23_427.15);
-    expect(sim.anexoContenciosoLc227VsTema1113).toMatch(/LC nº 227\/2026.*Tema 1\.113/);
+    expect(sim.sfhOtimizado1Pct!.escrituraERegistroReais).toBeNull();
+    expect(sim.economiaSfhReais).toBe(11_960);
+    expect(sim.melhorCenarioEconomiaReais).toBe(11_960);
+    expect(sim.notaBaseDeCalculoLc227).toMatch(/Lei Complementar federal 227\/2026, de 13\/01\/2026, mudou o art\. 38 do Código Tributário Nacional/);
+    expect(sim.notaBaseDeCalculoLc227).toMatch(/Lei 19\.490\/2026/);
+    expect(sim.notaBaseDeCalculoLc227).not.toMatch(/Tema 1\.124|Tema 1\.113|ônus da prova/);
   });
 
   test("IND-07 Econometria NBR 14653-2 aplica expurgo de fração parcial, Chauvenet, IC 80% (Grau I–III) e Repeat-Sales", () => {
@@ -128,7 +133,7 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
       tipoEstruturaIptu: "Alvenaria Autoportante",
       distanciaCostaOuEstuarioM: 120,
       constaAcordoTrf5_431: true,
-      ultimaVistoriaTrienalAno: 2021,
+      ultimaVistoriaAno: 2021,
       ultimaReformaFachadaAno: 2019,
       saldoFundoReservaReais: 40_000,
       orcamentoEstimadoObraReais: 200_000,
@@ -143,13 +148,17 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
     expect(caixaoTrf5.classeAgressividade).toBe("CAA-IV");
     expect(caixaoTrf5.riscoPredioCaixao).toBe("confirmado_acordo_trf5");
     expect(caixaoTrf5.indenizacaoReferenciaTrf5TetoReais).toBe(120_000);
-    expect(caixaoTrf5.vistoriaTrienalLei13032.estado).toBe("vencida_ou_ausente");
+    // Prédio de 1980 (46 anos): vistoria a cada 3 anos; a de 2021 valia até 2024.
+    expect(caixaoTrf5.vistoriaPeriodicaLei13032).toEqual({ obrigatoria: true, intervaloAnos: 3, estado: "vencida_ou_ausente", proximaVistoriaAteAno: 2024 });
     expect(caixaoTrf5.sistemasEmJanelaCritica.length).toBeGreaterThanOrEqual(3);
     expect(caixaoTrf5.choqueCotaExtraEstimadoPorUnidadeReais).toBeGreaterThan(10_000);
     expect(caixaoTrf5.segregacaoLei8245.totalOrdinarioInquilinoReais).toBe(750);
     expect(caixaoTrf5.segregacaoLei8245.totalExtraordinarioLocadorReais).toBe(395);
     expect(caixaoTrf5.segregacaoLei8245.itensCobrancaAbusivaNoBoleto).toHaveLength(2);
-    expect(caixaoTrf5.alertaPropterRemStj).toMatch(/propter rem/);
+    expect(caixaoTrf5.alertaPropterRemStj).toBe(
+      "Dívida de condomínio acompanha o imóvel (STJ, REsp 1.910.280, Segunda Seção, 2025): quem figura na matrícula responde pelos débitos da unidade. Exija certidão negativa de débitos condominiais antes do sinal.",
+    );
+    expect(caixaoTrf5.alertaPropterRemStj).not.toMatch(/2\.147\.665/);
   });
 
   test("derivarCustoPorPartes integra spuEstatutario, otimizacaoFechamento e estruturaECondominio sem quebrar contrato anterior", () => {
@@ -233,7 +242,7 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
 
     expect(partes.alertaMarinha?.laudemioReferencia5PctReais).toBe(15_300);
     expect(partes.spuEstatutario?.foroMensalReais).toBe(153);
-    expect(partes.otimizacaoFechamento?.economiaSfhReais).toBe(23_427.15);
+    expect(partes.otimizacaoFechamento?.economiaSfhReais).toBe(11_960);
     expect(partes.estruturaECondominio?.classeAgressividade).toBe("CAA-IV");
   });
 });

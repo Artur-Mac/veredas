@@ -1,3 +1,4 @@
+import type { FichaDeMetodo6Campos } from "../fichaDeMetodo";
 import type { ResultadoBioclimatico3D } from "../../municipios/recife/motores/bioclimatico3d";
 import type { FachadaInferida } from "../sol/inferirFachadas";
 import { classificarOrientacaoRecife } from "../sol/inferirFachadas";
@@ -19,6 +20,8 @@ export type VereditoConfortoTermico = {
   notaConforto0a10: number;
   zona: ZonaConfortoTermico;
   selo: string;
+  /** Ficha "como foi calculada" (decisão A13): a nota é uma regra de pontos, sem base medida. */
+  metodo: FichaDeMetodo6Campos;
   perguntaTitulo: string;
   vereditoUmaLinha: string;
   acaoVisita: string;
@@ -238,5 +241,15 @@ export function avaliarConfortoTermico(entrada: EntradaConfortoTermico): Veredit
     custoExtraVsFrescoMesReais,
     temperaturaQuadraResumo,
     fatores: fatores.slice(0, 4),
+    metodo: {
+      oQueMede: "Se o apartamento tende a ser fresco ou quente, pela posição da fachada, o andar e a quadra.",
+      fonte:
+        "Fachada e andar que você escolheu, altura dos vizinhos pelo cadastro da Prefeitura do Recife e, quando há leitura, a temperatura de superfície da quadra (Landsat).",
+      data: "Cadastro no recorte de 2026; a temperatura de superfície é a das cenas já publicadas na camada de calor.",
+      calculo: `Regra de pontos: parte de 46 e soma ou tira pontos por orientação do sol, brisa de sudeste, último andar ou andar baixo, calor da quadra, praça ou árvore perto e distância da água. Este apartamento ficou em ${indiceCalor0a100} de 100, e a nota é 10 menos esse índice dividido por 10 (${notaConforto0a10.toFixed(1).replace(".", ",")}).`,
+      limite:
+        "Os pontos de luz e de ar são uma fórmula do Vereda, sem base medida: nenhuma temperatura foi medida dentro do apartamento. O gasto mensal com ar-condicionado também é fórmula (R$ 65 mais R$ 2,35 por ponto do índice), não leitura de conta de luz.",
+      naVisita: acaoVisita.replace(/^O que checar na visita: /, ""),
+    },
   };
 }

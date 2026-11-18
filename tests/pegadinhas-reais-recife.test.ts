@@ -136,10 +136,9 @@ describe("3 Pegadinhas Reais do Mercado Imobiliário do Recife", () => {
             prestacaoEstimadaReais: partes.simulacaoCompra?.prestacaoPriceReais ?? 3_500,
             entradaReais: 98_000,
             itbiReais: 6_000,
-            cartorioRegistroReais: 4_000,
             spuAnualReais: partes.spuEstatutario?.encargoPatrimonialAnualVigenteReais ?? 10_000,
             custoMensalArReais: 180,
-            economiaLegalItbiCartorioReais: partes.otimizacaoFechamento?.melhorCenarioEconomiaReais ?? 8_000,
+            economiaLegalItbiReais: partes.otimizacaoFechamento?.melhorCenarioEconomiaReais ?? 8_000,
             descontoRuidoReais: 0,
             vplCalorPoenteReais: 0,
             riscoManutencaoPredioReais: partes.estruturaECondominio?.choqueCotaExtraEstimadoPorUnidadeReais ?? 12_000,
@@ -150,7 +149,9 @@ describe("3 Pegadinhas Reais do Mercado Imobiliário do Recife", () => {
     });
     const txt = textosDoNo(tree.toJSON());
     expect(txt).toContain("Taxa da União /12");
-    expect(txt).toContain("Alvo sugerido de proposta");
+    // Decisão D4 (18/11/2026): ficam os fatos para negociar, sem valor de proposta.
+    expect(txt).toContain("Fatos que você pode levar à conversa");
+    expect(txt).not.toMatch(/alvo (justo|sugerido)/i);
   });
 
   it("Pegadinha 2: Cobertura / último andar Poente em ilha de calor vira forno à tarde", () => {
@@ -194,7 +195,7 @@ describe("3 Pegadinhas Reais do Mercado Imobiliário do Recife", () => {
     });
 
     expect(acuCorredor.isolamentoFachadaD2mnTwDb).toBeLessThan(20);
-    expect(acuCorredor.atendeLimiteNoturnoLei16243_50Db).toBe(false);
+    expect(acuCorredor.atendeReferenciaNoturnaNbr10151).toBe(false);
     expect(acuCorredor.ruidoInternoDormitorioDbA).toBeGreaterThan(50);
     expect(acuCorredor.descontoHedonicoEstimadoReais).toBeGreaterThan(0);
 

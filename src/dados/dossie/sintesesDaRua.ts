@@ -18,6 +18,7 @@ import {
 import { lerRendaDoSetorOuBairro, type RetratoRendaCenso } from "../recife/censoRenda";
 import { centroideDoBairro } from "../recife/referenciasPublicas";
 import { fraseDoAeroporto, relacaoComOAeroporto } from "../recife/aeroporto";
+import { estimarRuido } from "../ruido/estimativa";
 import { lerRuaDoEdificio } from "./rua";
 
 export type CartaoDeSinteseHumana = {
@@ -258,7 +259,8 @@ export function derivarSintesesInteligentes(opcoes: {
           : "À noite: nenhum local com licença municipal de som (LUSE) a até 150 m."
         : "À noite: confirme o prédio para cruzar licenças municipais de som (LUSE) a até 150 m.";
 
-    // 18/11/2026 (hub): aeroporto como fonte com nome, sem dB; sob a trajetória vira a manchete.
+    // 18/11/2026 (hub): aeroporto como fonte com nome; sob a trajetória vira a manchete. As frases do aeroporto não
+    // trazem dB: o número estimado do prédio (rua + avião) vem do modelo de ruído, logo abaixo.
     let aero: ReturnType<typeof relacaoComOAeroporto> = null;
     try {
       aero = relacaoComOAeroporto(edificio?.centro ?? null);
@@ -288,16 +290,23 @@ export function derivarSintesesInteligentes(opcoes: {
           ? `Estação ${corr.estacaoMetroProxima.nome} a ${formatarDistancia(corr.estacaoMetroProxima.distanciaM)} em linha reta.`
           : "Se puder, passe na rua em dois horários diferentes (horário comercial e começo da noite de sexta/sábado).";
 
+    // 18/11/2026 (decisão A2): o dB(A) estimado de dia e à noite na rua em frente ao prédio, pelo mesmo modelo do
+    // placar e do simulador, sempre dito como estimativa. Sem prédio ou sem camada, o cartão fica só com os fatos.
+    const estimativa = estimarRuido(edificio);
+    const estimado = estimativa.estado === "estimado" ? estimativa : null;
+
     ruidoDiaNoite = {
       id: "ruido-dia-noite",
       sobretitulo: "Acústica urbana · Dia × Noite",
       manchete: mancheteRuido,
-      medidaDestaque: aero?.trajetoria
-        ? `Avião a ~${formatarNumero(aero.trajetoria.alturaEstimadaM)} m`
-        : onibusPerto ? `Corredor a ${formatarDistancia(onibusPerto.distanciaM)}` : luse150m > 0 ? `${luse150m} LUSE ≤150 m` : "Via interna",
-      explicacaoHumana: `${textoDia} ${textoNoite}${textoAviao}`,
+      medidaDestaque: estimado
+        ? `~${Math.round(estimado.naRua.diaDb)} dB(A) de dia · ~${Math.round(estimado.naRua.noiteDb)} à noite (estimativa)`
+        : aero?.trajetoria
+          ? `Avião a ~${formatarNumero(aero.trajetoria.alturaEstimadaM)} m`
+          : onibusPerto ? `Corredor a ${formatarDistancia(onibusPerto.distanciaM)}` : luse150m > 0 ? `${luse150m} LUSE ≤150 m` : "Via interna",
+      explicacaoHumana: `${estimado ? `${estimado.textos.manchete}. ${estimado.textos.aviso} ${estimado.textos.faixa} ${estimado.textos.nbr} ` : ""}${textoDia} ${textoNoite}${textoAviao}`,
       dicaPratica: aero?.trajetoria ? fraseDoAeroporto(aero).pergunta : notaAndarRuido,
-      fonteCurta: `GTFS Grande Recife / CBTU · Licenciamento de Obras e LUSE Semas (ODbL)${aero ? " · pista: OpenStreetMap (ODbL)" : ""}`,
+      fonteCurta: `GTFS Grande Recife / CBTU · Licenciamento de Obras e LUSE Semas (ODbL)${estimado || aero ? " · vias e pista: © colaboradores do OpenStreetMap (ODbL)" : ""}${estimado ? " · método do Mapa Sossego" : ""}`,
       urlFonte: "https://dados.recife.pe.gov.br",
     };
   }

@@ -17,9 +17,7 @@
     "eas-build-post-install": "node scripts/dados/publicar-camadas.cjs"
   },
   "dependencies": {
-    "@maplibre/maplibre-react-native": "^11.5.1",
     "@react-native-async-storage/async-storage": "2.2.0",
-    "drizzle-orm": "^0.45.4",
     "expo": "~57.0.30",
     "expo-asset": "~57.0.20",
     "expo-audio": "~57.0.5",
@@ -37,11 +35,9 @@
     "expo-share-intent": "^8.0.1",
     "expo-sharing": "~57.0.24",
     "expo-splash-screen": "~57.0.10",
-    "expo-sqlite": "~57.0.4",
     "expo-status-bar": "~57.0.1",
     "expo-system-ui": "~57.0.4",
     "expo-web-browser": "~57.0.3",
-    "pmtiles": "^4.5.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",

@@ -176,10 +176,9 @@ describe("Teste dos Gêmeos Intra-Prédio (Unidade 202 Poente vs Unidade 1401 Na
             prestacaoEstimadaReais: 4_600,
             entradaReais: 136_000,
             itbiReais: 8_500,
-            cartorioRegistroReais: 5_200,
             spuAnualReais: 0,
             custoMensalArReais: conforto202.custoMensalArReais,
-            economiaLegalItbiCartorioReais: 14_000,
+            economiaLegalItbiReais: 14_000,
             descontoRuidoReais: acustica202.descontoHedonicoEstimadoReais ?? 18_000,
             vplCalorPoenteReais: bio202.vpl10AnosPoenteReais,
             riscoManutencaoPredioReais: 0,
@@ -245,7 +244,9 @@ describe("Teste dos Gêmeos Intra-Prédio (Unidade 202 Poente vs Unidade 1401 Na
     const textoMatriz = extrairTextos(treeMatriz.toJSON());
 
     expect(texto202).toContain("Poente");
-    expect(texto202).toContain("Alvo sugerido de proposta");
+    // Decisão D4 (18/11/2026): ficam os fatos para negociar, sem valor de proposta.
+    expect(texto202).toContain("Fatos que você pode levar à conversa");
+    expect(texto202).not.toMatch(/alvo (justo|sugerido)/i);
     expect(texto1401).toContain("Nascente");
     expect(texto1401).toContain(conforto1401.selo);
     expect(textoMatriz).toContain("Apê 1401 (Nascente) leva vantagem");

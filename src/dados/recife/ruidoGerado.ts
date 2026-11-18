@@ -1,0 +1,113 @@
+// Gerado por scripts/dados/ruido/rodar-ruido.mjs (18/11/2026). Troca atômica depois de gravar as partições.
+// Ruído estimado com dados abertos, não medição: fontes do chão por prédio (vias do OpenStreetMap, ônibus, trilho,
+// LUSE e CNEFE). O avião é somado no app. Vias: © colaboradores do OpenStreetMap, ODbL 1.0.
+export const VERSAO_DO_RUIDO = "5e3b4b7941ed75ee";
+export const INDICE_DO_RUIDO = "indice-municipal/faa40c969275e6b5";
+export const ARQUIVOS_DO_RUIDO: Record<string, string> = {
+  "boa-viagem": "recife/ruido/5e3b4b7941ed75ee/boa-viagem.json",
+  "casa-forte": "recife/ruido/5e3b4b7941ed75ee/casa-forte.json",
+  "gracas": "recife/ruido/5e3b4b7941ed75ee/gracas.json",
+  "espinheiro": "recife/ruido/5e3b4b7941ed75ee/espinheiro.json",
+  "madalena": "recife/ruido/5e3b4b7941ed75ee/madalena.json",
+  "aflitos": "recife/ruido/5e3b4b7941ed75ee/aflitos.json",
+  "afogados": "recife/ruido/5e3b4b7941ed75ee/afogados.json",
+  "agua-fria": "recife/ruido/5e3b4b7941ed75ee/agua-fria.json",
+  "apipucos": "recife/ruido/5e3b4b7941ed75ee/apipucos.json",
+  "areias": "recife/ruido/5e3b4b7941ed75ee/areias.json",
+  "arruda": "recife/ruido/5e3b4b7941ed75ee/arruda.json",
+  "barro": "recife/ruido/5e3b4b7941ed75ee/barro.json",
+  "beberibe": "recife/ruido/5e3b4b7941ed75ee/beberibe.json",
+  "boa-vista": "recife/ruido/5e3b4b7941ed75ee/boa-vista.json",
+  "bomba-do-hemeterio": "recife/ruido/5e3b4b7941ed75ee/bomba-do-hemeterio.json",
+  "bongi": "recife/ruido/5e3b4b7941ed75ee/bongi.json",
+  "cacote": "recife/ruido/5e3b4b7941ed75ee/cacote.json",
+  "cajueiro": "recife/ruido/5e3b4b7941ed75ee/cajueiro.json",
+  "campina-do-barreto": "recife/ruido/5e3b4b7941ed75ee/campina-do-barreto.json",
+  "campo-grande": "recife/ruido/5e3b4b7941ed75ee/campo-grande.json",
+  "casa-amarela": "recife/ruido/5e3b4b7941ed75ee/casa-amarela.json",
+  "caxanga": "recife/ruido/5e3b4b7941ed75ee/caxanga.json",
+  "coelhos": "recife/ruido/5e3b4b7941ed75ee/coelhos.json",
+  "coqueiral": "recife/ruido/5e3b4b7941ed75ee/coqueiral.json",
+  "cordeiro": "recife/ruido/5e3b4b7941ed75ee/cordeiro.json",
+  "curado": "recife/ruido/5e3b4b7941ed75ee/curado.json",
+  "derby": "recife/ruido/5e3b4b7941ed75ee/derby.json",
+  "encruzilhada": "recife/ruido/5e3b4b7941ed75ee/encruzilhada.json",
+  "engenho-do-meio": "recife/ruido/5e3b4b7941ed75ee/engenho-do-meio.json",
+  "estancia": "recife/ruido/5e3b4b7941ed75ee/estancia.json",
+  "fundao": "recife/ruido/5e3b4b7941ed75ee/fundao.json",
+  "guabiraba": "recife/ruido/5e3b4b7941ed75ee/guabiraba.json",
+  "hipodromo": "recife/ruido/5e3b4b7941ed75ee/hipodromo.json",
+  "ibura": "recife/ruido/5e3b4b7941ed75ee/ibura.json",
+  "ilha-do-leite": "recife/ruido/5e3b4b7941ed75ee/ilha-do-leite.json",
+  "ilha-do-retiro": "recife/ruido/5e3b4b7941ed75ee/ilha-do-retiro.json",
+  "imbiribeira": "recife/ruido/5e3b4b7941ed75ee/imbiribeira.json",
+  "ipsep": "recife/ruido/5e3b4b7941ed75ee/ipsep.json",
+  "iputinga": "recife/ruido/5e3b4b7941ed75ee/iputinga.json",
+  "jaqueira": "recife/ruido/5e3b4b7941ed75ee/jaqueira.json",
+  "jardim-sao-paulo": "recife/ruido/5e3b4b7941ed75ee/jardim-sao-paulo.json",
+  "jiquia": "recife/ruido/5e3b4b7941ed75ee/jiquia.json",
+  "jordao": "recife/ruido/5e3b4b7941ed75ee/jordao.json",
+  "mangueira": "recife/ruido/5e3b4b7941ed75ee/mangueira.json",
+  "monteiro": "recife/ruido/5e3b4b7941ed75ee/monteiro.json",
+  "morro-da-conceicao": "recife/ruido/5e3b4b7941ed75ee/morro-da-conceicao.json",
+  "mustardinha": "recife/ruido/5e3b4b7941ed75ee/mustardinha.json",
+  "nova-descoberta": "recife/ruido/5e3b4b7941ed75ee/nova-descoberta.json",
+  "paissandu": "recife/ruido/5e3b4b7941ed75ee/paissandu.json",
+  "parnamirim": "recife/ruido/5e3b4b7941ed75ee/parnamirim.json",
+  "pina": "recife/ruido/5e3b4b7941ed75ee/pina.json",
+  "poco": "recife/ruido/5e3b4b7941ed75ee/poco.json",
+  "ponto-de-parada": "recife/ruido/5e3b4b7941ed75ee/ponto-de-parada.json",
+  "porto-da-madeira": "recife/ruido/5e3b4b7941ed75ee/porto-da-madeira.json",
+  "prado": "recife/ruido/5e3b4b7941ed75ee/prado.json",
+  "recife": "recife/ruido/5e3b4b7941ed75ee/recife.json",
+  "rosarinho": "recife/ruido/5e3b4b7941ed75ee/rosarinho.json",
+  "san-martin": "recife/ruido/5e3b4b7941ed75ee/san-martin.json",
+  "sancho": "recife/ruido/5e3b4b7941ed75ee/sancho.json",
+  "santana": "recife/ruido/5e3b4b7941ed75ee/santana.json",
+  "santo-amaro": "recife/ruido/5e3b4b7941ed75ee/santo-amaro.json",
+  "santo-antonio": "recife/ruido/5e3b4b7941ed75ee/santo-antonio.json",
+  "sao-jose": "recife/ruido/5e3b4b7941ed75ee/sao-jose.json",
+  "soledade": "recife/ruido/5e3b4b7941ed75ee/soledade.json",
+  "tamarineira": "recife/ruido/5e3b4b7941ed75ee/tamarineira.json",
+  "tejipio": "recife/ruido/5e3b4b7941ed75ee/tejipio.json",
+  "torre": "recife/ruido/5e3b4b7941ed75ee/torre.json",
+  "torreao": "recife/ruido/5e3b4b7941ed75ee/torreao.json",
+  "torroes": "recife/ruido/5e3b4b7941ed75ee/torroes.json",
+  "varzea": "recife/ruido/5e3b4b7941ed75ee/varzea.json",
+  "vasco-da-gama": "recife/ruido/5e3b4b7941ed75ee/vasco-da-gama.json",
+  "zumbi": "recife/ruido/5e3b4b7941ed75ee/zumbi.json",
+};
+export const FONTES_DO_RUIDO = {
+ "vias": {
+  "nome": "OpenStreetMap, vias (extrato Geofabrik, região Nordeste)",
+  "url": "https://download.geofabrik.de/south-america/brazil/nordeste-261117.osm.pbf",
+  "arquivo": "nordeste-261117.osm.pbf",
+  "dadosDe": "2026-11-17",
+  "baixadoEm": "2026-11-18",
+  "md5": "9546c214b72a118f99ad5c8d1c06a630",
+  "sha256": "4b1b5e2eae02e04f29db98c88ce93c484816ace1484ed3238f920a684aa7a43d",
+  "licenca": "ODbL 1.0",
+  "atribuicao": "© colaboradores do OpenStreetMap"
+ },
+ "onibus": {
+  "nome": "GTFS Grande Recife (partidas programadas num dia útil)",
+  "origem": "src/dados/recife/camadas-ambientais.json (ruidoCorredores.corredoresOnibus)"
+ },
+ "trilho": {
+  "nome": "CBTU Metrô do Recife (traçado)",
+  "origem": "src/dados/recife/camadas-ambientais.json (ruidoCorredores.trilhosMetro)"
+ },
+ "luse": {
+  "nome": "Licenciamento Ambiental do Recife (LUSE vigente)",
+  "origem": "src/dados/recife/indice-municipal/faa40c969275e6b5 (rua.luse)"
+ },
+ "cnefe": {
+  "nome": "CNEFE, Censo Demográfico 2022 (IBGE)",
+  "origem": "src/dados/recife/atrito/7b838d25558798c2"
+ },
+ "metodologia": {
+  "nome": "Mapa Sossego, “Como funciona”",
+  "url": "https://mapasossego.com.br/sobre",
+  "lidaEm": "2026-11-18"
+ }
+} as const;

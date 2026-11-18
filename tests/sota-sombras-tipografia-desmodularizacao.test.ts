@@ -351,7 +351,10 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(layout).toContain("PlusJakartaSans");
   });
 
-  it("novos módulos visuais (Radar, Copiloto, Pulso, Checklist IPTU) seguem anti-jargão, zero dB, zero R$ 0 e zero palavras proibidas", () => {
+  // Decisão A2 do Samuel (18/11/2026): o dB(A) pode aparecer, desde que estimado e dito como estimativa. A ficha do
+  // pulso traz a conta do eixo de sossego com o nível estimado; a regra deixa de ser "zero dB" e passa a ser "dB só
+  // com estimativa".
+  it("novos módulos visuais (Radar, Copiloto, Pulso, Checklist IPTU) seguem anti-jargão, dB só com estimativa, zero R$ 0 e zero palavras proibidas", () => {
     const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: 90, andar: 6 });
     const conf = avaliarConfortoTermico({
       andar: 6,
@@ -384,7 +387,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: false,
       precoInformado: true,
       condominioInformado: true,
-      comparacaoM2Pct: 0,
       spuAtivo: false,
     });
 
@@ -414,10 +416,9 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
             prestacaoEstimadaReais: 5_100,
             entradaReais: 170_000,
             itbiReais: 10_000,
-            cartorioRegistroReais: 6_500,
             spuAnualReais: 0,
             custoMensalArReais: 140,
-            economiaLegalItbiCartorioReais: 15_000,
+            economiaLegalItbiReais: 15_000,
             descontoRuidoReais: 0,
             vplCalorPoenteReais: 0,
             riscoManutencaoPredioReais: 0,
@@ -438,7 +439,9 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(texto).toContain("revisão cadastral na Prefeitura do Recife");
     expect(texto).toContain("Cadastro Imobiliário Recife");
     expect(texto).not.toMatch(/R\$ 0(?![\d.,])/);
-    expect(texto).not.toMatch(/\d\s*dB\b/i);
+    const comDb = extrairTextos(tree.toJSON()).filter((t) => /\d\s*dB\b/i.test(t));
+    expect(comDb.length).toBeGreaterThan(0);
+    for (const t of comDb) expect(t).toMatch(/estimativ|estimad/i);
     expect(REGEX_JARGON_CAMADA1.test(texto)).toBe(false);
     for (const r of PALAVRAS_PROIBIDAS_UI) {
       expect(r.test(texto)).toBe(false);
@@ -534,7 +537,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: true,
       precoInformado: true,
       condominioInformado: true,
-      comparacaoM2Pct: 0,
       spuAtivo: false,
     });
 
@@ -676,8 +678,8 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       toggle.props.onPress();
     });
     const txtCompra = extrairTextos(tree.toJSON()).join("\n");
-    expect(txtCompra).toContain("Caixa para entrar");
-    expect(txtCompra).toContain("SFH / 180 dias");
+    expect(txtCompra).toContain("Caixa para entrar (sem cartório)");
+    expect(txtCompra).toContain("Economia possível de ITBI (SFH e pedido em até 180 dias)");
     expect(txtCompra).not.toMatch(/R\$ 0(?![\d.,])/);
 
     const btnAlugar = tree.root.find((n) => n.props.testID === "sim15-mod-aluguel");
@@ -857,7 +859,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: true,
       precoInformado: true,
       condominioInformado: true,
-      comparacaoM2Pct: 0,
       spuAtivo: false,
     });
 
@@ -1225,7 +1226,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: true,
       precoInformado: true,
       condominioInformado: true,
-      comparacaoM2Pct: 0,
       spuAtivo: false,
     });
     const link = gerarLinkPrivadoSemServidor({
@@ -1597,7 +1597,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: false,
       precoInformado: false,
       condominioInformado: false,
-      comparacaoM2Pct: null,
       spuAtivo: false,
     });
 
@@ -1877,7 +1876,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: true,
       precoInformado: true,
       condominioInformado: true,
-      comparacaoM2Pct: 0,
       spuAtivo: false,
     });
     expect(pulso.escopoResolucao).toContain("escala deste edifício");
@@ -1969,7 +1967,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: true,
       precoInformado: true,
       condominioInformado: true,
-      comparacaoM2Pct: 0,
       spuAtivo: false,
     });
     const sintese = decomporSossego(acu, 2005);
@@ -2272,15 +2269,14 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
             prestacaoEstimadaReais: 5_100,
             entradaReais: 170_000,
             itbiReais: 10_000,
-            cartorioRegistroReais: 6_500,
             spuAnualReais: 2_400,
             custoMensalArReais: 140,
-            economiaLegalItbiCartorioReais: 15_000,
+            economiaLegalItbiReais: 15_000,
             descontoRuidoReais: 0,
             vplCalorPoenteReais: 0,
             riscoManutencaoPredioReais: 0,
             excedenteMedianaM2Reais: 0,
-            saldo10AnosCompraVsAluguelReais: 120_000,
+            entradaTco10Anos: { precoCompraReais: 650_000, aluguelEquivalenteMensalReais: 2_925, condominioMensalReais: 1_050, iptuAnualReais: 3_600 },
           }),
         ),
       );
@@ -2299,7 +2295,7 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });
 
-  it("expõe diligência estatutária do Recife (AQUA/Compesa, vistoria trienal PE e CAT 90 dias) em CopilotoDocumentosPreSinal em S50", () => {
+  it("expõe diligência estatutária do Recife (AQUA/Compesa, vistoria predial periódica PE e CAT 90 dias) em CopilotoDocumentosPreSinal em S50", () => {
     let tree!: TestRenderer.ReactTestRenderer;
     act(() => {
       tree = TestRenderer.create(
@@ -2435,7 +2431,6 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       vinculoConfirmado: true,
       precoInformado: true,
       condominioInformado: true,
-      comparacaoM2Pct: 0,
       spuAtivo: false,
     });
 
@@ -2581,7 +2576,8 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     });
     const aluguelFiancaTxt = extrairTextos(tree.toJSON()).join("\n");
     expect(aluguelFiancaTxt).not.toBe(aluguelCaucaoTxt);
-    expect(aluguelFiancaTxt).toContain("fiança locatícia estimada");
+    expect(aluguelFiancaTxt).toContain("fiança locatícia estimada em cerca de 10% do aluguel por mês (estimativa de mercado, não é valor de lei)");
+    expect(aluguelFiancaTxt).not.toMatch(/8\.245/);
 
     expect(REGEX_JARGON_CAMADA1.test(aluguelFiancaTxt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(aluguelFiancaTxt)).toBe(false);
@@ -2896,6 +2892,9 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       "fracao_terreno",
     ]);
     expect(radarSemClausula.perguntasDeUsoELote[0]?.respostaCurta).toBe("Depende da convenção do condomínio");
+    expect(radarSemClausula.perguntasDeUsoELote[0]?.fundamentoEAritmetica).toBe(
+      "STJ (REsp 2.121.055, Segunda Seção, 07/05/2026): em condomínio residencial, oferecer a unidade para estadia de curta temporada depende de aprovação de dois terços dos condôminos em assembleia. Confira a convenção e as atas antes do sinal.",
+    );
     expect(radarSemClausula.perguntasDeUsoELote[1]?.fundamentoEAritmetica).toContain("LC Municipal nº 2/2021");
     expect(radarSemClausula.perguntasDeUsoELote[2]?.respostaCurta).toContain("m² de lote por unidade");
 
@@ -2909,7 +2908,9 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       clausulaTemporadaNaConvencao: "Permitida locação por temporada mediante registro na portaria.",
     });
     expect(radarComClausula.perguntasDeUsoELote[0]?.respostaCurta).toBe("Há trecho salvo nos documentos");
-    expect(radarComClausula.perguntasDeUsoELote[0]?.fundamentoEAritmetica).toContain("Permitida locação por temporada");
+    expect(radarComClausula.perguntasDeUsoELote[0]?.fundamentoEAritmetica).toBe(
+      "Convenção ou ata registrada: “Permitida locação por temporada mediante registro na portaria.” · STJ (REsp 2.121.055, Segunda Seção, 07/05/2026): a liberação depende de aprovação de dois terços dos condôminos.",
+    );
 
     const radarSemPredio = analisarRadarVistaELote({
       centro: predioComDados.centro,
@@ -3075,15 +3076,14 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
             prestacaoEstimadaReais: 5_100,
             entradaReais: 170_000,
             itbiReais: 10_000,
-            cartorioRegistroReais: 6_500,
             spuAnualReais: 2_400,
             custoMensalArReais: 140,
-            economiaLegalItbiCartorioReais: 15_000,
+            economiaLegalItbiReais: 15_000,
             descontoRuidoReais: 0,
             vplCalorPoenteReais: 0,
             riscoManutencaoPredioReais: 0,
             excedenteMedianaM2Reais: 0,
-            saldo10AnosCompraVsAluguelReais: 120_000,
+            entradaTco10Anos: { precoCompraReais: 650_000, aluguelEquivalenteMensalReais: 2_925, condominioMensalReais: 1_050, iptuAnualReais: 3_600 },
           }),
         ),
       );

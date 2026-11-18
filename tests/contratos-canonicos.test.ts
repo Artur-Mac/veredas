@@ -1,5 +1,4 @@
 import { describe, expect, it } from "@jest/globals";
-import { DatabaseSync } from "node:sqlite";
 import {
   esquemaDecisionProjection,
   esquemaDocumentAssertion,
@@ -13,11 +12,6 @@ import {
   paraEpistemicTag,
   verificarEntailmentDeterministico,
 } from "../src/nucleo/contratosCanonicos";
-import {
-  DDL_BANCO_PUBLICO_MODULOS_SQL,
-  DDL_BANCO_PUBLICO_SQL,
-  DDL_COFRE_USUARIO_SQL,
-} from "../src/persistencia/ddlCanonico.sql";
 
 const SHA = "a".repeat(64);
 
@@ -237,45 +231,4 @@ describe("8 Contratos Canónicos do VEREDA", () => {
     expect(staging.certified_for_release).toBe(false);
   });
 
-  it("DDL SQLite canónico cria todas as tabelas e índices sem erros em SQLite real", () => {
-    const db = new DatabaseSync(":memory:");
-    db.exec(DDL_BANCO_PUBLICO_SQL);
-    db.exec(DDL_BANCO_PUBLICO_MODULOS_SQL);
-    const tables = db
-      .prepare("SELECT name FROM sqlite_master WHERE type IN ('table') ORDER BY name")
-      .all() as Array<{ name: string }>;
-    const names = tables.map((t) => t.name);
-    expect(names).toEqual(
-      expect.arrayContaining([
-        "source_snapshots",
-        "publication_manifest",
-        "lotes_dsqfl",
-        "edificios",
-        "observations",
-        "urban_events",
-        "arestas_caminhaveis",
-        "lotes_rtree",
-        "edificios_rtree",
-        "edificios_fts",
-      ]),
-    );
-
-    const vault = new DatabaseSync(":memory:");
-    vault.exec(DDL_COFRE_USUARIO_SQL);
-    const vTables = vault
-      .prepare("SELECT name FROM sqlite_master WHERE type = 'table'")
-      .all() as Array<{ name: string }>;
-    expect(vTables.map((t) => t.name)).toEqual(
-      expect.arrayContaining([
-        "vault_meta",
-        "offer_snapshots",
-        "entity_links",
-        "document_assertions",
-        "decision_projections",
-        "visit_photo_refs",
-      ]),
-    );
-    db.close();
-    vault.close();
-  });
 });

@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { decomporSossego, type NivelSossego } from "../../dados/acustica/decomporSossego";
 import type { ResultadoAcustica3D } from "../../nucleo/motores/acustica3d";
+import type { EstimativaDeRuido } from "../../dados/ruido/estimativa";
+import { LeituraDoRuido } from "../ruido/RuidoEstimado";
+import { FichaDeMetodo } from "./FichaDeMetodo";
 import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
 import { RAIO, TOQUE_MINIMO, type TokenDeCor } from "../../tema/tokens";
@@ -22,12 +25,34 @@ function corNivelSossego(nivel: NivelSossego): TokenDeCor {
 export function EscalaDeRuidoHumana({
   acustica,
   anoConstrucao,
+  ruido,
 }: {
-  acustica: ResultadoAcustica3D;
+  /** `null` = sem leitura de ruído para o prédio: o cartão diz isso, sem número. */
+  acustica: ResultadoAcustica3D | null;
   anoConstrucao: number | null;
+  /** A estimativa do modelo (src/dados/ruido): mostra os dB(A) estimados e põe as fontes do prédio na ficha de método. */
+  ruido?: EstimativaDeRuido;
 }) {
   const { cor } = useTema();
-  const sintese = decomporSossego(acustica, anoConstrucao);
+  if (!acustica) {
+    return (
+      <View
+        testID="escala-de-ruido-humana-sem-leitura"
+        style={[styles.cartao, { backgroundColor: cor("cor-superficie"), borderColor: cor("cor-linha-forte") }]}
+      >
+        <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.kicker}>
+          Sossego à noite por fonte
+        </Texto>
+        <Texto tipo="secao" style={styles.titulo}>
+          {ruido && ruido.estado !== "estimado" ? ruido.textos.manchete : "Ruído estimado: sem leitura para este imóvel"}
+        </Texto>
+        <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.subTexto}>
+          {ruido && ruido.estado !== "estimado" ? ruido.textos.explicacao : "Confirme o prédio no cadastro do Recife para ver a estimativa de ruído deste endereço."}
+        </Texto>
+      </View>
+    );
+  }
+  const sintese = decomporSossego(acustica, anoConstrucao, ruido?.estado === "estimado" ? ruido.textos.ficha : null);
   const silencioso = sintese.nivelQuarto !== "Intenso";
 
   return (
@@ -104,6 +129,12 @@ export function EscalaDeRuidoHumana({
         </Texto>
       </View>
 
+      {ruido ? (
+        <View style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 8 }}>
+          <LeituraDoRuido estimativa={ruido} testID="escala-ruido-estimado" comNota={false} />
+        </View>
+      ) : null}
+
       {/* Decomposição por fonte sem caixas aninhadas (HowLoud + Mapa Sossego) */}
       <View style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 8, gap: 7 }}>
         {sintese.fontes.map((f) => (
@@ -154,6 +185,8 @@ export function EscalaDeRuidoHumana({
       <Texto testID="escala-ruido-aviso-metodo" tipo="apoio" cor="cor-texto-apoio" style={styles.avisoMetodo}>
         {sintese.avisoEstimativaSemLaudo}
       </Texto>
+      {/* A nota de sossego nunca aparece sem a ficha "como foi calculada" a um toque (A13). */}
+      <FichaDeMetodo ficha={sintese.metodo} testID="escala-ruido-metodo" />
     </View>
   );
 }

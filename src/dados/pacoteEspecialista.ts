@@ -7,6 +7,7 @@ import type { AnaliseV2, Pergunta, VisaoDoDossie } from "./contratos";
 import { estruturaDoCaderno, type ItemDaFicha } from "./dossie/fichaViva";
 import { ROTULO_DA_ETAPA } from "./estrutura/linhaDoTempo";
 import { formatarReais } from "./formatos";
+import { regraDaVistoriaPredialPe } from "../municipios/recife/motores/estruturaCondominio";
 import { trechosDaAta } from "./negociacao";
 
 export type SecaoDoPacote = { titulo: string; linhas: string[] };
@@ -57,8 +58,13 @@ type RequisitoDoc = {
   incluirBalancetes?: boolean;
   prefInspecao?: boolean;
   maxDias: number | null;
+  /** Vistoria predial (Lei PE 13.032/2006): o prazo e a exigência dependem da idade do prédio; `maxDias` vale sem a idade. */
+  prazoPelaIdadeDoPredio?: boolean;
   referencia: string;
 };
+
+const DIAS_EM_3_ANOS = 1095;
+const DIAS_EM_4_ANOS = 1461;
 
 const REQUISITOS_COMPRA: readonly RequisitoDoc[] = [
   {
@@ -95,8 +101,9 @@ const REQUISITOS_COMPRA: readonly RequisitoDoc[] = [
     titulo: "Vistoria / laudo estrutural ou ART-RRT",
     tipos: ["laudo", "art_rrt"],
     prefInspecao: true,
-    maxDias: 1095,
-    referencia: "Inspeção periódica (Lei Estadual PE nº 13.032/2006 · 3 anos)",
+    maxDias: DIAS_EM_4_ANOS,
+    prazoPelaIdadeDoPredio: true,
+    referencia: "Inspeção periódica (Lei Estadual PE nº 13.032/2006 · a cada 3 ou 4 anos, conforme a idade do prédio)",
   },
   {
     id: "licenca",
@@ -110,7 +117,7 @@ const REQUISITOS_COMPRA: readonly RequisitoDoc[] = [
     titulo: "Certidão trabalhista do condomínio (CNDT)",
     tipos: ["cndt", "acoes_trt6"],
     maxDias: 180,
-    referencia: "Débitos e ações trabalhistas (CLT art. 642-A · 180 dias)",
+    referencia: "Débitos e ações trabalhistas (CLT, art. 642-A, § 4º · 180 dias)",
   },
 ];
 
@@ -142,7 +149,8 @@ const REQUISITOS_ALUGUEL: readonly RequisitoDoc[] = [
     titulo: "Vistoria / laudo estrutural",
     tipos: ["laudo", "art_rrt"],
     prefInspecao: true,
-    maxDias: 1095,
+    maxDias: DIAS_EM_4_ANOS,
+    prazoPelaIdadeDoPredio: true,
     referencia: "Registro técnico de manutenção (Lei PE nº 13.032/2006)",
   },
 ];
@@ -150,14 +158,28 @@ const REQUISITOS_ALUGUEL: readonly RequisitoDoc[] = [
 /**
  * Controle determinístico de completude e atualidade documental (HomeWiseDocs R15 §6.1–§6.2).
  * Nunca inventa validade quando a data declarada do documento está ausente.
+ *
+ * Vistoria predial (Lei PE nº 13.032/2006): com o ano de construção, o prazo é de 4 anos em prédio com até 20 anos e de
+ * 3 anos depois, e o laudo não é cobrado de prédio com até 5 anos. Sem o ano, o laudo é pedido e só fica "data antiga"
+ * depois de 4 anos; entre 3 e 4 anos a linha avisa que o prazo é de 3 anos em prédio com mais de 20.
  */
-export function auditarConjuntoDocumental(analise: AnaliseV2, agoraIso: string): AuditoriaConjuntoDocumental {
+export function auditarConjuntoDocumental(
+  analise: AnaliseV2,
+  agoraIso: string,
+  opcoes: { anoConstrucao?: number | null } = {},
+): AuditoriaConjuntoDocumental {
   const hojeYmd = agoraIso.slice(0, 10);
+  const idadeDoPredio =
+    typeof opcoes.anoConstrucao === "number" && Number.isFinite(opcoes.anoConstrucao)
+      ? Math.max(0, Number(hojeYmd.slice(0, 4)) - opcoes.anoConstrucao)
+      : null;
+  const vistoria = regraDaVistoriaPredialPe(idadeDoPredio);
   const docs = (analise.caderno?.documentos ?? []).filter((d) => d.vinculo !== "outro_imovel");
   const balancetes = analise.caderno?.balancetes ?? [];
   const requisitos = analise.modalidade === "aluguel" ? REQUISITOS_ALUGUEL : REQUISITOS_COMPRA;
 
-  const itens: ItemControlePacote[] = requisitos.map((req) => {
+  const itens: ItemControlePacote[] = requisitos.flatMap((req): ItemControlePacote[] => {
+    const maxDias = req.prazoPelaIdadeDoPredio && vistoria.intervaloAnos === 3 ? DIAS_EM_3_ANOS : req.maxDias;
     const candidatosDocs = docs.filter((d) => req.tipos.includes(d.tipo));
     const registros = candidatosDocs.map((d) => {
       const ymd = (req.prefInspecao ? d.inspecaoEm ?? d.emitidoEm : d.emitidoEm ?? d.inspecaoEm) ?? null;
@@ -176,14 +198,16 @@ export function auditarConjuntoDocumental(analise: AnaliseV2, agoraIso: string):
     }
 
     if (registros.length === 0) {
-      return {
+      // Prédio com até 5 anos de habite-se ainda não precisa da vistoria: o laudo não entra na lista do que falta.
+      if (req.prazoPelaIdadeDoPredio && vistoria.exigida === false) return [];
+      return [{
         id: req.id,
         titulo: req.titulo,
         estado: "faltando",
         rotuloEstado: "Faltando",
         detalhe: "Não guardado no caderno ainda",
         referencia: req.referencia,
-      };
+      }];
     }
 
     const comData = registros
@@ -192,39 +216,43 @@ export function auditarConjuntoDocumental(analise: AnaliseV2, agoraIso: string):
 
     const maisRecente = comData[0];
     if (!maisRecente) {
-      return {
+      return [{
         id: req.id,
         titulo: req.titulo,
         estado: "recebido",
         rotuloEstado: "Recebido",
         detalhe: "Recebido · sem data declarada",
         referencia: req.referencia,
-      };
+      }];
     }
 
     const dias = diasEntre(maisRecente.ymd, hojeYmd);
-    if (req.maxDias !== null && dias !== null && dias > req.maxDias) {
-      return {
+    if (maxDias !== null && dias !== null && dias > maxDias) {
+      return [{
         id: req.id,
         titulo: req.titulo,
         estado: "desatualizado",
         rotuloEstado: "Data antiga",
-        detalhe: `${maisRecente.rotuloOrigem} · ${dias} dias (referência: até ${req.maxDias} dias)`,
+        detalhe: `${maisRecente.rotuloOrigem} · ${dias} dias (referência: até ${maxDias} dias)`,
         referencia: req.referencia,
-      };
+      }];
     }
 
-    return {
+    const avisoDoPrazoMenor =
+      req.prazoPelaIdadeDoPredio && vistoria.intervaloAnos === null && dias !== null && dias > DIAS_EM_3_ANOS
+        ? " · se o prédio tiver mais de 20 anos, o prazo é de 3 anos"
+        : "";
+    return [{
       id: req.id,
       titulo: req.titulo,
       estado: "recebido",
       rotuloEstado: "Recebido",
       detalhe:
-        dias !== null && dias >= 0
+        (dias !== null && dias >= 0
           ? `${maisRecente.rotuloOrigem} (${dias} ${dias === 1 ? "dia" : "dias"})`
-          : maisRecente.rotuloOrigem,
+          : maisRecente.rotuloOrigem) + avisoDoPrazoMenor,
       referencia: req.referencia,
-    };
+    }];
   });
 
   const recebidosEmDia = itens.filter((i) => i.estado === "recebido").length;

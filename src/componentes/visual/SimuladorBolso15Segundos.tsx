@@ -59,12 +59,10 @@ export function SimuladorBolso15Segundos({
     const itbi = simularOtimizacaoItbiRecife({
       precoImovelReais: precoAtivo,
       financiamentoSfh: true,
-      primeiroImovelResidencialSfh: true,
       percentualFinanciado: 1 - entradaAtivaPct / 100,
     });
-    const fechamento =
-      itbi.sfhOtimizado1Pct?.totalFechamentoReais ??
-      itbi.aVistaTempestivo18Pct.totalFechamentoReais;
+    // Só o ITBI entra: escritura e registro ficam a confirmar no cartório (a tabela do TJPE não é proporcional ao preço).
+    const fechamento = itbi.sfhOtimizado1Pct?.itbiReais ?? itbi.aVistaTempestivo18Pct.itbiReais;
     const condEst = Math.round((precoAtivo / 100_000) * 145);
     const iptuEst = Math.round((precoAtivo * 0.004) / 12);
     caixaEntrar = Math.round(entradaReais + fechamento);
@@ -253,7 +251,7 @@ export function SimuladorBolso15Segundos({
           >
             <View style={styles.colRes}>
               <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.rotuloRes}>
-                {compra ? "Caixa para entrar" : "Garantia estimada"}
+                {compra ? "Caixa para entrar (sem cartório)" : "Garantia estimada"}
               </Texto>
               <Texto tipo="numero" style={styles.valorRes}>
                 {`~${formatarReaisCompacto(caixaEntrar)}`}
@@ -274,15 +272,15 @@ export function SimuladorBolso15Segundos({
 
           {compra && economiaLegal > 0 ? (
             <Texto tipo="apoio" cor="cor-salvia-escura" style={styles.economiaTxt}>
-              {`Potencial de economia legal no fechamento (SFH / 180 dias): até ${formatarReais(economiaLegal)}`}
+              {`Economia possível de ITBI (SFH e pedido em até 180 dias): até ${formatarReais(economiaLegal)}`}
             </Texto>
           ) : null}
 
           <Texto testID="sim15-origens-calculo" tipo="apoio" cor="cor-texto-apoio" style={styles.origemTxt}>
             {compra
-              ? "Origem de cada linha: financiamento pela taxa média Banco Central · fechamento pelas regras fiscais do Recife · condomínio, IPTU e energia por estimativa parametrizada."
+              ? "Origem de cada linha: financiamento pela taxa média Banco Central · entrada + ITBI pelas regras do Recife (escritura e registro a confirmar no cartório, fora da conta) · condomínio, IPTU e energia por estimativa parametrizada."
               : garantiaAluguel === "fianca"
-                ? "Origem de cada linha: entrada sem caução tripla · fiança locatícia estimada em ~10%/mês (Lei nº 8.245/1991) · condomínio, IPTU e energia parametrizados."
+                ? "Origem de cada linha: entrada sem caução tripla · fiança locatícia estimada em cerca de 10% do aluguel por mês (estimativa de mercado, não é valor de lei) · condomínio, IPTU e energia parametrizados."
                 : "Origem de cada linha: caução estimada em 3 meses de aluguel · condomínio, IPTU e energia por estimativa parametrizada do anúncio."}
           </Texto>
 

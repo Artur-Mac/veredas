@@ -2,7 +2,9 @@ import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { classificarNivelSossegoPorDbInterno } from "../../dados/acustica/decomporSossego";
 import type { VereditoConfortoTermico } from "../../dados/clima/confortoTermico";
+import type { FichaDeMetodo6Campos } from "../../dados/fichaDeMetodo";
 import { formatarReaisCompacto } from "../../dados/formatos";
+import { FichaDeMetodo } from "./FichaDeMetodo";
 import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
 import { RAIO, TOQUE_MINIMO, type TokenDeCor } from "../../tema/tokens";
@@ -15,7 +17,14 @@ type Props = {
   comparacaoM2Pct: number | null;
   orientacaoCurta: string;
   conforto: VereditoConfortoTermico;
-  ruidoDormitorioDb: number;
+  /** dB(A) estimados no quarto à noite, com a janela fechada; `null` = sem leitura para o prédio. */
+  ruidoDormitorioDb: number | null;
+  /**
+   * A leitura de sossego do modelo de ruído estimado (src/dados/ruido): a palavra da nota,
+   * "~61 dB(A) à noite (estimativa) · 6,6/10" e a ficha "como foi calculada" (`null` sem leitura). É o que a tela do
+   * dossiê passa (decisões A1, A2 e A13, 18/11/2026): a nota não aparece sem a ficha.
+   */
+  sossego?: { valor: string; subtitulo: string; ficha: FichaDeMetodo6Campos | null };
   spuAtivo?: boolean;
   aoTocarMetrica?: (alvo: "bolso" | "sol" | "ruido" | "predio") => void;
 };
@@ -38,6 +47,7 @@ export function PlacarHeroi5Segundos({
   orientacaoCurta,
   conforto,
   ruidoDormitorioDb,
+  sossego: sossegoDoModelo,
   spuAtivo = false,
   aoTocarMetrica,
 }: Props) {
@@ -54,12 +64,12 @@ export function PlacarHeroi5Segundos({
   const comparacaoTxt =
     comparacaoM2Pct !== null
       ? comparacaoM2Pct <= -5
-        ? `${Math.abs(comparacaoM2Pct)}% abaixo do bairro`
+        ? `${Math.abs(comparacaoM2Pct)}% abaixo do ITBI do prédio`
         : comparacaoM2Pct >= 8
-          ? `${comparacaoM2Pct}% acima do bairro`
-          : "Na média do bairro"
+          ? `${comparacaoM2Pct}% acima do ITBI do prédio`
+          : "Perto do ITBI do prédio"
       : compra && dinheiroParaEntrarReais
-        ? `Entrada + cartório ~${formatarReaisCompacto(dinheiroParaEntrarReais)}`
+        ? `Entrada + ITBI ~${formatarReaisCompacto(dinheiroParaEntrarReais)} (sem cartório)`
         : "Confira os custos abaixo";
 
   const mensalTxt =
@@ -70,12 +80,14 @@ export function PlacarHeroi5Segundos({
   const confortoQuente =
     conforto.zona === "quente_tarde" || conforto.zona === "tende_abafar";
 
-  const sossego = classificarNivelSossegoPorDbInterno(ruidoDormitorioDb);
-  const notaSossego0a10 = Math.max(
-    1,
-    Math.min(9.8, Math.round(((64 - ruidoDormitorioDb) / 3.4) * 10) / 10),
-  );
-  const ruidoAlto = ruidoDormitorioDb > 45;
+  // A nota e o dB vêm do modelo estimado do prédio; sem ele (cartão montado só com o dB do quarto) fica a palavra do
+  // nível, sem nota. Sem leitura nenhuma, diz "Sem leitura": nunca um valor fixo.
+  const porQuarto = ruidoDormitorioDb !== null ? classificarNivelSossegoPorDbInterno(ruidoDormitorioDb) : null;
+  const sossego = sossegoDoModelo ??
+    (porQuarto ? { valor: porQuarto.nivel, subtitulo: porQuarto.subtituloPlacar, ficha: null } : { valor: "Sem leitura", subtitulo: "Sem estimativa de ruído", ficha: null });
+  // A13: as duas notas do placar (conforto e sossego) abrem a ficha de método num toque.
+  const temNotaDeConforto = typeof conforto.notaConforto0a10 === "number";
+  const ruidoAlto = ruidoDormitorioDb !== null && ruidoDormitorioDb > 45;
   const precoAcima = comparacaoM2Pct !== null && comparacaoM2Pct >= 10;
 
   const celulas: [CelulaPlacar, CelulaPlacar, CelulaPlacar, CelulaPlacar] = [
@@ -113,8 +125,8 @@ export function PlacarHeroi5Segundos({
     {
       id: "ruido",
       rotulo: "Sossego à noite",
-      valorGrande: sossego.nivel,
-      subtitulo: `${sossego.subtituloPlacar} · ${notaSossego0a10.toFixed(1).replace(".", ",")}/10`,
+      valorGrande: sossego.valor,
+      subtitulo: sossego.subtitulo,
       corPonto: ruidoAlto ? "cor-barro" : "cat-mare",
       corDestaque: ruidoAlto ? "cor-barro-texto" : "cor-azul-cadastral",
     },
@@ -166,6 +178,12 @@ export function PlacarHeroi5Segundos({
         {renderCelula(celulas[2], false)}
         {renderCelula(celulas[3], true)}
       </View>
+      {temNotaDeConforto || sossego.ficha ? (
+        <View testID="placar-fichas-de-metodo" style={styles.fichas}>
+          {temNotaDeConforto ? <FichaDeMetodo ficha={conforto.metodo} testID="placar-conforto-metodo" rotulo="Como foi calculada a nota de sol e conforto" /> : null}
+          {sossego.ficha ? <FichaDeMetodo ficha={sossego.ficha} testID="placar-sossego-metodo" rotulo="Como foi calculada a nota de sossego" /> : null}
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -179,6 +197,9 @@ const styles = StyleSheet.create({
   },
   linhaGrade: {
     flexDirection: "row",
+  },
+  fichas: {
+    paddingHorizontal: 14,
   },
   celula: {
     flex: 1,
@@ -211,5 +232,6 @@ const styles = StyleSheet.create({
   subtitulo: {
     fontSize: 11.5,
     lineHeight: 15,
+    fontVariant: ["tabular-nums"],
   },
 });
