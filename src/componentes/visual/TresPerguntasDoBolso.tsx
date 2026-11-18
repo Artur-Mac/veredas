@@ -428,7 +428,7 @@ export function TresPerguntasDoBolso({
               • ITBI no Recife (Código Tributário do Recife, Lei 15.563/1991, arts. 52 e 55): 1% sobre a parte financiada pelo SFH, até R$ 1.036.600,71 (valor de 2026), e 1,8% sobre o restante com o lançamento pedido em até 180 dias da assinatura do contrato (3% fora do prazo).
             </Texto>
             <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
-              • Terreno da União (Decreto-Lei nº 2.398/1987 e Leis nº 13.139/2015 e 13.240/2015): foro anual (0,6%) ou ocupação (2%) calculados apenas sobre a fração ideal do terreno, excluídas as benfeitorias.
+              • Terreno da União: foro anual de 0,6% (Decreto-Lei nº 9.760/1946, art. 101) ou taxa de ocupação de 2% (Decreto-Lei nº 2.398/1987, art. 1º), calculados sobre o valor do terreno na fração ideal da unidade, sem as benfeitorias.
             </Texto>
             <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
               • Saída mensal e 10 anos: financiamento referencial Tabela Price com 20% de entrada e comparação líquida contra aplicação no CDI. A valorização do imóvel é uma suposição que você escolhe (0%, 3% ou 5% ao ano), começando em 0%.

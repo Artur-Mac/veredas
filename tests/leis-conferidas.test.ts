@@ -12,10 +12,11 @@ import { TresPerguntasDoBolso, type PropsTresPerguntasDoBolso } from "../src/com
 import { TemaDoApp } from "../src/tema/Tema";
 import { traduzirIndicadoresCidadao, type EntradaTradutorCidadao } from "../src/dados/cidadao/tradutorCidadao";
 import { ITBI_ALIQUOTA_MAXIMA, ITBI_ALIQUOTA_MINIMA, estimarTransferencia, type CustoPorPartes } from "../src/dados/custoPorPartes";
+import { calcularSpuEstatutario, calcularTetoReajusteSpu } from "../src/nucleo/motores/spuMarinha";
 import { avaliarResilienciaRedes, DATA_ASSUNCAO_AQUA_PERNAMBUCO, hojeNoAparelhoIso } from "../src/municipios/recife/motores/resilienciaRedes";
 import { cadernoVazio, type DocumentoPessoal } from "../src/dados/caderno";
 import { esquemaAnaliseV2, type AnaliseV2 } from "../src/dados/contratos";
-import { ALERTAS_DILIGENCIA_RECIFE_2026 } from "../src/dados/documentos/copilotoPreSinal";
+import { ALERTAS_DILIGENCIA_RECIFE_2026, derivarImpedimentosPreSinal } from "../src/dados/documentos/copilotoPreSinal";
 import { auditarConjuntoDocumental } from "../src/dados/pacoteEspecialista";
 import { avaliarEstruturaECondominio, regraDaVistoriaPredialPe } from "../src/municipios/recife/motores/estruturaCondominio";
 import {
@@ -413,5 +414,60 @@ describe("água: início da AQUA Pernambuco marcado para 23/11/2026, pela data r
     const semRedes = cartao(cartoes({}), "IND-08");
     expect(semRedes.camada2ImpactoPratico).toBe("Peça ao vendedor a quitação das contas de água e pergunte à Compesa se há débito em aberto.");
     expect(JSON.stringify([antes, semRedes])).not.toMatch(/continuam sendo cobrados|permanecem|Tapacurá/);
+  });
+});
+
+describe("terreno da União: teto de reajuste, foro pelo Decreto-Lei 9.760/1946 e CAT", () => {
+  test("Lei 14.474/2022: o teto do reajuste é 2× o IPCA do ano anterior; os 10,06% de 2022 saíram", () => {
+    // Antes, com IPCA de 3% ou de 4,5%, o código devolvia 10,06% (o maior entre os dois).
+    expect(calcularTetoReajusteSpu(0.03)).toBe(0.06);
+    expect(calcularTetoReajusteSpu(0.045)).toBe(0.09);
+    expect(calcularTetoReajusteSpu(0.06)).toBe(0.12);
+    expect(calcularTetoReajusteSpu(0)).toBe(0);
+    expect(calcularTetoReajusteSpu(-0.01)).toBe(0);
+    const base = { regime: "aforamento" as const, valorDominioPlenoTerrenoReais: 15_300_000, fracaoIdeal: 1 / 50 };
+    expect(calcularSpuEstatutario({ ...base, ipcaAnual: 0.045 }).tetoReajusteAnualPct).toBe(9);
+    expect(calcularSpuEstatutario({ ...base, ipcaAnual: 0.03 }).tetoReajusteAnualPct).toBe(6);
+    // Sem o IPCA do ano anterior, o app não supõe um: o teto fica nulo.
+    expect(calcularSpuEstatutario(base).tetoReajusteAnualPct).toBeNull();
+    expect(fonteDe("nucleo", "motores", "spuMarinha.ts")).not.toMatch(/0\.1006/);
+  });
+
+  test("as fichas dizem que o foro vem do Decreto-Lei 9.760/1946 e o laudêmio e a ocupação, do 2.398/1987", () => {
+    expect(cartao(cartoes({}), "IND-01").camada3ProvaMetodo.metodo6Campos.baseLegalOuNormativa).toBe(
+      "Decreto-Lei nº 9.760/1946 (foro), Decreto-Lei nº 2.398/1987 (laudêmio e taxa de ocupação) e Lei nº 14.474/2022.",
+    );
+    const bolso = montar(React.createElement(TresPerguntasDoBolso, PROPS_BOLSO));
+    const abrir = bolso.root.find((n) => n.props.testID === "bolso-metodo-toggle" && typeof n.props.onPress === "function");
+    act(() => abrir.props.onPress());
+    const texto = textos(bolso.toJSON());
+    expect(texto).toContain(
+      "• Terreno da União: foro anual de 0,6% (Decreto-Lei nº 9.760/1946, art. 101) ou taxa de ocupação de 2% (Decreto-Lei nº 2.398/1987, art. 1º), calculados sobre o valor do terreno na fração ideal da unidade, sem as benfeitorias.",
+    );
+    expect(texto).toContain(
+      "• ITBI no Recife (Código Tributário do Recife, Lei 15.563/1991, arts. 52 e 55): 1% sobre a parte financiada pelo SFH, até R$ 1.036.600,71 (valor de 2026), e 1,8% sobre o restante com o lançamento pedido em até 180 dias da assinatura do contrato (3% fora do prazo).",
+    );
+    expect(texto).not.toMatch(/13\.139\/2015|LC nº 227/);
+    act(() => bolso.unmount());
+
+    const boletim = fonteDe("dados", "recife", "boletimPreContrato.ts");
+    expect(boletim).toContain("(Decretos-Leis 9.760/1946 e 2.398/1987)");
+    expect(boletim).toContain("com checagem da alíquota reduzida de 1,8% (pedido em até 180 dias)");
+    expect(boletim).not.toMatch(/\(DL 2\.398\/1987\)|alíquota reduzida SFH/);
+  });
+
+  test("a CAT aparece com o nome inteiro, vale 90 dias, e quem paga o laudêmio é o vendedor", () => {
+    const alerta = ALERTAS_DILIGENCIA_RECIFE_2026.find((a) => a.id === "cat_spu_90_dias")!;
+    expect(alerta.titulo).toBe("Transferência em terreno da União: certidão da SPU (CAT, vale 90 dias)");
+    expect(alerta.detalhe).toBe(
+      "Quando o terreno é da União, o vendedor paga o laudêmio (5% do valor do terreno na fração ideal da unidade) antes da escritura, e a SPU emite a Certidão de Autorização para Transferência (CAT), que vale 90 dias.",
+    );
+    const [trava] = derivarImpedimentosPreSinal({ spuAtivo: true, onusAtivos: [], alertas: [], estadosPacote: { matricula: "recebido" } });
+    expect(trava!.comoDestravar).toBe(
+      "Conferir se é aforamento ou ocupação e exigir o laudêmio pago pelo vendedor e a Certidão de Autorização para Transferência (CAT) da SPU, que vale 90 dias.",
+    );
+    expect(calcularSpuEstatutario({ regime: "ocupacao", valorDominioPlenoTerrenoReais: 1_000_000, fracaoIdeal: 0.1 }).limiteEpistemologico).toMatch(
+      /Certidão de Autorização para Transferência \(CAT\), que a SPU emite para a venda e vale 90 dias\.$/,
+    );
   });
 });

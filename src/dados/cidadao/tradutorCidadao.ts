@@ -186,7 +186,7 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       chavesDuplas,
       metodo6Campos: {
         oQueMede: "Laudêmio (5%), ocupação (2% a.a.) ou foro (0,6% a.a.) e bloqueio de FGTS.",
-        baseLegalOuNormativa: "Decreto-Lei nº 2.398/1987, Leis nº 13.240/2015 e 14.474/2022.",
+        baseLegalOuNormativa: "Decreto-Lei nº 9.760/1946 (foro), Decreto-Lei nº 2.398/1987 (laudêmio e taxa de ocupação) e Lei nº 14.474/2022.",
         aritmeticaResumo: "Incide apenas sobre (Valor do Domínio Pleno do Terreno × Fração Ideal).",
         // R10 (19/11/2026): nenhuma tela informa o valor do terreno, então a conta pela fração ideal não roda. A ficha
         // diz isso em vez de citar uma fonte que não foi lida.

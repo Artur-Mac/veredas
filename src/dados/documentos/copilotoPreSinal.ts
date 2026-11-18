@@ -183,9 +183,9 @@ export const ALERTAS_DILIGENCIA_RECIFE_2026: readonly AlertaDiligenciaRecife[] =
   },
   {
     id: "cat_spu_90_dias",
-    titulo: "Transferência em terreno da União — CAT (90 dias)",
+    titulo: "Transferência em terreno da União: certidão da SPU (CAT, vale 90 dias)",
     detalhe:
-      "Quando há regime da União, o laudêmio (5% sobre o domínio pleno do terreno × fração ideal) e a emissão da CAT cabem ao vendedor antes da escritura, com validade de 90 dias.",
+      "Quando o terreno é da União, o vendedor paga o laudêmio (5% do valor do terreno na fração ideal da unidade) antes da escritura, e a SPU emite a Certidão de Autorização para Transferência (CAT), que vale 90 dias.",
   },
 ];
 
@@ -232,7 +232,7 @@ export function derivarImpedimentosPreSinal(params: {
       relacao: "bloqueia",
       titulo: "Regime de terreno da União (marinha)",
       impacto: "Ocupação sem aforamento impede uso de FGTS na Caixa, e a escritura exige CAT vigente.",
-      comoDestravar: "Conferir se é aforamento ou ocupação e exigir CAT (90 dias) e laudêmio pagos pelo vendedor.",
+      comoDestravar: "Conferir se é aforamento ou ocupação e exigir o laudêmio pago pelo vendedor e a Certidão de Autorização para Transferência (CAT) da SPU, que vale 90 dias.",
     });
   }
 

@@ -59,7 +59,9 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
     });
     expect(alodial.laudemio5PctVendedorReais).toBe(0);
     expect(alodial.elegivelFgtsCaixa).toBe(true);
-    expect(calcularTetoReajusteSpu(0.045)).toBe(0.1006);
+    // Lei 14.474/2022: o teto é 2× o IPCA do ano anterior; os 10,06% valeram só em 2022.
+    expect(calcularTetoReajusteSpu(0.045)).toBe(0.09);
+    expect(alodial.tetoReajusteAnualPct).toBeNull();
   });
 
   test("Otimizador do ITBI (arts. 52 e 55 do Código Tributário do Recife) reproduz os cenários de R$ 650 mil e o limite do SFH de 2026, sem valor de cartório", () => {
