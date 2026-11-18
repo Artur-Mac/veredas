@@ -67,6 +67,9 @@ export const esquemaArquivoDoBairro = z.strictObject({
   ruas: esquemaRuas,
   agua: esquemaAgua,
   pracas: z.strictObject({ nome: z.array(z.string().min(1).nullable()), tipo: z.array(z.enum(["praca", "parque"])), g: inteiros }),
+  // Pontes (18/11/2026): seção acrescentada ao contrato depois do piloto. Opcional só até o pipeline gravá-la em todos
+  // os arquivos; quem regenerar os dados com a seção torna este campo obrigatório.
+  pontes: z.strictObject({ g: inteiros }).optional(),
 });
 export type ArquivoDoBairro = z.infer<typeof esquemaArquivoDoBairro>;
 
@@ -280,6 +283,7 @@ export function decodificarArquivoDoBairro(a: ArquivoDoBairro): MapaBaseDoBairro
     ruas: decodificarRuas(a.ruas, `${onde} ruas`),
     agua: decodificarAgua(a.agua, `${onde} água`),
     pracas,
+    pontes: a.pontes ? decodificarPoligonos(a.pontes.g, null, `${onde} pontes`) : [],
   };
 }
 

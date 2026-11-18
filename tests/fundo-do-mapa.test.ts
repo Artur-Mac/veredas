@@ -54,7 +54,7 @@ function vizinhoSintetico(): MapaBaseDoBairro {
     return acc;
   }, []));
   const parte: PoligonoBase = { aneis: [anel], caixa: [Math.min(anel[0]!, anel[6]!), anel[1]!, anel[2]!, anel[5]!] };
-  return { versao: 1, bairro: "pina", origem, divisa: { slug: "pina", nome: "PINA", partes: [parte] }, quadras: [], lotes: [], ruas: [], agua: [], pracas: [] };
+  return { versao: 1, bairro: "pina", origem, divisa: { slug: "pina", nome: "PINA", partes: [parte] }, quadras: [], lotes: [], ruas: [], agua: [], pracas: [], pontes: [] };
 }
 
 function contarSubcaminhos(d: string): number {

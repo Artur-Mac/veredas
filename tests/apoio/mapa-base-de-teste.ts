@@ -138,6 +138,7 @@ export function mapaBaseDoRecorte(recorte: Recorte, slug = "boa-viagem", origem:
     ruas,
     agua,
     pracas,
+    pontes: [],
   };
 }
 
