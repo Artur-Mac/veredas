@@ -71,6 +71,10 @@ export function PlacarHeroi5Segundos({
     conforto.zona === "quente_tarde" || conforto.zona === "tende_abafar";
 
   const sossego = classificarNivelSossegoPorDbInterno(ruidoDormitorioDb);
+  const notaSossego0a10 = Math.max(
+    1,
+    Math.min(9.8, Math.round(((64 - ruidoDormitorioDb) / 3.4) * 10) / 10),
+  );
   const ruidoAlto = ruidoDormitorioDb > 45;
   const precoAcima = comparacaoM2Pct !== null && comparacaoM2Pct >= 10;
 
@@ -99,7 +103,10 @@ export function PlacarHeroi5Segundos({
       id: "sol",
       rotulo: "Sol & conforto",
       valorGrande: orientacaoCurta,
-      subtitulo: conforto.selo,
+      subtitulo:
+        typeof conforto.notaConforto0a10 === "number"
+          ? `${conforto.selo} · ${conforto.notaConforto0a10.toFixed(1).replace(".", ",")}/10`
+          : conforto.selo,
       corPonto: confortoQuente ? "cor-barro" : "cor-salvia",
       corDestaque: confortoQuente ? "cor-barro-texto" : "cor-salvia-escura",
     },
@@ -107,7 +114,7 @@ export function PlacarHeroi5Segundos({
       id: "ruido",
       rotulo: "Sossego à noite",
       valorGrande: sossego.nivel,
-      subtitulo: sossego.subtituloPlacar,
+      subtitulo: `${sossego.subtituloPlacar} · ${notaSossego0a10.toFixed(1).replace(".", ",")}/10`,
       corPonto: ruidoAlto ? "cor-barro" : "cat-mare",
       corDestaque: ruidoAlto ? "cor-barro-texto" : "cor-azul-cadastral",
     },

@@ -47,6 +47,8 @@ import { decomporSossego } from "../src/dados/acustica/decomporSossego";
 import { EscalaDeRuidoHumana, RelogioDoPredio } from "../src/componentes/visual/EscalasVisuais";
 import { TermometroConfortoTermico } from "../src/componentes/visual/TermometroConfortoTermico";
 import { MatrizVisualComparar } from "../src/componentes/visual/MatrizVisualComparar";
+import { PlacarHeroi5Segundos } from "../src/componentes/visual/PlacarHeroi5Segundos";
+import { BussolaSolarBrisa } from "../src/componentes/cidadao/BussolaSolarBrisa";
 import { TemaDoApp } from "../src/tema/Tema";
 
 function listarTsxRecursivo(dir: string): string[] {
@@ -2163,6 +2165,53 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(arvoreVisivel.root.find((n) => n.props.testID === "relogio-do-predio-vazio")).toBeDefined();
     const txt = extrairTextos(arvoreVisivel.toJSON()).join("\n");
     expect(txt).toContain("Sem leitura publicada de ano de entrega");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+  });
+
+  it("remove último dB não calibrado em BussolaSolarBrisa e unifica notas 0–10 no PlacarHeroi5Segundos em S48", () => {
+    const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: 90, andar: 7 });
+    const conf = avaliarConfortoTermico({
+      andar: 7,
+      pavimentosTotais: 14,
+      fachadaAzimuteGraus: 90,
+      bioclimatico: bio,
+    });
+    const acu = avaliarAcustica3d({
+      andar: 7,
+      fachadaVoltadaParaVia: "frente",
+      tipologiaVia: "local",
+      distanciaViaM: 12,
+      anoConstrucao: 2018,
+      precoImovelReais: 850_000,
+    });
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(BussolaSolarBrisa, { azimuteGraus: 105, ruidoDbAtual: 35.4 }),
+          React.createElement(PlacarHeroi5Segundos, {
+            modalidade: "compra",
+            precoPrincipalReais: 850_000,
+            mensalBolsoRealReais: 5_900,
+            dinheiroParaEntrarReais: 195_000,
+            comparacaoM2Pct: -4,
+            orientacaoCurta: "Nascente",
+            conforto: conf,
+            ruidoDormitorioDb: acu.ruidoInternoDormitorioDbA,
+          }),
+        ),
+      );
+    });
+
+    expect(tree.root.find((n) => n.props.testID === "bussola-som-ambiente")).toBeDefined();
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("zero gravação de áudio");
+    expect(txt).toContain(`${conf.notaConforto0a10.toFixed(1).replace(".", ",")}/10`);
+    expect(txt).not.toMatch(/\d+\s*dB/i);
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });

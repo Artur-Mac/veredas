@@ -1,11 +1,12 @@
 import { View } from "react-native";
+import { classificarNivelSossegoPorDbInterno } from "../../dados/acustica/decomporSossego";
 import { classificarCardeal } from "../../municipios/recife/motores/bioclimatico3d";
 import { useTema } from "../../tema/Tema";
-import { RAIO, comAlfa } from "../../tema/tokens";
+import { RAIO } from "../../tema/tokens";
 import { Texto } from "../Texto";
 
 /**
- * Bússola Ao Vivo de Sol, Brisa Leste-Sudeste e Medidor Acústico Local (somente em memória):
+ * Bússola Ao Vivo de Sol, Brisa Leste-Sudeste e Leitura Acústica Relativa Local (somente em memória):
  * Guia prático durante a visita presencial ao apartamento sem gravar áudio bruto (P3).
  */
 export function BussolaSolarBrisa({
@@ -21,18 +22,19 @@ export function BussolaSolarBrisa({
   const cardeal = azimuteGraus !== null ? classificarCardeal(azimuteGraus) : "Aponte a bússola pela janela";
   const recebeBrisa = azimuteGraus !== null && azimuteGraus >= 60 && azimuteGraus <= 170;
   const recebePoente = azimuteGraus !== null && azimuteGraus >= 225 && azimuteGraus <= 315;
+  const nivelSom = ruidoDbAtual !== null ? classificarNivelSossegoPorDbInterno(ruidoDbAtual).nivel : "Aguardando";
 
   return (
     <View
       style={{
-        backgroundColor: cor("cor-creme"),
+        backgroundColor: cor("cor-superficie"),
         borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto"), 0.14),
+        borderColor: cor("cor-linha-forte"),
         borderRadius: RAIO.cartao,
         padding: 14,
         gap: 8,
       }}
-      accessibilityLabel="Bússola de visita sol, brisa e decibelímetro em memória"
+      accessibilityLabel="Bússola de visita sol, brisa e som ambiente em memória"
     >
       <Texto tipo="secao" style={{ fontSize: 15.5 }}>
         Modo visita: Sol, brisa e silêncio no quarto
@@ -59,18 +61,18 @@ export function BussolaSolarBrisa({
 
         <View style={{ width: 118, gap: 2 }}>
           <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 11.5 }}>
-            Decibéis (agora)
+            Som ambiente (agora)
           </Texto>
-          <Texto tipo="numero" style={{ fontSize: 18, fontVariant: ["tabular-nums"] }}>
-            {ruidoDbAtual !== null ? `${ruidoDbAtual.toFixed(1)} dB` : "-- dB"}
+          <Texto testID="bussola-som-ambiente" tipo="numero" style={{ fontSize: 16, fontWeight: "700" }}>
+            {nivelSom}
           </Texto>
           <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11 }}>
-            Leitura local em memória · zero gravação de áudio
+            Leitura relativa em memória · zero gravação de áudio
           </Texto>
         </View>
       </View>
 
-      <View style={{ borderTopWidth: 1, borderTopColor: comAlfa(cor("cor-texto"), 0.08), paddingTop: 6, gap: 3 }}>
+      <View style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 6, gap: 3 }}>
         <Texto tipo="apoio" style={{ fontSize: 12 }}>
           • Testar dados móveis 5G no quarto dos fundos com a porta fechada.
         </Texto>
