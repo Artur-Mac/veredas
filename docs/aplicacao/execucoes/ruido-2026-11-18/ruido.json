@@ -1,0 +1,555 @@
+{
+ "executadoEm": "2026-11-18T18:37:23.896Z",
+ "versao": "5e3b4b7941ed75ee",
+ "formato": 1,
+ "indice": "indice-municipal/faa40c969275e6b5",
+ "atrito": "7b838d25558798c2",
+ "extrato": {
+  "arquivo": "nordeste-261117.osm.pbf",
+  "url": "https://download.geofabrik.de/south-america/brazil/nordeste-261117.osm.pbf",
+  "dadosDe": "2026-11-17",
+  "baixadoEm": "2026-11-18",
+  "md5": "9546c214b72a118f99ad5c8d1c06a630",
+  "sha256": "4b1b5e2eae02e04f29db98c88ce93c484816ace1484ed3238f920a684aa7a43d",
+  "bytes": 445617687
+ },
+ "viasDoCache": true,
+ "leitura": {
+  "blocos": 9110,
+  "nos": 66441837,
+  "vias": 6355505,
+  "nosNaCaixa": 1630733,
+  "viasDeTransito": 34978,
+  "tuneis": 312,
+  "foraDaClasse": 439129
+ },
+ "cenario": {
+  "trechos": 208478,
+  "grupos": 19582,
+  "paradasLigadas": 1490,
+  "paradas": 1492,
+  "trechosComOnibus": 17836
+ },
+ "luseVigentes": 19,
+ "pontosDoTrilho": 242,
+ "bairros": 72,
+ "predios": 7203,
+ "semFonteNenhuma": 0,
+ "bytesTotais": 1357045,
+ "maiorArquivo": 352399,
+ "fonteMaisForteDeDiaDb": {
+  "p10": 53.4,
+  "mediana": 61.2,
+  "p90": 68.7,
+  "maximo": 78.2
+ },
+ "sha256DosArquivos": "b03a942f987cd2ca1dd7e37a541ec6ba85f5348fc161927cf5dedfe7e8cdc30c",
+ "porBairro": {
+  "boa-viagem": {
+   "predios": 1878,
+   "bytes": 352399,
+   "nomesDeVia": 62,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.08
+  },
+  "casa-forte": {
+   "predios": 82,
+   "bytes": 15542,
+   "nomesDeVia": 26,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.05
+  },
+  "gracas": {
+   "predios": 291,
+   "bytes": 55899,
+   "nomesDeVia": 38,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.26
+  },
+  "espinheiro": {
+   "predios": 156,
+   "bytes": 30595,
+   "nomesDeVia": 14,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.35
+  },
+  "madalena": {
+   "predios": 280,
+   "bytes": 53179,
+   "nomesDeVia": 35,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.1
+  },
+  "aflitos": {
+   "predios": 70,
+   "bytes": 13637,
+   "nomesDeVia": 15,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.31
+  },
+  "afogados": {
+   "predios": 174,
+   "bytes": 32300,
+   "nomesDeVia": 39,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.94
+  },
+  "agua-fria": {
+   "predios": 33,
+   "bytes": 6650,
+   "nomesDeVia": 14,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.39
+  },
+  "apipucos": {
+   "predios": 1,
+   "bytes": 279,
+   "nomesDeVia": 2,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4
+  },
+  "areias": {
+   "predios": 31,
+   "bytes": 5360,
+   "nomesDeVia": 14,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.06
+  },
+  "arruda": {
+   "predios": 27,
+   "bytes": 5379,
+   "nomesDeVia": 13,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.33
+  },
+  "barro": {
+   "predios": 38,
+   "bytes": 6580,
+   "nomesDeVia": 12,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.13
+  },
+  "beberibe": {
+   "predios": 9,
+   "bytes": 1633,
+   "nomesDeVia": 5,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.11
+  },
+  "boa-vista": {
+   "predios": 267,
+   "bytes": 50695,
+   "nomesDeVia": 48,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.19
+  },
+  "bomba-do-hemeterio": {
+   "predios": 4,
+   "bytes": 1015,
+   "nomesDeVia": 7,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.75
+  },
+  "bongi": {
+   "predios": 24,
+   "bytes": 4450,
+   "nomesDeVia": 10,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.71
+  },
+  "cacote": {
+   "predios": 2,
+   "bytes": 504,
+   "nomesDeVia": 3,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.5
+  },
+  "cajueiro": {
+   "predios": 16,
+   "bytes": 3429,
+   "nomesDeVia": 14,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.38
+  },
+  "campina-do-barreto": {
+   "predios": 7,
+   "bytes": 1583,
+   "nomesDeVia": 10,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.57
+  },
+  "campo-grande": {
+   "predios": 123,
+   "bytes": 23848,
+   "nomesDeVia": 30,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.34
+  },
+  "casa-amarela": {
+   "predios": 265,
+   "bytes": 49430,
+   "nomesDeVia": 43,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.91
+  },
+  "caxanga": {
+   "predios": 25,
+   "bytes": 4873,
+   "nomesDeVia": 19,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.4
+  },
+  "coelhos": {
+   "predios": 10,
+   "bytes": 2126,
+   "nomesDeVia": 10,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.3
+  },
+  "coqueiral": {
+   "predios": 1,
+   "bytes": 176,
+   "nomesDeVia": 0,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 1
+  },
+  "cordeiro": {
+   "predios": 352,
+   "bytes": 64897,
+   "nomesDeVia": 68,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.04
+  },
+  "curado": {
+   "predios": 1,
+   "bytes": 287,
+   "nomesDeVia": 2,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4
+  },
+  "derby": {
+   "predios": 33,
+   "bytes": 6317,
+   "nomesDeVia": 14,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.73
+  },
+  "encruzilhada": {
+   "predios": 198,
+   "bytes": 36669,
+   "nomesDeVia": 31,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.84
+  },
+  "engenho-do-meio": {
+   "predios": 45,
+   "bytes": 8636,
+   "nomesDeVia": 8,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.38
+  },
+  "estancia": {
+   "predios": 16,
+   "bytes": 3293,
+   "nomesDeVia": 9,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.44
+  },
+  "fundao": {
+   "predios": 6,
+   "bytes": 1216,
+   "nomesDeVia": 5,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.67
+  },
+  "guabiraba": {
+   "predios": 1,
+   "bytes": 279,
+   "nomesDeVia": 2,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4
+  },
+  "hipodromo": {
+   "predios": 23,
+   "bytes": 4628,
+   "nomesDeVia": 14,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.13
+  },
+  "ibura": {
+   "predios": 21,
+   "bytes": 4292,
+   "nomesDeVia": 19,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.76
+  },
+  "ilha-do-leite": {
+   "predios": 36,
+   "bytes": 7221,
+   "nomesDeVia": 16,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.42
+  },
+  "ilha-do-retiro": {
+   "predios": 33,
+   "bytes": 6363,
+   "nomesDeVia": 12,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.73
+  },
+  "imbiribeira": {
+   "predios": 475,
+   "bytes": 86375,
+   "nomesDeVia": 67,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.89
+  },
+  "ipsep": {
+   "predios": 183,
+   "bytes": 31455,
+   "nomesDeVia": 15,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.24
+  },
+  "iputinga": {
+   "predios": 286,
+   "bytes": 53800,
+   "nomesDeVia": 41,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.25
+  },
+  "jaqueira": {
+   "predios": 24,
+   "bytes": 4943,
+   "nomesDeVia": 14,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.29
+  },
+  "jardim-sao-paulo": {
+   "predios": 56,
+   "bytes": 11139,
+   "nomesDeVia": 20,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.3
+  },
+  "jiquia": {
+   "predios": 13,
+   "bytes": 2929,
+   "nomesDeVia": 12,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.85
+  },
+  "jordao": {
+   "predios": 19,
+   "bytes": 4113,
+   "nomesDeVia": 19,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.37
+  },
+  "mangueira": {
+   "predios": 3,
+   "bytes": 529,
+   "nomesDeVia": 1,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 2.67
+  },
+  "monteiro": {
+   "predios": 38,
+   "bytes": 7123,
+   "nomesDeVia": 10,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.97
+  },
+  "morro-da-conceicao": {
+   "predios": 4,
+   "bytes": 905,
+   "nomesDeVia": 5,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.75
+  },
+  "mustardinha": {
+   "predios": 26,
+   "bytes": 4756,
+   "nomesDeVia": 10,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.69
+  },
+  "nova-descoberta": {
+   "predios": 6,
+   "bytes": 1277,
+   "nomesDeVia": 3,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.33
+  },
+  "paissandu": {
+   "predios": 10,
+   "bytes": 2168,
+   "nomesDeVia": 9,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.1
+  },
+  "parnamirim": {
+   "predios": 93,
+   "bytes": 18223,
+   "nomesDeVia": 26,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.28
+  },
+  "pina": {
+   "predios": 130,
+   "bytes": 24545,
+   "nomesDeVia": 18,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.99
+  },
+  "poco": {
+   "predios": 39,
+   "bytes": 6988,
+   "nomesDeVia": 17,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.36
+  },
+  "ponto-de-parada": {
+   "predios": 13,
+   "bytes": 2575,
+   "nomesDeVia": 7,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.92
+  },
+  "porto-da-madeira": {
+   "predios": 18,
+   "bytes": 3702,
+   "nomesDeVia": 8,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.44
+  },
+  "prado": {
+   "predios": 92,
+   "bytes": 15752,
+   "nomesDeVia": 16,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.17
+  },
+  "recife": {
+   "predios": 3,
+   "bytes": 617,
+   "nomesDeVia": 3,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.33
+  },
+  "rosarinho": {
+   "predios": 65,
+   "bytes": 11690,
+   "nomesDeVia": 15,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.66
+  },
+  "san-martin": {
+   "predios": 25,
+   "bytes": 4771,
+   "nomesDeVia": 9,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.12
+  },
+  "sancho": {
+   "predios": 24,
+   "bytes": 4536,
+   "nomesDeVia": 12,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.75
+  },
+  "santana": {
+   "predios": 32,
+   "bytes": 6126,
+   "nomesDeVia": 10,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.22
+  },
+  "santo-amaro": {
+   "predios": 87,
+   "bytes": 16589,
+   "nomesDeVia": 24,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.93
+  },
+  "santo-antonio": {
+   "predios": 25,
+   "bytes": 5230,
+   "nomesDeVia": 13,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.44
+  },
+  "sao-jose": {
+   "predios": 47,
+   "bytes": 9280,
+   "nomesDeVia": 17,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.26
+  },
+  "soledade": {
+   "predios": 41,
+   "bytes": 8033,
+   "nomesDeVia": 17,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.12
+  },
+  "tamarineira": {
+   "predios": 159,
+   "bytes": 30121,
+   "nomesDeVia": 25,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.02
+  },
+  "tejipio": {
+   "predios": 10,
+   "bytes": 2095,
+   "nomesDeVia": 9,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4
+  },
+  "torre": {
+   "predios": 136,
+   "bytes": 25391,
+   "nomesDeVia": 24,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.04
+  },
+  "torreao": {
+   "predios": 35,
+   "bytes": 5579,
+   "nomesDeVia": 2,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 2.43
+  },
+  "torroes": {
+   "predios": 13,
+   "bytes": 2276,
+   "nomesDeVia": 6,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 2.92
+  },
+  "varzea": {
+   "predios": 326,
+   "bytes": 63136,
+   "nomesDeVia": 64,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 4.41
+  },
+  "vasco-da-gama": {
+   "predios": 32,
+   "bytes": 5959,
+   "nomesDeVia": 9,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.69
+  },
+  "zumbi": {
+   "predios": 36,
+   "bytes": 6660,
+   "nomesDeVia": 12,
+   "semFonteNenhuma": 0,
+   "fontesPorPredio": 3.81
+  }
+ },
+ "ms": 20702,
+ "memoriaPicoMB": 319
+}

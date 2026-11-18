@@ -30,6 +30,7 @@ const MODULOS_GERADOS = [
   "recife/procuraGerado.ts",
   "recife/equipamentosGerado.ts",
   "recife/atritoGerado.ts",
+  "recife/ruidoGerado.ts",
   "recife/mapaBaseGerado.ts",
   "sol/fontesGeradas.ts",
 ];
