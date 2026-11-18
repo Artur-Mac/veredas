@@ -500,6 +500,16 @@ export function CanvasSolSombraBrisa25D({
             const cyTopo =
               topoSvg.reduce((s, q) => s + q[1], 0) / topoSvg.length;
             const paredes = cena.paredesPorPredio[p.id] ?? [];
+            const paredesFrente = paredes.filter((w) => w.ehFrenteCamera);
+            const indicePrimeiraCota = p.ehAlvo
+              ? paredesFrente.findIndex((w) => w.fachadaId === fachadaSelecionada)
+              : -1;
+            const indicePrimeiraCotaFundo =
+              p.ehAlvo && indicePrimeiraCota === -1
+                ? paredes.findIndex(
+                    (w) => !w.ehFrenteCamera && w.fachadaId === fachadaSelecionada,
+                  )
+                : -1;
 
             const corTeto = p.ehAlvo
               ? cena.tetoEmSombra
@@ -514,9 +524,7 @@ export function CanvasSolSombraBrisa25D({
             return (
               <G key={p.id}>
                 {/* Paredes visiveis para a camera com iluminacao real */}
-                {paredes
-                  .filter((w) => w.ehFrenteCamera)
-                  .map((w) => {
+                {paredesFrente.map((w, idxParede) => {
                     const b0 = toSvg(w.p0M, 0);
                     const b1 = toSvg(w.p1M, 0);
                     const t1 = toSvg(w.p1M, alt);
@@ -560,28 +568,49 @@ export function CanvasSolSombraBrisa25D({
                       wallTestId = `canvas-wall-${w.fachadaId}`;
                     }
 
+                    const zCotaM = Math.min(Math.max(1.5, alt - 1), zAndarM);
+                    const f0 = toSvg(w.p0M, zCotaM);
+                    const f1 = toSvg(w.p1M, zCotaM);
+                    const cotaTestId =
+                      ehSelecionada && idxParede === indicePrimeiraCota
+                        ? "canvas-cota-andar-ativo"
+                        : undefined;
+
                     return (
-                      <Polygon
-                        key={`w-${p.id}-${w.indiceAresta}`}
-                        testID={wallTestId}
-                        points={formatarPts([b0, b1, t1, t0])}
-                        fill={fillParede}
-                        stroke={
-                          ehSelecionada
-                            ? fachadaAtiva.grupoSolar === "Poente"
-                              ? cor("cor-barro")
-                              : cor("cor-acao")
-                            : p.ehAlvo
-                              ? cor("cor-texto-apoio")
-                              : cor("cor-linha-forte")
-                        }
-                        strokeWidth={ehSelecionada ? 2 : 0.7}
-                        onPress={
-                          p.ehAlvo && w.fachadaId
-                            ? () => aoSelecionarFachada(w.fachadaId!)
-                            : undefined
-                        }
-                      />
+                      <G key={`w-${p.id}-${w.indiceAresta}`}>
+                        <Polygon
+                          testID={wallTestId}
+                          points={formatarPts([b0, b1, t1, t0])}
+                          fill={fillParede}
+                          stroke={
+                            ehSelecionada
+                              ? fachadaAtiva.grupoSolar === "Poente"
+                                ? cor("cor-barro")
+                                : cor("cor-acao")
+                              : p.ehAlvo
+                                ? cor("cor-texto-apoio")
+                                : cor("cor-linha-forte")
+                          }
+                          strokeWidth={ehSelecionada ? 2 : 0.7}
+                          onPress={
+                            p.ehAlvo && w.fachadaId
+                              ? () => aoSelecionarFachada(w.fachadaId!)
+                              : undefined
+                          }
+                        />
+                        {ehSelecionada ? (
+                          <Line
+                            testID={cotaTestId}
+                            x1={f0[0]}
+                            y1={f0[1]}
+                            x2={f1[0]}
+                            y2={f1[1]}
+                            stroke={cor("cor-superficie")}
+                            strokeWidth={1.6}
+                            strokeDasharray="3 2"
+                          />
+                        ) : null}
+                      </G>
                     );
                   })}
 
@@ -600,11 +629,14 @@ export function CanvasSolSombraBrisa25D({
                   strokeDasharray={ehFutura ? "4 3" : undefined}
                 />
 
-                {/* Aresta iluminada no teto + alvos de toque para fachadas posteriores (Norte/Oeste) */}
+                {/* Aresta iluminada no teto + cota posterior + alvos de toque */}
                 {p.ehAlvo
-                  ? paredes.map((w) => {
+                  ? paredes.map((w, idxEdge) => {
                       const t0 = toSvg(w.p0M, alt);
                       const t1 = toSvg(w.p1M, alt);
+                      const zCotaEdgeM = Math.min(Math.max(1.5, alt - 1), zAndarM);
+                      const f0Edge = toSvg(w.p0M, zCotaEdgeM);
+                      const f1Edge = toSvg(w.p1M, zCotaEdgeM);
                       const ehSelecionada = w.fachadaId === fachadaSelecionada;
                       let backTestId: string | undefined;
                       if (
@@ -630,6 +662,25 @@ export function CanvasSolSombraBrisa25D({
                               }
                               strokeWidth={3.6}
                               strokeLinecap="round"
+                            />
+                          ) : null}
+                          {!w.ehFrenteCamera &&
+                          ehSelecionada &&
+                          indicePrimeiraCotaFundo >= 0 ? (
+                            <Line
+                              testID={
+                                idxEdge === indicePrimeiraCotaFundo
+                                  ? "canvas-cota-andar-ativo"
+                                  : undefined
+                              }
+                              x1={f0Edge[0]}
+                              y1={f0Edge[1]}
+                              x2={f1Edge[0]}
+                              y2={f1Edge[1]}
+                              stroke={cor("cor-superficie")}
+                              strokeOpacity={0.65}
+                              strokeWidth={1.4}
+                              strokeDasharray="3 2"
                             />
                           ) : null}
                           {!w.ehFrenteCamera && w.fachadaId ? (
@@ -991,7 +1042,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   abaEstacao: {
-    minHeight: 34,
+    minHeight: TOQUE_MINIMO,
     paddingHorizontal: 10,
     borderRadius: RAIO.pilula,
     alignItems: "center",
@@ -1082,7 +1133,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   pilulaHora: {
-    minHeight: TOQUE_MINIMO - 4,
+    minHeight: TOQUE_MINIMO,
     minWidth: 46,
     borderRadius: RAIO.pilula,
     paddingHorizontal: 10,
@@ -1129,7 +1180,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   bandaPilula: {
-    minHeight: 36,
+    minHeight: TOQUE_MINIMO,
     borderRadius: RAIO.pilula,
     paddingHorizontal: 10,
     alignItems: "center",

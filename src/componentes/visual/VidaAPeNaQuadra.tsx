@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
   },
   botaoPesos: {
-    minHeight: TOQUE_MINIMO - 6,
+    minHeight: TOQUE_MINIMO,
     justifyContent: "center",
   },
   textoBotaoPesos: {

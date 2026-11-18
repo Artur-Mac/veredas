@@ -1594,4 +1594,67 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(txt).toContain("Banco Central");
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });
+
+  it("desenha cota visual 2.5D do andar ativo, exibe economia mensal de trânsito e blinda WCAG >= 44px em visual/", () => {
+    const visualDir = join(__dirname, "..", "src", "componentes", "visual");
+    const violacoesToque: string[] = [];
+    for (const arquivo of listarTsxRecursivo(visualDir)) {
+      const src = readFileSync(arquivo, "utf8");
+      if (/\bTOQUE_MINIMO\s*-/.test(src) || /\bminHeight:\s*(?:3[0-9]|4[0-3])\b/.test(src)) {
+        violacoesToque.push(arquivo);
+      }
+    }
+    expect(violacoesToque).toEqual([]);
+
+    const bv = edificiosDoBairro("boa-viagem");
+    const predio = bv.find((e) => e.poligono && e.poligono.length >= 3)!;
+    const inf = inferirFachadasDoEdificio({ edificio: predio, textoAnuncio: "" });
+
+    let canvasTree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      canvasTree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(CanvasSolSombraBrisa25D, {
+            inferencia: inf,
+            fachadaSelecionada: inf.frente.id,
+            aoSelecionarFachada: () => undefined,
+            andar: 5,
+            aoAlterarAndar: () => undefined,
+            pavimentosTotais: 14,
+            centro: predio.centro,
+          }),
+        ),
+      );
+    });
+    expect(
+      canvasTree.root.find((n) => n.props.testID === "canvas-cota-andar-ativo"),
+    ).toBeDefined();
+
+    let rotinaTree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      rotinaTree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(RotinaDoisDestinosComparar, {
+            nomeOpcaoA: "Opção Boa Viagem",
+            centroA: null,
+            bairroA: "boa-viagem",
+            nomeOpcaoB: "Opção Graças",
+            centroB: null,
+            bairroB: "gracas",
+          }),
+        ),
+      );
+    });
+    expect(
+      rotinaTree.root.find((n) => n.props.testID === "rotina-economia-mensal"),
+    ).toBeDefined();
+    const rotinaTxt = extrairTextos(rotinaTree.toJSON()).join("\n");
+    expect(rotinaTxt).toContain("h/mês a menos no trânsito");
+    expect(REGEX_JARGON_CAMADA1.test(rotinaTxt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(rotinaTxt)).toBe(false);
+  });
 });

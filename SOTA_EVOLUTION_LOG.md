@@ -52,5 +52,6 @@ Branch: `feat/vereda-visual-power-overhaul`
 - [x] **S32**: Radical hairline demodularization of `SobreOsDados` (`sobre-os-dados.tsx`), ATTOM data-elements table (`app23` §6.1), and local/no-training privacy clause (`Cherre app27` §6.4 / `ONR app26` §6.4) (`2/2` suites, `138/138` tests).
 - [x] **S33**: Action ladder & 6-field method sheet (`Jupiter app28` §6.1–§6.3 + `Symbium app25`) in `radarVistaELote.ts` & `RadarVistaELote.tsx` (`3/3` suites, `108/108` tests).
 - [x] **S34**: Unified citizen typography (`PlusJakartaSans` + `tabular-nums`), package versioning metadata (`Gridics app24` §6.5), line-item sources (`Ownwell app30` §6.2), and WCAG 44px cleanup across `LeitorDeAta`, `PorPerto`, `MapaDoLote`, `ExportarResumoExecutivo`, and `SimuladorBolso15Segundos` (`5/5` suites, `179/179` tests).
-- [ ] **S35**: Visual 2.5D floor elevation line (`CanvasSolSombraBrisa25D.tsx`), monthly commute savings (`TravelTime app17`), and global WCAG >= 44px guard across `src/componentes/visual/`.
+- [x] **S35**: Visual 2.5D floor elevation line (`CanvasSolSombraBrisa25D.tsx`), monthly commute savings (`TravelTime app17`), and global WCAG >= 44px guard across `src/componentes/visual/` (`4/4` suites, `79/79` tests).
 - [ ] **S36**: Year-over-year cadence comparison in `LinhaUnificadaDoLote` (`Placer app29` §6.4 + `Jupiter app28` §6.3) + full 98-suite & live Metro `200` verification.
+- [ ] **S37**: WCAG >= 44px & subtle-divider cleanup across `visita-v1/` (`NoImovel`, `Orientacao`) and `dossie-v1/` (`MapaDoLote`, `PorPerto`, `Topo`).

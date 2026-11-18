@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   botaoMetodo: {
-    minHeight: TOQUE_MINIMO - 4,
+    minHeight: TOQUE_MINIMO,
     justifyContent: "center",
   },
   textoBotaoMetodo: {

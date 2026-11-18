@@ -7,7 +7,7 @@ import {
 } from "../../dados/mobilidade/rotinaCasal";
 import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
-import { RAIO } from "../../tema/tokens";
+import { RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 
 type Props = {
   nomeOpcaoA: string;
@@ -43,6 +43,8 @@ export function RotinaDoisDestinosComparar({
     destino2Id,
     diasPresenciaisMes: 20,
   });
+  const difMinDia = Math.abs(resultado.minutosDiaOpcaoA - resultado.minutosDiaOpcaoB);
+  const horasMesMenos = Math.round(((difMinDia * 20) / 60) * 10) / 10;
 
   return (
     <View
@@ -177,6 +179,17 @@ export function RotinaDoisDestinosComparar({
           </Texto>
         </View>
       </View>
+
+      {difMinDia >= 6 && resultado.vencedorRotina !== "empate" ? (
+        <View
+          testID="rotina-economia-mensal"
+          style={[styles.faixaEconomia, { borderTopColor: cor("cor-linha") }]}
+        >
+          <Texto tipo="apoio" cor="cor-salvia-escura" style={styles.textoEconomia}>
+            {`~${String(horasMesMenos).replace(".", ",")} h/mês a menos no trânsito em ${resultado.vencedorRotina === "A" ? nomeOpcaoA : nomeOpcaoB} considerando 20 dias presenciais.`}
+          </Texto>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -220,7 +233,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   chip: {
-    minHeight: 34,
+    minHeight: TOQUE_MINIMO,
     borderRadius: RAIO.pilula,
     paddingHorizontal: 10,
     alignItems: "center",
@@ -236,6 +249,16 @@ const styles = StyleSheet.create({
     padding: 14,
     gap: 10,
     alignItems: "center",
+  },
+  faixaEconomia: {
+    borderTopWidth: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  textoEconomia: {
+    fontSize: 12,
+    fontWeight: "600",
+    fontVariant: ["tabular-nums"],
   },
   colTotal: {
     flex: 1,

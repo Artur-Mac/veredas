@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   botaoChecklistIptu: {
-    minHeight: 38,
+    minHeight: TOQUE_MINIMO,
     justifyContent: "center",
   },
   textoChecklistIptu: {
