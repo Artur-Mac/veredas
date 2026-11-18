@@ -90,6 +90,7 @@ describe("MapaDoLote na tela", () => {
     let a!: TestRenderer.ReactTestRenderer;
     act(() => { a = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(MapaDoLote, { predio, obras, vizinhos: edificiosDoBairro("gracas") }))); });
     montadas.push(a);
+    medirOQuadro(a);
     return a;
   }
   it("o seletor 2D/2.5D aparece com quatro modos e o volume diz que é estimado", () => {
@@ -129,8 +130,17 @@ describe("MapaDoLote na tela", () => {
   });
 });
 
-// 18/11/2026: o fundo do mapa (mapa-base) na planta da gaveta. No jest as camadas são lidas na hora, então o fundo já
-// vem pronto no primeiro desenho.
+// 18/11/2026: o fundo do mapa (mapa-base) na planta da gaveta. No jest as camadas são lidas na hora, então o fundo vem
+// pronto logo depois da primeira medida do quadro.
+/**
+ * No jest o onLayout não dispara sozinho, e o fundo só monta depois da primeira medida. A largura é a mesma de antes
+ * da medida (320), para as contas de toque dos testes continuarem valendo.
+ */
+function medirOQuadro(a: TestRenderer.ReactTestRenderer, largura = 320) {
+  const no = a.root.findAll((n) => typeof n.type === "string" && typeof n.props.onLayout === "function")[0];
+  if (no) act(() => no.props.onLayout({ nativeEvent: { layout: { width: largura, height: 280 } } }));
+}
+
 describe("MapaDoLote com o fundo do mapa", () => {
   const golden = edificioPorId("8001-216", "boa-viagem")!;
   const vizinhosBV = edificiosDoBairro("boa-viagem");
@@ -138,6 +148,7 @@ describe("MapaDoLote com o fundo do mapa", () => {
     let a!: TestRenderer.ReactTestRenderer;
     act(() => { a = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(MapaDoLote, { predio: golden, obras: [], vizinhos: vizinhosBV, ...props }))); });
     montadas.push(a);
+    medirOQuadro(a);
     return a;
   }
   const rotulo = (a: TestRenderer.ReactTestRenderer) => a.root.findAll((n) => n.props.role === "img")[0]!.props.accessibilityLabel as string;
@@ -321,6 +332,7 @@ describe("MapaDoLote, revisão do mapa-base", () => {
     let a!: TestRenderer.ReactTestRenderer;
     act(() => { a = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(MapaDoLote, { predio: golden, obras: [], vizinhos: vizinhosBV, ...props }))); });
     montadas.push(a);
+    medirOQuadro(a);
     return a;
   }
   /** Os filhos do grupo de zoom, na ordem do desenho, como "chao", "volume", "rotulos" ou "outro". */
@@ -375,5 +387,32 @@ describe("MapaDoLote, revisão do mapa-base", () => {
     // Longe do pino, fica onde está.
     expect(etiquetaLongeDoPino({ x: 160, y: 104 }, [100, 100], 1)).toEqual({ x: 160, y: 104 });
     expect(etiquetaLongeDoPino({ x: 100, y: 60 }, [100, 100], 1)).toEqual({ x: 100, y: 60 });
+  });
+});
+
+// 18/11/2026 (última revisão): o fundo só monta depois da primeira medida do quadro. Antes, com a largura provisória,
+// ele montava e desenhava duas vezes por abertura da gaveta.
+describe("MapaDoLote: o fundo só depois de medir a largura", () => {
+  const golden = edificioPorId("8001-216", "boa-viagem")!;
+  it("antes do onLayout não há fundo nem crédito e o gancho não pediu arquivo; depois, uma cena só", () => {
+    const pedidos = jest.spyOn(mapaBase, "arquivosDoMapaBaseParaOQuadro");
+    const bairros = jest.spyOn(mapaBase, "mapaBaseDoBairro");
+    try {
+      let a!: TestRenderer.ReactTestRenderer;
+      act(() => { a = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(MapaDoLote, { predio: golden, obras: [], vizinhos: edificiosDoBairro("boa-viagem") }))); });
+      montadas.push(a);
+      expect(a.root.findAllByType(FundoDoMapa)).toHaveLength(0);
+      expect(a.root.findAllByType(CreditoDaBase)).toHaveLength(0);
+      expect(pedidos).not.toHaveBeenCalled();
+      expect(bairros).not.toHaveBeenCalled();
+      medirOQuadro(a, 340);
+      const fundos = a.root.findAllByType(FundoDoMapa);
+      expect(fundos).toHaveLength(1);
+      expect(fundos[0]!.props.cena.largura).toBe(340);
+      expect(a.root.findAllByType(CreditoDaBase)).toHaveLength(1);
+    } finally {
+      pedidos.mockRestore();
+      bairros.mockRestore();
+    }
   });
 });

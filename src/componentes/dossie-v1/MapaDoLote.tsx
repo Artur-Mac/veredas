@@ -240,6 +240,8 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
   const acao = cor("cor-acao");
   const textoCor = cor("cor-texto");
   const [largura, setLargura] = useState(LARGURA_ANTES_DA_MEDIDA);
+  // O fundo só monta depois da primeira medida: com a largura provisória ele montaria e desenharia duas vezes.
+  const [medido, setMedido] = useState(false);
   const [estado, setEstado] = useState<EstadoDoMapa>({ ...ESTADO_INICIAL, modo: modoInicial });
   const [filtroExtra, setFiltroExtra] = useState<"todos" | CategoriaPontoExtra>("todos");
   const [extraTocadoId, setExtraTocadoId] = useState<string | null>(null);
@@ -312,6 +314,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
     imovel: { centro: predio.centro, codigoDoLogradouro: codigoDoLogradouro(predio.id) },
     quadro: { largura: cenaDoQuadro.largura, altura: cenaDoQuadro.altura, paraDesenho, zoom: estado.zoom, deslocamento, obstaculos },
     caixa,
+    ativo: medido,
   });
   const cenaDoFundo = fundo.estado === "pronta" && fundo.cena?.temDado ? fundo.cena : null;
   const loteNoFundo = Boolean(cenaDoFundo?.camadas.loteDoImovel);
@@ -474,6 +477,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
         onLayout={(e) => {
           const medida = Math.round(e.nativeEvent.layout.width);
           if (medida > 0 && medida !== largura) setLargura(medida);
+          if (medida > 0) setMedido(true);
         }}
         {...arraste}
         style={{

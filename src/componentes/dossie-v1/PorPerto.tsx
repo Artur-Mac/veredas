@@ -1,8 +1,9 @@
 // "Por perto" (15/11/2026): equipamentos públicos do cadastro da Prefeitura em volta do prédio, mapa interativo do
 // entorno com camadas (praças, metrô, ensino, saúde) e lugares personalizados da rotina / pontos de interesse.
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TextInput, View } from "react-native";
-import { garantirCamadas } from "../../dados/camadas";
+import { adiantarCamadas, garantirCamadas } from "../../dados/camadas";
+import { arquivosDoFundoEmVolta } from "../../dados/camadasDasTelas";
 import type { Edificio, ObrasProximas } from "../../dados/contratos";
 import { distanciaMetros } from "../../dados/geo";
 import { BAIRROS_DO_RECIFE, eCoberto, type SlugCoberto } from "../../dados/recife/bairros";
@@ -93,6 +94,15 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
   const fatos = fatosDeEquipamentos(bairro, predioId, acesso);
   const semaforos = semaforosPerto(bairro, predioId);
   const visiveis = todos ? fatos : fatos.slice(0, VISIVEIS);
+
+  // Pré-carga do fundo do "Ver no mapa": guarda no aparelho os arquivos que o mapa vai pedir, sem ler para a memória
+  // nem bloquear (adiantarCamadas não espera nem avisa falha). Uma vez por centro.
+  const chaveDoCentro = centroReferencia ? `${centroReferencia[0]},${centroReferencia[1]}` : null;
+  useEffect(() => {
+    if (!centroReferencia) return;
+    adiantarCamadas(arquivosDoFundoEmVolta(centroReferencia));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- só muda com o centro (chaveDoCentro)
+  }, [chaveDoCentro]);
 
   const pontosExtras = useMemo<EntradaPontoExtraMapa[]>(() => {
     if (!centroReferencia) return [];

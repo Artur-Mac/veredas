@@ -1,6 +1,6 @@
 // O fundo do mapa-base (18/11/2026) na confirmação do prédio e no topo do dossiê, com os arquivos de verdade (leitor
 // síncrono nos testes). Sem cobertura, os dois ficam como antes.
-import { describe, expect, it } from "@jest/globals";
+import { describe, expect, it, jest } from "@jest/globals";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
 import type { Edificio } from "../src/dados/contratos";
@@ -11,6 +11,8 @@ import { alturaDoPe, MapaDoPredio } from "../src/componentes/predio/MapaDoPredio
 import { caixaDaCena, montarCena, paraDesenhoDaCena, projetorLocal } from "../src/componentes/predio/projecao";
 import { GradeArquitetonica } from "../src/componentes/GradeArquitetonica";
 import { TemaDoApp } from "../src/tema/Tema";
+import { arquivosDoFundoEmVolta, camadasParaDepois } from "../src/dados/camadasDasTelas";
+import * as mapaBase from "../src/dados/recife/mapaBase";
 
 const BOA_VIAGEM = edificiosDoBairro("boa-viagem");
 const GOLDEN = BOA_VIAGEM.find((e) => e.id === "8001-216")!;
@@ -26,7 +28,13 @@ function montar(el: React.ReactElement): TestRenderer.ReactTestRenderer {
   act(() => {
     arvore = TestRenderer.create(React.createElement(TemaDoApp, null, el));
   });
+  // O fundo do /predio só monta depois da primeira medida (no jest o onLayout não dispara sozinho).
+  if (el.type === MapaDoPredio) medir(arvore);
   return arvore;
+}
+function medir(a: TestRenderer.ReactTestRenderer, largura = 340) {
+  const no = a.root.findAll((n) => typeof n.type === "string" && typeof n.props.onLayout === "function")[0];
+  if (no) act(() => no.props.onLayout({ nativeEvent: { layout: { width: largura, height: 180 } } }));
 }
 const botoes = (a: TestRenderer.ReactTestRenderer) =>
   a.root.findAll((n) => typeof n.type !== "string" && n.props.accessibilityRole === "button" && typeof n.props.onPress === "function");
@@ -187,5 +195,56 @@ describe("revisão do mapa-base no /predio e no topo", () => {
     act(() => a.root.find((n) => typeof n.props.onLayout === "function" && n.props.style?.aspectRatio === 16 / 10).props.onLayout({ nativeEvent: { layout: { width: 375, height: 234 } } }));
     const cena = a.root.findByType(FundoDoMapa).props.cena;
     expect(cena.rotulos.length).toBeGreaterThan(0);
+  });
+});
+
+// 18/11/2026 (última revisão): fundo só depois da medida, topo sem nomes de bairro e pré-carga dos arquivos do fundo.
+describe("última revisão do mapa-base nas telas", () => {
+  it("/predio: antes do onLayout não há fundo nem crédito e o gancho não pediu arquivo; depois, uma cena só", () => {
+    const pedidos = jest.spyOn(mapaBase, "arquivosDoMapaBaseParaOQuadro");
+    try {
+      let a!: TestRenderer.ReactTestRenderer;
+      act(() => {
+        a = TestRenderer.create(React.createElement(TemaDoApp, null, React.createElement(MapaDoPredio, { selecionado: GOLDEN, outros: BOA_VIAGEM, aoEscolher: () => undefined })));
+      });
+      expect(a.root.findAllByType(FundoDoMapa)).toHaveLength(0);
+      expect(a.root.findAllByType(CreditoDaBase)).toHaveLength(0);
+      expect(pedidos).not.toHaveBeenCalled();
+      medir(a, 343);
+      const fundos = a.root.findAllByType(FundoDoMapa);
+      expect(fundos).toHaveLength(1);
+      expect(fundos[0]!.props.cena.largura).toBe(343);
+      expect(a.root.findAllByType(CreditoDaBase)).toHaveLength(1);
+      a.unmount();
+    } finally {
+      pedidos.mockRestore();
+    }
+  });
+
+  it("topo: o desenho não traz nomes de bairro (o título já diz o bairro); os nomes de rua continuam", () => {
+    const t = montar(React.createElement(TopoDoDossie, { salva: false, aoVoltar: () => undefined, aoAlternarSalvo: () => undefined, aoAbrirMapa: () => undefined, predio: GOLDEN }));
+    act(() => t.root.find((n) => typeof n.props.onLayout === "function" && n.props.style?.aspectRatio === 16 / 10).props.onLayout({ nativeEvent: { layout: { width: 375, height: 234 } } }));
+    const cena = t.root.findByType(FundoDoMapa).props.cena;
+    expect(cena.bairros).toEqual([]);
+    expect(cena.rotulos.length).toBeGreaterThan(0);
+  });
+
+  it("camadasParaDepois leva o mapa-base do bairro e o da cidade; bairro sem arquivo fica só com a cidade", () => {
+    const depois = camadasParaDepois("boa-viagem");
+    expect(depois).toContain(mapaBase.arquivoDoMapaBase("boa-viagem"));
+    expect(depois).toContain(mapaBase.arquivoDaCidade());
+    expect(new Set(depois).size).toBe(depois.length);
+    expect(camadasParaDepois(null)).toEqual([mapaBase.arquivoDaCidade()]);
+  });
+
+  it("Por perto: adianta os bairros cuja caixa toca ~1,3 km em volta do centro e a cidade, sem repetir", () => {
+    const arquivos = arquivosDoFundoEmVolta(GOLDEN.centro);
+    expect(arquivos).toContain(mapaBase.arquivoDoMapaBase("boa-viagem"));
+    expect(arquivos).toContain(mapaBase.arquivoDaCidade());
+    expect(new Set(arquivos).size).toBe(arquivos.length);
+    // Um quadro de 1,3 km não chega a todos os bairros da cidade.
+    expect(arquivos.length).toBeLessThan(10);
+    // No mar, longe de tudo: só a cidade.
+    expect(arquivosDoFundoEmVolta(NO_MAR.centro)).toEqual([mapaBase.arquivoDaCidade()]);
   });
 });

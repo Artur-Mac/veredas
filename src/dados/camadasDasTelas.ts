@@ -5,6 +5,7 @@ import { arquivoDaChuva } from "./recife/chuva";
 import { arquivoDosEquipamentos } from "./recife/equipamentos";
 import { arquivoDosEssenciais } from "./recife/essenciais";
 import { arquivoDoIndice } from "./recife/indice";
+import { arquivoDaCidade, arquivoDoMapaBase, bairrosNaCaixa } from "./recife/mapaBase";
 import { arquivoDaNoite } from "./recife/noite";
 import { arquivoDaProcura } from "./recife/procura";
 import { arquivosDoTransito } from "./recife/transito";
@@ -32,7 +33,27 @@ export function camadasDoSol(bairro: string | null | undefined): string[] {
   return definidos([arquivoSolar(bairro)]);
 }
 
-/** O que outras abas vão pedir depois que o dossiê abriu: guardado em segundo plano para reabrir sem rede. */
+/**
+ * O que outras abas vão pedir depois que o dossiê abriu: guardado em segundo plano para reabrir sem rede. Inclui o
+ * mapa-base do bairro e o da cidade, para o fundo dos mapas (gaveta, Por perto) não esperar o download.
+ */
 export function camadasParaDepois(bairro: string | null | undefined): string[] {
-  return definidos([...camadasDoSol(bairro), ...(arquivosDoTransito([bairro]).length > 1 ? camadasDaRotina([bairro]) : [])]);
+  return definidos([
+    ...camadasDoSol(bairro),
+    ...(arquivosDoTransito([bairro]).length > 1 ? camadasDaRotina([bairro]) : []),
+    arquivoDoMapaBase(bairro),
+    arquivoDaCidade(),
+  ]);
+}
+
+/** Meia largura, em metros, do quadro em volta do centro cujo fundo o Por perto adianta ao aparecer (~1,3 km de lado). */
+const MEIO_QUADRO_DA_PRECARGA_M = 650;
+
+/** Por perto: arquivos do mapa-base dos bairros cuja caixa toca o quadro de ~1,3 km em volta do centro, e o da cidade. */
+export function arquivosDoFundoEmVolta(centro: readonly [number, number]): string[] {
+  const [lon, lat] = centro;
+  const dLat = MEIO_QUADRO_DA_PRECARGA_M / 111_320;
+  const dLon = MEIO_QUADRO_DA_PRECARGA_M / (111_320 * Math.cos((lat * Math.PI) / 180));
+  const arquivos = [...bairrosNaCaixa([lon - dLon, lat - dLat, lon + dLon, lat + dLat]).map(arquivoDoMapaBase), arquivoDaCidade()];
+  return [...new Set(arquivos.filter((x): x is string => !!x))];
 }

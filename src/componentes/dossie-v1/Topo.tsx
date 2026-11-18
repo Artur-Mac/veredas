@@ -125,7 +125,10 @@ export function TopoDoDossie({ predio, salva, aoVoltar, aoAlternarSalvo, aoAbrir
   });
   // Decisão (18/11/2026): o topo falha em silêncio, sem aviso nem "Tentar de novo": a gaveta do mapa, logo abaixo, já
   // mostra o aviso. Sem o fundo (carregando, falha ou sem cobertura), o quadro volta ao contorno solto sobre a grade.
-  const mapa = querFundo && fundo.cena?.temDado && quadro ? fundo.cena : null;
+  // Sem nomes de bairro (18/11/2026): perto de uma divisa só o vizinho cabia no quadro, e o topo parecia dizer outro
+  // bairro. O título do dossiê já diz o bairro; os nomes de rua continuam.
+  const cenaDoFundo = querFundo && fundo.cena?.temDado && quadro ? fundo.cena : null;
+  const mapa = useMemo(() => (cenaDoFundo && cenaDoFundo.bairros.length ? { ...cenaDoFundo, bairros: [] } : cenaDoFundo), [cenaDoFundo]);
   const contornoDoIndice = useMemo(
     () => (mapa && !mapa.camadas.loteDoImovel && predio?.poligono && quadro ? pontosDoSvg(predio.poligono.map(quadro.paraDesenho)) : null),
     [mapa, predio, quadro],

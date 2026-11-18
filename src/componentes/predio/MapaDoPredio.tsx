@@ -102,6 +102,8 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
   const { cor } = useTema();
   const azul = cor("cor-azul-cadastral");
   const [largura, setLargura] = useState(LARGURA_ANTES_DA_MEDIDA);
+  // O fundo só monta depois da primeira medida: com a largura provisória ele montaria e desenharia duas vezes.
+  const [medido, setMedido] = useState(false);
 
   // O pé conta o crédito sempre (com ou sem o fundo): o enquadramento não muda quando o fundo chega.
   const pe = alturaDoPe(largura, true);
@@ -131,6 +133,7 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
     imovel,
     quadro: { largura: cena.largura, altura: cena.altura, paraDesenho, obstaculos },
     caixa,
+    ativo: medido,
   });
   const comFundo = fundo.cena?.temDado ? fundo.cena : null;
   // Um destaque só para o prédio: com o fundo, o lote do imóvel do fundo (azul forte, o mesmo do topo do dossiê e da
@@ -182,6 +185,7 @@ export function MapaDoPredio({ selecionado, outros, aoEscolher }: Props) {
       onLayout={(e) => {
         const medida = Math.round(e.nativeEvent.layout.width);
         if (medida > 0 && medida !== largura) setLargura(medida);
+        if (medida > 0) setMedido(true);
       }}
       style={{
         position: "relative",
