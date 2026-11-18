@@ -98,22 +98,25 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
             style={{ padding: 13, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 }}
           >
             <View style={{ flex: 1, gap: 2 }}>
-              <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11, fontWeight: "700", letterSpacing: 0.5, textTransform: "uppercase" }}>Barulho por perto</Texto>
+              <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, fontWeight: "700" }}>Barulho por perto</Texto>
               <Texto tipo="corpo" style={{ fontSize: 14.5, lineHeight: 20, fontWeight: "600" }}>{resumoBarulho}</Texto>
             </View>
             <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 13, fontWeight: "600" }}>{aberto === "barulho" ? "Fechar −" : "Ver +"}</Texto>
           </AlvoDeToque>
           {aberto === "barulho" ? (
-            <View style={{ paddingHorizontal: 13, paddingBottom: 14, gap: 8, borderTopWidth: 0.5, borderTopColor: cor("cor-linha"), paddingTop: 10 }}>
+            <View style={{ paddingHorizontal: 13, paddingBottom: 14, gap: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 10 }}>
+              <Texto testID="simulador-consequencia-face" tipo="corpo" style={{ fontSize: 13.5, lineHeight: 19, fontWeight: "600", color: cor("cor-texto") }}>
+                {s.barulho.consequenciaPorFace}
+              </Texto>
               {s.barulho.semFontes ? (
                 <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20 }}>
-                  Nenhuma via principal, corredor de ônibus, metrô, bar ou licença de som foi encontrada perto nos dados públicos.
+                  Nenhuma via principal, corredor de ônibus, metrô, bar, mercado ou licença de som foi encontrada perto nos dados públicos.
                 </Texto>
               ) : (
                 s.barulho.fontes.map((f) => {
                   const badge = ROTULO_RELACAO[f.relacao];
                   return (
-                    <View key={f.id} style={{ padding: 10, borderRadius: 10, backgroundColor: cor("cor-superficie"), borderWidth: 1, borderColor: cor("cor-linha"), gap: 4 }}>
+                    <View key={f.id} style={{ paddingVertical: 9, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 4 }}>
                       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                         <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 19, fontWeight: "600", flex: 1 }}>{f.nome}</Texto>
                         <View style={{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 999, backgroundColor: cor(badge.corFundo) }}>
@@ -141,7 +144,7 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
             style={{ padding: 13, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 }}
           >
             <View style={{ flex: 1, gap: 2 }}>
-              <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11, fontWeight: "700", letterSpacing: 0.5, textTransform: "uppercase" }}>Sol na janela</Texto>
+              <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, fontWeight: "700" }}>Sol na janela</Texto>
               <Texto tipo="corpo" style={{ fontSize: 14.5, lineHeight: 20, fontWeight: "600" }}>{resumoSol}</Texto>
             </View>
             <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 13, fontWeight: "600" }}>{aberto === "sol" ? "Fechar −" : "Ver +"}</Texto>
@@ -173,7 +176,7 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
             style={{ padding: 13, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 }}
           >
             <View style={{ flex: 1, gap: 2 }}>
-              <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11, fontWeight: "700", letterSpacing: 0.5, textTransform: "uppercase" }}>Vento e brisa</Texto>
+              <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, fontWeight: "700" }}>Vento e brisa</Texto>
               <Texto tipo="corpo" style={{ fontSize: 14.5, lineHeight: 20, fontWeight: "600" }}>{resumoBrisa}</Texto>
             </View>
             <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 13, fontWeight: "600" }}>{aberto === "brisa" ? "Fechar −" : "Ver +"}</Texto>

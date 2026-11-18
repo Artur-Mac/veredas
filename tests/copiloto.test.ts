@@ -173,6 +173,8 @@ describe("simulador andar × fachada", () => {
     const oeste = simularUnidade({ predio: comNome, vizinhos, tipo: "apartamento", andar: 2, fachadaGraus: 270 });
     expect(leste.barulho.decibeis).toContain(SEM_LEITURA);
     expect(JSON.stringify(leste.barulho.fontes)).not.toMatch(/\d+\s*dB/);
+    expect(leste.barulho.consequenciaPorFace.length).toBeGreaterThan(15);
+    expect(leste.barulho.consequenciaPorFace).not.toMatch(/\d+\s*dB/);
     expect(leste.barulho.fontes.length).toBeLessThanOrEqual(3);
     expect(leste.sol?.fachada).not.toBe(oeste.sol?.fachada);
     const alto = simularUnidade({ predio: comNome, vizinhos, tipo: "apartamento", andar: 10, fachadaGraus: 90 });

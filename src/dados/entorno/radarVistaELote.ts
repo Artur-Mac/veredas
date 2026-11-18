@@ -325,6 +325,7 @@ export function analisarRadarVistaELote(params: {
     loteDeEsquinaProvavel,
     distanciaVizinhoConeM: distMinGeral,
     obrasNoConeCount: obrasNoCone.length,
-    itens: [itemCone, itemPrivacidade, itemLote, itemObras],
+    // Ordem Gridics (R38): capacidade/horizonte -> terreno/lote -> privacidade/afastamento -> licenças existentes
+    itens: [itemCone, itemLote, itemPrivacidade, itemObras],
   };
 }

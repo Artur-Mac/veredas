@@ -32,7 +32,7 @@ const rumo = (de: readonly [number, number], para: readonly [number, number]) =>
 };
 
 export type FonteDeBarulho = {
-  id: "via" | "onibus" | "metro" | "bar" | "luse" | "oficina";
+  id: "via" | "onibus" | "metro" | "bar" | "luse" | "oficina" | "mercado";
   nome: string;
   quando: "de dia" | "à noite" | "de dia e à noite";
   distanciaM: number;
@@ -58,6 +58,7 @@ export function fontesDeBarulho(predio: Edificio): FonteDeBarulho[] {
   const a = atritoDoPredio(predio.bairro, predio.id);
   if (a?.n && a.n[1] <= 300) fontes.push({ id: "bar", nome: "Bar ou venda de bebida", quando: "à noite", distanciaM: a.n[1], rumoGraus: a.n[2], fonte: "CNEFE, Censo 2022 (IBGE)" });
   if (a?.o && a.o[1] <= 150) fontes.push({ id: "oficina", nome: "Oficina, borracharia ou serralheria", quando: "de dia", distanciaM: a.o[1], rumoGraus: a.o[2], fonte: "CNEFE, Censo 2022 (IBGE)" });
+  if (a?.m && a.m[1] <= 200) fontes.push({ id: "mercado", nome: "Supermercado ou carga e descarga", quando: "de dia", distanciaM: a.m[1], rumoGraus: a.m[2], fonte: "CNEFE, Censo 2022 (IBGE)" });
   try {
     const r = baseDeCamadasAmbientais().ruidoCorredores;
     let onibus: { d: number; g: number; v: number } | null = null;
@@ -83,7 +84,13 @@ export function fontesDeBarulho(predio: Edificio): FonteDeBarulho[] {
 export type SimulacaoDaUnidade = {
   alturaDaJanelaM: number;
   explicacaoDaAltura: string;
-  barulho: { fontes: (FonteDeBarulho & { relacao: RelacaoComAFachada; frase: string })[]; semFontes: boolean; decibeis: string; nota: string };
+  barulho: {
+    fontes: (FonteDeBarulho & { relacao: RelacaoComAFachada; frase: string })[];
+    semFontes: boolean;
+    consequenciaPorFace: string;
+    decibeis: string;
+    nota: string;
+  };
   sol: LeituraDaJanela | null;
   vento: { frase: string; barreira: string | null; superficie3d: string };
 };
@@ -99,6 +106,17 @@ export function simularUnidade(opcoes: { predio: Edificio; vizinhos: readonly Ed
     const relacao = relacaoComAFachada(fachadaGraus, f.rumoGraus);
     return { ...f, relacao, frase: `${f.nome}, ${f.quando}, a ~${f.distanciaM} m para o ${nomeDaDirecao(f.rumoGraus)}: ${TEXTO_DA_RELACAO[relacao]}.` };
   });
+
+  const consequenciaPorFace =
+    fontes.length === 0
+      ? "Nenhuma fonte ruidosa mapeada perto em qualquer fachada deste prédio."
+      : fachadaGraus === null
+        ? "Toque numa direção da rosa acima para comparar se a janela fica de frente para a rua ou protegida nos fundos."
+        : fontes.some((f) => f.relacao === "de_frente")
+          ? "Janela de frente para a fonte principal: o som chega direto à esquadria; feche o vidro na visita para testar a vedação."
+          : fontes.every((f) => f.relacao === "de_costas")
+            ? "Janela nos fundos em relação às fontes mapeadas: o próprio corpo do prédio funciona como barreira acústica."
+            : "Janela lateral à fonte principal: o som incide de viés, com exposição reduzida em relação à frente.";
 
   const sol = fachadaGraus === null ? null : analisarJanelaNoRecife(fachadaGraus, { predio, vizinhos, andar });
 
@@ -124,6 +142,7 @@ export function simularUnidade(opcoes: { predio: Edificio; vizinhos: readonly Ed
     alturaDaJanelaM, explicacaoDaAltura,
     barulho: {
       fontes, semFontes: fontes.length === 0,
+      consequenciaPorFace,
       decibeis: `Nível em dB(A): ${SEM_LEITURA} (nenhuma medição calibrada no Recife).`,
       nota: "Distâncias em linha reta, do centro do lote. Para comparar, ouça na visita com a janela aberta e fechada, num dia útil às 18h e numa sexta à noite.",
     },

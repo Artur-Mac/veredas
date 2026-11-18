@@ -7,6 +7,8 @@ import { inferirFachadasDoEdificio } from "../src/dados/sol/inferirFachadas";
 import { simularCenaSombra25D, type PredioCena25D } from "../src/dados/sol/motorSombra25D";
 import { analisarRadarVistaELote } from "../src/dados/entorno/radarVistaELote";
 import { calcularPulsoDaQuadra } from "../src/dados/dossie/pulsoDaQuadra";
+import { fontesDeBarulho, simularUnidade } from "../src/dados/dossie/simuladorDaUnidade";
+import { edificiosDoBairro } from "../src/dados/recife/indice";
 import { avaliarBioclimatico3d } from "../src/municipios/recife/motores/bioclimatico3d";
 import { avaliarConfortoTermico } from "../src/dados/clima/confortoTermico";
 import { avaliarAcustica3d } from "../src/nucleo/motores/acustica3d";
@@ -861,5 +863,45 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     for (const tag of mapaSvgTags) {
       expect(tag).toContain('fontFamily="PlusJakartaSans"');
     }
+  });
+
+  it("expõe ordem Gridics no radar e consequência frente vs fundos sem dB no simulador (R9/R11/R38)", () => {
+    const radarOrdem = analisarRadarVistaELote({
+      centro,
+      edificio: null,
+      fachadaAtiva: inf.frente,
+      andar: 5,
+      vizinhos: vizinhosMesmaRua,
+      obrasProximas: null,
+    });
+    expect(radarOrdem.itens.map((i) => i.id)).toEqual([
+      "cone_vista",
+      "lote",
+      "privacidade",
+      "obras",
+    ]);
+
+    const bv = edificiosDoBairro("boa-viagem");
+    const comFonte = bv.find((e) => fontesDeBarulho(e).length > 0)!;
+    expect(comFonte).toBeDefined();
+    const primFonte = fontesDeBarulho(comFonte)[0]!;
+    const frente = simularUnidade({
+      predio: comFonte,
+      vizinhos: bv,
+      tipo: "apartamento",
+      andar: 4,
+      fachadaGraus: primFonte.rumoGraus,
+    });
+    const fundos = simularUnidade({
+      predio: comFonte,
+      vizinhos: bv,
+      tipo: "apartamento",
+      andar: 4,
+      fachadaGraus: (primFonte.rumoGraus + 180) % 360,
+    });
+    expect(frente.barulho.consequenciaPorFace).toContain("frente");
+    expect(fundos.barulho.consequenciaPorFace).not.toBe(frente.barulho.consequenciaPorFace);
+    expect(frente.barulho.consequenciaPorFace).not.toMatch(/\d+\s*dB/i);
+    expect(fundos.barulho.consequenciaPorFace).not.toMatch(/\d+\s*dB/i);
   });
 });
