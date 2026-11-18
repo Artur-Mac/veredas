@@ -2,7 +2,22 @@
 
 Escrito pelo orquestrador ao longo da noite. Estado de cada parte no fim de cada fase; o resumo do topo é o último a ser escrito. O plano de antes está em `PLANO-DA-NOITE.md`; o pedido, em `PROMPT-SESSAO-NOTURNA.md`.
 
-> **EM ANDAMENTO.** Este arquivo é atualizado a cada fase. Enquanto este aviso estiver aqui, a noite não terminou.
+## Resumo
+
+**O que mudou.** Todos os mapas do app passaram a ter um fundo de verdade, feito com as bases abertas da Prefeitura do Recife: quadras com calçada, todos os lotes, ruas com nome (a do imóvel em destaque), o bairro e suas divisas, água, praças e pontes, com o crédito "Base: Prefeitura do Recife (ODbL)". Isso vale para a gaveta "Mapa do lote" (planta e volume 2.5D), o Por perto, a confirmação do prédio, o topo do dossiê sem fotos e o mapa dos exemplos, que desenhava uma cidade inventada. As miniaturas dos cartões ficaram como eram, de propósito.
+
+**Onde está.** Branch `feat/mapa-base`, enviada ao GitHub, com PR rascunho contra `fix/mapas-e-leitura-de-anuncios` (o PR #4). Nada foi mesclado nem enviado para `main`. A cópia de trabalho usada na noite fica em `C:\Users\ssamu\vereda-mapa-base` (ver a primeira seção: outra sessão trocou a branch da pasta original durante a preparação).
+
+**Portões.** `tsc` sem erros; lint sem erro novo; `jest` com 92 suítes e 2.421 testes passando (eram 1.980), 0 falhas; pipeline com os mesmos bytes em execuções repetidas; todos os 94 bairros abaixo de 250 kB gzip; LGPD verde; nenhum dado no pacote JS; 160 capturas sem rolagem horizontal, erro de console ou requisição falha; gaveta com o fundo sem rede, inclusive recarregando a página na versão exportada. Detalhes e comandos na seção F5.
+
+**O que não fechou.**
+
+1. **Desempenho na primeira abertura.** Desenhar o fundo custa 19 ms na gaveta e 25 ms no Por perto com a CPU 4 vezes mais lenta, dentro do teto de 50 e 80 ms. Mas na primeira abertura depois de carregar a página o fundo chega ~140 ms depois do mapa na gaveta e ~800 ms depois no Por perto, por esperar a medida da largura e por baixar e ler os arquivos. O mapa não trava; o fundo entra depois.
+2. **Peso.** O total publicado é 7,6 MB gzip (21 MB brutos), o dobro dos 3,8 MB estimados, porque a borda de 300 m repete as feições de divisa nos dois vizinhos. Imbiribeira está a 2 kB do teto. Com borda de 150 m o total cairia 24%.
+3. **Celular físico e tema escuro na tela** não foram conferidos (o app é sempre claro; nada rodou em aparelho).
+4. Detalhes visuais que restam, decisões para confirmar e problemas dos dados na origem: seção "Pendências e decisões tomadas por padrão".
+
+**Como a noite andou.** 27 agentes em Opus 5.5, no máximo 5 ao mesmo tempo, em workflows por fase. Cada fase teve revisores independentes em duas rodadas, e o orquestrador conferiu os números antes de cada commit. Três vezes a conferência desmentiu um relatório: um teste de custo que só passava com a máquina livre; uma nota dizendo que a bacia do porto não tinha polígono de água (tinha); e o custo do fundo, medido em 35 ms por quem corrigiu e em 127 ms pelo revisor seguinte.
 
 ## Antes de tudo: o que aconteceu com a pasta do repositório
 
@@ -271,7 +286,79 @@ O que a revisão conferiu ou não disso: ver "Revisão da F2".
 
 ## F5 Verificação final
 
-_A preencher._
+Um agente que não escreveu nada do código rodou todos os portões sozinho na máquina, no commit `67cb0a4`, e tirou as fotos de depois. O portão de desempenho reprovou; depois da correção (commit `2f65361`) as fotos e as medidas foram refeitas com o código final (commit `bac37c1`) e o orquestrador rodou de novo, ele mesmo, os itens marcados com (O).
+
+| Portão (seção 6 do pedido) | Resultado | Situação |
+|---|---|---|
+| `npx tsc --noEmit` | sem erros (O, código final) | verde |
+| `npm run lint` | 0 erros, 5 avisos, os mesmos da partida (O, código final) | verde |
+| `npx jest` | **92 suítes, 2.421 testes passando**, 4 pulados, 0 falhas (partida: 83 suítes, 1.980) (O, código final) | verde |
+| `publicar-camadas --conferir` | 343 arquivos, sem problemas (O, código final); manifestos iguais depois de subir o Metro | verde |
+| Pipeline determinístico | duas execuções em pastas à parte e a pasta publicada: os mesmos 95 arquivos e o mesmo módulo gerado; versão `62be5d5145e04c7f`; resumo dos sha256 `04013bb7b7134812…` | verde |
+| Peso por bairro (teto de 250 kB gzip) | maior: Imbiribeira, 247.904 bytes; nenhum acima; total publicado **21,0 MB brutos, 7,6 MB gzip** | verde, com Imbiribeira no limite |
+| O pacote JS não cresce com dados | nenhum módulo importa arquivo de camada (protegido por `tests/camadas.test.ts`); na exportação web, "Major Armando de Souza Mello" não aparece em nenhum `.js`, só nos arquivos estáticos de `dados/recife/mapa-base/`. O que entra no pacote: `mapaBaseGerado.ts` (15 kB, novo) e +22 kB no manifesto `camadasGeradas.ts`. O pacote do app exportado tem 3,84 MB | verde |
+| LGPD (`tests/lgpd-artefatos.test.ts`) | 346 testes passando, com os 95 arquivos novos | verde |
+| Visual: 160 capturas (13 superfícies, 4 prédios, 5 exemplos, 375/360/1280 px, e zoom máximo) | todas no estado certo; rolagem horizontal 0; erros de console 0; requisições que falharam 0; requisições para fora 0. O fundo está presente onde se espera e ausente nas miniaturas dos cartões | verde, com os problemas visuais que restam listados abaixo |
+| Elementos SVG do fundo (até ~30, mais os rótulos) | as camadas são no máximo 13 formas. Com os rótulos: gaveta 19 a 42; Por perto 23 a 64. Com zoom máximo o Por perto chega a 210 a 650, quase tudo rótulo | verde nas camadas; sem teto de rótulos no zoom máximo |
+| Desempenho com a CPU 4 vezes mais lenta (até 50 ms na gaveta e 80 ms no Por perto) | desenho do fundo: **19 ms e 25 ms** (O). Primeira abertura depois de recarregar a página: +140 ms e +801 ms | verde no desenho; primeira abertura fora do teto (ver abaixo) |
+| Sem rede | a gaveta de um dossiê já visto mostra o fundo com a rede cortada, no servidor de desenvolvimento e na **exportação recarregada sem rede** (o service worker serve a casca e os arquivos guardados). O Por perto sem rede só mostra o fundo se os arquivos dos vizinhos e da cidade já tiverem sido baixados (por tê-lo aberto antes, ou pela pré-carga em segundo plano); sem isso aparece como antes, sem o fundo, com o aviso | verde na gaveta; parcial no Por perto |
+| Tema escuro | o app não tem tema escuro; conferido só nos testes e nas cenas de prova | não conferido na tela |
+
+### Desempenho
+
+Chrome com a CPU 4 vezes mais lenta, Golden Tower (Boa Viagem), 375 px, máquina sem mais nada rodando. O roteiro `scripts/medir.mjs` abre a gaveta e o Por perto com e sem o fundo (uma chave só de medição desliga o fundo); **o custo do fundo é a diferença** entre as duas medianas, do toque ao quadro pintado.
+
+A verificação final, no commit `67cb0a4`, reprovou este portão: 75 ms na gaveta e 122 ms no Por perto na reabertura. Um último agente perfilou (cerca de 40 ms eram o React e o `react-native-svg` criando dezenas de componentes, três por rótulo; o resto era espera de quadro, porque o fundo só era pedido depois de a largura ser medida) e fez duas mudanças (commit `2f65361`): na web o fundo sai de um serializador como marcação SVG crua num único elemento (o nativo não muda), e o Mapa do lote lembra a última largura medida. As 50 fotos conferidas depois saíram iguais, pixel a pixel, às que os revisores tinham aprovado.
+
+Medida refeita pelo orquestrador no código final (7 repetições, medianas):
+
+| | Antes desta noite | Sem o fundo | Com o fundo | **Custo do fundo** | Portão |
+|---|---|---|---|---|---|
+| Gaveta, reabertura (arquivos em memória) | — | 250 ms | 269 ms | **19 ms** | 50 ms: verde |
+| Por perto, reabertura | — | 157 ms | 183 ms | **25 ms** | 80 ms: verde |
+| Gaveta, primeira abertura depois de recarregar a página | 283 ms | 279 ms | 419 ms | **140 ms** | fora |
+| Por perto, primeira abertura depois de recarregar a página | 183 ms | 208 ms | 1.009 ms | **801 ms** | fora |
+
+O que os números dizem:
+
+- **Desenhar o fundo custa pouco**: 19 e 25 ms com os dados em memória. É esse o número comparado com o portão, porque o portão fala em desenho e veio de uma bancada de desenho (`scripts/bench.mjs`: 24 ms para 7 mil polígonos numa forma só).
+- **A primeira abertura depois de carregar a página não cabe no teto.** O mapa em si aparece quase no tempo de antes (301 ms contra 283 na gaveta; 214 ms contra 183 no Por perto) e o fundo entra depois, sem travar nada. Na gaveta são 140 ms a mais: esperar a medida da largura (o fundo só é pedido depois dela, para não ser desenhado duas vezes), montar a cena (12 ms) e desenhar. No Por perto são 800 ms a mais: quase tudo é baixar, conferir (tamanho e sha256) e ler quatro arquivos de bairro e o da cidade, cerca de 2 MB de JSON, com a CPU lenta; montar leva 30 ms. O roteiro abre o Por perto logo depois de carregar a página, então a pré-carga em segundo plano não tem tempo de ajudar; em uso normal ela ajuda, mas isso não foi medido.
+- Depois da primeira abertura de qualquer mapa na sessão, as seguintes já começam com a largura lembrada.
+- Elementos do fundo: no máximo 13 formas de camada. Com os rótulos, a gaveta tem de 19 a 42 elementos e o Por perto de 23 a 64. Com zoom máximo o Por perto chega a 210 a 650 elementos, quase tudo rótulo de rua; não há teto no número de rótulos (um teto mudaria o que se vê e ficou de fora).
+- Montar a cena, em node, mediana: 2,5 ms na gaveta, 10,9 ms no Por perto, até 28 ms num quadro de 1240 px.
+
+**Leitura honesta do portão:** verde para o desenho; a primeira abertura depois de recarregar fica fora do teto e vai para as pendências, com o caminho provável (estimar a largura pela janela antes do primeiro `onLayout`; deixar os arquivos do Por perto prontos em memória enquanto a aba Entorno está aberta).
+
+### Fotos
+
+`telas/noite/antes/` (144 capturas do app antes desta noite) e `telas/noite/depois/` (as mesmas, com os mesmos nomes, mais as de zoom máximo). Para comparar uma superfície, abra os dois arquivos de mesmo nome. As principais:
+
+| Superfície | Antes | Depois |
+|---|---|---|
+| Gaveta "Mapa do lote", Golden Tower | `antes/gaveta-planta--golden-tower--375--claro.png` | `depois/gaveta-planta--golden-tower--375--claro.png` |
+| Gaveta junto à divisa (Casa Forte) | `antes/gaveta-planta--casa-forte-divisa--375--claro.png` | `depois/gaveta-planta--casa-forte-divisa--375--claro.png` |
+| Gaveta com quadra sem lote (Pina) | `antes/gaveta-planta--pina-sem-lote--375--claro.png` | `depois/gaveta-planta--pina-sem-lote--375--claro.png` |
+| Volume 2.5D | `antes/gaveta-volume--golden-tower--375--claro.png` | `depois/gaveta-volume--golden-tower--375--claro.png` |
+| Por perto | `antes/por-perto--golden-tower--375--claro.png` | `depois/por-perto--golden-tower--375--claro.png` |
+| Por perto, Torre | `antes/por-perto--torre--375--claro.png` | `depois/por-perto--torre--375--claro.png` |
+| Confirmação do prédio | `antes/predio--casa-forte-divisa--375--claro.png` | `depois/predio--casa-forte-divisa--375--claro.png` |
+| Topo do dossiê sem fotos | `antes/miniatura-topo--golden-tower--375--claro.png` | `depois/miniatura-topo--golden-tower--375--claro.png` |
+| Mapa do exemplo | `antes/exemplo-mapa--casa-forte--375--claro.png` | `depois/exemplo-mapa--casa-forte--375--claro.png` |
+| "É este o prédio?" do exemplo | `antes/exemplo-confirmar-lote--boa-viagem--375--claro.png` | `depois/exemplo-confirmar-lote--boa-viagem--375--claro.png` |
+| Tela larga | `antes/gaveta-planta--golden-tower--1280--claro.png` | `depois/gaveta-planta--golden-tower--1280--claro.png` |
+
+As fotos pesam: 7 MB as de antes, 12 MB as de depois e 5 MB as provas, cerca de 25 MB na branch. Se for demais para o repositório, as de tela inteira (`--tela.png`) e as de 1280 px dos exemplos são as primeiras a sair.
+
+Outras provas: `telas/noite/f1-desenho/` (o componente no Chrome, claro e escuro), `telas/noite/f2-bairros/folha-de-contato.png` (oito bairros de tipos diferentes com os arquivos reais) e `telas/noite/f2-miniaturas/` (por que os cartões ficaram sem o fundo).
+
+### Problemas visuais que restam (vistos nas fotos de depois)
+
+- A rua do imóvel fica sem nome no Por perto do Golden Tower e de Casa Forte, e na tela do prédio a 375 px.
+- No Por perto, marcadores de obra e de ponto cobrem o pino quando caem em cima dele (Casa Forte; já era assim antes).
+- Na tela do prédio do Golden Tower, números de lote sobrepostos (já era assim antes).
+- No volume 2.5D, "Brisa SE" encosta no crédito e a etiqueta de altura do próprio lote fica riscada pelas arestas do volume em Casa Forte.
+- Nos exemplos, o nome do bairro às vezes é cruzado por um anel de distância ou por uma avenida.
+- A divisa de Boa Viagem aparece no mar (é a divisa oficial; o modelo aprovado também a mostra).
 
 ## Pendências e decisões tomadas por padrão
 
@@ -301,6 +388,7 @@ _A preencher._
 
 ### Pendências
 
+0. **Primeira abertura depois de carregar a página.** O fundo aparece ~140 ms depois do mapa na gaveta e ~800 ms depois no Por perto (CPU 4 vezes mais lenta), acima do teto de 50 e 80 ms que o desenho em si cumpre. Caminho provável: estimar a largura do mapa pela janela, para pedir o fundo já no primeiro render; e deixar os arquivos do Por perto lidos em memória enquanto a aba Entorno está aberta, em vez de só guardados no aparelho. Vale medir também num celular de entrada, que é para quem o teto existe.
 1. **Borda de 300 m ou de 150 m.** O total publicado é 7,6 MB gzip (21 MB brutos, que no aplicativo nativo vão como arquivos empacotados), o dobro do estimado, e Imbiribeira fica a 2 kB do teto de 250 kB. Com 150 m o total cai 24% e Imbiribeira vai para 197 kB. A carga em dois tempos e a regra do chão junto à divisa supõem a borda de 300 m (constante `BORDA_DO_MAPA_BASE_M`): trocar pede mexer nas duas pontas e rodar a suíte.
 2. **Teste em celular físico.** Nada desta noite rodou em aparelho. O que pode diferir no nativo está em `telas/noite/f1-desenho/LEIA.md` (peso da fonte variável no Android, texto que passa do fim do caminho, espaçamento entre letras). O `TextPath` foi conferido só na web e pela leitura do código do `react-native-svg`.
 3. **Tema escuro na tela.** O app é sempre claro; o fundo no escuro foi conferido pelos testes e pelas cenas de prova (`telas/noite/f1-desenho/navegador-*.png`), não em nenhuma tela do app.
