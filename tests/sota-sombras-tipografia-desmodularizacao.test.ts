@@ -17,6 +17,7 @@ import { CopilotoDocumentosPreSinal } from "../src/componentes/visual/CopilotoDo
 import { PulsoDaQuadra } from "../src/componentes/visual/PulsoDaQuadra";
 import { TresPerguntasDoBolso } from "../src/componentes/visual/TresPerguntasDoBolso";
 import { RotinaDoisDestinosComparar } from "../src/componentes/visual/RotinaDoisDestinosComparar";
+import { ExportarResumoExecutivo } from "../src/componentes/visual/ExportarResumoExecutivo";
 import { compararRotinaDoisDestinos } from "../src/dados/mobilidade/rotinaCasal";
 import { TemaDoApp } from "../src/tema/Tema";
 
@@ -413,6 +414,113 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     });
     const txt = extrairTextos(tree.toJSON()).join("\n");
     expect(txt).toContain("min/dia");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    expect(/\bseguro\b/i.test(txt)).toBe(false);
+  });
+
+  it("renderiza pinos 2.5D de obras licenciadas no canvas e dossiê executivo exportável sem R$ 0, dB ou jargão", () => {
+    const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: 90, andar: 5 });
+    const conf = avaliarConfortoTermico({
+      andar: 5,
+      pavimentosTotais: 14,
+      fachada: inf.frente,
+      bioclimatico: bio,
+    });
+    const acu = avaliarAcustica3d({
+      andar: 5,
+      fachadaVoltadaParaVia: "frente",
+      tipologiaVia: "coletora",
+      distanciaViaM: 18,
+      anoConstrucao: 2016,
+      precoImovelReais: 920_000,
+    });
+    const obras = {
+      licencasDeObra: 2,
+      relevantes24m: 1,
+      demolicoes24m: 0,
+      recentes: [
+        {
+          categoria: "construcao" as const,
+          descricao: "ALVARA DE CONSTRUCAO",
+          data: "2026-04",
+          situacao: "EMITIDA",
+          centro: [-34.8957, -8.1208] as [number, number],
+          distanciaM: 38,
+        },
+      ],
+    };
+    const radar = analisarRadarVistaELote({
+      centro,
+      edificio: null,
+      fachadaAtiva: inf.frente,
+      andar: 5,
+      vizinhos: vizinhosMesmaRua,
+      obrasProximas: obras,
+    });
+    const pulso = calcularPulsoDaQuadra({
+      conforto: conf,
+      acustica: acu,
+      anoConstrucao: 2016,
+      obrasProximas: obras,
+      visaoRua: null,
+      vinculoConfirmado: true,
+      precoInformado: true,
+      condominioInformado: true,
+      comparacaoM2Pct: 0,
+      spuAtivo: false,
+    });
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(CanvasSolSombraBrisa25D, {
+            inferencia: inf,
+            fachadaSelecionada: "frente_rua",
+            aoSelecionarFachada: () => undefined,
+            andar: 5,
+            aoAlterarAndar: () => undefined,
+            pavimentosTotais: 14,
+            centro,
+            obrasEntorno: obras,
+          }),
+          React.createElement(ExportarResumoExecutivo, {
+            entrada: {
+              nomeImovel: "Edifício Atlântico",
+              endereco: "Av. Boa Viagem, 120",
+              modalidade: "compra",
+              precoPrincipalReais: 920_000,
+              mensalBolsoRealReais: 6_800,
+              dinheiroEntrarReais: 215_000,
+              fachadaResumo: "Nascente (5º andar)",
+              conforto: conf,
+              sossegoNivel: "Calmo à noite",
+              radar,
+              pulso,
+              anoConstrucao: 2016,
+              unidades: 36,
+              chaveLote14: "12345678901234",
+              spuAtivo: false,
+            },
+          }),
+        ),
+      );
+    });
+
+    const togglePrevia = tree.root.find(
+      (n) => typeof n.type !== "string" && typeof n.props.accessibilityState?.expanded === "boolean",
+    );
+    act(() => {
+      togglePrevia.props.onPress();
+    });
+
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("Obra");
+    expect(txt).toContain("DOSSIÊ EXECUTIVO VEREDA");
+    expect(txt).not.toMatch(/R\$ 0(?![\d.,])/);
+    expect(txt).not.toMatch(/\d\s*dB\b/i);
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     expect(/\bseguro\b/i.test(txt)).toBe(false);
   });

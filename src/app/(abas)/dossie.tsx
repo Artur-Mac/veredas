@@ -75,6 +75,8 @@ import { RadarVistaELote } from "../../componentes/visual/RadarVistaELote";
 import { CopilotoDocumentosPreSinal } from "../../componentes/visual/CopilotoDocumentosPreSinal";
 import { calcularPulsoDaQuadra } from "../../dados/dossie/pulsoDaQuadra";
 import { PulsoDaQuadra } from "../../componentes/visual/PulsoDaQuadra";
+import { ExportarResumoExecutivo } from "../../componentes/visual/ExportarResumoExecutivo";
+import { classificarNivelSossegoPorDbInterno } from "../../dados/acustica/decomporSossego";
 
 /** Recuo do painel (`.ds-panel`, padding 20 18): a posição de uma seção na tela soma este recuo ao topo do painel. */
 const RECUO_DO_PAINEL = 20;
@@ -744,6 +746,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                   centro={predio?.centro ?? [-34.896, -8.121]}
                   volumesEntorno={entornoSolar?.recorte.volumes}
                   vizinhosLotes={cadastro.vizinhos}
+                  obrasEntorno={visao.obras}
                 />
                 <TermometroConfortoTermico conforto={confortoTermico} andar={andarSimulado} />
                 <RadarVistaELote radar={radarVistaELote} />
@@ -819,6 +822,43 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                   spuAtivo={Boolean(partesDeCusto.alertaMarinha)}
                 />
                 <SilencioInteligente itensNormais={itensSilencio} />
+                <ExportarResumoExecutivo
+                  entrada={{
+                    nomeImovel: analise.nome,
+                    endereco: visao.endereco || nomeDoBairro,
+                    modalidade: analise.modalidade,
+                    precoPrincipalReais: visao.custo.principal.valor,
+                    mensalBolsoRealReais:
+                      ((analise.modalidade === "compra"
+                        ? (partesDeCusto.simulacaoCompra?.prestacaoPriceReais ?? 0) +
+                          (analise.declarados.condominio.valor ?? 0) +
+                          Math.round((predio?.iptuAnual?.mediana ?? 0) / 12)
+                        : (visao.custo.totalMensalConhecido ?? visao.custo.principal.valor ?? 0)) +
+                        confortoTermico.custoMensalArReais) ||
+                      null,
+                    dinheiroEntrarReais:
+                      analise.modalidade === "compra" && analise.declarados.preco.valor
+                        ? Math.round(
+                            (partesDeCusto.simulacaoCompra?.entradaReais ??
+                              analise.declarados.preco.valor * 0.2) +
+                              (partesDeCusto.otimizacaoFechamento?.sfhOtimizado1Pct
+                                ?.totalFechamentoReais ??
+                                analise.declarados.preco.valor * 0.03),
+                          )
+                        : null,
+                    fachadaResumo: `${fachadaAtiva.orientacaoSolar} (${andarSimulado}º andar)`,
+                    conforto: confortoTermico,
+                    sossegoNivel: classificarNivelSossegoPorDbInterno(
+                      acustica.ruidoInternoDormitorioDbA,
+                    ).rotuloComparar,
+                    radar: radarVistaELote,
+                    pulso: pulsoDaQuadra,
+                    anoConstrucao: predio?.anoConstrucao ?? null,
+                    unidades: predio?.unidades ?? null,
+                    chaveLote14: predio?.dsqfl ?? null,
+                    spuAtivo: Boolean(partesDeCusto.alertaMarinha),
+                  }}
+                />
               </View>
             ) : null}
             {aba === "destaques" ? <FichaViva analise={analise} predio={predio} lista={lista} visao={visao} nomeDoBairro={nomeDoBairro} /> : null}

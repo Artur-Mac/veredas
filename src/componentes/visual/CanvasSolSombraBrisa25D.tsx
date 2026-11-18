@@ -9,6 +9,7 @@ import Svg, {
   Text as TextoSvg,
 } from "react-native-svg";
 import type { LoteAdjacente3D } from "../../municipios/recife/motores/bioclimatico3d";
+import type { ObrasProximas } from "../../dados/contratos";
 import { emMetros, type VolumeSolar } from "../../dados/sol/geometria";
 import type {
   InferenciaDeFachadas,
@@ -43,6 +44,7 @@ type Props = {
   volumesEntorno?: readonly VolumeSolar[];
   vizinhosLotes?: readonly VizinhoParaFachada[];
   lotesRiscoLpuos?: readonly LoteAdjacente3D[];
+  obrasEntorno?: ObrasProximas | null;
 };
 
 const HORAS_RAPIDAS = [7, 9, 12, 15, 17] as const;
@@ -101,6 +103,7 @@ export function CanvasSolSombraBrisa25D({
   volumesEntorno,
   vizinhosLotes,
   lotesRiscoLpuos,
+  obrasEntorno,
 }: Props) {
   const { cor } = useTema();
   const [hora, setHora] = useState<number>(15);
@@ -686,6 +689,40 @@ export function CanvasSolSombraBrisa25D({
               </G>
             );
           })}
+
+          {/* Pinos 2.5D de obras licenciadas recentes a ate 85 m (R13) */}
+          {(obrasEntorno?.recentes ?? [])
+            .filter((o) => o.distanciaM <= 85)
+            .slice(0, 5)
+            .map((o, idx) => {
+              const m = emMetros(o.centro, [centroLon, centroLat]);
+              const [ox, oy] = toSvg(m, 2);
+              const ehDem = o.categoria === "demolicao";
+              const corPino = ehDem ? cor("cor-barro") : cor("cor-acao");
+              return (
+                <G key={`obra25d-${idx}`}>
+                  <Circle
+                    cx={ox}
+                    cy={oy}
+                    r={4.2}
+                    fill={corPino}
+                    stroke={cor("cor-superficie")}
+                    strokeWidth={1.3}
+                  />
+                  <TextoSvg
+                    x={ox}
+                    y={oy - 6.5}
+                    fontFamily="PlusJakartaSans"
+                    fontSize={8}
+                    fontWeight="700"
+                    fill={ehDem ? cor("cor-barro-texto") : cor("cor-texto")}
+                    textAnchor="middle"
+                  >
+                    {ehDem ? "Dem." : "Obra"}
+                  </TextoSvg>
+                </G>
+              );
+            })}
 
           {/* Camada 3: Orbe do Sol e raio solar recortado no bloqueador (nunca atravessa vizinho) */}
           {cena.oclusao.solAcima && fimRaioSvg ? (
