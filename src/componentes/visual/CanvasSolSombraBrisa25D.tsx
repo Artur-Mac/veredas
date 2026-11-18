@@ -21,6 +21,7 @@ import {
   type PredioCena25D,
 } from "../../dados/sol/motorSombra25D";
 import { Texto } from "../Texto";
+import { toqueNoSvg } from "../toqueNoSvg";
 import { useTema } from "../../tema/Tema";
 import { RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 
@@ -643,11 +644,11 @@ export function CanvasSolSombraBrisa25D({
                                 : cor("cor-linha-forte")
                           }
                           strokeWidth={ehSelecionada ? 2 : 0.7}
-                          onPress={
+                          {...toqueNoSvg(
                             p.ehAlvo && w.fachadaId
                               ? () => aoSelecionarFachada(w.fachadaId!)
-                              : undefined
-                          }
+                              : undefined,
+                          )}
                         />
                         {ehSelecionada ? (
                           <Line
@@ -744,7 +745,7 @@ export function CanvasSolSombraBrisa25D({
                               stroke={cor("cor-acao")}
                               strokeOpacity={0.01}
                               strokeWidth={16}
-                              onPress={() => aoSelecionarFachada(w.fachadaId!)}
+                              {...toqueNoSvg(() => aoSelecionarFachada(w.fachadaId!))}
                             />
                           ) : null}
                         </G>
