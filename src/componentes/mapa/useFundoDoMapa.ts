@@ -8,7 +8,7 @@
 //   imóvel: a cena não usa quadras de longe.
 // - Arquivo que falta ou não confere vira `falhou`: o mapa fica sem fundo e oferece tentar de novo, nunca um dado parecido.
 import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
-import { ouvirCamadas } from "../../dados/camadas";
+import { descritorDaCamada, estadoDasCamadas, garantirCamadas, ouvirCamadas } from "../../dados/camadas";
 import { METROS_POR_GRAU } from "../../dados/recife/mapaBaseContrato";
 import { arquivoDaCidade, arquivoDoMapaBase, arquivosDoMapaBaseParaOQuadro, geracaoDoMapaBase, mapaBaseDaCidade, mapaBaseDoBairro, type CaixaEmGraus } from "../../dados/recife/mapaBase";
 import type { MapaBaseDoBairro } from "../../dados/recife/mapaBaseContrato";
@@ -86,6 +86,63 @@ function planoSemProtecao(bairro: string | null, caixa: CaixaEmGraus, largura: n
     return { arquivos, completo: true };
   }
   return arquivosDoMapaBaseParaOQuadro({ bairro, caixa });
+}
+
+/**
+ * Quanto o pré-aquecimento lê para a memória, no máximo, em bytes de JSON. Medido em 18/11/2026 (node, heap depois do
+ * coletor): o Por perto do Golden Tower pede 5 arquivos, 2,5 MB de JSON, +5,7 MB de heap; o de Casa Forte, 10 arquivos,
+ * 2,1 MB, +4,9 MB; o da Torre em tela larga, 15 arquivos, 2,8 MB, +6,3 MB (o heap fica em ~2,3 vezes o JSON). O teto de
+ * 4 MB (~9 MB de heap) cobre esses planos inteiros; o que passar dele é lido quando o mapa abrir, como antes.
+ */
+export const BYTES_DO_AQUECIMENTO = 4 * 1024 * 1024;
+
+export type QuadroParaAquecer = { readonly caixa: CaixaEmGraus; readonly largura: number; readonly zoom?: number };
+
+const ceder = (): Promise<void> => new Promise((r) => setTimeout(r, 0));
+
+/**
+ * Pré-aquecimento do fundo (M7, 18/11/2026): lê para a MEMÓRIA os arquivos que um mapa com estes quadros vai pedir, para
+ * o fundo não esperar download, conferência e leitura na primeira abertura (no Por perto eram ~0,8 s com a CPU 4× mais
+ * lenta). Usa o mesmo plano de carga do gancho, em dois tempos, então a lista é a que o mapa vai pedir.
+ * - Não bloqueia a tela: é assíncrono, lê um arquivo por vez e cede a vez entre um e outro.
+ * - Não estoura a memória: lê no máximo BYTES_DO_AQUECIMENTO de JSON (são os mesmos arquivos que o mapa leria ao
+ *   abrir), e nada além do arquivo do bairro do imóvel é decodificado aqui (a decodificação continua na abertura do
+ *   mapa, limitada a 8 bairros).
+ * - Falha de leitura não avisa ninguém: o mapa, ao abrir, tenta de novo e mostra o estado, como sempre.
+ * Devolve os arquivos do plano que estão em memória no fim (para os testes e para a medição).
+ */
+export async function aquecerFundoDoMapa(bairro: string | null, quadros: readonly QuadroParaAquecer[], cancelado: () => boolean = () => false): Promise<string[]> {
+  if (fundoDesligadoParaMedir()) return [];
+  await ceder();
+  if (cancelado()) return [];
+  let doPlano: string[] = [];
+  // Dois tempos, como o gancho: com o arquivo do bairro em memória, o plano diz se entram os vizinhos e a cidade.
+  for (let tempo = 0; tempo < 3; tempo++) {
+    const planos = quadros.map((q) => planoDeCargaDoFundo(bairro, q.caixa, q.largura, q.zoom ?? 1));
+    // O bairro do imóvel e a cidade primeiro: se o teto cortar a lista, corta vizinhos, na ordem do plano.
+    const cidade = arquivoDaCidade();
+    const todos = [...new Set(planos.flatMap((p) => p.arquivos))];
+    const emOrdem = [...todos.filter((a, i) => i === 0 || a === cidade), ...todos.filter((a, i) => i !== 0 && a !== cidade)];
+    doPlano = [];
+    let bytes = 0;
+    for (const a of emOrdem) {
+      bytes += descritorDaCamada(a)?.bytes ?? 0;
+      if (bytes > BYTES_DO_AQUECIMENTO && doPlano.length > 0) break;
+      doPlano.push(a);
+    }
+    for (const a of doPlano) {
+      if (cancelado()) return [];
+      try {
+        // O que já está em memória volta na hora; o que falhou antes é tentado de novo.
+        await garantirCamadas([a]);
+      } catch {
+        // Sem rede ou arquivo recusado: quem abrir o mapa vê o aviso e o "Tentar de novo".
+      }
+      await ceder();
+    }
+    if (planos.every((p) => p.completo)) break;
+  }
+  return doPlano.filter((a) => estadoDasCamadas([a]) === "pronta");
 }
 
 /**

@@ -90,6 +90,18 @@ const LARGURA_ANTES_DA_MEDIDA = 320;
  */
 const largurasMedidas = new Map<string, number>();
 
+/**
+ * O quadro (caixa em graus e largura) que o mapa do Por perto vai pedir ao fundo para estes pontos e esta largura, e a
+ * largura fica lembrada: quem conhece a largura antes de o mapa existir (o Por perto mede a própria caixa quando a aba
+ * Entorno abre) pré-aquece o fundo com `aquecerFundoDoMapa` e o mapa já pede o fundo no primeiro render (M7).
+ */
+export function quadroDoPorPerto(predio: Edificio, obras: ObrasProximas["recentes"], pontosExtras: readonly EntradaPontoExtraMapa[], largura: number): { caixa: [number, number, number, number]; largura: number } {
+  largurasMedidas.set("por-perto", largura);
+  // Os vizinhos não mudam o enquadramento: só o lote, as obras e os pontos.
+  const { cena } = montarCenaComPontosExtras(predio, obras, [], largura, ALTURA, pontosExtras, undefined, { limiteDeVizinhos: null });
+  return { caixa: caixaDoQuadro(cena), largura: cena.largura };
+}
+
 /** Só para testes: esquece as larguras medidas. */
 export function esquecerLargurasDoMapaDoLote(): void {
   largurasMedidas.clear();
