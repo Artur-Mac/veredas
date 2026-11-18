@@ -48,4 +48,6 @@ Branch: `feat/vereda-visual-power-overhaul`
 - [x] **S28**: Multi-criteria walkability search with live counter & walk-to-market filter in `OndeMaisProcurarNoPiloto` (`NeighborhoodScout app14` §6.2; `4/4` suites, `177/177` tests).
 - [x] **S29**: Hairline demodularization & WCAG touch-target cleanup across `creditos.tsx` and `perfil-domicilio.tsx` + full 98-suite (`2043/2043` tests) & live Metro (`ANDROID 200 6681173`, `WEB 200 3901350`) verification.
 - [x] **S30**: Pre-contract statutory validity windows (`B4` / `HomeWiseDocs` / `ONR app26` CNIB guidance), honest scanner observability (`Cherre app27` §6.5), and WCAG >= 44px touch targets in `copilotoPreSinal.ts` & `CopilotoDocumentosPreSinal.tsx` (`3/3` suites, `62/62` tests).
-- [ ] **S31**: Deterministic IPTU exemption checklist (`Ownwell app30` §6.1 / `B7`), pre-sinal billing reminder (`Winker app22` §6.4), and `alertaMarinha` demodularization in `Custo.tsx`.
+- [x] **S31**: Deterministic IPTU exemption checklist (`Ownwell app30` §6.1 / `B7`), pre-sinal billing reminder (`Winker app22` §6.4), and `alertaMarinha` demodularization in `isencaoIptuRecife.ts` & `Custo.tsx` (`5/5` suites, `118/118` tests).
+- [ ] **S32**: Radical hairline demodularization of `SobreOsDados` (`sobre-os-dados.tsx`), ATTOM data-elements table (`app23` §6.1), and local/no-training privacy clause (`Cherre app27` §6.4 / `ONR app26` §6.4).
+- [ ] **S33**: Action ladder & 6-field method sheet (`Jupiter app28` §6.1–§6.3 + `Symbium app25`) in `radarVistaELote.ts` & `RadarVistaELote.tsx`.

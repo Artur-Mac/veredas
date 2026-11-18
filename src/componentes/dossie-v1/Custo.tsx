@@ -5,6 +5,7 @@ import type { ParcelaDoCusto, Posicao, VisaoDoDossie } from "../../dados/contrat
 import type { CustoPorPartes } from "../../dados/custoPorPartes";
 import { avisoDeValoresPendentes } from "../../dados/custos";
 import { formatarReais } from "../../dados/formatos";
+import { COMO_PEDIR_ISENCAO_RECIFE, HIPOTESES_ISENCAO_IPTU_RECIFE } from "../../dados/recife/isencaoIptuRecife";
 import { useTema } from "../../tema/Tema";
 import { ESPACO, type TokenDeCor } from "../../tema/tokens";
 import { Pressionavel } from "../Pressionavel";
@@ -123,6 +124,7 @@ export function BlocoDeCusto({
   const [estimativasAbertas, setEstimativasAbertas] = useState(false);
   // 15/11/2026: a pílula do financiamento abre o simulador Price aqui mesmo.
   const [simuladorAberto, setSimuladorAberto] = useState(false);
+  const [mostrarIsencoesIptu, setMostrarIsencoesIptu] = useState(false);
   const iptuDoPredio = partes?.referenciaIptuDoPredio?.mensalMedianoReais ?? null;
   const aluguel = custo.principal.rotulo === "Aluguel anunciado";
   const principal = custo.principal.valor !== null ? formatarReais(custo.principal.valor) : "A confirmar";
@@ -252,7 +254,7 @@ export function BlocoDeCusto({
             ) : null}
           </View>
           {simuladorAberto && partes.simulacaoCompra ? <SimuladorPrice simulacao={partes.simulacaoCompra} aoFechar={() => setSimuladorAberto(false)} /> : null}
-          <Pressionavel onPress={() => setEstimativasAbertas(true)} accessibilityRole="button" accessibilityLabel="Estimativas à parte: luz e financiamento. Toque para ver e ajustar" style={{ minHeight: 32, flexDirection: "row", alignItems: "center", gap: 4 }}>
+          <Pressionavel onPress={() => setEstimativasAbertas(true)} accessibilityRole="button" accessibilityLabel="Estimativas à parte: luz e financiamento. Toque para ver e ajustar" style={{ minHeight: 44, flexDirection: "row", alignItems: "center", gap: 4 }}>
             <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 12, lineHeight: 16, fontWeight: "600" }}>Estimativas à parte · toque para ver e ajustar</Texto>
             <Seta tamanho={11} />
           </Pressionavel>
@@ -361,11 +363,10 @@ export function BlocoDeCusto({
               <View
                 style={{
                   marginTop: 4,
-                  padding: 10,
-                  borderRadius: 9,
-                  backgroundColor: cor("cor-superficie"),
-                  borderWidth: 1,
-                  borderColor: cor("cor-linha"),
+                  borderLeftWidth: 3,
+                  borderLeftColor: cor("cor-barro"),
+                  paddingLeft: 10,
+                  paddingVertical: 4,
                   gap: 3,
                 }}
               >
@@ -375,6 +376,59 @@ export function BlocoDeCusto({
                 <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16 }}>
                   {partes.alertaMarinha.explicacaoHumana}
                 </Texto>
+              </View>
+            ) : null}
+
+            <View testID="custo-lembrete-doc-condominio" style={{ marginTop: 2, paddingTop: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 2 }}>
+              <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600" }}>
+                Documento que acompanha este boleto antes do sinal
+              </Texto>
+              <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                Antes de fechar: confira junto ao boleto vigente o saldo do fundo de reserva e a declaração de quitação do condomínio.
+              </Texto>
+            </View>
+
+            {!aluguel ? (
+              <View style={{ marginTop: 2, paddingTop: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 6 }}>
+                <Pressionavel
+                  testID="toggle-isencao-iptu-recife"
+                  accessibilityRole="button"
+                  accessibilityState={{ expanded: mostrarIsencoesIptu }}
+                  onPress={() => setMostrarIsencoesIptu((x) => !x)}
+                  style={{ minHeight: 44, flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}
+                >
+                  <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600", flex: 1 }}>
+                    IPTU no Recife: conferir hipóteses legais de isenção
+                  </Texto>
+                  <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, fontWeight: "600" }}>
+                    {mostrarIsencoesIptu ? "Ocultar" : "Ver regras"}
+                  </Texto>
+                </Pressionavel>
+                {mostrarIsencoesIptu ? (
+                  <View testID="lista-isencao-iptu-recife" style={{ gap: 6 }}>
+                    {HIPOTESES_ISENCAO_IPTU_RECIFE.map((h, i) => (
+                      <View
+                        key={h.id}
+                        style={{
+                          borderTopWidth: i > 0 ? 1 : 0,
+                          borderTopColor: cor("cor-linha"),
+                          paddingTop: i > 0 ? 6 : 0,
+                          gap: 2,
+                        }}
+                      >
+                        <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600" }}>
+                          {h.titulo}
+                        </Texto>
+                        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                          {`${h.requisito} ${h.comoConferir}`}
+                        </Texto>
+                      </View>
+                    ))}
+                    <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                      {COMO_PEDIR_ISENCAO_RECIFE}
+                    </Texto>
+                  </View>
+                ) : null}
               </View>
             ) : null}
           </View>

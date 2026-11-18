@@ -20,6 +20,8 @@ import { PALAVRAS_PROIBIDAS_UI, REGEX_JARGON_CAMADA1 } from "../src/dados/cidada
 import { CanvasSolSombraBrisa25D } from "../src/componentes/visual/CanvasSolSombraBrisa25D";
 import { RadarVistaELote } from "../src/componentes/visual/RadarVistaELote";
 import { CopilotoDocumentosPreSinal } from "../src/componentes/visual/CopilotoDocumentosPreSinal";
+import { BlocoDeCusto } from "../src/componentes/dossie-v1/Custo";
+import { COMO_PEDIR_ISENCAO_RECIFE, HIPOTESES_ISENCAO_IPTU_RECIFE } from "../src/dados/recife/isencaoIptuRecife";
 import { PulsoDaQuadra } from "../src/componentes/visual/PulsoDaQuadra";
 import { TresPerguntasDoBolso } from "../src/componentes/visual/TresPerguntasDoBolso";
 import { RotinaDoisDestinosComparar } from "../src/componentes/visual/RotinaDoisDestinosComparar";
@@ -1317,5 +1319,100 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     );
     expect(copSrc).not.toMatch(/minHeight:\s*(?:38|42)\b/);
     expect(copSrc).not.toContain("TOQUE_MINIMO - 6");
+  });
+
+  it("exibe hipóteses determinísticas de isenção de IPTU (Ownwell app30), lembrete pré-sinal Winker e desmodulariza alertaMarinha em Custo", () => {
+    expect(HIPOTESES_ISENCAO_IPTU_RECIFE).toHaveLength(4);
+    expect(COMO_PEDIR_ISENCAO_RECIFE).toContain("Recife em Dia");
+    for (const h of HIPOTESES_ISENCAO_IPTU_RECIFE) {
+      const linha = `${h.titulo} ${h.requisito} ${h.comoConferir}`;
+      expect(REGEX_JARGON_CAMADA1.test(linha)).toBe(false);
+      for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(linha)).toBe(false);
+    }
+
+    const oficialCompra = {
+      principal: { rotulo: "Preço anunciado" as const, valor: 720_000, porM2: 7200 },
+      totalMensalConhecido: 980,
+      alemDoPrincipal: null,
+      parcelas: [
+        { nome: "Condomínio" as const, estado: "conhecido" as const, valorMensal: 800, nota: null },
+        { nome: "IPTU" as const, estado: "conhecido" as const, valorMensal: 180, nota: null },
+      ],
+      pendentes: 0,
+      notaForaDaSoma: null,
+    };
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(BlocoDeCusto, {
+            custo: oficialCompra,
+            area: 100,
+            posicao: null,
+            aoAbrirPosicao: () => undefined,
+            aoAjustar: () => undefined,
+            partes: {
+              oficial: oficialCompra,
+              referenciaIptuDoPredio: null,
+              fatiasDaRotina: [
+                {
+                  id: "energia",
+                  rotulo: "Energia elétrica estimada",
+                  valorMensalReais: 240,
+                  explicacaoHumana: "Tarifa homologada ANEEL",
+                  fonteCurta: "ANEEL 2026",
+                },
+              ],
+              somaRotinaEstimadaReais: 240,
+              simulacaoCompra: null,
+              alertaMarinha: {
+                titulo: "Conferir regime de Terreno de Marinha",
+                laudemioReferencia5PctReais: 36_000,
+                explicacaoHumana: "Faixa costeira pede checagem do regime SPU na matrícula.",
+                perguntaParaCorretor: "O terreno é alodial, foreiro ou sob ocupação da União?",
+                fonteCurta: "SPU / DL 2.398/1987",
+              },
+              transferencia: null,
+              comparacaoComTetoPessoal: null,
+              janelaPoenteConsiderada: false,
+            },
+          }),
+        ),
+      );
+    });
+
+    const toggleEstimativas = tree.root.find(
+      (n) =>
+        n.props.accessibilityLabel === "Estimativas à parte: luz e financiamento. Toque para ver e ajustar" &&
+        typeof n.props.onPress === "function",
+    );
+    act(() => {
+      toggleEstimativas.props.onPress();
+    });
+    expect(tree.root.find((n) => n.props.testID === "custo-lembrete-doc-condominio")).toBeDefined();
+
+    const toggleIptu = tree.root.find((n) => n.props.testID === "toggle-isencao-iptu-recife");
+    act(() => {
+      toggleIptu.props.onPress();
+    });
+    expect(tree.root.find((n) => n.props.testID === "lista-isencao-iptu-recife")).toBeDefined();
+
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("declaração de quitação do condomínio");
+    expect(txt).toContain("Recife em Dia");
+    expect(txt).not.toMatch(/R\$ 0(?![\d.,])/);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+
+    const custoSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "Custo.tsx"),
+      "utf8",
+    );
+    expect(custoSrc).not.toMatch(/minHeight:\s*32\b/);
+    const blocoMarinha = custoSrc.match(/partes\.alertaMarinha \? \(\s*<View[\s\S]*?>/)?.[0] ?? "";
+    expect(blocoMarinha).not.toMatch(/\bborderWidth:\s*1\b/);
+    expect(blocoMarinha).toContain("borderLeftWidth: 3");
   });
 });
