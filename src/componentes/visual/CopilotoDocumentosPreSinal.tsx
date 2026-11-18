@@ -547,7 +547,7 @@ export function CopilotoDocumentosPreSinal({
           style={styles.botaoVerScript}
         >
           <Texto tipo="etiqueta" style={styles.subTitulo}>
-            Prazos de referência das certidões e CNIB
+            Prazos das certidões e da consulta de bens bloqueados (CNIB)
           </Texto>
           <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.acaoVer}>
             {verPrazos ? "Ocultar" : "Ver prazos"}

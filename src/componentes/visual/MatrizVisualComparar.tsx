@@ -168,8 +168,8 @@ export function MatrizVisualComparar({
     },
     {
       criterio: "Terreno / matrícula",
-      valorA: opcaoA.spuAlerta ? "Checar Marinha" : "Sem alerta SPU",
-      valorB: opcaoB.spuAlerta ? "Checar Marinha" : "Sem alerta SPU",
+      valorA: opcaoA.spuAlerta ? "Checar terreno de marinha" : "Sem alerta de terreno da União",
+      valorB: opcaoB.spuAlerta ? "Checar terreno de marinha" : "Sem alerta de terreno da União",
       vencedor:
         opcaoA.spuAlerta !== opcaoB.spuAlerta
           ? opcaoA.spuAlerta

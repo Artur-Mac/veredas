@@ -679,7 +679,7 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     });
     const txtCompra = extrairTextos(tree.toJSON()).join("\n");
     expect(txtCompra).toContain("Caixa para entrar (sem cartório)");
-    expect(txtCompra).toContain("Economia possível de ITBI (SFH e pedido em até 180 dias)");
+    expect(txtCompra).toContain("Economia possível de ITBI (financiamento pelo Sistema Financeiro da Habitação, SFH, e pedido em até 180 dias)");
     expect(txtCompra).not.toMatch(/R\$ 0(?![\d.,])/);
 
     const btnAlugar = tree.root.find((n) => n.props.testID === "sim15-mod-aluguel");
@@ -3944,7 +3944,7 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(comCnm.cnmConfirmada).toBe(true);
     expect(comCnm.cnmFormatada).toBe(cnmValida);
     expect(comCnm.textoParaCopiar).toContain("Lote municipal (Prefeitura): 12.3456.789.01.234");
-    expect(comCnm.textoParaCopiar).toContain(`Matrícula nacional (CNM): ${cnmValida}`);
+    expect(comCnm.textoParaCopiar).toContain(`Matrícula nacional do cartório (CNM, Código Nacional de Matrícula): ${cnmValida}`);
 
     const semCnm = sintetizarChaveDuplaDoEdificio({
       chaveLote14: null,

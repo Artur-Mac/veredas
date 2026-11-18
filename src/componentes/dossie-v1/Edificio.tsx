@@ -72,7 +72,7 @@ export function sintetizarChaveDuplaDoEdificio(params: {
   const cnmFormatada = cnmEncontrado ?? "Pedir certidão de ônus (16 dígitos)";
   const textoParaCopiar = [
     `Lote municipal (Prefeitura): ${loteFormatado}`,
-    `Matrícula nacional (CNM): ${cnmFormatada}`,
+    `Matrícula nacional do cartório (CNM, Código Nacional de Matrícula): ${cnmFormatada}`,
   ].join("\n");
 
   return {

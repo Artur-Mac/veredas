@@ -126,7 +126,7 @@ export const PACOTE_PRE_SINAL_ITENS: readonly ItemPacotePreSinal[] = [
 ];
 
 export const ORIENTACAO_CNIB_ONR =
-  "Indisponibilidade de bens do vendedor (CNIB / ONR): consulte diretamente no portal oficial onr.org.br; este app não coleta nem consulta CPF.";
+  "Bens do vendedor bloqueados pela Justiça (Central Nacional de Indisponibilidade de Bens, CNIB, do ONR): consulte diretamente no portal oficial onr.org.br; este app não coleta nem consulta CPF.";
 
 export type PrazoReferenciaPreSinal = {
   id: string;
