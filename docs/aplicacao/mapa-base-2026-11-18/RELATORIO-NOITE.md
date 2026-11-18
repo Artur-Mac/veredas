@@ -161,7 +161,34 @@ Ficou de fora nesta etapa (dito pelos agentes): fotos com zoom máximo no Por pe
 
 ### Revisão da F2
 
-_A preencher._
+**Rodada 1, dois revisores independentes.** Como os revisores da F1 tinham entregado relatórios sem abrir imagens, a revisão foi dividida: um revisor só para olhar e outro para código e comportamento.
+
+O revisor visual rodou o roteiro inteiro (160 capturas, todas no estado certo, sem rolagem horizontal nem erro de console) e **abriu 89 imagens**, descrevendo cada uma; 42 tinham algum critério falhando. Veredito: não bloqueia; a gaveta e o Por perto do Golden Tower ficaram muito perto do modelo aprovado; as miniaturas dos cartões continuam iguais ao antes. Os três piores:
+
+1. Na tela `/predio`, o crédito ficava no topo, por cima de números de lote e do nome do bairro vizinho.
+2. Nos mapas de exemplo, nomes de bairro e de rua saíam cortados na borda, nos cinco exemplos.
+3. Afastando o mapa, o oceano terminava numa borda reta e o resto do Atlântico aparecia hachurado como "sem dado"; e a bacia do porto aparece como chão.
+
+Também: nomes de rua sem acento ("R. Frei Jaboatao", "R. Sa e Souza"); um rótulo de rua deitado dentro do Capibaribe a 360 px; os botões cobrindo o pino no Por perto com zoom máximo a 360 px; no volume 2.5D, os volumes tapando nomes de rua e de bairro.
+
+Comparação com o modelo, feita pelo revisor: bate o selo, as quadras com calçada, os lotes, o lote do imóvel sem contorno duplo, a rua do imóvel em destaque, as divisas e a hachura; difere a régua (50 m na gaveta e 200 m no Por perto, contra 25 m e 500 m do modelo: o quadro da gaveta é um pouco mais afastado e o do Por perto mostra menos cidade), os nomes sem acento e o crédito, que o modelo não tinha.
+
+O revisor de código conferiu que nenhum teste antigo foi afrouxado para passar (o único apagado, de geometria inventada, foi trocado por um equivalente); que com a carga do fundo bloqueada a gaveta, a tela do prédio e os exemplos mostram o mapa sem fundo com o aviso, e que "Tentar de novo" traz o fundo sem recarregar a página; que um dossiê já visto reabre com o fundo sem rede; que os valores do rótulo de acessibilidade estão certos; e que as áreas de toque novas têm 44 px ou mais. Os três piores:
+
+1. **Desempenho**: do toque ao mapa pintado, com a CPU 4 vezes mais lenta, a gaveta passou de 283 ms para **396 ms** e o Por perto de 183 ms para **331 ms**. A montagem da cena custa ~10 ms, mas era feita 3 vezes por abertura; o resto do atraso não estava separado.
+2. Nos exemplos, com o fundo falhando, o mapa ficava vazio, "É este o prédio?" ficava sem candidatos e o aviso dizia que "o lote continua valendo".
+3. O rótulo de acessibilidade da gaveta repetia a descrição em dois nós e falava "R." abreviado.
+
+Também: bairros decodificados guardados em memória para sempre; o lote tocado não é alcançável pelo teclado; o topo do dossiê falha em silêncio.
+
+**Correções da rodada 1:** _a preencher._
+
+**Rodada 2:** _a preencher._
+
+Não corrigido de propósito, para decisão do dono do produto:
+
+- **Nomes de rua sem acento.** É como a Prefeitura publica o nome curto do logradouro (e o nome oficial também vem sem acento). Restaurar acentos por dicionário é mexer em dado oficial e pode errar; ficou como está.
+- **O lote tocado só é alcançável por toque ou mouse.** O rótulo do mapa diz quantos lotes há no quadro e quantos são de prédio conhecido, mas não há lista de lotes navegável por teclado.
 
 ## F3 Expansão dos dados
 
