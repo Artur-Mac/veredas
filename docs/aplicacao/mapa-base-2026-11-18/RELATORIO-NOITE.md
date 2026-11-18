@@ -157,7 +157,7 @@ Suíte depois da etapa B: `tsc` sem erros; `eslint` sem erros; `jest` com 91 su�
 
 Ficou de fora nesta etapa (dito pelos agentes): fotos com zoom máximo no Por perto; o percurso por Tab conferido na tela; os nomes de rua e de bairro ficam por baixo dos volumes no 2.5D; a 360 px com zoom máximo a rua do imóvel pode ficar sem rótulo (não há lugar livre que não passe por baixo de um botão).
 
-**Problema de dado visto na folha de contato:** no bairro do Recife (o do porto), a área de água entre o cais e o molhe está dentro da divisa do bairro e não tem polígono na base de Recursos Hídricos. Como rua é o que sobra entre quadras, essa água aparece como chão de rua. Não há como corrigir sem inventar dado; fica registrado para decisão.
+**O bairro do Recife (o do porto) na folha de contato.** O mapa de 300 m do porto aparece quase todo como chão liso. O agente que montou a folha escreveu que a água entre o cais e o molhe não tinha polígono na base; **isso estava errado** e foi desmentido depois por medição nos brutos: a bacia portuária tem polígono (aparece duas vezes na base, sobreposta) e o arquivo gerado é fiel ao bruto em 6.430 de 6.432 pontos de uma grade de 22 m. O chão liso do quadro é a área do cais, que é terra e não tem quadra nem lote na base. Dentro da divisa do bairro há um único vazio largo de água sem polígono, de ~5.800 m², logo ao norte do fim da bacia.
 
 ### Revisão da F2
 
@@ -167,7 +167,7 @@ O revisor visual rodou o roteiro inteiro (160 capturas, todas no estado certo, s
 
 1. Na tela `/predio`, o crédito ficava no topo, por cima de números de lote e do nome do bairro vizinho.
 2. Nos mapas de exemplo, nomes de bairro e de rua saíam cortados na borda, nos cinco exemplos.
-3. Afastando o mapa, o oceano terminava numa borda reta e o resto do Atlântico aparecia hachurado como "sem dado"; e a bacia do porto aparece como chão.
+3. Afastando o mapa, o oceano terminava numa borda reta e o resto do Atlântico aparecia hachurado como "sem dado". O revisor também achou que a bacia do porto aparecia como chão; a medição nos brutos mostrou que a bacia tem polígono de água e é desenhada como água (ver a nota sobre o bairro do Recife na etapa B).
 
 Também: nomes de rua sem acento ("R. Frei Jaboatao", "R. Sa e Souza"); um rótulo de rua deitado dentro do Capibaribe a 360 px; os botões cobrindo o pino no Por perto com zoom máximo a 360 px; no volume 2.5D, os volumes tapando nomes de rua e de bairro.
 
@@ -181,7 +181,15 @@ O revisor de código conferiu que nenhum teste antigo foi afrouxado para passar 
 
 Também: bairros decodificados guardados em memória para sempre; o lote tocado não é alcançável pelo teclado; o topo do dossiê falha em silêncio.
 
-**Correções da rodada 1:** _a preencher._
+**Correções da rodada 1**, por quatro agentes em arquivos disjuntos; o orquestrador conferiu a suíte e abriu as fotos do crédito na tela do prédio, de um exemplo e do volume antes de commitar:
+
+- **Desempenho** (commit `perf(mapa): uma montagem do fundo por abertura…`). A cena só é montada com o plano de carga completo, e a chegada de outra camada do app não remonta; as últimas seis cenas ficam guardadas, então reabrir não remonta; no máximo oito bairros ficam decodificados em memória. O roteiro `medir.mjs` passou a medir a primeira e a segunda abertura, com e sem o fundo (uma chave só de medição desliga o fundo): **o custo do fundo é a diferença**. Medido pelo agente, CPU 4 vezes mais lenta, Golden Tower, 375 px, segunda abertura: **35 ms na gaveta** (portão: 50) e **50 ms no Por perto** (portão: 80). Na primeira abertura depois de recarregar a página o fundo chega depois do mapa: +60 ms na gaveta e **+708 ms no Por perto**, quase tudo baixando e lendo os cinco arquivos (quatro bairros e a cidade); o mapa aparece antes, sem o fundo, e não fica travado. A medição final está na F5.
+- **Telas do dossiê.** Na tela do prédio, o crédito foi para o pé, acima da faixa de instrução. No volume 2.5D a ordem passou a ser chão, sombras e volumes, e por último os nomes de rua e de bairro. Em tela estreita o "Recentrar" virou um botão de 44 px com ícone (a coluna de botões cobria o pino no Por perto com zoom máximo a 360 px). A descrição para leitor de tela fica num nó só. O topo do dossiê enquadra o lote inteiro com a rua em volta quando o lote é grande.
+- **Mapa dos exemplos.** Nomes de rua e de bairro ficam inteiros dentro da janela visível e o pino conta como obstáculo. Sem o fundo, o aviso diz o que continua valendo em cada tela e "É este o prédio?" diz que não dá para escolher o lote agora, com os botões desligados. O lote escolhido usa o azul cadastral e uma linha explica que os tracejados são lotes do cadastro.
+- **O mar** (commit `fix(dados): o mar do mapa-base vai até onde a base da Prefeitura vai`). A borda reta tinha duas causas: o pipeline cortava o oceano cedo demais (corrigido) e a própria base da Prefeitura acaba a cerca de 6 km da costa, numa reta inclinada (mantido: além dali nada foi acrescentado). Versão nova dos dados: `62be5d5145e04c7f`, +552 bytes gzip no total, três execuções com os mesmos bytes.
+- Descrição para leitor de tela com "Rua" e "Avenida" por extenso; rótulo de rua que cairia sobre a água é descartado.
+
+Suíte depois das correções: `tsc` sem erros; `eslint` sem erros; `jest` com 91 suítes, **2.408 testes passando**, 0 falhas; `publicar-camadas --conferir` sem problemas.
 
 **Rodada 2:** _a preencher._
 
@@ -196,7 +204,7 @@ Feita junto com as correções da F1, porque gerar a cidade inteira leva 13 segu
 
 | Item | Valor (conferido pelo orquestrador) |
 |---|---|
-| Publicado | **94 bairros** (todos os da base de Bairros, não só os 72 do índice e seus vizinhos) e `cidade.json`; versão `30c418b7bb665cd3` |
+| Publicado | **94 bairros** (todos os da base de Bairros, não só os 72 do índice e seus vizinhos) e `cidade.json`; versão `30c418b7bb665cd3` nesta fase e `62be5d5145e04c7f` depois da correção do mar (F2) |
 | Tempo e memória | 12,6 s; pico de 651 MB |
 | Peso total | **21,0 MB brutos; 7,6 MB gzip** (zlib nível 9) |
 | Maiores, gzip | Imbiribeira 248 kB, Afogados 241 kB, Ibura 222 kB, Várzea 201 kB, Boa Viagem 200 kB |
