@@ -63,6 +63,8 @@ import { formatarReais } from "../src/dados/formatos";
 import { formatarChaveCadastral } from "../src/dados/recife/endereco";
 import { indiceDoBairro, META } from "../src/dados/recife/indice";
 import { TemaDoApp } from "../src/tema/Tema";
+import { lerMicroclimaDoPonto } from "../src/dados/clima/microclima";
+import { escolherUnidadeAtiva, inferirFachadasDaAnalise, lerUnidade } from "../src/dados/dossie/unidadeAtiva";
 
 type Globais = {
   __router: { push: jest.Mock; replace: jest.Mock; navigate: jest.Mock; back: jest.Mock; canGoBack: jest.Mock; setParams: jest.Mock };
@@ -1387,5 +1389,41 @@ describe("tela do dossiê", () => {
       expect(carregar(analise())).toEqual({ edificio: null, contexto: null, obras: [], vizinhos: [], rua: null, falhou: true });
     });
     jest.dontMock("../src/dados/recife/indice");
+  });
+});
+
+// Pendência 5 do HANDOFF (19/11/2026): o que antes era regex sobre o código de dossie.tsx ("usa estimarRuido") vira a
+// tela montada: o placar mostra o sossego do modelo estimado no andar e na fachada ativos, e diz quais são.
+describe("tela do dossiê: o placar usa o ruído estimado na unidade ativa", () => {
+  beforeEach(() => {
+    G.__router = { push: jest.fn(), replace: jest.fn(), navigate: jest.fn(), back: jest.fn(), canGoBack: jest.fn(() => false), setParams: jest.fn() };
+    G.__descarte = undefined;
+  });
+
+  it.each([
+    ["8001-216", 9, 95],
+    ["31950-280", 3, null],
+  ] as [string, number, number | null][])("prédio %s, %sº andar, bússola %s", (id, andar, bussola) => {
+    const bairro = id === "8001-216" ? "boa-viagem" : "torre";
+    const e = indiceDoBairro(bairro).edificios.find((x) => x.id === id)!;
+    const a = analise({
+      id: `placar-${id}`, modalidade: "compra", bairro, bairroTexto: bairro, vinculo: confirmadoEm(e.id),
+      declarados: { preco: v(800_000), andar: v(andar) }, visita: { ...BASE.visita, orientacaoGraus: bussola },
+    });
+    const cadastro = carregarCadastro(a);
+    const unidade = escolherUnidadeAtiva({
+      inferencia: inferirFachadasDaAnalise(a, cadastro.edificio, cadastro.vizinhos),
+      pavimentos: cadastro.edificio?.pavimentos ?? null,
+      andarDeclarado: andar,
+      orientacaoBussolaGraus: bussola,
+    });
+    const { ruido } = lerUnidade(cadastro.edificio, unidade, lerMicroclimaDoPonto(e.centro, bairro));
+    expect(ruido.estado).toBe("estimado");
+    prepararEstado([a], a.id);
+    const t = todosOsTextos(abrirTela()).join("\n");
+    expect(t).toContain(ruido.textos.placar.subtitulo);
+    expect(t).toContain(`Sol e sossego calculados para: ${unidade.descricao}.`);
+    // Nenhum rastro da via fixa antiga ("coletora a 18 m").
+    expect(t).not.toMatch(/coletora a 18 m/);
   });
 });

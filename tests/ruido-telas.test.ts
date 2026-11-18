@@ -7,8 +7,6 @@
 // - sem camada para o prédio: "Sem leitura", nunca um valor fixo;
 // - saem da tela a Lei municipal 16.243/1996 e o RBAC 161 (conferência de leis); a referência é a NBR 10151.
 import { describe, expect, it, jest } from "@jest/globals";
-import { readFileSync } from "fs";
-import { join } from "path";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
 import { DueloFinalistas } from "../src/componentes/cidadao/DueloFinalistas";
@@ -32,6 +30,11 @@ import { avaliarAcustica3d, fecharResultadoAcustico } from "../src/nucleo/motore
 import { simularUnidade } from "../src/dados/dossie/simuladorDaUnidade";
 import { alturaDoAndarM } from "../src/dados/dossie/solESombra";
 import { TemaDoApp } from "../src/tema/Tema";
+import { derivarCustoPorPartes } from "../src/dados/custoPorPartes";
+import { montarColunaDoComparar } from "../src/dados/dossie/colunaDoComparar";
+import { escolherUnidadeAtiva, inferirFachadasDaAnalise } from "../src/dados/dossie/unidadeAtiva";
+import { PERFIL_DOMICILIO_PADRAO } from "../src/estado/PerfilDomicilio";
+import { analiseDeTeste, EM } from "./fixtures/caderno";
 
 jest.mock("@react-native-async-storage/async-storage", () => require("@react-native-async-storage/async-storage/jest/async-storage-mock"));
 
@@ -119,14 +122,19 @@ describe("placar do topo do dossiê (R1)", () => {
     const a = montar(placar(gt)), b = montar(placar(torre));
     expect(textos(a.toJSON()).join("\n")).toContain(gt.textos.placar.subtitulo);
     expect(textos(b.toJSON()).join("\n")).toContain(torre.textos.placar.subtitulo);
-    for (const arquivo of ["src/app/(abas)/dossie.tsx", "src/app/(abas)/comparar.tsx", "src/dados/dossie/colunaDoComparar.ts"]) {
-      const fonte = readFileSync(join(__dirname, "..", arquivo), "utf8");
-      expect(fonte).not.toMatch(/tipologiaVia|distanciaViaM|avaliarAcustica3d/);
-      // Desde a pendência 1 do HANDOFF (19/11/2026) as telas leem o ruído pela unidade ativa, que chama estimarRuido; o
-      // Comparar monta a coluna em src/dados/dossie/colunaDoComparar.ts.
-      if (!arquivo.endsWith("comparar.tsx")) expect(fonte).toContain("lerUnidade(");
-    }
-    expect(readFileSync(join(__dirname, "..", "src/dados/dossie/unidadeAtiva.ts"), "utf8")).toContain("estimarRuido(");
+    // Pendência 5 do HANDOFF (19/11/2026): sem regex sobre o código. A tela do dossiê montada está em
+    // tests/dossie-tela.test.ts ("o placar usa o ruído estimado na unidade ativa"); aqui, a coluna do Comparar, pela
+    // função que a tela chama, traz a nota do modelo no andar e na fachada ativos, diferente nos dois prédios.
+    const coluna = (e: Edificio, andar: number) => {
+      const a = analiseDeTeste(`c-${e.id}`, { bairro: e.bairro, modalidade: "compra", declarados: { ...analiseDeTeste().declarados, andar: { valor: andar, origem: "voce", aConfirmar: false } }, vinculo: { estado: "confirmado", edificioId: e.id, dsqfl: e.dsqfl, confirmadoEm: EM, indiceGeradoEm: EM } });
+      const unidade = escolherUnidadeAtiva({ inferencia: inferirFachadasDaAnalise(a, e, edificiosDoBairro(e.bairro)), pavimentos: e.pavimentos ?? null, andarDeclarado: andar });
+      const r = estimado(estimarRuido(e, { andar: unidade.andar, fachadaGraus: unidade.fachada.azimuteGraus, janelaFechada: true }));
+      return { col: montarColunaDoComparar(a, e, derivarCustoPorPartes(a, e, PERFIL_DOMICILIO_PADRAO), "x"), r };
+    };
+    const [cg, ct] = [coluna(GOLDEN_TOWER, 9), coluna(DA_TORRE, 3)];
+    expect(cg.col.sossego).toEqual({ nota0a10: cg.r.notaDeSossego, nivel: cg.r.nivelDeSossego, noiteDb: cg.r.naJanela.noiteDb });
+    expect(ct.col.sossego).toEqual({ nota0a10: ct.r.notaDeSossego, nivel: ct.r.nivelDeSossego, noiteDb: ct.r.naJanela.noiteDb });
+    expect(cg.col.sossego!.nota0a10).not.toBe(ct.col.sossego!.nota0a10);
     act(() => { a.unmount(); b.unmount(); });
   });
 
