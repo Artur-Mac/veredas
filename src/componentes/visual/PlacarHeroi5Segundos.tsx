@@ -13,10 +13,13 @@ type Props = {
   modalidade: "compra" | "aluguel";
   precoPrincipalReais: number | null;
   mensalBolsoRealReais: number | null;
+  /** O que entrou na soma mensal, na ordem (ex.: ["Parcela", "cond.", "IPTU", "luz"]). Sem ela, vale a legenda completa. */
+  composicaoMensal?: readonly string[];
   dinheiroParaEntrarReais: number | null;
   comparacaoM2Pct: number | null;
   orientacaoCurta: string;
-  conforto: VereditoConfortoTermico;
+  /** `null` sem prédio confirmado: o cartão de sol mostra "Sem leitura" em vez de uma nota tirada de um ponto fictício. */
+  conforto: VereditoConfortoTermico | null;
   /** dB(A) estimados no quarto à noite, com a janela fechada; `null` = sem leitura para o prédio. */
   ruidoDormitorioDb: number | null;
   /**
@@ -42,6 +45,7 @@ export function PlacarHeroi5Segundos({
   modalidade,
   precoPrincipalReais,
   mensalBolsoRealReais,
+  composicaoMensal,
   dinheiroParaEntrarReais,
   comparacaoM2Pct,
   orientacaoCurta,
@@ -77,8 +81,7 @@ export function PlacarHeroi5Segundos({
       ? `~${formatarReaisCompacto(mensalBolsoRealReais)}/mês`
       : "A calcular";
 
-  const confortoQuente =
-    conforto.zona === "quente_tarde" || conforto.zona === "tende_abafar";
+  const confortoQuente = conforto !== null && (conforto.zona === "quente_tarde" || conforto.zona === "tende_abafar");
 
   // A nota e o dB vêm do modelo estimado do prédio; sem ele (cartão montado só com o dB do quarto) fica a palavra do
   // nível, sem nota. Sem leitura nenhuma, diz "Sem leitura": nunca um valor fixo.
@@ -86,7 +89,7 @@ export function PlacarHeroi5Segundos({
   const sossego = sossegoDoModelo ??
     (porQuarto ? { valor: porQuarto.nivel, subtitulo: porQuarto.subtituloPlacar, ficha: null } : { valor: "Sem leitura", subtitulo: "Sem estimativa de ruído", ficha: null });
   // A13: as duas notas do placar (conforto e sossego) abrem a ficha de método num toque.
-  const temNotaDeConforto = typeof conforto.notaConforto0a10 === "number";
+  const temNotaDeConforto = conforto !== null && typeof conforto.notaConforto0a10 === "number";
   const ruidoAlto = ruidoDormitorioDb !== null && ruidoDormitorioDb > 45;
   const precoAcima = comparacaoM2Pct !== null && comparacaoM2Pct >= 10;
 
@@ -101,26 +104,29 @@ export function PlacarHeroi5Segundos({
     },
     {
       id: "predio",
-      rotulo: compra ? "Saída real por mês" : "Total mensal real",
+      rotulo: compra ? "Saída estimada por mês" : "Total mensal estimado",
       valorGrande: mensalTxt,
       subtitulo: spuAtivo
         ? "Terreno da União (ver regra)"
-        : compra
-          ? "Parcela + cond. + IPTU + luz"
-          : "Aluguel + cond. + IPTU + luz",
+        : composicaoMensal && composicaoMensal.length > 0
+          ? composicaoMensal.join(" + ")
+          : compra
+            ? "Parcela + cond. + IPTU + luz"
+            : "Aluguel + cond. + IPTU + luz",
       corPonto: spuAtivo ? "cor-barro" : "cor-azul-cadastral",
       corDestaque: spuAtivo ? "cor-barro-texto" : "cor-texto",
     },
     {
       id: "sol",
       rotulo: "Sol & conforto",
-      valorGrande: orientacaoCurta,
-      subtitulo:
-        typeof conforto.notaConforto0a10 === "number"
+      valorGrande: conforto ? orientacaoCurta : "Sem leitura",
+      subtitulo: !conforto
+        ? "Confirme o prédio para ler a fachada"
+        : typeof conforto.notaConforto0a10 === "number"
           ? `${conforto.selo} · ${conforto.notaConforto0a10.toFixed(1).replace(".", ",")}/10`
           : conforto.selo,
-      corPonto: confortoQuente ? "cor-barro" : "cor-salvia",
-      corDestaque: confortoQuente ? "cor-barro-texto" : "cor-salvia-escura",
+      corPonto: !conforto ? "cor-traco" : confortoQuente ? "cor-barro" : "cor-salvia",
+      corDestaque: !conforto ? "cor-texto-apoio" : confortoQuente ? "cor-barro-texto" : "cor-salvia-escura",
     },
     {
       id: "ruido",
@@ -180,7 +186,7 @@ export function PlacarHeroi5Segundos({
       </View>
       {temNotaDeConforto || sossego.ficha ? (
         <View testID="placar-fichas-de-metodo" style={styles.fichas}>
-          {temNotaDeConforto ? <FichaDeMetodo ficha={conforto.metodo} testID="placar-conforto-metodo" rotulo="Como foi calculada a nota de sol e conforto" /> : null}
+          {temNotaDeConforto && conforto ? <FichaDeMetodo ficha={conforto.metodo} testID="placar-conforto-metodo" rotulo="Como foi calculada a nota de sol e conforto" /> : null}
           {sossego.ficha ? <FichaDeMetodo ficha={sossego.ficha} testID="placar-sossego-metodo" rotulo="Como foi calculada a nota de sossego" /> : null}
         </View>
       ) : null}

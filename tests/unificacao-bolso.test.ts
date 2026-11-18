@@ -123,3 +123,41 @@ describe("R3: bolso sem alvo de preço e conta de 10 anos com valorização esco
     act(() => arvore.unmount());
   });
 });
+
+describe("revisão de 19/11/2026: a conta de 10 anos usa o mesmo financiamento do resto da tela", () => {
+  it("o saldo devedor depois de 10 anos sai da Tabela Price, não de 34% fixo", () => {
+    // Financiamento de 15 anos a 10,5% ao ano: depois de 120 prestações falta pagar cerca de metade do financiado.
+    const quinze = calcularTco10Anos({ ...ENTRADA, valorizacaoImovelAnual: 0 });
+    const financiado = ENTRADA.precoCompraReais * 0.8;
+    const saldo15 = ENTRADA.precoCompraReais - quinze.patrimonioFinalCompraReais;
+    expect(saldo15 / financiado).toBeGreaterThan(0.48);
+    expect(saldo15 / financiado).toBeLessThan(0.54);
+    // Em 30 anos quase nada foi amortizado em 10: o saldo é bem maior e o patrimônio, menor.
+    const trinta = calcularTco10Anos({ ...ENTRADA, valorizacaoImovelAnual: 0, prazoFinanciamentoAnos: 30 });
+    const saldo30 = ENTRADA.precoCompraReais - trinta.patrimonioFinalCompraReais;
+    expect(saldo30 / financiado).toBeGreaterThan(0.88);
+    expect(saldo30 / financiado).toBeLessThan(0.95);
+    // E a prestação de 30 anos é menor: o desembolso em 10 anos também.
+    expect(trinta.desembolsoLiquidoCompra10AnosReais).toBeLessThan(quinze.desembolsoLiquidoCompra10AnosReais);
+  });
+
+  it("prazo menor que 10 anos: paga só as prestações do prazo e termina sem saldo", () => {
+    const oito = calcularTco10Anos({ ...ENTRADA, valorizacaoImovelAnual: 0, prazoFinanciamentoAnos: 8 });
+    expect(oito.patrimonioFinalCompraReais).toBe(ENTRADA.precoCompraReais);
+  });
+
+  it("a frase das suposições diz o prazo e os juros que a conta usou", () => {
+    const frase = fraseDasSuposicoesTco({ ...ENTRADA, prazoFinanciamentoAnos: 30, jurosFinanciamentoAnual: 0.115 });
+    expect(frase).toContain("financiamento a 11,5% ao ano em 30 anos");
+  });
+
+  it("o bolso chama a soma mensal de estimativa e a luz de 'Luz estimada'", () => {
+    const arvore = montar(React.createElement(TresPerguntasDoBolso, PROPS));
+    const texto = textos(arvore.toJSON());
+    expect(texto).toContain("Saída do bolso por mês (estimativa)");
+    expect(texto).toContain("Luz estimada");
+    expect(texto).toContain("IPTU pelo cadastro");
+    expect(texto).not.toMatch(/de verdade|Saída real/);
+    act(() => arvore.unmount());
+  });
+});

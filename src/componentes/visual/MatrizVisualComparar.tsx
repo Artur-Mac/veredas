@@ -113,7 +113,7 @@ export function MatrizVisualComparar({
           : "empate",
     },
     {
-      criterio: "Saída mensal real",
+      criterio: "Saída mensal estimada",
       valorA: opcaoA.mensalBolsoRealReais
         ? `~${formatarReaisCompacto(opcaoA.mensalBolsoRealReais)}/mês`
         : "A confirmar",

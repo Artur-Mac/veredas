@@ -62,7 +62,8 @@ export function rotuloAusencia(ausencia: AbsenceState): string {
 }
 
 export function calcularPulsoDaQuadra(params: {
-  conforto: VereditoConfortoTermico;
+  /** `null` sem prédio confirmado: não há fachada nem vizinhos para a regra de conforto, e o eixo fica sem leitura. */
+  conforto: VereditoConfortoTermico | null;
   /** O resultado acústico do prédio pelo modelo de ruído estimado; `null` = sem leitura (o eixo sai da média). */
   acustica: ResultadoAcustica3D | null;
   anoConstrucao: number | null;
@@ -92,16 +93,27 @@ export function calcularPulsoDaQuadra(params: {
   } = params;
 
   // 1. Sol e brisa (derivado do indice termico 0-100)
-  const notaSol = clampNota((100 - conforto.indiceCalor0a100) / 10);
-  const eixoSol: EixoPulsoDaQuadra = {
-    id: "sol_brisa",
-    titulo: "Sol e ventilação",
-    nota0a10: notaSol,
-    ausencia: null,
-    rotuloValor: `${notaSol.toFixed(1).replace(".", ",")} / 10`,
-    resumo: conforto.selo,
-    conta: `10 menos o índice de calor (${conforto.indiceCalor0a100} de 100) dividido por 10`,
-  };
+  const notaSol = conforto ? clampNota((100 - conforto.indiceCalor0a100) / 10) : null;
+  const eixoSol: EixoPulsoDaQuadra =
+    conforto && notaSol !== null
+      ? {
+          id: "sol_brisa",
+          titulo: "Sol e ventilação",
+          nota0a10: notaSol,
+          ausencia: null,
+          rotuloValor: `${notaSol.toFixed(1).replace(".", ",")} / 10`,
+          resumo: conforto.selo,
+          conta: `10 menos o índice de calor (${conforto.indiceCalor0a100} de 100) dividido por 10`,
+        }
+      : {
+          id: "sol_brisa",
+          titulo: "Sol e ventilação",
+          nota0a10: null,
+          ausencia: "sem_leitura_publicada",
+          rotuloValor: "Sem leitura",
+          resumo: "Confirme o prédio para ler a fachada, o andar e os vizinhos",
+          conta: "sem prédio confirmado, o eixo fica fora da média",
+        };
 
   // 2. Sossego noturno: a mesma nota do placar e do Comparar, a do modelo de ruído estimado (18/11/2026, A1 e A2).
   // Antes era (64 − dB no quarto) ÷ 3,4, com uma via fixa igual para todo prédio. Sem leitura, fora da média.

@@ -26,6 +26,7 @@ export type PropsTresPerguntasDoBolso = {
   entradaReais: number;
   itbiReais: number;
   spuAnualReais: number;
+  /** A luz estimada do custo (a mesma "Luz estimada" do topo do dossiê), não o gasto de ar da regra de conforto. */
   custoMensalArReais: number;
   /** Só ITBI (diferença entre alíquotas). Escritura e registro não têm valor no app: ficam a confirmar no cartório. */
   economiaLegalItbiReais: number;
@@ -97,8 +98,8 @@ export function TresPerguntasDoBolso({
   const fatiasMesBase: FatiaBarra[] = [
     { rotulo: compra ? "Financiamento" : "Aluguel", valor: baseMensal, corToken: "cor-acao" },
     { rotulo: "Condomínio", valor: condominioMensalReais, corToken: "cor-salvia" },
-    { rotulo: "IPTU", valor: iptuMensalReais, corToken: "cor-azul-cadastral" },
-    { rotulo: "Climatização / energia", valor: custoMensalArReais, corToken: "cat-ipe-amarelo" },
+    { rotulo: "IPTU pelo cadastro", valor: iptuMensalReais, corToken: "cor-azul-cadastral" },
+    { rotulo: "Luz estimada", valor: custoMensalArReais, corToken: "cat-ipe-amarelo" },
     { rotulo: "Taxa da União /12", valor: spuMensal, corToken: "cor-barro" },
   ];
   const fatiasMes = fatiasMesBase.filter((f) => f.valor > 0);
@@ -212,14 +213,14 @@ export function TresPerguntasDoBolso({
         ) : null}
       </View>
 
-      {/* Bloco 2: Saída mensal real */}
+      {/* Bloco 2: saída mensal estimada */}
       <View style={[styles.secao, { borderTopWidth: 1, borderTopColor: cor("cor-linha") }]}>
         <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.kicker}>
-          Saída real do bolso por mês
+          Saída do bolso por mês (estimativa)
         </Texto>
         <View style={styles.linhaTituloValor}>
           <Texto tipo="secao" style={styles.perguntaTitulo}>
-            Quanto pesa por mês de verdade?
+            Quanto pesa por mês?
           </Texto>
           <Texto tipo="numero" style={styles.valorDestaque}>
             {totalMensalReal > 0 ? `~${formatarReais(totalMensalReal)}/mês` : "A calcular"}

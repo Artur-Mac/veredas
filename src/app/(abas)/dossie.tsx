@@ -391,6 +391,25 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     () => derivarCustoPorPartes(analise, predio, perfilDomicilio),
     [analise, predio, perfilDomicilio],
   );
+  // Revisão de 19/11/2026: a saída mensal estimada é uma soma só para o placar, o bolso e o resumo. A luz é a "Luz
+  // estimada" do custo (perfil da casa), a mesma do topo do dossiê; antes o bolso somava o gasto de ar da regra de conforto
+  // e a tela mostrava dois valores de luz. A legenda diz só o que entrou.
+  const saidaMensalEstimada = useMemo(() => {
+    const compra = analise.modalidade === "compra";
+    const itens: { rotulo: string; valor: number }[] = compra
+      ? [
+          { rotulo: "Parcela", valor: partesDeCusto.simulacaoCompra?.prestacaoPriceReais ?? 0 },
+          { rotulo: "cond.", valor: analise.declarados.condominio.valor ?? 0 },
+          { rotulo: "IPTU", valor: Math.round((predio?.iptuAnual?.mediana ?? 0) / 12) },
+        ]
+      : [{ rotulo: "Mensal conhecido", valor: visao.custo.totalMensalConhecido ?? visao.custo.principal.valor ?? 0 }];
+    const luz = partesDeCusto.fatiasDaRotina.find((f) => f.id === "energia")?.valorMensalReais ?? 0;
+    itens.push({ rotulo: "luz", valor: luz });
+    const entraram = itens.filter((i) => i.valor > 0);
+    const total = Math.round(entraram.reduce((s, i) => s + i.valor, 0));
+    return { total: total > 0 ? total : null, composicao: entraram.map((i) => i.rotulo), luz };
+  }, [analise.declarados.condominio.valor, analise.modalidade, partesDeCusto, predio?.iptuAnual?.mediana, visao.custo.principal.valor, visao.custo.totalMensalConhecido]);
+
   const entradaTco10Anos = useMemo((): EntradaTco10Anos | null => {
     if (analise.modalidade !== "compra" || !analise.declarados.preco.valor) return null;
     return {
@@ -401,13 +420,23 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
       spuAnualReais: partesDeCusto.spuEstatutario?.encargoPatrimonialAnualVigenteReais ?? 0,
       economiaOtimizacaoTributariaReais:
         partesDeCusto.otimizacaoFechamento?.melhorCenarioEconomiaReais ?? 0,
+      // O mesmo prazo e os mesmos juros da simulação de financiamento do custo (antes a conta de 10 anos supunha 15 anos
+      // a 10,5% enquanto o topo dizia "Financiar 80% em 30 anos").
+      ...(partesDeCusto.simulacaoCompra
+        ? {
+            entradaPct: partesDeCusto.simulacaoCompra.entradaPct,
+            prazoFinanciamentoAnos: partesDeCusto.simulacaoCompra.prazoAnos,
+            jurosFinanciamentoAnual: partesDeCusto.simulacaoCompra.taxaEfetivaAnualPct / 100,
+          }
+        : {}),
     };
   }, [analise.declarados.condominio.valor, analise.declarados.preco.valor, analise.modalidade, partesDeCusto, predio?.iptuAnual?.mediana]);
 
   const pulsoDaQuadra = useMemo(
     () =>
       calcularPulsoDaQuadra({
-        conforto: confortoTermico,
+        // Sem prédio confirmado não há fachada nem vizinhos: o eixo de sol fica sem leitura.
+        conforto: predio ? confortoTermico : null,
         // O eixo de sossego usa a nota do modelo de ruído estimado; sem leitura, fica fora da média.
         acustica,
         anoConstrucao: predio?.anoConstrucao ?? null,
@@ -416,7 +445,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
         vinculoConfirmado,
         precoInformado: analise.declarados.preco.valor !== null,
         condominioInformado: analise.declarados.condominio.valor !== null,
-        iptuConhecido: analise.declarados.iptu.valor !== null || (predio?.iptuAnual?.mediana ?? null) !== null,
+        iptuConhecido: analise.declarados.iptu.valor !== null,
         spuAtivo: Boolean(partesDeCusto.alertaMarinha),
         caminhabilidade,
       }),
@@ -428,8 +457,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
       caminhabilidade,
       confortoTermico,
       partesDeCusto,
-      predio?.anoConstrucao,
-      predio?.iptuAnual?.mediana,
+      predio,
       vinculoConfirmado,
       visao,
     ],
@@ -641,14 +669,8 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
           <PlacarHeroi5Segundos
             modalidade={analise.modalidade}
             precoPrincipalReais={visao.custo.principal.valor}
-            mensalBolsoRealReais={
-              (analise.modalidade === "compra"
-                ? (partesDeCusto.simulacaoCompra?.prestacaoPriceReais ?? 0) +
-                  (analise.declarados.condominio.valor ?? 0) +
-                  Math.round((predio?.iptuAnual?.mediana ?? 0) / 12)
-                : (visao.custo.totalMensalConhecido ?? visao.custo.principal.valor ?? 0)) +
-              confortoTermico.custoMensalArReais
-            }
+            mensalBolsoRealReais={saidaMensalEstimada.total}
+            composicaoMensal={saidaMensalEstimada.composicao}
             dinheiroParaEntrarReais={
               analise.modalidade === "compra" && analise.declarados.preco.valor
                 ? Math.round(
@@ -660,7 +682,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             }
             comparacaoM2Pct={visao.posicao?.deltaPercentual ?? null}
             orientacaoCurta={fachadaAtiva.orientacaoSolar}
-            conforto={confortoTermico}
+            conforto={predio ? confortoTermico : null}
             ruidoDormitorioDb={acustica?.ruidoInternoDormitorioDbA ?? null}
             sossego={{ ...ruido.textos.placar, ficha: ruido.estado === "estimado" ? ruido.textos.ficha : null }}
             spuAtivo={Boolean(partesDeCusto.alertaMarinha)}
@@ -784,11 +806,13 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                   />
                 ) : (
                   <Texto testID="canvas-25d-sem-predio" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 19 }}>
-                    Confirme o prédio para ver o volume com sol, sombra e brisa neste endereço.
+                    Confirme o prédio para ver o volume com sol, sombra e brisa, o conforto térmico e o horizonte da janela neste endereço.
                   </Texto>
                 )}
-                <TermometroConfortoTermico conforto={confortoTermico} andar={andarSimulado} />
-                <RadarVistaELote radar={radarVistaELote} />
+                {/* Revisão de 19/11/2026: sem prédio confirmado, o conforto e o horizonte saíam de um ponto fictício (a mesma
+                    nota para qualquer anúncio sem vínculo). Agora só aparecem com o prédio. */}
+                {predio ? <TermometroConfortoTermico conforto={confortoTermico} andar={andarSimulado} /> : null}
+                {predio ? <RadarVistaELote radar={radarVistaELote} /> : null}
                 <TresPerguntasDoBolso
                   modalidade={analise.modalidade}
                   nomeImovel={analise.nome}
@@ -808,7 +832,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                     Math.round((analise.declarados.preco.valor ?? 0) * 0.018)
                   }
                   spuAnualReais={partesDeCusto.spuEstatutario?.encargoPatrimonialAnualVigenteReais ?? 0}
-                  custoMensalArReais={confortoTermico.custoMensalArReais}
+                  custoMensalArReais={saidaMensalEstimada.luz}
                   economiaLegalItbiReais={
                     partesDeCusto.otimizacaoFechamento?.melhorCenarioEconomiaReais ?? 0
                   }
@@ -863,14 +887,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                     endereco: visao.endereco || nomeDoBairro,
                     modalidade: analise.modalidade,
                     precoPrincipalReais: visao.custo.principal.valor,
-                    mensalBolsoRealReais:
-                      ((analise.modalidade === "compra"
-                        ? (partesDeCusto.simulacaoCompra?.prestacaoPriceReais ?? 0) +
-                          (analise.declarados.condominio.valor ?? 0) +
-                          Math.round((predio?.iptuAnual?.mediana ?? 0) / 12)
-                        : (visao.custo.totalMensalConhecido ?? visao.custo.principal.valor ?? 0)) +
-                        confortoTermico.custoMensalArReais) ||
-                      null,
+                    mensalBolsoRealReais: saidaMensalEstimada.total,
                     dinheiroEntrarReais:
                       analise.modalidade === "compra" && analise.declarados.preco.valor
                         ? Math.round(
@@ -881,13 +898,13 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                                 analise.declarados.preco.valor * 0.03),
                           )
                         : null,
-                    fachadaResumo: `${fachadaAtiva.orientacaoSolar} (${andarSimulado}º andar)`,
-                    conforto: confortoTermico,
+                    fachadaResumo: predio ? `${fachadaAtiva.orientacaoSolar} (${andarSimulado}º andar)` : "Sem leitura (prédio não confirmado)",
+                    conforto: predio ? confortoTermico : null,
                     sossegoNivel:
                       ruido.estado === "estimado"
                         ? `${ruido.nivelDeSossego} (~${Math.round(ruido.naJanela.noiteDb)} dB(A) à noite na janela, estimativa)`
                         : ruido.textos.placar.valor,
-                    radar: radarVistaELote,
+                    radar: predio ? radarVistaELote : null,
                     pulso: pulsoDaQuadra,
                     anoConstrucao: predio?.anoConstrucao ?? null,
                     unidades: predio?.unidades ?? null,

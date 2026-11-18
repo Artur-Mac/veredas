@@ -211,13 +211,15 @@ function CompararComDados() {
       // a mesma nota do placar do dossiê. Sem prédio no cadastro, "sem leitura".
       const ruido = estimarRuido(ed, { andar, fachadaGraus: az, janelaFechada: true });
       const acu = acusticaDaEstimativa(ruido, { anoConstrucao: ed?.anoConstrucao ?? null });
+      // A mesma soma do dossiê: a luz é a "Luz estimada" do custo (perfil da casa), não o gasto de ar da regra de conforto.
+      const luz = pt.fatiasDaRotina.find((f) => f.id === "energia")?.valorMensalReais ?? 0;
       const baseMensal =
         item.modalidade === "compra"
           ? (pt.simulacaoCompra?.prestacaoPriceReais ?? 0) +
             (item.declarados.condominio.valor ?? 0) +
             Math.round((ed?.iptuAnual?.mediana ?? 0) / 12) +
-            conf.custoMensalArReais
-          : (pt.oficial.totalMensalConhecido ?? item.declarados.preco.valor ?? 0) + conf.custoMensalArReais;
+            luz
+          : (pt.oficial.totalMensalConhecido ?? item.declarados.preco.valor ?? 0) + luz;
       return {
         nome: nomeCurto,
         precoPrincipalReais: item.declarados.preco.valor ?? null,

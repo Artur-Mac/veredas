@@ -5,6 +5,7 @@ import { describe, expect, it } from "@jest/globals";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
 import { FichaDeMetodo } from "../src/componentes/visual/FichaDeMetodo";
+import { PlacarHeroi5Segundos } from "../src/componentes/visual/PlacarHeroi5Segundos";
 import { PulsoDaQuadra } from "../src/componentes/visual/PulsoDaQuadra";
 import { TermometroConfortoTermico } from "../src/componentes/visual/TermometroConfortoTermico";
 import { VidaAPeNaQuadra } from "../src/componentes/visual/VidaAPeNaQuadra";
@@ -215,5 +216,42 @@ describe("o mesmo prédio tem o mesmo selo de conforto no dossiê e no Comparar"
     expect(calcular(micro).indiceCalor0a100).toBeLessThan(calcular(SEM_MICROCLIMA).indiceCalor0a100);
     // Sem coordenada: sem leitura, nunca um valor fixo.
     expect(lerMicroclimaDoPonto(null, "boa-viagem")).toEqual(SEM_MICROCLIMA);
+  });
+});
+
+describe("revisão de 19/11/2026: sem prédio confirmado, sol e conforto ficam sem leitura", () => {
+  it("pulso: o eixo de sol fica 'Sem leitura' e fora da média, em vez de uma nota tirada de um ponto fictício", () => {
+    const sem = calcularPulsoDaQuadra({ ...BASE, conforto: null, obrasProximas: null, vinculoConfirmado: false });
+    const sol = eixo(sem, "sol_brisa");
+    expect(sol.nota0a10).toBeNull();
+    expect(sol.rotuloValor).toBe("Sem leitura");
+    expect(sol.resumo).toContain("Confirme o prédio");
+    const com = calcularPulsoDaQuadra({ ...BASE, obrasProximas: null, vinculoConfirmado: false });
+    expect(sem.eixosComLeitura).toBe(com.eixosComLeitura - 1);
+  });
+
+  it("placar: sem conforto, o cartão de sol diz 'Sem leitura' e não mostra nota nem ficha de conforto", () => {
+    const props = {
+      modalidade: "compra" as const,
+      precoPrincipalReais: 650_000,
+      mensalBolsoRealReais: 5_000,
+      composicaoMensal: ["Parcela", "cond.", "luz"],
+      dinheiroParaEntrarReais: 140_000,
+      comparacaoM2Pct: null,
+      orientacaoCurta: "Nascente",
+      ruidoDormitorioDb: null,
+    };
+    const semPredio = montar(React.createElement(PlacarHeroi5Segundos, { ...props, conforto: null }));
+    const textoSem = textos(semPredio.toJSON());
+    expect(textoSem).toContain("Sem leitura");
+    expect(textoSem).toContain("Confirme o prédio para ler a fachada");
+    expect(textoSem).not.toContain("Nascente");
+    expect(semPredio.root.findAll((n) => n.props.testID === "placar-conforto-metodo-toggle")).toHaveLength(0);
+    // A legenda da soma mensal lista só o que entrou.
+    expect(textoSem).toContain("Parcela + cond. + luz");
+    expect(textoSem).not.toContain("IPTU");
+    const comPredio = montar(React.createElement(PlacarHeroi5Segundos, { ...props, conforto }));
+    expect(textos(comPredio.toJSON())).toContain(conforto.selo);
+    act(() => { semPredio.unmount(); comPredio.unmount(); });
   });
 });

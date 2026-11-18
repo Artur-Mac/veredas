@@ -1,6 +1,7 @@
 import type { ResultadoAcustica3D } from "../../nucleo/motores/acustica3d";
 import type { FichaDeMetodo6Campos } from "../fichaDeMetodo";
 import { fichaGeralDoRuido } from "../ruido/estimativa";
+import { nivelDeSossego } from "../ruido/leitura";
 
 export type NivelSossego = "Calmo" | "Moderado" | "Intenso";
 
@@ -16,7 +17,8 @@ export type SinteseSossego = {
   rotuloCurtoPlacar: NivelSossego;
   subtituloPlacar: string;
   tituloQuarto: string;
-  rotuloSelo: "Tranquilo" | "Moderado" | "Atenção à janela";
+  /** A palavra da nota de sossego do modelo (a mesma do placar, do pulso e do Comparar). */
+  rotuloSelo: string;
   notaSossego0a10: number;
   indice0a100Interno: number;
   indice0a100Externo: number;
@@ -79,19 +81,10 @@ export function decomporSossego(
     Math.min(96, Math.round(((externoDb - 40) / 42) * 100)),
   );
 
-  const rotuloSelo: SinteseSossego["rotuloSelo"] =
-    internoDb <= 40
-      ? "Tranquilo"
-      : internoDb <= 45
-        ? "Moderado"
-        : "Atenção à janela";
-
-  const tituloQuarto =
-    internoDb <= 40
-      ? "Quarto calmo na maior parte da noite"
-      : internoDb <= 45
-        ? "Quarto com movimento urbano moderado"
-        : "Quarto exposto a som intenso da rua";
+  // Revisão de 19/11/2026: o selo e o título tinham faixas próprias pelo dB do quarto ("Tranquilo", "Quarto calmo…") e
+  // o placar mostrava outra palavra para o mesmo prédio ("Muito tranquilo"). Agora a palavra é uma só, a da nota.
+  const rotuloSelo = nivelDeSossego(acustica.notaSossego0a10);
+  const tituloQuarto = `${rotuloSelo} à noite, pela estimativa`;
 
   // Fonte 1: Transito da via
   const nivelTransito = nivelPorExterno(viaDb);

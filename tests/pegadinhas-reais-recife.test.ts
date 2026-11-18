@@ -206,7 +206,10 @@ describe("3 Pegadinhas Reais do Mercado Imobiliário do Recife", () => {
       );
     });
     const txt = textosDoNo(tree.toJSON());
-    expect(txt).toContain("Atenção à janela");
+    // Revisão de 19/11/2026: o selo do cartão usa a mesma palavra da nota de sossego (a do placar), não uma faixa própria
+    // pelo dB do quarto: um quarto baixo de frente para um corredor arterial dá "Agitado", nunca "Tranquilo".
+    expect(txt).toContain("Agitado à noite, pela estimativa");
+    expect(txt).not.toMatch(/tranquilo/i);
     expect(txt).toContain("Prédio de 1995: janelas antigas filtram menos o som da rua");
     expect(txt).toContain("Trânsito da via");
     expect(txt).not.toMatch(/\d\s*dB\b/i);
