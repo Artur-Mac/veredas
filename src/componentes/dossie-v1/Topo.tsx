@@ -4,7 +4,6 @@ import { FotoRemota } from "../FotoRemota";
 import Svg, { Path } from "react-native-svg";
 import type { Edificio } from "../../dados/contratos";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 import { GradeArquitetonica } from "../GradeArquitetonica";
 import { Icone } from "../Icone";
 import { Pressionavel } from "../Pressionavel";
@@ -48,9 +47,7 @@ export function TopoDoDossie({ predio, salva, aoVoltar, aoAlternarSalvo, aoAbrir
     borderRadius: 22,
     alignItems: "center" as const,
     justifyContent: "center" as const,
-    backgroundColor: comAlfa(cor("cor-superficie"), 0.96),
-    borderWidth: 1,
-    borderColor: comAlfa(cor("cor-texto"), 0.08),
+    backgroundColor: cor("cor-superficie"),
   };
   return (
     <View style={{ aspectRatio: 16 / 10, backgroundColor: cor("cor-sutil"), overflow: "hidden" }} onLayout={(e) => setLargura(e.nativeEvent.layout.width)}>
@@ -82,9 +79,9 @@ export function TopoDoDossie({ predio, salva, aoVoltar, aoAlternarSalvo, aoAbrir
             onPress={() => setFotoAmpliada(Math.min(atual, fotos.length - 1))}
             accessibilityRole="button"
             accessibilityLabel={`Ver foto ${Math.min(atual + 1, fotos.length)} de ${fotos.length} em tela cheia`}
-            style={{ position: "absolute", left: 12, bottom: 12, minHeight: 44, justifyContent: "center", paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, backgroundColor: comAlfa(cor("cor-superficie"), 0.94) }}
+            style={{ position: "absolute", left: 12, bottom: 12, minHeight: 44, justifyContent: "center", paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, backgroundColor: cor("cor-superficie") }}
           >
-            <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 16, fontWeight: "600" }}>{`${Math.min(atual + 1, fotos.length)}/${fotos.length} · tocar para ampliar`}</Texto>
+            <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 16, fontWeight: "600", fontVariant: ["tabular-nums"] }}>{`${Math.min(atual + 1, fotos.length)}/${fotos.length} · tocar para ampliar`}</Texto>
           </Pressionavel>
           <Modal
             visible={fotoAmpliada !== null}
@@ -92,7 +89,7 @@ export function TopoDoDossie({ predio, salva, aoVoltar, aoAlternarSalvo, aoAbrir
             animationType="fade"
             onRequestClose={() => setFotoAmpliada(null)}
           >
-            <View style={{ flex: 1, backgroundColor: comAlfa(cor("cor-campo"), 0.96), justifyContent: "center", alignItems: "center" }}>
+            <View style={{ flex: 1, backgroundColor: cor("cor-campo"), justifyContent: "center", alignItems: "center" }}>
               {fotoAmpliada !== null && fotos[fotoAmpliada] ? (
                 <Image
                   source={{ uri: fotos[fotoAmpliada] }}
@@ -112,7 +109,7 @@ export function TopoDoDossie({ predio, salva, aoVoltar, aoAlternarSalvo, aoAbrir
                   width: 48,
                   height: 48,
                   borderRadius: 24,
-                  backgroundColor: comAlfa(cor("cor-texto-campo"), 0.16),
+                  backgroundColor: cor("cor-texto"),
                   alignItems: "center",
                   justifyContent: "center",
                 }}
@@ -125,18 +122,18 @@ export function TopoDoDossie({ predio, salva, aoVoltar, aoAlternarSalvo, aoAbrir
                     onPress={() => setFotoAmpliada((p) => (p === null ? 0 : (p - 1 + fotos.length) % fotos.length))}
                     accessibilityRole="button"
                     accessibilityLabel="Foto anterior"
-                    style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: comAlfa(cor("cor-texto-campo"), 0.16), alignItems: "center", justifyContent: "center" }}
+                    style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: cor("cor-texto"), alignItems: "center", justifyContent: "center" }}
                   >
                     <Texto style={{ color: cor("cor-texto-campo"), fontSize: 20, lineHeight: 24 }}>‹</Texto>
                   </Pressionavel>
-                  <Texto style={{ color: cor("cor-texto-campo"), fontFamily: "JetBrainsMono", fontSize: 13, fontWeight: "600" }}>
+                  <Texto tipo="etiqueta" style={{ color: cor("cor-texto-campo"), fontSize: 13, fontWeight: "600", fontVariant: ["tabular-nums"] }}>
                     {`${fotoAmpliada + 1} / ${fotos.length}`}
                   </Texto>
                   <Pressionavel
                     onPress={() => setFotoAmpliada((p) => (p === null ? 0 : (p + 1) % fotos.length))}
                     accessibilityRole="button"
                     accessibilityLabel="Próxima foto"
-                    style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: comAlfa(cor("cor-texto-campo"), 0.16), alignItems: "center", justifyContent: "center" }}
+                    style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: cor("cor-texto"), alignItems: "center", justifyContent: "center" }}
                   >
                     <Texto style={{ color: cor("cor-texto-campo"), fontSize: 20, lineHeight: 24 }}>›</Texto>
                   </Pressionavel>
@@ -209,9 +206,7 @@ export function TopoDoDossie({ predio, salva, aoVoltar, aoAlternarSalvo, aoAbrir
             gap: 6,
             paddingHorizontal: 14,
             borderRadius: 24,
-            backgroundColor: comAlfa(cor("cor-superficie"), 0.95),
-            borderWidth: 1,
-            borderColor: comAlfa(cor("cor-texto"), 0.1),
+            backgroundColor: cor("cor-superficie"),
           }}
         >
           <Icone nome="map" tamanho="p" />

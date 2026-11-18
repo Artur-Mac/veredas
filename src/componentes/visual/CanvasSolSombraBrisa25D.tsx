@@ -22,7 +22,7 @@ import {
 } from "../../dados/sol/motorSombra25D";
 import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
-import { RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 
 export type EstadoSimulacao25D = {
   hora: number;
@@ -573,30 +573,39 @@ export function CanvasSolSombraBrisa25D({
                     const ehSelecionada =
                       p.ehAlvo && w.fachadaId === fachadaSelecionada;
 
-                    let fillParede: string;
+                    let fillCorParede: string;
+                    let fillOpacidadeParede = 1;
                     if (p.ehAlvo) {
                       if (ehSelecionada) {
-                        fillParede = w.emSombraPropria
-                          ? comAlfa(cor("cor-azul-cadastral"), 0.34)
-                          : fachadaAtiva.grupoSolar === "Poente"
-                            ? comAlfa(cor("cor-barro"), 0.52)
-                            : comAlfa(cor("cor-acao"), 0.44);
+                        if (w.emSombraPropria) {
+                          fillCorParede = cor("cor-azul-cadastral");
+                          fillOpacidadeParede = 0.34;
+                        } else if (fachadaAtiva.grupoSolar === "Poente") {
+                          fillCorParede = cor("cor-barro");
+                          fillOpacidadeParede = 0.52;
+                        } else {
+                          fillCorParede = cor("cor-acao");
+                          fillOpacidadeParede = 0.44;
+                        }
                       } else if (w.emSombraPropria) {
-                        fillParede = comAlfa(cor("cor-azul-cadastral"), 0.24);
+                        fillCorParede = cor("cor-azul-cadastral");
+                        fillOpacidadeParede = 0.24;
                       } else {
-                        fillParede = comAlfa(
-                          cor("cat-ipe-amarelo"),
-                          0.26 + w.luminosidadeSol0a1 * 0.44,
-                        );
+                        fillCorParede = cor("cat-ipe-amarelo");
+                        fillOpacidadeParede = 0.26 + w.luminosidadeSol0a1 * 0.44;
                       }
                     } else if (ehFutura) {
-                      fillParede = w.emSombraPropria
-                        ? comAlfa(cor("cor-barro"), 0.34)
-                        : cor("cor-barro-suave");
+                      if (w.emSombraPropria) {
+                        fillCorParede = cor("cor-barro");
+                        fillOpacidadeParede = 0.34;
+                      } else {
+                        fillCorParede = cor("cor-barro-suave");
+                      }
+                    } else if (w.emSombraPropria) {
+                      fillCorParede = cor("cor-texto");
+                      fillOpacidadeParede = 0.17;
                     } else {
-                      fillParede = w.emSombraPropria
-                        ? comAlfa(cor("cor-texto"), 0.17)
-                        : cor("cor-papel-claro");
+                      fillCorParede = cor("cor-papel-claro");
                     }
 
                     let wallTestId: string | undefined;
@@ -622,7 +631,8 @@ export function CanvasSolSombraBrisa25D({
                         <Polygon
                           testID={wallTestId}
                           points={formatarPts([b0, b1, t1, t0])}
-                          fill={fillParede}
+                          fill={fillCorParede}
+                          fillOpacity={fillOpacidadeParede}
                           stroke={
                             ehSelecionada
                               ? fachadaAtiva.grupoSolar === "Poente"
@@ -879,14 +889,14 @@ export function CanvasSolSombraBrisa25D({
           </G>
         </Svg>
 
-        {/* Pílula translúcida integrada no rodapé da cena (substitui caixa bege separada) */}
+        {/* Pílula integrada no rodapé da cena (substitui caixa bege separada) */}
         <View
           style={[
             styles.overlayStatus,
             {
-              backgroundColor: ehPoenteDireto
-                ? comAlfa(cor("cor-barro-suave"), 0.94)
-                : comAlfa(cor("cor-superficie"), 0.92),
+              backgroundColor: cor(
+                ehPoenteDireto ? "cor-barro-suave" : "cor-superficie",
+              ),
             },
           ]}
         >

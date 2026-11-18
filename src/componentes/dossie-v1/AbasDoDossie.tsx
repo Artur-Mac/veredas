@@ -1,6 +1,5 @@
 import { View, type ViewProps } from "react-native";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { abaPorTecla, focarElemento, teclaDoEvento, type EventoDeTecla } from "./teclado";
@@ -69,7 +68,6 @@ export function AbasDoDossie({ atual, aoEscolher }: Props) {
               justifyContent: "center",
               borderRadius: 8,
               backgroundColor: ativa ? cor("cor-superficie") : "transparent",
-              boxShadow: ativa ? `0 1px 3px ${comAlfa(cor("cor-texto"), 0.05)}` : undefined,
             }}
           >
             <Texto tipo="apoio" cor={ativa ? "cor-texto" : "cor-texto-apoio"} style={{ fontSize: 12, lineHeight: 16, fontWeight: ativa ? "700" : "500" }}>

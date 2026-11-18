@@ -4027,4 +4027,46 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       tree.unmount();
     });
   });
+
+  it("onda S98: zera comAlfa em todas as 7 famílias principais de UI e finaliza bordas limpas em Topo, SeletorDeBairro e index.tsx", () => {
+    const familias = [
+      join(__dirname, "..", "src", "app", "(abas)"),
+      join(__dirname, "..", "src", "componentes", "dossie-v1"),
+      join(__dirname, "..", "src", "componentes", "visual"),
+      join(__dirname, "..", "src", "componentes", "cidadao"),
+      join(__dirname, "..", "src", "componentes", "revisao"),
+      join(__dirname, "..", "src", "componentes", "visita-v1"),
+      join(__dirname, "..", "src", "componentes", "inicio"),
+    ];
+    const violacoesComAlfa: string[] = [];
+    for (const dir of familias) {
+      for (const arquivo of listarTsxRecursivo(dir)) {
+        const conteudo = readFileSync(arquivo, "utf8");
+        if (/\bcomAlfa\b/.test(conteudo)) {
+          violacoesComAlfa.push(arquivo);
+        }
+      }
+    }
+    expect(violacoesComAlfa).toEqual([]);
+
+    const topoSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "Topo.tsx"),
+      "utf8",
+    );
+    expect(topoSrc).not.toMatch(/\bborderWidth:\s*1(?!\.)\b/);
+    expect(topoSrc).not.toContain("JetBrainsMono");
+    expect(topoSrc).toContain("tabular-nums");
+
+    const bairroSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "revisao", "SeletorDeBairro.tsx"),
+      "utf8",
+    );
+    expect(bairroSrc.match(/\bborderWidth:\s*1(?!\.)\b/g)?.length ?? 0).toBeLessThanOrEqual(1);
+
+    const homeSrc = readFileSync(
+      join(__dirname, "..", "src", "app", "(abas)", "index.tsx"),
+      "utf8",
+    );
+    expect(homeSrc.match(/\bborderWidth:\s*1(?!\.)\b/g)?.length ?? 0).toBeLessThanOrEqual(2);
+  });
 });

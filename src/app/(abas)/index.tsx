@@ -28,7 +28,6 @@ import { arquivoDoIndice } from "../../dados/recife/indice";
 import { garantirCamadas } from "../../dados/camadas";
 import { useAnalises } from "../../estado/Analises";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 
 type FiltroModalidade = "TODOS" | "aluguel" | "compra";
 
@@ -417,7 +416,6 @@ function CartaoDaAnalise({
 // com as cores sempre por token. Texto pequeno em ferrugem usa "cor-barro-texto"; o laranja fica em preenchimento, borda e traço.
 const useEstilos = estilosDoTema((cor) => {
   const bordaDoCartao = cor("cor-linha");
-  const sombraDoCartao = `0 4px 14px -4px ${comAlfa(cor("cor-texto"), 0.05)}`;
   return StyleSheet.create({
     // As margens laterais ficam na rolagem; a coluna (720 px no desktop) vem dentro delas.
     scroll: {
@@ -427,88 +425,19 @@ const useEstilos = estilosDoTema((cor) => {
     coluna: {
       gap: 16,
     },
-    // `.scanner-card`: raio 18, borda e sombra suaves. Sem a margem lateral do `Cartao`: a rolagem já recua.
+    // `.scanner-card`: raio 18, borda limpa sem sombra difusa. Sem a margem lateral do `Cartao`: a rolagem já recua.
     cartaoDoScanner: {
       marginHorizontal: 0,
       marginBottom: 8,
       borderRadius: 18,
       borderWidth: 1,
       borderColor: bordaDoCartao,
-      boxShadow: sombraDoCartao,
     },
     corpoDoScanner: {
       paddingTop: 16,
       paddingHorizontal: 15,
       paddingBottom: 15,
       gap: 12,
-    },
-    scannerHead: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      gap: 10,
-    },
-    scannerTitulo: {
-      flexShrink: 1,
-      fontSize: 21,
-      lineHeight: 24,
-      fontWeight: "500",
-      letterSpacing: -0.42,
-      color: cor("cor-texto"),
-    },
-    alvoColar: {
-      minHeight: 44,
-      minWidth: 44,
-      justifyContent: "center",
-    },
-    btnColar: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 5,
-      paddingHorizontal: 11,
-      paddingVertical: 5,
-      backgroundColor: cor("cor-papel-claro"),
-      borderRadius: 999,
-    },
-    textoBtnColar: {
-      fontSize: 11.5,
-      lineHeight: 16,
-      color: cor("cor-texto-apoio"),
-      fontWeight: "600",
-    },
-    pocoLink: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 10,
-      paddingVertical: 11,
-      paddingHorizontal: 13,
-      minHeight: 46,
-      backgroundColor: cor("cor-creme"),
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
-    },
-    // O contorno de foco (2 px em azul cadastral) vem de `useFocoDoCampo`; aqui só o fundo branco do protótipo.
-    pocoLinkFocado: {
-      backgroundColor: cor("cor-superficie"),
-    },
-    inputUrl: {
-      flex: 1,
-      minWidth: 0,
-      padding: 0,
-      color: cor("cor-texto"),
-      fontFamily: "PlusJakartaSans",
-      fontSize: 13,
-      fontWeight: "500",
-      outlineWidth: 0,
-    },
-    textoErroUrl: {
-      color: cor("cor-barro-texto"),
-      fontSize: 12,
-      lineHeight: 16,
-    },
-    acoesDoScanner: {
-      gap: 10,
     },
     // `.saved-section-header` (index.html 1577): título à esquerda e filtro à direita, sempre na mesma linha. Sem os 2 px
     // laterais do protótipo e com 8 px entre os dois, o título de 162 px cabe em uma linha a partir de 375 px; abaixo
@@ -551,7 +480,6 @@ const useEstilos = estilosDoTema((cor) => {
     },
     btnFiltroAtivo: {
       backgroundColor: cor("cor-texto"),
-      boxShadow: `0 2px 5px ${comAlfa(cor("cor-texto"), 0.15)}`,
     },
     textoFiltro: {
       fontSize: 11.5,
@@ -581,7 +509,6 @@ const useEstilos = estilosDoTema((cor) => {
       borderRadius: 18,
       borderWidth: 1,
       borderColor: bordaDoCartao,
-      boxShadow: sombraDoCartao,
     },
     // Raio do cartão menos a borda de 1 px: o toque e o realce de "pressionado" seguem os cantos arredondados, e o anel de
     // foco, que acompanha este raio, aparece inteiro.
@@ -608,7 +535,7 @@ const useEstilos = estilosDoTema((cor) => {
       top: 10,
       left: 10,
       maxWidth: "70%",
-      backgroundColor: comAlfa(cor("cor-campo"), 0.65),
+      backgroundColor: cor("cor-campo"),
       paddingHorizontal: 9,
       paddingVertical: 3.5,
       borderRadius: 6,
@@ -630,7 +557,7 @@ const useEstilos = estilosDoTema((cor) => {
       justifyContent: "space-between",
       columnGap: 8,
       rowGap: 6,
-      backgroundColor: comAlfa(cor("cor-campo"), 0.82),
+      backgroundColor: cor("cor-campo"),
       borderRadius: 12,
       paddingVertical: 8,
       paddingHorizontal: 12,
@@ -640,7 +567,8 @@ const useEstilos = estilosDoTema((cor) => {
       gap: 1.5,
     },
     precoLinha: {
-      color: comAlfa(cor("cor-texto-campo"), 0.72),
+      color: cor("cor-texto-campo"),
+      opacity: 0.78,
       fontVariant: ["tabular-nums"],
       fontSize: 11,
       lineHeight: 14,
@@ -659,9 +587,9 @@ const useEstilos = estilosDoTema((cor) => {
       flexWrap: "wrap",
       gap: 6,
     },
-    // `.visor-delta-pill.alert`: o laranja só no preenchimento; o texto fica claro sobre a barra escura.
+    // `.visor-delta-pill.alert`: o barro só no preenchimento; o texto fica claro sobre a barra escura.
     etiquetaAlerta: {
-      backgroundColor: comAlfa(cor("cor-acao"), 0.24),
+      backgroundColor: cor("cor-barro"),
       borderRadius: 7,
       paddingVertical: 4.5,
       paddingHorizontal: 9,
@@ -732,15 +660,12 @@ const useEstilos = estilosDoTema((cor) => {
     },
     pontoConfirmado: {
       backgroundColor: cor("cor-salvia-escura"),
-      boxShadow: `0 0 0 2px ${comAlfa(cor("cor-salvia-escura"), 0.16)}`,
     },
     pontoNeutro: {
       backgroundColor: cor("cor-texto-apoio"),
-      boxShadow: `0 0 0 2px ${comAlfa(cor("cor-texto-apoio"), 0.16)}`,
     },
     pontoFerrugem: {
       backgroundColor: cor("cor-barro"),
-      boxShadow: `0 0 0 2px ${comAlfa(cor("cor-barro"), 0.16)}`,
     },
     textoConfirmado: {
       flexShrink: 1,
@@ -776,8 +701,7 @@ const useEstilos = estilosDoTema((cor) => {
       marginHorizontal: 0,
       marginBottom: 0,
       borderRadius: 18,
-      borderWidth: 1,
-      borderColor: bordaDoCartao,
+      backgroundColor: cor("cor-papel-claro"),
     },
     tituloDoCadernoVazio: {
       color: cor("cor-texto"),
