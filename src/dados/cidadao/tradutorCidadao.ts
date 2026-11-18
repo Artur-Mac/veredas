@@ -262,7 +262,7 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       chavesDuplas,
       metodo6Campos: {
         oQueMede: "Horas de insolação solar, brisa alísia e gabarito construtivo aberto ao redor.",
-        baseLegalOuNormativa: "EN 17037, Lei Municipal Recife 19.389/2025 (LPUOS) e Decretos 39.664-39.667/2026.",
+        baseLegalOuNormativa: "EN 17037 e Lei municipal do Recife 19.426/2025 (LPUOS).",
         aritmeticaResumo: "Cálculo solar a 8,05° S descontado horizonte 108B; VPL 120m a 8% a.a.",
         fontePrimaria: "PE3D LiDAR + ESIG LPUOS + MapBiomas LST",
         vintage: "2026-11",

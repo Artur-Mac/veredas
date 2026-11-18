@@ -12,6 +12,7 @@ import { TresPerguntasDoBolso, type PropsTresPerguntasDoBolso } from "../src/com
 import { TemaDoApp } from "../src/tema/Tema";
 import { traduzirIndicadoresCidadao, type EntradaTradutorCidadao } from "../src/dados/cidadao/tradutorCidadao";
 import { ITBI_ALIQUOTA_MAXIMA, ITBI_ALIQUOTA_MINIMA, estimarTransferencia, type CustoPorPartes } from "../src/dados/custoPorPartes";
+import { avaliarBioclimatico3d } from "../src/municipios/recife/motores/bioclimatico3d";
 import { calcularSpuEstatutario, calcularTetoReajusteSpu } from "../src/nucleo/motores/spuMarinha";
 import { avaliarResilienciaRedes, DATA_ASSUNCAO_AQUA_PERNAMBUCO, hojeNoAparelhoIso } from "../src/municipios/recife/motores/resilienciaRedes";
 import { cadernoVazio, type DocumentoPessoal } from "../src/dados/caderno";
@@ -541,5 +542,19 @@ describe("condomínio e documentos: Acordo-Base nº 01/2024, REsp 1.910.280 e C�
     const itens = auditarConjuntoDocumental(analiseDeTeste("compra"), "2026-11-19T12:00:00.000Z").itens;
     expect(itens.find((i) => i.id === "trabalhista")!.referencia).toBe("Débitos e ações trabalhistas (CLT, art. 642-A, § 4º · 180 dias)");
     expect(itens.find((i) => i.id === "matricula")!.referencia).toBe("Certidão de ônus reais (até 30 dias · Dec. nº 93.240/1986)");
+  });
+});
+
+describe("LPUOS do Recife: Lei 19.426/2025; saem a Lei 19.389/2025 e os Decretos 39.664 a 39.667/2026", () => {
+  test("o radar de vista e a ficha do IND-03 citam a Lei nº 19.426, de 03/10/2025", () => {
+    const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: 100, andar: 8 });
+    expect(bio.radarPerdaVista.notaRegulatoriaLpuos2025).toBe("Leitura segundo a LPUOS do Recife (Lei nº 19.426, de 03/10/2025).");
+    expect(cartao(cartoes({}, { bioclimatico: bio }), "IND-03").camada3ProvaMetodo.metodo6Campos.baseLegalOuNormativa).toBe(
+      "EN 17037 e Lei municipal do Recife 19.426/2025 (LPUOS).",
+    );
+    for (const arquivo of [["municipios", "recife", "motores", "bioclimatico3d.ts"], ["dados", "cidadao", "tradutorCidadao.ts"]]) {
+      expect(fonteDe(...arquivo)).not.toMatch(/19\.389|39\.66[4-7]/);
+    }
+    expect(fonteDe("nucleo", "higiene", "arquivosLegados.ts")).toContain("Plano Diretor (LC 2/2021) e LPUOS (Lei 19.426/2025)");
   });
 });
