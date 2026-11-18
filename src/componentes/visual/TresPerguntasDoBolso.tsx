@@ -66,7 +66,6 @@ export function TresPerguntasDoBolso({
     Math.round(baseMensal + condominioMensalReais + iptuMensalReais + custoMensalArReais + spuMensal),
   );
 
-  // Pergunta 1: Caixa na mao para entrar
   const dinheiroEntrarBase: FatiaBarra[] = compra
     ? [
         { rotulo: "Entrada (20%)", valor: entradaReais, corToken: "cor-acao" },
@@ -80,7 +79,6 @@ export function TresPerguntasDoBolso({
   const dinheiroEntrar = dinheiroEntrarBase.filter((f) => f.valor > 0);
   const totalEntrar = dinheiroEntrar.reduce((s, f) => s + f.valor, 0);
 
-  // Pergunta 2: Saida mensal real empilhada
   const fatiasMesBase: FatiaBarra[] = [
     { rotulo: compra ? "Financiamento" : "Aluguel", valor: baseMensal, corToken: "cor-acao" },
     { rotulo: "Condomínio", valor: condominioMensalReais, corToken: "cor-salvia" },
@@ -90,7 +88,6 @@ export function TresPerguntasDoBolso({
   ];
   const fatiasMes = fatiasMesBase.filter((f) => f.valor > 0);
 
-  // Calculadora Cascata de Negociacao
   const deducoesNegociacao: { motivo: string; valor: number }[] = [];
   if (excedenteMedianaM2Reais > 3_000) {
     deducoesNegociacao.push({ motivo: "Acima do preço médio do prédio/rua", valor: excedenteMedianaM2Reais });
@@ -143,10 +140,16 @@ export function TresPerguntasDoBolso({
   };
 
   return (
-    <View testID="tres-perguntas-do-bolso" style={styles.wrapper}>
-      {/* Pergunta 1: Dinheiro na mao para entrar */}
-      <View style={[styles.cartao, { backgroundColor: cor("cor-superficie"), borderColor: cor("cor-linha-forte") }]}>
-        <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+    <View
+      testID="tres-perguntas-do-bolso"
+      style={[
+        styles.folhaUnificada,
+        { backgroundColor: cor("cor-superficie"), borderColor: cor("cor-linha-forte") },
+      ]}
+    >
+      {/* Bloco 1: Dinheiro à vista para entrar */}
+      <View style={styles.secao}>
+        <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.kicker}>
           Dinheiro à vista para entrar
         </Texto>
         <View style={styles.linhaTituloValor}>
@@ -185,20 +188,20 @@ export function TresPerguntasDoBolso({
         </View>
 
         {compra && economiaLegalItbiCartorioReais >= 1000 ? (
-          <View style={[styles.dicaVerde, { backgroundColor: cor("cor-salvia-suave"), borderColor: cor("cor-salvia") }]}>
+          <View style={[styles.chamadaLateral, { borderLeftColor: cor("cor-salvia") }]}>
             <Texto tipo="etiqueta" cor="cor-salvia-escura" style={styles.textoDicaTitulo}>
               {`Economia legal no fechamento: até ${formatarReais(economiaLegalItbiCartorioReais)}`}
             </Texto>
-            <Texto tipo="apoio" cor="cor-salvia-escura" style={styles.textoDicaDetalhe}>
+            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
               Pela regra municipal do Recife (1% na faixa financiada e 1,8% pagando no prazo certo de até 180 dias).
             </Texto>
           </View>
         ) : null}
       </View>
 
-      {/* Pergunta 2: Saida mensal real */}
-      <View style={[styles.cartao, { backgroundColor: cor("cor-superficie"), borderColor: cor("cor-linha-forte") }]}>
-        <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+      {/* Bloco 2: Saída mensal real */}
+      <View style={[styles.secao, { borderTopWidth: 1, borderTopColor: cor("cor-linha") }]}>
+        <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.kicker}>
           Saída real do bolso por mês
         </Texto>
         <View style={styles.linhaTituloValor}>
@@ -237,16 +240,16 @@ export function TresPerguntasDoBolso({
         </View>
       </View>
 
-      {/* Pergunta 3: 10 anos comprar vs alugar */}
+      {/* Bloco 3: Visão de 10 anos */}
       {compra && saldo10AnosCompraVsAluguelReais !== null ? (
-        <View style={[styles.cartao, { backgroundColor: cor("cor-superficie"), borderColor: cor("cor-linha-forte") }]}>
-          <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+        <View style={[styles.secao, { borderTopWidth: 1, borderTopColor: cor("cor-linha") }]}>
+          <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.kicker}>
             Visão de 10 anos
           </Texto>
           <Texto tipo="secao" style={styles.perguntaTitulo}>
             Comprar vs manter capital aplicado no CDI
           </Texto>
-          <View style={[styles.dicaNeutro, { backgroundColor: cor("cor-papel-claro"), borderColor: cor("cor-linha") }]}>
+          <View style={[styles.chamadaLateral, { borderLeftColor: cor("cor-azul-cadastral") }]}>
             <Texto tipo="corpo" style={styles.textoDicaTitulo}>
               {saldo10AnosCompraVsAluguelReais >= 0
                 ? `Comprar tende a deixar saldo líquido de ~${formatarReaisCompacto(saldo10AnosCompraVsAluguelReais)} à frente em 10 anos.`
@@ -259,13 +262,20 @@ export function TresPerguntasDoBolso({
         </View>
       ) : null}
 
-      {/* Cascata visual de desconto / negociacao + copiar WhatsApp */}
+      {/* Bloco 4: Cascata de contraproposta sem borda dupla */}
       {compra && precoBase && precoAlvoJusto && deducoesNegociacao.length > 0 ? (
         <View
           testID="cascata-negociacao"
-          style={[styles.cartao, { backgroundColor: cor("cor-papel-claro"), borderColor: cor("cor-acao") }]}
+          style={[
+            styles.secao,
+            {
+              borderTopWidth: 1,
+              borderTopColor: cor("cor-linha"),
+              backgroundColor: cor("cor-papel-claro"),
+            },
+          ]}
         >
-          <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, fontWeight: "600" }}>
+          <Texto tipo="etiqueta" cor="cor-barro-texto" style={styles.kicker}>
             Calculadora de contraproposta
           </Texto>
           <Texto tipo="secao" style={styles.perguntaTitulo}>
@@ -299,40 +309,46 @@ export function TresPerguntasDoBolso({
         </View>
       ) : null}
 
-      <Pressable
-        testID="botao-copiar-whatsapp"
-        accessibilityRole="button"
-        onPress={copiarParaWhatsapp}
-        style={({ pressed }) => [
-          styles.botaoWhatsapp,
-          {
-            backgroundColor: copiado ? cor("cor-salvia-suave") : cor("cor-texto"),
-            borderColor: copiado ? cor("cor-salvia") : cor("cor-texto"),
-            opacity: pressed ? 0.85 : 1,
-          },
-        ]}
-      >
-        <Texto
-          tipo="botao"
-          cor={copiado ? "cor-salvia-escura" : "cor-superficie"}
-          style={styles.textoBotaoWhatsapp}
+      {/* Rodape CTA unico */}
+      <View style={[styles.rodapeCta, { borderTopColor: cor("cor-linha") }]}>
+        <Pressable
+          testID="botao-copiar-whatsapp"
+          accessibilityRole="button"
+          onPress={copiarParaWhatsapp}
+          style={({ pressed }) => [
+            styles.botaoWhatsapp,
+            {
+              backgroundColor: copiado ? cor("cor-salvia-suave") : cor("cor-texto"),
+              opacity: pressed ? 0.85 : 1,
+            },
+          ]}
         >
-          {copiado ? "Resumo copiado! Cole direto no WhatsApp" : "Copiar resumo e proposta para WhatsApp"}
-        </Texto>
-      </Pressable>
+          <Texto
+            tipo="botao"
+            cor={copiado ? "cor-salvia-escura" : "cor-superficie"}
+            style={styles.textoBotaoWhatsapp}
+          >
+            {copiado ? "Resumo copiado! Cole direto no WhatsApp" : "Copiar resumo e proposta para WhatsApp"}
+          </Texto>
+        </Pressable>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    gap: 12,
-  },
-  cartao: {
+  folhaUnificada: {
     borderRadius: RAIO.cartao,
     borderWidth: 1,
+    overflow: "hidden",
+  },
+  secao: {
     padding: 16,
     gap: 10,
+  },
+  kicker: {
+    fontSize: 12,
+    fontWeight: "600",
   },
   linhaTituloValor: {
     flexDirection: "row",
@@ -344,15 +360,18 @@ const styles = StyleSheet.create({
   perguntaTitulo: {
     fontSize: 16,
     lineHeight: 21,
+    fontWeight: "700",
+    letterSpacing: -0.3,
     flexShrink: 1,
   },
   valorDestaque: {
     fontSize: 18,
     fontWeight: "700",
+    fontVariant: ["tabular-nums"],
   },
   barraEmpilhada: {
-    height: 12,
-    borderRadius: 6,
+    height: 10,
+    borderRadius: 5,
     flexDirection: "row",
     gap: 2,
     overflow: "hidden",
@@ -368,24 +387,19 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   quadradoCor: {
-    width: 9,
-    height: 9,
+    width: 8,
+    height: 8,
     borderRadius: 2,
   },
   textoLegenda: {
     fontSize: 12,
+    fontVariant: ["tabular-nums"],
   },
-  dicaVerde: {
-    borderRadius: RAIO.quadrado,
-    borderWidth: 1,
-    padding: 10,
+  chamadaLateral: {
+    borderLeftWidth: 3,
+    paddingLeft: 10,
+    paddingVertical: 2,
     gap: 3,
-  },
-  dicaNeutro: {
-    borderRadius: RAIO.quadrado,
-    borderWidth: 1,
-    padding: 10,
-    gap: 4,
   },
   textoDicaTitulo: {
     fontSize: 13,
@@ -411,6 +425,7 @@ const styles = StyleSheet.create({
   cascataValor: {
     fontSize: 13.5,
     fontWeight: "600",
+    fontVariant: ["tabular-nums"],
   },
   cascataFinal: {
     marginTop: 4,
@@ -421,10 +436,13 @@ const styles = StyleSheet.create({
     fontSize: 13.5,
     fontWeight: "700",
   },
+  rodapeCta: {
+    borderTopWidth: 1,
+    padding: 12,
+  },
   botaoWhatsapp: {
     minHeight: TOQUE_MINIMO,
     borderRadius: RAIO.quadrado,
-    borderWidth: 1,
     paddingHorizontal: 16,
     alignItems: "center",
     justifyContent: "center",

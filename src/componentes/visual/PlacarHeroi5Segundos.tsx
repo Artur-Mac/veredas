@@ -24,8 +24,7 @@ type CelulaPlacar = {
   rotulo: string;
   valorGrande: string;
   subtitulo: string;
-  corFundo: TokenDeCor;
-  corBorda: TokenDeCor;
+  corPonto: TokenDeCor;
   corDestaque: TokenDeCor;
 };
 
@@ -59,7 +58,7 @@ export function PlacarHeroi5Segundos({
           ? `${comparacaoM2Pct}% acima do bairro`
           : "Na média do bairro"
       : compra && dinheiroParaEntrarReais
-        ? `Entrada+cartório ~${formatarReaisCompacto(dinheiroParaEntrarReais)}`
+        ? `Entrada + cartório ~${formatarReaisCompacto(dinheiroParaEntrarReais)}`
         : "Confira os custos abaixo";
 
   const mensalTxt =
@@ -71,24 +70,27 @@ export function PlacarHeroi5Segundos({
     conforto.zona === "quente_tarde" || conforto.zona === "tende_abafar";
 
   const ruidoAlto = ruidoDormitorioDb > 45;
+  const precoAcima = comparacaoM2Pct !== null && comparacaoM2Pct >= 10;
 
-  const celulas: CelulaPlacar[] = [
+  const celulas: [CelulaPlacar, CelulaPlacar, CelulaPlacar, CelulaPlacar] = [
     {
       id: "bolso",
       rotulo: compra ? "Valor pedido" : "Aluguel + taxas",
       valorGrande: precoTxt,
       subtitulo: comparacaoTxt,
-      corFundo: comparacaoM2Pct !== null && comparacaoM2Pct >= 10 ? "cor-barro-suave" : "cor-papel-claro",
-      corBorda: comparacaoM2Pct !== null && comparacaoM2Pct >= 10 ? "cor-barro" : "cor-linha-forte",
-      corDestaque: comparacaoM2Pct !== null && comparacaoM2Pct >= 10 ? "cor-barro-texto" : "cor-texto",
+      corPonto: precoAcima ? "cor-barro" : "cor-acao",
+      corDestaque: precoAcima ? "cor-barro-texto" : "cor-texto",
     },
     {
       id: "predio",
       rotulo: compra ? "Saída real por mês" : "Total mensal real",
       valorGrande: mensalTxt,
-      subtitulo: spuAtivo ? "Terreno da União (ver regra)" : compra ? "Parcela + cond. + IPTU + luz" : "Aluguel + cond. + IPTU + luz",
-      corFundo: spuAtivo ? "cor-barro-suave" : "cor-papel-claro",
-      corBorda: spuAtivo ? "cor-barro" : "cor-linha-forte",
+      subtitulo: spuAtivo
+        ? "Terreno da União (ver regra)"
+        : compra
+          ? "Parcela + cond. + IPTU + luz"
+          : "Aluguel + cond. + IPTU + luz",
+      corPonto: spuAtivo ? "cor-barro" : "cor-azul-cadastral",
       corDestaque: spuAtivo ? "cor-barro-texto" : "cor-texto",
     },
     {
@@ -96,8 +98,7 @@ export function PlacarHeroi5Segundos({
       rotulo: "Sol & conforto",
       valorGrande: orientacaoCurta,
       subtitulo: conforto.selo,
-      corFundo: confortoQuente ? "cor-barro-suave" : "cor-salvia-suave",
-      corBorda: confortoQuente ? "cor-barro" : "cor-salvia",
+      corPonto: confortoQuente ? "cor-barro" : "cor-salvia",
       corDestaque: confortoQuente ? "cor-barro-texto" : "cor-salvia-escura",
     },
     {
@@ -105,74 +106,98 @@ export function PlacarHeroi5Segundos({
       rotulo: "Sossego à noite",
       valorGrande: `~${Math.round(ruidoDormitorioDb)} dB`,
       subtitulo: ruidoAlto ? "Acima do silêncio noturno" : "Ambiente noturno calmo",
-      corFundo: ruidoAlto ? "cor-barro-suave" : "cor-azul-cadastral-suave",
-      corBorda: ruidoAlto ? "cor-barro" : "cor-azul-cadastral",
+      corPonto: ruidoAlto ? "cor-barro" : "cat-mare",
       corDestaque: ruidoAlto ? "cor-barro-texto" : "cor-azul-cadastral",
     },
   ];
 
+  const renderCelula = (c: CelulaPlacar, bordaEsq = false) => (
+    <Pressable
+      key={c.id}
+      testID={`placar-item-${c.id}`}
+      accessibilityRole="button"
+      onPress={() => aoTocarMetrica?.(c.id)}
+      style={({ pressed }) => [
+        styles.celula,
+        bordaEsq ? { borderLeftWidth: 1, borderLeftColor: cor("cor-linha") } : undefined,
+        pressed ? { opacity: 0.72 } : undefined,
+      ]}
+    >
+      <View style={styles.rotuloLinha}>
+        <View style={[styles.ponto, { backgroundColor: cor(c.corPonto) }]} />
+        <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.rotulo}>
+          {c.rotulo}
+        </Texto>
+      </View>
+      <Texto tipo="numero" cor={c.corDestaque} style={styles.valorGrande}>
+        {c.valorGrande}
+      </Texto>
+      <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.subtitulo}>
+        {c.subtitulo}
+      </Texto>
+    </Pressable>
+  );
+
   return (
-    <View testID="placar-heroi-5-segundos" style={styles.container}>
-      <View style={styles.grade}>
-        {celulas.map((c) => (
-          <Pressable
-            key={c.id}
-            testID={`placar-item-${c.id}`}
-            accessibilityRole="button"
-            onPress={() => aoTocarMetrica?.(c.id)}
-            style={({ pressed }) => [
-              styles.celula,
-              {
-                backgroundColor: cor(c.corFundo),
-                borderColor: cor(c.corBorda),
-                opacity: pressed ? 0.85 : 1,
-              },
-            ]}
-          >
-            <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.rotulo}>
-              {c.rotulo}
-            </Texto>
-            <Texto tipo="numero" cor={c.corDestaque} style={styles.valorGrande}>
-              {c.valorGrande}
-            </Texto>
-            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.subtitulo}>
-              {c.subtitulo}
-            </Texto>
-          </Pressable>
-        ))}
+    <View
+      testID="placar-heroi-5-segundos"
+      style={[
+        styles.containerUnificado,
+        {
+          backgroundColor: cor("cor-superficie"),
+          borderColor: cor("cor-linha-forte"),
+        },
+      ]}
+    >
+      <View style={styles.linhaGrade}>
+        {renderCelula(celulas[0], false)}
+        {renderCelula(celulas[1], true)}
+      </View>
+      <View style={[styles.linhaGrade, { borderTopWidth: 1, borderTopColor: cor("cor-linha") }]}>
+        {renderCelula(celulas[2], false)}
+        {renderCelula(celulas[3], true)}
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  containerUnificado: {
     marginTop: 12,
-  },
-  grade: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  celula: {
-    flexBasis: "48%",
-    flexGrow: 1,
-    minHeight: TOQUE_MINIMO + 24,
     borderRadius: RAIO.cartao,
     borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    overflow: "hidden",
+  },
+  linhaGrade: {
+    flexDirection: "row",
+  },
+  celula: {
+    flex: 1,
+    minHeight: TOQUE_MINIMO + 26,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
     gap: 3,
     justifyContent: "space-between",
   },
+  rotuloLinha: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  ponto: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
   rotulo: {
-    fontSize: 10,
-    letterSpacing: 0.4,
+    fontSize: 11.5,
+    fontWeight: "600",
   },
   valorGrande: {
     fontSize: 17,
     lineHeight: 22,
     fontWeight: "700",
+    fontVariant: ["tabular-nums"],
   },
   subtitulo: {
     fontSize: 11.5,

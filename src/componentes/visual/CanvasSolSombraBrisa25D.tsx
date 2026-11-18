@@ -1,21 +1,27 @@
 import React, { useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import Svg, { Circle, G, Line, Polygon, Rect, Text as TextoSvg } from "react-native-svg";
+import Svg, {
+  Circle,
+  G,
+  Line,
+  Path,
+  Polygon,
+  Text as TextoSvg,
+} from "react-native-svg";
 import type { LoteAdjacente3D } from "../../municipios/recife/motores/bioclimatico3d";
-import {
-  incidenciaNaFace,
-  instanteNoRecife,
-  posicaoDoSol,
-} from "../../dados/sol/astronomia";
 import { emMetros, type VolumeSolar } from "../../dados/sol/geometria";
 import type {
   InferenciaDeFachadas,
   PapelFachada,
   VizinhoParaFachada,
 } from "../../dados/sol/inferirFachadas";
+import {
+  simularCenaSombra25D,
+  type PredioCena25D,
+} from "../../dados/sol/motorSombra25D";
 import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
-import { RAIO, TOQUE_MINIMO } from "../../tema/tokens";
+import { RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
 
 export type EstadoSimulacao25D = {
   hora: number;
@@ -39,24 +45,15 @@ type Props = {
   lotesRiscoLpuos?: readonly LoteAdjacente3D[];
 };
 
-type PredioCena = {
-  id: string;
-  pontosM: [number, number][];
-  alturaM: number;
-  ehAlvo: boolean;
-  potencialFuturoM: number | null;
-};
-
 const HORAS_RAPIDAS = [7, 9, 12, 15, 17] as const;
 const RAD = Math.PI / 180;
 const SVG_W = 340;
-const SVG_H = 228;
+const SVG_H = 236;
 const CX = SVG_W / 2;
-const CY = SVG_H / 2 + 10;
-const ESCALA = 1.48; // 1 metro -> 1.48 px (mostra ~220 m × 140 m ao redor)
+const CY = SVG_H / 2 + 8;
+const ESCALA = 1.48; // 1 m -> 1.48 px
 
 function toSvg([mx, my]: readonly [number, number], zM = 0): [number, number] {
-  // Projecao 2.5D isometrica leve: +x=Leste(dir), +y=Norte(cima), z desloca para cima-esquerda
   return [
     CX + mx * ESCALA - zM * 0.22,
     CY - my * ESCALA - zM * 0.42,
@@ -67,51 +64,30 @@ function formatarPts(pts: readonly [number, number][]): string {
   return pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
 }
 
-function dentroPoligono2D(p: readonly [number, number], poli: readonly [number, number][]): boolean {
-  let inside = false;
-  for (let i = 0, j = poli.length - 1; i < poli.length; j = i++) {
-    const xi = poli[i]![0], yi = poli[i]![1];
-    const xj = poli[j]![0], yj = poli[j]![1];
-    const inter = (yi > p[1]) !== (yj > p[1]) && p[0] < ((xj - xi) * (p[1] - yi)) / (yj - yi + 1e-9) + xi;
-    if (inter) inside = !inside;
-  }
-  return inside;
-}
-
-function retanguloCentrado(cx: number, cy: number, larg: number, prof: number, angRad: number): [number, number][] {
+function retanguloCentrado(
+  cx: number,
+  cy: number,
+  larg: number,
+  prof: number,
+  angRad: number,
+): [number, number][] {
   const hl = larg / 2;
   const hp = prof / 2;
   const c = Math.cos(angRad);
   const s = Math.sin(angRad);
-  const base: [number, number][] = [[-hl, -hp], [hl, -hp], [hl, hp], [-hl, hp]];
+  const base: [number, number][] = [
+    [-hl, -hp],
+    [hl, -hp],
+    [hl, hp],
+    [-hl, hp],
+  ];
   return base.map(([x, y]) => [cx + x * c - y * s, cy + x * s + y * c]);
 }
 
-function sombraDaCaixa(
-  baseM: readonly [number, number][],
-  dxM: number,
-  dyM: number,
-): [number, number][] {
-  // Envoltoria convexa simples entre poligono base e poligono deslocado pela sombra
-  const todos = [...baseM, ...baseM.map(([x, y]): [number, number] => [x + dxM, y + dyM])];
-  if (todos.length < 3) return [];
-  const ord = [...todos].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
-  const cross = (o: [number, number], a: [number, number], b: [number, number]) =>
-    (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
-  const baixo: [number, number][] = [];
-  for (const p of ord) {
-    while (baixo.length >= 2 && cross(baixo[baixo.length - 2]!, baixo[baixo.length - 1]!, p) <= 0) baixo.pop();
-    baixo.push(p);
-  }
-  const cima: [number, number][] = [];
-  for (let i = ord.length - 1; i >= 0; i--) {
-    const p = ord[i]!;
-    while (cima.length >= 2 && cross(cima[cima.length - 2]!, cima[cima.length - 1]!, p) <= 0) cima.pop();
-    cima.push(p);
-  }
-  baixo.pop();
-  cima.pop();
-  return [...baixo, ...cima];
+function rotuloCurtoFachada(papel: "Frente Rua" | "Lateral" | "Fundos"): string {
+  if (papel === "Frente Rua") return "Frente";
+  if (papel === "Fundos") return "Fundos";
+  return "Lateral";
 }
 
 export function CanvasSolSombraBrisa25D({
@@ -131,15 +107,17 @@ export function CanvasSolSombraBrisa25D({
   const [estacao, setEstacao] = useState<"verao" | "inverno">("verao");
   const [mostrarTorresFuturas, setMostrarTorresFuturas] = useState<boolean>(false);
 
+  const centroLon = centro[0];
+  const centroLat = centro[1];
   const dia = estacao === "verao" ? "2026-12-21" : "2026-06-21";
   const maxAndar = Math.max(28, pavimentosTotais ?? 24);
   const zAndarM = Math.max(1.5, (andar - 1) * 3.0 + 1.5);
   const fachadaAtiva =
     inferencia.fachadas.find((f) => f.id === fachadaSelecionada) ?? inferencia.frente;
 
-  const prediosDaCena = useMemo<PredioCena[]>(() => {
+  const prediosDaCena = useMemo<PredioCena25D[]>(() => {
     const alvoAlturaM = Math.max(12, (pavimentosTotais ?? 14) * 3.0);
-    const resultado: PredioCena[] = [
+    const resultado: PredioCena25D[] = [
       {
         id: "alvo",
         pontosM: inferencia.poligonoMetros,
@@ -149,7 +127,7 @@ export function CanvasSolSombraBrisa25D({
       },
     ];
 
-    const cRef: [number, number] = [centro[0], centro[1]];
+    const cRef: [number, number] = [centroLon, centroLat];
     if (volumesEntorno && volumesEntorno.length > 0) {
       let adicionados = 0;
       for (const vol of volumesEntorno) {
@@ -180,7 +158,13 @@ export function CanvasSolSombraBrisa25D({
         const ptsM =
           viz.poligono && viz.poligono.length >= 3
             ? viz.poligono.slice(0, 8).map((p) => emMetros(p, cRef) as [number, number])
-            : retanguloCentrado(m[0], m[1], 16, 14, (inferencia.frenteAzimuteGraus * Math.PI) / 180);
+            : retanguloCentrado(
+                m[0],
+                m[1],
+                16,
+                14,
+                (inferencia.frenteAzimuteGraus * Math.PI) / 180,
+              );
         const alt = Math.max(6, (viz.pavimentos ?? 4) * 3.0);
         resultado.push({
           id: viz.id,
@@ -198,14 +182,17 @@ export function CanvasSolSombraBrisa25D({
         const y = Math.cos(l.azimuteGraus * RAD) * l.distanciaM;
         resultado.push({
           id: l.id,
-          pontosM: retanguloCentrado(x, y, 16, 15, (l.azimuteGraus * RAD)),
+          pontosM: retanguloCentrado(x, y, 16, 15, l.azimuteGraus * RAD),
           alturaM: Math.max(6, l.alturaEdificadaAtualM),
           ehAlvo: false,
-          potencialFuturoM: l.gabaritoLegalEstimadoM && l.gabaritoLegalEstimadoM > l.alturaEdificadaAtualM + 10 ? l.gabaritoLegalEstimadoM : null,
+          potencialFuturoM:
+            l.gabaritoLegalEstimadoM &&
+            l.gabaritoLegalEstimadoM > l.alturaEdificadaAtualM + 10
+              ? l.gabaritoLegalEstimadoM
+              : null,
         });
       }
     } else {
-      // Contexto esquematico coerente ao redor da quadra quando sem camadas carregadas
       const fr = inferencia.frenteAzimuteGraus * RAD;
       const lat = fr + Math.PI / 2;
       const exemplos: [number, number, number, number][] = [
@@ -226,81 +213,39 @@ export function CanvasSolSombraBrisa25D({
     }
 
     return resultado;
-  }, [centro, inferencia, lotesRiscoLpuos, pavimentosTotais, vizinhosLotes, volumesEntorno]);
+  }, [
+    centroLat,
+    centroLon,
+    inferencia,
+    lotesRiscoLpuos,
+    pavimentosTotais,
+    vizinhosLotes,
+    volumesEntorno,
+  ]);
 
-  const calculoSolar = useMemo(() => {
-    const sol = posicaoDoSol(instanteNoRecife(dia, hora * 60), {
-      latitude: centro[1],
-      longitude: centro[0],
-    });
-    const solAcima = sol.elevacao > 1;
-    const solNaFrente = solAcima && incidenciaNaFace(sol, fachadaAtiva.azimuteGraus);
-    const elevRad = Math.max(0.14, sol.elevacao * RAD);
-    const azRad = sol.azimute * RAD;
-
-    const sombras: { id: string; poliSvg: [number, number][]; futura: boolean }[] = [];
-    let emSombraVizinho = false;
-    const pontoJanelaM: [number, number] = [
-      fachadaAtiva.pontoMedioM[0] * 1.05,
-      fachadaAtiva.pontoMedioM[1] * 1.05,
-    ];
-
-    if (solAcima) {
-      for (const p of prediosDaCena) {
-        if (p.ehAlvo) continue;
-        const altEfetiva = mostrarTorresFuturas && p.potencialFuturoM ? p.potencialFuturoM : p.alturaM;
-        const excessoH = altEfetiva - zAndarM;
-        if (excessoH <= 0.3) continue;
-        const compM = Math.min(110, excessoH / Math.tan(elevRad));
-        const dxM = -Math.sin(azRad) * compM;
-        const dyM = -Math.cos(azRad) * compM;
-        const sombraM = sombraDaCaixa(p.pontosM, dxM, dyM);
-        if (sombraM.length >= 3) {
-          if (dentroPoligono2D(pontoJanelaM, sombraM)) {
-            emSombraVizinho = true;
-          }
-          sombras.push({
-            id: p.id,
-            poliSvg: sombraM.map((pt) => toSvg(pt, 0)),
-            futura: Boolean(mostrarTorresFuturas && p.potencialFuturoM),
-          });
-        }
-      }
-    }
-
-    // Vetor de vento alisio E-SE (sopra DE 125° PARA 305°)
-    const ventoDeAz = 125 * RAD;
-    const ventoVemX = Math.sin(ventoDeAz);
-    const ventoVemY = Math.cos(ventoDeAz);
-    const bloqueioBrisa = prediosDaCena
-      .filter((p) => !p.ehAlvo)
-      .some((p) => {
-        const cx = p.pontosM.reduce((s, pt) => s + pt[0], 0) / p.pontosM.length;
-        const cy = p.pontosM.reduce((s, pt) => s + pt[1], 0) / p.pontosM.length;
-        const projVento = cx * ventoVemX + cy * ventoVemY;
-        const alt = mostrarTorresFuturas && p.potencialFuturoM ? p.potencialFuturoM : p.alturaM;
-        return projVento > 12 && projVento < 65 && alt > zAndarM + 3;
-      });
-
-    return {
-      sol,
-      solAcima,
-      solNaFrente,
-      emSombraVizinho,
-      sombras,
-      bloqueioBrisa,
-    };
-  }, [centro, dia, fachadaAtiva, hora, mostrarTorresFuturas, prediosDaCena, zAndarM]);
-
-  // Ordenar edificios de tras para frente no eixo Y do SVG para correta oclusao 2.5D
-  const prediosOrdenados = useMemo(
+  const cena = useMemo(
     () =>
-      [...prediosDaCena].sort((a, b) => {
-        const ya = a.pontosM.reduce((s, p) => s + p[1], 0) / a.pontosM.length;
-        const yb = b.pontosM.reduce((s, p) => s + p[1], 0) / b.pontosM.length;
-        return yb - ya;
+      simularCenaSombra25D({
+        predios: prediosDaCena,
+        inferencia,
+        fachadaAtiva,
+        andar,
+        hora,
+        dia,
+        centro: [centroLon, centroLat],
+        mostrarTorresFuturas,
       }),
-    [prediosDaCena],
+    [
+      andar,
+      centroLat,
+      centroLon,
+      dia,
+      fachadaAtiva,
+      hora,
+      inferencia,
+      mostrarTorresFuturas,
+      prediosDaCena,
+    ],
   );
 
   // Linha da rua frontal fora da fachada Frente Rua
@@ -309,28 +254,57 @@ export function CanvasSolSombraBrisa25D({
   const ruaDirY = -Math.sin(frRad);
   const ruaOffX = Math.sin(frRad) * 20;
   const ruaOffY = Math.cos(frRad) * 20;
-  const ruaA = toSvg([ruaOffX - ruaDirX * 110, ruaOffY - ruaDirY * 110]);
-  const ruaB = toSvg([ruaOffX + ruaDirX * 110, ruaOffY + ruaDirY * 110]);
+  const ruaA = toSvg([ruaOffX - ruaDirX * 115, ruaOffY - ruaDirY * 115]);
+  const ruaB = toSvg([ruaOffX + ruaDirX * 115, ruaOffY + ruaDirY * 115]);
 
-  // Posicao do icone do Sol no ceu (borda do diagrama)
-  const solAz = calculoSolar.sol.azimute * RAD;
-  const [solX, solY] = toSvg([Math.sin(solAz) * 76, Math.cos(solAz) * 58], 18);
+  // Posicao do Sol e ponto na fachada selecionada
+  const solAz = cena.sol.azimute * RAD;
+  const [solX, solY] = toSvg([Math.sin(solAz) * 76, Math.cos(solAz) * 58], 22);
   const [pinX, pinY] = toSvg(fachadaAtiva.pontoMedioM, Math.min(28, zAndarM * 0.65));
 
-  // Brisa setas vindo de SE (~125°)
-  const brisaOffsets: [number, number][] = [
-    [42, -38],
-    [68, -14],
-    [22, -52],
-  ];
+  // Fim recortado do raio solar (para na torre vizinha quando ha sombra no andar)
+  const fimRaioSvg = useMemo<[number, number] | null>(() => {
+    if (!cena.oclusao.solAcima) return null;
+    if (cena.oclusao.emSombraVizinho && cena.oclusao.pontoBloqueioM) {
+      return toSvg(
+        cena.oclusao.pontoBloqueioM,
+        cena.oclusao.zBloqueioM ?? zAndarM,
+      );
+    }
+    if (cena.oclusao.solNaFrente) {
+      return [pinX, pinY];
+    }
+    // Sol esta nas costas da fachada selecionada -> aponta ate o contorno medio oposto sem cruzar por cima do apartamento
+    const centroSvg = toSvg([0, 0], Math.min(24, zAndarM * 0.65));
+    return [
+      centroSvg[0] + Math.sin(solAz) * 8,
+      centroSvg[1] - Math.cos(solAz) * 8,
+    ];
+  }, [cena.oclusao, pinX, pinY, solAz, zAndarM]);
 
-  const resumoMomento = !calculoSolar.solAcima
+  const ehPoenteDireto =
+    cena.oclusao.solNaFrente &&
+    !cena.oclusao.emSombraVizinho &&
+    fachadaAtiva.grupoSolar === "Poente";
+
+  const resumoMomento = !cena.oclusao.solAcima
     ? `${String(hora).padStart(2, "0")}h · Sol já se pôs`
-    : !calculoSolar.solNaFrente
-      ? `${String(hora).padStart(2, "0")}h · Sol do outro lado do prédio (esta face está na sombra)`
-      : calculoSolar.emSombraVizinho
-        ? `${String(hora).padStart(2, "0")}h · ${andar}º andar protegido pela sombra de prédio vizinho`
-        : `${String(hora).padStart(2, "0")}h · Sol direto na fachada ${fachadaAtiva.orientacaoSolar} (${andar}º andar)`;
+    : !cena.oclusao.solNaFrente
+      ? `${String(hora).padStart(2, "0")}h · Sol do outro lado do prédio`
+      : cena.oclusao.emSombraVizinho
+        ? `${String(hora).padStart(2, "0")}h · ${andar}º andar na sombra do vizinho${
+            cena.oclusao.ateQualAndarProtegido >= andar
+              ? ` (cobre até ~${cena.oclusao.ateQualAndarProtegido}º)`
+              : ""
+          }`
+        : `${String(hora).padStart(2, "0")}h · Sol direto na face ${fachadaAtiva.orientacaoSolar} (${andar}º andar)`;
+
+  const textoBrisa = cena.bloqueioBrisa
+    ? "Brisa E-SE barrada"
+    : "Brisa E-SE livre";
+
+  // Rastrear ids de parede que ja receberam testID para evitar duplicidade
+  const idsParedeAtribuidos = new Set<PapelFachada>();
 
   return (
     <View
@@ -343,74 +317,122 @@ export function CanvasSolSombraBrisa25D({
         },
       ]}
     >
-      {/* Cabecalho direto */}
+      {/* Cabecalho compacto + toggle sutil Verão | Inverno */}
       <View style={styles.cabecalho}>
-        <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
-          Sol, sombra e brisa
-        </Texto>
-        <Texto tipo="secao" style={[styles.resumoTitulo, { fontWeight: "700", letterSpacing: -0.35 }]}>
-          {inferencia.resumoAutomatico}
-        </Texto>
-        <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.subtitulo}>
-          {inferencia.subtituloExplicacao}
-        </Texto>
-      </View>
-
-      {/* Seletor 1-toque das 4 fachadas */}
-      <View style={styles.grupoBotoesFachada} accessibilityRole="radiogroup" accessibilityLabel="Escolha a fachada do apartamento">
-        {inferencia.fachadas.map((f) => {
-          const ativa = f.id === fachadaSelecionada;
-          return (
+        <View style={styles.topoCabecalho}>
+          <Texto
+            tipo="etiqueta"
+            cor="cor-texto-apoio"
+            style={styles.kicker}
+          >
+            Sol, sombra e brisa
+          </Texto>
+          <View
+            style={[
+              styles.trilhoEstacao,
+              { backgroundColor: cor("cor-papel-claro") },
+            ]}
+          >
             <Pressable
-              key={f.id}
-              testID={`fachada-chip-${f.id}`}
-              accessibilityRole="radio"
-              accessibilityState={{ selected: ativa }}
-              onPress={() => aoSelecionarFachada(f.id)}
-              style={({ pressed }) => [
-                styles.botaoFachada,
-                {
-                  backgroundColor: ativa ? cor("cor-acao") : cor("cor-papel-claro"),
-                  borderColor: ativa ? cor("cor-acao") : cor("cor-linha-forte"),
-                  opacity: pressed ? 0.85 : 1,
-                },
+              testID="estacao-verao"
+              accessibilityRole="button"
+              onPress={() => setEstacao("verao")}
+              style={[
+                styles.abaEstacao,
+                estacao === "verao"
+                  ? { backgroundColor: cor("cor-acao") }
+                  : undefined,
               ]}
             >
               <Texto
                 tipo="etiqueta"
-                cor={ativa ? "cor-sobre-acao" : "cor-texto"}
-                style={styles.textoBotaoFachada}
+                cor={estacao === "verao" ? "cor-sobre-acao" : "cor-texto-apoio"}
+                style={styles.textoEstacao}
               >
-                {f.rotuloBotao}
-              </Texto>
-              <Texto
-                tipo="apoio"
-                cor={ativa ? "cor-sobre-acao" : "cor-texto-apoio"}
-                style={styles.subBotaoFachada}
-              >
-                {f.grupoSolar === "Poente"
-                  ? "Sol da tarde"
-                  : f.recebeBrisaAlisia
-                    ? "Brisa SE livre"
-                    : `${f.azimuteGraus}°`}
+                Verão
               </Texto>
             </Pressable>
-          );
-        })}
+            <Pressable
+              testID="estacao-inverno"
+              accessibilityRole="button"
+              onPress={() => setEstacao("inverno")}
+              style={[
+                styles.abaEstacao,
+                estacao === "inverno"
+                  ? { backgroundColor: cor("cor-azul-cadastral") }
+                  : undefined,
+              ]}
+            >
+              <Texto
+                tipo="etiqueta"
+                cor={estacao === "inverno" ? "cor-superficie" : "cor-texto-apoio"}
+                style={styles.textoEstacao}
+              >
+                Inverno
+              </Texto>
+            </Pressable>
+          </View>
+        </View>
+
+        <Texto tipo="secao" style={styles.resumoTitulo}>
+          {inferencia.resumoAutomatico}
+        </Texto>
       </View>
 
-      {/* Cena SVG 2.5D */}
+      {/* Seletor segmentado em faixa unica sem caixas aninhadas */}
       <View
         style={[
-          styles.molduraSvg,
-          {
-            backgroundColor: cor("mapa-terra"),
-            borderColor: cor("cor-linha"),
-          },
+          styles.faixaSegmentadaWrap,
+          { borderTopColor: cor("cor-linha") },
         ]}
+        accessibilityRole="radiogroup"
+        accessibilityLabel="Escolha a fachada do apartamento"
       >
+        <View
+          style={[
+            styles.trilhoFachadas,
+            { backgroundColor: cor("cor-papel-claro") },
+          ]}
+        >
+          {inferencia.fachadas.map((f) => {
+            const ativa = f.id === fachadaSelecionada;
+            return (
+              <Pressable
+                key={f.id}
+                testID={`fachada-chip-${f.id}`}
+                accessibilityRole="radio"
+                accessibilityState={{ selected: ativa }}
+                onPress={() => aoSelecionarFachada(f.id)}
+                style={({ pressed }) => [
+                  styles.segmentoFachada,
+                  ativa ? { backgroundColor: cor("cor-acao") } : undefined,
+                  pressed ? { opacity: 0.85 } : undefined,
+                ]}
+              >
+                <Texto
+                  tipo="apoio"
+                  cor={ativa ? "cor-sobre-acao" : "cor-texto-apoio"}
+                  style={styles.subSegmento}
+                >
+                  {rotuloCurtoFachada(f.papelRotulo)}
+                </Texto>
+                <Texto
+                  tipo="etiqueta"
+                  cor={ativa ? "cor-sobre-acao" : "cor-texto"}
+                  style={styles.tituloSegmento}
+                >
+                  {f.grupoSolar}
+                </Texto>
+              </Pressable>
+            );
+          })}
+        </View>
+      </View>
+
+      {/* Cena 2.5D sem borda interna duplicada */}
+      <View style={[styles.cenaWrap, { backgroundColor: cor("mapa-terra") }]}>
         <Svg width="100%" height={SVG_H} viewBox={`0 0 ${SVG_W} ${SVG_H}`}>
-          {/* Fundo da via frontal */}
+          {/* Via frontal */}
           <Line
             x1={ruaA[0]}
             y1={ruaA[1]}
@@ -430,60 +452,205 @@ export function CanvasSolSombraBrisa25D({
             strokeDasharray="6 6"
           />
 
-          {/* Poligonos de sombra reais projetados no horario */}
-          {calculoSolar.sombras.map((s) => (
-            <Polygon
-              key={`sh-${s.id}`}
-              points={formatarPts(s.poliSvg)}
-              fill={s.futura ? cor("cor-barro") : cor("cor-campo")}
-              fillOpacity={s.futura ? 0.18 : 0.16}
-            />
-          ))}
+          {/* Camada 1: Sombra real projetada no solo por vizinhos E pelo proprio edificio */}
+          {cena.sombrasSolo.map((s) => {
+            const ptsSvg = s.poliM.map((pt) => toSvg(pt, 0));
+            return (
+              <Polygon
+                key={`sh-${s.id}`}
+                points={formatarPts(ptsSvg)}
+                fill={
+                  s.ehAlvo
+                    ? cor("cor-texto")
+                    : s.futura
+                      ? cor("cor-barro")
+                      : cor("cor-campo")
+                }
+                fillOpacity={s.ehAlvo ? 0.14 : s.futura ? 0.19 : 0.16}
+                stroke={s.futura ? cor("cor-barro") : undefined}
+                strokeWidth={s.futura ? 0.8 : 0}
+                strokeDasharray={s.futura ? "3 3" : undefined}
+              />
+            );
+          })}
 
-          {/* Volumes 2.5D dos vizinhos e do edificio alvo */}
-          {prediosOrdenados.map((p) => {
-            const alt = !p.ehAlvo && mostrarTorresFuturas && p.potencialFuturoM ? p.potencialFuturoM : p.alturaM;
-            const baseSvg = p.pontosM.map((pt) => toSvg(pt, 0));
+          {/* Camada 2: Extrusao 2.5D com self-shadowing fisico (n · s) + paredes clicaveis */}
+          {cena.prediosOrdenados.map((p) => {
+            const alt =
+              !p.ehAlvo && mostrarTorresFuturas && p.potencialFuturoM
+                ? p.potencialFuturoM
+                : p.alturaM;
+            const ehFutura =
+              !p.ehAlvo &&
+              mostrarTorresFuturas &&
+              Boolean(p.potencialFuturoM);
+
             const topoSvg = p.pontosM.map((pt) => toSvg(pt, alt));
-            const cxBase = baseSvg.reduce((s, q) => s + q[0], 0) / baseSvg.length;
-            const cyTopo = topoSvg.reduce((s, q) => s + q[1], 0) / topoSvg.length;
+            const cxTopo =
+              topoSvg.reduce((s, q) => s + q[0], 0) / topoSvg.length;
+            const cyTopo =
+              topoSvg.reduce((s, q) => s + q[1], 0) / topoSvg.length;
+            const paredes = cena.paredesPorPredio[p.id] ?? [];
 
-            // Faces laterais simples para extrusao visual 2.5D
-            const faces = baseSvg.map((b, i) => {
-              const nb = baseSvg[(i + 1) % baseSvg.length]!;
-              const t = topoSvg[i]!;
-              const nt = topoSvg[(i + 1) % topoSvg.length]!;
-              return `${formatarPts([b, nb, nt, t])}`;
-            });
-
-            const ehFutura = !p.ehAlvo && mostrarTorresFuturas && Boolean(p.potencialFuturoM);
+            const corTeto = p.ehAlvo
+              ? cena.tetoEmSombra
+                ? cor("cor-sutil")
+                : cor("cor-superficie")
+              : ehFutura
+                ? cor("cor-barro-suave")
+                : cena.tetoEmSombra
+                  ? cor("cor-linha")
+                  : cor("cor-papel-claro");
 
             return (
               <G key={p.id}>
-                {faces.map((pts, i) => (
-                  <Polygon
-                    key={`wall-${p.id}-${i}`}
-                    points={pts}
-                    fill={p.ehAlvo ? cor("cor-sutil") : ehFutura ? cor("cor-barro-suave") : cor("cor-linha")}
-                    stroke={p.ehAlvo ? cor("cor-texto-apoio") : cor("cor-linha-forte")}
-                    strokeWidth={0.7}
-                  />
-                ))}
+                {/* Paredes visiveis para a camera com iluminacao real */}
+                {paredes
+                  .filter((w) => w.ehFrenteCamera)
+                  .map((w) => {
+                    const b0 = toSvg(w.p0M, 0);
+                    const b1 = toSvg(w.p1M, 0);
+                    const t1 = toSvg(w.p1M, alt);
+                    const t0 = toSvg(w.p0M, alt);
+                    const ehSelecionada =
+                      p.ehAlvo && w.fachadaId === fachadaSelecionada;
+
+                    let fillParede: string;
+                    if (p.ehAlvo) {
+                      if (ehSelecionada) {
+                        fillParede = w.emSombraPropria
+                          ? comAlfa(cor("cor-azul-cadastral"), 0.34)
+                          : fachadaAtiva.grupoSolar === "Poente"
+                            ? comAlfa(cor("cor-barro"), 0.52)
+                            : comAlfa(cor("cor-acao"), 0.44);
+                      } else if (w.emSombraPropria) {
+                        fillParede = comAlfa(cor("cor-azul-cadastral"), 0.24);
+                      } else {
+                        fillParede = comAlfa(
+                          cor("cat-ipe-amarelo"),
+                          0.26 + w.luminosidadeSol0a1 * 0.44,
+                        );
+                      }
+                    } else if (ehFutura) {
+                      fillParede = w.emSombraPropria
+                        ? comAlfa(cor("cor-barro"), 0.34)
+                        : cor("cor-barro-suave");
+                    } else {
+                      fillParede = w.emSombraPropria
+                        ? comAlfa(cor("cor-texto"), 0.17)
+                        : cor("cor-papel-claro");
+                    }
+
+                    let wallTestId: string | undefined;
+                    if (
+                      p.ehAlvo &&
+                      w.fachadaId &&
+                      !idsParedeAtribuidos.has(w.fachadaId)
+                    ) {
+                      idsParedeAtribuidos.add(w.fachadaId);
+                      wallTestId = `canvas-wall-${w.fachadaId}`;
+                    }
+
+                    return (
+                      <Polygon
+                        key={`w-${p.id}-${w.indiceAresta}`}
+                        testID={wallTestId}
+                        points={formatarPts([b0, b1, t1, t0])}
+                        fill={fillParede}
+                        stroke={
+                          ehSelecionada
+                            ? fachadaAtiva.grupoSolar === "Poente"
+                              ? cor("cor-barro")
+                              : cor("cor-acao")
+                            : p.ehAlvo
+                              ? cor("cor-texto-apoio")
+                              : cor("cor-linha-forte")
+                        }
+                        strokeWidth={ehSelecionada ? 2 : 0.7}
+                        onPress={
+                          p.ehAlvo && w.fachadaId
+                            ? () => aoSelecionarFachada(w.fachadaId!)
+                            : undefined
+                        }
+                      />
+                    );
+                  })}
+
+                {/* Teto */}
                 <Polygon
                   points={formatarPts(topoSvg)}
-                  fill={p.ehAlvo ? cor("cor-superficie") : ehFutura ? cor("cor-barro-suave") : cor("cor-papel-claro")}
-                  stroke={p.ehAlvo ? cor("cor-texto") : ehFutura ? cor("cor-barro") : cor("cor-traco")}
-                  strokeWidth={p.ehAlvo ? 1.8 : 1}
+                  fill={corTeto}
+                  stroke={
+                    p.ehAlvo
+                      ? cor("cor-texto")
+                      : ehFutura
+                        ? cor("cor-barro")
+                        : cor("cor-traco")
+                  }
+                  strokeWidth={p.ehAlvo ? 1.5 : 1}
                   strokeDasharray={ehFutura ? "4 3" : undefined}
                 />
+
+                {/* Aresta iluminada no teto + alvos de toque para fachadas posteriores (Norte/Oeste) */}
+                {p.ehAlvo
+                  ? paredes.map((w) => {
+                      const t0 = toSvg(w.p0M, alt);
+                      const t1 = toSvg(w.p1M, alt);
+                      const ehSelecionada = w.fachadaId === fachadaSelecionada;
+                      let backTestId: string | undefined;
+                      if (
+                        !w.ehFrenteCamera &&
+                        w.fachadaId &&
+                        !idsParedeAtribuidos.has(w.fachadaId)
+                      ) {
+                        idsParedeAtribuidos.add(w.fachadaId);
+                        backTestId = `canvas-wall-${w.fachadaId}`;
+                      }
+                      return (
+                        <G key={`edge-${w.indiceAresta}`}>
+                          {ehSelecionada ? (
+                            <Line
+                              x1={t0[0]}
+                              y1={t0[1]}
+                              x2={t1[0]}
+                              y2={t1[1]}
+                              stroke={
+                                fachadaAtiva.grupoSolar === "Poente"
+                                  ? cor("cor-barro")
+                                  : cor("cor-acao")
+                              }
+                              strokeWidth={3.6}
+                              strokeLinecap="round"
+                            />
+                          ) : null}
+                          {!w.ehFrenteCamera && w.fachadaId ? (
+                            <Line
+                              testID={backTestId}
+                              x1={t0[0]}
+                              y1={t0[1]}
+                              x2={t1[0]}
+                              y2={t1[1]}
+                              stroke={cor("cor-acao")}
+                              strokeOpacity={0.01}
+                              strokeWidth={16}
+                              onPress={() => aoSelecionarFachada(w.fachadaId!)}
+                            />
+                          ) : null}
+                        </G>
+                      );
+                    })
+                  : null}
+
                 {!p.ehAlvo && alt >= 18 ? (
                   <TextoSvg
-                    x={cxBase}
+                    x={cxTopo}
                     y={cyTopo + 3}
-                    fontFamily="JetBrainsMono"
+                    fontFamily="PlusJakartaSans"
                     fontSize={8.5}
-                    fontWeight="600"
-                    fill={ehFutura ? cor("cor-barro-texto") : cor("cor-texto-apoio")}
+                    fontWeight="700"
+                    fill={
+                      ehFutura ? cor("cor-barro-texto") : cor("cor-texto-apoio")
+                    }
                     textAnchor="middle"
                   >
                     {`${Math.round(alt / 3)}p`}
@@ -493,181 +660,188 @@ export function CanvasSolSombraBrisa25D({
             );
           })}
 
-          {/* Linhas de brisa E-SE (90-160°) */}
-          {brisaOffsets.map(([bx, by], idx) => {
-            const p0 = toSvg([bx, by], 4);
-            const p1 = toSvg([bx - 34, by + 23], 4);
+          {/* Vetores curvos de brisa E-SE (125° -> 305°) */}
+          {cena.fluxosBrisa.map((f, idx) => {
+            const p0 = toSvg(f.origemM, 5);
+            const c1 = toSvg(f.cp1M, 5);
+            const c2 = toSvg(f.cp2M, 5);
+            const p1 = toSvg(f.destinoM, 5);
+            const sA = toSvg(f.pontaA, 5);
+            const sB = toSvg(f.pontaB, 5);
+            const corBrisa = cena.bloqueioBrisa
+              ? cor("cor-traco")
+              : cor("cat-mare");
+            const d = `M ${p0[0].toFixed(1)} ${p0[1].toFixed(1)} C ${c1[0].toFixed(1)} ${c1[1].toFixed(1)}, ${c2[0].toFixed(1)} ${c2[1].toFixed(1)}, ${p1[0].toFixed(1)} ${p1[1].toFixed(1)}`;
             return (
               <G key={`brisa-${idx}`}>
-                <Line
-                  x1={p0[0]}
-                  y1={p0[1]}
-                  x2={p1[0]}
-                  y2={p1[1]}
-                  stroke={calculoSolar.bloqueioBrisa ? cor("cor-traco") : cor("cat-mare")}
-                  strokeWidth={2}
-                  strokeDasharray={calculoSolar.bloqueioBrisa ? "4 4" : undefined}
+                <Path
+                  d={d}
+                  fill="none"
+                  stroke={corBrisa}
+                  strokeWidth={1.8}
+                  strokeLinecap="round"
+                  strokeDasharray={cena.bloqueioBrisa ? "4 3" : undefined}
                 />
-                <Circle
-                  cx={p1[0]}
-                  cy={p1[1]}
-                  r={2.4}
-                  fill={calculoSolar.bloqueioBrisa ? cor("cor-traco") : cor("cat-mare")}
-                />
+                <Polygon points={formatarPts([p1, sA, sB])} fill={corBrisa} />
               </G>
             );
           })}
 
-          {/* Marcador da fachada selecionada no imovel */}
-          <Circle
-            cx={pinX}
-            cy={pinY}
-            r={6.5}
-            fill={fachadaAtiva.grupoSolar === "Poente" ? cor("cor-barro") : cor("cor-acao")}
-            stroke={cor("cor-superficie")}
-            strokeWidth={2}
-          />
-
-          {/* Orbe do Sol no horario */}
-          {calculoSolar.solAcima ? (
+          {/* Camada 3: Orbe do Sol e raio solar recortado no bloqueador (nunca atravessa vizinho) */}
+          {cena.oclusao.solAcima && fimRaioSvg ? (
             <G>
               <Line
                 x1={solX}
                 y1={solY}
-                x2={pinX}
-                y2={pinY}
-                stroke={cor("cor-acao")}
-                strokeWidth={1.3}
-                strokeDasharray="4 4"
-                strokeOpacity={0.7}
+                x2={fimRaioSvg[0]}
+                y2={fimRaioSvg[1]}
+                stroke={
+                  cena.oclusao.emSombraVizinho
+                    ? cor("cor-azul-cadastral")
+                    : cor("cor-acao")
+                }
+                strokeWidth={1.5}
+                strokeDasharray="4 3"
+                strokeOpacity={0.82}
               />
+              {cena.oclusao.emSombraVizinho ? (
+                <Circle
+                  cx={fimRaioSvg[0]}
+                  cy={fimRaioSvg[1]}
+                  r={4.2}
+                  fill={cor("cor-azul-cadastral")}
+                  stroke={cor("cor-superficie")}
+                  strokeWidth={1.4}
+                />
+              ) : null}
               <Circle cx={solX} cy={solY} r={10} fill={cor("cat-ipe-amarelo")} />
               <Circle cx={solX} cy={solY} r={5.5} fill={cor("cor-acao")} />
             </G>
           ) : null}
 
-          {/* Rosa dos ventos compacta (Norte) */}
+          {/* Rosa dos ventos compacta */}
           <G>
-            <Circle cx={SVG_W - 24} cy={24} r={14} fill={cor("cor-superficie")} stroke={cor("cor-linha-forte")} strokeWidth={1} />
-            <TextoSvg x={SVG_W - 24} y={28} fontFamily="PlusJakartaSans" fontSize={10} fontWeight="700" fill={cor("cor-texto")} textAnchor="middle">
+            <Circle
+              cx={SVG_W - 22}
+              cy={22}
+              r={13}
+              fill={cor("cor-superficie")}
+              fillOpacity={0.9}
+              stroke={cor("cor-linha-forte")}
+              strokeWidth={1}
+            />
+            <TextoSvg
+              x={SVG_W - 22}
+              y={26}
+              fontFamily="PlusJakartaSans"
+              fontSize={9.5}
+              fontWeight="700"
+              fill={cor("cor-texto")}
+              textAnchor="middle"
+            >
               N
             </TextoSvg>
           </G>
-
-          {/* Legenda canto inferior */}
-          <Rect x={10} y={SVG_H - 28} width={178} height={20} rx={6} fill={cor("cor-superficie")} fillOpacity={0.92} />
-          <TextoSvg x={18} y={SVG_H - 14.5} fontFamily="PlusJakartaSans" fontSize={9.5} fontWeight="600" fill={cor("cat-mare")}>
-            {calculoSolar.bloqueioBrisa ? "Brisa E-SE: barrada por vizinho" : "Brisa E-SE: entrando pela quadra"}
-          </TextoSvg>
         </Svg>
+
+        {/* Pílula translúcida integrada no rodapé da cena (substitui caixa bege separada) */}
+        <View
+          style={[
+            styles.overlayStatus,
+            {
+              backgroundColor: ehPoenteDireto
+                ? comAlfa(cor("cor-barro-suave"), 0.94)
+                : comAlfa(cor("cor-superficie"), 0.92),
+            },
+          ]}
+        >
+          <View
+            style={[
+              styles.pontoStatus,
+              {
+                backgroundColor: ehPoenteDireto
+                  ? cor("cor-barro")
+                  : cena.oclusao.emSombraVizinho
+                    ? cor("cor-azul-cadastral")
+                    : cor("cat-mare"),
+              },
+            ]}
+          />
+          <Texto
+            tipo="apoio"
+            cor={ehPoenteDireto ? "cor-barro-texto" : "cor-texto"}
+            style={styles.textoOverlayStatus}
+          >
+            {`${resumoMomento} · ${textoBrisa}`}
+          </Texto>
+        </View>
       </View>
 
-      {/* Leitura dinamica do instante simulado */}
+      {/* Controles separados por hairline 1px */}
+      <View style={styles.rodapeHoras}>
+        <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.rotuloMini}>
+          Hora
+        </Texto>
+        <View style={styles.horasRow}>
+          {HORAS_RAPIDAS.map((h) => {
+            const ativo = hora === h;
+            return (
+              <Pressable
+                key={h}
+                testID={`hora-preset-${h}`}
+                accessibilityRole="button"
+                onPress={() => setHora(h)}
+                style={[
+                  styles.pilulaHora,
+                  {
+                    backgroundColor: ativo ? cor("cor-texto") : cor("cor-papel-claro"),
+                  },
+                ]}
+              >
+                <Texto
+                  tipo="etiqueta"
+                  cor={ativo ? "cor-superficie" : "cor-texto"}
+                  style={styles.textoHora}
+                >
+                  {`${String(h).padStart(2, "0")}h`}
+                </Texto>
+              </Pressable>
+            );
+          })}
+        </View>
+      </View>
+
       <View
         style={[
-          styles.faixaLeitura,
-          {
-            backgroundColor: calculoSolar.solNaFrente && !calculoSolar.emSombraVizinho && fachadaAtiva.grupoSolar === "Poente"
-              ? cor("cor-barro-suave")
-              : cor("cor-papel-claro"),
-            borderColor: cor("cor-linha"),
-          },
+          styles.rodapeAndarFuturo,
+          { borderTopColor: cor("cor-linha") },
         ]}
       >
-        <Texto tipo="corpo" cor="cor-texto" style={styles.textoLeitura}>
-          {resumoMomento}
-        </Texto>
-      </View>
-
-      {/* Controles interativos: Hora, Estacao, Andar e Risco LPUOS */}
-      <View style={styles.controlesLinha}>
-        <View style={styles.blocoHoras}>
-          <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.rotuloMini}>
-            Hora do dia:
-          </Texto>
-          <View style={styles.horasRow}>
-            {HORAS_RAPIDAS.map((h) => {
-              const ativo = hora === h;
-              return (
-                <Pressable
-                  key={h}
-                  testID={`hora-preset-${h}`}
-                  accessibilityRole="button"
-                  onPress={() => setHora(h)}
-                  style={[
-                    styles.pilulaHora,
-                    {
-                      backgroundColor: ativo ? cor("cor-texto") : cor("cor-papel-claro"),
-                      borderColor: cor("cor-linha-forte"),
-                    },
-                  ]}
-                >
-                  <Texto tipo="etiqueta" cor={ativo ? "cor-superficie" : "cor-texto"} style={styles.textoHora}>
-                    {`${String(h).padStart(2, "0")}h`}
-                  </Texto>
-                </Pressable>
-              );
-            })}
-          </View>
-        </View>
-
-        <View style={styles.blocoEstacao}>
-          <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.rotuloMini}>
-            Época do ano:
-          </Texto>
-          <View style={styles.horasRow}>
-            <Pressable
-              testID="estacao-verao"
-              accessibilityRole="button"
-              onPress={() => setEstacao("verao")}
-              style={[
-                styles.pilulaEstacao,
-                {
-                  backgroundColor: estacao === "verao" ? cor("cor-acao") : cor("cor-papel-claro"),
-                  borderColor: cor("cor-linha-forte"),
-                },
-              ]}
-            >
-              <Texto tipo="etiqueta" cor={estacao === "verao" ? "cor-sobre-acao" : "cor-texto"} style={styles.textoHora}>
-                Verão (Dez)
-              </Texto>
-            </Pressable>
-            <Pressable
-              testID="estacao-inverno"
-              accessibilityRole="button"
-              onPress={() => setEstacao("inverno")}
-              style={[
-                styles.pilulaEstacao,
-                {
-                  backgroundColor: estacao === "inverno" ? cor("cor-azul-cadastral") : cor("cor-papel-claro"),
-                  borderColor: cor("cor-linha-forte"),
-                },
-              ]}
-            >
-              <Texto tipo="etiqueta" cor={estacao === "inverno" ? "cor-superficie" : "cor-texto"} style={styles.textoHora}>
-                Inverno (Jun)
-              </Texto>
-            </Pressable>
-          </View>
-        </View>
-      </View>
-
-      {/* Stepper de Andar + Botao Risco Torres Futuras */}
-      <View style={styles.rodapeControles}>
         <View style={styles.andarStepper}>
           <Pressable
             testID="andar-menos"
             accessibilityRole="button"
             accessibilityLabel="Diminuir andar"
             onPress={() => aoAlterarAndar(Math.max(1, andar - 1))}
-            style={[styles.botaoStepper, { backgroundColor: cor("cor-papel-claro"), borderColor: cor("cor-linha-forte") }]}
+            style={[
+              styles.botaoStepper,
+              { backgroundColor: cor("cor-papel-claro") },
+            ]}
           >
-            <Texto tipo="secao" style={styles.textoStepper}>−</Texto>
+            <Texto tipo="secao" style={styles.textoStepper}>
+              −
+            </Texto>
           </Pressable>
           <View style={styles.andarValor}>
-            <Texto tipo="etiqueta">{`${andar}º andar`}</Texto>
-            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.rotuloMini}>
-              {`Altura ~${Math.round(zAndarM)} m`}
+            <Texto tipo="etiqueta" style={styles.tabular}>
+              {`${andar}º andar`}
+            </Texto>
+            <Texto
+              tipo="apoio"
+              cor="cor-texto-apoio"
+              style={[styles.rotuloMini, styles.tabular]}
+            >
+              {`~${Math.round(zAndarM)} m`}
             </Texto>
           </View>
           <Pressable
@@ -675,9 +849,14 @@ export function CanvasSolSombraBrisa25D({
             accessibilityRole="button"
             accessibilityLabel="Aumentar andar"
             onPress={() => aoAlterarAndar(Math.min(maxAndar, andar + 1))}
-            style={[styles.botaoStepper, { backgroundColor: cor("cor-papel-claro"), borderColor: cor("cor-linha-forte") }]}
+            style={[
+              styles.botaoStepper,
+              { backgroundColor: cor("cor-papel-claro") },
+            ]}
           >
-            <Texto tipo="secao" style={styles.textoStepper}>+</Texto>
+            <Texto tipo="secao" style={styles.textoStepper}>
+              +
+            </Texto>
           </Pressable>
         </View>
 
@@ -689,8 +868,9 @@ export function CanvasSolSombraBrisa25D({
           style={[
             styles.botaoFuturas,
             {
-              backgroundColor: mostrarTorresFuturas ? cor("cor-barro-suave") : cor("cor-papel-claro"),
-              borderColor: mostrarTorresFuturas ? cor("cor-barro") : cor("cor-linha-forte"),
+              backgroundColor: mostrarTorresFuturas
+                ? cor("cor-barro-suave")
+                : cor("cor-papel-claro"),
             },
           ]}
         >
@@ -699,7 +879,9 @@ export function CanvasSolSombraBrisa25D({
             cor={mostrarTorresFuturas ? "cor-barro-texto" : "cor-texto"}
             style={styles.textoFuturas}
           >
-            {mostrarTorresFuturas ? "Risco de torres futuras: ligado" : "Ver risco de torres futuras"}
+            {mostrarTorresFuturas
+              ? "Risco de torres futuras: ligado"
+              : "Ver risco de torres futuras"}
           </Texto>
         </Pressable>
       </View>
@@ -711,96 +893,138 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: RAIO.cartao,
     borderWidth: 1,
-    padding: 16,
-    gap: 12,
-  },
-  cabecalho: {
-    gap: 4,
-  },
-  resumoTitulo: {
-    fontSize: 17,
-    lineHeight: 22,
-  },
-  subtitulo: {
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  grupoBotoesFachada: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  botaoFachada: {
-    flexBasis: "48%",
-    flexGrow: 1,
-    minHeight: TOQUE_MINIMO,
-    borderRadius: RAIO.quadrado,
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    justifyContent: "center",
-  },
-  textoBotaoFachada: {
-    fontSize: 12.5,
-    fontWeight: "700",
-  },
-  subBotaoFachada: {
-    fontSize: 11,
-  },
-  molduraSvg: {
-    borderRadius: RAIO.quadrado,
-    borderWidth: 1,
     overflow: "hidden",
   },
-  faixaLeitura: {
-    borderRadius: RAIO.quadrado,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 9,
-  },
-  textoLeitura: {
-    fontSize: 13.5,
-    fontWeight: "600",
-  },
-  controlesLinha: {
-    gap: 10,
-  },
-  blocoHoras: {
-    gap: 4,
-  },
-  blocoEstacao: {
-    gap: 4,
-  },
-  rotuloMini: {
-    fontSize: 11,
-  },
-  horasRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+  cabecalho: {
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 10,
     gap: 6,
   },
-  pilulaHora: {
-    minHeight: TOQUE_MINIMO,
-    minWidth: 48,
+  topoCabecalho: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+  kicker: {
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  trilhoEstacao: {
+    flexDirection: "row",
     borderRadius: RAIO.pilula,
-    borderWidth: 1,
-    paddingHorizontal: 12,
+    padding: 3,
+    gap: 2,
+  },
+  abaEstacao: {
+    minHeight: 34,
+    paddingHorizontal: 10,
+    borderRadius: RAIO.pilula,
     alignItems: "center",
     justifyContent: "center",
   },
-  pilulaEstacao: {
+  textoEstacao: {
+    fontSize: 11.5,
+    fontWeight: "600",
+  },
+  resumoTitulo: {
+    fontSize: 16.5,
+    lineHeight: 22,
+    fontWeight: "700",
+    letterSpacing: -0.35,
+  },
+  faixaSegmentadaWrap: {
+    borderTopWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  trilhoFachadas: {
+    flexDirection: "row",
+    borderRadius: RAIO.quadrado,
+    padding: 3,
+    gap: 3,
+  },
+  segmentoFachada: {
+    flex: 1,
     minHeight: TOQUE_MINIMO,
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    paddingVertical: 6,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  subSegmento: {
+    fontSize: 10.5,
+    lineHeight: 13,
+  },
+  tituloSegmento: {
+    fontSize: 12,
+    lineHeight: 15,
+    fontWeight: "700",
+  },
+  cenaWrap: {
+    position: "relative",
+    width: "100%",
+  },
+  overlayStatus: {
+    position: "absolute",
+    left: 10,
+    right: 10,
+    bottom: 10,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+  },
+  pontoStatus: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+  },
+  textoOverlayStatus: {
+    flex: 1,
+    fontSize: 11.5,
+    lineHeight: 15,
+    fontWeight: "600",
+    fontVariant: ["tabular-nums"],
+  },
+  rodapeHoras: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    gap: 8,
+    flexWrap: "wrap",
+  },
+  rotuloMini: {
+    fontSize: 11.5,
+  },
+  horasRow: {
+    flexDirection: "row",
+    gap: 6,
+    flexWrap: "wrap",
+  },
+  pilulaHora: {
+    minHeight: TOQUE_MINIMO - 4,
+    minWidth: 46,
     borderRadius: RAIO.pilula,
-    borderWidth: 1,
-    paddingHorizontal: 14,
+    paddingHorizontal: 10,
     alignItems: "center",
     justifyContent: "center",
   },
   textoHora: {
-    fontSize: 12.5,
+    fontSize: 12,
     fontWeight: "600",
+    fontVariant: ["tabular-nums"],
   },
-  rodapeControles: {
+  rodapeAndarFuturo: {
+    borderTopWidth: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
@@ -816,7 +1040,6 @@ const styles = StyleSheet.create({
     width: TOQUE_MINIMO,
     height: TOQUE_MINIMO,
     borderRadius: RAIO.quadrado,
-    borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -825,19 +1048,21 @@ const styles = StyleSheet.create({
   },
   andarValor: {
     alignItems: "center",
-    minWidth: 74,
+    minWidth: 68,
+  },
+  tabular: {
+    fontVariant: ["tabular-nums"],
   },
   botaoFuturas: {
     minHeight: TOQUE_MINIMO,
     borderRadius: RAIO.quadrado,
-    borderWidth: 1,
     paddingHorizontal: 12,
     paddingVertical: 8,
     justifyContent: "center",
     flexShrink: 1,
   },
   textoFuturas: {
-    fontSize: 12.5,
+    fontSize: 12,
     fontWeight: "600",
   },
 });

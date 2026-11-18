@@ -1,6 +1,9 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import type { VereditoConfortoTermico, ZonaConfortoTermico } from "../../dados/clima/confortoTermico";
+import type {
+  VereditoConfortoTermico,
+  ZonaConfortoTermico,
+} from "../../dados/clima/confortoTermico";
 import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
 import { RAIO, type TokenDeCor } from "../../tema/tokens";
@@ -46,19 +49,16 @@ export function TermometroConfortoTermico({ conforto }: Props) {
     >
       <View style={styles.topoRow}>
         <View style={styles.topoEsq}>
-          <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+          <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.kicker}>
             Conforto térmico na prática
           </Texto>
-          <Texto tipo="secao" style={[styles.perguntaTitulo, { fontWeight: "700", letterSpacing: -0.35 }]}>
+          <Texto tipo="secao" style={styles.perguntaTitulo}>
             {conforto.perguntaTitulo}
           </Texto>
         </View>
         <View
           testID="selo-conforto-termico"
-          style={[
-            styles.selo,
-            { backgroundColor: cor(corSeloFundo), borderColor: cor(corSeloTexto) },
-          ]}
+          style={[styles.selo, { backgroundColor: cor(corSeloFundo) }]}
         >
           <Texto tipo="etiqueta" cor={corSeloTexto} style={styles.textoSelo}>
             {conforto.selo}
@@ -66,7 +66,7 @@ export function TermometroConfortoTermico({ conforto }: Props) {
         </View>
       </View>
 
-      {/* Medidor visual em 4 zonas com marcador de posicao exata */}
+      {/* Regua visual de 4 zonas */}
       <View style={styles.reguaWrapper}>
         <View style={styles.marcadorRow}>
           <View
@@ -89,8 +89,8 @@ export function TermometroConfortoTermico({ conforto }: Props) {
                     styles.barraSegmento,
                     {
                       backgroundColor: cor(z.corToken),
-                      opacity: ativo ? 1 : 0.28,
-                      height: ativo ? 12 : 8,
+                      opacity: ativo ? 1 : 0.25,
+                      height: ativo ? 10 : 6,
                     },
                   ]}
                 />
@@ -107,16 +107,15 @@ export function TermometroConfortoTermico({ conforto }: Props) {
         </View>
       </View>
 
-      {/* Veredito humano em 1 frase */}
       <Texto tipo="corpo" cor="cor-texto" style={styles.veredito}>
         {conforto.vereditoUmaLinha}
       </Texto>
 
-      {/* Impacto de conta de energia + temperatura de superfície */}
+      {/* Strip de energia separado por hairlines 1px (zero caixa interna) */}
       <View
         style={[
           styles.faixaEnergia,
-          { backgroundColor: cor("cor-papel-claro"), borderColor: cor("cor-linha") },
+          { borderTopColor: cor("cor-linha"), borderBottomColor: cor("cor-linha") },
         ]}
       >
         <View style={styles.energiaItem}>
@@ -127,14 +126,18 @@ export function TermometroConfortoTermico({ conforto }: Props) {
             {`~R$ ${conforto.custoMensalArReais}/mês`}
           </Texto>
         </View>
-        <View style={[styles.divisorVertical, { backgroundColor: cor("cor-linha-forte") }]} />
+        <View style={[styles.divisorVertical, { backgroundColor: cor("cor-linha") }]} />
         <View style={styles.energiaItem}>
           <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.rotuloMini}>
             Diferença vs Nascente fresco
           </Texto>
           <Texto
             tipo="secao"
-            cor={conforto.custoExtraVsFrescoMesReais >= 90 ? "cor-barro-texto" : "cor-salvia-escura"}
+            cor={
+              conforto.custoExtraVsFrescoMesReais >= 90
+                ? "cor-barro-texto"
+                : "cor-salvia-escura"
+            }
             style={styles.valorEnergia}
           >
             {conforto.custoExtraVsFrescoMesReais > 15
@@ -150,7 +153,6 @@ export function TermometroConfortoTermico({ conforto }: Props) {
         </Texto>
       ) : null}
 
-      {/* Fatores explicativos claros */}
       <View style={styles.listaFatores}>
         {conforto.fatores.map((f, idx) => {
           const corPonto: TokenDeCor =
@@ -195,13 +197,18 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 2,
   },
+  kicker: {
+    fontSize: 12,
+    fontWeight: "600",
+  },
   perguntaTitulo: {
     fontSize: 17,
     lineHeight: 22,
+    fontWeight: "700",
+    letterSpacing: -0.35,
   },
   selo: {
     borderRadius: RAIO.pilula,
-    borderWidth: 1,
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
@@ -211,7 +218,7 @@ const styles = StyleSheet.create({
   },
   reguaWrapper: {
     gap: 6,
-    paddingTop: 4,
+    paddingTop: 2,
   },
   marcadorRow: {
     height: 10,
@@ -251,9 +258,9 @@ const styles = StyleSheet.create({
   },
   faixaEnergia: {
     flexDirection: "row",
-    borderRadius: RAIO.quadrado,
-    borderWidth: 1,
-    padding: 10,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    paddingVertical: 10,
     alignItems: "center",
   },
   energiaItem: {
@@ -262,14 +269,15 @@ const styles = StyleSheet.create({
   },
   divisorVertical: {
     width: 1,
-    height: 30,
-    marginHorizontal: 10,
+    height: 28,
+    marginHorizontal: 12,
   },
   rotuloMini: {
     fontSize: 11,
   },
   valorEnergia: {
     fontSize: 15,
+    fontVariant: ["tabular-nums"],
   },
   subResumo: {
     fontSize: 12,
@@ -283,9 +291,9 @@ const styles = StyleSheet.create({
     gap: 9,
   },
   bolinha: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
     marginTop: 6,
   },
   fatorTexto: {

@@ -19,7 +19,7 @@ Branch: `feat/vereda-visual-power-overhaul`
 
 - [x] **S0**: Audited `projetosraiox/` + `ARQUITETURA_MESTRE.md` + `mcphub/EnemiesHub`; initialized `SOTA_EVOLUTION_LOG.md`.
 - [x] **S1**: Zero-serif SVG/Web typography unification + calm `PlusJakartaSans` hierarchy + `tabular-nums` (global web SVG sans rule in `src/app/_layout.tsx`, explicit `fontFamily="PlusJakartaSans"` across `EntornoSolar`, `Ilustracao`, `Orientacao`, `CanvasSolSombraBrisa25D`, `MapaDoLote`, calm sentence-case headings replacing noisy ALL-CAPS across `PlacarHeroi5Segundos`, `TermometroConfortoTermico`, `TresPerguntasDoBolso`, `EscalasVisuais`, `MatrizVisualComparar`).
-- [ ] **S2**: 3-layer 2.5D Shadow Engine (`motorSombra25D.ts`) + clickable walls + curved E-SE wind vectors + radical "1 container max" demodularization across visual blocks.
+- [x] **S2**: 3-layer 2.5D Shadow Engine (`src/dados/sol/motorSombra25D.ts`: ground cast shadows for focal tower + neighbors, CCW polygon normalization + physical self-shadowing normals, neighbor floor-height ray occlusion + ray clipping, curved E-SE aerodynamic wind vectors) + clickable 2.5D walls (`canvas-wall-*`) + radical "1 container max" hairline demodularization across `CanvasSolSombraBrisa25D`, `PlacarHeroi5Segundos`, `TermometroConfortoTermico`, `TresPerguntasDoBolso`, `EscalasVisuais`, `MatrizVisualComparar`.
 - [ ] **S3**: Source-decomposed quietness (`decomporSossego.ts`, HowLoud + Mapa Sossego) removing raw dB clutter from Layer-1 cards.
 - [ ] **S4**: Sightline obstruction radar, privacy distance, corner-lot detection & typed permits (`radarVistaELote.ts`).
 - [ ] **S5**: Pre-signal document co-pilot (3-question síndico script, reserve calculator, CNM + DSQFL dual key, pending-doc nudge).

@@ -42,8 +42,14 @@ export function MatrizVisualComparar({
   const { cor } = useTema();
   const compra = modalidade === "compra";
 
-  const pm2A = opcaoA.precoPrincipalReais && opcaoA.areaM2 ? opcaoA.precoPrincipalReais / opcaoA.areaM2 : null;
-  const pm2B = opcaoB.precoPrincipalReais && opcaoB.areaM2 ? opcaoB.precoPrincipalReais / opcaoB.areaM2 : null;
+  const pm2A =
+    opcaoA.precoPrincipalReais && opcaoA.areaM2
+      ? opcaoA.precoPrincipalReais / opcaoA.areaM2
+      : null;
+  const pm2B =
+    opcaoB.precoPrincipalReais && opcaoB.areaM2
+      ? opcaoB.precoPrincipalReais / opcaoB.areaM2
+      : null;
 
   const linhas: LinhaComparacao[] = [
     {
@@ -59,8 +65,12 @@ export function MatrizVisualComparar({
     },
     {
       criterio: "Saída mensal real",
-      valorA: opcaoA.mensalBolsoRealReais ? `~${formatarReaisCompacto(opcaoA.mensalBolsoRealReais)}/mês` : "A confirmar",
-      valorB: opcaoB.mensalBolsoRealReais ? `~${formatarReaisCompacto(opcaoB.mensalBolsoRealReais)}/mês` : "A confirmar",
+      valorA: opcaoA.mensalBolsoRealReais
+        ? `~${formatarReaisCompacto(opcaoA.mensalBolsoRealReais)}/mês`
+        : "A confirmar",
+      valorB: opcaoB.mensalBolsoRealReais
+        ? `~${formatarReaisCompacto(opcaoB.mensalBolsoRealReais)}/mês`
+        : "A confirmar",
       vencedor:
         opcaoA.mensalBolsoRealReais !== null &&
         opcaoB.mensalBolsoRealReais !== null &&
@@ -94,8 +104,12 @@ export function MatrizVisualComparar({
     },
     {
       criterio: "Idade do prédio",
-      valorA: opcaoA.anoConstrucao ? `${new Date().getFullYear() - opcaoA.anoConstrucao} anos` : "A confirmar",
-      valorB: opcaoB.anoConstrucao ? `${new Date().getFullYear() - opcaoB.anoConstrucao} anos` : "A confirmar",
+      valorA: opcaoA.anoConstrucao
+        ? `${new Date().getFullYear() - opcaoA.anoConstrucao} anos`
+        : "A confirmar",
+      valorB: opcaoB.anoConstrucao
+        ? `${new Date().getFullYear() - opcaoB.anoConstrucao} anos`
+        : "A confirmar",
       vencedor:
         opcaoA.anoConstrucao !== null &&
         opcaoB.anoConstrucao !== null &&
@@ -137,10 +151,10 @@ export function MatrizVisualComparar({
       ]}
     >
       <View style={styles.cabecalho}>
-        <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+        <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.kicker}>
           Lado a lado em 6 pontos
         </Texto>
-        <Texto tipo="secao" style={[styles.tituloSintese, { fontWeight: "700", letterSpacing: -0.35 }]}>
+        <Texto tipo="secao" style={styles.tituloSintese}>
           {sinteseCurta}
         </Texto>
       </View>
@@ -156,36 +170,40 @@ export function MatrizVisualComparar({
           key={l.criterio}
           style={[
             styles.linha,
-            idx < linhas.length - 1 ? { borderBottomWidth: 1, borderBottomColor: cor("cor-linha") } : undefined,
+            idx < linhas.length - 1
+              ? { borderBottomWidth: 1, borderBottomColor: cor("cor-linha") }
+              : undefined,
           ]}
         >
           <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.colCriterio}>
             {l.criterio}
           </Texto>
-          <View
-            style={[
-              styles.celulaValor,
-              l.vencedor === "A" ? { backgroundColor: cor("cor-salvia-suave"), borderRadius: 6 } : undefined,
-            ]}
-          >
+          <View style={styles.celulaValor}>
+            {l.vencedor === "A" ? (
+              <View style={[styles.pontoVencedor, { backgroundColor: cor("cor-salvia") }]} />
+            ) : null}
             <Texto
               tipo="etiqueta"
               cor={l.vencedor === "A" ? "cor-salvia-escura" : "cor-texto"}
-              style={styles.textoCelula}
+              style={[
+                styles.textoCelula,
+                l.vencedor === "A" ? styles.textoVencedor : undefined,
+              ]}
             >
               {l.valorA}
             </Texto>
           </View>
-          <View
-            style={[
-              styles.celulaValor,
-              l.vencedor === "B" ? { backgroundColor: cor("cor-salvia-suave"), borderRadius: 6 } : undefined,
-            ]}
-          >
+          <View style={styles.celulaValor}>
+            {l.vencedor === "B" ? (
+              <View style={[styles.pontoVencedor, { backgroundColor: cor("cor-salvia") }]} />
+            ) : null}
             <Texto
               tipo="etiqueta"
               cor={l.vencedor === "B" ? "cor-salvia-escura" : "cor-texto"}
-              style={styles.textoCelula}
+              style={[
+                styles.textoCelula,
+                l.vencedor === "B" ? styles.textoVencedor : undefined,
+              ]}
             >
               {l.valorB}
             </Texto>
@@ -200,16 +218,23 @@ const styles = StyleSheet.create({
   cartao: {
     borderRadius: RAIO.cartao,
     borderWidth: 1,
-    padding: 14,
-    gap: 8,
+    padding: 16,
+    gap: 6,
     marginBottom: 14,
   },
   cabecalho: {
     gap: 3,
+    paddingBottom: 6,
+  },
+  kicker: {
+    fontSize: 12,
+    fontWeight: "600",
   },
   tituloSintese: {
     fontSize: 15.5,
     lineHeight: 20,
+    fontWeight: "700",
+    letterSpacing: -0.35,
   },
   cabecalhoColunas: {
     flexDirection: "row",
@@ -222,7 +247,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    paddingVertical: 6,
+    paddingVertical: 8,
   },
   colCriterio: {
     flex: 0.9,
@@ -231,14 +256,26 @@ const styles = StyleSheet.create({
   colOpcao: {
     flex: 1,
     fontSize: 12.5,
+    fontWeight: "700",
   },
   celulaValor: {
     flex: 1,
-    paddingHorizontal: 6,
-    paddingVertical: 4,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+  },
+  pontoVencedor: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
   textoCelula: {
+    flexShrink: 1,
     fontSize: 12,
     lineHeight: 16,
+    fontVariant: ["tabular-nums"],
+  },
+  textoVencedor: {
+    fontWeight: "700",
   },
 });

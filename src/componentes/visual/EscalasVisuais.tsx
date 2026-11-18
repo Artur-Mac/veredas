@@ -41,10 +41,10 @@ export function EscalaDeRuidoHumana({
     >
       <View style={styles.topoRow}>
         <View style={{ flex: 1, gap: 2 }}>
-          <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+          <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.kicker}>
             Barulho na fachada e no quarto
           </Texto>
-          <Texto tipo="secao" style={[styles.titulo, { fontWeight: "700", letterSpacing: -0.35 }]}>
+          <Texto tipo="secao" style={styles.titulo}>
             {silencioso
               ? `Quarto calmo à noite (~${intDb} dB)`
               : `Ruído noturno acima do conforto (~${intDb} dB)`}
@@ -53,10 +53,7 @@ export function EscalaDeRuidoHumana({
         <View
           style={[
             styles.pilula,
-            {
-              backgroundColor: cor(silencioso ? "cor-salvia-suave" : "cor-barro-suave"),
-              borderColor: cor(silencioso ? "cor-salvia" : "cor-barro"),
-            },
+            { backgroundColor: cor(silencioso ? "cor-salvia-suave" : "cor-barro-suave") },
           ]}
         >
           <Texto tipo="etiqueta" cor={silencioso ? "cor-salvia-escura" : "cor-barro-texto"} style={styles.textoPilula}>
@@ -65,7 +62,6 @@ export function EscalaDeRuidoHumana({
         </View>
       </View>
 
-      {/* Marcador de posicao na regua */}
       <View style={styles.reguaContainer}>
         <View style={styles.ponteiroTrack}>
           <View
@@ -148,7 +144,7 @@ export function RelogioDoPredio({
         { backgroundColor: cor("cor-superficie"), borderColor: cor("cor-linha-forte") },
       ]}
     >
-      <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+      <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.kicker}>
         Relógio do prédio e ciclo de obras
       </Texto>
       <View style={styles.topoRow}>
@@ -156,7 +152,7 @@ export function RelogioDoPredio({
           {`${idade} anos de construção (${anoConstrucao})`}
         </Texto>
         {alertaCiclo ? (
-          <View style={[styles.pilula, { backgroundColor: cor("cor-papel-claro"), borderColor: cor("cor-linha-forte") }]}>
+          <View style={[styles.pilula, { backgroundColor: cor("cor-barro-suave") }]}>
             <Texto tipo="etiqueta" cor="cor-barro-texto" style={styles.textoPilula}>
               Olho na ata e reserva
             </Texto>
@@ -210,8 +206,8 @@ export function SilencioInteligente({
     <View
       testID="silencio-inteligente"
       style={[
-        styles.silencioCaixa,
-        { backgroundColor: cor("cor-papel-claro"), borderColor: cor("cor-linha-forte") },
+        styles.silencioLinha,
+        { borderTopColor: cor("cor-linha"), borderBottomColor: cor("cor-linha") },
       ]}
     >
       <Pressable
@@ -220,9 +216,12 @@ export function SilencioInteligente({
         onPress={() => setAberto((v) => !v)}
         style={styles.silencioBotao}
       >
-        <Texto tipo="etiqueta" cor="cor-salvia-escura" style={styles.silencioTitulo}>
-          {`${itensNormais.length} ${titulo.toLowerCase()} · tudo em ordem`}
-        </Texto>
+        <View style={styles.silencioTituloRow}>
+          <View style={[styles.pontoVerde, { backgroundColor: cor("cor-salvia") }]} />
+          <Texto tipo="etiqueta" cor="cor-salvia-escura" style={styles.silencioTitulo}>
+            {`${itensNormais.length} ${titulo.toLowerCase()} · tudo em ordem`}
+          </Texto>
+        </View>
         <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.silencioAcao}>
           {aberto ? "Ocultar" : "Ver lista"}
         </Texto>
@@ -254,6 +253,10 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 10,
   },
+  kicker: {
+    fontSize: 12,
+    fontWeight: "600",
+  },
   topoRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -264,10 +267,12 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 16,
     lineHeight: 21,
+    fontWeight: "700",
+    letterSpacing: -0.3,
+    fontVariant: ["tabular-nums"],
   },
   pilula: {
     borderRadius: RAIO.pilula,
-    borderWidth: 1,
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
@@ -317,6 +322,7 @@ const styles = StyleSheet.create({
   },
   legendaPinos: {
     fontSize: 11,
+    fontVariant: ["tabular-nums"],
   },
   descricao: {
     fontSize: 13.5,
@@ -341,10 +347,10 @@ const styles = StyleSheet.create({
   textoMarco: {
     fontSize: 10.5,
   },
-  silencioCaixa: {
-    borderRadius: RAIO.quadrado,
-    borderWidth: 1,
-    paddingHorizontal: 14,
+  silencioLinha: {
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    paddingHorizontal: 4,
   },
   silencioBotao: {
     minHeight: TOQUE_MINIMO,
@@ -353,9 +359,20 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: 10,
   },
+  silencioTituloRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    flex: 1,
+  },
+  pontoVerde: {
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+  },
   silencioTitulo: {
     fontSize: 13,
-    fontWeight: "700",
+    fontWeight: "600",
     flex: 1,
   },
   silencioAcao: {
@@ -364,6 +381,7 @@ const styles = StyleSheet.create({
   },
   silencioLista: {
     paddingBottom: 12,
+    paddingLeft: 15,
     gap: 6,
   },
   silencioItem: {
