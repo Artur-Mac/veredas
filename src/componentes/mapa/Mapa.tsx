@@ -14,7 +14,7 @@ import { CreditoDaBase, FundoDoMapa, SeloDoBairro } from "./FundoDoMapa";
 import { descreverFundoDoMapa, loteNoPonto, type CenaDoFundo, type LoteNoDesenho, type QuadroDoFundo } from "./fundoDoMapaCena";
 import type { ParaDesenho } from "./fundoDoMapaGeometria";
 import { celulasDeCalor, type CelulaDeCalor, type Ponto } from "./geometria";
-import { useFundoDoMapa } from "./useFundoDoMapa";
+import { useFundoDoMapa, type EstadoDoFundo } from "./useFundoDoMapa";
 
 export type Camada = "ruas" | "3d" | "calor" | "alagamento";
 type Lotes = "confirmado" | "candidatos" | "nenhum";
@@ -42,9 +42,15 @@ type Props = Partial<OpcoesDoMundo> & {
   selo?: boolean;
   /** Retângulos [x0, y0, x1, y1], em px do mapa, que o que vai por cima ocupa (pílulas, botões): os rótulos desviam. */
   obstaculos?: (largura: number, altura: number) => [number, number, number, number][];
+  /** Completa a frase do aviso quando o fundo falha: o que continua valendo neste mapa. */
+  oQueContinua?: string;
+  /** Avisa a tela (confirmar o lote) do estado do fundo e de quantos candidatos há; `escolhido`: o selecionado existe. */
+  aoMudarCandidatos?: (info: InfoDosCandidatos) => void;
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
 };
+
+export type InfoDosCandidatos = { readonly estado: EstadoDoFundo; readonly quantos: number; readonly escolhido: boolean };
 
 type Vista = { escala: number; centro: Ponto };
 
@@ -187,7 +193,7 @@ const SobreOFundo = memo(function SobreOFundo({
         <Path
           d={caminhoDosAneis(escolhido.aneis)}
           fill={cores["cor-azul-cadastral"]}
-          fillOpacity={0.18}
+          fillOpacity={0.85}
           stroke={cores["cor-azul-cadastral"]}
           strokeWidth={1.5}
           vectorEffect={NAO_ESCALA}
@@ -319,6 +325,53 @@ export function caixaDaJanela(j: Janela, centro: Coordenada): CaixaEmGraus {
   return [oeste, sul, leste, norte];
 }
 
+type Retangulo = [number, number, number, number];
+
+/** Parte visível da janela no desenho da cena (sem arraste): o mapa sem a folga. */
+export function visivelNaJanela(j: Janela): Retangulo {
+  return [j.folgaX, j.folgaY, j.folgaX + j.largura, j.folgaY + j.altura];
+}
+
+/** Margem, em px, entre um rótulo e a borda do mapa. */
+const MARGEM_DOS_ROTULOS = 4;
+
+/**
+ * Obstáculos (px do mapa, como `QuadroDoFundo.obstaculos`) que cobrem a folga em volta da parte visível: a cena coloca
+ * rótulos de rua e nomes de bairro só dentro do mapa visível, com uma margem, no momento em que é montada.
+ */
+export function obstaculosDaFolga(j: Janela, margem = MARGEM_DOS_ROTULOS): Retangulo[] {
+  const fx = j.folgaX + 1;
+  const fy = j.folgaY + 1;
+  return [
+    [-fx, -fy, j.largura + fx, margem],
+    [-fx, j.altura - margem, j.largura + fx, j.altura + fy],
+    [-fx, -fy, margem, j.altura + fy],
+    [j.largura - margem, -fy, j.largura + fx, j.altura + fy],
+  ];
+}
+
+/** O desenho inteiro do pino (28 × 36 px, com a ponta no imóvel), em px do mapa na vista da janela. */
+export function retanguloDoPino(j: Janela): Retangulo {
+  const x = j.largura / 2 - j.centro[0] * j.escala;
+  const y = j.altura / 2 - j.centro[1] * j.escala;
+  return [x - 15, y - 37, x + 15, y + 2];
+}
+
+function dentro(c: readonly number[], r: Retangulo): boolean {
+  return c[0]! >= r[0] && c[1]! >= r[1] && c[2]! <= r[2] && c[3]! <= r[3];
+}
+
+/**
+ * Só os rótulos de rua e nomes de bairro da cena cuja caixa cabe inteira em `janela` (coordenadas do desenho). Rede de
+ * segurança: com a folga como obstáculo a cena já os põe dentro; um rótulo que ainda saísse seria cortado na borda.
+ */
+export function rotulosNaJanela(cena: CenaDoFundo, janela: Retangulo): CenaDoFundo {
+  const rotulos = cena.rotulos.filter((r) => r.caixas.every((c) => dentro(c, janela)));
+  const bairros = cena.bairros.filter((b) => dentro(b.caixa, janela));
+  if (rotulos.length === cena.rotulos.length && bairros.length === cena.bairros.length) return cena;
+  return { ...cena, rotulos, bairros };
+}
+
 /** Espera depois do último movimento (roda, pinça, arraste) para considerar o gesto terminado. */
 const FIM_DO_GESTO_MS = 220;
 /** Lugar do crédito no canto de baixo à esquerda, em px (largura, altura), para os rótulos desviarem. */
@@ -347,6 +400,8 @@ export function Mapa(props: Props) {
     rotuloPino,
     selo: comSelo = true,
     obstaculos = SEM_OBSTACULOS,
+    oQueContinua = "O pino e os raios continuam valendo.",
+    aoMudarCandidatos,
     children,
     style,
   } = props;
@@ -389,6 +444,7 @@ export function Mapa(props: Props) {
     const fy = janela?.folgaY ?? 0;
     const ocupados = JSON.parse(chaveDosObstaculos) as [number, number, number, number][];
     if (janela) {
+      ocupados.push(...obstaculosDaFolga(janela), retanguloDoPino(janela));
       ocupados.push([8, janela.altura - 8 - CREDITO[1], 8 + CREDITO[0], janela.altura - 8]);
       if (comSelo && janela.altura >= ALTURA_PARA_O_SELO) ocupados.push([janela.largura - 150, 0, janela.largura, 56]);
       // As pílulas dos raios ficam no alto de cada círculo, na vista da janela.
@@ -418,15 +474,27 @@ export function Mapa(props: Props) {
   // Cena sem dado nenhum (quadro fora do Recife): nem desenho, nem crédito, nem descrição.
   const cena = mostrada?.cena.temDado ? mostrada.cena : null;
   // O lote do imóvel só aparece destacado quando confirmado; nos candidatos, o destaque é o do escolhido.
-  const cenaNaTela = useMemo(
-    () => (cena && lotes !== "confirmado" ? { ...cena, camadas: { ...cena.camadas, loteDoImovel: "" } } : cena),
-    [cena, lotes],
-  );
+  const janelaMostrada = mostrada?.janela ?? null;
+  const cenaNaTela = useMemo(() => {
+    if (!cena || !janelaMostrada) return null;
+    const cabem = rotulosNaJanela(cena, visivelNaJanela(janelaMostrada));
+    return lotes !== "confirmado" ? { ...cabem, camadas: { ...cabem.camadas, loteDoImovel: "" } } : cabem;
+  }, [cena, janelaMostrada, lotes]);
   const centroNoDesenho = useMemo<Ponto | null>(() => {
     if (!mostrada) return null;
     const [ox, oy] = origemDaJanela(mostrada.janela);
     return [-ox * mostrada.janela.escala, -oy * mostrada.janela.escala];
   }, [mostrada]);
+
+  const candidatos = useMemo(
+    () => (lotes === "candidatos" && cena && centroNoDesenho ? candidatosDaCena(cena, centroNoDesenho) : []),
+    [lotes, cena, centroNoDesenho],
+  );
+  const quantos = candidatos.filter((c) => c !== null).length;
+  const escolhidoExiste = candidatos[selecionado] != null;
+  useEffect(() => {
+    aoMudarCandidatos?.({ estado: fundo.estado, quantos, escolhido: escolhidoExiste });
+  }, [aoMudarCandidatos, fundo.estado, quantos, escolhidoExiste]);
 
   const zoom = useCallback(
     (fator: number, foco: Ponto) => {
@@ -594,6 +662,7 @@ export function Mapa(props: Props) {
               <AvisoDoFundoDoMapa
                 estado={fundo.estado}
                 tentarDeNovo={fundo.tentarDeNovo}
+                oQueContinua={oQueContinua}
                 style={{ backgroundColor: comAlfa(cores["cor-superficie"], 0.9), borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 }}
               />
               {cena ? <CreditoDaBase style={{ alignSelf: "flex-start" }} /> : null}

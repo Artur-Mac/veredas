@@ -94,6 +94,7 @@ export default function CaminhosDiarios() {
                   ajustar={1100}
                   destinos={dados.destinos.map((d) => coordenadaParaMetros(dossie.lote.centro, d.coordenada))}
                   acessivel={enderecoDoDossie(dossie)}
+                  oQueContinua="O pino, os raios e os destinos continuam valendo."
                   aoTocarMapa={([x, y]) => {
                     const limpo = nome.trim();
                     if (!limpo) {

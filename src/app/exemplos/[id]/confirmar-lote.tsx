@@ -1,9 +1,9 @@
 import { router } from "expo-router";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { View } from "react-native";
 import { Botao } from "../../../componentes/Botao";
 import { PilulaIlustrativo } from "../../../componentes/Etiquetas";
-import { Mapa } from "../../../componentes/mapa/Mapa";
+import { Mapa, type InfoDosCandidatos } from "../../../componentes/mapa/Mapa";
 import { Cabecalho, Tela } from "../../../componentes/Tela";
 import { Texto } from "../../../componentes/Texto";
 import { enderecoDoDossie, fato as fatoDe } from "../../../dados/consultas";
@@ -18,6 +18,18 @@ export default function ConfirmarOLote() {
   const { mudar } = useAparelho();
   const [naoEEste, setNaoEEste] = useState(false);
   const [selecionado, setSelecionado] = useState(0);
+  const [info, setInfo] = useState<InfoDosCandidatos | null>(null);
+  const aoMudarCandidatos = useCallback((nova: InfoDosCandidatos) => setInfo(nova), []);
+  // Sem candidato (o fundo falhou, ainda carrega ou não tem lote aqui) não há o que confirmar: nada de lote inventado.
+  const semCandidatos = !info || info.quantos === 0;
+  const podeConfirmar = !semCandidatos && info.escolhido;
+  const situacao = semCandidatos
+    ? info?.estado === "carregando" || !info
+      ? "Carregando os lotes do cadastro…"
+      : info.estado === "falhou"
+        ? "Não dá para escolher o lote agora: os lotes do cadastro não carregaram. Use “Tentar de novo” no mapa."
+        : "Não há lotes do cadastro neste ponto do mapa: não dá para escolher o lote aqui."
+    : null;
   const pavimentos = fatoDe(dossie, "predio", "pavimentos");
   const apoio = `${enderecoDoDossie(dossie)}${pavimentos ? `, ${pavimentos.texto} pavimentos no cadastro` : ""}`;
 
@@ -40,6 +52,8 @@ export default function ConfirmarOLote() {
         ajustar={110}
         acessivel={enderecoDoDossie(dossie)}
         aoTocarLote={setSelecionado}
+        oQueContinua="Sem elas, não dá para escolher o lote agora."
+        aoMudarCandidatos={aoMudarCandidatos}
         style={{ flex: 1 }}
       />
       <View style={{ backgroundColor: cor("cor-superficie"), paddingHorizontal: ESPACO[4], paddingTop: ESPACO[3], paddingBottom: ESPACO[4], gap: ESPACO[2] }}>
@@ -50,9 +64,20 @@ export default function ConfirmarOLote() {
           <Texto cor="cor-texto-apoio">{apoio}</Texto>
           {dossie.endereco.ilustrativo || dossie.lote.ilustrativo_poligono ? <PilulaIlustrativo /> : null}
         </View>
-        {naoEEste ? <Texto>Escolha o prédio no mapa.</Texto> : null}
-        <Botao rotulo="É este prédio" variante="principal" onPress={() => decidir(true)} />
-        <Botao rotulo="Não é este" onPress={() => setNaoEEste(true)} />
+        {situacao ? (
+          <Texto role="status" cor="cor-texto-apoio">
+            {situacao}
+          </Texto>
+        ) : (
+          <Texto tipo="apoio" cor="cor-texto-apoio">
+            {podeConfirmar
+              ? "Em azul, o lote escolhido; tracejados, os lotes vizinhos do cadastro da Prefeitura."
+              : "Tracejados, os lotes do cadastro da Prefeitura. Toque num deles para escolher."}
+          </Texto>
+        )}
+        {naoEEste && !semCandidatos ? <Texto>Escolha o prédio no mapa.</Texto> : null}
+        <Botao rotulo="É este prédio" variante="principal" desativado={!podeConfirmar} onPress={() => decidir(true)} />
+        <Botao rotulo="Não é este" desativado={semCandidatos} onPress={() => setNaoEEste(true)} />
         {dossie.tipo === "aluguel" ? (
           <Botao rotulo="Pular por agora" variante="texto" onPress={() => decidir(false)} style={{ alignSelf: "center" }} />
         ) : null}
