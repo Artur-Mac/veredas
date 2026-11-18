@@ -3,10 +3,12 @@
 // (<superficie>--<caso>--<largura>--<tema>.png) para pôr lado a lado. Ver ../telas/noite/antes/LEIA.md.
 //
 //   CI=1 npx expo start --web --port 8095          (noutro terminal; espere a página responder)
-//   node docs/aplicacao/mapa-base-2026-11-18/scripts/capturar.mjs --fase antes
+//   node docs/aplicacao/mapa-base-2026-11-18/scripts/capturar.mjs --saida .cache/noite-mapa-base/<nome>/<rodada>
 //   node .../capturar.mjs --fase depois --superficie gaveta-planta,por-perto --caso golden-tower --largura 375
 //
-// Parâmetros: --base <url> (padrão http://localhost:8095), --fase antes|depois ou --saida <pasta>, --superficie a,b,
+// Parâmetros (--help mostra o uso; parâmetro desconhecido é erro): --base <url> (padrão http://localhost:8095; o servidor
+// tem de responder antes de qualquer foto), --fase antes|depois ou --saida <pasta> (um dos dois é obrigatório; a pasta de
+// antes, que já tem capturas.json, só é regravada com --sobrescrever), --superficie a,b,
 // --caso a,b (ids de casos.json ou dos exemplos), --largura 375,360,1280, --tema claro|escuro (padrão claro; o app é
 // sempre claro, "escuro" só emula prefers-color-scheme para provar isso).
 // --esperar-fundo <ms> (padrão 20000; 0 desliga): nas superfícies que podem ter o fundo do mapa-base, espera o crédito
@@ -16,23 +18,35 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
-  RAIZ_DA_NOITE,
   abrirNavegador,
   analiseDoCaso,
   esperarMapa,
   esvaziar,
-  lerArgumentos,
   lerCasos,
   lista,
   medidasDoFundo,
   novoContexto,
+  prepararExecucao,
   rolagemHorizontal,
 } from "./comum.mjs";
 
-const args = lerArgumentos();
-const base = String(args.base || process.env.BASE_URL || "http://localhost:8095").replace(/\/+$/, "");
-const fase = args.fase || "antes";
-const saida = path.resolve(args.saida || path.join(RAIZ_DA_NOITE, "telas", "noite", fase));
+const USO = `
+Uso: node docs/aplicacao/mapa-base-2026-11-18/scripts/capturar.mjs --saida <pasta> [opções]
+     node docs/aplicacao/mapa-base-2026-11-18/scripts/capturar.mjs --fase antes|depois [opções]
+
+  --saida <pasta>        onde gravar as fotos e capturas.json (rodadas de trabalho: .cache/noite-mapa-base/<nome>/<rodada>)
+  --fase antes|depois    grava em telas/noite/<fase>. A pasta de antes já tem capturas.json: só com --sobrescrever
+  --sobrescrever         permite regravar a pasta de antes (o app de antes não existe mais: quase nunca é o que se quer)
+  --base <url>           o app no ar (padrão http://localhost:8095); sem resposta, o roteiro sai antes de gravar
+  --superficie a,b       --caso a,b       --largura 375,360,1280       --tema claro|escuro
+  --esperar-fundo <ms>   (padrão 20000; 0 desliga)       --zoom max
+  --help, --ajuda        mostra este uso e sai sem fazer nada
+`;
+const { args, base, fase, saida } = await prepararExecucao({
+  uso: USO,
+  conhecidos: ["superficie", "caso", "largura", "tema", "esperar-fundo", "zoom"],
+  arquivosQueProtegem: ["capturas.json"],
+});
 const filtroSuperficie = lista(args.superficie);
 const filtroCaso = lista(args.caso);
 const temas = lista(args.tema) ?? ["claro"];

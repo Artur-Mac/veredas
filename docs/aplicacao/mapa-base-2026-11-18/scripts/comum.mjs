@@ -1,5 +1,6 @@
 // Apoio da régua visual do mapa-base (18/11/2026): casos, análises de teste, navegador, rede e a leitura do mapa na página.
 // Usado por capturar.mjs e medir.mjs. Não depende do código do app: abre o app pelo navegador, como uma pessoa.
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -24,6 +25,55 @@ export function lerArgumentos(argv = process.argv.slice(2)) {
     else r[k] = true;
   }
   return r;
+}
+
+/**
+ * Entrada segura dos roteiros que gravam fotos e medidas (capturar.mjs, medir.mjs). Em 18/11/2026 um `--help` que o
+ * roteiro não conhecia rodou tudo contra uma porta fora do ar e gravou fotos de erro na pasta de antes (versionada).
+ * - `--help`/`--ajuda`: imprime o uso e sai sem fazer nada; parâmetro desconhecido (ou solto) é erro, com o uso.
+ * - Sem `--fase` nem `--saida`: recusa. A pasta de antes (telas/noite/antes) só é gravada se ainda não tem nenhum
+ *   dos `arquivosQueProtegem`, a não ser com `--sobrescrever` (o app de antes não existe mais para refazer as fotos).
+ * - O servidor tem de responder antes de qualquer gravação (nem a pasta é criada antes disso).
+ * Devolve { args, base, fase, saida }. Sai do processo (código 0 no uso, 2 no erro de uso, 1 no resto) quando recusa.
+ */
+export async function prepararExecucao({ uso, conhecidos, arquivosQueProtegem, argv = process.argv.slice(2) }) {
+  const aceitos = new Set([...conhecidos, "base", "fase", "saida", "sobrescrever", "help", "ajuda"]);
+  const sair = (codigo, mensagem) => {
+    if (mensagem) console.error(`Erro: ${mensagem}\n`);
+    (codigo === 0 ? console.log : console.error)(uso.trim());
+    process.exit(codigo);
+  };
+  const soltos = argv.filter((a, i) => !a.startsWith("--") && !(i > 0 && argv[i - 1].startsWith("--") && !argv[i - 1].includes("=")));
+  const args = lerArgumentos(argv);
+  if (args.help || args.ajuda) sair(0);
+  const desconhecidos = Object.keys(args).filter((k) => !aceitos.has(k));
+  if (desconhecidos.length) sair(2, `parâmetro desconhecido: ${desconhecidos.map((k) => `--${k}`).join(", ")}`);
+  if (soltos.length) sair(2, `parâmetro sem nome: ${soltos.join(" ")}`);
+  if (typeof args.fase !== "string" && typeof args.saida !== "string") {
+    sair(2, "diga onde gravar: --saida <pasta> (rodadas de trabalho) ou --fase antes|depois (as pastas da régua em telas/noite/).");
+  }
+  if (args.fase !== undefined && !["antes", "depois"].includes(args.fase)) sair(2, `--fase ${args.fase}: use antes ou depois.`);
+  const fase = typeof args.fase === "string" ? args.fase : "depois";
+  const saida = path.resolve(typeof args.saida === "string" ? args.saida : path.join(RAIZ_DA_NOITE, "telas", "noite", fase));
+  const pastaDeAntes = path.resolve(RAIZ_DA_NOITE, "telas", "noite", "antes");
+  if (path.relative(pastaDeAntes, saida) === "" && !args.sobrescrever) {
+    const ja = arquivosQueProtegem.filter((a) => existsSync(path.join(pastaDeAntes, a)));
+    if (ja.length) {
+      console.error(`Erro: a pasta de antes já tem ${ja.join(", ")} (fotos e medidas de um app que não existe mais). Nada foi gravado.`);
+      console.error("Use --saida <outra pasta> para uma rodada de trabalho, ou --sobrescrever se for mesmo para regravar a pasta de antes.");
+      process.exit(2);
+    }
+  }
+  const base = String(args.base || process.env.BASE_URL || "http://localhost:8095").replace(/\/+$/, "");
+  try {
+    const r = await fetch(base, { signal: AbortSignal.timeout(15000) });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  } catch (e) {
+    console.error(`Erro: o servidor ${base} não respondeu (${e?.cause?.code ?? e?.message ?? e}). Nada foi gravado.`);
+    console.error("Suba o app (npx expo start --web --port <porta>) e passe --base http://localhost:<porta>.");
+    process.exit(1);
+  }
+  return { args, base, fase, saida };
 }
 
 export const lista = (v) => (typeof v === "string" && v ? v.split(",").map((s) => s.trim()).filter(Boolean) : null);

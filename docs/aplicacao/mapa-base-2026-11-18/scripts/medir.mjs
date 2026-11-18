@@ -1,6 +1,6 @@
 // Desempenho e sem rede da régua do mapa-base (18/11/2026).
 //
-//   node docs/aplicacao/mapa-base-2026-11-18/scripts/medir.mjs --fase antes                 (os dois modos)
+//   node docs/aplicacao/mapa-base-2026-11-18/scripts/medir.mjs --saida <pasta>              (os dois modos; --help: uso)
 //   node .../medir.mjs --fase depois --modo desempenho --vezes 7
 //   node .../medir.mjs --fase depois --modo offline
 //
@@ -11,24 +11,36 @@
 // abertura); tudo de novo com o fundo desligado pela chave de medição globalThis.__veredaSemFundoDoMapa (addInitScript).
 // O custo do fundo é a segunda abertura com o fundo menos a segunda sem ele.
 // Sem rede: abre o dossiê e a gaveta com rede, fecha, corta a rede (context.setOffline) e reabre a gaveta e o Por perto.
-// Grava desempenho.json e offline.json (e as fotos do offline) na pasta da fase.
+// Grava desempenho.json e offline.json (e as fotos do offline) na pasta de --saida ou da fase (a de antes só com
+// --sobrescrever); recusa parâmetro desconhecido e sai antes de gravar se o servidor não responde.
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
-  RAIZ_DA_NOITE,
   abrirNavegador,
   analiseDoCaso,
   esperarMapa,
-  lerArgumentos,
   lerCasos,
   medidasDoFundo,
   novoContexto,
+  prepararExecucao,
 } from "./comum.mjs";
 
-const args = lerArgumentos();
-const base = String(args.base || process.env.BASE_URL || "http://localhost:8095").replace(/\/+$/, "");
-const fase = args.fase || "antes";
-const saida = path.resolve(args.saida || path.join(RAIZ_DA_NOITE, "telas", "noite", fase));
+const USO = `
+Uso: node docs/aplicacao/mapa-base-2026-11-18/scripts/medir.mjs --saida <pasta> [opções]
+     node docs/aplicacao/mapa-base-2026-11-18/scripts/medir.mjs --fase antes|depois [opções]
+
+  --saida <pasta>        onde gravar desempenho.json, offline.json e as fotos do offline
+  --fase antes|depois    grava em telas/noite/<fase>. A pasta de antes já tem as medidas: só com --sobrescrever
+  --sobrescrever         permite regravar a pasta de antes (o app de antes não existe mais: quase nunca é o que se quer)
+  --base <url>           o app no ar (padrão http://localhost:8095); sem resposta, o roteiro sai antes de gravar
+  --modo tudo|desempenho|offline      --vezes <n> (padrão 5)      --largura <px> (padrão 375)      --caso <id>
+  --help, --ajuda        mostra este uso e sai sem fazer nada
+`;
+const { args, base, saida } = await prepararExecucao({
+  uso: USO,
+  conhecidos: ["modo", "vezes", "largura", "caso"],
+  arquivosQueProtegem: ["desempenho.json", "offline.json"],
+});
 const modo = args.modo || "tudo";
 const vezes = Number(args.vezes || 5);
 const largura = Number(args.largura || 375);

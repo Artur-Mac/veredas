@@ -256,6 +256,75 @@ describe("uma montagem por abertura (desempenho, 18/11/2026)", () => {
     expect(contarMontagensDoFundo() - antes).toBe(1);
   });
 
+  // O quadro do Por perto: 2,6 km, obstáculos dos botões e dos pontos de interesse, deslocamento do zoom no pino.
+  const OBSTACULOS_DO_POR_PERTO: [number, number, number, number][] = [[0, 0, 130, 54], [219, 0, 279, 156], [178.52, 142.1, 200.52, 164.1]];
+  function porPerto(extra: Partial<PedidoDoFundo["quadro"]> = {}, resto: Partial<PedidoDoFundo> = {}): PedidoDoFundo {
+    const base = pedido(2600, resto);
+    return { ...base, quadro: { ...base.quadro, obstaculos: OBSTACULOS_DO_POR_PERTO.map((o) => [...o] as [number, number, number, number]), deslocamento: [0, 0], ...extra } };
+  }
+
+  it("Por perto: reabrir depois do topo e da gaveta reaproveita a cena; mudar o que muda o desenho monta de novo", () => {
+    act(() => { esquecerCenasDoFundo(); });
+    const contar = (p: PedidoDoFundo) => {
+      const antes = contarMontagensDoFundo();
+      const cena = usar(p).cena;
+      act(() => { for (const m of montadas.splice(0)) m.unmount(); });
+      return { cena, montou: contarMontagensDoFundo() - antes };
+    };
+    // Abertura do dossiê: topo, gaveta (largura provisória e medida) e Por perto (idem), como no app.
+    contar(pedido(300, { quadro: { ...pedido(300).quadro, largura: 341, altura: 213 } }));
+    contar(pedido(220, { quadro: { ...pedido(220).quadro, largura: 300 } }));
+    contar(pedido(220));
+    contar(porPerto({ largura: 300 }));
+    const primeira = contar(porPerto());
+    expect(primeira.montou).toBe(1);
+    // Reabrir (pedido novo, mesmos valores: obstáculos e conta recriados) não monta.
+    const segunda = contar(porPerto());
+    expect(segunda.montou).toBe(0);
+    expect(segunda.cena).toBe(primeira.cena);
+    // Cada entrada que muda o desenho monta de novo (cena velha no lugar da certa seria pior que montar).
+    const variacoes: PedidoDoFundo[] = [
+      porPerto({ obstaculos: [...OBSTACULOS_DO_POR_PERTO, [10, 10, 30, 30]] }),
+      porPerto({ zoom: 2 }),
+      porPerto({ deslocamento: [5, 0] }),
+      porPerto({}, { bairro: "pina" }),
+      porPerto({}, { imovel: { centro: [CENTRO_DO_IMOVEL[0] + 0.001, CENTRO_DO_IMOVEL[1]], codigoDoLogradouro: LOGRADOURO_DO_IMOVEL } }),
+      porPerto({}, { imovel: { centro: CENTRO_DO_IMOVEL, codigoDoLogradouro: null } }),
+      porPerto({ altura: 280 }),
+      porPerto({ paraDesenho: paraDesenhoCentrado(CENTRO_DO_IMOVEL, LARGURA, ALTURA, 2500) }),
+    ];
+    for (const v of variacoes) {
+      const r = contar(v);
+      expect(r.montou).toBe(1);
+      expect(r.cena).not.toBe(primeira.cena);
+    }
+    // Versão dos dados: depois de esquecer o mapa-base (dados relidos), a mesma entrada monta de novo.
+    act(() => { esquecerMapaBase(); });
+    expect(contar(porPerto()).montou).toBe(1);
+  });
+
+  it("tentar de novo esquece a cena guardada daquela chave e monta de novo", () => {
+    act(() => { esquecerCenasDoFundo(); });
+    const antes = contarMontagensDoFundo();
+    let saida!: FundoDoMapaCarregado;
+    const p = pedido(224);
+    const Sonda = () => {
+      saida = useFundoDoMapa(p);
+      return null;
+    };
+    act(() => { montadas.push(TestRenderer.create(React.createElement(Sonda))); });
+    const primeira = saida.cena;
+    expect(contarMontagensDoFundo() - antes).toBe(1);
+    act(() => { saida.tentarDeNovo(); });
+    expect(saida.estado).toBe("pronta");
+    expect(contarMontagensDoFundo() - antes).toBe(2);
+    expect(saida.cena).not.toBe(primeira);
+    // A cena nova fica guardada: reabrir não monta.
+    act(() => { for (const m of montadas.splice(0)) m.unmount(); });
+    expect(usar(pedido(224)).cena).toBe(saida.cena);
+    expect(contarMontagensDoFundo() - antes).toBe(2);
+  });
+
   it("com a chave de medição ligada o gancho fica desligado: nada carregado, nenhuma cena", () => {
     const g = globalThis as { __veredaSemFundoDoMapa?: boolean };
     g.__veredaSemFundoDoMapa = true;

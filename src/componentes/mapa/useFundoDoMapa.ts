@@ -134,7 +134,8 @@ export function useFundoDoMapa(pedido: PedidoDoFundo): FundoDoMapaCarregado {
   const [oeste, sul, leste, norte] = caixa;
 
   const tique = useSyncExternalStore(ouvirCamadas, lerRelogio, lerRelogio);
-  // Cada "tentar de novo" refaz o plano, a leitura e a montagem (o arquivo recusado não fica guardado em memória).
+  // Cada "tentar de novo" refaz o plano, a leitura e a montagem (o arquivo recusado não fica guardado em memória, e a
+  // cena guardada da chave é esquecida antes: ver `tentarDeNovo`).
   const [tentativa, setTentativa] = useState(0);
   const planoNovo = useMemo(
     () => (ativo ? planoDeCargaDoFundo(bairro, [oeste, sul, leste, norte], quadro.largura, zoom) : { arquivos: [] as string[], completo: true }),
@@ -148,10 +149,6 @@ export function useFundoDoMapa(pedido: PedidoDoFundo): FundoDoMapaCarregado {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const plano = useMemo(() => planoNovo, [chaveDoPlano]);
   const { estado, tentarDeNovo: tentarAsCamadas } = useCamadas(ativo ? plano.arquivos : SEM_ARQUIVOS);
-  const tentarDeNovo = useCallback(() => {
-    setTentativa((n) => n + 1);
-    tentarAsCamadas();
-  }, [tentarAsCamadas]);
 
   const centroLon = imovel?.centro[0] ?? null;
   const centroLat = imovel?.centro[1] ?? null;
@@ -169,6 +166,12 @@ export function useFundoDoMapa(pedido: PedidoDoFundo): FundoDoMapaCarregado {
     ? [geracaoDoMapaBase(), chaveDosArquivos, bairro, centroLon, centroLat, codigo, quadro.largura, quadro.altura, zoom, chaveDosObstaculos, dx, dy, conta].join("|")
     : "";
   const paraDesenho = quadro.paraDesenho;
+  // Tentar de novo esquece a cena guardada desta chave (se houver), refaz o plano, relê os arquivos e monta de novo.
+  const tentarDeNovo = useCallback(() => {
+    if (chaveDaCena) cenasGuardadas.delete(chaveDaCena);
+    setTentativa((n) => n + 1);
+    tentarAsCamadas();
+  }, [tentarAsCamadas, chaveDaCena]);
 
   const montada = useMemo((): { cena: CenaDoFundo | null; falhou: boolean } => {
     if (!pronto) return { cena: null, falhou: false };
@@ -207,8 +210,8 @@ export function useFundoDoMapa(pedido: PedidoDoFundo): FundoDoMapaCarregado {
       // Arquivo inválido ou de outra versão: a leitura recusa. O mapa fica sem fundo, como em qualquer falha de carga.
       return { cena: null, falhou: true };
     }
-    // A chave da cena resume a entrada (paraDesenho por valor); `tentativa` entra de propósito: tentar de novo relê e
-    // remonta mesmo com a mesma entrada.
+    // A chave da cena resume a entrada (paraDesenho por valor); `tentativa` entra de propósito: tentar de novo esquece a
+    // cena guardada da chave e remonta mesmo com a mesma entrada.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pronto, chaveDaCena, tentativa]);
   // A última cena pronta, para `manterAnterior` (estado ajustado durante o render, o padrão do React para "valor anterior").
