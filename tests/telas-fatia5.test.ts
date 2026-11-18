@@ -778,7 +778,7 @@ describe("Sobre os dados", () => {
     const arvore = await montar(React.createElement(SobreOsDados));
     const t = texto(arvore);
     expect(t).toContain("O que ainda não cobrimos");
-    for (const item of ["Aluguel de mercado", "Segurança por bairro", "Alagamento por endereço", "Fotos dos anúncios", "Cobertura por bairro e camada"]) {
+    for (const item of ["Aluguel de mercado", "Segurança por rua", "Alagamento por endereço", "Fotos dos anúncios", "Cobertura por bairro e camada"]) {
       expect(t).toContain(item);
     }
     expect(t).toContain("72 bairros do Recife");

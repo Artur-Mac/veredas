@@ -52,6 +52,7 @@ Update policies refer to the [update runbook](RUNBOOK-ATUALIZACAO.md). "Cycle" m
 | Minutes / bylaws / statement reader: pasted text or `.txt`; literal excerpts with page (header or footer markers, form feeds), house rules, financial and legal facts, ready questions incl. what the document does not mention | `LeitorDeAta`, `leitorDeAta.ts` | user | user | product | iterate (PDF: paste text; no on-device PDF parser) |
 | Visit: up to 3 risk checks on top (water/garage, building over 25 years, internet test) and optional 10-s microphone comparison (open vs. closed window, relative dB only) | `checagensDoRisco.ts`, `MedidorDeRuido` | dossier layers; Web Audio | follows its sources | product | iterate (microphone on real phones pending) |
 | Internet onde você vai usar (fibre query by address/block/unit, per-room measurement, Anatel link) | `Conectividade`, `conectividade.ts` | user-entered, private | user | product | iterate (web verified; devices pending) |
+| Segurança no bairro (Entorno): registros in 12 months, rate per 1,000 residents, top natures, position against the Recife median (±15% band), border neighbours (≥50 m of shared limit) in alphabetical order; "few residents" warning under 5,000. No ranking, score, "safe" or "dangerous" (hub, 16 and 18 Nov 2026) | `SegurancaNoBairro`, `recife/seguranca.ts` | `crime/ocorrencias.json` (SDS-PE records compiled by Crime Brasil, CC BY 4.0) + `populacao-bairros.json` (IBGE Censo 2022, V0001) | rerun `coletar-crime-recife.mjs` (cached pages, 12-month moving window) and `populacao-bairros-recife.mjs` (static) | data | iterate (web) |
 
 ## Compare
 
@@ -93,6 +94,6 @@ Update policies refer to the [update runbook](RUNBOOK-ATUALIZACAO.md). "Cycle" m
 | Business "noise" (`incomodo`) or "open storefront" claims | `incomodo` is "N" in all 439,905 rows; registration is not operation |
 | CTTU crashes as a street safety score | `acidente_verificado` empty in all 5,315 rows of 2024; shown only as registered calls with a victim |
 | Shared corrections, accounts, sync | A36 deferred |
-| Noise in dB(A) per floor/façade, airport approach noise | no calibrated measurement in Recife; user decision 15 Nov 2026 |
+| Noise in dB(A) per floor/façade | no calibrated measurement in Recife; user decision 15 Nov 2026 (the airport left this list on 18 Nov 2026 and is shown as a named source, without dB) |
 | Establishment names from the CNEFE | descriptions can carry a person's name; only the category is published |
 | Neighbour high-rise potential (PE3D MDS−MDT, LPUOS, outorga onerosa) and bare-earth flooding (PE3D MDT + HAND + tide) | sources not in the repository; shown as "Sem leitura publicada nesta área ainda" |
