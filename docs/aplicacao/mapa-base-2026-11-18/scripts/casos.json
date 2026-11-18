@@ -48,7 +48,7 @@
       "numero": "160",
       "dsqfl": "61710010040013",
       "centro": [-34.892671, -8.087688],
-      "porque": "Pina tem ~33% da área de quadra sem lote (PROMPT seção 7). Escolhido o maior conjunto habitacional do Pina no índice (320 unidades), junto ao mangue e à Via Mangue, onde se esperam quadras sem lote e água. Não conferido contra a base de Lotes (ainda não baixada nesta fase): a fase depois deve olhar a foto e confirmar que há quadra sem lote no quadro."
+      "porque": "Pina tem ~33% da área de quadra sem lote (PROMPT seção 7). Escolhido o maior conjunto habitacional do Pina no índice (320 unidades), junto ao mangue e à Via Mangue, onde se esperam quadras sem lote e água. Conferido em 18/11/2026 contra os brutos de Quadras e Lotes (.cache/dados-recife/mapa-base/, lidos em fluxo; lote conta para a quadra que contém o centro da sua caixa): no quadro de ~450 m em volta do prédio há 17 quadras, 3 sem nenhum lote (61750012, a quadra grande do mangue com ~1,58 km², 61710081 e 61710079), 40,1% da área de quadra do quadro. O caso fica."
     }
   ],
   "exemplos": ["boa-viagem", "casa-forte", "gracas", "espinheiro", "madalena"],
