@@ -20,7 +20,7 @@ import {
   rotuloDaConfianca,
 } from "../src/componentes/fonte/textos";
 import { carregarCadastro, entradaDaRua } from "../src/componentes/dossie-v1/cadastro";
-import { montarCenaDoLote, poligonoDoLote } from "../src/componentes/dossie-v1/mapa";
+import { montarCena25DDoLote, montarCenaComPontosExtras, montarCenaDoLote, poligonoDoLote } from "../src/componentes/dossie-v1/mapa";
 import {
   anomaliaResolvida,
   categoriaDaObra,
@@ -439,6 +439,33 @@ describe("mapa do lote", () => {
     const longe = edificio({ id: "99001-900", numero: "900", centro: [-34.85, -8.0], poligono: quadrado(-34.85, -8.0) });
     const cena = montarCenaDoLote(e, [], [perto, longe], 320, 280);
     expect(cena.vizinhos).toHaveLength(1);
+  });
+
+  it("com mais vizinhos no quadro que o limite, desenha os mais perto do prédio, não os primeiros do índice (16/11/2026)", () => {
+    const e = edificio();
+    // Obra a ~500 m ao norte: o quadro cobre o prédio e uma rua inteira lá em cima.
+    const obras = [{ ...OBRAS[0]!, centro: [-34.9, -8.0255] as [number, number], distanciaM: 500 }];
+    // O índice vem na ordem dos logradouros: 70 prédios da rua de cima (a ~550 m) antes do vizinho colado ao lote.
+    const daRuaDeCima = Array.from({ length: 70 }, (_, i) => {
+      const lon = -34.9 + (i - 35) * 0.00005;
+      return edificio({ id: `99002-${i}`, numero: String(i), centro: [lon, -8.025], poligono: quadrado(lon, -8.025, 0.00002) });
+    });
+    const colado = edificio({ id: "99003-102", numero: "102", centro: [-34.9002, -8.0302], poligono: quadrado(-34.9002, -8.0302) });
+    const vizinhos = [...daRuaDeCima, colado];
+
+    // O quadro não depende dos vizinhos: o contorno do colado sozinho é o que tem de aparecer na cena cheia.
+    const cena = montarCenaDoLote(e, obras, vizinhos, 320, 280);
+    expect(cena.vizinhos).toHaveLength(60);
+    expect(cena.vizinhos).toContain(montarCenaDoLote(e, obras, [colado], 320, 280).vizinhos[0]);
+
+    const volume = montarCena25DDoLote(e, obras, vizinhos, 320, 280, "tarde");
+    expect(volume.volumes.map((v) => v.id)).toContain(colado.id);
+
+    // "Por perto" enquadra pontos a até 1,3 km: o mesmo corte valia lá, onde o quadro quase sempre passa do limite.
+    const extras = [{ id: "praca-1", categoria: "praca" as const, rotulo: "Praça", detalhe: "", coordenada: [-34.9, -8.021] as [number, number], distanciaM: 1000 }];
+    const porPerto = montarCenaComPontosExtras(e, [], vizinhos, 320, 280, extras).cena;
+    expect(porPerto.vizinhos).toHaveLength(60);
+    expect(porPerto.vizinhos).toContain(montarCenaComPontosExtras(e, [], [colado], 320, 280, extras).cena.vizinhos[0]);
   });
 });
 

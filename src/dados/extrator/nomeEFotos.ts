@@ -46,12 +46,19 @@ export function nomeDeEdificioNoTexto(texto: string | null | undefined): string 
 // "{width}x{height}"; "foto.webp?action=fit-in&dimension=870x653" responde 200 image/webp.
 const TAMANHO_DA_FOTO = "870x653";
 
-/** URL de foto utilizável: https, de imagem; os modelos do ZAP ("{action}/{width}x{height}") viram um tamanho fixo. */
-export function urlDaFoto(v: unknown): string | null {
+/** Só o nome do arquivo da foto, sem endereço ("893547852-996.68255896601041.jpg"). */
+const SO_O_ARQUIVO = /^[\w.-]+\.(?:jpe?g|png|webp)$/i;
+
+/**
+ * URL de foto utilizável: https, de imagem; os modelos do ZAP ("{action}/{width}x{height}") viram um tamanho fixo.
+ * `base`: endereço das fotos do portal que guarda só o nome do arquivo (o QuintoAndar).
+ */
+export function urlDaFoto(v: unknown, base?: string): string | null {
   const o = v && typeof v === "object" ? (v as Record<string, unknown>) : null;
   const bruto = typeof v === "string" ? v : o ? (o["url"] ?? o["src"] ?? o["dangerousSrc"] ?? o["original"]) : null;
   if (typeof bruto !== "string") return null;
-  const u = bruto.trim().replace("{action}", "fit-in").replace("{width}x{height}", TAMANHO_DA_FOTO).replace("{description}", "foto");
+  const completo = base && SO_O_ARQUIVO.test(bruto.trim()) ? `${base}${bruto.trim()}` : bruto;
+  const u = completo.trim().replace("{action}", "fit-in").replace("{width}x{height}", TAMANHO_DA_FOTO).replace("{description}", "foto");
   if (!/^https:\/\//.test(u) || /[{}\s]/.test(u) || u.length > 600) return null;
   if (!/\.(jpe?g|png|webp)(\?|$)/i.test(u) && !/(img|image|foto|photo|media|resized)/i.test(u)) return null;
   // Vídeo, planta 3D ou tour não entram como foto.
@@ -59,8 +66,8 @@ export function urlDaFoto(v: unknown): string | null {
   return u;
 }
 
-/** Até `maximo` fotos distintas a partir das listas mais comuns no objeto do anúncio. */
-export function fotosDoAnuncio(obj: Record<string, unknown>, maximo = 12): string[] {
+/** Até `maximo` fotos distintas a partir das listas mais comuns no objeto do anúncio. `base`: ver `urlDaFoto`. */
+export function fotosDoAnuncio(obj: Record<string, unknown>, maximo = 12, base?: string): string[] {
   const listas: unknown[] = [];
   const procurar = (no: unknown, nivel: number) => {
     if (!no || typeof no !== "object" || nivel > 3) return;
@@ -76,7 +83,7 @@ export function fotosDoAnuncio(obj: Record<string, unknown>, maximo = 12): strin
   const out: string[] = [];
   for (const l of listas) for (const item of l as unknown[]) {
     if (item && typeof item === "object" && /video/i.test(String((item as Record<string, unknown>)["type"] ?? ""))) continue;
-    const u = urlDaFoto(item);
+    const u = urlDaFoto(item, base);
     if (u && !out.includes(u)) out.push(u);
     if (out.length >= maximo) return out;
   }

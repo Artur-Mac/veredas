@@ -1,10 +1,11 @@
 import { z } from "zod";
 import {
+  type ChaveDeCampo,
   type LeituraParcial,
   type Portal,
 } from "../contratos";
 import { extrairDoEstado } from "./estado";
-import { extrairDoTexto } from "./texto";
+import { extrairDoTexto, mapaNaoInformados } from "./texto";
 
 export const esquemaColetaDaPagina = z.strictObject({
   url: z.string().max(2000),
@@ -178,9 +179,12 @@ export function lerPagina(
     const leiturasTexto = extrairDoTexto(validada.texto, portal);
     for (const lt of leiturasTexto) {
       if (lt.metodo === "texto") {
+        // O "não informado" do texto também sai: na montagem ele apagaria o valor que o estado trouxe.
+        const naoInformados = mapaNaoInformados.get(lt);
         for (const campo of Object.keys(lt.campos) as (keyof typeof lt.campos)[]) {
           if (preenchidos.has(campo)) {
             (lt.campos as any)[campo] = null;
+            naoInformados?.delete(campo as ChaveDeCampo);
           }
         }
         leituras.push(lt);

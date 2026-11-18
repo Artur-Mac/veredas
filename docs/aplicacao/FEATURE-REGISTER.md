@@ -60,12 +60,12 @@ Update policies refer to the [update runbook](RUNBOOK-ATUALIZACAO.md). "Cycle" m
 | Para decidir: brief, priority, decisive question | `Decisao` | dossier projections | follows its sources | product | adopt |
 | Já tem a resposta? | `Decisao`, `resposta.ts` | user answer | user | product | iterate |
 | Custo / Espaço / Entorno panels | `Paineis` | listing, index, cycle | as above | product | adopt |
-| Quem ganha em cada parte (Custo, Espaço, Dia a dia a pé, Rua e clima incl. Sol e sombra) | `Placar`, `placar.ts` | indicators of each building | follows its sources | product | iterate |
+| Quem ganha em cada parte (Custo, Espaço, Dia a dia a pé, Rua e clima incl. Sol e sombra) | `Placar`, `placarDoPar.ts` | indicators of each building | follows its sources | product | iterate |
 | Rotina por horário | `Rotina` | cycle: transito (on-device RAPTOR) | cycle monthly; GTFS freshness check | data | adopt (engineering) |
 | Price per hour saved, dominance | `Rotina` (ParaDecidir) | cost + routine | follows its sources | product | iterate |
 | Onde mais procurar | `Rotina`, `procura.ts` | cycle: procura | cycle (per-area cache) | data | iterate |
 | Comparáveis do meu caderno | `ComparaveisPessoais` | personal notebook only | user | product | iterate |
-| Placar: total purchase cost (ITBI range), routine to the destination (7 a.m. trip, h/month and 8-h working days/year, return assumed equal to the trip and said so), surface heat and elevation, condo fee/m² (no winner) | `placar.ts`, `extras.ts` | procura, environmental layers, listing | follows its sources | product | iterate |
+| Placar: total purchase cost (ITBI range), routine to the destination (7 a.m. trip, h/month and 8-h working days/year, return assumed equal to the trip and said so), surface heat and elevation, condo fee/m² (no winner) | `placarDoPar.ts`, `extras.ts` | procura, environmental layers, listing | follows its sources | product | iterate |
 | Sala de decisão: share 2–3 analyses in the link fragment (`#s=`), the other person reacts (Faz sentido / Dúvida / Descartar) and notes, returns `#r=`; import writes diary lines once | `Sala.tsx`, `sala.tsx`, `salaDeDecisao.ts` | listing fields only (no notebook, visit or profile); no server | user | product | iterate |
 
 ## Platform

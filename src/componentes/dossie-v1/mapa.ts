@@ -59,6 +59,30 @@ const MARGEM_RELATIVA = 0.22;
 const FOLGA_DOS_VIZINHOS_M = 30;
 const MAX_VIZINHOS = 60;
 
+/**
+ * Os vizinhos (com polígono) cujo centro cai no quadro, os mais perto do prédio primeiro, até `MAX_VIZINHOS`.
+ * O índice vem na ordem dos logradouros: cortar nessa ordem (até 16/11/2026) desenhava uma rua inteira a centenas de
+ * metros e deixava de fora os lotes colados ao prédio, e o mapa parecia não ter carregado (relato de 16/11/2026).
+ */
+function vizinhosNoQuadro(
+  predio: Edificio,
+  vizinhos: readonly Edificio[],
+  projetar: (ponto: Coordenada) => [number, number],
+  quadro: { meioX: number; meioY: number; metadeX: number; metadeY: number },
+): Edificio[] {
+  const dentro: { v: Edificio; distancia: number }[] = [];
+  for (const v of vizinhos) {
+    if (v.id === predio.id || !v.poligono) continue;
+    const [cx, cy] = projetar(v.centro);
+    if (Math.abs(cx - quadro.meioX) > quadro.metadeX || Math.abs(cy - quadro.meioY) > quadro.metadeY) continue;
+    dentro.push({ v, distancia: Math.hypot(cx, cy) });
+  }
+  return dentro
+    .sort((a, b) => a.distancia - b.distancia)
+    .slice(0, MAX_VIZINHOS)
+    .map((d) => d.v);
+}
+
 export function reguaDe(metrosPorPixel: number, larguraMaxima: number): CenaDoLote["regua"] {
   let escolhida = ESCALAS_DA_REGUA_M[0] ?? 10;
   for (const metros of ESCALAS_DA_REGUA_M) {
@@ -103,14 +127,9 @@ export function montarCenaDoLote(
 
   const metadeX = (largura / 2) * metrosPorPixel + FOLGA_DOS_VIZINHOS_M;
   const metadeY = (altura / 2) * metrosPorPixel + FOLGA_DOS_VIZINHOS_M;
-  const contornos: string[] = [];
-  for (const v of vizinhos) {
-    if (contornos.length >= MAX_VIZINHOS) break;
-    if (v.id === predio.id || !v.poligono) continue;
-    const [cx, cy] = projetar(v.centro);
-    if (Math.abs(cx - meioX) > metadeX || Math.abs(cy - meioY) > metadeY) continue;
-    contornos.push(caminhoDe(v.poligono.map((p) => projetar(p))));
-  }
+  const contornos = vizinhosNoQuadro(predio, vizinhos, projetar, { meioX, meioY, metadeX, metadeY }).map((v) =>
+    caminhoDe(v.poligono!.map((p) => projetar(p))),
+  );
 
   return {
     largura,
@@ -217,14 +236,9 @@ export function montarCenaComPontosExtras(
 
   const metadeX = (largura / 2) * metrosPorPixel + FOLGA_DOS_VIZINHOS_M;
   const metadeY = (altura / 2) * metrosPorPixel + FOLGA_DOS_VIZINHOS_M;
-  const contornos: string[] = [];
-  for (const v of vizinhos) {
-    if (contornos.length >= MAX_VIZINHOS) break;
-    if (v.id === predio.id || !v.poligono) continue;
-    const [cx, cy] = projetar(v.centro);
-    if (Math.abs(cx - meioX) > metadeX || Math.abs(cy - meioY) > metadeY) continue;
-    contornos.push(caminhoDe(v.poligono.map((p) => projetar(p))));
-  }
+  const contornos = vizinhosNoQuadro(predio, vizinhos, projetar, { meioX, meioY, metadeX, metadeY }).map((v) =>
+    caminhoDe(v.poligono!.map((p) => projetar(p))),
+  );
 
   const cena: CenaDoLote = {
     largura,
@@ -393,16 +407,12 @@ export function montarCena25DDoLote(
   const metadeY = (altura / 2) * base.metrosPorPixel + FOLGA_DOS_VIZINHOS_M;
 
   const candidatos: { centroY: number; volume: VolumeDeEdificio25D }[] = [];
-  for (const v of vizinhos) {
-    if (candidatos.length >= MAX_VIZINHOS) break;
-    if (v.id === predio.id || !v.poligono) continue;
-    const [cx, cy] = projetar(v.centro);
-    if (Math.abs(cx - meioX) > metadeX || Math.abs(cy - meioY) > metadeY) continue;
+  for (const v of vizinhosNoQuadro(predio, vizinhos, projetar, { meioX, meioY, metadeX, metadeY })) {
     candidatos.push(
       montarVolume(
         v.id,
         false,
-        v.poligono.map((p) => projetar(p)),
+        v.poligono!.map((p) => projetar(p)),
         v.pavimentos,
         v.ate4Pavimentos,
         null,
