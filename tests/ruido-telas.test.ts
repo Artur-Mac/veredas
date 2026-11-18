@@ -28,7 +28,9 @@ import type { FichaDeMetodo6Campos } from "../src/dados/fichaDeMetodo";
 import { edificiosDoBairro, indiceDoBairro } from "../src/dados/recife/indice";
 import { estimarRuido, type EstimativaDeRuido, type RuidoEstimado } from "../src/dados/ruido/estimativa";
 import { acusticaDaEstimativa } from "../src/dados/ruido/ponte";
-import { avaliarAcustica3d } from "../src/nucleo/motores/acustica3d";
+import { avaliarAcustica3d, fecharResultadoAcustico } from "../src/nucleo/motores/acustica3d";
+import { simularUnidade } from "../src/dados/dossie/simuladorDaUnidade";
+import { alturaDoAndarM } from "../src/dados/dossie/solESombra";
 import { TemaDoApp } from "../src/tema/Tema";
 
 jest.mock("@react-native-async-storage/async-storage", () => require("@react-native-async-storage/async-storage/jest/async-storage-mock"));
@@ -92,7 +94,7 @@ describe("placar do topo do dossiê (R1)", () => {
     const a = montar(placar(ruido));
     const fechado = textos(a.toJSON()).join("\n");
     expect(fechado).toContain(ruido.nivelDeSossego);
-    expect(fechado).toMatch(/~\d+ dB\(A\) à noite \(estimativa\) · \d+,\d\/10/);
+    expect(fechado).toMatch(/~\d+ dB\(A\) à noite na janela \(estimativa\) · \d+,\d\/10/);
     expect(fechado).toContain(`${ruido.notaDeSossego.toFixed(1).replace(".", ",")}/10`);
     expect(fechado).not.toContain("O que mede");
     // As duas notas do placar (conforto e sossego) têm ficha.
@@ -230,7 +232,7 @@ describe("matriz do Comparar (R4): 'leva vantagem em N de 6' com o sossego pela 
     abrir(a, "matriz-metodo-toggle");
     const aberto = textos(a.toJSON()).join("\n");
     for (const r of ROTULOS_DA_FICHA) expect(aberto).toContain(r);
-    for (const ponto of ["Preço por m²", "Saída mensal", "Sol e conforto", "Sossego no quarto", "Idade do prédio", "Terreno"]) expect(aberto).toContain(`${ponto}:`);
+    for (const ponto of ["Preço por m²", "Saída mensal", "Sol e conforto", "Sossego à noite", "Idade do prédio", "Terreno"]) expect(aberto).toContain(`${ponto}:`);
     expect(aberto).toContain("empate");
     conferirRegras(a);
     act(() => a.unmount());
@@ -308,7 +310,7 @@ describe("cartão 'Dia × Noite' e tradutor dos 10 indicadores", () => {
     const s = derivarSintesesInteligentes({ slugBairro: "boa-viagem", edificio: GOLDEN_TOWER, ruaDoBairro: indice.rua ?? null, andar: 6 }).ruidoDiaNoite!;
     const e = estimado(estimarRuido(GOLDEN_TOWER));
     expect(s.sobretitulo).toBe("Acústica urbana · Dia × Noite");
-    expect(s.medidaDestaque).toBe(`~${Math.round(e.naRua.diaDb)} dB(A) de dia · ~${Math.round(e.naRua.noiteDb)} à noite (estimativa)`);
+    expect(s.medidaDestaque).toBe(`~${Math.round(e.naRua.diaDb)} dB(A) na rua de dia · ~${Math.round(e.naRua.noiteDb)} à noite (estimativa)`);
     expect(s.explicacaoHumana).toContain(e.textos.manchete);
     expect(s.explicacaoHumana).toContain("Estimativa com dados abertos, não medição.");
     expect(s.fonteCurta).toContain("© colaboradores do OpenStreetMap (ODbL)");
@@ -338,5 +340,66 @@ describe("cartão 'Dia × Noite' e tradutor dos 10 indicadores", () => {
     expect(sem.camada1Manchete).not.toMatch(/\bdB\b/);
     // E o motor não devolve mais texto com a lei nem com o regulamento.
     expect(JSON.stringify(acustica)).not.toMatch(/16\.243|RBAC|SBRF|Lei/);
+  });
+});
+
+// Pendência 3 do HANDOFF (19/11/2026).
+describe("restos do ruído", () => {
+  const manchete = (acu: NonNullable<ReturnType<typeof acusticaDaEstimativa>>) =>
+    traduzirIndicadoresCidadao({ modalidade: "compra", custoPorPartes: {} as CustoPorPartes, acustica: acu }).find((c) => c.indicadorId === "IND-04")!.camada1Manchete;
+  const fechar = (chao: number, aviao: number) =>
+    fecharResultadoAcustico({ nivelDoChaoDbA: chao, nivelDoAviaoDbA: aviao, atenuacaoAlturaViaDb: 0, atenuacaoFachadaFundosDb: 0, isolamentoD2mnTwDb: 20, viaMovimentada: false, somNoturnoPerto: false, epistemicTag: "inferencia" });
+
+  it("a manchete 'Rota de aviões' só aparece quando o avião é a fonte que mais pesa à noite", () => {
+    expect(manchete(fechar(52, 34))).not.toContain("Rota de aviões");
+    expect(manchete(fechar(50, 62))).toContain("Rota de aviões");
+    expect(manchete(fechar(50, 62))).toContain("à noite na janela");
+  });
+
+  it("'dentro da referência' é o nível da noite na janela, o mesmo do texto da NBR 10151: nunca 'dentro' e 'N dB a mais à noite' juntos", () => {
+    let dentro = 0, fora = 0;
+    for (const bairro of ["boa-viagem", "torre", "casa-forte", "gracas", "imbiribeira"] as const) {
+      for (const p of edificiosDoBairro(bairro)) {
+        for (const opcoes of [{}, { andar: 9, fachadaGraus: 90 }, { andar: 2, fachadaGraus: 270 }]) {
+          const e = estimarRuido(p, { ...opcoes, janelaFechada: true });
+          if (e.estado !== "estimado") continue;
+          const acu = acusticaDaEstimativa(e, { anoConstrucao: p.anoConstrucao ?? null })!;
+          expect(acu.atendeReferenciaNoturnaNbr10151).toBe(Math.round(e.naJanela.noiteDb) <= 50);
+          if (acu.atendeReferenciaNoturnaNbr10151) {
+            dentro++;
+            expect(e.textos.nbr).not.toMatch(/dB a mais à noite|à noite e fica dentro dela de dia/);
+          } else {
+            fora++;
+            expect(e.textos.nbr).toMatch(/à noite/);
+          }
+        }
+      }
+    }
+    expect(dentro).toBeGreaterThan(20);
+    expect(fora).toBeGreaterThan(20);
+  });
+
+  it("o placar pinta o sossego pela palavra da nota, não por um corte próprio em dB do quarto", () => {
+    const cor = (valor: string, dbQuarto: number | null) => {
+      const a = montar(React.createElement(PlacarHeroi5Segundos, {
+        modalidade: "compra", precoPrincipalReais: 650_000, mensalBolsoRealReais: 5_000, dinheiroParaEntrarReais: null, comparacaoM2Pct: null,
+        orientacaoCurta: "Nascente", conforto: null, ruidoDormitorioDb: dbQuarto, sossego: { valor, subtitulo: "x", ficha: null },
+      }));
+      const celula = a.root.find((n) => n.props.testID === "placar-item-ruido");
+      const textoGrande = celula.findAll((n) => n.props.children === valor && n.props.cor)[0]!;
+      const r = textoGrande.props.cor as string;
+      act(() => a.unmount());
+      return r;
+    };
+    // Antes: 46 dB no quarto pintava "Tranquilo" de alerta.
+    expect(cor("Tranquilo", 46)).not.toBe("cor-barro-texto");
+    expect(cor("Agitado", 30)).toBe("cor-barro-texto");
+    expect(cor("Barulhento", null)).toBe("cor-barro-texto");
+  });
+
+  it("a altura da janela do 9º andar é a mesma no simulador e no 2.5D (~29,4 m)", () => {
+    expect(alturaDoAndarM(9)).toBe(29.4);
+    const s = simularUnidade({ predio: GOLDEN_TOWER, vizinhos: edificiosDoBairro("boa-viagem"), tipo: "apartamento", andar: 9, fachadaGraus: null });
+    expect(s.explicacaoDaAltura).toContain("~29,4 m");
   });
 });

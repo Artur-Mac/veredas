@@ -126,7 +126,8 @@ export function DueloFinalistas({
       Math.abs(opcaoA.custoMensalTotalReais - opcaoB.custoMensalTotalReais) < 50,
     ),
     linhaDiferenca(
-      "Sossego no quarto",
+      // O rótulo diz o ponto do número: a nota é do ruído à noite na janela; sem ela, o dB do quarto.
+      opcaoA.sossego !== undefined && opcaoB.sossego !== undefined ? "Sossego à noite" : "Sossego no quarto",
       sossegoDoDuelo(opcaoA),
       sossegoDoDuelo(opcaoB),
       opcaoA.sossego !== undefined && opcaoB.sossego !== undefined

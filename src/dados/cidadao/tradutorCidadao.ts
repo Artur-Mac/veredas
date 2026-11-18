@@ -278,8 +278,10 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
     tituloCurto: "Ruído no quarto e horário de teste",
     camada1Manchete: sanearTextoCamada1(
       acu
-        ? acu.ruidoExternoAeronavePezrDb > 0
-          ? `Rota de aviões: cerca de ${Math.round(acu.ruidoExternoAeronavePezrDb)} dB(A) estimados à noite, mesmo em andares altos.`
+        ? // Pendência 3 do HANDOFF (19/11/2026): a manchete do avião só quando ele é a fonte que mais pesa à noite; antes
+          // disparava com qualquer nível (34 dB(A) de avião contra 52 do chão).
+          acu.ruidoExternoAeronavePezrDb > 0 && acu.ruidoExternoAeronavePezrDb >= acu.ruidoExternoViaDbA
+          ? `Rota de aviões: o avião sozinho dá cerca de ${Math.round(acu.ruidoExternoAeronavePezrDb)} dB(A) estimados à noite na janela, mesmo em andares altos.`
           : acu.atendeReferenciaNoturnaNbr10151
             ? `Estimativa noturna tranquila no quarto (~${Math.round(acu.ruidoInternoDormitorioDbA)} dB(A) com a janela fechada).`
             : `Ruído estimado de ~${Math.round(acu.ruidoInternoDormitorioDbA)} dB(A) no quarto à noite pede atenção às janelas.`

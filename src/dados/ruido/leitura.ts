@@ -120,7 +120,7 @@ export type RuidoEstimado = {
     aviso: string;
     fontes: string[];
     vieses: string[];
-    /** Para o placar: a palavra da nota e "~61 dB(A) à noite (estimativa) · 6,6/10". */
+    /** Para o placar: a palavra da nota e "~61 dB(A) à noite na janela (estimativa) · 6,6/10". */
     placar: { valor: string; subtitulo: string };
     /** A ficha "como foi calculada" (ficha de método de 6 campos), com as fontes que mais pesam neste prédio. */
     ficha: FichaDeMetodo6Campos;
@@ -312,7 +312,7 @@ export function montarEstimativa(entrada: {
       aviso: `${AVISO_DE_ESTIMATIVA}.`,
       fontes: fontes.map((f) => f.texto),
       vieses: [...VIESES_CONHECIDOS],
-      placar: { valor: nivel, subtitulo: `~${inteiro(naJanela.noiteDb)} dB(A) à noite (estimativa) · ${virgula(nota)}/10${pistaAoLado ? " · piso, sem a pista ao lado" : ""}` },
+      placar: { valor: nivel, subtitulo: `~${inteiro(naJanela.noiteDb)} dB(A) à noite na janela (estimativa) · ${virgula(nota)}/10${pistaAoLado ? " · piso, sem a pista ao lado" : ""}` },
       ficha: fichaDoRuido(entrada.datas, fontes.map((f) => f.texto), textoDaPista),
     },
   };

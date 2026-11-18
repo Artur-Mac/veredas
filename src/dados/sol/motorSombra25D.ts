@@ -1,6 +1,7 @@
 import { incidenciaNaFace, instanteNoRecife, posicaoDoSol, type Sol } from "./astronomia";
 import { intervalosDoRaio, type Ponto } from "./geometria";
 import type { FachadaInferida, InferenciaDeFachadas, PapelFachada } from "./inferirFachadas";
+import { alturaDoAndarM } from "../dossie/solESombra";
 
 export type PredioCena25D = {
   id: string;
@@ -257,7 +258,9 @@ export function simularCenaSombra25D(params: {
   const azRad = sol.azimute * RAD;
   const dirSolX = Math.sin(azRad);
   const dirSolY = Math.cos(azRad);
-  const zAndarM = Math.max(1.5, (andar - 1) * 3.0 + 1.5);
+  // A mesma altura de janela do simulador e do ruído (pendência 3 do HANDOFF, 19/11/2026): 1,5 m + andar × 3,1 m. Antes
+  // (andar − 1) × 3 + 1,5 dava "~26 m" no 9º andar aqui e "~29,4 m" no simulador.
+  const zAndarM = alturaDoAndarM(andar) ?? 1.6;
 
   // Camada 1: Sombra projetada no solo para O PREDIO ALVO e TODOS OS VIZINHOS
   const sombrasSolo: SombraNoSolo25D[] = [];

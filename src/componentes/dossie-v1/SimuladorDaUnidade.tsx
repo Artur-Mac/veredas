@@ -63,7 +63,7 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarInicial, 
   // A estimativa na janela escolhida abre o resumo; as fontes nomeadas continuam logo depois.
   const ruido = s.barulho.estimativa;
   const resumoBarulho = ruido.estado === "estimado"
-    ? `~${Math.round(ruido.naJanela.diaDb)} dB(A) de dia · ~${Math.round(ruido.naJanela.noiteDb)} à noite (estimativa) · ${fontesPerto}`
+    ? `Na janela: ~${Math.round(ruido.naJanela.diaDb)} dB(A) de dia · ~${Math.round(ruido.naJanela.noiteDb)} à noite (estimativa) · ${fontesPerto}`
     : fontesPerto;
   const resumoSol = s.sol
     ? `${s.sol.fachada}: ~${s.sol.horasSolDireto.toFixed(1).replace(".", ",")} h/dia`

@@ -39,14 +39,14 @@ const notaTexto = (n: number) => `${n.toFixed(1).replace(".", ",")}/10`;
 export function fichaDaMatrizComparar(compra: boolean, comNotaDeSossego: boolean): FichaDeMetodo6Campos {
   const ruido = fichaGeralDoRuido();
   return {
-    oQueMede: "Seis pontos lado a lado, com a mesma régua nos dois imóveis: preço por m², saída mensal, sol e conforto, sossego no quarto, idade do prédio e terreno. “Leva vantagem em N de 6” conta em quantos pontos um imóvel fica à frente; não é nota do imóvel.",
+    oQueMede: "Seis pontos lado a lado, com a mesma régua nos dois imóveis: preço por m², saída mensal, sol e conforto, sossego à noite, idade do prédio e terreno. “Leva vantagem em N de 6” conta em quantos pontos um imóvel fica à frente; não é nota do imóvel.",
     fonte: `O anúncio e o que você informou (preço, área, condomínio), o cadastro do Recife (IPTU, ano do prédio), o cálculo de sol do Vereda e, no sossego, o ruído estimado. ${ruido.fonte}`,
     data: `Cadastro do Recife de 2026. ${ruido.data}`,
     calculo:
       `${compra ? "Preço" : "Aluguel"} por m²: menor vence; empate com diferença de até 4%. Saída mensal: menor vence; empate com diferença abaixo de R$ 150. ` +
       "Sol e conforto: vence o que não fica na faixa quente; empate quando os dois estão do mesmo lado. " +
       (comNotaDeSossego
-        ? `Sossego no quarto: maior nota de sossego vence (a nota do ruído estimado à noite na janela); empate com diferença abaixo de ${VANTAGEM_NA_NOTA} ponto ou sem leitura num dos lados. `
+        ? `Sossego à noite: maior nota de sossego vence (a nota do ruído estimado à noite na janela); empate com diferença abaixo de ${VANTAGEM_NA_NOTA} ponto ou sem leitura num dos lados. `
         : "Sossego no quarto: menor ruído estimado no quarto vence; empate com diferença abaixo de 4 dB (estimativa) ou sem leitura num dos lados. ") +
       "Idade do prédio: o mais novo vence; empate com menos de 5 anos de diferença ou sem ano no cadastro. Terreno: vence o que não tem alerta de terreno da União; empate quando os dois têm ou nenhum tem.",
     limite: `Cada ponto pesa igual e os cortes de empate são escolhas do Vereda, não medições; um ponto sem dado vira empate. No sossego: ${ruido.limite}`,
@@ -54,14 +54,18 @@ export function fichaDaMatrizComparar(compra: boolean, comNotaDeSossego: boolean
   };
 }
 
-/** A linha "Sossego no quarto": pela nota do modelo estimado quando os dois lados a trazem; senão, pelo dB do quarto. */
+/**
+ * A linha de sossego: pela nota do modelo estimado (à noite, na janela) quando os dois lados a trazem, com o rótulo
+ * "Sossego à noite"; senão, pelo dB do quarto, com o rótulo "Sossego no quarto" (o rótulo diz o ponto do número).
+ */
 function linhaDeSossego(a: ColunaMatrizComparar, b: ColunaMatrizComparar): LinhaComparacao {
-  const criterio = "Sossego no quarto";
   if (a.sossego !== undefined && b.sossego !== undefined) {
+    const criterio = "Sossego à noite";
     const valor = (s: ColunaMatrizComparar["sossego"]) => (s ? `${s.nivel} · ${notaTexto(s.nota0a10)}` : "Sem leitura");
     const vencedor = a.sossego && b.sossego && Math.abs(a.sossego.nota0a10 - b.sossego.nota0a10) >= VANTAGEM_NA_NOTA ? (a.sossego.nota0a10 > b.sossego.nota0a10 ? "A" : "B") : "empate";
     return { criterio, valorA: valor(a.sossego), valorB: valor(b.sossego), vencedor };
   }
+  const criterio = "Sossego no quarto";
   const valor = (db: number | null) => (db === null ? "Sem leitura" : classificarNivelSossegoPorDbInterno(db).rotuloComparar);
   const vencedor = a.ruidoInternoDb !== null && b.ruidoInternoDb !== null && Math.abs(a.ruidoInternoDb - b.ruidoInternoDb) >= 4 ? (a.ruidoInternoDb < b.ruidoInternoDb ? "A" : "B") : "empate";
   return { criterio, valorA: valor(a.ruidoInternoDb), valorB: valor(b.ruidoInternoDb), vencedor };
