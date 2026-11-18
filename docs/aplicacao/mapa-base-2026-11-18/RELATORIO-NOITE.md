@@ -103,7 +103,7 @@ Decisões tomadas aqui, para o dono do produto confirmar:
 
 **Rodada 2, um revisor independente.** Conferiu de novo, por conta própria: o determinismo (gerou duas vezes em pastas à parte, arquivos iguais entre si e iguais aos publicados), a independência da ordem dos bairros, a lista branca em todos os campos dos arquivos (as pontes só têm geometria), os pesos e os testes. **Não abriu nenhuma imagem**: a parte visual ficou sem veredito nesta rodada (o primeiro revisor de dados também tinha pulado essa parte). O orquestrador olhou as fotos da integração e é dali que saíram os defeitos corrigidos na etapa B da F2. Achados novos:
 
-1. Imbiribeira a 646 bytes do teto de 250 kB (medido com `gzip -9`): qualquer quadra a mais numa base nova quebra o teste de peso. Tratado só com um aviso do pipeline a partir de 90% do teto; a folga de verdade depende da decisão sobre a borda (seção F3).
+1. Imbiribeira quase no teto de 250 kB: 247.904 bytes pelo zlib nível 9, que é o que o teste aplica (folga de 2.096 bytes), e 249.354 bytes pelo `gzip -9` de linha de comando (folga de 646 bytes). Qualquer quadra a mais numa base nova quebra o teste de peso. Tratado só com um aviso do pipeline a partir de 90% do teto; a folga de verdade depende da decisão sobre a borda (seção F3).
 2. Depois de uma falha por arquivo recusado, "Tentar de novo" não refazia a montagem. Corrigido na etapa B da F2.
 
 ## F2 Integração
@@ -191,7 +191,23 @@ Também: bairros decodificados guardados em memória para sempre; o lote tocado 
 
 Suíte depois das correções: `tsc` sem erros; `eslint` sem erros; `jest` com 91 suítes, **2.408 testes passando**, 0 falhas; `publicar-camadas --conferir` sem problemas.
 
-**Rodada 2:** _a preencher._
+**Rodada 2, dois revisores independentes novos.**
+
+O revisor visual rodou as 160 capturas de novo (todas no estado certo, sem rolagem horizontal nem erro), abriu 57 imagens e conferiu por foto os 11 achados da rodada 1: sete corrigidos (crédito da tela do prédio, rótulos dos exemplos, rótulo no rio, botões sobre o pino, confirmar lote, pino sobre nomes, rótulos sobre os volumes), dois em parte (o mar, até onde a base vai; o topo do dossiê, que ganhou as ruas) e dois não (os nomes sem acento, por decisão; a divisa do Pina no Por perto a 1280 px, que fica fora do quadro). Os três piores do que resta, na avaliação dele:
+
+1. A divisa de Boa Viagem aparece como uma reta em ferrugem atravessando o mar. **Mantido:** a divisa oficial do bairro passa pelo mar, e o modelo aprovado mostra a mesma linha.
+2. No Por perto de Casa Forte, os marcadores de obra e de ponto cobrem o pino. **Mantido:** já era assim antes desta noite (os marcadores e o pino são do mapa de hoje, "como hoje" no pedido).
+3. Afastando o mapa do exemplo ao máximo, depois dos ~6 km de mar que a base tem, o resto do oceano aparece hachurado. **Mantido:** é onde a base da Prefeitura acaba; o oceano dela cobre só da latitude −8,177 à −8,047 (o mar em frente ao porto e a Olinda fica de fora).
+
+Também: números de lote sobrepostos na tela do prédio do Golden Tower (já era assim); a rua do imóvel sem nome em alguns quadros de 360 e 375 px; o topo do dossiê mostrando só o nome do bairro vizinho perto da divisa (corrigido na rodada final).
+
+O revisor de código conferiu que o pipeline gera os mesmos 96 arquivos em duas execuções (iguais aos publicados), que a suíte passa duas vezes seguidas sem variação, que os comandos do runbook funcionam como escritos, que a descrição para leitor de tela fica num nó só e diz "Rua" por extenso, e que nenhum arquivo de camada entra no pacote JS (o único pedaço do mapa-base no pacote é `mapaBaseGerado.ts`, com 15 kB). Os três piores:
+
+1. **O portão de desempenho da gaveta reprovou na medida dele**: 127 ms de custo do fundo na segunda abertura, contra o teto de 50 ms (o agente que corrigiu tinha medido 35 ms). A máquina estava ocupada pelo outro revisor e as repetições variaram muito, mas a causa que sobrava é real: as telas desenhavam o fundo primeiro com uma largura provisória e depois de novo com a largura medida. Corrigido na rodada final; a medida que vale é a da F5, com a máquina livre.
+2. Na primeira abertura do Por perto o fundo chega ~720 ms depois do mapa, quase tudo baixando e lendo cinco arquivos. Tratado na rodada final com pré-carga em segundo plano.
+3. O limite de memória só vale para os bairros decodificados: o JSON bruto de cada arquivo lido fica para sempre no sistema de camadas (`src/dados/camadas.ts`). **Não corrigido:** é o desenho do sistema de camadas para todas as camadas do app, não só do mapa-base; fica como pendência.
+
+**Correções da rodada 2:** _a preencher._
 
 Não corrigido de propósito, para decisão do dono do produto:
 
@@ -208,7 +224,7 @@ Feita junto com as correções da F1, porque gerar a cidade inteira leva 13 segu
 | Tempo e memória | 12,6 s; pico de 651 MB |
 | Peso total | **21,0 MB brutos; 7,6 MB gzip** (zlib nível 9) |
 | Maiores, gzip | Imbiribeira 248 kB, Afogados 241 kB, Ibura 222 kB, Várzea 201 kB, Boa Viagem 200 kB |
-| Teto de 250 kB gzip por bairro | todos abaixo; **Imbiribeira fica a ~2 kB do teto** (249,4 kB pelo `gzip -9` de linha de comando) |
+| Teto de 250 kB gzip por bairro | todos abaixo; **Imbiribeira fica a 2.096 bytes do teto** pelo zlib nível 9 do teste (247.904 bytes; pelo `gzip -9` de linha de comando são 249.354) |
 | Determinismo | rodei `--todos` de novo: o resumo de sha256 dos 95 arquivos e do módulo gerado saiu igual |
 | `publicar-camadas --conferir` | 343 arquivos, sem problemas |
 | Pontes | 113 feições; 47 bairros têm ponte |
