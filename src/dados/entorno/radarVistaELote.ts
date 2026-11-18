@@ -34,6 +34,7 @@ export type ResultadoRadarVistaELote = {
     ItemRadarVistaELote,
   ];
   acoesPraticas: readonly string[];
+  fundamentoNormativoEAritmetica: string;
   fichaMetodo: FichaMetodoRadar;
 };
 
@@ -369,6 +370,11 @@ export function analisarRadarVistaELote(params: {
     janelaTemporal: "Licenças nos últimos 24 meses (histórico 2018–2026).",
   };
 
+  const fundamentoNormativoEAritmetica =
+    distMinGeral !== null
+      ? `Aritmética do recuo: ~${distMinGeral} m livres (distância entre centros cadastrais menos ~8 m de meia-projeção das fachadas; cone visual ±42° até 120 m${areaLoteM2 ? `; polígono de ~${areaLoteM2.toLocaleString("pt-BR")} m²` : ""}). Referência normativa: Plano Diretor do Recife (LC Municipal nº 2/2021) e licenciamento urbanístico municipal; leitura informativa que não substitui certidão de uso e ocupação do solo.`
+      : `Aritmética do recuo: cone visual ±42° até 120 m a partir da fachada ${fachadaAtiva.orientacaoSolar} (sem vizinho indexado até 150 m para subtração de vão). Referência normativa: Plano Diretor do Recife (LC Municipal nº 2/2021) e licenciamento urbanístico municipal; leitura informativa que não substitui certidão de uso e ocupação do solo.`;
+
   return {
     manchete,
     areaLoteM2,
@@ -378,6 +384,7 @@ export function analisarRadarVistaELote(params: {
     // Ordem Gridics (R38): capacidade/horizonte -> terreno/lote -> privacidade/afastamento -> licenças existentes
     itens: [itemCone, itemLote, itemPrivacidade, itemObras],
     acoesPraticas: acoesPraticas.slice(0, 3),
+    fundamentoNormativoEAritmetica,
     fichaMetodo,
   };
 }

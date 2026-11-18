@@ -92,6 +92,17 @@ export function RadarVistaELote({ radar }: { radar: ResultadoRadarVistaELote }) 
         </View>
       ) : null}
 
+      <View style={[styles.faixaAcoes, { borderTopColor: cor("cor-linha") }]}>
+        <Texto
+          testID="radar-fundamento-aritmetica"
+          tipo="apoio"
+          cor="cor-texto-apoio"
+          style={styles.detalheItem}
+        >
+          {radar.fundamentoNormativoEAritmetica}
+        </Texto>
+      </View>
+
       <View style={[styles.rodapeMetodo, { borderTopColor: cor("cor-linha") }]}>
         <Pressable
           testID="radar-toggle-metodo"

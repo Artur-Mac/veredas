@@ -2101,4 +2101,37 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });
+
+  it("expõe fundamento normativo LC Municipal nº 2/2021 e aritmética do recuo (Symbium / Gridics) em RadarVistaELote em S46", () => {
+    const bv = edificiosDoBairro("boa-viagem");
+    const predio = bv.find((e) => e.poligono && e.poligono.length >= 3 && e.centro)!;
+    const inf = inferirFachadasDoEdificio({ edificio: predio, textoAnuncio: "" });
+    const radar = analisarRadarVistaELote({
+      centro: predio.centro,
+      edificio: predio,
+      fachadaAtiva: inf.frente,
+      andar: 6,
+      vizinhos: bv,
+      obrasProximas: null,
+    });
+    expect(radar.fundamentoNormativoEAritmetica).toContain("LC Municipal nº 2/2021");
+    expect(radar.fundamentoNormativoEAritmetica).toContain("±42°");
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(RadarVistaELote, { radar }),
+        ),
+      );
+    });
+    expect(tree.root.find((n) => n.props.testID === "radar-fundamento-aritmetica")).toBeDefined();
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("LC Municipal nº 2/2021");
+    expect(txt).toContain("±42°");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+  });
 });
