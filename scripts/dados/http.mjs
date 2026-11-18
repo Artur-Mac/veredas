@@ -5,7 +5,9 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
 
-const CACHE_DIR = process.env.VEREDA_HTTP_CACHE_DIR ?? fileURLToPath(new URL("../../raw/_cache/", import.meta.url));
+// Cliente HTTP dos coletores (antes em docs/dados/infra/scripts, movido em 18/11/2026 com o arquivamento do pipeline
+// antigo). O cache fica em .cache/http/ (fora do git); os coletores de produção chamam com cache: false.
+const CACHE_DIR = process.env.VEREDA_HTTP_CACHE_DIR ?? fileURLToPath(new URL("../../.cache/http/", import.meta.url));
 const UA = "Vereda-Research/1.0";
 const RETRY_STATUS = new Set([408, 429, 500, 502, 503, 504]);
 const MAX_RETRY_DELAY_MS = 30_000;

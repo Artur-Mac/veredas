@@ -1,5 +1,5 @@
 // Consulta Overpass e caixas de bairro, puras e testáveis (VE02.02). Substitui as caixas fixas de
-// docs/dados/infra/scripts/10-osm-pois.mjs (latitude perto de −8,8, fora do Recife) e os seletores malformados de
+// ignorar/dados-pipeline-2026-11-11/infra/scripts/10-osm-pois.mjs (latitude perto de −8,8, fora do Recife) e os seletores malformados de
 // 12-amenidades.mjs (`amenity["pharmacy"](...)` não é Overpass QL; `["k"~""a"|"b""]` quebra as aspas).
 // A via preferida para POIs e rede é o extrato datado do Geofabrik (geofabrik.mjs); isto fica para consultas pontuais.
 

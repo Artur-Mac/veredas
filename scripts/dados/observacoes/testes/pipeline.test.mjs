@@ -199,8 +199,8 @@ describe("OSM: caixas, seletores, coordenadas e categorias", () => {
     assert.equal(resumirCategorias({ a: { total: 2 } }).estado, "valida");
   });
   it("os coletores 10 e 12 usam o construtor testado, sem caixas perto de −8,8 nem todosPois fora de escopo", () => {
-    const c10 = readFileSync(join(RAIZ, "docs/dados/infra/scripts/10-osm-pois.mjs"), "utf8");
-    const c12 = readFileSync(join(RAIZ, "docs/dados/infra/scripts/12-amenidades.mjs"), "utf8");
+    const c10 = readFileSync(join(RAIZ, "ignorar/dados-pipeline-2026-11-11/infra/scripts/10-osm-pois.mjs"), "utf8");
+    const c12 = readFileSync(join(RAIZ, "ignorar/dados-pipeline-2026-11-11/infra/scripts/12-amenidades.mjs"), "utf8");
     assert.ok(!/-8\.8\d{3}/.test(c10));
     assert.ok(c10.includes("seletorOverpass(") && c12.includes("seletorOverpass("));
     assert.ok(!/\$\{key\}\["\$\{v\}"\]/.test(c12), "seletor malformado ainda presente");

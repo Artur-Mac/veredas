@@ -4,7 +4,7 @@
 // total ou orçamento esgotado viram "falhou"/"parcial" com motivo, nunca cobertura completa.
 import { Buffer } from "node:buffer";
 import { createHash } from "node:crypto";
-import { get } from "../../../docs/dados/infra/scripts/http.mjs";
+import { get } from "../http.mjs";
 import { planejarPaginas } from "../paginacao.mjs";
 
 const sha256 = (t) => createHash("sha256").update(t).digest("hex");
