@@ -22,7 +22,7 @@ import { confirmarPredio, editarAnalise, useAbrirAnalise, usePrepararVisita } fr
 import { PainelDeCusto, PainelDeEntorno, PainelDeEspaco } from "../../componentes/comparar/Paineis";
 import { PainelDeRotina } from "../../componentes/comparar/Rotina";
 import { PlacarDoPar } from "../../componentes/comparar/Placar";
-import { placarDoPar } from "../../componentes/comparar/placar";
+import { placarDoPar } from "../../componentes/comparar/placarDoPar";
 import { extrasDoPar } from "../../componentes/comparar/extras";
 import { CompartilharSala } from "../../componentes/comparar/Sala";
 import { arquivoDaProcura } from "../../dados/recife/procura";

@@ -1,7 +1,7 @@
 // Placar do Comparar (15/11/2026): quem ganha em cada seção e por quanto; um toque abre a aba com o detalhe.
 import { View } from "react-native";
 import type { Topico } from "./comparar";
-import type { LinhaDoPlacar } from "./placar";
+import type { LinhaDoPlacar } from "./placarDoPar";
 import { useTema } from "../../tema/Tema";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";

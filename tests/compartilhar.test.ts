@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { parseShareIntent } from "expo-share-intent";
 import { getPreprocessorContent } from "expo-share-intent/plugin/build/ios/writeIosShareExtensionFiles";
+import { join } from "node:path";
 import React from "react";
 import { Platform, Text } from "react-native";
 import TestRenderer, { act } from "react-test-renderer";
@@ -393,8 +394,9 @@ describe("'Ler no Vereda' no menu de seleção (Android)", () => {
     expect(codigo).toContain("Intent.EXTRA_PROCESS_TEXT");
     expect(codigo).toContain("action = Intent.ACTION_SEND");
     expect(codigo).toContain('type = "text/plain"');
+    // O separador é o do sistema (o prebuild grava o arquivo com path.join): no Windows sai com "\\".
     expect(pluginDoAndroid.caminhoDaAtividade("/raiz/android", "br.vereda.prototipo")).toBe(
-      "/raiz/android/app/src/main/java/br/vereda/prototipo/ProcessarTextoActivity.kt",
+      join("/raiz/android", "app", "src", "main", "java", "br", "vereda", "prototipo", "ProcessarTextoActivity.kt"),
     );
   });
 

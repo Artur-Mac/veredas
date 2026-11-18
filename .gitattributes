@@ -1,0 +1,7 @@
+# Código, dados e testes do app sempre com LF, em qualquer sistema. O publicar-camadas.cjs nomeia cada camada pelo sha
+# dos bytes do JSON e os testes comparam os manifestos gerados byte a byte: com core.autocrlf=true (padrão no Windows)
+# o checkout trocava LF por CRLF, o sha mudava e o Metro reescrevia src/dados/camadasGeradas.ts a cada início.
+src/** text=auto eol=lf
+tests/** text=auto eol=lf
+scripts/** text=auto eol=lf
+plugins/** text=auto eol=lf

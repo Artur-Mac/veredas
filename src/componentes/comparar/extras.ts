@@ -7,7 +7,7 @@ import { lerRelevoECanalProximo, lerTemperaturaSuperficie100m } from "../../dado
 import { procura } from "../../dados/recife/procura";
 import type { PerfilDoDomicilio } from "../../estado/PerfilDomicilio";
 import type { Par } from "./comparar";
-import type { ExtrasDoPlacar } from "./placar";
+import type { ExtrasDoPlacar } from "./placarDoPar";
 
 const conhecido = (d: { valor: number | null; aConfirmar: boolean }) => (d.aConfirmar ? null : d.valor);
 

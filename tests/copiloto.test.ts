@@ -9,7 +9,7 @@ import { Image, Modal, View } from "react-native";
 import { LinhaDoTempoEstrutural } from "../src/componentes/dossie-v1/FichaViva";
 import { TopoDoDossie } from "../src/componentes/dossie-v1/Topo";
 import { Pressionavel } from "../src/componentes/Pressionavel";
-import { placarDoPar, type ExtrasDoPlacar } from "../src/componentes/comparar/placar";
+import { placarDoPar, type ExtrasDoPlacar } from "../src/componentes/comparar/placarDoPar";
 import { fraseDaDiferenca, nivelRelativoDb } from "../src/componentes/visita-v1/MedidorDeRuido";
 import { cadernoVazio, type Caderno } from "../src/dados/caderno";
 import { CAMADAS_PUBLICADAS } from "../src/dados/camadasGeradas";
