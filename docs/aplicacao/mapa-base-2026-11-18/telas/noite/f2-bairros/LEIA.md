@@ -7,5 +7,5 @@ O que foi conferido a olho: lotes dentro das quadras; nomes de rua no vão entre
 Corrigido no desenho nesta rodada: ids dos caminhos dos rótulos repetidos entre dois fundos na mesma página (na web um rótulo seguia o caminho do outro fundo); chão do vizinho junto à divisa.
 
 Do dado, sem correção no desenho:
-- Recife (bairro do porto): a bacia do porto, entre o cais e o molhe, está dentro da divisa do bairro e não tem polígono de água nem quadra; aparece como chão de rua (branco no nível de lote, tingido no nível de quadras).
+- Recife (bairro do porto): o quadro de 300 m aparece quase todo como chão liso. É a área do cais, que é terra e não tem quadra nem lote na base. (A primeira versão desta nota dizia que a bacia do porto não tinha polígono de água; a medição nos brutos, feita depois, mostrou que tem e que é desenhada como água. O único vazio largo de água sem polígono dentro da divisa do bairro tem ~5.800 m², ao norte do fim da bacia.)
 - Nova Descoberta (morro) e Coqueiral: quase sem lote; algumas ruas do morro passam sobre quadra (o traçado da rua não coincide com o vão entre quadras).
