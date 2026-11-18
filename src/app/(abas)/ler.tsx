@@ -518,12 +518,10 @@ function LeituraDoAnuncio() {
                       flexDirection: "row",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      paddingHorizontal: 12,
-                      paddingVertical: 8,
-                      borderRadius: 10,
-                      borderWidth: 1,
-                      borderColor: cor("cor-linha-forte"),
-                      backgroundColor: cor("cor-papel-claro"),
+                      paddingVertical: 10,
+                      borderTopWidth: 1,
+                      borderBottomWidth: 1,
+                      borderColor: cor("cor-linha"),
                     }}
                   >
                     <Texto tipo="etiqueta" style={{ fontSize: 12.5 }}>
@@ -834,22 +832,18 @@ const useEstilos = estilosDoTema((cor) =>
       textDecorationLine: "underline",
     },
     checklist: {
-      gap: 7,
+      gap: 0,
     },
     linhaDoChecklist: {
       flexDirection: "row",
       alignItems: "flex-start",
       gap: 11,
       paddingVertical: 10,
-      paddingHorizontal: 12,
-      borderRadius: 11,
-      backgroundColor: cor("cor-creme"),
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
+      borderTopWidth: 1,
+      borderTopColor: cor("cor-linha"),
     },
     linhaLida: {
-      backgroundColor: cor("cor-superficie"),
-      borderColor: cor("cor-salvia"),
+      borderTopColor: comAlfa(cor("cor-salvia"), 0.45),
     },
     circulo: {
       width: 22,
@@ -958,11 +952,11 @@ const useEstilos = estilosDoTema((cor) =>
       fontWeight: "700",
     },
     caixaCreme: {
-      padding: 12,
-      borderRadius: 12,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
       backgroundColor: cor("cor-creme"),
-      borderWidth: 1,
-      borderColor: cor("cor-linha"),
+      borderLeftWidth: 2,
+      borderLeftColor: cor("cor-linha-forte"),
     },
     textoDaCaixaCreme: {
       color: cor("cor-texto-apoio"),

@@ -904,4 +904,15 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(frente.barulho.consequenciaPorFace).not.toMatch(/\d+\s*dB/i);
     expect(fundos.barulho.consequenciaPorFace).not.toMatch(/\d+\s*dB/i);
   });
+
+  it("remove caixas aninhadas com borderWidth: 1 em checklists de ler.tsx e garante transparência R50 em sobre-os-dados", () => {
+    const lerSrc = readFileSync(join(__dirname, "..", "src", "app", "(abas)", "ler.tsx"), "utf8");
+    const checklistBlock = lerSrc.match(/linhaDoChecklist:\s*\{[^}]*\}/)?.[0] ?? "";
+    expect(checklistBlock).not.toMatch(/\bborderWidth:\s*1\b/);
+    expect(checklistBlock).toContain("borderTopWidth: 1");
+
+    const sobreSrc = readFileSync(join(__dirname, "..", "src", "app", "sobre-os-dados.tsx"), "utf8");
+    expect(sobreSrc).toContain("escopo-qualidade-leituras");
+    expect(sobreSrc).toContain("O que lemos sozinhos vs. o que pede confirmação");
+  });
 });

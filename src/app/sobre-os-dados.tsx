@@ -69,6 +69,33 @@ const MATRIZ_COBERTURA_CAMADAS: readonly { camada: string; escopo: string; estad
   { camada: "Microclima, Satélite 100 m e Relevo", escopo: "Temperatura de superfície e drenagem", estado: "Referência por ponto" },
 ];
 
+const ESCOPO_QUALIDADE_LEITURAS: readonly {
+  campo: string;
+  extracao: string;
+  confirmacao: string;
+}[] = [
+  {
+    campo: "Preço, condomínio, área e quartos",
+    extracao: "Leitura automática determinística do texto ou página do anúncio",
+    confirmacao: "Sempre revisável antes de confirmar o vínculo do prédio",
+  },
+  {
+    campo: "Andar, vagas e período do IPTU (mês ou ano)",
+    extracao: "Lido só quando explícito; sem inventar nem assumir período",
+    confirmacao: "Marcado como a confirmar sempre que omitido pelo anúncio",
+  },
+  {
+    campo: "Orientação solar e frentes da torre",
+    extracao: "Inferida pela geometria do polígono e direção da via pública",
+    confirmacao: "Conferir na planta ou tocando a fachada desejada no 2.5D",
+  },
+  {
+    campo: "Atas de condomínio, editais e matrículas",
+    extracao: "Varredura por palavras-chave no aparelho citando trecho e página",
+    confirmacao: "Leitura humana indispensável; sem percentual estatístico sem amostra rotulada",
+  },
+];
+
 function Fato({ rotulo, valor, numerico = false }: { rotulo: string; valor: string; numerico?: boolean }) {
   return (
     <View style={{ flexDirection: "row", gap: 8, alignItems: "baseline" }}>
@@ -356,6 +383,30 @@ export default function SobreOsDados() {
                   </View>
                   <Texto tipo="apoio" cor="cor-salvia-escura" style={{ fontSize: 11, fontWeight: "700" }}>
                     {row.estado}
+                  </Texto>
+                </View>
+              ))}
+            </CaixaCreme>
+
+            <Texto testID="escopo-qualidade-leituras" tipo="secao" role="heading" aria-level={3} style={{ fontSize: 12, lineHeight: 16, fontWeight: "700", marginTop: 4 }}>
+              O que lemos sozinhos vs. o que pede confirmação
+            </Texto>
+            <CaixaCreme gap={6}>
+              {ESCOPO_QUALIDADE_LEITURAS.map((item, idx) => (
+                <View
+                  key={item.campo}
+                  style={{
+                    borderTopWidth: idx === 0 ? 0 : 1,
+                    borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+                    paddingTop: idx === 0 ? 0 : 6,
+                    gap: 2,
+                  }}
+                >
+                  <Texto tipo="etiqueta" style={{ fontSize: 12, fontWeight: "700" }}>
+                    {item.campo}
+                  </Texto>
+                  <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16 }}>
+                    {`${item.extracao}. ${item.confirmacao}.`}
                   </Texto>
                 </View>
               ))}
