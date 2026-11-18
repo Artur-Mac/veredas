@@ -1,7 +1,7 @@
 // Simulador "Andar × Fachada" (15/11/2026): a pessoa escolhe casa ou apartamento, o andar e a fachada da janela (rosa
 // de 8 direções) e o app recalcula, no aparelho, sem nota de 0 a 100:
 // - barulho: as 3 fontes nomeadas mais perto (via principal, corredor de ônibus, metrô, bar, local com licença de som,
-//   oficina), com distância e se a janela fica de frente, de lado ou de costas para cada uma. SEM decibéis (decisão do
+//   oficina, aeroporto), com distância e se a janela fica de frente, de lado ou de costas para cada uma. SEM decibéis (decisão do
 //   usuário, 15/11/2026): nenhuma fonte do Recife foi medida ou calibrada; o dB(A) fica "Sem leitura publicada";
 // - sol: horas de sol direto nessa fachada nessa altura no equinócio, descontando prédios vizinhos mais altos
 //   (analisarJanelaNoRecife, o mesmo cálculo da visita);
@@ -11,6 +11,7 @@ import type { Edificio } from "../contratos";
 import { atritoDoPredio } from "../recife/atrito";
 import { baseDeCamadasAmbientais } from "../recife/camadasAmbientais";
 import { noiteDoBairro } from "../recife/noite";
+import { FONTE_DO_AEROPORTO, relacaoComOAeroporto } from "../recife/aeroporto";
 import { distanciaMetros } from "../geo";
 import { SEM_LEITURA } from "./fichaViva";
 import { alturaDoAndarM, analisarJanelaNoRecife, METROS_POR_PAVIMENTO, type LeituraDaJanela } from "./solESombra";
@@ -32,7 +33,7 @@ const rumo = (de: readonly [number, number], para: readonly [number, number]) =>
 };
 
 export type FonteDeBarulho = {
-  id: "via" | "onibus" | "metro" | "bar" | "luse" | "oficina";
+  id: "via" | "onibus" | "metro" | "bar" | "luse" | "oficina" | "aeroporto";
   nome: string;
   quando: "de dia" | "à noite" | "de dia e à noite";
   distanciaM: number;
@@ -77,6 +78,24 @@ export function fontesDeBarulho(predio: Edificio): FonteDeBarulho[] {
   } catch {
     // Camada ambiental fora: as outras fontes continuam.
   }
+  // 18/11/2026 (hub): o aeroporto entra até 3 km da pista ou sob a trajetória de pouso e decolagem (até 10 km).
+  try {
+    const aero = relacaoComOAeroporto(predio.centro);
+    if (aero) {
+      fontes.push({
+        id: "aeroporto",
+        nome: aero.trajetoria
+          ? `Aeroporto dos Guararapes (na linha de pouso e decolagem, avião a ~${aero.trajetoria.alturaEstimadaM} m de altura)`
+          : "Aeroporto dos Guararapes (pista)",
+        quando: "de dia e à noite",
+        distanciaM: aero.distanciaM,
+        rumoGraus: aero.rumoGraus,
+        fonte: FONTE_DO_AEROPORTO,
+      });
+    }
+  } catch {
+    // Sem a pista: as outras fontes continuam.
+  }
   return fontes.sort((x, y) => x.distanciaM - y.distanciaM);
 }
 
@@ -94,7 +113,10 @@ export function simularUnidade(opcoes: { predio: Edificio; vizinhos: readonly Ed
   const alturaDaJanelaM = alturaDoAndarM(andar) ?? 1.6;
   const explicacaoDaAltura = tipo === "casa" || andar === 0 ? "Janela no térreo (~1,6 m do chão)." : `Janela a ~${alturaDaJanelaM.toFixed(1).replace(".", ",")} m do chão (${andar}º andar × ${METROS_POR_PAVIMENTO.toFixed(1).replace(".", ",")} m + 1,5 m).`;
 
-  const todas = fontesDeBarulho(predio).slice(0, 3);
+  // As 3 fontes mais perto; o aeroporto, quando entra, fica mesmo se estiver mais longe (som que vem de cima).
+  const lista = fontesDeBarulho(predio);
+  const aeroporto = lista.find((f) => f.id === "aeroporto");
+  const todas = [...lista.filter((f) => f.id !== "aeroporto").slice(0, 3), ...(aeroporto ? [aeroporto] : [])];
   const fontes = todas.map((f) => {
     const relacao = relacaoComAFachada(fachadaGraus, f.rumoGraus);
     return { ...f, relacao, frase: `${f.nome}, ${f.quando}, a ~${f.distanciaM} m para o ${nomeDaDirecao(f.rumoGraus)}: ${TEXTO_DA_RELACAO[relacao]}.` };

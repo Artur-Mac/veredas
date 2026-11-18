@@ -14,6 +14,8 @@ import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { ARua, type RespostaDaDefesaCivil } from "./ARua";
 import { PorPerto } from "./PorPerto";
+import { SegurancaNoBairro } from "./SegurancaNoBairro";
+import { segurancaDoBairro } from "../../dados/recife/seguranca";
 import { BateComARua, SimuladorDaUnidade } from "./SimuladorDaUnidade";
 import { CartaoSemPredio } from "./CartaoSemPredio";
 import { DiaADia } from "./DiaADia";
@@ -425,6 +427,12 @@ export function Entorno({
             ))}
           </View>
           {renda ? <View style={{ marginTop: ESPACO[2] }}><CartaoSintese cartao={renda} /></View> : null}
+        </Secao>
+      ) : null}
+      {/* 18/11/2026 (hub): ocorrências registradas no bairro e nos vizinhos de divisa, com taxa por 1.000 moradores. */}
+      {segurancaDoBairro(slugBairro ?? edificio?.bairro ?? null) ? (
+        <Secao>
+          <SegurancaNoBairro slugBairro={slugBairro ?? edificio?.bairro ?? null} />
         </Secao>
       ) : null}
       <Secao aoMedir={(y) => aoMedirSecao("preco", y)}>

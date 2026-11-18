@@ -80,7 +80,7 @@ Teste feito no celular com anúncios reais do ZAP (Graças e Torre). Este arquiv
 - **Calor e sombra:** fachada automática, sombra de prédios e árvores no caminho, comparados às ruas do bairro. Reaproveita o piloto CoolWalk, sem prometer rota.
 - **Alagamento:** histórico da rua contra a média do bairro (frequência de registros). Os 4 registros mais usados entram depois da revisão H1.
 - **Ruído:** fontes perto do prédio (avenida, escola, LUSE, obra) e de que lado ficam.
-- **Caminhada:** minutos até o essencial contra a mediana do bairro. Praças e parques com tamanho (área do polígono) e movimento, quando houver dado. Crime fica fora até a resposta da SDS.
+- **Caminhada:** minutos até o essencial contra a mediana do bairro. Praças e parques com tamanho (área do polígono) e movimento, quando houver dado. Crime fica fora até a resposta da SDS. *(Superado em 18/11/2026: o hub incluiu "Segurança no bairro" com o compilado do Crime Brasil e a taxa por 1.000 moradores; ver D043 no EPOCH-TRACKER.)*
 - Linguagem: classificador direto ("acima, na média, abaixo do bairro") e, no detalhe, o que isso significa para a pessoa.
 
 ### Fase 4: cartões "investigar" no Entorno e na Rua
@@ -102,7 +102,7 @@ Teste feito no celular com anúncios reais do ZAP (Graças e Torre). Este arquiv
 
 - Street View e 3D fotorrealista do Google: custo, cota e termos levantados antes de qualquer chave.
 - Detecção de grande-angular e "proporção corrigida" como experimento.
-- Crime por bairro (depende do pedido LAI à SDS).
+- Crime por bairro (depende do pedido LAI à SDS). *(Superado em 18/11/2026: já está no Entorno; o pedido LAI segue para a base oficial.)*
 
 ## Regras que continuam valendo
 

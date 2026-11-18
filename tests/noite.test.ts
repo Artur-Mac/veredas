@@ -46,7 +46,20 @@ describe("frases", () => {
     expect(b.pergunta.length).toBeLessThanOrEqual(MAX_TEXTO_DA_PERGUNTA);
     expect(b.titulo).toMatch(/^(A via movimentada mais perto|Rua movimentada e som licenciado)\.$/);
     expect(b.nota).toContain("Sem medição de decibéis");
-    expect(b.nota).toContain("O aeroporto não entra");
+    // 18/11/2026 (hub): o aeroporto deixou de ficar de fora; sem o centro do prédio, ele não aparece.
+    expect(b.nota).not.toContain("aeroporto");
+  });
+  it("aeroporto (hub, 18/11/2026): com o centro do prédio, entra a pista ou a linha de pouso, sem decibéis", () => {
+    // Prédio sem via nem LUSE perto, 2 km além da cabeceira 18 no prolongamento da pista.
+    const b = ladoDoBarulho("cabanga", "1-1", [-34.93279, -8.096056])!;
+    expect(b.titulo).toBe("Aviões passando por cima.");
+    expect(b.frase).toMatch(/cabeceira 18/);
+    expect(b.pergunta).toMatch(/^Avião:/);
+    expect(b.pergunta.length).toBeLessThanOrEqual(MAX_TEXTO_DA_PERGUNTA);
+    expect(`${b.frase} ${b.nota}`).not.toMatch(/\bdB\b(?!\()/);
+    expect(b.nota).toContain("Sem medição de decibéis");
+    // Longe da pista e fora da linha de pouso: nada.
+    expect(ladoDoBarulho("cabanga", "1-1", [-34.88, -8.06])).toBeNull();
   });
   it("LUSE vigente: diz que a licença não dá horário nem volume", () => {
     const n = noiteDoBairro("gracas")!;

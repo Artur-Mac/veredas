@@ -1,9 +1,10 @@
 // A volta à noite e o lado do barulho (VE08): só redige o que scripts/dados/noite/rodar-noite.mjs calculou. Primeiro o que
 // muda para a pessoa (ponto, minutos, travessias, último ônibus; lado que dá para a via); os registros vêm depois.
-// Sem nota de segurança, sem decibéis, sem aeroporto (o plano oficial ainda não foi georreferenciado e conferido).
+// Sem nota de segurança, sem decibéis. O aeroporto entra pela pista do OpenStreetMap (hub, 18/11/2026), sem dB.
 import { z } from "zod";
 import { lerCamada } from "../camadas";
 import { ARQUIVOS_DA_NOITE, VERSAO_DA_NOITE } from "./noiteGerado";
+import { fraseDoAeroporto, relacaoComOAeroporto } from "./aeroporto";
 
 /** O arquivo de camada do bairro (fora do bundle, D036), ou null fora do piloto. */
 export const arquivoDaNoite = (bairro: string | null | undefined): string | null => (bairro ? ARQUIVOS_DA_NOITE[bairro] ?? null : null);
@@ -69,10 +70,29 @@ export function voltaANoite(bairro: string | null | undefined, predioId: string 
 }
 
 export type LadoDoBarulho = { titulo: string; frase: string; pergunta: string; nota: string };
-/** De que lado do prédio vem o barulho de via principal (≤ 80 m) e de local com LUSE vigente (≤ 150 m). */
-export function ladoDoBarulho(bairro: string | null | undefined, predioId: string | null | undefined): LadoDoBarulho | null {
+/**
+ * De que lado do prédio vem o barulho de via principal (≤ 80 m), de local com LUSE vigente (≤ 150 m) e, desde
+ * 18/11/2026, do aeroporto (até 3 km da pista ou sob a trajetória). O aeroporto só precisa do centro do prédio, então
+ * aparece também fora dos bairros com a camada da noite.
+ */
+export function ladoDoBarulho(
+  bairro: string | null | undefined,
+  predioId: string | null | undefined,
+  centro: readonly [number, number] | null = null,
+): LadoDoBarulho | null {
   const n = noiteDoBairro(bairro);
   const p = predioId ? n?.predios[predioId] : undefined;
+  let aero: ReturnType<typeof relacaoComOAeroporto> = null;
+  try {
+    aero = relacaoComOAeroporto(centro);
+  } catch {
+    aero = null;
+  }
+  const notaDoAeroporto = " Aeroporto: pista do OpenStreetMap e faixa de aproximação pelo Anexo 14 da ICAO; as curvas oficiais de ruído da ANAC ainda não estão no app.";
+  if ((!p || (!p.r && !p.s)) && aero) {
+    const f = fraseDoAeroporto(aero);
+    return { titulo: aero.trajetoria ? "Aviões passando por cima." : "O aeroporto por perto.", frase: f.frase, pergunta: f.pergunta, nota: `Sem medição de decibéis.${notaDoAeroporto}` };
+  }
   if (!p || (!p.r && !p.s)) return null;
   const partes: string[] = [];
   let pergunta = "";
@@ -86,6 +106,7 @@ export function ladoDoBarulho(bairro: string | null | undefined, predioId: strin
     partes.push(`A ${p.s.m} m, para o ${p.s.lado}, há um local com licença ambiental de uso sonoro (LUSE) vigente; a licença não diz horário nem volume, então vale passar numa sexta ou num sábado à noite.`);
     if (!pergunta) pergunta = `Barulho: passar numa sexta ou sábado à noite e ouvir o lado ${p.s.lado}, onde há um local com licença de som a ${p.s.m} m.`;
   }
+  if (aero) partes.push(fraseDoAeroporto(aero).frase);
   const titulo = p.r && p.s ? "Rua movimentada e som licenciado." : p.r ? "A via movimentada mais perto." : "Som licenciado por perto.";
-  return { titulo, frase: partes.join(" "), pergunta, nota: "Sem medição de decibéis. Via principal do mapa (OpenStreetMap), partidas do GTFS fixado e LUSE do Licenciamento Ambiental da Prefeitura. O aeroporto não entra: o plano oficial de ruído ainda não foi georreferenciado e conferido." };
+  return { titulo, frase: partes.join(" "), pergunta, nota: `Sem medição de decibéis. Via principal do mapa (OpenStreetMap), partidas do GTFS fixado e LUSE do Licenciamento Ambiental da Prefeitura.${aero ? notaDoAeroporto : ""}` };
 }

@@ -10,7 +10,7 @@ import { createHash } from "node:crypto";
 import { copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { gzipSync } from "node:zlib";
-import { get } from "../../../docs/dados/infra/scripts/http.mjs";
+import { get } from "../http.mjs";
 import { classificarColeta, esquemaSnapshotDaFonte, VERSAO_DO_CONTRATO } from "../../../src/dados/observacao.ts";
 import { coletarDatastore } from "./coleta.mjs";
 import { ANALISADOR_DEFESA_CIVIL, normalizarDefesaCivil } from "./defesaCivil.mjs";

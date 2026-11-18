@@ -246,7 +246,7 @@ Distância em linha reta (haversine) do centro aproximado de cada bairro-alvo at
 
 ```bash
 export PATH="$HOME/.nvm/versions/node/v22.23.3/bin:$PATH"
-cd docs/dados/infra/scripts
+cd ignorar/dados-pipeline-2026-11-11/infra/scripts
 
 # Defesa Civil e GTFS (leem raw/, imprimem stdout)
 node validar-defesa-civil.mjs   # → JSON do alagamento (stdout)
