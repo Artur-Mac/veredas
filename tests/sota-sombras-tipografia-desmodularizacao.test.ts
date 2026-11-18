@@ -23,6 +23,8 @@ import { auditarTextoColadoCidadao } from "../src/dados/documentos/copilotoPreSi
 import { avaliarCaminhabilidadeEVidaNaRua } from "../src/dados/dossie/caminhabilidadeEVidaNaRua";
 import { VidaAPeNaQuadra } from "../src/componentes/visual/VidaAPeNaQuadra";
 import { SimuladorBolso15Segundos } from "../src/componentes/visual/SimuladorBolso15Segundos";
+import { construirLinhaUnificadaDoLote } from "../src/dados/dossie/linhaUnificadaDoLote";
+import { LinhaUnificadaDoLote } from "../src/componentes/visual/LinhaUnificadaDoLote";
 import { TemaDoApp } from "../src/tema/Tema";
 
 function listarTsxRecursivo(dir: string): string[] {
@@ -624,5 +626,71 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(txtAluguel).toContain("Garantia estimada");
     expect(REGEX_JARGON_CAMADA1.test(txtAluguel)).toBe(false);
     expect(/\bseguro\b/i.test(txtAluguel)).toBe(false);
+  });
+
+  it("constrói linha unificada cronológica do lote e edifício com ações práticas sem jargão", () => {
+    const linha = construirLinhaUnificadaDoLote({
+      edificio: {
+        id: "60461-120",
+        bairro: "boa-viagem",
+        logradouro: "AV BOA VIAGEM",
+        numero: "120",
+        dsqfl: "12345678901234",
+        nome: "Atlântico",
+        centro,
+        poligono,
+        unidades: 30,
+        tipologias: [{ area: 95, unidades: 30, iptuAnualMediano: 3200 }],
+        anoConstrucao: 2005,
+        pavimentos: 15,
+        ate4Pavimentos: false,
+        padrao: "Superior",
+        iptuAnual: { n: 30, p25: 2900, mediana: 3200, p75: 3500 },
+        itbi: {
+          transmissoes: 4,
+          desde: 2023,
+          ate: 2025,
+          valorUnidade: { n: 4, p25: 720_000, mediana: 780_000, p75: 840_000 },
+          porAno: [
+            [2023, 1],
+            [2025, 2],
+          ],
+        },
+        obras150m: { licencasDeObra: 1, relevantes24m: 1, demolicoes24m: 0, recentes: [] },
+      },
+      obrasProximas: {
+        licencasDeObra: 1,
+        relevantes24m: 1,
+        demolicoes24m: 0,
+        recentes: [
+          {
+            categoria: "construcao",
+            descricao: "ALVARA DE CONSTRUCAO INICIAL",
+            data: "2026-03",
+            situacao: "EMITIDA",
+            centro: [-34.8957, -8.1208],
+            distanciaM: 42,
+          },
+        ],
+      },
+      visaoRua: null,
+      spuAtivo: true,
+    });
+
+    expect(linha.eventos.length).toBeGreaterThanOrEqual(4);
+    expect(linha.eventos[0]!.ordemAno).toBeGreaterThanOrEqual(linha.eventos[1]!.ordemAno);
+    expect(linha.acoesConcretas.length).toBeGreaterThanOrEqual(2);
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(TemaDoApp, null, React.createElement(LinhaUnificadaDoLote, { linha })),
+      );
+    });
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("O que fazer com isso");
+    expect(txt).toContain("Obra nova licenciada");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    expect(/\bseguro\b/i.test(txt)).toBe(false);
   });
 });

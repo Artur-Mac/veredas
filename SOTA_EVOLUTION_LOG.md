@@ -30,4 +30,8 @@ Branch: `feat/vereda-visual-power-overhaul`
 - [x] **S10**: On-device document paste red-flag scanner (`auditarTextoColadoCidadao` in `copilotoPreSinal.ts` reusing `auditorDocumental.ts`) + interactive 3-state pre-signal package (`faltando` / `recebido` / `vencido`) in `CopilotoDocumentosPreSinal.tsx`.
 - [x] **S11**: Explainable Walkability `0–10` (`R7`), explicit neighborhood percentiles (`R14`, `R15`), and Street Life proxy (`R49`) in `src/dados/dossie/caminhabilidadeEVidaNaRua.ts` + `VidaAPeNaQuadra.tsx`, wired cleanly into `dossie.tsx` Entorno tab.
 - [x] **S12**: 15-second instant pocket cost preview (`Ownwell R47`) on `Explorar` (`SimuladorBolso15Segundos.tsx`, reusing official Recife ITBI + Price calculators) + Minimum Sample & Zero-Sync Privacy Clause (`R48`) on `src/app/sobre-os-dados.tsx`.
-- [ ] **S13**: Unified Chronological Lot & Building Timeline (`R20`, `R25`) + concrete next actions (`R41`, `R45`) + final full-suite & live Metro verification.
+- [x] **S13**: Unified Chronological Lot & Building Timeline (`src/dados/dossie/linhaUnificadaDoLote.ts` + `LinhaUnificadaDoLote.tsx`, merging construction +15a/+25a arithmetic, ITBI porAno, 150m licensed works, street Defesa Civil history & `"O que fazer com isso"` actions; full verification `98/98` suites `2027/2027` tests + Android/Web Metro `200`).
+- [ ] **S14**: Declared vs Cadastral Area Audit (`R39` Gridics) in `radarVistaELote.ts` + Pure Theme Tokens (`cor(...)`) in `MapaDoLote.tsx` (eliminating `#...` hex literals).
+- [ ] **S15**: 1-Tap Floor-Band Quick Presets (`Baixo · Médio · Alto`, `R12` First Street) on `CanvasSolSombraBrisa25D`.
+- [ ] **S16**: Zero-server Hash-Link Private Share (`#s=...`, `R24` HomeWiseDocs) in `ExportarResumoExecutivo`.
+- [ ] **S17**: Schema & Layer Coverage Version Matrix (`R18`, `R19`, `R43`) on `sobre-os-dados.tsx` + final full-suite & live Metro verification.

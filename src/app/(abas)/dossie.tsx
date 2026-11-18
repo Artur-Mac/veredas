@@ -79,6 +79,8 @@ import { ExportarResumoExecutivo } from "../../componentes/visual/ExportarResumo
 import { classificarNivelSossegoPorDbInterno } from "../../dados/acustica/decomporSossego";
 import { avaliarCaminhabilidadeEVidaNaRua } from "../../dados/dossie/caminhabilidadeEVidaNaRua";
 import { VidaAPeNaQuadra } from "../../componentes/visual/VidaAPeNaQuadra";
+import { construirLinhaUnificadaDoLote } from "../../dados/dossie/linhaUnificadaDoLote";
+import { LinhaUnificadaDoLote } from "../../componentes/visual/LinhaUnificadaDoLote";
 
 /** Recuo do painel (`.ds-panel`, padding 20 18): a posição de uma seção na tela soma este recuo ao topo do painel. */
 const RECUO_DO_PAINEL = 20;
@@ -435,6 +437,17 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
       vinculoConfirmado,
       visao,
     ],
+  );
+
+  const linhaUnificada = useMemo(
+    () =>
+      construirLinhaUnificadaDoLote({
+        edificio: predio,
+        obrasProximas: visao.obras,
+        visaoRua: visao.rua ?? null,
+        spuAtivo: Boolean(partesDeCusto.alertaMarinha),
+      }),
+    [partesDeCusto, predio, visao],
   );
 
   const cartoesCidadao = useMemo(
@@ -937,6 +950,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
               </View>
             ) : null}
             {aba === "destaques" ? <LinkComSeta rotulo="Orçamento e cenários" onPress={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "orcamento" } })} /> : null}
+            {aba === "edificio" ? <LinhaUnificadaDoLote linha={linhaUnificada} /> : null}
             {aba === "edificio" ? <SolNasFachadas analise={analise} predio={predio} aoLevarParaVisita={levarParaVisita} /> : null}
             {aba === "edificio" ? <LadoDoBarulho bairro={predio?.bairro ?? null} predioId={predio?.id ?? null} aoLevarParaVisita={levarParaVisita} /> : null}
             {aba === "edificio" ? <LinhaDoTempoEstrutural analise={analise} aoRegistrar={() => router.push({ pathname: "/detalhes", params: { id: analise.id, secao: "edificio" } })} /> : null}
