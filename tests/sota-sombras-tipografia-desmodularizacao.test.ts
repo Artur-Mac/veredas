@@ -2134,4 +2134,36 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });
+
+  it("exibe seção explícita sem leitura quando anoConstrucao ausente em RelogioDoPredio (NeighborhoodScout R26 / Regrid R17) em S47", () => {
+    let arvoreOculta!: TestRenderer.ReactTestRenderer;
+    let arvoreVisivel!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvoreOculta = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(RelogioDoPredio, { anoConstrucao: null, unidades: null, pavimentos: null }),
+        ),
+      );
+      arvoreVisivel = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(RelogioDoPredio, {
+            anoConstrucao: null,
+            unidades: null,
+            pavimentos: null,
+            exibirSemLeitura: true,
+          }),
+        ),
+      );
+    });
+    expect(arvoreOculta.toJSON()).toBeNull();
+    expect(arvoreVisivel.root.find((n) => n.props.testID === "relogio-do-predio-vazio")).toBeDefined();
+    const txt = extrairTextos(arvoreVisivel.toJSON()).join("\n");
+    expect(txt).toContain("Sem leitura publicada de ano de entrega");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+  });
 });

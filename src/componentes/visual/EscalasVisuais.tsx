@@ -162,13 +162,36 @@ export function RelogioDoPredio({
   anoConstrucao,
   unidades,
   pavimentos,
+  exibirSemLeitura = false,
 }: {
   anoConstrucao: number | null;
   unidades: number | null;
   pavimentos: number | null;
+  exibirSemLeitura?: boolean;
 }) {
   const { cor } = useTema();
-  if (!anoConstrucao) return null;
+  if (!anoConstrucao) {
+    if (!exibirSemLeitura) return null;
+    return (
+      <View
+        testID="relogio-do-predio-vazio"
+        style={[
+          styles.cartao,
+          { backgroundColor: cor("cor-superficie"), borderColor: cor("cor-linha-forte") },
+        ]}
+      >
+        <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.kicker}>
+          Relógio do prédio e ciclo de obras
+        </Texto>
+        <Texto tipo="secao" style={styles.titulo}>
+          Sem leitura publicada de ano de entrega
+        </Texto>
+        <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.subTexto}>
+          Confirme o edifício no cadastro do Recife para calcular a idade construtiva e as janelas de revisão (+15 anos fachada, +25 anos prumadas).
+        </Texto>
+      </View>
+    );
+  }
   const anoAtual = new Date().getFullYear();
   const idade = Math.max(0, anoAtual - anoConstrucao);
   const pctVida = Math.max(6, Math.min(96, (idade / 50) * 100));

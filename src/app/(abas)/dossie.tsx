@@ -845,6 +845,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                   anoConstrucao={predio?.anoConstrucao ?? null}
                   unidades={predio?.unidades ?? null}
                   pavimentos={predio?.pavimentos ?? null}
+                  exibirSemLeitura
                 />
                 <CopilotoDocumentosPreSinal
                   nomeImovel={analise.nome}
