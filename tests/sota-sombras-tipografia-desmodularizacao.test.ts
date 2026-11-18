@@ -2661,4 +2661,23 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(explorarSrc).not.toMatch(/\bcomAlfa\b/);
     expect((explorarSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(4);
   });
+
+  it("auditoria global de fios garante zero divisórias subpixel 0.5 em todo src/ (S64)", () => {
+    const srcRoot = join(__dirname, "..", "src");
+    const arqs: string[] = [];
+    const empilhar = (dir: string) => {
+      for (const nome of readdirSync(dir)) {
+        const p = join(dir, nome);
+        if (statSync(p).isDirectory()) empilhar(p);
+        else if (p.endsWith(".tsx")) arqs.push(p);
+      }
+    };
+    empilhar(srcRoot);
+    expect(arqs.length).toBeGreaterThan(50);
+
+    for (const p of arqs) {
+      const s = readFileSync(p, "utf8");
+      expect(s).not.toMatch(/border(?:Top|Bottom|Left|Right)?Width:\s*0\.5\b/);
+    }
+  });
 });

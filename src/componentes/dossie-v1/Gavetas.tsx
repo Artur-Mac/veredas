@@ -39,7 +39,7 @@ function LinhaDeValor({ rotulo, valor, apoio, aConfirmar = false }: { rotulo: st
         justifyContent: "space-between",
         gap: 12,
         paddingVertical: 9,
-        borderBottomWidth: 0.5,
+        borderBottomWidth: 1,
         borderBottomColor: cor("cor-linha"),
       }}
     >
@@ -188,7 +188,7 @@ export function GavetaDoCadastro({ visivel, aoFechar, visao, aoAbrirFonte }: Pro
                 {f.detalhe ? <Nota>{f.detalhe}</Nota> : null}
               </>
             );
-            const estilo = { paddingVertical: 10, borderBottomWidth: 0.5, borderBottomColor: cor("cor-linha"), gap: 4 } as const;
+            const estilo = { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: cor("cor-linha"), gap: 4 } as const;
             return pedido ? (
               <Pressionavel
                 key={f.id}

@@ -7,7 +7,7 @@ import { chaveDoFato } from "../../estado/Aparelho";
 import { useCarregando, useEstadoDoFato, useLoteConfirmado } from "../../estado/fatos";
 import { useSessao } from "../../estado/Sessao";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { ESPACO, RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 import { Botao, LinkDeLinha } from "../Botao";
 import { Cartao, CorpoDoCartao } from "../Cartao";
 import { PilulaIlustrativo } from "../Etiquetas";
@@ -208,7 +208,7 @@ export function CartaoVisita({ dossie, aoAbrirFato }: { dossie: Dossie; aoAbrirF
           const linha = { flexDirection: "row" as const, gap: ESPACO[3], alignItems: "center" as const, minHeight: 48, paddingVertical: ESPACO[2] };
           const origem = item.origem[0];
           return (
-            <View key={item.texto} style={i > 0 ? { borderTopWidth: 0.5, borderTopColor: comAlfa(cor("cor-texto"), 0.18) } : undefined}>
+            <View key={item.texto} style={i > 0 ? { borderTopWidth: 1, borderTopColor: cor("cor-linha") } : undefined}>
               {origem ? (
                 <Pressionavel role="button" onPress={() => aoAbrirFato(origem)} style={[linha, { borderRadius: RAIO.quadrado }]}>
                   {corpo}

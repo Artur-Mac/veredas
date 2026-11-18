@@ -56,7 +56,7 @@ function LinhaDeDados({ rotulo, valor, mono = false }: { rotulo: string; valor: 
     <View
       accessible
       accessibilityLabel={`${rotulo}: ${valor}`}
-      style={{ paddingVertical: ESPACO[3] - 1, gap: 2, borderBottomWidth: 0.5, borderBottomColor: cor("cor-linha") }}
+      style={{ paddingVertical: ESPACO[3] - 1, gap: 2, borderBottomWidth: 1, borderBottomColor: cor("cor-linha") }}
     >
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 16 }}>
         {rotulo}
