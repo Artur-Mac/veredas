@@ -49,11 +49,35 @@ export type CenaDoLote = {
   metrosPorPixel: number;
   /** Régua: comprimento em pixels e rótulo ("50 m"). */
   regua: { pixels: number; rotulo: string };
+  /** Origem do plano local (o centro do prédio, [lon, lat]) e o meio do quadro nesse plano, em metros: com
+   * `metrosPorPixel`, a conta inteira de [lon, lat] para o desenho (ver `paraDesenhoDoQuadro` e `caixaDoQuadro`). */
+  origem: Coordenada;
+  meio: [number, number];
+};
+
+/** Opções do enquadramento. Os padrões são os de antes do mapa-base (2.5D e chamadas antigas). */
+export type OpcoesDaCena = {
+  /** Vão mínimo do quadro, em metros (padrão 80). A gaveta usa `VAO_MINIMO_DA_GAVETA_M`. */
+  vaoMinimoM?: number;
+  /** Altura mínima do quadro, em metros (padrão: nenhuma além da proporção de vaoMinimoM). Ver VAO_MINIMO_VERTICAL_DA_GAVETA_M. */
+  vaoMinimoVerticalM?: number;
+  /** Quantos contornos de vizinhos, os mais perto primeiro; null: todos os do quadro (padrão 60). */
+  limiteDeVizinhos?: number | null;
 };
 
 const ESCALAS_DA_REGUA_M = [10, 20, 25, 50, 100, 200];
 /** O desenho nunca mostra menos que isto de largura, para um prédio isolado não aparecer gigante. */
 const VAO_MINIMO_M = 80;
+/**
+ * A gaveta "Mapa do lote" abre em ~220 m com o mapa-base (proposta aprovada, 18/11/2026): rua, quadra e vizinhança à
+ * vista, o lote ainda reconhecível; o zoom (até 4×, ~55 m) chega ao lote.
+ */
+export const VAO_MINIMO_DA_GAVETA_M = 220;
+/**
+ * Altura mínima do quadro da gaveta. No celular (~340 × 280 px) os 220 m de largura já dão ~180 m de altura; num quadro
+ * largo (1280 px, ~600 × 280) dariam só ~100 m e a rua do imóvel saía do quadro (fotos da rodada 1, 18/11/2026).
+ */
+export const VAO_MINIMO_VERTICAL_DA_GAVETA_M = 160;
 const MARGEM_RELATIVA = 0.22;
 /** Prédios vizinhos só entram quando o centro cai a esta distância do quadro desenhado. */
 const FOLGA_DOS_VIZINHOS_M = 30;
@@ -69,6 +93,7 @@ function vizinhosNoQuadro(
   vizinhos: readonly Edificio[],
   projetar: (ponto: Coordenada) => [number, number],
   quadro: { meioX: number; meioY: number; metadeX: number; metadeY: number },
+  limite: number | null = MAX_VIZINHOS,
 ): Edificio[] {
   const dentro: { v: Edificio; distancia: number }[] = [];
   for (const v of vizinhos) {
@@ -77,10 +102,8 @@ function vizinhosNoQuadro(
     if (Math.abs(cx - quadro.meioX) > quadro.metadeX || Math.abs(cy - quadro.meioY) > quadro.metadeY) continue;
     dentro.push({ v, distancia: Math.hypot(cx, cy) });
   }
-  return dentro
-    .sort((a, b) => a.distancia - b.distancia)
-    .slice(0, MAX_VIZINHOS)
-    .map((d) => d.v);
+  const ordenados = dentro.sort((a, b) => a.distancia - b.distancia);
+  return (limite === null ? ordenados : ordenados.slice(0, limite)).map((d) => d.v);
 }
 
 export function reguaDe(metrosPorPixel: number, larguraMaxima: number): CenaDoLote["regua"] {
@@ -89,6 +112,34 @@ export function reguaDe(metrosPorPixel: number, larguraMaxima: number): CenaDoLo
     if (metros / metrosPorPixel <= larguraMaxima) escolhida = metros;
   }
   return { pixels: escolhida / metrosPorPixel, rotulo: `${escolhida} m` };
+}
+
+type QuadroDaCena = Pick<CenaDoLote, "largura" | "altura" | "metrosPorPixel" | "origem" | "meio">;
+
+/**
+ * A conta inteira de [lon, lat] para o desenho da cena (escala 1): a projeção do plano local (`projetorDoPlano` em
+ * torno de `origem`) seguida dos pixels do quadro. Linear em lon e lat, como pede o fundo do mapa (useFundoDoMapa).
+ */
+export function paraDesenhoDoQuadro(cena: QuadroDaCena): (ponto: Coordenada) => [number, number] {
+  const projetar = projetorDoPlano(cena.origem);
+  const { largura, altura, metrosPorPixel } = cena;
+  const [meioX, meioY] = cena.meio;
+  return (ponto) => {
+    const [x, y] = projetar(ponto);
+    return [largura / 2 + (x - meioX) / metrosPorPixel, altura / 2 + (y - meioY) / metrosPorPixel];
+  };
+}
+
+/** Caixa [oeste, sul, leste, norte], em graus, do quadro inteiro da cena na escala 1 (o inverso de `paraDesenhoDoQuadro`). */
+export function caixaDoQuadro(cena: QuadroDaCena): [number, number, number, number] {
+  const [lon0, lat0] = cena.origem;
+  const cosseno = Math.cos((lat0 * Math.PI) / 180);
+  const [meioX, meioY] = cena.meio;
+  const metadeX = (cena.largura / 2) * cena.metrosPorPixel;
+  const metadeY = (cena.altura / 2) * cena.metrosPorPixel;
+  const lonDe = (x: number) => lon0 + x / (METROS_POR_GRAU * cosseno);
+  const latDe = (y: number) => lat0 - y / METROS_POR_GRAU;
+  return [lonDe(meioX - metadeX), latDe(meioY + metadeY), lonDe(meioX + metadeX), latDe(meioY - metadeY)];
 }
 
 /**
@@ -101,7 +152,9 @@ export function montarCenaDoLote(
   vizinhos: readonly Edificio[],
   largura: number,
   altura: number,
+  opcoes: OpcoesDaCena = {},
 ): CenaDoLote {
+  const vaoMinimo = opcoes.vaoMinimoM ?? VAO_MINIMO_M;
   const projetar = projetorDoPlano(predio.centro);
   const lotePlano = poligonoDoLote(predio);
   const pontosDeObra = obras.map((o) => projetar(o.centro));
@@ -113,8 +166,8 @@ export function montarCenaDoLote(
   const maxX = Math.max(...xs);
   const minY = Math.min(...ys);
   const maxY = Math.max(...ys);
-  const vaoX = Math.max((maxX - minX) * (1 + 2 * MARGEM_RELATIVA), VAO_MINIMO_M);
-  const vaoY = Math.max((maxY - minY) * (1 + 2 * MARGEM_RELATIVA), (VAO_MINIMO_M * altura) / largura);
+  const vaoX = Math.max((maxX - minX) * (1 + 2 * MARGEM_RELATIVA), vaoMinimo);
+  const vaoY = Math.max((maxY - minY) * (1 + 2 * MARGEM_RELATIVA), (vaoMinimo * altura) / largura, opcoes.vaoMinimoVerticalM ?? 0);
   const metrosPorPixel = Math.max(vaoX / largura, vaoY / altura);
   const meioX = (minX + maxX) / 2;
   const meioY = (minY + maxY) / 2;
@@ -127,7 +180,7 @@ export function montarCenaDoLote(
 
   const metadeX = (largura / 2) * metrosPorPixel + FOLGA_DOS_VIZINHOS_M;
   const metadeY = (altura / 2) * metrosPorPixel + FOLGA_DOS_VIZINHOS_M;
-  const contornos = vizinhosNoQuadro(predio, vizinhos, projetar, { meioX, meioY, metadeX, metadeY }).map((v) =>
+  const contornos = vizinhosNoQuadro(predio, vizinhos, projetar, { meioX, meioY, metadeX, metadeY }, opcoes.limiteDeVizinhos === undefined ? MAX_VIZINHOS : opcoes.limiteDeVizinhos).map((v) =>
     caminhoDe(v.poligono!.map((p) => projetar(p))),
   );
 
@@ -143,6 +196,8 @@ export function montarCenaDoLote(
     }),
     metrosPorPixel,
     regua: reguaDe(metrosPorPixel, largura * 0.35),
+    origem: predio.centro,
+    meio: [meioX, meioY],
   };
 }
 
@@ -189,11 +244,13 @@ export function montarCenaComPontosExtras(
   altura: number,
   pontosExtras: readonly EntradaPontoExtraMapa[],
   distanciaMaxEnquadramentoM = 1300,
+  opcoes: OpcoesDaCena = {},
 ): {
   cena: CenaDoLote;
   pontos: PontoExtraCena[];
   foraDoQuadro: (EntradaPontoExtraMapa & { direcao: string })[];
 } {
+  const vaoMinimo = opcoes.vaoMinimoM ?? VAO_MINIMO_M;
   const projetar = projetorDoPlano(predio.centro);
   const lotePlano = poligonoDoLote(predio);
   const pontosDeObra = obras.map((o) => projetar(o.centro));
@@ -222,8 +279,8 @@ export function montarCenaComPontosExtras(
   const maxX = Math.max(...xs);
   const minY = Math.min(...ys);
   const maxY = Math.max(...ys);
-  const vaoX = Math.max((maxX - minX) * (1 + 2 * MARGEM_RELATIVA), VAO_MINIMO_M);
-  const vaoY = Math.max((maxY - minY) * (1 + 2 * MARGEM_RELATIVA), (VAO_MINIMO_M * altura) / largura);
+  const vaoX = Math.max((maxX - minX) * (1 + 2 * MARGEM_RELATIVA), vaoMinimo);
+  const vaoY = Math.max((maxY - minY) * (1 + 2 * MARGEM_RELATIVA), (vaoMinimo * altura) / largura);
   const metrosPorPixel = Math.max(vaoX / largura, vaoY / altura);
   const meioX = (minX + maxX) / 2;
   const meioY = (minY + maxY) / 2;
@@ -236,7 +293,7 @@ export function montarCenaComPontosExtras(
 
   const metadeX = (largura / 2) * metrosPorPixel + FOLGA_DOS_VIZINHOS_M;
   const metadeY = (altura / 2) * metrosPorPixel + FOLGA_DOS_VIZINHOS_M;
-  const contornos = vizinhosNoQuadro(predio, vizinhos, projetar, { meioX, meioY, metadeX, metadeY }).map((v) =>
+  const contornos = vizinhosNoQuadro(predio, vizinhos, projetar, { meioX, meioY, metadeX, metadeY }, opcoes.limiteDeVizinhos === undefined ? MAX_VIZINHOS : opcoes.limiteDeVizinhos).map((v) =>
     caminhoDe(v.poligono!.map((p) => projetar(p))),
   );
 
@@ -252,6 +309,8 @@ export function montarCenaComPontosExtras(
     }),
     metrosPorPixel,
     regua: reguaDe(metrosPorPixel, largura * 0.35),
+    origem: predio.centro,
+    meio: [meioX, meioY],
   };
 
   const pontos: PontoExtraCena[] = dentro.map(({ item, plano }) => {

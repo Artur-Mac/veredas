@@ -1,24 +1,32 @@
 import { useMemo, useRef, useState } from "react";
 import { View, type GestureResponderEvent } from "react-native";
-import Svg, { Circle, G, Line, Path, Text as TextoSvg } from "react-native-svg";
+import Svg, { Circle, G, Line, Path, Rect, Text as TextoSvg } from "react-native-svg";
 import type { Edificio, Obra, ObrasProximas } from "../../dados/contratos";
 import { HORARIOS_DO_MAPA } from "../../dados/dossie/solESombra";
 import { useTema } from "../../tema/Tema";
 import { ESPACO, RAIO, comAlfa, type TokenDeCor } from "../../tema/tokens";
 import { GradeArquitetonica } from "../GradeArquitetonica";
+import { AvisoDoFundoDoMapa } from "../mapa/AvisoDoFundoDoMapa";
+import { CreditoDaBase, FundoDoMapa, SeloDoBairro } from "../mapa/FundoDoMapa";
+import { descreverFundoDoMapa } from "../mapa/fundoDoMapaCena";
+import { useFundoDoMapa } from "../mapa/useFundoDoMapa";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import {
+  caixaDoQuadro,
   montarCena25DDoLote,
   montarCenaComPontosExtras,
   montarCenaDoLote,
+  paraDesenhoDoQuadro,
   reguaDe,
+  VAO_MINIMO_DA_GAVETA_M,
+  VAO_MINIMO_VERTICAL_DA_GAVETA_M,
   type CategoriaPontoExtra,
   type EntradaPontoExtraMapa,
   type PontoExtraCena,
 } from "./mapa";
 import {
-  ESTADO_INICIAL, afastar, aproximar, arrastar, naTela, recentrar, tocarObra, transformacao, trocarModo, visivelNoQuadro,
+  ESTADO_INICIAL, afastar, aproximar, arrastar, deslocamentoDoZoom, naTela, recentrar, tocarObra, transformacao, trocarModo, visivelNoQuadro,
   ZOOMS, type EstadoDoMapa, type ModoDoMapa,
 } from "./mapaInterativo";
 import { categoriaDaObra, distanciaDaObra, mesDaObra, textoDaLicenca } from "./textos";
@@ -47,6 +55,10 @@ function formatarDistanciaCurta(m: number): string {
 }
 
 const ALTURA = 280;
+/** Retângulos ocupados pelos controles por cima do desenho, em px da tela (os rótulos do fundo desviam deles). */
+const ALTURA_DOS_BOTOES = 8 + 44 * 3 + 6 * 2 + 4;
+const LARGURA_DO_CREDITO = 172;
+const MARCA_DO_FUNDO = { "data-fundo-do-mapa": "1" } as object;
 const LARGURA_ANTES_DA_MEDIDA = 320;
 
 /** 15/11/2026: o seletor volta a aparecer; o volume é estimado (altura do cadastro sobre o contorno do lote). */
@@ -170,12 +182,13 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
   const cenaComExtras = useMemo(
     () =>
       pontosExtras.length > 0 && modo === "planta"
-        ? montarCenaComPontosExtras(predio, obras, vizinhos, largura, ALTURA, extrasFiltrados)
+        ? montarCenaComPontosExtras(predio, obras, vizinhos, largura, ALTURA, extrasFiltrados, undefined, { limiteDeVizinhos: null })
         : null,
     [predio, obras, vizinhos, largura, pontosExtras.length, modo, extrasFiltrados],
   );
   const cenaPlanta = useMemo(
-    () => cenaComExtras?.cena ?? montarCenaDoLote(predio, obras, vizinhos, largura, ALTURA),
+    // 18/11/2026: a planta abre em ~220 m e desenha todos os vizinhos do quadro (o limite de 60 fica só no 2.5D).
+    () => cenaComExtras?.cena ?? montarCenaDoLote(predio, obras, vizinhos, largura, ALTURA, { vaoMinimoM: VAO_MINIMO_DA_GAVETA_M, vaoMinimoVerticalM: VAO_MINIMO_VERTICAL_DA_GAVETA_M, limiteDeVizinhos: null }),
     [cenaComExtras, predio, obras, vizinhos, largura],
   );
   const cena25d = useMemo(
@@ -186,6 +199,39 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
   const pontosNoMapa = useMemo(() => cenaComExtras?.pontos ?? [], [cenaComExtras]);
   const foraDoQuadro = cenaComExtras?.foraDoQuadro ?? [];
   const regua = reguaDe(cena.metrosPorPixel / estado.zoom, largura * 0.35);
+
+  // Fundo do mapa (mapa-base, 18/11/2026): só na planta. No volume 2.5D o gancho fica desligado e o mapa é o de antes.
+  const paraDesenho = useMemo(() => paraDesenhoDoQuadro(cenaPlanta), [cenaPlanta]);
+  const caixa = useMemo(() => caixaDoQuadro(cenaPlanta), [cenaPlanta]);
+  // O deslocamento do zoom com foco no pino, não o do arraste: a cena do fundo não é remontada a cada movimento.
+  const deslocamento = useMemo(
+    () => deslocamentoDoZoom(estado.zoom, cenaPlanta.largura, cenaPlanta.altura, cenaPlanta.pino),
+    [estado.zoom, cenaPlanta],
+  );
+  const reguaNoFundo = reguaDe(cenaPlanta.metrosPorPixel / estado.zoom, largura * 0.35);
+  const seloEstimado = 20 + (predio.bairro.length + 2) * 8.5;
+  const obstaculos: [number, number, number, number][] = [
+    [0, 0, 8 + seloEstimado, 8 + 46],
+    // Os botões de zoom e, com zoom, o "Recentrar" (mais largo).
+    [largura - 8 - (estado.zoom > 1 ? 100 : 52), 0, largura, ALTURA_DOS_BOTOES],
+    [0, ALTURA - 40, 12 + Math.max(reguaNoFundo.pixels, 40) + 12, ALTURA],
+    [largura - LARGURA_DO_CREDITO, ALTURA - 22, largura, ALTURA],
+    // As obras numeradas ficam por cima do desenho: os nomes de rua desviam delas (na vista sem arraste).
+    ...cenaPlanta.obras.map((o): [number, number, number, number] => {
+      const [x, y] = naTela({ ...estado, dx: deslocamento[0], dy: deslocamento[1] }, o.x, o.y, cenaPlanta.largura, cenaPlanta.altura);
+      return [x - 12, y - 12, x + 12, y + 12];
+    }),
+  ];
+  const fundo = useFundoDoMapa({
+    bairro: predio.bairro,
+    imovel: { centro: predio.centro, codigoDoLogradouro: codigoDoLogradouro(predio.id) },
+    quadro: { largura: cenaPlanta.largura, altura: cenaPlanta.altura, paraDesenho, zoom: estado.zoom, deslocamento, obstaculos },
+    caixa,
+    ativo: modo === "planta",
+  });
+  const cenaDoFundo = !cena25d && fundo.estado === "pronta" && fundo.cena?.temDado ? fundo.cena : null;
+  const loteNoFundo = Boolean(cenaDoFundo?.camadas.loteDoImovel);
+  const vizinhosJuntos = useMemo(() => [...new Set(cenaPlanta.vizinhos)].join(" "), [cenaPlanta]);
 
   const pontoExtraTocado = extraTocadoId ? pontosNoMapa.find((p) => p.id === extraTocadoId) ?? null : null;
 
@@ -209,7 +255,8 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
   const descricao =
     `Mapa do lote do prédio${cena25d ? ", volume estimado com sombra projetada" : ", planta cadastral"}` +
     (obras.length > 0 ? ` e ${obras.length} ${obras.length === 1 ? "obra licenciada" : "obras licenciadas"} como pontos numerados; toque num ponto para ver a distância e a licença.` : ", sem obras licenciadas nos últimos 24 meses.") +
-    ` Zoom ${String(estado.zoom).replace(".", ",")} vezes. Régua de ${regua.rotulo}.`;
+    ` Zoom ${String(estado.zoom).replace(".", ",")} vezes. Régua de ${regua.rotulo}.` +
+    (cenaDoFundo ? ` ${descreverFundoDoMapa(cenaDoFundo)}` : "");
   const tela = (x: number, y: number) => naTela(estado, x, y, largura, ALTURA);
   const comZoom = estado.zoom > 1 || estado.dx !== 0 || estado.dy !== 0;
 
@@ -315,10 +362,17 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
           backgroundColor: cor("cor-azul-cadastral-suave"),
         }}
       >
-        <GradeArquitetonica />
+        {cenaDoFundo ? null : <GradeArquitetonica />}
         <View accessible role="img" accessibilityLabel={descricao} pointerEvents="none" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}>
           <Svg width={cena.largura} height={cena.altura} viewBox={`0 0 ${cena.largura} ${cena.altura}`}>
             <G transform={transformacao(estado, cena.largura, cena.altura)}>
+              {/* O fundo (ruas, quadras, lotes, água) é o primeiro filho do grupo de zoom: tudo o mais fica por cima. */}
+              {cenaDoFundo ? (
+                // A marca serve ao roteiro de capturas (conta os elementos do fundo); no nativo é ignorada.
+                <G {...MARCA_DO_FUNDO}>
+                  <FundoDoMapa cena={cenaDoFundo} />
+                </G>
+              ) : null}
               {cena25d ? (
                 <>
                   {/* 1. Sombras projetadas no chão por todos os edifícios */}
@@ -355,11 +409,13 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                 </>
               ) : (
                 <>
-                  {/* Dois prédios no mesmo lote têm o mesmo contorno: desenha uma vez (e a chave fica única). */}
-                  {[...new Set(cenaPlanta.vizinhos)].map((d) => (
-                    <Path key={d} d={d} fill={azul} fillOpacity={0.05} stroke={azul} strokeOpacity={0.35} strokeWidth={1 / estado.zoom} strokeDasharray="4 3" strokeLinejoin="round" />
-                  ))}
-                  {cenaPlanta.lote ? <Path d={cenaPlanta.lote} fill={azul} fillOpacity={0.22} stroke={azul} strokeWidth={2.5 / estado.zoom} strokeLinejoin="round" /> : null}
+                  {/* Sem o fundo, os prédios do índice no quadro numa forma só (dois no mesmo lote: o contorno entra uma vez).
+                      Com o fundo, os lotes vizinhos (inclusive dos bairros ao lado) já vêm dele. */}
+                  {!cenaDoFundo && vizinhosJuntos ? (
+                    <Path d={vizinhosJuntos} fill={azul} fillOpacity={0.05} stroke={azul} strokeOpacity={0.35} strokeWidth={1 / estado.zoom} strokeDasharray="4 3" strokeLinejoin="round" />
+                  ) : null}
+                  {/* O lote do imóvel vem do fundo quando a base o acha no centro do prédio; senão, o polígono do índice. */}
+                  {cenaPlanta.lote && !loteNoFundo ? <Path d={cenaPlanta.lote} fill={azul} fillOpacity={0.22} stroke={azul} strokeWidth={2.5 / estado.zoom} strokeLinejoin="round" /> : null}
                 </>
               )}
             </G>
@@ -428,6 +484,9 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
               </G>
             ) : null}
             <G>
+              {cenaDoFundo ? (
+                <Rect x={6} y={cena.altura - 34} width={Math.max(regua.pixels, 34) + 12} height={28} rx={5} fill={cor("cor-superficie")} fillOpacity={0.9} />
+              ) : null}
               <Line x1={12} y1={cena.altura - 14} x2={12 + regua.pixels} y2={cena.altura - 14} stroke={textoCor} strokeWidth={2} />
               <Line x1={12} y1={cena.altura - 18} x2={12} y2={cena.altura - 10} stroke={textoCor} strokeWidth={2} />
               <Line x1={12 + regua.pixels} y1={cena.altura - 18} x2={12 + regua.pixels} y2={cena.altura - 10} stroke={textoCor} strokeWidth={2} />
@@ -478,12 +537,15 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
             </Pressionavel>
           );
         })}
+        {cenaDoFundo?.selo ? <SeloDoBairro nome={cenaDoFundo.selo} style={{ position: "absolute", top: 8, left: 8 }} /> : null}
+        {cenaDoFundo ? <CreditoDaBase style={{ position: "absolute", right: 4, bottom: 4 }} /> : null}
         <View style={{ position: "absolute", top: 8, right: 8, gap: 6 }}>
           <BotaoDoMapa rotulo="+" acessivel="Aproximar o mapa" onPress={() => setEstado((e) => aproximar(e, largura, ALTURA, cena.pino))} desligado={estado.zoom >= ZOOMS[ZOOMS.length - 1]!} />
           <BotaoDoMapa rotulo="−" acessivel="Afastar o mapa" onPress={() => setEstado((e) => afastar(e, largura, ALTURA, cena.pino))} desligado={estado.zoom <= ZOOMS[0]!} />
           {comZoom ? <BotaoDoMapa rotulo="Recentrar" acessivel="Voltar ao enquadramento inicial" onPress={() => setEstado(recentrar)} /> : null}
         </View>
       </View>
+      <AvisoDoFundoDoMapa estado={fundo.estado} tentarDeNovo={fundo.tentarDeNovo} />
       {foraDoQuadro.length > 0 && modo === "planta" ? (
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
           {foraDoQuadro.map((f) => (
@@ -521,6 +583,12 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
       ) : null}
     </View>
   );
+}
+
+/** Código do logradouro: o prefixo do id do prédio no índice ("8001-216" → 8001), ou null. */
+function codigoDoLogradouro(id: string): number | null {
+  const n = Number(id.split("-")[0]);
+  return Number.isInteger(n) && n > 0 ? n : null;
 }
 
 /** Linha da lista de obras: bolinha numerada com a cor da categoria, tipo da obra e "mês · distância · situação". */
@@ -575,6 +643,13 @@ export function LegendaDoMapa({ categorias, temAndar = false, temSombra = false 
         <View style={{ width: 14, height: 10, borderRadius: 2, borderWidth: 2, borderColor: cor("cor-azul-cadastral"), backgroundColor: comAlfa(cor("cor-azul-cadastral"), 0.22) }} />
         <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
           Lote do prédio
+        </Texto>
+      </View>
+      {/* 18/11/2026: o azul claro do mapa (com ou sem o fundo) são os prédios do índice do Vereda. */}
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+        <View style={{ width: 14, height: 10, borderRadius: 2, borderWidth: 1, borderColor: comAlfa(cor("cor-azul-cadastral"), 0.45), backgroundColor: cor("cor-azul-cadastral-suave") }} />
+        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+          Prédios que o Vereda conhece
         </Texto>
       </View>
       {temSombra ? <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>

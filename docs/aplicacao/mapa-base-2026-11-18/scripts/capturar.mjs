@@ -9,6 +9,10 @@
 // Parâmetros: --base <url> (padrão http://localhost:8095), --fase antes|depois ou --saida <pasta>, --superficie a,b,
 // --caso a,b (ids de casos.json ou dos exemplos), --largura 375,360,1280, --tema claro|escuro (padrão claro; o app é
 // sempre claro, "escuro" só emula prefers-color-scheme para provar isso).
+// --esperar-fundo <ms> (padrão 20000; 0 desliga): nas superfícies que podem ter o fundo do mapa-base, espera o crédito
+// "Base: Prefeitura do Recife (ODbL)" aparecer na moldura (o fundo chega depois do mapa). capturas.json registra "fundo"
+// (true/false) e "elementosDoFundo" (elementos dentro de [data-fundo-do-mapa], ou null sem a marca).
+// --zoom max: antes da foto, toca "Aproximar o mapa" até o fim; o nome ganha "--zoom-max" (sem o parâmetro, nada muda).
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
@@ -32,6 +36,8 @@ const saida = path.resolve(args.saida || path.join(RAIZ_DA_NOITE, "telas", "noit
 const filtroSuperficie = lista(args.superficie);
 const filtroCaso = lista(args.caso);
 const temas = lista(args.tema) ?? ["claro"];
+const esperarFundoMs = args["esperar-fundo"] === undefined ? 20000 : Number(args["esperar-fundo"]);
+const zoomMaximo = args.zoom === "max";
 const dados = await lerCasos();
 const larguras = (lista(args.largura) ?? dados.larguras).map(Number);
 await mkdir(saida, { recursive: true });
@@ -76,6 +82,7 @@ const SUPERFICIES = [
     descricao: "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
     abrir: abrirGaveta,
     mapa: { escopo: '[role="dialog"]', minimo: 2 },
+    fundo: true,
   },
   {
     id: "gaveta-volume",
@@ -105,6 +112,7 @@ const SUPERFICIES = [
       await p.waitForFunction(marcarEscopo, { ancora: '[aria-label="Ocultar mapa do entorno"]', area: 20000 }, { timeout: 30000 });
     },
     mapa: { escopo: "[data-captura-escopo]", minimo: 2 },
+    fundo: true,
   },
   {
     id: "predio",
@@ -115,6 +123,7 @@ const SUPERFICIES = [
       await p.getByText("É este o prédio?").first().waitFor({ timeout: 120000 });
     },
     mapa: { minimo: 2 },
+    fundo: true,
   },
   {
     id: "miniatura-inicio",
@@ -192,6 +201,7 @@ const SUPERFICIES = [
       await p.goto(`${base}/exemplos/${id}/mapa`, { waitUntil: "load" });
     },
     mapa: { minimo: 5 },
+    fundo: true,
   },
   {
     id: "exemplo-topo",
@@ -201,6 +211,7 @@ const SUPERFICIES = [
       await p.goto(`${base}/exemplos/${id}`, { waitUntil: "load" });
     },
     mapa: { minimo: 5 },
+    fundo: true,
   },
   {
     id: "exemplo-caminhos",
@@ -211,6 +222,7 @@ const SUPERFICIES = [
       await p.getByRole("button", { name: /Adicionar destino/ }).first().click({ timeout: 120000 });
     },
     mapa: { minimo: 5 },
+    fundo: true,
   },
   {
     id: "exemplo-confirmar-lote",
@@ -220,6 +232,7 @@ const SUPERFICIES = [
       await p.goto(`${base}/exemplos/${id}/confirmar-lote`, { waitUntil: "load" });
     },
     mapa: { minimo: 5 },
+    fundo: true,
   },
 ];
 
@@ -259,14 +272,21 @@ try {
     const { contexto, pagina, registro } = await novoContexto(navegador, { base, largura: g.largura, analises, ativa: g.ativa, tema: g.tema });
     try {
       for (const s of g.sup) {
-        const nome = `${s.id}--${g.chave}--${g.largura}--${g.tema}`;
+        const nome = `${s.id}--${g.chave}--${g.largura}--${g.tema}${zoomMaximo ? "--zoom-max" : ""}`;
         esvaziar(registro);
         const nota = {};
-        const item = { arquivo: `${nome}.png`, tela: null, superficie: s.id, descricao: s.descricao, caso: g.chave, largura: g.largura, tema: g.tema };
+        const item = { arquivo: `${nome}.png`, tela: null, superficie: s.id, descricao: s.descricao, caso: g.chave, largura: g.largura, tema: g.tema, ...(zoomMaximo ? { zoom: "max" } : {}) };
         try {
           await s.abrir(pagina, g.caso, nota);
           if (s.preparar) await s.preparar(pagina);
-          const mapa = await esperarMapa(pagina, s.mapa);
+          const opcoesDoMapa = { ...s.mapa, esperarFundoMs: s.fundo ? esperarFundoMs : 0 };
+          let mapa = await esperarMapa(pagina, opcoesDoMapa);
+          if (zoomMaximo) {
+            const mais = pagina.locator('[data-captura-alvo] [aria-label="Aproximar o mapa"]').first();
+            for (let i = 0; i < 8 && (await mais.count()) && !(await mais.isDisabled().catch(() => true)); i++) await mais.click();
+            nota.zoomTocado = true;
+            mapa = await esperarMapa(pagina, opcoesDoMapa);
+          }
           const alvo = pagina.locator("[data-captura-alvo]").first();
           if (await alvo.count()) await alvo.scrollIntoViewIfNeeded().catch(() => undefined);
           // Releitura depois de rolar: a moldura pode ter mudado de posição.
@@ -289,6 +309,9 @@ try {
             moldura: mapa.moldura ?? null,
             svgs: mapa.svgs ?? 0,
             elementos: mapa.elementos ?? { total: 0, porTipo: {} },
+            fundo: mapa.fundo ?? false,
+            elementosDoFundo: mapa.elementosDoFundo ?? null,
+            motivoDoFundo: mapa.motivoDoFundo ?? null,
             fundoDoMapa: await medidasDoFundo(pagina),
             rolagemHorizontal: await rolagemHorizontal(pagina),
             ...nota,
@@ -305,7 +328,7 @@ try {
         item.requisicoesFalhas = [...registro.falhas];
         item.externasBloqueadas = [...registro.externas];
         novas.push(item);
-        console.log(`${item.estado.padEnd(8)} ${nome}  svg=${item.elementos?.total ?? "-"} rolagem=${item.rolagemHorizontal} erros=${item.errosDeConsole.length} falhas=${item.requisicoesFalhas.length} externas=${item.externasBloqueadas.length}${item.motivo ? `  (${item.motivo})` : ""}`);
+        console.log(`${item.estado.padEnd(8)} ${nome}  svg=${item.elementos?.total ?? "-"} fundo=${item.fundo ?? "-"}/${item.elementosDoFundo ?? "-"} rolagem=${item.rolagemHorizontal} erros=${item.errosDeConsole.length} falhas=${item.requisicoesFalhas.length} externas=${item.externasBloqueadas.length}${item.motivo ? `  (${item.motivo})` : ""}`);
       }
     } finally {
       await contexto.close();
@@ -313,7 +336,7 @@ try {
   }
 } finally {
   await navegador.close();
-  const chave = (c) => `${c.superficie}--${c.caso}--${c.largura}--${c.tema}`;
+  const chave = (c) => `${c.superficie}--${c.caso}--${c.largura}--${c.tema}${c.zoom === "max" ? "--zoom-max" : ""}`;
   const trocadas = new Set(novas.map(chave));
   const capturas = [...anteriores.filter((c) => !trocadas.has(chave(c))), ...novas].sort((a, b) => chave(a).localeCompare(chave(b)));
   await writeFile(

@@ -179,6 +179,11 @@ export function lerMapaNaPagina({ escopo, alvo, minimo }) {
   const r = moldura.getBoundingClientRect();
   const rs = svgPrincipal.getBoundingClientRect();
   const desenhado = svgPrincipal.querySelectorAll("path,polygon,polyline,rect,circle,line,text,image").length;
+  // Fundo do mapa-base: o crédito obrigatório dentro da moldura diz que ele está na tela. Os elementos do fundo são
+  // contados dentro do grupo marcado com data-fundo-do-mapa (quem hospeda marca; sem a marca, null).
+  const fundo = [...moldura.querySelectorAll("*")].some((el) => el.childElementCount === 0 && (el.textContent ?? "").trim() === "Base: Prefeitura do Recife (ODbL)");
+  const gruposDoFundo = [...moldura.querySelectorAll("[data-fundo-do-mapa]")];
+  const elementosDoFundo = gruposDoFundo.length ? gruposDoFundo.reduce((n, g) => n + 1 + g.querySelectorAll("*").length, 0) : null;
   return {
     achou: desenhado >= (minimo ?? 1),
     motivo: desenhado >= (minimo ?? 1) ? null : `só ${desenhado} formas no svg`,
@@ -186,22 +191,34 @@ export function lerMapaNaPagina({ escopo, alvo, minimo }) {
     svg: { largura: Math.round(rs.width), altura: Math.round(rs.height) },
     svgs: svgsNaMoldura.length,
     elementos: { total, porTipo: Object.fromEntries(Object.entries(porTipo).sort()) },
-    assinatura: `${total}|${Math.round(r.width)}x${Math.round(r.height)}|${desenhado}`,
+    fundo,
+    elementosDoFundo,
+    assinatura: `${total}|${Math.round(r.width)}x${Math.round(r.height)}|${desenhado}|${fundo ? "fundo" : "-"}`,
   };
 }
 
-/** Espera o mapa ficar desenhado e parado: mesma assinatura em 3 leituras seguidas (250 ms), com formas desenhadas. */
+/**
+ * Espera o mapa ficar desenhado e parado: mesma assinatura em 3 leituras seguidas (250 ms), com formas desenhadas.
+ * Com `opcoes.esperarFundoMs` > 0, o fundo do mapa-base chega depois do mapa (carga assíncrona): parado sem o fundo, a
+ * espera continua até ele aparecer ou até esse tempo passar (contado do primeiro quadro parado); o resultado diz `fundo`.
+ */
 export async function esperarMapa(pagina, opcoes, limiteMs = 60000) {
   const inicio = Date.now();
   let anterior = null;
   let iguais = 0;
   let ultimo = null;
+  let paradoSemFundoDesde = null;
+  const esperarFundoMs = Number(opcoes?.esperarFundoMs ?? 0);
   while (Date.now() - inicio < limiteMs) {
     ultimo = await pagina.evaluate(lerMapaNaPagina, opcoes).catch((e) => ({ achou: false, motivo: String(e).slice(0, 200) }));
     if (ultimo.achou && ultimo.assinatura === anterior) iguais++;
     else iguais = 0;
     anterior = ultimo.achou ? ultimo.assinatura : null;
-    if (iguais >= 2) return { ...ultimo, esperaMs: Date.now() - inicio };
+    if (iguais >= 2) {
+      if (ultimo.fundo || esperarFundoMs <= 0) return { ...ultimo, esperaMs: Date.now() - inicio };
+      paradoSemFundoDesde ??= Date.now();
+      if (Date.now() - paradoSemFundoDesde >= esperarFundoMs) return { ...ultimo, esperaMs: Date.now() - inicio, motivoDoFundo: `fundo não apareceu em ${esperarFundoMs} ms` };
+    }
     await pagina.waitForTimeout(250);
   }
   return { ...(ultimo ?? { achou: false }), achou: false, motivo: `tempo esgotado (${limiteMs} ms): ${ultimo?.motivo ?? "?"}`, esperaMs: Date.now() - inicio };
