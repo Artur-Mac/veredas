@@ -16,7 +16,12 @@ import type { ParaDesenho } from "./fundoDoMapaGeometria";
 import { celulasDeCalor, type CelulaDeCalor, type Ponto } from "./geometria";
 import { useFundoDoMapa, type EstadoDoFundo } from "./useFundoDoMapa";
 
-export type Camada = "ruas" | "3d" | "calor" | "alagamento";
+/**
+ * Camadas do mapa dos exemplos. "Alagamento" saiu da lista em 18/11/2026 (M2): era oferecida sem desenho nenhum, porque a
+ * faixa hachurada sobre a água de verdade da base pareceria uma inundação mapeada. O fato da faixa marginal continua na
+ * seção "Alagamento" do dossiê de exemplo.
+ */
+export type Camada = "ruas" | "3d" | "calor";
 type Lotes = "confirmado" | "candidatos" | "nenhum";
 
 type OpcoesDoMundo = {
@@ -136,8 +141,6 @@ const PE_DIREITO_M = 3;
 /**
  * O que vai por cima do fundo, nas coordenadas do desenho da cena: lote escolhido ou candidatos, e as camadas de
  * demonstração que dependem do chão de verdade ("3D e sombra" com os lotes e pavimentos da base, só no nível de lote).
- * "Alagamento" não desenha faixa: o traço largo sobre a água da base hachurava os rios inteiros e a borda recortada do
- * quadro, o que pareceria uma mancha de inundação mapeada. A camada fica com o chão e o painel de texto.
  */
 const SobreOFundo = memo(function SobreOFundo({
   cena,

@@ -203,7 +203,6 @@ function UmaSecao({ dossie, id }: { dossie: Dossie; id: string }) {
       ) : null}
       {id === "sol" ? <Botao rotulo="Ver em 3D" icone="map" onPress={() => irParaCamada(dossie, "3d")} /> : null}
       {id === "calor" ? <Botao rotulo="Abrir mapa" icone="map" onPress={() => irParaCamada(dossie, "calor")} /> : null}
-      {id === "alagamento" ? <Botao rotulo="Abrir mapa" icone="map" onPress={() => irParaCamada(dossie, "alagamento")} /> : null}
     </SecaoDeFato>
   );
 }
