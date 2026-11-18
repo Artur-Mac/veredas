@@ -4,6 +4,7 @@
 import type { Edificio, ObrasProximas } from "../../dados/contratos";
 import { HORARIOS_DO_MAPA, METROS_POR_PAVIMENTO, posicaoSolarRecife, type HorarioSolar } from "../../dados/dossie/solESombra";
 import { caminho, poligonoNaCaixa, type Poligono } from "../mapa/geometria";
+import { pontoNosAneisDoDesenho } from "../mapa/fundoDoMapaGeometria";
 
 type Coordenada = readonly [number, number];
 
@@ -341,6 +342,10 @@ export type VolumeDeEdificio25D = {
   /** Contorno na cota do andar do apartamento anunciado (somente no edifício alvo quando conhecido). */
   faixaDoAndar: string | null;
   etiquetaAltura: { x: number; y: number; texto: string } | null;
+  /** Centro da base no desenho (o chão), para casar com os lotes do fundo do mapa. */
+  centroNoChao: [number, number];
+  /** Y médio no plano (metros, Sul positivo): a ordem do pintor. */
+  centroY: number;
 };
 
 export type Cena25DDoLote = CenaDoLote & {
@@ -426,6 +431,8 @@ function montarVolume(
       topo: caminho(topoPx),
       faixaDoAndar,
       etiquetaAltura,
+      centroNoChao: [basePx.reduce((s, p) => s + p[0], 0) / (basePx.length || 1), basePx.reduce((s, p) => s + p[1], 0) / (basePx.length || 1)],
+      centroY,
     },
   };
 }
@@ -442,8 +449,10 @@ export function montarCena25DDoLote(
   altura: number,
   horario: HorarioSolar = "tarde",
   andarAlvo: number | null = null,
+  opcoes: OpcoesDaCena = {},
 ): Cena25DDoLote {
-  const base = montarCenaDoLote(predio, obras, vizinhos, largura, altura);
+  // O limite de 60 volumes vale sempre no 2.5D; o enquadramento (vão mínimo) segue as opções, como na planta.
+  const base = montarCenaDoLote(predio, obras, vizinhos, largura, altura, { ...opcoes, limiteDeVizinhos: MAX_VIZINHOS });
   const projetar = projetorDoPlano(predio.centro);
   const lotePlano = poligonoDoLote(predio);
   const pontosDeObra = obras.map((o) => projetar(o.centro));
@@ -507,6 +516,8 @@ export function montarCena25DDoLote(
 
   return {
     ...base,
+    // O meio que faz `paraDesenhoDoQuadro` repetir a conta deste desenho (deslocado na vertical para caber a extrusão).
+    meio: [meioX, meioY - (altura * 0.56 - altura / 2) * base.metrosPorPixel],
     pino: pinoElevado,
     obras: pontosDeObra.map((p, i) => {
       const [x, y] = paraDesenho(p);
@@ -517,4 +528,47 @@ export function montarCena25DDoLote(
     azimuteSolarGraus: Math.round(sol.azimuteGraus),
     volumes: candidatos.map((c) => c.volume),
   };
+}
+
+/** Lote do fundo do mapa, no desenho (o `LoteNoDesenho` do fundo, só o que o volume usa). */
+export type LoteDoChao = {
+  readonly aneis: readonly Float64Array[];
+  readonly caixa: readonly [number, number, number, number];
+  readonly pavimentos: number | null;
+  readonly noIndice: boolean;
+  readonly doImovel: boolean;
+};
+
+/**
+ * Acrescenta à cena 2.5D os prédios do índice que o fundo do mapa traz e o índice do bairro não (os do bairro ao lado,
+ * do outro lado da divisa): lotes `noIndice` com pavimentos, que não contêm o centro de nenhum volume já desenhado.
+ * Os mais perto do pino primeiro, sem passar de `MAX_VIZINHOS` vizinhos no total. Função pura.
+ */
+export function comVolumesDoChao(cena: Cena25DDoLote, lotes: readonly LoteDoChao[], centro: Coordenada): Cena25DDoLote {
+  const vizinhosJa = cena.volumes.filter((v) => !v.alvo).length;
+  const vagas = MAX_VIZINHOS - vizinhosJa;
+  if (vagas <= 0 || lotes.length === 0) return cena;
+  const { largura, altura, metrosPorPixel: mpp } = cena;
+  const [meioX, meioY] = cena.meio;
+  const paraDesenho = ([x, y]: [number, number]): [number, number] => [largura / 2 + (x - meioX) / mpp, altura / 2 + (y - meioY) / mpp];
+  const paraPlano = (px: number, py: number): [number, number] => [meioX + (px - largura / 2) * mpp, meioY + (py - altura / 2) * mpp];
+  const [chaoX, chaoY] = paraDesenho([0, 0]);
+  const horaConfig = HORARIOS_DO_MAPA.find((h) => h.id === cena.horario) ?? HORARIOS_DO_MAPA[2]!;
+  const sol = posicaoSolarRecife(horaConfig.horaLocal, centro, "equinocio");
+  const centros = cena.volumes.map((v) => v.centroNoChao);
+  const candidatos = lotes
+    .filter((l) => l.noIndice && !l.doImovel && l.pavimentos !== null && l.pavimentos > 0 && l.aneis.length > 0)
+    .filter((l) => !centros.some(([x, y]) => x >= l.caixa[0] && x <= l.caixa[2] && y >= l.caixa[1] && y <= l.caixa[3] && pontoNosAneisDoDesenho(x, y, l.aneis)))
+    .map((l) => ({ l, d: Math.hypot((l.caixa[0] + l.caixa[2]) / 2 - chaoX, (l.caixa[1] + l.caixa[3]) / 2 - chaoY) }))
+    .sort((a, b) => a.d - b.d)
+    .slice(0, vagas);
+  if (candidatos.length === 0) return cena;
+  const novos = candidatos.map(({ l }, i) => {
+    const anel = l.aneis[0]!;
+    const plano: [number, number][] = [];
+    for (let k = 0; k + 1 < anel.length; k += 2) plano.push(paraPlano(anel[k]!, anel[k + 1]!));
+    return montarVolume(`chao-${i}`, false, plano, l.pavimentos, null, null, sol.sombraPorMetro, paraDesenho, mpp).volume;
+  });
+  const volumes = [...cena.volumes, ...novos].sort((a, b) => a.centroY - b.centroY);
+  return { ...cena, volumes };
 }

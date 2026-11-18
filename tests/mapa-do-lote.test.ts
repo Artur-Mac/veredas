@@ -3,9 +3,9 @@
 import { afterEach, describe, expect, it, jest } from "@jest/globals";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
-import { MapaDoLote } from "../src/componentes/dossie-v1/MapaDoLote";
+import { daTelaParaODesenho, ehToque, LIMIAR_DO_TOQUE_PX, MapaDoLote, obstaculosDosPontos } from "../src/componentes/dossie-v1/MapaDoLote";
 import { ESTADO_INICIAL, afastar, aproximar, arrastar, deslocamentoDoZoom, naTela, recentrar, tocarObra, transformacao, trocarModo } from "../src/componentes/dossie-v1/mapaInterativo";
-import { caixaDoQuadro, montarCena25DDoLote, montarCenaDoLote, paraDesenhoDoQuadro, VAO_MINIMO_DA_GAVETA_M } from "../src/componentes/dossie-v1/mapa";
+import { caixaDoQuadro, comVolumesDoChao, montarCena25DDoLote, montarCenaDoLote, paraDesenhoDoQuadro, VAO_MINIMO_DA_GAVETA_M, VAO_MINIMO_VERTICAL_DA_GAVETA_M } from "../src/componentes/dossie-v1/mapa";
 import { CreditoDaBase, FundoDoMapa, SeloDoBairro } from "../src/componentes/mapa/FundoDoMapa";
 import * as mapaBase from "../src/dados/recife/mapaBase";
 import { edificioPorId , edificiosDoBairro } from "../src/dados/recife/indice";
@@ -185,12 +185,115 @@ describe("MapaDoLote com o fundo do mapa", () => {
     }
   });
 
-  it("o modo Volume não usa o fundo e continua com o limite de 60 vizinhos", () => {
+  // Mudou em 18/11/2026 (Por perto e volume): o volume passa a ter o fundo como chão, sem o lote do imóvel em dobro.
+  it("o modo Volume tem o fundo por baixo, sem a camada do lote do imóvel, e continua com o limite de 60 vizinhos", () => {
     const a = montar({ modoInicial: "tarde" });
-    expect(a.root.findAllByType(FundoDoMapa)).toHaveLength(0);
-    expect(a.root.findAllByType(CreditoDaBase)).toHaveLength(0);
-    expect(textos(a.toJSON())).toContain("Volume estimado");
+    const fundos = a.root.findAllByType(FundoDoMapa);
+    expect(fundos).toHaveLength(1);
+    expect(fundos[0]!.props.cena.camadas.loteDoImovel).toBe("");
+    expect(fundos[0]!.props.cena.camadas.quadras.length).toBeGreaterThan(0);
+    expect(a.root.findAllByType(CreditoDaBase)).toHaveLength(1);
+    const t = textos(a.toJSON());
+    expect(t).toContain("Volume estimado");
     expect(montarCena25DDoLote(golden, [], vizinhosBV, 320, 280, "tarde").volumes.length).toBeLessThanOrEqual(61);
+  });
+
+  it("planta e volume abrem na mesma escala (220 m) e o meio do volume repete a conta do desenho 2.5D", () => {
+    const opcoes = { vaoMinimoM: VAO_MINIMO_DA_GAVETA_M, vaoMinimoVerticalM: VAO_MINIMO_VERTICAL_DA_GAVETA_M };
+    const planta = montarCenaDoLote(golden, [], vizinhosBV, 340, 280, { ...opcoes, limiteDeVizinhos: null });
+    const volume = montarCena25DDoLote(golden, [], vizinhosBV, 340, 280, "tarde", null, opcoes);
+    expect(volume.metrosPorPixel).toBeCloseTo(planta.metrosPorPixel, 9);
+    // O chão do pino (centro do prédio) cai a 56% da altura, como na conta do 2.5D.
+    const [, y] = paraDesenhoDoQuadro(volume)(golden.centro);
+    const alvo = volume.volumes.find((v) => v.alvo);
+    expect(alvo).toBeDefined();
+    expect(Math.abs(y - 280 * 0.56)).toBeLessThan(40);
+  });
+
+  it("volumes do chão: prédio do índice que o bairro não traz vira volume; o que já tem volume não entra em dobro", () => {
+    const opcoes = { vaoMinimoM: VAO_MINIMO_DA_GAVETA_M, vaoMinimoVerticalM: VAO_MINIMO_VERTICAL_DA_GAVETA_M };
+    const cena = montarCena25DDoLote(golden, [], [], 340, 280, "tarde", null, opcoes);
+    const quadrado = (x: number, y: number) => ({ aneis: [new Float64Array([x - 4, y - 4, x + 4, y - 4, x + 4, y + 4, x - 4, y + 4])], caixa: [x - 4, y - 4, x + 4, y + 4] as const });
+    const alvo = cena.volumes.find((v) => v.alvo)!;
+    const lotes = [
+      { ...quadrado(60, 60), pavimentos: 12, noIndice: true, doImovel: false },
+      { ...quadrado(alvo.centroNoChao[0], alvo.centroNoChao[1]), pavimentos: 20, noIndice: true, doImovel: false },
+      { ...quadrado(100, 60), pavimentos: null, noIndice: true, doImovel: false },
+      { ...quadrado(140, 60), pavimentos: 5, noIndice: false, doImovel: false },
+    ];
+    const com = comVolumesDoChao(cena, lotes, golden.centro);
+    expect(com.volumes.length).toBe(cena.volumes.length + 1);
+    const novo = com.volumes.find((v) => v.id.startsWith("chao-"))!;
+    expect(novo.pavimentos).toBe(12);
+    expect(novo.centroNoChao[0]).toBeCloseTo(60, 6);
+    expect(novo.centroNoChao[1]).toBeCloseTo(60, 6);
+  });
+
+  it("no Por perto, o pino e os pontos de interesse passam como obstáculos aos nomes do fundo", () => {
+    const ob = obstaculosDosPontos([100, 100], [{ x: 50, y: 40, categoria: "praca" }, { x: 10, y: 10, categoria: "rotina" }], (x, y) => [x, y]);
+    expect(ob).toEqual([[89, 89, 111, 111], [39, 29, 61, 51], [-2, -2, 22, 22]]);
+  });
+
+  it("o Por perto com pontos desenha o fundo, os pontos por cima e passa os obstáculos ao fundo", () => {
+    const [lon, lat] = golden.centro;
+    const pontosExtras = [{ id: "p1", categoria: "praca" as const, rotulo: "Praça", detalhe: "", distanciaM: 60, coordenada: [lon + 0.0004, lat] as [number, number] }];
+    const a = montar({ pontosExtras });
+    expect(a.root.findAllByType(FundoDoMapa)).toHaveLength(1);
+    expect(porRotulo(a, /^Praça a 60 m/)).toBeDefined();
+  });
+
+  it("toque no lote: o inverso de naTela, o limiar do arraste e o cartão com fechar", () => {
+    const z = { ...ESTADO_INICIAL, zoom: 2, dx: 30, dy: -10 };
+    const [sx, sy] = naTela(z, 123, 77, 320, 280);
+    const [x, y] = daTelaParaODesenho(z, sx, sy, 320, 280);
+    expect(x).toBeCloseTo(123, 9); expect(y).toBeCloseTo(77, 9);
+    expect(ehToque(0)).toBe(true);
+    expect(ehToque(LIMIAR_DO_TOQUE_PX)).toBe(true);
+    expect(ehToque(LIMIAR_DO_TOQUE_PX + 1)).toBe(false);
+
+    const a = montar();
+    const quadro = a.root.findAll((n) => typeof n.props.onResponderRelease === "function" && typeof n.props.onLayout === "function")[0]!;
+    const fundo = a.root.findAllByType(FundoDoMapa)[0]!.props.cena;
+    const doImovel = fundo.lotes.find((l: { doImovel: boolean }) => l.doImovel);
+    expect(doImovel).toBeDefined();
+    const toque = (px: number, py: number, andar = 0) => act(() => {
+      quadro.props.onResponderGrant({ nativeEvent: { pageX: 0, pageY: 0, locationX: px, locationY: py } });
+      if (andar) quadro.props.onResponderMove({ nativeEvent: { pageX: andar, pageY: 0 } });
+      quadro.props.onResponderRelease({ nativeEvent: {} });
+    });
+    // O pino (centro do prédio) cai no lote do imóvel.
+    const cena = montarCenaDoLote(golden, [], vizinhosBV, 320, 280, { vaoMinimoM: VAO_MINIMO_DA_GAVETA_M, vaoMinimoVerticalM: VAO_MINIMO_VERTICAL_DA_GAVETA_M, limiteDeVizinhos: null });
+    toque(cena.pino[0], cena.pino[1], 20);
+    expect(textos(a.toJSON())).not.toContain("Lote do imóvel");
+    toque(cena.pino[0], cena.pino[1]);
+    let t = textos(a.toJSON());
+    expect(t).toMatch(/Lote do imóvel( · \d+ pavimentos?)?/);
+    if (doImovel.pavimentos) expect(t).toContain("base de Lotes da Prefeitura");
+    // Tocar de novo fecha.
+    toque(cena.pino[0], cena.pino[1]);
+    expect(textos(a.toJSON())).not.toContain("Lote do imóvel");
+    // Um vizinho: "Lote vizinho", e o ✕ fecha.
+    const vizinho = fundo.lotes.find((l: { doImovel: boolean; caixa: [number, number, number, number] }) => !l.doImovel && l.caixa[0] > 20 && l.caixa[2] < 300 && l.caixa[1] > 20 && l.caixa[3] < 260);
+    if (vizinho) {
+      const r = vizinho.aneis[0] as Float64Array;
+      // Um ponto dentro: a média dos vértices de um lote convexo o bastante; se cair fora, o teste só pula esta parte.
+      let mx = 0, my = 0;
+      for (let i = 0; i < r.length; i += 2) { mx += r[i]!; my += r[i + 1]!; }
+      mx /= r.length / 2; my /= r.length / 2;
+      toque(mx, my);
+      t = textos(a.toJSON());
+      if (t.includes("Lote vizinho")) {
+        act(() => porRotulo(a, /^Fechar o detalhe do lote$/)!.props.onPress());
+        expect(textos(a.toJSON())).not.toContain("Lote vizinho");
+      }
+    }
+  });
+
+  it("os controles do mapa têm 44 px e o rótulo acessível conta os lotes do quadro", () => {
+    const a = montar();
+    expect(rotulo(a)).toMatch(/\d+ lotes no quadro/);
+    const mais = porRotulo(a, /^Aproximar o mapa$/)!;
+    expect(mais.props.style.height).toBe(44);
   });
 
   it("a gaveta abre em ~220 m (o 2.5D continua em 80 m) e a caixa em graus volta ao quadro do desenho", () => {
