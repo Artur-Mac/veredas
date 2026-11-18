@@ -35,7 +35,7 @@ Branch: `feat/vereda-visual-power-overhaul`
 - [x] **S15**: 1-Tap Floor-Band Quick Presets (`Baixo · Médio · Alto`, `R12` First Street) on `CanvasSolSombraBrisa25D` (`91/91` tests passed across `sota-sombras`, `anti-jargao`, `dossie-tela`).
 - [x] **S16**: Zero-server Hash-Link Private Share (`#s=...` / `#v=...`, `R24` HomeWiseDocs) in `resumoExecutivo2Paginas.ts` + `ExportarResumoExecutivo.tsx`, wired into `dossie.tsx` with clean timer unmount lifecycle (`47/47` tests passed in `compartilhar` + `sota-sombras`).
 - [x] **S17**: Schema & Layer Coverage Version Matrix (`R18`, `R19`, `R43`) on `sobre-os-dados.tsx` + final full-suite & live Metro verification (`98/98` suites, `2030/2030` tests, Android Metro `200`, Web Metro `200`).
-- [ ] **S18**: Pure Theme Tokens, Unified SVG `PlusJakartaSans` (`MapaDoLote.tsx`), and Hairline Demodularization across `FichaViva.tsx`, `Negociacao.tsx`, `CartaoCidadao3Camadas.tsx`, `SimuladorTco10Anos.tsx`.
+- [x] **S18**: Pure Theme Tokens, Unified SVG `PlusJakartaSans` (`MapaDoLote.tsx`), and Hairline Demodularization across `FichaViva.tsx`, `Negociacao.tsx`, `CartaoCidadao3Camadas.tsx`, `SimuladorTco10Anos.tsx` (`6/6` suites, `141/141` tests).
 - [ ] **S19**: Expanded Noise Inventory (`R9`, `"mercado"`), Front vs Back Acoustic Consequence (`R11`, zero dB), `SimuladorDaUnidade.tsx` Hairline Refinements, and `Gridics` Sightline-Lot-Work Ordering (`R38`).
 - [ ] **S20**: Extraction Scope & Reliability Transparency (`Ownwell R50` respecting `B8`) on `sobre-os-dados.tsx` + nested container audit in `ler.tsx` and `NoImovel.tsx`.
 - [ ] **S21**: Building Scale Quick Filter (`Zoneomics R35`) & Index-Backed Neighborhood Portrait Strip (`R28`) in `Explorar`.

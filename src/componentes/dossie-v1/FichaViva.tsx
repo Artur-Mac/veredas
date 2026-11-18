@@ -95,11 +95,11 @@ function LinhaDaFicha({ item, primeira }: { item: ItemDaFicha; primeira: boolean
 
 function IndicadorVisual({ rotulo, estado, detalhe, tom }: { rotulo: string; estado: string; detalhe: string; tom: TomIndicador }) {
   const { cor } = useTema();
-  const coresPorTom: Record<TomIndicador, { fundo: string; ponto: string; texto: string }> = {
-    bom: { fundo: cor("cor-salvia-suave"), ponto: cor("cor-salvia-escura"), texto: cor("cor-salvia-escura") },
-    medio: { fundo: "#FDF3E4", ponto: "#B86B11", texto: "#8A4F0A" },
-    atencao: { fundo: cor("cor-barro-suave"), ponto: cor("cor-barro-texto"), texto: cor("cor-barro-texto") },
-    neutro: { fundo: cor("cor-papel-claro"), ponto: cor("cor-texto-apoio"), texto: cor("cor-texto") },
+  const coresPorTom: Record<TomIndicador, { ponto: string; texto: string }> = {
+    bom: { ponto: cor("cor-salvia-escura"), texto: cor("cor-salvia-escura") },
+    medio: { ponto: cor("cat-ipe-amarelo"), texto: cor("cor-barro-texto") },
+    atencao: { ponto: cor("cor-barro-texto"), texto: cor("cor-barro-texto") },
+    neutro: { ponto: cor("cor-texto-apoio"), texto: cor("cor-texto") },
   };
   const c = coresPorTom[tom];
   return (
@@ -110,17 +110,16 @@ function IndicadorVisual({ rotulo, estado, detalhe, tom }: { rotulo: string; est
         flexGrow: 1,
         flexBasis: 170,
         minWidth: 165,
-        padding: 12,
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: tom === "neutro" ? cor("cor-linha") : comAlfa(c.ponto, 0.25),
-        backgroundColor: c.fundo,
-        gap: 4,
+        paddingTop: 10,
+        paddingBottom: 6,
+        borderTopWidth: 2,
+        borderTopColor: tom === "neutro" ? cor("cor-linha") : c.ponto,
+        gap: 3,
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
         <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: c.ponto }} />
-        <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 15, fontWeight: "700", color: c.texto, flexShrink: 1 }}>
+        <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 16, fontWeight: "700", color: c.texto, flexShrink: 1 }}>
           {rotulo}
         </Texto>
       </View>
@@ -206,10 +205,10 @@ export function FichaViva({ analise, predio, lista, visao, nomeDoBairro }: { ana
   return (
     <View role="region" aria-label="Raio-X do imóvel e edifício" style={{ marginTop: 18, padding: 18, borderRadius: 16, borderWidth: 1, borderColor: comAlfa(cor("cor-texto"), 0.09), backgroundColor: cor("cor-superficie"), gap: 12 }}>
       <View style={{ gap: 3 }}>
-        <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11, lineHeight: 15, fontWeight: "700", letterSpacing: 0.7, textTransform: "uppercase" }}>Raio-X do edifício</Texto>
+        <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>Raio-X do edifício</Texto>
         <Texto tipo="secao" role="heading" style={{ fontSize: 18, lineHeight: 24, fontWeight: "700" }}>Condições físicas, imposto e prédio</Texto>
       </View>
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 14 }}>
         <IndicadorVisual rotulo="Temperatura da quadra" estado={estadoCalor} detalhe={detalheCalor} tom={tomCalor} />
         <IndicadorVisual rotulo="Altura do terreno e água" estado={estadoAgua} detalhe={detalheAgua} tom={tomAgua} />
         <IndicadorVisual rotulo="Movimento e barulho" estado={estadoRuido} detalhe={detalheRuido} tom={tomRuido} />

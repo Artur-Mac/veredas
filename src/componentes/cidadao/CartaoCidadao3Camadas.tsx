@@ -44,10 +44,9 @@ export function CartaoCidadao3Camadas({ item }: { item: DadosCartao3Camadas }) {
 
       <View
         style={{
-          backgroundColor: cor("cor-creme"),
-          borderRadius: RAIO.quadrado,
-          paddingVertical: 8,
-          paddingHorizontal: 10,
+          borderTopWidth: 1,
+          borderTopColor: cor("cor-linha"),
+          paddingTop: 10,
           gap: 4,
         }}
       >
@@ -85,9 +84,9 @@ export function CartaoCidadao3Camadas({ item }: { item: DadosCartao3Camadas }) {
       {aberto ? (
         <View
           style={{
-            backgroundColor: cor("cor-papel-claro"),
-            borderRadius: RAIO.quadrado,
-            padding: 10,
+            borderTopWidth: 1,
+            borderTopColor: cor("cor-linha"),
+            paddingTop: 10,
             gap: 5,
           }}
         >

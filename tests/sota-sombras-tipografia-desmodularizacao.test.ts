@@ -842,4 +842,24 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     expect(/\bseguro\b/i.test(txt)).toBe(false);
   });
+
+  it("elimina hex literais em FichaViva e Negociacao e unifica PlusJakartaSans em <TextoSvg> do MapaDoLote", () => {
+    const lerLimpo = (rel: string) =>
+      readFileSync(join(__dirname, "..", rel), "utf8")
+        .replace(/\/\*[\s\S]*?\*\//g, "")
+        .replace(/^\s*\/\/.*$/gm, "");
+
+    for (const rel of [
+      "src/componentes/dossie-v1/FichaViva.tsx",
+      "src/componentes/dossie-v1/Negociacao.tsx",
+    ]) {
+      expect(lerLimpo(rel).match(/#[0-9A-Fa-f]{3,8}\b/g)).toBeNull();
+    }
+
+    const mapaSvgTags = lerLimpo("src/componentes/dossie-v1/MapaDoLote.tsx").match(/<TextoSvg\b[\s\S]*?>/g) ?? [];
+    expect(mapaSvgTags.length).toBeGreaterThan(0);
+    for (const tag of mapaSvgTags) {
+      expect(tag).toContain('fontFamily="PlusJakartaSans"');
+    }
+  });
 });

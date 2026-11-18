@@ -346,7 +346,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                       />
                       {v.faixaDoAndar ? <Path d={v.faixaDoAndar} fill="none" stroke={acao} strokeWidth={2.4 / estado.zoom} strokeLinejoin="round" /> : null}
                       {v.etiquetaAltura ? (
-                        <TextoSvg x={v.etiquetaAltura.x} y={v.etiquetaAltura.y} fill={v.alvo ? azul : cor("cor-texto-apoio")} fontFamily="JetBrainsMono" fontSize={9.5 / estado.zoom} fontWeight={v.alvo ? "700" : "600"} textAnchor="middle">
+                        <TextoSvg x={v.etiquetaAltura.x} y={v.etiquetaAltura.y} fill={v.alvo ? azul : cor("cor-texto-apoio")} fontFamily="PlusJakartaSans" fontSize={9.5 / estado.zoom} fontWeight={v.alvo ? "700" : "600"} textAnchor="middle">
                           {v.etiquetaAltura.texto}
                         </TextoSvg>
                       ) : null}
@@ -412,7 +412,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
                 <G key={o.numero} transform={`translate(${x}, ${y})`}>
                   {tocada ? <Circle cx={0} cy={0} r={15} fill="none" stroke={textoCor} strokeWidth={2} /> : null}
                   <Circle cx={0} cy={0} r={10} fill={cor(COR_DA_OBRA[o.categoria].fundo)} stroke={cor("cor-superficie")} strokeWidth={2} />
-                  <TextoSvg x={0} y={3.5} fill={cor(COR_DA_OBRA[o.categoria].texto)} fontFamily="JetBrainsMono" fontSize={10} fontWeight="700" textAnchor="middle">
+                  <TextoSvg x={0} y={3.5} fill={cor(COR_DA_OBRA[o.categoria].texto)} fontFamily="PlusJakartaSans" fontSize={10} fontWeight="700" textAnchor="middle">
                     {String(o.numero)}
                   </TextoSvg>
                 </G>
@@ -431,7 +431,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
               <Line x1={12} y1={cena.altura - 14} x2={12 + regua.pixels} y2={cena.altura - 14} stroke={textoCor} strokeWidth={2} />
               <Line x1={12} y1={cena.altura - 18} x2={12} y2={cena.altura - 10} stroke={textoCor} strokeWidth={2} />
               <Line x1={12 + regua.pixels} y1={cena.altura - 18} x2={12 + regua.pixels} y2={cena.altura - 10} stroke={textoCor} strokeWidth={2} />
-              <TextoSvg x={12} y={cena.altura - 22} fill={textoCor} fontFamily="JetBrainsMono" fontSize={10} fontWeight="600">
+              <TextoSvg x={12} y={cena.altura - 22} fill={textoCor} fontFamily="PlusJakartaSans" fontSize={10} fontWeight="600">
                 {regua.rotulo}
               </TextoSvg>
             </G>

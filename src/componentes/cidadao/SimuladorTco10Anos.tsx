@@ -103,7 +103,7 @@ export function SimuladorTco10Anos({ entrada }: { entrada: EntradaTco10Anos }) {
           ? `Em 10 anos, considerando custo de oportunidade da entrada no CDI, a compra projeta patrimônio líquido R$ ${Math.abs(sim.saldoLiquidoCompraSobreAluguel10AnosReais).toLocaleString("pt-BR")} maior que permanecer alugando.`
           : `Em 10 anos, mantendo a entrada e ITBI aplicados no CDI, o aluguel preserva R$ ${Math.abs(sim.saldoLiquidoCompraSobreAluguel10AnosReais).toLocaleString("pt-BR")} a mais de patrimônio líquido.`}
       </Texto>
-      <View style={{ backgroundColor: cor("cor-creme"), borderRadius: RAIO.quadrado, padding: 10, gap: 4 }}>
+      <View style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 10, gap: 4 }}>
         <Texto tipo="numero" style={{ fontSize: 12.5, fontVariant: ["tabular-nums"] }}>
           {`Saída acumulada compra (10a): R$ ${sim.desembolsoLiquidoCompra10AnosReais.toLocaleString("pt-BR")} · Bem quitado parcial: R$ ${sim.patrimonioFinalCompraReais.toLocaleString("pt-BR")}`}
         </Texto>

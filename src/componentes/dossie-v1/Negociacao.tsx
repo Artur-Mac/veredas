@@ -93,7 +93,7 @@ export function PrepararNegociacao({ analise, visao, lista, predio = null, nomeD
           }}
         >
           <View style={{ gap: 4 }}>
-            <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11, lineHeight: 15, fontWeight: "700", letterSpacing: 0.7, textTransform: "uppercase" }}>
+            <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>
               Antes de propor um valor
             </Texto>
             <Texto tipo="secao" role="heading" style={{ fontSize: 19, lineHeight: 25, fontWeight: "700" }}>
@@ -104,13 +104,13 @@ export function PrepararNegociacao({ analise, visao, lista, predio = null, nomeD
             </Texto>
           </View>
 
-          <View role="list" aria-label="O que pesa na negociação" style={{ gap: 8 }}>
-            <View style={{ padding: 12, borderRadius: 12, backgroundColor: cor("cor-papel-claro"), borderWidth: 1, borderColor: cor("cor-linha") }}>
+          <View role="list" aria-label="O que pesa na negociação" style={{ gap: 0 }}>
+            <View style={{ paddingVertical: 10, borderTopWidth: 1, borderTopColor: cor("cor-linha") }}>
               <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20, fontWeight: "600" }}>{n.total.texto}</Texto>
             </View>
             {destaquesResumo.map((a) => (
-              <View key={a.id} role="listitem" style={{ padding: 12, borderRadius: 12, backgroundColor: cor("cor-papel-claro"), borderWidth: 1, borderColor: cor("cor-linha"), gap: 4 }}>
-                <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 10.5, fontWeight: "700", textTransform: "uppercase" }}>
+              <View key={a.id} role="listitem" style={{ paddingVertical: 10, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 3 }}>
+                <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11.5, fontWeight: "700" }}>
                   {categoriaDoArgumento(a.id)}
                 </Texto>
                 <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20 }}>{a.fato}</Texto>
@@ -119,8 +119,8 @@ export function PrepararNegociacao({ analise, visao, lista, predio = null, nomeD
           </View>
 
           {n.mesmoImovel.length ? (
-            <View style={{ padding: 12, borderRadius: 12, backgroundColor: "#FDF3E4", borderWidth: 1, borderColor: comAlfa("#B86B11", 0.3) }}>
-              <Texto tipo="apoio" style={{ fontSize: 13, lineHeight: 19, color: "#8A4F0A" }}>
+            <View style={{ paddingVertical: 10, paddingHorizontal: 12, borderLeftWidth: 3, borderLeftColor: cor("cat-ipe-amarelo"), backgroundColor: comAlfa(cor("cat-ipe-amarelo"), 0.08) }}>
+              <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 13, lineHeight: 19 }}>
                 {`Possível duplicata: ${n.mesmoImovel.map((m) => `"${m.nome}" (${m.motivo})`).join("; ")}.`}
               </Texto>
             </View>
@@ -159,16 +159,14 @@ export function PrepararNegociacao({ analise, visao, lista, predio = null, nomeD
                         flexDirection: "row",
                         alignItems: "flex-start",
                         gap: 10,
-                        padding: 10,
-                        borderRadius: 10,
-                        borderWidth: 1,
-                        borderColor: marcado ? comAlfa(cor("cor-acao"), 0.35) : cor("cor-linha"),
-                        backgroundColor: marcado ? cor("cor-superficie") : cor("cor-papel-claro"),
+                        paddingVertical: 10,
+                        borderTopWidth: 1,
+                        borderTopColor: cor("cor-linha"),
                       }}
                     >
                       <CaixaSelecao marcado={marcado} />
                       <View style={{ flex: 1, gap: 2 }}>
-                        <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 10.5, fontWeight: "700", textTransform: "uppercase" }}>
+                        <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11.5, fontWeight: "700" }}>
                           {categoriaDoArgumento(x.id)}
                         </Texto>
                         <Texto tipo="apoio" style={{ fontSize: 13.5, lineHeight: 19, color: cor("cor-texto") }}>{x.fato}</Texto>
