@@ -221,12 +221,41 @@ export function CanvasSolSombraBrisa25D({
       });
     }
 
+    const licencasRecentes = (obrasEntorno?.recentes ?? [])
+      .filter((o) => o.categoria === "construcao" && o.distanciaM >= 10 && o.distanciaM <= 85)
+      .slice(0, 3);
+    licencasRecentes.forEach((o, idx) => {
+      const m = emMetros(o.centro, cRef);
+      const jaCoberto = resultado.some((r) => {
+        if (r.ehAlvo || r.pontosM.length === 0) return false;
+        const rcx = r.pontosM.reduce((s, p) => s + p[0], 0) / r.pontosM.length;
+        const rcy = r.pontosM.reduce((s, p) => s + p[1], 0) / r.pontosM.length;
+        return Math.hypot(rcx - m[0], rcy - m[1]) < 10;
+      });
+      if (!jaCoberto) {
+        resultado.push({
+          id: `licenca-obra-${idx}`,
+          pontosM: retanguloCentrado(
+            m[0],
+            m[1],
+            15,
+            14,
+            (inferencia.frenteAzimuteGraus * Math.PI) / 180,
+          ),
+          alturaM: 4,
+          ehAlvo: false,
+          potencialFuturoM: 54,
+        });
+      }
+    });
+
     return resultado;
   }, [
     centroLat,
     centroLon,
     inferencia,
     lotesRiscoLpuos,
+    obrasEntorno,
     pavimentosTotais,
     vizinhosLotes,
     volumesEntorno,

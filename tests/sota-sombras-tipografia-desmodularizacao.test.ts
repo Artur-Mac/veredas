@@ -1712,4 +1712,66 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       expect(src).not.toMatch(/\bminHeight:\s*(?:34|36|38|40)\b/);
     }
   });
+
+  it("projeta volume e sombra 2.5D de obras licenciadas reais ao ativar torres futuras (Localize.city S38)", () => {
+    const bv = edificiosDoBairro("boa-viagem");
+    const predio = bv.find((e) => e.poligono && e.poligono.length >= 3)!;
+    const inf = inferirFachadasDoEdificio({ edificio: predio, textoAnuncio: "" });
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(CanvasSolSombraBrisa25D, {
+            inferencia: inf,
+            fachadaSelecionada: inf.frente.id,
+            aoSelecionarFachada: () => undefined,
+            andar: 5,
+            aoAlterarAndar: () => undefined,
+            pavimentosTotais: 14,
+            centro: predio.centro,
+            vizinhosLotes: [
+              {
+                id: "viz-existente-8p",
+                centro: [predio.centro[0] + 0.00045, predio.centro[1]],
+                logradouro: "Rua Existente",
+                pavimentos: 8,
+                poligono: null,
+              },
+            ],
+            obrasEntorno: {
+              licencasDeObra: 1,
+              relevantes24m: 1,
+              demolicoes24m: 0,
+              recentes: [
+                {
+                  categoria: "construcao",
+                  descricao: "ALVARA TORRE NOVA",
+                  data: "2026-06",
+                  situacao: "EMITIDA",
+                  centro: [predio.centro[0] - 0.00034, predio.centro[1]],
+                  distanciaM: 37,
+                },
+              ],
+            },
+          }),
+        ),
+      );
+    });
+
+    expect(tree.root.findAll((n) => n.props.children === "Obra").length).toBeGreaterThan(0);
+    expect(tree.root.findAll((n) => n.props.children === "18p")).toHaveLength(0);
+
+    const toggleFut = tree.root.find((n) => n.props.testID === "toggle-torres-futuras");
+    act(() => {
+      toggleFut.props.onPress();
+    });
+    expect(tree.root.findAll((n) => n.props.children === "18p").length).toBeGreaterThan(0);
+    const depois = extrairTextos(tree.toJSON()).join("\n");
+    expect(depois).toContain("Risco de torres futuras: ligado");
+    expect(REGEX_JARGON_CAMADA1.test(depois)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(depois)).toBe(false);
+  });
 });
