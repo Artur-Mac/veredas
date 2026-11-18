@@ -9,6 +9,7 @@ import { analisarRadarVistaELote } from "../src/dados/entorno/radarVistaELote";
 import { calcularPulsoDaQuadra } from "../src/dados/dossie/pulsoDaQuadra";
 import { fontesDeBarulho, simularUnidade } from "../src/dados/dossie/simuladorDaUnidade";
 import { edificiosDoBairro } from "../src/dados/recife/indice";
+import { filtrarPrediosPorPorte, resumoDoBairroNoCadastro } from "../src/dados/recife/localizar";
 import { avaliarBioclimatico3d } from "../src/municipios/recife/motores/bioclimatico3d";
 import { avaliarConfortoTermico } from "../src/dados/clima/confortoTermico";
 import { avaliarAcustica3d } from "../src/nucleo/motores/acustica3d";
@@ -914,5 +915,22 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     const sobreSrc = readFileSync(join(__dirname, "..", "src", "app", "sobre-os-dados.tsx"), "utf8");
     expect(sobreSrc).toContain("escopo-qualidade-leituras");
     expect(sobreSrc).toContain("O que lemos sozinhos vs. o que pede confirmação");
+  });
+
+  it("filtra edifícios por porte (Zoneomics R35) e resume retrato factual do bairro (R28) sem preços", () => {
+    const bv = edificiosDoBairro("boa-viagem");
+    const torres = filtrarPrediosPorPorte(bv, "torre", 8);
+    expect(torres.length).toBeGreaterThan(0);
+    expect(torres.every((e) => (e.pavimentos ?? 0) >= 15)).toBe(true);
+
+    const baixos = filtrarPrediosPorPorte(bv, "baixo", 8);
+    expect(baixos.length).toBeGreaterThan(0);
+    expect(baixos.every((e) => (e.pavimentos ?? 0) <= 6 || e.ate4Pavimentos)).toBe(true);
+
+    const resumo = resumoDoBairroNoCadastro(bv)!;
+    expect(resumo).not.toBeNull();
+    expect(resumo.totalEdificios).toBe(bv.length);
+    expect(resumo.medianaPavimentos).toBeGreaterThan(0);
+    expect(resumo.decadaPredominante).toMatch(/^anos \d{4}$/);
   });
 });

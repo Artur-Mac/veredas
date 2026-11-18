@@ -60,6 +60,73 @@ export function textoSemBairros(texto: string): string {
 
 export type ResultadoDaBusca = { edificio: Edificio; motivo: "endereco_ou_nome" | "bairro" };
 
+export type FiltroPortePredio = "todos" | "baixo" | "medio" | "torre";
+
+/** Filtro por porte/gabarito (Zoneomics R35) mantendo ordenação por número de unidades. */
+export function filtrarPrediosPorPorte(
+  edificios: readonly Edificio[],
+  porte: FiltroPortePredio,
+  limite = 8,
+): Edificio[] {
+  const filtrados = edificios.filter((e) => {
+    if (porte === "todos") return true;
+    if (porte === "baixo") return (e.pavimentos !== null && e.pavimentos <= 6) || Boolean(e.ate4Pavimentos);
+    if (porte === "medio") return e.pavimentos !== null && e.pavimentos >= 7 && e.pavimentos <= 14;
+    return e.pavimentos !== null && e.pavimentos >= 15;
+  });
+  return filtrados
+    .slice()
+    .sort((a, b) => b.unidades - a.unidades || (a.id < b.id ? -1 : 1))
+    .slice(0, limite);
+}
+
+export type ResumoBairroNoCadastro = {
+  totalEdificios: number;
+  medianaPavimentos: number | null;
+  decadaPredominante: string | null;
+  comObraRecente: number;
+};
+
+/** Retrato factual calculado diretamente do índice cadastral do bairro, sem avaliação de preço (R28). */
+export function resumoDoBairroNoCadastro(edificios: readonly Edificio[]): ResumoBairroNoCadastro | null {
+  if (edificios.length === 0) return null;
+  const pavs = edificios
+    .map((e) => e.pavimentos)
+    .filter((p): p is number => typeof p === "number" && Number.isFinite(p) && p > 0)
+    .sort((a, b) => a - b);
+  const medianaPavimentos =
+    pavs.length === 0
+      ? null
+      : pavs.length % 2 === 1
+        ? pavs[(pavs.length - 1) / 2]!
+        : Math.round((pavs[pavs.length / 2 - 1]! + pavs[pavs.length / 2]!) / 2);
+
+  const contagemDecada = new Map<number, number>();
+  for (const e of edificios) {
+    if (typeof e.anoConstrucao === "number" && e.anoConstrucao >= 1900) {
+      const dec = Math.floor(e.anoConstrucao / 10) * 10;
+      contagemDecada.set(dec, (contagemDecada.get(dec) ?? 0) + 1);
+    }
+  }
+  let melhorDecada: number | null = null;
+  let melhorQtd = 0;
+  for (const [dec, qtd] of contagemDecada.entries()) {
+    if (qtd > melhorQtd || (qtd === melhorQtd && melhorDecada !== null && dec > melhorDecada)) {
+      melhorDecada = dec;
+      melhorQtd = qtd;
+    }
+  }
+  const decadaPredominante = melhorDecada !== null ? `anos ${melhorDecada}` : null;
+  const comObraRecente = edificios.filter((e) => e.obras150m.relevantes24m > 0).length;
+
+  return {
+    totalEdificios: edificios.length,
+    medianaPavimentos,
+    decadaPredominante,
+    comObraRecente,
+  };
+}
+
 /**
  * Prédios para o texto, até 8: rua, número e nome do prédio (a mesma busca da confirmação); texto que é só o nome de um
  * bairro lista os prédios com mais unidades dele (para começar por algum).

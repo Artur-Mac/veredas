@@ -38,6 +38,6 @@ Branch: `feat/vereda-visual-power-overhaul`
 - [x] **S18**: Pure Theme Tokens, Unified SVG `PlusJakartaSans` (`MapaDoLote.tsx`), and Hairline Demodularization across `FichaViva.tsx`, `Negociacao.tsx`, `CartaoCidadao3Camadas.tsx`, `SimuladorTco10Anos.tsx` (`6/6` suites, `141/141` tests).
 - [x] **S19**: Expanded Noise Inventory (`R9`, `"mercado"`), Front vs Back Acoustic Consequence (`R11`, zero dB), `SimuladorDaUnidade.tsx` Hairline Refinements, and `Gridics` Sightline-Lot-Work Ordering (`R38`) (`4/4` suites, `128/128` tests).
 - [x] **S20**: Extraction Scope & Reliability Transparency (`Ownwell R50` respecting `B8`) on `sobre-os-dados.tsx` + nested container audit in `ler.tsx` and `NoImovel.tsx` (`4/4` suites, `383/383` tests).
-- [ ] **S21**: Building Scale Quick Filter (`Zoneomics R35`) & Index-Backed Neighborhood Portrait Strip (`R28`) in `Explorar`.
+- [x] **S21**: Building Scale Quick Filter (`Zoneomics R35`) & Index-Backed Neighborhood Portrait Strip (`R28`) in `Explorar` (`3/3` suites, `157/157` tests).
 - [ ] **S22**: Complete Elimination of Residual `#hex` / `rgba()` in UI Tree (`Topo.tsx` + global recursive test guard) & Walk Score Block Mesh Connectivity Note (`R8`).
 - [ ] **S23**: Numbered Pre-Contract Dispatch Bulletin (`DataZap R27`, zero valuation) + full 98-suite verification + live Android/Web Metro `200` verification.

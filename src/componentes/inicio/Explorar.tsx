@@ -12,7 +12,17 @@ import { ondeMaisProcurar } from "../../dados/escolha";
 import { bairroPorSlug, eCoberto, type SlugCoberto } from "../../dados/recife/bairros";
 import { arquivoDoIndice, edificioPorId, edificiosDoBairro, indiceDoBairro } from "../../dados/recife/indice";
 import {
-  bairrosDaBusca, bairrosNoPonto, buscarNoCadastro, lerEntrada, predioMaisPerto, RAIO_DA_LOCALIZACAO_M, type ResultadoDaBusca,
+  bairrosDaBusca,
+  bairrosNoPonto,
+  buscarNoCadastro,
+  filtrarPrediosPorPorte,
+  lerEntrada,
+  predioMaisPerto,
+  RAIO_DA_LOCALIZACAO_M,
+  resumoDoBairroNoCadastro,
+  textoSemBairros,
+  type FiltroPortePredio,
+  type ResultadoDaBusca,
 } from "../../dados/recife/localizar";
 import { arquivoDaProcura, procura } from "../../dados/recife/procura";
 import { analiseDoPredio, enderecoDoPredio, EXEMPLOS, idDoRaioX, nomeDoPredio, type Exemplo } from "../../dados/raioX";
@@ -53,7 +63,7 @@ async function edificiosDe(bairros: readonly SlugCoberto[]): Promise<Map<SlugCob
 type EstadoDaBusca =
   | { tipo: "parado" }
   | { tipo: "procurando"; o: string }
-  | { tipo: "resultado"; itens: ResultadoDaBusca[]; onde: string; citados: boolean }
+  | { tipo: "resultado"; itens: ResultadoDaBusca[]; poolEdificios: Edificio[]; onde: string; citados: boolean }
   | { tipo: "perto"; edificio: Edificio; distanciaM: number; precisaoM: number | null }
   | { tipo: "aviso"; texto: string };
 
@@ -96,8 +106,10 @@ export function BuscaUnificada() {
       const porBairro = await edificiosDe(bairros);
       if (!montado.current) return;
       const itens = buscarNoCadastro(e.texto, porBairro);
+      const soPorBairro = !textoSemBairros(e.texto);
+      const poolEdificios = soPorBairro ? [...porBairro.values()].flat() : itens.map((i) => i.edificio);
       const onde = citados ? bairros.map((b) => bairroPorSlug(b)?.nome ?? b).join(", ") : "Boa Viagem, Graças, Espinheiro, Madalena, Casa Forte e Aflitos";
-      setEstado({ tipo: "resultado", itens, onde, citados });
+      setEstado({ tipo: "resultado", itens, poolEdificios, onde, citados });
     } catch {
       if (montado.current) setEstado({ tipo: "aviso", texto: "O cadastro não abriu agora (sem rede?). Tente de novo em instantes." });
     }
@@ -185,7 +197,21 @@ function LinhaDePredio({ e, detalhe, aoAbrir }: { e: Edificio; detalhe: string; 
 const detalheDoPredio = (e: Edificio) =>
   [e.nome ? enderecoDoPredio(e) : null, bairroPorSlug(e.bairro)?.nome ?? e.bairro, e.anoConstrucao ? `${e.anoConstrucao}` : null, `${e.unidades} unidades no IPTU`].filter(Boolean).join(" · ");
 
+const PORTES: readonly { id: FiltroPortePredio; rotulo: string }[] = [
+  { id: "todos", rotulo: "Todos" },
+  { id: "baixo", rotulo: "Até 6 andares" },
+  { id: "medio", rotulo: "7–14 andares" },
+  { id: "torre", rotulo: "15+ andares" },
+];
+
 function ResultadoDaBuscaUnificada({ estado, aoAbrir }: { estado: EstadoDaBusca; aoAbrir: (e: Edificio, origem: "busca" | "localizacao") => void }) {
+  const { cor } = useTema();
+  const [selecaoPorte, setSelecaoPorte] = useState<{ estado: EstadoDaBusca; porte: FiltroPortePredio }>({
+    estado,
+    porte: "todos",
+  });
+  const porte: FiltroPortePredio = selecaoPorte.estado === estado ? selecaoPorte.porte : "todos";
+
   if (estado.tipo === "parado") return null;
   if (estado.tipo === "procurando") return <Texto tipo="apoio" role="status" cor="cor-texto-apoio">{estado.o}</Texto>;
   if (estado.tipo === "aviso") return <Texto tipo="apoio" role="alert" cor="cor-barro-texto">{estado.texto}</Texto>;
@@ -203,12 +229,78 @@ function ResultadoDaBuscaUnificada({ estado, aoAbrir }: { estado: EstadoDaBusca;
     return <Texto tipo="apoio" role="status">{`Nada no cadastro de ${estado.onde}. Tente só o nome da rua ou bairro.`}</Texto>;
   }
   const soBairro = estado.itens.every((i) => i.motivo === "bairro");
+  const resumoBairro = soBairro ? resumoDoBairroNoCadastro(estado.poolEdificios) : null;
+  const exibidos =
+    porte === "todos"
+      ? estado.itens.map((i) => i.edificio)
+      : filtrarPrediosPorPorte(estado.poolEdificios, porte, 8);
+
   return (
-    <View role="group" aria-label="Prédios encontrados">
-      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 18, marginBottom: 4 }}>
+    <View role="group" aria-label="Prédios encontrados" style={{ gap: 8 }}>
+      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 18 }}>
         {soBairro ? `Prédios em ${estado.onde}. Toque para abrir o Raio-X.` : `Cadastro de ${estado.onde}. Toque para abrir o Raio-X.`}
       </Texto>
-      {estado.itens.map(({ edificio: e }) => <LinhaDePredio key={e.id} e={e} detalhe={detalheDoPredio(e)} aoAbrir={() => aoAbrir(e, "busca")} />)}
+
+      {resumoBairro ? (
+        <View
+          testID="retrato-bairro-cadastro"
+          style={{
+            paddingVertical: 8,
+            borderTopWidth: 1,
+            borderBottomWidth: 1,
+            borderColor: cor("cor-linha"),
+          }}
+        >
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17, fontVariant: ["tabular-nums"] }}>
+            {[
+              `Cadastro de ${estado.onde}: ${resumoBairro.totalEdificios} edifícios`,
+              resumoBairro.medianaPavimentos !== null ? `mediana de ${resumoBairro.medianaPavimentos} andares` : null,
+              resumoBairro.decadaPredominante ? `predominância ${resumoBairro.decadaPredominante}` : null,
+              `${resumoBairro.comObraRecente} com obra licenciada perto em 24m`,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          </Texto>
+        </View>
+      ) : null}
+
+      {estado.poolEdificios.length >= 3 ? (
+        <View testID="filtro-porte-predio" style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }} accessibilityRole="radiogroup" aria-label="Filtrar por porte do edifício">
+          {PORTES.map((p) => {
+            const ativo = porte === p.id;
+            return (
+              <Pressionavel
+                key={p.id}
+                onPress={() => setSelecaoPorte({ estado, porte: p.id })}
+                accessibilityRole="radio"
+                accessibilityState={{ checked: ativo }}
+                aria-checked={ativo}
+                style={{
+                  minHeight: 44,
+                  paddingHorizontal: 10,
+                  borderRadius: 999,
+                  borderWidth: 1,
+                  borderColor: ativo ? cor("cor-acao") : cor("cor-linha"),
+                  backgroundColor: ativo ? cor("cor-acao") : cor("cor-papel-claro"),
+                  justifyContent: "center",
+                }}
+              >
+                <Texto tipo="apoio" cor={ativo ? "cor-sobre-acao" : "cor-texto"} style={{ fontSize: 12, fontWeight: ativo ? "700" : "500" }}>
+                  {p.rotulo}
+                </Texto>
+              </Pressionavel>
+            );
+          })}
+        </View>
+      ) : null}
+
+      {exibidos.length > 0 ? (
+        exibidos.map((e) => <LinhaDePredio key={e.id} e={e} detalhe={detalheDoPredio(e)} aoAbrir={() => aoAbrir(e, "busca")} />)
+      ) : (
+        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13 }}>
+          Nenhum prédio deste porte neste recorte.
+        </Texto>
+      )}
     </View>
   );
 }
