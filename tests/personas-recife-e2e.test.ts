@@ -294,7 +294,7 @@ describe("Milestone 8 — Jornadas End-to-End de Personas Reais no Recife", () =
     });
     expect(est.riscoPredioCaixao).toBe("suspeita_tipologica_alvenaria");
     expect(est.bloqueioSeguroECreditoProvavel).toBe(true);
-    expect(est.vistoriaTrienalLei13032.estado).toBe("vencida_ou_ausente");
+    expect(est.vistoriaPeriodicaLei13032.estado).toBe("vencida_ou_ausente");
 
     const cnm = gerarCnm16Formatado("077214", "2", "0099112");
     const aud = auditarDocumentoVereda({

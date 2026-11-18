@@ -2,7 +2,7 @@ import type { EpistemicTag } from "../../../nucleo/contratosCanonicos";
 
 /**
  * IND-02, IND-09 & #42 — Triagem Estrutural (Prédios-Caixão), Maresia (ABNT NBR 6118 CAA-III/IV),
- * Relógio de Vida Útil (ABNT NBR 15575-1:2025), Vistoria Trienal (Lei PE 13.032/2006) e
+ * Relógio de Vida Útil (ABNT NBR 15575-1:2025), Vistoria Predial Periódica (Lei PE 13.032/2006) e
  * Segregação da Lei do Inquilinato (Lei 8.245/1991, Arts. 22 X e 23).
  */
 
@@ -37,8 +37,8 @@ export type EntradaEstruturaCondominio = {
   /** Código de identificação oficial presente na lista dos 431 prédios do Acordo-Base 01/2024 TRF5/Seduh. */
   constaAcordoTrf5_431?: boolean;
   faseAcordoTrf5?: "fase_1" | "fase_2_ago_set_2026" | null;
-  /** Data da última vistoria técnica com ART/RRT (Lei PE 13.032/2006), se informada em documentos. */
-  ultimaVistoriaTrienalAno?: number | null;
+  /** Ano da última vistoria técnica com ART/RRT (Lei PE 13.032/2006), se informado em documentos. */
+  ultimaVistoriaAno?: number | null;
   ultimaReformaFachadaAno?: number | null;
   saldoFundoReservaReais?: number | null;
   orcamentoEstimadoObraReais?: number | null;
@@ -55,9 +55,12 @@ export type ResultadoEstruturaCondominio = {
   riscoPredioCaixao: NivelRiscoPredioCaixao;
   bloqueioSeguroECreditoProvavel: boolean;
   indenizacaoReferenciaTrf5TetoReais: number | null;
-  vistoriaTrienalLei13032: {
-    obrigatoria: boolean;
-    estado: "em_dia" | "vencida_ou_ausente" | "nao_sabemos";
+  vistoriaPeriodicaLei13032: {
+    /** Exigida de prédio com mais de 5 anos de habite-se (art. 4º); null sem o ano de construção. */
+    obrigatoria: boolean | null;
+    /** 4 anos até 20 anos de construção, 3 anos depois (art. 3º); null sem o ano de construção. */
+    intervaloAnos: 3 | 4 | null;
+    estado: EstadoDaVistoriaPredial;
     proximaVistoriaAteAno: number | null;
   };
   matrizVupNbr15575: ItemCicloVup[];
@@ -74,6 +77,28 @@ export type ResultadoEstruturaCondominio = {
   epistemicTag: EpistemicTag;
   limiteEpistemologico: string;
 };
+
+export type EstadoDaVistoriaPredial = "em_dia" | "vencida_ou_ausente" | "ainda_nao_exigida" | "nao_sabemos";
+
+/** Prédio com mais de 5 anos de habite-se precisa da vistoria (Lei PE nº 13.032/2006, art. 4º). */
+export const VISTORIA_PE_CARENCIA_ANOS = 5;
+/** Até 20 anos de construção, a vistoria é a cada 4 anos; depois, a cada 3 (art. 3º, I, na redação da Lei 17.882/2022). */
+export const VISTORIA_PE_IDADE_DO_INTERVALO_MENOR_ANOS = 20;
+
+/**
+ * Vistoria predial periódica em Pernambuco: Lei Estadual nº 13.032, de 14/06/2006, arts. 3º a 5º, com a redação da Lei
+ * 17.882/2022, regulamentada pelo Decreto nº 33.747/2009. A cada 4 anos em prédio residencial ou condominial com até 20
+ * anos de construção e a cada 3 anos em prédio com mais de 20 anos; exigida de prédio com mais de 5 anos de habite-se;
+ * laudo registrado no CREA-PE com ART. A palavra "trienal" era da redação de 2006.
+ * O app não tem a data do habite-se: usa o ano de construção do cadastro no lugar dela.
+ */
+export function regraDaVistoriaPredialPe(idadeAnos: number | null): { exigida: boolean | null; intervaloAnos: 3 | 4 | null } {
+  if (idadeAnos === null || !Number.isFinite(idadeAnos)) return { exigida: null, intervaloAnos: null };
+  return {
+    exigida: idadeAnos > VISTORIA_PE_CARENCIA_ANOS,
+    intervaloAnos: idadeAnos > VISTORIA_PE_IDADE_DO_INTERVALO_MENOR_ANOS ? 3 : 4,
+  };
+}
 
 export const BENCHMARK_CONDO_PE_REAIS = 910.0;
 export const INADIMPLENCIA_NE_1S2026_PCT = 12.71;
@@ -118,14 +143,24 @@ export function avaliarEstruturaECondominio(entrada: EntradaEstruturaCondominio)
 
   const caixao = triarPredioCaixao(entrada);
 
-  // Vistoria Trienal Lei PE 13.032/2006 (Decreto 33.747/2009)
-  let estadoVistoria: "em_dia" | "vencida_ou_ausente" | "nao_sabemos" = "nao_sabemos";
+  // Vistoria predial periódica (Lei PE 13.032/2006; Decreto 33.747/2009): 4 anos até 20 anos de construção, 3 depois.
+  const regraVistoria = regraDaVistoriaPredialPe(idade);
+  let estadoVistoria: EstadoDaVistoriaPredial = "nao_sabemos";
   let proximaVistoria: number | null = null;
-  if (typeof entrada.ultimaVistoriaTrienalAno === "number") {
-    proximaVistoria = entrada.ultimaVistoriaTrienalAno + 3;
-    estadoVistoria = anoAtual <= proximaVistoria ? "em_dia" : "vencida_ou_ausente";
-  } else if (idade !== null && idade >= 3) {
+  if (typeof entrada.ultimaVistoriaAno === "number") {
+    if (regraVistoria.intervaloAnos !== null) {
+      proximaVistoria = entrada.ultimaVistoriaAno + regraVistoria.intervaloAnos;
+      estadoVistoria = anoAtual <= proximaVistoria ? "em_dia" : "vencida_ou_ausente";
+    } else {
+      // Sem a idade do prédio, só vale o que os dois intervalos dizem igual: até 3 anos está em dia, mais de 4 venceu.
+      const anosDesdeAVistoria = anoAtual - entrada.ultimaVistoriaAno;
+      estadoVistoria = anosDesdeAVistoria <= 3 ? "em_dia" : anosDesdeAVistoria > 4 ? "vencida_ou_ausente" : "nao_sabemos";
+    }
+  } else if (regraVistoria.exigida === true) {
+    // Sem vistoria informada, só se cobra de prédio com mais de 5 anos (art. 4º).
     estadoVistoria = "vencida_ou_ausente";
+  } else if (regraVistoria.exigida === false) {
+    estadoVistoria = "ainda_nao_exigida";
   }
 
   // Relógio de Vida Útil ABNT NBR 15575-1:2025 (Tabela 7 + Anexo C)
@@ -231,8 +266,9 @@ export function avaliarEstruturaECondominio(entrada: EntradaEstruturaCondominio)
     riscoPredioCaixao: caixao.risco,
     bloqueioSeguroECreditoProvavel: caixao.bloqueio,
     indenizacaoReferenciaTrf5TetoReais: caixao.risco === "confirmado_acordo_trf5" ? INDENIZACAO_TETO_TRF5_REAIS : null,
-    vistoriaTrienalLei13032: {
-      obrigatoria: true,
+    vistoriaPeriodicaLei13032: {
+      obrigatoria: regraVistoria.exigida,
+      intervaloAnos: regraVistoria.intervaloAnos,
       estado: estadoVistoria,
       proximaVistoriaAteAno: proximaVistoria,
     },

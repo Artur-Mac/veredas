@@ -2290,7 +2290,7 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });
 
-  it("expõe diligência estatutária do Recife (AQUA/Compesa, vistoria trienal PE e CAT 90 dias) em CopilotoDocumentosPreSinal em S50", () => {
+  it("expõe diligência estatutária do Recife (AQUA/Compesa, vistoria predial periódica PE e CAT 90 dias) em CopilotoDocumentosPreSinal em S50", () => {
     let tree!: TestRenderer.ReactTestRenderer;
     act(() => {
       tree = TestRenderer.create(

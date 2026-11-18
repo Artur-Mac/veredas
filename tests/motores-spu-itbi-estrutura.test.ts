@@ -131,7 +131,7 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
       tipoEstruturaIptu: "Alvenaria Autoportante",
       distanciaCostaOuEstuarioM: 120,
       constaAcordoTrf5_431: true,
-      ultimaVistoriaTrienalAno: 2021,
+      ultimaVistoriaAno: 2021,
       ultimaReformaFachadaAno: 2019,
       saldoFundoReservaReais: 40_000,
       orcamentoEstimadoObraReais: 200_000,
@@ -146,7 +146,8 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
     expect(caixaoTrf5.classeAgressividade).toBe("CAA-IV");
     expect(caixaoTrf5.riscoPredioCaixao).toBe("confirmado_acordo_trf5");
     expect(caixaoTrf5.indenizacaoReferenciaTrf5TetoReais).toBe(120_000);
-    expect(caixaoTrf5.vistoriaTrienalLei13032.estado).toBe("vencida_ou_ausente");
+    // Prédio de 1980 (46 anos): vistoria a cada 3 anos; a de 2021 valia até 2024.
+    expect(caixaoTrf5.vistoriaPeriodicaLei13032).toEqual({ obrigatoria: true, intervaloAnos: 3, estado: "vencida_ou_ausente", proximaVistoriaAteAno: 2024 });
     expect(caixaoTrf5.sistemasEmJanelaCritica.length).toBeGreaterThanOrEqual(3);
     expect(caixaoTrf5.choqueCotaExtraEstimadoPorUnidadeReais).toBeGreaterThan(10_000);
     expect(caixaoTrf5.segregacaoLei8245.totalOrdinarioInquilinoReais).toBe(750);

@@ -176,10 +176,10 @@ export const ALERTAS_DILIGENCIA_RECIFE_2026: readonly AlertaDiligenciaRecife[] =
       "Na mudança operacional para a AQUA Pernambuco, eventuais débitos anteriores a 23/11/2026 permanecem retidos na Compesa: peça certidão de quitação nas duas frentes.",
   },
   {
-    id: "vistoria_trienal_pe",
-    titulo: "Inspeção predial periódica (Lei Estadual PE nº 13.032/2006)",
+    id: "vistoria_predial_pe",
+    titulo: "Vistoria predial periódica (Lei Estadual PE nº 13.032/2006)",
     detalhe:
-      "Edifícios em Pernambuco devem manter vistoria técnica trienal registrada; em prédios entregues há mais de 5 anos, solicite cópia do último relatório ao síndico.",
+      "Em Pernambuco, prédio com mais de 5 anos de habite-se deve passar por vistoria técnica a cada 4 anos (até 20 anos de construção) ou a cada 3 anos (mais de 20 anos), com laudo registrado no CREA-PE. Peça ao síndico a cópia do último laudo.",
   },
   {
     id: "cat_spu_90_dias",

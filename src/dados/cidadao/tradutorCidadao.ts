@@ -10,6 +10,7 @@ import type { ResultadoAcustica3D } from "../../nucleo/motores/acustica3d";
 import type { ResultadoHidroMare1m } from "../../municipios/recife/motores/hidroMare1m";
 import type { ResultadoZeladoriaPu } from "../../nucleo/motores/zeladoriaPuLearning";
 import type { ResultadoEconometriaItbi } from "../../municipios/recife/motores/econometriaItbi";
+import type { ResultadoEstruturaCondominio } from "../../municipios/recife/motores/estruturaCondominio";
 import type { ResultadoResilienciaRedes } from "../../municipios/recife/motores/resilienciaRedes";
 import type { ResultadoAuditoriaDocumental } from "../../nucleo/documentos/auditorDocumental";
 
@@ -112,6 +113,16 @@ export function descreverAusenciaCidadao(estado: AbsenceState | null): EstadoAus
   };
 }
 
+/** Estado da vistoria predial periódica (Lei PE 13.032/2006) em palavras de gente. */
+function rotuloDaVistoriaPredial(v: ResultadoEstruturaCondominio["vistoriaPeriodicaLei13032"] | undefined): string {
+  if (!v || v.estado === "nao_sabemos") return "a confirmar";
+  if (v.estado === "em_dia") return v.proximaVistoriaAteAno !== null ? `em dia, a próxima até ${v.proximaVistoriaAteAno}` : "em dia";
+  if (v.estado === "ainda_nao_exigida") return "ainda não exigida (prédio com até 5 anos)";
+  return v.proximaVistoriaAteAno !== null
+    ? `vencida, o prazo ia até ${v.proximaVistoriaAteAno}`
+    : "sem laudo informado (exigida de prédio com mais de 5 anos)";
+}
+
 function fReais(v: number | null | undefined): string {
   if (v === null || v === undefined || !Number.isFinite(v)) return "a confirmar";
   return `R$ ${Math.round(v).toLocaleString("pt-BR")}`;
@@ -208,7 +219,7 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
         ? `Rateio estimado por unidade: ${fReais(est.choqueCotaExtraEstimadoPorUnidadeReais)} (considerando reserva e inadimplência).`
         : "Consulte o saldo atual do fundo de reserva nas últimas atas.",
     camada2AcaoConcreta:
-      "Solicite os últimos 3 balancetes, atas de assembleia e o laudo de vistoria predial trienal.",
+      "Solicite os últimos 3 balancetes, atas de assembleia e o último laudo de vistoria predial.",
     camada3ProvaMetodo: {
       epistemicTag: est?.epistemicTag ?? "nao_sabemos",
       ausencia: est ? null : descreverAusenciaCidadao("sem_leitura_publicada"),
@@ -455,14 +466,14 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
     camada2ImpactoPratico:
       est?.bloqueioSeguroECreditoProvavel
         ? "Financiamento habitacional e apólice patrimonial enfrentam bloqueio provável."
-        : `Vistoria trienal (Lei PE 13.032/06): ${est?.vistoriaTrienalLei13032.estado ?? "a confirmar"}.`,
+        : `Vistoria periódica (Lei PE 13.032/2006): ${rotuloDaVistoriaPredial(est?.vistoriaPeriodicaLei13032)}.`,
     camada2AcaoConcreta: "Peça o último Laudo Técnico de Vistoria Predial (ART/RRT) e a apólice condominial vigente.",
     camada3ProvaMetodo: {
       epistemicTag: est?.epistemicTag ?? "nao_sabemos",
       ausencia: est ? null : descreverAusenciaCidadao("sem_leitura_publicada"),
       chavesDuplas,
       metodo6Campos: {
-        oQueMede: "Triagem de alvenaria autoportante vulnerável, Acordo TRF5 (431 edifícios) e vistoria trienal.",
+        oQueMede: "Triagem de alvenaria autoportante vulnerável, Acordo TRF5 (431 edifícios) e vistoria periódica (a cada 4 anos até 20 anos de construção, a cada 3 depois).",
         baseLegalOuNormativa: "Acordo-Base TRF5 01/2024 e Lei Estadual PE 13.032/2006.",
         aritmeticaResumo: "Cruzamento da coluna 31 IPTU (estrutura) × gabarito <= 4 pav. × lista TRF5.",
         fontePrimaria: "IPTU Recife Col. 31 + Acordo TRF5/Seduh",

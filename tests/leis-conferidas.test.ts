@@ -12,6 +12,11 @@ import { TresPerguntasDoBolso, type PropsTresPerguntasDoBolso } from "../src/com
 import { TemaDoApp } from "../src/tema/Tema";
 import { traduzirIndicadoresCidadao, type EntradaTradutorCidadao } from "../src/dados/cidadao/tradutorCidadao";
 import { ITBI_ALIQUOTA_MAXIMA, ITBI_ALIQUOTA_MINIMA, estimarTransferencia, type CustoPorPartes } from "../src/dados/custoPorPartes";
+import { cadernoVazio, type DocumentoPessoal } from "../src/dados/caderno";
+import { esquemaAnaliseV2, type AnaliseV2 } from "../src/dados/contratos";
+import { ALERTAS_DILIGENCIA_RECIFE_2026 } from "../src/dados/documentos/copilotoPreSinal";
+import { auditarConjuntoDocumental } from "../src/dados/pacoteEspecialista";
+import { avaliarEstruturaECondominio, regraDaVistoriaPredialPe } from "../src/municipios/recife/motores/estruturaCondominio";
 import {
   PRAZO_PEDIDO_LANCAMENTO_ITBI_DIAS,
   simularOtimizacaoItbiRecife,
@@ -228,5 +233,121 @@ describe("cartório: sem valor calculado por proporção; a economia é só de I
     expect(fonteDoSimulador).toContain("escritura e registro a confirmar no cartório, fora da conta");
     expect(fonteDoSimulador).not.toMatch(/totalFechamentoReais|emolumentos/);
     expect(SimuladorBolso15Segundos).toBeDefined();
+  });
+});
+
+const VAZIO = { valor: null, origem: "link" as const, aConfirmar: true };
+function analiseDeTeste(modalidade: "compra" | "aluguel", documentos: DocumentoPessoal[] = []): AnaliseV2 {
+  const base = esquemaAnaliseV2.parse({
+    versao: 2, id: "leis-1", criadaEm: "2026-11-17T10:00:00Z", atualizadaEm: "2026-11-17T10:00:00Z",
+    url: "https://anuncio.invalid/leis", nome: "Apartamento de teste", modalidade, tipologia: "apartamento",
+    bairro: "gracas", bairroTexto: "Graças", logradouro: "Rua de Teste", numero: "10", nomeEdificio: "Teste", extracao: null,
+    declarados: {
+      preco: { valor: 650_000, origem: "link", aConfirmar: false }, condominio: VAZIO, iptu: { ...VAZIO, periodo: "desconhecido" },
+      seguroIncendio: VAZIO, taxaServico: VAZIO, outros: VAZIO, area: VAZIO, quartos: VAZIO, suites: VAZIO, banheiros: VAZIO, vagas: VAZIO, andar: VAZIO,
+    },
+    vinculo: { estado: "pendente" },
+    visita: { verificadas: [], respostas: {}, perguntasProprias: [], notas: "", ruido: null, orientacaoGraus: null, segundos: 0, concluidaEm: null },
+    salva: true, descarte: null,
+  });
+  return { ...base, caderno: { ...cadernoVazio(), documentos } };
+}
+const laudo = (inspecaoEm: string): DocumentoPessoal => ({
+  id: `laudo-${inspecaoEm}`, titulo: "Laudo de vistoria", tipo: "laudo", inspecaoEm, emitidoEm: null, recebidoEm: "2026-11-19T12:00:00.000Z",
+  origem: "Síndico", escopo: "", trecho: "", pagina: null, vinculo: "confirmado",
+});
+const vistoriaDoPredio = (anoConstrucao: number | null, ultimaVistoriaAno?: number) =>
+  avaliarEstruturaECondominio({
+    buildingId: "p", bairroSlug: "gracas", anoConstrucao, anoReferencia: 2026, pavimentos: 12, tipoEstruturaIptu: "Concreto Armado",
+    distanciaCostaOuEstuarioM: 3000, ultimaVistoriaAno,
+  });
+
+describe("vistoria predial periódica (Lei PE 13.032/2006): 4 anos até 20 anos de construção, 3 depois, carência de 5 anos", () => {
+  const estadoDe = (anoConstrucao: number | null, ultimaVistoriaAno?: number) => vistoriaDoPredio(anoConstrucao, ultimaVistoriaAno).vistoriaPeriodicaLei13032;
+
+  test("a regra: exigida de prédio com mais de 5 anos; intervalo de 4 anos até 20 anos e de 3 anos depois", () => {
+    expect(regraDaVistoriaPredialPe(null)).toEqual({ exigida: null, intervaloAnos: null });
+    expect(regraDaVistoriaPredialPe(0)).toEqual({ exigida: false, intervaloAnos: 4 });
+    expect(regraDaVistoriaPredialPe(5)).toEqual({ exigida: false, intervaloAnos: 4 });
+    expect(regraDaVistoriaPredialPe(6)).toEqual({ exigida: true, intervaloAnos: 4 });
+    expect(regraDaVistoriaPredialPe(20)).toEqual({ exigida: true, intervaloAnos: 4 });
+    expect(regraDaVistoriaPredialPe(21)).toEqual({ exigida: true, intervaloAnos: 3 });
+    expect(regraDaVistoriaPredialPe(46)).toEqual({ exigida: true, intervaloAnos: 3 });
+  });
+
+  test("sem vistoria informada, só se cobra de prédio com mais de 5 anos", () => {
+    // Antes, prédio com 3 anos já saía como "vencida ou ausente".
+    expect(estadoDe(2023)).toEqual({ obrigatoria: false, intervaloAnos: 4, estado: "ainda_nao_exigida", proximaVistoriaAteAno: null });
+    expect(estadoDe(2021).estado).toBe("ainda_nao_exigida");
+    expect(estadoDe(2020)).toEqual({ obrigatoria: true, intervaloAnos: 4, estado: "vencida_ou_ausente", proximaVistoriaAteAno: null });
+    expect(estadoDe(1984)).toEqual({ obrigatoria: true, intervaloAnos: 3, estado: "vencida_ou_ausente", proximaVistoriaAteAno: null });
+    expect(estadoDe(null)).toEqual({ obrigatoria: null, intervaloAnos: null, estado: "nao_sabemos", proximaVistoriaAteAno: null });
+  });
+
+  test("com vistoria informada, o prazo é de 4 anos em prédio de até 20 anos e de 3 anos em prédio mais velho", () => {
+    // Prédio de 2010 (16 anos): a vistoria de 2022 vale até 2026. Com a regra antiga, de 3 anos, estaria vencida.
+    expect(estadoDe(2010, 2022)).toEqual({ obrigatoria: true, intervaloAnos: 4, estado: "em_dia", proximaVistoriaAteAno: 2026 });
+    expect(estadoDe(2010, 2021)).toEqual({ obrigatoria: true, intervaloAnos: 4, estado: "vencida_ou_ausente", proximaVistoriaAteAno: 2025 });
+    // Prédio de 1990 (36 anos): a mesma vistoria de 2022 venceu em 2025.
+    expect(estadoDe(1990, 2022)).toEqual({ obrigatoria: true, intervaloAnos: 3, estado: "vencida_ou_ausente", proximaVistoriaAteAno: 2025 });
+    expect(estadoDe(1990, 2023)).toEqual({ obrigatoria: true, intervaloAnos: 3, estado: "em_dia", proximaVistoriaAteAno: 2026 });
+    // Sem a idade, só vale o que os dois prazos dizem igual.
+    expect(estadoDe(null, 2023).estado).toBe("em_dia");
+    expect(estadoDe(null, 2022).estado).toBe("nao_sabemos");
+    expect(estadoDe(null, 2021).estado).toBe("vencida_ou_ausente");
+  });
+
+  test("o tradutor diz o estado em palavras e não usa mais a palavra trienal", () => {
+    const frase = (anoConstrucao: number | null, ultimaVistoriaAno?: number) =>
+      cartao(cartoes({ estruturaECondominio: vistoriaDoPredio(anoConstrucao, ultimaVistoriaAno) }), "IND-09").camada2ImpactoPratico;
+    expect(frase(2023)).toBe("Vistoria periódica (Lei PE 13.032/2006): ainda não exigida (prédio com até 5 anos).");
+    expect(frase(1984)).toBe("Vistoria periódica (Lei PE 13.032/2006): sem laudo informado (exigida de prédio com mais de 5 anos).");
+    expect(frase(2010, 2022)).toBe("Vistoria periódica (Lei PE 13.032/2006): em dia, a próxima até 2026.");
+    expect(frase(1990, 2022)).toBe("Vistoria periódica (Lei PE 13.032/2006): vencida, o prazo ia até 2025.");
+    expect(frase(null)).toBe("Vistoria periódica (Lei PE 13.032/2006): a confirmar.");
+    expect(JSON.stringify(cartoes({}))).not.toMatch(/trienal/i);
+    expect(cartao(cartoes({}), "IND-02").camada2AcaoConcreta).toBe("Solicite os últimos 3 balancetes, atas de assembleia e o último laudo de vistoria predial.");
+  });
+
+  test("o alerta do copiloto traz a regra da lei", () => {
+    const alerta = ALERTAS_DILIGENCIA_RECIFE_2026.find((a) => a.id === "vistoria_predial_pe")!;
+    expect(alerta.titulo).toBe("Vistoria predial periódica (Lei Estadual PE nº 13.032/2006)");
+    expect(alerta.detalhe).toBe(
+      "Em Pernambuco, prédio com mais de 5 anos de habite-se deve passar por vistoria técnica a cada 4 anos (até 20 anos de construção) ou a cada 3 anos (mais de 20 anos), com laudo registrado no CREA-PE. Peça ao síndico a cópia do último laudo.",
+    );
+  });
+
+  test("no pacote para especialista, o prazo do laudo segue a idade do prédio e o laudo não é cobrado de prédio novo", () => {
+    const AGORA = "2026-11-19T12:00:00.000Z";
+    const estrutura = (a: AnaliseV2, anoConstrucao?: number | null) =>
+      auditarConjuntoDocumental(a, AGORA, { anoConstrucao }).itens.find((i) => i.id === "estrutura");
+
+    // Sem laudo: prédio de 2023 não é cobrado; prédio de 2010 e prédio sem ano são.
+    const semLaudo = analiseDeTeste("compra");
+    expect(auditarConjuntoDocumental(semLaudo, AGORA).totalObrigatorios).toBe(7);
+    expect(auditarConjuntoDocumental(semLaudo, AGORA, { anoConstrucao: 2010 }).totalObrigatorios).toBe(7);
+    expect(auditarConjuntoDocumental(semLaudo, AGORA, { anoConstrucao: 2023 }).totalObrigatorios).toBe(6);
+    expect(estrutura(semLaudo, 2023)).toBeUndefined();
+    expect(estrutura(semLaudo, 2010)).toMatchObject({
+      estado: "faltando",
+      referencia: "Inspeção periódica (Lei Estadual PE nº 13.032/2006 · a cada 3 ou 4 anos, conforme a idade do prédio)",
+    });
+    expect(auditarConjuntoDocumental(analiseDeTeste("aluguel"), AGORA, { anoConstrucao: 2023 }).totalObrigatorios).toBe(3);
+
+    // Laudo de 3 anos e meio (1.283 dias): em dia num prédio de 16 anos, data antiga num prédio de 36.
+    const comLaudo = analiseDeTeste("compra", [laudo("2023-05-16")]);
+    expect(estrutura(comLaudo, 2010)).toMatchObject({ estado: "recebido", detalhe: "Inspecionado em 16/05/2023 (1283 dias)" });
+    expect(estrutura(comLaudo, 1990)).toMatchObject({ estado: "desatualizado", detalhe: "Inspecionado em 16/05/2023 · 1283 dias (referência: até 1095 dias)" });
+    // Sem o ano de construção, não dá para dizer que venceu: fica recebido, com o aviso do prazo menor.
+    expect(estrutura(comLaudo)).toMatchObject({
+      estado: "recebido",
+      detalhe: "Inspecionado em 16/05/2023 (1283 dias) · se o prédio tiver mais de 20 anos, o prazo é de 3 anos",
+    });
+    // Mais de 4 anos é data antiga em qualquer idade.
+    const laudoVelho = analiseDeTeste("compra", [laudo("2022-05-16")]);
+    expect(estrutura(laudoVelho)).toMatchObject({ estado: "desatualizado", detalhe: "Inspecionado em 16/05/2022 · 1648 dias (referência: até 1461 dias)" });
+    expect(estrutura(laudoVelho, 2010)!.estado).toBe("desatualizado");
+    // Prédio novo que já tem laudo guardado continua aparecendo.
+    expect(estrutura(analiseDeTeste("compra", [laudo("2025-05-16")]), 2023)!.estado).toBe("recebido");
   });
 });
