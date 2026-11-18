@@ -81,9 +81,13 @@ export type FaixaHorarioTrajeto = "pico" | "fora_pico";
  */
 export const FATOR_DE_DESVIO_DA_LINHA_RETA = 1.38;
 export const VELOCIDADE_MEDIA_KMH: Record<FaixaHorarioTrajeto, number> = { pico: 19, fora_pico: 28 };
-/** Minutos somados a cada trecho (sair, estacionar, esperar) e o mínimo e o máximo que um trecho pode dar. */
+/**
+ * Minutos somados a cada trecho (sair, estacionar, esperar) e o máximo que um trecho pode dar. Pendência 5 do HANDOFF
+ * (19/11/2026): saiu o mínimo de 12 min (10 fora do pico) por trecho, que fazia todo imóvel a menos de ~1,4 km do
+ * destino empatar; o piso agora é só o tempo fixo do trecho.
+ */
 export const MINUTOS_FIXOS_POR_TRECHO: Record<FaixaHorarioTrajeto, number> = { pico: 6, fora_pico: 4 };
-export const MINIMO_POR_TRECHO_MIN: Record<FaixaHorarioTrajeto, number> = { pico: 12, fora_pico: 10 };
+export const MINIMO_POR_TRECHO_MIN: Record<FaixaHorarioTrajeto, number> = MINUTOS_FIXOS_POR_TRECHO;
 export const MAXIMO_POR_TRECHO_MIN = 95;
 
 /** Frase do método, para a tela: de onde sai o tempo e o que ele não é. */
@@ -91,7 +95,7 @@ export function fraseDoMetodoDaRotina(faixaHorario: FaixaHorarioTrajeto, diasPre
   const fator = String(FATOR_DE_DESVIO_DA_LINHA_RETA).replace(".", ",");
   return (
     `Estimativa ${faixaHorario === "pico" ? "em horário de pico" : "fora de pico"}: distância em linha reta × ${fator} ` +
-    `(~${VELOCIDADE_MEDIA_KMH[faixaHorario]} km/h · ${diasPresenciaisMes} dias/mês), mais ${MINUTOS_FIXOS_POR_TRECHO[faixaHorario]} min por trecho, com mínimo de ${MINIMO_POR_TRECHO_MIN[faixaHorario]} min: dois imóveis muito perto do destino dão o mesmo tempo. Não é o trajeto pelas ruas nem o trânsito do dia; calculada localmente sem rastreamento GPS pessoal.`
+    `(~${VELOCIDADE_MEDIA_KMH[faixaHorario]} km/h · ${diasPresenciaisMes} dias/mês), mais ${MINUTOS_FIXOS_POR_TRECHO[faixaHorario]} min por trecho (sair, estacionar, esperar). Não é o trajeto pelas ruas nem o trânsito do dia; calculada localmente sem rastreamento GPS pessoal.`
   );
 }
 

@@ -10,6 +10,7 @@ import { describe, expect, it, jest } from "@jest/globals";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
 import { DueloFinalistas } from "../src/componentes/cidadao/DueloFinalistas";
+import { compararRotinaDoisDestinos } from "../src/dados/mobilidade/rotinaCasal";
 import { SimuladorDaUnidade } from "../src/componentes/dossie-v1/SimuladorDaUnidade";
 import { EscalaDeRuidoHumana } from "../src/componentes/visual/EscalasVisuais";
 import { fichaDaMatrizComparar, MatrizVisualComparar, type ColunaMatrizComparar } from "../src/componentes/visual/MatrizVisualComparar";
@@ -411,5 +412,22 @@ describe("restos do ruído", () => {
     expect(alturaDoAndarM(9)).toBe(29.4);
     const s = simularUnidade({ predio: GOLDEN_TOWER, vizinhos: edificiosDoBairro("boa-viagem"), tipo: "apartamento", andar: 9, fachadaGraus: null });
     expect(s.explicacaoDaAltura).toContain("~29,4 m");
+  });
+});
+
+// Pendência 5 do HANDOFF (19/11/2026): o Duelo conta o trajeto pela rotina de dois destinos do cartão.
+describe("Duelo com a rotina de dois destinos", () => {
+  it("diz os dois destinos e os dias da rotina, sem 'só até o Recife Antigo' nem 22 dias", () => {
+    const candidato = { id: "a", nomeExibicao: "A", custoMensalTotalReais: 5000, areaM2: 90, deslocamentoMinDia: 40, ruidoInternoDb: 38, situacaoDocumentalResumo: "A confirmar", riscoAguaChuvaResumo: "Checar" };
+    const r = compararRotinaDoisDestinos({ nomeOpcaoA: "A", centroA: GOLDEN_TOWER.centro, bairroA: "boa-viagem", nomeOpcaoB: "B", centroB: DA_TORRE.centro, bairroB: "torre", destino1Id: "polo_porto_digital", destino2Id: "polo_boa_viagem", diasPresenciaisMes: 12 });
+    const a = montar(React.createElement(DueloFinalistas, {
+      opcaoA: { ...candidato, deslocamentoMinDia: r.minutosDiaOpcaoA }, opcaoB: { ...candidato, id: "b", nomeExibicao: "B", deslocamentoMinDia: r.minutosDiaOpcaoB },
+      daRotina: true, destinoDoTrajeto: `${r.destino1.nomeCurto} e ${r.destino2.nomeCurto}`, diasPorMes: r.diasPresenciaisMes,
+    }));
+    const t = textos(a.toJSON()).join("\n");
+    expect(t).toContain(`cartão "Rotina de dois destinos" (${r.destino1.nomeCurto} e ${r.destino2.nomeCurto})`);
+    expect(t).toContain("12 dias por mês");
+    expect(t).not.toMatch(/só até|22 dias/);
+    act(() => a.unmount());
   });
 });

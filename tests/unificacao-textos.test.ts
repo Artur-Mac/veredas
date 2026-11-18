@@ -7,6 +7,8 @@ import { esquemaAnaliseV2 } from "../src/dados/contratos";
 import { avaliarCaminhabilidadeEVidaNaRua } from "../src/dados/dossie/caminhabilidadeEVidaNaRua";
 import {
   FATOR_DE_DESVIO_DA_LINHA_RETA,
+  POLOS_RECIFE,
+  estimarMinutosPicoIdaVolta,
   fraseDoMetodoDaRotina,
   VELOCIDADE_MEDIA_KMH,
 } from "../src/dados/mobilidade/rotinaCasal";
@@ -110,9 +112,17 @@ describe("R10: a conta da taxa da União só é citada quando o valor do terreno
 });
 
 describe("revisão de código de 19/11/2026: as frases descrevem a conta", () => {
-  it("rotina: a frase diz os minutos fixos por trecho e o mínimo, que empatam imóveis muito perto do destino", () => {
-    expect(fraseDoMetodoDaRotina("pico", 20)).toContain("mais 6 min por trecho, com mínimo de 12 min");
-    expect(fraseDoMetodoDaRotina("fora_pico", 12)).toContain("mais 4 min por trecho, com mínimo de 10 min");
+  it("rotina: a frase diz os minutos fixos por trecho; sem o mínimo de 12 min, imóveis perto do destino não empatam", () => {
+    expect(fraseDoMetodoDaRotina("pico", 20)).toContain("mais 6 min por trecho (sair, estacionar, esperar)");
+    expect(fraseDoMetodoDaRotina("fora_pico", 12)).toContain("mais 4 min por trecho (sair, estacionar, esperar)");
+    expect(fraseDoMetodoDaRotina("pico", 20)).not.toContain("mínimo");
+    // Pendência 5 do HANDOFF (19/11/2026): a 300 m e a 1 km do Porto Digital davam os mesmos 24 min no pico.
+    const porto = POLOS_RECIFE.find((p) => p.id === "polo_porto_digital")!.centro;
+    const deslocado = (m: number): [number, number] => [porto[0] + m / 110_000, porto[1]];
+    const perto = estimarMinutosPicoIdaVolta(deslocado(300), null);
+    const umKm = estimarMinutosPicoIdaVolta(deslocado(1000), null);
+    expect(perto).toBeLessThan(umKm);
+    expect(perto).toBeGreaterThanOrEqual(12);
   });
 });
 

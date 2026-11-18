@@ -53,8 +53,8 @@ import { DueloFinalistas } from "../../componentes/cidadao/DueloFinalistas";
 import { ConvergenciaFamiliar } from "../../componentes/cidadao/ConvergenciaFamiliar";
 import { filtrarDominanciaInvisivel } from "../../dados/cidadao/dominanciaInvisivel";
 import { MatrizVisualComparar, type ColunaMatrizComparar } from "../../componentes/visual/MatrizVisualComparar";
-import { RotinaDoisDestinosComparar } from "../../componentes/visual/RotinaDoisDestinosComparar";
-import { estimarMinutosPicoIdaVolta } from "../../dados/mobilidade/rotinaCasal";
+import { ESCOLHA_INICIAL_DA_ROTINA, RotinaDoisDestinosComparar, type EscolhaDaRotina } from "../../componentes/visual/RotinaDoisDestinosComparar";
+import { compararRotinaDoisDestinos, estimarMinutosPicoIdaVolta } from "../../dados/mobilidade/rotinaCasal";
 import { montarColunaDoComparar } from "../../dados/dossie/colunaDoComparar";
 
 const MODALIDADES: readonly { valor: Modalidade; rotulo: string }[] = [
@@ -159,6 +159,17 @@ function CompararComDados() {
   const partesDoPar: Par<ReturnType<typeof derivarCustoPorPartes>> | null = a && b
     ? [derivarCustoPorPartes(a, ea, perfilDomicilio), derivarCustoPorPartes(b, eb, perfilDomicilio)] : null;
 
+  // Pendência 5 do HANDOFF (19/11/2026): o Duelo conta o trajeto pela mesma rotina de dois destinos do cartão.
+  const [escolhaDaRotina, setEscolhaDaRotina] = useState<EscolhaDaRotina>(ESCOLHA_INICIAL_DA_ROTINA);
+  const rotinaDoDuelo = a && b
+    ? compararRotinaDoisDestinos({
+        nomeOpcaoA: "A", centroA: ea?.centro ?? null, bairroA: a.bairro ?? null,
+        nomeOpcaoB: "B", centroB: eb?.centro ?? null, bairroB: b.bairro ?? null,
+        destino1Id: escolhaDaRotina.destino1Id, destino2Id: escolhaDaRotina.destino2Id,
+        diasPresenciaisMes: escolhaDaRotina.diasPresenciais, faixaHorario: escolhaDaRotina.faixaHorario,
+      })
+    : null;
+
   const matrizComparar: [ColunaMatrizComparar, ColunaMatrizComparar] | null = (() => {
     if (!a || !b || !comparacao || !partesDoPar) return null;
     return [
@@ -249,6 +260,8 @@ function CompararComDados() {
                     opcaoB={matrizComparar[1]}
                   />
                   <RotinaDoisDestinosComparar
+                    escolha={escolhaDaRotina}
+                    aoMudarEscolha={setEscolhaDaRotina}
                     nomeOpcaoA={matrizComparar[0].nome}
                     centroA={ea?.centro ?? null}
                     bairroA={par[0].bairro ?? null}
@@ -348,12 +361,15 @@ function CompararComDados() {
                 {partesDoPar && comparacao ? (
                   <View style={{ gap: 12, marginBottom: 14 }}>
                     <DueloFinalistas
+                      daRotina={rotinaDoDuelo !== null}
+                      destinoDoTrajeto={rotinaDoDuelo ? `${rotinaDoDuelo.destino1.nomeCurto} e ${rotinaDoDuelo.destino2.nomeCurto}` : undefined}
+                      diasPorMes={rotinaDoDuelo?.diasPresenciaisMes}
                       opcaoA={{
                         id: par[0].id,
                         nomeExibicao: comparacao.rotulos[0],
                         custoMensalTotalReais: partesDoPar[0].oficial.totalMensalConhecido ?? 0,
                         areaM2: par[0].declarados.area.valor ?? 0,
-                        deslocamentoMinDia: estimarMinutosPicoIdaVolta(ea?.centro, par[0].bairro),
+                        deslocamentoMinDia: rotinaDoDuelo?.minutosDiaOpcaoA ?? estimarMinutosPicoIdaVolta(ea?.centro, par[0].bairro),
                         ruidoInternoDb:
                           matrizComparar?.[0].ruidoInternoDb ??
                           (par[0].visita.ruido === "silencioso" ? 34 : par[0].visita.ruido === "alto" ? 54 : 40),
@@ -368,7 +384,7 @@ function CompararComDados() {
                         nomeExibicao: comparacao.rotulos[1],
                         custoMensalTotalReais: partesDoPar[1].oficial.totalMensalConhecido ?? 0,
                         areaM2: par[1].declarados.area.valor ?? 0,
-                        deslocamentoMinDia: estimarMinutosPicoIdaVolta(eb?.centro, par[1].bairro),
+                        deslocamentoMinDia: rotinaDoDuelo?.minutosDiaOpcaoB ?? estimarMinutosPicoIdaVolta(eb?.centro, par[1].bairro),
                         ruidoInternoDb:
                           matrizComparar?.[1].ruidoInternoDb ??
                           (par[1].visita.ruido === "silencioso" ? 34 : par[1].visita.ruido === "alto" ? 54 : 40),

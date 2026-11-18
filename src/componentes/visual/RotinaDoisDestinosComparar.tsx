@@ -11,7 +11,19 @@ import { Texto } from "../Texto";
 import { useTema } from "../../tema/Tema";
 import { RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 
+/** O que a pessoa escolhe no cartão: os dois destinos, o horário e os dias presenciais. */
+export type EscolhaDaRotina = {
+  destino1Id: PoloDestinoRecife["id"];
+  destino2Id: PoloDestinoRecife["id"];
+  faixaHorario: FaixaHorarioTrajeto;
+  diasPresenciais: 20 | 12;
+};
+export const ESCOLHA_INICIAL_DA_ROTINA: EscolhaDaRotina = { destino1Id: "polo_porto_digital", destino2Id: "polo_boa_viagem", faixaHorario: "pico", diasPresenciais: 20 };
+
 type Props = {
+  /** Com estes dois, a escolha fica com quem chama (o Comparar usa a mesma no Duelo). */
+  escolha?: EscolhaDaRotina;
+  aoMudarEscolha?: (e: EscolhaDaRotina) => void;
   nomeOpcaoA: string;
   centroA: readonly [number, number] | null;
   bairroA: string | null;
@@ -27,14 +39,22 @@ export function RotinaDoisDestinosComparar({
   nomeOpcaoB,
   centroB,
   bairroB,
+  escolha,
+  aoMudarEscolha,
 }: Props) {
   const { cor } = useTema();
-  const [destino1Id, setDestino1Id] =
-    useState<PoloDestinoRecife["id"]>("polo_porto_digital");
-  const [destino2Id, setDestino2Id] =
-    useState<PoloDestinoRecife["id"]>("polo_boa_viagem");
-  const [faixaHorario, setFaixaHorario] = useState<FaixaHorarioTrajeto>("pico");
-  const [diasPresenciais, setDiasPresenciais] = useState<20 | 12>(20);
+  const [interna, setInterna] = useState<EscolhaDaRotina>(ESCOLHA_INICIAL_DA_ROTINA);
+  const atual = escolha ?? interna;
+  const { destino1Id, destino2Id, faixaHorario, diasPresenciais } = atual;
+  // Sem quem controle, atualização funcional: dois toques seguidos não se desfazem.
+  const mudar = (parte: Partial<EscolhaDaRotina>) => {
+    if (aoMudarEscolha) aoMudarEscolha({ ...atual, ...parte });
+    else setInterna((anterior) => ({ ...anterior, ...parte }));
+  };
+  const setDestino1Id = (id: PoloDestinoRecife["id"]) => mudar({ destino1Id: id });
+  const setDestino2Id = (id: PoloDestinoRecife["id"]) => mudar({ destino2Id: id });
+  const setFaixaHorario = (f: FaixaHorarioTrajeto) => mudar({ faixaHorario: f });
+  const setDiasPresenciais = (d: 20 | 12) => mudar({ diasPresenciais: d });
 
   const resultado = compararRotinaDoisDestinos({
     nomeOpcaoA,
