@@ -25,6 +25,8 @@ export type Indicador = {
   comparacao: string;
   /** O que isso pode significar para quem mora, numa frase. */
   significado: string;
+  /** Posição relativa no bairro (0–100, fração de outros prédios em condição inferior), ou null quando categórico. */
+  percentilBairro?: number | null;
   /** 0 (no meio do bairro) a 1 (num extremo): ordena os destaques. */
   forca: number;
   /** Quantos prédios do bairro entram na comparação. */
@@ -69,13 +71,14 @@ export function posicaoNoBairro(valor: number, todos: readonly number[], menorMe
   return { piores: piores / outros, melhores: melhores / outros, n: todos.length };
 }
 
-/** Classe e frase da comparação, com "k de cada 10". */
-function comparar(valor: number, todos: readonly number[], menorMelhor: boolean, bairro: string, melhorQue: string, piorQue: string): { classe: ClasseDoIndicador; comparacao: string; forca: number } {
+/** Classe e frase da comparação, com "k de cada 10" e percentil explícito (`R14`). */
+function comparar(valor: number, todos: readonly number[], menorMelhor: boolean, bairro: string, melhorQue: string, piorQue: string): { classe: ClasseDoIndicador; comparacao: string; forca: number; percentilBairro: number } {
   const p = posicaoNoBairro(valor, todos, menorMelhor);
   const forca = Math.abs(p.piores - p.melhores);
-  if (p.piores >= 0.7) return { classe: "melhor", comparacao: `${melhorQue} que ${Math.round(p.piores * 10)} de cada 10 prédios ${deBairro(bairro)}.`, forca };
-  if (p.melhores >= 0.7) return { classe: "pior", comparacao: `${piorQue} que ${Math.round(p.melhores * 10)} de cada 10 prédios ${deBairro(bairro)}.`, forca };
-  return { classe: "igual", comparacao: `Parecido com a maioria dos prédios ${deBairro(bairro)}.`, forca };
+  const percentilBairro = Math.round(p.piores * 100);
+  if (p.piores >= 0.7) return { classe: "melhor", comparacao: `${melhorQue} que ${Math.round(p.piores * 10)} de cada 10 prédios ${deBairro(bairro)}.`, forca, percentilBairro };
+  if (p.melhores >= 0.7) return { classe: "pior", comparacao: `${piorQue} que ${Math.round(p.melhores * 10)} de cada 10 prédios ${deBairro(bairro)}.`, forca, percentilBairro };
+  return { classe: "igual", comparacao: `Parecido com a maioria dos prédios ${deBairro(bairro)}.`, forca, percentilBairro };
 }
 
 function indicadorAPe(e: EntradaDosIndicadores): Indicador | null {
@@ -178,7 +181,7 @@ function indicadorChuva(e: EntradaDosIndicadores): Indicador | null {
   if (!naRua && !noCaminho) {
     // Sem registro não é "rua que não alaga": fica como o bairro, nunca "melhor".
     return {
-      id: "chuva", tema: "Alagamento", classe: "igual", forca: 0, base: total,
+      id: "chuva", tema: "Alagamento", classe: "igual", forca: 0, base: total, percentilBairro: null,
       rotulo: "Sem registro na rua",
       frase: "A Defesa Civil não tem alagamento registrado na rua nem no caminho a pé (2014–2024).",
       comparacao: k <= 1 ? `Como a grande maioria dos prédios ${deBairro(e.nomeDoBairro)}.` : `${k} de cada 10 prédios ${deBairro(e.nomeDoBairro)} têm algum registro na rua ou no caminho.`,
@@ -187,7 +190,7 @@ function indicadorChuva(e: EntradaDosIndicadores): Indicador | null {
   }
   const quando = naRua ? lista(mesesEAnos(obs).rotulos) : null;
   return {
-    id: "chuva", tema: "Alagamento", classe: fracao <= 0.3 ? "pior" : "igual", forca: Math.max(0, 0.9 - fracao), base: total,
+    id: "chuva", tema: "Alagamento", classe: fracao <= 0.3 ? "pior" : "igual", forca: Math.max(0, 0.9 - fracao), base: total, percentilBairro: null,
     rotulo: naRua ? "Rua com alagamento registrado" : "Caminho com alagamento registrado",
     frase: naRua ? `A Defesa Civil registrou alagamento na rua do prédio em ${quando}.` : "Uma rua do caminho a pé até o dia a dia tem alagamento registrado.",
     comparacao: `${k === 0 ? "Menos de 1" : k} de cada 10 prédios ${deBairro(e.nomeDoBairro)} têm algum registro assim.`,
@@ -234,4 +237,96 @@ export function indicadoresDoPredio(e: EntradaDosIndicadores): Indicador[] {
 /** Os mais fortes (fora da média do bairro), no máximo `n`. */
 export function destaquesDosIndicadores(ind: readonly Indicador[], n = 3): Indicador[] {
   return ind.filter((i) => i.classe !== "igual").sort((a, b) => b.forca - a.forca).slice(0, n);
+}
+
+export type FichaDeMetodoIndicador = {
+  medida: string;
+  unidade: string;
+  fonte: string;
+  recorte: string;
+  amostra: string;
+  limite: string;
+};
+
+const FICHAS_POR_TEMA: Record<TemaDoIndicador, Omit<FichaDeMetodoIndicador, "amostra">> = {
+  a_pe: {
+    medida: "Soma dos menores percursos a pé até mercado, farmácia e transporte",
+    unidade: "Minutos a pé pela malha viária",
+    fonte: "Prefeitura do Recife + Grande Recife (malha a pé)",
+    recorte: "Entorno conectado a partir da entrada do lote",
+    limite: "Considera percurso nas vias mapeadas; sem tempo real de semáforo.",
+  },
+  noite: {
+    medida: "Distância a pé até a parada com linha programada entre 22h e 2h",
+    unidade: "Metros a pé pela rede viária",
+    fonte: "Grande Recife / CBTU (horário programado)",
+    recorte: "Linhas com viagens previstas na madrugada",
+    limite: "Horário programado pode variar em feriados e trechos com iluminação reduzida.",
+  },
+  barulho: {
+    medida: "Distância até via principal de tráfego e local com licença sonora",
+    unidade: "Metros em linha reta do lote",
+    fonte: "Malha viária pública + Licenciamento Ambiental (Recife)",
+    recorte: "Entorno imediato das fachadas do edifício",
+    limite: "Não mede decibéis no apartamento nem vedação de janelas; visite nos horários de pico.",
+  },
+  obras: {
+    medida: "Contagem de alvarás licenciados em raio de 150 m em 24 meses",
+    unidade: "Licenças emitidas no período",
+    fonte: "Licenciamento de Obras da Prefeitura do Recife",
+    recorte: "Construção nova, acréscimo de área e demolição a até 150 m",
+    limite: "Licença emitida não comprova que a obra já começou ou foi encerrada.",
+  },
+  sol: {
+    medida: "Parcela do lote voltada ao poente e sombra de edifícios vizinhos (13h–17h)",
+    unidade: "Fração do contorno + hora de sombra no equinócio",
+    fonte: "Cadastro municipal de lotes e pavimentos + Censo 2022",
+    recorte: "Contorno do prédio, vizinhos no raio solar e arborização da quadra",
+    limite: "Andar, recuo e posição exata da janela dentro do prédio mudam a exposição interna.",
+  },
+  chuva: {
+    medida: "Histórico de chamados de alagamento na rua ou rota a pé (2014–2024)",
+    unidade: "Registros oficiais na via e trajeto",
+    fonte: "Defesa Civil do Recife (chamados 2014–2024)",
+    recorte: "Logradouro do prédio e vias da caminhada diária",
+    limite: "Ausência de chamado registrado não garante ausência de acúmulo em chuva intensa.",
+  },
+};
+
+/** Ficha de método de 6 campos por indicador (`R44` / Jupiter R28 + ATTOM R23). */
+export function fichaDeMetodoDoIndicador(i: Indicador): FichaDeMetodoIndicador {
+  return {
+    ...FICHAS_POR_TEMA[i.id],
+    amostra: `${formatarNumero(i.base)} edifícios no bairro (mínimo 20)`,
+  };
+}
+
+/** Ação prática concreta após a leitura do indicador (`R45` / Jupiter R28). */
+export function acaoPraticaDoIndicador(i: Indicador): string {
+  switch (i.id) {
+    case "a_pe":
+      return i.classe === "pior"
+        ? "Faça a pé o trajeto até o mercado ou parada mais próxima no horário em que costuma sair."
+        : "Confirme na visita por qual portaria se sai direto para a calçada do comércio e das paradas.";
+    case "noite":
+      return i.classe === "pior"
+        ? "Observe iluminação, movimento e calçadas entre a parada noturna e a portaria após 21h."
+        : "Confira o movimento ao redor da parada noturna e a visibilidade até a entrada do prédio.";
+    case "barulho":
+      return i.classe === "pior"
+        ? "Visite entre 17h30 e 19h30 e teste abrir e fechar a janela do quarto principal."
+        : "Cheque ruídos internos do próprio prédio (garagem, bombas, salão) com a janela fechada.";
+    case "obras":
+      return i.classe === "melhor"
+        ? "Mesmo com poucas licenças, observe terrenos vizinhos para checar avisos de futuro canteiro."
+        : "Pergunte na portaria sobre horários de obra próxima e veja no mapa qual fachada enfrenta o canteiro.";
+    case "sol":
+      return i.classe === "pior"
+        ? "Visite entre 15h e 17h, toque a parede voltada ao poente e veja se o condomínio permite película."
+        : "Confira na planta a posição dos quartos e teste a ventilação cruzada abrindo duas frentes.";
+    case "chuva":
+      return i.forca > 0 || i.frase.includes("registrou")
+        ? "Pergunte na portaria até onde a água sobe na rua, na rampa da garagem e nas vagas em chuva forte."
+        : "Confirme com porteiro ou vizinho se a rua ou a rampa da garagem acumulam água em maré alta com chuva.";
+  }
 }

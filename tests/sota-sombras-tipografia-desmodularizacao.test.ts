@@ -59,7 +59,12 @@ import {
   gerarPedidoDocumentosFaltantes,
   gerarRoteiroTresPerguntasSindico,
 } from "../src/dados/pacoteEspecialista";
-import { montarTextoDivergenciasParaCorretor } from "../src/componentes/dossie-v1/Indicadores";
+import { CartaoDoIndicador, montarTextoDivergenciasParaCorretor } from "../src/componentes/dossie-v1/Indicadores";
+import {
+  acaoPraticaDoIndicador,
+  fichaDeMetodoDoIndicador,
+  type Indicador,
+} from "../src/dados/dossie/indicadores";
 import { calcularAreaPoligonoM2, MapaDoLote } from "../src/componentes/dossie-v1/MapaDoLote";
 import { descreverJanelaTemporalDaBase, GavetaDeFonte } from "../src/componentes/fonte/GavetaDeFonte";
 import { Entorno } from "../src/componentes/dossie-v1/Entorno";
@@ -3732,5 +3737,95 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(salvosSrc).toContain("tabular-nums");
 
     expect((editarSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+  });
+
+  it("CartaoDoIndicador entrega percentil, acao pratica e ficha de metodo de 6 campos sem comAlfa/bordas (S95)", () => {
+    const indSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "Indicadores.tsx"),
+      "utf8",
+    );
+    expect(indSrc).not.toMatch(/\bcomAlfa\b/);
+    expect(indSrc).not.toMatch(/\bborderWidth:\s*1(?!\.)\b/);
+    expect(indSrc).toContain("tabular-nums");
+
+    const temas: Indicador["id"][] = ["a_pe", "noite", "barulho", "obras", "sol", "chuva"];
+    for (const id of temas) {
+      const mockInd: Indicador = {
+        id,
+        tema: `Tema ${id}`,
+        classe: "pior",
+        rotulo: "Rótulo exemplo",
+        frase: "Frase factual do cadastro.",
+        comparacao: "Mais próximo que 8 de cada 10 prédios.",
+        significado: "Significado prático.",
+        percentilBairro: id === "chuva" ? null : 80,
+        forca: 0.7,
+        base: 42,
+      };
+      const ficha = fichaDeMetodoDoIndicador(mockInd);
+      const acao = acaoPraticaDoIndicador(mockInd);
+      expect(Object.values(ficha).every((v) => v.trim().length > 5)).toBe(true);
+      expect(ficha.amostra).toContain("42 edifícios no bairro");
+      expect(acao.length).toBeGreaterThan(15);
+      const agregado = `${Object.values(ficha).join(" ")} ${acao}`;
+      expect(REGEX_JARGON_CAMADA1.test(agregado)).toBe(false);
+      for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(agregado)).toBe(false);
+    }
+
+    const indicadorSol: Indicador = {
+      id: "sol",
+      tema: "Sol e sombra",
+      classe: "pior",
+      rotulo: "Sol da tarde forte",
+      frase: "8 de cada 10 metros do contorno do lote dão para o poente.",
+      comparacao: "Mais sol da tarde que 9 de cada 10 prédios de Boa Viagem.",
+      significado: "Os cômodos do poente tendem a esquentar após 15h.",
+      percentilBairro: 90,
+      forca: 0.9,
+      base: 120,
+    };
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(CartaoDoIndicador, { indicador: indicadorSol }),
+        ),
+      );
+    });
+
+    const toggleCard = tree.root.find(
+      (n) =>
+        typeof n.props.onPress === "function" &&
+        typeof n.props.accessibilityLabel === "string" &&
+        n.props.accessibilityLabel.startsWith("Sol e sombra:"),
+    );
+    act(() => {
+      toggleCard.props.onPress();
+    });
+
+    let txt = extrairTextos(tree.toJSON()).join(" ");
+    expect(txt).toContain("Posição relativa: percentil 90 entre 120 prédios do bairro.");
+    expect(txt).toContain("O que fazer com isso:");
+
+    const toggleMetodo = tree.root.find((n) => n.props.testID === "indicador-toggle-metodo-sol");
+    act(() => {
+      toggleMetodo.props.onPress();
+    });
+
+    const fichaNode = tree.root.find((n) => n.props.testID === "indicador-ficha-metodo-sol");
+    expect(fichaNode).toBeDefined();
+    txt = extrairTextos(tree.toJSON()).join(" ");
+    for (const campo of ["Medida", "Unidade", "Fonte", "Recorte", "Amostra", "Limite"]) {
+      expect(txt).toContain(campo);
+    }
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+
+    act(() => {
+      tree.unmount();
+    });
   });
 });

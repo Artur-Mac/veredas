@@ -4,7 +4,7 @@ import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
 import { View } from "react-native";
 import type { Achado, Pergunta } from "../../dados/contratos";
-import type { Indicador } from "../../dados/dossie/indicadores";
+import { acaoPraticaDoIndicador, fichaDeMetodoDoIndicador, type Indicador } from "../../dados/dossie/indicadores";
 import { CATEGORIAS_DO_DIA, essenciaisDoPredio, nomeDe } from "../../dados/recife/essenciais";
 import { formatarNumero } from "../../dados/formatos";
 import { useTema } from "../../tema/Tema";
@@ -22,7 +22,18 @@ const CORES: Record<Indicador["classe"], { fundo: TokenDeCor; texto: TokenDeCor 
 export function CartaoDoIndicador({ indicador: i, aoInvestigar }: { indicador: Indicador; aoInvestigar?: (id: Indicador["id"]) => void }) {
   const { cor } = useTema();
   const [aberto, setAberto] = useState(false);
+  const [verMetodo, setVerMetodo] = useState(false);
   const c = CORES[i.classe];
+  const ficha = fichaDeMetodoDoIndicador(i);
+  const acao = acaoPraticaDoIndicador(i);
+  const linhasMetodo: readonly [string, string][] = [
+    ["Medida", ficha.medida],
+    ["Unidade", ficha.unidade],
+    ["Fonte", ficha.fonte],
+    ["Recorte", ficha.recorte],
+    ["Amostra", ficha.amostra],
+    ["Limite", ficha.limite],
+  ];
   return (
     <View style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha") }}>
       <Pressionavel
@@ -46,6 +57,14 @@ export function CartaoDoIndicador({ indicador: i, aoInvestigar }: { indicador: I
           <View style={{ gap: 6, marginTop: 4, paddingTop: 8, borderTopWidth: 1, borderTopColor: cor("cor-linha") }}>
             <Texto tipo="corpo" style={{ fontSize: 13, lineHeight: 19 }}>{i.frase}</Texto>
             <Texto tipo="corpo" cor="cor-barro-texto" style={{ fontSize: 13, lineHeight: 19 }}>{i.significado}</Texto>
+            {typeof i.percentilBairro === "number" ? (
+              <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17, fontVariant: ["tabular-nums"] }}>
+                {`Posição relativa: percentil ${i.percentilBairro} entre ${formatarNumero(i.base)} prédios do bairro.`}
+              </Texto>
+            ) : null}
+            <Texto tipo="corpo" style={{ fontSize: 12.5, lineHeight: 18 }}>
+              {`O que fazer com isso: ${acao}`}
+            </Texto>
             <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15, fontVariant: ["tabular-nums"] }}>{`Comparação com ${formatarNumero(i.base)} prédios do bairro no cadastro.`}</Texto>
           </View>
         ) : (
@@ -55,9 +74,42 @@ export function CartaoDoIndicador({ indicador: i, aoInvestigar }: { indicador: I
           </View>
         )}
       </Pressionavel>
-      {aberto && aoInvestigar ? (
-        <View style={{ paddingBottom: 8 }}>
-          <LinkComSeta rotulo="Investigar no Entorno" onPress={() => aoInvestigar(i.id)} />
+      {aberto ? (
+        <View style={{ paddingBottom: 6, gap: 6 }}>
+          <Pressionavel
+            testID={`indicador-toggle-metodo-${i.id}`}
+            onPress={() => setVerMetodo((v) => !v)}
+            accessibilityRole="button"
+            accessibilityState={{ expanded: verMetodo }}
+            style={{ minHeight: 44, justifyContent: "center" }}
+          >
+            <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 12, lineHeight: 16, fontWeight: "600" }}>
+              {verMetodo ? "Ocultar ficha de método" : "Ficha de método (6 campos)"}
+            </Texto>
+          </Pressionavel>
+          {verMetodo ? (
+            <View testID={`indicador-ficha-metodo-${i.id}`} style={{ gap: 5, paddingBottom: 4 }}>
+              {linhasMetodo.map(([rotulo, valor]) => (
+                <View
+                  key={rotulo}
+                  style={{
+                    borderTopWidth: 1,
+                    borderTopColor: cor("cor-linha"),
+                    paddingTop: 5,
+                    gap: 1,
+                  }}
+                >
+                  <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                    {rotulo}
+                  </Texto>
+                  <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 17, fontVariant: ["tabular-nums"] }}>
+                    {valor}
+                  </Texto>
+                </View>
+              ))}
+            </View>
+          ) : null}
+          {aoInvestigar ? <LinkComSeta rotulo="Investigar no Entorno" onPress={() => aoInvestigar(i.id)} /> : null}
         </View>
       ) : null}
     </View>
