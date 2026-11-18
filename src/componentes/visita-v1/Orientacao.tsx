@@ -29,7 +29,7 @@ const ATALHOS_RECIFE: readonly { graus: number; rotulo: string }[] = [
 function Bussola({ graus }: { graus: number | null }) {
   const { cor } = useTema();
   const o = graus === null ? null : orientacaoDaJanela(graus);
-  const marca = { fontSize: 10, fill: cor("cor-texto-apoio"), textAnchor: "middle" as const, fontFamily: "PlusJakartaSans" };
+  const marca = { fontSize: 10, fill: cor("cor-texto-apoio"), textAnchor: "middle" as const, fontFamily: "PlusJakartaSans", fontWeight: "600" as const };
   return (
     <Svg
       width={TAMANHO_DA_BUSSOLA}

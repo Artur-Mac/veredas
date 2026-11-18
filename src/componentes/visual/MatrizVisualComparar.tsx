@@ -137,10 +137,10 @@ export function MatrizVisualComparar({
       ]}
     >
       <View style={styles.cabecalho}>
-        <Texto tipo="etiqueta" cor="cor-azul-cadastral">
-          LADO A LADO EM 6 PONTOS
+        <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+          Lado a lado em 6 pontos
         </Texto>
-        <Texto tipo="secao" style={styles.tituloSintese}>
+        <Texto tipo="secao" style={[styles.tituloSintese, { fontWeight: "700", letterSpacing: -0.35 }]}>
           {sinteseCurta}
         </Texto>
       </View>

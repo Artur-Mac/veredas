@@ -146,8 +146,8 @@ export function TresPerguntasDoBolso({
     <View testID="tres-perguntas-do-bolso" style={styles.wrapper}>
       {/* Pergunta 1: Dinheiro na mao para entrar */}
       <View style={[styles.cartao, { backgroundColor: cor("cor-superficie"), borderColor: cor("cor-linha-forte") }]}>
-        <Texto tipo="etiqueta" cor="cor-azul-cadastral">
-          PERGUNTA 1 · DINHEIRO À VISTA PARA ENTRAR
+        <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+          Dinheiro à vista para entrar
         </Texto>
         <View style={styles.linhaTituloValor}>
           <Texto tipo="secao" style={styles.perguntaTitulo}>
@@ -198,8 +198,8 @@ export function TresPerguntasDoBolso({
 
       {/* Pergunta 2: Saida mensal real */}
       <View style={[styles.cartao, { backgroundColor: cor("cor-superficie"), borderColor: cor("cor-linha-forte") }]}>
-        <Texto tipo="etiqueta" cor="cor-azul-cadastral">
-          PERGUNTA 2 · SAÍDA REAL DO BOLSO POR MÊS
+        <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+          Saída real do bolso por mês
         </Texto>
         <View style={styles.linhaTituloValor}>
           <Texto tipo="secao" style={styles.perguntaTitulo}>
@@ -240,8 +240,8 @@ export function TresPerguntasDoBolso({
       {/* Pergunta 3: 10 anos comprar vs alugar */}
       {compra && saldo10AnosCompraVsAluguelReais !== null ? (
         <View style={[styles.cartao, { backgroundColor: cor("cor-superficie"), borderColor: cor("cor-linha-forte") }]}>
-          <Texto tipo="etiqueta" cor="cor-azul-cadastral">
-            PERGUNTA 3 · VISÃO DE 10 ANOS
+          <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+            Visão de 10 anos
           </Texto>
           <Texto tipo="secao" style={styles.perguntaTitulo}>
             Comprar vs manter capital aplicado no CDI
@@ -265,8 +265,8 @@ export function TresPerguntasDoBolso({
           testID="cascata-negociacao"
           style={[styles.cartao, { backgroundColor: cor("cor-papel-claro"), borderColor: cor("cor-acao") }]}
         >
-          <Texto tipo="etiqueta" cor="cor-barro-texto">
-            CALCULADORA DE CONTRAPROPOSTA
+          <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, fontWeight: "600" }}>
+            Calculadora de contraproposta
           </Texto>
           <Texto tipo="secao" style={styles.perguntaTitulo}>
             Argumentos com conta feita para negociar o preço

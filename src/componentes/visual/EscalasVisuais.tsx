@@ -41,10 +41,10 @@ export function EscalaDeRuidoHumana({
     >
       <View style={styles.topoRow}>
         <View style={{ flex: 1, gap: 2 }}>
-          <Texto tipo="etiqueta" cor="cor-texto-apoio">
-            BARULHO NA FACHADA E NO QUARTO
+          <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+            Barulho na fachada e no quarto
           </Texto>
-          <Texto tipo="secao" style={styles.titulo}>
+          <Texto tipo="secao" style={[styles.titulo, { fontWeight: "700", letterSpacing: -0.35 }]}>
             {silencioso
               ? `Quarto calmo à noite (~${intDb} dB)`
               : `Ruído noturno acima do conforto (~${intDb} dB)`}
@@ -148,8 +148,8 @@ export function RelogioDoPredio({
         { backgroundColor: cor("cor-superficie"), borderColor: cor("cor-linha-forte") },
       ]}
     >
-      <Texto tipo="etiqueta" cor="cor-texto-apoio">
-        RELÓGIO DO PRÉDIO E CICLO DE OBRAS
+      <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+        Relógio do prédio e ciclo de obras
       </Texto>
       <View style={styles.topoRow}>
         <Texto tipo="secao" style={styles.titulo}>

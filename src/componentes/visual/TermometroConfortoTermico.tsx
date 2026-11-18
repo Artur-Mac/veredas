@@ -46,10 +46,10 @@ export function TermometroConfortoTermico({ conforto }: Props) {
     >
       <View style={styles.topoRow}>
         <View style={styles.topoEsq}>
-          <Texto tipo="etiqueta" cor="cor-texto-apoio">
-            CONFORTO TÉRMICO NA PRÁTICA
+          <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+            Conforto térmico na prática
           </Texto>
-          <Texto tipo="secao" style={styles.perguntaTitulo}>
+          <Texto tipo="secao" style={[styles.perguntaTitulo, { fontWeight: "700", letterSpacing: -0.35 }]}>
             {conforto.perguntaTitulo}
           </Texto>
         </View>

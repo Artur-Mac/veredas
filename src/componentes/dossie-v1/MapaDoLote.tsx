@@ -422,7 +422,7 @@ export function MapaDoLote({ predio, obras, vizinhos, andar = null, modoInicial 
               <G transform={`translate(${cena.largura - 56}, ${cena.altura - 22})`}>
                 <Line x1={38} y1={10} x2={22} y2={-4} stroke={azul} strokeWidth={1.5} strokeLinecap="round" />
                 <Path d="M22 -4 L28 -3 L23 2 Z" fill={azul} />
-                <TextoSvg x={4} y={12} fill={azul} fontFamily="JetBrainsMono" fontSize={9.5} fontWeight="600">
+                <TextoSvg x={4} y={12} fill={azul} fontFamily="PlusJakartaSans" fontSize={9.5} fontWeight="600">
                   Brisa SE
                 </TextoSvg>
               </G>

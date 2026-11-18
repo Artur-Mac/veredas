@@ -75,7 +75,7 @@ export function PlacarHeroi5Segundos({
   const celulas: CelulaPlacar[] = [
     {
       id: "bolso",
-      rotulo: compra ? "VALOR PEDIDO" : "ALUGUEL + TAXAS",
+      rotulo: compra ? "Valor pedido" : "Aluguel + taxas",
       valorGrande: precoTxt,
       subtitulo: comparacaoTxt,
       corFundo: comparacaoM2Pct !== null && comparacaoM2Pct >= 10 ? "cor-barro-suave" : "cor-papel-claro",
@@ -84,7 +84,7 @@ export function PlacarHeroi5Segundos({
     },
     {
       id: "predio",
-      rotulo: compra ? "SAÍDA REAL POR MÊS" : "TOTAL MENSAL REAL",
+      rotulo: compra ? "Saída real por mês" : "Total mensal real",
       valorGrande: mensalTxt,
       subtitulo: spuAtivo ? "Terreno da União (ver regra)" : compra ? "Parcela + cond. + IPTU + luz" : "Aluguel + cond. + IPTU + luz",
       corFundo: spuAtivo ? "cor-barro-suave" : "cor-papel-claro",
@@ -93,7 +93,7 @@ export function PlacarHeroi5Segundos({
     },
     {
       id: "sol",
-      rotulo: "SOL & CONFORTO",
+      rotulo: "Sol & conforto",
       valorGrande: orientacaoCurta,
       subtitulo: conforto.selo,
       corFundo: confortoQuente ? "cor-barro-suave" : "cor-salvia-suave",
@@ -102,7 +102,7 @@ export function PlacarHeroi5Segundos({
     },
     {
       id: "ruido",
-      rotulo: "RUÍDO NO QUARTO",
+      rotulo: "Sossego à noite",
       valorGrande: `~${Math.round(ruidoDormitorioDb)} dB`,
       subtitulo: ruidoAlto ? "Acima do silêncio noturno" : "Ambiente noturno calmo",
       corFundo: ruidoAlto ? "cor-barro-suave" : "cor-azul-cadastral-suave",

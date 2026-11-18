@@ -345,10 +345,10 @@ export function CanvasSolSombraBrisa25D({
     >
       {/* Cabecalho direto */}
       <View style={styles.cabecalho}>
-        <Texto tipo="etiqueta" cor="cor-azul-cadastral">
-          SOL, SOMBRA E BRISA NO APARTAMENTO
+        <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+          Sol, sombra e brisa
         </Texto>
-        <Texto tipo="secao" style={styles.resumoTitulo}>
+        <Texto tipo="secao" style={[styles.resumoTitulo, { fontWeight: "700", letterSpacing: -0.35 }]}>
           {inferencia.resumoAutomatico}
         </Texto>
         <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.subtitulo}>
@@ -480,6 +480,7 @@ export function CanvasSolSombraBrisa25D({
                   <TextoSvg
                     x={cxBase}
                     y={cyTopo + 3}
+                    fontFamily="JetBrainsMono"
                     fontSize={8.5}
                     fontWeight="600"
                     fill={ehFutura ? cor("cor-barro-texto") : cor("cor-texto-apoio")}
@@ -548,14 +549,14 @@ export function CanvasSolSombraBrisa25D({
           {/* Rosa dos ventos compacta (Norte) */}
           <G>
             <Circle cx={SVG_W - 24} cy={24} r={14} fill={cor("cor-superficie")} stroke={cor("cor-linha-forte")} strokeWidth={1} />
-            <TextoSvg x={SVG_W - 24} y={28} fontSize={10} fontWeight="700" fill={cor("cor-texto")} textAnchor="middle">
+            <TextoSvg x={SVG_W - 24} y={28} fontFamily="PlusJakartaSans" fontSize={10} fontWeight="700" fill={cor("cor-texto")} textAnchor="middle">
               N
             </TextoSvg>
           </G>
 
           {/* Legenda canto inferior */}
           <Rect x={10} y={SVG_H - 28} width={178} height={20} rx={6} fill={cor("cor-superficie")} fillOpacity={0.92} />
-          <TextoSvg x={18} y={SVG_H - 14.5} fontSize={9.5} fontWeight="600" fill={cor("cat-mare")}>
+          <TextoSvg x={18} y={SVG_H - 14.5} fontFamily="PlusJakartaSans" fontSize={9.5} fontWeight="600" fill={cor("cat-mare")}>
             {calculoSolar.bloqueioBrisa ? "Brisa E-SE: barrada por vizinho" : "Brisa E-SE: entrando pela quadra"}
           </TextoSvg>
         </Svg>
