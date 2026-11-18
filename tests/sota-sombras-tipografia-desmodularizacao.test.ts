@@ -24,6 +24,9 @@ import { PulsoDaQuadra } from "../src/componentes/visual/PulsoDaQuadra";
 import { TresPerguntasDoBolso } from "../src/componentes/visual/TresPerguntasDoBolso";
 import { RotinaDoisDestinosComparar } from "../src/componentes/visual/RotinaDoisDestinosComparar";
 import { ExportarResumoExecutivo } from "../src/componentes/visual/ExportarResumoExecutivo";
+import { CartaoResumoCompartilhado } from "../src/componentes/comparar/CartaoResumoCompartilhado";
+import { gerarLinkPrivadoSemServidor } from "../src/dados/dossie/resumoExecutivo2Paginas";
+import { lerFragmento } from "../src/dados/salaDeDecisao";
 import { DueloFinalistas } from "../src/componentes/cidadao/DueloFinalistas";
 import { ConvergenciaFamiliar } from "../src/componentes/cidadao/ConvergenciaFamiliar";
 import { compararRotinaDoisDestinos, estimarMinutosPicoIdaVolta } from "../src/dados/mobilidade/rotinaCasal";
@@ -1136,5 +1139,82 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     const elMicro = tree.root.find((n) => n.props.testID === "vida-a-pe-micro-setor");
     expect(elMicro).toBeDefined();
     expect(extrairTextos(tree.toJSON()).join("\n")).toContain("Calçada 96%");
+  });
+
+  it("decodifica ida e volta link #v= de dossiê único na Sala sem servidor", () => {
+    const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: 90, andar: 5 });
+    const conf = avaliarConfortoTermico({
+      andar: 5,
+      pavimentosTotais: 14,
+      fachada: inf.frente,
+      bioclimatico: bio,
+    });
+    const acu = avaliarAcustica3d({
+      andar: 5,
+      fachadaVoltadaParaVia: "frente",
+      tipologiaVia: "coletora",
+      distanciaViaM: 18,
+      anoConstrucao: 2016,
+      precoImovelReais: 850_000,
+    });
+    const radar = analisarRadarVistaELote({
+      centro,
+      edificio: null,
+      fachadaAtiva: inf.frente,
+      andar: 5,
+      vizinhos: vizinhosMesmaRua,
+      obrasProximas: null,
+    });
+    const pulso = calcularPulsoDaQuadra({
+      conforto: conf,
+      acustica: acu,
+      anoConstrucao: 2016,
+      obrasProximas: null,
+      visaoRua: null,
+      vinculoConfirmado: true,
+      precoInformado: true,
+      condominioInformado: true,
+      comparacaoM2Pct: 0,
+      spuAtivo: false,
+    });
+    const link = gerarLinkPrivadoSemServidor({
+      entrada: {
+        nomeImovel: "Edifício Beira-Mar",
+        endereco: "Boa Viagem, Recife",
+        modalidade: "compra",
+        precoPrincipalReais: 850_000,
+        mensalBolsoRealReais: 6_200,
+        dinheiroEntrarReais: 195_000,
+        fachadaResumo: "Nascente (5º andar)",
+        conforto: conf,
+        sossegoNivel: "Calmo",
+        radar,
+        pulso,
+        anoConstrucao: 2016,
+        unidades: 36,
+        chaveLote14: "12345678901234",
+        spuAtivo: false,
+      },
+    });
+    const frag = link.split("#")[1]!;
+    const lido = lerFragmento(`#${frag}`);
+    expect(lido.tipo).toBe("resumo");
+    if (lido.tipo !== "resumo") throw new Error("Esperado tipo resumo");
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(CartaoResumoCompartilhado, { resumo: lido.resumo }),
+        ),
+      );
+    });
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("Dossiê resumido compartilhado");
+    expect(txt).toContain("Edifício Beira-Mar");
+    expect(txt).toContain("Nascente (5º andar)");
+    expect(txt).not.toMatch(/R\$ 0(?![\d.,])/);
   });
 });

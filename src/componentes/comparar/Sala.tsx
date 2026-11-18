@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { Platform, Share, TextInput, View } from "react-native";
 import type { AnaliseV2 } from "../../dados/contratos";
 import { formatarNumero, formatarReais } from "../../dados/formatos";
-import { fragmentoDaResposta, fragmentoDaSala, importarResposta, montarSala, REACOES, type Reacao, type RespostaDaSala, type Sala } from "../../dados/salaDeDecisao";
+import { fragmentoDaResposta, fragmentoDaSala, importarResposta, montarSala, REACOES, type Reacao, type RespostaDaSala, type ResumoCompartilhado, type Sala } from "../../dados/salaDeDecisao";
 import { useAnalises } from "../../estado/Analises";
 import { useTema } from "../../tema/Tema";
 import { comAlfa } from "../../tema/tokens";
@@ -14,6 +14,7 @@ import { Botao } from "../Botao";
 import { Nota } from "../dossie-v1/base";
 import { AlvoDeToque } from "../Pressionavel";
 import { Texto } from "../Texto";
+import { CartaoResumoCompartilhado } from "./CartaoResumoCompartilhado";
 
 /** Link da sala: na web, a origem atual + /sala#…; no aparelho, o esquema do app com ?d= (o # pode se perder). */
 export function linkDaSala(fragmento: string): string {
@@ -54,14 +55,26 @@ export function CompartilharSala({ analises }: { analises: readonly AnaliseV2[] 
 
 const valor = (v: number | null, f: (n: number) => string) => (v === null ? "A confirmar" : f(v));
 
-/** A tela do link: a outra pessoa vota; quem compartilhou importa a resposta. */
-export function TelaDaSala({ sala, resposta }: { sala: Sala | null; resposta: RespostaDaSala | null }) {
+/** A tela do link: a outra pessoa vota; quem compartilhou importa a resposta; ou exibe dossiê único #v=. */
+export function TelaDaSala({
+  sala,
+  resposta,
+  resumo = null,
+}: {
+  sala: Sala | null;
+  resposta: RespostaDaSala | null;
+  resumo?: ResumoCompartilhado | null;
+}) {
   const { cor } = useTema();
   const { lista, salvar } = useAnalises();
   const [autor, setAutor] = useState("");
   const [votos, setVotos] = useState<Record<string, { reacao: Reacao | null; nota: string }>>({});
   const [link, setLink] = useState<string | null>(null);
   const [aviso, setAviso] = useState("");
+
+  if (resumo) {
+    return <CartaoResumoCompartilhado resumo={resumo} />;
+  }
 
   if (resposta) {
     const nossas = resposta.respostas.filter((r) => lista.some((a) => a.id === r.id));
