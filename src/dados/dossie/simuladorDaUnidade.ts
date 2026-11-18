@@ -39,6 +39,50 @@ export type FonteDeBarulho = {
   rumoGraus: number;
   fonte: string;
 };
+
+export type CausaDeBarulho = {
+  id: "trafego" | "comercio" | "noturno";
+  rotulo: string;
+  nivel: "Presença próxima" | "Presença moderada" | "Sem registro próximo";
+  detalhe: string;
+};
+
+const BALDES_DE_CAUSA: readonly {
+  id: CausaDeBarulho["id"];
+  rotulo: string;
+  fontesIds: readonly FonteDeBarulho["id"][];
+}[] = [
+  { id: "trafego", rotulo: "Tráfego e transporte", fontesIds: ["via", "onibus", "metro"] },
+  { id: "comercio", rotulo: "Comércio e serviços diurnos", fontesIds: ["mercado", "oficina"] },
+  { id: "noturno", rotulo: "Movimento noturno", fontesIds: ["bar", "luse"] },
+];
+
+/**
+ * Decomposição de ruído por tipo de fonte sem afirmar dB(A) absoluto (`R10` / HowLoud R16 §6.1).
+ */
+export function decomporCausasDeBarulhoSemDb(todasFontes: readonly FonteDeBarulho[]): CausaDeBarulho[] {
+  return BALDES_DE_CAUSA.map((balde) => {
+    let maisPerto: FonteDeBarulho | null = null;
+    for (const f of todasFontes) {
+      if (!balde.fontesIds.includes(f.id)) continue;
+      if (!maisPerto || f.distanciaM < maisPerto.distanciaM) maisPerto = f;
+    }
+    if (!maisPerto) {
+      return {
+        id: balde.id,
+        rotulo: balde.rotulo,
+        nivel: "Sem registro próximo",
+        detalhe: "Nenhuma fonte mapeada no raio",
+      };
+    }
+    return {
+      id: balde.id,
+      rotulo: balde.rotulo,
+      nivel: maisPerto.distanciaM <= 80 ? "Presença próxima" : "Presença moderada",
+      detalhe: `${maisPerto.nome.split(" (")[0]} a ~${maisPerto.distanciaM} m`,
+    };
+  });
+}
 export type RelacaoComAFachada = "de_frente" | "de_lado" | "de_costas" | "sem_fachada";
 export const relacaoComAFachada = (fachada: number | null, rumoDaFonte: number): RelacaoComAFachada =>
   fachada === null ? "sem_fachada" : difAngulo(fachada, rumoDaFonte) <= 60 ? "de_frente" : difAngulo(fachada, rumoDaFonte) <= 120 ? "de_lado" : "de_costas";
@@ -86,6 +130,7 @@ export type SimulacaoDaUnidade = {
   explicacaoDaAltura: string;
   barulho: {
     fontes: (FonteDeBarulho & { relacao: RelacaoComAFachada; frase: string })[];
+    porCausa: CausaDeBarulho[];
     semFontes: boolean;
     consequenciaPorFace: string;
     decibeis: string;
@@ -103,7 +148,9 @@ export function simularUnidade(opcoes: { predio: Edificio; vizinhos: readonly Ed
   const alturaDaJanelaM = alturaDoAndarM(andar) ?? 1.6;
   const explicacaoDaAltura = tipo === "casa" || andar === 0 ? "Janela no térreo (~1,6 m do chão)." : `Janela a ~${alturaDaJanelaM.toFixed(1).replace(".", ",")} m do chão (${andar}º andar × ${METROS_POR_PAVIMENTO.toFixed(1).replace(".", ",")} m + 1,5 m).`;
 
-  const todas = fontesDeBarulho(predio).slice(0, 3);
+  const todasFontes = fontesDeBarulho(predio);
+  const todas = todasFontes.slice(0, 3);
+  const porCausa = decomporCausasDeBarulhoSemDb(todasFontes);
   const fontes = todas.map((f) => {
     const relacao = relacaoComAFachada(fachadaGraus, f.rumoGraus);
     return { ...f, relacao, frase: `${f.nome}, ${f.quando}, a ~${f.distanciaM} m para o ${nomeDaDirecao(f.rumoGraus)}: ${TEXTO_DA_RELACAO[relacao]}.` };
@@ -159,7 +206,7 @@ export function simularUnidade(opcoes: { predio: Edificio; vizinhos: readonly Ed
   return {
     alturaDaJanelaM, explicacaoDaAltura,
     barulho: {
-      fontes, semFontes: fontes.length === 0,
+      fontes, porCausa, semFontes: fontes.length === 0,
       consequenciaPorFace,
       decibeis: `Nível em dB(A): ${SEM_LEITURA} (nenhuma medição calibrada no Recife).`,
       nota: "Distâncias em linha reta, do centro do lote; dobrar a distância reduz de forma relevante o efeito da fonte. Para comparar, ouça na visita com a janela aberta e fechada, num dia útil às 18h e numa sexta à noite.",

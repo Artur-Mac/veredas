@@ -7,7 +7,7 @@ import { inferirFachadasDoEdificio } from "../src/dados/sol/inferirFachadas";
 import { simularCenaSombra25D, type PredioCena25D } from "../src/dados/sol/motorSombra25D";
 import { analisarRadarVistaELote } from "../src/dados/entorno/radarVistaELote";
 import { calcularPulsoDaQuadra } from "../src/dados/dossie/pulsoDaQuadra";
-import { fontesDeBarulho, simularUnidade } from "../src/dados/dossie/simuladorDaUnidade";
+import { decomporCausasDeBarulhoSemDb, fontesDeBarulho, simularUnidade } from "../src/dados/dossie/simuladorDaUnidade";
 import { edificiosDoBairro, META } from "../src/dados/recife/indice";
 import { montarBoletimPreContrato } from "../src/dados/recife/boletimPreContrato";
 import { BAIRROS_COBERTOS } from "../src/dados/recife/bairros";
@@ -3511,5 +3511,48 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     act(() => {
       tree.unmount();
     });
+  });
+
+  it("SimuladorDaUnidade decompoe causas de barulho sem dB e reduz para <=1 borderWidth:1 (S90)", () => {
+    const simSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "SimuladorDaUnidade.tsx"),
+      "utf8",
+    );
+    expect(simSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((simSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    expect(simSrc).toContain("tabular-nums");
+    expect(simSrc).toContain("simulador-causas-barulho");
+
+    const vazio = decomporCausasDeBarulhoSemDb([]);
+    expect(vazio).toHaveLength(3);
+    expect(vazio.every((c) => c.nivel === "Sem registro próximo")).toBe(true);
+
+    const composto = decomporCausasDeBarulhoSemDb([
+      {
+        id: "via",
+        nome: "Via principal (Av. Conselheiro Aguiar)",
+        quando: "de dia e à noite",
+        distanciaM: 55,
+        rumoGraus: 90,
+        fonte: "OSM",
+      },
+      {
+        id: "bar",
+        nome: "Bar ou venda de bebida",
+        quando: "à noite",
+        distanciaM: 140,
+        rumoGraus: 180,
+        fonte: "IBGE",
+      },
+    ]);
+    expect(composto[0]).toMatchObject({ id: "trafego", nivel: "Presença próxima" });
+    expect(composto[0]!.detalhe).toContain("55 m");
+    expect(composto[1]).toMatchObject({ id: "comercio", nivel: "Sem registro próximo" });
+    expect(composto[2]).toMatchObject({ id: "noturno", nivel: "Presença moderada" });
+    expect(composto[2]!.detalhe).toContain("140 m");
+
+    const txt = composto.map((c) => `${c.rotulo} ${c.nivel} ${c.detalhe}`).join(" ");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });
 });

@@ -160,6 +160,33 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
                   );
                 })
               )}
+              <View
+                testID="simulador-causas-barulho"
+                style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingTop: 8, marginTop: 2, gap: 6 }}
+              >
+                <Texto tipo="etiqueta" cor="cor-texto-apoio" style={{ fontSize: 11, fontWeight: "700" }}>
+                  Fontes por tipo na vizinhança
+                </Texto>
+                {s.barulho.porCausa.map((causa) => (
+                  <View key={causa.id} style={{ gap: 1 }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                      <Texto tipo="apoio" style={{ fontSize: 12.5, lineHeight: 17, fontWeight: "600", flex: 1 }}>
+                        {causa.rotulo}
+                      </Texto>
+                      <Texto
+                        tipo="apoio"
+                        cor={causa.nivel === "Presença próxima" ? "cor-barro-texto" : causa.nivel === "Presença moderada" ? "cor-azul-cadastral" : "cor-texto-apoio"}
+                        style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "700" }}
+                      >
+                        {causa.nivel}
+                      </Texto>
+                    </View>
+                    <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17, fontVariant: ["tabular-nums"] }}>
+                      {causa.detalhe}
+                    </Texto>
+                  </View>
+                ))}
+              </View>
               <Texto testID="simulador-atenuacao-distancia" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5, lineHeight: 18 }}>
                 {`${s.barulho.decibeis} ${s.barulho.nota}`}
               </Texto>
@@ -305,7 +332,7 @@ export function BateComARua({ chave }: { chave: string }) {
       {r?.resposta === "nao_bate" ? (
         <View style={{ gap: 6 }}>
           <TextInput value={motivo} onChangeText={setMotivo} maxLength={400} multiline accessibilityLabel="O que não bate (opcional)" placeholder="O que não bate? (opcional)" placeholderTextColor={cor("cor-texto-apoio")}
-            style={{ minHeight: 44, padding: 10, borderRadius: 10, borderWidth: 1, borderColor: cor("cor-linha"), color: cor("cor-texto"), fontFamily: "PlusJakartaSans", fontSize: 13 }} />
+            style={{ minHeight: 44, padding: 10, borderRadius: 10, backgroundColor: cor("cor-papel-claro"), borderBottomWidth: 1, borderBottomColor: cor("cor-linha-forte"), color: cor("cor-texto"), fontFamily: "PlusJakartaSans", fontSize: 13 }} />
           <Botao rotulo="Guardar o motivo" variante="secundario" desativado={!motivo.trim()} onPress={() => void responder("nao_bate")} />
         </View>
       ) : null}

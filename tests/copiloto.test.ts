@@ -745,6 +745,11 @@ describe("por perto no mapa, rotina personalizada, comodidades e HTML editorial"
       btnBarulho!.props.onPress?.();
     });
     expect(arvore.root.find((n) => n.props.testID === "simulador-acao-barulho")).toBeDefined();
+    expect(arvore.root.find((n) => n.props.testID === "simulador-causas-barulho")).toBeDefined();
+    const jsonBarulho = JSON.stringify(arvore.toJSON());
+    expect(jsonBarulho).toContain("Tráfego e transporte");
+    expect(jsonBarulho).toContain("Comércio e serviços diurnos");
+    expect(jsonBarulho).toContain("Movimento noturno");
 
     act(() => {
       arvore.unmount();
