@@ -92,7 +92,7 @@ export function TopoDoDossie({ predio, salva, aoVoltar, aoAlternarSalvo, aoAbrir
             animationType="fade"
             onRequestClose={() => setFotoAmpliada(null)}
           >
-            <View style={{ flex: 1, backgroundColor: "rgba(17, 17, 16, 0.96)", justifyContent: "center", alignItems: "center" }}>
+            <View style={{ flex: 1, backgroundColor: comAlfa(cor("cor-campo"), 0.96), justifyContent: "center", alignItems: "center" }}>
               {fotoAmpliada !== null && fotos[fotoAmpliada] ? (
                 <Image
                   source={{ uri: fotos[fotoAmpliada] }}
@@ -112,12 +112,12 @@ export function TopoDoDossie({ predio, salva, aoVoltar, aoAlternarSalvo, aoAbrir
                   width: 48,
                   height: 48,
                   borderRadius: 24,
-                  backgroundColor: "rgba(255,255,255,0.16)",
+                  backgroundColor: comAlfa(cor("cor-texto-campo"), 0.16),
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <Texto style={{ color: "#FFFFFF", fontSize: 20, lineHeight: 24, fontWeight: "600" }}>✕</Texto>
+                <Texto style={{ color: cor("cor-texto-campo"), fontSize: 20, lineHeight: 24, fontWeight: "600" }}>✕</Texto>
               </Pressionavel>
               {fotos.length > 1 && fotoAmpliada !== null ? (
                 <View style={{ position: "absolute", bottom: 24, flexDirection: "row", alignItems: "center", gap: 18 }}>
@@ -125,20 +125,20 @@ export function TopoDoDossie({ predio, salva, aoVoltar, aoAlternarSalvo, aoAbrir
                     onPress={() => setFotoAmpliada((p) => (p === null ? 0 : (p - 1 + fotos.length) % fotos.length))}
                     accessibilityRole="button"
                     accessibilityLabel="Foto anterior"
-                    style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.16)", alignItems: "center", justifyContent: "center" }}
+                    style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: comAlfa(cor("cor-texto-campo"), 0.16), alignItems: "center", justifyContent: "center" }}
                   >
-                    <Texto style={{ color: "#FFFFFF", fontSize: 20, lineHeight: 24 }}>‹</Texto>
+                    <Texto style={{ color: cor("cor-texto-campo"), fontSize: 20, lineHeight: 24 }}>‹</Texto>
                   </Pressionavel>
-                  <Texto style={{ color: "#FFFFFF", fontFamily: "JetBrainsMono", fontSize: 13, fontWeight: "600" }}>
+                  <Texto style={{ color: cor("cor-texto-campo"), fontFamily: "JetBrainsMono", fontSize: 13, fontWeight: "600" }}>
                     {`${fotoAmpliada + 1} / ${fotos.length}`}
                   </Texto>
                   <Pressionavel
                     onPress={() => setFotoAmpliada((p) => (p === null ? 0 : (p + 1) % fotos.length))}
                     accessibilityRole="button"
                     accessibilityLabel="Próxima foto"
-                    style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: "rgba(255,255,255,0.16)", alignItems: "center", justifyContent: "center" }}
+                    style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: comAlfa(cor("cor-texto-campo"), 0.16), alignItems: "center", justifyContent: "center" }}
                   >
-                    <Texto style={{ color: "#FFFFFF", fontSize: 20, lineHeight: 24 }}>›</Texto>
+                    <Texto style={{ color: cor("cor-texto-campo"), fontSize: 20, lineHeight: 24 }}>›</Texto>
                   </Pressionavel>
                 </View>
               ) : null}

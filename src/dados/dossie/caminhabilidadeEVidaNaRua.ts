@@ -20,6 +20,7 @@ export type ResultadoCaminhabilidadeEVida = {
   percentilNoBairro: number | null;
   amostraPredios: number;
   frasePercentil: string;
+  fraseMalhaQuadra: string;
   vidaNaRuaResumo: string;
   categorias: [
     CategoriaCaminhabilidade,
@@ -77,6 +78,8 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
       amostraPredios: 0,
       frasePercentil:
         "Amostra mínima declarada: 20 prédios com caminho medido em rede de ruas.",
+      fraseMalhaQuadra:
+        "Sem vínculo confirmado: a conectividade pelas esquinas e travessias da quadra ainda não foi medida.",
       vidaNaRuaResumo: "Sem leitura de face de quadra sem vínculo confirmado.",
       categorias: categoriasVazias,
       decomposicaoResumo:
@@ -188,6 +191,11 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
         }`
       : "Distâncias medidas em linha reta (entrada fora da rede de calçadas)";
 
+  const fraseMalhaQuadra =
+    leituraPredio.modo === "rede"
+      ? "Trajeto pela malha de quadra: os minutos consideram esquinas e ruas reais a pé, não linha reta."
+      : "Entrada fora da rede viária validada: distâncias exibidas apenas em linha reta.";
+
   return {
     notaAPe0a10,
     ausenciaNota: notaAPe0a10 === null ? "sem_leitura_publicada" : null,
@@ -195,6 +203,7 @@ export function avaliarCaminhabilidadeEVidaNaRua(params: {
     percentilNoBairro,
     amostraPredios: todosTempos.length,
     frasePercentil,
+    fraseMalhaQuadra,
     vidaNaRuaResumo,
     categorias,
     decomposicaoResumo:

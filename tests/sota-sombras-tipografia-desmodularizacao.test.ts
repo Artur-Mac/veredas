@@ -9,6 +9,7 @@ import { analisarRadarVistaELote } from "../src/dados/entorno/radarVistaELote";
 import { calcularPulsoDaQuadra } from "../src/dados/dossie/pulsoDaQuadra";
 import { fontesDeBarulho, simularUnidade } from "../src/dados/dossie/simuladorDaUnidade";
 import { edificiosDoBairro } from "../src/dados/recife/indice";
+import { essenciaisDoBairro } from "../src/dados/recife/essenciais";
 import { filtrarPrediosPorPorte, resumoDoBairroNoCadastro } from "../src/dados/recife/localizar";
 import { avaliarBioclimatico3d } from "../src/municipios/recife/motores/bioclimatico3d";
 import { avaliarConfortoTermico } from "../src/dados/clima/confortoTermico";
@@ -932,5 +933,43 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(resumo.totalEdificios).toBe(bv.length);
     expect(resumo.medianaPavimentos).toBeGreaterThan(0);
     expect(resumo.decadaPredominante).toMatch(/^anos \d{4}$/);
+  });
+
+  it("garante zero hex literal em toda a árvore UI (.tsx) e expõe malha de quadra Walk Score R8", () => {
+    const pastas = [
+      join(__dirname, "..", "src", "componentes"),
+      join(__dirname, "..", "src", "app"),
+    ];
+    const violacoesHex: string[] = [];
+    for (const pasta of pastas) {
+      for (const arquivo of listarTsxRecursivo(pasta)) {
+        const limpo = readFileSync(arquivo, "utf8")
+          .replace(/\/\*[\s\S]*?\*\//g, "")
+          .replace(/^\s*\/\/.*$/gm, "");
+        const matches = limpo.match(/#[0-9A-Fa-f]{3,8}\b/g);
+        if (matches) violacoesHex.push(`${arquivo}: ${matches.join(",")}`);
+      }
+    }
+    expect(violacoesHex).toEqual([]);
+
+    const essBv = essenciaisDoBairro("boa-viagem");
+    const bv = edificiosDoBairro("boa-viagem");
+    const predioRede = bv.find((e) => essBv?.predios[e.id]?.modo === "rede");
+    if (predioRede && essBv) {
+      const camRede = avaliarCaminhabilidadeEVidaNaRua({
+        predio: predioRede,
+        essenciais: essBv,
+        visaoRua: null,
+        nomeDoBairro: "Boa Viagem",
+      });
+      expect(camRede.fraseMalhaQuadra).toContain("malha de quadra");
+      let tree!: TestRenderer.ReactTestRenderer;
+      act(() => {
+        tree = TestRenderer.create(
+          React.createElement(TemaDoApp, null, React.createElement(VidaAPeNaQuadra, { dados: camRede })),
+        );
+      });
+      expect(tree.root.find((n) => n.props.testID === "vida-a-pe-malha-quadra")).toBeDefined();
+    }
   });
 });
