@@ -21,14 +21,14 @@ export type EntradaDueloA_B = CandidatoDecisao & {
    * A nota de sossego do modelo de ruído estimado (a mesma do placar e da matriz); `null` = sem leitura para o prédio.
    * Ausente só quando o duelo é montado sem o modelo: aí vale a palavra pelo dB do quarto.
    */
-  sossego?: { nota0a10: number; nivel: string } | null;
+  sossego?: { nota0a10: number; nivel: string; piso?: boolean } | null;
 };
 
 const sossegoDoDuelo = (o: EntradaDueloA_B): string =>
   o.sossego === undefined
     ? classificarNivelSossegoPorDbInterno(o.ruidoInternoDb).rotuloComparar
     : o.sossego
-      ? `${o.sossego.nivel} à noite (estimativa)`
+      ? `${o.sossego.nivel} à noite (estimativa${o.sossego.piso ? "; piso, sem a pista do aeroporto" : ""})`
       : "Sem leitura";
 
 export type SensibilidadeDuelo = {

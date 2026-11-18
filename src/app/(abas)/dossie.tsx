@@ -251,8 +251,9 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
         andarEscolhido,
         fachadaEscolhida: fachadaSelecionada,
         orientacaoBussolaGraus: analise.visita.orientacaoGraus,
+        tipologia: analise.tipologia,
       }),
-    [analise.declarados.andar.valor, analise.visita.orientacaoGraus, andarEscolhido, fachadaSelecionada, inferenciaFachadas, predio?.pavimentos],
+    [analise.declarados.andar.valor, analise.tipologia, analise.visita.orientacaoGraus, andarEscolhido, fachadaSelecionada, inferenciaFachadas, predio?.pavimentos],
   );
   const andarSimulado = unidade.andar;
   const fachadaAtiva = unidade.fachada;

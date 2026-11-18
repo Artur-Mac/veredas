@@ -132,8 +132,8 @@ describe("placar do topo do dossiê (R1)", () => {
       return { col: montarColunaDoComparar(a, e, derivarCustoPorPartes(a, e, PERFIL_DOMICILIO_PADRAO), "x"), r };
     };
     const [cg, ct] = [coluna(GOLDEN_TOWER, 9), coluna(DA_TORRE, 3)];
-    expect(cg.col.sossego).toEqual({ nota0a10: cg.r.notaDeSossego, nivel: cg.r.nivelDeSossego, noiteDb: cg.r.naJanela.noiteDb });
-    expect(ct.col.sossego).toEqual({ nota0a10: ct.r.notaDeSossego, nivel: ct.r.nivelDeSossego, noiteDb: ct.r.naJanela.noiteDb });
+    expect(cg.col.sossego).toEqual({ nota0a10: cg.r.notaDeSossego, nivel: cg.r.nivelDeSossego, noiteDb: cg.r.naJanela.noiteDb, piso: false });
+    expect(ct.col.sossego).toEqual({ nota0a10: ct.r.notaDeSossego, nivel: ct.r.nivelDeSossego, noiteDb: ct.r.naJanela.noiteDb, piso: false });
     expect(cg.col.sossego!.nota0a10).not.toBe(ct.col.sossego!.nota0a10);
     act(() => { a.unmount(); b.unmount(); });
   });
@@ -372,7 +372,9 @@ describe("restos do ruído", () => {
           const e = estimarRuido(p, { ...opcoes, janelaFechada: true });
           if (e.estado !== "estimado") continue;
           const acu = acusticaDaEstimativa(e, { anoConstrucao: p.anoConstrucao ?? null })!;
-          expect(acu.atendeReferenciaNoturnaNbr10151).toBe(Math.round(e.naJanela.noiteDb) <= 50);
+          // Ao lado da pista a nota é um piso e "dentro da referência" não se afirma.
+          expect(acu.atendeReferenciaNoturnaNbr10151).toBe(!e.pistaAoLado && Math.round(e.naJanela.noiteDb) <= 50);
+          expect(acu.pisoSemAPistaDoAeroporto).toBe(Boolean(e.pistaAoLado));
           if (acu.atendeReferenciaNoturnaNbr10151) {
             dentro++;
             expect(e.textos.nbr).not.toMatch(/dB a mais à noite|à noite e fica dentro dela de dia/);

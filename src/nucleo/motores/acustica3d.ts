@@ -41,6 +41,10 @@ export type EntradaAcustica3D = {
 
 export type ResultadoAcustica3D = {
   indicadorId: "IND-04";
+  /** A pista do aeroporto ao lado não entra na estimativa: os números são um piso (src/dados/ruido/ponte.ts). */
+  pisoSemAPistaDoAeroporto?: boolean;
+  /** O avião é a primeira das fontes que mais pesam na ficha do prédio (src/dados/ruido/ponte.ts). */
+  aviaoEAFontePrincipal?: boolean;
   ruidoExternoViaDbA: number;
   ruidoExternoAeronavePezrDb: number;
   ruidoExternoCombinadoDbA: number;

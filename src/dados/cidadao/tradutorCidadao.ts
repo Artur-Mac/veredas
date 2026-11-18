@@ -280,9 +280,13 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       acu
         ? // Pendência 3 do HANDOFF (19/11/2026): a manchete do avião só quando ele é a fonte que mais pesa à noite; antes
           // disparava com qualquer nível (34 dB(A) de avião contra 52 do chão).
-          acu.ruidoExternoAeronavePezrDb > 0 && acu.ruidoExternoAeronavePezrDb >= acu.ruidoExternoViaDbA
-          ? `Rota de aviões: o avião sozinho dá cerca de ${Math.round(acu.ruidoExternoAeronavePezrDb)} dB(A) estimados à noite na janela, mesmo em andares altos.`
-          : acu.atendeReferenciaNoturnaNbr10151
+          // Revisão de 19/11/2026: "a fonte que mais pesa" é a primeira da ficha do prédio (cada via conta sozinha), não a
+          // soma de tudo o que vem do chão.
+          acu.ruidoExternoAeronavePezrDb > 0 && (acu.aviaoEAFontePrincipal ?? acu.ruidoExternoAeronavePezrDb >= acu.ruidoExternoViaDbA)
+          ? `Rota de aviões: o avião sozinho dá cerca de ${Math.round(acu.ruidoExternoAeronavePezrDb)} dB(A) à noite na janela (estimativa), mesmo em andares altos.`
+          : acu.pisoSemAPistaDoAeroporto
+            ? `Ruído estimado de ~${Math.round(acu.ruidoInternoDormitorioDbA)} dB(A) no quarto à noite é um piso: a pista do aeroporto ao lado não entra na conta.`
+            : acu.atendeReferenciaNoturnaNbr10151
             ? `Estimativa noturna tranquila no quarto (~${Math.round(acu.ruidoInternoDormitorioDbA)} dB(A) com a janela fechada).`
             : `Ruído estimado de ~${Math.round(acu.ruidoInternoDormitorioDbA)} dB(A) no quarto à noite pede atenção às janelas.`
         : "Silêncio do quarto depende da fachada, distância da via e esquadrias.",

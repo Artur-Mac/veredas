@@ -21,7 +21,7 @@ export const ANDAR_SUPOSTO_SEM_CADASTRO = 4;
 /** Centro usado só para a geometria da fachada quando não há prédio nem ponto da visita (nenhuma nota sai dele). */
 const CENTRO_SEM_PONTO: [number, number] = [-34.896, -8.121];
 
-export type OrigemDoAndar = "escolhido" | "anuncio" | "suposto";
+export type OrigemDoAndar = "escolhido" | "anuncio" | "suposto" | "casa";
 export type OrigemDaFachada = "escolhida" | "bussola" | "sugerida";
 
 export type UnidadeAtiva = {
@@ -36,7 +36,9 @@ export type UnidadeAtiva = {
 /** O último andar com janela que o simulador oferece: pavimentos do cadastro menos o térreo (20 sem cadastro). */
 export const ultimoAndar = (pavimentos: number | null | undefined): number => Math.max(1, (pavimentos ?? 20) - 1);
 
-const limitar = (andar: number, pavimentos: number | null | undefined): number => Math.min(ultimoAndar(pavimentos), Math.max(1, Math.round(andar)));
+/** Entre o térreo (0) e o último andar com janela do cadastro. */
+const limitar = (andar: number, pavimentos: number | null | undefined): number => Math.min(ultimoAndar(pavimentos), Math.max(0, Math.round(andar)));
+const nomeDoAndar = (andar: number): string => (andar === 0 ? "térreo" : `${andar}º andar`);
 
 const diferencaAngular = (a: number, b: number): number => Math.abs(((a - b + 540) % 360) - 180);
 
@@ -49,6 +51,7 @@ const TEXTO_DO_ANDAR: Record<OrigemDoAndar, string> = {
   escolhido: "escolhido por você",
   anuncio: "do anúncio",
   suposto: "suposto; o anúncio não diz o andar",
+  casa: "casa",
 };
 const TEXTO_DA_FACHADA: Record<OrigemDaFachada, string> = {
   escolhida: "escolhida por você",
@@ -63,14 +66,18 @@ export function escolherUnidadeAtiva(entrada: {
   andarEscolhido?: number | null;
   fachadaEscolhida?: PapelFachada | null;
   orientacaoBussolaGraus?: number | null;
+  /** "casa" põe a janela no térreo, como o simulador (revisão de 19/11/2026). */
+  tipologia?: string | null;
 }): UnidadeAtiva {
   const { inferencia, pavimentos } = entrada;
   const [andarBruto, origemDoAndar]: [number, OrigemDoAndar] =
-    entrada.andarEscolhido != null
-      ? [entrada.andarEscolhido, "escolhido"]
-      : entrada.andarDeclarado != null
-        ? [entrada.andarDeclarado, "anuncio"]
-        : [pavimentos != null ? Math.ceil(ultimoAndar(pavimentos) / 2) : ANDAR_SUPOSTO_SEM_CADASTRO, "suposto"];
+    entrada.tipologia === "casa"
+      ? [0, "casa"]
+      : entrada.andarEscolhido != null
+        ? [entrada.andarEscolhido, "escolhido"]
+        : entrada.andarDeclarado != null
+          ? [entrada.andarDeclarado, "anuncio"]
+          : [pavimentos != null ? Math.ceil(ultimoAndar(pavimentos) / 2) : ANDAR_SUPOSTO_SEM_CADASTRO, "suposto"];
   const andar = limitar(andarBruto, pavimentos);
 
   const sugerida = inferencia.fachadas.find((f) => f.id === inferencia.fachadaSugeridaId) ?? inferencia.frente;
@@ -81,13 +88,20 @@ export function escolherUnidadeAtiva(entrada: {
       ? [fachadaMaisProxima(inferencia, entrada.orientacaoBussolaGraus), "bussola"]
       : [sugerida, "sugerida"];
 
-  const andarTexto = origemDoAndar === "suposto" && pavimentos != null ? "suposto no meio do prédio; o anúncio não diz o andar" : TEXTO_DO_ANDAR[origemDoAndar];
+  // Revisão de 19/11/2026: quando o andar foi limitado ao cadastro, a descrição diz isso, em vez de "do anúncio".
+  const limitado = Math.round(andarBruto) !== andar;
+  const andarTexto =
+    origemDoAndar === "suposto" && pavimentos != null
+      ? "suposto no meio do prédio; o anúncio não diz o andar"
+      : limitado && origemDoAndar === "anuncio"
+        ? `o anúncio diz ${nomeDoAndar(Math.round(andarBruto))}; o cadastro tem ${pavimentos} pavimentos`
+        : TEXTO_DO_ANDAR[origemDoAndar];
   return {
     andar,
     origemDoAndar,
     fachada,
     origemDaFachada,
-    descricao: `${andar}º andar (${andarTexto}) · fachada ${fachada.orientacaoSolar} (${TEXTO_DA_FACHADA[origemDaFachada]})`,
+    descricao: `${nomeDoAndar(andar)} (${andarTexto}) · fachada ${fachada.orientacaoSolar} (${TEXTO_DA_FACHADA[origemDaFachada]})`,
   };
 }
 

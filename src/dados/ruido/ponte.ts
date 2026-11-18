@@ -30,5 +30,7 @@ export function acusticaDaEstimativa(e: EstimativaDeRuido, p: { anoConstrucao: n
   // Pendência 3 do HANDOFF (19/11/2026): "dentro da referência" é a mesma comparação que o texto da NBR 10151 mostra
   // (nível da NOITE na janela, arredondado como na tela). Pela soma refeita aqui, um prédio a 50,4 dB(A) podia sair
   // "dentro" numa linha e não na outra.
-  return { ...resultado, atendeReferenciaNoturnaNbr10151: e.nbr10151.noite.diferencaDb <= 0 };
+  // Ao lado da pista a nota é um piso: "dentro da referência" não se afirma (revisão de 19/11/2026).
+  const piso = Boolean(e.pistaAoLado);
+  return { ...resultado, pisoSemAPistaDoAeroporto: piso, aviaoEAFontePrincipal: e.fontes[0]?.tipo === "aviao", atendeReferenciaNoturnaNbr10151: !piso && e.nbr10151.noite.diferencaDb <= 0 };
 }

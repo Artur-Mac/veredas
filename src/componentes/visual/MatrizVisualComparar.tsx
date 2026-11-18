@@ -17,13 +17,15 @@ export type ColunaMatrizComparar = {
   orientacaoCurta: string;
   climaSelo: string;
   confortoQuente: boolean;
+  /** Sem prédio confirmado não há fachada nem conforto: "Sem leitura" e empate no ponto. */
+  confortoSemLeitura?: boolean;
   /** dB(A) estimados no quarto à noite, com a janela fechada; `null` = sem leitura para o prédio. */
   ruidoInternoDb: number | null;
   /**
    * A nota de sossego do modelo de ruído estimado (a mesma do placar do dossiê): nota 0–10, a palavra da faixa e os
    * dB(A) estimados à noite na janela. `null` = sem leitura. Ausente só nos cartões montados sem o modelo.
    */
-  sossego?: { nota0a10: number; nivel: string; noiteDb: number } | null;
+  sossego?: { nota0a10: number; nivel: string; noiteDb: number; /** A pista do aeroporto ao lado não entra: a nota é um piso. */ piso?: boolean } | null;
   anoConstrucao: number | null;
   spuAlerta: boolean;
 };
@@ -61,8 +63,10 @@ export function fichaDaMatrizComparar(compra: boolean, comNotaDeSossego: boolean
 function linhaDeSossego(a: ColunaMatrizComparar, b: ColunaMatrizComparar): LinhaComparacao {
   if (a.sossego !== undefined && b.sossego !== undefined) {
     const criterio = "Sossego à noite";
-    const valor = (s: ColunaMatrizComparar["sossego"]) => (s ? `${s.nivel} · ${notaTexto(s.nota0a10)}` : "Sem leitura");
-    const vencedor = a.sossego && b.sossego && Math.abs(a.sossego.nota0a10 - b.sossego.nota0a10) >= VANTAGEM_NA_NOTA ? (a.sossego.nota0a10 > b.sossego.nota0a10 ? "A" : "B") : "empate";
+    const valor = (s: ColunaMatrizComparar["sossego"]) => (s ? `${s.nivel} · ${notaTexto(s.nota0a10)}${s.piso ? " (piso: sem a pista do aeroporto)" : ""}` : "Sem leitura");
+    const pelaNota = a.sossego && b.sossego && Math.abs(a.sossego.nota0a10 - b.sossego.nota0a10) >= VANTAGEM_NA_NOTA ? (a.sossego.nota0a10 > b.sossego.nota0a10 ? "A" : "B") : "empate";
+    // Uma nota que é piso não ganha o ponto: o real tende a ser mais barulhento (revisão de 19/11/2026).
+    const vencedor = (pelaNota === "A" && a.sossego?.piso) || (pelaNota === "B" && b.sossego?.piso) ? "empate" : pelaNota;
     return { criterio, valorA: valor(a.sossego), valorB: valor(b.sossego), vencedor };
   }
   const criterio = "Sossego no quarto";
@@ -135,10 +139,10 @@ export function MatrizVisualComparar({
     },
     {
       criterio: "Sol & conforto",
-      valorA: `${opcaoA.orientacaoCurta} · ${opcaoA.climaSelo}`,
-      valorB: `${opcaoB.orientacaoCurta} · ${opcaoB.climaSelo}`,
+      valorA: opcaoA.confortoSemLeitura ? "Sem leitura" : `${opcaoA.orientacaoCurta} · ${opcaoA.climaSelo}`,
+      valorB: opcaoB.confortoSemLeitura ? "Sem leitura" : `${opcaoB.orientacaoCurta} · ${opcaoB.climaSelo}`,
       vencedor:
-        opcaoA.confortoQuente !== opcaoB.confortoQuente
+        !opcaoA.confortoSemLeitura && !opcaoB.confortoSemLeitura && opcaoA.confortoQuente !== opcaoB.confortoQuente
           ? opcaoA.confortoQuente
             ? "B"
             : "A"

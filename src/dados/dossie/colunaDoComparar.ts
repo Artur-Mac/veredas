@@ -27,6 +27,7 @@ export function montarColunaDoComparar(item: AnaliseV2, ed: Edificio | null, pt:
     pavimentos: ed?.pavimentos ?? null,
     andarDeclarado: item.declarados.andar.valor,
     orientacaoBussolaGraus: item.visita.orientacaoGraus,
+    tipologia: item.tipologia,
   });
   const fac = unidade.fachada;
   // O mesmo microclima que o dossiê lê: sem ele, o selo de conforto do mesmo prédio saía diferente nas duas telas.
@@ -50,8 +51,10 @@ export function montarColunaDoComparar(item: AnaliseV2, ed: Edificio | null, pt:
     orientacaoCurta: fac.orientacaoSolar,
     climaSelo: conf.selo,
     confortoQuente: conf.zona === "quente_tarde" || conf.zona === "tende_abafar",
+    // Sem prédio confirmado a fachada sairia de um ponto inventado: o dossiê não mostra conforto, e o Comparar também não.
+    confortoSemLeitura: !ed,
     ruidoInternoDb: acu?.ruidoInternoDormitorioDbA ?? null,
-    sossego: ruido.estado === "estimado" ? { nota0a10: ruido.notaDeSossego, nivel: ruido.nivelDeSossego, noiteDb: ruido.naJanela.noiteDb } : null,
+    sossego: ruido.estado === "estimado" ? { nota0a10: ruido.notaDeSossego, nivel: ruido.nivelDeSossego, noiteDb: ruido.naJanela.noiteDb, piso: Boolean(ruido.pistaAoLado) } : null,
     anoConstrucao: ed?.anoConstrucao ?? null,
     spuAlerta: Boolean(pt.alertaMarinha),
   };

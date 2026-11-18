@@ -6,12 +6,12 @@
    "predios": 1878,
    "comLeitura": 1878,
    "vereda": {
-    "diaMediana": 66.6,
-    "diaP10": 61.5,
+    "diaMediana": 66.8,
+    "diaP10": 62.4,
     "diaP90": 70.3,
-    "noiteMediana": 59.7,
-    "noiteP10": 54.9,
-    "noiteP90": 63.4,
+    "noiteMediana": 59.9,
+    "noiteP10": 55.5,
+    "noiteP90": 63.5,
     "notaMediana": 6.9
    },
    "mapaSossego": {
@@ -25,14 +25,14 @@
     "vizinhanca": 55
    },
    "diferenca": {
-    "dia": 0.6,
-    "noite": -1.3
+    "dia": 0.8,
+    "noite": -1.1
    },
    "comAVizinhancaDoSite": {
-    "dia": 66.9,
-    "noite": 60.4,
-    "diferencaDia": 0.9,
-    "diferencaNoite": -0.6
+    "dia": 67.1,
+    "noite": 60.6,
+    "diferencaDia": 1.1,
+    "diferencaNoite": -0.4
    },
    "sobALinhaDePouso": 4,
    "dentroDaFaixa": true
@@ -253,7 +253,7 @@
     "andarDoTopo": 17
    },
    "fontes": [
-    "Aeroporto dos Guararapes, avião a ~30 m de altura, 1,1 km para o lado da linha de pouso e decolagem: ~61 dB(A) de dia · ~54 à noite (estimativa)",
+    "Aeroporto dos Guararapes, aviões passando a 1,1 km para o lado da linha de pouso e decolagem: ~61 dB(A) de dia · ~54 à noite (estimativa)",
     "Avenida Visconde de Jequitinhonha, arterial, 542 partidas de ônibus num dia útil, 220 m: ~57 dB(A) de dia · ~50 à noite (estimativa)",
     "Rua Sá e Souza, via local, 71 m: ~50 dB(A) de dia · ~41 à noite (estimativa)",
     "Avenida Boa Viagem, arterial, 544 partidas de ônibus num dia útil, 416 m: ~48 dB(A) de dia · ~41 à noite (estimativa)",
@@ -356,31 +356,31 @@
   "predios": 7203,
   "comLeitura": 7203,
   "sobALinhaDePouso": 639,
-  "comAviaoNaConta": 2304,
+  "comAviaoNaConta": 3831,
   "pistaAoLadoSemNumero": 1172,
   "ate1kmDaPista": {
    "predios": 322,
-   "comAviao": 108,
+   "comAviao": 322,
    "pistaAoLado": 214,
    "semAviaoNemAviso": 0,
    "tranquiloOuMuitoSemAviso": 0
   },
   "dia": {
    "p10": 58.2,
-   "mediana": 64.4,
-   "p90": 70.2,
-   "minimo": 45,
+   "mediana": 64.7,
+   "p90": 70.3,
+   "minimo": 50.1,
    "maximo": 78.5
   },
   "noite": {
-   "p10": 51.1,
-   "mediana": 57.8,
-   "p90": 63.7,
-   "minimo": 42,
+   "p10": 51.2,
+   "mediana": 58,
+   "p90": 63.8,
+   "minimo": 42.5,
    "maximo": 74
   },
   "nota": {
-   "p10": 5.9,
+   "p10": 5.8,
    "mediana": 7.4,
    "p90": 9.2
   }

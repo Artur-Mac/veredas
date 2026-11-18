@@ -369,7 +369,7 @@ describe("avião fora do cone de aproximação", () => {
     expect(nivelDoAviao(a.alturaEstimadaM, 0) - nivelDoAviao(a.alturaEstimadaM, 1000)).toBeCloseTo(9, 5);
   });
 
-  it("todo prédio a até 1 km da pista tem o avião na conta ou o aviso de piso; ao lado da pista, nenhum número do aeroporto", () => {
+  it("todo prédio a até 1 km da pista tem o avião na conta ou o aviso de piso; ao lado da pista, só os aviões da cabeceira, com piso", () => {
     let perto = 0, aoLado = 0;
     for (const bairro of BAIRROS_HABILITADOS) {
       if (!arquivoDoRuido(bairro)) continue;
@@ -379,10 +379,13 @@ describe("avião fora do cone de aproximação", () => {
         perto++;
         const r = estimado(estimarRuido(p));
         expect(Boolean(r.partes.doAviao) || Boolean(r.pistaAoLado)).toBe(true);
-        if (r.pistaAoLado && !aviaoNoPonto(p.centro)) {
+        // Nenhuma frase com o avião "a ~0 m de altura" (revisão de 19/11/2026).
+        expect(r.fontes.find((f) => f.tipo === "aviao")?.texto ?? "").not.toMatch(/~0 m de altura/);
+        if (r.pistaAoLado) {
           aoLado++;
-          expect(r.partes.doAviao).toBeNull();
-          expect(r.fontes.some((f) => f.tipo === "aviao")).toBe(false);
+          expect(aviaoNoPonto(p.centro)?.posicao).toBe("ao_lado_da_pista");
+          const aviao = r.fontes.find((f) => f.tipo === "aviao");
+          if (aviao) expect(aviao.texto).toMatch(/^Aeroporto dos Guararapes, aviões chegando e saindo pela cabeceira (18|36), a /);
           expect(r.textos.aeroporto).toContain("leia a nota como piso");
           expect(r.textos.nota).toContain("É um piso: a pista do aeroporto ao lado não entra.");
           expect(r.textos.placar.subtitulo).toContain("piso, sem a pista ao lado");
@@ -392,6 +395,22 @@ describe("avião fora do cone de aproximação", () => {
     }
     expect(perto).toBeGreaterThan(300);
     expect(aoLado).toBeGreaterThan(100);
+  });
+
+  it("atravessar a linha da cabeceira (de 'além da cabeceira' para 'ao lado da pista') muda menos de 1 dB", () => {
+    // Revisão de 19/11/2026: antes o avião ia de ~68 para 0 dB(A) em poucos metros nessa linha.
+    const [n, s] = [base.pista.cabeceiraNorte.lonLat, base.pista.cabeceiraSul.lonLat];
+    const kx = 111320 * Math.cos((n[1] * Math.PI) / 180), ky = 110574;
+    const [ux, uy] = [(s[0] - n[0]) * kx, (s[1] - n[1]) * ky];
+    const L = Math.hypot(ux, uy);
+    const ponto = (cab: readonly [number, number], ao: number, lado: number): [number, number] =>
+      [cab[0] + ((ux / L) * ao - (uy / L) * lado) / kx, cab[1] + ((uy / L) * ao + (ux / L) * lado) / ky];
+    for (const [cab, sentido] of [[n, 1], [s, -1]] as const) {
+      for (const lado of [300, 1100, 2000]) {
+        const passos = [-60, -30, -5, 5, 30, 60].map((m) => nivel(ponto(cab, sentido * m, lado)).db);
+        for (let i = 1; i < passos.length; i++) expect(Math.abs(passos[i]! - passos[i - 1]!)).toBeLessThan(1);
+      }
+    }
   });
 
   it("longe da pista, sem aviso de piso", () => {

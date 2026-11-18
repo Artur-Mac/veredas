@@ -295,13 +295,21 @@ describe("escolherUnidadeAtiva: a ordem de cada escolha", () => {
   const sugerida = inferencia.fachadas.find((f) => f.id === inferencia.fachadaSugeridaId)!;
   const outra = inferencia.fachadas.find((f) => f.id !== inferencia.fachadaSugeridaId)!;
 
-  it("andar: escolhido > anúncio > suposto (meio do prédio; 4º sem pavimentos), sempre entre o 1º e o último", () => {
+  it("andar: casa > escolhido > anúncio > suposto (meio do prédio; 4º sem pavimentos), entre o térreo e o último", () => {
     expect(escolherUnidadeAtiva({ inferencia, pavimentos: 20, andarDeclarado: 9, andarEscolhido: 3 })).toMatchObject({ andar: 3, origemDoAndar: "escolhido" });
     expect(escolherUnidadeAtiva({ inferencia, pavimentos: 20, andarDeclarado: 9 })).toMatchObject({ andar: 9, origemDoAndar: "anuncio" });
     expect(escolherUnidadeAtiva({ inferencia, pavimentos: 20, andarDeclarado: null })).toMatchObject({ andar: 10, origemDoAndar: "suposto" });
     expect(escolherUnidadeAtiva({ inferencia, pavimentos: null, andarDeclarado: null })).toMatchObject({ andar: ANDAR_SUPOSTO_SEM_CADASTRO, origemDoAndar: "suposto" });
-    expect(escolherUnidadeAtiva({ inferencia, pavimentos: 8, andarDeclarado: 15 }).andar).toBe(7);
-    expect(escolherUnidadeAtiva({ inferencia, pavimentos: 8, andarDeclarado: 0 }).andar).toBe(1);
+    // Revisão de 19/11/2026: andar limitado ao cadastro diz isso; térreo (0) é térreo; casa é térreo.
+    const alto = escolherUnidadeAtiva({ inferencia, pavimentos: 8, andarDeclarado: 15 });
+    expect(alto.andar).toBe(7);
+    expect(alto.descricao).toContain("7º andar (o anúncio diz 15º andar; o cadastro tem 8 pavimentos)");
+    const terreo = escolherUnidadeAtiva({ inferencia, pavimentos: 8, andarDeclarado: 0 });
+    expect(terreo.andar).toBe(0);
+    expect(terreo.descricao).toMatch(/^térreo \(do anúncio\)/);
+    const casa = escolherUnidadeAtiva({ inferencia, pavimentos: 2, andarDeclarado: null, tipologia: "casa" });
+    expect(casa).toMatchObject({ andar: 0, origemDoAndar: "casa" });
+    expect(casa.descricao).toMatch(/^térreo \(casa\)/);
   });
 
   it("fachada: escolhida > bússola aproximada à inferida > sugerida; a descrição diz a origem", () => {

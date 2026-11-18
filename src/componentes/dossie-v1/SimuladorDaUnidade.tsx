@@ -50,7 +50,7 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarInicial, 
   const { cor } = useTema();
   const maxAndar = Math.max(1, (predio.pavimentos ?? 20) - 1);
   const [tipo, setTipo] = useState<TipoDeImovel>(tipologia === "casa" ? "casa" : "apartamento");
-  const [andar, setAndar] = useState<number>(Math.min(maxAndar, Math.max(1, Math.round(andarInicial))));
+  const [andar, setAndar] = useState<number>(Math.min(maxAndar, Math.max(0, Math.round(andarInicial))));
   const [fachada, setFachada] = useState<number | null>(fachadaInicialGraus);
   const [aberto, setAberto] = useState<TopicoSimulador | null>(null);
   const s = useMemo(() => simularUnidade({ predio, vizinhos, tipo, andar, fachadaGraus: fachada }), [predio, vizinhos, tipo, andar, fachada]);
@@ -82,8 +82,8 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarInicial, 
         <Escolha ativo={tipo === "casa"} rotulo="Casa" onPress={() => setTipo("casa")} />
         {tipo === "apartamento" ? (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginLeft: 4 }} aria-label="Andar">
-            <Escolha botao ativo={false} rotulo="−" acessivel="Descer um andar" onPress={() => setAndar((a) => Math.max(1, a - 1))} />
-            <Texto tipo="numero" accessibilityLiveRegion="polite" style={{ minWidth: 74, textAlign: "center", fontSize: 14, fontWeight: "700" }}>{`${andar}º andar`}</Texto>
+            <Escolha botao ativo={false} rotulo="−" acessivel="Descer um andar" onPress={() => setAndar((a) => Math.max(0, a - 1))} />
+            <Texto tipo="numero" accessibilityLiveRegion="polite" style={{ minWidth: 74, textAlign: "center", fontSize: 14, fontWeight: "700" }}>{andar === 0 ? "Térreo" : `${andar}º andar`}</Texto>
             <Escolha botao ativo={false} rotulo="+" acessivel="Subir um andar" onPress={() => setAndar((a) => Math.min(maxAndar, a + 1))} />
           </View>
         ) : null}
