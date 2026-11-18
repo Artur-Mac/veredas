@@ -2696,4 +2696,17 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect((orientacaoSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(1);
     expect(orientacaoSrc).not.toMatch(/\bcomAlfa\b/);
   });
+
+  it("Sala e salvos eliminam comAlfa, usam cor-linha-forte e aplicam tabular-nums nos resumos (S67)", () => {
+    const salaSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "comparar", "Sala.tsx"),
+      "utf8",
+    );
+    const salvosSrc = readFileSync(join(__dirname, "..", "src", "app", "(abas)", "salvos.tsx"), "utf8");
+
+    expect(salaSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((salaSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(3);
+    expect(salvosSrc).not.toMatch(/\bcomAlfa\b/);
+    expect(salvosSrc).toContain("tabular-nums");
+  });
 });

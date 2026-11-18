@@ -9,7 +9,6 @@ import { formatarNumero, formatarReais } from "../../dados/formatos";
 import { fragmentoDaResposta, fragmentoDaSala, importarResposta, montarSala, REACOES, type Reacao, type RespostaDaSala, type ResumoCompartilhado, type Sala } from "../../dados/salaDeDecisao";
 import { useAnalises } from "../../estado/Analises";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 import { Botao } from "../Botao";
 import { Nota } from "../dossie-v1/base";
 import { AlvoDeToque } from "../Pressionavel";
@@ -114,7 +113,7 @@ export function TelaDaSala({
       {sala.imoveis.map((i) => {
         const v = votos[i.id] ?? { reacao: null, nota: "" };
         return (
-          <View key={i.id} style={{ padding: 12, borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha"), backgroundColor: cor("cor-superficie"), gap: 6 }} role="group" aria-label={i.nome}>
+          <View key={i.id} style={{ padding: 12, borderRadius: 12, borderWidth: 1, borderColor: cor("cor-linha-forte"), backgroundColor: cor("cor-superficie"), gap: 6 }} role="group" aria-label={i.nome}>
             <Texto style={{ fontWeight: "600", fontSize: 15 }}>{i.nome}</Texto>
             <Texto tipo="apoio" cor="cor-texto-apoio">{[i.bairro, i.modalidade === "compra" ? "Compra" : "Aluguel"].filter(Boolean).join(" · ")}</Texto>
             <Texto tipo="apoio" style={{ fontVariant: ["tabular-nums"], fontSize: 12 }}>
@@ -128,8 +127,8 @@ export function TelaDaSala({
                 const ativo = v.reacao === r.valor;
                 return (
                   <AlvoDeToque key={r.valor} onPress={() => setVotos((x) => ({ ...x, [i.id]: { ...v, reacao: ativo ? null : r.valor } }))} accessibilityRole="radio" accessibilityState={{ checked: ativo }} aria-checked={ativo}
-                    style={{ minHeight: 44, justifyContent: "center", paddingHorizontal: 12, borderRadius: 999, borderWidth: 1, borderColor: ativo ? cor("cor-acao") : cor("cor-linha"), backgroundColor: ativo ? comAlfa(cor("cor-acao"), 0.14) : "transparent" }}>
-                    <Texto tipo="apoio" style={{ fontWeight: "600" }}>{r.rotulo}</Texto>
+                    style={{ minHeight: 44, justifyContent: "center", paddingHorizontal: 12, borderRadius: 999, backgroundColor: ativo ? cor("cor-texto") : cor("cor-papel-claro") }}>
+                    <Texto tipo="apoio" cor={ativo ? "cor-papel-claro" : "cor-texto"} style={{ fontWeight: "600" }}>{r.rotulo}</Texto>
                   </AlvoDeToque>
                 );
               })}

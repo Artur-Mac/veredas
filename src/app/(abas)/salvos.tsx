@@ -25,7 +25,7 @@ import { useAnalises } from "../../estado/Analises";
 import { useCarteira } from "../../estado/Carteira";
 import { usePerfilDomicilio, type PerfilDoDomicilio } from "../../estado/PerfilDomicilio";
 import { useTema } from "../../tema/Tema";
-import { RAIO, comAlfa } from "../../tema/tokens";
+import { RAIO } from "../../tema/tokens";
 
 type Filtro = "todos" | Modalidade;
 
@@ -120,7 +120,7 @@ function CartaoSalvo({ analise, perfilDomicilio, aoAbrir, aoRemover, aoPrepararV
       style={{
         backgroundColor: cor("cor-superficie"),
         borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto"), 0.07),
+        borderColor: cor("cor-linha-forte"),
         borderRadius: 15,
         padding: 14,
         marginBottom: 14,
@@ -150,12 +150,12 @@ function CartaoSalvo({ analise, perfilDomicilio, aoAbrir, aoRemover, aoPrepararV
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 17 }}>
         {aluguel ? ROTULO_MENSAL_CONHECIDO : custo.principal.rotulo}
       </Texto>
-      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 18, marginTop: 4 }}>
+      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 18, marginTop: 4, fontVariant: ["tabular-nums"] }}>
         {aluguel
           ? `${custo.principal.rotulo}: ${custo.principal.valor === null ? "A confirmar" : `${formatarReais(custo.principal.valor)}/mês`}`
           : `${ROTULO_MENSAL_CONHECIDO}: ${custo.totalMensalConhecido === null ? "A confirmar" : `${formatarReais(custo.totalMensalConhecido)}/mês`}`}
       </Texto>
-      <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 11.5, lineHeight: 17, marginTop: 2 }}>
+      <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 11.5, lineHeight: 17, marginTop: 2, fontVariant: ["tabular-nums"] }}>
         {`Rotina à parte: ${resumoRotina}/mês`}
       </Texto>
       <View
@@ -224,7 +224,7 @@ function CartaoDescartado({ analise, aoRestaurar }: { analise: AnaliseV2; aoRest
       style={{
         backgroundColor: cor("cor-superficie"),
         borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto"), 0.07),
+        borderColor: cor("cor-linha-forte"),
         borderRadius: 15,
         padding: 14,
         marginBottom: 10,
@@ -234,7 +234,7 @@ function CartaoDescartado({ analise, aoRestaurar }: { analise: AnaliseV2; aoRest
       <Texto numberOfLines={2} style={{ fontSize: 14, lineHeight: 20, fontWeight: "600" }}>
         {analise.nome}
       </Texto>
-      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 17 }}>
+      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 17, fontVariant: ["tabular-nums"] }}>
         {`${rotuloDoMotivo(descarte.motivo)} · ${dataDoInstante(descarte.em)}`}
       </Texto>
       {descarte.observacao ? (
