@@ -783,6 +783,7 @@ describe("Sobre os dados", () => {
     }
     expect(t).toContain("O que lemos sozinhos vs. o que pede confirmação");
     expect(t).toContain("Versão do pacote e cobertura por camada");
+    expect(t).toContain("Ver radar do pré-contrato");
     expect(t).toContain("72 bairros do Recife");
   });
 });

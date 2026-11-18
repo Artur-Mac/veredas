@@ -17,6 +17,7 @@ import { Pressionavel } from "../componentes/Pressionavel";
 import { voltarOu } from "../componentes/Tela";
 import { Texto } from "../componentes/Texto";
 import type { Confianca, FonteDaRua, MetaDoIndice } from "../dados/contratos";
+import { montarBoletimPreContrato } from "../dados/recife/boletimPreContrato";
 import { formatarData, formatarNumero } from "../dados/formatos";
 import { BAIRROS_COBERTOS, bairroPorSlug } from "../dados/recife/bairros";
 import { META } from "../dados/recife/indice";
@@ -265,7 +266,19 @@ function ApagarMeusDados() {
 export default function SobreOsDados() {
   const { cor } = useTema();
   const [mostrarBairros, definirMostrarBairros] = useState(false);
+  const [mostrarBoletim, definirMostrarBoletim] = useState(false);
   const leitura = lerFontes();
+  const boletim =
+    "fontes" in leitura
+      ? montarBoletimPreContrato({
+          meta: {
+            geradoEm: leitura.geradoEm,
+            fontes: leitura.fontes as MetaDoIndice["fontes"],
+            fontesDaRua: leitura.fontesDaRua,
+          },
+          bairrosCobertos: BAIRROS_COBERTOS.length,
+        })
+      : null;
   return (
     <Gaveta visivel titulo="Sobre os dados públicos" aoFechar={() => voltarOu("/")}>
       <View style={{ gap: 14, paddingTop: RESPIRO_NO_TOPO_DA_GAVETA }}>
@@ -411,6 +424,41 @@ export default function SobreOsDados() {
                 </View>
               ))}
             </CaixaCreme>
+            <Botao
+              rotulo={mostrarBoletim ? "Ocultar radar do pré-contrato (Edição 1)" : "Ver radar do pré-contrato · Edição 1 (sem preço)"}
+              variante="secundario"
+              onPress={() => definirMostrarBoletim((v) => !v)}
+            />
+            {mostrarBoletim && boletim ? (
+              <CaixaCreme gap={6}>
+                <View testID="boletim-pre-contrato" style={{ gap: 6 }}>
+                  <Texto tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 11.5, fontWeight: "700" }}>
+                    {`${boletim.titulo} · ${boletim.edicao}`}
+                  </Texto>
+                  <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16 }}>
+                    {boletim.subtitulo}
+                  </Texto>
+                  {boletim.itens.map((b) => (
+                    <View
+                      key={b.numero}
+                      style={{
+                        borderTopWidth: 1,
+                        borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+                        paddingTop: 6,
+                        gap: 2,
+                      }}
+                    >
+                      <Texto tipo="etiqueta" style={{ fontSize: 11.5, fontWeight: "700" }}>
+                        {`${b.numero} · ${b.titulo}`}
+                      </Texto>
+                      <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16 }}>
+                        {b.resumo}
+                      </Texto>
+                    </View>
+                  ))}
+                </View>
+              </CaixaCreme>
+            ) : null}
           </View>
         ) : null}
 

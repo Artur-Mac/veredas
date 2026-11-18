@@ -8,7 +8,9 @@ import { simularCenaSombra25D, type PredioCena25D } from "../src/dados/sol/motor
 import { analisarRadarVistaELote } from "../src/dados/entorno/radarVistaELote";
 import { calcularPulsoDaQuadra } from "../src/dados/dossie/pulsoDaQuadra";
 import { fontesDeBarulho, simularUnidade } from "../src/dados/dossie/simuladorDaUnidade";
-import { edificiosDoBairro } from "../src/dados/recife/indice";
+import { edificiosDoBairro, META } from "../src/dados/recife/indice";
+import { montarBoletimPreContrato } from "../src/dados/recife/boletimPreContrato";
+import { BAIRROS_COBERTOS } from "../src/dados/recife/bairros";
 import { essenciaisDoBairro } from "../src/dados/recife/essenciais";
 import { filtrarPrediosPorPorte, resumoDoBairroNoCadastro } from "../src/dados/recife/localizar";
 import { avaliarBioclimatico3d } from "../src/municipios/recife/motores/bioclimatico3d";
@@ -970,6 +972,30 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
         );
       });
       expect(tree.root.find((n) => n.props.testID === "vida-a-pe-malha-quadra")).toBeDefined();
+    }
+  });
+
+  it("gera boletim numerado do pré-contrato (DataZap R27) sem valuation nem palavras proibidas", () => {
+    const bv = edificiosDoBairro("boa-viagem");
+    const bol = montarBoletimPreContrato({
+      meta: META,
+      bairrosCobertos: BAIRROS_COBERTOS.length,
+      edificiosAmostra: bv.slice(0, 25),
+    });
+    expect(bol.edicao).toContain("Edição 1");
+    expect(bol.itens).toHaveLength(4);
+    expect(bol.itens.map((i) => i.numero)).toEqual([
+      "Boletim #01",
+      "Boletim #02",
+      "Boletim #03",
+      "Boletim #04",
+    ]);
+    const texto = `${bol.titulo} ${bol.subtitulo} ${bol.itens.map((i) => `${i.titulo} ${i.resumo}`).join(" ")}`;
+    expect(texto).not.toMatch(/R\$ 0(?![\d.,])/);
+    expect(texto).not.toMatch(/\d\s*dB\b/i);
+    expect(/\bseguro\b/i.test(texto)).toBe(false);
+    for (const r of PALAVRAS_PROIBIDAS_UI) {
+      expect(r.test(texto)).toBe(false);
     }
   });
 });

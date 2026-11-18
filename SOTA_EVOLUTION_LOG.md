@@ -40,4 +40,7 @@ Branch: `feat/vereda-visual-power-overhaul`
 - [x] **S20**: Extraction Scope & Reliability Transparency (`Ownwell R50` respecting `B8`) on `sobre-os-dados.tsx` + nested container audit in `ler.tsx` and `NoImovel.tsx` (`4/4` suites, `383/383` tests).
 - [x] **S21**: Building Scale Quick Filter (`Zoneomics R35`) & Index-Backed Neighborhood Portrait Strip (`R28`) in `Explorar` (`3/3` suites, `157/157` tests).
 - [x] **S22**: Complete Elimination of Residual `#hex` / `rgba()` in UI Tree (`Topo.tsx` + global recursive test guard) & Walk Score Block Mesh Connectivity Note (`R8`) (`3/3` suites, `125/125` tests).
-- [ ] **S23**: Numbered Pre-Contract Dispatch Bulletin (`DataZap R27`, zero valuation) + full 98-suite verification + live Android/Web Metro `200` verification.
+- [x] **S23**: Numbered Pre-Contract Dispatch Bulletin (`DataZap R27`, zero valuation) + full 98-suite verification + live Android/Web Metro `200` verification (`98/98` suites, `2036/2036` tests, Android Metro `200`, Web Metro `200`).
+- [ ] **S24**: Editorial Calm Typography (zero forced `uppercase` across all `.tsx` UI files) & internal hairline demodularization inside `CaixaCreme` and `CartaoDoIndicador`.
+- [ ] **S25**: Real geodesic commute calculation in `DueloFinalistas` / dominance pruning (`rotinaCasal`) + live interactive toggles in `ConvergenciaFamiliar` + copy refinement (`"Terreno, cota e drenagem"`).
+- [ ] **S26**: Micro census-tract vs neighborhood comparison context (`NeighborhoodScout R16`) + full 98-suite + live Metro `200` verification.
