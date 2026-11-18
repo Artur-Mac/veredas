@@ -1,10 +1,10 @@
 # Fotos de "depois" do mapa-base (18/11/2026)
 
-Tiradas no commit `67cb0a44` (branch `feat/mapa-base`), servidor de desenvolvimento na porta 8098, máquina sem outro trabalho. Mesmo roteiro e mesmos nomes de `../antes/`, para comparar lado a lado.
+Tiradas depois do commit `67cb0a44` (branch `feat/mapa-base`), com as mudanças de desempenho (fundo como marcação SVG crua na web; a reabertura do mapa do lote usa a última largura medida), servidor de desenvolvimento na porta 8098, máquina sem outro trabalho. Mesmo roteiro e mesmos nomes de `../antes/`, para comparar lado a lado.
 
 - 160 capturas (`capturas.json`), todas no estado `ok`: as 144 do roteiro (13 superfícies, 4 casos, 5 exemplos, 375/360/1280 px) e 16 com `--zoom max` (gaveta-planta e por-perto, 4 casos, 360 e 1280 px; sufixo `--zoom-max`).
 - Rolagem horizontal: 0 em todas. Erros de console, requisições que falharam, requisições externas bloqueadas: 0, 0, 0.
-- Pasta: 209 arquivos, 14,7 MB (antes: 7,0 MB). **Acima da meta de ~10 MB**: as telas inteiras a 375 px somam 4,1 MB e os mapas de exemplo a 1280 px chegam a 0,6 MB cada (fundo detalhado comprime pior que a grade de antes).
+- Pasta: 182 arquivos, 12,3 MB (antes: 7,0 MB; na versão anterior desta pasta, 209 arquivos e 14,7 MB). Para pesar menos, depois de conferidas as capturas, saíram as fotos de tela inteira (`--tela.png`) das superfícies de exemplo e das miniaturas (32 arquivos); ficam as de `gaveta-planta`, `gaveta-volume`, `por-perto` e `predio`. Ainda acima da meta de ~10 MB: os mapas de exemplo a 1280 px chegam a 0,6 MB cada (fundo detalhado comprime pior que a grade de antes).
 
 ## Como rodar de novo
 
@@ -16,7 +16,7 @@ Tiradas no commit `67cb0a44` (branch `feat/mapa-base`), servidor de desenvolvime
 
 ## Superfícies
 
-Antes: `../antes/<superficie>--<caso>--<largura>--claro.png`. Depois: `./<superficie>--<caso>--<largura>--claro.png` (e `--tela.png` a 375 px).
+Antes: `../antes/<superficie>--<caso>--<largura>--claro.png`. Depois: `./<superficie>--<caso>--<largura>--claro.png` (e `--tela.png` a 375 px, só em gaveta-planta, gaveta-volume, por-perto e predio).
 
 | Superfície | O que mudou | SVG antes | SVG depois (fundo) |
 |---|---|---|---|
@@ -35,10 +35,12 @@ Antes: `../antes/<superficie>--<caso>--<largura>--claro.png`. Depois: `./<superf
 
 | | Antes (toque ao mapa) | Depois 1ª abertura com fundo / sem | Depois 2ª abertura com fundo / sem | Custo do fundo 1ª / 2ª |
 |---|---|---|---|---|
-| Gaveta | 282,6 ms | 414,2 / 275,1 ms (pior 445,9) | 316,8 / 242,0 ms | 139,1 / **74,8 ms** (portão 50) |
-| Por perto | 183,4 ms | 909,2 / 181,1 ms (pior 1.006,5) | 269,1 / 147,3 ms | 728,1 / **121,8 ms** (portão 80) |
+| Gaveta | 282,6 ms | 412,2 / 272,7 ms (pior 428,0) | 260,0 / 240,8 ms | 139,5 / **19,2 ms** (portão 50: verde) |
+| Por perto | 183,4 ms | 886,9 / 178,4 ms (pior 983,4) | 159,9 / 141,3 ms | 708,5 / **18,6 ms** (portão 80: verde) |
 
-Etapas (mediana da soma por abertura). Gaveta, 1ª: ler 0 (0 vezes; os arquivos já vieram na pré-carga), montar 12,3 ms (1 vez), desenhar 101,4 ms (1 vez); 2ª: só desenhar, 3,5 ms. Por perto, 1ª: ler 14,4 ms (4 vezes), montar 28,8 ms (1), desenhar 120,4 ms (1); 2ª: só desenhar, 5,7 ms.
+Etapas (mediana da soma por abertura). Gaveta, 1ª: ler 0 (0 vezes; os arquivos já vieram na pré-carga), montar 12,0 ms (1 vez), desenhar 91,0 ms (1 vez); 2ª: só desenhar, 24,5 ms. Por perto, 1ª: ler 14,9 ms (4 vezes), montar 28,4 ms (1), desenhar 114,4 ms (1); 2ª: só desenhar, 21,6 ms. Na 2ª abertura "desenhar" subiu (era 3,5 e 5,7 ms) sem o custo subir: com a largura lembrada, o fundo entra no mesmo render que o mapa, e a marca, que começa nesse render, passa a incluir o desenho do mapa inteiro; antes o fundo vinha num render separado, depois do onLayout, e o tempo até ele ficava fora da marca.
+
+Versão anterior desta pasta (commit `67cb0a44`, sem as mudanças de desempenho): custo do fundo 74,8 ms na gaveta e 121,8 ms no Por perto (2ª abertura). Perfil (CPU 4×, 2ª abertura, Performance.getMetrics): o fundo somava ~44 ms de script na gaveta e ~37 ms no Por perto (criar pelo React e pelo react-native-svg dezenas de elementos), estilo e leiaute ~3 a 10 ms, e o resto era espera de quadro: o fundo só era pedido depois do onLayout do mapa, num segundo render. Rodadas de conferência fora desta pasta (`.cache/noite-mapa-base/desempenho-final/medir1` e `medir2`): 27,4 / 18,9 ms e 16,0 / 14,1 ms.
 
 ## Sem rede (`offline.json`)
 

@@ -1,5 +1,5 @@
 {
- "geradoEm": "2026-11-18T08:16:48.068Z",
+ "geradoEm": "2026-11-18T08:48:57.824Z",
  "base": "http://localhost:8098",
  "caso": "golden-tower",
  "largura": 375,
@@ -11,14 +11,14 @@
    "fundoDoMapa": [
     {
      "tipo": "measure",
-     "inicio": 891.4,
-     "duracao": 7.4,
+     "inicio": 916.2,
+     "duracao": 7.8,
      "detalhe": null
     },
     {
      "tipo": "measure",
-     "inicio": 989.1,
-     "duracao": 4.3,
+     "inicio": 1033.2,
+     "duracao": 2.8,
      "detalhe": null
     }
    ]
@@ -31,14 +31,14 @@
    "fundoDoMapa": [
     {
      "tipo": "measure",
-     "inicio": 891.4,
-     "duracao": 7.4,
+     "inicio": 916.2,
+     "duracao": 7.8,
      "detalhe": null
     },
     {
      "tipo": "measure",
-     "inicio": 989.1,
-     "duracao": 4.3,
+     "inicio": 1033.2,
+     "duracao": 2.8,
      "detalhe": null
     }
    ],
@@ -52,14 +52,14 @@
    "fundoDoMapa": [
     {
      "tipo": "measure",
-     "inicio": 891.4,
-     "duracao": 7.4,
+     "inicio": 916.2,
+     "duracao": 7.8,
      "detalhe": null
     },
     {
      "tipo": "measure",
-     "inicio": 989.1,
-     "duracao": 4.3,
+     "inicio": 1033.2,
+     "duracao": 2.8,
      "detalhe": null
     }
    ],
@@ -74,10 +74,7 @@
     "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/imbiribeira.aced4ef8b1a0a660.json",
     "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/jordao.d8a22c239bafa7ad.json",
     "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/cidade.1bbd9861150bc7b9.json",
-    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/ibura.147a6aecb17d304e.json",
-    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/imbiribeira.aced4ef8b1a0a660.json",
-    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/jordao.d8a22c239bafa7ad.json",
-    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/cidade.1bbd9861150bc7b9.json"
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/ibura.147a6aecb17d304e.json"
    ]
   },
   {
