@@ -1,3 +1,4 @@
+import { FATOR_DE_DESVIO_DA_LINHA_RETA } from "../../dados/mobilidade/rotinaCasal";
 import { View } from "react-native";
 import { classificarNivelSossegoPorDbInterno } from "../../dados/acustica/decomporSossego";
 import type { CandidatoDecisao } from "../../dados/cidadao/dominanciaInvisivel";
@@ -104,12 +105,22 @@ function linhaDiferenca(rotulo: string, valA: string, valB: string, igual: boole
   return { rotulo, valA, valB, igual };
 }
 
-export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; opcaoB: EntradaDueloA_B }) {
+export function DueloFinalistas({
+  opcaoA,
+  opcaoB,
+  destinoDoTrajeto = "Recife Antigo",
+}: {
+  opcaoA: EntradaDueloA_B;
+  opcaoB: EntradaDueloA_B;
+  /** Para onde o tempo de trajeto foi contado (um destino só). A tela diz, para não se confundir com a rotina de dois destinos. */
+  destinoDoTrajeto?: string;
+}) {
   const { cor } = useTema();
 
   const linhas = [
     linhaDiferenca(
-      "Custo em 10 anos / mês",
+      // Revisão de 19/11/2026: o rótulo dizia "Custo em 10 anos / mês", mas o número é o mensal conhecido do anúncio.
+      "Mensal conhecido (do anúncio)",
       `R$ ${Math.round(opcaoA.custoMensalTotalReais).toLocaleString("pt-BR")}/mês`,
       `R$ ${Math.round(opcaoB.custoMensalTotalReais).toLocaleString("pt-BR")}/mês`,
       Math.abs(opcaoA.custoMensalTotalReais - opcaoB.custoMensalTotalReais) < 50,
@@ -136,11 +147,19 @@ export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; o
       opcaoB.situacaoDocumentalResumo,
       opcaoA.situacaoDocumentalResumo === opcaoB.situacaoDocumentalResumo,
     ),
+    // Revisão de 19/11/2026: tempo e área eram uma linha só ("96 min/dia · 112 m²") e o destino não era dito; o cartão da
+    // rotina de dois destinos, logo acima, dava outro vencedor sem a tela explicar por quê.
     linhaDiferenca(
-      "Rotina e deslocamento",
-      `${Math.round(opcaoA.deslocamentoMinDia)} min/dia · ${Math.round(opcaoA.areaM2)} m²`,
-      `${Math.round(opcaoB.deslocamentoMinDia)} min/dia · ${Math.round(opcaoB.areaM2)} m²`,
-      Math.abs(opcaoA.deslocamentoMinDia - opcaoB.deslocamentoMinDia) < 5 && Math.abs(opcaoA.areaM2 - opcaoB.areaM2) < 4,
+      `Ida e volta até ${destinoDoTrajeto}, no pico (estimativa)`,
+      `~${Math.round(opcaoA.deslocamentoMinDia)} min/dia`,
+      `~${Math.round(opcaoB.deslocamentoMinDia)} min/dia`,
+      Math.abs(opcaoA.deslocamentoMinDia - opcaoB.deslocamentoMinDia) < 5,
+    ),
+    linhaDiferenca(
+      "Área anunciada",
+      `${Math.round(opcaoA.areaM2)} m²`,
+      `${Math.round(opcaoB.areaM2)} m²`,
+      Math.abs(opcaoA.areaM2 - opcaoB.areaM2) < 4,
     ),
   ];
 
@@ -149,7 +168,7 @@ export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; o
   const sinteseTroca = trocaCustoTempo(
     [opcaoA.nomeExibicao, opcaoB.nomeExibicao],
     [Math.round(opcaoA.custoMensalTotalReais), Math.round(opcaoB.custoMensalTotalReais)],
-    [0, 0],
+    [opcaoA.itensPendentesCusto?.length ?? 0, opcaoB.itensPendentesCusto?.length ?? 0],
     [Math.round(opcaoA.deslocamentoMinDia), Math.round(opcaoB.deslocamentoMinDia)],
     22,
   );
@@ -233,6 +252,9 @@ export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; o
           style={{ fontSize: 12.5, lineHeight: 18, fontWeight: "600", fontVariant: ["tabular-nums"] }}
         >
           {sinteseTroca.frase}
+        </Texto>
+        <Texto testID="duelo-metodo-do-trajeto" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>
+          {`O trajeto aqui é só até ${destinoDoTrajeto}, em linha reta × ${String(FATOR_DE_DESVIO_DA_LINHA_RETA).replace(".", ",")} (estimativa, 22 dias por mês). Com outros destinos o resultado muda: escolha os seus na rotina de dois destinos.`}
         </Texto>
         {sinteseTroca.tipo === "troca" ? (
           <Texto
