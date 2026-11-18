@@ -2215,4 +2215,49 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });
+
+  it("abre gaveta de base legal e fórmulas (Decreto-Lei nº 2.398/1987 e 180 dias) em TresPerguntasDoBolso em S49", () => {
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(TresPerguntasDoBolso, {
+            modalidade: "compra",
+            nomeImovel: "Residencial Mar Azul",
+            enderecoImovel: "Boa Viagem",
+            precoAnuncioReais: 850_000,
+            aluguelAnunciadoReais: null,
+            condominioMensalReais: 950,
+            iptuMensalReais: 260,
+            prestacaoEstimadaReais: 5_100,
+            entradaReais: 170_000,
+            itbiReais: 10_000,
+            cartorioRegistroReais: 6_500,
+            spuAnualReais: 2_400,
+            custoMensalArReais: 140,
+            economiaLegalItbiCartorioReais: 15_000,
+            descontoRuidoReais: 0,
+            vplCalorPoenteReais: 0,
+            riscoManutencaoPredioReais: 0,
+            excedenteMedianaM2Reais: 0,
+            saldo10AnosCompraVsAluguelReais: 120_000,
+          }),
+        ),
+      );
+    });
+
+    const toggle = tree.root.find((n) => n.props.testID === "bolso-metodo-toggle");
+    expect(toggle).toBeDefined();
+    act(() => {
+      toggle.props.onPress();
+    });
+    expect(tree.root.find((n) => n.props.testID === "bolso-ficha-metodo")).toBeDefined();
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("Decreto-Lei nº 2.398/1987");
+    expect(txt).toContain("180 dias");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+  });
 });

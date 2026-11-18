@@ -60,6 +60,7 @@ export function TresPerguntasDoBolso({
   const { cor } = useTema();
   const [copiado, setCopiado] = useState(false);
   const [verChecklistIptu, setVerChecklistIptu] = useState(false);
+  const [verMetodoBolso, setVerMetodoBolso] = useState(false);
 
   const compra = modalidade === "compra";
   const baseMensal = compra ? prestacaoEstimadaReais : (aluguelAnunciadoReais ?? 0);
@@ -354,6 +355,39 @@ export function TresPerguntasDoBolso({
         </View>
       ) : null}
 
+      {/* Base legal e formulas (Ownwell app30 §6.2 + Symbium R41 + Jupiter R44) */}
+      <View style={[styles.faixaMetodo, { borderTopColor: cor("cor-linha") }]}>
+        <Pressable
+          testID="bolso-metodo-toggle"
+          accessibilityRole="button"
+          accessibilityState={{ expanded: verMetodoBolso }}
+          onPress={() => setVerMetodoBolso((v) => !v)}
+          style={styles.botaoChecklistIptu}
+        >
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoChecklistIptu}>
+            {verMetodoBolso
+              ? "Ocultar base legal e fórmulas de custo"
+              : "Como calculamos impostos, entrada e horizonte de 10 anos"}
+          </Texto>
+        </Pressable>
+        {verMetodoBolso ? (
+          <View testID="bolso-ficha-metodo" style={styles.blocoMetodo}>
+            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
+              • ITBI Recife (CTM / LC nº 227/2026): 1% sobre a parcela financiada pelo SFH e 1,8% sobre recursos próprios pagando em até 180 dias (alíquota cheia de 3% fora do prazo).
+            </Texto>
+            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
+              • Terreno da União (Decreto-Lei nº 2.398/1987 e Leis nº 13.139/2015 e 13.240/2015): foro anual (0,6%) ou ocupação (2%) calculados apenas sobre a fração ideal do terreno, excluídas as benfeitorias.
+            </Texto>
+            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
+              • Saída mensal e 10 anos: financiamento referencial Tabela Price com 20% de entrada e comparação líquida contra aplicação no CDI.
+            </Texto>
+            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
+              • Limite: simulação educativa local neste aparelho; confirme valores finais na guia oficial da Prefeitura do Recife, cartório e agente financeiro.
+            </Texto>
+          </View>
+        ) : null}
+      </View>
+
       {/* Rodape CTA unico */}
       <View style={[styles.rodapeCta, { borderTopColor: cor("cor-linha") }]}>
         <Pressable
@@ -503,5 +537,14 @@ const styles = StyleSheet.create({
   textoChecklistIptu: {
     fontSize: 12,
     fontWeight: "600",
+  },
+  faixaMetodo: {
+    borderTopWidth: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+  },
+  blocoMetodo: {
+    paddingBottom: 10,
+    gap: 4,
   },
 });
