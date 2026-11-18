@@ -62,18 +62,17 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
     expect(calcularTetoReajusteSpu(0.045)).toBe(0.1006);
   });
 
-  test("Otimizador ITBI + TJPE (Art. 52 CTMR / Art. 290 LRP) reproduz exatamente cenários de R$ 650 mil e limites SFH 2026", () => {
+  test("Otimizador do ITBI (arts. 52 e 55 do Código Tributário do Recife) reproduz os cenários de R$ 650 mil e o limite do SFH de 2026, sem valor de cartório", () => {
     expect(TETO_SFH_RECIFE_2026_REAIS).toBe(1_036_600.71);
 
     const sim = simularOtimizacaoItbiRecife({
       precoImovelReais: 650_000,
       financiamentoSfh: true,
       percentualFinanciado: 0.8,
-      primeiroImovelResidencialSfh: true,
     });
 
     expect(sim.semOrientacao3Pct.itbiReais).toBe(19_500);
-    expect(sim.semOrientacao3Pct.totalFechamentoReais).toBe(36_151.97);
+    expect(sim.semOrientacao3Pct.escrituraERegistroReais).toBeNull();
     expect(sim.semOrientacao3Pct.prazoLegalDias).toBeNull();
 
     expect(sim.aVistaTempestivo18Pct.itbiReais).toBe(11_700);
@@ -83,8 +82,9 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
     expect(sim.sfhOtimizado1Pct).not.toBeNull();
     expect(sim.sfhOtimizado1Pct!.itbiReais).toBe(7_540);
     expect(sim.sfhOtimizado1Pct!.prazoLegalDias).toBe(180);
-    expect(sim.sfhOtimizado1Pct!.totalFechamentoReais).toBe(12_724.82);
-    expect(sim.economiaSfhReais).toBe(23_427.15);
+    expect(sim.sfhOtimizado1Pct!.escrituraERegistroReais).toBeNull();
+    expect(sim.economiaSfhReais).toBe(11_960);
+    expect(sim.melhorCenarioEconomiaReais).toBe(11_960);
     expect(sim.notaBaseDeCalculoLc227).toMatch(/Lei Complementar federal 227\/2026, de 13\/01\/2026, mudou o art\. 38 do Código Tributário Nacional/);
     expect(sim.notaBaseDeCalculoLc227).toMatch(/Lei 19\.490\/2026/);
     expect(sim.notaBaseDeCalculoLc227).not.toMatch(/Tema 1\.124|Tema 1\.113|ônus da prova/);
@@ -236,7 +236,7 @@ describe("Milestone 3 — SPU Estatutário, Estrutura/Condomínio e Econometria/
 
     expect(partes.alertaMarinha?.laudemioReferencia5PctReais).toBe(15_300);
     expect(partes.spuEstatutario?.foroMensalReais).toBe(153);
-    expect(partes.otimizacaoFechamento?.economiaSfhReais).toBe(23_427.15);
+    expect(partes.otimizacaoFechamento?.economiaSfhReais).toBe(11_960);
     expect(partes.estruturaECondominio?.classeAgressividade).toBe("CAA-IV");
   });
 });

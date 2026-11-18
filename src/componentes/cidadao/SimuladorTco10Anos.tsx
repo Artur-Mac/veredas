@@ -7,7 +7,7 @@ import { Texto } from "../Texto";
 /**
  * Simulador de Custo Total de Propriedade (TCO) em 10 anos — Compra vs. Aluguel Equivalente:
  * Inclui custo de oportunidade da entrada/ITBI pelo CDI, encargos SPU sobre o terreno,
- * economia legal de ITBI/cartório e risco de rateio extraordinário de fachada/impermeabilização.
+ * economia legal de ITBI e risco de rateio extraordinário de fachada/impermeabilização.
  */
 
 export type EntradaTco10Anos = {
@@ -224,7 +224,7 @@ export function SimuladorTco10Anos({ entrada }: { entrada: EntradaTco10Anos }) {
         </Texto>
         {entrada.economiaOtimizacaoTributariaReais ? (
           <Texto tipo="apoio" cor="cor-salvia-escura" style={{ fontSize: 12 }}>
-            {`Inclui potencial economia tributária de R$ ${Math.round(entrada.economiaOtimizacaoTributariaReais).toLocaleString("pt-BR")} no fechamento.`}
+            {`Economia possível de ITBI no fechamento: até R$ ${Math.round(entrada.economiaOtimizacaoTributariaReais).toLocaleString("pt-BR")} (escritura e registro a confirmar no cartório).`}
           </Texto>
         ) : null}
       </View>

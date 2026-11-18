@@ -2,7 +2,14 @@
 // oficial confirma fica; o que diverge é corrigido; o que não se confirmou sai da tela. Estes testes prendem as mudanças
 // de cálculo e de texto que a conferência pediu.
 import { describe, expect, test } from "@jest/globals";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import React from "react";
+import TestRenderer, { act } from "react-test-renderer";
 import { ITBI_MAXIMO, ITBI_MINIMO, placarDoPar, type ExtrasDoPlacar } from "../src/componentes/comparar/placarDoPar";
+import { SimuladorBolso15Segundos } from "../src/componentes/visual/SimuladorBolso15Segundos";
+import { TresPerguntasDoBolso, type PropsTresPerguntasDoBolso } from "../src/componentes/visual/TresPerguntasDoBolso";
+import { TemaDoApp } from "../src/tema/Tema";
 import { traduzirIndicadoresCidadao, type EntradaTradutorCidadao } from "../src/dados/cidadao/tradutorCidadao";
 import { ITBI_ALIQUOTA_MAXIMA, ITBI_ALIQUOTA_MINIMA, estimarTransferencia, type CustoPorPartes } from "../src/dados/custoPorPartes";
 import {
@@ -112,5 +119,114 @@ describe("ficha do ITBI no tradutor (IND-07)", () => {
     );
     const tudo = JSON.stringify(ind07);
     expect(tudo).not.toMatch(/30 dias|90 dias|tempestivo/);
+  });
+});
+
+const fonteDe = (...partes: string[]) => readFileSync(join(__dirname, "..", "src", ...partes), "utf8");
+
+function textos(node: TestRenderer.ReactTestRendererJSON | TestRenderer.ReactTestRendererJSON[] | null): string {
+  if (!node) return "";
+  if (Array.isArray(node)) return node.map(textos).join(" ");
+  return (node.children ?? []).map((c) => (typeof c === "string" ? c : textos(c))).join(" ");
+}
+
+function montar(elemento: React.ReactElement): TestRenderer.ReactTestRenderer {
+  let arvore!: TestRenderer.ReactTestRenderer;
+  act(() => {
+    arvore = TestRenderer.create(React.createElement(TemaDoApp, null, elemento));
+  });
+  return arvore;
+}
+
+const PROPS_BOLSO: PropsTresPerguntasDoBolso = {
+  modalidade: "compra",
+  nomeImovel: "Apartamento de teste",
+  enderecoImovel: "Graças",
+  precoAnuncioReais: 650_000,
+  aluguelAnunciadoReais: null,
+  condominioMensalReais: 1_050,
+  iptuMensalReais: 300,
+  prestacaoEstimadaReais: 4_800,
+  entradaReais: 130_000,
+  itbiReais: 7_540,
+  spuAnualReais: 0,
+  custoMensalArReais: 180,
+  economiaLegalItbiReais: 11_960,
+  descontoRuidoReais: 0,
+  vplCalorPoenteReais: 0,
+  riscoManutencaoPredioReais: 0,
+  excedenteMedianaM2Reais: 0,
+};
+
+describe("cartório: sem valor calculado por proporção; a economia é só de ITBI (Ato TJPE 1.556/2025 tem teto)", () => {
+  test("nenhum cenário traz valor de escritura e registro, em nenhuma faixa de preço", () => {
+    for (const precoImovelReais of [150_000, 278_000, 650_000, 1_300_000, 3_000_000]) {
+      const sim = simularOtimizacaoItbiRecife({ precoImovelReais, financiamentoSfh: true });
+      for (const cenario of [sim.semOrientacao3Pct, sim.aVistaTempestivo18Pct, sim.sfhOtimizado1Pct!]) {
+        expect(cenario.escrituraERegistroReais).toBeNull();
+        expect(cenario).not.toHaveProperty("emolumentosERegistroReais");
+        expect(cenario).not.toHaveProperty("totalFechamentoReais");
+      }
+      // A economia do pedido no prazo é a diferença entre 3% e 1,8% do preço, e nada mais.
+      expect(sim.economiaAVistaTempestivoReais).toBeCloseTo(precoImovelReais * 0.012, 2);
+    }
+  });
+
+  test("R$ 650 mil com 80% financiado: a economia era R$ 23.427,15 (com cartório por proporção) e passa a R$ 11.960 (só ITBI)", () => {
+    const sim = simularOtimizacaoItbiRecife({ precoImovelReais: 650_000, financiamentoSfh: true, percentualFinanciado: 0.8 });
+    expect(sim.economiaAVistaTempestivoReais).toBe(7_800);
+    expect(sim.economiaSfhReais).toBe(11_960);
+    expect(sim.melhorCenarioEconomiaReais).toBe(11_960);
+    expect(sim.economiaSfhReais).toBe(sim.semOrientacao3Pct.itbiReais - sim.sfhOtimizado1Pct!.itbiReais);
+    expect(sim.ressalvaLegalConselhos).toMatch(/não inclui escritura e registro \(tabela do TJPE, Ato nº 1\.556\/2025, a confirmar no cartório\)/);
+  });
+
+  test("o motor não guarda mais os valores de R$ 16.651,97 e R$ 5.184,82 nem a proporção sobre R$ 650 mil", () => {
+    const motor = fonteDe("municipios", "recife", "motores", "econometriaItbi.ts");
+    expect(motor).not.toMatch(/16[._]651|5[._]184|650_000/);
+  });
+
+  test("a ficha do IND-07 fala de economia de ITBI e deixa o cartório a confirmar", () => {
+    const ind07 = cartao(cartoes({ otimizacaoFechamento: simularOtimizacaoItbiRecife({ precoImovelReais: 650_000, financiamentoSfh: true }) }), "IND-07");
+    expect(ind07.tituloCurto).toBe("Economia de ITBI e base de preço");
+    expect(ind07.camada1Manchete).toBe(
+      "Planejamento correto de prazo e financiamento economiza até R$ 11.960 de ITBI; escritura e registro ficam a confirmar no cartório.",
+    );
+    expect(ind07.camada3ProvaMetodo.metodo6Campos.oQueMede).not.toMatch(/emolumentos/);
+    expect(ind07.camada3ProvaMetodo.metodo6Campos.fontePrimaria).toMatch(/a confirmar no cartório/);
+  });
+
+  test("no bolso, o dinheiro para entrar é entrada + ITBI e o cartório aparece como a confirmar, sem valor", () => {
+    const arvore = montar(React.createElement(TresPerguntasDoBolso, PROPS_BOLSO));
+    const texto = textos(arvore.toJSON());
+    expect(texto).toContain("Dinheiro à vista para entrar (sem cartório)");
+    expect(texto).toContain("Entrada (20%): R$ 130 mil");
+    expect(texto).toContain("Imposto (ITBI): R$ 7.540");
+    // R$ 130.000 de entrada + R$ 7.540 de ITBI = R$ 137.540; antes o total somava também o cartório por proporção.
+    expect(texto).toContain("~R$ 138 mil");
+    expect(texto).toContain("Escritura e registro não entram neste total: a confirmar no cartório (tabela de emolumentos do TJPE).");
+    expect(texto).toContain("Economia possível de ITBI: até R$ 11.960");
+    expect(texto).not.toMatch(/Cartório\/Registro|Economia legal no fechamento|ITBI\/Cartório/);
+    act(() => arvore.unmount());
+  });
+
+  test("no aluguel, o bolso não fala de cartório", () => {
+    const arvore = montar(React.createElement(TresPerguntasDoBolso, { ...PROPS_BOLSO, modalidade: "aluguel", precoAnuncioReais: null, aluguelAnunciadoReais: 3_000 }));
+    const texto = textos(arvore.toJSON());
+    expect(texto).toContain("Dinheiro à vista para entrar");
+    expect(texto).not.toMatch(/cartório/i);
+    act(() => arvore.unmount());
+  });
+
+  test("o placar de 5 segundos e o simulador de 15 segundos dizem que o total não inclui cartório", () => {
+    const fonteDoPlacar = fonteDe("componentes", "visual", "PlacarHeroi5Segundos.tsx");
+    expect(fonteDoPlacar).toContain("`Entrada + ITBI ~${formatarReaisCompacto(dinheiroParaEntrarReais)} (sem cartório)`");
+    expect(fonteDoPlacar).not.toContain("Entrada + cartório");
+
+    const fonteDoSimulador = fonteDe("componentes", "visual", "SimuladorBolso15Segundos.tsx");
+    expect(fonteDoSimulador).toContain("Caixa para entrar (sem cartório)");
+    expect(fonteDoSimulador).toContain("escritura e registro a confirmar no cartório, fora da conta");
+    expect(fonteDoSimulador).not.toMatch(/totalFechamentoReais|emolumentos/);
+    expect(SimuladorBolso15Segundos).toBeDefined();
   });
 });

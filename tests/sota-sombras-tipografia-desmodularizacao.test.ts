@@ -413,10 +413,9 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
             prestacaoEstimadaReais: 5_100,
             entradaReais: 170_000,
             itbiReais: 10_000,
-            cartorioRegistroReais: 6_500,
             spuAnualReais: 0,
             custoMensalArReais: 140,
-            economiaLegalItbiCartorioReais: 15_000,
+            economiaLegalItbiReais: 15_000,
             descontoRuidoReais: 0,
             vplCalorPoenteReais: 0,
             riscoManutencaoPredioReais: 0,
@@ -674,8 +673,8 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       toggle.props.onPress();
     });
     const txtCompra = extrairTextos(tree.toJSON()).join("\n");
-    expect(txtCompra).toContain("Caixa para entrar");
-    expect(txtCompra).toContain("SFH / 180 dias");
+    expect(txtCompra).toContain("Caixa para entrar (sem cartório)");
+    expect(txtCompra).toContain("Economia possível de ITBI (SFH e pedido em até 180 dias)");
     expect(txtCompra).not.toMatch(/R\$ 0(?![\d.,])/);
 
     const btnAlugar = tree.root.find((n) => n.props.testID === "sim15-mod-aluguel");
@@ -2265,10 +2264,9 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
             prestacaoEstimadaReais: 5_100,
             entradaReais: 170_000,
             itbiReais: 10_000,
-            cartorioRegistroReais: 6_500,
             spuAnualReais: 2_400,
             custoMensalArReais: 140,
-            economiaLegalItbiCartorioReais: 15_000,
+            economiaLegalItbiReais: 15_000,
             descontoRuidoReais: 0,
             vplCalorPoenteReais: 0,
             riscoManutencaoPredioReais: 0,
@@ -3067,10 +3065,9 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
             prestacaoEstimadaReais: 5_100,
             entradaReais: 170_000,
             itbiReais: 10_000,
-            cartorioRegistroReais: 6_500,
             spuAnualReais: 2_400,
             custoMensalArReais: 140,
-            economiaLegalItbiCartorioReais: 15_000,
+            economiaLegalItbiReais: 15_000,
             descontoRuidoReais: 0,
             vplCalorPoenteReais: 0,
             riscoManutencaoPredioReais: 0,

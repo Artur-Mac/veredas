@@ -372,12 +372,12 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
   const melhorEco = itbiOpt?.melhorCenarioEconomiaReais ?? null;
   const ind07: CartaoCidadao3Camadas = {
     indicadorId: "IND-07",
-    tituloCurto: "Economia no fechamento e base de preço",
+    tituloCurto: "Economia de ITBI e base de preço",
     camada1Manchete: sanearTextoCamada1(
       entrada.modalidade === "aluguel"
-        ? "Economia de imposto de transferência e escritura se aplica apenas na compra."
+        ? "Economia de imposto de transferência (ITBI) se aplica apenas na compra."
         : melhorEco !== null
-          ? `Planejamento correto de prazo e financiamento economiza até ${fReais(melhorEco)} no fechamento.`
+          ? `Planejamento correto de prazo e financiamento economiza até ${fReais(melhorEco)} de ITBI; escritura e registro ficam a confirmar no cartório.`
           : "Confira o histórico de transações do prédio e o prazo de 180 dias para pedir o ITBI com alíquota reduzida no Recife.",
     ),
     camada2ImpactoPratico: eco?.medianaReais
@@ -397,12 +397,12 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
             : null,
       chavesDuplas,
       metodo6Campos: {
-        oQueMede: "Economia legal de ITBI + emolumentos cartoriais e estatística comparativa NBR 14653-2.",
+        oQueMede: "Economia legal de ITBI (diferença entre as alíquotas de 3%, 1,8% e 1%) e estatística comparativa NBR 14653-2. Escritura e registro não entram na conta.",
         baseLegalOuNormativa:
           "Código Tributário do Recife (Lei 15.563/1991), arts. 51, 52 e 55, com a redação das Leis 17.904/2013, 19.174/2023, 19.391/2025 e 19.490/2026; Lei federal 6.015/1973, art. 290; Ato TJPE 1.556/2025 (tabela de 2026); Lei Complementar federal 227/2026.",
         aritmeticaResumo:
           "1% sobre a parte financiada pelo SFH até R$ 1.036.600,71 (2026); 1,8% com pedido em até 180 dias; 3% nos demais casos. Expurgo de Chauvenet + IC 80%.",
-        fontePrimaria: "ITBI SEFIN Recife + Tabela TJPE",
+        fontePrimaria: "ITBI SEFIN Recife. Escritura e registro: tabela do TJPE, a confirmar no cartório",
         vintage: "2026-11",
         limiteEpistemologico:
           eco?.ressalvaLegalConselhos ??

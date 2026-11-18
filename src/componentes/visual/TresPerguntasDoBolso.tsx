@@ -25,10 +25,10 @@ export type PropsTresPerguntasDoBolso = {
   prestacaoEstimadaReais: number;
   entradaReais: number;
   itbiReais: number;
-  cartorioRegistroReais: number;
   spuAnualReais: number;
   custoMensalArReais: number;
-  economiaLegalItbiCartorioReais: number;
+  /** Só ITBI (diferença entre alíquotas). Escritura e registro não têm valor no app: ficam a confirmar no cartório. */
+  economiaLegalItbiReais: number;
   descontoRuidoReais: number;
   vplCalorPoenteReais: number;
   riscoManutencaoPredioReais: number;
@@ -55,10 +55,9 @@ export function TresPerguntasDoBolso({
   prestacaoEstimadaReais,
   entradaReais,
   itbiReais,
-  cartorioRegistroReais,
   spuAnualReais,
   custoMensalArReais,
-  economiaLegalItbiCartorioReais,
+  economiaLegalItbiReais,
   descontoRuidoReais,
   vplCalorPoenteReais,
   riscoManutencaoPredioReais,
@@ -87,7 +86,6 @@ export function TresPerguntasDoBolso({
     ? [
         { rotulo: "Entrada (20%)", valor: entradaReais, corToken: "cor-acao" },
         { rotulo: "Imposto (ITBI)", valor: itbiReais, corToken: "cor-azul-cadastral" },
-        { rotulo: "Cartório/Registro", valor: cartorioRegistroReais, corToken: "cor-salvia" },
       ]
     : [
         { rotulo: "Garantia / caução (~3x)", valor: (aluguelAnunciadoReais ?? 0) * 3, corToken: "cor-acao" },
@@ -127,10 +125,10 @@ export function TresPerguntasDoBolso({
       ? `• Custo mensal completo (com cond., IPTU e luz): ~${formatarReais(totalMensalReal)}/mês`
       : null,
     compra && totalEntrar > 0
-      ? `• Dinheiro necessário para entrada + cartório + ITBI: ~${formatarReaisCompacto(totalEntrar)}`
+      ? `• Dinheiro necessário para entrada + ITBI: ~${formatarReaisCompacto(totalEntrar)} (escritura e registro a confirmar no cartório)`
       : null,
-    economiaLegalItbiCartorioReais > 500
-      ? `• Economia legal prevista em ITBI/Cartório (SFH/180 dias): até ${formatarReais(economiaLegalItbiCartorioReais)}`
+    economiaLegalItbiReais > 500
+      ? `• Economia possível de ITBI (SFH e pedido em até 180 dias): até ${formatarReais(economiaLegalItbiReais)}`
       : null,
     argumentosDeNegociacao.length > 0 ? `• Pontos para negociar: ${argumentosDeNegociacao.join("; ")}` : null,
   ]
@@ -159,7 +157,7 @@ export function TresPerguntasDoBolso({
       {/* Bloco 1: Dinheiro à vista para entrar */}
       <View style={styles.secao}>
         <Texto tipo="etiqueta" cor="cor-texto-apoio" style={styles.kicker}>
-          Dinheiro à vista para entrar
+          {compra ? "Dinheiro à vista para entrar (sem cartório)" : "Dinheiro à vista para entrar"}
         </Texto>
         <View style={styles.linhaTituloValor}>
           <Texto tipo="secao" style={styles.perguntaTitulo}>
@@ -196,10 +194,16 @@ export function TresPerguntasDoBolso({
           ))}
         </View>
 
-        {compra && economiaLegalItbiCartorioReais >= 1000 ? (
+        {compra ? (
+          <Texto testID="bolso-cartorio-a-confirmar" tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
+            Escritura e registro não entram neste total: a confirmar no cartório (tabela de emolumentos do TJPE).
+          </Texto>
+        ) : null}
+
+        {compra && economiaLegalItbiReais >= 1000 ? (
           <View style={[styles.chamadaLateral, { borderLeftColor: cor("cor-salvia") }]}>
             <Texto tipo="etiqueta" cor="cor-salvia-escura" style={styles.textoDicaTitulo}>
-              {`Economia legal no fechamento: até ${formatarReais(economiaLegalItbiCartorioReais)}`}
+              {`Economia possível de ITBI: até ${formatarReais(economiaLegalItbiReais)}`}
             </Texto>
             <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoDicaDetalhe}>
               Pela regra municipal do Recife: 1% sobre a parte financiada pelo SFH e 1,8% com o lançamento pedido em até 180 dias da assinatura do contrato.

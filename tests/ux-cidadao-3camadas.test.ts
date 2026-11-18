@@ -227,7 +227,7 @@ describe("Milestone 7 — Tradutor Cidadão 3 Camadas, Dominância Invisível e 
                 aluguelEquivalenteMensalReais: 3200,
                 condominioMensalReais: 900,
                 iptuAnualReais: 2400,
-                economiaOtimizacaoTributariaReais: 23_427.15,
+                economiaOtimizacaoTributariaReais: 11_960,
               },
             }),
             React.createElement(BussolaSolarBrisa, { azimuteGraus: 105, ruidoDbAtual: 35.4 }),

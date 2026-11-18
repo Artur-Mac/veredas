@@ -2,8 +2,9 @@ import type { EpistemicTag } from "../../../nucleo/contratosCanonicos";
 
 /**
  * IND-07 & #40 — Econometria Espacial ITBI (ABNT NBR 14653-2), Repeat-Sales, Liquidez Condominial (λ_b)
- * e Otimizador Tributário & Cartorário do Recife (Código Tributário do Recife, Lei 15.563/1991, arts. 51, 52 e 55;
- * limite do SFH de 2026; Lei Complementar federal 227/2026; art. 290 da Lei federal nº 6.015/1973 e Ato TJPE nº 1.556/2025).
+ * e Otimizador Tributário do ITBI do Recife (Código Tributário do Recife, Lei 15.563/1991, arts. 51, 52 e 55; limite do
+ * SFH de 2026; Lei Complementar federal 227/2026). Escritura e registro não entram na conta: a tabela do TJPE (Ato nº
+ * 1.556/2025) tem teto e não é proporcional ao preço, então o valor fica a confirmar no cartório.
  */
 
 export type RegistroItbiBruto = {
@@ -242,7 +243,7 @@ export function analisarItbiNbr14653(
   };
 }
 
-// ——— Otimizador Tributário e Cartorário (Recife 2026) —————————————————————————————————————
+// ——— Otimizador Tributário do ITBI (Recife 2026) ————————————————————————————————————————
 
 /** Limite da parte financiada pelo SFH que paga 1% (art. 52, I, do Código Tributário do Recife). Valor de 2026: muda todo ano. */
 export const TETO_SFH_RECIFE_2026_REAIS = 1_036_600.71;
@@ -258,17 +259,17 @@ export type EntradaOtimizadorItbiRecife = {
   precoImovelReais: number;
   financiamentoSfh: boolean;
   percentualFinanciado?: number; // ex.: 0.80 para 80%
-  primeiroImovelResidencialSfh?: boolean;
-  /** Tabela de emolumentos cartório + avaliação bancária opcional (padrão compilado Ato TJPE 1.556/2025). */
-  emolumentosEscrituraRegistroPadraoReais?: number;
-  emolumentosRegistroSfhDesconto50PctReais?: number;
 };
 
 export type CenarioTributarioRecife = {
   itbiReais: number;
   aliquotaEfetivaPct: number;
-  emolumentosERegistroReais: number;
-  totalFechamentoReais: number;
+  /**
+   * Escritura e registro: a confirmar no cartório, nunca estimados aqui. A tabela do TJPE (Ato nº 1.556/2025) tem teto
+   * por faixa de valor e não cresce em proporção ao preço; os valores que o app calculava por proporção saíram na
+   * conferência de 18/11/2026.
+   */
+  escrituraERegistroReais: null;
   /** Dias para pedir o lançamento e ter a alíquota reduzida; null no cenário de 3%, que é o de quem perde o prazo. */
   prazoLegalDias: number | null;
 };
@@ -277,6 +278,7 @@ export type ResultadoOtimizadorItbiRecife = {
   semOrientacao3Pct: CenarioTributarioRecife;
   aVistaTempestivo18Pct: CenarioTributarioRecife;
   sfhOtimizado1Pct: CenarioTributarioRecife | null;
+  /** As três economias são só de ITBI (diferença entre as alíquotas); cartório não entra. */
   melhorCenarioEconomiaReais: number;
   economiaAVistaTempestivoReais: number;
   economiaSfhReais: number | null;
@@ -286,28 +288,22 @@ export type ResultadoOtimizadorItbiRecife = {
 };
 
 /**
- * Simula os custos de ITBI e emolumentos de fechamento no Recife em 2026:
+ * Simula o ITBI do fechamento no Recife em 2026 e a economia entre as alíquotas:
  * - Arts. 52 e 55 da Lei Municipal nº 15.563/1991: 3% na regra comum; 1,8% com o lançamento pedido em até 180 dias;
  *   1% sobre a parte financiada pelo SFH, até R$ 1.036.600,71 (valor de 2026), sem depender de prazo.
- * - Art. 290 da Lei nº 6.015/1973: 50% de redução nos emolumentos da primeira compra residencial financiada pelo SFH
- *   (na tabela do TJPE, o desconto do registro é sobre a parte financiada).
+ * - Escritura e registro ficam de fora (a confirmar no cartório). O art. 290 da Lei nº 6.015/1973 dá 50% de redução
+ *   nos emolumentos da primeira compra residencial financiada pelo SFH (na tabela do TJPE, sobre a parte financiada),
+ *   mas o app não calcula esse valor.
  */
 export function simularOtimizacaoItbiRecife(entrada: EntradaOtimizadorItbiRecife): ResultadoOtimizadorItbiRecife {
   const preco = Math.max(0, entrada.precoImovelReais);
   const r2 = (v: number) => Math.round(v * 100) / 100;
 
-  // Referência compilada do Ato TJPE nº 1.556/2025 (para R$ 650 mil: R$ 16.651,97 escritura+registro à vista; R$ 5.184,82 registro+avaliação SFH)
-  const padraoEscReg =
-    entrada.emolumentosEscrituraRegistroPadraoReais ?? r2((preco / 650_000) * 16_651.97);
-  const padraoRegSfh =
-    entrada.emolumentosRegistroSfhDesconto50PctReais ?? r2((preco / 650_000) * 5_184.82);
-
   const itbi3 = r2(preco * 0.03);
   const semOrientacao3Pct: CenarioTributarioRecife = {
     itbiReais: itbi3,
     aliquotaEfetivaPct: 3.0,
-    emolumentosERegistroReais: padraoEscReg,
-    totalFechamentoReais: r2(itbi3 + padraoEscReg),
+    escrituraERegistroReais: null,
     prazoLegalDias: null,
   };
 
@@ -315,12 +311,11 @@ export function simularOtimizacaoItbiRecife(entrada: EntradaOtimizadorItbiRecife
   const aVistaTempestivo18Pct: CenarioTributarioRecife = {
     itbiReais: itbi18,
     aliquotaEfetivaPct: 1.8,
-    emolumentosERegistroReais: padraoEscReg,
-    totalFechamentoReais: r2(itbi18 + padraoEscReg),
+    escrituraERegistroReais: null,
     prazoLegalDias: PRAZO_PEDIDO_LANCAMENTO_ITBI_DIAS,
   };
 
-  const economiaAVista = r2(semOrientacao3Pct.totalFechamentoReais - aVistaTempestivo18Pct.totalFechamentoReais);
+  const economiaAVista = r2(itbi3 - itbi18);
 
   let sfhOtimizado: CenarioTributarioRecife | null = null;
   let economiaSfh: number | null = null;
@@ -330,17 +325,14 @@ export function simularOtimizacaoItbiRecife(entrada: EntradaOtimizadorItbiRecife
     const parcelaFinanciada = Math.min(preco * pctFin, TETO_SFH_RECIFE_2026_REAIS);
     const parcelaEntradaOuExcedente = Math.max(0, preco - parcelaFinanciada);
     const itbiSfh = r2(parcelaFinanciada * 0.01 + parcelaEntradaOuExcedente * 0.018);
-    const emolSfh = entrada.primeiroImovelResidencialSfh === false ? r2(padraoRegSfh * 1.45) : padraoRegSfh;
-    const totalSfh = r2(itbiSfh + emolSfh);
 
     sfhOtimizado = {
       itbiReais: itbiSfh,
       aliquotaEfetivaPct: preco > 0 ? r2((itbiSfh / preco) * 100) : 0,
-      emolumentosERegistroReais: emolSfh,
-      totalFechamentoReais: totalSfh,
+      escrituraERegistroReais: null,
       prazoLegalDias: PRAZO_PEDIDO_LANCAMENTO_ITBI_DIAS,
     };
-    economiaSfh = r2(semOrientacao3Pct.totalFechamentoReais - totalSfh);
+    economiaSfh = r2(itbi3 - itbiSfh);
   }
 
   return {
@@ -353,6 +345,6 @@ export function simularOtimizacaoItbiRecife(entrada: EntradaOtimizadorItbiRecife
     notaBaseDeCalculoLc227:
       "A Lei Complementar federal 227/2026, de 13/01/2026, mudou o art. 38 do Código Tributário Nacional: a base do ITBI é o valor de venda à vista em condições normais de mercado, estimado pelo município por critérios técnicos que ele deve divulgar. Quem discordar pode contestar com avaliação própria. No Recife (Lei 19.490/2026), vale o valor declarado pelo comprador, se for compatível com esses critérios; se não for, o Fisco arbitra, com direito de defesa. O histórico de transações do prédio serve de apoio para contestar.",
     ressalvaLegalConselhos:
-      "Simulação estatística informativa segundo os arts. 52 e 55 da Lei Municipal nº 15.563/1991 e o Ato TJPE nº 1.556/2025; não substitui guia DAM oficial da SEFIN nem cálculo de cartório.",
+      "Simulação informativa do ITBI segundo os arts. 52 e 55 da Lei Municipal nº 15.563/1991; não inclui escritura e registro (tabela do TJPE, Ato nº 1.556/2025, a confirmar no cartório) e não substitui a guia oficial da Secretaria de Finanças.",
   };
 }

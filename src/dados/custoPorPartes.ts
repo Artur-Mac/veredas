@@ -113,7 +113,7 @@ export type CustoPorPartes = {
   janelaPoenteConsiderada: boolean;
   /** Motor SPU estatutário (IND-01): laudêmio, taxa/foro e bloqueio de FGTS sobre fração ideal de terreno. */
   spuEstatutario?: ResultadoSpu | null;
-  /** Otimizador tributário e cartorário ITBI + TJPE (arts. 52 e 55 do Código Tributário do Recife / art. 290 da Lei 6.015/1973). */
+  /** Otimizador do ITBI (arts. 52 e 55 do Código Tributário do Recife). Só imposto: escritura e registro ficam a confirmar no cartório. */
   otimizacaoFechamento?: ResultadoOtimizadorItbiRecife | null;
   /** Triagem estrutural, ciclo VUP NBR 15575-1:2025 e maresia NBR 6118 (IND-02 & IND-09). */
   estruturaECondominio?: ResultadoEstruturaCondominio | null;
