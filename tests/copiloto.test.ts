@@ -475,8 +475,8 @@ describe("por perto no mapa, rotina personalizada, comodidades e HTML editorial"
             predio: comNome,
             vizinhos: gracas,
             tipologia: "apartamento",
-            andarDoAnuncio: 4,
-            orientacaoGraus: 90,
+            andarInicial: 4,
+            fachadaInicialGraus: 90,
           }),
         ),
       );
@@ -731,8 +731,8 @@ describe("por perto no mapa, rotina personalizada, comodidades e HTML editorial"
             predio: { ...comNome, pavimentos: 12 },
             vizinhos: gracas,
             tipologia: "apartamento",
-            andarDoAnuncio: 4,
-            orientacaoGraus: 270,
+            andarInicial: 4,
+            fachadaInicialGraus: 270,
           }),
         ),
       );

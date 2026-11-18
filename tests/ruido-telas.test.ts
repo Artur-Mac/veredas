@@ -117,11 +117,14 @@ describe("placar do topo do dossiê (R1)", () => {
     const a = montar(placar(gt)), b = montar(placar(torre));
     expect(textos(a.toJSON()).join("\n")).toContain(gt.textos.placar.subtitulo);
     expect(textos(b.toJSON()).join("\n")).toContain(torre.textos.placar.subtitulo);
-    for (const arquivo of ["src/app/(abas)/dossie.tsx", "src/app/(abas)/comparar.tsx"]) {
+    for (const arquivo of ["src/app/(abas)/dossie.tsx", "src/app/(abas)/comparar.tsx", "src/dados/dossie/colunaDoComparar.ts"]) {
       const fonte = readFileSync(join(__dirname, "..", arquivo), "utf8");
       expect(fonte).not.toMatch(/tipologiaVia|distanciaViaM|avaliarAcustica3d/);
-      expect(fonte).toContain("estimarRuido(");
+      // Desde a pendência 1 do HANDOFF (19/11/2026) as telas leem o ruído pela unidade ativa, que chama estimarRuido; o
+      // Comparar monta a coluna em src/dados/dossie/colunaDoComparar.ts.
+      if (!arquivo.endsWith("comparar.tsx")) expect(fonte).toContain("lerUnidade(");
     }
+    expect(readFileSync(join(__dirname, "..", "src/dados/dossie/unidadeAtiva.ts"), "utf8")).toContain("estimarRuido(");
     act(() => { a.unmount(); b.unmount(); });
   });
 
@@ -267,7 +270,7 @@ describe("matriz do Comparar (R4): 'leva vantagem em N de 6' com o sossego pela 
 
 describe("simulador andar × fachada (R5)", () => {
   it("mostra a estimativa na janela, a faixa, a NBR 10151, a nota com ficha, o aviso e mantém as fontes nomeadas e as causas", () => {
-    const a = montar(React.createElement(SimuladorDaUnidade, { predio: GOLDEN_TOWER, vizinhos: edificiosDoBairro("boa-viagem"), tipologia: "apartamento", andarDoAnuncio: 6, orientacaoGraus: 90 }));
+    const a = montar(React.createElement(SimuladorDaUnidade, { predio: GOLDEN_TOWER, vizinhos: edificiosDoBairro("boa-viagem"), tipologia: "apartamento", andarInicial: 6, fachadaInicialGraus: 90 }));
     const resumo = a.root.findAll((n) => typeof n.props.onPress === "function" && typeof n.props.accessibilityLabel === "string" && n.props.accessibilityLabel.startsWith("Barulho por perto:"))[0]!;
     expect(resumo.props.accessibilityLabel).toMatch(/~\d+ dB\(A\) de dia · ~\d+ à noite \(estimativa\)/);
     act(() => resumo.props.onPress());

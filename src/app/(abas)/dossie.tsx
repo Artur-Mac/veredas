@@ -53,15 +53,13 @@ import { traduzirIndicadoresCidadao } from "../../dados/cidadao/tradutorCidadao"
 import { CartaoCidadao3Camadas } from "../../componentes/cidadao/CartaoCidadao3Camadas";
 import { SimuladorTco10Anos, type EntradaTco10Anos } from "../../componentes/cidadao/SimuladorTco10Anos";
 import { ResumoEvidenciaPartilhavel } from "../../componentes/cidadao/ResumoEvidenciaPartilhavel";
-import { avaliarBioclimatico3d } from "../../municipios/recife/motores/bioclimatico3d";
-import { estimarRuido } from "../../dados/ruido/estimativa";
 import { acusticaDaEstimativa } from "../../dados/ruido/ponte";
 import { avaliarHidroMare1m } from "../../municipios/recife/motores/hidroMare1m";
 import { avaliarResilienciaRedes } from "../../municipios/recife/motores/resilienciaRedes";
-import { inferirFachadasDoEdificio, type PapelFachada } from "../../dados/sol/inferirFachadas";
+import type { PapelFachada } from "../../dados/sol/inferirFachadas";
+import { escolherUnidadeAtiva, inferirFachadasDaAnalise, lerUnidade } from "../../dados/dossie/unidadeAtiva";
 import { carregarEntornoSolar } from "../../dados/sol/entorno";
 import { lerMicroclimaDoPonto } from "../../dados/clima/microclima";
-import { avaliarConfortoTermico } from "../../dados/clima/confortoTermico";
 import { PlacarHeroi5Segundos } from "../../componentes/visual/PlacarHeroi5Segundos";
 import { CanvasSolSombraBrisa25D } from "../../componentes/visual/CanvasSolSombraBrisa25D";
 import { TermometroConfortoTermico } from "../../componentes/visual/TermometroConfortoTermico";
@@ -234,46 +232,30 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     });
   }, [analise.bairro, nomeDoBairro, predio, visao]);
 
-  const [andarSimulado, setAndarSimulado] = useState<number>(analise.declarados.andar.valor ?? 4);
+  // Pendência 1 do HANDOFF (19/11/2026): andar e fachada saem de uma função só (src/dados/dossie/unidadeAtiva.ts), a
+  // mesma do Comparar e do valor inicial do simulador; o placar diz qual andar e qual fachada usou.
+  const [andarEscolhido, setAndarSimulado] = useState<number | null>(null);
   const [fachadaSelecionada, setFachadaSelecionada] = useState<PapelFachada | null>(null);
 
-  const inferenciaFachadas = useMemo(() => {
-    const centroRef: [number, number] =
-      predio?.centro ??
-      (analise.caderno?.localizacaoDaVisita
-        ? [analise.caderno.localizacaoDaVisita.longitude, analise.caderno.localizacaoDaVisita.latitude]
-        : [-34.896, -8.121]);
-    return inferirFachadasDoEdificio({
-      edificio: predio ?? {
-        id: analise.id,
-        bairro: analise.bairro ?? "boa-viagem",
-        logradouro: analise.logradouro || analise.bairroTexto || "Via local",
-        centro: centroRef,
-        poligono: null,
-      },
-      vizinhosDoBairro: cadastro.vizinhos,
-      textoAnuncio: [analise.nome, analise.nomeEdificio, ...(analise.extracao?.campos.comodidades ?? [])]
-        .filter(Boolean)
-        .join(" "),
-    });
-  }, [analise.bairro, analise.bairroTexto, analise.caderno, analise.extracao, analise.id, analise.logradouro, analise.nome, analise.nomeEdificio, cadastro.vizinhos, predio]);
+  const inferenciaFachadas = useMemo(
+    () => inferirFachadasDaAnalise(analise, predio, cadastro.vizinhos),
+    [analise, cadastro.vizinhos, predio],
+  );
 
-  const fachadaAtiva = useMemo(() => {
-    if (fachadaSelecionada) {
-      return inferenciaFachadas.fachadas.find((f) => f.id === fachadaSelecionada) ?? inferenciaFachadas.frente;
-    }
-    if (analise.visita.orientacaoGraus !== null) {
-      const g = analise.visita.orientacaoGraus;
-      return [...inferenciaFachadas.fachadas].sort(
-        (a, b) =>
-          Math.abs(((a.azimuteGraus - g + 540) % 360) - 180) -
-          Math.abs(((b.azimuteGraus - g + 540) % 360) - 180),
-      )[0]!;
-    }
-    return inferenciaFachadas.fachadas.find((f) => f.id === inferenciaFachadas.fachadaSugeridaId) ?? inferenciaFachadas.frente;
-  }, [analise.visita.orientacaoGraus, fachadaSelecionada, inferenciaFachadas]);
-
-  const fachadaGrausAtiva = fachadaAtiva.azimuteGraus;
+  const unidade = useMemo(
+    () =>
+      escolherUnidadeAtiva({
+        inferencia: inferenciaFachadas,
+        pavimentos: predio?.pavimentos ?? null,
+        andarDeclarado: analise.declarados.andar.valor,
+        andarEscolhido,
+        fachadaEscolhida: fachadaSelecionada,
+        orientacaoBussolaGraus: analise.visita.orientacaoGraus,
+      }),
+    [analise.declarados.andar.valor, analise.visita.orientacaoGraus, andarEscolhido, fachadaSelecionada, inferenciaFachadas, predio?.pavimentos],
+  );
+  const andarSimulado = unidade.andar;
+  const fachadaAtiva = unidade.fachada;
 
   const entornoSolar = useMemo(() => {
     if (!predio) return null;
@@ -293,41 +275,15 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     return lerMicroclimaDoPonto(coord, analise.bairro);
   }, [analise.bairro, analise.caderno, predio]);
 
-  const bioclimatico = useMemo(
-    () =>
-      avaliarBioclimatico3d({
-        fachadaAzimuteGraus: fachadaGrausAtiva,
-        andar: andarSimulado,
-        lstDeltaIlhaCalorC: microclima.tempDelta,
-      }),
-    [andarSimulado, fachadaGrausAtiva, microclima.tempDelta],
-  );
-
   // 18/11/2026 (decisões A1 e A2): o barulho sai do modelo estimado do prédio (src/dados/ruido), no andar e na fachada
-  // simulados; sem prédio ou sem camada, "sem leitura". Os cartões da frente visual recebem o resultado pela ponte.
-  const ruido = useMemo(
-    () => estimarRuido(predio, { andar: andarSimulado, fachadaGraus: fachadaGrausAtiva, janelaFechada: true }),
-    [andarSimulado, fachadaGrausAtiva, predio],
+  // ativos; sem prédio ou sem camada, "sem leitura". Os cartões da frente visual recebem o resultado pela ponte.
+  const { bioclimatico, ruido, conforto: confortoTermico } = useMemo(
+    () => lerUnidade(predio, unidade, microclima),
+    [microclima, predio, unidade],
   );
   const acustica = useMemo(
     () => acusticaDaEstimativa(ruido, { anoConstrucao: predio?.anoConstrucao ?? null, precoImovelReais: analise.declarados.preco.valor ?? null }),
     [analise.declarados.preco.valor, predio?.anoConstrucao, ruido],
-  );
-
-  const confortoTermico = useMemo(
-    () =>
-      avaliarConfortoTermico({
-        andar: andarSimulado,
-        pavimentosTotais: predio?.pavimentos ?? null,
-        fachada: fachadaAtiva,
-        bioclimatico,
-        diferencaBairroCalorC: microclima.tempDelta,
-        tempQuadraC: microclima.tempQuadraC,
-        pracasAte300m: microclima.pracasAte300m,
-        possuiArvoreProxima: microclima.possuiArvore,
-        distanciaPraiaOuRioM: microclima.distanciaAgua,
-      }),
-    [andarSimulado, bioclimatico, fachadaAtiva, microclima, predio?.pavimentos],
   );
 
   const centroParaRadar = useMemo<readonly [number, number]>(() => {
@@ -690,6 +646,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             conforto={predio ? confortoTermico : null}
             ruidoDormitorioDb={acustica?.ruidoInternoDormitorioDbA ?? null}
             sossego={{ ...ruido.textos.placar, ficha: ruido.estado === "estimado" ? ruido.textos.ficha : null }}
+            unidade={predio ? unidade.descricao : null}
             spuAtivo={Boolean(partesDeCusto.alertaMarinha)}
             aoTocarMetrica={(alvo) => {
               setAba(alvo === "predio" ? "edificio" : "destaques");
@@ -753,6 +710,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                 edificio={predio}
                 vizinhos={cadastro.vizinhos}
                 orientacaoJanelaGraus={analise.visita.orientacaoGraus}
+                unidade={{ andar: unidade.andar, fachadaGraus: unidade.fachada.azimuteGraus, descricao: unidade.descricao }}
                 slugBairro={analise.bairro}
                 ruaDoBairro={cadastro.rua?.bairro ?? null}
                 contexto={cadastro.contexto}

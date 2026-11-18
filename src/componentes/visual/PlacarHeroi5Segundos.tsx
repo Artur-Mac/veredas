@@ -29,8 +29,16 @@ type Props = {
    */
   sossego?: { valor: string; subtitulo: string; ficha: FichaDeMetodo6Campos | null };
   spuAtivo?: boolean;
+  /**
+   * Andar e fachada em que conforto e sossego foram calculados, com a origem de cada um
+   * (src/dados/dossie/unidadeAtiva.ts); `null` sem prédio confirmado.
+   */
+  unidade?: string | null;
   aoTocarMetrica?: (alvo: "bolso" | "sol" | "ruido" | "predio") => void;
 };
+
+/** Palavras da nota de sossego (escala do Mapa Sossego e, sem o modelo, a do quarto) que pintam a célula de alerta. */
+const PALAVRAS_DE_ALERTA: ReadonlySet<string> = new Set(["Agitado", "Barulhento", "Intenso"]);
 
 type CelulaPlacar = {
   id: "bolso" | "sol" | "ruido" | "predio";
@@ -52,6 +60,7 @@ export function PlacarHeroi5Segundos({
   conforto,
   ruidoDormitorioDb,
   sossego: sossegoDoModelo,
+  unidade = null,
   spuAtivo = false,
   aoTocarMetrica,
 }: Props) {
@@ -90,7 +99,9 @@ export function PlacarHeroi5Segundos({
     (porQuarto ? { valor: porQuarto.nivel, subtitulo: porQuarto.subtituloPlacar, ficha: null } : { valor: "Sem leitura", subtitulo: "Sem estimativa de ruído", ficha: null });
   // A13: as duas notas do placar (conforto e sossego) abrem a ficha de método num toque.
   const temNotaDeConforto = conforto !== null && typeof conforto.notaConforto0a10 === "number";
-  const ruidoAlto = ruidoDormitorioDb !== null && ruidoDormitorioDb > 45;
+  // Pendência 3 do HANDOFF (19/11/2026): a cor sai da palavra da nota que a célula mostra, não de um corte próprio em
+  // dB do quarto (que podia pintar de alerta um "Tranquilo").
+  const ruidoAlto = PALAVRAS_DE_ALERTA.has(sossego.valor);
   const precoAcima = comparacaoM2Pct !== null && comparacaoM2Pct >= 10;
 
   const celulas: [CelulaPlacar, CelulaPlacar, CelulaPlacar, CelulaPlacar] = [
@@ -184,6 +195,11 @@ export function PlacarHeroi5Segundos({
         {renderCelula(celulas[2], false)}
         {renderCelula(celulas[3], true)}
       </View>
+      {unidade && (conforto || sossego.ficha) ? (
+        <Texto testID="placar-unidade" tipo="apoio" cor="cor-texto-apoio" style={styles.unidade}>
+          {`Sol e sossego calculados para: ${unidade}.`}
+        </Texto>
+      ) : null}
       {temNotaDeConforto || sossego.ficha ? (
         <View testID="placar-fichas-de-metodo" style={styles.fichas}>
           {temNotaDeConforto && conforto ? <FichaDeMetodo ficha={conforto.metodo} testID="placar-conforto-metodo" rotulo="Como foi calculada a nota de sol e conforto" /> : null}
@@ -195,6 +211,7 @@ export function PlacarHeroi5Segundos({
 }
 
 const styles = StyleSheet.create({
+  unidade: { fontSize: 12.5, lineHeight: 18, paddingHorizontal: 14, paddingTop: 10 },
   containerUnificado: {
     marginTop: 12,
     borderRadius: RAIO.cartao,
