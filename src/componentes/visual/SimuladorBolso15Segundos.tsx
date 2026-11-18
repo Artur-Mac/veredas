@@ -34,6 +34,8 @@ export function SimuladorBolso15Segundos({
   const [aberto, setAberto] = useState(false);
   const [modalidade, setModalidade] = useState<"compra" | "aluguel">("compra");
   const [valorSelecionado, setValorSelecionado] = useState<number>(750_000);
+  const [entradaAtivaPct, setEntradaAtivaPct] = useState<number>(entradaPct);
+  const [garantiaAluguel, setGarantiaAluguel] = useState<"caucao" | "fianca">("caucao");
 
   const refs = baseDeReferenciasPublicas();
   const compra = modalidade === "compra";
@@ -47,7 +49,7 @@ export function SimuladorBolso15Segundos({
   let economiaLegal = 0;
 
   if (compra) {
-    const entradaReais = Math.round((precoAtivo * entradaPct) / 100);
+    const entradaReais = Math.round((precoAtivo * entradaAtivaPct) / 100);
     const valorFinanciadoReais = Math.max(0, precoAtivo - entradaReais);
     const prestacaoReais = prestacaoPrice(
       valorFinanciadoReais,
@@ -58,7 +60,7 @@ export function SimuladorBolso15Segundos({
       precoImovelReais: precoAtivo,
       financiamentoSfh: true,
       primeiroImovelResidencialSfh: true,
-      percentualFinanciado: 1 - entradaPct / 100,
+      percentualFinanciado: 1 - entradaAtivaPct / 100,
     });
     const fechamento =
       itbi.sfhOtimizado1Pct?.totalFechamentoReais ??
@@ -71,8 +73,13 @@ export function SimuladorBolso15Segundos({
   } else {
     const condEst = Math.round(precoAtivo * 0.25);
     const iptuEst = Math.round(precoAtivo * 0.07);
-    caixaEntrar = Math.round(precoAtivo * 3);
-    mensalEstimado = Math.round(precoAtivo + condEst + iptuEst + 120);
+    if (garantiaAluguel === "fianca") {
+      caixaEntrar = Math.round(precoAtivo + condEst);
+      mensalEstimado = Math.round(precoAtivo + condEst + iptuEst + 120 + precoAtivo * 0.1);
+    } else {
+      caixaEntrar = Math.round(precoAtivo * 3);
+      mensalEstimado = Math.round(precoAtivo + condEst + iptuEst + 120);
+    }
   }
 
   return (
@@ -173,6 +180,71 @@ export function SimuladorBolso15Segundos({
             })}
           </View>
 
+          <View style={styles.chipsRow}>
+            {compra
+              ? ([20, 35] as const).map((pct) => {
+                  const ativo = entradaAtivaPct === pct;
+                  return (
+                    <Pressable
+                      key={pct}
+                      testID={`sim15-entrada-${pct}`}
+                      accessibilityRole="radio"
+                      accessibilityState={{ checked: ativo }}
+                      onPress={() => setEntradaAtivaPct(pct)}
+                      style={[
+                        styles.chip,
+                        {
+                          backgroundColor: ativo
+                            ? cor("cor-azul-cadastral")
+                            : cor("cor-papel-claro"),
+                        },
+                      ]}
+                    >
+                      <Texto
+                        tipo="etiqueta"
+                        cor={ativo ? "cor-superficie" : "cor-texto"}
+                        style={styles.textoChip}
+                      >
+                        {`Entrada ${pct}%`}
+                      </Texto>
+                    </Pressable>
+                  );
+                })
+              : (
+                  [
+                    { id: "caucao", rotulo: "Caução (3 meses)" },
+                    { id: "fianca", rotulo: "Fiança locatícia mensal" },
+                  ] as const
+                ).map((g) => {
+                  const ativo = garantiaAluguel === g.id;
+                  return (
+                    <Pressable
+                      key={g.id}
+                      testID={`sim15-garantia-${g.id}`}
+                      accessibilityRole="radio"
+                      accessibilityState={{ checked: ativo }}
+                      onPress={() => setGarantiaAluguel(g.id)}
+                      style={[
+                        styles.chip,
+                        {
+                          backgroundColor: ativo
+                            ? cor("cor-azul-cadastral")
+                            : cor("cor-papel-claro"),
+                        },
+                      ]}
+                    >
+                      <Texto
+                        tipo="etiqueta"
+                        cor={ativo ? "cor-superficie" : "cor-texto"}
+                        style={styles.textoChip}
+                      >
+                        {g.rotulo}
+                      </Texto>
+                    </Pressable>
+                  );
+                })}
+          </View>
+
           <View
             style={[
               styles.gradeResultados,
@@ -209,7 +281,9 @@ export function SimuladorBolso15Segundos({
           <Texto testID="sim15-origens-calculo" tipo="apoio" cor="cor-texto-apoio" style={styles.origemTxt}>
             {compra
               ? "Origem de cada linha: financiamento pela taxa média Banco Central · fechamento pelas regras fiscais do Recife · condomínio, IPTU e energia por estimativa parametrizada."
-              : "Origem de cada linha: caução estimada em 3 meses de aluguel · condomínio, IPTU e energia por estimativa parametrizada do anúncio."}
+              : garantiaAluguel === "fianca"
+                ? "Origem de cada linha: entrada sem caução tripla · fiança locatícia estimada em ~10%/mês (Lei nº 8.245/1991) · condomínio, IPTU e energia parametrizados."
+                : "Origem de cada linha: caução estimada em 3 meses de aluguel · condomínio, IPTU e energia por estimativa parametrizada do anúncio."}
           </Texto>
 
           <Pressable

@@ -2514,4 +2514,44 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });
+
+  it("alterna entrada 20%/35% na compra e Caução/Seguro fiança no aluguel em SimuladorBolso15Segundos em S55", () => {
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(TemaDoApp, null, React.createElement(SimuladorBolso15Segundos)),
+      );
+    });
+
+    const toggle = tree.root.find((n) => n.props.testID === "simulador-15s-toggle");
+    act(() => {
+      toggle.props.onPress();
+    });
+    const compra20Txt = extrairTextos(tree.toJSON()).join("\n");
+
+    const entrada35Btn = tree.root.find((n) => n.props.testID === "sim15-entrada-35");
+    act(() => {
+      entrada35Btn.props.onPress();
+    });
+    const compra35Txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(compra35Txt).not.toBe(compra20Txt);
+
+    const modAluguel = tree.root.find((n) => n.props.testID === "sim15-mod-aluguel");
+    act(() => {
+      modAluguel.props.onPress();
+    });
+    const aluguelCaucaoTxt = extrairTextos(tree.toJSON()).join("\n");
+
+    const fiancaBtn = tree.root.find((n) => n.props.testID === "sim15-garantia-fianca");
+    act(() => {
+      fiancaBtn.props.onPress();
+    });
+    const aluguelFiancaTxt = extrairTextos(tree.toJSON()).join("\n");
+    expect(aluguelFiancaTxt).not.toBe(aluguelCaucaoTxt);
+    expect(aluguelFiancaTxt).toContain("fiança locatícia estimada");
+
+    expect(REGEX_JARGON_CAMADA1.test(aluguelFiancaTxt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(aluguelFiancaTxt)).toBe(false);
+    expect(/\bseguro\b/i.test(aluguelFiancaTxt)).toBe(false);
+  });
 });
