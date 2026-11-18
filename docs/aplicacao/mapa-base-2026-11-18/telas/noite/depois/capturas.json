@@ -1,0 +1,7916 @@
+{
+ "geradoEm": "2026-11-18T08:11:27.642Z",
+ "base": "http://localhost:8098",
+ "fase": "depois",
+ "casos": "casos.json",
+ "total": 160,
+ "capturas": [
+  {
+   "arquivo": "exemplo-caminhos--boa-viagem--1280--claro.png",
+   "tela": null,
+   "superficie": "exemplo-caminhos",
+   "descricao": "Caminhos do dossiê de exemplo, com \"Adicionar destino\" aberto (o mapa só aparece aí; exemplos/[id]/caminhos.tsx)",
+   "caso": "boa-viagem",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 769,
+   "moldura": {
+    "x": 28,
+    "y": 265,
+    "largura": 1224,
+    "altura": 220
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 30,
+    "porTipo": {
+     "circle": 3,
+     "defs": 1,
+     "g": 5,
+     "path": 8,
+     "rect": 1,
+     "text": 10,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 669.5,
+     "duracao": 6.2,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-caminhos--boa-viagem--360--claro.png",
+   "tela": null,
+   "superficie": "exemplo-caminhos",
+   "descricao": "Caminhos do dossiê de exemplo, com \"Adicionar destino\" aberto (o mapa só aparece aí; exemplos/[id]/caminhos.tsx)",
+   "caso": "boa-viagem",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 768,
+   "moldura": {
+    "x": 28,
+    "y": 285,
+    "largura": 304,
+    "altura": 220
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 20,
+    "porTipo": {
+     "circle": 3,
+     "g": 5,
+     "path": 7,
+     "rect": 1,
+     "text": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 671.5,
+     "duracao": 4,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-caminhos--boa-viagem--375--claro.png",
+   "tela": "exemplo-caminhos--boa-viagem--375--claro--tela.png",
+   "superficie": "exemplo-caminhos",
+   "descricao": "Caminhos do dossiê de exemplo, com \"Adicionar destino\" aberto (o mapa só aparece aí; exemplos/[id]/caminhos.tsx)",
+   "caso": "boa-viagem",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 768,
+   "moldura": {
+    "x": 28,
+    "y": 285,
+    "largura": 319,
+    "altura": 220
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 20,
+    "porTipo": {
+     "circle": 3,
+     "g": 5,
+     "path": 7,
+     "rect": 1,
+     "text": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 659.5,
+     "duracao": 4.2,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-confirmar-lote--boa-viagem--1280--claro.png",
+   "tela": null,
+   "superficie": "exemplo-confirmar-lote",
+   "descricao": "Confirmar lote do dossiê de exemplo (exemplos/[id]/confirmar-lote.tsx)",
+   "caso": "boa-viagem",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1091,
+   "moldura": {
+    "x": 0,
+    "y": 105,
+    "largura": 1280,
+    "altura": 423
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 102,
+    "porTipo": {
+     "circle": 1,
+     "defs": 1,
+     "g": 5,
+     "path": 34,
+     "rect": 1,
+     "text": 30,
+     "textpath": 30
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 629,
+     "duracao": 10,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 896.1,
+     "duracao": 4.9,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-confirmar-lote--boa-viagem--360--claro.png",
+   "tela": null,
+   "superficie": "exemplo-confirmar-lote",
+   "descricao": "Confirmar lote do dossiê de exemplo (exemplos/[id]/confirmar-lote.tsx)",
+   "caso": "boa-viagem",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 871,
+   "moldura": {
+    "x": 0,
+    "y": 105,
+    "largura": 360,
+    "altura": 371
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 46,
+    "porTipo": {
+     "circle": 1,
+     "defs": 1,
+     "g": 5,
+     "path": 22,
+     "rect": 1,
+     "text": 8,
+     "textpath": 8
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 580.1,
+     "duracao": 7.6,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 877.8,
+     "duracao": 2.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-confirmar-lote--boa-viagem--375--claro.png",
+   "tela": "exemplo-confirmar-lote--boa-viagem--375--claro--tela.png",
+   "superficie": "exemplo-confirmar-lote",
+   "descricao": "Confirmar lote do dossiê de exemplo (exemplos/[id]/confirmar-lote.tsx)",
+   "caso": "boa-viagem",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 873,
+   "moldura": {
+    "x": 0,
+    "y": 105,
+    "largura": 375,
+    "altura": 371
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 46,
+    "porTipo": {
+     "circle": 1,
+     "defs": 1,
+     "g": 5,
+     "path": 22,
+     "rect": 1,
+     "text": 8,
+     "textpath": 8
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 608.8,
+     "duracao": 7.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 910.3,
+     "duracao": 2.4,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--boa-viagem--1280--claro.png",
+   "tela": null,
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "boa-viagem",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1116,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 1280,
+    "altura": 478
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 75,
+    "porTipo": {
+     "circle": 4,
+     "defs": 1,
+     "g": 5,
+     "path": 20,
+     "rect": 1,
+     "text": 26,
+     "textpath": 18
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 812.1,
+     "duracao": 29.3,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--boa-viagem--360--claro.png",
+   "tela": null,
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "boa-viagem",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 877,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 360,
+    "altura": 474
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 29,
+    "porTipo": {
+     "circle": 4,
+     "defs": 1,
+     "g": 5,
+     "path": 8,
+     "rect": 1,
+     "text": 8,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 698.3,
+     "duracao": 7.9,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--boa-viagem--375--claro.png",
+   "tela": "exemplo-mapa--boa-viagem--375--claro--tela.png",
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "boa-viagem",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 881,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 375,
+    "altura": 474
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 34,
+    "porTipo": {
+     "circle": 4,
+     "defs": 1,
+     "g": 5,
+     "path": 9,
+     "rect": 1,
+     "text": 10,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 722.6,
+     "duracao": 9,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--casa-forte--1280--claro.png",
+   "tela": null,
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "casa-forte",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1368,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 1280,
+    "altura": 478
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 182,
+    "porTipo": {
+     "circle": 4,
+     "defs": 1,
+     "g": 5,
+     "path": 29,
+     "rect": 1,
+     "text": 104,
+     "textpath": 38
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 1031.9,
+     "duracao": 141.9,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--casa-forte--360--claro.png",
+   "tela": null,
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "casa-forte",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 876,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 360,
+    "altura": 474
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 47,
+    "porTipo": {
+     "circle": 4,
+     "defs": 1,
+     "g": 5,
+     "path": 8,
+     "rect": 1,
+     "text": 26,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 691.6,
+     "duracao": 15.6,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--casa-forte--375--claro.png",
+   "tela": "exemplo-mapa--casa-forte--375--claro--tela.png",
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "casa-forte",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 879,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 375,
+    "altura": 474
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 52,
+    "porTipo": {
+     "circle": 4,
+     "defs": 1,
+     "g": 5,
+     "path": 9,
+     "rect": 1,
+     "text": 28,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 685.8,
+     "duracao": 14.6,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--espinheiro--1280--claro.png",
+   "tela": null,
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "espinheiro",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1375,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 1280,
+    "altura": 478
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 168,
+    "porTipo": {
+     "circle": 4,
+     "defs": 1,
+     "g": 5,
+     "path": 29,
+     "rect": 1,
+     "text": 90,
+     "textpath": 38
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 1042.6,
+     "duracao": 136.2,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--espinheiro--360--claro.png",
+   "tela": null,
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "espinheiro",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 901,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 360,
+    "altura": 474
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 66,
+    "porTipo": {
+     "circle": 4,
+     "defs": 1,
+     "g": 5,
+     "path": 11,
+     "rect": 1,
+     "text": 36,
+     "textpath": 8
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 717.2,
+     "duracao": 14.9,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--espinheiro--375--claro.png",
+   "tela": "exemplo-mapa--espinheiro--375--claro--tela.png",
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "espinheiro",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 895,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 375,
+    "altura": 474
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 68,
+    "porTipo": {
+     "circle": 4,
+     "defs": 1,
+     "g": 5,
+     "path": 11,
+     "rect": 1,
+     "text": 38,
+     "textpath": 8
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 748.3,
+     "duracao": 13.6,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--gracas--1280--claro.png",
+   "tela": null,
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "gracas",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1288,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 1280,
+    "altura": 478
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 193,
+    "porTipo": {
+     "circle": 4,
+     "defs": 1,
+     "g": 5,
+     "path": 34,
+     "rect": 1,
+     "text": 100,
+     "textpath": 48
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 991.1,
+     "duracao": 156.5,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--gracas--360--claro.png",
+   "tela": null,
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "gracas",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 890,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 360,
+    "altura": 474
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 47,
+    "porTipo": {
+     "circle": 4,
+     "g": 5,
+     "path": 7,
+     "rect": 1,
+     "text": 30
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 698.2,
+     "duracao": 15.5,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--gracas--375--claro.png",
+   "tela": "exemplo-mapa--gracas--375--claro--tela.png",
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "gracas",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 876,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 375,
+    "altura": 474
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 55,
+    "porTipo": {
+     "circle": 4,
+     "defs": 1,
+     "g": 5,
+     "path": 8,
+     "rect": 1,
+     "text": 34,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 728.7,
+     "duracao": 15.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--madalena--1280--claro.png",
+   "tela": null,
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "madalena",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1231,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 1280,
+    "altura": 478
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 205,
+    "porTipo": {
+     "circle": 4,
+     "defs": 1,
+     "g": 5,
+     "path": 36,
+     "rect": 1,
+     "text": 108,
+     "textpath": 50
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 1002.3,
+     "duracao": 85.9,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--madalena--360--claro.png",
+   "tela": null,
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "madalena",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 883,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 360,
+    "altura": 474
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 69,
+    "porTipo": {
+     "circle": 4,
+     "defs": 1,
+     "g": 5,
+     "path": 12,
+     "rect": 1,
+     "text": 36,
+     "textpath": 10
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 696.4,
+     "duracao": 14.5,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-mapa--madalena--375--claro.png",
+   "tela": "exemplo-mapa--madalena--375--claro--tela.png",
+   "superficie": "exemplo-mapa",
+   "descricao": "Aba Mapa do dossiê de exemplo (componentes/mapa/Mapa.tsx)",
+   "caso": "madalena",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 893,
+   "moldura": {
+    "x": 0,
+    "y": 213,
+    "largura": 375,
+    "altura": 474
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 71,
+    "porTipo": {
+     "circle": 4,
+     "defs": 1,
+     "g": 5,
+     "path": 12,
+     "rect": 1,
+     "text": 38,
+     "textpath": 10
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 703.1,
+     "duracao": 14.8,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--boa-viagem--1280--claro.png",
+   "tela": null,
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "boa-viagem",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1076,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 1256,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 54,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 5,
+     "path": 19,
+     "rect": 1,
+     "text": 16,
+     "textpath": 10
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 635.9,
+     "duracao": 10.6,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--boa-viagem--360--claro.png",
+   "tela": null,
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "boa-viagem",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1082,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 336,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 30,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 5,
+     "path": 15,
+     "rect": 1,
+     "text": 4,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 646.9,
+     "duracao": 6.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--boa-viagem--375--claro.png",
+   "tela": "exemplo-topo--boa-viagem--375--claro--tela.png",
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "boa-viagem",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1073,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 351,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 30,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 5,
+     "path": 15,
+     "rect": 1,
+     "text": 4,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 625.4,
+     "duracao": 7.1,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--casa-forte--1280--claro.png",
+   "tela": null,
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "casa-forte",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1055,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 1256,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 87,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 5,
+     "path": 20,
+     "rect": 1,
+     "text": 44,
+     "textpath": 14
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 672.8,
+     "duracao": 67.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--casa-forte--360--claro.png",
+   "tela": null,
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "casa-forte",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1079,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 336,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 27,
+    "porTipo": {
+     "circle": 2,
+     "g": 5,
+     "path": 13,
+     "rect": 1,
+     "text": 6
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 702.4,
+     "duracao": 21.9,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--casa-forte--375--claro.png",
+   "tela": "exemplo-topo--casa-forte--375--claro--tela.png",
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "casa-forte",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1058,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 351,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 27,
+    "porTipo": {
+     "circle": 2,
+     "g": 5,
+     "path": 13,
+     "rect": 1,
+     "text": 6
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 716,
+     "duracao": 27.5,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--espinheiro--1280--claro.png",
+   "tela": null,
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "espinheiro",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1075,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 1256,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 83,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 5,
+     "path": 20,
+     "rect": 1,
+     "text": 40,
+     "textpath": 14
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 714.8,
+     "duracao": 53.4,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--espinheiro--360--claro.png",
+   "tela": null,
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "espinheiro",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1066,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 336,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 46,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 5,
+     "path": 17,
+     "rect": 1,
+     "text": 12,
+     "textpath": 8
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 681,
+     "duracao": 28.9,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--espinheiro--375--claro.png",
+   "tela": "exemplo-topo--espinheiro--375--claro--tela.png",
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "espinheiro",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1064,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 351,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 46,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 5,
+     "path": 17,
+     "rect": 1,
+     "text": 12,
+     "textpath": 8
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 687.2,
+     "duracao": 30.6,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--gracas--1280--claro.png",
+   "tela": null,
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "gracas",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1058,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 1256,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 85,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 5,
+     "path": 22,
+     "rect": 1,
+     "text": 36,
+     "textpath": 18
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 668.8,
+     "duracao": 48,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--gracas--360--claro.png",
+   "tela": null,
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "gracas",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1063,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 336,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 33,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 5,
+     "path": 14,
+     "rect": 1,
+     "text": 8,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 671.2,
+     "duracao": 30.2,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--gracas--375--claro.png",
+   "tela": "exemplo-topo--gracas--375--claro--tela.png",
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "gracas",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1068,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 351,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 38,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 5,
+     "path": 15,
+     "rect": 1,
+     "text": 10,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 671.9,
+     "duracao": 30.9,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--madalena--1280--claro.png",
+   "tela": null,
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "madalena",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1061,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 1256,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 98,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 5,
+     "path": 25,
+     "rect": 1,
+     "text": 42,
+     "textpath": 22
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 680.9,
+     "duracao": 29,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--madalena--360--claro.png",
+   "tela": null,
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "madalena",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1063,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 336,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 36,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 5,
+     "path": 15,
+     "rect": 1,
+     "text": 10,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 687.2,
+     "duracao": 14,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "exemplo-topo--madalena--375--claro.png",
+   "tela": "exemplo-topo--madalena--375--claro--tela.png",
+   "superficie": "exemplo-topo",
+   "descricao": "Topo do dossiê de exemplo (componentes/dossie/Topo.tsx, Mapa com raio de 500 m)",
+   "caso": "madalena",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 1061,
+   "moldura": {
+    "x": 12,
+    "y": 105,
+    "largura": 351,
+    "altura": 200
+   },
+   "svgs": 3,
+   "elementos": {
+    "total": 36,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 5,
+     "path": 15,
+     "rect": 1,
+     "text": 10,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 679.3,
+     "duracao": 14.3,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--casa-forte-divisa--1280--claro.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "casa-forte-divisa",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 336,
+    "y": 273,
+    "largura": 608,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 61,
+    "porTipo": {
+     "circle": 5,
+     "defs": 1,
+     "g": 10,
+     "line": 3,
+     "path": 14,
+     "rect": 2,
+     "text": 16,
+     "textpath": 10
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 42,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 775.7,
+     "duracao": 6.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 856.5,
+     "duracao": 1.9,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--casa-forte-divisa--1280--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "casa-forte-divisa",
+   "largura": 1280,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 336,
+    "y": 273,
+    "largura": 608,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 111,
+    "porTipo": {
+     "circle": 5,
+     "defs": 1,
+     "g": 10,
+     "line": 3,
+     "path": 24,
+     "rect": 2,
+     "text": 36,
+     "textpath": 30
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 92,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 858.6,
+     "duracao": 7.2,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 872.6,
+     "duracao": 1.9,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1425,
+     "duracao": 1.7,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1461.1,
+     "duracao": 2.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1498.4,
+     "duracao": 1.6,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1527.5,
+     "duracao": 1.5,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--casa-forte-divisa--360--claro.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "casa-forte-divisa",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 16,
+    "y": 324,
+    "largura": 328,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 46,
+    "porTipo": {
+     "circle": 5,
+     "defs": 1,
+     "g": 10,
+     "line": 3,
+     "path": 11,
+     "rect": 2,
+     "text": 10,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 27,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 854.6,
+     "duracao": 5.9,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 866,
+     "duracao": 1.5,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--casa-forte-divisa--360--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "casa-forte-divisa",
+   "largura": 360,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 505,
+   "moldura": {
+    "x": 16,
+    "y": 324,
+    "largura": 328,
+    "altura": 280
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 88,
+    "porTipo": {
+     "circle": 6,
+     "defs": 1,
+     "g": 10,
+     "line": 3,
+     "path": 20,
+     "rect": 2,
+     "text": 26,
+     "textpath": 20
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 67,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 868.9,
+     "duracao": 5.9,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 888.6,
+     "duracao": 1.6,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1431.7,
+     "duracao": 1.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1458.2,
+     "duracao": 1.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1485.9,
+     "duracao": 1.6,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1514.1,
+     "duracao": 1.5,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--casa-forte-divisa--375--claro.png",
+   "tela": "gaveta-planta--casa-forte-divisa--375--claro--tela.png",
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "casa-forte-divisa",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 514,
+   "moldura": {
+    "x": 16,
+    "y": 324,
+    "largura": 343,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 46,
+    "porTipo": {
+     "circle": 5,
+     "defs": 1,
+     "g": 10,
+     "line": 3,
+     "path": 11,
+     "rect": 2,
+     "text": 10,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 27,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 861.2,
+     "duracao": 6,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 872.6,
+     "duracao": 1.5,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--golden-tower--1280--claro.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "golden-tower",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 509,
+   "moldura": {
+    "x": 336,
+    "y": 323,
+    "largura": 608,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 49,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 13,
+     "rect": 2,
+     "text": 11,
+     "textpath": 10
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 39,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 852.3,
+     "duracao": 10.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 937.4,
+     "duracao": 2.3,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--golden-tower--1280--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "golden-tower",
+   "largura": 1280,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 505,
+   "moldura": {
+    "x": 336,
+    "y": 300,
+    "largura": 608,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 104,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 24,
+     "rect": 2,
+     "text": 33,
+     "textpath": 32
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 94,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 852.2,
+     "duracao": 11,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 943.7,
+     "duracao": 2.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1488.3,
+     "duracao": 2.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1515.8,
+     "duracao": 2,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1543.4,
+     "duracao": 2,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1577.7,
+     "duracao": 2.1,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--golden-tower--360--claro.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "golden-tower",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 509,
+   "moldura": {
+    "x": 16,
+    "y": 324,
+    "largura": 328,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 39,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 11,
+     "rect": 2,
+     "text": 7,
+     "textpath": 6
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 29,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 891.3,
+     "duracao": 6.7,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 982.6,
+     "duracao": 1.8,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--golden-tower--360--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "golden-tower",
+   "largura": 360,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 16,
+    "y": 324,
+    "largura": 328,
+    "altura": 280
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 71,
+    "porTipo": {
+     "circle": 3,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 18,
+     "rect": 2,
+     "text": 19,
+     "textpath": 18
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 59,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 890.5,
+     "duracao": 6.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 985.8,
+     "duracao": 2.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1534.3,
+     "duracao": 2.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1566.6,
+     "duracao": 1.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1594,
+     "duracao": 1.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1621.9,
+     "duracao": 1.3,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--golden-tower--375--claro.png",
+   "tela": "gaveta-planta--golden-tower--375--claro--tela.png",
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "golden-tower",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 510,
+   "moldura": {
+    "x": 16,
+    "y": 324,
+    "largura": 343,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 39,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 11,
+     "rect": 2,
+     "text": 7,
+     "textpath": 6
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 29,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 1988.1,
+     "duracao": 8.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 2092.4,
+     "duracao": 4.4,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--pina-sem-lote--1280--claro.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "pina-sem-lote",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 336,
+    "y": 323,
+    "largura": 608,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 40,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 12,
+     "rect": 2,
+     "text": 7,
+     "textpath": 6
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 30,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 820.2,
+     "duracao": 8.9,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 845.6,
+     "duracao": 2.6,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--pina-sem-lote--1280--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "pina-sem-lote",
+   "largura": 1280,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 336,
+    "y": 300,
+    "largura": 608,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 85,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 21,
+     "rect": 2,
+     "text": 25,
+     "textpath": 24
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 75,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 754,
+     "duracao": 9.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 833,
+     "duracao": 2.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1372.6,
+     "duracao": 2.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1406.7,
+     "duracao": 2.7,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1433.3,
+     "duracao": 2.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1461.3,
+     "duracao": 2.9,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--pina-sem-lote--360--claro.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "pina-sem-lote",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 509,
+   "moldura": {
+    "x": 16,
+    "y": 324,
+    "largura": 328,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 29,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 9,
+     "rect": 2,
+     "text": 3,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 19,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 750.3,
+     "duracao": 7.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 838.8,
+     "duracao": 2.2,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--pina-sem-lote--360--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "pina-sem-lote",
+   "largura": 360,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 505,
+   "moldura": {
+    "x": 16,
+    "y": 324,
+    "largura": 328,
+    "altura": 280
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 56,
+    "porTipo": {
+     "circle": 3,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 15,
+     "rect": 2,
+     "text": 13,
+     "textpath": 12
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 44,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 765.7,
+     "duracao": 5.9,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 836.3,
+     "duracao": 2.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1379.3,
+     "duracao": 2,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1405.5,
+     "duracao": 2.2,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1433.1,
+     "duracao": 2.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1460.7,
+     "duracao": 2.3,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--pina-sem-lote--375--claro.png",
+   "tela": "gaveta-planta--pina-sem-lote--375--claro--tela.png",
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "pina-sem-lote",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 16,
+    "y": 324,
+    "largura": 343,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 29,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 9,
+     "rect": 2,
+     "text": 3,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 19,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 773.3,
+     "duracao": 7.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 862.2,
+     "duracao": 2.1,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--torre--1280--claro.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "torre",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 546,
+   "moldura": {
+    "x": 336,
+    "y": 323,
+    "largura": 608,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 43,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 13,
+     "rect": 2,
+     "text": 9,
+     "textpath": 6
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 33,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 849.3,
+     "duracao": 7.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 863.2,
+     "duracao": 2.4,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--torre--1280--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "torre",
+   "largura": 1280,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 336,
+    "y": 300,
+    "largura": 608,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 85,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 21,
+     "rect": 2,
+     "text": 27,
+     "textpath": 22
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 75,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 865.3,
+     "duracao": 7.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 889.3,
+     "duracao": 2.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1435.8,
+     "duracao": 1.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1471.5,
+     "duracao": 2.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1497,
+     "duracao": 2.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1524.8,
+     "duracao": 2.1,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--torre--360--claro.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "torre",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 510,
+   "moldura": {
+    "x": 16,
+    "y": 324,
+    "largura": 328,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 36,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 12,
+     "rect": 2,
+     "text": 5,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 26,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 875.9,
+     "duracao": 6.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 888.4,
+     "duracao": 1.3,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--torre--360--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "torre",
+   "largura": 360,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 16,
+    "y": 324,
+    "largura": 328,
+    "altura": 280
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 60,
+    "porTipo": {
+     "circle": 3,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 17,
+     "rect": 2,
+     "text": 15,
+     "textpath": 12
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 48,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 836.2,
+     "duracao": 6.7,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 857.6,
+     "duracao": 1.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1395.9,
+     "duracao": 1.7,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1424,
+     "duracao": 1.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1450.4,
+     "duracao": 2,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1478.1,
+     "duracao": 1.4,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-planta--torre--375--claro.png",
+   "tela": "gaveta-planta--torre--375--claro--tela.png",
+   "superficie": "gaveta-planta",
+   "descricao": "Gaveta \"Mapa do lote\" do dossiê, Planta 2D (MapaDoLote em GavetaDoMapa)",
+   "caso": "torre",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 16,
+    "y": 324,
+    "largura": 343,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 36,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "line": 3,
+     "path": 12,
+     "rect": 2,
+     "text": 5,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 26,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 853.1,
+     "duracao": 7.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 876.2,
+     "duracao": 1.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-volume--casa-forte-divisa--1280--claro.png",
+   "tela": null,
+   "superficie": "gaveta-volume",
+   "descricao": "Gaveta \"Mapa do lote\", primeiro horário do Volume 2.5D",
+   "caso": "casa-forte-divisa",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 336,
+    "y": 313,
+    "largura": 608,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 409,
+    "porTipo": {
+     "circle": 5,
+     "defs": 1,
+     "g": 31,
+     "line": 4,
+     "path": 330,
+     "rect": 2,
+     "text": 26,
+     "textpath": 10
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 11,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 508.4,
+     "duracao": 3.7,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 585.9,
+     "duracao": 1.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 627.3,
+     "duracao": 1.4,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "modo": "Ver mapa: Volume · manhã",
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-volume--casa-forte-divisa--360--claro.png",
+   "tela": null,
+   "superficie": "gaveta-volume",
+   "descricao": "Gaveta \"Mapa do lote\", primeiro horário do Volume 2.5D",
+   "caso": "casa-forte-divisa",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 509,
+   "moldura": {
+    "x": 16,
+    "y": 380,
+    "largura": 328,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 374,
+    "porTipo": {
+     "circle": 5,
+     "defs": 1,
+     "g": 28,
+     "line": 4,
+     "path": 311,
+     "rect": 2,
+     "text": 19,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 11,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 500.2,
+     "duracao": 3.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 568.7,
+     "duracao": 1.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 606.3,
+     "duracao": 1.6,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "modo": "Ver mapa: Volume · manhã",
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-volume--casa-forte-divisa--375--claro.png",
+   "tela": "gaveta-volume--casa-forte-divisa--375--claro--tela.png",
+   "superficie": "gaveta-volume",
+   "descricao": "Gaveta \"Mapa do lote\", primeiro horário do Volume 2.5D",
+   "caso": "casa-forte-divisa",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 16,
+    "y": 380,
+    "largura": 343,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 374,
+    "porTipo": {
+     "circle": 5,
+     "defs": 1,
+     "g": 28,
+     "line": 4,
+     "path": 311,
+     "rect": 2,
+     "text": 19,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 11,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 519.9,
+     "duracao": 2.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 586.6,
+     "duracao": 1.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 627.1,
+     "duracao": 1,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "modo": "Ver mapa: Volume · manhã",
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-volume--golden-tower--1280--claro.png",
+   "tela": null,
+   "superficie": "gaveta-volume",
+   "descricao": "Gaveta \"Mapa do lote\", primeiro horário do Volume 2.5D",
+   "caso": "golden-tower",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 509,
+   "moldura": {
+    "x": 336,
+    "y": 323,
+    "largura": 608,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 1393,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 61,
+     "line": 4,
+     "path": 1263,
+     "rect": 2,
+     "text": 50,
+     "textpath": 10
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 10,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 614,
+     "duracao": 9.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 682.6,
+     "duracao": 2.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 717.8,
+     "duracao": 1.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "modo": "Ver mapa: Volume · manhã",
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-volume--golden-tower--360--claro.png",
+   "tela": null,
+   "superficie": "gaveta-volume",
+   "descricao": "Gaveta \"Mapa do lote\", primeiro horário do Volume 2.5D",
+   "caso": "golden-tower",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 510,
+   "moldura": {
+    "x": 16,
+    "y": 380,
+    "largura": 328,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 1165,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 51,
+     "line": 4,
+     "path": 1061,
+     "rect": 2,
+     "text": 38,
+     "textpath": 6
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 10,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 562.9,
+     "duracao": 4.9,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 629.4,
+     "duracao": 1.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 662.6,
+     "duracao": 1.3,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "modo": "Ver mapa: Volume · manhã",
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-volume--golden-tower--375--claro.png",
+   "tela": "gaveta-volume--golden-tower--375--claro--tela.png",
+   "superficie": "gaveta-volume",
+   "descricao": "Gaveta \"Mapa do lote\", primeiro horário do Volume 2.5D",
+   "caso": "golden-tower",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 509,
+   "moldura": {
+    "x": 16,
+    "y": 380,
+    "largura": 343,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 1139,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 50,
+     "line": 4,
+     "path": 1036,
+     "rect": 2,
+     "text": 38,
+     "textpath": 6
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 10,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 653,
+     "duracao": 5.9,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 732.7,
+     "duracao": 3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 778.4,
+     "duracao": 2,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "modo": "Ver mapa: Volume · manhã",
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-volume--pina-sem-lote--1280--claro.png",
+   "tela": null,
+   "superficie": "gaveta-volume",
+   "descricao": "Gaveta \"Mapa do lote\", primeiro horário do Volume 2.5D",
+   "caso": "pina-sem-lote",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 509,
+   "moldura": {
+    "x": 336,
+    "y": 323,
+    "largura": 608,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 89,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 11,
+     "line": 4,
+     "path": 54,
+     "rect": 2,
+     "text": 9,
+     "textpath": 6
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 11,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 494.5,
+     "duracao": 6,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 561.5,
+     "duracao": 2.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 599.4,
+     "duracao": 1.9,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "modo": "Ver mapa: Volume · manhã",
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-volume--pina-sem-lote--360--claro.png",
+   "tela": null,
+   "superficie": "gaveta-volume",
+   "descricao": "Gaveta \"Mapa do lote\", primeiro horário do Volume 2.5D",
+   "caso": "pina-sem-lote",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 16,
+    "y": 380,
+    "largura": 328,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 64,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 10,
+     "line": 4,
+     "path": 38,
+     "rect": 2,
+     "text": 5,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 10,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 516.4,
+     "duracao": 4.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 583.7,
+     "duracao": 2.6,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 626,
+     "duracao": 1.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "modo": "Ver mapa: Volume · manhã",
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-volume--pina-sem-lote--375--claro.png",
+   "tela": "gaveta-volume--pina-sem-lote--375--claro--tela.png",
+   "superficie": "gaveta-volume",
+   "descricao": "Gaveta \"Mapa do lote\", primeiro horário do Volume 2.5D",
+   "caso": "pina-sem-lote",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 16,
+    "y": 380,
+    "largura": 343,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 64,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 10,
+     "line": 4,
+     "path": 38,
+     "rect": 2,
+     "text": 5,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 10,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 507,
+     "duracao": 4.7,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 581.3,
+     "duracao": 2.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 621.3,
+     "duracao": 1.5,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "modo": "Ver mapa: Volume · manhã",
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-volume--torre--1280--claro.png",
+   "tela": null,
+   "superficie": "gaveta-volume",
+   "descricao": "Gaveta \"Mapa do lote\", primeiro horário do Volume 2.5D",
+   "caso": "torre",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 336,
+    "y": 323,
+    "largura": 608,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 307,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 19,
+     "line": 4,
+     "path": 255,
+     "rect": 2,
+     "text": 18,
+     "textpath": 6
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 12,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 539,
+     "duracao": 4.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 608.2,
+     "duracao": 2,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 648,
+     "duracao": 1.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "modo": "Ver mapa: Volume · manhã",
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-volume--torre--360--claro.png",
+   "tela": null,
+   "superficie": "gaveta-volume",
+   "descricao": "Gaveta \"Mapa do lote\", primeiro horário do Volume 2.5D",
+   "caso": "torre",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 510,
+   "moldura": {
+    "x": 16,
+    "y": 380,
+    "largura": 328,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 231,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 16,
+     "line": 4,
+     "path": 193,
+     "rect": 2,
+     "text": 9,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 12,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 529.4,
+     "duracao": 3.7,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 599.9,
+     "duracao": 1.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 634.2,
+     "duracao": 1.1,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "modo": "Ver mapa: Volume · manhã",
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "gaveta-volume--torre--375--claro.png",
+   "tela": "gaveta-volume--torre--375--claro--tela.png",
+   "superficie": "gaveta-volume",
+   "descricao": "Gaveta \"Mapa do lote\", primeiro horário do Volume 2.5D",
+   "caso": "torre",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 16,
+    "y": 380,
+    "largura": 343,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 231,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 16,
+     "line": 4,
+     "path": 193,
+     "rect": 2,
+     "text": 9,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 12,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 497.3,
+     "duracao": 3.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 563.2,
+     "duracao": 1.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 593.7,
+     "duracao": 1,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "modo": "Ver mapa: Volume · manhã",
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-comparar--casa-forte-divisa--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-comparar",
+   "descricao": "Miniatura no cartão \"Imóvel 1\" do Comparar (comparar/CartaoDoImovel.tsx); o par é o caso seguinte",
+   "caso": "casa-forte-divisa",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 281,
+    "y": 1015,
+    "largura": 352,
+    "altura": 196
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-comparar--casa-forte-divisa--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-comparar",
+   "descricao": "Miniatura no cartão \"Imóvel 1\" do Comparar (comparar/CartaoDoImovel.tsx); o par é o caso seguinte",
+   "caso": "casa-forte-divisa",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 17,
+    "y": 1140,
+    "largura": 156,
+    "altura": 87
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-comparar--casa-forte-divisa--375--claro.png",
+   "tela": "miniatura-comparar--casa-forte-divisa--375--claro--tela.png",
+   "superficie": "miniatura-comparar",
+   "descricao": "Miniatura no cartão \"Imóvel 1\" do Comparar (comparar/CartaoDoImovel.tsx); o par é o caso seguinte",
+   "caso": "casa-forte-divisa",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 505,
+   "moldura": {
+    "x": 17,
+    "y": 1140,
+    "largura": 164,
+    "altura": 91
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-comparar--golden-tower--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-comparar",
+   "descricao": "Miniatura no cartão \"Imóvel 1\" do Comparar (comparar/CartaoDoImovel.tsx); o par é o caso seguinte",
+   "caso": "golden-tower",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 512,
+   "moldura": {
+    "x": 281,
+    "y": 963,
+    "largura": 352,
+    "altura": 196
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-comparar--golden-tower--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-comparar",
+   "descricao": "Miniatura no cartão \"Imóvel 1\" do Comparar (comparar/CartaoDoImovel.tsx); o par é o caso seguinte",
+   "caso": "golden-tower",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 17,
+    "y": 1050,
+    "largura": 156,
+    "altura": 87
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-comparar--golden-tower--375--claro.png",
+   "tela": "miniatura-comparar--golden-tower--375--claro--tela.png",
+   "superficie": "miniatura-comparar",
+   "descricao": "Miniatura no cartão \"Imóvel 1\" do Comparar (comparar/CartaoDoImovel.tsx); o par é o caso seguinte",
+   "caso": "golden-tower",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 17,
+    "y": 1050,
+    "largura": 164,
+    "altura": 91
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-comparar--pina-sem-lote--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-comparar",
+   "descricao": "Miniatura no cartão \"Imóvel 1\" do Comparar (comparar/CartaoDoImovel.tsx); o par é o caso seguinte",
+   "caso": "pina-sem-lote",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 281,
+    "y": 963,
+    "largura": 352,
+    "altura": 196
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-comparar--pina-sem-lote--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-comparar",
+   "descricao": "Miniatura no cartão \"Imóvel 1\" do Comparar (comparar/CartaoDoImovel.tsx); o par é o caso seguinte",
+   "caso": "pina-sem-lote",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 17,
+    "y": 1050,
+    "largura": 156,
+    "altura": 87
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-comparar--pina-sem-lote--375--claro.png",
+   "tela": "miniatura-comparar--pina-sem-lote--375--claro--tela.png",
+   "superficie": "miniatura-comparar",
+   "descricao": "Miniatura no cartão \"Imóvel 1\" do Comparar (comparar/CartaoDoImovel.tsx); o par é o caso seguinte",
+   "caso": "pina-sem-lote",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 17,
+    "y": 1032,
+    "largura": 164,
+    "altura": 91
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-comparar--torre--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-comparar",
+   "descricao": "Miniatura no cartão \"Imóvel 1\" do Comparar (comparar/CartaoDoImovel.tsx); o par é o caso seguinte",
+   "caso": "torre",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 505,
+   "moldura": {
+    "x": 281,
+    "y": 1063,
+    "largura": 352,
+    "altura": 196
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-comparar--torre--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-comparar",
+   "descricao": "Miniatura no cartão \"Imóvel 1\" do Comparar (comparar/CartaoDoImovel.tsx); o par é o caso seguinte",
+   "caso": "torre",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 17,
+    "y": 1177,
+    "largura": 156,
+    "altura": 87
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-comparar--torre--375--claro.png",
+   "tela": "miniatura-comparar--torre--375--claro--tela.png",
+   "superficie": "miniatura-comparar",
+   "descricao": "Miniatura no cartão \"Imóvel 1\" do Comparar (comparar/CartaoDoImovel.tsx); o par é o caso seguinte",
+   "caso": "torre",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 17,
+    "y": 1177,
+    "largura": 164,
+    "altura": 91
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-inicio--casa-forte-divisa--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-inicio",
+   "descricao": "Miniatura do lote no cartão da aba inicial (src/app/(abas)/index.tsx)",
+   "caso": "casa-forte-divisa",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 281,
+    "y": 120,
+    "largura": 718,
+    "altura": 449
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-inicio--casa-forte-divisa--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-inicio",
+   "descricao": "Miniatura do lote no cartão da aba inicial (src/app/(abas)/index.tsx)",
+   "caso": "casa-forte-divisa",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 510,
+   "moldura": {
+    "x": 17,
+    "y": 249,
+    "largura": 326,
+    "altura": 204
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-inicio--casa-forte-divisa--375--claro.png",
+   "tela": "miniatura-inicio--casa-forte-divisa--375--claro--tela.png",
+   "superficie": "miniatura-inicio",
+   "descricao": "Miniatura do lote no cartão da aba inicial (src/app/(abas)/index.tsx)",
+   "caso": "casa-forte-divisa",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 17,
+    "y": 243,
+    "largura": 341,
+    "altura": 213
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-inicio--golden-tower--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-inicio",
+   "descricao": "Miniatura do lote no cartão da aba inicial (src/app/(abas)/index.tsx)",
+   "caso": "golden-tower",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 281,
+    "y": 120,
+    "largura": 718,
+    "altura": 449
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-inicio--golden-tower--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-inicio",
+   "descricao": "Miniatura do lote no cartão da aba inicial (src/app/(abas)/index.tsx)",
+   "caso": "golden-tower",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 17,
+    "y": 249,
+    "largura": 326,
+    "altura": 204
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-inicio--golden-tower--375--claro.png",
+   "tela": "miniatura-inicio--golden-tower--375--claro--tela.png",
+   "superficie": "miniatura-inicio",
+   "descricao": "Miniatura do lote no cartão da aba inicial (src/app/(abas)/index.tsx)",
+   "caso": "golden-tower",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 17,
+    "y": 244,
+    "largura": 341,
+    "altura": 213
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-inicio--pina-sem-lote--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-inicio",
+   "descricao": "Miniatura do lote no cartão da aba inicial (src/app/(abas)/index.tsx)",
+   "caso": "pina-sem-lote",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 281,
+    "y": 120,
+    "largura": 718,
+    "altura": 449
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-inicio--pina-sem-lote--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-inicio",
+   "descricao": "Miniatura do lote no cartão da aba inicial (src/app/(abas)/index.tsx)",
+   "caso": "pina-sem-lote",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 17,
+    "y": 285,
+    "largura": 326,
+    "altura": 204
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-inicio--pina-sem-lote--375--claro.png",
+   "tela": "miniatura-inicio--pina-sem-lote--375--claro--tela.png",
+   "superficie": "miniatura-inicio",
+   "descricao": "Miniatura do lote no cartão da aba inicial (src/app/(abas)/index.tsx)",
+   "caso": "pina-sem-lote",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 17,
+    "y": 275,
+    "largura": 341,
+    "altura": 213
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-inicio--torre--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-inicio",
+   "descricao": "Miniatura do lote no cartão da aba inicial (src/app/(abas)/index.tsx)",
+   "caso": "torre",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 281,
+    "y": 120,
+    "largura": 718,
+    "altura": 449
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-inicio--torre--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-inicio",
+   "descricao": "Miniatura do lote no cartão da aba inicial (src/app/(abas)/index.tsx)",
+   "caso": "torre",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 17,
+    "y": 249,
+    "largura": 326,
+    "altura": 204
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-inicio--torre--375--claro.png",
+   "tela": "miniatura-inicio--torre--375--claro--tela.png",
+   "superficie": "miniatura-inicio",
+   "descricao": "Miniatura do lote no cartão da aba inicial (src/app/(abas)/index.tsx)",
+   "caso": "torre",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 17,
+    "y": 244,
+    "largura": 341,
+    "altura": 213
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-topo--casa-forte-divisa--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-topo",
+   "descricao": "Topo do dossiê sem fotos: contorno do lote (dossie-v1/Topo.tsx)",
+   "caso": "casa-forte-divisa",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 509,
+   "moldura": {
+    "x": 281,
+    "y": 74,
+    "largura": 718,
+    "altura": 449
+   },
+   "svgs": 4,
+   "elementos": {
+    "total": 51,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 3,
+     "path": 20,
+     "rect": 1,
+     "text": 12,
+     "textpath": 12
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 543.3,
+     "duracao": 4.8,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-topo--casa-forte-divisa--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-topo",
+   "descricao": "Topo do dossiê sem fotos: contorno do lote (dossie-v1/Topo.tsx)",
+   "caso": "casa-forte-divisa",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 17,
+    "y": 74,
+    "largura": 326,
+    "altura": 204
+   },
+   "svgs": 4,
+   "elementos": {
+    "total": 26,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 3,
+     "path": 15,
+     "rect": 1,
+     "text": 2,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 545,
+     "duracao": 3.4,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-topo--casa-forte-divisa--375--claro.png",
+   "tela": "miniatura-topo--casa-forte-divisa--375--claro--tela.png",
+   "superficie": "miniatura-topo",
+   "descricao": "Topo do dossiê sem fotos: contorno do lote (dossie-v1/Topo.tsx)",
+   "caso": "casa-forte-divisa",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 17,
+    "y": 74,
+    "largura": 341,
+    "altura": 213
+   },
+   "svgs": 4,
+   "elementos": {
+    "total": 26,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 3,
+     "path": 15,
+     "rect": 1,
+     "text": 2,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 561.3,
+     "duracao": 3.9,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-topo--golden-tower--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-topo",
+   "descricao": "Topo do dossiê sem fotos: contorno do lote (dossie-v1/Topo.tsx)",
+   "caso": "golden-tower",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 281,
+    "y": 74,
+    "largura": 718,
+    "altura": 449
+   },
+   "svgs": 4,
+   "elementos": {
+    "total": 40,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 3,
+     "path": 17,
+     "rect": 1,
+     "text": 8,
+     "textpath": 8
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 600.6,
+     "duracao": 10.1,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-topo--golden-tower--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-topo",
+   "descricao": "Topo do dossiê sem fotos: contorno do lote (dossie-v1/Topo.tsx)",
+   "caso": "golden-tower",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 17,
+    "y": 74,
+    "largura": 326,
+    "altura": 204
+   },
+   "svgs": 4,
+   "elementos": {
+    "total": 30,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 3,
+     "path": 15,
+     "rect": 1,
+     "text": 4,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 630.5,
+     "duracao": 9.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-topo--golden-tower--375--claro.png",
+   "tela": "miniatura-topo--golden-tower--375--claro--tela.png",
+   "superficie": "miniatura-topo",
+   "descricao": "Topo do dossiê sem fotos: contorno do lote (dossie-v1/Topo.tsx)",
+   "caso": "golden-tower",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 17,
+    "y": 74,
+    "largura": 341,
+    "altura": 213
+   },
+   "svgs": 4,
+   "elementos": {
+    "total": 35,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 3,
+     "path": 16,
+     "rect": 1,
+     "text": 6,
+     "textpath": 6
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 631.2,
+     "duracao": 7.3,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-topo--pina-sem-lote--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-topo",
+   "descricao": "Topo do dossiê sem fotos: contorno do lote (dossie-v1/Topo.tsx)",
+   "caso": "pina-sem-lote",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 281,
+    "y": 74,
+    "largura": 718,
+    "altura": 449
+   },
+   "svgs": 4,
+   "elementos": {
+    "total": 50,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 3,
+     "path": 19,
+     "rect": 1,
+     "text": 12,
+     "textpath": 12
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 547.4,
+     "duracao": 7.4,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-topo--pina-sem-lote--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-topo",
+   "descricao": "Topo do dossiê sem fotos: contorno do lote (dossie-v1/Topo.tsx)",
+   "caso": "pina-sem-lote",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 17,
+    "y": 74,
+    "largura": 326,
+    "altura": 204
+   },
+   "svgs": 4,
+   "elementos": {
+    "total": 25,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 3,
+     "path": 14,
+     "rect": 1,
+     "text": 2,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 557.1,
+     "duracao": 5.1,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-topo--pina-sem-lote--375--claro.png",
+   "tela": "miniatura-topo--pina-sem-lote--375--claro--tela.png",
+   "superficie": "miniatura-topo",
+   "descricao": "Topo do dossiê sem fotos: contorno do lote (dossie-v1/Topo.tsx)",
+   "caso": "pina-sem-lote",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 509,
+   "moldura": {
+    "x": 17,
+    "y": 74,
+    "largura": 341,
+    "altura": 213
+   },
+   "svgs": 4,
+   "elementos": {
+    "total": 25,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 3,
+     "path": 14,
+     "rect": 1,
+     "text": 2,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 531.7,
+     "duracao": 5.8,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-topo--torre--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-topo",
+   "descricao": "Topo do dossiê sem fotos: contorno do lote (dossie-v1/Topo.tsx)",
+   "caso": "torre",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 510,
+   "moldura": {
+    "x": 281,
+    "y": 74,
+    "largura": 718,
+    "altura": 449
+   },
+   "svgs": 4,
+   "elementos": {
+    "total": 42,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 3,
+     "path": 19,
+     "rect": 1,
+     "text": 8,
+     "textpath": 8
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 595,
+     "duracao": 6,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-topo--torre--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-topo",
+   "descricao": "Topo do dossiê sem fotos: contorno do lote (dossie-v1/Topo.tsx)",
+   "caso": "torre",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 521,
+   "moldura": {
+    "x": 17,
+    "y": 74,
+    "largura": 326,
+    "altura": 204
+   },
+   "svgs": 4,
+   "elementos": {
+    "total": 32,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 3,
+     "path": 17,
+     "rect": 1,
+     "text": 4,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 576.2,
+     "duracao": 5.1,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-topo--torre--375--claro.png",
+   "tela": "miniatura-topo--torre--375--claro--tela.png",
+   "superficie": "miniatura-topo",
+   "descricao": "Topo do dossiê sem fotos: contorno do lote (dossie-v1/Topo.tsx)",
+   "caso": "torre",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 522,
+   "moldura": {
+    "x": 17,
+    "y": 74,
+    "largura": 341,
+    "altura": 213
+   },
+   "svgs": 4,
+   "elementos": {
+    "total": 32,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 3,
+     "path": 17,
+     "rect": 1,
+     "text": 4,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 565.2,
+     "duracao": 5.2,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita--casa-forte-divisa--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita",
+   "descricao": "Miniatura no cartão do imóvel da Visita (visita-v1/CartaoDoImovel.tsx)",
+   "caso": "casa-forte-divisa",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 504,
+   "moldura": {
+    "x": 293,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita--casa-forte-divisa--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita",
+   "descricao": "Miniatura no cartão do imóvel da Visita (visita-v1/CartaoDoImovel.tsx)",
+   "caso": "casa-forte-divisa",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 29,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita--casa-forte-divisa--375--claro.png",
+   "tela": "miniatura-visita--casa-forte-divisa--375--claro--tela.png",
+   "superficie": "miniatura-visita",
+   "descricao": "Miniatura no cartão do imóvel da Visita (visita-v1/CartaoDoImovel.tsx)",
+   "caso": "casa-forte-divisa",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 29,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita--golden-tower--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita",
+   "descricao": "Miniatura no cartão do imóvel da Visita (visita-v1/CartaoDoImovel.tsx)",
+   "caso": "golden-tower",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 505,
+   "moldura": {
+    "x": 293,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita--golden-tower--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita",
+   "descricao": "Miniatura no cartão do imóvel da Visita (visita-v1/CartaoDoImovel.tsx)",
+   "caso": "golden-tower",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 505,
+   "moldura": {
+    "x": 29,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita--golden-tower--375--claro.png",
+   "tela": "miniatura-visita--golden-tower--375--claro--tela.png",
+   "superficie": "miniatura-visita",
+   "descricao": "Miniatura no cartão do imóvel da Visita (visita-v1/CartaoDoImovel.tsx)",
+   "caso": "golden-tower",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 29,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita--pina-sem-lote--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita",
+   "descricao": "Miniatura no cartão do imóvel da Visita (visita-v1/CartaoDoImovel.tsx)",
+   "caso": "pina-sem-lote",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 293,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita--pina-sem-lote--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita",
+   "descricao": "Miniatura no cartão do imóvel da Visita (visita-v1/CartaoDoImovel.tsx)",
+   "caso": "pina-sem-lote",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 29,
+    "y": 231,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita--pina-sem-lote--375--claro.png",
+   "tela": "miniatura-visita--pina-sem-lote--375--claro--tela.png",
+   "superficie": "miniatura-visita",
+   "descricao": "Miniatura no cartão do imóvel da Visita (visita-v1/CartaoDoImovel.tsx)",
+   "caso": "pina-sem-lote",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 29,
+    "y": 231,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita--torre--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita",
+   "descricao": "Miniatura no cartão do imóvel da Visita (visita-v1/CartaoDoImovel.tsx)",
+   "caso": "torre",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 293,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita--torre--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita",
+   "descricao": "Miniatura no cartão do imóvel da Visita (visita-v1/CartaoDoImovel.tsx)",
+   "caso": "torre",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 29,
+    "y": 231,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita--torre--375--claro.png",
+   "tela": "miniatura-visita--torre--375--claro--tela.png",
+   "superficie": "miniatura-visita",
+   "descricao": "Miniatura no cartão do imóvel da Visita (visita-v1/CartaoDoImovel.tsx)",
+   "caso": "torre",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 29,
+    "y": 231,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita-no-imovel--casa-forte-divisa--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita-no-imovel",
+   "descricao": "Visita no modo \"No imóvel\": o painel de campo é o único lugar sob TemaEscuro; o cartão com a miniatura fica fora dele",
+   "caso": "casa-forte-divisa",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 293,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita-no-imovel--casa-forte-divisa--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita-no-imovel",
+   "descricao": "Visita no modo \"No imóvel\": o painel de campo é o único lugar sob TemaEscuro; o cartão com a miniatura fica fora dele",
+   "caso": "casa-forte-divisa",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 29,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita-no-imovel--casa-forte-divisa--375--claro.png",
+   "tela": "miniatura-visita-no-imovel--casa-forte-divisa--375--claro--tela.png",
+   "superficie": "miniatura-visita-no-imovel",
+   "descricao": "Visita no modo \"No imóvel\": o painel de campo é o único lugar sob TemaEscuro; o cartão com a miniatura fica fora dele",
+   "caso": "casa-forte-divisa",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 29,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita-no-imovel--golden-tower--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita-no-imovel",
+   "descricao": "Visita no modo \"No imóvel\": o painel de campo é o único lugar sob TemaEscuro; o cartão com a miniatura fica fora dele",
+   "caso": "golden-tower",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 505,
+   "moldura": {
+    "x": 293,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita-no-imovel--golden-tower--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita-no-imovel",
+   "descricao": "Visita no modo \"No imóvel\": o painel de campo é o único lugar sob TemaEscuro; o cartão com a miniatura fica fora dele",
+   "caso": "golden-tower",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 505,
+   "moldura": {
+    "x": 29,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita-no-imovel--golden-tower--375--claro.png",
+   "tela": "miniatura-visita-no-imovel--golden-tower--375--claro--tela.png",
+   "superficie": "miniatura-visita-no-imovel",
+   "descricao": "Visita no modo \"No imóvel\": o painel de campo é o único lugar sob TemaEscuro; o cartão com a miniatura fica fora dele",
+   "caso": "golden-tower",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 29,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita-no-imovel--pina-sem-lote--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita-no-imovel",
+   "descricao": "Visita no modo \"No imóvel\": o painel de campo é o único lugar sob TemaEscuro; o cartão com a miniatura fica fora dele",
+   "caso": "pina-sem-lote",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 293,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita-no-imovel--pina-sem-lote--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita-no-imovel",
+   "descricao": "Visita no modo \"No imóvel\": o painel de campo é o único lugar sob TemaEscuro; o cartão com a miniatura fica fora dele",
+   "caso": "pina-sem-lote",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 29,
+    "y": 231,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita-no-imovel--pina-sem-lote--375--claro.png",
+   "tela": "miniatura-visita-no-imovel--pina-sem-lote--375--claro--tela.png",
+   "superficie": "miniatura-visita-no-imovel",
+   "descricao": "Visita no modo \"No imóvel\": o painel de campo é o único lugar sob TemaEscuro; o cartão com a miniatura fica fora dele",
+   "caso": "pina-sem-lote",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 29,
+    "y": 231,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita-no-imovel--torre--1280--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita-no-imovel",
+   "descricao": "Visita no modo \"No imóvel\": o painel de campo é o único lugar sob TemaEscuro; o cartão com a miniatura fica fora dele",
+   "caso": "torre",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 505,
+   "moldura": {
+    "x": 293,
+    "y": 230,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita-no-imovel--torre--360--claro.png",
+   "tela": null,
+   "superficie": "miniatura-visita-no-imovel",
+   "descricao": "Visita no modo \"No imóvel\": o painel de campo é o único lugar sob TemaEscuro; o cartão com a miniatura fica fora dele",
+   "caso": "torre",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 505,
+   "moldura": {
+    "x": 29,
+    "y": 231,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "miniatura-visita-no-imovel--torre--375--claro.png",
+   "tela": "miniatura-visita-no-imovel--torre--375--claro--tela.png",
+   "superficie": "miniatura-visita-no-imovel",
+   "descricao": "Visita no modo \"No imóvel\": o painel de campo é o único lugar sob TemaEscuro; o cartão com a miniatura fica fora dele",
+   "caso": "torre",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 29,
+    "y": 231,
+    "largura": 68,
+    "altura": 76
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 6,
+    "porTipo": {
+     "defs": 1,
+     "path": 1,
+     "pattern": 1,
+     "rect": 3
+    }
+   },
+   "fundo": false,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--casa-forte-divisa--1280--claro.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "casa-forte-divisa",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 762,
+   "moldura": {
+    "x": 312,
+    "y": 540,
+    "largura": 656,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 105,
+    "porTipo": {
+     "circle": 14,
+     "defs": 1,
+     "g": 19,
+     "line": 3,
+     "path": 15,
+     "rect": 2,
+     "text": 41,
+     "textpath": 10
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 59,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 546.6,
+     "duracao": 6.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 977.4,
+     "duracao": 16.2,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--casa-forte-divisa--1280--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "casa-forte-divisa",
+   "largura": 1280,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 312,
+    "y": 540,
+    "largura": 656,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 696,
+    "porTipo": {
+     "circle": 14,
+     "defs": 1,
+     "g": 19,
+     "line": 3,
+     "path": 134,
+     "rect": 2,
+     "text": 277,
+     "textpath": 246
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 650,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 529.6,
+     "duracao": 3.7,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 929.1,
+     "duracao": 12.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1693.2,
+     "duracao": 10.9,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1755.3,
+     "duracao": 53.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1871.8,
+     "duracao": 53.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 2115,
+     "duracao": 93.3,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--casa-forte-divisa--360--claro.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "casa-forte-divisa",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 538,
+   "moldura": {
+    "x": 48,
+    "y": 646,
+    "largura": 264,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 69,
+    "porTipo": {
+     "circle": 14,
+     "g": 19,
+     "line": 3,
+     "path": 10,
+     "rect": 2,
+     "text": 21
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 23,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 555.4,
+     "duracao": 3.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 935.6,
+     "duracao": 5.4,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--casa-forte-divisa--360--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "casa-forte-divisa",
+   "largura": 360,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 48,
+    "y": 646,
+    "largura": 264,
+    "altura": 280
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 310,
+    "porTipo": {
+     "circle": 15,
+     "defs": 1,
+     "g": 19,
+     "line": 3,
+     "path": 59,
+     "rect": 2,
+     "text": 117,
+     "textpath": 94
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 262,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 513.1,
+     "duracao": 3.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 847,
+     "duracao": 5.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1398.1,
+     "duracao": 5.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1444.1,
+     "duracao": 22.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1521.2,
+     "duracao": 19.2,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1597,
+     "duracao": 23.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--casa-forte-divisa--375--claro.png",
+   "tela": "por-perto--casa-forte-divisa--375--claro--tela.png",
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "casa-forte-divisa",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 567,
+   "moldura": {
+    "x": 48,
+    "y": 646,
+    "largura": 279,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 69,
+    "porTipo": {
+     "circle": 14,
+     "g": 19,
+     "line": 3,
+     "path": 10,
+     "rect": 2,
+     "text": 21
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 23,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 535.6,
+     "duracao": 5.2,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 910.5,
+     "duracao": 6.6,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--golden-tower--1280--claro.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "golden-tower",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 763,
+   "moldura": {
+    "x": 312,
+    "y": 540,
+    "largura": 656,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 90,
+    "porTipo": {
+     "circle": 13,
+     "defs": 1,
+     "g": 18,
+     "line": 3,
+     "path": 15,
+     "rect": 2,
+     "text": 28,
+     "textpath": 10
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 47,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 623.9,
+     "duracao": 7.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 977,
+     "duracao": 8.6,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--golden-tower--1280--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "golden-tower",
+   "largura": 1280,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 312,
+    "y": 540,
+    "largura": 656,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 469,
+    "porTipo": {
+     "circle": 13,
+     "defs": 1,
+     "g": 18,
+     "line": 3,
+     "path": 92,
+     "rect": 2,
+     "text": 178,
+     "textpath": 162
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 426,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 606.4,
+     "duracao": 5.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 942.5,
+     "duracao": 8.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1668.6,
+     "duracao": 8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1731.5,
+     "duracao": 7.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1778.4,
+     "duracao": 7.6,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1833.1,
+     "duracao": 44.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--golden-tower--360--claro.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "golden-tower",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 762,
+   "moldura": {
+    "x": 48,
+    "y": 696,
+    "largura": 264,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 68,
+    "porTipo": {
+     "circle": 13,
+     "defs": 1,
+     "g": 18,
+     "line": 3,
+     "path": 11,
+     "rect": 2,
+     "text": 18,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 25,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 642.6,
+     "duracao": 5.9,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1016.8,
+     "duracao": 6.6,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--golden-tower--360--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "golden-tower",
+   "largura": 360,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 48,
+    "y": 693,
+    "largura": 264,
+    "altura": 280
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 373,
+    "porTipo": {
+     "circle": 14,
+     "defs": 1,
+     "g": 18,
+     "line": 3,
+     "path": 73,
+     "rect": 2,
+     "text": 140,
+     "textpath": 122
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 328,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 579.8,
+     "duracao": 4.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 915.7,
+     "duracao": 6.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1642.5,
+     "duracao": 5.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1691,
+     "duracao": 5.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1738.9,
+     "duracao": 5.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1795.3,
+     "duracao": 31.8,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--golden-tower--375--claro.png",
+   "tela": "por-perto--golden-tower--375--claro--tela.png",
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "golden-tower",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 763,
+   "moldura": {
+    "x": 48,
+    "y": 646,
+    "largura": 279,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 78,
+    "porTipo": {
+     "circle": 13,
+     "defs": 1,
+     "g": 18,
+     "line": 3,
+     "path": 13,
+     "rect": 2,
+     "text": 22,
+     "textpath": 6
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 35,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 641.5,
+     "duracao": 5.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1015,
+     "duracao": 7.1,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--pina-sem-lote--1280--claro.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "pina-sem-lote",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 312,
+    "y": 540,
+    "largura": 656,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 74,
+    "porTipo": {
+     "circle": 11,
+     "defs": 1,
+     "g": 16,
+     "line": 3,
+     "path": 13,
+     "rect": 2,
+     "text": 20,
+     "textpath": 8
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 37,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 533.5,
+     "duracao": 12.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 771.6,
+     "duracao": 5.9,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--pina-sem-lote--1280--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "pina-sem-lote",
+   "largura": 1280,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 509,
+   "moldura": {
+    "x": 312,
+    "y": 540,
+    "largura": 656,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 448,
+    "porTipo": {
+     "circle": 11,
+     "defs": 1,
+     "g": 16,
+     "line": 3,
+     "path": 89,
+     "rect": 2,
+     "text": 168,
+     "textpath": 158
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 411,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 508.1,
+     "duracao": 6.6,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 711.2,
+     "duracao": 4.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1264.6,
+     "duracao": 17.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1326.4,
+     "duracao": 12.7,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1388.3,
+     "duracao": 25,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1486.2,
+     "duracao": 16.5,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--pina-sem-lote--360--claro.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "pina-sem-lote",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 48,
+    "y": 646,
+    "largura": 264,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 61,
+    "porTipo": {
+     "circle": 11,
+     "defs": 1,
+     "g": 16,
+     "line": 3,
+     "path": 12,
+     "rect": 2,
+     "text": 14,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 24,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 516.9,
+     "duracao": 10.7,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 792.4,
+     "duracao": 4.1,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--pina-sem-lote--360--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "pina-sem-lote",
+   "largura": 360,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 48,
+    "y": 646,
+    "largura": 264,
+    "altura": 280
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 249,
+    "porTipo": {
+     "circle": 12,
+     "defs": 1,
+     "g": 16,
+     "line": 3,
+     "path": 51,
+     "rect": 2,
+     "text": 88,
+     "textpath": 76
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 210,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 502.1,
+     "duracao": 5.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 738.5,
+     "duracao": 3.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1289.3,
+     "duracao": 3.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1328.8,
+     "duracao": 9.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1377.3,
+     "duracao": 13.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1448,
+     "duracao": 11.5,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--pina-sem-lote--375--claro.png",
+   "tela": "por-perto--pina-sem-lote--375--claro--tela.png",
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "pina-sem-lote",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 48,
+    "y": 646,
+    "largura": 279,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 66,
+    "porTipo": {
+     "circle": 11,
+     "defs": 1,
+     "g": 16,
+     "line": 3,
+     "path": 13,
+     "rect": 2,
+     "text": 16,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 29,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 552.1,
+     "duracao": 5.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 833.8,
+     "duracao": 4.4,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--torre--1280--claro.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "torre",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 762,
+   "moldura": {
+    "x": 312,
+    "y": 540,
+    "largura": 656,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 101,
+    "porTipo": {
+     "circle": 11,
+     "defs": 1,
+     "g": 16,
+     "line": 3,
+     "path": 16,
+     "rect": 2,
+     "text": 40,
+     "textpath": 12
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 64,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 569.6,
+     "duracao": 7.6,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1026.7,
+     "duracao": 16.1,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--torre--1280--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "torre",
+   "largura": 1280,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 510,
+   "moldura": {
+    "x": 312,
+    "y": 540,
+    "largura": 656,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 684,
+    "porTipo": {
+     "circle": 11,
+     "defs": 1,
+     "g": 16,
+     "line": 3,
+     "path": 133,
+     "rect": 2,
+     "text": 274,
+     "textpath": 244
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 647,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 529.4,
+     "duracao": 8.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1012.9,
+     "duracao": 11.2,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1703.6,
+     "duracao": 11.5,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1763.7,
+     "duracao": 57.3,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1890.8,
+     "duracao": 66,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 2063.2,
+     "duracao": 65.6,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--torre--360--claro.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "torre",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 48,
+    "y": 646,
+    "largura": 264,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 62,
+    "porTipo": {
+     "circle": 11,
+     "g": 16,
+     "line": 3,
+     "path": 10,
+     "rect": 2,
+     "text": 20
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 25,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 566.2,
+     "duracao": 6.4,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 888.1,
+     "duracao": 6.2,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--torre--360--claro--zoom-max.png",
+   "tela": null,
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "torre",
+   "largura": 360,
+   "tema": "claro",
+   "zoom": "max",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 48,
+    "y": 646,
+    "largura": 264,
+    "altura": 280
+   },
+   "svgs": 2,
+   "elementos": {
+    "total": 286,
+    "porTipo": {
+     "circle": 12,
+     "defs": 1,
+     "g": 16,
+     "line": 3,
+     "path": 56,
+     "rect": 2,
+     "text": 108,
+     "textpath": 88
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 247,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 534.4,
+     "duracao": 4.1,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 821.6,
+     "duracao": 3.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1364.5,
+     "duracao": 5.7,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1412,
+     "duracao": 18.9,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1480.2,
+     "duracao": 13.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1543.5,
+     "duracao": 16.2,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "zoomTocado": true,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "por-perto--torre--375--claro.png",
+   "tela": "por-perto--torre--375--claro--tela.png",
+   "superficie": "por-perto",
+   "descricao": "\"Por perto\" na aba Entorno, botão \"Ver no mapa\" (PorPerto usa MapaDoLote com pontos)",
+   "caso": "torre",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 507,
+   "moldura": {
+    "x": 48,
+    "y": 646,
+    "largura": 279,
+    "altura": 280
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 68,
+    "porTipo": {
+     "circle": 11,
+     "defs": 1,
+     "g": 16,
+     "line": 3,
+     "path": 11,
+     "rect": 2,
+     "text": 22,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": 31,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 533.7,
+     "duracao": 6.2,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 893,
+     "duracao": 6.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "predio--casa-forte-divisa--1280--claro.png",
+   "tela": null,
+   "superficie": "predio",
+   "descricao": "Confirmação do prédio, rota /predio (MapaDoPredio)",
+   "caso": "casa-forte-divisa",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 542,
+   "moldura": {
+    "x": 297,
+    "y": 322,
+    "largura": 686,
+    "altura": 180
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 61,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 13,
+     "path": 12,
+     "polygon": 9,
+     "rect": 1,
+     "text": 17,
+     "textpath": 6
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 477.6,
+     "duracao": 4.4,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "predio--casa-forte-divisa--360--claro.png",
+   "tela": null,
+   "superficie": "predio",
+   "descricao": "Confirmação do prédio, rota /predio (MapaDoPredio)",
+   "caso": "casa-forte-divisa",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 773,
+   "moldura": {
+    "x": 33,
+    "y": 373,
+    "largura": 294,
+    "altura": 180
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 46,
+    "porTipo": {
+     "circle": 2,
+     "g": 13,
+     "path": 10,
+     "polygon": 9,
+     "rect": 1,
+     "text": 11
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 472,
+     "duracao": 4,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "predio--casa-forte-divisa--375--claro.png",
+   "tela": "predio--casa-forte-divisa--375--claro--tela.png",
+   "superficie": "predio",
+   "descricao": "Confirmação do prédio, rota /predio (MapaDoPredio)",
+   "caso": "casa-forte-divisa",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 770,
+   "moldura": {
+    "x": 33,
+    "y": 373,
+    "largura": 309,
+    "altura": 180
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 46,
+    "porTipo": {
+     "circle": 2,
+     "g": 13,
+     "path": 10,
+     "polygon": 9,
+     "rect": 1,
+     "text": 11
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 504.4,
+     "duracao": 4.3,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "predio--golden-tower--1280--claro.png",
+   "tela": null,
+   "superficie": "predio",
+   "descricao": "Confirmação do prédio, rota /predio (MapaDoPredio)",
+   "caso": "golden-tower",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 777,
+   "moldura": {
+    "x": 297,
+    "y": 322,
+    "largura": 686,
+    "altura": 180
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 116,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 32,
+     "path": 12,
+     "polygon": 28,
+     "rect": 1,
+     "text": 34,
+     "textpath": 6
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 519.1,
+     "duracao": 7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "predio--golden-tower--360--claro.png",
+   "tela": null,
+   "superficie": "predio",
+   "descricao": "Confirmação do prédio, rota /predio (MapaDoPredio)",
+   "caso": "golden-tower",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 777,
+   "moldura": {
+    "x": 33,
+    "y": 389,
+    "largura": 294,
+    "altura": 180
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 99,
+    "porTipo": {
+     "circle": 2,
+     "g": 32,
+     "path": 8,
+     "polygon": 28,
+     "rect": 1,
+     "text": 28
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 500.6,
+     "duracao": 6.2,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "predio--golden-tower--375--claro.png",
+   "tela": "predio--golden-tower--375--claro--tela.png",
+   "superficie": "predio",
+   "descricao": "Confirmação do prédio, rota /predio (MapaDoPredio)",
+   "caso": "golden-tower",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 796,
+   "moldura": {
+    "x": 33,
+    "y": 389,
+    "largura": 309,
+    "altura": 180
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 99,
+    "porTipo": {
+     "circle": 2,
+     "g": 32,
+     "path": 8,
+     "polygon": 28,
+     "rect": 1,
+     "text": 28
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 520.8,
+     "duracao": 6.3,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "predio--pina-sem-lote--1280--claro.png",
+   "tela": null,
+   "superficie": "predio",
+   "descricao": "Confirmação do prédio, rota /predio (MapaDoPredio)",
+   "caso": "pina-sem-lote",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 508,
+   "moldura": {
+    "x": 297,
+    "y": 322,
+    "largura": 686,
+    "altura": 180
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 22,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 4,
+     "path": 10,
+     "rect": 1,
+     "text": 2,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 449.2,
+     "duracao": 6.8,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "predio--pina-sem-lote--360--claro.png",
+   "tela": null,
+   "superficie": "predio",
+   "descricao": "Confirmação do prédio, rota /predio (MapaDoPredio)",
+   "caso": "pina-sem-lote",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 506,
+   "moldura": {
+    "x": 33,
+    "y": 373,
+    "largura": 294,
+    "altura": 180
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 21,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 4,
+     "path": 9,
+     "rect": 1,
+     "text": 2,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 440.1,
+     "duracao": 6.4,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "predio--pina-sem-lote--375--claro.png",
+   "tela": "predio--pina-sem-lote--375--claro--tela.png",
+   "superficie": "predio",
+   "descricao": "Confirmação do prédio, rota /predio (MapaDoPredio)",
+   "caso": "pina-sem-lote",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 509,
+   "moldura": {
+    "x": 33,
+    "y": 357,
+    "largura": 309,
+    "altura": 180
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 21,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 4,
+     "path": 9,
+     "rect": 1,
+     "text": 2,
+     "textpath": 2
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 436.2,
+     "duracao": 7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "predio--torre--1280--claro.png",
+   "tela": null,
+   "superficie": "predio",
+   "descricao": "Confirmação do prédio, rota /predio (MapaDoPredio)",
+   "caso": "torre",
+   "largura": 1280,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 768,
+   "moldura": {
+    "x": 297,
+    "y": 322,
+    "largura": 686,
+    "altura": 180
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 57,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "path": 16,
+     "polygon": 3,
+     "rect": 1,
+     "text": 17,
+     "textpath": 10
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 500.9,
+     "duracao": 8.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "predio--torre--360--claro.png",
+   "tela": null,
+   "superficie": "predio",
+   "descricao": "Confirmação do prédio, rota /predio (MapaDoPredio)",
+   "caso": "torre",
+   "largura": 360,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 770,
+   "moldura": {
+    "x": 33,
+    "y": 373,
+    "largura": 294,
+    "altura": 180
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 37,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "path": 12,
+     "polygon": 3,
+     "rect": 1,
+     "text": 7,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 449.3,
+     "duracao": 4.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  },
+  {
+   "arquivo": "predio--torre--375--claro.png",
+   "tela": "predio--torre--375--claro--tela.png",
+   "superficie": "predio",
+   "descricao": "Confirmação do prédio, rota /predio (MapaDoPredio)",
+   "caso": "torre",
+   "largura": 375,
+   "tema": "claro",
+   "estado": "ok",
+   "motivo": null,
+   "esperaMs": 766,
+   "moldura": {
+    "x": 33,
+    "y": 373,
+    "largura": 309,
+    "altura": 180
+   },
+   "svgs": 1,
+   "elementos": {
+    "total": 37,
+    "porTipo": {
+     "circle": 2,
+     "defs": 1,
+     "g": 7,
+     "path": 12,
+     "polygon": 3,
+     "rect": 1,
+     "text": 7,
+     "textpath": 4
+    }
+   },
+   "fundo": true,
+   "elementosDoFundo": null,
+   "motivoDoFundo": null,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 464,
+     "duracao": 4.7,
+     "detalhe": null
+    }
+   ],
+   "rolagemHorizontal": 0,
+   "errosDeConsole": [],
+   "avisosDeConsole": 0,
+   "requisicoesFalhas": [],
+   "externasBloqueadas": []
+  }
+ ]
+}

@@ -114,10 +114,10 @@ Antes de integrar, o orquestrador escreveu duas peças comuns para as telas não
 
 | Superfície | O que mudou | Commit |
 |---|---|---|
-| Gaveta "Mapa do lote", planta 2D | Fundo com quadras, lotes, ruas com nome, selo do bairro e crédito; lote do imóvel em azul cadastral. Abre em 220 m (eram 80 m) e ganhou o passo de zoom 4 (~55 m no celular). Sem o fundo, desenha como antes, com os vizinhos do índice numa forma só (sem o limite de 60). Rótulo de acessibilidade com rua, bairro e distância até a divisa. Legenda nova: "Prédios que o Vereda conhece". | `git log --grep "planta do Mapa do lote"` |
-| Confirmação do prédio (`/predio`) | Fundo no lugar da grade; lotes vizinhos continuam botões de verdade; um só destaque para o prédio. | `git log --grep "confirmação do prédio"` |
+| Gaveta "Mapa do lote", planta 2D | Fundo com quadras, lotes, ruas com nome, selo do bairro e crédito; lote do imóvel em azul cadastral. Abre em 220 m (eram 80 m) e ganhou o passo de zoom 4 (~55 m no celular). Sem o fundo, desenha como antes, com os vizinhos do índice numa forma só (sem o limite de 60). Rótulo de acessibilidade com rua, bairro e distância até a divisa. Legenda nova: "Prédios que o Vereda conhece". | `ea9f827` |
+| Confirmação do prédio (`/predio`) | Fundo no lugar da grade; lotes vizinhos continuam botões de verdade; um só destaque para o prédio. | `45fac9e` |
 | Topo do dossiê sem fotos | Mapa parado de 220 m em volta do prédio, com o crédito. Com fotos, nada muda. | mesmo commit |
-| Mapa dos exemplos (mapa, caminhos, confirmar lote, topo do exemplo) | A cidade inventada saiu: o chão é o mapa-base em volta da coordenada do exemplo, montado para a janela visível. Os candidatos de "É este o prédio?" são lotes de verdade. Sem o fundo, chão liso, sem reserva inventada. | `git log --grep "mapa dos exemplos"` |
+| Mapa dos exemplos (mapa, caminhos, confirmar lote, topo do exemplo) | A cidade inventada saiu: o chão é o mapa-base em volta da coordenada do exemplo, montado para a janela visível. Os candidatos de "É este o prédio?" são lotes de verdade. Sem o fundo, chão liso, sem reserva inventada. | `9f9b631` |
 
 Decisões desta etapa:
 
@@ -137,7 +137,7 @@ Defeitos que o orquestrador viu ao abrir as fotos da etapa A (e mandou corrigir 
 
 ### Etapa B: dois agentes em paralelo
 
-**Arquivos comuns do fundo** (`git log --grep "chão do vizinho"`), corrigindo o que as fotos da etapa A mostraram:
+**Arquivos comuns do fundo** (commit `53361d0`), corrigindo o que as fotos da etapa A mostraram:
 
 - Junto à divisa, o chão passa a cobrir também os bairros do arquivo da cidade, que o gancho pede sempre que o quadro cruza a divisa. Só vale quando a borda de 300 m dos arquivos carregados cobre o quadro inteiro, para nunca sobrar chão de rua sem quadra. As divisas e os nomes dos vizinhos aparecem ali também no nível de lote.
 - O nome do bairro do imóvel tem prioridade no nível de quadras e procura outro lugar quando o melhor está tomado.
@@ -145,7 +145,7 @@ Defeitos que o orquestrador viu ao abrir as fotos da etapa A (e mandou corrigir 
 - "Tentar de novo" depois de arquivo recusado refaz leitura e montagem (teste que falha sem a correção). Cena sem dado nenhum vira "sem cobertura".
 - Custo depois das correções, em node, mediana: gaveta 2,4 ms; Por perto 10,8 ms; quadro de 1240 px até 27,6 ms.
 
-**Mapa do lote** (`git log --grep "Por perto, volume 2.5D"`):
+**Mapa do lote** (commit `fe03420`):
 
 - Por perto: o pino e os pontos de interesse passam como obstáculos; os nomes de bairro deixaram de ficar atrás deles.
 - Volume 2.5D: o chão é o mapa-base, na projeção do próprio volume. Volumes só para prédios com altura conhecida, os mais perto primeiro, até 60; o prédio do índice do outro lado da divisa entra pelo lote do fundo (visto em Casa Forte: um prédio de 37 m em Parnamirim). Planta e volume abrem na mesma escala (220 m).
@@ -183,10 +183,10 @@ Também: bairros decodificados guardados em memória para sempre; o lote tocado 
 
 **Correções da rodada 1**, por quatro agentes em arquivos disjuntos; o orquestrador conferiu a suíte e abriu as fotos do crédito na tela do prédio, de um exemplo e do volume antes de commitar:
 
-- **Desempenho** (commit `perf(mapa): uma montagem do fundo por abertura…`). A cena só é montada com o plano de carga completo, e a chegada de outra camada do app não remonta; as últimas seis cenas ficam guardadas, então reabrir não remonta; no máximo oito bairros ficam decodificados em memória. O roteiro `medir.mjs` passou a medir a primeira e a segunda abertura, com e sem o fundo (uma chave só de medição desliga o fundo): **o custo do fundo é a diferença**. Medido pelo agente, CPU 4 vezes mais lenta, Golden Tower, 375 px, segunda abertura: **35 ms na gaveta** (portão: 50) e **50 ms no Por perto** (portão: 80). Na primeira abertura depois de recarregar a página o fundo chega depois do mapa: +60 ms na gaveta e **+708 ms no Por perto**, quase tudo baixando e lendo os cinco arquivos (quatro bairros e a cidade); o mapa aparece antes, sem o fundo, e não fica travado. A medição final está na F5.
-- **Telas do dossiê.** Na tela do prédio, o crédito foi para o pé, acima da faixa de instrução. No volume 2.5D a ordem passou a ser chão, sombras e volumes, e por último os nomes de rua e de bairro. Em tela estreita o "Recentrar" virou um botão de 44 px com ícone (a coluna de botões cobria o pino no Por perto com zoom máximo a 360 px). A descrição para leitor de tela fica num nó só. O topo do dossiê enquadra o lote inteiro com a rua em volta quando o lote é grande.
-- **Mapa dos exemplos.** Nomes de rua e de bairro ficam inteiros dentro da janela visível e o pino conta como obstáculo. Sem o fundo, o aviso diz o que continua valendo em cada tela e "É este o prédio?" diz que não dá para escolher o lote agora, com os botões desligados. O lote escolhido usa o azul cadastral e uma linha explica que os tracejados são lotes do cadastro.
-- **O mar** (commit `fix(dados): o mar do mapa-base vai até onde a base da Prefeitura vai`). A borda reta tinha duas causas: o pipeline cortava o oceano cedo demais (corrigido) e a própria base da Prefeitura acaba a cerca de 6 km da costa, numa reta inclinada (mantido: além dali nada foi acrescentado). Versão nova dos dados: `62be5d5145e04c7f`, +552 bytes gzip no total, três execuções com os mesmos bytes.
+- **Desempenho** (commit `fa5f78a`). A cena só é montada com o plano de carga completo, e a chegada de outra camada do app não remonta; as últimas seis cenas ficam guardadas, então reabrir não remonta; no máximo oito bairros ficam decodificados em memória. O roteiro `medir.mjs` passou a medir a primeira e a segunda abertura, com e sem o fundo (uma chave só de medição desliga o fundo): **o custo do fundo é a diferença**. Medido pelo agente, CPU 4 vezes mais lenta, Golden Tower, 375 px, segunda abertura: **35 ms na gaveta** (portão: 50) e **50 ms no Por perto** (portão: 80). Na primeira abertura depois de recarregar a página o fundo chega depois do mapa: +60 ms na gaveta e **+708 ms no Por perto**, quase tudo baixando e lendo os cinco arquivos (quatro bairros e a cidade); o mapa aparece antes, sem o fundo, e não fica travado. A medição final está na F5.
+- **Telas do dossiê** (commit `9a25a93`). Na tela do prédio, o crédito foi para o pé, acima da faixa de instrução. No volume 2.5D a ordem passou a ser chão, sombras e volumes, e por último os nomes de rua e de bairro. Em tela estreita o "Recentrar" virou um botão de 44 px com ícone (a coluna de botões cobria o pino no Por perto com zoom máximo a 360 px). A descrição para leitor de tela fica num nó só. O topo do dossiê enquadra o lote inteiro com a rua em volta quando o lote é grande.
+- **Mapa dos exemplos** (commit `c5a6b53`). Nomes de rua e de bairro ficam inteiros dentro da janela visível e o pino conta como obstáculo. Sem o fundo, o aviso diz o que continua valendo em cada tela e "É este o prédio?" diz que não dá para escolher o lote agora, com os botões desligados. O lote escolhido usa o azul cadastral e uma linha explica que os tracejados são lotes do cadastro.
+- **O mar** (commit `8ecab4d`). A borda reta tinha duas causas: o pipeline cortava o oceano cedo demais (corrigido) e a própria base da Prefeitura acaba a cerca de 6 km da costa, numa reta inclinada (mantido: além dali nada foi acrescentado). Versão nova dos dados: `62be5d5145e04c7f`, +552 bytes gzip no total, três execuções com os mesmos bytes.
 - Descrição para leitor de tela com "Rua" e "Avenida" por extenso; rótulo de rua que cairia sobre a água é descartado.
 
 Suíte depois das correções: `tsc` sem erros; `eslint` sem erros; `jest` com 91 suítes, **2.408 testes passando**, 0 falhas; `publicar-camadas --conferir` sem problemas.
@@ -207,7 +207,17 @@ O revisor de código conferiu que o pipeline gera os mesmos 96 arquivos em duas 
 2. Na primeira abertura do Por perto o fundo chega ~720 ms depois do mapa, quase tudo baixando e lendo cinco arquivos. Tratado na rodada final com pré-carga em segundo plano.
 3. O limite de memória só vale para os bairros decodificados: o JSON bruto de cada arquivo lido fica para sempre no sistema de camadas (`src/dados/camadas.ts`). **Não corrigido:** é o desenho do sistema de camadas para todas as camadas do app, não só do mapa-base; fica como pendência.
 
-**Correções da rodada 2:** _a preencher._
+**Correções da rodada 2** (commits `71371d1` e `67cb0a4`):
+
+- **O fundo só entra depois de medir a largura.** O Mapa do lote e a tela do prédio começavam com uma largura provisória e desenhavam o fundo duas vezes. Agora o fundo só é pedido depois do primeiro `onLayout`: uma montagem e um desenho por abertura (contado pelo `medir.mjs`). O mapa em si continua aparecendo no primeiro render.
+- **Pré-carga em segundo plano.** O dossiê adianta o arquivo do mapa-base do bairro e o da cidade 1,5 s depois de abrir; o Por perto adianta os dos bairros em volta. Só guarda no aparelho: nada vai para a memória antes de a pessoa abrir o mapa.
+- O topo do dossiê não mostra mais nomes de bairro (perto da divisa aparecia só o do vizinho).
+- "Tentar de novo" esquece a cena guardada daquela chave antes de reler. A remontagem do Por perto ao reabrir, que o revisor mediu, não se reproduziu com o código final (zero montagens na segunda abertura, em três repetições); entrou um teste que garante uma montagem para duas aberturas iguais e uma nova montagem quando muda qualquer entrada que muda o desenho.
+- **Roteiro de capturas seguro.** Um revisor rodou `capturar.mjs --help`; o roteiro não conhecia a opção, rodou tudo contra uma porta fora do ar e gravou fotos de erro dentro da pasta de fotos de antes. Ele apagou na hora e a pasta ficou intacta (conferido no `git status`). Agora `--help` só imprime o uso, parâmetro desconhecido é erro, sem `--fase` nem `--saida` o roteiro recusa e a pasta de antes não é regravada sem `--sobrescrever`.
+
+Tentado e desfeito, por não mudar o resultado nas fotos: fazer a rua do imóvel caber mais vezes em quadro pequeno (tela do prédio e Por perto a 360 e 375 px). Fica na lista de pendências.
+
+Suíte depois das correções finais: `tsc` sem erros; `eslint` sem erros; `jest` com 91 suítes, **2.415 testes passando**, 0 falhas.
 
 Não corrigido de propósito, para decisão do dono do produto:
 
@@ -244,7 +254,7 @@ Problemas de dados encontrados:
 
 ## F4 Interação, acessibilidade e documentação
 
-**Documentação** (feita em paralelo com a etapa A da F2; `git log --grep "Sobre os dados, registro"`):
+**Documentação** (feita em paralelo com a etapa A da F2; commit `9f02f84`):
 
 - Tela "Sobre os dados": seção nova "O desenho dos mapas", com as bases (lidas do módulo gerado, sem data escrita à mão), a licença ODbL com o crédito e o que o desenho não é (não é foto de satélite; onde falta o lote aparece só a quadra; a forma do lote não é a planta do prédio). Teste novo em `tests/telas-fatia5.test.ts`.
 - `docs/aplicacao/FEATURE-REGISTER.md` (em inglês, como o arquivo): linha do mapa-base na seção Platform, com o estado "construído na branch, pendente de revisão humana, teste em celular físico e parecer jurídico sobre a ODbL".
@@ -265,4 +275,40 @@ _A preencher._
 
 ## Pendências e decisões tomadas por padrão
 
-_A preencher._
+### Decisões que são do dono do produto (a noite seguiu o padrão indicado e registrou)
+
+1. **Licença ODbL.** Implementado com o crédito "Base: Prefeitura do Recife (ODbL)" em todo mapa com o fundo e na tela "Sobre os dados", e com a base derivada no repositório (`src/dados/recife/mapa-base/`). Nada foi publicado fora da branch. O parecer jurídico continua pendente no hub.
+2. **Escala inicial da gaveta: 220 m**, como proposto. Em tela larga o quadro tem pelo menos 160 m de altura.
+3. **Paissandu e Madalena:** o mapa desenha o que a geometria diz; nenhuma regra de vizinhança foi criada.
+4. **Nada mudou fora do mapa** (custos, extrator, comparar, visita). A única mudança em arquivo de regra é a lista de arquivos que o dossiê adianta em segundo plano (`src/dados/camadasDasTelas.ts`), que ganhou os do mapa-base.
+
+### Decisões tomadas nesta noite, para confirmar
+
+| Decisão | Por quê | Para desfazer |
+|---|---|---|
+| Lotes aparecem até 2,4 m por pixel (~800 m num quadro de celular); o pedido dizia "até ~600 m" | o intervalo entre 600 m e 1 km estava em aberto; a 800 m um lote de 10 a 12 m de frente ainda tem 4 a 5 px | `LOTES_ATE_M_POR_PX` em `fundoDoMapaCena.ts` |
+| 94 bairros publicados (o pedido: os 72 do índice e os vizinhos de borda) | a hachura passa a significar só "fora do Recife" ou "arquivo que não carregou" | lista de bairros no pipeline |
+| Um arquivo a mais, da cidade inteira (`cidade.json`, 83 kB gzip) | divisas e nomes dos vizinhos, chão junto à divisa e o nível de mais de 3 km sem baixar dezenas de arquivos de bairro | — |
+| Pontes desenhadas (base "Pontes do Recife", só a geometria) | o pedido mandava avaliar; mostram por onde se atravessa o rio | seção `pontes` do pipeline |
+| O arquivo publicado não leva código de lote nem de quadra | o pedido permitia; a marca "prédio que o Vereda conhece" é calculada no pipeline, e o lote do imóvel é achado pela geometria | — |
+| Sete tokens novos de mapa em `src/tema/tokens.ts` | no escuro os tokens gerais não separavam rua, quadra e área sem dado; no claro repetem as cores da especificação | — |
+| Miniaturas dos cartões sem o fundo | ilegível em 72 a 84 px; custo de download por cartão; crédito não cabe | — |
+| A rua do imóvel só ganha rótulo quando cabe sem cobrir o pino | o pedido dizia "sempre" e também "só aparece se couber"; o leitor de tela ouve a rua sempre que ela é achada | — |
+| Nomes de rua sem acento, como a Prefeitura publica | restaurar por dicionário é mexer em nome oficial e pode errar | — |
+| Camada "Alagamento" dos exemplos sem a faixa hachurada | sobre a água de verdade pareceria inundação mapeada | — |
+| `PoligonoMini.tsx` apagado | não era usado e dependia dos lotes inventados | `git show 9f9b631` |
+| A divisa do bairro continua desenhada sobre o mar | é a divisa oficial e o modelo aprovado a mostra | — |
+
+### Pendências
+
+1. **Borda de 300 m ou de 150 m.** O total publicado é 7,6 MB gzip (21 MB brutos, que no aplicativo nativo vão como arquivos empacotados), o dobro do estimado, e Imbiribeira fica a 2 kB do teto de 250 kB. Com 150 m o total cai 24% e Imbiribeira vai para 197 kB. A carga em dois tempos e a regra do chão junto à divisa supõem a borda de 300 m (constante `BORDA_DO_MAPA_BASE_M`): trocar pede mexer nas duas pontas e rodar a suíte.
+2. **Teste em celular físico.** Nada desta noite rodou em aparelho. O que pode diferir no nativo está em `telas/noite/f1-desenho/LEIA.md` (peso da fonte variável no Android, texto que passa do fim do caminho, espaçamento entre letras). O `TextPath` foi conferido só na web e pela leitura do código do `react-native-svg`.
+3. **Tema escuro na tela.** O app é sempre claro; o fundo no escuro foi conferido pelos testes e pelas cenas de prova (`telas/noite/f1-desenho/navegador-*.png`), não em nenhuma tela do app.
+4. **Rua do imóvel sem nome em quadro pequeno**: na tela do prédio (180 px de altura) e no Por perto a 360 e 375 px, em alguns casos. Falta diagnosticar qual obstáculo barra cada posição; o caminho mais provável na tela do prédio é pôr o crédito e a instrução na mesma faixa.
+5. **Lote tocado só por toque ou mouse.** Não há lista de lotes navegável por teclado nem por leitor de tela.
+6. **Memória do sistema de camadas.** O JSON bruto de cada arquivo lido fica para sempre em `src/dados/camadas.ts`, para todas as camadas do app. O mapa-base limita o que ele mesmo decodifica (8 bairros, 6 cenas), mas não o bruto.
+7. **O oceano da base** cobre uma faixa de ~6 km e só da latitude −8,177 à −8,047. Afastando muito o mapa dos exemplos, ou olhando para o mar em frente ao porto, aparece a hachura de "sem dado".
+8. **Dados com defeito na origem**: 24 prédios do índice sem lote na base; 6.695 lotes sem pavimentos; alturas no volume 2.5D vindas de pavimentos altos demais na base de Lotes (na Torre aparecem volumes de 112 m e 189 m; já era assim antes desta noite); números de lote sobrepostos na tela do prédio quando dois prédios do índice dividem o mesmo lote (também já era assim).
+9. **Com a gaveta aberta, o leitor de tela ainda alcança o mapa do topo, que fica atrás** (a gaveta não é marcada como modal em `Gavetas.tsx`; comportamento de antes desta noite).
+10. **Outra sessão e a branch `feat/seguranca-aeroporto-limpeza`**: ver a primeira seção deste relatório. A tela "Sobre os dados" (`src/app/sobre-os-dados.tsx`), o teste dela (`tests/telas-fatia5.test.ts`) e `docs/aplicacao/FEATURE-REGISTER.md` foram editados nas duas branches (o commit `7f834d2` da outra sessão mexe nos três); a mesclagem pode pedir conciliação manual nesses arquivos.
+11. **Hub.** Esta noite só gravou o que o pedido autorizou (atualização da tarefa e mudança de coluna). Propostas, sem gravar: registrar na feature "Mapa do lote em 2D e volume 2.5D" as decisões da tabela acima; criar o impedimento "parecer ODbL antes de publicar o mapa-base"; atualizar o documento do plano com o peso real (7,6 MB) e com as pontes.
