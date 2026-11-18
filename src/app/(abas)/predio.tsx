@@ -25,7 +25,6 @@ import { useConfirmarPredio } from "../../componentes/predio/confirmar";
 import { PreparoDoDossie } from "../../componentes/preparo/PreparoDoDossie";
 import { entradaDeBusca } from "../../componentes/predio/entrada";
 import { useTema } from "../../tema/Tema";
-import { comAlfa } from "../../tema/tokens";
 
 export default function TelaPredio() {
   const parametros = useLocalSearchParams<{ id?: string | string[] }>();
@@ -94,7 +93,7 @@ export default function TelaPredio() {
 function CartaoDeAviso({ titulo, texto }: { titulo: string; texto: string }) {
   const { cor } = useTema();
   return (
-    <Cartao style={[styles.cartao, { borderColor: comAlfa(cor("cor-texto"), 0.09) }]}>
+    <Cartao style={[styles.cartao, { borderColor: cor("cor-linha-forte") }]}>
       <CorpoDoCartao style={styles.corpo}>
         <Texto tipo="secao">{titulo}</Texto>
         <Texto tipo="apoio" cor="cor-texto-apoio">
@@ -190,7 +189,7 @@ function ConfirmarPredio({ analise, bairro, aoFaltarCredito }: PropsDaConfirmaca
   /** Depois de confirmar: o preparo (o que o Vereda está cruzando e o aviso) por cima da tela, que leva ao dossiê. */
   const [preparando, setPreparando] = useState(false);
   const abrirCarregamento = () => setPreparando(true);
-  const estiloDoCartao = [styles.cartao, { borderColor: comAlfa(cor("cor-texto"), 0.09) }];
+  const estiloDoCartao = [styles.cartao, { borderColor: cor("cor-linha-forte") }];
 
   const escolher = (edificio: Edificio) => {
     setErro("");
@@ -409,6 +408,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 14,
     fontWeight: "600",
+    fontVariant: ["tabular-nums"],
   },
   titulo: { fontSize: 22, lineHeight: 26, fontWeight: "500", letterSpacing: -0.44, marginBottom: -4 },
   paragrafo: { fontSize: 12.5, lineHeight: 18 },

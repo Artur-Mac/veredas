@@ -2774,4 +2774,26 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(fichaSrc).toContain("tabular-nums");
     expect(cartaoSrc).toContain("tabular-nums");
   });
+
+  it("fluxo de confirmação de prédio e LeitorDePagina zeram comAlfa, rgba literal e caixas extras (S73)", () => {
+    const caixaPath = join(__dirname, "..", "src", "componentes", "predio", "CaixaDoPredio.tsx");
+    const buscaPath = join(__dirname, "..", "src", "componentes", "predio", "BuscaDePredio.tsx");
+    const predioPath = join(__dirname, "..", "src", "app", "(abas)", "predio.tsx");
+    const leitorPath = join(__dirname, "..", "src", "componentes", "leitor", "LeitorDePagina.tsx");
+
+    for (const p of [caixaPath, buscaPath, predioPath, leitorPath]) {
+      expect(readFileSync(p, "utf8")).not.toMatch(/\bcomAlfa\b/);
+    }
+
+    const caixaSrc = readFileSync(caixaPath, "utf8");
+    expect(caixaSrc).not.toMatch(/rgba\(/);
+    expect(caixaSrc).not.toMatch(/borderWidth:\s*1\b/);
+    expect(caixaSrc).toContain("tabular-nums");
+
+    for (const p of [buscaPath, predioPath, leitorPath]) {
+      const s = readFileSync(p, "utf8");
+      expect((s.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    }
+    expect(readFileSync(predioPath, "utf8")).toContain("tabular-nums");
+  });
 });
