@@ -59,8 +59,14 @@ import {
   gerarPedidoDocumentosFaltantes,
 } from "../src/dados/pacoteEspecialista";
 import { montarTextoDivergenciasParaCorretor } from "../src/componentes/dossie-v1/Indicadores";
+import { Entorno } from "../src/componentes/dossie-v1/Entorno";
+import { sintetizarPerfilObrasProximas } from "../src/componentes/dossie-v1/textos";
+import type { VisaoDoDossie } from "../src/dados/contratos";
 import { analiseDoPredio } from "../src/dados/raioX";
 import { TemaDoApp } from "../src/tema/Tema";
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+jest.mock("@react-native-async-storage/async-storage", () => require("@react-native-async-storage/async-storage/jest/async-storage-mock"));
 
 function listarTsxRecursivo(dir: string): string[] {
   const arquivos: string[] = [];
@@ -3215,5 +3221,117 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     );
     expect(REGEX_JARGON_CAMADA1.test(msg)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(msg)).toBe(false);
+  });
+
+  it("Entorno zera comAlfa e sintetizarPerfilObrasProximas exibe breakdown por categoria e ritmo 12m (S85)", () => {
+    const entornoPath = join(__dirname, "..", "src", "componentes", "dossie-v1", "Entorno.tsx");
+    const entornoSrc = readFileSync(entornoPath, "utf8");
+    expect(entornoSrc).not.toMatch(/\bcomAlfa\b/);
+    expect(entornoSrc).toContain("tabular-nums");
+    expect((entornoSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+
+    expect(sintetizarPerfilObrasProximas(null)).toBeNull();
+    expect(
+      sintetizarPerfilObrasProximas({ licencasDeObra: 4, relevantes24m: 0, demolicoes24m: 0, recentes: [] }),
+    ).toBeNull();
+
+    const obrasMock = {
+      licencasDeObra: 18,
+      relevantes24m: 3,
+      demolicoes24m: 1,
+      recentes: [
+        {
+          categoria: "construcao" as const,
+          descricao: "Edifício residencial multifamiliar",
+          data: "2026-06",
+          distanciaM: 85,
+          situacao: "DEFERIDO",
+          centro: [-34.918, -8.034] as [number, number],
+          licenca: ["valida", "2027-11-01", true] as ["valida", string, boolean],
+        },
+        {
+          categoria: "acrescimo" as const,
+          descricao: "Acréscimo de área",
+          data: "2026-02",
+          distanciaM: 120,
+          situacao: "EM ANÁLISE",
+          centro: [-34.919, -8.035] as [number, number],
+        },
+        {
+          categoria: "demolicao" as const,
+          descricao: "Demolição total",
+          data: "2025-04",
+          distanciaM: 95,
+          situacao: "DEFERIDO",
+          centro: [-34.917, -8.033] as [number, number],
+        },
+      ],
+    };
+
+    const perfil = sintetizarPerfilObrasProximas(obrasMock, "2026-11");
+    expect(perfil).not.toBeNull();
+    expect(perfil!.construcoes).toBe(1);
+    expect(perfil!.acrescimos).toBe(1);
+    expect(perfil!.demolicoes).toBe(1);
+    expect(perfil!.impacto).toBe(1);
+    expect(perfil!.ultimos12m).toBe(2);
+    expect(perfil!.anteriores12m).toBe(1);
+    expect(perfil!.etiquetas).toEqual(["1 construção nova", "1 acréscimo", "1 demolição", "1 de impacto"]);
+    expect(perfil!.ritmo12m).toBe("Ritmo na janela: 2 nos últimos 12 meses · 1 nos 12 meses anteriores");
+
+    const visaoMinima = {
+      imovel: "Rua Teste, 100",
+      endereco: "Rua Teste, 100",
+      custo: {
+        principal: { rotulo: "Preço anunciado", valor: 680000, unidade: "R$", porM2: 8500 },
+        mensalConhecido: 900,
+        parcelas: [],
+        pendencias: 0,
+        textoDoResumo: "Condomínio e IPTU somam R$ 900/mês.",
+      },
+      especificacoes: { area: 80, quartos: 3, banheiros: 2, vagas: 1, andar: 5 },
+      achados: { principal: null, apoio: [] },
+      perguntas: [],
+      cadastro: [],
+      posicao: null,
+      obras: obrasMock,
+      rua: null,
+    } as unknown as VisaoDoDossie;
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(Entorno, {
+            visao: visaoMinima,
+            edificio: null,
+            contexto: null,
+            nomeDoBairro: "Casa Forte",
+            coberto: true,
+            vinculoConfirmado: true,
+            aoAbrirFonte: () => undefined,
+            aoAbrirMapa: () => undefined,
+            aoConfirmarPredio: () => undefined,
+            aoMedirSecao: () => undefined,
+            aoResponderDefesaCivil: () => undefined,
+          }),
+        ),
+      );
+    });
+
+    const chips = tree.root.find((n) => n.props.testID === "obras-resumo-categorias");
+    expect(chips).toBeDefined();
+    const txt = extrairTextos(tree.toJSON()).join(" ");
+    expect(txt).toContain("1 construção nova");
+    expect(txt).toContain("1 de impacto");
+    expect(txt).toContain("Ritmo na janela: 2 nos últimos 12 meses · 1 nos 12 meses anteriores");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+
+    act(() => {
+      tree.unmount();
+    });
   });
 });
