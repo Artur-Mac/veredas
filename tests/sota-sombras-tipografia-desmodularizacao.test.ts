@@ -27,7 +27,7 @@ import { TresPerguntasDoBolso } from "../src/componentes/visual/TresPerguntasDoB
 import { RotinaDoisDestinosComparar } from "../src/componentes/visual/RotinaDoisDestinosComparar";
 import { ExportarResumoExecutivo } from "../src/componentes/visual/ExportarResumoExecutivo";
 import { CartaoResumoCompartilhado } from "../src/componentes/comparar/CartaoResumoCompartilhado";
-import { gerarLinkPrivadoSemServidor } from "../src/dados/dossie/resumoExecutivo2Paginas";
+import { gerarLinkPrivadoSemServidor, gerarTextoResumoExecutivo } from "../src/dados/dossie/resumoExecutivo2Paginas";
 import { lerFragmento } from "../src/dados/salaDeDecisao";
 import { ondeMaisProcurar } from "../src/dados/escolha";
 import { DueloFinalistas } from "../src/componentes/cidadao/DueloFinalistas";
@@ -1506,5 +1506,92 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       "utf8",
     );
     expect(radarSrc).not.toContain("TOQUE_MINIMO - 4");
+  });
+
+  it("unifica tipografia PlusJakartaSans/tabular-nums, metadado v2 Gridics e origem por rubrica Ownwell em S34", () => {
+    for (const rel of [
+      "src/componentes/caderno/LeitorDeAta.tsx",
+      "src/componentes/dossie-v1/PorPerto.tsx",
+      "src/componentes/dossie-v1/MapaDoLote.tsx",
+      "src/componentes/visual/ExportarResumoExecutivo.tsx",
+    ]) {
+      const src = readFileSync(join(__dirname, "..", rel), "utf8");
+      expect(src).not.toContain("JetBrainsMono");
+    }
+
+    const bv = edificiosDoBairro("boa-viagem");
+    const edificio = bv.find((e) => e.poligono && e.poligono.length >= 3)!;
+    const inf = inferirFachadasDoEdificio({ edificio, textoAnuncio: "" });
+    const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: 90, andar: 3 });
+    const conf = avaliarConfortoTermico({
+      andar: 3,
+      pavimentosTotais: 10,
+      fachada: inf.frente,
+      bioclimatico: bio,
+    });
+    const radar = analisarRadarVistaELote({
+      centro: edificio.centro,
+      edificio: null,
+      fachadaAtiva: inf.frente,
+      andar: 3,
+      vizinhos: [],
+      obrasProximas: null,
+    });
+    const pulso = calcularPulsoDaQuadra({
+      conforto: conf,
+      acustica: avaliarAcustica3d({
+        andar: 3,
+        fachadaVoltadaParaVia: "frente",
+        tipologiaVia: "local",
+        distanciaViaM: 12,
+        anoConstrucao: null,
+        precoImovelReais: null,
+      }),
+      anoConstrucao: null,
+      obrasProximas: null,
+      visaoRua: null,
+      vinculoConfirmado: false,
+      precoInformado: false,
+      condominioInformado: false,
+      comparacaoM2Pct: null,
+      spuAtivo: false,
+    });
+
+    const resumo = gerarTextoResumoExecutivo({
+      nomeImovel: "Apartamento em análise",
+      endereco: "Boa Viagem, Recife",
+      modalidade: "compra",
+      precoPrincipalReais: null,
+      mensalBolsoRealReais: null,
+      dinheiroEntrarReais: null,
+      fachadaResumo: "Nascente (3º andar)",
+      conforto: conf,
+      sossegoNivel: "Calmo",
+      radar,
+      pulso,
+      anoConstrucao: null,
+      unidades: null,
+      chaveLote14: null,
+      spuAtivo: false,
+    });
+    expect(resumo).toContain("Modelo do dossiê: v2");
+    expect(resumo).toContain("Itens faltantes visíveis antes do sinal");
+    expect(resumo).toContain("chave municipal do lote");
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(TemaDoApp, null, React.createElement(SimuladorBolso15Segundos)),
+      );
+    });
+    const toggle = tree.root.find((n) => n.props.testID === "simulador-15s-toggle");
+    act(() => {
+      toggle.props.onPress();
+    });
+    expect(tree.root.find((n) => n.props.testID === "sim15-origens-calculo")).toBeDefined();
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("Origem de cada linha");
+    expect(txt).toContain("Banco Central");
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });
 });

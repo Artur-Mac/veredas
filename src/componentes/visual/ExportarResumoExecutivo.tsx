@@ -211,10 +211,10 @@ const styles = StyleSheet.create({
   linkPreview: {
     fontSize: 11,
     lineHeight: 15,
-    fontFamily: "JetBrainsMono",
+    fontVariant: ["tabular-nums"],
   },
   botaoPrevia: {
-    minHeight: 38,
+    minHeight: TOQUE_MINIMO,
     alignItems: "center",
     justifyContent: "center",
   },

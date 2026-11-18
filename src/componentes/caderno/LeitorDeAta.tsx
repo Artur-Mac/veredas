@@ -35,12 +35,12 @@ function Trecho({ a }: { a: AchadoDaAta }) {
   const { cor } = useTema();
   return (
     <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, paddingVertical: 6, borderTopWidth: 0.5, borderTopColor: cor("cor-linha") }}>
-      <View style={{ flexGrow: 3, flexBasis: 220, borderLeftWidth: 3, borderLeftColor: cor("cor-azul-cadastral"), paddingLeft: 8 }}>
+      <View style={{ flexGrow: 3, flexBasis: 220, borderLeftWidth: 3, borderLeftColor: cor(a.secao === "financeiro" ? "cor-barro" : "cor-azul-cadastral"), paddingLeft: 8 }}>
         <Texto selectable style={{ fontSize: 12.5, lineHeight: 18, fontStyle: "italic" }}>{`“${a.trecho}”`}</Texto>
       </View>
       <View style={{ flexGrow: 1, flexBasis: 110 }}>
         <Texto tipo="apoio" style={{ fontSize: 11.5, fontWeight: "700" }}>{ROTULO_DO_TEMA[a.tema]}</Texto>
-        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, fontFamily: "JetBrainsMono" }}>{a.pagina ? `p. ${a.pagina}` : "página não marcada"}</Texto>
+        <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, fontVariant: ["tabular-nums"] }}>{a.pagina ? `p. ${a.pagina}` : "página não marcada"}</Texto>
       </View>
     </View>
   );

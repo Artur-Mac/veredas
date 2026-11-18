@@ -206,6 +206,12 @@ export function SimuladorBolso15Segundos({
             </Texto>
           ) : null}
 
+          <Texto testID="sim15-origens-calculo" tipo="apoio" cor="cor-texto-apoio" style={styles.origemTxt}>
+            {compra
+              ? "Origem de cada linha: financiamento pela taxa média Banco Central · fechamento pelas regras fiscais do Recife · condomínio, IPTU e energia por estimativa parametrizada."
+              : "Origem de cada linha: caução estimada em 3 meses de aluguel · condomínio, IPTU e energia por estimativa parametrizada do anúncio."}
+          </Texto>
+
           <Pressable
             accessibilityRole="button"
             onPress={() => router.push("/editar")}
@@ -264,7 +270,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   chip: {
-    minHeight: 38,
+    minHeight: TOQUE_MINIMO,
     borderRadius: RAIO.pilula,
     paddingHorizontal: 11,
     alignItems: "center",
@@ -304,8 +310,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontVariant: ["tabular-nums"],
   },
+  origemTxt: {
+    fontSize: 11,
+    lineHeight: 15.5,
+  },
   botaoEditar: {
-    minHeight: TOQUE_MINIMO - 4,
+    minHeight: TOQUE_MINIMO,
     borderRadius: RAIO.quadrado,
     paddingHorizontal: 12,
     alignItems: "center",

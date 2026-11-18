@@ -38,8 +38,15 @@ export function gerarTextoResumoExecutivo(e: EntradaResumoExecutivo): string {
       ? `~${formatarReaisCompacto(e.dinheiroEntrarReais)}`
       : "Caução / garantias conforme contrato";
 
+  const pendenciasLista: string[] = [];
+  if (e.precoPrincipalReais === null) pendenciasLista.push("preço anunciado");
+  if (e.mensalBolsoRealReais === null) pendenciasLista.push("parcelas mensais completas");
+  if (!e.chaveLote14) pendenciasLista.push("chave municipal do lote");
+  if (!e.anoConstrucao) pendenciasLista.push("ano de construção do prédio");
+
   const linhas = [
     `DOSSIÊ EXECUTIVO VEREDA — ${e.nomeImovel}`,
+    `Modelo do dossiê: v2`,
     `Endereço de referência: ${e.endereco}`,
     "",
     "1. IDENTIFICAÇÃO E VALOR",
@@ -65,7 +72,10 @@ export function gerarTextoResumoExecutivo(e: EntradaResumoExecutivo): string {
     ...e.pulso.eixos.map((x) => `• ${x.titulo}: ${x.rotuloValor} (${x.resumo})`),
     "",
     "6. LIMITES E CONFERÊNCIA ANTES DO SINAL",
-    "• Leitura independente baseada em cadastro municipal, geometria do lote e valores declarados. Confirmar matrícula atualizada (CNM 16 dígitos), atas condominiais e vistoria presencial.",
+    pendenciasLista.length > 0
+      ? `• Itens faltantes visíveis antes do sinal: ${pendenciasLista.join(", ")}.`
+      : "• Campos estruturais deste resumo preenchidos; confirmar matrícula atualizada (CNM 16 dígitos) e atas antes do sinal.",
+    "• Leitura independente baseada em cadastro municipal, geometria do lote e valores declarados. Não substitui certidão oficial nem vistoria presencial.",
   ];
 
   return linhas.join("\n");

@@ -544,7 +544,7 @@ export function LinhaDeObraNumerada({
       style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12, borderTopWidth: 0.5, borderTopColor: cor("cor-linha") }}
     >
       <View style={{ width: 26, height: 26, borderRadius: RAIO.pilula, alignItems: "center", justifyContent: "center", backgroundColor: cor(cores.fundo) }}>
-        <Texto tipo="etiqueta" cor={cores.texto} style={{ fontFamily: "JetBrainsMono", fontSize: 11, lineHeight: 14, fontWeight: "700" }}>
+        <Texto tipo="numero" cor={cores.texto} style={{ fontVariant: ["tabular-nums"], fontSize: 11, lineHeight: 14, fontWeight: "700" }}>
           {String(numero)}
         </Texto>
       </View>

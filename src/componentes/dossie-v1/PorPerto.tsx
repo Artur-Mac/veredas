@@ -375,7 +375,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
             <Texto style={{ fontSize: 13.5, color: cor("cor-texto") }}>
               Destino do perfil · <Texto style={{ fontWeight: "700" }}>{destinoPerfilBairro.nome}</Texto>
             </Texto>
-            <Texto style={{ fontFamily: "JetBrainsMono", fontSize: 12.5, fontWeight: "600", color: cor("cor-azul-cadastral") }}>
+            <Texto style={{ fontVariant: ["tabular-nums"], fontSize: 12.5, fontWeight: "600", color: cor("cor-azul-cadastral") }}>
               {formatarDist(destinoPerfilBairro.distanciaM)}
             </Texto>
           </View>
@@ -413,7 +413,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
                   </View>
                   {dist !== null ? (
                     <View style={{ alignItems: "flex-end" }}>
-                      <Texto style={{ fontFamily: "JetBrainsMono", fontSize: 13, fontWeight: "700", color: cor("cor-texto") }}>
+                      <Texto style={{ fontVariant: ["tabular-nums"], fontSize: 13, fontWeight: "700", color: cor("cor-texto") }}>
                         {formatarDist(dist)}
                       </Texto>
                       {minPe ? (
@@ -427,7 +427,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
                     onPress={() => void removerLugar(local.id)}
                     accessibilityRole="button"
                     accessibilityLabel={`Remover ${local.nome}`}
-                    style={{ minWidth: 36, minHeight: 36, alignItems: "center", justifyContent: "center" }}
+                    style={{ minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center" }}
                   >
                     <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 15 }}>✕</Texto>
                   </Pressionavel>
@@ -561,7 +561,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
                       </Texto>
                     </View>
                     {op.distanciaM !== null ? (
-                      <Texto style={{ fontFamily: "JetBrainsMono", fontSize: 12, fontWeight: "700", color: cor("cor-azul-cadastral") }}>
+                      <Texto style={{ fontVariant: ["tabular-nums"], fontSize: 12, fontWeight: "700", color: cor("cor-azul-cadastral") }}>
                         {formatarDist(op.distanciaM)}
                       </Texto>
                     ) : null}
@@ -579,7 +579,7 @@ export function PorPerto({ bairro, predioId, acesso = [], centro = null, edifici
                   onPress={() => void salvarNovoLugar()}
                   accessibilityRole="button"
                   style={{
-                    minHeight: 38,
+                    minHeight: 44,
                     paddingHorizontal: 14,
                     borderRadius: RAIO.pilula,
                     backgroundColor: cor("cor-acao"),
