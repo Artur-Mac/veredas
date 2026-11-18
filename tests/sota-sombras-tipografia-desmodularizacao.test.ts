@@ -328,6 +328,8 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(aoSelecionar).toHaveBeenCalledWith("fundos");
   });
 
+  // Decisão A6 (18/11/2026): Plus Jakarta Sans em todo texto SVG; a única exceção é FONTES_DO_FUNDO.bairro (Fraunces), só
+  // nos nomes de bairro do fundo do mapa (src/componentes/mapa/fundoDoMapaEstilo.ts).
   it("proíbe <TextoSvg> ou <SvgText> sem fontFamily explícito em todo src/ e injeta CSS SVG sans-serif na Web", () => {
     const srcRoot = join(__dirname, "..", "src");
     const tsxFiles = listarTsxRecursivo(srcRoot);
@@ -3538,8 +3540,10 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(simSrc).toContain("tabular-nums");
     expect(simSrc).toContain("simulador-causas-barulho");
 
+    // Unificação de 19/11/2026: a quarta causa é o avião (aeroporto da branch de segurança).
     const vazio = decomporCausasDeBarulhoSemDb([]);
-    expect(vazio).toHaveLength(3);
+    expect(vazio).toHaveLength(4);
+    expect(vazio[3]).toMatchObject({ id: "aereo", rotulo: "Avião" });
     expect(vazio.every((c) => c.nivel === "Sem registro próximo")).toBe(true);
 
     const composto = decomporCausasDeBarulhoSemDb([
@@ -3656,7 +3660,9 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
       "utf8",
     );
     expect(mapaSrc).not.toMatch(/\bcomAlfa\b/);
-    expect((mapaSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(1);
+    // Unificação de 19/11/2026: além da moldura do mapa, o mapa-base trouxe o quadradinho "Prédios que o Vereda conhece" da
+    // legenda, que precisa do contorno fino para se distinguir do "Lote do prédio" (contorno grosso). São 2, não 1.
+    expect((mapaSrc.match(/\bborderWidth:\s*1(?!\.)\b/g) ?? []).length).toBeLessThanOrEqual(2);
     expect(mapaSrc).toContain("tabular-nums");
 
     expect(calcularAreaPoligonoM2(null)).toBeNull();
@@ -3702,8 +3708,11 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     const geoNode = tree.root.find((n) => n.props.testID === "mapa-geometria-lote");
     expect(geoNode).toBeDefined();
     const txt = extrairTextos(tree.toJSON()).join(" ");
-    expect(txt).toContain("Contorno cadastral no mapa:");
-    expect(txt).toContain("4 vértices");
+    // Unificação de 19/11/2026: "m² de projeção (N vértices)" virou "Área do lote no cadastro: ~X m²" (é a área do
+    // contorno do lote, não a projeção da torre; o número de vértices não diz nada a quem compra).
+    expect(txt).toContain("Área do lote no cadastro:");
+    expect(txt).not.toContain("vértices");
+    expect(txt).not.toContain("de projeção");
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
 

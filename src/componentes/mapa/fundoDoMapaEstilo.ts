@@ -23,7 +23,7 @@ export const TRACO = {
 
 export const TRACEJADO_DA_DIVISA = [5, 3] as const;
 
-export const FONTES_DO_FUNDO = { rua: "PlusJakartaSans", bairro: "Fraunces", tecnico: "JetBrainsMono" } as const;
+export const FONTES_DO_FUNDO = { rua: "PlusJakartaSans", bairro: "Fraunces" } as const;
 
 /** `escuro` fica na assinatura por compatibilidade: as diferenças do escuro estão nos próprios tokens. */
 export function estiloDoFundo(c: Cores, _escuro = false) {
