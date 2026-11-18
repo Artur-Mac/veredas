@@ -7,6 +7,7 @@ import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
 import { Image, Modal, View } from "react-native";
 import { LinhaDoTempoEstrutural } from "../src/componentes/dossie-v1/FichaViva";
+import { PacoteParaEspecialista } from "../src/componentes/dossie-v1/Pacote";
 import { SimuladorDaUnidade } from "../src/componentes/dossie-v1/SimuladorDaUnidade";
 import { TopoDoDossie } from "../src/componentes/dossie-v1/Topo";
 import { Pressionavel } from "../src/componentes/Pressionavel";
@@ -34,6 +35,8 @@ import { TemaDoApp } from "../src/tema/Tema";
 
 jest.mock("@react-native-async-storage/async-storage", () => require("@react-native-async-storage/async-storage/jest/async-storage-mock"));
 jest.mock("expo-router", () => ({ router: { push: jest.fn() } }));
+jest.mock("expo-print", () => ({ printAsync: jest.fn(async () => undefined) }));
+jest.mock("expo-clipboard", () => ({ setStringAsync: jest.fn(async () => true) }));
 
 const AGORA = "2026-11-15T12:00:00.000Z";
 const gracas = edificiosDoBairro("gracas");
@@ -460,6 +463,51 @@ describe("por perto no mapa, rotina personalizada, comodidades e HTML editorial"
       );
     });
     expect(arvore.root.find((n) => n.props.testID === "simulador-painel-unificado")).toBeDefined();
+    act(() => {
+      arvore.unmount();
+    });
+  });
+
+  it("PacoteParaEspecialista oferece cópia direta em Markdown no celular/web sem comAlfa (S57)", async () => {
+    const pacoteSrc = readFileSync(join(__dirname, "..", "src", "componentes", "dossie-v1", "Pacote.tsx"), "utf8");
+    expect(pacoteSrc).not.toMatch(/\bcomAlfa\b/);
+
+    const visaoMinima = {
+      achados: { principal: null, apoio: [] },
+      perguntas: [],
+    } as unknown as Parameters<typeof PacoteParaEspecialista>[0]["visao"];
+
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(PacoteParaEspecialista, {
+            analise: analise(),
+            visao: visaoMinima,
+            ficha: [],
+          }),
+        ),
+      );
+    });
+
+    const jsonInicial = JSON.stringify(arvore.toJSON());
+    expect(jsonInicial).toContain("Copiar texto (.md)");
+
+    const botaoCopiar = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.includes("Copiar texto (.md)")).length > 0);
+    expect(botaoCopiar).toBeDefined();
+
+    await act(async () => {
+      await botaoCopiar!.props.onPress?.();
+    });
+
+    const jsonAposCopiar = JSON.stringify(arvore.toJSON());
+    expect(jsonAposCopiar).toContain("Dossiê técnico (.md) copiado para colar ou enviar.");
+    expect(jsonAposCopiar).toContain('"role":"status"');
+
     act(() => {
       arvore.unmount();
     });
