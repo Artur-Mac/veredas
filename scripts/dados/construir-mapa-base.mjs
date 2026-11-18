@@ -472,13 +472,17 @@ const removidas = [];
 if (!SAIDA_PROPRIA) for (const d of readdirSync(SAIDA)) if (d !== versao && /^[0-9a-f]{16}$/.test(d)) { rmSync(join(SAIDA, d), { recursive: true }); removidas.push(d); }
 if (registrado) publicacaoDeCamadas.publicarCamadas();
 
+const TETO_GZIP = 250_000;
+const AVISO_DO_TETO = 0.9;
 const resumo = {
   versao, indice: DIRETORIO_DO_INDICE, bordaM: BORDA_M, saida: SAIDA_PROPRIA ? "propria" : "publicada", bairros: pedidos.length, lidos, ligacao, cruzamento, ruasSemNome, removidas,
   registradoEmPublicarCamadas: registrado,
   totalBytes: [...textos.values()].reduce((s, t) => s + Buffer.byteLength(t), 0),
   totalGzip: Object.values(relatorio.bairros).reduce((s, r) => s + r.gzip, 0) + relatorio.cidade.gzip,
   maiorGzip: Object.entries(relatorio.bairros).sort((a, b) => b[1].gzip - a[1].gzip).slice(0, 5).map(([s, r]) => [s, r.gzip]),
-  acimaDoTeto: Object.entries(relatorio.bairros).filter(([, r]) => r.gzip > 250_000).map(([s, r]) => [s, r.gzip]),
+  acimaDoTeto: Object.entries(relatorio.bairros).filter(([, r]) => r.gzip > TETO_GZIP).map(([s, r]) => [s, r.gzip]),
+  // Aviso (não falha): arquivos acima de 90% do teto, que a próxima atualização da base pode empurrar para cima dele.
+  pertoDoTeto: Object.entries(relatorio.bairros).filter(([, r]) => r.gzip > TETO_GZIP * AVISO_DO_TETO && r.gzip <= TETO_GZIP).map(([s, r]) => [s, r.gzip, TETO_GZIP - r.gzip]),
   ms: Date.now() - t0, memoriaPicoMB: Math.round(process.resourceUsage().maxRSS / 1024),
   sha256: { ...Object.fromEntries(nomes.map((n) => [n, sha256(textos.get(n))])), "mapaBaseGerado.ts": sha256(ts) },
 };
@@ -486,3 +490,4 @@ const saidaRel = arg("--relatorio");
 if (saidaRel) writeFileSync(saidaRel, JSON.stringify({ ...resumo, ...relatorio }, null, 1) + "\n");
 if (!existsSync(MODULO)) throw new Error("módulo gerado ausente");
 console.log(JSON.stringify({ ...resumo, sha256: undefined, arquivos: nomes.length }));
+for (const [s, g, falta] of resumo.pertoDoTeto) console.warn(`AVISO: ${s} tem ${g} bytes gzip, acima de ${AVISO_DO_TETO * 100}% do teto de ${TETO_GZIP} (faltam ${falta} bytes).`);

@@ -1,10 +1,12 @@
 // O gancho comum dos mapas para o mapa-base (18/11/2026): que arquivos cada quadro pede, em que estado fica e que cena
 // entrega. Nos testes o leitor de camadas é síncrono (tests/configurar-camadas.ts): o que existe já está "carregado".
-import { afterEach, describe, expect, it } from "@jest/globals";
+import { afterEach, describe, expect, it, jest } from "@jest/globals";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
 import { metrosPorPixelDoQuadro, planoDeCargaDoFundo, useFundoDoMapa, type FundoDoMapaCarregado, type PedidoDoFundo } from "../src/componentes/mapa/useFundoDoMapa";
-import { arquivoDaCidade, arquivoDoMapaBase, type CaixaEmGraus } from "../src/dados/recife/mapaBase";
+import { arquivoDaCidade, arquivoDoMapaBase, esquecerMapaBase, type CaixaEmGraus } from "../src/dados/recife/mapaBase";
+import { esquecerCamadas } from "../src/dados/camadas";
+import * as plataforma from "../src/plataforma/camadas";
 import { METROS_POR_GRAU } from "../src/dados/recife/mapaBaseContrato";
 import { CENTRO_DO_IMOVEL, LOGRADOURO_DO_IMOVEL, paraDesenhoCentrado } from "./apoio/mapa-base-de-teste";
 
@@ -75,6 +77,12 @@ describe("plano de carga", () => {
     expect(plano.arquivos).toContain(arquivoDaCidade());
   });
 
+  it("quadro que cruza a divisa mas fica na borda de 300 m: o bairro e a cidade (o chão do vizinho)", () => {
+    const casaForte: readonly [number, number] = [-34.914433, -8.035775];
+    const plano = planoDeCargaDoFundo("casa-forte", caixaDe(casaForte, 220), LARGURA);
+    expect(plano).toEqual({ arquivos: [arquivoDoMapaBase("casa-forte"), arquivoDaCidade()], completo: true });
+  });
+
   it("longe do Recife não há arquivo de bairro para pedir", () => {
     const saoPaulo: readonly [number, number] = [-46.6333, -23.5505];
     const plano = planoDeCargaDoFundo(null, caixaDe(saoPaulo, 220), LARGURA);
@@ -142,5 +150,74 @@ describe("useFundoDoMapa", () => {
     act(() => { a.update(React.createElement(Sonda, { n: 1 })); });
     expect(cenas.length).toBeGreaterThanOrEqual(2);
     expect(cenas[cenas.length - 1]).toBe(cenas[0]);
+  });
+
+  it("quadro fora do Recife só com a cidade: sem cobertura, não pronta", () => {
+    const saoPaulo: readonly [number, number] = [-46.6333, -23.5505];
+    const r = usar({
+      bairro: null,
+      imovel: null,
+      quadro: { largura: LARGURA, altura: ALTURA, paraDesenho: paraDesenhoCentrado(saoPaulo, LARGURA, ALTURA, 220), zoom: 1 },
+      caixa: caixaDe(saoPaulo, 220),
+    });
+    expect(r).toMatchObject({ estado: "sem-cobertura", cena: null });
+  });
+
+  it("manterAnterior: enquanto o quadro novo não está pronto, entrega a última cena", () => {
+    const saidas: FundoDoMapaCarregado[] = [];
+    const Sonda = ({ p }: { p: PedidoDoFundo }) => {
+      saidas.push(useFundoDoMapa(p));
+      return null;
+    };
+    const primeiro = pedido(220, { manterAnterior: true });
+    let a!: TestRenderer.ReactTestRenderer;
+    act(() => { a = TestRenderer.create(React.createElement(Sonda, { p: primeiro })); });
+    montadas.push(a);
+    const pronta = saidas[saidas.length - 1]!;
+    expect(pronta.estado).toBe("pronta");
+    // Sem o leitor de teste e com a busca parada, os arquivos ficam "carregando".
+    const g = globalThis as { __veredaLerCamadaEmTeste?: (c: string) => unknown };
+    const original = g.__veredaLerCamadaEmTeste;
+    const busca = jest.spyOn(plataforma, "buscarArquivoDeCamada").mockImplementation(() => new Promise<never>(() => undefined));
+    try {
+      delete g.__veredaLerCamadaEmTeste;
+      act(() => { esquecerMapaBase(); esquecerCamadas(); });
+      act(() => { a.update(React.createElement(Sonda, { p: pedido(240, { manterAnterior: true }) })); });
+      const depois = saidas[saidas.length - 1]!;
+      expect(depois.estado).toBe("carregando");
+      expect(depois.cena).toBe(pronta.cena);
+    } finally {
+      g.__veredaLerCamadaEmTeste = original;
+      busca.mockRestore();
+      act(() => { esquecerMapaBase(); esquecerCamadas(); });
+    }
+  });
+
+  it("depois de falhar por arquivo recusado, tentar de novo relê e monta", () => {
+    const g = globalThis as { __veredaLerCamadaEmTeste?: (c: string) => unknown };
+    const original = g.__veredaLerCamadaEmTeste!;
+    const arquivo = arquivoDoMapaBase("boa-viagem")!;
+    let saida!: FundoDoMapaCarregado;
+    const Sonda = () => {
+      saida = useFundoDoMapa(p);
+      return null;
+    };
+    const p = pedido(220);
+    try {
+      esquecerMapaBase();
+      act(() => { esquecerCamadas(); });
+      g.__veredaLerCamadaEmTeste = (c) => (c === arquivo ? { versao: "outra" } : original(c));
+      act(() => { montadas.push(TestRenderer.create(React.createElement(Sonda))); });
+      expect(saida.estado).toBe("falhou");
+      // O arquivo certo chega (nova carga); tentar de novo tem de reler e remontar.
+      g.__veredaLerCamadaEmTeste = original;
+      act(() => { esquecerCamadas(); });
+      act(() => { saida.tentarDeNovo(); });
+      expect(saida.estado).toBe("pronta");
+      expect(saida.cena?.temDado).toBe(true);
+    } finally {
+      g.__veredaLerCamadaEmTeste = original;
+      act(() => { esquecerMapaBase(); esquecerCamadas(); });
+    }
   });
 });

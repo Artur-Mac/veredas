@@ -8,6 +8,8 @@
 //   Os rótulos são calculados por passo de zoom e ficam parados no arraste.
 // - Nada é completado: quadra sem lote fica quadra sem lote; fora de bairro carregado é hachura ("sem dado").
 import { bairroPorSlug } from "../../dados/recife/bairros";
+import { quadroCobertoPelosBairros, type CaixaEmGraus } from "../../dados/recife/mapaBase";
+import { METROS_POR_GRAU, UNIDADES_POR_METRO } from "../../dados/recife/mapaBaseContrato";
 import type {
   Caixa,
   DivisaDoBairro,
@@ -104,6 +106,12 @@ export type CamadasDoFundo = {
   readonly hachura: string;
   /** Dentro dos bairros com dado (a cor da rua: rua é o espaço entre quadras). */
   readonly chao: string;
+  /**
+   * Chão dos bairros vizinhos que só vêm do arquivo da cidade (divisa de 2 m), quando a borda de 300 m dos arquivos
+   * carregados cobre o quadro: as quadras e os lotes do vizinho vêm dessa borda. Desenhado com traço da cor do chão para
+   * fechar a emenda com a divisa fina do arquivo do bairro. Opcional: ausente é vazio.
+   */
+  readonly chaoDaCidade?: string;
   /** Bairro do imóvel levemente tingido (só no nível de 1 a 3 km). */
   readonly tintaDoBairro: string;
   readonly quadras: string;
@@ -156,6 +164,8 @@ export type CenaDoFundo = {
 };
 
 const PASSO_DA_HACHURA_PX = 7;
+/** O lote do imóvel é obstáculo dos nomes de rua enquanto a caixa dele ocupa até esta fração do quadro. */
+const FRACAO_DO_LOTE_OBSTACULO = 0.12;
 /** Pontos mais perto que isto (px na tela) não mudam o desenho. */
 const TOLERANCIA_PX = 0.4;
 /** Quadras menores que isto (px no desenho) somem no nível de bairro. */
@@ -233,6 +243,7 @@ export function montarFundoDoMapa(entrada: EntradaDoFundo): CenaDoFundo {
 const CAMADAS_VAZIAS: CamadasDoFundo = {
   hachura: "",
   chao: "",
+  chaoDaCidade: "",
   tintaDoBairro: "",
   quadras: "",
   lotes: "",
@@ -335,6 +346,10 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
   const doImovel = divisasNaCena.find((d) => d.divisa.slug === slugDoImovel) ?? null;
 
   const chao = divisasNaCena.filter((d) => d.carregado).map(caminhoDaDivisa).join("");
+  // O vizinho sem arquivo próprio ganha chão (da cidade) só se a borda de 300 m dos arquivos carregados cobre o quadro
+  // inteiro: aí tudo o que é Recife no quadro tem as quadras vindas dessa borda. Senão continua "sem dado".
+  const vizinhosDaCidade = !daCidade && cidade ? divisasNaCena.filter((d) => !d.carregado) : [];
+  const chaoDaCidade = vizinhosDaCidade.length > 0 && bordaCobreOQuadro(arquivos, largura, altura) ? vizinhosDaCidade.map(caminhoDaDivisa).join("") : "";
   const tintaDoBairro = nivel === "bairro" && doImovel ? caminhoDaDivisa(doImovel) : "";
   const divisasOutras = divisasNaCena.filter((d) => d !== doImovel).map(caminhoDaDivisa).join("");
   const divisaDoImovel = doImovel ? caminhoDaDivisa(doImovel) : "";
@@ -405,6 +420,19 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
         ...(codigo === null ? [] : arquivos.flatMap((arq) => arq.base.ruas.filter((r) => r.codigo === codigo).map((rua) => ({ a: arq as Arquivo, rua })))),
       ]
     : arquivos.flatMap((arq) => arq.base.ruas.map((rua) => ({ a: arq as Arquivo, rua })));
+  // A janela visível sem arraste (o inverso do grupo de zoom translate(cx + dx, cy + dy) scale(zoom) translate(-cx, -cy)):
+  // a rua do imóvel é recortada a ela, para o nome cair onde a pessoa olha mesmo no zoom máximo.
+  const [dx, dy] = entrada.quadro.deslocamento ?? [0, 0];
+  const cx = largura / 2;
+  const cy = altura / 2;
+  const visivel: Retangulo = [cx + (0 - cx - dx) / zoom, cy + (0 - cy - dy) / zoom, cx + (largura - cx - dx) / zoom, cy + (altura - cy - dy) / zoom];
+  const margem = 10 / zoom;
+  const limiteDoImovel: Retangulo = [
+    Math.max(inset[0], visivel[0] + margem),
+    Math.max(inset[1], visivel[1] + margem),
+    Math.min(inset[2], visivel[2] - margem),
+    Math.min(inset[3], visivel[3] - margem),
+  ];
   const porNome = new Map<string, CandidatoDeRua & { trechos: number[][] }>();
   for (const { a, rua } of ruas) {
     const eDoImovel = codigo !== null && rua.codigo === codigo;
@@ -414,7 +442,7 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
     // A mesma rua vinda de dois arquivos (borda) é um candidato só; os trechos repetidos caem na regra de repetição.
     const chave = `${rua.codigo ?? ""}|${rua.nome}`;
     const item = porNome.get(chave) ?? { nome: rua.nome, tipo: eDoImovel ? "imovel" : grande ? "avenida" : "rua", trechos: [] };
-    for (const l of rua.linhas) item.trechos.push(...recortarLinha(anelNoDesenho(l, a.afim), inset));
+    for (const l of rua.linhas) item.trechos.push(...recortarLinha(anelNoDesenho(l, a.afim), eDoImovel ? limiteDoImovel : inset));
     porNome.set(chave, item);
   }
   const candidatos = [...porNome.values()];
@@ -425,24 +453,35 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
     const m = 13 / zoom;
     pino.push([px - m, py - m, px + m, py + m]);
   }
-  const [dx, dy] = entrada.quadro.deslocamento ?? [0, 0];
-  const cx = largura / 2;
-  const cy = altura / 2;
   // Tela → desenho: inverso de translate(cx + dx, cy + dy) scale(zoom) translate(-cx, -cy).
   for (const o of entrada.quadro.obstaculos ?? []) {
     pino.push([cx + (o[0] - cx - dx) / zoom, cy + (o[1] - cy - dy) / zoom, cx + (o[2] - cx - dx) / zoom, cy + (o[3] - cy - dy) / zoom]);
   }
-  const rotulosDoImovel = posicionarRotulosDeRua(candidatos.filter((c) => c.tipo === "imovel"), zoom, pino, 0, inset);
-  const ocupadas: Retangulo[] = [...pino, ...rotulosDoImovel.flatMap((r) => [...r.caixas])];
+  // O lote do imóvel pequeno na vista também fica livre de nome de rua; o lote enorme (um conjunto que toma metade da
+  // vista, ou qualquer lote no zoom máximo) não: bloquearia a vista toda, e o pino já protege o imóvel.
+  const obstaculosDeRua: Retangulo[] = [...pino];
+  if (loteDoImovel) {
+    const r = caixaNoDesenho(loteDoImovel.a.afim, loteDoImovel.lote.caixa);
+    const w = Math.min(r[2], visivel[2]) - Math.max(r[0], visivel[0]);
+    const h = Math.min(r[3], visivel[3]) - Math.max(r[1], visivel[1]);
+    const fracao = w > 0 && h > 0 ? (w * h) / ((visivel[2] - visivel[0]) * (visivel[3] - visivel[1])) : 0;
+    // O lote vira células pequenas dentro do polígono (não a caixa: a caixa de um lote torto cobre a via da frente,
+    // onde o nome da rua do imóvel corre).
+    if (fracao > 0 && fracao <= FRACAO_DO_LOTE_OBSTACULO) obstaculosDeRua.push(...celulasDoLote(loteDoImovel.lote.aneis.map((a) => anelNoDesenho(a, loteDoImovel!.a.afim)), r, 4 / zoom));
+  }
+  const rotulosDoImovel = posicionarRotulosDeRua(candidatos.filter((c) => c.tipo === "imovel"), zoom, obstaculosDeRua, 0, inset, limiteDoImovel);
+  const ocupadas: Retangulo[] = [...obstaculosDeRua, ...rotulosDoImovel.flatMap((r) => [...r.caixas])];
   let nomes: NomeDeBairro[] = [];
-  if (nivel !== "lote") {
-    const paraNome: BairroParaNome[] = divisasNaCena.map((d) => ({
+  // No nível de lote o bairro do imóvel está no selo; com a cidade carregada, os vizinhos junto à divisa levam o nome.
+  const comNome = nivel !== "lote" ? divisasNaCena : cidade && !daCidade ? divisasNaCena.filter((d) => d !== doImovel) : [];
+  if (comNome.length > 0) {
+    const paraNome: BairroParaNome[] = comNome.map((d) => ({
       slug: d.divisa.slug,
       nome: nomeDeExibicao(d.divisa.slug, d.divisa.nome),
       doImovel: d === doImovel,
       aneis: d.divisa.partes.flatMap((p) => p.aneis.map((anel) => anelNoDesenho(anel, d.a.afim))),
     }));
-    nomes = posicionarNomesDeBairro(paraNome, quadro, zoom, ocupadas);
+    nomes = posicionarNomesDeBairro(paraNome, quadro, zoom, pino, rotulosDoImovel.flatMap((r) => [...r.caixas]));
   }
   const outras = posicionarRotulosDeRua(
     candidatos.filter((c) => c.tipo !== "imovel"),
@@ -479,6 +518,7 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
     camadas: {
       hachura: caminhoDaHachura(largura, altura, PASSO_DA_HACHURA_PX / zoom),
       chao,
+      chaoDaCidade,
       tintaDoBairro,
       quadras,
       lotes,
@@ -496,8 +536,38 @@ function montar(entrada: EntradaDoFundo): CenaDoFundo {
     selo: nivel === "lote" && nomeDoBairro ? nomeDoBairro : null,
     acessibilidade: { rua: ruaDoImovel, bairro: nomeDoBairro, distanciaDaDivisaM },
     lotes: lotesDoToque,
-    temDado: chao !== "" || quadras !== "" || agua !== "",
+    temDado: chao !== "" || chaoDaCidade !== "" || quadras !== "" || agua !== "",
   };
+}
+
+/** Células quadradas de lado `passo` cujo centro cai dentro do lote (anéis no desenho), recolhidas meio passo. */
+function celulasDoLote(aneis: readonly Float64Array[], caixa: Retangulo, passo: number): Retangulo[] {
+  const celulas: Retangulo[] = [];
+  const meia = passo / 2;
+  for (let x = caixa[0] + meia; x < caixa[2]; x += passo) {
+    for (let y = caixa[1] + meia; y < caixa[3]; y += passo) {
+      if (pontoNosAneisDoDesenho(x, y, aneis)) celulas.push([x - meia, y - meia, x + meia, y + meia]);
+    }
+  }
+  return celulas;
+}
+
+/** A caixa em graus do quadro inteiro (escala 1), pelo plano do arquivo. */
+function caixaEmGrausDoQuadro(arq: { base: MapaBaseDoBairro; afim: Afim }, largura: number, altura: number): CaixaEmGraus {
+  const c = retanguloNoPlano(arq.afim, [0, 0, largura, altura]);
+  const [lon0, lat0] = arq.base.origem;
+  const kx = METROS_POR_GRAU * Math.cos((lat0 * Math.PI) / 180) * UNIDADES_POR_METRO;
+  const ky = METROS_POR_GRAU * UNIDADES_POR_METRO;
+  return [lon0 + c[0] / kx, lat0 - c[3] / ky, lon0 + c[2] / kx, lat0 - c[1] / ky];
+}
+
+function bordaCobreOQuadro(arquivos: readonly { base: MapaBaseDoBairro; afim: Afim }[], largura: number, altura: number): boolean {
+  const primeiro = arquivos[0];
+  if (!primeiro) return false;
+  return quadroCobertoPelosBairros(
+    arquivos.map((a) => a.base),
+    caixaEmGrausDoQuadro(primeiro, largura, altura),
+  );
 }
 
 function metros(n: number): string {

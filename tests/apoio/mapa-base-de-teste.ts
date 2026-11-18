@@ -181,6 +181,7 @@ export function svgDaCena(cena: CenaDoFundo, cores: Cores, extra = ""): string {
     `<rect x="0" y="0" width="${cena.largura}" height="${cena.altura}" fill="${e.semDado}"/>` +
     p(c.hachura, `stroke="${e.hachura}" stroke-width="${t(TRACO.hachura)}" fill="none"`) +
     p(c.chao, `fill="${e.chao}" fill-rule="evenodd"`) +
+    p(c.chaoDaCidade ?? "", `fill="${e.chao}" stroke="${e.chao}" stroke-width="${+(3 / (cena.metrosPorPx * cena.zoom)).toFixed(3)}" stroke-linejoin="round" fill-rule="evenodd"`) +
     p(c.tintaDoBairro, `fill="${e.tinta}" fill-opacity="${e.tintaOpacidade}" fill-rule="evenodd"`) +
     p(c.quadras, `fill="${e.quadra}" fill-rule="evenodd"`) +
     p(c.lotes, `fill="${e.lote}" stroke="${e.loteLinha}" stroke-width="${t(TRACO.lote)}" stroke-linejoin="round" fill-rule="evenodd"`) +

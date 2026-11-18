@@ -7,7 +7,7 @@
 //   cuja caixa toca o quadro e o arquivo da cidade. No nível de cidade (quadro de mais de ~3 km) só a cidade e o bairro do
 //   imóvel: a cena não usa quadras de longe.
 // - Arquivo que falta ou não confere vira `falhou`: o mapa fica sem fundo e oferece tentar de novo, nunca um dado parecido.
-import { useMemo, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 import { ouvirCamadas } from "../../dados/camadas";
 import { METROS_POR_GRAU } from "../../dados/recife/mapaBaseContrato";
 import { arquivoDaCidade, arquivoDoMapaBase, arquivosDoMapaBaseParaOQuadro, mapaBaseDaCidade, mapaBaseDoBairro, type CaixaEmGraus } from "../../dados/recife/mapaBase";
@@ -28,12 +28,18 @@ export type PedidoDoFundo = {
   readonly caixa: CaixaEmGraus;
   /** false: não carrega nem monta (mapa fechado, ou modo que não usa o fundo). */
   readonly ativo?: boolean;
+  /**
+   * true: enquanto um quadro novo carrega ou monta, entrega a última cena pronta (estado `carregando`, `cena` não nula),
+   * para o mapa não piscar sem fundo a cada passo de zoom. Padrão false: `carregando` vem sem cena, como sempre foi.
+   */
+  readonly manterAnterior?: boolean;
 };
 
 /**
  * - `desligado`: `ativo` é false.
- * - `sem-cobertura`: não há arquivo para este quadro (fora do Recife).
- * - `carregando`, `falhou`, `pronta`: como nas outras camadas. A cena só existe em `pronta`.
+ * - `sem-cobertura`: não há arquivo para este quadro, ou a cena montada não tem dado nenhum (quadro fora do Recife).
+ * - `carregando`, `falhou`, `pronta`: como nas outras camadas. A cena só existe em `pronta` (e em `carregando` com
+ *   `manterAnterior`: a cena anterior).
  */
 export type EstadoDoFundo = "desligado" | "sem-cobertura" | "carregando" | "falhou" | "pronta";
 
@@ -65,6 +71,16 @@ export function metrosPorPixelDoQuadro(caixa: CaixaEmGraus, largura: number, zoo
 
 /** Os arquivos que o quadro pede agora e se a lista já é a definitiva (ver a carga em dois tempos). Função pura. */
 export function planoDeCargaDoFundo(bairro: string | null, caixa: CaixaEmGraus, largura: number, zoom = 1): { arquivos: string[]; completo: boolean } {
+  try {
+    return planoSemProtecao(bairro, caixa, largura, zoom);
+  } catch {
+    // O arquivo do bairro em memória foi recusado: pede só ele, e a montagem falha e oferece tentar de novo.
+    const doBairro = arquivoDoMapaBase(bairro);
+    return { arquivos: doBairro ? [doBairro] : [], completo: true };
+  }
+}
+
+function planoSemProtecao(bairro: string | null, caixa: CaixaEmGraus, largura: number, zoom: number): { arquivos: string[]; completo: boolean } {
   if (nivelDaEscala(metrosPorPixelDoQuadro(caixa, largura, zoom)) === "cidade") {
     const arquivos = [arquivoDoMapaBase(bairro), arquivoDaCidade()].filter((a): a is string => a !== null);
     return { arquivos, completo: true };
@@ -83,13 +99,19 @@ export function useFundoDoMapa(pedido: PedidoDoFundo): FundoDoMapaCarregado {
   const [oeste, sul, leste, norte] = caixa;
 
   const tique = useSyncExternalStore(ouvirCamadas, lerRelogio, lerRelogio);
+  // Cada "tentar de novo" refaz o plano, a leitura e a montagem (o arquivo recusado não fica guardado em memória).
+  const [tentativa, setTentativa] = useState(0);
   const plano = useMemo(
     () => (ativo ? planoDeCargaDoFundo(bairro, [oeste, sul, leste, norte], quadro.largura, zoom) : { arquivos: [] as string[], completo: true }),
     // `tique` entra de propósito: o plano depende do que já está em memória.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [ativo, bairro, oeste, sul, leste, norte, quadro.largura, zoom, tique],
+    [ativo, bairro, oeste, sul, leste, norte, quadro.largura, zoom, tique, tentativa],
   );
-  const { estado, tentarDeNovo } = useCamadas(ativo ? plano.arquivos : SEM_ARQUIVOS);
+  const { estado, tentarDeNovo: tentarAsCamadas } = useCamadas(ativo ? plano.arquivos : SEM_ARQUIVOS);
+  const tentarDeNovo = useCallback(() => {
+    setTentativa((n) => n + 1);
+    tentarAsCamadas();
+  }, [tentarAsCamadas]);
 
   const centroLon = imovel?.centro[0] ?? null;
   const centroLat = imovel?.centro[1] ?? null;
@@ -131,11 +153,19 @@ export function useFundoDoMapa(pedido: PedidoDoFundo): FundoDoMapaCarregado {
       // Arquivo inválido ou de outra versão: a leitura recusa. O mapa fica sem fundo, como em qualquer falha de carga.
       return { cena: null, falhou: true };
     }
-  }, [pronto, chaveDosArquivos, bairro, centroLon, centroLat, codigo, quadro.largura, quadro.altura, quadro.paraDesenho, zoom, chaveDosObstaculos, dx, dy]);
+    // `tentativa` entra de propósito: tentar de novo relê e remonta mesmo com a mesma entrada.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pronto, chaveDosArquivos, bairro, centroLon, centroLat, codigo, quadro.largura, quadro.altura, quadro.paraDesenho, zoom, chaveDosObstaculos, dx, dy, tentativa]);
+
+  // A última cena pronta, para `manterAnterior` (estado ajustado durante o render, o padrão do React para "valor anterior").
+  const [anterior, setAnterior] = useState<CenaDoFundo | null>(null);
+  const cenaPronta = ativo && plano.arquivos.length > 0 && estado !== "falhou" && !montada.falhou && pronto && montada.cena?.temDado ? montada.cena : null;
+  if (cenaPronta && cenaPronta !== anterior) setAnterior(cenaPronta);
 
   if (!ativo) return DESLIGADO;
   if (plano.arquivos.length === 0) return { estado: "sem-cobertura", cena: null, tentarDeNovo };
   if (estado === "falhou" || montada.falhou) return { estado: "falhou", cena: null, tentarDeNovo };
-  if (!pronto || !montada.cena) return { estado: "carregando", cena: null, tentarDeNovo };
+  if (!pronto || !montada.cena) return { estado: "carregando", cena: pedido.manterAnterior ? anterior : null, tentarDeNovo };
+  if (!montada.cena.temDado) return { estado: "sem-cobertura", cena: null, tentarDeNovo };
   return { estado: "pronta", cena: montada.cena, tentarDeNovo };
 }

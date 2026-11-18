@@ -18,7 +18,8 @@ import {
 } from "../src/componentes/mapa/fundoDoMapaCena";
 import { estiloDoFundo } from "../src/componentes/mapa/fundoDoMapaEstilo";
 import { pontoNosAneis } from "../src/componentes/mapa/fundoDoMapaGeometria";
-import { mapaBaseDaCidade, mapaBaseDoBairro } from "../src/dados/recife/mapaBase";
+import { bairrosNaCaixa, mapaBaseDaCidade, mapaBaseDoBairro } from "../src/dados/recife/mapaBase";
+import { METROS_POR_GRAU } from "../src/dados/recife/mapaBaseContrato";
 import type { MapaBaseDaCidade, MapaBaseDoBairro, PoligonoBase } from "../src/dados/recife/mapaBaseContrato";
 import { TemaDoApp, TemaEscuro } from "../src/tema/Tema";
 import { CORES_CLARO, CORES_ESCURO, type Cores } from "../src/tema/tokens";
@@ -475,10 +476,12 @@ describe("componente FundoDoMapa", () => {
         const caminhos = a.root.findAllByType(TextPath);
         expect(caminhos).toHaveLength(2 * c.rotulos.length);
         for (const tp of caminhos) {
-          const r = c.rotulos.find((x) => `#${x.id}` === tp.props.href)!;
+          // O id leva um prefixo por instância (dois fundos na mesma página web não se confundem).
+          const r = c.rotulos.find((x) => (tp.props.href as string).endsWith(`-${x.id}`))!;
           expect(r).toBeDefined();
-          expect(ids.has(r.id)).toBe(true);
-          expect(noDefs.find((p) => p.props.id === r.id)!.props.d).toBe(r.caminho);
+          const id = (tp.props.href as string).slice(1);
+          expect(ids.has(id)).toBe(true);
+          expect(noDefs.find((p) => p.props.id === id)!.props.d).toBe(r.caminho);
           expect(tp.props.startOffset).toBe(r.inicio);
           expect(tp.props.children).toBe(r.nome);
         }
@@ -493,7 +496,7 @@ describe("componente FundoDoMapa", () => {
         }
         expect(textos.indexOf(comHalo[comHalo.length - 1]!)).toBeLessThan(textos.indexOf(semHalo[0]!));
         for (const r of c.rotulos) {
-          const par = caminhos.filter((tp) => tp.props.href === `#${r.id}`);
+          const par = caminhos.filter((tp) => (tp.props.href as string).endsWith(`-${r.id}`));
           expect(par).toHaveLength(2);
         }
         const rua = semHalo.find((t) => t.props.fill === cores["cor-azul-cadastral"]);
@@ -515,5 +518,103 @@ describe("componente FundoDoMapa", () => {
     expect(json).toContain("BAIRRO");
     expect(json).toContain("Boa Viagem");
     expect(json).toContain("Base: Prefeitura do Recife (ODbL)");
+  });
+});
+
+// Correções da F2 (18/11/2026): chão junto à divisa, nome do bairro do imóvel, rua do imóvel na janela visível.
+describe("junto à divisa e janela visível (arquivos reais)", () => {
+  const CASA_FORTE: readonly [number, number] = [-34.914433, -8.035775];
+  const deslocar = (c: readonly [number, number], lesteM: number, norteM: number): [number, number] => [
+    c[0] + lesteM / (METROS_POR_GRAU * Math.cos((c[1] * Math.PI) / 180)),
+    c[1] + norteM / METROS_POR_GRAU,
+  ];
+  const cena = (centro: readonly [number, number], metros: number, bairros: MapaBaseDoBairro[], comCidade: boolean, extra: Partial<EntradaDoFundo["quadro"]> = {}, largura = 343, altura = 280) =>
+    montarFundoDoMapa({
+      bairros,
+      cidade: comCidade ? mapaBaseDaCidade() : null,
+      bairroDoImovel: "casa-forte",
+      imovel: { centro: CASA_FORTE, codigoDoLogradouro: 2453 },
+      quadro: { largura, altura, paraDesenho: paraDesenhoCentrado(centro, largura, altura, metros), zoom: 1, ...extra },
+    });
+  const casaForte = () => mapaBaseDoBairro("casa-forte")!;
+
+  it("na borda de 300 m, com a cidade: o vizinho ganha chão (não fica hachurado), divisa e nome no nível de lote", () => {
+    const c = cena(CASA_FORTE, 220, [casaForte()], true);
+    expect(c.nivel).toBe("lote");
+    expect(c.camadas.chaoDaCidade).not.toBe("");
+    expect(c.camadas.divisas).not.toBe("");
+    expect(c.camadas.divisaDoImovel).not.toBe("");
+    expect(c.bairros.map((b) => b.slug)).toContain("parnamirim");
+    expect(c.bairros.some((b) => b.doImovel)).toBe(false);
+  });
+
+  it("sem a cidade o vizinho continua sem chão (como antes)", () => {
+    const c = cena(CASA_FORTE, 220, [casaForte()], false);
+    expect(c.camadas.chaoDaCidade ?? "").toBe("");
+  });
+
+  it("bem além da borda, só com o arquivo do bairro e a cidade: nenhum chão de rua sem quadras (fica sem dado)", () => {
+    const c = cena(deslocar(CASA_FORTE, 0, -1500), 400, [casaForte()], true);
+    expect(c.camadas.chaoDaCidade ?? "").toBe("");
+  });
+
+  it("além da borda com os vizinhos carregados: o chão vem dos arquivos deles", () => {
+    const centro = deslocar(CASA_FORTE, 0, -1500);
+    const m = 400;
+    const meiaL = m / 2 / (METROS_POR_GRAU * Math.cos((centro[1] * Math.PI) / 180));
+    const meiaA = (m * 280) / 343 / 2 / METROS_POR_GRAU;
+    const slugs = bairrosNaCaixa([centro[0] - meiaL, centro[1] - meiaA, centro[0] + meiaL, centro[1] + meiaA]);
+    const bairros = [casaForte(), ...slugs.filter((s) => s !== "casa-forte").map((s) => mapaBaseDoBairro(s)!)];
+    const c = cena(centro, m, bairros, true);
+    expect(c.camadas.chao).not.toBe("");
+    expect(c.camadas.quadras).not.toBe("");
+  });
+
+  it("o nome do bairro do imóvel aparece no nível de quadras mesmo com o melhor lugar tomado", () => {
+    const m = 2600;
+    const meiaL = m / 2 / (METROS_POR_GRAU * Math.cos((CASA_FORTE[1] * Math.PI) / 180));
+    const meiaA = (m * 280) / 343 / 2 / METROS_POR_GRAU;
+    const slugs = bairrosNaCaixa([CASA_FORTE[0] - meiaL, CASA_FORTE[1] - meiaA, CASA_FORTE[0] + meiaL, CASA_FORTE[1] + meiaA]);
+    const bairros = [casaForte(), ...slugs.filter((s) => s !== "casa-forte").map((s) => mapaBaseDoBairro(s)!)];
+    const livre = cena(CASA_FORTE, m, bairros, true);
+    const nome = livre.bairros.find((b) => b.doImovel);
+    expect(nome?.nome).toBe("CASA FORTE");
+    // Um controle do mapa por cima do melhor lugar: o nome procura outro.
+    const k = nome!.caixa;
+    const tomado = cena(CASA_FORTE, m, bairros, true, { obstaculos: [[k[0] - 4, k[1] - 4, k[2] + 4, k[3] + 4]] });
+    const outro = tomado.bairros.find((b) => b.doImovel);
+    expect(outro).toBeDefined();
+    expect(outro!.x !== nome!.x || outro!.y !== nome!.y).toBe(true);
+  });
+
+  it("com zoom, a rua do imóvel fica dentro da janela visível sem arraste", () => {
+    for (const z of [2, 3]) {
+      const desl: [number, number] = [-20, 15];
+      const c = montarFundoDoMapa({ ...entrada([A], 340, 300, 220, z), quadro: { ...entrada([A], 340, 300, 220, z).quadro, deslocamento: desl } });
+      const r = c.rotulos.find((x) => x.tipo === "imovel");
+      expect(r).toBeDefined();
+      const cx = 170;
+      const cy = 150;
+      const janela = [cx + (0 - cx - desl[0]) / z, cy + (0 - cy - desl[1]) / z, cx + (340 - cx - desl[0]) / z, cy + (300 - cy - desl[1]) / z];
+      for (const b of r!.caixas) {
+        expect(b[0]).toBeGreaterThanOrEqual(janela[0]!);
+        expect(b[2]).toBeLessThanOrEqual(janela[2]!);
+        expect(b[1]).toBeGreaterThanOrEqual(janela[1]!);
+        expect(b[3]).toBeLessThanOrEqual(janela[3]!);
+      }
+    }
+  });
+
+  it("em tela larga nenhum rótulo sai do quadro", () => {
+    const c = montarFundoDoMapa(entrada([A], 1240, 600, 802));
+    expect(c.rotulos.length).toBeGreaterThan(0);
+    for (const r of c.rotulos) {
+      for (const b of r.caixas) {
+        expect(b[0]).toBeGreaterThanOrEqual(0);
+        expect(b[2]).toBeLessThanOrEqual(1240);
+        expect(b[1]).toBeGreaterThanOrEqual(0);
+        expect(b[3]).toBeLessThanOrEqual(600);
+      }
+    }
   });
 });

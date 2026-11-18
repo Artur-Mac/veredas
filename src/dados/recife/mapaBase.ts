@@ -397,6 +397,26 @@ function dentro(x: number, y: number, p: PoligonoBase): boolean {
   return d;
 }
 
+/** Pontos [lon, lat] da borda do quadro, a cada ~25 m e nos cantos. */
+function amostrasEmGraus(caixa: CaixaEmGraus): [number, number][] {
+  const latMedia = (caixa[1] + caixa[3]) / 2;
+  const larguraM = (caixa[2] - caixa[0]) * METROS_POR_GRAU * Math.cos((latMedia * Math.PI) / 180);
+  const alturaM = (caixa[3] - caixa[1]) * METROS_POR_GRAU;
+  const nx = Math.max(1, Math.ceil(larguraM / 25)), ny = Math.max(1, Math.ceil(alturaM / 25));
+  const pontos: [number, number][] = [];
+  for (let i = 0; i <= nx; i++) { const lon = caixa[0] + ((caixa[2] - caixa[0]) * i) / nx; pontos.push([lon, caixa[1]], [lon, caixa[3]]); }
+  for (let j = 1; j < ny; j++) { const lat = caixa[1] + ((caixa[3] - caixa[1]) * j) / ny; pontos.push([caixa[0], lat], [caixa[2], lat]); }
+  return pontos;
+}
+
+/** As amostras da borda do quadro no plano do arquivo do bairro. */
+function amostrasDoQuadro(mapa: MapaBaseDoBairro, graus: readonly [number, number][]): [number, number][] {
+  const [lon0, lat0] = mapa.origem;
+  const kx = METROS_POR_GRAU * Math.cos((lat0 * Math.PI) / 180) * UNIDADES_POR_METRO;
+  const ky = METROS_POR_GRAU * UNIDADES_POR_METRO;
+  return graus.map(([lon, lat]) => [(lon - lon0) * kx, -(lat - lat0) * ky]);
+}
+
 /**
  * O quadro (em graus) está todo dentro da divisa do bairro ou a menos de `borda` metros dela? Confere pontos a cada
  * ~25 m ao longo da borda do quadro (e os cantos): o arquivo do bairro cobre a divisa mais 300 m. A conta usa a borda
@@ -404,24 +424,44 @@ function dentro(x: number, y: number, p: PoligonoBase): boolean {
  * simplificada (0,5 m). Na dúvida, entram os vizinhos.
  */
 export function quadroCobertoPeloBairro(mapa: MapaBaseDoBairro, caixa: CaixaEmGraus, bordaM = BORDA_DO_MAPA_BASE_M): boolean {
-  const [lon0, lat0] = mapa.origem;
-  const kx = METROS_POR_GRAU * Math.cos((lat0 * Math.PI) / 180) * UNIDADES_POR_METRO;
-  const ky = METROS_POR_GRAU * UNIDADES_POR_METRO;
-  const limite = Math.max(0, bordaM - FOLGA_DO_QUADRO_M) * UNIDADES_POR_METRO;
-  const x0 = (caixa[0] - lon0) * kx, x1 = (caixa[2] - lon0) * kx;
-  const y0 = -(caixa[3] - lat0) * ky, y1 = -(caixa[1] - lat0) * ky;
-  const passo = 25 * UNIDADES_POR_METRO;
-  const nx = Math.max(1, Math.ceil((x1 - x0) / passo)), ny = Math.max(1, Math.ceil((y1 - y0) / passo));
-  const pontos: [number, number][] = [];
-  for (let i = 0; i <= nx; i++) { const x = x0 + ((x1 - x0) * i) / nx; pontos.push([x, y0], [x, y1]); }
-  for (let j = 1; j < ny; j++) { const y = y0 + ((y1 - y0) * j) / ny; pontos.push([x0, y], [x1, y]); }
-  const partes = mapa.divisa.partes;
-  return pontos.every(([x, y]) => partes.some((p) => dentro(x, y, p) || distanciaABorda(x, y, p) < limite));
+  return quadroCobertoPelosBairros([mapa], caixa, bordaM);
 }
 
 /**
- * A carga em dois tempos (decisão 6 do plano). Primeiro só o arquivo do bairro do imóvel; com ele em memória, se o
- * quadro está todo a menos de 300 m da divisa, basta ele (`completo`). Senão entram os bairros cuja caixa toca o quadro
+ * Cada ponto da borda do quadro está dentro de algum dos bairros ou a menos de `borda` metros dele (a união das bordas
+ * de 300 m dos arquivos carregados cobre o quadro). Mesmas amostras e folga de quadroCobertoPeloBairro.
+ */
+export function quadroCobertoPelosBairros(mapas: readonly MapaBaseDoBairro[], caixa: CaixaEmGraus, bordaM = BORDA_DO_MAPA_BASE_M): boolean {
+  if (mapas.length === 0) return false;
+  const limite = Math.max(0, bordaM - FOLGA_DO_QUADRO_M) * UNIDADES_POR_METRO;
+  const graus = amostrasEmGraus(caixa);
+  const amostras = mapas.map((m) => amostrasDoQuadro(m, graus));
+  const n = graus.length;
+  for (let i = 0; i < n; i++) {
+    const coberto = mapas.some((m, k) => {
+      const [x, y] = amostras[k]![i]!;
+      return m.divisa.partes.some((p) => dentro(x, y, p) || distanciaABorda(x, y, p) < limite);
+    });
+    if (!coberto) return false;
+  }
+  return true;
+}
+
+/**
+ * O quadro (em graus) está todo dentro da divisa do bairro, com folga? Cada amostra da borda do quadro tem de estar
+ * dentro e a mais de FOLGA_DO_QUADRO_M / 2 da divisa (entre duas amostras, ~12,5 m): na dúvida, não está dentro, e o
+ * arquivo da cidade entra para dar o chão do vizinho.
+ */
+export function quadroDentroDoBairro(mapa: MapaBaseDoBairro, caixa: CaixaEmGraus): boolean {
+  const margem = (FOLGA_DO_QUADRO_M / 2) * UNIDADES_POR_METRO;
+  const partes = mapa.divisa.partes;
+  return amostrasDoQuadro(mapa, amostrasEmGraus(caixa)).every(([x, y]) => partes.some((p) => dentro(x, y, p)) && partes.every((p) => distanciaABorda(x, y, p) > margem));
+}
+
+/**
+ * A carga em dois tempos (decisão 6 do plano). Primeiro só o arquivo do bairro do imóvel; com ele em memória: quadro
+ * todo dentro da divisa, basta ele; quadro que cruza a divisa mas fica na borda de 300 m, ele e a cidade (o chão e a
+ * divisa do vizinho, 18/11/2026). Senão entram os bairros cuja caixa toca o quadro
  * e o arquivo da cidade. Sem bairro, ou bairro sem arquivo: os bairros na caixa e a cidade direto. Função pura sobre o
  * que está em memória: a tela chama de novo depois de cada carga, até `completo`.
  */
@@ -437,6 +477,8 @@ export function arquivosDoMapaBaseParaOQuadro({ bairro, caixa }: { bairro: strin
   if (!doBairro) return { arquivos: vizinhos(), completo: true };
   const mapa = bairroDisponivel(bairro!);
   if (!mapa) return { arquivos: [doBairro], completo: false };
-  if (quadroCobertoPeloBairro(mapa, caixa)) return { arquivos: [doBairro], completo: true };
+  if (quadroDentroDoBairro(mapa, caixa)) return { arquivos: [doBairro], completo: true };
+  // Na borda de 300 m: o arquivo do bairro tem as quadras e os lotes do vizinho; a cidade dá o chão e a divisa dele.
+  if (quadroCobertoPeloBairro(mapa, caixa)) return { arquivos: cidade ? [doBairro, cidade] : [doBairro], completo: true };
   return { arquivos: vizinhos(), completo: true };
 }

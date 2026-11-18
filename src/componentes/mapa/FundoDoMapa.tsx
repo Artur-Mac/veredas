@@ -9,6 +9,7 @@
 //   para não depender do cálculo de porcentagem de cada plataforma); textAnchor vem do <Text> pai; letterSpacing entra
 //   nos dados de fonte; traço em texto funciona, então o halo também é um texto com traço por baixo.
 // - nos dois: fontWeight com família própria depende de a fonte carregada ter o peso (os .ttf do app são variáveis).
+import { useId } from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import { Defs, G, Path, Rect, Text as TextoSvg, TextPath } from "react-native-svg";
 import { useTema } from "../../tema/Tema";
@@ -23,6 +24,10 @@ export type FundoDoMapaProps = { cena: CenaDoFundo };
 /** Os elementos do fundo, para pôr dentro do <Svg> (e do grupo de zoom) do mapa que hospeda. */
 export function FundoDoMapa({ cena }: FundoDoMapaProps) {
   const { cores, escuro } = useTema();
+  // Os ids dos caminhos dos rótulos são do documento inteiro na web: dois fundos na mesma página (topo do dossiê e
+  // gaveta abertos juntos) não podem apontar um para o caminho do outro.
+  const prefixo = "f" + useId().replace(/[^A-Za-z0-9_-]/g, "");
+  const idDe = (r: RotuloDeRua) => `${prefixo}-${r.id}`;
   const e = estiloDoFundo(cores, escuro);
   const z = cena.zoom;
   const t = (px: number) => px / z;
@@ -30,11 +35,19 @@ export function FundoDoMapa({ cena }: FundoDoMapaProps) {
   const corDaRua = (r: RotuloDeRua) => (r.tipo === "imovel" ? e.ruaDoImovel : r.tipo === "avenida" ? e.avenida : e.rua);
   const pesoDaRua = (r: RotuloDeRua) => (r.tipo === "imovel" ? "700" : "600");
   if (!cena.temDado) return null;
+  // Emenda do chão do vizinho (divisa da cidade, 2 m) com a divisa fina do bairro: um traço de 3 m na cor do chão.
+  const emenda = Number.isFinite(cena.metrosPorPx) && cena.metrosPorPx > 0 ? 3 / (cena.metrosPorPx * z) : t(2);
+  // Marca estável do grupo raiz (testID e, na web, data-fundo-do-mapa-raiz) para as capturas acharem o fundo em
+  // qualquer tela. Não é data-fundo-do-mapa: quem hospeda já pode marcar o embrulho com ele, e a contagem dobraria.
+  const marca = { testID: "fundo-do-mapa", "data-fundo-do-mapa-raiz": "" } as object;
   return (
-    <G>
+    <G {...marca}>
       <Rect x={0} y={0} width={cena.largura} height={cena.altura} fill={e.semDado} />
       <Path d={c.hachura} stroke={e.hachura} strokeWidth={t(TRACO.hachura)} fill="none" />
       {c.chao ? <Path d={c.chao} fill={e.chao} fillRule="evenodd" /> : null}
+      {c.chaoDaCidade ? (
+        <Path d={c.chaoDaCidade} fill={e.chao} stroke={e.chao} strokeWidth={emenda} strokeLinejoin="round" fillRule="evenodd" />
+      ) : null}
       {c.tintaDoBairro ? <Path d={c.tintaDoBairro} fill={e.tinta} fillOpacity={e.tintaOpacidade} fillRule="evenodd" /> : null}
       {c.quadras ? <Path d={c.quadras} fill={e.quadra} fillRule="evenodd" /> : null}
       {c.lotes ? <Path d={c.lotes} fill={e.lote} stroke={e.loteLinha} strokeWidth={t(TRACO.lote)} strokeLinejoin="round" fillRule="evenodd" /> : null}
@@ -72,7 +85,7 @@ export function FundoDoMapa({ cena }: FundoDoMapaProps) {
       {cena.rotulos.length > 0 ? (
         <Defs>
           {cena.rotulos.map((r) => (
-            <Path key={r.id} id={r.id} d={r.caminho} />
+            <Path key={r.id} id={idDe(r)} d={r.caminho} />
           ))}
         </Defs>
       ) : null}
@@ -90,7 +103,7 @@ export function FundoDoMapa({ cena }: FundoDoMapaProps) {
               strokeWidth={halo ? t(TRACO.haloDaRua) : undefined}
               strokeLinejoin={halo ? "round" : undefined}
             >
-              <TextPath href={`#${r.id}`} startOffset={r.inicio}>
+              <TextPath href={`#${idDe(r)}`} startOffset={r.inicio}>
                 {r.nome}
               </TextPath>
             </TextoSvg>
