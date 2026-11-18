@@ -81,10 +81,10 @@ const Calor = memo(function Calor({ calor, agua, cores }: { calor: CelulaDeCalor
       {agua ? (
         <Defs>
           <Mask id={id} maskUnits="userSpaceOnUse" x={x0} y={y0} width={lado} height={lado}>
-            <Rect x={x0} y={y0} width={lado} height={lado} fill="#FFFFFF" />
+            <Rect x={x0} y={y0} width={lado} height={lado} fill="white" />
             <G transform={agua.transformacao}>
-              <Path d={agua.agua} fill="#000000" fillRule="evenodd" />
-              {agua.pontes ? <Path d={agua.pontes} fill="#FFFFFF" fillRule="evenodd" /> : null}
+              <Path d={agua.agua} fill="black" fillRule="evenodd" />
+              {agua.pontes ? <Path d={agua.pontes} fill="white" fillRule="evenodd" /> : null}
             </G>
           </Mask>
         </Defs>

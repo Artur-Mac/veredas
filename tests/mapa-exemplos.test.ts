@@ -422,8 +422,8 @@ describe("calor dos exemplos: não pinta a água do mapa-base", () => {
     // Na máscara: branco em tudo (mostra o calor), a água em preto (apaga) com a regra par-ímpar do fundo.
     const branco = mascara!.findAllByType(Rect)[0]!;
     const agua = mascara!.findAll((n) => n.type === Path && n.props.d === cena.camadas.agua)[0]!;
-    expect(branco.props.fill).toBe("#FFFFFF");
-    expect(agua.props.fill).toBe("#000000");
+    expect(branco.props.fill).toBe("white");
+    expect(agua.props.fill).toBe("black");
     expect(agua.props.fillRule).toBe("evenodd");
     // A água da máscara fica no mesmo lugar do mundo que a água do fundo: a mesma conta de transformação do grupo da cena.
     const grupoDaAgua = mascara!.findAll((n) => n.type === GrupoSvg && typeof n.props.transform === "string")[0]!;
