@@ -21,9 +21,9 @@ export function VoltandoANoite({ bairro, predioId }: { bairro: string | null; pr
   );
 }
 
-export function LadoDoBarulho({ bairro, predioId, aoLevarParaVisita }: { bairro: string | null; predioId: string | null; aoLevarParaVisita: (texto: string) => Promise<boolean> }) {
+export function LadoDoBarulho({ bairro, predioId, centro = null, aoLevarParaVisita }: { bairro: string | null; predioId: string | null; centro?: readonly [number, number] | null; aoLevarParaVisita: (texto: string) => Promise<boolean> }) {
   const [levado, setLevado] = useState<"sim" | "nao" | null>(null);
-  const b = ladoDoBarulho(bairro, predioId);
+  const b = ladoDoBarulho(bairro, predioId, centro);
   if (!b) return null;
   return (
     <View style={{ gap: ESPACO[2] }}>

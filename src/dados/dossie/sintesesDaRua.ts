@@ -17,6 +17,7 @@ import {
 } from "../recife/camadasAmbientais";
 import { lerRendaDoSetorOuBairro, type RetratoRendaCenso } from "../recife/censoRenda";
 import { centroideDoBairro } from "../recife/referenciasPublicas";
+import { fraseDoAeroporto, relacaoComOAeroporto } from "../recife/aeroporto";
 import { lerRuaDoEdificio } from "./rua";
 
 export type CartaoDeSinteseHumana = {
@@ -257,8 +258,19 @@ export function derivarSintesesInteligentes(opcoes: {
           : "À noite: nenhum local com licença municipal de som (LUSE) a até 150 m."
         : "À noite: confirme o prédio para cruzar licenças municipais de som (LUSE) a até 150 m.";
 
+    // 18/11/2026 (hub): aeroporto como fonte com nome, sem dB; sob a trajetória vira a manchete.
+    let aero: ReturnType<typeof relacaoComOAeroporto> = null;
+    try {
+      aero = relacaoComOAeroporto(edificio?.centro ?? null);
+    } catch {
+      aero = null;
+    }
+    const textoAviao = aero ? ` Avião, de dia e à noite: ${fraseDoAeroporto(aero).frase}` : "";
+
     let mancheteRuido: string;
-    if (sinaisDia.length > 0 && luse150m > 0) {
+    if (aero?.trajetoria) {
+      mancheteRuido = fraseDoAeroporto(aero).manchete;
+    } else if (sinaisDia.length > 0 && luse150m > 0) {
       mancheteRuido = "Movimento viário/obras de dia e licença de som a até 150 m";
     } else if (sinaisDia.length > 0) {
       mancheteRuido = "Movimento concentrado no horário diurno; sem licença de som a 150 m";
@@ -279,11 +291,12 @@ export function derivarSintesesInteligentes(opcoes: {
       id: "ruido-dia-noite",
       sobretitulo: "Acústica urbana · Dia × Noite",
       manchete: mancheteRuido,
-      medidaDestaque:
-        onibusPerto ? `Corredor a ${formatarDistancia(onibusPerto.distanciaM)}` : luse150m > 0 ? `${luse150m} LUSE ≤150 m` : "Via interna",
-      explicacaoHumana: `${textoDia} ${textoNoite}`,
-      dicaPratica: notaAndarRuido,
-      fonteCurta: "GTFS Grande Recife / CBTU · Licenciamento de Obras e LUSE Semas (ODbL)",
+      medidaDestaque: aero?.trajetoria
+        ? `Avião a ~${formatarNumero(aero.trajetoria.alturaEstimadaM)} m`
+        : onibusPerto ? `Corredor a ${formatarDistancia(onibusPerto.distanciaM)}` : luse150m > 0 ? `${luse150m} LUSE ≤150 m` : "Via interna",
+      explicacaoHumana: `${textoDia} ${textoNoite}${textoAviao}`,
+      dicaPratica: aero?.trajetoria ? fraseDoAeroporto(aero).pergunta : notaAndarRuido,
+      fonteCurta: `GTFS Grande Recife / CBTU · Licenciamento de Obras e LUSE Semas (ODbL)${aero ? " · pista: OpenStreetMap (ODbL)" : ""}`,
       urlFonte: "https://dados.recife.pe.gov.br",
     };
   }

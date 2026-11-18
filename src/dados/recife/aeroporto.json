@@ -1,0 +1,33 @@
+{
+ "versao": 1,
+ "aeroporto": "Aeroporto Internacional do Recife/Guararapes",
+ "pista": {
+  "ref": "18/36",
+  "cabeceiraNorte": {
+   "ref": "18",
+   "lonLat": [
+    -34.927306,
+    -8.113906
+   ]
+  },
+  "cabeceiraSul": {
+   "ref": "36",
+   "lonLat": [
+    -34.918996,
+    -8.139094
+   ]
+  },
+  "comprimentoM": 2932,
+  "larguraM": 45
+ },
+ "fonte": {
+  "nome": "OpenStreetMap (via da pista)",
+  "licenca": "ODbL",
+  "atribuicao": "© colaboradores do OpenStreetMap",
+  "url": "https://www.openstreetmap.org/way/22732877",
+  "osmId": 22732877,
+  "versaoOsm": 23,
+  "editadoEm": "2025-03-10T18:36:58Z",
+  "consultadoEm": "2026-11-18T04:47:56Z"
+ }
+}

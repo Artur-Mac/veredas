@@ -299,6 +299,9 @@ export default function SobreOsDados() {
         <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
           Segurança no bairro: registros da SDS-PE compilados pelo Crime Brasil (CC BY 4.0), janela de 12 meses por bairro; a taxa por 1.000 moradores usa a população do IBGE, Censo 2022 (variável V0001). É o que chegou à polícia, pelo bairro informado no registro.
         </Texto>
+        <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
+          Aeroporto: eixo da pista 18/36 do Aeroporto dos Guararapes no OpenStreetMap (ODbL, © colaboradores do OpenStreetMap). A linha de pouso e decolagem segue a superfície de aproximação do Anexo 14 da ICAO, até 10 km da cabeceira; a altura do avião é estimada pela rampa padrão de 3°. Sem decibéis: as curvas oficiais de ruído da ANAC ainda não estão no app.
+        </Texto>
 
         <View style={{ gap: 8 }}>
           <Texto tipo="secao" role="heading" aria-level={3} style={{ fontSize: 12, lineHeight: 16, fontWeight: "700" }}>
