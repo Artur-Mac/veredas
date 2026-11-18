@@ -41,7 +41,7 @@ import { derivarDossie } from "../../dados/dossie/derivar";
 import { indicadoresDoPredio, type Indicador } from "../../dados/dossie/indicadores";
 import { referenciaDoCadastro } from "../../dados/iptuDoAnuncio";
 import { chuvaDoBairro } from "../../dados/recife/chuva";
-import { essenciaisDoBairro } from "../../dados/recife/essenciais";
+import { essenciaisDoBairro, type EssenciaisDoBairro } from "../../dados/recife/essenciais";
 import { edificiosDoBairro, indiceDoBairro } from "../../dados/recife/indice";
 import { noiteDoBairro } from "../../dados/recife/noite";
 import { bairroPorSlug, eCoberto } from "../../dados/recife/bairros";
@@ -77,6 +77,8 @@ import { calcularPulsoDaQuadra } from "../../dados/dossie/pulsoDaQuadra";
 import { PulsoDaQuadra } from "../../componentes/visual/PulsoDaQuadra";
 import { ExportarResumoExecutivo } from "../../componentes/visual/ExportarResumoExecutivo";
 import { classificarNivelSossegoPorDbInterno } from "../../dados/acustica/decomporSossego";
+import { avaliarCaminhabilidadeEVidaNaRua } from "../../dados/dossie/caminhabilidadeEVidaNaRua";
+import { VidaAPeNaQuadra } from "../../componentes/visual/VidaAPeNaQuadra";
 
 /** Recuo do painel (`.ds-panel`, padding 20 18): a posição de uma seção na tela soma este recuo ao topo do painel. */
 const RECUO_DO_PAINEL = 20;
@@ -216,6 +218,23 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
       return [];
     }
   }, [predio, analise.bairro, nomeDoBairro]);
+
+  const caminhabilidade = useMemo(() => {
+    let ess: EssenciaisDoBairro | null = null;
+    if (predio && analise.bairro) {
+      try {
+        ess = essenciaisDoBairro(analise.bairro);
+      } catch {
+        ess = null;
+      }
+    }
+    return avaliarCaminhabilidadeEVidaNaRua({
+      predio,
+      essenciais: ess,
+      visaoRua: visao.rua ?? null,
+      nomeDoBairro,
+    });
+  }, [analise.bairro, nomeDoBairro, predio, visao]);
 
   const [andarSimulado, setAndarSimulado] = useState<number>(analise.declarados.andar.valor ?? 4);
   const [fachadaSelecionada, setFachadaSelecionada] = useState<PapelFachada | null>(null);
@@ -864,6 +883,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
             {aba === "destaques" ? <FichaViva analise={analise} predio={predio} lista={lista} visao={visao} nomeDoBairro={nomeDoBairro} /> : null}
             {aba === "entorno" ? (
               <View style={{ gap: 12, marginTop: 8 }}>
+                <VidaAPeNaQuadra dados={caminhabilidade} />
                 <PulsoDaQuadra pulso={pulsoDaQuadra} />
                 <ServicosDeEntorno
                   centro={

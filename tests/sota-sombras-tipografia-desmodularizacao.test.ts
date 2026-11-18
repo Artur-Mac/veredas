@@ -20,6 +20,8 @@ import { RotinaDoisDestinosComparar } from "../src/componentes/visual/RotinaDois
 import { ExportarResumoExecutivo } from "../src/componentes/visual/ExportarResumoExecutivo";
 import { compararRotinaDoisDestinos } from "../src/dados/mobilidade/rotinaCasal";
 import { auditarTextoColadoCidadao } from "../src/dados/documentos/copilotoPreSinal";
+import { avaliarCaminhabilidadeEVidaNaRua } from "../src/dados/dossie/caminhabilidadeEVidaNaRua";
+import { VidaAPeNaQuadra } from "../src/componentes/visual/VidaAPeNaQuadra";
 import { TemaDoApp } from "../src/tema/Tema";
 
 function listarTsxRecursivo(dir: string): string[] {
@@ -569,5 +571,31 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(aposColar).toContain("Vaga presa ou rotativa");
     expect(REGEX_JARGON_CAMADA1.test(aposColar)).toBe(false);
     expect(/\bseguro\b/i.test(aposColar)).toBe(false);
+  });
+
+  it("calcula caminhabilidade 0–10 com pesos abertos, percentil no bairro e renderiza VidaAPeNaQuadra sem jargão", () => {
+    const cam = avaliarCaminhabilidadeEVidaNaRua({
+      predio: null,
+      essenciais: null,
+      visaoRua: null,
+      nomeDoBairro: "Boa Viagem",
+    });
+    expect(cam.ausenciaNota).toBe("sem_leitura_publicada");
+    expect(cam.frasePercentil).toContain("20 prédios");
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(TemaDoApp, null, React.createElement(VidaAPeNaQuadra, { dados: cam })),
+      );
+    });
+    const togglePesos = tree.root.find((n) => n.props.testID === "vida-a-pe-pesos-toggle");
+    act(() => {
+      togglePesos.props.onPress();
+    });
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("Mercado 30%");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    expect(/\bseguro\b/i.test(txt)).toBe(false);
   });
 });
