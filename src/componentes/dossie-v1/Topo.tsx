@@ -1,13 +1,18 @@
 import { useMemo, useState } from "react";
 import { Image, Modal, ScrollView, View } from "react-native";
 import { FotoRemota } from "../FotoRemota";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Circle, Path, Polygon } from "react-native-svg";
 import type { Edificio } from "../../dados/contratos";
 import { useTema } from "../../tema/Tema";
 import { comAlfa } from "../../tema/tokens";
 import { GradeArquitetonica } from "../GradeArquitetonica";
 import { Icone } from "../Icone";
+import { CreditoDaBase, FundoDoMapa } from "../mapa/FundoDoMapa";
+import { descreverFundoDoMapa } from "../mapa/fundoDoMapaCena";
+import { useFundoDoMapa } from "../mapa/useFundoDoMapa";
+import { METROS_POR_GRAU } from "../../dados/recife/mapaBaseContrato";
 import { Pressionavel } from "../Pressionavel";
+import { pontosDoSvg, projetorLocal } from "../predio/projecao";
 import { Texto } from "../Texto";
 import { caminhoDoLoteNaCaixa } from "./mapa";
 
@@ -25,6 +30,50 @@ type Props = {
 
 const LARGURA_DO_DESENHO = 300;
 const ALTURA_DO_DESENHO = 100;
+/** Largura mínima, em metros, do mapa parado do topo (mapa-base, 18/11/2026): o quarteirão do prédio e os vizinhos. */
+export const METROS_MINIMOS_NA_LARGURA = 220;
+/** Folga, em metros, em volta do lote em cada lado: o bastante para a rua da frente e a do lado aparecerem. */
+export const FOLGA_EM_VOLTA_DO_LOTE_M = 45;
+const CAIXA_VAZIA = [0, 0, 0, 0] as const;
+
+/**
+ * Largura, em metros, do mapa do topo. Revisão de 18/11/2026: um lote enorme enchia o quadro de 220 m e nenhuma rua
+ * aparecia. Agora o quadro, centrado no prédio, cobre o lote inteiro com `FOLGA_EM_VOLTA_DO_LOTE_M` de cada lado, na
+ * largura e na altura (pela proporção do quadro), com 220 m no mínimo.
+ */
+export function metrosNaLarguraDoTopo(
+  centro: readonly [number, number],
+  poligono: readonly (readonly [number, number])[] | null | undefined,
+  largura: number,
+  altura: number,
+): number {
+  if (!poligono || poligono.length === 0 || largura <= 0 || altura <= 0) return METROS_MINIMOS_NA_LARGURA;
+  const projetar = projetorLocal(centro);
+  let meiaX = 0, meiaY = 0;
+  for (const p of poligono) {
+    const [x, y] = projetar(p);
+    meiaX = Math.max(meiaX, Math.abs(x));
+    meiaY = Math.max(meiaY, Math.abs(y));
+  }
+  const pelaLargura = 2 * (meiaX + FOLGA_EM_VOLTA_DO_LOTE_M);
+  const pelaAltura = 2 * (meiaY + FOLGA_EM_VOLTA_DO_LOTE_M) * (largura / altura);
+  return Math.max(METROS_MINIMOS_NA_LARGURA, pelaLargura, pelaAltura);
+}
+
+/** Quadro do mapa do topo: [lon, lat] → px, com o prédio no centro, norte para cima, `metros` de largura. */
+export function quadroDoTopo(centro: readonly [number, number], largura: number, altura: number, metros: number = METROS_MINIMOS_NA_LARGURA) {
+  const porMetro = largura / metros;
+  const projetar = projetorLocal(centro);
+  const paraDesenho = (p: readonly [number, number]): [number, number] => {
+    const [x, y] = projetar(p);
+    return [largura / 2 + x * porMetro, altura / 2 + y * porMetro];
+  };
+  const cos = Math.cos((centro[1] * Math.PI) / 180);
+  const meiaL = metros / 2;
+  const meiaA = altura / porMetro / 2;
+  const caixa = [centro[0] - meiaL / (METROS_POR_GRAU * cos), centro[1] - meiaA / METROS_POR_GRAU, centro[0] + meiaL / (METROS_POR_GRAU * cos), centro[1] + meiaA / METROS_POR_GRAU] as const;
+  return { paraDesenho, caixa };
+}
 
 /**
  * `.ds-photo` de index.html (CSS 2693 a 2701): quadro 16:10 no lugar da foto, com o voltar, o marcador de salvo e
@@ -40,6 +89,52 @@ export function TopoDoDossie({ predio, salva, aoVoltar, aoAlternarSalvo, aoAbrir
     () => (predio ? caminhoDoLoteNaCaixa(predio, LARGURA_DO_DESENHO - 12, ALTURA_DO_DESENHO - 12, 6) : null),
     [predio],
   );
+
+  // Sem fotos, o quadro vira um mapa pequeno e parado em volta do prédio, com o fundo do mapa-base. Enquanto o fundo não
+  // chega (ou se não há cobertura), fica como antes: o contorno solto sobre a grade.
+  const altura = Math.round((largura * 10) / 16);
+  const querFundo = predio !== null && fotos.length === 0 && largura > 0;
+  const quadro = useMemo(
+    () =>
+      predio && largura > 0
+        ? quadroDoTopo(predio.centro, largura, altura, metrosNaLarguraDoTopo(predio.centro, predio.poligono, largura, altura))
+        : null,
+    [predio, largura, altura],
+  );
+  const semConta = useMemo(() => (p: readonly [number, number]): [number, number] => [p[0], p[1]], []);
+  const obstaculos = useMemo(
+    (): [number, number, number, number][] => [
+      [8, 8, 60, 60],
+      [largura - 60, 8, largura - 8, 60],
+      [largura - 136, altura - 60, largura - 8, altura - 8],
+      [8, altura - 26, 180, altura - 4],
+    ],
+    [largura, altura],
+  );
+  const imovel = useMemo(() => {
+    if (!predio) return null;
+    const codigo = Number(predio.id.split("-")[0]);
+    return { centro: predio.centro, codigoDoLogradouro: Number.isInteger(codigo) ? codigo : null };
+  }, [predio]);
+  const fundo = useFundoDoMapa({
+    bairro: predio?.bairro ?? null,
+    imovel,
+    quadro: { largura, altura, paraDesenho: quadro?.paraDesenho ?? semConta, obstaculos },
+    caixa: quadro?.caixa ?? CAIXA_VAZIA,
+    ativo: querFundo,
+  });
+  // Decisão (18/11/2026): o topo falha em silêncio, sem aviso nem "Tentar de novo": a gaveta do mapa, logo abaixo, já
+  // mostra o aviso. Sem o fundo (carregando, falha ou sem cobertura), o quadro volta ao contorno solto sobre a grade.
+  // Sem nomes de bairro (18/11/2026): perto de uma divisa só o vizinho cabia no quadro, e o topo parecia dizer outro
+  // bairro. O título do dossiê já diz o bairro; os nomes de rua continuam.
+  const cenaDoFundo = querFundo && fundo.cena?.temDado && quadro ? fundo.cena : null;
+  const mapa = useMemo(() => (cenaDoFundo && cenaDoFundo.bairros.length ? { ...cenaDoFundo, bairros: [] } : cenaDoFundo), [cenaDoFundo]);
+  const contornoDoIndice = useMemo(
+    () => (mapa && !mapa.camadas.loteDoImovel && predio?.poligono && quadro ? pontosDoSvg(predio.poligono.map(quadro.paraDesenho)) : null),
+    [mapa, predio, quadro],
+  );
+  const pino = predio && quadro ? quadro.paraDesenho(predio.centro) : null;
+
   const botao = {
     position: "absolute" as const,
     top: 12,
@@ -145,8 +240,30 @@ export function TopoDoDossie({ predio, salva, aoVoltar, aoAlternarSalvo, aoAbrir
             </View>
           </Modal>
         </>
-      ) : <GradeArquitetonica />}
-      {lote && !fotos.length ? (
+      ) : mapa ? null : <GradeArquitetonica />}
+      {mapa && pino ? (
+        <>
+          <View
+            accessible
+            role="img"
+            accessibilityLabel={`${descreverFundoDoMapa(mapa)} O lote do prédio em azul, com o pino laranja.`}
+            pointerEvents="none"
+            style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+          >
+            {/* A descrição fica só no contêiner acima; o desenho fica fora da acessibilidade. */}
+            <Svg aria-hidden width={largura} height={altura} viewBox={`0 0 ${largura} ${altura}`}>
+              <FundoDoMapa cena={mapa} />
+              {contornoDoIndice ? (
+                <Polygon points={contornoDoIndice} fill={azul} fillOpacity={0.3} stroke={azul} strokeWidth={1.5} strokeLinejoin="round" />
+              ) : null}
+              <Circle cx={pino[0]} cy={pino[1]} r={11} fill={cor("cor-acao")} fillOpacity={0.25} />
+              <Circle cx={pino[0]} cy={pino[1]} r={6} fill={cor("cor-acao")} stroke={cor("cor-superficie")} strokeWidth={2} />
+            </Svg>
+          </View>
+          <CreditoDaBase style={{ position: "absolute", left: 12, bottom: 12 }} />
+        </>
+      ) : null}
+      {lote && !fotos.length && !mapa ? (
         <View
           accessible
           role="img"

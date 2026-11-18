@@ -1,0 +1,46 @@
+{
+ "geradoEm": "2026-11-18T05:23:32.667Z",
+ "base": "http://localhost:8095",
+ "caso": "golden-tower",
+ "largura": 375,
+ "passos": [
+  {
+   "passo": "gaveta com rede",
+   "mapa": true,
+   "elementos": 24,
+   "fundoDoMapa": []
+  },
+  {
+   "passo": "gaveta sem rede",
+   "mapa": true,
+   "motivo": null,
+   "elementos": 24,
+   "fundoDoMapa": [],
+   "falhasNovas": []
+  },
+  {
+   "passo": "por perto sem rede",
+   "mapa": true,
+   "motivo": null,
+   "elementos": 93,
+   "fundoDoMapa": [],
+   "falhasNovas": [
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8095/dados/sol/recortes/boa-viagem.3e731471f81a8f5d.json",
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8095/dados/recife/transito/b212f3805d6f7eba/grade.bca86e354b1ae6cf.json",
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8095/dados/recife/transito/b212f3805d6f7eba/boa-viagem.865a245e00367cc5.json",
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8095/dados/recife/procura/cdc71ca14723e3c2.2d1fad7d4ccde091.json"
+   ]
+  },
+  {
+   "passo": "recarregar a página sem rede",
+   "resultado": "page.reload: net::ERR_INTERNET_DISCONNECTED"
+  }
+ ],
+ "errosDeConsole": [
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+ ],
+ "externasBloqueadas": 0
+}

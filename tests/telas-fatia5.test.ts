@@ -42,6 +42,7 @@ import Predio from "../src/app/(abas)/predio";
 import Salvos from "../src/app/(abas)/salvos";
 import Creditos from "../src/app/creditos";
 import SobreOsDados from "../src/app/sobre-os-dados";
+import { FONTES_DO_MAPA_BASE } from "../src/dados/recife/mapaBase";
 
 jest.mock("@react-native-async-storage/async-storage", () =>
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -782,6 +783,22 @@ describe("Sobre os dados", () => {
       expect(t).toContain(item);
     }
     expect(t).toContain("72 bairros do Recife");
+  });
+
+  it("explica o desenho dos mapas com as bases lidas do mapa-base gerado", async () => {
+    await semear([], carteiraCom(3, [cota]));
+    const arvore = await montar(React.createElement(SobreOsDados));
+    const t = texto(arvore);
+    expect(t).toContain("O desenho dos mapas");
+    expect(FONTES_DO_MAPA_BASE.length).toBeGreaterThan(0);
+    for (const f of FONTES_DO_MAPA_BASE) {
+      expect(t).toContain(f.nome);
+      expect(t).toContain(f.conjunto);
+    }
+    expect(t).toContain("Base: Prefeitura do Recife (ODbL)");
+    expect(t).toContain("Não é foto de satélite");
+    expect(t).toContain("aparece só a quadra");
+    expect(t).toContain("não é a planta do prédio");
   });
 });
 

@@ -4,7 +4,8 @@ import type { HorarioSolar } from "../../dados/dossie/solESombra";
 
 export type ModoDoMapa = HorarioSolar | "planta";
 
-export const ZOOMS = [1, 1.5, 2, 3] as const;
+/** 18/11/2026: o passo 4 entrou com a gaveta abrindo em ~220 m (mapa-base): 4× mostra ~55 m, o lote de perto. */
+export const ZOOMS = [1, 1.5, 2, 3, 4] as const;
 
 export type EstadoDoMapa = {
   modo: ModoDoMapa;
@@ -49,6 +50,15 @@ export function afastar(e: EstadoDoMapa, largura: number, altura: number, foco?:
 export function arrastar(e: EstadoDoMapa, ddx: number, ddy: number, largura: number, altura: number): EstadoDoMapa {
   const l = limites(e.zoom, largura, altura);
   return { ...e, dx: prender(e.dx + ddx, l.x), dy: prender(e.dy + ddy, l.y) };
+}
+
+/**
+ * O deslocamento [dx, dy] que o zoom `zoom` teria vindo da escala 1 com foco em `foco` (o pino), sem arraste. É o que o
+ * fundo do mapa usa para desviar os rótulos dos controles: não muda no arraste, então a cena não é remontada a cada toque.
+ */
+export function deslocamentoDoZoom(zoom: number, largura: number, altura: number, foco: readonly [number, number]): [number, number] {
+  const z = comZoom(ESTADO_INICIAL, zoom, largura, altura, foco);
+  return [z.dx, z.dy];
 }
 
 export const recentrar = (e: EstadoDoMapa): EstadoDoMapa => ({ ...e, zoom: 1, dx: 0, dy: 0 });

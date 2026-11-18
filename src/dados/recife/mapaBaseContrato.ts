@@ -101,6 +101,11 @@ export type MapaBaseDoBairro = {
   readonly ruas: readonly RuaBase[];
   readonly agua: readonly AguaBase[];
   readonly pracas: readonly PracaBase[];
+  /**
+   * Tabuleiros de pontes e viadutos (base "Pontes do Recife"): só a forma, sem nome (a base não traz). São chão de rua
+   * por cima da água: é o que mostra por onde se atravessa o Capibaribe e os canais. Vazio onde não há ponte.
+   */
+  readonly pontes: readonly PoligonoBase[];
 };
 
 /**

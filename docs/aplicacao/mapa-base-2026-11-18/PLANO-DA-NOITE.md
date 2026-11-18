@@ -15,6 +15,18 @@ Escrito pelo orquestrador na F0, antes de qualquer agente rodar. Diz quem faz o 
 | Navegador | Chrome do sistema; os navegadores do Playwright não estão instalados (`channel: "chrome"`) |
 | Portal de dados | `https://dados.recife.pe.gov.br` responde (o `http://` redireciona) |
 
+### A pasta do repositório está sendo usada por outra sessão
+
+Às 01:36 de 18/11/2026, enquanto a preparação lia o código, outra sessão trocou a branch da pasta `C:\Users\ssamu\OneDrive\Desktop\repos\veredas` de `feat/mapa-base` para `feat/seguranca-aeroporto-limpeza` (está no `git reflog`). O primeiro commit desta noite (este plano e o contrato) foi feito às 01:44 sem conferir a branch de novo e caiu naquela branch como `fc5ad83`; a outra sessão commitou por cima (`7f834d2`). Nada foi apagado, e a branch e os arquivos da outra sessão não foram tocados depois disso.
+
+O que foi feito:
+
+- A noite passou para uma cópia de trabalho própria (`git worktree`) em **`C:\Users\ssamu\vereda-mapa-base`**, fora do OneDrive, na branch `feat/mapa-base`. Todos os agentes trabalham só nela. A pasta original não é tocada.
+- O commit do plano foi trazido para `feat/mapa-base` por `cherry-pick` (`2b757a6`).
+- Fica para o dono decidir: `feat/seguranca-aeroporto-limpeza` carrega uma cópia do commit `fc5ad83` (este arquivo e `src/dados/recife/mapaBaseContrato.ts`). Se as duas branches forem mescladas, esses dois arquivos podem dar conflito de "adicionado dos dois lados"; vale a versão de `feat/mapa-base`.
+- A cópia de trabalho não tem as mudanças não commitadas da outra sessão (`AGENTS.md`, `README.md`, `.github/`). O modelo de PR foi lido na pasta original antes da mudança.
+- De manhã: `git worktree remove C:\Users\ssamu\vereda-mapa-base` apaga a cópia (a branch continua no repositório e no GitHub).
+
 ## 2. O que a leitura do código mostrou
 
 1. **`PoligonoMini.tsx` não é usado por ninguém.** As miniaturas de verdade desenham o lote direto com `caminho(poligonoNaCaixa(...))` em quatro lugares: `src/app/(abas)/index.tsx` (288 × 72), `src/componentes/comparar/CartaoDoImovel.tsx` (164 × 84), `src/componentes/visita-v1/CartaoDoImovel.tsx` e `src/componentes/dossie-v1/Topo.tsx` (300 × 100, via `caminhoDoLoteNaCaixa`). `dossie-v1/InfoDoImovel.tsx` só tem ícones. A superfície "miniaturas" são esses quatro lugares.
@@ -23,6 +35,9 @@ Escrito pelo orquestrador na F0, antes de qualquer agente rodar. Diz quem faz o 
 4. **O código do logradouro já está no id do prédio**: `8001-216` é o logradouro 8001, o mesmo `CLOGRACODI` dos Trechos de Logradouros. É por aí que o desenho acha a rua do imóvel.
 5. **O Por perto pode passar de 3 km**: enquadra pontos a até 1.300 m de cada lado, com 22% de margem. O mapa dos exemplos vai de ~3 km até mais de 7 km ao afastar. O nível "mais de 3 km" precisa existir.
 6. O teste de LGPD roda um caso por arquivo de camada publicado: cada arquivo novo do mapa-base entra sozinho na conferência.
+7. **O app é sempre claro**: `TemaDoApp` fixa o tema claro e `TemaEscuro` só envolve o painel de campo da visita. Não existe chave de tema escuro para o app inteiro. O fundo é conferido no escuro pelos testes e pelas cenas de prova do componente, e na tela só onde `TemaEscuro` hospeda um mapa.
+8. `docs/aplicacao/FEATURE-REGISTER.md` e `RUNBOOK-ATUALIZACAO.md` estão escritos em inglês; as entradas novas seguem a língua de cada arquivo.
+9. Não há análise salva de exemplo versionada para as capturas: o roteiro de capturas monta as próprias, com prédios escolhidos do índice.
 
 ## 3. Decisões de desenho tomadas na F0
 
@@ -69,6 +84,8 @@ Até ~30 agentes na noite, no máximo 6 ao mesmo tempo, todos em Opus 5.5. O orq
 
 ## 6. Regras para todos os agentes
 
+- O repositório desta noite é `C:\Users\ssamu\vereda-mapa-base`. Não leia nem grave em `C:\Users\ssamu\OneDrive\Desktop\repos\veredas` (é de outra sessão) e não troque de branch.
+- Comandos `git` simples, um por chamada, rodados da raiz da cópia de trabalho, sem `cd` e sem encadear com `&&` ou `;`.
 - Trabalhe só nos seus arquivos. Se precisar de mudança em arquivo de outro dono, descreva no relatório; não edite.
 - Português em código, comentários, testes e textos de tela, no estilo do repositório. Cores só por token de `src/tema/tokens.ts`.
 - Nenhuma biblioteca nova, nenhum tile, nenhuma chave de API, nenhuma WebView de mapa.

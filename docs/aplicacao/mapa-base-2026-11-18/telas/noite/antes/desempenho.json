@@ -1,0 +1,68 @@
+{
+ "geradoEm": "2026-11-18T05:22:50.316Z",
+ "base": "http://localhost:8095",
+ "caso": "golden-tower",
+ "largura": 375,
+ "cpu": "4x (Emulation.setCPUThrottlingRate)",
+ "vezes": 7,
+ "superficies": {
+  "gaveta": {
+   "toqueAoQuadroMs": {
+    "mediana": 282.6,
+    "pior": 286.6,
+    "todas": [
+     253.3,
+     286.1,
+     284,
+     282.2,
+     280.2,
+     286.6,
+     282.6
+    ]
+   },
+   "toqueAoDomMs": [
+    241.9,
+    271.6,
+    270.9,
+    268.2,
+    267,
+    272.7,
+    268.9
+   ],
+   "fundoDoMapaMs": null,
+   "erros": [],
+   "errosDeConsole": 0,
+   "requisicoesFalhas": 0,
+   "externasBloqueadas": 0
+  },
+  "por-perto": {
+   "toqueAoQuadroMs": {
+    "mediana": 183.4,
+    "pior": 215.2,
+    "todas": [
+     215.2,
+     187.6,
+     180.9,
+     186.1,
+     178.4,
+     175.1,
+     183.4
+    ]
+   },
+   "toqueAoDomMs": [
+    199.4,
+    172.4,
+    165.8,
+    171.5,
+    164.8,
+    161,
+    169.7
+   ],
+   "fundoDoMapaMs": null,
+   "erros": [],
+   "errosDeConsole": 0,
+   "requisicoesFalhas": 0,
+   "externasBloqueadas": 0
+  }
+ }
+}

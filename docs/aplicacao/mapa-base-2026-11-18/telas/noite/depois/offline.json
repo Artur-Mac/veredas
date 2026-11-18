@@ -1,0 +1,102 @@
+{
+ "geradoEm": "2026-11-18T08:48:57.824Z",
+ "base": "http://localhost:8098",
+ "caso": "golden-tower",
+ "largura": 375,
+ "passos": [
+  {
+   "passo": "gaveta com rede",
+   "mapa": true,
+   "elementos": 39,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 916.2,
+     "duracao": 7.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1033.2,
+     "duracao": 2.8,
+     "detalhe": null
+    }
+   ]
+  },
+  {
+   "passo": "gaveta sem rede",
+   "mapa": true,
+   "motivo": null,
+   "elementos": 39,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 916.2,
+     "duracao": 7.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1033.2,
+     "duracao": 2.8,
+     "detalhe": null
+    }
+   ],
+   "falhasNovas": []
+  },
+  {
+   "passo": "por perto sem rede",
+   "mapa": true,
+   "motivo": null,
+   "elementos": 49,
+   "fundoDoMapa": [
+    {
+     "tipo": "measure",
+     "inicio": 916.2,
+     "duracao": 7.8,
+     "detalhe": null
+    },
+    {
+     "tipo": "measure",
+     "inicio": 1033.2,
+     "duracao": 2.8,
+     "detalhe": null
+    }
+   ],
+   "falhasNovas": [
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/cidade.1bbd9861150bc7b9.json",
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/sol/recortes/boa-viagem.3e731471f81a8f5d.json",
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/transito/b212f3805d6f7eba/grade.bca86e354b1ae6cf.json",
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/transito/b212f3805d6f7eba/boa-viagem.865a245e00367cc5.json",
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/procura/cdc71ca14723e3c2.2d1fad7d4ccde091.json",
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/cidade.1bbd9861150bc7b9.json",
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/ibura.147a6aecb17d304e.json",
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/imbiribeira.aced4ef8b1a0a660.json",
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/jordao.d8a22c239bafa7ad.json",
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/cidade.1bbd9861150bc7b9.json",
+    "net::ERR_INTERNET_DISCONNECTED http://localhost:8098/dados/recife/mapa-base/62be5d5145e04c7f/ibura.147a6aecb17d304e.json"
+   ]
+  },
+  {
+   "passo": "recarregar a página sem rede",
+   "resultado": "page.reload: net::ERR_INTERNET_DISCONNECTED"
+  }
+ ],
+ "errosDeConsole": [
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+ ],
+ "externasBloqueadas": 0
+}

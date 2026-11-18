@@ -112,3 +112,37 @@ No review has been worked yet (0 minutes). Before the next expansion, time one s
 | Cost per useful decision | not measurable without participants |
 
 Known limits: the code fingerprint is global (editing any pipeline script re-runs every step); raw files are fingerprinted by size and modification time; GTFS and the building index are outside the cycle; the hub extraction is a dated snapshot (re-run `extrair-hub-recife.py` and `extrair-hub-complementar.py` to refresh it, then this whole section).
+
+## 6. Base map (mapa-base, outside the cycle)
+
+The drawing behind every map (blocks, lots, named streets, bairro limits, water, squares, bridges) comes from Prefeitura do Recife open data ("Área urbana" and "Parques e praças", ODbL). Sources, `lastModified`, SHA-256 and sizes are recorded in `FONTES_DO_MAPA_BASE` (`src/dados/recife/mapaBaseGerado.ts`); files live in `src/dados/recife/mapa-base/<sha>/` (one per bairro plus `cidade.json`). Raw downloads stay in `.cache/dados-recife/mapa-base/` (outside git). The legal opinion on ODbL (derived base in the repository, visible credit) is still pending: nothing leaves branch `feat/mapa-base` until it is in.
+
+**When to regenerate**
+
+| Trigger | Why |
+|---|---|
+| After activating a new municipal index (section 1b) | the "building the Vereda knows" mark depends on the active index; `tests/mapa-base.test.ts` fails when `INDICE_DO_MAPA_BASE` no longer matches it |
+| When the portal republishes a source | `--atualizar` rereads portal metadata, downloads what changed (`last_modified` or size) and recomputes SHA-256 |
+
+**Commands** (run from the repository root; flags as in the script header)
+
+| Step | Command |
+|---|---|
+| Try first in a scratch folder (does not touch the published version, does not call `publicar-camadas`) | `node --max-old-space-size=4096 scripts/dados/construir-mapa-base.mjs --todos --saida .cache/mapa-base-teste --relatorio .cache/mapa-base-teste/relatorio.json` |
+| Refresh sources from the portal (all, or a list of resource keys from `mapa-base/fontes.mjs`) | add `--atualizar` or `--atualizar <a,b>` |
+| Publish every bairro (always replaces the whole version) | `node --max-old-space-size=4096 scripts/dados/construir-mapa-base.mjs --todos` |
+| Only some bairros | `--bairros a,b` (refused if it would drop published bairros; list them too, or pass `--substituir` to drop the others on purpose) |
+| Different clip border (experiments only) | `--borda <m>` is accepted only with `--saida`; the app assumes 300 m |
+
+Write order on publish: new version files, then the module (atomic switch), then `publicar-camadas`, and last the previous version folder is removed.
+
+**What to check**
+
+1. Determinism: run the scratch build twice into two folders; every file SHA-256 must match (no generation date or absolute path is written).
+2. Size: each bairro file at most 250 kB gzip (level 9). The report lists offenders in `acimaDoTeto`; `tests/mapa-base.test.ts` enforces it. Imbiribeira is about 2 kB below the cap today.
+3. `npx jest tests/mapa-base tests/lgpd-artefatos.test.ts`
+4. `node scripts/dados/publicar-camadas.cjs --conferir` (exit 1 if anything is stale or missing)
+
+**Measured (18 Nov 2026, all 94 bairros)**: 12–13 s, about 650 MB peak memory; 21 MB raw, 7.6 MB gzip in total. The total is twice the planned 3.8 MB because the 300 m border repeats boundary features in both neighbours' files.
+
+**If a bairro goes over the cap**: do not publish. Inspect its per-section weights in the `--relatorio` output, then try a smaller border in a scratch folder (`--saida ... --borda 150` measured 5.8 MB total and 197 kB for Imbiribeira). Changing the published border also changes what the app reads (it assumes 300 m), so it is a product and code decision, not a runbook step; record it before acting.
