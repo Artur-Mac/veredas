@@ -2554,4 +2554,35 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(aluguelFiancaTxt)).toBe(false);
     expect(/\bseguro\b/i.test(aluguelFiancaTxt)).toBe(false);
   });
+
+  it("visual e cidadao mantem no maximo 1 container borderWidth:1 por componente e zero comAlfa/toque<44 em cidadao (S56)", () => {
+    const pastaVisual = join(__dirname, "..", "src", "componentes", "visual");
+    const pastaCidadao = join(__dirname, "..", "src", "componentes", "cidadao");
+    const arqsVisual = readdirSync(pastaVisual).filter((f) => f.endsWith(".tsx"));
+    const arqsCidadao = readdirSync(pastaCidadao).filter((f) => f.endsWith(".tsx"));
+
+    expect(arqsVisual.length + arqsCidadao.length).toBeGreaterThanOrEqual(20);
+
+    for (const nome of arqsVisual) {
+      const src = readFileSync(join(pastaVisual, nome), "utf8");
+      const bordas = src.match(/borderWidth:\s*1/g) ?? [];
+      expect({ arq: `visual/${nome}`, bordas: bordas.length }).toEqual({
+        arq: `visual/${nome}`,
+        bordas: expect.any(Number),
+      });
+      expect(bordas.length).toBeLessThanOrEqual(1);
+    }
+
+    for (const nome of arqsCidadao) {
+      const src = readFileSync(join(pastaCidadao, nome), "utf8");
+      const bordas = src.match(/borderWidth:\s*1/g) ?? [];
+      expect(bordas.length).toBeLessThanOrEqual(1);
+      expect(src).not.toMatch(/\bcomAlfa\b/);
+      expect(src).not.toMatch(/minHeight:\s*TOQUE_MINIMO\s*-/);
+      expect(src).not.toMatch(/minHeight:\s*(?:3\d|4[0-3])\b/);
+    }
+
+    const cartaoSrc = readFileSync(join(pastaCidadao, "CartaoCidadao3Camadas.tsx"), "utf8");
+    expect(cartaoSrc).toContain("cartao-3camadas-toggle-");
+  });
 });

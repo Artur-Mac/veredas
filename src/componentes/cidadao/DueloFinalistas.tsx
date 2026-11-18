@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { classificarNivelSossegoPorDbInterno } from "../../dados/acustica/decomporSossego";
 import type { CandidatoDecisao } from "../../dados/cidadao/dominanciaInvisivel";
 import { useTema } from "../../tema/Tema";
-import { RAIO, comAlfa } from "../../tema/tokens";
+import { RAIO } from "../../tema/tokens";
 import { Texto } from "../Texto";
 
 /**
@@ -63,7 +63,7 @@ export function DueloFinalistas({ opcaoA, opcaoB }: { opcaoA: EntradaDueloA_B; o
       style={{
         backgroundColor: cor("cor-superficie"),
         borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto"), 0.14),
+        borderColor: cor("cor-linha-forte"),
         borderRadius: RAIO.cartao,
         padding: 14,
         gap: 10,

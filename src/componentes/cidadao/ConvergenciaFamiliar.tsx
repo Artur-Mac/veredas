@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 import { useTema } from "../../tema/Tema";
-import { RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 import { Texto } from "../Texto";
 
 /**
@@ -66,7 +66,7 @@ export function ConvergenciaFamiliar({
       style={{
         backgroundColor: cor("cor-superficie"),
         borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto"), 0.12),
+        borderColor: cor("cor-linha-forte"),
         borderRadius: RAIO.cartao,
         padding: 14,
         gap: 8,
@@ -100,15 +100,17 @@ export function ConvergenciaFamiliar({
             minHeight: TOQUE_MINIMO,
             paddingHorizontal: 10,
             borderRadius: RAIO.pilula,
-            borderWidth: 1,
-            borderColor: perfilBAtual.exigeSilencioNoQuarto ? cor("cor-acao") : cor("cor-linha"),
             backgroundColor: perfilBAtual.exigeSilencioNoQuarto
-              ? comAlfa(cor("cor-acao"), 0.12)
+              ? cor("cor-texto")
               : cor("cor-papel-claro"),
             justifyContent: "center",
           }}
         >
-          <Texto tipo="apoio" style={{ fontSize: 12, fontWeight: "600" }}>
+          <Texto
+            tipo="apoio"
+            cor={perfilBAtual.exigeSilencioNoQuarto ? "cor-papel-claro" : "cor-texto"}
+            style={{ fontSize: 12, fontWeight: "600" }}
+          >
             {`${perfilB.pessoaNome}: silêncio à noite (${perfilBAtual.exigeSilencioNoQuarto ? "sim" : "não"})`}
           </Texto>
         </Pressable>
@@ -120,8 +122,6 @@ export function ConvergenciaFamiliar({
             minHeight: TOQUE_MINIMO,
             paddingHorizontal: 10,
             borderRadius: RAIO.pilula,
-            borderWidth: 1,
-            borderColor: cor("cor-linha"),
             backgroundColor: cor("cor-papel-claro"),
             justifyContent: "center",
           }}
@@ -138,8 +138,6 @@ export function ConvergenciaFamiliar({
             minHeight: TOQUE_MINIMO,
             paddingHorizontal: 10,
             borderRadius: RAIO.pilula,
-            borderWidth: 1,
-            borderColor: cor("cor-linha"),
             backgroundColor: cor("cor-papel-claro"),
             justifyContent: "center",
           }}
@@ -169,7 +167,7 @@ export function ConvergenciaFamiliar({
           minHeight: TOQUE_MINIMO,
           justifyContent: "center",
           borderTopWidth: 1,
-          borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+          borderTopColor: cor("cor-linha"),
           paddingTop: 6,
         }}
       >

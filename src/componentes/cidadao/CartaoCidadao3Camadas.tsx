@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Pressable, View } from "react-native";
 import type { CartaoCidadao3Camadas as DadosCartao3Camadas } from "../../dados/cidadao/tradutorCidadao";
 import { useTema } from "../../tema/Tema";
-import { RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 import { Texto } from "../Texto";
 
 /**
@@ -27,7 +27,7 @@ export function CartaoCidadao3Camadas({ item }: { item: DadosCartao3Camadas }) {
       style={{
         backgroundColor: cor("cor-superficie"),
         borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto"), 0.12),
+        borderColor: cor("cor-linha-forte"),
         borderRadius: RAIO.cartao,
         padding: 14,
         gap: 8,
@@ -65,6 +65,7 @@ export function CartaoCidadao3Camadas({ item }: { item: DadosCartao3Camadas }) {
       ) : null}
 
       <Pressable
+        testID={`cartao-3camadas-toggle-${item.indicadorId}`}
         onPress={() => setAberto((v) => !v)}
         accessibilityRole="button"
         accessibilityLabel={`${aberto ? "Ocultar" : "Ver"} base de cálculo e fontes de ${item.tituloCurto}`}
@@ -72,7 +73,7 @@ export function CartaoCidadao3Camadas({ item }: { item: DadosCartao3Camadas }) {
           minHeight: TOQUE_MINIMO,
           justifyContent: "center",
           borderTopWidth: 1,
-          borderTopColor: comAlfa(cor("cor-texto"), 0.08),
+          borderTopColor: cor("cor-linha"),
           paddingTop: 8,
         }}
       >
