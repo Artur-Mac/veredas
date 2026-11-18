@@ -9,6 +9,7 @@ import { Image, Modal, TextInput, View } from "react-native";
 import { LeitorDeAta } from "../src/componentes/caderno/LeitorDeAta";
 import { OrcamentoPessoal } from "../src/componentes/caderno/Orcamento";
 import { LinhaDoTempoEstrutural } from "../src/componentes/dossie-v1/FichaViva";
+import { Divergencias, montarTextoDivergenciasParaCorretor } from "../src/componentes/dossie-v1/Indicadores";
 import { PacoteParaEspecialista } from "../src/componentes/dossie-v1/Pacote";
 import { SimuladorDaUnidade } from "../src/componentes/dossie-v1/SimuladorDaUnidade";
 import { TopoDoDossie } from "../src/componentes/dossie-v1/Topo";
@@ -17,7 +18,7 @@ import { placarDoPar, type ExtrasDoPlacar } from "../src/componentes/comparar/pl
 import { fraseDaDiferenca, nivelRelativoDb } from "../src/componentes/visita-v1/MedidorDeRuido";
 import { cadernoVazio, type Caderno } from "../src/dados/caderno";
 import { CAMADAS_PUBLICADAS } from "../src/dados/camadasGeradas";
-import { esquemaAnaliseV2, type AnaliseV2, type Edificio } from "../src/dados/contratos";
+import { esquemaAnaliseV2, type Achado, type AnaliseV2, type Edificio, type Pergunta } from "../src/dados/contratos";
 import { compararCondominio, estruturaDoCaderno, fichaViva, mad, mediana, SEM_LEITURA } from "../src/dados/dossie/fichaViva";
 import { relacaoComAFachada, ROSA, simularUnidade } from "../src/dados/dossie/simuladorDaUnidade";
 import { lerAta } from "../src/dados/leitorDeAta";
@@ -876,6 +877,76 @@ describe("por perto no mapa, rotina personalizada, comodidades e HTML editorial"
     });
     expect(clip.setStringAsync).toHaveBeenCalledWith(expect.stringContaining("[Atualizar] Matrícula atualizada do imóvel"));
     expect(JSON.stringify(arvore.toJSON())).toContain("Pedido de documentos pendentes copiado para enviar.");
+
+    act(() => {
+      arvore.unmount();
+    });
+  });
+
+  it("Divergencias copia em 1 toque todas as divergências anúncio×cadastro para o corretor (S83)", async () => {
+    const perguntasExemplo: Pergunta[] = [
+      {
+        id: "perg-area",
+        titulo: "Qual a área privativa na matrícula?",
+        pista: "Anúncio 110 m² vs cadastro 92 m²",
+        textoParaMensagem: "Confirmar área privativa",
+        origem: "achado",
+        prioridade: "documentos",
+      },
+    ];
+    const achadosExemplo: Achado[] = [
+      {
+        id: "ach-area",
+        tipo: "area",
+        titulo: "Área anunciada acima do cadastro",
+        medida: { numero: "18", unidade: "m² de diferença" },
+        texto: "O anúncio informa 110 m², enquanto o cadastro registra 92 m².",
+        confianca: "oficial",
+        fonte: "iptu_2026",
+        perguntaId: "perg-area",
+      },
+      {
+        id: "ach-iptu",
+        tipo: "iptu",
+        titulo: "Período do IPTU não informado",
+        medida: null,
+        texto: "Valor informado sem indicar se é mensal ou anual.",
+        confianca: "nao_sabemos",
+        fonte: "anuncio",
+        perguntaId: null,
+      },
+    ];
+
+    const textoGerado = montarTextoDivergenciasParaCorretor(achadosExemplo, perguntasExemplo);
+    expect(textoGerado).toContain("Área anunciada acima do cadastro");
+    expect(textoGerado).toContain("→ Confirmar: Qual a área privativa na matrícula?");
+    expect(textoGerado).toContain("Conferência pré-visita preparada com o VEREDA.");
+
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(Divergencias, {
+            achados: achadosExemplo,
+            perguntas: perguntasExemplo,
+            aoAbrirPergunta: jest.fn(),
+          }),
+        ),
+      );
+    });
+
+    const clip = jest.requireMock("expo-clipboard") as { setStringAsync: jest.Mock };
+    clip.setStringAsync.mockClear();
+
+    const btnCopiar = arvore.root.find((n) => n.props.testID === "divergencias-copiar-corretor");
+    await act(async () => {
+      await btnCopiar.props.onPress?.();
+    });
+
+    expect(clip.setStringAsync).toHaveBeenCalledWith(textoGerado);
+    expect(JSON.stringify(arvore.toJSON())).toContain("Divergências copiadas para enviar ao corretor.");
 
     act(() => {
       arvore.unmount();

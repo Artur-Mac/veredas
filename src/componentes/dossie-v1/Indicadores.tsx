@@ -1,5 +1,6 @@
 // Indicadores comparados com o bairro, rotina num olhar e divergências do anúncio (15/11/2026, sabatina). Cartão curto
 // com o classificador e a comparação; tocar abre o que sustenta a frase e o que pode significar ("investigar").
+import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
 import { View } from "react-native";
 import type { Achado, Pergunta } from "../../dados/contratos";
@@ -7,7 +8,7 @@ import type { Indicador } from "../../dados/dossie/indicadores";
 import { CATEGORIAS_DO_DIA, essenciaisDoPredio, nomeDe } from "../../dados/recife/essenciais";
 import { formatarNumero } from "../../dados/formatos";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, type TokenDeCor } from "../../tema/tokens";
+import { ESPACO, TOQUE_MINIMO, type TokenDeCor } from "../../tema/tokens";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { LinkComSeta, Seta } from "./base";
@@ -45,7 +46,7 @@ export function CartaoDoIndicador({ indicador: i, aoInvestigar }: { indicador: I
           <View style={{ gap: 6, marginTop: 4, paddingTop: 8, borderTopWidth: 1, borderTopColor: cor("cor-linha") }}>
             <Texto tipo="corpo" style={{ fontSize: 13, lineHeight: 19 }}>{i.frase}</Texto>
             <Texto tipo="corpo" cor="cor-barro-texto" style={{ fontSize: 13, lineHeight: 19 }}>{i.significado}</Texto>
-            <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>{`Comparação com ${formatarNumero(i.base)} prédios do bairro no cadastro.`}</Texto>
+            <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15, fontVariant: ["tabular-nums"] }}>{`Comparação com ${formatarNumero(i.base)} prédios do bairro no cadastro.`}</Texto>
           </View>
         ) : (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
@@ -82,7 +83,7 @@ export function RotinaNumOlhar({ bairro, predioId, aoVerMais }: { bairro: string
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
         {itens.map((x) => (
           <Pressionavel key={x.cat} onPress={aoVerMais} accessibilityRole="button" accessibilityLabel={`${ROTULO_CURTO[x.cat]}: ${x.nome}, ${Math.round(x.min)} minutos a pé`}
-            style={{ paddingHorizontal: 12, paddingVertical: 8, borderRadius: 12, backgroundColor: cor("cor-creme"), minWidth: 72 }}>
+            style={{ minHeight: TOQUE_MINIMO, justifyContent: "center", paddingHorizontal: 12, paddingVertical: 8, borderRadius: 12, backgroundColor: cor("cor-creme"), minWidth: 72 }}>
             <Texto tipo="numero" style={{ fontSize: 17, lineHeight: 22, fontWeight: "600" }}>{x.min < 1 ? "<1" : formatarNumero(Math.round(x.min))} min</Texto>
             <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>{ROTULO_CURTO[x.cat]}</Texto>
           </Pressionavel>
@@ -92,13 +93,42 @@ export function RotinaNumOlhar({ bairro, predioId, aoVerMais }: { bairro: string
   );
 }
 
+/** Monta mensagem objetiva para confirmar divergências entre anúncio e cadastro antes da visita (HouseCanary R9 / CondoScan R3). */
+export function montarTextoDivergenciasParaCorretor(achados: readonly Achado[], perguntas: readonly Pergunta[]): string {
+  const linhas = [
+    "Olá! Antes da visita, gostaria de confirmar alguns números que divergiram entre o anúncio e o cadastro oficial:",
+    "",
+    ...achados.flatMap((a) => {
+      const pergunta = a.perguntaId ? perguntas.find((p) => p.id === a.perguntaId) ?? null : null;
+      return pergunta
+        ? [`• ${a.titulo}: ${a.texto}`, `  → Confirmar: ${pergunta.titulo}`]
+        : [`• ${a.titulo}: ${a.texto}`];
+    }),
+    "",
+    "Conferência pré-visita preparada com o VEREDA.",
+  ];
+  return linhas.join("\n");
+}
+
 /** Divergências do anúncio: compactas, cada uma com a pergunta pronta para o corretor. */
 export function Divergencias({ achados, perguntas, aoAbrirPergunta, aoCorrigir }: { achados: readonly Achado[]; perguntas: readonly Pergunta[]; aoAbrirPergunta: (p: Pergunta) => void; aoCorrigir?: (a: Achado) => (() => void) | null }) {
   const { cor } = useTema();
+  const [copiado, setCopiado] = useState(false);
+  const [erroCopia, setErroCopia] = useState(false);
   if (!achados.length) return null;
+  const copiarTudo = async () => {
+    try {
+      setErroCopia(false);
+      await Clipboard.setStringAsync(montarTextoDivergenciasParaCorretor(achados, perguntas));
+      setCopiado(true);
+    } catch {
+      setCopiado(false);
+      setErroCopia(true);
+    }
+  };
   return (
     <View style={{ gap: ESPACO[2] }} role="group" aria-label="Divergências do anúncio">
-      <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20, fontWeight: "600" }}>{`Divergências do anúncio (${achados.length})`}</Texto>
+      <Texto tipo="corpo" style={{ fontSize: 14, lineHeight: 20, fontWeight: "600", fontVariant: ["tabular-nums"] }}>{`Divergências do anúncio (${achados.length})`}</Texto>
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>Diferenças entre o anúncio e o cadastro. Muitas são de leitura; vale perguntar antes da visita.</Texto>
       {achados.map((a) => {
         const pergunta = a.perguntaId ? perguntas.find((p) => p.id === a.perguntaId) ?? null : null;
@@ -111,6 +141,35 @@ export function Divergencias({ achados, perguntas, aoAbrirPergunta, aoCorrigir }
           </View>
         );
       })}
+      <Pressionavel
+        testID="divergencias-copiar-corretor"
+        accessibilityRole="button"
+        accessibilityLabel="Copiar divergências para o corretor"
+        onPress={() => void copiarTudo()}
+        style={{
+          minHeight: 44,
+          marginTop: 4,
+          paddingHorizontal: 14,
+          paddingVertical: 10,
+          borderRadius: 10,
+          backgroundColor: cor("cor-sutil"),
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Texto tipo="apoio" cor="cor-azul-cadastral" style={{ fontSize: 13, lineHeight: 18, fontWeight: "700" }}>
+          Copiar divergências para o corretor
+        </Texto>
+      </Pressionavel>
+      {copiado ? (
+        <Texto tipo="apoio" cor="cor-salvia-escura" role="status" style={{ fontSize: 12.5, lineHeight: 17, fontWeight: "600" }}>
+          Divergências copiadas para enviar ao corretor.
+        </Texto>
+      ) : erroCopia ? (
+        <Texto tipo="apoio" cor="cor-barro-texto" role="alert" style={{ fontSize: 12.5, lineHeight: 17, fontWeight: "600" }}>
+          Não foi possível copiar as divergências agora.
+        </Texto>
+      ) : null}
     </View>
   );
 }

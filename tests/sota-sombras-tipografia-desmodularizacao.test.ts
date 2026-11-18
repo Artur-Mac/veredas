@@ -58,6 +58,7 @@ import {
   auditarConjuntoDocumental,
   gerarPedidoDocumentosFaltantes,
 } from "../src/dados/pacoteEspecialista";
+import { montarTextoDivergenciasParaCorretor } from "../src/componentes/dossie-v1/Indicadores";
 import { analiseDoPredio } from "../src/dados/raioX";
 import { TemaDoApp } from "../src/tema/Tema";
 
@@ -3178,5 +3179,41 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     act(() => {
       tree.unmount();
     });
+  });
+
+  it("Indicadores.tsx zera comAlfa/bordas, garante TOQUE_MINIMO e monta texto limpo de divergências (S83)", () => {
+    const indPath = join(__dirname, "..", "src", "componentes", "dossie-v1", "Indicadores.tsx");
+    const indSrc = readFileSync(indPath, "utf8");
+    expect(indSrc).not.toMatch(/\bcomAlfa\b/);
+    expect(indSrc).not.toMatch(/\bborderWidth:\s*1(?!\.)\b/);
+    expect(indSrc).toContain("TOQUE_MINIMO");
+    expect(indSrc).toContain("tabular-nums");
+
+    const msg = montarTextoDivergenciasParaCorretor(
+      [
+        {
+          id: "ach-1",
+          tipo: "area",
+          titulo: "Área anunciada diferente do cadastro",
+          medida: null,
+          texto: "Anúncio cita 95 m² contra 82 m² no cadastro municipal.",
+          confianca: "oficial",
+          fonte: "iptu_2026",
+          perguntaId: "p-1",
+        },
+      ],
+      [
+        {
+          id: "p-1",
+          titulo: "Qual a área privativa na matrícula?",
+          pista: "Diferença de 13 m²",
+          textoParaMensagem: "Confirmar área privativa",
+          origem: "achado",
+          prioridade: "documentos",
+        },
+      ],
+    );
+    expect(REGEX_JARGON_CAMADA1.test(msg)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(msg)).toBe(false);
   });
 });
