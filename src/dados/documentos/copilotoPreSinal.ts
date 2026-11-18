@@ -171,21 +171,21 @@ export type AlertaDiligenciaRecife = {
 export const ALERTAS_DILIGENCIA_RECIFE_2026: readonly AlertaDiligenciaRecife[] = [
   {
     id: "aqua_compesa_2026",
-    titulo: "Água e saneamento (transição 23/11/2026)",
+    titulo: "Água e saneamento (mudança marcada para 23/11/2026)",
     detalhe:
-      "Na mudança operacional para a AQUA Pernambuco, eventuais débitos anteriores a 23/11/2026 permanecem retidos na Compesa: peça certidão de quitação nas duas frentes.",
+      "A partir de 23/11/2026, data marcada pelo Governo de Pernambuco, a distribuição de água passa da Compesa para a concessionária AQUA Pernambuco em cerca de 150 municípios. A Compesa continua produzindo a água. Peça ao vendedor a quitação das contas de água e pergunte à Compesa se há débito em aberto.",
   },
   {
-    id: "vistoria_trienal_pe",
-    titulo: "Inspeção predial periódica (Lei Estadual PE nº 13.032/2006)",
+    id: "vistoria_predial_pe",
+    titulo: "Vistoria predial periódica (Lei Estadual PE nº 13.032/2006)",
     detalhe:
-      "Edifícios em Pernambuco devem manter vistoria técnica trienal registrada; em prédios entregues há mais de 5 anos, solicite cópia do último relatório ao síndico.",
+      "Em Pernambuco, prédio com mais de 5 anos de habite-se deve passar por vistoria técnica a cada 4 anos (até 20 anos de construção) ou a cada 3 anos (mais de 20 anos), com laudo registrado no CREA-PE. Peça ao síndico a cópia do último laudo.",
   },
   {
     id: "cat_spu_90_dias",
-    titulo: "Transferência em terreno da União — CAT (90 dias)",
+    titulo: "Transferência em terreno da União: certidão da SPU (CAT, vale 90 dias)",
     detalhe:
-      "Quando há regime da União, o laudêmio (5% sobre o domínio pleno do terreno × fração ideal) e a emissão da CAT cabem ao vendedor antes da escritura, com validade de 90 dias.",
+      "Quando o terreno é da União, o vendedor paga o laudêmio (5% do valor do terreno na fração ideal da unidade) antes da escritura, e a SPU emite a Certidão de Autorização para Transferência (CAT), que vale 90 dias.",
   },
 ];
 
@@ -232,7 +232,7 @@ export function derivarImpedimentosPreSinal(params: {
       relacao: "bloqueia",
       titulo: "Regime de terreno da União (marinha)",
       impacto: "Ocupação sem aforamento impede uso de FGTS na Caixa, e a escritura exige CAT vigente.",
-      comoDestravar: "Conferir se é aforamento ou ocupação e exigir CAT (90 dias) e laudêmio pagos pelo vendedor.",
+      comoDestravar: "Conferir se é aforamento ou ocupação e exigir o laudêmio pago pelo vendedor e a Certidão de Autorização para Transferência (CAT) da SPU, que vale 90 dias.",
     });
   }
 

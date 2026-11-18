@@ -222,8 +222,9 @@ describe("placar ampliado", () => {
     const ids = l.map((x) => x.id);
     expect(ids.indexOf("custo_total")).toBe(ids.indexOf("custo") + 1);
     const total = l.find((x) => x.id === "custo_total")!;
-    expect(total.frase).toContain("R$ 510.000 a R$ 515.000");
-    expect(total.frase).toContain("escritura e registro a confirmar");
+    expect(total.frase).toContain("R$ 509.000 a R$ 515.000");
+    expect(total.frase).toContain("Preço + ITBI de 1,8% a 3%");
+    expect(total.frase).toContain("escritura e registro a confirmar no cartório");
     const rotina = l.find((x) => x.id === "rotina")!;
     expect(rotina.vencedor).toBe(0);
     expect(rotina.frase).toContain("~10,0 h por mês");

@@ -189,7 +189,7 @@ export function PrepararNegociacao({ analise, visao, lista, predio = null, nomeD
         </View>
       ) : null}
 
-      <PacoteParaEspecialista analise={analise} visao={visao} ficha={ficha.itens} />
+      <PacoteParaEspecialista analise={analise} visao={visao} ficha={ficha.itens} anoConstrucao={predio?.anoConstrucao ?? null} />
     </View>
   );
 }

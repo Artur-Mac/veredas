@@ -2,9 +2,10 @@ import type { EpistemicTag } from "../contratosCanonicos";
 
 /**
  * IND-01 & #37 — Motor Legal de Terrenos de Marinha (SPU) e Elegibilidade FGTS.
- * Base legal: Decreto-Lei nº 2.398/1987 (redação Leis nº 13.139/2015 e nº 13.240/2015),
- * Lei nº 14.011/2020 (Remição de Foro / Conversão), Lei nº 14.474/2022 (teto de atualização
- * anual de 2× IPCA ou 10,06%) e normativo da Caixa Econômica Federal (bloqueio FGTS em Ocupação).
+ * Base legal: Decreto-Lei nº 9.760/1946, art. 101 (foro de 0,6%); Decreto-Lei nº 2.398/1987, arts. 1º e 3º (taxa de
+ * ocupação de 2% e laudêmio de 5%, redação das Leis nº 13.139/2015, nº 13.240/2015 e nº 13.465/2017);
+ * Lei nº 14.011/2020 (Remição de Foro / Conversão); Lei nº 14.474/2022 (teto do reajuste anual: 10,06% só no exercício
+ * de 2022; daí em diante, no máximo 2× o IPCA do ano anterior) e normativo da Caixa Econômica Federal (bloqueio FGTS em Ocupação).
  *
  * REGRA DECISIVA: Laudêmio (5%), Ocupação (2%/ano), Foro (0,6%/ano), Conversão (83%) e
  * Remição (17%) incidem EXCLUSIVAMENTE sobre o valor atualizado do domínio pleno do terreno,
@@ -23,7 +24,7 @@ export type EntradaSpu = {
   emPoligonalMarinha?: boolean;
   /** Possui Portaria Autorizativa ativa no SPUApp (reduz rito ordinário de até 180 dias). */
   portariaAutorizativaAtiva?: boolean | null;
-  /** IPCA acumulado 12m em fração (ex.: 0.045 para 4,5%) para simular teto da Lei 14.474/2022. */
+  /** IPCA do ano anterior em fração (ex.: 0.045 para 4,5%), para o teto de reajuste da Lei 14.474/2022. Sem ele, o teto fica nulo. */
   ipcaAnual?: number;
 };
 
@@ -41,7 +42,8 @@ export type ResultadoSpu = {
   encargoPatrimonialMensalVigenteReais: number | null;
   custoConversao83PctReais: number | null;
   custoRemicaoForo17PctReais: number | null;
-  tetoReajusteAnualPct: number;
+  /** Teto do reajuste anual da cobrança (2× o IPCA do ano anterior), em %; null quando o IPCA não foi informado. */
+  tetoReajusteAnualPct: number | null;
   elegivelFgtsCaixa: boolean | null;
   bloqueioFgtsMotivo: string | null;
   prazoOrdinarioSpuDias: number | null;
@@ -51,16 +53,22 @@ export type ResultadoSpu = {
   limiteEpistemologico: string;
 };
 
-const TETO_LEI_14474 = 0.1006; // 10,06%
-
-export function calcularTetoReajusteSpu(ipcaAnual = 0.045): number {
-  const dobroIpca = Math.max(0, 2 * ipcaAnual);
-  return Math.round(Math.max(dobroIpca, TETO_LEI_14474) * 10000) / 10000;
+/**
+ * Teto do reajuste anual da cobrança da SPU (Lei nº 14.474/2022, art. 6º, e art. 11-B, § 8º-A, da Lei nº 9.636/1998):
+ * no máximo 2 vezes o IPCA do ano anterior. Os 10,06% valeram só para o exercício de 2022 e saíram da conta em
+ * 19/11/2026: até então o código usava o maior entre 10,06% e 2× IPCA, o que a lei não diz.
+ */
+export function calcularTetoReajusteSpu(ipcaAnoAnterior: number): number {
+  return Math.round(Math.max(0, 2 * ipcaAnoAnterior) * 10000) / 10000;
 }
 
 export function calcularSpuEstatutario(entrada: EntradaSpu): ResultadoSpu {
   const emMarinha = entrada.emPoligonalMarinha ?? (entrada.regime === "ocupacao" || entrada.regime === "aforamento");
-  const tetoReajusteAnualPct = Math.round(calcularTetoReajusteSpu(entrada.ipcaAnual) * 10000) / 100;
+  // Sem o IPCA do ano anterior não há teto para mostrar: o app não supõe um IPCA.
+  const tetoReajusteAnualPct =
+    typeof entrada.ipcaAnual === "number" && Number.isFinite(entrada.ipcaAnual)
+      ? Math.round(calcularTetoReajusteSpu(entrada.ipcaAnual) * 10000) / 100
+      : null;
 
   if (entrada.regime === "alodial") {
     return {
@@ -152,6 +160,6 @@ export function calcularSpuEstatutario(entrada: EntradaSpu): ResultadoSpu {
     pec3EmTramitacaoSenado: true,
     epistemicTag,
     limiteEpistemologico:
-      "Polígono SPU e cálculo sobre terreno não substituem certidão individual por RIP na SPU nem a CAT emitida para a transferência (validade 90 dias).",
+      "Polígono SPU e cálculo sobre terreno não substituem certidão individual por RIP na SPU nem a Certidão de Autorização para Transferência (CAT), que a SPU emite para a venda e vale 90 dias.",
   };
 }

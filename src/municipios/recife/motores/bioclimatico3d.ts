@@ -6,7 +6,7 @@ import type { EpistemicTag } from "../../../nucleo/contratosCanonicos";
  * - Geometria solar exata nos solstícios/equinócio + norma europeia EN 17037 (horas de insolação direta).
  * - Canalização/bloqueio de brisa leste-sudeste (alísios 90°–150°) e delta térmico MapBiomas Col. 10 (LST).
  * - Penalidade térmica poente (+R$ 210/mês tarifa Neoenergia PE -> VPL 10 anos a 8% a.a. = R$ 17.521).
- * - Radar regulatório de gabarito LPUOS (Lei nº 19.389/2025) + Decretos 39.664–39.667/2026 + IEP/ZEPH/PBZPA.
+ * - Radar regulatório de gabarito LPUOS (Lei municipal nº 19.426, de 03/10/2025) + IEP/ZEPH/PBZPA.
  */
 
 export const LATITUDE_RECIFE_GRAUS = -8.0539;
@@ -186,7 +186,7 @@ export function avaliarBioclimatico3d(entrada: EntradaBioclimatica3D): Resultado
   const extraMensal = exposicaoPoente ? (entrada.extraMensalArPoenteReais ?? 210) : 0;
   const vpl10Anos = calcularVpl10AnosPoente(extraMensal, entrada.taxaDescontoRealAnual ?? 0.08);
 
-  // Radar de perda de vista LPUOS 2025 (Lei 19.389/2025) + Decretos 39.664–39.667/2026 + IEP/ZEPH/PBZPA
+  // Radar de perda de vista LPUOS 2025 (Lei municipal 19.426/2025) + IEP/ZEPH/PBZPA
   const obs = entrada.obstaculosProximos ?? [];
   let lotesAbertos = 0;
   let margemMaxM: number | null = null;
@@ -231,7 +231,7 @@ export function avaliarBioclimatico3d(entrada: EntradaBioclimatica3D): Resultado
       margemLegalGabaritoMaxM: margemMaxM,
       amortecedorPatrimonialIepZephIpav: temAmortecedorPatrimonial,
       notaRegulatoriaLpuos2025:
-        "Leitura segundo LPUOS Recife (Lei nº 19.389/2025), Decretos nº 39.664–39.667/2026 (transferência do direito de construir e IEP) e PBZPA SBRF.",
+        "Leitura segundo a LPUOS do Recife (Lei nº 19.426, de 03/10/2025).",
     },
     horizonte108Bytes: horizonte,
     epistemicTag: obs.length > 0 || entrada.horizonte108 ? "inferencia" : "nao_sabemos",

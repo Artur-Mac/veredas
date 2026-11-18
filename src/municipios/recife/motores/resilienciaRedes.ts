@@ -1,11 +1,22 @@
 import type { EpistemicTag } from "../../../nucleo/contratosCanonicos";
 
 /**
- * IND-08 & #39 — Motor de Resiliência de Redes: Água (Tapacurá + Transição AQUA PE 23/11/2026),
+ * IND-08 & #39 — Motor de Resiliência de Redes: Água (Tapacurá + início da AQUA Pernambuco marcado para 23/11/2026),
  * Energia (ANEEL DEC/FEC por conjunto elétrico Neoenergia PE) e Telecom (5G 3,5 GHz Anatel + checklist na visita).
  */
 
+/**
+ * Início da operação da AQUA Pernambuco na distribuição de água, marcado pelo Governo de Pernambuco (nota da Secretaria
+ * de Recursos Hídricos e Saneamento de 23/10/2026, que a chama de "nova data": já foi adiada uma vez). Não é lei nem
+ * ato: é a concessão parcial do saneamento. Conferir de novo depois do dia 23.
+ */
 export const DATA_ASSUNCAO_AQUA_PERNAMBUCO = "2026-11-23";
+
+/** O dia de hoje no relógio do aparelho (AAAA-MM-DD, hora local: em UTC o dia viraria três horas antes no Recife). */
+export function hojeNoAparelhoIso(agora: Date = new Date()): string {
+  const dois = (n: number) => String(n).padStart(2, "0");
+  return `${agora.getFullYear()}-${dois(agora.getMonth() + 1)}-${dois(agora.getDate())}`;
+}
 
 export type EntradaResilienciaRedes = {
   bairroSlug: string;
@@ -29,7 +40,8 @@ export type ResultadoResilienciaRedes = {
     vulnerabilidadeRodizioTapacura: boolean;
     concessionariaDistribuicaoVigente: "Compesa" | "AQUA Pernambuco (Acciona + BRK)";
     dataMarcoTransicao: string;
-    alertaDividaAnterior23Nov2026: string;
+    /** O que muda na distribuição de água e o que pedir ao vendedor; vale antes e depois da data marcada. */
+    avisoMudancaNaDistribuicao: string;
     epistemicTag: EpistemicTag;
   };
   eletrico: {
@@ -49,9 +61,14 @@ export type ResultadoResilienciaRedes = {
   limiteEpistemologico: string;
 };
 
+/**
+ * `dataReferenciaIso` é a data real do aparelho quando ninguém informa outra: antes de 23/11/2026 a distribuição é da
+ * Compesa; a partir desse dia, da AQUA Pernambuco. (Até 19/11/2026 o padrão era "2026-11-24" fixo, e o app mostrava a
+ * AQUA como concessionária atual antes da hora.)
+ */
 export function avaliarResilienciaRedes(
   entrada: EntradaResilienciaRedes,
-  dataReferenciaIso = "2026-11-24",
+  dataReferenciaIso: string = hojeNoAparelhoIso(),
 ): ResultadoResilienciaRedes {
   const moradoresUnid = entrada.moradoresMediosPorUnidade ?? 2.6;
   const consumoDiaLitrosUnid = moradoresUnid * 165; // ~165 L/hab/dia referência ABNT/SNIS Recife
@@ -87,8 +104,8 @@ export function avaliarResilienciaRedes(
         ? "AQUA Pernambuco (Acciona + BRK)"
         : "Compesa",
       dataMarcoTransicao: DATA_ASSUNCAO_AQUA_PERNAMBUCO,
-      alertaDividaAnterior23Nov2026:
-        "A AQUA Pernambuco assume em 23/11/2026 a distribuição comercial em 151 municípios; captação/produção (Sistema Tapacurá) e cobrança de débitos anteriores a 23/11/2026 permanecem sob responsabilidade da Compesa (PPP de esgoto na RMR mantida). Exija quitação das duas origens se houver hidrômetro individual.",
+      avisoMudancaNaDistribuicao:
+        "A partir de 23/11/2026, data marcada pelo Governo de Pernambuco, a distribuição de água passa da Compesa para a concessionária AQUA Pernambuco em cerca de 150 municípios. A Compesa continua produzindo a água. Peça ao vendedor a quitação das contas de água e pergunte à Compesa se há débito em aberto.",
       epistemicTag: autonomiaDias !== null ? "declarado" : "nao_sabemos",
     },
     eletrico: {

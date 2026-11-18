@@ -69,7 +69,7 @@ export function PlacarHeroi5Segundos({
           ? `${comparacaoM2Pct}% acima do ITBI do prédio`
           : "Perto do ITBI do prédio"
       : compra && dinheiroParaEntrarReais
-        ? `Entrada + cartório ~${formatarReaisCompacto(dinheiroParaEntrarReais)}`
+        ? `Entrada + ITBI ~${formatarReaisCompacto(dinheiroParaEntrarReais)} (sem cartório)`
         : "Confira os custos abaixo";
 
   const mensalTxt =

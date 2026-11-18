@@ -53,7 +53,7 @@ export function montarBoletimPreContrato(params: {
     {
       numero: "Boletim #03",
       titulo: "Base legal SPU (terreno) e janela do ITBI",
-      resumo: `Foro (0,6%), ocupação (2%) e laudêmio (5%) incidem somente sobre o domínio pleno do terreno × fração ideal (DL 2.398/1987); ${itbiFonte ? `${formatarNumero(itbiFonte.registrosLidos)} transmissões lidas` : "ITBI municipal"} com checagem de alíquota reduzida SFH em até 180 dias.`,
+      resumo: `Foro (0,6%), ocupação (2%) e laudêmio (5%) incidem somente sobre o domínio pleno do terreno × fração ideal (Decretos-Leis 9.760/1946 e 2.398/1987); ${itbiFonte ? `${formatarNumero(itbiFonte.registrosLidos)} transmissões lidas` : "ITBI municipal"} com checagem da alíquota reduzida de 1,8% (pedido em até 180 dias).`,
     },
     {
       numero: "Boletim #04",

@@ -38,10 +38,9 @@ const PROPS: PropsTresPerguntasDoBolso = {
   prestacaoEstimadaReais: 4_800,
   entradaReais: 130_000,
   itbiReais: 9_000,
-  cartorioRegistroReais: 6_000,
   spuAnualReais: 0,
   custoMensalArReais: 180,
-  economiaLegalItbiCartorioReais: 0,
+  economiaLegalItbiReais: 0,
   descontoRuidoReais: 9_000,
   vplCalorPoenteReais: 7_000,
   riscoManutencaoPredioReais: 12_000,
@@ -75,6 +74,7 @@ describe("R3: bolso sem alvo de preço e conta de 10 anos com valorização esco
     expect(frase).toContain("CDI líquido de 9,5% ao ano");
     expect(frase).toContain("10,5% ao ano em 15 anos");
     expect(frase).toContain("4,5% ao ano");
+    expect(frase).toContain("custo de fechamento (ITBI, escritura e registro) de 2,5% do preço");
     expect(frase).toContain("0,45% do preço ao mês");
   });
 
