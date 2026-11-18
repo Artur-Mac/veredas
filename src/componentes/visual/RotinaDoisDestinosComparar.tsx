@@ -45,6 +45,7 @@ export function RotinaDoisDestinosComparar({
   });
   const difMinDia = Math.abs(resultado.minutosDiaOpcaoA - resultado.minutosDiaOpcaoB);
   const horasMesMenos = Math.round(((difMinDia * 20) / 60) * 10) / 10;
+  const diasUteisAnoMenos = Math.round(((horasMesMenos * 12) / 8) * 10) / 10;
 
   return (
     <View
@@ -186,10 +187,23 @@ export function RotinaDoisDestinosComparar({
           style={[styles.faixaEconomia, { borderTopColor: cor("cor-linha") }]}
         >
           <Texto tipo="apoio" cor="cor-salvia-escura" style={styles.textoEconomia}>
-            {`~${String(horasMesMenos).replace(".", ",")} h/mês a menos no trânsito em ${resultado.vencedorRotina === "A" ? nomeOpcaoA : nomeOpcaoB} considerando 20 dias presenciais.`}
+            {`~${String(horasMesMenos).replace(".", ",")} h/mês a menos no trânsito (~${String(diasUteisAnoMenos).replace(".", ",")} dias úteis de 8h por ano) em ${resultado.vencedorRotina === "A" ? nomeOpcaoA : nomeOpcaoB} considerando 20 dias presenciais.`}
           </Texto>
         </View>
       ) : null}
+
+      <View
+        style={{
+          borderTopWidth: 1,
+          borderTopColor: cor("cor-linha"),
+          paddingHorizontal: 14,
+          paddingVertical: 8,
+        }}
+      >
+        <Texto testID="rotina-aviso-tabela" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+          Estimativa em horário de pico programado; calculada localmente sem rastreamento GPS pessoal.
+        </Texto>
+      </View>
     </View>
   );
 }

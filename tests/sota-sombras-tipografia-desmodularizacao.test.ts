@@ -49,6 +49,7 @@ import { TermometroConfortoTermico } from "../src/componentes/visual/TermometroC
 import { MatrizVisualComparar } from "../src/componentes/visual/MatrizVisualComparar";
 import { PlacarHeroi5Segundos } from "../src/componentes/visual/PlacarHeroi5Segundos";
 import { BussolaSolarBrisa } from "../src/componentes/cidadao/BussolaSolarBrisa";
+import { SimuladorTco10Anos } from "../src/componentes/cidadao/SimuladorTco10Anos";
 import { TemaDoApp } from "../src/tema/Tema";
 
 function listarTsxRecursivo(dir: string): string[] {
@@ -2289,5 +2290,47 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(txt).toContain("CAT");
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+  });
+
+  it("exibe dias úteis/ano em RotinaDoisDestinosComparar e alterna presets de entrada em SimuladorTco10Anos em S51", () => {
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(RotinaDoisDestinosComparar, {
+            nomeOpcaoA: "Opção Boa Viagem",
+            centroA: null,
+            bairroA: "boa-viagem",
+            nomeOpcaoB: "Opção Graças",
+            centroB: null,
+            bairroB: "gracas",
+          }),
+          React.createElement(SimuladorTco10Anos, {
+            entrada: {
+              precoCompraReais: 850_000,
+              aluguelEquivalenteMensalReais: 3_900,
+              condominioMensalReais: 950,
+              iptuAnualReais: 2_800,
+            },
+          }),
+        ),
+      );
+    });
+
+    expect(tree.root.find((n) => n.props.testID === "rotina-aviso-tabela")).toBeDefined();
+    const antesTxt = extrairTextos(tree.toJSON()).join("\n");
+    expect(antesTxt).toContain("dias úteis de 8h por ano");
+    expect(antesTxt).toContain("sem rastreamento GPS pessoal");
+
+    const preset50 = tree.root.find((n) => n.props.testID === "tco-preset-50");
+    act(() => {
+      preset50.props.onPress();
+    });
+    const depoisTxt = extrairTextos(tree.toJSON()).join("\n");
+    expect(depoisTxt).not.toBe(antesTxt);
+    expect(REGEX_JARGON_CAMADA1.test(depoisTxt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(depoisTxt)).toBe(false);
   });
 });

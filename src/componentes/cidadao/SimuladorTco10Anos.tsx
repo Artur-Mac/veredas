@@ -1,6 +1,7 @@
-import { View } from "react-native";
+import { useState } from "react";
+import { Pressable, View } from "react-native";
 import { useTema } from "../../tema/Tema";
-import { RAIO, comAlfa } from "../../tema/tokens";
+import { RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 import { Texto } from "../Texto";
 
 /**
@@ -80,7 +81,8 @@ export function calcularTco10Anos(e: EntradaTco10Anos): ResultadoTco10Anos {
 
 export function SimuladorTco10Anos({ entrada }: { entrada: EntradaTco10Anos }) {
   const { cor } = useTema();
-  const sim = calcularTco10Anos(entrada);
+  const [entradaPctAtiva, setEntradaPctAtiva] = useState<number>(entrada.entradaPct ?? 20);
+  const sim = calcularTco10Anos({ ...entrada, entradaPct: entradaPctAtiva });
   const favoreceCompra = sim.saldoLiquidoCompraSobreAluguel10AnosReais >= 0;
 
   return (
@@ -88,7 +90,7 @@ export function SimuladorTco10Anos({ entrada }: { entrada: EntradaTco10Anos }) {
       style={{
         backgroundColor: cor("cor-superficie"),
         borderWidth: 1,
-        borderColor: comAlfa(cor("cor-texto"), 0.12),
+        borderColor: cor("cor-linha-forte"),
         borderRadius: RAIO.cartao,
         padding: 14,
         gap: 8,
@@ -98,6 +100,38 @@ export function SimuladorTco10Anos({ entrada }: { entrada: EntradaTco10Anos }) {
       <Texto tipo="secao" style={{ fontSize: 16 }}>
         Simulador 10 anos: comprar × alugar
       </Texto>
+      <View
+        style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}
+        accessibilityRole="radiogroup"
+        accessibilityLabel="Percentual de entrada"
+      >
+        {[20, 35, 50].map((pct) => (
+          <Pressable
+            key={pct}
+            testID={`tco-preset-${pct}`}
+            accessibilityRole="radio"
+            accessibilityState={{ checked: entradaPctAtiva === pct }}
+            onPress={() => setEntradaPctAtiva(pct)}
+            style={{
+              minHeight: TOQUE_MINIMO,
+              paddingHorizontal: 12,
+              borderRadius: RAIO.pilula,
+              backgroundColor:
+                entradaPctAtiva === pct ? cor("cor-texto") : cor("cor-papel-claro"),
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Texto
+              tipo="apoio"
+              cor={entradaPctAtiva === pct ? "cor-superficie" : "cor-texto"}
+              style={{ fontSize: 12, fontWeight: "600", fontVariant: ["tabular-nums"] }}
+            >
+              {`Entrada ${pct}%`}
+            </Texto>
+          </Pressable>
+        ))}
+      </View>
       <Texto tipo="corpo" style={{ fontSize: 13.5, lineHeight: 19 }}>
         {favoreceCompra
           ? `Em 10 anos, considerando custo de oportunidade da entrada no CDI, a compra projeta patrimônio líquido R$ ${Math.abs(sim.saldoLiquidoCompraSobreAluguel10AnosReais).toLocaleString("pt-BR")} maior que permanecer alugando.`
