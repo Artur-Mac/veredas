@@ -69,15 +69,22 @@ import {
 import { calcularAreaPoligonoM2, MapaDoLote } from "../src/componentes/dossie-v1/MapaDoLote";
 import { descreverJanelaTemporalDaBase, GavetaDeFonte } from "../src/componentes/fonte/GavetaDeFonte";
 import { Entorno } from "../src/componentes/dossie-v1/Entorno";
+import { EdificioDoDossie, sintetizarChaveDuplaDoEdificio } from "../src/componentes/dossie-v1/Edificio";
 import { sintetizarPerfilObrasProximas } from "../src/componentes/dossie-v1/textos";
 import type { VisaoDoDossie } from "../src/dados/contratos";
+import { derivarDossie } from "../src/dados/dossie/derivar";
 import { analiseDoPredio } from "../src/dados/raioX";
+import { gerarCnm16Formatado } from "../src/nucleo/documentos/auditorDocumental";
 import { TemaDoApp } from "../src/tema/Tema";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 jest.mock("@react-native-async-storage/async-storage", () => require("@react-native-async-storage/async-storage/jest/async-storage-mock"));
 jest.mock("react-native-safe-area-context", () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
+}));
+jest.mock("expo-clipboard", () => ({
+  setStringAsync: jest.fn(async () => true),
+  getStringAsync: jest.fn(async () => ""),
 }));
 
 function listarTsxRecursivo(dir: string): string[] {
@@ -3911,6 +3918,110 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     );
     expect(copSrc.match(/\bborderWidth:\s*1(?!\.)\b/g)?.length ?? 0).toBeLessThanOrEqual(1);
     expect(copSrc).not.toContain("comAlfa(");
+
+    act(() => {
+      tree.unmount();
+    });
+  });
+
+  it("onda S97: expõe chave dupla lote 14d + CNM 16d (R42/ONR) com cópia em 1 toque e zero borderWidth: 1 em Edificio.tsx", async () => {
+    const cnmValida = gerarCnm16Formatado("004123", "2", "0005678");
+    const comCnm = sintetizarChaveDuplaDoEdificio({
+      chaveLote14: "12345678901234",
+      textosDocumentos: [`Certidão de ônus reais CNM ${cnmValida} lavrada em Recife.`],
+    });
+    expect(comCnm.loteConfirmado).toBe(true);
+    expect(comCnm.loteFormatado).toBe("12.3456.789.01.234");
+    expect(comCnm.cnmConfirmada).toBe(true);
+    expect(comCnm.cnmFormatada).toBe(cnmValida);
+    expect(comCnm.textoParaCopiar).toContain("Lote municipal (Prefeitura): 12.3456.789.01.234");
+    expect(comCnm.textoParaCopiar).toContain(`Matrícula nacional (CNM): ${cnmValida}`);
+
+    const semCnm = sintetizarChaveDuplaDoEdificio({
+      chaveLote14: null,
+      textosDocumentos: ["Matrícula falsa 123456.7.0005678-00 sem dígito válido."],
+    });
+    expect(semCnm.loteConfirmado).toBe(false);
+    expect(semCnm.loteFormatado).toBe("A confirmar no cadastro");
+    expect(semCnm.cnmConfirmada).toBe(false);
+    expect(semCnm.cnmFormatada).toBe("Pedir certidão de ônus (16 dígitos)");
+
+    for (const s of [comCnm.textoParaCopiar, comCnm.cnmFormatada, semCnm.loteFormatado, semCnm.cnmFormatada]) {
+      expect(REGEX_JARGON_CAMADA1.test(s)).toBe(false);
+      for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(s)).toBe(false);
+    }
+
+    const bv = edificiosDoBairro("boa-viagem");
+    const predioBv = bv[0]!;
+    const analiseBv = analiseDoPredio(predioBv, {
+      agora: "2026-11-18T10:00:00.000Z",
+      indiceGeradoEm: "2026-11-15T00:00:00Z",
+      origem: "busca",
+    });
+    const visaoBv = derivarDossie(
+      analiseBv,
+      predioBv,
+      null,
+      [],
+      [],
+      new Date("2026-11-18T10:00:00.000Z"),
+      "custo",
+      null,
+    );
+
+    const clip = jest.requireMock("expo-clipboard") as { setStringAsync: jest.Mock };
+    clip.setStringAsync.mockClear();
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(EdificioDoDossie, {
+            visao: visaoBv,
+            edificio: predioBv,
+            coberto: true,
+            vinculoConfirmado: true,
+            prioridade: "custo",
+            chaveLote14: "12345678901234",
+            textosDocumentos: [`Matrícula oficial CNM ${cnmValida}`],
+            aoMudarPrioridade: () => undefined,
+            aoAbrirPergunta: () => undefined,
+            aoAbrirRoteiro: () => undefined,
+            aoAbrirFonte: () => undefined,
+            aoAbrirCadastro: () => undefined,
+            aoConfirmarPredio: () => undefined,
+            aoMedirSecao: () => undefined,
+          }),
+        ),
+      );
+    });
+
+    const blocoChaves = tree.root.find((n) => n.props.testID === "edificio-chave-dupla");
+    expect(blocoChaves).toBeDefined();
+    let txt = extrairTextos(tree.toJSON()).join(" ");
+    expect(txt).toContain("12.3456.789.01.234");
+    expect(txt).toContain(cnmValida);
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+
+    const btnCopiar = tree.root.find((n) => n.props.testID === "edificio-copiar-chaves");
+    await act(async () => {
+      btnCopiar.props.onPress();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+    expect(clip.setStringAsync).toHaveBeenCalledWith(comCnm.textoParaCopiar);
+    txt = extrairTextos(tree.toJSON()).join(" ");
+    expect(txt).toContain("Chaves copiadas");
+
+    const edifSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "dossie-v1", "Edificio.tsx"),
+      "utf8",
+    );
+    expect(edifSrc).not.toMatch(/\bborderWidth:\s*1(?!\.)\b/);
+    expect(edifSrc).not.toContain("comAlfa(");
 
     act(() => {
       tree.unmount();

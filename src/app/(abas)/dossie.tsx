@@ -766,6 +766,8 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                 coberto={coberto}
                 vinculoConfirmado={vinculoConfirmado}
                 prioridade={prioridade}
+                chaveLote14={predio?.dsqfl ?? null}
+                textosDocumentos={(analise.caderno?.documentos ?? []).map((d) => `${d.titulo} ${d.escopo} ${d.trecho}`)}
                 aoMudarPrioridade={setPrioridade}
                 aoAbrirPergunta={(pergunta) => setGaveta({ tipo: "pergunta", pergunta })}
                 aoAbrirRoteiro={() => setGaveta({ tipo: "roteiro" })}
