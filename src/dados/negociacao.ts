@@ -59,13 +59,14 @@ export type ExtrasDaNegociacao = {
   barulho: readonly { nome: string; distanciaM: number }[];
 };
 
-const TEMAS_FINANCEIROS_DA_ATA = /^\[(Chamada extra \/ rateio|Obra do condomínio aprovada|Ações judiciais|Inadimplência|Fundo de reserva)(?: · p\. (\d+))?\] (.+)$/;
+const TEMAS_FINANCEIROS_DA_ATA =
+  /^\[(Chamada extra \/ rateio|Obra do condomínio aprovada|Ações judiciais|Inadimplência|Fundo de reserva|Déficit no caixa|Troca de administradora|Gravames e garantias|Restrições e usufruto|Terreno de marinha \(SPU\))(?: · p\. (\d+))?\] (.+)$/;
 
-/** Trechos financeiros e jurídicos que o leitor de ata guardou no caderno (documento ata/convenção/balancete). */
+/** Trechos financeiros e jurídicos que o leitor de ata guardou no caderno (documento ata/convenção/balancete/matrícula). */
 export function trechosDaAta(a: AnaliseV2): { tema: string; pagina: number | null; trecho: string; documento: string }[] {
   const out: { tema: string; pagina: number | null; trecho: string; documento: string }[] = [];
   for (const d of a.caderno?.documentos ?? []) {
-    if (!["ata", "convencao", "balancete"].includes(d.tipo) || d.vinculo === "outro_imovel") continue;
+    if (!["ata", "convencao", "balancete", "matricula"].includes(d.tipo) || d.vinculo === "outro_imovel") continue;
     for (const linha of d.trecho.split("\n")) {
       const m = TEMAS_FINANCEIROS_DA_ATA.exec(linha.trim());
       if (m) out.push({ tema: m[1]!, pagina: m[2] ? Number(m[2]) : null, trecho: m[3]!, documento: d.titulo });
@@ -144,8 +145,19 @@ export function prepararNegociacao(a: AnaliseV2, visao: Pick<VisaoDoDossie, "ach
       args.push({ id: "taxas:omitidas", peso: 1, fato: `O anúncio não informa: ${emFrase(faltando)}.`, pergunta: `Quais os valores atuais de ${emFrase(faltando)}?` });
     }
     trechosDaAta(a).slice(0, 4).forEach((t, i) => {
-      args.push({ id: `ata:${i}`, peso: 2, fato: `${t.documento}${t.pagina ? `, p. ${t.pagina}` : ""} (${t.tema.toLowerCase()}): “${t.trecho}”`,
-        pergunta: t.tema === "Chamada extra / rateio" ? "A chamada extra aprovada em ata já foi paga ou fica com o comprador?" : t.tema === "Ações judiciais" ? "Qual a situação atual da ação citada em ata?" : null });
+      const pergunta =
+        t.tema === "Chamada extra / rateio"
+          ? "A chamada extra aprovada em ata já foi paga ou fica com o comprador?"
+          : t.tema === "Ações judiciais"
+            ? "Qual a situação atual da ação citada em ata?"
+            : t.tema === "Déficit no caixa"
+              ? "Como será coberto o déficit citado no balancete sem chamada extra?"
+              : t.tema === "Gravames e garantias"
+                ? "A baixa do gravame citado na matrícula sairá antes da escritura?"
+                : t.tema === "Terreno de marinha (SPU)"
+                  ? "O imóvel está sob aforamento ou ocupação na SPU, e a CAT será emitida pelo vendedor?"
+                  : null;
+      args.push({ id: `ata:${i}`, peso: 2, fato: `${t.documento}${t.pagina ? `, p. ${t.pagina}` : ""} (${t.tema.toLowerCase()}): “${t.trecho}”`, pergunta });
     });
     if (extras.calor?.diferencaBairroC != null && extras.calor.diferencaBairroC >= 1) {
       args.push({ id: "ambiente:calor", peso: 1, pergunta: null,

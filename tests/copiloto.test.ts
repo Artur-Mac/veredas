@@ -5,7 +5,8 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
-import { Image, Modal, View } from "react-native";
+import { Image, Modal, TextInput, View } from "react-native";
+import { LeitorDeAta } from "../src/componentes/caderno/LeitorDeAta";
 import { LinhaDoTempoEstrutural } from "../src/componentes/dossie-v1/FichaViva";
 import { PacoteParaEspecialista } from "../src/componentes/dossie-v1/Pacote";
 import { SimuladorDaUnidade } from "../src/componentes/dossie-v1/SimuladorDaUnidade";
@@ -507,6 +508,106 @@ describe("por perto no mapa, rotina personalizada, comodidades e HTML editorial"
     const jsonAposCopiar = JSON.stringify(arvore.toJSON());
     expect(jsonAposCopiar).toContain("Dossiê técnico (.md) copiado para colar ou enviar.");
     expect(jsonAposCopiar).toContain('"role":"status"');
+
+    act(() => {
+      arvore.unmount();
+    });
+  });
+
+  it("leitor de ata lê matrícula (gravames/SPU), déficits, ausências esperadas e integra com negociação (S59)", async () => {
+    const leitorSrc = readFileSync(join(__dirname, "..", "src", "componentes", "caderno", "LeitorDeAta.tsx"), "utf8");
+    expect(leitorSrc).not.toMatch(/borderTopWidth:\s*0\.5/);
+
+    const matriculaTxt = [
+      "Página 1",
+      "Imóvel edificado em terreno de marinha sob regime de ocupação na SPU.",
+      "Página 2",
+      "R-4: Consta hipoteca e penhora judicial averbada sobre a unidade.",
+    ].join("\n");
+    const lMat = lerAta(matriculaTxt, "matricula");
+    expect(lMat.achados.find((x) => x.tema === "regime_spu")?.pagina).toBe(1);
+    expect(lMat.achados.find((x) => x.tema === "gravames")?.pagina).toBe(2);
+    expect(lMat.ausentesEsperados.some((x) => x.tema === "situacao_onus")).toBe(true);
+    expect(lMat.perguntas.join(" ")).toMatch(/terreno de marinha|CAT/i);
+    expect(lMat.perguntas.join(" ")).toMatch(/gravame ou garantia/i);
+
+    const lBal = lerAta("As despesas superaram as receitas e o exercício fechou com déficit recorrente.\nHouve troca de administradora em maio.", "balancete");
+    expect(lBal.achados.some((x) => x.tema === "deficit_orcamentario")).toBe(true);
+    expect(lBal.achados.some((x) => x.tema === "troca_administradora")).toBe(true);
+
+    const aMat = analise({
+      caderno: {
+        ...cadernoVazio(),
+        documentos: [{
+          id: "doc-mat",
+          titulo: "Matrícula (trechos do leitor)",
+          tipo: "matricula",
+          inspecaoEm: null,
+          emitidoEm: null,
+          recebidoEm: AGORA,
+          origem: "Texto colado",
+          escopo: "",
+          trecho: "[Gravames e garantias · p. 2] R-4: Consta hipoteca e penhora judicial averbada.",
+          pagina: 2,
+          vinculo: "a_confirmar",
+        }],
+      },
+    }, { preco: 750000 });
+    const negMat = prepararNegociacao(aMat, { achados: { principal: null, apoio: [] }, perguntas: [] } as unknown as Parameters<typeof prepararNegociacao>[1], [aMat], { predio: null, calor: null, barulho: [] });
+    expect(negMat.argumentos.some((x) => x.id === "ata:0" && x.pergunta?.includes("baixa do gravame"))).toBe(true);
+
+    let arvore!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      arvore = TestRenderer.create(
+        React.createElement(TemaDoApp, null, React.createElement(LeitorDeAta, { salvar: async () => true })),
+      );
+    });
+
+    const abrirGrupo = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.some((c) => typeof c === "string" && c.includes("Ler ata, convenção"))).length > 0);
+    expect(abrirGrupo).toBeDefined();
+    act(() => {
+      abrirGrupo!.props.onPress?.();
+    });
+
+    expect(JSON.stringify(arvore.toJSON())).toContain("Matrícula / ônus");
+    expect(arvore.root.find((n) => n.props.testID === "leitor-prioridades-intake")).toBeDefined();
+
+    const btnMat = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.some((c) => typeof c === "string" && c.includes("Matrícula / ônus"))).length > 0);
+    const pillPrioridade = arvore.root.find(
+      (n) => n.props.testID === "leitor-prioridade-onus_spu" && typeof n.props.onPress === "function",
+    );
+    const campo = arvore.root.findByType(TextInput);
+
+    act(() => {
+      btnMat!.props.onPress?.();
+      pillPrioridade.props.onPress?.();
+      campo.props.onChangeText?.(matriculaTxt);
+    });
+
+    const btnLer = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.some((c) => typeof c === "string" && c.includes("Ler o texto"))).length > 0);
+    act(() => {
+      btnLer!.props.onPress?.();
+    });
+
+    const jsonLido = JSON.stringify(arvore.toJSON());
+    expect(jsonLido).toContain("Sua prioridade");
+    expect(jsonLido).toContain("O que não apareceu neste texto");
+    expect(jsonLido).toContain("Copiar perguntas");
+
+    const btnCopiarPerg = arvore.root
+      .findAllByType(Pressionavel)
+      .find((n) => n.findAll((sub) => sub.children.some((c) => typeof c === "string" && c.includes("Copiar perguntas"))).length > 0);
+    expect(btnCopiarPerg).toBeDefined();
+    await act(async () => {
+      await btnCopiarPerg!.props.onPress?.();
+    });
+    expect(JSON.stringify(arvore.toJSON())).toContain("Perguntas copiadas para enviar ao síndico ou corretor.");
 
     act(() => {
       arvore.unmount();
