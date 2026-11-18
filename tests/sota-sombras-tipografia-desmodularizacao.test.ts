@@ -2718,4 +2718,14 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect((mapaSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(4);
     expect(mapaSrc).toContain("fontVariant: [\"tabular-nums\"]");
   });
+
+  it("PerfilDomicilio zera comAlfa/caixas de pílulas e exibe prévia mensal ao vivo (S70)", () => {
+    const perfilSrc = readFileSync(
+      join(__dirname, "..", "src", "app", "perfil-domicilio.tsx"),
+      "utf8",
+    );
+    expect(perfilSrc).not.toMatch(/\bcomAlfa\b/);
+    expect((perfilSrc.match(/borderWidth:\s*1\b/g) ?? []).length).toBeLessThanOrEqual(2);
+    expect(perfilSrc).toContain("perfil-resumo-mensal-vivo");
+  });
 });
