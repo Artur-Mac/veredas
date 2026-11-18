@@ -114,6 +114,12 @@ export function CanvasSolSombraBrisa25D({
   const centroLat = centro[1];
   const dia = estacao === "verao" ? "2026-12-21" : "2026-06-21";
   const maxAndar = Math.max(28, pavimentosTotais ?? 24);
+  const totalPavRef = Math.max(8, pavimentosTotais ?? 14);
+  const bandasAndar = [
+    { id: "baixo", label: "Baixo", target: 2 },
+    { id: "medio", label: "Médio", target: Math.max(4, Math.round(totalPavRef * 0.5)) },
+    { id: "alto", label: "Alto", target: Math.max(8, totalPavRef - 1) },
+  ] as const;
   const zAndarM = Math.max(1.5, (andar - 1) * 3.0 + 1.5);
   const fachadaAtiva =
     inferencia.fachadas.find((f) => f.id === fachadaSelecionada) ?? inferencia.frente;
@@ -897,6 +903,36 @@ export function CanvasSolSombraBrisa25D({
           </Pressable>
         </View>
 
+        <View style={styles.bandasRow}>
+          {bandasAndar.map((b) => {
+            const ativo = andar === b.target;
+            return (
+              <Pressable
+                key={b.id}
+                testID={`andar-banda-${b.id}`}
+                accessibilityRole="button"
+                onPress={() => aoAlterarAndar(b.target)}
+                style={[
+                  styles.bandaPilula,
+                  {
+                    backgroundColor: ativo
+                      ? cor("cor-texto")
+                      : cor("cor-papel-claro"),
+                  },
+                ]}
+              >
+                <Texto
+                  tipo="apoio"
+                  cor={ativo ? "cor-superficie" : "cor-texto"}
+                  style={styles.textoBanda}
+                >
+                  {b.label}
+                </Texto>
+              </Pressable>
+            );
+          })}
+        </View>
+
         <Pressable
           testID="toggle-torres-futuras"
           accessibilityRole="switch"
@@ -1086,6 +1122,22 @@ const styles = StyleSheet.create({
   andarValor: {
     alignItems: "center",
     minWidth: 68,
+  },
+  bandasRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  bandaPilula: {
+    minHeight: 36,
+    borderRadius: RAIO.pilula,
+    paddingHorizontal: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  textoBanda: {
+    fontSize: 11.5,
+    fontWeight: "600",
   },
   tabular: {
     fontVariant: ["tabular-nums"],

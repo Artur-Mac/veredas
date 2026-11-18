@@ -734,4 +734,31 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(loteItem.estado).toBe("atencao");
     expect(loteItem.detalhe).toContain("112 m² × cadastro 75 m²");
   });
+
+  it("permite pular para faixas de andar (Baixo, Médio, Alto) em 1 toque no Canvas 2.5D", () => {
+    const aoAlterarAndar = jest.fn();
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(CanvasSolSombraBrisa25D, {
+            inferencia: inf,
+            fachadaSelecionada: "frente_rua",
+            aoSelecionarFachada: () => undefined,
+            andar: 4,
+            aoAlterarAndar,
+            pavimentosTotais: 16,
+            centro,
+          }),
+        ),
+      );
+    });
+    const btnAlto = tree.root.find((n) => n.props.testID === "andar-banda-alto");
+    act(() => {
+      btnAlto.props.onPress();
+    });
+    expect(aoAlterarAndar).toHaveBeenCalledWith(15);
+  });
 });
