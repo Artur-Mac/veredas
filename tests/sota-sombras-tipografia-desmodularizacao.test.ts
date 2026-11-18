@@ -761,4 +761,85 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     });
     expect(aoAlterarAndar).toHaveBeenCalledWith(15);
   });
+
+  it("gera link privado sem servidor (#v= / #s=) no dossiê executivo", async () => {
+    const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: 90, andar: 5 });
+    const conf = avaliarConfortoTermico({
+      andar: 5,
+      pavimentosTotais: 14,
+      fachada: inf.frente,
+      bioclimatico: bio,
+    });
+    const acu = avaliarAcustica3d({
+      andar: 5,
+      fachadaVoltadaParaVia: "frente",
+      tipologiaVia: "coletora",
+      distanciaViaM: 18,
+      anoConstrucao: 2016,
+      precoImovelReais: 850_000,
+    });
+    const radar = analisarRadarVistaELote({
+      centro,
+      edificio: null,
+      fachadaAtiva: inf.frente,
+      andar: 5,
+      vizinhos: vizinhosMesmaRua,
+      obrasProximas: null,
+    });
+    const pulso = calcularPulsoDaQuadra({
+      conforto: conf,
+      acustica: acu,
+      anoConstrucao: 2016,
+      obrasProximas: null,
+      visaoRua: null,
+      vinculoConfirmado: true,
+      precoInformado: true,
+      condominioInformado: true,
+      comparacaoM2Pct: 0,
+      spuAtivo: false,
+    });
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(ExportarResumoExecutivo, {
+            entrada: {
+              nomeImovel: "Edifício Atlântico",
+              endereco: "Av. Boa Viagem, 120",
+              modalidade: "compra",
+              precoPrincipalReais: 850_000,
+              mensalBolsoRealReais: 6_200,
+              dinheiroEntrarReais: 195_000,
+              fachadaResumo: "Nascente (5º andar)",
+              conforto: conf,
+              sossegoNivel: "Calmo à noite",
+              radar,
+              pulso,
+              anoConstrucao: 2016,
+              unidades: 36,
+              chaveLote14: "12345678901234",
+              spuAtivo: false,
+            },
+          }),
+        ),
+      );
+    });
+
+    const btnLink = tree.root.find((n) => n.props.testID === "botao-gerar-link-privado");
+    await act(async () => {
+      btnLink.props.onPress();
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    act(() => {
+      tree.unmount();
+    });
+    expect(txt).toContain("/sala#v=");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    expect(/\bseguro\b/i.test(txt)).toBe(false);
+  });
 });

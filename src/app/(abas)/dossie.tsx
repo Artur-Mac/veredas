@@ -856,6 +856,8 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
                 />
                 <SilencioInteligente itensNormais={itensSilencio} />
                 <ExportarResumoExecutivo
+                  analisePrincipal={analise}
+                  outrasAnalises={outras}
                   entrada={{
                     nomeImovel: analise.nome,
                     endereco: visao.endereco || nomeDoBairro,

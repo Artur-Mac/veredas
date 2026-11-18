@@ -1,4 +1,6 @@
+import type { AnaliseV2 } from "../contratos";
 import { formatarReais, formatarReaisCompacto } from "../formatos";
+import { fragmentoDaSala, montarSala, paraBase64Url } from "../salaDeDecisao";
 import type { VereditoConfortoTermico } from "../clima/confortoTermico";
 import type { ResultadoRadarVistaELote } from "../entorno/radarVistaELote";
 import type { ResultadoPulsoDaQuadra } from "./pulsoDaQuadra";
@@ -67,4 +69,38 @@ export function gerarTextoResumoExecutivo(e: EntradaResumoExecutivo): string {
   ];
 
   return linhas.join("\n");
+}
+
+export function gerarLinkPrivadoSemServidor(params: {
+  entrada: EntradaResumoExecutivo;
+  analisePrincipal?: AnaliseV2 | null;
+  outrasAnalises?: readonly AnaliseV2[];
+  origemWeb?: string;
+}): string {
+  const origem = params.origemWeb ?? "https://vereda.local";
+  const compativel = (params.outrasAnalises ?? []).find(
+    (x) =>
+      params.analisePrincipal &&
+      x.id !== params.analisePrincipal.id &&
+      !x.descarte &&
+      x.modalidade === params.analisePrincipal.modalidade,
+  );
+  if (params.analisePrincipal && compativel) {
+    const sala = montarSala(
+      [params.analisePrincipal, compativel],
+      new Date().toISOString(),
+    );
+    return `${origem}/sala#${fragmentoDaSala(sala)}`;
+  }
+
+  const compacto = {
+    v: 1,
+    n: params.entrada.nomeImovel.slice(0, 60),
+    e: params.entrada.endereco.slice(0, 80),
+    m: params.entrada.modalidade,
+    p: params.entrada.precoPrincipalReais,
+    mb: params.entrada.mensalBolsoRealReais,
+    s: params.entrada.fachadaResumo,
+  };
+  return `${origem}/sala#v=${paraBase64Url(JSON.stringify(compacto))}`;
 }

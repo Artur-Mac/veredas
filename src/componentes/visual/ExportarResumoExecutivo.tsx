@@ -1,7 +1,9 @@
 import * as Clipboard from "expo-clipboard";
-import React, { useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
+import type { AnaliseV2 } from "../../dados/contratos";
 import {
+  gerarLinkPrivadoSemServidor,
   gerarTextoResumoExecutivo,
   type EntradaResumoExecutivo,
 } from "../../dados/dossie/resumoExecutivo2Paginas";
@@ -11,12 +13,28 @@ import { RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 
 export function ExportarResumoExecutivo({
   entrada,
+  analisePrincipal = null,
+  outrasAnalises = [],
 }: {
   entrada: EntradaResumoExecutivo;
+  analisePrincipal?: AnaliseV2 | null;
+  outrasAnalises?: readonly AnaliseV2[];
 }) {
   const { cor } = useTema();
   const [copiado, setCopiado] = useState(false);
+  const [linkCopiado, setLinkCopiado] = useState(false);
+  const [linkGerado, setLinkGerado] = useState<string | null>(null);
   const [mostrarPrevia, setMostrarPrevia] = useState(false);
+  const timerTextoRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timerLinkRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (timerTextoRef.current) clearTimeout(timerTextoRef.current);
+      if (timerLinkRef.current) clearTimeout(timerLinkRef.current);
+    },
+    [],
+  );
 
   const resumo = gerarTextoResumoExecutivo(entrada);
 
@@ -24,10 +42,34 @@ export function ExportarResumoExecutivo({
     void Clipboard.setStringAsync(resumo)
       .then(() => {
         setCopiado(true);
-        setTimeout(() => setCopiado(false), 3000);
+        if (timerTextoRef.current) clearTimeout(timerTextoRef.current);
+        timerTextoRef.current = setTimeout(() => setCopiado(false), 3000);
       })
       .catch(() => {
         setCopiado(false);
+      });
+  };
+
+  const gerarECopiarLink = () => {
+    const origemWeb =
+      Platform.OS === "web" && typeof window !== "undefined"
+        ? window.location.origin
+        : undefined;
+    const url = gerarLinkPrivadoSemServidor({
+      entrada,
+      analisePrincipal,
+      outrasAnalises,
+      origemWeb,
+    });
+    setLinkGerado(url);
+    void Clipboard.setStringAsync(url)
+      .then(() => {
+        setLinkCopiado(true);
+        if (timerLinkRef.current) clearTimeout(timerLinkRef.current);
+        timerLinkRef.current = setTimeout(() => setLinkCopiado(false), 3000);
+      })
+      .catch(() => {
+        setLinkCopiado(false);
       });
   };
 
@@ -76,6 +118,37 @@ export function ExportarResumoExecutivo({
               : "Copiar dossiê executivo completo"}
           </Texto>
         </Pressable>
+
+        <Pressable
+          testID="botao-gerar-link-privado"
+          accessibilityRole="button"
+          onPress={gerarECopiarLink}
+          style={({ pressed }) => [
+            styles.botaoPrincipal,
+            {
+              backgroundColor: linkCopiado
+                ? cor("cor-salvia-suave")
+                : cor("cor-papel-claro"),
+              opacity: pressed ? 0.8 : 1,
+            },
+          ]}
+        >
+          <Texto
+            tipo="etiqueta"
+            cor={linkCopiado ? "cor-salvia-escura" : "cor-azul-cadastral"}
+            style={styles.textoBotao}
+          >
+            {linkCopiado
+              ? "Link privado copiado! Nada enviado a servidor"
+              : "Copiar link privado sem servidor (#s= / #v=)"}
+          </Texto>
+        </Pressable>
+
+        {linkGerado ? (
+          <Texto tipo="apoio" cor="cor-texto-apoio" numberOfLines={2} style={styles.linkPreview}>
+            {linkGerado}
+          </Texto>
+        ) : null}
 
         <Pressable
           accessibilityRole="button"
@@ -134,6 +207,11 @@ const styles = StyleSheet.create({
   textoBotao: {
     fontSize: 13.5,
     fontWeight: "700",
+  },
+  linkPreview: {
+    fontSize: 11,
+    lineHeight: 15,
+    fontFamily: "JetBrainsMono",
   },
   botaoPrevia: {
     minHeight: 38,
