@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { Cartao, CorpoDoCartao } from "../../componentes/Cartao";
 import { useAviso } from "../../componentes/casca/Aviso";
@@ -48,11 +48,15 @@ import { bairroPorSlug, eCoberto } from "../../dados/recife/bairros";
 import { useAnalises } from "../../estado/Analises";
 import { usePerfilDomicilio } from "../../estado/PerfilDomicilio";
 import { useTema } from "../../tema/Tema";
-import { ESPACO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
+import { ESPACO, RAIO, TOQUE_MINIMO, comAlfa } from "../../tema/tokens";
 import { traduzirIndicadoresCidadao } from "../../dados/cidadao/tradutorCidadao";
 import { CartaoCidadao3Camadas } from "../../componentes/cidadao/CartaoCidadao3Camadas";
 import { SimuladorTco10Anos } from "../../componentes/cidadao/SimuladorTco10Anos";
 import { ResumoEvidenciaPartilhavel } from "../../componentes/cidadao/ResumoEvidenciaPartilhavel";
+import { avaliarBioclimatico3d } from "../../municipios/recife/motores/bioclimatico3d";
+import { avaliarAcustica3d } from "../../nucleo/motores/acustica3d";
+import { avaliarHidroMare1m } from "../../municipios/recife/motores/hidroMare1m";
+import { avaliarResilienciaRedes } from "../../municipios/recife/motores/resilienciaRedes";
 
 /** Recuo do painel (`.ds-panel`, padding 20 18): a posição de uma seção na tela soma este recuo ao topo do painel. */
 const RECUO_DO_PAINEL = 20;
@@ -193,6 +197,52 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
     }
   }, [predio, analise.bairro, nomeDoBairro]);
 
+  const [orientacaoSimulada, setOrientacaoSimulada] = useState<number | null>(
+    analise.visita.orientacaoGraus ?? null,
+  );
+  const fachadaGrausAtiva = orientacaoSimulada ?? analise.visita.orientacaoGraus ?? 90;
+
+  const bioclimatico = useMemo(
+    () =>
+      avaliarBioclimatico3d({
+        fachadaAzimuteGraus: fachadaGrausAtiva,
+        andar: analise.declarados.andar.valor ?? 4,
+      }),
+    [fachadaGrausAtiva, analise.declarados.andar.valor],
+  );
+
+  const acustica = useMemo(
+    () =>
+      avaliarAcustica3d({
+        andar: analise.declarados.andar.valor ?? 4,
+        fachadaVoltadaParaVia: "frente",
+        tipologiaVia: "coletora",
+        distanciaViaM: 18,
+        anoConstrucao: predio?.anoConstrucao ?? null,
+      }),
+    [analise.declarados.andar.valor, predio?.anoConstrucao],
+  );
+
+  const hidroMare = useMemo(
+    () =>
+      avaliarHidroMare1m({
+        handM: null,
+        areaDrenadaM2: null,
+        declividadeTangente: null,
+      }),
+    [],
+  );
+
+  const resiliencia = useMemo(
+    () =>
+      avaliarResilienciaRedes({
+        bairroSlug: analise.bairro ?? "recife",
+        unidadesCondominio: predio?.unidades ?? null,
+        andar: analise.declarados.andar.valor ?? null,
+      }),
+    [analise.bairro, predio?.unidades, analise.declarados.andar.valor],
+  );
+
   const partesDeCusto = useMemo(
     () => derivarCustoPorPartes(analise, predio, perfilDomicilio),
     [analise, predio, perfilDomicilio],
@@ -204,10 +254,14 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
         dsqfl: predio?.dsqfl ?? null,
         cnm16: null,
         custoPorPartes: partesDeCusto,
+        bioclimatico,
+        acustica,
+        hidroMare,
+        resiliencia,
       }),
-    [analise.modalidade, predio, partesDeCusto],
+    [analise.modalidade, predio, partesDeCusto, bioclimatico, acustica, hidroMare, resiliencia],
   );
-  const [mostrarPainelCidadao, setMostrarPainelCidadao] = useState(false);
+  const [mostrarPainelCidadao, setMostrarPainelCidadao] = useState(true);
 
   const fechar = useCallback(() => setGaveta(null), []);
 
@@ -470,6 +524,66 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
 
           {/* `.ds-after-panel`: Raio-X vem depois dos destaques (ordem pedida pelo usuário), depois negociação e ações. */}
           <View style={styles.depoisDoPainel}>
+            {aba === "destaques" ? (
+              <View
+                style={{
+                  backgroundColor: cor("cor-creme"),
+                  borderWidth: 1,
+                  borderColor: comAlfa(cor("cor-texto"), 0.12),
+                  borderRadius: RAIO.cartao,
+                  padding: 14,
+                  gap: 10,
+                }}
+              >
+                <Texto tipo="secao" style={{ fontSize: 16 }}>
+                  Sol, poente e brisa deste apartamento
+                </Texto>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12.5 }}>
+                  Escolha para qual lado a janela principal aponta (ou confira na bússola da Visita):
+                </Texto>
+                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+                  {(
+                    [
+                      { rotulo: "Nascente (Leste)", graus: 90 },
+                      { rotulo: "Poente (Oeste)", graus: 270 },
+                      { rotulo: "Norte", graus: 0 },
+                      { rotulo: "Sul", graus: 180 },
+                    ] as const
+                  ).map((op) => {
+                    const ativo = Math.abs(fachadaGrausAtiva - op.graus) < 25;
+                    return (
+                      <Pressable
+                        key={op.rotulo}
+                        onPress={() => setOrientacaoSimulada(op.graus)}
+                        accessibilityRole="button"
+                        style={{
+                          minHeight: TOQUE_MINIMO,
+                          paddingHorizontal: 12,
+                          justifyContent: "center",
+                          borderRadius: RAIO.pilula,
+                          borderWidth: 1,
+                          borderColor: ativo ? cor("cor-acao") : comAlfa(cor("cor-texto"), 0.16),
+                          backgroundColor: ativo ? cor("cor-acao") : cor("cor-superficie"),
+                        }}
+                      >
+                        <Texto
+                          tipo="etiqueta"
+                          cor={ativo ? "cor-sobre-acao" : "cor-texto"}
+                          style={{ fontSize: 12.5 }}
+                        >
+                          {op.rotulo}
+                        </Texto>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+                <Texto tipo="corpo" style={{ fontSize: 13.5, lineHeight: 19 }}>
+                  {bioclimatico.exposicaoPoente
+                    ? `Poente (${bioclimatico.orientacaoCardinal}): recebe sol forte da tarde, somando ~R$ ${bioclimatico.custoMensalExtraPoenteReais}/mês de climatização (R$ ${bioclimatico.vpl10AnosPoenteReais.toLocaleString("pt-BR")} em 10 anos).`
+                    : `${bioclimatico.orientacaoCardinal}: ${bioclimatico.horasSolEquinocioH.toFixed(1)} h de sol direto no equinócio · brisa ${bioclimatico.classificacaoBrisaLesteSudeste.replace(/_/g, " ")}.`}
+                </Texto>
+              </View>
+            ) : null}
             {aba === "destaques" ? <FichaViva analise={analise} predio={predio} lista={lista} visao={visao} nomeDoBairro={nomeDoBairro} /> : null}
             {aba === "entorno" ? <ServicosDeEntorno centro={predio?.centro ?? (analise.caderno?.localizacaoDaVisita ? [analise.caderno.localizacaoDaVisita.longitude, analise.caderno.localizacaoDaVisita.latitude] : null)} referenciaDaVisita={!predio ? analise.caderno?.localizacaoDaVisita : undefined} bairro={predio?.bairro ?? null} predioId={predio?.id ?? null} /> : null}
             {aba === "destaques" ? <PrepararNegociacao analise={analise} visao={visao} lista={lista} predio={predio} nomeDoBairro={nomeDoBairro} /> : null}

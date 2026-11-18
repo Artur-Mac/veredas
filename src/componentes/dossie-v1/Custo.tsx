@@ -340,6 +340,22 @@ export function BlocoDeCusto({
               </View>
             ) : null}
 
+            {partes.otimizacaoFechamento ? (
+              <View style={{ marginTop: 2, paddingTop: 6, borderTopWidth: 1, borderTopColor: cor("cor-linha"), gap: 2 }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                  <Texto tipo="apoio" style={{ fontSize: 11.5, lineHeight: 16, fontWeight: "600", flex: 1 }}>
+                    Economia legal no fechamento (ITBI + cartório)
+                  </Texto>
+                  <Texto tipo="numero" cor="cor-salvia-escura" style={{ fontSize: 12, lineHeight: 17, fontWeight: "600" }}>
+                    {`até ${formatarReais(partes.otimizacaoFechamento.melhorCenarioEconomiaReais)}`}
+                  </Texto>
+                </View>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 15 }}>
+                  {`À vista em 30 dias (1,8%): economiza ${formatarReais(partes.otimizacaoFechamento.economiaAVistaTempestivoReais)}${partes.otimizacaoFechamento.economiaSfhReais ? ` · Financiado SFH (1,0% até R$ 1.036.600,71): economiza ${formatarReais(partes.otimizacaoFechamento.economiaSfhReais)}` : ""}.`}
+                </Texto>
+              </View>
+            ) : null}
+
             {partes.alertaMarinha ? (
               <View
                 style={{

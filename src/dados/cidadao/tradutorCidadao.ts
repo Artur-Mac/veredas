@@ -437,7 +437,7 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
   const riscoEst = est?.riscoPredioCaixao ?? "nao_sabemos";
   const ind09: CartaoCidadao3Camadas = {
     indicadorId: "IND-09",
-    tituloCurto: "Tipologia construtiva e seguro",
+    tituloCurto: "Tipologia construtiva e crédito",
     camada1Manchete: sanearTextoCamada1(
       riscoEst === "confirmado_acordo_trf5"
         ? "Edifício consta em acordo judicial de desocupação e demolição estrutural."
@@ -447,9 +447,9 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
     ),
     camada2ImpactoPratico:
       est?.bloqueioSeguroECreditoProvavel
-        ? "Financiamento habitacional e apólice de seguro enfrentam bloqueio provável."
+        ? "Financiamento habitacional e apólice patrimonial enfrentam bloqueio provável."
         : `Vistoria trienal (Lei PE 13.032/06): ${est?.vistoriaTrienalLei13032.estado ?? "a confirmar"}.`,
-    camada2AcaoConcreta: "Peça o último Laudo Técnico de Vistoria Predial (ART/RRT) e apólice de seguro do prédio.",
+    camada2AcaoConcreta: "Peça o último Laudo Técnico de Vistoria Predial (ART/RRT) e a apólice condominial vigente.",
     camada3ProvaMetodo: {
       epistemicTag: est?.epistemicTag ?? "nao_sabemos",
       ausencia: est ? null : descreverAusenciaCidadao("sem_leitura_publicada"),
