@@ -1426,4 +1426,85 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(sobreSrc).toContain("nada é usado para treinar modelos");
     expect(sobreSrc).toContain("não substitui certidão oficial nem responsabiliza o app");
   });
+
+  it("expõe escada de ação prática e ficha de método de 6 campos (Jupiter app28 / Symbium) em RadarVistaELote", () => {
+    const bv = edificiosDoBairro("boa-viagem");
+    const edificio = bv.find((e) => e.poligono && e.poligono.length >= 3)!;
+    const inf = inferirFachadasDoEdificio({ edificio, textoAnuncio: "" });
+
+    const radarComObra = analisarRadarVistaELote({
+      centro: edificio.centro,
+      edificio,
+      fachadaAtiva: inf.frente,
+      andar: 5,
+      vizinhos: bv.slice(0, 6).map((v) => ({
+        id: v.id,
+        centro: v.centro,
+        logradouro: v.logradouro ?? "",
+        pavimentos: v.pavimentos,
+        poligono: v.poligono,
+      })),
+      obrasProximas: {
+        licencasDeObra: 2,
+        relevantes24m: 1,
+        demolicoes24m: 0,
+        recentes: [
+          {
+            categoria: "construcao",
+            descricao: "Edifício residencial multipavimentos",
+            data: "2026-08",
+            situacao: "EMITIDA",
+            centro: [
+              edificio.centro[0] + Math.sin((inf.frente.azimuteGraus * Math.PI) / 180) * 0.00035,
+              edificio.centro[1] + Math.cos((inf.frente.azimuteGraus * Math.PI) / 180) * 0.00035,
+            ],
+            distanciaM: 40,
+          },
+        ],
+      },
+    });
+    expect(radarComObra.acoesPraticas.length).toBeGreaterThan(0);
+    expect(radarComObra.fichaMetodo.janelaTemporal).toContain("24 meses");
+
+    const radarLimpo = analisarRadarVistaELote({
+      centro: edificio.centro,
+      edificio: null,
+      fachadaAtiva: inf.frente,
+      andar: 5,
+      vizinhos: [],
+      obrasProximas: null,
+    });
+    expect(radarLimpo.acoesPraticas).toEqual([]);
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(RadarVistaELote, { radar: radarComObra }),
+        ),
+      );
+    });
+
+    expect(tree.root.find((n) => n.props.testID === "radar-acoes-praticas")).toBeDefined();
+    const toggle = tree.root.find((n) => n.props.testID === "radar-toggle-metodo");
+    act(() => {
+      toggle.props.onPress();
+    });
+    expect(tree.root.find((n) => n.props.testID === "radar-ficha-metodo")).toBeDefined();
+
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain("O que conferir antes de avançar");
+    expect(txt).toContain("Janela:");
+    expect(txt).toContain("Não inclui:");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+
+    const radarSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "visual", "RadarVistaELote.tsx"),
+      "utf8",
+    );
+    expect(radarSrc).not.toContain("TOQUE_MINIMO - 4");
+  });
 });

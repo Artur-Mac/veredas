@@ -71,8 +71,30 @@ export function RadarVistaELote({ radar }: { radar: ResultadoRadarVistaELote }) 
         </View>
       ))}
 
+      {radar.acoesPraticas.length > 0 ? (
+        <View
+          testID="radar-acoes-praticas"
+          style={[styles.faixaAcoes, { borderTopColor: cor("cor-linha") }]}
+        >
+          <Texto tipo="etiqueta" style={styles.tituloAcoes}>
+            O que conferir antes de avançar
+          </Texto>
+          {radar.acoesPraticas.map((acao, idx) => (
+            <Texto
+              key={`acao-${idx}`}
+              tipo="apoio"
+              cor="cor-texto-apoio"
+              style={styles.detalheItem}
+            >
+              {`• ${acao}`}
+            </Texto>
+          ))}
+        </View>
+      ) : null}
+
       <View style={[styles.rodapeMetodo, { borderTopColor: cor("cor-linha") }]}>
         <Pressable
+          testID="radar-toggle-metodo"
           accessibilityRole="button"
           accessibilityState={{ expanded: mostrarMetodo }}
           onPress={() => setMostrarMetodo((v) => !v)}
@@ -85,9 +107,28 @@ export function RadarVistaELote({ radar }: { radar: ResultadoRadarVistaELote }) 
           </Texto>
         </Pressable>
         {mostrarMetodo ? (
-          <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoMetodo}>
-            Cruzamos somente licenças oficiais publicadas pela Prefeitura do Recife e a geometria dos lotes cadastrados num cone frontal de 42° a partir da fachada selecionada. Nunca projetamos obras privadas sem alvará público.
-          </Texto>
+          <View testID="radar-ficha-metodo" style={styles.blocoFichaMetodo}>
+            <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoMetodo}>
+              Cruzamos somente licenças oficiais publicadas pela Prefeitura do Recife e a geometria dos lotes cadastrados num cone frontal de 42° a partir da fachada selecionada. Nunca projetamos obras privadas sem alvará público.
+            </Texto>
+            {[
+              { rotulo: "Método", valor: radar.fichaMetodo.metodo },
+              { rotulo: "Fonte", valor: radar.fichaMetodo.fonte },
+              { rotulo: "Escala", valor: radar.fichaMetodo.escala },
+              { rotulo: "Fórmula", valor: radar.fichaMetodo.formula },
+              { rotulo: "Não inclui", valor: radar.fichaMetodo.naoInclui },
+              { rotulo: "Janela", valor: radar.fichaMetodo.janelaTemporal },
+            ].map((campo) => (
+              <View key={campo.rotulo} style={styles.linhaMetodoCampo}>
+                <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.rotuloMetodoCampo}>
+                  {`${campo.rotulo}: `}
+                  <Texto tipo="apoio" style={styles.valorMetodoCampo}>
+                    {campo.valor}
+                  </Texto>
+                </Texto>
+              </View>
+            ))}
+          </View>
         ) : null}
       </View>
     </View>
@@ -158,17 +199,43 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 4,
   },
+  faixaAcoes: {
+    borderTopWidth: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 11,
+    gap: 4,
+  },
+  tituloAcoes: {
+    fontSize: 12.5,
+    fontWeight: "700",
+  },
   botaoMetodo: {
-    minHeight: TOQUE_MINIMO - 4,
+    minHeight: TOQUE_MINIMO,
     justifyContent: "center",
   },
   textoBotaoMetodo: {
     fontSize: 12,
     fontWeight: "600",
   },
+  blocoFichaMetodo: {
+    gap: 4,
+    paddingBottom: 10,
+  },
   textoMetodo: {
     fontSize: 11.5,
     lineHeight: 16,
-    paddingBottom: 10,
+    paddingBottom: 4,
+  },
+  linhaMetodoCampo: {
+    gap: 1,
+  },
+  rotuloMetodoCampo: {
+    fontSize: 11.5,
+    lineHeight: 16,
+    fontWeight: "600",
+  },
+  valorMetodoCampo: {
+    fontSize: 11.5,
+    lineHeight: 16,
   },
 });

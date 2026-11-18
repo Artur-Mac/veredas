@@ -12,6 +12,15 @@ export type ItemRadarVistaELote = {
   detalhe: string;
 };
 
+export type FichaMetodoRadar = {
+  metodo: string;
+  fonte: string;
+  escala: string;
+  formula: string;
+  naoInclui: string;
+  janelaTemporal: string;
+};
+
 export type ResultadoRadarVistaELote = {
   manchete: string;
   areaLoteM2: number | null;
@@ -24,6 +33,8 @@ export type ResultadoRadarVistaELote = {
     ItemRadarVistaELote,
     ItemRadarVistaELote,
   ];
+  acoesPraticas: readonly string[];
+  fichaMetodo: FichaMetodoRadar;
 };
 
 const RAD = Math.PI / 180;
@@ -319,6 +330,45 @@ export function analisarRadarVistaELote(params: {
   // Unused RAD guard (mantem simetria trigonometrica disponivel)
   void RAD;
 
+  const acoesPraticas: string[] = [];
+  if (itemCone.estado === "atencao") {
+    acoesPraticas.push(
+      "Consultar o alvará e o gabarito da obra no eixo da janela para estimar impacto em sol e vista.",
+    );
+  } else if (itemCone.estado === "moderado") {
+    acoesPraticas.push(
+      `Confirmar na visita presencial a linha do horizonte no ${andar}º andar frente ao edifício vizinho.`,
+    );
+  }
+  if (itemPrivacidade.estado === "atencao") {
+    acoesPraticas.push(
+      "Conferir na visita a distância real entre janelas e necessidade de cortina ou película.",
+    );
+  }
+  if (itemLote.estado === "atencao") {
+    acoesPraticas.push(
+      "Solicitar a matrícula do imóvel para conferir metragem privativa registrada versus anunciada.",
+    );
+  }
+  if (
+    acoesPraticas.length < 3 &&
+    (itemObras.estado === "atencao" || itemObras.estado === "moderado")
+  ) {
+    acoesPraticas.push(
+      "Checar horários de canteiro das obras licenciadas num raio de 150 m antes de assinar proposta.",
+    );
+  }
+
+  const fichaMetodo: FichaMetodoRadar = {
+    metodo:
+      "Cone direcional de 42° até 120 m, vão livre entre fachadas e polígonos cadastrados.",
+    fonte: "Cadastro imobiliário e licenciamento urbano (Prefeitura do Recife).",
+    escala: "Faixas em metros, pavimentos e área útil com recorte de 24 meses.",
+    formula: "Cruzamento geométrico da fachada escolhida contra alvarás e vizinhos.",
+    naoInclui: "Reformas internas sem alvará nem projetos particulares ainda não protocolados.",
+    janelaTemporal: "Licenças nos últimos 24 meses (histórico 2018–2026).",
+  };
+
   return {
     manchete,
     areaLoteM2,
@@ -327,5 +377,7 @@ export function analisarRadarVistaELote(params: {
     obrasNoConeCount: obrasNoCone.length,
     // Ordem Gridics (R38): capacidade/horizonte -> terreno/lote -> privacidade/afastamento -> licenças existentes
     itens: [itemCone, itemLote, itemPrivacidade, itemObras],
+    acoesPraticas: acoesPraticas.slice(0, 3),
+    fichaMetodo,
   };
 }
