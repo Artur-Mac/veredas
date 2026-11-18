@@ -46,6 +46,14 @@ export function EscalaDeRuidoHumana({
           <Texto tipo="secao" style={styles.titulo}>
             {sintese.tituloQuarto}
           </Texto>
+          <Texto
+            testID="escala-ruido-nota-0a10"
+            tipo="apoio"
+            cor="cor-texto-apoio"
+            style={styles.notaEscalaUnica}
+          >
+            {`Nota de sossego ${sintese.notaSossego0a10.toFixed(1).replace(".", ",")} / 10`}
+          </Texto>
         </View>
         <View
           style={[
@@ -143,6 +151,9 @@ export function EscalaDeRuidoHumana({
       <Texto tipo="corpo" style={styles.descricao}>
         {sintese.notaJanela}
       </Texto>
+      <Texto testID="escala-ruido-aviso-metodo" tipo="apoio" cor="cor-texto-apoio" style={styles.avisoMetodo}>
+        {sintese.avisoEstimativaSemLaudo}
+      </Texto>
     </View>
   );
 }
@@ -183,6 +194,13 @@ export function RelogioDoPredio({
       : unidades
         ? `Obra grande dividida entre ${unidades} unidades${pavimentos ? ` em ${pavimentos} andares` : ""}.`
         : null;
+
+  const acaoVisita =
+    idade < 8
+      ? "O que checar: pedir manual de garantias construtivas e atas de entrega das áreas comuns."
+      : idade < 20
+        ? "O que checar: pedir últimas atas de assembleia sobre fachada, elevadores e saldo do fundo de reserva."
+        : "O que checar: confirmar nas atas se prumadas de água, impermeabilização e quadro elétrico já passaram por reforma.";
 
   return (
     <View
@@ -234,6 +252,11 @@ export function RelogioDoPredio({
           {impactoCota}
         </Texto>
       ) : null}
+      <View style={[styles.blocoAcaoVisita, { borderTopColor: cor("cor-linha") }]}>
+        <Texto testID="relogio-acao-visita" tipo="apoio" cor="cor-texto-apoio" style={styles.subTexto}>
+          {acaoVisita}
+        </Texto>
+      </View>
     </View>
   );
 }
@@ -319,6 +342,19 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: -0.3,
     fontVariant: ["tabular-nums"],
+  },
+  notaEscalaUnica: {
+    fontSize: 12,
+    fontWeight: "600",
+    fontVariant: ["tabular-nums"],
+  },
+  avisoMetodo: {
+    fontSize: 11.5,
+    lineHeight: 16,
+  },
+  blocoAcaoVisita: {
+    borderTopWidth: 1,
+    paddingTop: 8,
   },
   pilula: {
     borderRadius: RAIO.pilula,

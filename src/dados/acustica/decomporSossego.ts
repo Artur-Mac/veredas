@@ -15,9 +15,11 @@ export type SinteseSossego = {
   subtituloPlacar: string;
   tituloQuarto: string;
   rotuloSelo: "Tranquilo" | "Moderado" | "Atenção à janela";
+  notaSossego0a10: number;
   indice0a100Interno: number;
   indice0a100Externo: number;
   notaJanela: string;
+  avisoEstimativaSemLaudo: string;
   fontes: FonteDeSossego[];
 };
 
@@ -164,15 +166,24 @@ export function decomporSossego(
     });
   }
 
+  const notaSossego0a10 = Math.max(
+    1,
+    Math.min(9.8, Math.round(((64 - internoDb) / 3.4) * 10) / 10),
+  );
+  const avisoEstimativaSemLaudo =
+    "Estimativa por proximidade de fontes e época construtiva; não equivale a medição acústica no local.";
+
   return {
     nivelQuarto: nivel,
     rotuloCurtoPlacar: nivel,
     subtituloPlacar,
     tituloQuarto,
     rotuloSelo,
+    notaSossego0a10,
     indice0a100Interno,
     indice0a100Externo,
     notaJanela,
+    avisoEstimativaSemLaudo,
     fontes,
   };
 }

@@ -43,6 +43,9 @@ import { VidaAPeNaQuadra } from "../src/componentes/visual/VidaAPeNaQuadra";
 import { SimuladorBolso15Segundos } from "../src/componentes/visual/SimuladorBolso15Segundos";
 import { construirLinhaUnificadaDoLote } from "../src/dados/dossie/linhaUnificadaDoLote";
 import { LinhaUnificadaDoLote } from "../src/componentes/visual/LinhaUnificadaDoLote";
+import { decomporSossego } from "../src/dados/acustica/decomporSossego";
+import { EscalaDeRuidoHumana, RelogioDoPredio } from "../src/componentes/visual/EscalasVisuais";
+import { TermometroConfortoTermico } from "../src/componentes/visual/TermometroConfortoTermico";
 import { TemaDoApp } from "../src/tema/Tema";
 
 function listarTsxRecursivo(dir: string): string[] {
@@ -1896,6 +1899,70 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(tree.root.find((n) => n.props.testID === "canvas-checagem-anuncio")).toBeDefined();
     const txt = extrairTextos(tree.toJSON()).join("\n");
     expect(txt).toContain("Anúncio cita");
+    expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
+    for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
+  });
+
+  it("unifica escala 0–10 entre Pulso e Escalas, declara limite acústico e exibe próxima ação na visita em S43", () => {
+    const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: 270, andar: 12 });
+    const conf = avaliarConfortoTermico({
+      andar: 12,
+      pavimentosTotais: 12,
+      fachadaAzimuteGraus: 270,
+      bioclimatico: bio,
+    });
+    const acu = avaliarAcustica3d({
+      andar: 4,
+      fachadaVoltadaParaVia: "frente",
+      tipologiaVia: "coletora",
+      distanciaViaM: 12,
+      anoConstrucao: 2005,
+      precoImovelReais: 680_000,
+    });
+    const pulso = calcularPulsoDaQuadra({
+      conforto: conf,
+      acustica: acu,
+      anoConstrucao: 2005,
+      obrasProximas: null,
+      visaoRua: null,
+      vinculoConfirmado: true,
+      precoInformado: true,
+      condominioInformado: true,
+      comparacaoM2Pct: 0,
+      spuAtivo: false,
+    });
+    const sintese = decomporSossego(acu, 2005);
+
+    // Escala única 0–10 (HowLoud R36): mesmos valores numéricos entre cartões e PulsoDaQuadra
+    expect(conf.notaConforto0a10).toBe(pulso.eixos[0].nota0a10);
+    expect(sintese.notaSossego0a10).toBe(pulso.eixos[1].nota0a10);
+    expect(sintese.avisoEstimativaSemLaudo).not.toMatch(/\d+\s*dB/i);
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(EscalaDeRuidoHumana, { acustica: acu, anoConstrucao: 2005 }),
+          React.createElement(RelogioDoPredio, { anoConstrucao: 2005, unidades: 24, pavimentos: 12 }),
+          React.createElement(TermometroConfortoTermico, { conforto: conf, andar: 12 }),
+        ),
+      );
+    });
+
+    expect(tree.root.find((n) => n.props.testID === "escala-ruido-nota-0a10")).toBeDefined();
+    expect(tree.root.find((n) => n.props.testID === "escala-ruido-aviso-metodo")).toBeDefined();
+    expect(tree.root.find((n) => n.props.testID === "relogio-acao-visita")).toBeDefined();
+    expect(tree.root.find((n) => n.props.testID === "termometro-nota-0a10")).toBeDefined();
+    expect(tree.root.find((n) => n.props.testID === "termometro-acao-visita")).toBeDefined();
+
+    const txt = extrairTextos(tree.toJSON()).join("\n");
+    expect(txt).toContain(`${sintese.notaSossego0a10.toFixed(1).replace(".", ",")} / 10`);
+    expect(txt).toContain(`${conf.notaConforto0a10.toFixed(1).replace(".", ",")} / 10`);
+    expect(txt).toContain("não equivale a medição acústica no local");
+    expect(txt).toContain("O que checar");
+    expect(txt).not.toMatch(/\d+\s*dB/i);
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     for (const rx of PALAVRAS_PROIBIDAS_UI) expect(rx.test(txt)).toBe(false);
   });

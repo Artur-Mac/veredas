@@ -55,6 +55,14 @@ export function TermometroConfortoTermico({ conforto }: Props) {
           <Texto tipo="secao" style={styles.perguntaTitulo}>
             {conforto.perguntaTitulo}
           </Texto>
+          <Texto
+            testID="termometro-nota-0a10"
+            tipo="apoio"
+            cor="cor-texto-apoio"
+            style={styles.notaEscala}
+          >
+            {`Nota de conforto térmico ${conforto.notaConforto0a10.toFixed(1).replace(".", ",")} / 10`}
+          </Texto>
         </View>
         <View
           testID="selo-conforto-termico"
@@ -175,6 +183,12 @@ export function TermometroConfortoTermico({ conforto }: Props) {
             </View>
           );
         })}
+      </View>
+
+      <View style={[styles.blocoAcaoVisita, { borderTopColor: cor("cor-linha") }]}>
+        <Texto testID="termometro-acao-visita" tipo="apoio" cor="cor-texto-apoio" style={styles.acaoVisita}>
+          {conforto.acaoVisita}
+        </Texto>
       </View>
     </View>
   );
@@ -305,6 +319,19 @@ const styles = StyleSheet.create({
   },
   fatorDetalhe: {
     fontSize: 12.5,
+    lineHeight: 17,
+  },
+  notaEscala: {
+    fontSize: 12,
+    fontWeight: "600",
+    fontVariant: ["tabular-nums"],
+  },
+  blocoAcaoVisita: {
+    borderTopWidth: 1,
+    paddingTop: 8,
+  },
+  acaoVisita: {
+    fontSize: 12,
     lineHeight: 17,
   },
 });

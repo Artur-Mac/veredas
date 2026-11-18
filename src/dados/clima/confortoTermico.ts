@@ -16,10 +16,12 @@ export type FatorTermico = {
 
 export type VereditoConfortoTermico = {
   indiceCalor0a100: number;
+  notaConforto0a10: number;
   zona: ZonaConfortoTermico;
   selo: string;
   perguntaTitulo: string;
   vereditoUmaLinha: string;
+  acaoVisita: string;
   custoMensalArReais: number;
   custoExtraVsFrescoMesReais: number;
   temperaturaQuadraResumo: string | null;
@@ -213,12 +215,25 @@ export function avaliarConfortoTermico(entrada: EntradaConfortoTermico): Veredit
         : `Sol da tarde direto e pouca brisa de alívio — o quarto tende a permanecer quente até a noite (~R$ ${custoMensalArReais}/mês de ar).`;
   }
 
+  const notaConforto0a10 = Math.max(
+    1,
+    Math.min(9.8, Math.round(((100 - indiceCalor0a100) / 10) * 10) / 10),
+  );
+  const acaoVisita =
+    zona === "fresco_ventilado" || zona === "clima_agradavel"
+      ? "O que checar na visita: abrir janelas opostas para confirmar a passagem de ar entre sala e quartos."
+      : ultimoAndar
+        ? "O que checar na visita: visitar após as 15h e observar manta térmica da cobertura e pontos de ar-condicionado."
+        : "O que checar na visita: agendar visita entre 14h30 e 16h30 e conferir persianas, brises e carga elétrica para ar-condicionado.";
+
   return {
     indiceCalor0a100,
+    notaConforto0a10,
     zona,
     selo,
     perguntaTitulo: "Este apartamento é fresco ou quente?",
     vereditoUmaLinha,
+    acaoVisita,
     custoMensalArReais,
     custoExtraVsFrescoMesReais,
     temperaturaQuadraResumo,
