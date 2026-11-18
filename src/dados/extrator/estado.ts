@@ -8,7 +8,16 @@ import { BAIRROS_DO_RECIFE } from "../recife/bairros";
 import { normalizarTexto } from "./bairro";
 import { fotosDoAnuncio, nomeDeEdificioNoTexto, textoDoCampo } from "./nomeEFotos";
 
-const CHAVES_ID = new Set(["id", "listingid", "legacyid", "houseid"]);
+// "listid": o código do anúncio na OLX (`initial-data` → `ad.listId`; `ad.adId` é outro número).
+const CHAVES_ID = new Set(["id", "listingid", "legacyid", "houseid", "listid"]);
+
+/**
+ * Objeto com o id e quase nada mais não é o anúncio: é a rota da página. O QuintoAndar guarda `query: { houseId, slug }`
+ * no topo do `__NEXT_DATA__`, e a busca em largura o achava antes de `initialState.house.houseInfo` (18/11/2026).
+ */
+const CHAVES_MINIMAS_DO_ANUNCIO = 4;
+
+const FOTOS_DO_QUINTOANDAR = "https://www.quintoandar.com.br/img/xlg/";
 
 interface FilaItem {
   no: unknown;
@@ -22,6 +31,8 @@ function buscarObjetoDoAnuncio(raiz: unknown, idNoPortal: string): Record<string
   const visitados = new Set<unknown>();
   let visitadosContagem = 0;
   const idStr = String(idNoPortal).trim();
+  /** Primeiro objeto raso com o id: só vale se nenhum objeto completo tiver o id. */
+  let raso: Record<string, unknown> | null = null;
 
   while (fila.length > 0 && visitadosContagem < 200000) {
     const item = fila.shift();
@@ -47,12 +58,12 @@ function buscarObjetoDoAnuncio(raiz: unknown, idNoPortal: string): Record<string
     const obj = no as Record<string, unknown>;
 
     // Verifica se este objeto tem o ID do anúncio
-    for (const [k, v] of Object.entries(obj)) {
-      if (CHAVES_ID.has(k.toLowerCase())) {
-        if (v !== null && v !== undefined && String(v).trim() === idStr) {
-          return obj;
-        }
-      }
+    const temOId = Object.entries(obj).some(
+      ([k, v]) => CHAVES_ID.has(k.toLowerCase()) && v !== null && v !== undefined && String(v).trim() === idStr,
+    );
+    if (temOId) {
+      if (Object.keys(obj).length >= CHAVES_MINIMAS_DO_ANUNCIO) return obj;
+      raso ??= obj;
     }
 
     // Se não é o objeto, enfileira os filhos
@@ -65,7 +76,7 @@ function buscarObjetoDoAnuncio(raiz: unknown, idNoPortal: string): Record<string
     }
   }
 
-  return null;
+  return raso;
 }
 
 function extrairNumero(val: unknown): number | null {
@@ -80,7 +91,9 @@ function extrairNumero(val: unknown): number | null {
     return extrairNumero(v);
   }
   if (typeof val === "string") {
-    const n = Number(val.replace(/\./g, "").replace(",", "."));
+    // A OLX guarda o valor como na tela: "R$ 5.000", "R$ 1/mês", "57m²".
+    const semUnidade = val.trim().replace(/^R\$\s*/i, "").replace(/\s*(?:m²|m2)$/i, "").replace(/\s*\/\s*m[eê]s$/i, "");
+    const n = Number(semUnidade.replace(/\./g, "").replace(",", "."));
     if (n === 0) return null;
     return Number.isFinite(n) ? n : null;
   }
@@ -119,6 +132,26 @@ function buscarChaveInsensivel(obj: Record<string, unknown>, chaves: string[], m
   }
 
   return buscar(obj, 1);
+}
+
+/**
+ * OLX (`initial-data` → `ad`, 18/11/2026): preço, custos e medidas vêm em listas de `{ name, value }` com o texto da
+ * tela (`realEstatePriceInfo`, `properties`, `featuresSummary`): "condominio" "R$ 1", "iptu" "R$ 2", "size" "57m²",
+ * "rooms" "2", "real_estate_type" "Venda - apartamento padrão". Nome em minúsculas → valor e período; vale o primeiro.
+ */
+function propriedadesNomeadas(obj: Record<string, unknown>): Map<string, { valor: unknown; periodo: unknown }> {
+  const mapa = new Map<string, { valor: unknown; periodo: unknown }>();
+  for (const chave of ["realEstatePriceInfo", "properties", "featuresSummary"]) {
+    const lista = obj[chave];
+    if (!Array.isArray(lista)) continue;
+    for (const item of lista) {
+      if (!item || typeof item !== "object") continue;
+      const { name, value, period } = item as Record<string, unknown>;
+      if (typeof name !== "string" || mapa.has(name.toLowerCase())) continue;
+      mapa.set(name.toLowerCase(), { valor: value, periodo: period });
+    }
+  }
+  return mapa;
 }
 
 export function extrairDoEstado(
@@ -196,8 +229,8 @@ export function extrairDoEstado(
     campos.iptu = { valor: iptuGen, periodo };
   }
 
-  // Seguro e Taxa
-  campos.seguroIncendio = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["insurance", "fireInsurance"]));
+  // Seguro e Taxa ("homeProtection": o seguro incêndio no QuintoAndar)
+  campos.seguroIncendio = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["insurance", "fireInsurance", "homeProtection"]));
   campos.taxaServico = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["tenantServiceFee", "serviceFee"]));
   campos.totalInformado = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["totalCost"]));
 
@@ -227,6 +260,28 @@ export function extrairDoEstado(
   const floor = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["floor", "unitFloor"]));
   if (floor !== null) campos.andar = Math.round(floor);
 
+  // OLX: as listas de { name, value } preenchem o que as chaves comuns não trouxeram.
+  const nomeadas = propriedadesNomeadas(objetoAnuncio);
+  if (nomeadas.size > 0) {
+    const numeroDe = (nome: string) => extrairNumero(nomeadas.get(nome)?.valor);
+    const tipoDoNegocio = textoDoCampo(nomeadas.get("real_estate_type")?.valor) ?? "";
+    if (campos.modalidade === null) {
+      if (/^aluguel\b/i.test(tipoDoNegocio)) campos.modalidade = "aluguel";
+      else if (/^venda\b/i.test(tipoDoNegocio)) campos.modalidade = "compra";
+    }
+    campos.condominio ??= simbolico(numeroDe("condominio"));
+    const iptuNomeado = simbolico(numeroDe("iptu"));
+    if (campos.iptu === null && iptuNomeado !== null) {
+      const periodo = String(nomeadas.get("iptu")?.periodo ?? "");
+      campos.iptu = { valor: iptuNomeado, periodo: /m[eê]s/i.test(periodo) ? "mes" : /ano/i.test(periodo) ? "ano" : "desconhecido" };
+    }
+    campos.area ??= numeroDe("size");
+    const inteiro = (n: number | null) => (n === null ? null : Math.round(n));
+    campos.quartos ??= inteiro(numeroDe("rooms"));
+    campos.banheiros ??= inteiro(numeroDe("bathrooms"));
+    campos.vagas ??= inteiro(numeroDe("garage_spaces"));
+  }
+
   // Endereço
   // "$undefined" (marcador de ausência do ZAP) e afins não viram rua nem número.
   const street = textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["street"]));
@@ -239,12 +294,13 @@ export function extrairDoEstado(
   // Nome do edifício: campo próprio, quando o portal tem; senão, "Edf. …" no título ou na descrição.
   const nomeDoCampo = textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["condominiumName", "buildingName", "condoName", "developmentName"]));
   campos.nomeEdificio = (nomeDoCampo ? nomeDoCampo.slice(0, 120) : null)
-    ?? nomeDeEdificioNoTexto(textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["title"])))
+    ?? nomeDeEdificioNoTexto(textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["title", "subject"])))
     // O código interno do anunciante costuma trazer o prédio ("EDF CASTELO DE BRUNO RENDA, OPORTUNIDADE…").
     ?? nomeDeEdificioNoTexto(textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["externalId"])))
     ?? nomeDeEdificioNoTexto(textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["description"])));
 
-  const neighborhood = textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["neighborhood"]));
+  // "neighbourhood" e "municipality": a grafia da OLX.
+  const neighborhood = textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["neighborhood", "neighbourhood"]));
   if (neighborhood) {
     campos.bairroTexto = neighborhood.trim();
     const norm = normalizarTexto(neighborhood);
@@ -254,7 +310,7 @@ export function extrairDoEstado(
     campos.bairro = achouBairro ? achouBairro.slug : null;
   }
 
-  const city = textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["city"]));
+  const city = textoDoCampo(buscarChaveInsensivel(objetoAnuncio, ["city", "municipality"]));
   if (city) {
     if (normalizarTexto(city).includes("recife")) {
       campos.cidade = "recife";
@@ -264,7 +320,8 @@ export function extrairDoEstado(
   const year = extrairNumero(buscarChaveInsensivel(objetoAnuncio, ["constructionYear", "buildingYear"]));
   if (year !== null) campos.anoConstrucao = Math.round(year);
 
-  const fotos = fotosDoAnuncio(objetoAnuncio);
+  // QuintoAndar: `photos[].url` é só o nome do arquivo; a página e o JSON-LD o servem deste endereço (18/11/2026).
+  const fotos = fotosDoAnuncio(objetoAnuncio, 12, portal === "quintoandar" ? FOTOS_DO_QUINTOANDAR : undefined);
   return {
     metodo: "json_ld",
     portal,

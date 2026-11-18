@@ -132,6 +132,11 @@ export function encontrarBairroNoSlug(slug: string, portal: string): { bairro: s
  * - {Bairro} - Recife
  * no|na|nos|nas|em {Bairro}
  * Bairro: {Bairro}
+ * bairro (do|da|de)? {Bairro} ("no bairro do Torreão", "no bairro Boa Vista")
+ * {Bairro} numa linha e "Recife, PE" na seguinte (OLX)
+ *
+ * Vale o bairro citado primeiro: o do anúncio vem no título e no começo da descrição; os citados depois são de
+ * vizinhança ("próximo a…") ou de outros anúncios. No mesmo ponto, vale o nome mais longo.
  */
 export function encontrarBairroNoTexto(texto: string): { bairro: string | null; bairroTexto: string | null } {
   const textoNorm = normalizarTexto(texto);
@@ -139,6 +144,7 @@ export function encontrarBairroNoTexto(texto: string): { bairro: string | null; 
   // Ordenamos os bairros por tamanho do nome decrescente para desambiguação
   const bairrosOrdenados = [...BAIRROS_DO_RECIFE].sort((a, b) => b.nome.length - a.nome.length);
 
+  let achado: { bairro: string; bairroTexto: string; posicao: number } | null = null;
   for (const b of bairrosOrdenados) {
     const nomes = [b.nome, ...(b.aliases ?? [])];
     for (const n of nomes) {
@@ -149,18 +155,19 @@ export function encontrarBairroNoTexto(texto: string): { bairro: string | null; 
         new RegExp(`(?:^|\\s|,|-)\\s*${nomeNorm}\\s*-\\s*recife\\b`, "i"),
         new RegExp(`\\b(?:no|na|nos|nas|em)\\s+${nomeNorm}\\b`, "i"),
         new RegExp(`\\bbairro:\\s*${nomeNorm}\\b`, "i"),
+        new RegExp(`\\bbairro\\s+(?:d[aeo]s?\\s+)?${nomeNorm}\\b`, "i"),
+        // "Localização" da OLX: o bairro numa linha e "Recife, PE, 51020-260" na seguinte.
+        new RegExp(`(?:^|\\n)[^\\S\\n]*${nomeNorm}[^\\S\\n]*\\n[^\\S\\n]*recife\\s*,\\s*pe\\b`, "i"),
       ];
 
       for (const reg of padroes) {
-        if (reg.test(textoNorm)) {
-          return {
-            bairro: b.slug,
-            bairroTexto: b.nome,
-          };
+        const m = reg.exec(textoNorm);
+        if (m && (achado === null || m.index < achado.posicao)) {
+          achado = { bairro: b.slug, bairroTexto: b.nome, posicao: m.index };
         }
       }
     }
   }
 
-  return { bairro: null, bairroTexto: null };
+  return achado ? { bairro: achado.bairro, bairroTexto: achado.bairroTexto } : { bairro: null, bairroTexto: null };
 }

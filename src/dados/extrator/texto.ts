@@ -36,6 +36,38 @@ function limparHtml(html: string): string {
   return limpo;
 }
 
+/**
+ * Começo da parte da página que já não é o anúncio: os cartões de outros anúncios que o portal mostra depois dele, cada
+ * um com preço, "Cond.", "IPTU", área, rua e bairro. Lidos junto, davam ao anúncio o IPTU, o bairro, a rua e até o
+ * aluguel de outro imóvel. Títulos vistos nas páginas para celular em 18/11/2026: ZAP e VivaReal ("Outros imóveis
+ * parecidos que você pode gostar"), QuintoAndar ("Similares na mesma região") e OLX ("Também podem te interessar",
+ * "Imóveis novos para comprar", "Produtos para sua casa", "Mais vistos em Apartamentos").
+ */
+const INICIO_DE_OUTROS_ANUNCIOS =
+  /^(?:outros im[óo]veis parecidos|im[óo]veis (?:parecidos|similares|semelhantes|com caracter[íi]sticas similares)|similares na mesma regi[ãa]o|an[úu]ncios (?:parecidos|similares|semelhantes|relacionados)|tamb[ée]m podem te interessar|voc[êe] tamb[ée]m pode gostar|im[óo]veis novos para comprar|produtos para sua casa|mais vistos em\b|recomenda[çc][õo]es (?:exclusivas )?para voc[êe])/i;
+
+/** O texto até o primeiro título de outros anúncios. Um título logo na primeira linha não corta nada. */
+function semOutrosAnuncios(texto: string): string {
+  const linhas = texto.split(/\r?\n/);
+  const corte = linhas.findIndex((l, i) => i > 0 && INICIO_DE_OUTROS_ANUNCIOS.test(l.trim()));
+  return corte < 0 ? texto : linhas.slice(0, corte).join("\n");
+}
+
+/** Valor de um rótulo de preço ou custo: em reais, "não informado", "consulte" ou "isento" (ZAP e VivaReal). */
+const VALOR_DO_ROTULO = /(?:R\$|n[ãa]o\s+informado|consulte|sob\s+consulta|\bisent[oa]\b)/i;
+
+/**
+ * A rua termina antes de "no bairro", "em Recife" ou do ponto que fecha a frase: a descrição do QuintoAndar traz
+ * "Rua do Aragão no bairro Boa Vista em Recife. Está bem localizado…". O ponto só fecha depois de palavra de 5 letras
+ * ou mais, para "Rua Dr. José" continuar inteira.
+ */
+function ruaSemOResto(rua: string): string {
+  return rua
+    .replace(/\s+(?:n[oa]s?\s+bairro|bairro|em\s+recife)\b.*$/i, "")
+    .replace(/([a-zà-ÿ]{5})\.\s.*$/i, "$1")
+    .trim();
+}
+
 function parseDinheiro(str: string): number | null {
   const m = /R\$\s*([0-9]{1,3}(?:\.[0-9]{3})+(?:,[0-9]{1,2})?|[0-9]+(?:,[0-9]{1,2})?)/i.exec(str);
   if (!m || !m[1]) return null;
@@ -153,7 +185,7 @@ export function extrairDoTexto(conteudo: string, portal: Portal): LeituraParcial
   }
 
   // 2. Camada B: Texto, sem o contato de quem anuncia (o JSON-LD acima só rende campos da lista do imóvel)
-  const textoLimpo = semDadosPessoais(limparHtml(conteudo));
+  const textoLimpo = semOutrosAnuncios(semDadosPessoais(limparHtml(conteudo)));
   const campos = camposVazios();
   const naoInformados = new Map<ChaveDeCampo, string>();
 
@@ -171,15 +203,20 @@ export function extrairDoTexto(conteudo: string, portal: Portal): LeituraParcial
       if (match) {
         // Verifica o que vem depois na mesma linha
         const resto = linha.slice(match.index + match[0].length).trim();
-        if (resto && /(?:R\$|n[ãa]o\s+informado|consulte|sob\s+consulta)/i.test(resto)) {
+        if (resto && VALOR_DO_ROTULO.test(resto)) {
           const proximoRotulo = /(?:\s+(?:condom[íi]nio|iptu|seguro|taxa|total)\b)/i.exec(resto);
           const trechoValor = proximoRotulo ? resto.slice(0, proximoRotulo.index).trim() : resto;
           return { valorLido: trechoValor, linhaIdx: i };
         }
+        // O rótulo fecha a linha e o valor vem antes dele: "R$ 5.000 Aluguel" (OLX). A linha seguinte ali é o total.
+        const antes = linha.slice(0, match.index).trim();
+        if (!resto && /^R\$\s*\d/.test(antes)) {
+          return { valorLido: antes, linhaIdx: i };
+        }
         // Se a linha ficou vazia ou não tem valor de custo, pega a próxima linha não vazia se contiver R$ ou Não informado
         if (i + 1 < linhas.length) {
           const prox = linhas[i + 1];
-          if (prox && /(?:R\$|n[ãa]o\s+informado|consulte|sob\s+consulta)/i.test(prox)) {
+          if (prox && VALOR_DO_ROTULO.test(prox)) {
             return { valorLido: prox, linhaIdx: i + 1 };
           }
         }
@@ -194,7 +231,8 @@ export function extrairDoTexto(conteudo: string, portal: Portal): LeituraParcial
   const achadoVenda = acharValorRotulo(/\b(?:valor\s+de\s+venda|à\s+venda|venda)\b:?/i);
   const achadoPreco = acharValorRotulo(/\b(?:preço|valor)\b:?/i);
 
-  if (achadoAluguel) {
+  // Com os dois rótulos no texto, vale o que aparece primeiro: o anúncio de venda pode citar "aluguel" mais abaixo.
+  if (achadoAluguel && (!achadoVenda || achadoAluguel.linhaIdx <= achadoVenda.linhaIdx)) {
     campos.modalidade = "aluguel";
     const p = parseDinheiro(achadoAluguel.valorLido);
     if (p !== null) campos.preco = p;
@@ -316,26 +354,28 @@ export function extrairDoTexto(conteudo: string, portal: Portal): LeituraParcial
     }
   }
 
-  // Quartos: (\d+)\s+quartos?
-  const matchQuartos = /([0-9]+)\s+quartos?\b/i.exec(textoLimpo);
+  // Quartos, suítes, banheiros e vagas: número e palavra na mesma linha. No ZAP e no VivaReal cada rótulo vem em cima
+  // do próprio valor ("Quartos", "3", "Banheiros", "2"), e "3\nBanheiros" dava aos banheiros o número dos quartos.
+  // Quartos: (\d+) quartos?
+  const matchQuartos = /([0-9]+)[^\S\r\n]+quartos?\b/i.exec(textoLimpo);
   if (matchQuartos && matchQuartos[1]) {
     campos.quartos = Number(matchQuartos[1]);
   }
 
-  // Suítes: (\d+)\s+su[ií]tes?
-  const matchSuites = /([0-9]+)\s+su[ií]tes?\b/i.exec(textoLimpo);
+  // Suítes: (\d+) su[ií]tes?
+  const matchSuites = /([0-9]+)[^\S\r\n]+su[ií]tes?\b/i.exec(textoLimpo);
   if (matchSuites && matchSuites[1]) {
     campos.suites = Number(matchSuites[1]);
   }
 
-  // Banheiros: (\d+)\s+banheiros?
-  const matchBanhos = /([0-9]+)\s+banheiros?\b/i.exec(textoLimpo);
+  // Banheiros: (\d+) banheiros?
+  const matchBanhos = /([0-9]+)[^\S\r\n]+banheiros?\b/i.exec(textoLimpo);
   if (matchBanhos && matchBanhos[1]) {
     campos.banheiros = Number(matchBanhos[1]);
   }
 
-  // Vagas: (\d+)\s+vagas?
-  const matchVagas = /([0-9]+)\s+vagas?\b/i.exec(textoLimpo);
+  // Vagas: (\d+) vagas?
+  const matchVagas = /([0-9]+)[^\S\r\n]+vagas?\b/i.exec(textoLimpo);
   if (matchVagas && matchVagas[1]) {
     campos.vagas = Number(matchVagas[1]);
   }
@@ -363,8 +403,14 @@ export function extrairDoTexto(conteudo: string, portal: Portal): LeituraParcial
   const padraoLog = /\b((?:Rua|R\.|Avenida|Av\.|Travessa|Tv\.|Estrada|Praça|Praca|Largo|Alameda)\s+[^,\n-]+?)(?:\s*-\s*|,\s*|\n|$)/gi;
   let primeiraRua: string | null = null;
   for (const matchLog of textoLimpo.matchAll(padraoLog)) {
-    const rua = matchLog[1]?.trim();
-    if (!rua) continue;
+    const capturada = matchLog[1]?.trim();
+    if (!capturada) continue;
+    const rua = ruaSemOResto(capturada);
+    if (rua !== capturada) {
+      // A frase continuou depois da rua: o número, se houver, não vem logo depois dela.
+      primeiraRua ??= rua;
+      continue;
+    }
     primeiraRua ??= rua;
     const restoDepois = textoLimpo.slice((matchLog.index ?? 0) + (matchLog[1]?.length ?? 0));
     const matchNum = /^,\s*([0-9]+[a-zA-Z]?)\b/.exec(restoDepois);

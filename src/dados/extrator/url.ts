@@ -25,6 +25,10 @@ const COMODIDADES_VALIDAS = [
 const TIPO_COMERCIAL =
   /\b(loja|salao|sala-comercial|sala|ponto-comercial|conjunto-comercial|consultorio|galpao|deposito|armazem|terreno|lote|predio-inteiro|hotel|pousada|box)\b/;
 
+/** Depois de "-na-"/"-no-" no link da OLX, frase de anúncio que não é nome de prédio ("na-melhor-localizacao"). */
+const ELOGIO_NO_LINK =
+  /^(?:melhor|otim[ao]|excelente|privilegiad[ao]|bela|lind[ao]|localizacao|regiao|area|andar|frente|centro|cidade|beira)(?:-|$)/;
+
 export function extrairDaUrl(url: string): LeituraParcial | { erro: "url_invalida" } {
   if (!urlValida(url)) {
     return { erro: "url_invalida" };
@@ -132,9 +136,9 @@ export function extrairDaUrl(url: string): LeituraParcial | { erro: "url_invalid
     else if (temAluguel && !temCompra) campos.modalidade = "aluguel";
     else campos.modalidade = null;
 
-    // Área: -(\d+)-m- ou (\d+)m2
-    const areaMatch = /(?:-([0-9]+)-m-|-([0-9]+)m2\b)/.exec(slug);
-    if (areaMatch) campos.area = Number(areaMatch[1] ?? areaMatch[2]);
+    // Área: -(\d+)-m-, (\d+)m2 ou "-57-metros-quadrados" (título gerado pela OLX, visto em 18/11/2026)
+    const areaMatch = /(?:-([0-9]+)-m-|-([0-9]+)m2\b|-([0-9]+)-metros?-quadrados?\b)/.exec(slug);
+    if (areaMatch) campos.area = Number(areaMatch[1] ?? areaMatch[2] ?? areaMatch[3]);
 
     // Suítes: (\d+)-suites?
     const suiteMatch = /([0-9]+)-suites?\b/.exec(slug);
@@ -178,8 +182,8 @@ export function extrairDaUrl(url: string): LeituraParcial | { erro: "url_invalid
 
   // 4. OLX: logradouro e nomeEdificio específicos
   if (portal === "olx") {
-    // Depois de -no- ou -na-
-    const prepMatch = /-(?:no|na)-([a-z0-9-]+)/.exec(slug);
+    // Depois de -no- ou -na-, sem o código do anúncio no fim ("…-na-melhor-localizacao-1553890780")
+    const prepMatch = /-(?:no|na)-([a-z0-9-]+)/.exec(slug.replace(/-?\d{9,}$/, ""));
     if (prepMatch && prepMatch[1]) {
       let trecho: string = prepMatch[1];
       // Corta o trecho no início do bairro identificado ou do id final
@@ -212,7 +216,7 @@ export function extrairDaUrl(url: string): LeituraParcial | { erro: "url_invalid
           } else {
             // Verifica se o trecho é um bairro
             const eBairro = BAIRROS_DO_RECIFE.some((b) => b.slug === trecho || b.aliases?.includes(trecho));
-            if (!eBairro) {
+            if (!eBairro && !ELOGIO_NO_LINK.test(trecho)) {
               campos.nomeEdificio = slugParaTitulo(trecho);
               campos.logradouro = null;
             }
