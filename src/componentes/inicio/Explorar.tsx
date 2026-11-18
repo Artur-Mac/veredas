@@ -347,6 +347,7 @@ export function OndeMaisProcurarNoPiloto() {
   const { perfil } = usePerfilDomicilio();
   const destino = perfil.destinoBairro;
   const [ateMin, setAteMin] = useState<number>(30);
+  const [exigirMercado, setExigirMercado] = useState<boolean>(false);
   const [pronto, setPronto] = useState<"carregando" | "ok" | "falhou">("carregando");
   useEffect(() => {
     if (!destino) return;
@@ -357,33 +358,61 @@ export function OndeMaisProcurarNoPiloto() {
   if (!destino) return null;
   const nomeDestino = bairroPorSlug(destino)?.nome ?? destino;
   const p = pronto === "ok" ? procura() : null;
-  const r = p ? ondeMaisProcurar(p.ruas, p.bairros, destino, ateMin, [], { limite: 5 }) : null;
+  const r = p ? ondeMaisProcurar(p.ruas, p.bairros, destino, ateMin, [], { exigirMercado, limite: 5 }) : null;
   return (
     <View style={{ gap: 8, padding: 14, borderRadius: 14, borderWidth: 1, borderColor: comAlfa(cor("cor-texto"), 0.09), backgroundColor: cor("cor-superficie") }} role="group" aria-label="Onde mais procurar no piloto">
       <Texto tipo="secao" style={{ fontSize: 16, lineHeight: 22, fontWeight: "600" }}>Onde mais procurar no piloto</Texto>
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>{`Ruas com ida de ônibus ou metrô às 7h até ${nomeDestino} (horário programado, dia útil).`}</Texto>
-      <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }} accessibilityRole="radiogroup">
-        {LIMITES_DE_IDA.map((m) => (
-          <AlvoDeToque key={m} onPress={() => setAteMin(m)} accessibilityRole="radio" accessibilityState={{ checked: ateMin === m }} aria-checked={ateMin === m}
-            style={{ minHeight: 44, minWidth: 44, justifyContent: "center" }}>
-            <View style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, borderWidth: 1, borderColor: ateMin === m ? cor("cor-acao") : cor("cor-linha"), backgroundColor: ateMin === m ? comAlfa(cor("cor-acao"), 0.12) : "transparent" }}>
-              <Texto tipo="apoio" style={{ fontSize: 12, fontWeight: "600" }}>{`até ${m} min`}</Texto>
-            </View>
-          </AlvoDeToque>
-        ))}
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+        <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }} accessibilityRole="radiogroup">
+          {LIMITES_DE_IDA.map((m) => (
+            <AlvoDeToque key={m} onPress={() => setAteMin(m)} accessibilityRole="radio" accessibilityState={{ checked: ateMin === m }} aria-checked={ateMin === m}
+              style={{ minHeight: 44, minWidth: 44, justifyContent: "center" }}>
+              <View style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999, borderWidth: 1, borderColor: ateMin === m ? cor("cor-acao") : cor("cor-linha"), backgroundColor: ateMin === m ? comAlfa(cor("cor-acao"), 0.12) : "transparent" }}>
+                <Texto tipo="apoio" style={{ fontSize: 12, fontWeight: "600" }}>{`até ${m} min`}</Texto>
+              </View>
+            </AlvoDeToque>
+          ))}
+        </View>
+        <AlvoDeToque
+          testID="procura-toggle-mercado"
+          onPress={() => setExigirMercado((v) => !v)}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: exigirMercado }}
+          aria-checked={exigirMercado}
+          style={{ minHeight: 44, justifyContent: "center" }}
+        >
+          <View
+            style={{
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 999,
+              borderWidth: 1,
+              borderColor: exigirMercado ? cor("cor-salvia-escura") : cor("cor-linha"),
+              backgroundColor: exigirMercado ? cor("cor-salvia-suave") : "transparent",
+            }}
+          >
+            <Texto tipo="apoio" cor={exigirMercado ? "cor-salvia-escura" : "cor-texto"} style={{ fontSize: 12, fontWeight: "600" }}>
+              Mercado a pé ≤10 min
+            </Texto>
+          </View>
+        </AlvoDeToque>
       </View>
       {pronto === "carregando" ? <Texto tipo="apoio" role="status">Carregando as ruas…</Texto> : null}
       {pronto === "falhou" || (pronto === "ok" && !p) ? <Texto tipo="apoio" role="alert">Sem leitura publicada nesta área ainda.</Texto> : null}
       {r?.estado === "sem_destino" ? <Texto tipo="apoio">{`Sem leitura publicada para ${nomeDestino} ainda.`}</Texto> : null}
-      {r?.estado === "nenhuma" ? <Texto tipo="apoio">{`Nenhuma rua do piloto com ida até ${ateMin} min.`}</Texto> : null}
+      {r?.estado === "nenhuma" ? <Texto tipo="apoio">{`Nenhuma rua do piloto com ${exigirMercado ? "mercado perto e " : ""}ida até ${ateMin} min.`}</Texto> : null}
       {r?.estado === "ok" ? (
-        <View role="list" style={{ gap: 4 }}>
+        <View role="list" style={{ gap: 0 }}>
+          <Texto testID="procura-contador-vivo" tipo="etiqueta" cor="cor-barro-texto" style={{ fontSize: 12, fontWeight: "700", marginBottom: 4 }}>
+            {`${r.total} ${r.total === 1 ? "rua atende" : "ruas atendem"} aos critérios`}
+          </Texto>
           {r.ruas.map((x) => (
-            <View key={x.c} role="listitem">
+            <View key={x.c} role="listitem" style={{ borderTopWidth: 1, borderTopColor: cor("cor-linha"), paddingVertical: 6 }}>
               <Texto style={{ fontSize: 13, lineHeight: 19 }}>{`${tituloDaRua(x.n)} (${bairroPorSlug(x.b)?.nome ?? x.b}) · ${x.minutos} min`}</Texto>
             </View>
           ))}
-          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 16 }}>
+          <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11.5, lineHeight: 16, paddingTop: 4 }}>
             {`${r.total > r.ruas.length ? `Mais ${r.total - r.ruas.length} ruas também cabem. ` : ""}Preço e anúncios não entram: procure nessas ruas no portal que você usa.`}
           </Texto>
         </View>

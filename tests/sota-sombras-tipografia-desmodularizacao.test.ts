@@ -27,6 +27,7 @@ import { ExportarResumoExecutivo } from "../src/componentes/visual/ExportarResum
 import { CartaoResumoCompartilhado } from "../src/componentes/comparar/CartaoResumoCompartilhado";
 import { gerarLinkPrivadoSemServidor } from "../src/dados/dossie/resumoExecutivo2Paginas";
 import { lerFragmento } from "../src/dados/salaDeDecisao";
+import { ondeMaisProcurar } from "../src/dados/escolha";
 import { DueloFinalistas } from "../src/componentes/cidadao/DueloFinalistas";
 import { ConvergenciaFamiliar } from "../src/componentes/cidadao/ConvergenciaFamiliar";
 import { compararRotinaDoisDestinos, estimarMinutosPicoIdaVolta } from "../src/dados/mobilidade/rotinaCasal";
@@ -1216,5 +1217,25 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(txt).toContain("Edifício Beira-Mar");
     expect(txt).toContain("Nascente (5º andar)");
     expect(txt).not.toMatch(/R\$ 0(?![\d.,])/);
+  });
+
+  it("aplica filtro multicritério exigirMercado com contador ao vivo em OndeMaisProcurarNoPiloto", () => {
+    const ruas = [
+      { c: "r1", n: "RUA DA HORA", b: "espinheiro", p: 4, m10: 0.9, t: [18] },
+      { c: "r2", n: "RUA ISOLADA", b: "madalena", p: 2, m10: 0.1, t: [22] },
+    ];
+    const semFiltro = ondeMaisProcurar(ruas, ["recife"], "recife", 30, [], { exigirMercado: false });
+    const comMercado = ondeMaisProcurar(ruas, ["recife"], "recife", 30, [], { exigirMercado: true });
+    expect(semFiltro.total).toBe(2);
+    expect(comMercado.total).toBe(1);
+    expect(comMercado.ruas[0]!.c).toBe("r1");
+
+    const explorarSrc = readFileSync(
+      join(__dirname, "..", "src", "componentes", "inicio", "Explorar.tsx"),
+      "utf8",
+    );
+    expect(explorarSrc).toContain("procura-toggle-mercado");
+    expect(explorarSrc).toContain("procura-contador-vivo");
+    expect(explorarSrc).toContain("exigirMercado");
   });
 });
