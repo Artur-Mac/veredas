@@ -1,8 +1,11 @@
 import * as Clipboard from "expo-clipboard";
 import React, { useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import type { EstadoItemPacoteDocumental } from "../../nucleo/documentos/auditorDocumental";
 import {
   AVISO_LEITURA_INDEPENDENTE,
+  PACOTE_PRE_SINAL_ITENS,
+  auditarTextoColadoCidadao,
   calcularRateioReserva,
   extrairChaveCnm,
   gerarScriptSindico3Perguntas,
@@ -33,6 +36,20 @@ const CENARIOS_RESERVA = [
   { label: "R$ 150 mil", valor: 150_000 },
 ] as const;
 
+function proximoEstadoPacote(
+  atual: EstadoItemPacoteDocumental,
+): EstadoItemPacoteDocumental {
+  if (atual === "faltando") return "recebido";
+  if (atual === "recebido") return "vencido";
+  return "faltando";
+}
+
+function rotuloEstadoPacote(estado: EstadoItemPacoteDocumental): string {
+  if (estado === "recebido") return "Recebido";
+  if (estado === "vencido") return "Vencido";
+  return "Faltando";
+}
+
 export function CopilotoDocumentosPreSinal({
   nomeImovel,
   anoConstrucao,
@@ -45,7 +62,17 @@ export function CopilotoDocumentosPreSinal({
   const [custoObra, setCustoObra] = useState<number>(250_000);
   const [saldoReserva, setSaldoReserva] = useState<number>(50_000);
   const [verPerguntas, setVerPerguntas] = useState<boolean>(false);
+  const [verLeitorDoc, setVerLeitorDoc] = useState<boolean>(false);
+  const [textoColado, setTextoColado] = useState<string>("");
   const [copiado, setCopiado] = useState<boolean>(false);
+  const [estadosPacote, setEstadosPacote] = useState<
+    Record<string, EstadoItemPacoteDocumental>
+  >({
+    matricula: "faltando",
+    ata: "faltando",
+    balancete: "faltando",
+    certidao_condo: "faltando",
+  });
 
   const unidadesBase = Math.max(1, unidades ?? 24);
   const rateio = calcularRateioReserva({
@@ -54,7 +81,10 @@ export function CopilotoDocumentosPreSinal({
     unidades: unidadesBase,
   });
 
-  const cnm = extrairChaveCnm(textoAnuncio ?? "");
+  const leituraDoc = auditarTextoColadoCidadao(textoColado);
+  const cnm = extrairChaveCnm(
+    textoColado.trim() ? textoColado : (textoAnuncio ?? ""),
+  );
   const script = gerarScriptSindico3Perguntas({
     nomeImovel,
     anoConstrucao,
@@ -73,6 +103,10 @@ export function CopilotoDocumentosPreSinal({
       });
   };
 
+  const recebidosCount = PACOTE_PRE_SINAL_ITENS.filter(
+    (item) => estadosPacote[item.id] === "recebido",
+  ).length;
+
   return (
     <View
       testID="copiloto-documentos-pre-sinal"
@@ -90,7 +124,7 @@ export function CopilotoDocumentosPreSinal({
           Documentação e caixa antes do sinal
         </Texto>
         <Texto tipo="secao" style={styles.manchete}>
-          Pergunte 3 pontos ao síndico e simule o impacto de obras na unidade
+          Pergunte 3 pontos ao síndico e confira o pacote pré-sinal
         </Texto>
 
         <View style={styles.chavesLinha}>
@@ -113,6 +147,155 @@ export function CopilotoDocumentosPreSinal({
             </Texto>
           </View>
         </View>
+      </View>
+
+      {/* Pacote pré-sinal em 3 estados (recebido / faltando / vencido) */}
+      <View style={[styles.secao, { borderTopWidth: 1, borderTopColor: cor("cor-linha") }]}>
+        <View style={styles.linhaTopoCalc}>
+          <Texto tipo="etiqueta" style={styles.subTitulo}>
+            Pacote pré-sinal (toque para marcar)
+          </Texto>
+          <Texto tipo="numero" cor="cor-texto-apoio" style={styles.contagemPacote}>
+            {`${recebidosCount}/${PACOTE_PRE_SINAL_ITENS.length} recebidos`}
+          </Texto>
+        </View>
+        <View style={styles.listaPacote}>
+          {PACOTE_PRE_SINAL_ITENS.map((item, idx) => {
+            const est = estadosPacote[item.id] ?? "faltando";
+            return (
+              <Pressable
+                key={item.id}
+                testID={`pacote-item-${idx}`}
+                accessibilityRole="button"
+                onPress={() =>
+                  setEstadosPacote((prev) => ({
+                    ...prev,
+                    [item.id]: proximoEstadoPacote(prev[item.id] ?? "faltando"),
+                  }))
+                }
+                style={[
+                  styles.linhaPacote,
+                  idx > 0
+                    ? { borderTopWidth: 1, borderTopColor: cor("cor-linha") }
+                    : undefined,
+                ]}
+              >
+                <View style={styles.pacoteEsq}>
+                  <Texto tipo="apoio" style={styles.pacoteTitulo}>
+                    {item.titulo}
+                  </Texto>
+                  <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.pacoteSub}>
+                    {item.validade}
+                  </Texto>
+                </View>
+                <Texto
+                  tipo="etiqueta"
+                  cor={
+                    est === "recebido"
+                      ? "cor-salvia-escura"
+                      : est === "vencido"
+                        ? "cor-barro-texto"
+                        : "cor-texto-apoio"
+                  }
+                  style={styles.pacoteEstado}
+                >
+                  {rotuloEstadoPacote(est)}
+                </Texto>
+              </Pressable>
+            );
+          })}
+        </View>
+      </View>
+
+      {/* Scanner local de matricula, ata ou convencao colada */}
+      <View style={[styles.secao, { borderTopWidth: 1, borderTopColor: cor("cor-linha") }]}>
+        <Pressable
+          testID="toggle-leitor-rapido-doc"
+          accessibilityRole="button"
+          accessibilityState={{ expanded: verLeitorDoc }}
+          onPress={() => setVerLeitorDoc((v) => !v)}
+          style={styles.botaoVerScript}
+        >
+          <Texto tipo="etiqueta" style={styles.subTitulo}>
+            Ler trecho de matrícula, ata ou convenção (no aparelho)
+          </Texto>
+          <Texto tipo="apoio" cor="cor-azul-cadastral" style={styles.acaoVer}>
+            {verLeitorDoc ? "Fechar" : "Colar texto"}
+          </Texto>
+        </Pressable>
+
+        {verLeitorDoc ? (
+          <View style={styles.blocoLeitorDoc}>
+            <TextInput
+              testID="input-texto-documento"
+              multiline
+              numberOfLines={4}
+              value={textoColado}
+              onChangeText={setTextoColado}
+              placeholder="Cole trechos de matrícula (R-n/CNM), ata ou convenção para checar ônus, cota extra ou vaga presa…"
+              placeholderTextColor={cor("cor-texto-apoio")}
+              style={[
+                styles.campoDoc,
+                {
+                  backgroundColor: cor("cor-papel-claro"),
+                  color: cor("cor-texto"),
+                },
+              ]}
+            />
+            {textoColado.trim().length > 0 ? (
+              <View style={styles.resultadoDoc}>
+                <Texto tipo="etiqueta" style={styles.subTitulo}>
+                  {`Detectado: ${leituraDoc.classeRotulo}${
+                    leituraDoc.cnmFormatada ? ` · CNM ${leituraDoc.cnmFormatada}` : ""
+                  }`}
+                </Texto>
+                {leituraDoc.onusAtivosResumo.map((o, i) => (
+                  <View
+                    key={`onus-${i}`}
+                    style={[styles.achadoDocLinha, { borderLeftColor: cor("cor-barro") }]}
+                  >
+                    <Texto tipo="etiqueta" cor="cor-barro-texto" style={styles.textoAchadoTit}>
+                      {`${o.atoNumero} · ${o.titulo}`}
+                    </Texto>
+                    <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoAchadoCit}>
+                      {o.citacao}
+                    </Texto>
+                  </View>
+                ))}
+                {leituraDoc.alertasCondoScanResumo.map((a, i) => (
+                  <View
+                    key={`cs-${i}`}
+                    style={[
+                      styles.achadoDocLinha,
+                      {
+                        borderLeftColor: cor(
+                          a.severidade === "critico" ? "cor-barro" : "cor-acao",
+                        ),
+                      },
+                    ]}
+                  >
+                    <Texto
+                      tipo="etiqueta"
+                      cor={a.severidade === "critico" ? "cor-barro-texto" : "cor-texto"}
+                      style={styles.textoAchadoTit}
+                    >
+                      {a.titulo}
+                    </Texto>
+                    <Texto tipo="apoio" cor="cor-texto-apoio" style={styles.textoAchadoCit}>
+                      {a.citacao}
+                    </Texto>
+                  </View>
+                ))}
+                {leituraDoc.onusAtivosResumo.length === 0 &&
+                leituraDoc.alertasCondoScanResumo.length === 0 ? (
+                  <Texto tipo="apoio" cor="cor-salvia-escura" style={styles.resumoCalc}>
+                    Nenhum gravame ativo nem alerta de cota extra ou vaga presa encontrado neste trecho.
+                  </Texto>
+                ) : null}
+              </View>
+            ) : null}
+          </View>
+        ) : null}
       </View>
 
       {/* Simulador instantaneo de fundo de reserva vs obra (CondoScan R5) */}
@@ -291,6 +474,64 @@ const styles = StyleSheet.create({
     fontSize: 12.5,
     fontWeight: "600",
     fontVariant: ["tabular-nums"],
+  },
+  contagemPacote: {
+    fontSize: 11.5,
+    fontWeight: "600",
+    fontVariant: ["tabular-nums"],
+  },
+  listaPacote: {
+    gap: 0,
+  },
+  linhaPacote: {
+    minHeight: 42,
+    paddingVertical: 7,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 8,
+  },
+  pacoteEsq: {
+    flex: 1,
+    gap: 1,
+  },
+  pacoteTitulo: {
+    fontSize: 12.5,
+    fontWeight: "600",
+  },
+  pacoteSub: {
+    fontSize: 11,
+  },
+  pacoteEstado: {
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  blocoLeitorDoc: {
+    gap: 8,
+  },
+  campoDoc: {
+    borderRadius: RAIO.quadrado,
+    padding: 10,
+    minHeight: 72,
+    fontFamily: "PlusJakartaSans",
+    fontSize: 12.5,
+    textAlignVertical: "top",
+  },
+  resultadoDoc: {
+    gap: 6,
+  },
+  achadoDocLinha: {
+    borderLeftWidth: 3,
+    paddingLeft: 9,
+    gap: 2,
+  },
+  textoAchadoTit: {
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  textoAchadoCit: {
+    fontSize: 11.5,
+    lineHeight: 16,
   },
   linhaTopoCalc: {
     flexDirection: "row",

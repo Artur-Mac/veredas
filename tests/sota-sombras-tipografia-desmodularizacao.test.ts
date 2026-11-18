@@ -19,6 +19,7 @@ import { TresPerguntasDoBolso } from "../src/componentes/visual/TresPerguntasDoB
 import { RotinaDoisDestinosComparar } from "../src/componentes/visual/RotinaDoisDestinosComparar";
 import { ExportarResumoExecutivo } from "../src/componentes/visual/ExportarResumoExecutivo";
 import { compararRotinaDoisDestinos } from "../src/dados/mobilidade/rotinaCasal";
+import { auditarTextoColadoCidadao } from "../src/dados/documentos/copilotoPreSinal";
 import { TemaDoApp } from "../src/tema/Tema";
 
 function listarTsxRecursivo(dir: string): string[] {
@@ -523,5 +524,50 @@ describe("SOTA Física 2.5D de Sombras, Zero Serifas SVG e Auditoria S3–S6", (
     expect(txt).not.toMatch(/\d\s*dB\b/i);
     expect(REGEX_JARGON_CAMADA1.test(txt)).toBe(false);
     expect(/\bseguro\b/i.test(txt)).toBe(false);
+  });
+
+  it("audita trecho de matrícula/ata no aparelho e alterna pacote pré-sinal em 3 estados", () => {
+    const audit = auditarTextoColadoCidadao(
+      "R-4 Penhora executiva determinada em juízo.\nAta de assembleia extraordinária aprovou cota extra para fachada e mencionou vaga presa na garagem.",
+    );
+    expect(audit.onusAtivosResumo.some((o) => /Penhora/i.test(o.titulo))).toBe(true);
+    expect(audit.alertasCondoScanResumo.some((a) => /cota extra/i.test(a.titulo))).toBe(true);
+    expect(audit.alertasCondoScanResumo.some((a) => /Vaga presa/i.test(a.titulo))).toBe(true);
+
+    let tree!: TestRenderer.ReactTestRenderer;
+    act(() => {
+      tree = TestRenderer.create(
+        React.createElement(
+          TemaDoApp,
+          null,
+          React.createElement(CopilotoDocumentosPreSinal, {
+            nomeImovel: "Edifício Aurora",
+            anoConstrucao: 2008,
+            unidades: 32,
+            chaveLote14: "12345678901234",
+          }),
+        ),
+      );
+    });
+
+    const item0 = tree.root.find((n) => n.props.testID === "pacote-item-0");
+    act(() => {
+      item0.props.onPress();
+    });
+    expect(extrairTextos(tree.toJSON()).join("\n")).toContain("1/4 recebidos");
+
+    const toggleLeitor = tree.root.find((n) => n.props.testID === "toggle-leitor-rapido-doc");
+    act(() => {
+      toggleLeitor.props.onPress();
+    });
+    const inputDoc = tree.root.find((n) => n.props.testID === "input-texto-documento");
+    act(() => {
+      inputDoc.props.onChangeText("Ata de assembleia com cota extra aprovada e vaga presa.");
+    });
+    const aposColar = extrairTextos(tree.toJSON()).join("\n");
+    expect(aposColar).toContain("Chamada de cota extra");
+    expect(aposColar).toContain("Vaga presa ou rotativa");
+    expect(REGEX_JARGON_CAMADA1.test(aposColar)).toBe(false);
+    expect(/\bseguro\b/i.test(aposColar)).toBe(false);
   });
 });

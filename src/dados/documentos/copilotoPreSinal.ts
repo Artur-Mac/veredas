@@ -1,5 +1,12 @@
 import { formatarReais, formatarReaisCompacto } from "../formatos";
-import { validarCnm16 } from "../../nucleo/documentos/auditorDocumental";
+import {
+  auditarDocumentoVereda,
+  validarCnm16,
+  type AlertaCondoScan,
+  type ClasseDocumentalVereda,
+  type EstadoItemPacoteDocumental,
+  type OnusMatriculaExtraido,
+} from "../../nucleo/documentos/auditorDocumental";
 
 export type RateioReservaResultado = {
   custoObraReais: number;
@@ -82,4 +89,132 @@ export function gerarScriptSindico3Perguntas(params: {
   ];
 
   return linhas.join("\n");
+}
+
+export type ItemPacotePreSinal = {
+  id: "matricula" | "ata" | "balancete" | "certidao_condo";
+  titulo: string;
+  validade: string;
+  estadoInicial: EstadoItemPacoteDocumental;
+};
+
+export const PACOTE_PRE_SINAL_ITENS: readonly ItemPacotePreSinal[] = [
+  {
+    id: "matricula",
+    titulo: "Matrícula atualizada",
+    validade: "Validade 30 dias",
+    estadoInicial: "faltando",
+  },
+  {
+    id: "ata",
+    titulo: "Última ata de assembleia",
+    validade: "Última reunião",
+    estadoInicial: "faltando",
+  },
+  {
+    id: "balancete",
+    titulo: "Boleto e fundo de reserva",
+    validade: "Mês vigente",
+    estadoInicial: "faltando",
+  },
+  {
+    id: "certidao_condo",
+    titulo: "Declaração negativa do condomínio",
+    validade: "Antes da escritura",
+    estadoInicial: "faltando",
+  },
+];
+
+export type ResumoTextoColadoCidadao = {
+  classeRotulo: string;
+  cnmFormatada: string | null;
+  cnmValida: boolean;
+  validade30DiasRotulo: string;
+  onusAtivosResumo: { atoNumero: string; titulo: string; citacao: string }[];
+  alertasCondoScanResumo: {
+    codigo: AlertaCondoScan["codigo"];
+    severidade: AlertaCondoScan["severidade"];
+    titulo: string;
+    citacao: string;
+  }[];
+};
+
+function rotuloClasseDoc(classe: ClasseDocumentalVereda): string {
+  if (classe === "matricula_onr") return "Matrícula do imóvel";
+  if (classe === "ata_assembleia") return "Ata de assembleia";
+  if (classe === "convencao_condominio") return "Convenção de condomínio";
+  if (classe === "balancete_condominial") return "Balancete financeiro";
+  if (classe === "laudo_vistoria_art") return "Laudo / Vistoria";
+  if (classe === "boleto_condominio_iptu") return "Boleto de condomínio / IPTU";
+  return "Trecho livre";
+}
+
+function rotuloOnusCidadao(tipo: OnusMatriculaExtraido["tipo"]): string {
+  if (tipo === "penhora") return "Penhora registrada";
+  if (tipo === "hipoteca") return "Hipoteca ativa";
+  if (tipo === "alienacao_fiduciaria") return "Alienação fiduciária";
+  if (tipo === "usufruto") return "Usufruto registrado";
+  if (tipo === "indisponibilidade") return "Indisponibilidade judicial";
+  if (tipo === "clausula_inalienabilidade") return "Cláusula de inalienabilidade";
+  return "Terreno da União / marinha";
+}
+
+function rotuloCondoScanCidadao(codigo: AlertaCondoScan["codigo"]): string {
+  if (codigo === "short_stay_restricao_ou_permissao") return "Curta temporada / Airbnb";
+  if (codigo === "regra_pets") return "Regras para animais";
+  if (codigo === "vaga_presa_ou_rotativa") return "Vaga presa ou rotativa";
+  if (codigo === "chamada_cota_extra") return "Chamada de cota extra";
+  if (codigo === "litigio_estrutural_ou_trabalhista") return "Ação judicial ou trabalhista";
+  if (codigo === "deficit_contabil") return "Déficit de caixa";
+  if (codigo === "inadimplencia_acima_benchmark") return "Inadimplência elevada";
+  return "Vistoria ou bombeiros vencidos";
+}
+
+export function auditarTextoColadoCidadao(
+  texto: string,
+  dataEmissaoIso?: string | null,
+): ResumoTextoColadoCidadao {
+  const limpo = texto.trim();
+  if (!limpo) {
+    return {
+      classeRotulo: "Trecho livre",
+      cnmFormatada: null,
+      cnmValida: false,
+      validade30DiasRotulo: "Sem data informada",
+      onusAtivosResumo: [],
+      alertasCondoScanResumo: [],
+    };
+  }
+
+  const audit = auditarDocumentoVereda({
+    docId: "colado-local",
+    paginas: [{ pagina: 1, texto: limpo }],
+    dataEmissaoCertidaoIso: dataEmissaoIso ?? null,
+    dataReferenciaIso: new Date().toISOString().slice(0, 10),
+  });
+
+  const validade30DiasRotulo =
+    audit.validadeCertidao30Dias.estado === "recebido"
+      ? "Dentro de 30 dias"
+      : audit.validadeCertidao30Dias.estado === "vencido"
+        ? "Acima de 30 dias (pedir certidão atualizada)"
+        : "Sem data informada";
+
+  return {
+    classeRotulo: rotuloClasseDoc(audit.classeDocumental),
+    cnmFormatada: audit.cnmEncontrado?.formatado ?? null,
+    cnmValida: Boolean(audit.cnmEncontrado?.valido),
+    validade30DiasRotulo,
+    onusAtivosResumo: audit.onusAtivos.map((o) => ({
+      atoNumero: o.atoNumero,
+      titulo: rotuloOnusCidadao(o.tipo),
+      citacao: o.citacaoLiteral,
+    })),
+    alertasCondoScanResumo: audit.alertasCondoScan.map((a) => ({
+      codigo: a.codigo,
+      severidade: a.severidade,
+      titulo: rotuloCondoScanCidadao(a.codigo),
+      citacao: a.citacaoLiteral,
+    })),
+  };
 }
