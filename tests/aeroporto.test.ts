@@ -50,8 +50,14 @@ describe("relacaoComOAeroporto", () => {
 
   it("a faixa abre 15% para cada lado: dentro a 400 m de lado a 5 km, fora a 1.200 m", () => {
     expect(relacaoComOAeroporto(alem("18", 5000, 400))?.trajetoria).not.toBeNull();
-    // Fora da faixa e a mais de 3 km da pista: o aeroporto não entra.
-    expect(relacaoComOAeroporto(alem("18", 5000, 1200))).toBeNull();
+    // Fora da faixa e a mais de 3 km da pista: não passa por cima, mas desde 19/11/2026 (pendência 2 do HANDOFF) o
+    // avião ao lado da rota entra na estimativa de ruído, e o aeroporto aparece com nome.
+    const fora = relacaoComOAeroporto(alem("18", 5000, 1200))!;
+    expect(fora.trajetoria).toBeNull();
+    expect(fora.aviao?.posicao).toBe("ao_lado_da_rota");
+    expect(fraseDoAeroporto(fora).frase).toContain("Os aviões passam ao lado, não por cima");
+    // Longe o bastante para o avião ficar abaixo de 35 dB(A): fora.
+    expect(relacaoComOAeroporto(alem("18", 5000, 5000))).toBeNull();
   });
 
   it("além do alcance de 10 km não conta como trajetória", () => {

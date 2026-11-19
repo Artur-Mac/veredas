@@ -16,7 +16,7 @@ describe("total mensal conhecido", () => {
     const a = comDeclarados(analiseDeTeste("a"), { condominio: v(null), seguroIncendio: v(40) });
     const n = prepararNegociacao(a, vazio, []);
     expect(n.total.valor).toBe(2540);
-    expect(n.total.texto).toBe("Total mensal conhecido: R$ 2.540 (faltam condomínio, IPTU).");
+    expect(n.total.texto).toBe("Total mensal conhecido: R$ 2.540 (faltam condomínio, IPTU do anúncio).");
   });
   it("IPTU anual vira mensal; IPTU sem período fica fora da soma", () => {
     const anual = comDeclarados(analiseDeTeste("a"), { iptu: v(1200, { periodo: "ano" }), seguroIncendio: v(40) });

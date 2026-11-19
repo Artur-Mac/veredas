@@ -11,6 +11,7 @@ import { RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 import { Botao } from "../Botao";
 import { Texto } from "../Texto";
 import { CampoLocal, EscolhaLocal, GrupoLocal } from "./blocos";
+import { pl } from "../../dados/formatos";
 
 const PRIORIDADES_LEITOR = [
   { id: "animais", rotulo: "Animais", temas: ["animais"] },
@@ -165,7 +166,7 @@ export function LeitorDeAta({ salvar }: { salvar: Salvar }) {
       ...c,
       documentos: [...c.documentos, {
         id: `documento-leitor-${Date.now().toString(36)}`, titulo, tipo, inspecaoEm: null, emitidoEm: null, recebidoEm: new Date().toISOString(),
-        origem: "Texto colado por você no leitor de ata", escopo: `${leitura.achados.length} trechos achados em ${leitura.paginas} página(s)`, trecho, pagina: leitura.achados.find((a) => a.pagina)?.pagina ?? null, vinculo: "a_confirmar" as const,
+        origem: "Texto colado por você no leitor de ata", escopo: `${pl(leitura.achados.length, "trecho achado", "trechos achados")} em ${pl(leitura.paginas, "página", "páginas")}`, trecho, pagina: leitura.achados.find((a) => a.pagina)?.pagina ?? null, vinculo: "a_confirmar" as const,
       }].slice(-100),
     }));
     setAviso(ok ? "Guardado no caderno como documento \"a confirmar\": confirme que é deste prédio." : "Não foi possível guardar.");
@@ -220,7 +221,7 @@ export function LeitorDeAta({ salvar }: { salvar: Salvar }) {
       </View>
       {leitura ? (
         <View style={{ gap: 12 }}>
-          <Texto tipo="apoio" role="status" style={{ fontVariant: ["tabular-nums"] }}>{`${leitura.achados.length} trechos em ${leitura.paginas} página(s). Cada trecho é cópia literal do texto; confira no original.`}</Texto>
+          <Texto tipo="apoio" role="status" style={{ fontVariant: ["tabular-nums"] }}>{`${pl(leitura.achados.length, "trecho", "trechos")} em ${pl(leitura.paginas, "página", "páginas")}. Cada trecho é cópia literal do texto; confira no original.`}</Texto>
           {cobertura ? (
             <View
               testID="leitor-resumo-cobertura"

@@ -300,7 +300,7 @@ export function derivarSintesesInteligentes(opcoes: {
       sobretitulo: "Acústica urbana · Dia × Noite",
       manchete: mancheteRuido,
       medidaDestaque: estimado
-        ? `~${Math.round(estimado.naRua.diaDb)} dB(A) de dia · ~${Math.round(estimado.naRua.noiteDb)} à noite (estimativa)`
+        ? `~${Math.round(estimado.naRua.diaDb)} dB(A) na rua de dia · ~${Math.round(estimado.naRua.noiteDb)} à noite (estimativa)`
         : aero?.trajetoria
           ? `Avião a ~${formatarNumero(aero.trajetoria.alturaEstimadaM)} m`
           : onibusPerto ? `Corredor a ${formatarDistancia(onibusPerto.distanciaM)}` : luse150m > 0 ? `${luse150m} LUSE ≤150 m` : "Via interna",

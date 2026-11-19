@@ -3,6 +3,7 @@ import { Pressable, View } from "react-native";
 import { useTema } from "../../tema/Tema";
 import { RAIO, TOQUE_MINIMO } from "../../tema/tokens";
 import { Texto } from "../Texto";
+import { pl } from "../../dados/formatos";
 
 /**
  * Modo de Convergência Familiar (100% offline, sem nuvem ou cadastro):
@@ -77,7 +78,7 @@ export function ConvergenciaFamiliar({
         {`Convergência: ${perfilA.pessoaNome} + ${perfilB.pessoaNome}`}
       </Texto>
       <Texto tipo="numero" style={{ fontSize: 13, fontVariant: ["tabular-nums"] }}>
-        {`Em comum: ${res.favoritosEmComum.length} imóvel(is) · Teto conjunto de referência: R$ ${res.tetoComum.toLocaleString("pt-BR")}/mês`}
+        {`Em comum: ${pl(res.favoritosEmComum.length, "imóvel", "imóveis")} · Teto conjunto de referência: R$ ${res.tetoComum.toLocaleString("pt-BR")}/mês`}
       </Texto>
 
       <View

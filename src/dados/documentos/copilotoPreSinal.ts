@@ -126,7 +126,7 @@ export const PACOTE_PRE_SINAL_ITENS: readonly ItemPacotePreSinal[] = [
 ];
 
 export const ORIENTACAO_CNIB_ONR =
-  "Indisponibilidade de bens do vendedor (CNIB / ONR): consulte diretamente no portal oficial onr.org.br; este app não coleta nem consulta CPF.";
+  "Bens do vendedor bloqueados pela Justiça (Central Nacional de Indisponibilidade de Bens, CNIB, do ONR): consulte diretamente no portal oficial onr.org.br; este app não coleta nem consulta CPF.";
 
 export type PrazoReferenciaPreSinal = {
   id: string;
@@ -173,7 +173,7 @@ export const ALERTAS_DILIGENCIA_RECIFE_2026: readonly AlertaDiligenciaRecife[] =
     id: "aqua_compesa_2026",
     titulo: "Água e saneamento (mudança marcada para 23/11/2026)",
     detalhe:
-      "A partir de 23/11/2026, data marcada pelo Governo de Pernambuco, a distribuição de água passa da Compesa para a concessionária AQUA Pernambuco em cerca de 150 municípios. A Compesa continua produzindo a água. Peça ao vendedor a quitação das contas de água e pergunte à Compesa se há débito em aberto.",
+      "A partir de 23/11/2026, data marcada pelo Governo de Pernambuco, a distribuição de água passa da Compesa para a concessionária AQUA Pernambuco em cerca de 150 municípios. A Compesa continua produzindo a água. Peça ao vendedor a quitação das contas de água e pergunte à concessionária (Compesa até 22/11/2026, AQUA Pernambuco a partir de 23/11) se há débito em aberto.",
   },
   {
     id: "vistoria_predial_pe",

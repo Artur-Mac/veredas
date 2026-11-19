@@ -1,10 +1,10 @@
 // Ruído estimado do prédio (decisão A2 do Samuel, 18/11/2026): a leitura única de barulho do app. Lê a camada gerada por
-// scripts/dados/ruido/rodar-ruido.mjs (fontes do chão por prédio), soma o avião pelo cone de aproximação
+// scripts/dados/ruido/rodar-ruido.mjs (fontes do chão por prédio), soma o avião além das cabeceiras
 // (../recife/aeroporto) e aplica o andar, a fachada e a janela (./leitura, ./modelo). Sem camada para o prédio devolve
 // "sem leitura": nunca um valor fixo. Todo número daqui é estimativa com dados abertos, não medição.
 import { z } from "zod";
 import { faltaCamada, lerCamada } from "../camadas";
-import { relacaoComOAeroporto } from "../recife/aeroporto";
+import { aoLadoDaPista, aviaoNoPonto } from "../recife/aeroporto";
 import { ARQUIVOS_DO_RUIDO, FONTES_DO_RUIDO, VERSAO_DO_RUIDO } from "../recife/ruidoGerado";
 import type { FichaDeMetodo6Campos } from "../fichaDeMetodo";
 import { fichaDoRuido, montarEstimativa, semLeituraDeRuido, type AviaoSobreOPredio, type EstimativaDeRuido, type OpcoesDeRuido } from "./leitura";
@@ -48,7 +48,15 @@ export type PredioParaORuido = { id: string; bairro: string; centro: readonly [n
 
 function aviaoSobre(centro: readonly [number, number]): AviaoSobreOPredio {
   try {
-    return relacaoComOAeroporto(centro)?.trajetoria ?? null;
+    return aviaoNoPonto(centro);
+  } catch {
+    return null;
+  }
+}
+
+function pistaAoLadoDe(centro: readonly [number, number]): { distanciaM: number } | null {
+  try {
+    return aoLadoDaPista(centro);
   } catch {
     return null;
   }
@@ -75,6 +83,7 @@ export function estimarRuido(predio: PredioParaORuido | null | undefined, opcoes
     registro,
     nomes: camada.nomes,
     aviao: aviaoSobre(predio.centro),
+    pistaAoLado: pistaAoLadoDe(predio.centro),
     anoConstrucao: predio.anoConstrucao ?? null,
     datas: DATAS,
     opcoes,

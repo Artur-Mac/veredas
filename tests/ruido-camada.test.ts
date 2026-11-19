@@ -11,7 +11,8 @@ import { camadaDoBairro, criarPlano, fontesDoPonto, prepararCenario, type ViaDoM
 import { CAMADAS_PUBLICADAS } from "../src/dados/camadasGeradas";
 import { camadasDoBairro } from "../src/dados/camadasDasTelas";
 import type { Edificio } from "../src/dados/contratos";
-import { relacaoComOAeroporto } from "../src/dados/recife/aeroporto";
+import { aviaoNoPonto, baseDoAeroporto, relacaoComOAeroporto } from "../src/dados/recife/aeroporto";
+import { nivelDoAviao } from "../src/dados/ruido/modelo";
 import { BAIRROS_HABILITADOS, DIRETORIO_DO_INDICE } from "../src/dados/recife/publicacaoGerada";
 import { ARQUIVOS_DO_RUIDO, FONTES_DO_RUIDO, INDICE_DO_RUIDO, VERSAO_DO_RUIDO } from "../src/dados/recife/ruidoGerado";
 import { arquivoDoRuido, estimarRuido, fichaGeralDoRuido, ruidoDoBairro, type RuidoEstimado } from "../src/dados/ruido/estimativa";
@@ -229,7 +230,7 @@ describe("estimarRuido", () => {
     expect(janela.noQuarto!.isolamentoDb).toBe(17.8);
     expect(janela.noQuarto!.noiteDb).toBeCloseTo(janela.naJanela.noiteDb - 17.8, 1);
     const novo = estimado(estimarRuido(p, { andar: 9, fachadaGraus: frente, janelaFechada: true, anoConstrucao: 2020 }));
-    expect(novo.noQuarto!.isolamentoDb).toBe(27);
+    expect(novo.noQuarto!.isolamentoDb).toBe(20); // sem classe declarada vale o mínimo da NBR 15575-4 (era o intermediário, 27)
     expect(novo.noQuarto!.noiteDb).toBeLessThan(janela.noQuarto!.noiteDb);
     expect(janela.textos.quarto).toContain("com a janela fechada");
     expect(janela.textos.quarto).toContain("(estimativa)");
@@ -237,8 +238,11 @@ describe("estimarRuido", () => {
 
   it("aceite: Golden Tower, Torre e Casa Forte com números e notas diferentes, e frente mais barulhenta que fundos", () => {
     const leituras = [GOLDEN_TOWER(), DA_TORRE(), DE_CASA_FORTE()].map((p) => ({ p, rua: estimado(estimarRuido(p)) }));
-    const dia = leituras.map((l) => l.rua.naRua.diaDb), notas = leituras.map((l) => l.rua.notaDeSossego);
-    expect(new Set(dia).size).toBe(3);
+    const notas = leituras.map((l) => l.rua.notaDeSossego);
+    // Desde 19/11/2026 (pendência 2 do HANDOFF) o Golden Tower recebe o avião fora do cone e o dia dele empatou, por
+    // coincidência, com o de Casa Forte (63,4); o par dia/noite e a nota continuam diferentes nos três.
+    expect(new Set(leituras.map((l) => `${l.rua.naRua.diaDb}/${l.rua.naRua.noiteDb}`)).size).toBe(3);
+    expect(new Set(leituras.map((l) => l.rua.naRua.noiteDb)).size).toBe(3);
     expect(new Set(notas).size).toBe(3);
     // Aceite do R1: Golden Tower e o prédio da Torre com notas de sossego diferentes.
     expect(notas[0]).not.toBe(notas[1]);
@@ -326,5 +330,93 @@ describe("avião: um cálculo só (cone da pista + soma em energia)", () => {
     const casa = simularUnidade({ predio: p, vizinhos, tipo: "casa", andar: 9, fachadaGraus: null });
     expect(estimado(casa.barulho.estimativa).andar).toBe(0);
     expect(estimado(casa.barulho.estimativa).partes.doAviao).toEqual(eFrente.partes.doAviao);
+  });
+});
+
+// Pendência 2 do HANDOFF (19/11/2026): fora do cone, além das cabeceiras, o avião cai com o afastamento ("uns 9 dB a
+// menos 1 km para o lado", Mapa Sossego), sem degrau na borda; ao lado da pista não há número, e a tela e a ficha dizem
+// que a nota é um piso.
+describe("avião fora do cone de aproximação", () => {
+  const base = baseDoAeroporto();
+  /** Desloca um ponto em metros, perpendicular ao eixo da pista. */
+  const deLado = (centro: readonly [number, number], m: number): [number, number] => {
+    const [n, s] = [base.pista.cabeceiraNorte.lonLat, base.pista.cabeceiraSul.lonLat];
+    const kx = 111320 * Math.cos((centro[1] * Math.PI) / 180), ky = 110574;
+    const [ux, uy] = [(s[0] - n[0]) * kx, (s[1] - n[1]) * ky];
+    const L = Math.hypot(ux, uy);
+    return [centro[0] + ((-uy / L) * m) / kx, centro[1] + ((ux / L) * m) / ky];
+  };
+  const nivel = (c: readonly [number, number]) => {
+    const a = aviaoNoPonto(c)!;
+    return { cone: a.dentroDoCone, db: nivelDoAviao(a.alturaEstimadaM, a.afastamentoDoEixoM) };
+  };
+
+  it("prédio 64823-1080, logo fora do cone: entra com o avião, e atravessar a borda muda menos de 1 dB", () => {
+    const p = predioDe("boa-viagem", "64823-1080");
+    expect(relacaoComOAeroporto(p.centro)?.trajetoria).toBeNull();
+    const r = estimado(estimarRuido(p));
+    expect(r.partes.doAviao?.diaDb).toBeGreaterThan(65);
+    expect(r.fontes.find((f) => f.tipo === "aviao")?.texto).toMatch(/para o lado da linha de pouso e decolagem: ~\d+ dB\(A\) de dia · ~\d+ à noite \(estimativa\)$/);
+    // Varre 300 m de lado a lado, de 30 em 30 m: a borda fica no meio, e nenhum passo pula mais de 1 dB.
+    const passos = Array.from({ length: 11 }, (_, i) => nivel(deLado(p.centro, -150 + 30 * i)));
+    expect(passos.some((x) => x.cone) && passos.some((x) => !x.cone)).toBe(true);
+    for (let i = 1; i < passos.length; i++) expect(Math.abs(passos[i]!.db - passos[i - 1]!.db)).toBeLessThan(1);
+  });
+
+  it("a 1 km para o lado da linha de pouso, ~9 dB a menos que no eixo, na mesma altura", () => {
+    const p = predioDe("boa-viagem", "64823-1080");
+    const a = aviaoNoPonto(p.centro)!;
+    expect(nivelDoAviao(a.alturaEstimadaM, 0) - nivelDoAviao(a.alturaEstimadaM, 1000)).toBeCloseTo(9, 5);
+  });
+
+  it("todo prédio a até 1 km da pista tem o avião na conta ou o aviso de piso; ao lado da pista, só os aviões da cabeceira, com piso", () => {
+    let perto = 0, aoLado = 0;
+    for (const bairro of BAIRROS_HABILITADOS) {
+      if (!arquivoDoRuido(bairro)) continue;
+      for (const p of indiceDe(bairro)) {
+        const rel = relacaoComOAeroporto(p.centro);
+        if (!rel || rel.distanciaM > 1000) continue;
+        perto++;
+        const r = estimado(estimarRuido(p));
+        expect(Boolean(r.partes.doAviao) || Boolean(r.pistaAoLado)).toBe(true);
+        // Nenhuma frase com o avião "a ~0 m de altura" (revisão de 19/11/2026).
+        expect(r.fontes.find((f) => f.tipo === "aviao")?.texto ?? "").not.toMatch(/~0 m de altura/);
+        if (r.pistaAoLado) {
+          aoLado++;
+          expect(aviaoNoPonto(p.centro)?.posicao).toBe("ao_lado_da_pista");
+          const aviao = r.fontes.find((f) => f.tipo === "aviao");
+          if (aviao) expect(aviao.texto).toMatch(/^Aeroporto dos Guararapes, aviões chegando e saindo pela cabeceira (18|36), a /);
+          expect(r.textos.aeroporto).toContain("leia a nota como piso");
+          expect(r.textos.nota).toContain("É um piso: a pista do aeroporto ao lado não entra.");
+          expect(r.textos.placar.subtitulo).toContain("piso, sem a pista ao lado");
+          expect(r.textos.ficha.limite).toContain(r.textos.aeroporto!);
+        }
+      }
+    }
+    expect(perto).toBeGreaterThan(300);
+    expect(aoLado).toBeGreaterThan(100);
+  });
+
+  it("atravessar a linha da cabeceira (de 'além da cabeceira' para 'ao lado da pista') muda menos de 1 dB", () => {
+    // Revisão de 19/11/2026: antes o avião ia de ~68 para 0 dB(A) em poucos metros nessa linha.
+    const [n, s] = [base.pista.cabeceiraNorte.lonLat, base.pista.cabeceiraSul.lonLat];
+    const kx = 111320 * Math.cos((n[1] * Math.PI) / 180), ky = 110574;
+    const [ux, uy] = [(s[0] - n[0]) * kx, (s[1] - n[1]) * ky];
+    const L = Math.hypot(ux, uy);
+    const ponto = (cab: readonly [number, number], ao: number, lado: number): [number, number] =>
+      [cab[0] + ((ux / L) * ao - (uy / L) * lado) / kx, cab[1] + ((uy / L) * ao + (ux / L) * lado) / ky];
+    for (const [cab, sentido] of [[n, 1], [s, -1]] as const) {
+      for (const lado of [300, 1100, 2000]) {
+        const passos = [-60, -30, -5, 5, 30, 60].map((m) => nivel(ponto(cab, sentido * m, lado)).db);
+        for (let i = 1; i < passos.length; i++) expect(Math.abs(passos[i]! - passos[i - 1]!)).toBeLessThan(1);
+      }
+    }
+  });
+
+  it("longe da pista, sem aviso de piso", () => {
+    const r = estimado(estimarRuido(DA_TORRE()));
+    expect(r.pistaAoLado).toBeNull();
+    expect(r.textos.aeroporto).toBeNull();
+    expect(r.textos.placar.subtitulo).not.toContain("piso");
   });
 });

@@ -91,8 +91,10 @@ export function MedidorDeRuido({ aoGuardar }: { aoGuardar?: (texto: string) => v
       {frase && aoGuardar ? <Botao rotulo="Guardar nas impressões" variante="texto" onPress={() => aoGuardar(`Microfone (10 s, sem calibração): ${frase}`)} /> : null}
       {erro ? <Texto tipo="apoio" role="alert" cor="cor-barro-texto">{erro}</Texto> : null}
       <Texto tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 11, lineHeight: 16 }}>
-        Só a diferença entre aberta e fechada, no mesmo aparelho e lugar. O microfone não é calibrado e o navegador pode ajustar o ganho: não é medição em dB(A). Nada é gravado. Nível da rua em dB(A) para comparar: Sem leitura publicada nesta área ainda.
+        Só a diferença entre aberta e fechada, no mesmo aparelho e lugar. O microfone não é calibrado e o navegador pode ajustar o ganho: não é medição em dB(A). Nada é gravado.
       </Texto>
+      {/* Pendência 3 do HANDOFF (19/11/2026): saiu "Nível da rua em dB(A) para comparar: Sem leitura publicada". O prédio
+          tem estimativa no dossiê, mas ela não se compara a um microfone sem calibração: a tela não põe os dois lado a lado. */}
     </View>
   );
 }

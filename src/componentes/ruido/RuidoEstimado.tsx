@@ -26,6 +26,7 @@ export function LeituraDoRuido({ estimativa, testID = "ruido-estimado", comNota 
       <Texto testID={`${testID}-manchete`} tipo="numero" style={[{ fontSize: 16, lineHeight: 22, fontWeight: "700" }, NUMEROS]}>{t.manchete}</Texto>
       {t.janela ? <Texto testID={`${testID}-janela`} tipo="corpo" style={[{ fontSize: 13.5, lineHeight: 19, fontWeight: "600" }, NUMEROS]}>{t.janela}</Texto> : null}
       {t.quarto ? <Texto testID={`${testID}-quarto`} tipo="apoio" cor="cor-texto-apoio" style={[{ fontSize: 12.5, lineHeight: 18 }, NUMEROS]}>{t.quarto}</Texto> : null}
+      {t.aeroporto ? <Texto testID={`${testID}-aeroporto`} tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 12.5, lineHeight: 18 }}>{t.aeroporto}</Texto> : null}
       {comNota ? <Texto testID={`${testID}-nota`} tipo="corpo" style={[{ fontSize: 13.5, lineHeight: 19, fontWeight: "600" }, NUMEROS]}>{t.nota}</Texto> : null}
       <Texto tipo="apoio" cor="cor-texto-apoio" style={[{ fontSize: 12.5, lineHeight: 18 }, NUMEROS]}>{t.faixa}</Texto>
       <Texto tipo="apoio" cor="cor-texto-apoio" style={[{ fontSize: 12.5, lineHeight: 18 }, NUMEROS]}>{t.nbr}</Texto>

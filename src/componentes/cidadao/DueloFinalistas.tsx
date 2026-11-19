@@ -21,14 +21,14 @@ export type EntradaDueloA_B = CandidatoDecisao & {
    * A nota de sossego do modelo de ruído estimado (a mesma do placar e da matriz); `null` = sem leitura para o prédio.
    * Ausente só quando o duelo é montado sem o modelo: aí vale a palavra pelo dB do quarto.
    */
-  sossego?: { nota0a10: number; nivel: string } | null;
+  sossego?: { nota0a10: number; nivel: string; piso?: boolean } | null;
 };
 
 const sossegoDoDuelo = (o: EntradaDueloA_B): string =>
   o.sossego === undefined
     ? classificarNivelSossegoPorDbInterno(o.ruidoInternoDb).rotuloComparar
     : o.sossego
-      ? `${o.sossego.nivel} à noite (estimativa)`
+      ? `${o.sossego.nivel} à noite (estimativa${o.sossego.piso ? "; piso, sem a pista do aeroporto" : ""})`
       : "Sem leitura";
 
 export type SensibilidadeDuelo = {
@@ -109,11 +109,20 @@ export function DueloFinalistas({
   opcaoA,
   opcaoB,
   destinoDoTrajeto = "Recife Antigo",
+  diasPorMes = 22,
+  daRotina = false,
+  noPico = true,
 }: {
   opcaoA: EntradaDueloA_B;
   opcaoB: EntradaDueloA_B;
-  /** Para onde o tempo de trajeto foi contado (um destino só). A tela diz, para não se confundir com a rotina de dois destinos. */
+  /** Para onde o tempo de trajeto foi contado. A tela diz, para não se confundir com a rotina de dois destinos. */
   destinoDoTrajeto?: string;
+  /** Dias por mês na conta do tempo (a rotina usa 20 ou 12 presenciais). */
+  diasPorMes?: number;
+  /** O tempo veio da rotina de dois destinos escolhida na tela (os dois trajetos somados). */
+  daRotina?: boolean;
+  /** Horário da rotina escolhida no cartão. */
+  noPico?: boolean;
 }) {
   const { cor } = useTema();
 
@@ -126,7 +135,8 @@ export function DueloFinalistas({
       Math.abs(opcaoA.custoMensalTotalReais - opcaoB.custoMensalTotalReais) < 50,
     ),
     linhaDiferenca(
-      "Sossego no quarto",
+      // O rótulo diz o ponto do número: a nota é do ruído à noite na janela; sem ela, o dB do quarto.
+      opcaoA.sossego !== undefined && opcaoB.sossego !== undefined ? "Sossego à noite" : "Sossego no quarto",
       sossegoDoDuelo(opcaoA),
       sossegoDoDuelo(opcaoB),
       opcaoA.sossego !== undefined && opcaoB.sossego !== undefined
@@ -150,7 +160,7 @@ export function DueloFinalistas({
     // Revisão de 19/11/2026: tempo e área eram uma linha só ("96 min/dia · 112 m²") e o destino não era dito; o cartão da
     // rotina de dois destinos, logo acima, dava outro vencedor sem a tela explicar por quê.
     linhaDiferenca(
-      `Ida e volta até ${destinoDoTrajeto}, no pico (estimativa)`,
+      daRotina ? `Rotina até ${destinoDoTrajeto}, ida e volta somadas, ${noPico ? "no pico" : "fora de pico"} (estimativa)` : `Ida e volta até ${destinoDoTrajeto}, no pico (estimativa)`,
       `~${Math.round(opcaoA.deslocamentoMinDia)} min/dia`,
       `~${Math.round(opcaoB.deslocamentoMinDia)} min/dia`,
       Math.abs(opcaoA.deslocamentoMinDia - opcaoB.deslocamentoMinDia) < 5,
@@ -170,7 +180,7 @@ export function DueloFinalistas({
     [Math.round(opcaoA.custoMensalTotalReais), Math.round(opcaoB.custoMensalTotalReais)],
     [opcaoA.itensPendentesCusto?.length ?? 0, opcaoB.itensPendentesCusto?.length ?? 0],
     [Math.round(opcaoA.deslocamentoMinDia), Math.round(opcaoB.deslocamentoMinDia)],
-    22,
+    diasPorMes,
   );
   const sensibilidade = avaliarSensibilidadeDuelo(opcaoA, opcaoB);
 
@@ -254,7 +264,9 @@ export function DueloFinalistas({
           {sinteseTroca.frase}
         </Texto>
         <Texto testID="duelo-metodo-do-trajeto" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>
-          {`O trajeto aqui é só até ${destinoDoTrajeto}, em linha reta × ${String(FATOR_DE_DESVIO_DA_LINHA_RETA).replace(".", ",")} (estimativa, 22 dias por mês). Com outros destinos o resultado muda: escolha os seus na rotina de dois destinos.`}
+          {daRotina
+            ? `O trajeto aqui é o do cartão "Rotina de dois destinos" (${destinoDoTrajeto}), em linha reta × ${String(FATOR_DE_DESVIO_DA_LINHA_RETA).replace(".", ",")} (estimativa, ${noPico ? "no pico" : "fora de pico"}, ${diasPorMes} dias por mês).`
+            : `O trajeto aqui é só até ${destinoDoTrajeto}, em linha reta × ${String(FATOR_DE_DESVIO_DA_LINHA_RETA).replace(".", ",")} (estimativa, ${diasPorMes} dias por mês). Com outros destinos o resultado muda: escolha os seus na rotina de dois destinos.`}
         </Texto>
         {sinteseTroca.tipo === "troca" ? (
           <Texto

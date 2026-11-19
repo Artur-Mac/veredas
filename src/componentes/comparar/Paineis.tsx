@@ -232,7 +232,7 @@ export function PainelDeCusto({ custo, rotulos, aoAjustar, partes = null, aoAbri
           ) : null}
           {!aluguel && (partes[0].simulacaoCompra || partes[1].simulacaoCompra) ? (
             <LinhaDeDois
-              rotulo="Simulação Price BCB (à parte)"
+              rotulo="Prestação simulada pela taxa média do Banco Central (à parte)"
               colunas={rotulos}
               celulas={[
                 {
@@ -248,7 +248,7 @@ export function PainelDeCusto({ custo, rotulos, aoAjustar, partes = null, aoAbri
           ) : null}
           {!aluguel && (partes[0].alertaMarinha || partes[1].alertaMarinha) ? (
             <LinhaDeDois
-              rotulo="Terreno de Marinha / SPU"
+              rotulo="Terreno de marinha (União)"
               colunas={rotulos}
               celulas={[
                 {

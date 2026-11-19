@@ -76,8 +76,10 @@ function comparar(valor: number, todos: readonly number[], menorMelhor: boolean,
   const p = posicaoNoBairro(valor, todos, menorMelhor);
   const forca = Math.abs(p.piores - p.melhores);
   const percentilBairro = Math.round(p.piores * 100);
-  if (p.piores >= 0.7) return { classe: "melhor", comparacao: `${melhorQue} que ${Math.round(p.piores * 10)} de cada 10 prédios ${deBairro(bairro)}.`, forca, percentilBairro };
-  if (p.melhores >= 0.7) return { classe: "pior", comparacao: `${piorQue} que ${Math.round(p.melhores * 10)} de cada 10 prédios ${deBairro(bairro)}.`, forca, percentilBairro };
+  // Revisão visual de 19/11/2026: "10 de cada 10" é impossível (o próprio prédio está na conta); vira "quase todos".
+  const deCada10 = (x: number) => (Math.round(x * 10) >= 10 ? "quase todos os" : `${Math.round(x * 10)} de cada 10`);
+  if (p.piores >= 0.7) return { classe: "melhor", comparacao: `${melhorQue} que ${deCada10(p.piores)} prédios ${deBairro(bairro)}.`, forca, percentilBairro };
+  if (p.melhores >= 0.7) return { classe: "pior", comparacao: `${piorQue} que ${deCada10(p.melhores)} prédios ${deBairro(bairro)}.`, forca, percentilBairro };
   return { classe: "igual", comparacao: `Parecido com a maioria dos prédios ${deBairro(bairro)}.`, forca, percentilBairro };
 }
 
@@ -218,10 +220,12 @@ function indicadorSol(e: EntradaDosIndicadores): Indicador | null {
   partes.push(`Estimativa no equinócio, de 13h a 17h, pelo contorno do lote${meu.alturaConhecida ? " e a altura do cadastro" : " (altura do prédio estimada)"}.`);
   return {
     id: "sol", tema: "Sol e sombra", ...c,
-    rotulo: c.classe === "melhor" ? "Menos sol da tarde" : c.classe === "pior" ? "Sol da tarde forte" : "Sol da tarde na média",
+    // Revisão visual de 19/11/2026: o selo é do prédio inteiro (o contorno do lote), não da unidade; dizia "Sol da tarde
+    // forte" ao lado de uma unidade virada para o nascente. O rótulo e o significado dizem isso.
+    rotulo: c.classe === "melhor" ? "Prédio com menos sol da tarde" : c.classe === "pior" ? "Prédio com sol da tarde forte" : "Sol da tarde na média",
     frase: partes.join(" "),
     significado: c.classe === "pior"
-      ? "As fachadas do poente pegam a tarde de frente: os cômodos desse lado tendem a esquentar. Visite depois das 15h e pergunte para que lado o apartamento dá."
+      ? "As fachadas do poente deste prédio pegam a tarde de frente, mais que na maioria do bairro: os apartamentos desse lado tendem a esquentar. Se a sua janela dá para outro lado, vale o cartão Sol & conforto, feito para o andar e a fachada da unidade. Visite depois das 15h."
       : c.classe === "melhor"
         ? "Pouco sol direto depois das 13h: tende a esquentar menos à tarde. Confira na visita se a luz natural basta."
         : "O sol da tarde é o típico do bairro; para que lado o apartamento dá pesa mais que o prédio.",

@@ -15,7 +15,8 @@ import { FichaDoRuidoEstimado, LeituraDoRuido } from "../ruido/RuidoEstimado";
 import { Texto } from "../Texto";
 import { Nota } from "./base";
 
-const fachadaInicial = (g: number | null | undefined): number | null => (g === null || g === undefined ? null : (Math.round(g / 45) * 45) % 360);
+/** O botão da rosa (de 45 em 45°) que corresponde a um rumo. */
+const botaoDaRosa = (g: number | null | undefined): number | null => (g === null || g === undefined ? null : (Math.round(g / 45) * 45) % 360);
 
 type TopicoSimulador = "barulho" | "sol" | "brisa";
 
@@ -37,14 +38,20 @@ function Escolha({ ativo, rotulo, onPress, acessivel, botao = false }: { ativo: 
   );
 }
 
-export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio, orientacaoGraus }: {
-  predio: Edificio; vizinhos: readonly Edificio[]; tipologia: string | null; andarDoAnuncio: number | null; orientacaoGraus: number | null;
+/**
+ * Começa no andar e na fachada ativos do dossiê (src/dados/dossie/unidadeAtiva.ts): o rumo exato da fachada, não o botão
+ * da rosa, para que o primeiro número seja o mesmo do placar. Tocar na rosa passa a usar a direção do botão.
+ */
+export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarInicial, fachadaInicialGraus, unidadeDescricao = null }: {
+  predio: Edificio; vizinhos: readonly Edificio[]; tipologia: string | null; andarInicial: number; fachadaInicialGraus: number | null;
+  /** "9º andar (do anúncio) · fachada Nascente (pela bússola da visita)": de onde vem o ponto de partida. */
+  unidadeDescricao?: string | null;
 }) {
   const { cor } = useTema();
   const maxAndar = Math.max(1, (predio.pavimentos ?? 20) - 1);
   const [tipo, setTipo] = useState<TipoDeImovel>(tipologia === "casa" ? "casa" : "apartamento");
-  const [andar, setAndar] = useState<number>(Math.min(maxAndar, Math.max(1, andarDoAnuncio ?? Math.ceil(maxAndar / 2))));
-  const [fachada, setFachada] = useState<number | null>(fachadaInicial(orientacaoGraus));
+  const [andar, setAndar] = useState<number>(Math.min(maxAndar, Math.max(0, Math.round(andarInicial))));
+  const [fachada, setFachada] = useState<number | null>(fachadaInicialGraus);
   const [aberto, setAberto] = useState<TopicoSimulador | null>(null);
   const s = useMemo(() => simularUnidade({ predio, vizinhos, tipo, andar, fachadaGraus: fachada }), [predio, vizinhos, tipo, andar, fachada]);
 
@@ -56,7 +63,7 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
   // A estimativa na janela escolhida abre o resumo; as fontes nomeadas continuam logo depois.
   const ruido = s.barulho.estimativa;
   const resumoBarulho = ruido.estado === "estimado"
-    ? `~${Math.round(ruido.naJanela.diaDb)} dB(A) de dia · ~${Math.round(ruido.naJanela.noiteDb)} à noite (estimativa) · ${fontesPerto}`
+    ? `Na janela: ~${Math.round(ruido.naJanela.diaDb)} dB(A) de dia · ~${Math.round(ruido.naJanela.noiteDb)} à noite (estimativa) · ${fontesPerto}`
     : fontesPerto;
   const resumoSol = s.sol
     ? `${s.sol.fachada}: ~${s.sol.horasSolDireto.toFixed(1).replace(".", ",")} h/dia`
@@ -65,13 +72,18 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
 
   return (
     <View role="region" aria-label="Simulador andar e fachada" style={{ gap: 14 }}>
+      {unidadeDescricao ? (
+        <Texto testID="simulador-ponto-de-partida" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 13, lineHeight: 19 }}>
+          {`Começa como no placar: ${unidadeDescricao}.`}
+        </Texto>
+      ) : null}
       <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 8 }} accessibilityRole="radiogroup" aria-label="Tipo de imóvel">
         <Escolha ativo={tipo === "apartamento"} rotulo="Apartamento" onPress={() => setTipo("apartamento")} />
         <Escolha ativo={tipo === "casa"} rotulo="Casa" onPress={() => setTipo("casa")} />
         {tipo === "apartamento" ? (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginLeft: 4 }} aria-label="Andar">
-            <Escolha botao ativo={false} rotulo="−" acessivel="Descer um andar" onPress={() => setAndar((a) => Math.max(1, a - 1))} />
-            <Texto tipo="numero" accessibilityLiveRegion="polite" style={{ minWidth: 74, textAlign: "center", fontSize: 14, fontWeight: "700" }}>{`${andar}º andar`}</Texto>
+            <Escolha botao ativo={false} rotulo="−" acessivel="Descer um andar" onPress={() => setAndar((a) => Math.max(0, a - 1))} />
+            <Texto tipo="numero" accessibilityLiveRegion="polite" style={{ minWidth: 74, textAlign: "center", fontSize: 14, fontWeight: "700" }}>{andar === 0 ? "Térreo" : `${andar}º andar`}</Texto>
             <Escolha botao ativo={false} rotulo="+" acessivel="Subir um andar" onPress={() => setAndar((a) => Math.min(maxAndar, a + 1))} />
           </View>
         ) : null}
@@ -98,7 +110,7 @@ export function SimuladorDaUnidade({ predio, vizinhos, tipologia, andarDoAnuncio
             {ROSA.map((linha, i) => (
               <View key={i} style={{ flexDirection: "row", gap: 4 }}>
                 {linha.map((c) => (
-                  <Escolha key={c.rotulo} ativo={fachada === c.graus} rotulo={c.rotulo} acessivel={c.graus === null ? "Não sei a fachada" : `Fachada ${c.rotulo}`} onPress={() => setFachada(c.graus)} />
+                  <Escolha key={c.rotulo} ativo={botaoDaRosa(fachada) === c.graus} rotulo={c.rotulo} acessivel={c.graus === null ? "Não sei a fachada" : `Fachada ${c.rotulo}`} onPress={() => setFachada(c.graus)} />
                 ))}
               </View>
             ))}
