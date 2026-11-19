@@ -81,27 +81,27 @@ export function fatosDeEquipamentos(bairro: string | null | undefined, predioId:
     const [nome, tipo, m2] = L.p[e.pq[0]]!;
     const grande = m2 >= 10_000;
     fatos.push({ id: "praca", metros: e.pq[1],
-      frase: e.pq[1] === 0 ? `O prédio encosta numa ${tipo === "Parque" ? "área de parque" : "praça"}.` : `${grande ? (tipo === "Parque" ? "Parque" : "Praça grande") : tipo} a ~${minutos(e.pq[1])} min a pé em linha reta.`,
+      frase: e.pq[1] === 0 ? `O prédio encosta numa ${tipo === "Parque" ? "área de parque" : "praça"}.` : `${grande ? (tipo === "Parque" ? "Parque" : "Praça grande") : tipo} a ~${minutos(e.pq[1])} min a pé (distância em linha reta).`,
       detalhe: `${nome ?? `${tipo} sem nome no cadastro`}, ${area(m2)}, ${distanciaEmTexto(e.pq[1])} em linha reta.` });
   }
   if (e.pg) {
     const [nome, tipo, m2] = L.p[e.pg[0]]!;
-    fatos.push({ id: "praca_maior", metros: e.pg[1], frase: `${tipo === "Parque" ? "Parque" : "Praça maior"} a ~${minutos(e.pg[1])} min a pé em linha reta.`,
+    fatos.push({ id: "praca_maior", metros: e.pg[1], frase: `${tipo === "Parque" ? "Parque" : "Praça maior"} a ~${minutos(e.pg[1])} min a pé (distância em linha reta).`,
       detalhe: `${nome ?? `${tipo} sem nome no cadastro`}, ${area(m2)}, ${distanciaEmTexto(e.pg[1])} em linha reta.` });
   }
-  if (e.cv !== undefined) fatos.push({ id: "ciclovia", metros: e.cv, frase: e.cv <= 150 ? "Ciclovia ou ciclofaixa permanente na rua ou ao lado." : `Ciclovia ou ciclofaixa permanente a ~${minutos(e.cv)} min a pé em linha reta.`, detalhe: `Malha cicloviária permanente, ${distanciaEmTexto(e.cv)} em linha reta.` });
-  else if (e.cc !== undefined) fatos.push({ id: "conecta", metros: e.cc, frase: `Rota ciclável do Conecta a ~${minutos(e.cc)} min a pé em linha reta.`, detalhe: `Rotas cicláveis do Conecta (ciclorrota, ciclofaixa ou área compartilhada), ${distanciaEmTexto(e.cc)} em linha reta.` });
+  if (e.cv !== undefined) fatos.push({ id: "ciclovia", metros: e.cv, frase: e.cv <= 150 ? "Ciclovia ou ciclofaixa permanente na rua ou ao lado." : `Ciclovia ou ciclofaixa permanente a ~${minutos(e.cv)} min a pé (distância em linha reta).`, detalhe: `Malha cicloviária permanente, ${distanciaEmTexto(e.cv)} em linha reta.` });
+  else if (e.cc !== undefined) fatos.push({ id: "conecta", metros: e.cc, frase: `Rota ciclável do Conecta a ~${minutos(e.cc)} min a pé (distância em linha reta).`, detalhe: `Rotas cicláveis do Conecta (ciclorrota, ciclofaixa ou área compartilhada), ${distanciaEmTexto(e.cc)} em linha reta.` });
   if (e.bk) {
     const [nome, cap] = L.b[e.bk[0]]!;
-    fatos.push({ id: "bike", metros: e.bk[1], frase: `Estação do Bike PE a ~${minutos(e.bk[1])} min a pé em linha reta.`, detalhe: `${nome}${cap ? `, ${cap} vagas` : ""}, ${distanciaEmTexto(e.bk[1])} em linha reta.` });
-  } else if (e.pc !== undefined) fatos.push({ id: "paraciclo", metros: e.pc, frase: `Paraciclo público a ~${minutos(e.pc)} min a pé em linha reta.`, detalhe: `Paraciclo cadastrado, ${distanciaEmTexto(e.pc)} em linha reta.` });
+    fatos.push({ id: "bike", metros: e.bk[1], frase: `Estação do Bike PE a ~${minutos(e.bk[1])} min a pé (distância em linha reta).`, detalhe: `${nome}${cap ? `, ${cap} vagas` : ""}, ${distanciaEmTexto(e.bk[1])} em linha reta.` });
+  } else if (e.pc !== undefined) fatos.push({ id: "paraciclo", metros: e.pc, frase: `Paraciclo público a ~${minutos(e.pc)} min a pé (distância em linha reta).`, detalhe: `Paraciclo cadastrado, ${distanciaEmTexto(e.pc)} em linha reta.` });
   if (e.sd) {
     const [nome, tipo] = L.s[e.sd[0]]!;
-    fatos.push({ id: "saude", metros: e.sd[1], frase: e.sd[1] <= 2400 ? `Unidade de saúde municipal a ~${minutos(e.sd[1])} min a pé em linha reta.` : `Unidade de saúde municipal ${distanciaEmTexto(e.sd[1])}.`, detalhe: `${nome} (${minusculo(tipo)}), ${distanciaEmTexto(e.sd[1])} em linha reta.` });
+    fatos.push({ id: "saude", metros: e.sd[1], frase: e.sd[1] <= 2400 ? `Unidade de saúde municipal a ~${minutos(e.sd[1])} min a pé (distância em linha reta).` : `Unidade de saúde municipal ${distanciaEmTexto(e.sd[1])}.`, detalhe: `${nome} (${minusculo(tipo)}), ${distanciaEmTexto(e.sd[1])} em linha reta.` });
   }
   if (e.ac) {
     const [nome] = L.a[e.ac[0]]!;
-    fatos.push({ id: "academia", metros: e.ac[1], frase: `Academia da Cidade a ~${minutos(e.ac[1])} min a pé em linha reta.`, detalhe: `${nome}, ${distanciaEmTexto(e.ac[1])} em linha reta.` });
+    fatos.push({ id: "academia", metros: e.ac[1], frase: `Academia da Cidade a ~${minutos(e.ac[1])} min a pé (distância em linha reta).`, detalhe: `${nome}, ${distanciaEmTexto(e.ac[1])} em linha reta.` });
   }
   if (e.ct) {
     const [nome, tipo] = L.c[e.ct[0]]!;
@@ -112,7 +112,7 @@ export function fatosDeEquipamentos(bairro: string | null | undefined, predioId:
     fatos.push({ id: "ucn", metros: e.uc[1], frase: e.uc[1] === 0 ? "O lote fica dentro de uma unidade de conservação: pode haver regras extras para obras." : `Unidade de conservação ${distanciaEmTexto(e.uc[1])}.`, detalhe: `${nome}, ${formatarNumero(ha)} ha, ${distanciaEmTexto(e.uc[1])} em linha reta.` });
   }
   if (acesso.includes("visao") && e.sonM !== undefined) {
-    fatos.push({ id: "sonoro", metros: e.sonM, frase: e.son > 0 ? `Semáforo com sinal sonoro a até ${d.raioSemaforosM} m.` : `Semáforo com sinal sonoro a ~${minutos(e.sonM)} min a pé em linha reta.`,
+    fatos.push({ id: "sonoro", metros: e.sonM, frase: e.son > 0 ? `Semáforo com sinal sonoro a até ${d.raioSemaforosM} m.` : `Semáforo com sinal sonoro a ~${minutos(e.sonM)} min a pé (distância em linha reta).`,
       detalhe: `${e.son > 0 ? `${e.son} a até ${d.raioSemaforosM} m; o mais perto ` : "O mais perto "}${distanciaEmTexto(e.sonM)} em linha reta. O cadastro não diz se o sinal funciona hoje (pedido P09).` });
   }
   return fatos.sort((a, b) => a.metros - b.metros);

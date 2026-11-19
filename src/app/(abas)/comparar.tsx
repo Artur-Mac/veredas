@@ -362,6 +362,7 @@ function CompararComDados() {
                   <View style={{ gap: 12, marginBottom: 14 }}>
                     <DueloFinalistas
                       daRotina={rotinaDoDuelo !== null}
+                      noPico={escolhaDaRotina.faixaHorario === "pico"}
                       destinoDoTrajeto={rotinaDoDuelo ? `${rotinaDoDuelo.destino1.nomeCurto} e ${rotinaDoDuelo.destino2.nomeCurto}` : undefined}
                       diasPorMes={rotinaDoDuelo?.diasPresenciaisMes}
                       opcaoA={{

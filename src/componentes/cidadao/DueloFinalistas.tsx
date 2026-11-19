@@ -111,6 +111,7 @@ export function DueloFinalistas({
   destinoDoTrajeto = "Recife Antigo",
   diasPorMes = 22,
   daRotina = false,
+  noPico = true,
 }: {
   opcaoA: EntradaDueloA_B;
   opcaoB: EntradaDueloA_B;
@@ -120,6 +121,8 @@ export function DueloFinalistas({
   diasPorMes?: number;
   /** O tempo veio da rotina de dois destinos escolhida na tela (os dois trajetos somados). */
   daRotina?: boolean;
+  /** Horário da rotina escolhida no cartão. */
+  noPico?: boolean;
 }) {
   const { cor } = useTema();
 
@@ -157,7 +160,7 @@ export function DueloFinalistas({
     // Revisão de 19/11/2026: tempo e área eram uma linha só ("96 min/dia · 112 m²") e o destino não era dito; o cartão da
     // rotina de dois destinos, logo acima, dava outro vencedor sem a tela explicar por quê.
     linhaDiferenca(
-      daRotina ? `Rotina até ${destinoDoTrajeto}, ida e volta somadas (estimativa)` : `Ida e volta até ${destinoDoTrajeto}, no pico (estimativa)`,
+      daRotina ? `Rotina até ${destinoDoTrajeto}, ida e volta somadas, ${noPico ? "no pico" : "fora de pico"} (estimativa)` : `Ida e volta até ${destinoDoTrajeto}, no pico (estimativa)`,
       `~${Math.round(opcaoA.deslocamentoMinDia)} min/dia`,
       `~${Math.round(opcaoB.deslocamentoMinDia)} min/dia`,
       Math.abs(opcaoA.deslocamentoMinDia - opcaoB.deslocamentoMinDia) < 5,
@@ -262,7 +265,7 @@ export function DueloFinalistas({
         </Texto>
         <Texto testID="duelo-metodo-do-trajeto" tipo="apoio" cor="cor-texto-apoio" style={{ fontSize: 12, lineHeight: 17 }}>
           {daRotina
-            ? `O trajeto aqui é o do cartão "Rotina de dois destinos" (${destinoDoTrajeto}), em linha reta × ${String(FATOR_DE_DESVIO_DA_LINHA_RETA).replace(".", ",")} (estimativa, ${diasPorMes} dias por mês).`
+            ? `O trajeto aqui é o do cartão "Rotina de dois destinos" (${destinoDoTrajeto}), em linha reta × ${String(FATOR_DE_DESVIO_DA_LINHA_RETA).replace(".", ",")} (estimativa, ${noPico ? "no pico" : "fora de pico"}, ${diasPorMes} dias por mês).`
             : `O trajeto aqui é só até ${destinoDoTrajeto}, em linha reta × ${String(FATOR_DE_DESVIO_DA_LINHA_RETA).replace(".", ",")} (estimativa, ${diasPorMes} dias por mês). Com outros destinos o resultado muda: escolha os seus na rotina de dois destinos.`}
         </Texto>
         {sinteseTroca.tipo === "troca" ? (

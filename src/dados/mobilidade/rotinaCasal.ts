@@ -87,7 +87,7 @@ export const VELOCIDADE_MEDIA_KMH: Record<FaixaHorarioTrajeto, number> = { pico:
  * destino empatar; o piso agora é só o tempo fixo do trecho.
  */
 export const MINUTOS_FIXOS_POR_TRECHO: Record<FaixaHorarioTrajeto, number> = { pico: 6, fora_pico: 4 };
-export const MINIMO_POR_TRECHO_MIN: Record<FaixaHorarioTrajeto, number> = MINUTOS_FIXOS_POR_TRECHO;
+export const MINIMO_POR_TRECHO_MIN: Record<FaixaHorarioTrajeto, number> = { ...MINUTOS_FIXOS_POR_TRECHO };
 export const MAXIMO_POR_TRECHO_MIN = 95;
 
 /** Frase do método, para a tela: de onde sai o tempo e o que ele não é. */
