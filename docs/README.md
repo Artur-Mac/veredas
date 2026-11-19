@@ -6,6 +6,13 @@ Este diretório concentra toda a documentação ativa, canônica e de alto valor
 
 ---
 
+## 🧩 0. Método de entrega por task (`metodo/` e `planos/`)
+
+* **[Método de entrega por task](./metodo/README.md)** — Como uma tarefa do hub vira especificação, código, PR e conclusão, com as aprovações humanas. Inclui o [fluxo](./metodo/fluxo-entrega.md), o [contexto do projeto](./metodo/contexto-projeto.md) e os [modelos](./metodo/templates/).
+* **[Planos e tasks](./planos/README.md)** — Artefatos por feature e tarefa do hub.
+
+---
+
 ## 🏛️ 1. Visão Canônica e Arquitetura do Negócio
 
 * **[Documento Definitivo do Projeto (`VEREDA_DOCUMENTO_DEFINITIVO.md`)](./VEREDA_DOCUMENTO_DEFINITIVO.md)**  

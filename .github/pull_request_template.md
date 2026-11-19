@@ -14,6 +14,15 @@
 - [ ] `docs/aplicacao/FEATURE-REGISTER.md` está de acordo com o hub (ou esta mudança não o afeta)
 - [ ] Esta mudança não altera o hub (correção interna, sem efeito no escopo)
 
+## Task e especificações
+
+<!-- Método em docs/metodo/fluxo-entrega.md. Apague esta seção se a mudança não altera o hub. -->
+
+- Task: <!-- T-xxxxxxxx e título da tarefa no hub -->
+- Funcional: <!-- docs/planos/F-xxxxxxxx-nome-curto/tasks/T-xxxxxxxx/funcional.md; quem aprovou e onde -->
+- Técnico: <!-- .../tecnico.md; quem aprovou e onde -->
+- Validação: <!-- .../validacao.md -->
+
 ## Como verifiquei
 
 <!-- Testes, telas e evidência em docs/aplicacao/execucoes/ quando houver. -->
