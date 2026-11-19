@@ -3,7 +3,7 @@
 // distância). Nada é gravado sem toque: a pergunta só vai para a visita no botão.
 import * as Clipboard from "expo-clipboard";
 import { useEffect, useRef, useState } from "react";
-import { View } from "react-native";
+import { View, type ViewInstance } from "react-native";
 import { precoDaHoraPoupada, type Lado, type PrioridadeDaDecisao, type ProjecaoDaDecisao } from "../../dados/decisao";
 import { CAMPOS_RESPONDIVEIS, ROTULO_DO_CAMPO, type CampoRespondivel } from "../../dados/resposta";
 import { formatarReais } from "../../dados/formatos";
@@ -53,7 +53,7 @@ export function ResumoDaDecisao({ projecao: p, aoMudarPrioridade, aoLevarParaVis
 
   // Respondida a pergunta, a caixa some e o cartão encolhe: a tela leva a pessoa até a frase (web; no app nativo o
   // leitor de tela anuncia o status).
-  const refEfeito = useRef<View>(null);
+  const refEfeito = useRef<ViewInstance>(null);
   useEffect(() => {
     if (!efeito) return;
     const no = refEfeito.current as unknown as { scrollIntoView?: (o: object) => void } | null;

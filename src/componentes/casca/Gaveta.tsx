@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  type ViewInstance,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTema } from "../../tema/Tema";
@@ -36,7 +37,7 @@ export function Gaveta({ visivel, titulo, subtitulo, children, aoFechar }: Props
   const insets = useSafeAreaInsets();
   const [deslocamento] = useState(() => new Animated.Value(0));
   const movimentoReduzido = useMovimentoReduzidoRef();
-  const painel = useRef<View>(null);
+  const painel = useRef<ViewInstance>(null);
 
   const fechar = useCallback(() => {
     aoFechar();

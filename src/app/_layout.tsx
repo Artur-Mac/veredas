@@ -21,7 +21,7 @@ import { iniciarModoOffline } from "../plataforma/modoOffline";
 
 void SplashScreen.preventAutoHideAsync();
 
-export const unstable_settings = { initialRouteName: "(abas)" };
+export const unstable_settings = { anchor: "(abas)" };
 
 function Pilha() {
   const [fontesProntas, erroDeFonte] = useFonts(FONTES);

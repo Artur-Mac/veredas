@@ -118,7 +118,7 @@ export function LeitorDePagina({ url, portal, idNoPortal, aoLer, aoFalhar }: Lei
   }, [fase, despachar]);
 
   // Modo de inspeção: o botão pede uma nova coleta e a próxima mensagem vira o mapa de chaves. Nada é guardado.
-  const webViewRef = useRef<WebView>(null);
+  const webViewRef = useRef<WebView<object>>(null);
   const mapearNaProximaMensagem = useRef(false);
   const pedirMapaDeChaves = () => {
     mapearNaProximaMensagem.current = true;
@@ -204,7 +204,7 @@ export function LeitorDePagina({ url, portal, idNoPortal, aoLer, aoFalhar }: Lei
           ampliada ? styles.quadroAmpliado : null,
         ]}
       >
-        <WebView
+        <WebView<object>
           ref={webViewRef}
           source={{ uri: url }}
           injectedJavaScript={SCRIPT_COLETOR}

@@ -1,4 +1,4 @@
-/** @jest-environment jsdom */
+/** @jest-environment ./tests/ambiente-jsdom-rn.cjs */
 // T4 (18/11/2026): toque em forma SVG sem erro de console na web. O `onPress` numa forma do react-native-svg fazia a
 // versão web da biblioteca espalhar no DOM seis handlers de responder do React Native ("Unknown event handler property
 // `onStartShouldSetResponder`…", seis por tela do dossiê). O teste passa as props pelo `prepare` de verdade da biblioteca

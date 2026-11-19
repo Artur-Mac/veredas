@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { useMemo, useRef, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, type ScrollViewInstance } from "react-native";
 import { Botao } from "../componentes/Botao";
 import { Coluna } from "../componentes/casca/Coluna";
 import { carregarCadastro } from "../componentes/dossie-v1/cadastro";
@@ -28,7 +28,7 @@ export default function TelaSolar() {
   const [selecionada, setSelecionada] = useState<string | null>(null);
   const [captura, setCaptura] = useState<"nova" | "editar" | null>(null), [gerenciar, setGerenciar] = useState(false);
   const [excluir, setExcluir] = useState(false), [erro, setErro] = useState("");
-  const rolagem = useRef<ScrollView>(null);
+  const rolagem = useRef<ScrollViewInstance>(null);
   const abrirCaptura = (tipo: "nova" | "editar") => { setCaptura(tipo); setGerenciar(false); rolagem.current?.scrollTo({ y: 0, animated: false }); };
   const janela = registro?.janelas.find(j => j.id === (selecionada ?? registro.ativaId)) ?? registro?.janelas[0] ?? null;
   const coordenada = useMemo<CoordenadaSolar | null>(() => {

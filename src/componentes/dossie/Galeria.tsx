@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Image, Modal, ScrollView, View, useWindowDimensions } from "react-native";
+import { Image, Modal, ScrollView, View, useWindowDimensions, type ScrollViewInstance } from "react-native";
 import { useTema } from "../../tema/Tema";
 import { ESPACO, RAIO } from "../../tema/tokens";
 import { Botao, BotaoIcone } from "../Botao";
@@ -19,7 +19,7 @@ type Props = {
 export function GaleriaDoAnuncio({ fotos, titulo, alternativa, aoAbrirMapa }: Props) {
   const { cor } = useTema();
   const { height: alturaDaTela } = useWindowDimensions();
-  const rolagem = useRef<ScrollView>(null);
+  const rolagem = useRef<ScrollViewInstance>(null);
   const posicao = useRef(0);
   const [largura, setLargura] = useState(0);
   const [indice, setIndice] = useState(0);

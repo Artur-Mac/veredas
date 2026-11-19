@@ -17,7 +17,7 @@ jest.mock("expo-notifications/build/scheduleNotificationAsync",()=>({scheduleNot
 jest.mock("expo-notifications/build/setNotificationChannelAsync",()=>({setNotificationChannelAsync:jest.fn()}));
 jest.mock("expo-notifications/build/NotificationsHandler",()=>({setNotificationHandler:jest.fn()}));
 const em="2099-01-01T17:00:00.000Z";
-const registro=(id:string,vereda:boolean,quando=em):NotificationRequest=>({identifier:id,content:{title:null,subtitle:null,body:null,categoryIdentifier:null,sound:null,data:{vereda,em:quando,chave:"a/l"}},trigger:null});
+const registro=(id:string,vereda:boolean,quando=em):NotificationRequest=>({identifier:id,content:{title:null,subtitle:null,body:null,categoryIdentifier:null,sound:null,threadIdentifier:null,data:{vereda,em:quando,chave:"a/l"}},trigger:null});
 const analise=()=>analiseDeTeste("a",{caderno:{...cadernoVazio(),lembretes:[{id:"l",titulo:"Nome privado do imóvel",em,fuso:"America/Recife",estado:"ativo",notificar:true}]}});
 beforeEach(()=>{jest.clearAllMocks();jest.mocked(getPermissionsAsync).mockResolvedValue({granted:true,canAskAgain:true,expires:"never",status:PermissionStatus.GRANTED});jest.mocked(getAllScheduledNotificationsAsync).mockResolvedValue([]);});
 it("não pede permissão nem token implicitamente; agenda só conteúdo neutro",async()=>{

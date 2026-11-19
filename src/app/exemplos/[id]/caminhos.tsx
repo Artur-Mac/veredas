@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Linking, Platform, TextInput, View } from "react-native";
+import { Linking, Platform, TextInput, View, type TextInputInstance } from "react-native";
 import { AbasForaDoDossie } from "../../../componentes/Abas";
 import { Botao } from "../../../componentes/Botao";
 import { Cartao, CorpoDoCartao } from "../../../componentes/Cartao";
@@ -23,7 +23,7 @@ export default function CaminhosDiarios() {
   const { dados, mudar } = useAparelho();
   const [adicionando, setAdicionando] = useState(false);
   const [nome, setNome] = useState("");
-  const campo = useRef<TextInput>(null);
+  const campo = useRef<TextInputInstance>(null);
   const plataforma = Platform.OS === "ios" ? "ios" : Platform.OS === "android" ? "android" : "web";
 
   return (

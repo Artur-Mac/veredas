@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { View, type ViewProps } from "react-native";
+import { View, type ViewProps, type ViewInstance } from "react-native";
 import { useTema } from "../../tema/Tema";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
@@ -11,7 +11,7 @@ export function ControleSolar({ valor, minimo, maximo, passo, rotulo, texto, aoM
 }) {
   const { cor } = useTema();
   const foco = useFocoDeTeclado();
-  const ref = useRef<View>(null), origem = useRef(0), largura = useRef(1);
+  const ref = useRef<ViewInstance>(null), origem = useRef(0), largura = useRef(1);
   const [medida, setMedida] = useState(1);
   const mudar = (n: number) => aoMudar(Math.max(minimo, Math.min(maximo, Math.round(n / passo) * passo)));
   const porX = (x: number) => mudar(minimo + Math.max(0, Math.min(1, (x - origem.current - 12) / Math.max(1, largura.current - 24))) * (maximo - minimo));

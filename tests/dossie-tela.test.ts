@@ -613,7 +613,7 @@ describe("abas do dossiê: teclado (index.html dossierTabKey)", () => {
 
   it("a seta escolhe a aba, impede a rolagem da página e leva o foco do navegador para ela", () => {
     const focar = jest.fn();
-    const pegarElemento = jest.fn(() => ({ focus: focar }));
+    const pegarElemento = jest.fn((_id: string) => ({ focus: focar }));
     const original = Object.getOwnPropertyDescriptor(globalThis, "document");
     Object.defineProperty(globalThis, "document", { value: { getElementById: pegarElemento }, configurable: true, writable: true });
     const plataforma = jest.replaceProperty(Platform, "OS", "web");

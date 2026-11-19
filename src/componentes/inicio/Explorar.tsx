@@ -4,7 +4,7 @@
 import * as Clipboard from "expo-clipboard";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { TextInput, View } from "react-native";
+import { TextInput, View, type TextInputInstance } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
 import type { AnaliseV2, Edificio } from "../../dados/contratos";
 import { garantirCamadas } from "../../dados/camadas";
@@ -69,7 +69,7 @@ type EstadoDaBusca =
 export function BuscaUnificada() {
   const { cor } = useTema();
   const foco = useFocoDoCampo();
-  const campo = useRef<TextInput>(null);
+  const campo = useRef<TextInputInstance>(null);
   const abrirRaioX = useAbrirRaioX();
   const [texto, setTexto] = useState("");
   const [erro, setErro] = useState("");

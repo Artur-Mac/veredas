@@ -2,7 +2,7 @@
 // A pessoa informa para onde a janela está voltada, de 0° a 359°; o app mostra o rótulo (N, NE, L, SE, S, SO, O, NO)
 // e traduz em linguagem prática de sol (Nascente/Poente), obstrução de prédios vizinhos e brisa Sudeste do Recife.
 import { useMemo, useRef, useState } from "react";
-import { View } from "react-native";
+import { View, type ViewInstance } from "react-native";
 import Svg, { Circle, G, Path, Text as TextoSvg } from "react-native-svg";
 import type { Edificio } from "../../dados/contratos";
 import { analisarJanelaNoRecife } from "../../dados/dossie/solESombra";
@@ -95,7 +95,7 @@ function BotaoDePasso({ sinal, acessivel, onPress }: { sinal: "mais" | "menos"; 
  */
 function ControleDeGraus({ graus, aoMudar }: { graus: number | null; aoMudar: (graus: number) => void }) {
   const { cor } = useTema();
-  const trilho = useRef<View>(null);
+  const trilho = useRef<ViewInstance>(null);
   const largura = useRef(0);
   const origem = useRef(0);
   const [medido, setMedido] = useState(0);

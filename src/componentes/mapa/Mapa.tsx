@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
-import { Platform, Pressable, View, type GestureResponderEvent, type StyleProp, type ViewStyle } from "react-native";
+import { Platform, Pressable, View, type GestureResponderEvent, type StyleProp, type ViewStyle, type ViewInstance } from "react-native";
 import Svg, { Circle, Defs, G, Mask, Path, Rect } from "react-native-svg";
 import type { Coordenada, Dossie } from "../../dados/esquema";
 import { formatarDistancia } from "../../dados/formatos";
@@ -471,7 +471,7 @@ export function Mapa(props: Props) {
   const [tamanho, setTamanho] = useState<Tamanho | null>(null);
   const [vista, setVista] = useState<Vista | null>(null);
   const [janela, setJanela] = useState<Janela | null>(null);
-  const raiz = useRef<View>(null);
+  const raiz = useRef<ViewInstance>(null);
   const gesto = useRef<Gesto>({ moveu: false, inicio: [0, 0], anterior: [0, 0], pinca: null, origem: [0, 0] });
 
   // A primeira janela sai junto com o primeiro quadro. Depois, a cena acompanha a vista pelo transform durante o gesto;
