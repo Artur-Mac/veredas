@@ -12,7 +12,7 @@
 // --caso a,b (ids de casos.json ou dos exemplos), --largura 375,360,1280, --tema claro|escuro (padrão claro; o app é
 // sempre claro, "escuro" só emula prefers-color-scheme para provar isso).
 // --esperar-fundo <ms> (padrão 20000; 0 desliga): nas superfícies que podem ter o fundo do mapa-base, espera o crédito
-// "Base: Prefeitura do Recife (ODbL)" aparecer na moldura (o fundo chega depois do mapa). capturas.json registra "fundo"
+// "Contém dados da Prefeitura do Recife (ODbL)" aparecer na moldura (o fundo chega depois do mapa). capturas.json registra "fundo"
 // (true/false) e "elementosDoFundo" (elementos dentro de [data-fundo-do-mapa], ou null sem a marca).
 // --zoom max: antes da foto, toca "Aproximar o mapa" até o fim; o nome ganha "--zoom-max" (sem o parâmetro, nada muda).
 import { mkdir, readFile, writeFile } from "node:fs/promises";

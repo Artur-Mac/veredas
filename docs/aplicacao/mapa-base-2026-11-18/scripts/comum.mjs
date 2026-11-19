@@ -231,7 +231,7 @@ export function lerMapaNaPagina({ escopo, alvo, minimo }) {
   const desenhado = svgPrincipal.querySelectorAll("path,polygon,polyline,rect,circle,line,text,image").length;
   // Fundo do mapa-base: o crédito obrigatório dentro da moldura diz que ele está na tela. Os elementos do fundo são
   // contados dentro do grupo marcado com data-fundo-do-mapa (quem hospeda marca; sem a marca, null).
-  const fundo = [...moldura.querySelectorAll("*")].some((el) => el.childElementCount === 0 && (el.textContent ?? "").trim() === "Base: Prefeitura do Recife (ODbL)");
+  const fundo = [...moldura.querySelectorAll("*")].some((el) => el.childElementCount === 0 && (el.textContent ?? "").trim() === "Contém dados da Prefeitura do Recife (ODbL)");
   const gruposDoFundo = [...moldura.querySelectorAll("[data-fundo-do-mapa]")];
   const elementosDoFundo = gruposDoFundo.length ? gruposDoFundo.reduce((n, g) => n + 1 + g.querySelectorAll("*").length, 0) : null;
   return {

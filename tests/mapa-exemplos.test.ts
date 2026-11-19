@@ -62,7 +62,7 @@ jest.mock("../src/estado/Aparelho", () => ({
   }),
 }));
 
-const CREDITO = "Base: Prefeitura do Recife (ODbL)";
+const CREDITO = "Contém dados da Prefeitura do Recife (ODbL)";
 
 function dossie(id: string): Dossie {
   const d = dossies.get(id);

@@ -12,6 +12,7 @@
 import { useEffect, useId, useMemo, useRef } from "react";
 import { Platform, StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import { Defs, G, Path, Rect, Text as TextoSvg, TextPath } from "react-native-svg";
+import { ATRIBUICAO_DA_PREFEITURA_ODBL } from "../../dados/licencaOdbl";
 import { useTema } from "../../tema/Tema";
 import { comAlfa } from "../../tema/tokens";
 import { Texto } from "../Texto";
@@ -198,13 +199,17 @@ export function SeloDoBairro({ nome, style }: SeloDoBairroProps) {
 
 export type CreditoDaBaseProps = { style?: StyleProp<ViewStyle> };
 
-/** Crédito obrigatório em todo mapa com o fundo (licença ODbL da base da Prefeitura). */
+/**
+ * Crédito obrigatório em todo mapa com o fundo (ODbL 4.2/4.3). O mapa-base vem só das bases da Prefeitura (Área urbana,
+ * Parques e Praças; scripts/dados/mapa-base/fontes.mjs): sem OpenStreetMap, então sem crédito do OSM aqui. O link para o
+ * texto da licença fica em "Sobre os dados".
+ */
 export function CreditoDaBase({ style }: CreditoDaBaseProps) {
   const { cor } = useTema();
   return (
     <View style={[estilos.credito, { backgroundColor: comAlfa(cor("cor-superficie"), 0.88) }, style]}>
       <Texto tipo="apoio" cor="cor-texto-apoio" style={estilos.creditoTexto}>
-        Base: Prefeitura do Recife (ODbL)
+        {ATRIBUICAO_DA_PREFEITURA_ODBL}
       </Texto>
     </View>
   );

@@ -20,6 +20,7 @@ import type { Confianca, FonteDaRua, MetaDoIndice } from "../dados/contratos";
 import { FONTES_DO_RUIDO } from "../dados/recife/ruidoGerado";
 import { montarBoletimPreContrato } from "../dados/recife/boletimPreContrato";
 import { formatarData, formatarNumero } from "../dados/formatos";
+import { ATRIBUICAO_DA_PREFEITURA_ODBL, ATRIBUICAO_DO_OSM_ODBL, textoDaOfertaDasBases, URL_DA_LICENCA_ODBL } from "../dados/licencaOdbl";
 import { BAIRROS_COBERTOS, bairroPorSlug } from "../dados/recife/bairros";
 import { META } from "../dados/recife/indice";
 import { FONTES_DO_MAPA_BASE } from "../dados/recife/mapaBase";
@@ -298,7 +299,7 @@ function MapaBase() {
         <View style={{ gap: 3 }}>
           <Fato rotulo="Licença" valor="ODbL" />
           <Fato rotulo="Modificado em" valor={r.modificadoEm} numerico={r.modificadoEm !== "Não informado"} />
-          <Fato rotulo="Crédito no mapa" valor="Base: Prefeitura do Recife (ODbL)" />
+          <Fato rotulo="Crédito no mapa" valor={ATRIBUICAO_DA_PREFEITURA_ODBL} />
         </View>
         <View style={{ gap: 3, marginTop: 4 }}>
           <Texto tipo="secao" style={{ fontSize: 12.5, lineHeight: 18, fontWeight: "600" }}>
@@ -521,6 +522,23 @@ export default function SobreOsDados() {
         <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
           {ATRIBUICAO}
         </Texto>
+        <Texto testID="sobre-atribuicao-osm" tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
+          {`${ATRIBUICAO_DO_OSM_ODBL}: vias do ruído estimado, pista do aeroporto e rede de ruas a pé.`}
+        </Texto>
+        <Texto testID="sobre-bases-derivadas" tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
+          {textoDaOfertaDasBases()}
+        </Texto>
+        <Pressionavel
+          role="link"
+          accessibilityLabel="Abrir o texto da Open Database License 1.0"
+          onPress={() => void WebBrowser.openBrowserAsync(URL_DA_LICENCA_ODBL)}
+          style={{ flexDirection: "row", alignItems: "center", gap: 6, minHeight: 44, alignSelf: "flex-start" }}
+        >
+          <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 12, lineHeight: 16, fontWeight: "600" }}>
+            Ler a licença ODbL 1.0
+          </Texto>
+          <Icone nome="external-link" tamanho="p" cor="cor-barro-texto" />
+        </Pressionavel>
         {"fontes" in leitura && leitura.fontesDaRua.some((f) => f.licenca === "Citar o IBGE") ? (
           <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 18 }}>
             {ATRIBUICAO_DO_IBGE}

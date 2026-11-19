@@ -522,7 +522,7 @@ describe("componente FundoDoMapa", () => {
     const json = JSON.stringify(a.toJSON());
     expect(json).toContain("BAIRRO");
     expect(json).toContain("Boa Viagem");
-    expect(json).toContain("Base: Prefeitura do Recife (ODbL)");
+    expect(json).toContain("Contém dados da Prefeitura do Recife (ODbL)");
   });
 
   it('partes: "chao" desenha tudo menos os textos, "rotulos" só os textos; juntos, o mesmo que "tudo"', () => {

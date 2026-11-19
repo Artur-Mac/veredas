@@ -774,6 +774,11 @@ describe("Sobre os dados", () => {
     expect(t).toContain("Registros lidos");
     expect(t).toContain("Colunas usadas");
     expect(t).toContain("Contém dados da Prefeitura do Recife, disponibilizados sob a Open Database License (ODbL).");
+    // ODbL 4.2/4.3, 4.4 e 4.6: crédito do OSM, link da licença e oferta das bases derivadas (local ainda a definir).
+    expect(t).toContain("© colaboradores do OpenStreetMap (ODbL)");
+    expect(t).toContain("Ler a licença ODbL 1.0");
+    expect(t).toContain("oferecidas sob a mesma licença, a ODbL 1.0");
+    expect(t).toContain("O local de download ainda está a definir.");
     // data do meta.json em dia/mês/ano
     expect(t).toContain("03/10/2026");
   });
@@ -802,7 +807,7 @@ describe("Sobre os dados", () => {
       expect(t).toContain(f.nome);
       expect(t).toContain(f.conjunto);
     }
-    expect(t).toContain("Base: Prefeitura do Recife (ODbL)");
+    expect(t).toContain("Contém dados da Prefeitura do Recife (ODbL)");
     expect(t).toContain("Não é foto de satélite");
     expect(t).toContain("aparece só a quadra");
     expect(t).toContain("não é a planta do prédio");
