@@ -59,7 +59,7 @@ body{margin:0;padding:12px;background:${cores["cor-fundo"]};font-family:PlusJaka
 .regua{position:absolute;left:10px;bottom:10px;border-radius:4px;padding:2px 6px 4px;font:11px JetBrainsMono}
 .regua i{display:block;height:4px;border:1.5px solid;border-top:0}
 </style></head><body data-tema="${escuro ? "escuro" : "claro"}"><div class="mapa"><svg width="${v.largura}" height="${v.altura}" viewBox="0 0 ${v.largura} ${v.altura}" xmlns="http://www.w3.org/2000/svg"><g transform="${transform}">${svgDaCena(cena, cores, pino)}</g></svg>
-${cena.selo ? `<div class="selo"><small>BAIRRO</small><b>${cena.selo}</b></div>` : ""}${regua(cena, cores)}<div class="credito">Base: Prefeitura do Recife (ODbL)</div></div></body></html>`;
+${cena.selo ? `<div class="selo"><small>BAIRRO</small><b>${cena.selo}</b></div>` : ""}${regua(cena, cores)}<div class="credito">Contém dados da Prefeitura do Recife (ODbL)</div></div></body></html>`;
 }
 
 /** A caixa em graus de um quadro centrado (a mesma conta de paraDesenhoCentrado), com folga de 300 m. */

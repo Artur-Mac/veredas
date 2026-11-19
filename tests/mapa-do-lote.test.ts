@@ -159,7 +159,7 @@ describe("MapaDoLote com o fundo do mapa", () => {
     expect(a.root.findAllByType(FundoDoMapa)).toHaveLength(1);
     expect(a.root.findAllByType(SeloDoBairro)[0]!.props.nome).toBe("Boa Viagem");
     expect(a.root.findAllByType(CreditoDaBase)).toHaveLength(1);
-    expect(textos(a.toJSON())).toContain("Base: Prefeitura do Recife (ODbL)");
+    expect(textos(a.toJSON())).toContain("Contém dados da Prefeitura do Recife (ODbL)");
     // Com o fundo, os contornos tracejados do índice não são desenhados por cima.
     expect(tracejados(a)).toHaveLength(0);
   });
