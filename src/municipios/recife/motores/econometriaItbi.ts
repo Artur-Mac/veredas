@@ -215,8 +215,11 @@ export function analisarItbiNbr14653(
     icHigh = Math.round(media + semi);
     amplitudePct = Math.round(((icHigh - icLow) / media) * 10000) / 100;
 
-    if (amplitudePct <= 15) grau = "Grau_III";
-    else if (amplitudePct <= 30) grau = "Grau_II";
+    // NBR 14653-2 (amplitude do intervalo de confiança de 80% em torno da estimativa central): até 30% Grau III, até
+    // 40% Grau II, até 50% Grau I. Antes o app usava 15/30/50; conferido em fontes secundárias em 18/11/2026 (IBAPE,
+    // projeto de revisão da norma), sem o texto pago da ABNT. Amostra do ITBI não é laudo de avaliação.
+    if (amplitudePct <= 30) grau = "Grau_III";
+    else if (amplitudePct <= 40) grau = "Grau_II";
     else if (amplitudePct <= 50) grau = "Grau_I";
     else grau = "amostra_insuficiente";
   }

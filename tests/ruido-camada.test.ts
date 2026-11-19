@@ -230,7 +230,7 @@ describe("estimarRuido", () => {
     expect(janela.noQuarto!.isolamentoDb).toBe(17.8);
     expect(janela.noQuarto!.noiteDb).toBeCloseTo(janela.naJanela.noiteDb - 17.8, 1);
     const novo = estimado(estimarRuido(p, { andar: 9, fachadaGraus: frente, janelaFechada: true, anoConstrucao: 2020 }));
-    expect(novo.noQuarto!.isolamentoDb).toBe(27);
+    expect(novo.noQuarto!.isolamentoDb).toBe(20); // sem classe declarada vale o mínimo da NBR 15575-4 (era o intermediário, 27)
     expect(novo.noQuarto!.noiteDb).toBeLessThan(janela.noQuarto!.noiteDb);
     expect(janela.textos.quarto).toContain("com a janela fechada");
     expect(janela.textos.quarto).toContain("(estimativa)");

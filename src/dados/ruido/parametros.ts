@@ -28,7 +28,7 @@ export const NIVEL_DA_VIA_DB: Record<ClasseDeVia, number> = { rodovia: 78, arter
  * principal" e `residential` de "rua residencial" (ex.: em /ruido/recife/casa-forte, Rua de Casa Forte e Praça Casa
  * Forte, `tertiary` no mapa, aparecem como "via local principal"). São as cinco classes da metodologia.
  * DIVERGÊNCIA: a 4.1 punha `tertiary` junto de `secondary` (68); vale o que o site publica, `tertiary` = rua local
- * (61). A página de metodologia não traz a tabela de etiquetas: a leitura vem dos rótulos das páginas de bairro.
+ * (61). Decisão do Samuel de 18/11/2026: segue o Mapa Sossego, 61 (com 68, 704 prédios mudariam de palavra). A página de metodologia não traz a tabela de etiquetas: a leitura vem dos rótulos das páginas de bairro.
  * `unclassified` = rua local (61) vem da 4.1. Os acessos (`*_link`) seguem a via a que servem e `living_street` segue
  * a rua residencial: decisão desta implementação. Fica de fora o que não é via de trânsito geral (service, pedestrian,
  * footway, cycleway, track, path, steps).

@@ -111,7 +111,7 @@ Os 7.203 prédios têm leitura. O mínimo de 45 dB(A) fica acima do piso de 38 p
 ## O que não foi obtido ou conferido
 
 - **Os nove pontos de cada bairro do site** não são publicados; a comparação ponto a ponto não foi feita.
-- **A tabela de etiquetas `highway` → classe** não está na página de metodologia. A leitura `tertiary` = rua local (61 dB) veio dos rótulos das páginas de bairro ("via local principal" para vias `tertiary`), e diverge da seção 4.1, que punha `tertiary` com `secondary` (68). Com 68 as medianas subiriam; não foi medido quanto.
+- **A tabela de etiquetas `highway` → classe** não está na página de metodologia. A leitura `tertiary` = rua local (61 dB) veio dos rótulos das páginas de bairro ("via local principal" para vias `tertiary`), e diverge da seção 4.1, que punha `tertiary` com `secondary` (68). Medido em 18/11/2026 (teto, somando 7 dB a toda via local): a nota mediana da cidade não muda, os 10% mais afetados perdem 0,6 ponto ou mais e 704 prédios mudariam de palavra. Decisão do Samuel de 18/11/2026: fica 61, como o Mapa Sossego.
 - **Os valores das correções por faixas, velocidade e zona 30** e os níveis das fontes pontuais não estão na página: são "a calibrar".
 - **Medição em campo no Recife:** nenhuma. O botão "Isso bate com a rua hoje?" recolhe a percepção de quem visita, só no aparelho.
 

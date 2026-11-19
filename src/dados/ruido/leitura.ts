@@ -289,7 +289,7 @@ export function montarEstimativa(entrada: {
 
   const ano = entrada.opcoes?.anoConstrucao !== undefined ? entrada.opcoes.anoConstrucao : entrada.anoConstrucao;
   const quarto = noQuarto
-    ? `No quarto, com a janela fechada: ${diaENoite(noQuarto)}. A janela ${ano ? `de um prédio de ${ano}` : "sem ano de construção no cadastro"} tira cerca de ${inteiro(isolamentoDb)} dB pela NBR 15575-4; a vedação real pede teste na visita.`
+    ? `No quarto, com a janela fechada: ${diaENoite(noQuarto)}. A janela ${ano ? `de um prédio de ${ano}` : "sem ano de construção no cadastro"} tira cerca de ${inteiro(isolamentoDb)} dB, ${ano !== null && ano !== undefined && ano < 2013 ? "suposição do Vereda (a NBR 15575-4 só vale a partir de 2013)" : "o mínimo da NBR 15575-4 (suposição do Vereda: a classe da janela não é conhecida)"}; a vedação real pede teste na visita.`
     : null;
   const nivel = nivelDeSossego(nota);
   const textoDaPista = pistaAoLado

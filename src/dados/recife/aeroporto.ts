@@ -5,7 +5,7 @@
 // - a distância em linha reta até a pista;
 // - se o ponto fica sob a trajetória de pouso e decolagem: no prolongamento do eixo, até 10 km da cabeceira, dentro da
 //   superfície de aproximação do Anexo 14 da ICAO (150 m para cada lado a 60 m da cabeceira, abrindo 15% para cada
-//   lado). A altura do avião é a da rampa padrão de 3°, uma estimativa: o voo real varia.
+//   lado: os números da pista de aproximação de precisão, códigos 3 e 4, conferidos em 18/11/2026). A altura do avião é a da rampa padrão de 3°, uma estimativa: o voo real varia.
 // As frases daqui não trazem decibéis: as curvas oficiais de ruído (plano de zoneamento da ANAC) não estão georreferenciadas.
 import { z } from "zod";
 import { nivelDoAviao } from "../ruido/modelo";
