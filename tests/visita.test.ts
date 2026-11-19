@@ -438,7 +438,7 @@ describe("a tela Visita", () => {
     expect(setStringAsync).toHaveBeenCalledWith(sugerida);
     expect(todoOTexto(arvore)).toContain("Mensagem copiada");
 
-    const abrir = jest.spyOn(Linking, "openURL").mockResolvedValue(true);
+    const abrir = jest.spyOn(Linking, "openURL").mockResolvedValue(undefined);
     await digitar(arvore, "Mensagem para agendar", "Texto editado pela pessoa");
     await tocar(arvore, porTexto("Copiar mensagem"));
     expect(setStringAsync).toHaveBeenLastCalledWith("Texto editado pela pessoa");

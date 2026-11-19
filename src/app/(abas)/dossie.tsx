@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View, type ScrollViewInstance } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { Cartao, CorpoDoCartao } from "../../componentes/Cartao";
 import { useAviso } from "../../componentes/casca/Aviso";
@@ -183,7 +183,7 @@ function DossieDaAnalise({ analise, lista }: { analise: AnaliseV2; lista: Analis
   // O painel das abas entra na ordem de Tab (`tabIndex` 0, como em index.html): com o teclado, ele leva o anel de foco.
   const focoDoPainel = useFocoDeTeclado();
 
-  const rolagem = useRef<ScrollView>(null);
+  const rolagem = useRef<ScrollViewInstance>(null);
   const posicoes = useRef({ coluna: 0, painel: 0 });
   const secoes = useRef<Partial<Record<SecaoDaAba, number>>>({});
   const pendente = useRef<SecaoDaAba | null>(null);

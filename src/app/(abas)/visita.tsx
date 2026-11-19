@@ -4,7 +4,7 @@
 // o Vereda não envia nada a ninguém.
 import { router } from "expo-router";
 import { useMemo, useRef, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, type ScrollViewInstance } from "react-native";
 import { Botao } from "../../componentes/Botao";
 import { ProvedorDeAviso, useAviso } from "../../componentes/casca/Aviso";
 import { Coluna } from "../../componentes/casca/Coluna";
@@ -96,7 +96,7 @@ function ConteudoDaVisita() {
   const [aba, definirAba] = useState<Aba>("preparar");
   const [gaveta, definirGaveta] = useState<GavetaAberta>(null);
   const [rascunhoDaMensagem, definirRascunhoDaMensagem] = useState<{ id: string; texto: string } | null>(null);
-  const rolagem = useRef<ScrollView>(null);
+  const rolagem = useRef<ScrollViewInstance>(null);
 
   // Outro imóvel: a tela volta a "Preparar" e fecha o que estava aberto.
   const idDaAnalise = analise?.id ?? null;

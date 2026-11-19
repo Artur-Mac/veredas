@@ -1,6 +1,6 @@
 import { router, type Href } from "expo-router";
 import type { ReactNode, Ref } from "react";
-import { ScrollView, View, type StyleProp, type ViewStyle } from "react-native";
+import { ScrollView, View, type StyleProp, type ViewStyle, type ScrollViewInstance } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTema } from "../tema/Tema";
 import { ESPACO } from "../tema/tokens";
@@ -75,7 +75,7 @@ type PropsDaRolagem = {
   semRespiro?: boolean;
   respiroInferior?: number;
   style?: StyleProp<ViewStyle>;
-  ref?: Ref<ScrollView>;
+  ref?: Ref<ScrollViewInstance>;
 };
 
 export function Rolagem({ children, semRespiro = false, respiroInferior = 0, style, ref }: PropsDaRolagem) {

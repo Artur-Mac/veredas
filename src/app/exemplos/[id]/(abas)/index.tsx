@@ -1,7 +1,7 @@
 import * as Linking from "expo-linking";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useRef } from "react";
-import { Share, View, type ScrollView } from "react-native";
+import { Share, View, type ScrollViewInstance } from "react-native";
 import { Botao, BotaoIcone } from "../../../../componentes/Botao";
 import { SecoesDoDossie } from "../../../../componentes/dossie/Secoes";
 import { CartaoSolExemplo } from "../../../../componentes/sol/CartaoSolExemplo";
@@ -18,7 +18,7 @@ import { RAIO } from "../../../../tema/tokens";
 export default function TelaDoDossie() {
   const dossie = useDossie();
   const { abrirSecao, recebido } = useSessao();
-  const rolagem = useRef<ScrollView>(null);
+  const rolagem = useRef<ScrollViewInstance>(null);
   const posicoes = useRef(new Map<string, number>());
 
   const medir = useCallback((id: string, y: number) => {
