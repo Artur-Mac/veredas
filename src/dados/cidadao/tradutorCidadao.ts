@@ -444,7 +444,7 @@ export function traduzirIndicadoresCidadao(entrada: EntradaTradutorCidadao): Car
       ? res.hidrico.concessionariaDistribuicaoVigente === "Compesa"
         ? "Distribuição de água hoje: Compesa. A AQUA Pernambuco assume em 23/11/2026, data marcada pelo Governo de Pernambuco."
         : `Distribuição de água: ${res.hidrico.concessionariaDistribuicaoVigente}, desde 23/11/2026, data marcada pelo Governo de Pernambuco.`
-      : "Peça ao vendedor a quitação das contas de água e pergunte à Compesa se há débito em aberto.",
+      : "Peça ao vendedor a quitação das contas de água e pergunte à concessionária (Compesa até 22/11/2026, AQUA Pernambuco a partir de 23/11) se há débito em aberto.",
     camada2AcaoConcreta: "Teste dados móveis no quarto dos fundos na visita e confira quitação de contas anteriores.",
     camada3ProvaMetodo: {
       epistemicTag: res?.eletrico.epistemicTag ?? "nao_sabemos",

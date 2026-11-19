@@ -373,7 +373,7 @@ describe("vistoria predial periódica (Lei PE 13.032/2006): 4 anos até 20 anos 
 describe("água: início da AQUA Pernambuco marcado para 23/11/2026, pela data real do aparelho", () => {
   const ENTRADA_REDES = { bairroSlug: "gracas", unidadesCondominio: 28, volumeCisternaLitros: 35_000 };
   const AVISO =
-    "A partir de 23/11/2026, data marcada pelo Governo de Pernambuco, a distribuição de água passa da Compesa para a concessionária AQUA Pernambuco em cerca de 150 municípios. A Compesa continua produzindo a água. Peça ao vendedor a quitação das contas de água e pergunte à Compesa se há débito em aberto.";
+    "A partir de 23/11/2026, data marcada pelo Governo de Pernambuco, a distribuição de água passa da Compesa para a concessionária AQUA Pernambuco em cerca de 150 municípios. A Compesa continua produzindo a água. Peça ao vendedor a quitação das contas de água e pergunte à concessionária (Compesa até 22/11/2026, AQUA Pernambuco a partir de 23/11) se há débito em aberto.";
 
   afterEach(() => {
     jest.useRealTimers();
@@ -428,7 +428,7 @@ describe("água: início da AQUA Pernambuco marcado para 23/11/2026, pela data r
     );
     // Sem a leitura das redes, sai a afirmação de que o débito antigo "continua sendo cobrado pela Compesa".
     const semRedes = cartao(cartoes({}), "IND-08");
-    expect(semRedes.camada2ImpactoPratico).toBe("Peça ao vendedor a quitação das contas de água e pergunte à Compesa se há débito em aberto.");
+    expect(semRedes.camada2ImpactoPratico).toBe("Peça ao vendedor a quitação das contas de água e pergunte à concessionária (Compesa até 22/11/2026, AQUA Pernambuco a partir de 23/11) se há débito em aberto.");
     expect(JSON.stringify([antes, semRedes])).not.toMatch(/continuam sendo cobrados|permanecem|Tapacurá/);
   });
 });
