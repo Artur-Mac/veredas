@@ -17,6 +17,17 @@ Vale para todo o repositório. Decisão do usuário de 16/11/2026, estruturada a
 - Limites do MCP: só opera no quadro "Macro"; responsável de tarefa, colunas do kanban, áreas e imagens são alterados pela interface do hub.
 - No PR, preencha a seção "Hub" do modelo em `.github/pull_request_template.md`.
 
+## Método de entrega por task
+
+Vale para toda tarefa que muda o escopo ou o comportamento do app. Correção interna sem efeito no escopo dispensa plano e especificação.
+
+- Contexto geral (fontes, stack, comandos, responsáveis, pendências): [`docs/metodo/contexto-projeto.md`](docs/metodo/contexto-projeto.md). Fluxo e equivalências com o hub: [`docs/metodo/fluxo-entrega.md`](docs/metodo/fluxo-entrega.md).
+- Skills por etapa em `.agents/skills/`: use [`entregar-task`](.agents/skills/entregar-task/SKILL.md) para localizar a etapa pelo estado da tarefa no hub e a skill da etapa para executá-la (`preparar-task`, `especificar-funcional`, `especificar-tecnico`, `implementar-task`, `validar-task`, `concluir-task`; `planejar-entrega` e `definir-contexto-projeto` quando faltar plano ou contexto).
+- Plano = feature do hub; task = tarefa do quadro "Macro". IDs: `F-` e `T-` mais os 8 primeiros caracteres do id no hub, iguais no documento, na branch e no PR. Artefatos em `docs/planos/F-xxxxxxxx-nome-curto/tasks/T-xxxxxxxx/`, a partir dos modelos em `docs/metodo/templates/`.
+- Antes de implementar, confira os critérios de aceite no hub e as aprovações funcional e técnica registradas. As aprovações de Produto, Engenharia e PR são decisões humanas; o agente não as concede nem as presume por silêncio ou por revisão de outro agente.
+- Branch a partir de `main`: `<tipo>/T-xxxxxxxx-nome-curto` (`feat`, `fix`, `dados`, `docs`). PR para `main`.
+- Verifique com `npm run verificar` e os testes da área tocada. Registre em `validacao.md` o que foi executado, o que falhou e o que não rodou (celular físico e leitor de tela incluídos). Não há CI no GitHub.
+
 ## Notas e avaliações no app
 
 Decisão do usuário de 18/11/2026 (D1, D4, A13), registrada no hub.
