@@ -17,13 +17,15 @@ export type ColunaMatrizComparar = {
   orientacaoCurta: string;
   climaSelo: string;
   confortoQuente: boolean;
+  /** Sem prédio confirmado não há fachada nem conforto: "Sem leitura" e empate no ponto. */
+  confortoSemLeitura?: boolean;
   /** dB(A) estimados no quarto à noite, com a janela fechada; `null` = sem leitura para o prédio. */
   ruidoInternoDb: number | null;
   /**
    * A nota de sossego do modelo de ruído estimado (a mesma do placar do dossiê): nota 0–10, a palavra da faixa e os
    * dB(A) estimados à noite na janela. `null` = sem leitura. Ausente só nos cartões montados sem o modelo.
    */
-  sossego?: { nota0a10: number; nivel: string; noiteDb: number } | null;
+  sossego?: { nota0a10: number; nivel: string; noiteDb: number; /** A pista do aeroporto ao lado não entra: a nota é um piso. */ piso?: boolean } | null;
   anoConstrucao: number | null;
   spuAlerta: boolean;
 };
@@ -39,14 +41,14 @@ const notaTexto = (n: number) => `${n.toFixed(1).replace(".", ",")}/10`;
 export function fichaDaMatrizComparar(compra: boolean, comNotaDeSossego: boolean): FichaDeMetodo6Campos {
   const ruido = fichaGeralDoRuido();
   return {
-    oQueMede: "Seis pontos lado a lado, com a mesma régua nos dois imóveis: preço por m², saída mensal, sol e conforto, sossego no quarto, idade do prédio e terreno. “Leva vantagem em N de 6” conta em quantos pontos um imóvel fica à frente; não é nota do imóvel.",
+    oQueMede: "Seis pontos lado a lado, com a mesma régua nos dois imóveis: preço por m², saída mensal, sol e conforto, sossego à noite, idade do prédio e terreno. “Leva vantagem em N de 6” conta em quantos pontos um imóvel fica à frente; não é nota do imóvel.",
     fonte: `O anúncio e o que você informou (preço, área, condomínio), o cadastro do Recife (IPTU, ano do prédio), o cálculo de sol do Vereda e, no sossego, o ruído estimado. ${ruido.fonte}`,
     data: `Cadastro do Recife de 2026. ${ruido.data}`,
     calculo:
       `${compra ? "Preço" : "Aluguel"} por m²: menor vence; empate com diferença de até 4%. Saída mensal: menor vence; empate com diferença abaixo de R$ 150. ` +
       "Sol e conforto: vence o que não fica na faixa quente; empate quando os dois estão do mesmo lado. " +
       (comNotaDeSossego
-        ? `Sossego no quarto: maior nota de sossego vence (a nota do ruído estimado à noite na janela); empate com diferença abaixo de ${VANTAGEM_NA_NOTA} ponto ou sem leitura num dos lados. `
+        ? `Sossego à noite: maior nota de sossego vence (a nota do ruído estimado à noite na janela); empate com diferença abaixo de ${VANTAGEM_NA_NOTA} ponto ou sem leitura num dos lados. `
         : "Sossego no quarto: menor ruído estimado no quarto vence; empate com diferença abaixo de 4 dB (estimativa) ou sem leitura num dos lados. ") +
       "Idade do prédio: o mais novo vence; empate com menos de 5 anos de diferença ou sem ano no cadastro. Terreno: vence o que não tem alerta de terreno da União; empate quando os dois têm ou nenhum tem.",
     limite: `Cada ponto pesa igual e os cortes de empate são escolhas do Vereda, não medições; um ponto sem dado vira empate. No sossego: ${ruido.limite}`,
@@ -54,14 +56,20 @@ export function fichaDaMatrizComparar(compra: boolean, comNotaDeSossego: boolean
   };
 }
 
-/** A linha "Sossego no quarto": pela nota do modelo estimado quando os dois lados a trazem; senão, pelo dB do quarto. */
+/**
+ * A linha de sossego: pela nota do modelo estimado (à noite, na janela) quando os dois lados a trazem, com o rótulo
+ * "Sossego à noite"; senão, pelo dB do quarto, com o rótulo "Sossego no quarto" (o rótulo diz o ponto do número).
+ */
 function linhaDeSossego(a: ColunaMatrizComparar, b: ColunaMatrizComparar): LinhaComparacao {
-  const criterio = "Sossego no quarto";
   if (a.sossego !== undefined && b.sossego !== undefined) {
-    const valor = (s: ColunaMatrizComparar["sossego"]) => (s ? `${s.nivel} · ${notaTexto(s.nota0a10)}` : "Sem leitura");
-    const vencedor = a.sossego && b.sossego && Math.abs(a.sossego.nota0a10 - b.sossego.nota0a10) >= VANTAGEM_NA_NOTA ? (a.sossego.nota0a10 > b.sossego.nota0a10 ? "A" : "B") : "empate";
+    const criterio = "Sossego à noite";
+    const valor = (s: ColunaMatrizComparar["sossego"]) => (s ? `${s.nivel} · ${notaTexto(s.nota0a10)}${s.piso ? " (piso: sem a pista do aeroporto)" : ""}` : "Sem leitura");
+    const pelaNota = a.sossego && b.sossego && Math.abs(a.sossego.nota0a10 - b.sossego.nota0a10) >= VANTAGEM_NA_NOTA ? (a.sossego.nota0a10 > b.sossego.nota0a10 ? "A" : "B") : "empate";
+    // Uma nota que é piso não ganha o ponto: o real tende a ser mais barulhento (revisão de 19/11/2026).
+    const vencedor = (pelaNota === "A" && a.sossego?.piso) || (pelaNota === "B" && b.sossego?.piso) ? "empate" : pelaNota;
     return { criterio, valorA: valor(a.sossego), valorB: valor(b.sossego), vencedor };
   }
+  const criterio = "Sossego no quarto";
   const valor = (db: number | null) => (db === null ? "Sem leitura" : classificarNivelSossegoPorDbInterno(db).rotuloComparar);
   const vencedor = a.ruidoInternoDb !== null && b.ruidoInternoDb !== null && Math.abs(a.ruidoInternoDb - b.ruidoInternoDb) >= 4 ? (a.ruidoInternoDb < b.ruidoInternoDb ? "A" : "B") : "empate";
   return { criterio, valorA: valor(a.ruidoInternoDb), valorB: valor(b.ruidoInternoDb), vencedor };
@@ -131,10 +139,10 @@ export function MatrizVisualComparar({
     },
     {
       criterio: "Sol & conforto",
-      valorA: `${opcaoA.orientacaoCurta} · ${opcaoA.climaSelo}`,
-      valorB: `${opcaoB.orientacaoCurta} · ${opcaoB.climaSelo}`,
+      valorA: opcaoA.confortoSemLeitura ? "Sem leitura" : `${opcaoA.orientacaoCurta} · ${opcaoA.climaSelo}`,
+      valorB: opcaoB.confortoSemLeitura ? "Sem leitura" : `${opcaoB.orientacaoCurta} · ${opcaoB.climaSelo}`,
       vencedor:
-        opcaoA.confortoQuente !== opcaoB.confortoQuente
+        !opcaoA.confortoSemLeitura && !opcaoB.confortoSemLeitura && opcaoA.confortoQuente !== opcaoB.confortoQuente
           ? opcaoA.confortoQuente
             ? "B"
             : "A"
@@ -160,8 +168,8 @@ export function MatrizVisualComparar({
     },
     {
       criterio: "Terreno / matrícula",
-      valorA: opcaoA.spuAlerta ? "Checar Marinha" : "Sem alerta SPU",
-      valorB: opcaoB.spuAlerta ? "Checar Marinha" : "Sem alerta SPU",
+      valorA: opcaoA.spuAlerta ? "Checar terreno de marinha" : "Sem alerta de terreno da União",
+      valorB: opcaoB.spuAlerta ? "Checar terreno de marinha" : "Sem alerta de terreno da União",
       vencedor:
         opcaoA.spuAlerta !== opcaoB.spuAlerta
           ? opcaoA.spuAlerta

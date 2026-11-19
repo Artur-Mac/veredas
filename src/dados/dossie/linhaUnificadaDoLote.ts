@@ -1,4 +1,5 @@
 import type { Edificio, ObrasProximas, VisaoDaRua } from "../contratos";
+import { pl } from "../formatos";
 
 export type EventoLinhaUnificada = {
   ordemAno: number;
@@ -83,7 +84,7 @@ export function construirLinhaUnificadaDoLote(params: {
       ordemAno: ultimoAno + 0.2,
       etiquetaData: visaoRua.defesaCivil.anos,
       categoria: "rua",
-      titulo: `${visaoRua.defesaCivil.atendimentos} chamado(s) da Defesa Civil na via`,
+      titulo: `${pl(visaoRua.defesaCivil.atendimentos, "chamado", "chamados")} da Defesa Civil na via`,
       detalhe: `Base mascarada para ${visaoRua.defesaCivil.rua}: confirmar na visita se ocorreu neste lote ou em outro número da mesma rua.`,
     });
   }
@@ -136,12 +137,12 @@ export function construirLinhaUnificadaDoLote(params: {
       qtdAtualItbi === 1 ? "transmissão" : "transmissões"
     } em ${anoAtualItbi} contra ${qtdAntItbi} em ${anoAntItbi}.`;
   } else if (obrasProximas) {
-    comparativoTemporal = `Janela de obras no entorno: ${obrasProximas.relevantes24m} relevante(s) nos últimos 24 meses frente a ${obrasProximas.licencasDeObra} registro(s) totais na série 2018–2026.`;
+    comparativoTemporal = `Janela de obras no entorno: ${pl(obrasProximas.relevantes24m, "relevante", "relevantes")} nos últimos 24 meses frente a ${pl(obrasProximas.licencasDeObra, "registro", "registros")} na série 2018–2026.`;
   }
 
   const manchete =
     eventos.length > 0
-      ? `Linha unificada com ${eventos.length} marco(s) oficiais do prédio e da quadra`
+      ? `Linha unificada com ${pl(eventos.length, "marco oficial", "marcos oficiais")} do prédio e da quadra`
       : "Confirme o prédio para montar a linha do tempo unificada de entregas, licenças e registros";
 
   const totalItbi = (edificio?.itbi?.porAno ?? []).reduce((acc, [, q]) => acc + q, 0);
@@ -152,15 +153,15 @@ export function construirLinhaUnificadaDoLote(params: {
           edificio?.anoConstrucao ? `entrega em ${edificio.anoConstrucao}` : "ano a confirmar"
         } · Registro fiscal: ${
           totalItbi > 0
-            ? `${totalItbi} transmissão(ões) na série ITBI`
+            ? `${pl(totalItbi, "transmissão", "transmissões")} na série ITBI`
             : "sem série publicada"
         } · Rua (150 m): ${
           obrasProximas
-            ? `${obrasProximas.relevantes24m} obra(s) relevante(s) em 24m`
+            ? `${pl(obrasProximas.relevantes24m, "obra relevante", "obras relevantes")} em 24 meses`
             : "sem alvarás lidos"
         }${
           visaoRua?.defesaCivil
-            ? ` e ${visaoRua.defesaCivil.atendimentos} chamado(s) na via`
+            ? ` e ${pl(visaoRua.defesaCivil.atendimentos, "chamado", "chamados")} na via`
             : ""
         }.`;
 

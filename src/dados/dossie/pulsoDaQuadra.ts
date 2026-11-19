@@ -6,6 +6,7 @@ import type { FichaDeMetodo6Campos } from "../fichaDeMetodo";
 import type { ResultadoCaminhabilidadeEVida } from "./caminhabilidadeEVidaNaRua";
 import { nivelDeSossego } from "../ruido/leitura";
 import { DB_DA_NOTA_0, DB_DA_NOTA_10 } from "../ruido/parametros";
+import { pl } from "../formatos";
 
 export type EixoPulsoDaQuadra = {
   id:
@@ -268,7 +269,7 @@ export function calcularPulsoDaQuadra(params: {
       nota0a10: notaObr,
       ausencia: null,
       rotuloValor: `${notaObr.toFixed(1).replace(".", ",")} / 10`,
-      resumo: `${obrasProximas.relevantes24m} licença(s) relevante(s) em 24 meses num raio de 150 m`,
+      resumo: `${pl(obrasProximas.relevantes24m, "licença relevante", "licenças relevantes")} em 24 meses num raio de 150 m`,
       conta: `10 menos 1,1 por obra relevante (${obrasProximas.relevantes24m}) e 0,9 por demolição (${obrasProximas.demolicoes24m}) em 24 meses a 150 m`,
     };
   }

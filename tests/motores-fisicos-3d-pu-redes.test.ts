@@ -86,7 +86,7 @@ describe("Milestone 4 — Bioclimático 3D, Acústica 3D, Hidro-Maré 1m, PU-Lea
 
   test("IND-04 Acústica 3D: atenuação de fundos/altura na via, zero atenuação no PEZR SBRF, corte 2013 e privacidade P3", () => {
     expect(resolverIsolamentoD2mnTw(1998)).toBe(17.8);
-    expect(resolverIsolamentoD2mnTw(2020, "Superior")).toBe(32.8);
+    expect(resolverIsolamentoD2mnTw(2020, "Superior")).toBe(30); // NBR 15575-4, classe de ruído I: superior 30 dB (conferido em 18/11/2026; era 32,8)
 
     const frenteTerreoAv = avaliarAcustica3d({
       andar: 1,
@@ -132,7 +132,7 @@ describe("Milestone 4 — Bioclimático 3D, Acústica 3D, Hidro-Maré 1m, PU-Lea
     });
     expect(sobRotaSbrfPre2013.ruidoExternoAeronavePezrDb).toBe(65);
     expect(sobRotaSbrfPre2013.ruidoInternoDormitorioDbA).toBeCloseTo(47.2, 0);
-    expect(sobRotaSbrfSup2022.ruidoInternoDormitorioDbA).toBeCloseTo(32.2, 0);
+    expect(sobRotaSbrfSup2022.ruidoInternoDormitorioDbA).toBeCloseTo(35, 0); // 65 dB(A) menos 30 dB (superior da NBR 15575-4, classe de ruído I; era 32,8)
   });
 
   test("IND-05 Hidro-Maré 1m: ST-DBSCAN deduplica enxurrada 156 e integra tábua REMO real + macrodrenagem + Beltrán", () => {

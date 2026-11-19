@@ -44,6 +44,8 @@ type Props = {
   edificio: Edificio | null;
   vizinhos?: readonly Edificio[];
   orientacaoJanelaGraus?: number | null;
+  /** Andar e fachada ativos do dossiê (src/dados/dossie/unidadeAtiva.ts), ponto de partida do simulador. */
+  unidade?: { andar: number; fachadaGraus: number; descricao: string } | null;
   slugBairro?: string | null;
   ruaDoBairro?: RuaDoBairro | null;
   contexto: ContextoDoBairro | null;
@@ -369,6 +371,7 @@ export function Entorno({
   acesso = [],
   vizinhos = [],
   orientacaoJanelaGraus = null,
+  unidade = null,
   tipologia = null,
   analiseId,
   centroReferencia = null,
@@ -409,7 +412,15 @@ export function Entorno({
         <Secao semTopo={!indicadores.length}>
           <Sobretitulo>Sua unidade</Sobretitulo>
           <Titulo2>Andar × fachada</Titulo2>
-          <SimuladorDaUnidade predio={edificio} vizinhos={vizinhos} tipologia={tipologia} andarDoAnuncio={visao.especificacoes.andar} orientacaoGraus={orientacaoJanelaGraus} />
+          <SimuladorDaUnidade
+            key={unidade ? `${unidade.andar}-${unidade.fachadaGraus}` : "sem-unidade"}
+            predio={edificio}
+            vizinhos={vizinhos}
+            tipologia={tipologia}
+            andarInicial={unidade?.andar ?? Math.ceil(Math.max(1, (edificio.pavimentos ?? 20) - 1) / 2)}
+            fachadaInicialGraus={unidade ? unidade.fachadaGraus : orientacaoJanelaGraus}
+            unidadeDescricao={unidade?.descricao ?? null}
+          />
         </Secao>
       ) : null}
       <Secao semTopo={!indicadores.length && !edificio} aoMedir={(y) => aoMedirSecao("obras", y)}>

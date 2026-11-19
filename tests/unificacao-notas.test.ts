@@ -1,7 +1,7 @@
 // Unificação de 19/11/2026, itens R2, R6 e R11 (decisões D1 e A13 de 18/11/2026): as notas de 0 a 10 ficam, mas cada uma
 // usa dado do imóvel (nunca um valor fixo igual para todos), o eixo sem dado mostra "Sem leitura" e sai da média, e toda
 // nota abre, num toque, a ficha de método de 6 campos.
-import { describe, expect, it } from "@jest/globals";
+import { describe, expect, it, jest } from "@jest/globals";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
 import { FichaDeMetodo } from "../src/componentes/visual/FichaDeMetodo";
@@ -14,6 +14,16 @@ import { lerMicroclimaDoPonto, SEM_MICROCLIMA } from "../src/dados/clima/microcl
 import { edificiosDoBairro } from "../src/dados/recife/indice";
 import { inferirFachadasDoEdificio } from "../src/dados/sol/inferirFachadas";
 import { avaliarBioclimatico3d } from "../src/municipios/recife/motores/bioclimatico3d";
+import { SimuladorDaUnidade } from "../src/componentes/dossie-v1/SimuladorDaUnidade";
+import { carregarCadastro } from "../src/componentes/dossie-v1/cadastro";
+import type { AnaliseV2 } from "../src/dados/contratos";
+import { derivarCustoPorPartes } from "../src/dados/custoPorPartes";
+import { montarColunaDoComparar } from "../src/dados/dossie/colunaDoComparar";
+import { ANDAR_SUPOSTO_SEM_CADASTRO, escolherUnidadeAtiva, inferirFachadasDaAnalise, lerUnidade } from "../src/dados/dossie/unidadeAtiva";
+import { analiseDeTeste, EM } from "./fixtures/caderno";
+import { PERFIL_DOMICILIO_PADRAO } from "../src/estado/PerfilDomicilio";
+
+jest.mock("@react-native-async-storage/async-storage", () => require("@react-native-async-storage/async-storage/jest/async-storage-mock"));
 import type { ObrasProximas } from "../src/dados/contratos";
 import { avaliarCaminhabilidadeEVidaNaRua, type ResultadoCaminhabilidadeEVida } from "../src/dados/dossie/caminhabilidadeEVidaNaRua";
 import { calcularPulsoDaQuadra } from "../src/dados/dossie/pulsoDaQuadra";
@@ -191,31 +201,125 @@ describe("R11: cada nota abre a ficha de método de 6 campos num toque", () => {
   });
 });
 
-describe("o mesmo prédio tem o mesmo selo de conforto no dossiê e no Comparar", () => {
-  it("o microclima do ponto é lido num lugar só e muda o selo: sem ele o Comparar dava outro resultado", () => {
-    const predios = edificiosDoBairro("boa-viagem");
-    const golden = predios.find((e) => e.id === "8001-216")!;
-    const inf = inferirFachadasDoEdificio({ edificio: golden, vizinhosDoBairro: predios, textoAnuncio: "Golden Tower" });
-    const fachada = inf.fachadas.find((f) => f.id === inf.fachadaSugeridaId) ?? inf.frente;
-    const micro = lerMicroclimaDoPonto(golden.centro, "boa-viagem");
-    expect(micro.tempDelta).not.toBeNull();
-    const calcular = (m: typeof micro) =>
-      avaliarConfortoTermico({
-        andar: 9,
-        pavimentosTotais: golden.pavimentos,
-        fachada,
-        fachadaAzimuteGraus: fachada.azimuteGraus,
-        bioclimatico: avaliarBioclimatico3d({ fachadaAzimuteGraus: fachada.azimuteGraus, andar: 9, lstDeltaIlhaCalorC: m.tempDelta }),
-        diferencaBairroCalorC: m.tempDelta,
-        tempQuadraC: m.tempQuadraC,
-        pracasAte300m: m.pracasAte300m,
-        possuiArvoreProxima: m.possuiArvore,
-        distanciaPraiaOuRioM: m.distanciaAgua,
-      });
-    // Com o microclima (as duas telas hoje) o índice de calor é menor do que sem ele (o Comparar de antes).
-    expect(calcular(micro).indiceCalor0a100).toBeLessThan(calcular(SEM_MICROCLIMA).indiceCalor0a100);
-    // Sem coordenada: sem leitura, nunca um valor fixo.
-    expect(lerMicroclimaDoPonto(null, "boa-viagem")).toEqual(SEM_MICROCLIMA);
+// Pendência 1 do HANDOFF (19/11/2026). Substitui o teste antigo "o mesmo prédio tem o mesmo selo de conforto no dossiê e
+// no Comparar", que só comparava o microclima consigo mesmo: este monta as entradas das duas telas como cada uma monta
+// (vizinhos do cadastro no dossiê, do bairro no Comparar; bússola da visita), com e sem bússola.
+describe("andar e fachada: um estado só no placar, no simulador e no Comparar", () => {
+  const predios = edificiosDoBairro("boa-viagem");
+  const predio = (id: string) => predios.find((e) => e.id === id)!;
+  const analiseDo = (id: string, andar: number | null, bussola: number | null) => {
+    const e = predio(id);
+    const base = analiseDeTeste(`a-${id}`, { bairro: "boa-viagem", bairroTexto: "Boa Viagem", modalidade: "compra" });
+    return analiseDeTeste(`a-${id}`, {
+      bairro: "boa-viagem",
+      bairroTexto: "Boa Viagem",
+      modalidade: "compra",
+      declarados: { ...base.declarados, preco: { valor: 650_000, origem: "voce", aConfirmar: false }, andar: { valor: andar, origem: "voce", aConfirmar: false } },
+      vinculo: { estado: "confirmado", edificioId: e.id, dsqfl: e.dsqfl, confirmadoEm: EM, indiceGeradoEm: "2026-11-18T00:00:00Z" },
+      visita: { ...base.visita, orientacaoGraus: bussola },
+    });
+  };
+  /** O que a tela do dossiê calcula (src/app/(abas)/dossie.tsx), sem nada tocado pela pessoa. */
+  const doDossie = (a: AnaliseV2) => {
+    const cadastro = carregarCadastro(a);
+    const e = cadastro.edificio!;
+    const unidade = escolherUnidadeAtiva({
+      inferencia: inferirFachadasDaAnalise(a, e, cadastro.vizinhos),
+      pavimentos: e.pavimentos ?? null,
+      andarDeclarado: a.declarados.andar.valor,
+      orientacaoBussolaGraus: a.visita.orientacaoGraus,
+    });
+    return { e, unidade, ...lerUnidade(e, unidade, lerMicroclimaDoPonto(e.centro, a.bairro)) };
+  };
+  /** O que a tela do Comparar calcula (src/app/(abas)/comparar.tsx). */
+  const doComparar = (a: AnaliseV2) => {
+    const e = carregarCadastro(a).edificio!;
+    return montarColunaDoComparar(a, e, derivarCustoPorPartes(a, e, PERFIL_DOMICILIO_PADRAO), "A");
+  };
+
+  it.each([
+    ["10227-187", 7, null],
+    ["10227-187", 7, 20],
+    ["12955-45", null, null],
+    ["12955-45", null, 200],
+    ["8001-216", 9, 95],
+  ] as [string, number | null, number | null][])("prédio %s, andar %s, bússola %s: dossiê e Comparar com a mesma fachada, o mesmo selo de conforto e a mesma nota de sossego", (id, andar, bussola) => {
+    const a = analiseDo(id, andar, bussola);
+    const dossie = doDossie(a);
+    const comparar = doComparar(a);
+    expect(dossie.ruido.estado).toBe("estimado");
+    expect(comparar.climaSelo).toBe(dossie.conforto.selo);
+    expect(comparar.orientacaoCurta).toBe(dossie.unidade.fachada.orientacaoSolar);
+    expect(comparar.sossego?.nota0a10).toBe(dossie.ruido.estado === "estimado" ? dossie.ruido.notaDeSossego : null);
+    expect(dossie.unidade.origemDaFachada).toBe(bussola === null ? "sugerida" : "bussola");
+  });
+
+  it("prédio 10227-187 com bússola de 20°: a fachada é a inferida mais perto da bússola, a mesma no conforto e no ruído", () => {
+    const a = analiseDo("10227-187", 7, 20);
+    const { unidade, ruido } = doDossie(a);
+    const dif = (x: number) => Math.abs(((x - 20 + 540) % 360) - 180);
+    const inf = inferirFachadasDaAnalise(a, predio("10227-187"), predios);
+    for (const f of inf.fachadas) expect(dif(unidade.fachada.azimuteGraus)).toBeLessThanOrEqual(dif(f.azimuteGraus));
+    expect(ruido.estado === "estimado" ? ruido.fachadaGraus : null).toBe(unidade.fachada.azimuteGraus);
+  });
+
+  it("prédio 12955-45 sem andar no anúncio: placar e simulador começam no mesmo andar e na mesma fachada, com o mesmo dB(A)", () => {
+    const a = analiseDo("12955-45", null, null);
+    const { e, unidade, ruido } = doDossie(a);
+    expect(unidade.origemDoAndar).toBe("suposto");
+    expect(unidade.descricao).toContain("suposto");
+    expect(ruido.estado).toBe("estimado");
+    if (ruido.estado !== "estimado") return;
+    const sim = montar(React.createElement(SimuladorDaUnidade, {
+      predio: e, vizinhos: predios, tipologia: "apartamento",
+      andarInicial: unidade.andar, fachadaInicialGraus: unidade.fachada.azimuteGraus, unidadeDescricao: unidade.descricao,
+    }));
+    const resumo = sim.root.findAll((n) => typeof n.props.accessibilityLabel === "string" && n.props.accessibilityLabel.startsWith("Barulho por perto:"))[0]!;
+    expect(resumo.props.accessibilityLabel).toContain(`~${Math.round(ruido.naJanela.diaDb)} dB(A) de dia · ~${Math.round(ruido.naJanela.noiteDb)} à noite (estimativa)`);
+    expect(textos(sim.toJSON())).toContain(`${unidade.andar}º andar`);
+    expect(textos(sim.toJSON())).toContain(`Começa como no placar: ${unidade.descricao}.`);
+    // O placar diz o andar e a fachada em que calculou.
+    const placar = montar(React.createElement(PlacarHeroi5Segundos, {
+      modalidade: "compra", precoPrincipalReais: 650_000, mensalBolsoRealReais: 5_000, dinheiroParaEntrarReais: null, comparacaoM2Pct: null,
+      orientacaoCurta: unidade.fachada.orientacaoSolar, conforto, ruidoDormitorioDb: null,
+      sossego: { ...ruido.textos.placar, ficha: ruido.textos.ficha }, unidade: unidade.descricao,
+    }));
+    expect(textos(placar.toJSON())).toContain(`Sol e sossego calculados para: ${unidade.descricao}.`);
+    act(() => { sim.unmount(); placar.unmount(); });
+  });
+});
+
+describe("escolherUnidadeAtiva: a ordem de cada escolha", () => {
+  const golden = edificiosDoBairro("boa-viagem").find((e) => e.id === "8001-216")!;
+  const inferencia = inferirFachadasDoEdificio({ edificio: golden, vizinhosDoBairro: edificiosDoBairro("boa-viagem"), textoAnuncio: "Golden Tower" });
+  const sugerida = inferencia.fachadas.find((f) => f.id === inferencia.fachadaSugeridaId)!;
+  const outra = inferencia.fachadas.find((f) => f.id !== inferencia.fachadaSugeridaId)!;
+
+  it("andar: casa > escolhido > anúncio > suposto (meio do prédio; 4º sem pavimentos), entre o térreo e o último", () => {
+    expect(escolherUnidadeAtiva({ inferencia, pavimentos: 20, andarDeclarado: 9, andarEscolhido: 3 })).toMatchObject({ andar: 3, origemDoAndar: "escolhido" });
+    expect(escolherUnidadeAtiva({ inferencia, pavimentos: 20, andarDeclarado: 9 })).toMatchObject({ andar: 9, origemDoAndar: "anuncio" });
+    expect(escolherUnidadeAtiva({ inferencia, pavimentos: 20, andarDeclarado: null })).toMatchObject({ andar: 10, origemDoAndar: "suposto" });
+    expect(escolherUnidadeAtiva({ inferencia, pavimentos: null, andarDeclarado: null })).toMatchObject({ andar: ANDAR_SUPOSTO_SEM_CADASTRO, origemDoAndar: "suposto" });
+    // Revisão de 19/11/2026: andar limitado ao cadastro diz isso; térreo (0) é térreo; casa é térreo.
+    const alto = escolherUnidadeAtiva({ inferencia, pavimentos: 8, andarDeclarado: 15 });
+    expect(alto.andar).toBe(7);
+    expect(alto.descricao).toContain("7º andar (o anúncio diz 15º andar; o cadastro tem 8 pavimentos)");
+    const terreo = escolherUnidadeAtiva({ inferencia, pavimentos: 8, andarDeclarado: 0 });
+    expect(terreo.andar).toBe(0);
+    expect(terreo.descricao).toMatch(/^térreo \(do anúncio\)/);
+    const casa = escolherUnidadeAtiva({ inferencia, pavimentos: 2, andarDeclarado: null, tipologia: "casa" });
+    expect(casa).toMatchObject({ andar: 0, origemDoAndar: "casa" });
+    expect(casa.descricao).toMatch(/^térreo \(casa\)/);
+  });
+
+  it("fachada: escolhida > bússola aproximada à inferida > sugerida; a descrição diz a origem", () => {
+    const escolhida = escolherUnidadeAtiva({ inferencia, pavimentos: 20, andarDeclarado: 9, fachadaEscolhida: outra.id, orientacaoBussolaGraus: sugerida.azimuteGraus });
+    expect(escolhida).toMatchObject({ fachada: outra, origemDaFachada: "escolhida" });
+    expect(escolhida.descricao).toBe(`9º andar (do anúncio) · fachada ${outra.orientacaoSolar} (escolhida por você)`);
+    const pelaBussola = escolherUnidadeAtiva({ inferencia, pavimentos: 20, andarDeclarado: 9, orientacaoBussolaGraus: (outra.azimuteGraus + 10) % 360 });
+    expect(pelaBussola).toMatchObject({ fachada: outra, origemDaFachada: "bussola" });
+    expect(pelaBussola.descricao).toContain("pela bússola da visita");
+    expect(escolherUnidadeAtiva({ inferencia, pavimentos: 20, andarDeclarado: 9 })).toMatchObject({ fachada: sugerida, origemDaFachada: "sugerida" });
   });
 });
 

@@ -215,8 +215,11 @@ export function analisarItbiNbr14653(
     icHigh = Math.round(media + semi);
     amplitudePct = Math.round(((icHigh - icLow) / media) * 10000) / 100;
 
-    if (amplitudePct <= 15) grau = "Grau_III";
-    else if (amplitudePct <= 30) grau = "Grau_II";
+    // NBR 14653-2 (amplitude do intervalo de confiança de 80% em torno da estimativa central): até 30% Grau III, até
+    // 40% Grau II, até 50% Grau I. Antes o app usava 15/30/50; conferido em fontes secundárias em 18/11/2026 (IBAPE,
+    // projeto de revisão da norma), sem o texto pago da ABNT. Amostra do ITBI não é laudo de avaliação.
+    if (amplitudePct <= 30) grau = "Grau_III";
+    else if (amplitudePct <= 40) grau = "Grau_II";
     else if (amplitudePct <= 50) grau = "Grau_I";
     else grau = "amostra_insuficiente";
   }
@@ -332,14 +335,17 @@ export function simularOtimizacaoItbiRecife(entrada: EntradaOtimizadorItbiRecife
       escrituraERegistroReais: null,
       prazoLegalDias: PRAZO_PEDIDO_LANCAMENTO_ITBI_DIAS,
     };
-    economiaSfh = r2(itbi3 - itbiSfh);
+    // Pendência 5 do HANDOFF (19/11/2026): a economia do SFH é só a do SFH, 1% em vez de 3% na parte financiada (contra
+    // 1% no financiado + 3% no resto). Antes media contra 3% sobre tudo com o resto a 1,8%, e somava a economia do pedido
+    // em 180 dias, que a tela já mostra à parte. O melhor cenário continua sendo os dois juntos (SFH + pedido no prazo).
+    economiaSfh = r2(itbi3 - (parcelaFinanciada * 0.01 + parcelaEntradaOuExcedente * 0.03));
   }
 
   return {
     semOrientacao3Pct,
     aVistaTempestivo18Pct,
     sfhOtimizado1Pct: sfhOtimizado,
-    melhorCenarioEconomiaReais: economiaSfh !== null ? Math.max(economiaAVista, economiaSfh) : economiaAVista,
+    melhorCenarioEconomiaReais: sfhOtimizado !== null ? Math.max(economiaAVista, r2(itbi3 - sfhOtimizado.itbiReais)) : economiaAVista,
     economiaAVistaTempestivoReais: economiaAVista,
     economiaSfhReais: economiaSfh,
     notaBaseDeCalculoLc227:

@@ -10,6 +10,7 @@ import { useTema } from "../../tema/Tema";
 import { Pressionavel } from "../Pressionavel";
 import { Texto } from "../Texto";
 import { Nota, Seta } from "./base";
+import { pl } from "../../dados/formatos";
 
 type TomIndicador = "bom" | "medio" | "atencao" | "neutro";
 
@@ -255,7 +256,7 @@ export function LinhaDoTempoEstrutural({ analise, aoRegistrar }: { analise: Anal
       <View style={{ paddingVertical: 2, paddingLeft: 10, borderLeftWidth: 3, borderLeftColor: cor("cor-azul-cadastral") }}>
         <Texto tipo="apoio" style={{ fontSize: 12, lineHeight: 17 }}>{`Pergunta para o síndico: ${l.perguntaAoSindico}`}</Texto>
       </View>
-      {l.descartados ? <Nota>{`${l.descartados} registro(s) sem vínculo confirmado com este imóvel não entram na linha do tempo.`}</Nota> : null}
+      {l.descartados ? <Nota>{`${pl(l.descartados, "registro", "registros")} sem vínculo confirmado com este imóvel não ${l.descartados === 1 ? "entra" : "entram"} na linha do tempo.`}</Nota> : null}
       <Pressionavel onPress={aoRegistrar} accessibilityRole="link" accessibilityLabel="Registrar laudo, vistoria ou interdição no caderno" style={{ minHeight: 44, justifyContent: "center", alignSelf: "flex-start" }}>
         <Texto tipo="apoio" cor="cor-barro-texto" style={{ fontSize: 12.5, fontWeight: "600", textDecorationLine: "underline" }}>Registrar laudo, vistoria ou interdição no caderno</Texto>
       </Pressionavel>

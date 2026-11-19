@@ -272,7 +272,7 @@ export function SimuladorBolso15Segundos({
 
           {compra && economiaLegal > 0 ? (
             <Texto tipo="apoio" cor="cor-salvia-escura" style={styles.economiaTxt}>
-              {`Economia possível de ITBI (SFH e pedido em até 180 dias): até ${formatarReais(economiaLegal)}`}
+              {`Economia possível de ITBI (financiamento pelo Sistema Financeiro da Habitação, SFH, e pedido em até 180 dias): até ${formatarReais(economiaLegal)}`}
             </Texto>
           ) : null}
 

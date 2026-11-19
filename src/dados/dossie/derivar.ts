@@ -540,7 +540,13 @@ function perguntasDe(
   if (!comAnomalia("iptu") && parcela("IPTU")?.estado !== "conhecido") {
     const semPeriodicidade = d.iptu.valor !== null && d.iptu.periodo === "desconhecido";
     lista.push({
-      id: "lacuna-iptu", titulo: `Qual é o IPTU ${deste}?`, pista: semPeriodicidade ? "Anúncio sem periodicidade" : pistaDaLacuna(d.iptu.valor),
+      id: "lacuna-iptu", titulo: `Qual é o IPTU ${deste}?`,
+      // Com a referência do cadastro, a pista diz que ela existe (antes: "Não informado no anúncio" logo acima do valor do prédio).
+      pista: semPeriodicidade
+        ? "Anúncio sem periodicidade"
+        : d.iptu.valor === null && (predio?.iptuAnual?.mediana ?? 0) > 0
+          ? `Não informado no anúncio; o cadastro dá ~${formatarReais(Math.round(predio!.iptuAnual!.mediana / 12))}/mês para o prédio`
+          : pistaDaLacuna(d.iptu.valor),
       textoParaMensagem: `Qual é o valor do IPTU ${deste}, por mês ou por ano?`, origem: "lacuna", prioridade: "custo",
     });
   }

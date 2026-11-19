@@ -83,7 +83,7 @@ export function prepararNegociacao(a: AnaliseV2, visao: Pick<VisaoDoDossie, "ach
     valor: custo.totalMensalConhecido,
     faltando,
     texto: custo.totalMensalConhecido === null ? "Ainda não há valor mensal conhecido." :
-      `Total mensal conhecido: ${formatarReais(custo.totalMensalConhecido)}${faltando.length ? ` (faltam ${emFrase(faltando)})` : ""}.`,
+      `Total mensal conhecido: ${formatarReais(custo.totalMensalConhecido)}${faltando.length ? ` (${faltando.length === 1 ? "falta" : "faltam"} ${emFrase(faltando)} do anúncio)` : ""}.`,
   };
   const args: Argumento[] = [];
   const perguntaPorId = new Map(visao.perguntas.map((p) => [p.id, p]));

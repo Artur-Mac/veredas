@@ -53,14 +53,9 @@ import { DueloFinalistas } from "../../componentes/cidadao/DueloFinalistas";
 import { ConvergenciaFamiliar } from "../../componentes/cidadao/ConvergenciaFamiliar";
 import { filtrarDominanciaInvisivel } from "../../dados/cidadao/dominanciaInvisivel";
 import { MatrizVisualComparar, type ColunaMatrizComparar } from "../../componentes/visual/MatrizVisualComparar";
-import { RotinaDoisDestinosComparar } from "../../componentes/visual/RotinaDoisDestinosComparar";
-import { estimarMinutosPicoIdaVolta } from "../../dados/mobilidade/rotinaCasal";
-import { inferirFachadasDoEdificio } from "../../dados/sol/inferirFachadas";
-import { avaliarConfortoTermico } from "../../dados/clima/confortoTermico";
-import { lerMicroclimaDoPonto } from "../../dados/clima/microclima";
-import { avaliarBioclimatico3d } from "../../municipios/recife/motores/bioclimatico3d";
-import { estimarRuido } from "../../dados/ruido/estimativa";
-import { acusticaDaEstimativa } from "../../dados/ruido/ponte";
+import { ESCOLHA_INICIAL_DA_ROTINA, RotinaDoisDestinosComparar, type EscolhaDaRotina } from "../../componentes/visual/RotinaDoisDestinosComparar";
+import { compararRotinaDoisDestinos, estimarMinutosPicoIdaVolta } from "../../dados/mobilidade/rotinaCasal";
+import { montarColunaDoComparar } from "../../dados/dossie/colunaDoComparar";
 
 const MODALIDADES: readonly { valor: Modalidade; rotulo: string }[] = [
   { valor: "aluguel", rotulo: "Alugar" },
@@ -164,77 +159,23 @@ function CompararComDados() {
   const partesDoPar: Par<ReturnType<typeof derivarCustoPorPartes>> | null = a && b
     ? [derivarCustoPorPartes(a, ea, perfilDomicilio), derivarCustoPorPartes(b, eb, perfilDomicilio)] : null;
 
+  // Pendência 5 do HANDOFF (19/11/2026): o Duelo conta o trajeto pela mesma rotina de dois destinos do cartão.
+  const [escolhaDaRotina, setEscolhaDaRotina] = useState<EscolhaDaRotina>(ESCOLHA_INICIAL_DA_ROTINA);
+  const rotinaDoDuelo = a && b
+    ? compararRotinaDoisDestinos({
+        nomeOpcaoA: "A", centroA: ea?.centro ?? null, bairroA: a.bairro ?? null,
+        nomeOpcaoB: "B", centroB: eb?.centro ?? null, bairroB: b.bairro ?? null,
+        destino1Id: escolhaDaRotina.destino1Id, destino2Id: escolhaDaRotina.destino2Id,
+        diasPresenciaisMes: escolhaDaRotina.diasPresenciais, faixaHorario: escolhaDaRotina.faixaHorario,
+      })
+    : null;
+
   const matrizComparar: [ColunaMatrizComparar, ColunaMatrizComparar] | null = (() => {
     if (!a || !b || !comparacao || !partesDoPar) return null;
-    const vizinhosDe = (e: Edificio): Edificio[] => {
-      try {
-        return edificiosDoBairro(e.bairro);
-      } catch {
-        return [];
-      }
-    };
-    const montar = (item: AnaliseV2, ed: Edificio | null, pt: ReturnType<typeof derivarCustoPorPartes>, nomeCurto: string): ColunaMatrizComparar => {
-      const inf = inferirFachadasDoEdificio({
-        edificio: ed ?? {
-          id: item.id,
-          bairro: item.bairro ?? "boa-viagem",
-          logradouro: item.logradouro || item.bairroTexto || "Via local",
-          centro: [-34.896, -8.121],
-          poligono: null,
-        },
-        // Os mesmos vizinhos que o dossiê usa para achar a frente do prédio: sem eles a fachada inferida (e, com ela, a
-        // nota de sossego e o rótulo do sol) saía diferente da do placar do dossiê.
-        vizinhosDoBairro: ed ? vizinhosDe(ed) : undefined,
-        textoAnuncio: [item.nome, item.nomeEdificio, ...(item.extracao?.campos.comodidades ?? [])]
-          .filter(Boolean)
-          .join(" "),
-      });
-      const fac = inf.fachadas.find((f) => f.id === inf.fachadaSugeridaId) ?? inf.frente;
-      const az = item.visita.orientacaoGraus ?? fac.azimuteGraus;
-      const andar = item.declarados.andar.valor ?? 4;
-      // O mesmo microclima que o dossiê lê: sem ele, o selo de conforto do mesmo prédio saía diferente nas duas telas.
-      const microclima = lerMicroclimaDoPonto(ed?.centro ?? null, item.bairro);
-      const bio = avaliarBioclimatico3d({ fachadaAzimuteGraus: az, andar, lstDeltaIlhaCalorC: microclima.tempDelta });
-      const conf = avaliarConfortoTermico({
-        andar,
-        pavimentosTotais: ed?.pavimentos ?? null,
-        fachada: fac,
-        fachadaAzimuteGraus: az,
-        bioclimatico: bio,
-        diferencaBairroCalorC: microclima.tempDelta,
-        tempQuadraC: microclima.tempQuadraC,
-        pracasAte300m: microclima.pracasAte300m,
-        possuiArvoreProxima: microclima.possuiArvore,
-        distanciaPraiaOuRioM: microclima.distanciaAgua,
-      });
-      // 18/11/2026 (A1, R4): o sossego sai do modelo de ruído estimado do prédio, no andar e na fachada do anúncio:
-      // a mesma nota do placar do dossiê. Sem prédio no cadastro, "sem leitura".
-      const ruido = estimarRuido(ed, { andar, fachadaGraus: az, janelaFechada: true });
-      const acu = acusticaDaEstimativa(ruido, { anoConstrucao: ed?.anoConstrucao ?? null });
-      // A mesma soma do dossiê: a luz é a "Luz estimada" do custo (perfil da casa), não o gasto de ar da regra de conforto.
-      const luz = pt.fatiasDaRotina.find((f) => f.id === "energia")?.valorMensalReais ?? 0;
-      const baseMensal =
-        item.modalidade === "compra"
-          ? (pt.simulacaoCompra?.prestacaoPriceReais ?? 0) +
-            (item.declarados.condominio.valor ?? 0) +
-            Math.round((ed?.iptuAnual?.mediana ?? 0) / 12) +
-            luz
-          : (pt.oficial.totalMensalConhecido ?? item.declarados.preco.valor ?? 0) + luz;
-      return {
-        nome: nomeCurto,
-        precoPrincipalReais: item.declarados.preco.valor ?? null,
-        areaM2: item.declarados.area.valor ?? null,
-        mensalBolsoRealReais: baseMensal > 0 ? Math.round(baseMensal) : null,
-        orientacaoCurta: fac.orientacaoSolar,
-        climaSelo: conf.selo,
-        confortoQuente: conf.zona === "quente_tarde" || conf.zona === "tende_abafar",
-        ruidoInternoDb: acu?.ruidoInternoDormitorioDbA ?? null,
-        sossego: ruido.estado === "estimado" ? { nota0a10: ruido.notaDeSossego, nivel: ruido.nivelDeSossego, noiteDb: ruido.naJanela.noiteDb } : null,
-        anoConstrucao: ed?.anoConstrucao ?? null,
-        spuAlerta: Boolean(pt.alertaMarinha),
-      };
-    };
-    return [montar(a, ea, partesDoPar[0], comparacao.rotulos[0]), montar(b, eb, partesDoPar[1], comparacao.rotulos[1])];
+    return [
+      montarColunaDoComparar(a, ea, partesDoPar[0], comparacao.rotulos[0]),
+      montarColunaDoComparar(b, eb, partesDoPar[1], comparacao.rotulos[1]),
+    ];
   })();
 
   const naModalidade = elegiveis(lista, modalidade);
@@ -319,6 +260,8 @@ function CompararComDados() {
                     opcaoB={matrizComparar[1]}
                   />
                   <RotinaDoisDestinosComparar
+                    escolha={escolhaDaRotina}
+                    aoMudarEscolha={setEscolhaDaRotina}
                     nomeOpcaoA={matrizComparar[0].nome}
                     centroA={ea?.centro ?? null}
                     bairroA={par[0].bairro ?? null}
@@ -418,12 +361,16 @@ function CompararComDados() {
                 {partesDoPar && comparacao ? (
                   <View style={{ gap: 12, marginBottom: 14 }}>
                     <DueloFinalistas
+                      daRotina={rotinaDoDuelo !== null}
+                      noPico={escolhaDaRotina.faixaHorario === "pico"}
+                      destinoDoTrajeto={rotinaDoDuelo ? `${rotinaDoDuelo.destino1.nomeCurto} e ${rotinaDoDuelo.destino2.nomeCurto}` : undefined}
+                      diasPorMes={rotinaDoDuelo?.diasPresenciaisMes}
                       opcaoA={{
                         id: par[0].id,
                         nomeExibicao: comparacao.rotulos[0],
                         custoMensalTotalReais: partesDoPar[0].oficial.totalMensalConhecido ?? 0,
                         areaM2: par[0].declarados.area.valor ?? 0,
-                        deslocamentoMinDia: estimarMinutosPicoIdaVolta(ea?.centro, par[0].bairro),
+                        deslocamentoMinDia: rotinaDoDuelo?.minutosDiaOpcaoA ?? estimarMinutosPicoIdaVolta(ea?.centro, par[0].bairro),
                         ruidoInternoDb:
                           matrizComparar?.[0].ruidoInternoDb ??
                           (par[0].visita.ruido === "silencioso" ? 34 : par[0].visita.ruido === "alto" ? 54 : 40),
@@ -438,7 +385,7 @@ function CompararComDados() {
                         nomeExibicao: comparacao.rotulos[1],
                         custoMensalTotalReais: partesDoPar[1].oficial.totalMensalConhecido ?? 0,
                         areaM2: par[1].declarados.area.valor ?? 0,
-                        deslocamentoMinDia: estimarMinutosPicoIdaVolta(eb?.centro, par[1].bairro),
+                        deslocamentoMinDia: rotinaDoDuelo?.minutosDiaOpcaoB ?? estimarMinutosPicoIdaVolta(eb?.centro, par[1].bairro),
                         ruidoInternoDb:
                           matrizComparar?.[1].ruidoInternoDb ??
                           (par[1].visita.ruido === "silencioso" ? 34 : par[1].visita.ruido === "alto" ? 54 : 40),

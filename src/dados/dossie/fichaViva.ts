@@ -11,7 +11,7 @@ import { lerRelevoECanalProximo, lerTemperaturaSuperficie100m } from "../recife/
 import { edificioPorId } from "../recife/indice";
 import { derivarSintesesInteligentes } from "./sintesesDaRua";
 import { lerLinhaDoTempo, type AtoDocumentado, type EtapaEstrutural, type LeituraEstrutural } from "../estrutura/linhaDoTempo";
-import { formatarNumero, formatarReais } from "../formatos";
+import { formatarNumero, formatarReais, pl } from "../formatos";
 
 export const SEM_LEITURA = "Sem leitura publicada nesta área ainda";
 
@@ -163,7 +163,7 @@ export function fichaViva(x: EntradaDaFicha): ItemDaFicha[] {
     detalhes: [
       ...est.atos.map((t) => `${t.data ? dataBr(t.data) : "sem data"} · ${t.etapa === "laudo_art_rrt" ? "Laudo com ART/RRT" : t.etapa.charAt(0).toUpperCase() + t.etapa.slice(1)} · ${t.documento}${t.numero ? ` · nº ${t.numero}` : ""}`),
       est.checagemQueFalta,
-      ...(est.descartados ? [`${est.descartados} registro(s) do caderno sem vínculo confirmado com este imóvel ficaram de fora.`] : []),
+      ...(est.descartados ? [`${pl(est.descartados, "registro", "registros")} do caderno sem vínculo confirmado com este imóvel ${est.descartados === 1 ? "ficou" : "ficaram"} de fora.`] : []),
     ],
     fonte: "Documentos e ocorrências que você guardou no caderno (laudos, ART/RRT, Diário Oficial)",
     pergunta: est.perguntaAoSindico,
@@ -228,12 +228,12 @@ export function fichaViva(x: EntradaDaFicha): ItemDaFicha[] {
     partes.push(`${x.relevo.cursoDaguaMaisProximo.nome} a ${x.relevo.cursoDaguaMaisProximo.distanciaM} m`);
     detalhesClima.push(`${x.relevo.cursoDaguaMaisProximo.nome} a ${x.relevo.cursoDaguaMaisProximo.distanciaM} m em linha reta (hidrografia ESIG).`);
   }
-  if (x.rua?.defesaCivil) detalhesClima.push(`Defesa Civil: ${x.rua.defesaCivil.atendimentos} atendimento(s) na ${x.rua.defesaCivil.rua} (${x.rua.defesaCivil.anos}). A publicação não traz o número do imóvel.`);
+  if (x.rua?.defesaCivil) detalhesClima.push(`Defesa Civil: ${pl(x.rua.defesaCivil.atendimentos, "atendimento", "atendimentos")} na ${x.rua.defesaCivil.rua} (${x.rua.defesaCivil.anos}). A publicação não traz o número do imóvel.`);
   detalhesClima.push(`Potencial construtivo do lote vizinho (LPUOS, coeficiente máximo e outorga onerosa): ${SEM_LEITURA}.`);
   const clima: ItemDaFicha = {
     id: "clima", rotulo: "Clima e entorno",
     valor: partes.length ? partes.join(" · ") : SEM_LEITURA,
-    leitura: x.rua?.defesaCivil ? `Defesa Civil registrou ${x.rua.defesaCivil.atendimentos} atendimento(s) nesta rua (${x.rua.defesaCivil.anos}).` : null,
+    leitura: x.rua?.defesaCivil ? `Defesa Civil registrou ${pl(x.rua.defesaCivil.atendimentos, "atendimento", "atendimentos")} nesta rua (${x.rua.defesaCivil.anos}).` : null,
     atencao: null,
     detalhes: detalhesClima,
     fonte: "Landsat 8/9 (USGS), Copernicus DEM (CC-BY 4.0), ESIG e Defesa Civil do Recife (ODbL)",

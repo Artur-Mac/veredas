@@ -41,6 +41,10 @@ export type EntradaAcustica3D = {
 
 export type ResultadoAcustica3D = {
   indicadorId: "IND-04";
+  /** A pista do aeroporto ao lado não entra na estimativa: os números são um piso (src/dados/ruido/ponte.ts). */
+  pisoSemAPistaDoAeroporto?: boolean;
+  /** O avião é a primeira das fontes que mais pesam na ficha do prédio (src/dados/ruido/ponte.ts). */
+  aviaoEAFontePrincipal?: boolean;
   ruidoExternoViaDbA: number;
   ruidoExternoAeronavePezrDb: number;
   ruidoExternoCombinadoDbA: number;
@@ -93,12 +97,16 @@ export function resolverIsolamentoD2mnTw(
   anoConstrucao: number | null,
   classeDeclarada?: ClasseIsolamentoNbr15575,
 ): number {
-  if (classeDeclarada === "Superior") return 32.8; // Classe S (>30 dB)
-  if (classeDeclarada === "Intermediaria") return 27.0; // Classe I (25-29 dB)
-  if (classeDeclarada === "Minima") return 22.0; // Classe M (20-24 dB)
+  // NBR 15575-4, D2m,nT,w da fachada dos dormitórios na classe de ruído I (a mais baixa): mínimo 20 dB, intermediário
+  // 25, superior 30. Nas classes II e III os mínimos são maiores (até 30, 35 e 40). Conferido em fontes secundárias em
+  // 18/11/2026 (manual ProAcústica, ANTAC), sem o texto pago da ABNT. Sem classe declarada, vale o MÍNIMO (antes era o
+  // intermediário, sem prova). Antes de 2013 a norma não vale: 17,8 dB é suposição do Vereda, e a tela diz isso.
+  if (classeDeclarada === "Superior") return 30.0;
+  if (classeDeclarada === "Intermediaria") return 25.0;
+  if (classeDeclarada === "Minima") return 20.0;
   if (classeDeclarada === "PreNorma2013") return 17.8;
   if (anoConstrucao !== null && anoConstrucao < 2013) return 17.8;
-  return 27.0;
+  return 20.0;
 }
 
 export function avaliarAcustica3d(entrada: EntradaAcustica3D): ResultadoAcustica3D {

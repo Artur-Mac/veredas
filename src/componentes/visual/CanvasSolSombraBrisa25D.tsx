@@ -10,6 +10,7 @@ import Svg, {
 } from "react-native-svg";
 import type { LoteAdjacente3D } from "../../municipios/recife/motores/bioclimatico3d";
 import type { ObrasProximas } from "../../dados/contratos";
+import { alturaDoAndarM } from "../../dados/dossie/solESombra";
 import { emMetros, type VolumeSolar } from "../../dados/sol/geometria";
 import type {
   InferenciaDeFachadas,
@@ -121,7 +122,9 @@ export function CanvasSolSombraBrisa25D({
     { id: "medio", label: "Médio", target: Math.max(4, Math.round(totalPavRef * 0.5)) },
     { id: "alto", label: "Alto", target: Math.max(8, totalPavRef - 1) },
   ] as const;
-  const zAndarM = Math.max(1.5, (andar - 1) * 3.0 + 1.5);
+  // A mesma altura de janela do simulador e do ruído (pendência 3 do HANDOFF, 19/11/2026): 1,5 m + andar × 3,1 m. Antes
+  // (andar − 1) × 3 + 1,5 dava "~26 m" no 9º andar aqui e "~29,4 m" no simulador.
+  const zAndarM = alturaDoAndarM(andar) ?? 1.6;
   const fachadaAtiva =
     inferencia.fachadas.find((f) => f.id === fachadaSelecionada) ?? inferencia.frente;
 
@@ -987,7 +990,7 @@ export function CanvasSolSombraBrisa25D({
               cor="cor-texto-apoio"
               style={[styles.rotuloMini, styles.tabular]}
             >
-              {`~${Math.round(zAndarM)} m`}
+              {`~${zAndarM.toFixed(1).replace(".", ",")} m`}
             </Texto>
           </View>
           <Pressable

@@ -1,0 +1,388 @@
+{
+ "versao": "5e3b4b7941ed75ee",
+ "viasDe": "2026-11-17",
+ "bairros": {
+  "boa-viagem": {
+   "predios": 1878,
+   "comLeitura": 1878,
+   "vereda": {
+    "diaMediana": 66.8,
+    "diaP10": 62.4,
+    "diaP90": 70.3,
+    "noiteMediana": 59.9,
+    "noiteP10": 55.5,
+    "noiteP90": 63.5,
+    "notaMediana": 6.9
+   },
+   "mapaSossego": {
+    "diaIndice": 54,
+    "diaDb": 66,
+    "noiteIndice": 65,
+    "noiteDb": 61,
+    "transito": 65,
+    "aeroportos": 53,
+    "locais": 41,
+    "vizinhanca": 55
+   },
+   "diferenca": {
+    "dia": 0.8,
+    "noite": -1.1
+   },
+   "comAVizinhancaDoSite": {
+    "dia": 67.1,
+    "noite": 60.6,
+    "diferencaDia": 1.1,
+    "diferencaNoite": -0.4
+   },
+   "sobALinhaDePouso": 4,
+   "dentroDaFaixa": true
+  },
+  "casa-forte": {
+   "predios": 82,
+   "comLeitura": 82,
+   "vereda": {
+    "diaMediana": 59.3,
+    "diaP10": 55.5,
+    "diaP90": 63.9,
+    "noiteMediana": 51.6,
+    "noiteP10": 47.3,
+    "noiteP90": 56.4,
+    "notaMediana": 9.1
+   },
+   "mapaSossego": {
+    "diaIndice": 64,
+    "diaDb": 62,
+    "noiteIndice": 82,
+    "noiteDb": 55,
+    "transito": 61,
+    "aeroportos": 42,
+    "locais": 38,
+    "vizinhanca": 48
+   },
+   "diferenca": {
+    "dia": -2.7,
+    "noite": -3.4
+   },
+   "comAVizinhancaDoSite": {
+    "dia": 59.6,
+    "noite": 52.5,
+    "diferencaDia": -2.4,
+    "diferencaNoite": -2.5
+   },
+   "sobALinhaDePouso": 0,
+   "dentroDaFaixa": true
+  },
+  "gracas": {
+   "predios": 291,
+   "comLeitura": 291,
+   "vereda": {
+    "diaMediana": 61.9,
+    "diaP10": 59.2,
+    "diaP90": 67,
+    "noiteMediana": 54.9,
+    "noiteP10": 51.8,
+    "noiteP90": 59.4,
+    "notaMediana": 8.2
+   },
+   "mapaSossego": {
+    "diaIndice": 64,
+    "diaDb": 62,
+    "noiteIndice": 82,
+    "noiteDb": 55,
+    "transito": 61,
+    "aeroportos": 40,
+    "locais": 39,
+    "vizinhanca": 50
+   },
+   "diferenca": {
+    "dia": -0.1,
+    "noite": -0.1
+   },
+   "comAVizinhancaDoSite": {
+    "dia": 62.2,
+    "noite": 55.6,
+    "diferencaDia": 0.2,
+    "diferencaNoite": 0.6
+   },
+   "sobALinhaDePouso": 0,
+   "dentroDaFaixa": true
+  },
+  "espinheiro": {
+   "predios": 156,
+   "comLeitura": 156,
+   "vereda": {
+    "diaMediana": 67.3,
+    "diaP10": 63.9,
+    "diaP90": 72.2,
+    "noiteMediana": 60.5,
+    "noiteP10": 56.8,
+    "noiteP90": 65.8,
+    "notaMediana": 6.7
+   },
+   "mapaSossego": {
+    "diaIndice": 52,
+    "diaDb": 66,
+    "noiteIndice": 70,
+    "noiteDb": 60,
+    "transito": 66,
+    "aeroportos": 38,
+    "locais": 38,
+    "vizinhanca": 51
+   },
+   "diferenca": {
+    "dia": 1.3,
+    "noite": 0.5
+   },
+   "comAVizinhancaDoSite": {
+    "dia": 67.4,
+    "noite": 60.7,
+    "diferencaDia": 1.4,
+    "diferencaNoite": 0.7
+   },
+   "sobALinhaDePouso": 0,
+   "dentroDaFaixa": true
+  },
+  "madalena": {
+   "predios": 280,
+   "comLeitura": 280,
+   "vereda": {
+    "diaMediana": 66.9,
+    "diaP10": 61.3,
+    "diaP90": 72.1,
+    "noiteMediana": 60,
+    "noiteP10": 54.1,
+    "noiteP90": 65.2,
+    "notaMediana": 6.9
+   },
+   "mapaSossego": {
+    "diaIndice": 50,
+    "diaDb": 67,
+    "noiteIndice": 68,
+    "noiteDb": 60,
+    "transito": 67,
+    "aeroportos": 43,
+    "locais": 42,
+    "vizinhanca": 51
+   },
+   "diferenca": {
+    "dia": -0.2,
+    "noite": 0
+   },
+   "comAVizinhancaDoSite": {
+    "dia": 67,
+    "noite": 60.2,
+    "diferencaDia": 0,
+    "diferencaNoite": 0.2
+   },
+   "sobALinhaDePouso": 0,
+   "dentroDaFaixa": true
+  },
+  "torre": {
+   "predios": 136,
+   "comLeitura": 136,
+   "vereda": {
+    "diaMediana": 65.8,
+    "diaP10": 60.6,
+    "diaP90": 70.5,
+    "noiteMediana": 58.5,
+    "noiteP10": 53.1,
+    "noiteP90": 63.5,
+    "notaMediana": 7.2
+   },
+   "mapaSossego": {
+    "diaIndice": 60,
+    "diaDb": 63,
+    "noiteIndice": 79,
+    "noiteDb": 56,
+    "transito": 61,
+    "aeroportos": 42,
+    "locais": 38,
+    "vizinhanca": 52
+   },
+   "diferenca": {
+    "dia": 2.8,
+    "noite": 2.5
+   },
+   "comAVizinhancaDoSite": {
+    "dia": 66,
+    "noite": 59,
+    "diferencaDia": 3,
+    "diferencaNoite": 3
+   },
+   "sobALinhaDePouso": 0,
+   "dentroDaFaixa": true
+  }
+ },
+ "predios": [
+  {
+   "bairro": "boa-viagem",
+   "id": "8001-216",
+   "nome": "Golden Tower",
+   "endereco": "RUA MAJOR ARMANDO DE SOUZA MELLO, 216",
+   "pavimentos": 18,
+   "anoConstrucao": 1999,
+   "naRua": {
+    "dia": 63.4,
+    "noite": 56.3,
+    "nota": 7.8,
+    "nivel": "Tranquilo"
+   },
+   "manchete": "~63 dB(A) na rua de dia · ~56 à noite (estimativa)",
+   "nbr": "Pela estimativa, fica acima da referência da NBR 10151 para área residencial (55 dB(A) de dia e 50 à noite): 8 dB a mais de dia e 6 dB a mais à noite. É referência de norma técnica, não lei municipal.",
+   "andarDaConferencia": 9,
+   "fachadaDeFrenteGraus": 113,
+   "frente": {
+    "dia": 63.4,
+    "noite": 56.4,
+    "nota": 7.8,
+    "quartoNoite": 38.6
+   },
+   "fundos": {
+    "dia": 62,
+    "noite": 54.9,
+    "nota": 8.2,
+    "quartoNoite": 37.1
+   },
+   "frenteMenosFundos": {
+    "dia": 1.4,
+    "noite": 1.5
+   },
+   "terreoContraTopo": {
+    "terreoDia": 63.4,
+    "topoDia": 63.9,
+    "andarDoTopo": 17
+   },
+   "fontes": [
+    "Aeroporto dos Guararapes, aviões passando a 1,1 km para o lado da linha de pouso e decolagem: ~61 dB(A) de dia · ~54 à noite (estimativa)",
+    "Avenida Visconde de Jequitinhonha, arterial, 542 partidas de ônibus num dia útil, 220 m: ~57 dB(A) de dia · ~50 à noite (estimativa)",
+    "Rua Sá e Souza, via local, 71 m: ~50 dB(A) de dia · ~41 à noite (estimativa)",
+    "Avenida Boa Viagem, arterial, 544 partidas de ônibus num dia útil, 416 m: ~48 dB(A) de dia · ~41 à noite (estimativa)",
+    "Avenida Marechal Juarez Távora, coletora, 285 m: ~48 dB(A) de dia · ~40 à noite (estimativa)",
+    "Bar ou venda de bebida, 120 m: ~38 dB(A) de dia · ~41 à noite (estimativa)"
+   ]
+  },
+  {
+   "bairro": "torre",
+   "id": "31950-280",
+   "nome": "Conj Resid Privê Bosque da Torre",
+   "endereco": "RUA FREI JABOATAO, 280",
+   "pavimentos": 6,
+   "anoConstrucao": 1985,
+   "naRua": {
+    "dia": 60.6,
+    "noite": 53.1,
+    "nota": 8.7,
+    "nivel": "Muito tranquilo"
+   },
+   "manchete": "~61 dB(A) na rua de dia · ~53 à noite (estimativa)",
+   "nbr": "Pela estimativa, fica acima da referência da NBR 10151 para área residencial (55 dB(A) de dia e 50 à noite): 6 dB a mais de dia e 3 dB a mais à noite. Diferença de até 5 dB cabe na faixa de erro da estimativa. É referência de norma técnica, não lei municipal.",
+   "andarDaConferencia": 3,
+   "fachadaDeFrenteGraus": 170,
+   "frente": {
+    "dia": 59.6,
+    "noite": 51.9,
+    "nota": 9,
+    "quartoNoite": 34.1
+   },
+   "fundos": {
+    "dia": 55.7,
+    "noite": 48.4,
+    "nota": 9.9,
+    "quartoNoite": 30.6
+   },
+   "frenteMenosFundos": {
+    "dia": 3.9,
+    "noite": 3.5
+   },
+   "terreoContraTopo": {
+    "terreoDia": 60.6,
+    "topoDia": 61.1,
+    "andarDoTopo": 5
+   },
+   "fontes": [
+    "Rua Marcos André, coletora, 69 m: ~56 dB(A) de dia · ~48 à noite (estimativa)",
+    "Rua José Bonifácio, arterial, 542 partidas de ônibus num dia útil, 280 m: ~55 dB(A) de dia · ~48 à noite (estimativa)",
+    "Avenida Beira Rio, coletora, 102 m: ~52 dB(A) de dia · ~44 à noite (estimativa)",
+    "Avenida Rui Barbosa, coletora, 647 partidas de ônibus num dia útil, 211 m: ~51 dB(A) de dia · ~43 à noite (estimativa)"
+   ]
+  },
+  {
+   "bairro": "casa-forte",
+   "id": "19526-1070",
+   "nome": "Chagall",
+   "endereco": "AV DEZESSETE DE AGOSTO, 1070",
+   "pavimentos": 17,
+   "anoConstrucao": 2010,
+   "naRua": {
+    "dia": 63.4,
+    "noite": 55.4,
+    "nota": 8.1,
+    "nivel": "Tranquilo"
+   },
+   "manchete": "~63 dB(A) na rua de dia · ~55 à noite (estimativa)",
+   "nbr": "Pela estimativa, fica acima da referência da NBR 10151 para área residencial (55 dB(A) de dia e 50 à noite): 8 dB a mais de dia e 5 dB a mais à noite. Diferença de até 5 dB cabe na faixa de erro da estimativa. É referência de norma técnica, não lei municipal.",
+   "andarDaConferencia": 8,
+   "fachadaDeFrenteGraus": 182,
+   "frente": {
+    "dia": 63,
+    "noite": 55.1,
+    "nota": 8.1,
+    "quartoNoite": 37.3
+   },
+   "fundos": {
+    "dia": 52.8,
+    "noite": 45.4,
+    "nota": 10,
+    "quartoNoite": 27.6
+   },
+   "frenteMenosFundos": {
+    "dia": 10.2,
+    "noite": 9.7
+   },
+   "terreoContraTopo": {
+    "terreoDia": 63.4,
+    "topoDia": 62.1,
+    "andarDoTopo": 16
+   },
+   "fontes": [
+    "Avenida Dezessete de Agosto, coletora, 346 partidas de ônibus num dia útil, 50 m: ~63 dB(A) de dia · ~55 à noite (estimativa)",
+    "Rua de Santana, via local, 58 m: ~49 dB(A) de dia · ~40 à noite (estimativa)",
+    "Bar ou venda de bebida, 130 m: ~37 dB(A) de dia · ~40 à noite (estimativa)"
+   ]
+  }
+ ],
+ "cidade": {
+  "bairros": 72,
+  "predios": 7203,
+  "comLeitura": 7203,
+  "sobALinhaDePouso": 639,
+  "comAviaoNaConta": 3831,
+  "pistaAoLadoSemNumero": 1172,
+  "ate1kmDaPista": {
+   "predios": 322,
+   "comAviao": 322,
+   "pistaAoLado": 214,
+   "semAviaoNemAviso": 0,
+   "tranquiloOuMuitoSemAviso": 0
+  },
+  "dia": {
+   "p10": 58.2,
+   "mediana": 64.7,
+   "p90": 70.3,
+   "minimo": 50.1,
+   "maximo": 78.5
+  },
+  "noite": {
+   "p10": 51.2,
+   "mediana": 58,
+   "p90": 63.8,
+   "minimo": 42.5,
+   "maximo": 74
+  },
+  "nota": {
+   "p10": 5.8,
+   "mediana": 7.4,
+   "p90": 9.2
+  }
+ }
+}

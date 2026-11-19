@@ -59,7 +59,22 @@ export function trocarNoSlot(ids: readonly string[], slot: 0 | 1, novoId: string
 }
 
 /** Nome da coluna: o bairro, quando os dois são conhecidos e diferentes; senão "Imóvel 1" e "Imóvel 2". */
-export function rotulosDasColunas(a: AnaliseV2, b: AnaliseV2): Par<string> {
+/** Nome curto do prédio para os títulos do Comparar (até 24 letras). */
+const nomeCurtoDoPredio = (nome: string | null | undefined): string | null => {
+  const n = nome?.trim();
+  if (!n) return null;
+  return n.length <= 24 ? n : `${n.slice(0, 23).trimEnd()}…`;
+};
+
+/**
+ * Os nomes das duas colunas: o nome do prédio (do cadastro, senão do anúncio) quando os dois diferem; senão o bairro;
+ * senão "Imóvel 1" e "Imóvel 2". Pendência 5 do HANDOFF (19/11/2026): antes era sempre o bairro, e o Comparar dizia
+ * "Torre leva vantagem" ao lado do Golden Tower.
+ */
+export function rotulosDasColunas(a: AnaliseV2, b: AnaliseV2, edificios: Par<Edificio | null> = [null, null]): Par<string> {
+  const na = nomeCurtoDoPredio(edificios[0]?.nome ?? a.nomeEdificio);
+  const nb = nomeCurtoDoPredio(edificios[1]?.nome ?? b.nomeEdificio);
+  if (na && nb && na !== nb) return [na, nb];
   const ba = nomeDoBairro(a.bairro, a.bairroTexto);
   const bb = nomeDoBairro(b.bairro, b.bairroTexto);
   if (ba && bb && ba !== bb) return [ba, bb];
@@ -385,7 +400,7 @@ export type Comparacao = {
 export function comparar(a: AnaliseV2, b: AnaliseV2, edificios: Par<Edificio | null>): Comparacao {
   return {
     modalidade: a.modalidade,
-    rotulos: rotulosDasColunas(a, b),
+    rotulos: rotulosDasColunas(a, b, edificios),
     resumos: [resumoDoImovel(a), resumoDoImovel(b)],
     custo: compararCusto(a, b),
     espaco: compararEspaco(a, b),

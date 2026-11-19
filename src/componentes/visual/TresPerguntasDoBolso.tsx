@@ -129,7 +129,7 @@ export function TresPerguntasDoBolso({
       ? `• Dinheiro necessário para entrada + ITBI: ~${formatarReaisCompacto(totalEntrar)} (escritura e registro a confirmar no cartório)`
       : null,
     economiaLegalItbiReais > 500
-      ? `• Economia possível de ITBI (SFH e pedido em até 180 dias): até ${formatarReais(economiaLegalItbiReais)}`
+      ? `• Economia possível de ITBI (financiamento pelo Sistema Financeiro da Habitação, SFH, e pedido em até 180 dias): até ${formatarReais(economiaLegalItbiReais)}`
       : null,
     argumentosDeNegociacao.length > 0 ? `• Pontos para negociar: ${argumentosDeNegociacao.join("; ")}` : null,
   ]

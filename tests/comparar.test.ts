@@ -111,6 +111,14 @@ describe("quem entra na comparação", () => {
     expect(rotulosDasColunas(analise("a", { bairro: null, bairroTexto: "" }), analise("b"))).toEqual(["Imóvel 1", "Imóvel 2"]);
   });
 
+  it("rótulos das colunas: o nome do prédio vem antes do bairro (pendência 5 do HANDOFF, 19/11/2026)", () => {
+    const a = analise("a"), b = analise("b", { bairro: "gracas", bairroTexto: "Graças" });
+    expect(rotulosDasColunas(a, b, [{ nome: "Golden Tower" } as Edificio, { nome: "Conjunto Residencial Privê Bosque da Torre" } as Edificio])).toEqual(["Golden Tower", "Conjunto Residencial Pr…"]);
+    expect(rotulosDasColunas(analise("a", { nomeEdificio: "Edifício Alfa" }), analise("b", { nomeEdificio: "Edifício Beta" }))).toEqual(["Edifício Alfa", "Edifício Beta"]);
+    // Mesmo nome nos dois: cai no bairro.
+    expect(rotulosDasColunas(a, b, [{ nome: "Alfa" } as Edificio, { nome: "Alfa" } as Edificio])).toEqual(["Casa Forte", "Graças"]);
+  });
+
   it("resumo do imóvel só com o que se sabe", () => {
     expect(resumoDoImovel(analise("a"))).toBe("100 m² · 3 quartos");
     expect(resumoDoImovel(analise("a", { declarados: { quartos: v(1), area: v(62.5) } }))).toBe("62,5 m² · 1 quarto");

@@ -70,8 +70,8 @@ describe("indicador no índice real", () => {
     const sol = ind("boa-viagem", "50105-323", "Boa Viagem").find((x) => x.id === "sol")!;
     expect(sol).toBeDefined();
     expect(sol.tema).toBe("Sol e sombra");
-    expect(["Menos sol da tarde", "Sol da tarde forte", "Sol da tarde na média"]).toContain(sol.rotulo);
-    expect(sol.comparacao).toMatch(/(de cada 10 prédios de Boa Viagem|Parecido com a maioria dos prédios de Boa Viagem)\.$/);
+    expect(["Prédio com menos sol da tarde", "Prédio com sol da tarde forte", "Sol da tarde na média"]).toContain(sol.rotulo);
+    expect(sol.comparacao).toMatch(/(de cada 10 prédios de Boa Viagem|quase todos os prédios de Boa Viagem|Parecido com a maioria dos prédios de Boa Viagem)\.$/);
     expect(sol.frase).toContain("Estimativa no equinócio");
     expect(sol.base).toBeGreaterThanOrEqual(20);
     // Sem nota: nenhum número de 0 a 10 solto, nenhum "seguro".

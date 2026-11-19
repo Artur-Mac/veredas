@@ -8,7 +8,7 @@ import type { EpistemicTag } from "../../../nucleo/contratosCanonicos";
 /**
  * Início da operação da AQUA Pernambuco na distribuição de água, marcado pelo Governo de Pernambuco (nota da Secretaria
  * de Recursos Hídricos e Saneamento de 23/10/2026, que a chama de "nova data": já foi adiada uma vez). Não é lei nem
- * ato: é a concessão parcial do saneamento. Conferir de novo depois do dia 23.
+ * ato: é a concessão parcial do saneamento. O Samuel confirmou em 18/11/2026 que a troca é na segunda, 23/11.
  */
 export const DATA_ASSUNCAO_AQUA_PERNAMBUCO = "2026-11-23";
 
@@ -105,7 +105,7 @@ export function avaliarResilienciaRedes(
         : "Compesa",
       dataMarcoTransicao: DATA_ASSUNCAO_AQUA_PERNAMBUCO,
       avisoMudancaNaDistribuicao:
-        "A partir de 23/11/2026, data marcada pelo Governo de Pernambuco, a distribuição de água passa da Compesa para a concessionária AQUA Pernambuco em cerca de 150 municípios. A Compesa continua produzindo a água. Peça ao vendedor a quitação das contas de água e pergunte à Compesa se há débito em aberto.",
+        "A partir de 23/11/2026, data marcada pelo Governo de Pernambuco, a distribuição de água passa da Compesa para a concessionária AQUA Pernambuco em cerca de 150 municípios. A Compesa continua produzindo a água. Peça ao vendedor a quitação das contas de água e pergunte à concessionária (Compesa até 22/11/2026, AQUA Pernambuco a partir de 23/11) se há débito em aberto.",
       epistemicTag: autonomiaDias !== null ? "declarado" : "nao_sabemos",
     },
     eletrico: {

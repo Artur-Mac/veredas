@@ -104,6 +104,10 @@ export const BENCHMARK_CONDO_PE_REAIS = 910.0;
 export const INADIMPLENCIA_NE_1S2026_PCT = 12.71;
 const INDENIZACAO_TETO_TRF5_REAIS = 120_000;
 
+/**
+ * Classe de agressividade ambiental (NBR 6118). A norma classifica pelo TIPO de ambiente (marinha = III, respingos de
+ * maré = IV), não pela distância: os cortes de 150 m e 1 km abaixo são estimativa do Vereda (conferido em 18/11/2026).
+ */
 export function classificarMaresiaNbr6118(distanciaCostaM: number | null): ClasseAgressividadeMarinha {
   if (distanciaCostaM === null) return "CAA-III";
   if (distanciaCostaM <= 150) return "CAA-IV"; // Respingos de maré / linha de frente
