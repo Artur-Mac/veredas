@@ -1,0 +1,2119 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Opção B · Painel de bolso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../comum/base.css">
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+   OPÇÃO B · PAINEL DE BOLSO
+   Cada imóvel cabe numa tela: seis mostradores, um por pergunta (bolso, prédio, a pé, noite, calor, chuva),
+   cada um com um número e uma linha. O detalhe sobe numa gaveta. Desliza-se de um imóvel para o outro.
+   O papel é o fundo; os mostradores são superfícies brancas de canto médio, sem borda e sem sombra. Cada
+   mostrador tem o seu próprio instrumento (arco, escala, barra), então nenhum é igual ao vizinho.
+   Fraunces: números e nomes. Plus Jakarta Sans: interface. JetBrains Mono: só fonte, data e código.
+   Laranja: só a ação principal da tela. Ferrugem: o ponto de atenção. Preenchimentos tonais no lugar de contorno.
+   ═══════════════════════════════════════════════════════════════════════════════════════════════════════ */
+:root { --margem: 16px; --raio: 14px; }
+@media (max-width: 370px) { :root { --margem: 12px; } }
+
+/* ——— Tipografia: os mesmos sete degraus (12, 14, 16, 20, 28, 40, 56) ——— */
+.t-rotulo { font-size: var(--t12); line-height: 16px; font-weight: 600; letter-spacing: 0.01em; color: var(--apoio); }
+.t-titulo { font-family: var(--serifa); font-weight: 500; font-size: var(--t28); line-height: 32px; letter-spacing: -0.02em; }
+.t-nome { font-family: var(--serifa); font-weight: 500; font-size: var(--t20); line-height: 24px; letter-spacing: -0.01em; }
+.t-num { font-family: var(--serifa); font-weight: 500; font-size: var(--t28); line-height: 32px; letter-spacing: -0.025em; font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; }
+.t-num.g { font-size: var(--t40); line-height: 44px; letter-spacing: -0.03em; }
+.t-num.xg { font-size: var(--t56); line-height: 56px; letter-spacing: -0.035em; font-weight: 400; }
+.t-num.p { font-size: var(--t20); line-height: 24px; letter-spacing: -0.01em; }
+.aprox { font-family: var(--sans); font-size: 0.5em; font-weight: 600; letter-spacing: 0; color: var(--apoio); margin-right: 2px; vertical-align: 0.3em; }
+.t-un { font-family: var(--sans); font-size: var(--t14); line-height: 20px; font-weight: 600; letter-spacing: 0; margin-left: 4px; }
+.t-linha { font-size: var(--t14); line-height: 20px; color: var(--apoio); }
+.t-corpo { font-size: var(--t16); line-height: 22px; font-weight: 500; }
+.t-mono { font-family: var(--mono); font-size: var(--t12); line-height: 16px; color: var(--apoio); }
+.t-atencao { color: var(--barro-texto); font-weight: 600; }
+.t-sem { font-size: var(--t16); line-height: 32px; font-weight: 700; color: var(--apoio); }
+
+/* ——— Botões: preenchimento tonal; o laranja é um só por tela ——— */
+.botao { display: inline-flex; align-items: center; justify-content: center; gap: var(--e2); min-height: 52px; padding: 0 20px; border-radius: var(--raio); background: var(--sutil); font-size: var(--t16); font-weight: 700; white-space: nowrap; }
+.botao.principal { background: var(--acao); color: var(--sobre-acao); }
+.botao.principal:active { background: var(--acao-pressionada); }
+.botao.largo { flex: 1; }
+.botao.pequeno { min-height: var(--toque); padding: 0 14px; font-size: var(--t14); border-radius: 12px; }
+.botao.claro { background: var(--superficie); }
+.botao[aria-disabled="true"] { opacity: 0.45; }
+.icone { width: var(--toque); height: var(--toque); display: grid; place-items: center; border-radius: 50%; }
+.icone svg, .dock svg, .linha svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.icone[aria-pressed="true"] svg { fill: currentColor; }
+.icone.cheio { background: var(--superficie); }
+
+/* ——— Barra de baixo: quatro destinos ——— */
+.dock { position: relative; flex: none; display: grid; grid-template-columns: repeat(4, 1fr); padding: 6px 8px 26px; background: var(--papel-claro); border-top: 1px solid var(--linha); }
+.dock a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 50px; font-size: var(--t12); line-height: 16px; font-weight: 500; color: var(--apoio); }
+.dock .pilula { width: 56px; height: 28px; border-radius: 14px; display: grid; place-items: center; }
+.dock a[aria-current="page"] { color: var(--texto); font-weight: 700; }
+.dock a[aria-current="page"] .pilula { background: var(--sutil); }
+.dock::after, .acao:last-child::after { content: ""; position: absolute; bottom: 8px; left: 50%; width: 134px; margin-left: -67px; height: 5px; border-radius: 3px; background: var(--texto); }
+.acao { position: relative; flex: none; display: flex; gap: var(--e2); padding: var(--e2) var(--margem) var(--e3); background: var(--papel); }
+.acao:last-child { padding-bottom: 30px; }
+
+/* ——— Painel: uma página por imóvel, deslizando de lado ——— */
+.paginas { flex: 1; min-height: 0; display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.paginas::-webkit-scrollbar { display: none; }
+.pagina { flex: none; width: 100%; scroll-snap-align: start; display: flex; flex-direction: column; min-height: 0; }
+.pagina .rolagem { padding: 0 var(--margem) var(--e3); }
+.faixa { flex: none; display: flex; align-items: center; height: var(--toque); padding: 0 6px 0 0; }
+.pontos { display: flex; align-items: center; margin-left: max(0px, calc(var(--margem) - 13px)); }
+.pontos a { width: var(--toque); height: var(--toque); margin-right: -26px; display: grid; place-items: center; }
+.pontos a::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--linha-forte); }
+.pontos a[aria-current="true"]::before { background: var(--texto); width: 18px; border-radius: 4px; }
+.pontos a[aria-current="true"] { width: 55px; }
+.faixa-fim { margin-left: auto; display: flex; align-items: center; }
+.etapa { display: inline-flex; align-items: center; min-height: var(--toque); padding: 0 var(--e2); }
+.etapa span { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 15px; background: var(--sutil); font-size: var(--t12); font-weight: 700; }
+.etapa span::after { content: ""; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg) translateY(-2px); }
+.topo { display: grid; grid-template-columns: minmax(0, 1fr) 64px; column-gap: var(--e3); align-items: center; padding: var(--e1) 0 var(--e3); }
+.miniatura { display: block; width: 64px; height: 64px; border-radius: 12px; overflow: hidden; background: var(--sutil); }
+.miniatura img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; transform: scale(1.5); }
+
+/* ——— Mostradores ——— */
+.grade { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mostrador { position: relative; display: flex; flex-direction: column; min-height: 98px; padding: 12px 12px 12px 14px; background: var(--superficie); border-radius: var(--raio); }
+.mostrador:active { background: var(--creme); }
+.mostrador.largo { grid-column: 1 / -1; min-height: 0; padding: 14px 16px; }
+.mostrador.largo .t-linha { margin-top: var(--e2); padding-top: 0; }
+.mostrador .t-num { margin-top: 2px; }
+.mostrador .t-linha { margin-top: auto; padding-top: 2px; }
+.mostrador .instrumento { position: absolute; top: 12px; right: 12px; }
+.sinal { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--barro); margin-left: 6px; vertical-align: 1px; }
+.arco { width: 44px; height: 26px; overflow: visible; }
+.arco path { fill: none; stroke-width: 5; stroke-linecap: round; }
+.arco .trilho { stroke: var(--sutil); }
+.arco .valor { stroke: var(--texto); }
+.arco.sem .trilho { stroke-dasharray: 3 7; stroke: var(--linha-forte); }
+.escala { width: 100%; height: 14px; margin-top: 6px; overflow: visible; }
+.escala .trilho { stroke: var(--sutil); stroke-width: 4; stroke-linecap: round; }
+.escala .risco { stroke: var(--apoio); stroke-width: 1.5; }
+.escala .marca { fill: var(--texto); }
+.mostrador.sem .t-linha { color: var(--apoio); }
+
+/* Barra das parcelas do mês: cada parte com a sua cor, rotulada na lista. */
+.parcelas { display: flex; gap: 2px; height: 10px; margin-top: var(--e3); border-radius: 5px; overflow: hidden; }
+.parcelas i { display: block; min-width: 4px; }
+.c-banco { background: var(--texto); }
+.c-cond { background: var(--azul); }
+.c-luz { background: var(--cat-amarelo); }
+.c-iptu { background: var(--cat-goiaba); }
+.bolso-fim { display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--e3); margin-top: var(--e3); padding-top: var(--e3); border-top: 1px solid var(--linha); }
+.bolso-fim .t-num { display: block; }
+
+/* ——— Gavetas e listas ——— */
+.g-topo { flex: none; display: flex; align-items: flex-start; justify-content: space-between; gap: var(--e3); padding: var(--e3) 6px var(--e1) 20px; }
+.g-topo .t-rotulo { padding-top: 14px; }
+.fechar { flex: none; width: var(--toque); height: var(--toque); display: grid; place-items: center; }
+.fechar::before, .fechar::after { content: ""; grid-area: 1 / 1; width: 16px; height: 2px; border-radius: 1px; background: var(--texto); transform: rotate(45deg); }
+.fechar::after { transform: rotate(-45deg); }
+.fechar { background: var(--papel); border-radius: 50%; width: 32px; height: 32px; margin: 6px; outline-offset: 6px; position: relative; }
+.fechar::selection { background: none; }
+.fechar-alvo { flex: none; width: var(--toque); height: var(--toque); display: grid; place-items: center; }
+.gaveta .corpo { padding: 0 20px var(--e8); }
+/* Ação que decide a gaveta: fica presa embaixo, fora da rolagem, para não sair da tela em aparelho baixo. */
+.g-acao { flex: none; display: flex; gap: var(--e2); padding: var(--e3) 20px var(--e6); border-top: 1px solid var(--linha); background: var(--superficie); }
+.g-acao > * { flex: 1; }
+.leitura { padding-bottom: var(--e4); }
+.leitura .t-linha { margin-top: 2px; }
+.selo { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; margin-left: 8px; border-radius: 6px; background: var(--papel); font-family: var(--sans); font-size: var(--t12); font-weight: 700; letter-spacing: 0; color: var(--apoio); vertical-align: 0.5em; }
+.regua { display: block; width: 100%; height: auto; margin: var(--e2) 0 var(--e3); overflow: visible; color: var(--texto); }
+.regua text { font-family: var(--sans); font-size: 11px; font-weight: 600; fill: var(--apoio); }
+.regua .forte { fill: var(--texto); font-weight: 700; }
+.segmento { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; padding: 3px; background: var(--papel); border-radius: 12px; }
+.segmento button, .segmento a { min-height: var(--toque); border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; font-size: var(--t14); font-weight: 600; color: var(--apoio); }
+.segmento [aria-checked="true"], .segmento [aria-selected="true"], .segmento [aria-current="true"] { background: var(--superficie); color: var(--texto); font-weight: 700; }
+.tela .segmento { background: var(--sutil); }
+.lista { margin-top: var(--e2); }
+.linha { display: flex; align-items: center; gap: var(--e3); min-height: 52px; padding: 8px 0; border-top: 1px solid var(--linha); }
+.lista .linha:first-child { border-top: 0; }
+.linha-texto { flex: 1; min-width: 0; }
+.linha-texto b { display: block; font-size: var(--t16); line-height: 22px; font-weight: 600; }
+.linha-texto small { display: block; font-size: var(--t12); line-height: 16px; color: var(--apoio); }
+.linha-texto small.t-atencao { color: var(--barro-texto); }
+.linha .t-num { flex: none; }
+.linha .valor-texto { flex: none; font-size: var(--t14); font-weight: 600; text-align: right; }
+.cor { flex: none; width: 10px; height: 10px; border-radius: 3px; }
+.vai { flex: none; width: 8px; height: 8px; border-right: 1.75px solid var(--apoio); border-top: 1.75px solid var(--apoio); transform: rotate(45deg); margin-right: 4px; }
+.grupo-titulo { margin-top: var(--e6); margin-bottom: var(--e1); }
+.metodo > div { padding: var(--e3) 0; border-top: 1px solid var(--linha); }
+.metodo > div:first-child { border-top: 0; }
+.metodo dt { font-size: var(--t12); line-height: 16px; font-weight: 700; color: var(--apoio); }
+.metodo dd { margin-top: 2px; font-size: var(--t16); line-height: 22px; }
+.nota-linha { display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: var(--e3); padding: var(--e3) var(--e3) var(--e3) var(--e4); margin-top: var(--e3); background: var(--papel); border-radius: var(--raio); min-height: 64px; }
+.nota-linha .arco { width: 56px; height: 32px; }
+.nota-linha .arco .trilho { stroke: var(--sutil); }
+
+/* ——— Componentes das outras telas (entrada, comparar, visita, caderno, estados) ——— */
+.cabeca { flex: none; display: flex; align-items: center; justify-content: space-between; min-height: 56px; padding: var(--e2) 6px var(--e2) var(--margem); }
+.conteudo { padding: 0 var(--margem) var(--e4); }
+.campo { display: flex; align-items: center; gap: var(--e2); min-height: 56px; padding: 0 6px 0 var(--e4); background: var(--papel); border-radius: var(--raio); }
+.tela .campo { background: var(--superficie); }
+.campo input { flex: 1; min-width: 0; height: 52px; border: 0; outline: 0; background: none; font-size: var(--t16); font-weight: 500; }
+.campo input::placeholder { color: var(--apoio); }
+.campo:focus-within { outline: 2px solid var(--azul); outline-offset: 2px; }
+.campo-area { width: 100%; min-height: 88px; padding: var(--e3) var(--e4); background: var(--papel); border: 0; border-radius: var(--raio); font-size: var(--t16); resize: none; }
+.tela .campo-area { background: var(--superficie); }
+.imovel { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; column-gap: var(--e3); align-items: center; min-height: 68px; padding: 10px 0; border-top: 1px solid var(--linha); }
+.imovel:first-child { border-top: 0; }
+.imovel .miniatura { width: 48px; height: 48px; border-radius: 10px; }
+.imovel .t-num { text-align: right; display: block; }
+.imovel .t-linha { display: block; }
+.imovel .fim { text-align: right; }
+.esqueleto { height: 16px; border-radius: 8px; background: var(--sutil); }
+.esqueleto.curto { width: 40%; }
+.esqueleto.medio { width: 68%; }
+.aviso { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--e3); padding: var(--e3) var(--e3) var(--e3) var(--e4); background: var(--superficie); border-radius: var(--raio); }
+.chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 0 calc(var(--margem) * -1); padding: 0 var(--margem); }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; display: inline-flex; align-items: center; min-height: var(--toque); }
+.chip span { display: inline-flex; align-items: center; height: 34px; padding: 0 14px; border-radius: 17px; background: var(--superficie); font-size: var(--t14); font-weight: 600; color: var(--apoio); }
+.chip[aria-checked="true"] span, .chip[aria-pressed="true"] span, .chip[aria-current="true"] span { background: var(--texto); color: var(--papel-claro); }
+.gaveta .chip span { background: var(--papel); }
+.gaveta .chip[aria-checked="true"] span { background: var(--texto); }
+.respostas { display: grid; gap: var(--e2); }
+.respostas button, .respostas [role="radio"] { display: grid; place-items: center; min-height: 56px; border-radius: var(--raio); background: var(--superficie); font-size: var(--t16); font-weight: 700; }
+.respostas [aria-checked="true"] { background: var(--texto); color: var(--papel-claro); }
+.gaveta .respostas [role="radio"] { background: var(--papel); }
+.gaveta .respostas [role="radio"][aria-checked="true"] { background: var(--texto); }
+.progresso { height: 4px; border-radius: 2px; background: var(--sutil); overflow: hidden; }
+.progresso i { display: block; height: 100%; background: var(--texto); border-radius: 2px; }
+.caixa { flex: none; width: var(--toque); height: var(--toque); display: grid; place-items: center; margin-left: -10px; }
+.caixa::before { content: ""; width: 24px; height: 24px; border-radius: 8px; border: 2px solid var(--linha-forte); }
+.caixa[aria-checked="true"]::before { border-color: var(--texto); background: var(--texto) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m6.5 12.5 4 4 7.5-8.5' fill='none' stroke='%23FAF6EE' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 24px; }
+/* Duelo do Comparar: valor de cada lado, rótulo no meio, barra que cresce do centro para o lado de cada imóvel. */
+.duelo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 10px; row-gap: 4px; align-items: end; padding: var(--e3) 0; border-top: 1px solid var(--linha); min-height: 64px; }
+.duelo .t-rotulo { grid-column: 1 / -1; text-align: center; }
+.duelo .lado { text-align: right; }
+.duelo .lado + .lado { text-align: left; }
+.duelo .lado small { display: block; font-size: var(--t12); line-height: 16px; color: var(--apoio); }
+.duelo .barra { height: 6px; border-radius: 3px; background: var(--sutil); display: flex; justify-content: flex-end; }
+.duelo .barra + .barra { justify-content: flex-start; }
+.duelo .barra i { display: block; height: 100%; border-radius: 3px; background: var(--linha-forte); }
+.duelo .frente i { background: var(--texto); }
+.duelo .frente-texto { font-weight: 700; }
+.duelo .lado { padding-right: 8px; }
+.duelo .lado + .lado { padding-left: 8px; padding-right: 0; }
+
+/* ——— Acréscimos para as telas completadas (mesmo espírito: branco de canto 14 ou linha fina, sem sombra) ——— */
+/* Seguro incêndio no bolso do aluguel. */
+.c-seguro { background: var(--cat-mare); }
+/* Imóvel sem prédio confirmado: a miniatura fica só no traço. */
+.miniatura.vazia { background: none; border: 1.5px dashed var(--linha-forte); }
+/* Bloco branco solto numa tela (visita, pergunta que decide). */
+.bloco { padding: var(--e4); background: var(--superficie); border-radius: var(--raio); }
+.bloco .lista { margin-top: 0; }
+.secao { margin-top: var(--e6); }
+.t-forte { font-size: var(--t16); line-height: 22px; font-weight: 700; }
+.fila { display: flex; gap: var(--e2); }
+.fila > * { flex: 1; }
+/* Comparar: os dois imóveis lado a lado. */
+.par { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.par a { display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 10px; align-items: center; min-height: 64px; padding: 10px; background: var(--superficie); border-radius: var(--raio); }
+.par .miniatura { width: 40px; height: 40px; border-radius: 9px; }
+.par b { display: block; font-size: var(--t14); line-height: 18px; font-weight: 700; }
+.par small { display: block; font-size: var(--t12); line-height: 16px; color: var(--apoio); }
+.duelo .lado small.t-atencao { color: var(--barro-texto); }
+.duelo .vazio { height: 6px; }
+/* Caderno: a linha abre o imóvel; os três pontos abrem a triagem. */
+.imovel.com-menu { grid-template-columns: minmax(0, 1fr) var(--toque); column-gap: 0; padding: 4px 0; }
+.imovel-abre { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; column-gap: var(--e3); align-items: center; min-height: 60px; }
+.imovel-abre .fim .t-linha { font-size: var(--t12); line-height: 16px; }
+.imovel .linha-texto b svg { display: inline-block; width: 13px; height: 13px; margin-left: 4px; vertical-align: -1px; fill: currentColor; stroke: none; }
+.linha-texto small .estrela { display: inline-block; width: 12px; height: 12px; margin-right: 4px; vertical-align: -1px; fill: var(--texto); }
+.icone .ponto { fill: currentColor; stroke: none; }
+/* Caderno: linha deslizada para a esquerda, mostrando as duas ações do gesto. */
+.deslizada { position: relative; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; } /* fileira de deslizar */
+.deslizada .imovel-frente { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) var(--toque); background: var(--papel); transform: translateX(-128px); }
+.deslizada .gesto { position: absolute; top: 4px; right: 0; bottom: 4px; display: flex; gap: 0; }
+.deslizada .gesto > * { display: grid; place-items: center; width: 64px; font-size: var(--t12); font-weight: 700; background: var(--sutil); }
+.deslizada .gesto > :first-child { border-radius: 0; }
+.deslizada .gesto .descartar { background: var(--barro-suave); color: var(--barro-texto); border-radius: 0 12px 12px 0; }
+/* Interruptor (favorito na triagem): desenho de 52 × 32 num alvo de 44. */
+.interruptor { flex: none; position: relative; width: 52px; height: var(--toque); }
+.interruptor::before { content: ""; position: absolute; left: 0; top: 6px; width: 52px; height: 32px; border-radius: 16px; background: var(--sutil); }
+.interruptor::after { content: ""; position: absolute; left: 4px; top: 10px; width: 24px; height: 24px; border-radius: 50%; background: var(--superficie); }
+.interruptor[aria-pressed="true"]::before { background: var(--texto); }
+.interruptor[aria-pressed="true"]::after { left: 24px; }
+.segmento.miudo button { font-size: var(--t12); }
+/* Rosa dos ventos: grade 3 × 3 para escolher o lado da janela. */
+.rosa { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 216px; margin: var(--e2) auto 0; }
+.rosa button { min-height: var(--toque); border-radius: 10px; background: var(--papel); font-size: var(--t14); font-weight: 700; color: var(--apoio); }
+.rosa button[aria-checked="true"] { background: var(--texto); color: var(--papel-claro); }
+.rosa .meio { min-height: var(--toque); }
+.contador { display: grid; grid-template-columns: var(--toque) 1fr var(--toque); align-items: center; text-align: center; margin-bottom: var(--e2); }
+.contador .icone { background: var(--papel); }
+/* Visita: medições lado a lado e a bússola. */
+.medir { display: grid; grid-template-columns: 1fr 1fr; gap: var(--e2); }
+.medir button { min-height: 72px; border-radius: var(--raio); background: var(--superficie); font-size: var(--t16); font-weight: 700; }
+.medir button[aria-pressed="true"] { background: var(--texto); color: var(--papel-claro); }
+.bussola { display: block; width: 184px; height: 184px; margin: var(--e4) auto var(--e2); overflow: visible; }
+.bussola .aro { fill: var(--superficie); stroke: var(--linha-forte); stroke-width: 1.5; }
+.bussola .risco { stroke: var(--apoio); stroke-width: 1.5; }
+.bussola text { font-family: var(--sans); font-size: 12px; font-weight: 700; fill: var(--apoio); }
+.bussola .agulha { stroke: var(--texto); stroke-width: 3; stroke-linecap: round; }
+.centro { text-align: center; }
+/* Gaveta: arco grande, bloco de leitura, dois números lado a lado. */
+.arco.grande { width: 160px; height: 94px; margin: var(--e2) auto var(--e4); }
+.arco.grande path { stroke-width: 3.5; }
+.texto-pronto { padding: var(--e4); background: var(--papel); border-radius: var(--raio); font-size: var(--t16); line-height: 24px; }
+.dois { display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--e3); }
+.dois .t-num { display: block; }
+.linha .ano { flex: none; width: 76px; }
+.linha .esqueleto { margin: 3px 0; }
+.mostrador .esqueleto { height: 14px; margin-top: 10px; }
+.mostrador .esqueleto + .esqueleto { margin-top: 8px; }
+/* ——— Rodada 1 ——— */
+/* Duelo em três colunas: imóvel 1 à esquerda, rótulo no meio, imóvel 2 à direita; barras crescem do centro. */
+.duelo { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: start; column-gap: var(--e2); }
+.duelo .t-rotulo { grid-column: auto; max-width: 104px; padding-top: 4px; text-align: center; }
+.duelo .lado, .duelo .lado + .lado { padding: 0; text-align: left; }
+.duelo .lado.dir { text-align: right; }
+.duelo .barras { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 4px; }
+/* Par fixo no alto do Comparar, em versão baixa. */
+.par.fixa-no-topo { position: sticky; top: 0; z-index: 2; background: var(--papel); margin: 0 calc(var(--margem) * -1); padding: var(--e1) var(--margem) var(--e2); gap: var(--e2); }
+.par.fixa-no-topo a { grid-template-columns: 32px minmax(0, 1fr); min-height: 48px; padding: 8px 10px; column-gap: 8px; }
+.par.fixa-no-topo .miniatura { width: 32px; height: 32px; border-radius: 8px; }
+.par.fixa-no-topo b { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+/* Saldo do duelo: em tela estreita ou com nome comprido, o elo do método desce para a linha de baixo. */
+.saldo { display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--e3); }
+.saldo small { font-size: var(--t12); line-height: 16px; color: var(--apoio); padding: 4px 0; }
+.saldo a { display: inline-flex; align-items: center; gap: var(--e2); min-height: 44px; margin-left: auto; font-size: var(--t14); font-weight: 600; }
+/* Caderno: nome numa linha, estrela logo depois. */
+.imovel .linha-texto b { display: flex; align-items: center; min-width: 0; }
+.imovel .linha-texto b .nome { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.imovel .linha-texto b .estrela { flex: none; display: block; width: 13px; height: 13px; margin-left: 4px; fill: var(--texto); }
+.imovel .linha-texto small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.t-sem.pequeno { display: block; font-size: var(--t12); line-height: 16px; }
+/* Marca. */
+.assinatura { display: flex; align-items: center; gap: var(--e2); font-family: var(--serifa); font-weight: 500; font-size: var(--t16); line-height: 20px; letter-spacing: 0.2em; }
+.assinatura svg { width: 20px; height: 17px; fill: var(--acao); }
+/* Calor: arco ao lado do número. */
+.topo-arco { display: grid; grid-template-columns: minmax(0, 1fr) 64px; column-gap: var(--e3); align-items: center; }
+.topo-arco .arco { width: 64px; height: 38px; }
+/* Pulso da quadra: linha fina embaixo da grade. */
+.pulso { display: flex; align-items: center; gap: var(--e2); min-height: var(--toque); margin-top: 2px; padding: 0 2px; font-size: var(--t14); font-weight: 600; }
+.pulso > span:first-child { flex: 1; }
+.pulso .t-num-pulso { font-weight: 700; }
+.pulso .t-sem.pequeno { display: inline; }
+/* Aperto para a linha do pulso caber em 844 px. */
+.pagina .grade { gap: 8px; }
+.pagina .mostrador { min-height: 94px; padding-top: 10px; padding-bottom: 10px; }
+.pagina .rolagem { padding-bottom: 0; }
+.linha .linha-texto .escala { display: block; width: 100%; max-width: 240px; height: 18px; margin-top: 6px; }
+.imovel-abre .fim .t-num.p { font-size: var(--t16); line-height: 20px; }
+/* Rodada 2: "Também muda" no desenho do duelo, sem barra e mais baixo. */
+.duelo.baixo { min-height: 0; padding: var(--e2) 0; align-items: center; }
+.lista .duelo.baixo:first-child { border-top: 0; }
+.duelo.baixo .v { display: block; font-size: var(--t16); line-height: 22px; font-weight: 600; white-space: nowrap; }
+/* Rodada 2: a linha deslizada vai até a borda da tela. */
+.deslizada { margin: 0 calc(var(--margem) * -1); }
+.deslizada .imovel-frente { padding: 0 var(--margem); transform: translateX(-144px); }
+.deslizada .gesto { top: 0; bottom: 0; }
+.deslizada .gesto > * { width: 72px; border-radius: 0 !important; }
+</style>
+</head>
+<body>
+<div class="palco">
+<aside class="roteiro" id="roteiro" aria-label="Telas do protótipo"></aside>
+
+<main class="aparelho" id="aparelho">
+
+<!-- ═══════════════════════════════════ PAINEL (um imóvel por página) ═══════════════════════════════════ -->
+<section class="tela" id="painel" data-dock="painel" aria-label="Painel do imóvel">
+  <div class="faixa">
+    <nav class="pontos" aria-label="Imóveis do caderno">
+      <a href="#painel@pa" aria-current="true" aria-label="Parque Atlântico, 1 de 4"></a>
+      <a href="#painel@ae" aria-label="Ana Elizabeth, 2 de 4"></a>
+      <a href="#painel@viena" aria-label="Viena, 3 de 4"></a>
+      <a href="#painel@cf" aria-label="Apto. em Casa Forte, 4 de 4"></a>
+    </nav>
+    <div class="faixa-fim">
+      <a class="etapa" href="#painel+triagem" aria-label="Etapa: Triagem. Mudar"><span>Triagem</span></a>
+      <button class="icone" aria-pressed="true" data-liga aria-label="Favorito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.2 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></button>
+      <a class="icone" href="#painel+novo" aria-label="Novo imóvel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a>
+    </div>
+  </div>
+
+  <div class="paginas" id="paginas">
+    <!-- Página 1: Parque Atlântico (referência das outras páginas) -->
+    <article class="pagina" id="painel-pa" aria-label="Parque Atlântico" data-etapa="Triagem" data-favorito="true" data-acao="Preparar visita" data-acao-href="#visita">
+      <div class="rolagem">
+        <header class="topo">
+          <div>
+            <h1 class="t-titulo">Parque Atlântico</h1>
+            <p class="t-linha">Boa Viagem · 58 m² · 14º andar</p>
+          </div>
+          <a class="miniatura" href="#painel+mapa" aria-label="Abrir o mapa do lote"><img src="../mapas/parque-atlantico-topo.png" alt=""></a>
+        </header>
+
+        <div class="grade">
+          <a class="mostrador largo" href="#painel+bolso">
+            <span class="t-rotulo">Bolso · por mês</span>
+            <span class="t-num xg"><span class="aprox">~</span>R$ 6.805</span>
+            <span class="parcelas" role="img" aria-label="Parcela do banco 79%, condomínio 14%, luz 5%, IPTU 2%"><i class="c-banco" style="flex: 5371"></i><i class="c-cond" style="flex: 980"></i><i class="c-luz" style="flex: 324"></i><i class="c-iptu" style="flex: 130"></i></span>
+            <span class="t-linha">para entrar, R$ 152 mil · anúncio: R$ 1.075</span>
+          </a>
+
+          <a class="mostrador" href="#painel+predio">
+            <span class="t-rotulo">Prédio</span>
+            <span class="t-num">10<span class="t-un">anos</span></span>
+            <svg class="escala" viewBox="0 0 120 14" aria-hidden="true"><path class="trilho" d="M2 7H118"/><circle class="marca" cx="25.2" cy="7" r="4.5"/></svg>
+            <span class="t-linha">2016 · 29 andares</span>
+          </a>
+
+          <a class="mostrador" href="#painel+rua">
+            <span class="t-rotulo">A pé</span>
+            <span class="t-num">6,9<span class="t-un">de 10</span></span>
+            <svg class="arco instrumento" viewBox="0 0 48 28" aria-hidden="true"><path class="trilho" d="M4 25A20 20 0 0 1 44 25"/><path class="valor" d="M4 25A20 20 0 0 1 44 25" pathLength="100" stroke-dasharray="69 100"/></svg>
+            <span class="t-linha">mercado a 5 min</span>
+          </a>
+
+          <a class="mostrador" href="#painel+noite">
+            <span class="t-rotulo">Noite e ruído<i class="sinal" role="img" aria-label="ponto de atenção"></i></span>
+            <span class="t-num"><span class="aprox">~</span>58<span class="t-un">dB(A)</span></span>
+            <svg class="escala" viewBox="0 0 120 14" aria-hidden="true"><path class="trilho" d="M2 7H118"/><path class="risco" d="M48.4 2v10"/><circle class="marca" cx="67" cy="7" r="4.5"/></svg>
+            <span class="t-linha">estimativa, à noite</span>
+          </a>
+
+          <a class="mostrador" href="#painel+calor">
+            <span class="t-rotulo">Calor</span>
+            <span class="t-num">9,2<span class="t-un">de 10</span></span>
+            <svg class="arco instrumento" viewBox="0 0 48 28" aria-hidden="true"><path class="trilho" d="M4 25A20 20 0 0 1 44 25"/><path class="valor" d="M4 25A20 20 0 0 1 44 25" pathLength="100" stroke-dasharray="92 100"/></svg>
+            <span class="t-linha">fresco e ventilado</span>
+          </a>
+
+          <a class="mostrador" href="#painel+chuva">
+            <span class="t-rotulo">Chuva</span>
+            <span class="t-num">0<span class="t-un">alagamentos</span></span>
+            <span class="t-linha">registrados na rua</span>
+          </a>
+
+          <a class="mostrador" href="#painel+perguntas">
+            <span class="t-rotulo">Perguntas<i class="sinal" role="img" aria-label="ponto de atenção"></i></span>
+            <span class="t-num">12<span class="t-un">para a visita</span></span>
+            <span class="t-linha t-atencao">IPTU não confere</span>
+          </a>
+        </div>
+        <a class="pulso" href="#painel+pulso"><span>Pulso da quadra</span><span class="t-num-pulso">7,9 de 10</span><i class="vai"></i></a>
+      </div>
+    </article>
+    <!-- Página 2: Ana Elizabeth (compra, visita marcada) -->
+    <article class="pagina" id="painel-ae" aria-label="Ana Elizabeth" data-etapa="Visita" data-favorito="false" data-acao="Começar visita" data-acao-href="#visita">
+      <div class="rolagem">
+        <header class="topo">
+          <div>
+            <h1 class="t-titulo">Ana Elizabeth</h1>
+            <p class="t-linha">Graças · 130 m² · 4º andar</p>
+          </div>
+          <a class="miniatura" href="#painel+mapa" aria-label="Abrir o mapa do lote"><img src="../mapas/ana-elizabeth-topo.png" alt=""></a>
+        </header>
+        <div class="grade">
+          <a class="mostrador largo" href="#painel+bolso">
+            <span class="t-rotulo">Bolso · por mês</span>
+            <span class="t-num xg"><span class="aprox">~</span>R$ 5.476</span>
+            <span class="parcelas" role="img" aria-label="Parcela do banco 67%, condomínio 25%, luz 6%, IPTU 2%"><i class="c-banco" style="flex: 3692"></i><i class="c-cond" style="flex: 1350"></i><i class="c-luz" style="flex: 324"></i><i class="c-iptu" style="flex: 110"></i></span>
+            <span class="t-linha">para entrar, R$ 105 mil · anúncio: R$ 1.460</span>
+          </a>
+          <a class="mostrador" href="#painel+predio">
+            <span class="t-rotulo">Prédio<i class="sinal" role="img" aria-label="ponto de atenção"></i></span>
+            <span class="t-num">54<span class="t-un">anos</span></span>
+            <svg class="escala" viewBox="0 0 120 14" aria-hidden="true"><path class="trilho" d="M2 7H118"/><circle class="marca" cx="118" cy="7" r="4.5"/></svg>
+            <span class="t-linha">1972 · 9 andares</span>
+          </a>
+          <a class="mostrador" href="#painel+rua">
+            <span class="t-rotulo">A pé</span>
+            <span class="t-num">8,8<span class="t-un">de 10</span></span>
+            <svg class="arco instrumento" viewBox="0 0 48 28" aria-hidden="true"><path class="trilho" d="M4 25A20 20 0 0 1 44 25"/><path class="valor" d="M4 25A20 20 0 0 1 44 25" pathLength="100" stroke-dasharray="88 100"/></svg>
+            <span class="t-linha">mercado a 1 min</span>
+          </a>
+          <a class="mostrador" href="#painel+noite">
+            <span class="t-rotulo">Noite e ruído<i class="sinal" role="img" aria-label="ponto de atenção"></i></span>
+            <span class="t-num"><span class="aprox">~</span>58<span class="t-un">dB(A)</span></span>
+            <svg class="escala" viewBox="0 0 120 14" aria-hidden="true"><path class="trilho" d="M2 7H118"/><path class="risco" d="M48.4 2v10"/><circle class="marca" cx="67" cy="7" r="4.5"/></svg>
+            <span class="t-linha">estimativa, à noite</span>
+          </a>
+          <a class="mostrador" href="#painel+calor">
+            <span class="t-rotulo">Calor</span>
+            <span class="t-num">9,2<span class="t-un">de 10</span></span>
+            <svg class="arco instrumento" viewBox="0 0 48 28" aria-hidden="true"><path class="trilho" d="M4 25A20 20 0 0 1 44 25"/><path class="valor" d="M4 25A20 20 0 0 1 44 25" pathLength="100" stroke-dasharray="92 100"/></svg>
+            <span class="t-linha">fresco e ventilado</span>
+          </a>
+          <a class="mostrador" href="#painel+chuva">
+            <span class="t-rotulo">Chuva</span>
+            <span class="t-num">0<span class="t-un">alagamentos</span></span>
+            <span class="t-linha">registrados na rua</span>
+          </a>
+          <a class="mostrador" href="#painel+perguntas">
+            <span class="t-rotulo">Perguntas<i class="sinal" role="img" aria-label="ponto de atenção"></i></span>
+            <span class="t-num">12<span class="t-un">para a visita</span></span>
+            <span class="t-linha t-atencao">5 obras em volta</span>
+          </a>
+        </div>
+        <a class="pulso" href="#painel+pulso"><span>Pulso da quadra</span><span class="t-num-pulso">7,0 de 10</span><i class="vai"></i></a>
+      </div>
+    </article>
+
+    <!-- Página 3: Viena (aluguel) -->
+    <article class="pagina" id="painel-viena" aria-label="Viena" data-etapa="Triagem" data-favorito="false" data-acao="Preparar visita" data-acao-href="#visita">
+      <div class="rolagem">
+        <header class="topo">
+          <div>
+            <h1 class="t-titulo">Viena</h1>
+            <p class="t-linha">Madalena · 141 m² · 5º andar</p>
+          </div>
+          <a class="miniatura" href="#painel+mapa" aria-label="Abrir o mapa do lote"><img src="../mapas/viena-topo.png" alt=""></a>
+        </header>
+        <div class="grade">
+          <a class="mostrador largo" href="#painel+bolso">
+            <span class="t-rotulo">Bolso · aluguel e taxas por mês</span>
+            <span class="t-num xg">R$ 4.895</span>
+            <span class="parcelas" role="img" aria-label="Aluguel 74%, condomínio 26%, seguro incêndio 1%"><i class="c-banco" style="flex: 3600"></i><i class="c-cond" style="flex: 1250"></i><i class="c-seguro" style="flex: 45"></i></span>
+            <span class="t-linha"><span class="t-atencao">IPTU a confirmar</span> · com luz, ~R$ 5.219</span>
+          </a>
+          <a class="mostrador" href="#painel+predio">
+            <span class="t-rotulo">Prédio</span>
+            <span class="t-num">50<span class="t-un">anos</span></span>
+            <svg class="escala" viewBox="0 0 120 14" aria-hidden="true"><path class="trilho" d="M2 7H118"/><circle class="marca" cx="118" cy="7" r="4.5"/></svg>
+            <span class="t-linha">1976 · 11 andares</span>
+          </a>
+          <a class="mostrador" href="#painel+rua">
+            <span class="t-rotulo">A pé</span>
+            <span class="t-num">7,8<span class="t-un">de 10</span></span>
+            <svg class="arco instrumento" viewBox="0 0 48 28" aria-hidden="true"><path class="trilho" d="M4 25A20 20 0 0 1 44 25"/><path class="valor" d="M4 25A20 20 0 0 1 44 25" pathLength="100" stroke-dasharray="78 100"/></svg>
+            <span class="t-linha">ônibus a 1 min</span>
+          </a>
+          <a class="mostrador" href="#painel+noite">
+            <span class="t-rotulo">Noite e ruído<i class="sinal" role="img" aria-label="ponto de atenção"></i></span>
+            <span class="t-num"><span class="aprox">~</span>64<span class="t-un">dB(A)</span></span>
+            <svg class="escala" viewBox="0 0 120 14" aria-hidden="true"><path class="trilho" d="M2 7H118"/><path class="risco" d="M48.4 2v10"/><circle class="marca" cx="80.9" cy="7" r="4.5"/></svg>
+            <span class="t-linha">estimativa, à noite</span>
+          </a>
+          <a class="mostrador" href="#painel+calor">
+            <span class="t-rotulo">Calor<i class="sinal" role="img" aria-label="ponto de atenção"></i></span>
+            <span class="t-num">1,8<span class="t-un">de 10</span></span>
+            <svg class="arco instrumento" viewBox="0 0 48 28" aria-hidden="true"><path class="trilho" d="M4 25A20 20 0 0 1 44 25"/><path class="valor" d="M4 25A20 20 0 0 1 44 25" pathLength="100" stroke-dasharray="18 100"/></svg>
+            <span class="t-linha">quente à tarde</span>
+          </a>
+          <a class="mostrador" href="#painel+chuva">
+            <span class="t-rotulo">Chuva<i class="sinal" role="img" aria-label="ponto de atenção: terreno baixo"></i></span>
+            <span class="t-num">20<span class="t-un">pedidos</span></span>
+            <span class="t-linha">de drenagem</span>
+          </a>
+          <a class="mostrador" href="#painel+perguntas">
+            <span class="t-rotulo">Perguntas</span>
+            <span class="t-num">14<span class="t-un">para a visita</span></span>
+            <span class="t-linha t-atencao">IPTU a confirmar</span>
+          </a>
+        </div>
+        <a class="pulso" href="#painel+pulso"><span>Pulso da quadra</span><span class="t-num-pulso">6,4 de 10</span><i class="vai"></i></a>
+      </div>
+    </article>
+
+    <!-- Página 4: anúncio sem endereço (Sem leitura até confirmar o prédio) -->
+    <article class="pagina" id="painel-cf" aria-label="Apto. em Casa Forte" data-etapa="Triagem" data-favorito="false" data-acao="Confirmar prédio" data-acao-href="#painel+confirmar">
+      <div class="rolagem">
+        <header class="topo">
+          <div>
+            <h1 class="t-titulo">Apto. em Casa Forte</h1>
+            <p class="t-linha">66 m² · rua não informada</p>
+          </div>
+          <a class="miniatura vazia" href="#painel+confirmar" aria-label="Confirmar o prédio"></a>
+        </header>
+        <div class="grade">
+          <a class="mostrador largo" href="#painel+bolso">
+            <span class="t-rotulo">Bolso · conhecido por mês</span>
+            <span class="t-num xg">R$ 780</span>
+            <span class="parcelas" role="img" aria-label="Só o condomínio"><i class="c-cond" style="flex: 1"></i></span>
+            <span class="t-linha">IPTU de R$ 154, período a confirmar</span>
+          </a>
+          <a class="mostrador sem" href="#painel+confirmar">
+            <span class="t-rotulo">Prédio</span>
+            <span class="t-sem">Sem leitura</span>
+            <svg class="arco sem instrumento" viewBox="0 0 48 28" aria-hidden="true"><path class="trilho" d="M4 25A20 20 0 0 1 44 25"/></svg>
+            <span class="t-linha">confirme o prédio</span>
+          </a>
+          <a class="mostrador sem" href="#painel+confirmar">
+            <span class="t-rotulo">A pé</span>
+            <span class="t-sem">Sem leitura</span>
+            <svg class="arco sem instrumento" viewBox="0 0 48 28" aria-hidden="true"><path class="trilho" d="M4 25A20 20 0 0 1 44 25"/></svg>
+            <span class="t-linha">confirme o prédio</span>
+          </a>
+          <a class="mostrador sem" href="#painel+confirmar">
+            <span class="t-rotulo">Noite e ruído</span>
+            <span class="t-sem">Sem leitura</span>
+            <svg class="arco sem instrumento" viewBox="0 0 48 28" aria-hidden="true"><path class="trilho" d="M4 25A20 20 0 0 1 44 25"/></svg>
+            <span class="t-linha">confirme o prédio</span>
+          </a>
+          <a class="mostrador sem" href="#painel+confirmar">
+            <span class="t-rotulo">Calor</span>
+            <span class="t-sem">Sem leitura</span>
+            <svg class="arco sem instrumento" viewBox="0 0 48 28" aria-hidden="true"><path class="trilho" d="M4 25A20 20 0 0 1 44 25"/></svg>
+            <span class="t-linha">confirme o prédio</span>
+          </a>
+          <a class="mostrador sem" href="#painel+confirmar">
+            <span class="t-rotulo">Chuva</span>
+            <span class="t-sem">Sem leitura</span>
+            <svg class="arco sem instrumento" viewBox="0 0 48 28" aria-hidden="true"><path class="trilho" d="M4 25A20 20 0 0 1 44 25"/></svg>
+            <span class="t-linha">confirme o prédio</span>
+          </a>
+          <a class="mostrador" href="#painel+perguntas">
+            <span class="t-rotulo">Perguntas</span>
+            <span class="t-num">3<span class="t-un">para o corretor</span></span>
+            <span class="t-linha">qual é a rua e o número?</span>
+          </a>
+        </div>
+        <a class="pulso" href="#painel+confirmar"><span>Pulso da quadra</span><span class="t-sem pequeno">Sem leitura</span><i class="vai"></i></a>
+      </div>
+    </article>
+  </div>
+
+  <div class="acao"><a class="botao principal largo" href="#visita">Preparar visita</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ GAVETAS DE REFERÊNCIA ═══════════════════════════════════ -->
+<!-- Bolso: por mês (com as parcelas), para entrar e em 10 anos -->
+<section class="gaveta" id="g-bolso" role="dialog" aria-modal="true" aria-labelledby="g-bolso-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-bolso-t">Bolso · Parque Atlântico</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="segmento" role="radiogroup" aria-label="O que ver">
+      <button role="radio" aria-checked="true" data-escolhe="bolso:mes">Por mês</button>
+      <button role="radio" aria-checked="false" data-escolhe="bolso:entrar">Para entrar</button>
+      <button role="radio" aria-checked="false" data-escolhe="bolso:dez">Em 10 anos</button>
+    </div>
+
+    <div data-quando="bolso:mes">
+      <div class="leitura" style="padding-top: var(--e5)">
+        <p class="t-num xg"><span class="aprox">~</span>R$ 6.805<span class="t-un">por mês</span></p>
+        <p class="t-linha">O anúncio mostra R$ 1.075. Faltam a parcela e a luz.</p>
+        <div class="parcelas" role="img" aria-label="Parcela do banco 79%, condomínio 14%, luz 5%, IPTU 2%"><i class="c-banco" style="flex: 5371"></i><i class="c-cond" style="flex: 980"></i><i class="c-luz" style="flex: 324"></i><i class="c-iptu" style="flex: 130"></i></div>
+      </div>
+      <div class="lista">
+        <a class="linha" href="#painel+financiamento"><i class="cor c-banco"></i><span class="linha-texto"><b>Parcela do banco</b><small>estimativa · 80% em 30 anos</small></span><span class="t-num p"><span class="aprox">~</span>R$ 5.371</span><i class="vai"></i></a>
+        <div class="linha"><i class="cor c-cond"></i><span class="linha-texto"><b>Condomínio</b><small>do anúncio</small></span><span class="t-num p">R$ 980</span></div>
+        <div class="linha"><i class="cor c-luz"></i><span class="linha-texto"><b>Luz</b><small>estimativa · 2 pessoas, ar à noite</small></span><span class="t-num p"><span class="aprox">~</span>R$ 324</span></div>
+        <div class="linha"><i class="cor c-iptu"></i><span class="linha-texto"><b>IPTU</b><small class="t-atencao">cadastro · o anúncio diz R$ 95</small></span><span class="t-num p">R$ 130</span></div>
+      </div>
+    </div>
+
+    <div data-quando="bolso:entrar" hidden>
+      <div class="leitura" style="padding-top: var(--e5)">
+        <p class="t-num xg"><span class="aprox">~</span>R$ 152 mil</p>
+        <p class="t-linha">Entrada de 20% e imposto da compra. Cartório à parte.</p>
+      </div>
+      <div class="lista">
+        <div class="linha"><span class="linha-texto"><b>Entrada de 20%</b><small>sobre o preço do anúncio</small></span><span class="t-num p">R$ 144.000</span></div>
+        <div class="linha"><span class="linha-texto"><b>ITBI</b><small>imposto da Prefeitura na compra</small></span><span class="t-num p">R$ 8.352</span></div>
+        <div class="linha"><span class="linha-texto"><b>Escritura e registro</b><small>tabela do cartório, não segue o preço</small></span><span class="valor-texto t-atencao">A confirmar</span></div>
+        <div class="linha"><span class="linha-texto"><b>Custo total da compra</b><small>preço mais ITBI de 1,8% a 3% · cartório à parte</small></span><span class="valor-texto">R$ 733 a 742 mil</span></div>
+        <div class="linha"><span class="linha-texto"><b>Terreno da União</b><small class="t-atencao">sem aforamento, o FGTS não entra</small></span><span class="valor-texto">Trava</span></div>
+      </div>
+      <p class="t-linha" style="margin-top: var(--e3)">Pedindo o ITBI em até 180 dias, paga 1,8% em vez de 3%: até R$ 13.248 a menos.</p>
+    </div>
+
+    <div data-quando="bolso:dez" hidden>
+      <p class="t-rotulo grupo-titulo">Valorização do imóvel ao ano, pela sua suposição</p>
+      <div class="segmento" role="radiogroup" aria-label="Valorização ao ano">
+        <button role="radio" aria-checked="true" data-escolhe="valor:0">0%</button>
+        <button role="radio" aria-checked="false" data-escolhe="valor:3">3%</button>
+        <button role="radio" aria-checked="false" data-escolhe="valor:5">5%</button>
+      </div>
+      <div class="leitura" style="padding-top: var(--e5)">
+        <p class="t-num xg" data-quando="valor:0"><span class="aprox">~</span>R$ 559 mil</p>
+        <p class="t-num xg" data-quando="valor:3" hidden><span class="aprox">~</span>R$ 311 mil</p>
+        <p class="t-num xg" data-quando="valor:5" hidden><span class="aprox">~</span>R$ 106 mil</p>
+        <p class="t-linha">a favor de alugar e aplicar a entrada, em 10 anos</p>
+      </div>
+      <p class="t-mono">CDI LÍQUIDO DE 9,5% AO ANO · JUROS DE 11,3% EM 30 ANOS · REAJUSTES DE 4,5%</p>
+      <p class="t-linha" style="margin-top: var(--e2)">O Vereda não prevê preço: a valorização é escolha sua.</p>
+    </div>
+
+    <div class="lista" style="margin-top: var(--e5)">
+      <a class="linha" href="#painel+metodo-bolso"><span class="linha-texto"><b>Como foi calculada</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+fonte"><span class="linha-texto"><b>Ver a fonte</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- Noite e ruído: o dB(A) com "estimativa", a régua, a nota 0–10 e os registros da noite -->
+<section class="gaveta" id="g-noite" role="dialog" aria-modal="true" aria-labelledby="g-noite-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-noite-t">Noite e ruído · Parque Atlântico</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura">
+      <p class="t-num xg"><span class="aprox">~</span>58<span class="t-un">dB(A)</span><span class="selo">estimativa</span></p>
+      <p class="t-linha">À noite, na janela do 14º andar. 8 dB acima da referência.</p>
+    </div>
+    <svg class="regua" viewBox="0 0 350 62" role="img" aria-label="Estimativa à noite: quarto com a janela fechada 38 decibéis, janela 58, rua 61. Referência para área residencial: 50. Faixa da estimativa: 5 decibéis para mais ou para menos.">
+      <path d="M6 34H344" stroke="var(--sutil)" stroke-width="8" stroke-linecap="round"/>
+      <path d="M161.5 34H229.1" stroke="var(--linha-forte)" stroke-width="8" stroke-linecap="round"/>
+      <path d="M141.2 24V44" stroke="var(--apoio)" stroke-width="1.5"/>
+      <circle cx="60.1" cy="34" r="4.5" fill="var(--superficie)" stroke="currentColor" stroke-width="2"/>
+      <circle cx="215.6" cy="34" r="4.5" fill="var(--superficie)" stroke="currentColor" stroke-width="2"/>
+      <circle cx="195.3" cy="34" r="7" fill="currentColor"/>
+      <text x="60.1" y="18" text-anchor="middle">quarto 38</text>
+      <text x="141.2" y="58" text-anchor="middle">referência 50</text>
+      <text x="190" y="18" text-anchor="middle" class="forte">janela 58</text>
+      <text x="232" y="18">rua 61</text>
+      <text x="6" y="58">30</text><text x="344" y="58" text-anchor="end">80</text>
+    </svg>
+    <div class="segmento" role="radiogroup" aria-label="Período">
+      <button role="radio" aria-checked="true" data-escolhe="periodo:noite">À noite</button>
+      <button role="radio" aria-checked="false" data-escolhe="periodo:dia">De dia</button>
+    </div>
+    <div class="lista" data-quando="periodo:noite">
+      <div class="linha"><span class="linha-texto"><b>Na rua</b><small>estimativa</small></span><span class="t-num p"><span class="aprox">~</span>61 dB(A)</span></div>
+      <div class="linha"><span class="linha-texto"><b>Na janela</b><small>estimativa · 14º andar, sudeste</small></span><span class="t-num p"><span class="aprox">~</span>58 dB(A)</span></div>
+      <div class="linha"><span class="linha-texto"><b>No quarto, janela fechada</b><small>estimativa · a janela tira cerca de 20 dB</small></span><span class="t-num p"><span class="aprox">~</span>38 dB(A)</span></div>
+      <div class="linha"><span class="linha-texto"><b>Via mais perto</b><small>Rua dos Navegantes, lado noroeste</small></span><span class="t-num p">45 m</span></div>
+    </div>
+    <div class="lista" data-quando="periodo:dia" hidden>
+      <div class="linha"><span class="linha-texto"><b>Na rua</b><small>estimativa</small></span><span class="t-num p"><span class="aprox">~</span>68 dB(A)</span></div>
+      <div class="linha"><span class="linha-texto"><b>Na janela</b><small>estimativa · 10 dB acima da referência (55)</small></span><span class="t-num p"><span class="aprox">~</span>65 dB(A)</span></div>
+      <div class="linha"><span class="linha-texto"><b>No quarto, janela fechada</b><small>estimativa</small></span><span class="t-num p"><span class="aprox">~</span>45 dB(A)</span></div>
+      <div class="linha"><span class="linha-texto"><b>Via mais perto</b><small>Rua dos Navegantes, lado noroeste</small></span><span class="t-num p">45 m</span></div>
+    </div>
+    <div class="lista" style="margin-top: 0">
+      <div class="linha"><span class="linha-texto"><b>Avião</b><small>fora da linha de pouso · não pesa neste prédio</small></span><span class="valor-texto">não entra</span></div>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e2)">ESTIMATIVA COM DADOS ABERTOS, NÃO MEDIÇÃO · FAIXA DE ±5 dB</p>
+
+    <a class="nota-linha" href="#painel+metodo-noite">
+      <span><span class="t-rotulo">Sossego à noite</span><span class="t-num" style="display:block">7,3<span class="t-un">de 10</span></span></span>
+      <svg class="arco" viewBox="0 0 48 28" aria-hidden="true"><path class="trilho" d="M4 25A20 20 0 0 1 44 25"/><path class="valor" d="M4 25A20 20 0 0 1 44 25" pathLength="100" stroke-dasharray="73 100"/></svg>
+    </a>
+
+    <p class="t-rotulo grupo-titulo">Voltando à noite</p>
+    <div class="lista">
+      <div class="linha"><span class="linha-texto"><b>Ônibus mais perto</b><small>último às 23:58 · 2 travessias de avenida</small></span><span class="t-num p">4 min</span></div>
+      <div class="linha"><span class="linha-texto"><b>Lâmpada apagada</b><small>pedidos à Central 156 em 12 meses</small></span><span class="t-num p">30</span></div>
+      <a class="linha" href="#painel+vizinhos"><span class="linha-texto"><b>Registros policiais</b><small>por mil moradores · mediana do Recife: 17,4</small></span><span class="t-num p">17,1</span><i class="vai"></i></a>
+    </div>
+    <div class="lista" style="margin-top: var(--e5)">
+      <a class="linha" href="#painel+andar"><span class="linha-texto"><b>Andar e fachada</b><small>14º · sudeste</small></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+metodo-noite"><span class="linha-texto"><b>Como foi calculada</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+fonte"><span class="linha-texto"><b>Ver a fonte</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- Ficha de método de 6 campos (nota de sossego) -->
+<section class="gaveta" id="g-metodo-noite" role="dialog" aria-modal="true" aria-labelledby="g-metodo-noite-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-metodo-noite-t">Como foi calculada</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura">
+      <p class="t-num g">7,3<span class="t-un">de 10 · sossego à noite</span></p>
+    </div>
+    <dl class="metodo">
+      <div><dt>O que mede</dt><dd>O barulho médio do lado de fora, à noite (22h às 7h), na janela do seu andar e da sua fachada.</dd></div>
+      <div><dt>Fonte</dt><dd>Vias e pista do aeroporto do OpenStreetMap; ônibus do GTFS Grande Recife; metrô da CBTU; licenças de som da Prefeitura; comércio do Censo 2022.</dd></div>
+      <div><dt>Data</dt><dd>Vias de 17/11/2026 · Censo de 2022.</dd></div>
+      <div><dt>Cálculo</dt><dd>Cada via entra com o nível da sua classe, mais os ônibus. O som cai com a distância, o andar e o lado da fachada. Nota 10 com 48 dB(A) ou menos; nota 0 com 86 ou mais (estimativa).</dd></div>
+      <div><dt>Limite</dt><dd>Estimativa com dados abertos, não medição. Não vê muro, vizinho, festa nem o trânsito de cada hora. Perto de avenida, leia como teto.</dd></div>
+      <div><dt>Na visita</dt><dd>Ouça da janela do quarto, aberta e fechada, num dia útil por volta das 18h e numa sexta depois das 22h.</dd></div>
+    </dl>
+    <div class="lista" style="margin-top: var(--e3)">
+      <a class="linha" href="#painel+noite"><span class="linha-texto"><b>Voltar ao ruído</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+fonte"><span class="linha-texto"><b>Ver a fonte</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- Ver a fonte -->
+<section class="gaveta" id="g-fonte" role="dialog" aria-modal="true" aria-labelledby="g-fonte-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-fonte-t">Fonte</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura">
+      <p class="t-titulo">IPTU 2026</p>
+      <p class="t-linha">Prefeitura do Recife · Secretaria de Finanças</p>
+    </div>
+    <div class="lista">
+      <div class="linha"><span class="linha-texto"><b>Este dado</b><small>mediana do IPTU das 103 unidades do prédio</small></span><span class="t-num p">R$ 130</span></div>
+      <div class="linha"><span class="linha-texto"><b>Confiança</b></span><span class="valor-texto">registro oficial</span></div>
+      <div class="linha"><span class="linha-texto"><b>Licença</b></span><span class="valor-texto">ODbL</span></div>
+      <div class="linha"><span class="linha-texto"><b>Base modificada em</b></span><span class="valor-texto">03/10/2026</span></div>
+      <div class="linha"><span class="linha-texto"><b>Consultada em</b></span><span class="valor-texto">15/11/2026</span></div>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e3)">RECORTE: APARTAMENTOS, AGRUPADOS POR RUA E NÚMERO</p>
+    <div class="lista" style="margin-top: var(--e3)">
+      <a class="linha" href="#sobre"><span class="linha-texto"><b>Sobre os dados</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ A PARTIR DAQUI: TELAS E GAVETAS A COMPLETAR (ver a lista em window.TELAS) ═══════════════ -->
+
+<!-- ═══════════════════════════════════ ENTRADA E ESTADOS DO PAINEL ═══════════════════════════════════ -->
+<!-- Primeiro uso: nada no caderno -->
+<section class="tela" id="painel-vazio" data-dock="painel" aria-label="Painel vazio">
+  <div class="rolagem">
+    <div class="conteudo" style="padding-top: var(--e10)">
+      <p class="assinatura" style="margin-bottom: var(--e4)"><svg viewBox="0 0 100 84" aria-hidden="true"><path fill-rule="evenodd" d="M18 80C7 79 2 66 2 49 2 24 20 4 50 3c29-1 47 22 47 46 0 19-8 31-18 31-15 0-45 1-61 0Zm22-22c-5-16 0-34 13-35 11-1 16 17 11 34-5 15-19 15-24 1Z"/></svg>VEREDA</p>
+      <h1 class="t-titulo">Cole o link do anúncio</h1>
+      <p class="t-linha" style="margin-top: var(--e1)">ou busque o prédio pelo nome ou pela rua</p>
+      <label class="campo" style="margin-top: var(--e5)"><input type="text" placeholder="Link do anúncio, prédio ou rua" aria-label="Link do anúncio, prédio ou rua"></label>
+      <div class="fila" style="margin-top: var(--e3)">
+        <a class="botao principal" href="#painel+confirmar">Colar link</a>
+        <a class="botao" href="#painel-vazio+novo-buscando">Buscar prédio</a>
+      </div>
+      <p class="t-rotulo grupo-titulo" style="margin-top: var(--e10)">Exemplos</p>
+      <div class="lista">
+        <a class="imovel" href="#painel"><span class="miniatura"><img src="../mapas/parque-atlantico-topo.png" alt=""></span><span class="linha-texto"><b>Parque Atlântico</b><small>torre de 2016 em Boa Viagem</small></span><i class="vai"></i></a>
+        <a class="imovel" href="#painel@ae"><span class="miniatura"><img src="../mapas/ana-elizabeth-topo.png" alt=""></span><span class="linha-texto"><b>Ana Elizabeth</b><small>prédio de 1972 nas Graças</small></span><i class="vai"></i></a>
+        <a class="imovel" href="#painel@viena"><span class="miniatura"><img src="../mapas/viena-topo.png" alt=""></span><span class="linha-texto"><b>Viena</b><small>aluguel na Madalena</small></span><i class="vai"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Sem rede: o que veio do anúncio aparece; o resto espera -->
+<section class="tela" id="painel-sem-rede" data-dock="painel" aria-label="Painel sem rede">
+  <div class="rolagem">
+    <div class="conteudo">
+      <header class="topo">
+        <div>
+          <h1 class="t-titulo">Parque Atlântico</h1>
+          <p class="t-linha">Boa Viagem · 58 m² · 14º andar</p>
+        </div>
+        <span class="miniatura"><img src="../mapas/parque-atlantico-topo.png" alt="" style="transform: none"></span>
+      </header>
+      <div class="aviso" role="status" style="margin-bottom: 10px">
+        <span class="linha-texto"><b>Sem rede</b><small>Os dados de Boa Viagem não chegaram.</small></span>
+      </div>
+      <div class="grade">
+        <div class="mostrador largo">
+          <span class="t-rotulo">Bolso · conhecido por mês</span>
+          <span class="t-num g">R$ 1.075</span>
+          <span class="t-linha">condomínio e IPTU do anúncio</span>
+        </div>
+        <div class="mostrador" aria-busy="true"><span class="t-rotulo">Prédio</span><span class="esqueleto curto"></span><span class="esqueleto medio"></span></div>
+        <div class="mostrador" aria-busy="true"><span class="t-rotulo">A pé</span><span class="esqueleto curto"></span><span class="esqueleto medio"></span></div>
+        <div class="mostrador" aria-busy="true"><span class="t-rotulo">Noite e ruído</span><span class="esqueleto curto"></span><span class="esqueleto medio"></span></div>
+        <div class="mostrador" aria-busy="true"><span class="t-rotulo">Calor</span><span class="esqueleto curto"></span><span class="esqueleto medio"></span></div>
+        <div class="mostrador" aria-busy="true"><span class="t-rotulo">Chuva</span><span class="esqueleto curto"></span><span class="esqueleto medio"></span></div>
+        <div class="mostrador" aria-busy="true"><span class="t-rotulo">Perguntas</span><span class="esqueleto curto"></span><span class="esqueleto medio"></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="acao"><a class="botao principal largo" href="#painel">Tentar de novo</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ COMPARAR ═══════════════════════════════════ -->
+<section class="tela" id="comparar" data-dock="comparar" aria-label="Comparar">
+  <header class="cabeca"><h1 class="t-titulo">Comparar</h1></header>
+  <div class="rolagem">
+    <div class="conteudo">
+      <div class="par fixa-no-topo">
+        <a href="#comparar+trocar" aria-label="Trocar Parque Atlântico, à esquerda"><span class="miniatura"><img src="../mapas/parque-atlantico-topo.png" alt=""></span><b>Parque Atlântico</b></a>
+        <a href="#comparar+trocar" aria-label="Trocar Ana Elizabeth, à direita"><span class="miniatura"><img src="../mapas/ana-elizabeth-topo.png" alt=""></span><b>Ana Elizabeth</b></a>
+      </div>
+      <h2 class="t-nome" style="margin-top: var(--e6); text-wrap: balance">Ana Elizabeth leva vantagem em 3 de 6</h2>
+      <div class="saldo">
+        <small>Parque Atlântico 1 · empates 2</small>
+        <a href="#comparar+metodo-comparar">Como foi calculada<i class="vai"></i></a>
+      </div>
+
+      <div class="duelo">
+        <span class="lado"><span class="t-num p"><span class="aprox">~</span>R$ 6.805</span></span>
+        <span class="t-rotulo">Por mês</span>
+        <span class="lado dir"><span class="t-num p frente-texto"><span class="aprox">~</span>R$ 5.476</span></span>
+        <span class="barras"><span class="barra"><i style="width: 100%"></i></span><span class="barra frente"><i style="width: 80%"></i></span></span>
+      </div>
+      <div class="duelo">
+        <span class="lado"><span class="t-num p">R$ 12.414</span></span>
+        <span class="t-rotulo">Preço por m²</span>
+        <span class="lado dir"><span class="t-num p frente-texto">R$ 3.808</span></span>
+        <span class="barras"><span class="barra"><i style="width: 100%"></i></span><span class="barra frente"><i style="width: 31%"></i></span></span>
+      </div>
+      <div class="duelo">
+        <span class="lado"><span class="t-num p frente-texto">10 anos</span></span>
+        <span class="t-rotulo">Idade do prédio</span>
+        <span class="lado dir"><span class="t-num p">54 anos</span></span>
+        <span class="barras"><span class="barra frente"><i style="width: 19%"></i></span><span class="barra"><i style="width: 100%"></i></span></span>
+      </div>
+      <div class="duelo">
+        <span class="lado"><span class="t-num p">da União</span><small class="t-atencao">trava o FGTS</small></span>
+        <span class="t-rotulo">Terreno</span>
+        <span class="lado dir"><span class="t-num p frente-texto">sem alerta</span></span>
+      </div>
+      <div class="duelo">
+        <span class="lado"><span class="t-num p">7,3</span><small>empate</small></span>
+        <span class="t-rotulo">Sossego à noite</span>
+        <span class="lado dir"><span class="t-num p">7,5</span><small>empate</small></span>
+        <span class="barras"><span class="barra"><i style="width: 73%"></i></span><span class="barra"><i style="width: 75%"></i></span></span>
+      </div>
+      <div class="duelo">
+        <span class="lado"><span class="t-num p">9,2</span><small>empate</small></span>
+        <span class="t-rotulo">Calor</span>
+        <span class="lado dir"><span class="t-num p">9,2</span><small>empate</small></span>
+        <span class="barras"><span class="barra"><i style="width: 92%"></i></span><span class="barra"><i style="width: 92%"></i></span></span>
+      </div>
+
+      <p class="t-rotulo grupo-titulo">Também muda</p>
+      <div class="lista">
+        <div class="duelo baixo"><span class="lado"><span class="v">6,9</span></span><span class="t-rotulo">A pé, de 10</span><span class="lado dir"><span class="v">8,8</span></span></div>
+        <div class="duelo baixo"><span class="lado"><span class="v">4 min</span></span><span class="t-rotulo">Ônibus à noite</span><span class="lado dir"><span class="v">1 min</span></span></div>
+        <div class="duelo baixo"><span class="lado"><span class="v">1</span></span><span class="t-rotulo">Obras a 150 m</span><span class="lado dir"><span class="v">5</span></span></div>
+        <div class="duelo baixo"><span class="lado"><span class="v">~R$ 152 mil</span></span><span class="t-rotulo">Para entrar</span><span class="lado dir"><span class="v">~R$ 105 mil</span></span></div>
+        <div class="duelo baixo"><span class="lado"><span class="v">~58 dB(A)</span><small>estimativa</small></span><span class="t-rotulo">Ruído à noite</span><span class="lado dir"><span class="v">~58 dB(A)</span><small>estimativa</small></span></div>
+      </div>
+
+      <div class="bloco secao">
+        <p class="t-rotulo">O que pesa mais</p>
+        <div class="segmento" role="radiogroup" aria-label="O que pesa mais" style="margin: var(--e2) 0 var(--e4); background: var(--papel)">
+          <button role="radio" aria-checked="true" data-escolhe="peso:custo">Custo</button>
+          <button role="radio" aria-checked="false" data-escolhe="peso:conforto">Conforto</button>
+          <button role="radio" aria-checked="false" data-escolhe="peso:docs">Documentos</button>
+        </div>
+        <p class="t-rotulo">A pergunta que decide</p>
+        <div data-quando="peso:custo"><p class="t-nome" style="margin-top: var(--e1)">O IPTU é R$ 95 ou R$ 142 por mês?</p><p class="t-linha" style="margin-top: var(--e1)">São R$ 564 por ano de diferença no Parque Atlântico.</p></div>
+        <div data-quando="peso:conforto" hidden><p class="t-nome" style="margin-top: var(--e1)">A obra a 116 m ainda está ativa?</p><p class="t-linha" style="margin-top: var(--e1)">A licença venceu em 01/2025.</p></div>
+        <div data-quando="peso:docs" hidden><p class="t-nome" style="margin-top: var(--e1)">O terreno do Parque Atlântico é aforado?</p><p class="t-linha" style="margin-top: var(--e1)">Sem aforamento, o FGTS não entra na compra.</p></div>
+        <div class="chips" style="margin: var(--e2) 0 0; padding: 0">
+          <button class="chip" aria-pressed="false" data-liga><span style="background: var(--papel)">Já sei</span></button>
+          <button class="chip" aria-pressed="false" data-liga><span style="background: var(--papel)">Perguntar</span></button>
+        </div>
+      </div>
+
+      <div class="lista secao">
+        <a class="linha" href="#comparar+rotina"><span class="linha-texto"><b>Tempo de trajeto</b><small>84 e 124 min por dia</small></span><i class="vai"></i></a>
+        <a class="linha" href="#comparar+trocar"><span class="linha-texto"><b>Incluir terceiro imóvel</b></span><i class="vai"></i></a>
+        <a class="linha" href="#comparar+sala"><span class="linha-texto"><b>Decidir a dois</b></span><i class="vai"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="acao"><a class="botao principal largo" href="#visita">Escolher para visitar</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ VISITA ═══════════════════════════════════ -->
+<!-- Preparar -->
+<section class="tela" id="visita" data-dock="visita" aria-label="Visita">
+  <header class="cabeca"><h1 class="t-titulo">Visita</h1></header>
+  <div class="rolagem">
+    <div class="conteudo">
+      <div class="imovel"><span class="miniatura"><img src="../mapas/parque-atlantico-topo.png" alt=""></span><span class="linha-texto"><b>Parque Atlântico</b><small>Boa Viagem · 14º andar</small></span><a class="botao pequeno" href="#visita+trocar">Trocar</a></div>
+      <div class="bloco" style="margin-top: var(--e2)">
+        <p class="t-num xg">12<span class="t-un">pontos para conferir</span></p>
+        <p class="t-linha" style="margin-top: var(--e1)">7 vêm dos registros da rua</p>
+      </div>
+      <div class="lista secao">
+        <div class="linha"><span class="linha-texto"><b>A água da rua entra na garagem?</b><small>6 pedidos de drenagem em 12 meses</small></span></div>
+        <a class="linha" href="#visita+internet"><span class="linha-texto"><b>Internet no cômodo</b><small>sem teste ainda</small></span><i class="vai"></i></a>
+        <div class="linha"><span class="linha-texto"><b>As obras próximas afetam a rotina?</b><small>1 obra licenciada a 150 m</small></span></div>
+        <a class="linha" href="#visita+roteiro"><span class="linha-texto"><b>Todos os pontos</b></span><i class="vai"></i></a>
+      </div>
+      <div class="lista secao">
+        <a class="linha" href="#visita+mensagem"><span class="linha-texto"><b>Mensagem ao corretor</b><small>4 perguntas antes de ir</small></span><i class="vai"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="acao"><a class="botao principal largo" href="#visita-ponto">Começar visita</a></div>
+</section>
+
+<!-- Um ponto por vez -->
+<section class="tela" id="visita-ponto" aria-label="Visita: ponto 4 de 12">
+  <header class="cabeca" style="padding-left: 6px">
+    <a class="icone" href="#visita" aria-label="Sair da visita"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
+    <span class="t-mono" aria-label="Tempo de visita: 12 minutos e 40 segundos">00:12:40</span>
+    <a class="botao pequeno" href="#visita-ponto+roteiro">Lista</a>
+  </header>
+  <div class="rolagem">
+    <div class="conteudo">
+      <p class="t-rotulo">Ponto 4 de 12</p>
+      <div class="progresso" style="margin-top: var(--e2)" role="progressbar" aria-valuenow="4" aria-valuemin="0" aria-valuemax="12" aria-label="Ponto 4 de 12"><i style="width: 33%"></i></div>
+      <h1 class="t-titulo" style="margin-top: var(--e6)">A rua acumula água na chuva?</h1>
+      <p class="t-linha" style="margin-top: var(--e1)">6 pedidos de drenagem ao 156 em 12 meses</p>
+      <p class="t-corpo" style="margin-top: var(--e4)">Olhe os ralos, o meio-fio e a altura da entrada.</p>
+      <div class="respostas secao" role="radiogroup" aria-label="Resposta">
+        <button role="radio" aria-checked="false" data-escolhe="resp2:ok" data-sem-inicial>Tudo certo</button>
+        <button role="radio" aria-checked="false" data-escolhe="resp2:atencao">Atenção</button>
+        <button role="radio" aria-checked="false" data-escolhe="resp2:nao">Não vi</button>
+      </div>
+      <textarea class="campo-area" style="margin-top: var(--e3)" placeholder="Anotar" aria-label="Anotar"></textarea>
+    </div>
+  </div>
+  <div class="acao"><a class="botao" href="#visita-ponto">Anterior</a><a class="botao principal largo" href="#visita-ruido">Próximo ponto</a></div>
+</section>
+
+<!-- Sensor: ruído (diferença relativa) -->
+<section class="tela" id="visita-ruido" aria-label="Visita: ponto 11 de 12">
+  <header class="cabeca" style="padding-left: 6px">
+    <a class="icone" href="#visita" aria-label="Sair da visita"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
+    <span class="t-mono" aria-label="Tempo de visita: 36 minutos e 5 segundos">00:36:05</span>
+    <a class="botao pequeno" href="#visita-ponto+roteiro">Lista</a>
+  </header>
+  <div class="rolagem">
+    <div class="conteudo">
+      <p class="t-rotulo">Ponto 11 de 12</p>
+      <div class="progresso" style="margin-top: var(--e2)" role="progressbar" aria-valuenow="11" aria-valuemin="0" aria-valuemax="12" aria-label="Ponto 11 de 12"><i style="width: 92%"></i></div>
+      <h1 class="t-titulo" style="margin-top: var(--e6)">Como é o ruído com a janela aberta?</h1>
+      <div class="medir secao">
+        <button aria-pressed="false" data-liga>Medir aberta</button>
+        <button aria-pressed="true" data-liga>Medir fechada</button>
+      </div>
+      <div class="secao">
+        <p class="t-num xg">−9<span class="t-un">dB</span></p>
+        <p class="t-linha" style="margin-top: var(--e1)">com a janela fechada · diferença no mesmo aparelho</p>
+      </div>
+      <p class="t-rotulo grupo-titulo">Como soa lá dentro?</p>
+      <div class="chips" role="radiogroup" aria-label="Como soa lá dentro">
+        <button class="chip" role="radio" aria-checked="false" data-escolhe="som:silencioso"><span>Silencioso</span></button>
+        <button class="chip" role="radio" aria-checked="true" data-escolhe="som:moderado"><span>Moderado</span></button>
+        <button class="chip" role="radio" aria-checked="false" data-escolhe="som:alto"><span>Alto</span></button>
+      </div>
+      <p class="t-mono" style="margin-top: var(--e4)">O MICROFONE NÃO É CALIBRADO: VALE A DIFERENÇA, NÃO O VALOR</p>
+    </div>
+  </div>
+  <div class="acao"><a class="botao principal largo" href="#visita-bussola">Próximo ponto</a></div>
+</section>
+
+<!-- Sensor: bússola -->
+<section class="tela" id="visita-bussola" aria-label="Visita: ponto 12 de 12">
+  <header class="cabeca" style="padding-left: 6px">
+    <a class="icone" href="#visita" aria-label="Sair da visita"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a>
+    <span class="t-mono" aria-label="Tempo de visita: 39 minutos e 50 segundos">00:39:50</span>
+    <a class="botao pequeno" href="#visita-ponto+roteiro">Lista</a>
+  </header>
+  <div class="rolagem">
+    <div class="conteudo">
+      <p class="t-rotulo">Ponto 12 de 12</p>
+      <div class="progresso" style="margin-top: var(--e2)" role="progressbar" aria-valuenow="12" aria-valuemin="0" aria-valuemax="12" aria-label="Ponto 12 de 12"><i style="width: 100%"></i></div>
+      <h1 class="t-titulo" style="margin-top: var(--e6)">O sol chega às janelas?</h1>
+      <svg class="bussola" viewBox="0 0 200 200" role="img" aria-label="Bússola: a janela aponta para 116 graus, sudeste">
+        <circle class="aro" cx="100" cy="100" r="70"/>
+        <path class="risco" d="M100 38V30M131 46.3l4-6.9M153.7 69l6.9-4M162 100h8M153.7 131l6.9 4M131 153.7l4 6.9M100 162v8M69 153.7l-4 6.9M46.3 131l-6.9 4M38 100h-8M46.3 69l-6.9-4M69 46.3l-4-6.9"/>
+        <text x="100" y="20" text-anchor="middle">N</text>
+        <text x="186" y="104" text-anchor="middle">L</text>
+        <text x="100" y="192" text-anchor="middle">S</text>
+        <text x="14" y="104" text-anchor="middle">O</text>
+        <path class="agulha" d="M86.5 93.4L153.9 126.3"/>
+        <circle cx="100" cy="100" r="4" fill="var(--texto)"/>
+      </svg>
+      <div class="centro">
+        <p class="t-num g">116°<span class="t-un">sudeste</span></p>
+        <p class="t-linha" style="margin-top: var(--e1)">sol da manhã, ~5,5 h por dia</p>
+        <button class="botao pequeno" style="margin-top: var(--e3)">Guardar janela</button>
+      </div>
+    </div>
+  </div>
+  <div class="acao"><a class="botao principal largo" href="#visita-resumo">Encerrar visita</a></div>
+</section>
+
+<!-- Resumo da visita -->
+<section class="tela" id="visita-resumo" data-dock="visita" aria-label="Resumo da visita">
+  <header class="cabeca"><h1 class="t-titulo">Visita</h1></header>
+  <div class="rolagem">
+    <div class="conteudo">
+      <p class="t-num xg">9<span class="t-un">de 12 conferidos</span></p>
+      <p class="t-linha" style="margin-top: var(--e1)">42 minutos no imóvel</p>
+      <p class="t-rotulo grupo-titulo">Para olhar de novo</p>
+      <div class="lista">
+        <div class="linha"><span class="linha-texto"><b>A rua acumula água na chuva?</b></span><span class="valor-texto t-atencao">Atenção</span></div>
+        <div class="linha"><span class="linha-texto"><b>Como é a rua à noite?</b></span><span class="valor-texto t-atencao">Atenção</span></div>
+      </div>
+      <p class="t-rotulo grupo-titulo">Sem resposta</p>
+      <div class="lista">
+        <div class="linha"><span class="linha-texto"><b>Internet no cômodo</b></span><span class="valor-texto">Sem teste</span></div>
+        <div class="linha"><span class="linha-texto"><b>Há cota extra ou obra aprovada?</b></span><span class="valor-texto">Não vi</span></div>
+        <div class="linha"><span class="linha-texto"><b>Onde o lixo espera a coleta?</b></span><span class="valor-texto">Não vi</span></div>
+      </div>
+      <div class="lista secao">
+        <div class="linha"><span class="linha-texto"><b>Ruído com a janela fechada</b><small>diferença relativa, medida na visita</small></span><span class="t-num p">−9 dB</span></div>
+        <div class="linha"><span class="linha-texto"><b>Como soou</b></span><span class="valor-texto">Moderado</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="acao"><a class="botao principal largo" href="#comparar">Comparar</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ CADERNO ═══════════════════════════════════ -->
+<section class="tela" id="caderno" data-dock="caderno" aria-label="Caderno">
+  <header class="cabeca"><h1 class="t-titulo">Caderno</h1><a class="icone" href="#caderno+novo" aria-label="Novo imóvel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></header>
+  <div class="rolagem">
+    <div class="conteudo">
+      <div class="chips" role="radiogroup" aria-label="Filtrar">
+        <button class="chip" role="radio" aria-checked="true" data-escolhe="filtro:todos"><span>Todos</span></button>
+        <button class="chip" role="radio" aria-checked="false" data-escolhe="filtro:triagem"><span>Triagem</span></button>
+        <button class="chip" role="radio" aria-checked="false" data-escolhe="filtro:visita"><span>Visita</span></button>
+        <button class="chip" role="radio" aria-checked="false" data-escolhe="filtro:comprar"><span>Comprar</span></button>
+        <button class="chip" role="radio" aria-checked="false" data-escolhe="filtro:alugar"><span>Alugar</span></button>
+      </div>
+      <div class="lista">
+        <div class="imovel com-menu"><a class="imovel-abre" href="#painel@ae"><span class="miniatura"><img src="../mapas/ana-elizabeth-topo.png" alt=""></span><span class="linha-texto"><b><span class="nome">Ana Elizabeth</span></b><small>Graças · visita marcada</small></span><span class="fim"><span class="t-num p">R$ 495 mil</span><span class="t-linha">~R$ 5.476/mês</span></span></a><a class="icone" href="#caderno+triagem" aria-label="Triagem de Ana Elizabeth"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="ponto" cx="12" cy="5.5" r="1.6"/><circle class="ponto" cx="12" cy="12" r="1.6"/><circle class="ponto" cx="12" cy="18.5" r="1.6"/></svg></a></div>
+        <div class="imovel com-menu"><a class="imovel-abre" href="#painel@pa"><span class="miniatura"><img src="../mapas/parque-atlantico-topo.png" alt=""></span><span class="linha-texto"><b><span class="nome">Parque Atlântico</span><svg class="estrela" viewBox="0 0 24 24" role="img" aria-label="favorito"><path d="m12 3.2 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></b><small>Boa Viagem · triagem</small><small class="t-atencao">IPTU não confere</small></span><span class="fim"><span class="t-num p">R$ 720 mil</span><span class="t-linha">~R$ 6.805/mês</span></span></a><a class="icone" href="#caderno+triagem" aria-label="Triagem de Parque Atlântico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="ponto" cx="12" cy="5.5" r="1.6"/><circle class="ponto" cx="12" cy="12" r="1.6"/><circle class="ponto" cx="12" cy="18.5" r="1.6"/></svg></a></div>
+        <div class="imovel com-menu"><a class="imovel-abre" href="#painel@viena"><span class="miniatura"><img src="../mapas/viena-topo.png" alt=""></span><span class="linha-texto"><b><span class="nome">Viena</span></b><small>Madalena · aluguel</small><small class="t-atencao">IPTU a confirmar</small></span><span class="fim"><span class="t-num p">R$ 3.600</span><span class="t-linha">R$ 4.895/mês</span></span></a><a class="icone" href="#caderno+triagem" aria-label="Triagem de Viena"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="ponto" cx="12" cy="5.5" r="1.6"/><circle class="ponto" cx="12" cy="12" r="1.6"/><circle class="ponto" cx="12" cy="18.5" r="1.6"/></svg></a></div>
+        <div class="imovel com-menu"><a class="imovel-abre" href="#painel@cf"><span class="miniatura vazia"></span><span class="linha-texto"><b><span class="nome">Apto. em Casa Forte</span></b><small>prédio a confirmar</small></span><span class="fim"><span class="t-num p">R$ 690 mil</span><span class="t-sem pequeno">Sem leitura</span></span></a><a class="icone" href="#caderno+triagem" aria-label="Triagem de Apto. em Casa Forte"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="ponto" cx="12" cy="5.5" r="1.6"/><circle class="ponto" cx="12" cy="12" r="1.6"/><circle class="ponto" cx="12" cy="18.5" r="1.6"/></svg></a></div>
+        <a class="linha" href="#caderno+descartados"><span class="linha-texto"><small>1 descartado</small></span><i class="vai"></i></a>
+      </div>
+      <p class="t-rotulo grupo-titulo">Dados e ajustes</p>
+      <div class="lista">
+        <a class="linha" href="#caderno+perfil"><span class="linha-texto"><b>Perfil da casa</b><small>2 pessoas</small></span><i class="vai"></i></a>
+        <a class="linha" href="#sobre"><span class="linha-texto"><b>Sobre os dados</b></span><i class="vai"></i></a>
+        <a class="linha" href="#caderno+copia"><span class="linha-texto"><b>Cópia do caderno</b></span><i class="vai"></i></a>
+        <a class="linha" href="#caderno+creditos"><span class="linha-texto"><b>Créditos de teste</b></span><span class="valor-texto">3</span><i class="vai"></i></a>
+      </div>
+      <p class="assinatura" style="margin-top: var(--e8)"><svg viewBox="0 0 100 84" aria-hidden="true"><path fill-rule="evenodd" d="M18 80C7 79 2 66 2 49 2 24 20 4 50 3c29-1 47 22 47 46 0 19-8 31-18 31-15 0-45 1-61 0Zm22-22c-5-16 0-34 13-35 11-1 16 17 11 34-5 15-19 15-24 1Z"/></svg>VEREDA</p>
+      <p class="t-mono" style="margin-top: var(--e2)">SEM CADASTRO · DADOS SÓ NESTE APARELHO</p>
+    </div>
+  </div>
+  <div class="acao"><a class="botao principal largo" href="#caderno+novo">Novo imóvel</a></div>
+</section>
+
+<!-- Caderno com a linha do Viena deslizada (mostra o gesto; os três pontos fazem o mesmo) -->
+<section class="tela" id="caderno-deslize" data-dock="caderno" aria-label="Caderno: linha deslizada">
+  <header class="cabeca"><h1 class="t-titulo">Caderno</h1><a class="icone" href="#caderno+novo" aria-label="Novo imóvel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></header>
+  <div class="rolagem">
+    <div class="conteudo">
+      <div class="chips" role="radiogroup" aria-label="Filtrar">
+        <button class="chip" role="radio" aria-checked="true" data-escolhe="filtro2:todos"><span>Todos</span></button>
+        <button class="chip" role="radio" aria-checked="false" data-escolhe="filtro2:triagem"><span>Triagem</span></button>
+        <button class="chip" role="radio" aria-checked="false" data-escolhe="filtro2:visita"><span>Visita</span></button>
+        <button class="chip" role="radio" aria-checked="false" data-escolhe="filtro2:comprar"><span>Comprar</span></button>
+        <button class="chip" role="radio" aria-checked="false" data-escolhe="filtro2:alugar"><span>Alugar</span></button>
+      </div>
+      <div class="lista">
+        <div class="imovel com-menu"><a class="imovel-abre" href="#painel@ae"><span class="miniatura"><img src="../mapas/ana-elizabeth-topo.png" alt=""></span><span class="linha-texto"><b><span class="nome">Ana Elizabeth</span></b><small>Graças · visita marcada</small></span><span class="fim"><span class="t-num p">R$ 495 mil</span><span class="t-linha">~R$ 5.476/mês</span></span></a><a class="icone" href="#caderno+triagem" aria-label="Triagem de Ana Elizabeth"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="ponto" cx="12" cy="5.5" r="1.6"/><circle class="ponto" cx="12" cy="12" r="1.6"/><circle class="ponto" cx="12" cy="18.5" r="1.6"/></svg></a></div>
+        <div class="imovel com-menu"><a class="imovel-abre" href="#painel@pa"><span class="miniatura"><img src="../mapas/parque-atlantico-topo.png" alt=""></span><span class="linha-texto"><b><span class="nome">Parque Atlântico</span><svg class="estrela" viewBox="0 0 24 24" role="img" aria-label="favorito"><path d="m12 3.2 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></b><small>Boa Viagem · triagem</small><small class="t-atencao">IPTU não confere</small></span><span class="fim"><span class="t-num p">R$ 720 mil</span><span class="t-linha">~R$ 6.805/mês</span></span></a><a class="icone" href="#caderno+triagem" aria-label="Triagem de Parque Atlântico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="ponto" cx="12" cy="5.5" r="1.6"/><circle class="ponto" cx="12" cy="12" r="1.6"/><circle class="ponto" cx="12" cy="18.5" r="1.6"/></svg></a></div>
+        <div class="imovel com-menu deslizada" style="display: block">
+          <div class="gesto"><button aria-pressed="false" data-liga>Favoritar</button><a class="descartar" href="#caderno-deslize+descartar">Descartar</a></div>
+          <div class="imovel-frente"><a class="imovel-abre" href="#painel@viena"><span class="miniatura"><img src="../mapas/viena-topo.png" alt=""></span><span class="linha-texto"><b><span class="nome">Viena</span></b><small>Madalena · aluguel</small><small class="t-atencao">IPTU a confirmar</small></span><span class="fim"><span class="t-num p">R$ 3.600</span><span class="t-linha">R$ 4.895/mês</span></span></a><a class="icone" href="#caderno+triagem" aria-label="Triagem de Viena"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="ponto" cx="12" cy="5.5" r="1.6"/><circle class="ponto" cx="12" cy="12" r="1.6"/><circle class="ponto" cx="12" cy="18.5" r="1.6"/></svg></a></div>
+        </div>
+        <div class="imovel com-menu"><a class="imovel-abre" href="#painel@cf"><span class="miniatura vazia"></span><span class="linha-texto"><b><span class="nome">Apto. em Casa Forte</span></b><small>prédio a confirmar</small></span><span class="fim"><span class="t-num p">R$ 690 mil</span><span class="t-sem pequeno">Sem leitura</span></span></a><a class="icone" href="#caderno+triagem" aria-label="Triagem de Apto. em Casa Forte"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="ponto" cx="12" cy="5.5" r="1.6"/><circle class="ponto" cx="12" cy="12" r="1.6"/><circle class="ponto" cx="12" cy="18.5" r="1.6"/></svg></a></div>
+        <a class="linha" href="#caderno+descartados"><span class="linha-texto"><small>1 descartado</small></span><i class="vai"></i></a>
+      </div>
+      <p class="t-rotulo grupo-titulo">Dados e ajustes</p>
+      <div class="lista">
+        <a class="linha" href="#caderno+perfil"><span class="linha-texto"><b>Perfil da casa</b><small>2 pessoas</small></span><i class="vai"></i></a>
+        <a class="linha" href="#sobre"><span class="linha-texto"><b>Sobre os dados</b></span><i class="vai"></i></a>
+        <a class="linha" href="#caderno+copia"><span class="linha-texto"><b>Cópia do caderno</b></span><i class="vai"></i></a>
+        <a class="linha" href="#caderno+creditos"><span class="linha-texto"><b>Créditos de teste</b></span><span class="valor-texto">3</span><i class="vai"></i></a>
+      </div>
+      <p class="assinatura" style="margin-top: var(--e8)"><svg viewBox="0 0 100 84" aria-hidden="true"><path fill-rule="evenodd" d="M18 80C7 79 2 66 2 49 2 24 20 4 50 3c29-1 47 22 47 46 0 19-8 31-18 31-15 0-45 1-61 0Zm22-22c-5-16 0-34 13-35 11-1 16 17 11 34-5 15-19 15-24 1Z"/></svg>VEREDA</p>
+      <p class="t-mono" style="margin-top: var(--e2)">SEM CADASTRO · DADOS SÓ NESTE APARELHO</p>
+    </div>
+  </div>
+  <div class="acao"><a class="botao principal largo" href="#caderno+novo">Novo imóvel</a></div>
+</section>
+
+<!-- Sobre os dados -->
+<section class="tela" id="sobre" aria-label="Sobre os dados">
+  <header class="cabeca" style="padding-left: 6px"><a class="icone" href="#caderno" aria-label="Voltar ao caderno"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></a></header>
+  <div class="rolagem">
+    <div class="conteudo">
+      <h1 class="t-titulo">Sobre os dados</h1>
+      <p class="t-linha" style="margin-top: var(--e1)">14 bases públicas, lidas no aparelho.</p>
+      <div class="lista secao">
+        <div class="linha"><span class="linha-texto"><b>IPTU 2026</b><small>Prefeitura do Recife · ODbL · base de 03/10/2026</small></span></div>
+        <div class="linha"><span class="linha-texto"><b>ITBI</b><small>Prefeitura do Recife · escrituras por prédio</small></span></div>
+        <div class="linha"><span class="linha-texto"><b>Licenciamento de obras</b><small>Prefeitura do Recife · últimos 24 meses</small></span></div>
+        <div class="linha"><span class="linha-texto"><b>Central 156</b><small>pedidos de 20/06/2025 a 19/06/2026</small></span></div>
+        <div class="linha"><span class="linha-texto"><b>Defesa Civil</b><small>atendimentos de 2014 a 2024</small></span></div>
+        <div class="linha"><span class="linha-texto"><b>Censo 2022</b><small>IBGE</small></span></div>
+        <div class="linha"><span class="linha-texto"><b>OpenStreetMap</b><small>vias · ODbL · 17/11/2026</small></span></div>
+        <div class="linha"><span class="linha-texto"><b>Registros policiais</b><small>SDS-PE compilado pelo Crime Brasil · CC BY 4.0</small></span></div>
+      </div>
+      <div class="lista secao">
+        <a class="linha" href="#sobre"><span class="linha-texto"><b>Bairros cobertos</b></span><span class="valor-texto">72 de 94</span><i class="vai"></i></a>
+        <a class="linha" href="#sobre"><span class="linha-texto"><b>Fora da cobertura</b></span><i class="vai"></i></a>
+        <a class="linha" href="#sobre"><span class="linha-texto"><b>Baixar as bases</b><small>ODbL</small></span><i class="vai"></i></a>
+      </div>
+      <p class="t-mono" style="margin-top: var(--e4)">CONTÉM DADOS DA PREFEITURA DO RECIFE (ODbL) · © COLABORADORES DO OPENSTREETMAP</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ GAVETAS: ENTRADA ═══════════════════════════════════ -->
+<section class="gaveta" id="g-novo" role="dialog" aria-modal="true" aria-labelledby="g-novo-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-novo-t">Novo imóvel</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <label class="campo"><input type="text" placeholder="Link do anúncio, prédio ou rua" aria-label="Link do anúncio, prédio ou rua"></label>
+    <a class="botao principal" style="display: flex; margin-top: var(--e3)" href="#painel+confirmar">Colar link</a>
+    <div class="lista" style="margin-top: var(--e3)">
+      <a class="linha" href="#painel+confirmar"><span class="linha-texto"><b>Colar o texto</b><small>quando o link não abre</small></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+novo-sem-permissao"><span class="linha-texto"><b>Usar minha localização</b><small>prédio a até 250 m</small></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+novo-buscando"><span class="linha-texto"><b>Digitar sem link</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+bolso"><span class="linha-texto"><b>Simular o bolso</b><small>sem anúncio</small></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+onde"><span class="linha-texto"><b>Onde mais procurar</b><small>ruas perto do seu destino</small></span><i class="vai"></i></a>
+    </div>
+    <p class="t-rotulo grupo-titulo">Exemplos</p>
+    <div class="lista">
+      <a class="imovel" href="#painel"><span class="miniatura"><img src="../mapas/parque-atlantico-topo.png" alt=""></span><span class="linha-texto"><b>Parque Atlântico</b><small>torre de 2016 em Boa Viagem</small></span><i class="vai"></i></a>
+      <a class="imovel" href="#painel@ae"><span class="miniatura"><img src="../mapas/ana-elizabeth-topo.png" alt=""></span><span class="linha-texto"><b>Ana Elizabeth</b><small>prédio de 1972 nas Graças</small></span><i class="vai"></i></a>
+      <a class="imovel" href="#painel@viena"><span class="miniatura"><img src="../mapas/viena-topo.png" alt=""></span><span class="linha-texto"><b>Viena</b><small>aluguel na Madalena</small></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-novo-buscando" role="dialog" aria-modal="true" aria-labelledby="g-novo-buscando-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-novo-buscando-t">Novo imóvel</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <label class="campo"><input type="text" value="Rosa e Silva" aria-label="Link do anúncio, prédio ou rua"></label>
+    <p class="t-rotulo grupo-titulo" role="status">Procurando no cadastro</p>
+    <div class="lista" aria-busy="true">
+      <div class="imovel"><span class="miniatura"></span><span><span class="esqueleto medio" style="display: block"></span><span class="esqueleto curto" style="display: block; margin-top: 8px; height: 12px"></span></span><span></span></div>
+      <div class="imovel"><span class="miniatura"></span><span><span class="esqueleto medio" style="display: block"></span><span class="esqueleto curto" style="display: block; margin-top: 8px; height: 12px"></span></span><span></span></div>
+      <div class="imovel"><span class="miniatura"></span><span><span class="esqueleto medio" style="display: block"></span><span class="esqueleto curto" style="display: block; margin-top: 8px; height: 12px"></span></span><span></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-novo-resultados" role="dialog" aria-modal="true" aria-labelledby="g-novo-resultados-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-novo-resultados-t">Novo imóvel</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <label class="campo"><input type="text" value="Rosa e Silva" aria-label="Link do anúncio, prédio ou rua"></label>
+    <div class="chips" role="radiogroup" aria-label="Porte do prédio" style="margin-top: var(--e2); margin-left: -20px; margin-right: -20px; padding: 0 20px">
+      <button class="chip" role="radio" aria-checked="true" data-escolhe="porte:todos"><span>Todos</span></button>
+      <button class="chip" role="radio" aria-checked="false" data-escolhe="porte:baixo"><span>Até 6 andares</span></button>
+      <button class="chip" role="radio" aria-checked="false" data-escolhe="porte:medio"><span>7 a 14</span></button>
+      <button class="chip" role="radio" aria-checked="false" data-escolhe="porte:alto"><span>15 ou mais</span></button>
+    </div>
+    <p class="t-rotulo grupo-titulo">1 de 12 prédios nesta avenida</p>
+    <div class="lista">
+      <a class="imovel" href="#painel@ae"><span class="miniatura"><img src="../mapas/ana-elizabeth-topo.png" alt=""></span><span class="linha-texto"><b>Ana Elizabeth</b><small>Av. Conselheiro Rosa e Silva, 537 · 1972 · 62 apartamentos</small></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+novo-resultados"><span class="linha-texto"><b>Mais 11 prédios</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-novo-sem-permissao" role="dialog" aria-modal="true" aria-labelledby="g-novo-sem-permissao-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-novo-sem-permissao-t">Novo imóvel</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <label class="campo"><input type="text" placeholder="Link do anúncio, prédio ou rua" aria-label="Link do anúncio, prédio ou rua"></label>
+    <a class="botao principal" style="display: flex; margin-top: var(--e3)" href="#painel+confirmar">Colar link</a>
+    <div class="aviso" role="status" style="margin-top: var(--e3); background: var(--papel)">
+      <span class="linha-texto"><b>Sem permissão de localização</b><small>Busque pelo nome do prédio ou da rua.</small></span>
+      <button class="botao pequeno claro">Abrir ajustes</button>
+    </div>
+    <div class="lista" style="margin-top: var(--e2)">
+      <a class="linha" href="#painel+novo-buscando"><span class="linha-texto"><b>Digitar sem link</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+bolso"><span class="linha-texto"><b>Simular o bolso</b><small>sem anúncio</small></span><i class="vai"></i></a>
+    </div>
+    <p class="t-rotulo grupo-titulo">Exemplos</p>
+    <div class="lista">
+      <a class="imovel" href="#painel"><span class="miniatura"><img src="../mapas/parque-atlantico-topo.png" alt=""></span><span class="linha-texto"><b>Parque Atlântico</b><small>torre de 2016 em Boa Viagem</small></span><i class="vai"></i></a>
+      <a class="imovel" href="#painel@ae"><span class="miniatura"><img src="../mapas/ana-elizabeth-topo.png" alt=""></span><span class="linha-texto"><b>Ana Elizabeth</b><small>prédio de 1972 nas Graças</small></span><i class="vai"></i></a>
+      <a class="imovel" href="#painel@viena"><span class="miniatura"><img src="../mapas/viena-topo.png" alt=""></span><span class="linha-texto"><b>Viena</b><small>aluguel na Madalena</small></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-confirmar" role="dialog" aria-modal="true" aria-labelledby="g-confirmar-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-confirmar-t">Anúncio lido</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <p class="t-nome">2 quartos em Boa Viagem</p>
+    <div class="lista">
+      <div class="linha" style="min-height: 44px"><span class="linha-texto"><b>Preço</b><small>do anúncio</small></span><span class="t-num p">R$ 720.000</span></div>
+      <div class="linha" style="min-height: 44px"><span class="linha-texto"><b>Condomínio</b></span><span class="t-num p">R$ 980</span></div>
+      <div class="linha" style="min-height: 44px"><span class="linha-texto"><b>IPTU</b></span><span class="t-num p">R$ 95</span></div>
+      <div class="linha" style="min-height: 44px"><span class="linha-texto"><b>Área</b></span><span class="t-num p">58 m²</span></div>
+      <div class="linha" style="min-height: 44px"><span class="linha-texto"><b>Andar</b></span><span class="t-num p">14º</span></div>
+    </div>
+    <div class="fila" style="margin-top: var(--e2)">
+      <a class="botao pequeno" href="#painel+confirmar">Corrigir dados</a>
+      <a class="botao pequeno" href="#painel+confirmar">Colar o texto</a>
+    </div>
+    <p class="t-rotulo grupo-titulo">É este o prédio?</p>
+    <img src="../mapas/parque-atlantico-topo.png" alt="Mapa do lote do Parque Atlântico" style="width: 100%; height: 132px; border-radius: var(--raio); object-fit: cover; object-position: 50% 100%; margin-top: var(--e2)">
+    <p class="t-nome" style="margin-top: var(--e3)">Parque Atlântico</p>
+    <p class="t-linha">Av. Boa Viagem, 2290 · 2016 · 29 andares</p>
+    <p class="t-mono" style="margin-top: var(--e2)">25 APARTAMENTOS DE 57,72 m² NO CADASTRO · USA 1 CRÉDITO DE TESTE</p>
+  </div>
+  <div class="g-acao">
+    <a class="botao principal" href="#painel">É este prédio</a>
+    <a class="botao" href="#painel+novo-resultados">Não é este</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ GAVETAS: TRIAGEM ═══════════════════════════════════ -->
+<section class="gaveta" id="g-triagem" role="dialog" aria-modal="true" aria-labelledby="g-triagem-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-triagem-t">Triagem · Parque Atlântico</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="segmento miudo" role="radiogroup" aria-label="Etapa">
+      <button role="radio" aria-checked="true" data-escolhe="etapa:triagem">Triagem</button>
+      <button role="radio" aria-checked="false" data-escolhe="etapa:visita">Visita</button>
+      <button role="radio" aria-checked="false" data-escolhe="etapa:visitado">Visitado</button>
+      <button role="radio" aria-checked="false" data-escolhe="etapa:negociando">Negociando</button>
+    </div>
+    <div class="lista" style="margin-top: var(--e3)">
+      <div class="linha"><span class="linha-texto"><b id="rot-fav">Favorito</b></span><button class="interruptor" role="button" aria-pressed="true" data-liga aria-labelledby="rot-fav"></button></div>
+    </div>
+    <p class="t-rotulo grupo-titulo">Anotar</p>
+    <textarea class="campo-area" style="margin-top: var(--e2)" placeholder="Ex.: perguntar o IPTU do boleto" aria-label="Anotar"></textarea>
+    <button class="botao pequeno" style="margin-top: var(--e2)">Guardar nota</button>
+    <p class="t-mono" style="margin-top: var(--e4)">18/11 · PERGUNTAR SE A VARANDA PEGA SOL DA TARDE</p>
+    <div class="lista secao">
+      <a class="linha" href="#painel+descartar"><span class="linha-texto"><b class="t-atencao">Descartar imóvel</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-descartar" role="dialog" aria-modal="true" aria-labelledby="g-descartar-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-descartar-t">Descartar</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <p class="t-nome">Por que saiu da lista?</p>
+    <div class="respostas" role="radiogroup" aria-label="Motivo" style="margin-top: var(--e3)">
+      <div role="radio" tabindex="0" aria-checked="false" data-escolhe="motivo:preco" data-sem-inicial>Preço ou taxas</div>
+      <div role="radio" tabindex="0" aria-checked="false" data-escolhe="motivo:ruido">Ruído ou entorno</div>
+      <div role="radio" tabindex="0" aria-checked="false" data-escolhe="motivo:planta">Planta, andar ou vaga</div>
+      <div role="radio" tabindex="0" aria-checked="false" data-escolhe="motivo:outro">Outro motivo</div>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e4)">COM O MOTIVO, VOLTA 1 CRÉDITO DE TESTE</p>
+    <a class="botao principal" style="display: flex; margin-top: var(--e4)" href="#caderno" aria-disabled="true">Descartar imóvel</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ GAVETAS: DETALHES DOS MOSTRADORES ═══════════════════════════════════ -->
+<section class="gaveta" id="g-mapa" role="dialog" aria-modal="true" aria-labelledby="g-mapa-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-mapa-t">Mapa do lote · Av. Boa Viagem, 2290</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="segmento" role="radiogroup" aria-label="Vista">
+      <button role="radio" aria-checked="true" data-escolhe="mapa:planta">Planta</button>
+      <button role="radio" aria-checked="false" data-escolhe="mapa:manha">Manhã</button>
+      <button role="radio" aria-checked="false" data-escolhe="mapa:meio">Meio-dia</button>
+      <button role="radio" aria-checked="false" data-escolhe="mapa:tarde">Tarde</button>
+    </div>
+    <img data-quando="mapa:planta" src="../mapas/mapa-do-lote-planta.png" alt="Planta do lote" style="width: 100%; border-radius: var(--raio); margin-top: var(--e3)">
+    <img data-quando="mapa:manha" hidden src="../mapas/mapa-do-lote-volume.png" alt="Volume do prédio, sol da manhã" style="width: 100%; border-radius: var(--raio); margin-top: var(--e3)">
+    <img data-quando="mapa:meio" hidden src="../mapas/mapa-do-lote-volume.png" alt="Volume do prédio, sol do meio-dia" style="width: 100%; border-radius: var(--raio); margin-top: var(--e3)">
+    <img data-quando="mapa:tarde" hidden src="../mapas/mapa-do-lote-volume.png" alt="Volume do prédio, sol da tarde" style="width: 100%; border-radius: var(--raio); margin-top: var(--e3)">
+    <p class="t-mono" style="margin-top: var(--e2)">MAPA ATUAL DO APP, SEM MUDANÇA · CONTÉM DADOS DA PREFEITURA DO RECIFE (ODbL)</p>
+    <div class="lista" style="margin-top: var(--e3)">
+      <div class="linha"><span class="linha-texto"><b>Área do lote</b><small>cadastro</small></span><span class="t-num p">954 m²</span></div>
+      <div class="linha"><span class="linha-texto"><b>Obra licenciada</b><small>acréscimo · nov/2024 · licença vencida em 01/2025</small></span><span class="t-num p">116 m</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-predio" role="dialog" aria-modal="true" aria-labelledby="g-predio-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-predio-t">Prédio · Parque Atlântico</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura">
+      <p class="t-num xg">10<span class="t-un">anos</span></p>
+      <p class="t-linha">2016 · 29 andares · 103 apartamentos · padrão médio</p>
+      <p class="t-mono" style="margin-top: var(--e1)">CHAVE CADASTRAL 6.1755.205.02.0130</p>
+    </div>
+    <svg class="regua" viewBox="0 0 350 62" role="img" aria-label="Idade do prédio: 10 anos, numa régua de 0 a 50. Primeira obra de fachada por volta dos 15 anos, revisão das colunas por volta dos 25.">
+      <path d="M6 34H344" stroke="var(--sutil)" stroke-width="8" stroke-linecap="round"/>
+      <path d="M107.4 24V44M175 24V44" stroke="var(--apoio)" stroke-width="1.5"/>
+      <circle cx="73.6" cy="34" r="7" fill="currentColor"/>
+      <text x="73.6" y="18" text-anchor="middle" class="forte">10 anos</text>
+      <text x="107.4" y="58" text-anchor="middle">fachada 15</text>
+      <text x="175" y="58" text-anchor="middle">colunas 25</text>
+      <text x="6" y="58">0</text><text x="344" y="58" text-anchor="end">50 anos</text>
+    </svg>
+    <p class="t-rotulo grupo-titulo">Preço e escrituras do prédio</p>
+    <div class="leitura" style="padding-bottom: 0">
+      <p class="t-num g">12%<span class="t-un">acima da mediana</span></p>
+    </div>
+    <svg class="regua" viewBox="0 0 350 62" role="img" aria-label="Escrituras do prédio de 560 a 800 mil reais. Metade central de 588 a 783 mil. Mediana 641 mil. Anúncio 720 mil.">
+      <path d="M6 34H344" stroke="var(--sutil)" stroke-width="8" stroke-linecap="round"/>
+      <path d="M45 34H320.3" stroke="var(--linha-forte)" stroke-width="8" stroke-linecap="round"/>
+      <path d="M119.7 24V44" stroke="var(--apoio)" stroke-width="1.5"/>
+      <circle cx="231.3" cy="34" r="7" fill="currentColor"/>
+      <text x="231.3" y="18" text-anchor="middle" class="forte">anúncio 720 mil</text>
+      <text x="119.7" y="58" text-anchor="middle">mediana 641 mil</text>
+      <text x="6" y="18">560 mil</text><text x="344" y="58" text-anchor="end">800 mil</text>
+    </svg>
+    <p class="t-mono">12 VENDAS EM 36 MESES · VALOR FISCAL, NÃO PREÇO DE MERCADO</p>
+    <div class="lista" style="margin-top: var(--e3)">
+      <div class="linha"><span class="linha-texto"><b>Apartamentos como este</b><small>de 57,72 m², no IPTU 2026</small></span><span class="t-num p">25</span></div>
+      <div class="linha"><span class="linha-texto"><b>Condomínio por m²</b><small>mediana do bairro: Sem leitura · precisa de 5 no caderno</small></span><span class="t-num p">R$ 16,90</span></div>
+      <div class="linha"><span class="linha-texto"><b>Estrutura</b><small>sem alerta de alvenaria resistente (29 andares) · nenhum laudo guardado</small></span><span class="valor-texto">sem registro</span></div>
+      <div class="linha"><span class="linha-texto"><b>Terreno</b><small class="t-atencao">trava o FGTS sem aforamento</small></span><span class="valor-texto">da União</span></div>
+      <div class="linha"><span class="linha-texto"><b>Torre nova à frente</b><small>base ainda não publicada aqui · fora da média</small></span><span class="valor-texto t-sem" style="font-size: var(--t14); line-height: 20px">Sem leitura</span></div>
+    </div>
+    <div class="lista" style="margin-top: var(--e5)">
+      <a class="linha" href="#painel+documentos"><span class="linha-texto"><b>Documentos do sinal</b></span><span class="valor-texto">0 de 4</span><i class="vai"></i></a>
+      <a class="linha" href="#painel+linha-do-tempo"><span class="linha-texto"><b>Linha do tempo</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+ata"><span class="linha-texto"><b>Ler ata</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+metodo-predio"><span class="linha-texto"><b>Como foi calculada</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+fonte"><span class="linha-texto"><b>Ver a fonte</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-rua" role="dialog" aria-modal="true" aria-labelledby="g-rua-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-rua-t">A pé · Parque Atlântico</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura">
+      <p class="t-num xg">6,9<span class="t-un">de 10</span></p>
+      <p class="t-linha">Mais perto que 48% dos prédios do bairro.</p>
+    </div>
+    <svg class="regua" viewBox="0 0 350 62" role="img" aria-label="Minutos a pé: praça 3, ônibus 4, mercado 5, farmácia 6, numa régua de 0 a 10 minutos.">
+      <path d="M6 34H344" stroke="var(--sutil)" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="107.4" cy="34" r="5" fill="currentColor"/>
+      <circle cx="141.2" cy="34" r="5" fill="currentColor"/>
+      <circle cx="175" cy="34" r="5" fill="currentColor"/>
+      <circle cx="208.8" cy="34" r="5" fill="currentColor"/>
+      <text x="107.4" y="18" text-anchor="middle">praça 3</text>
+      <text x="141.2" y="58" text-anchor="middle">ônibus 4</text>
+      <text x="175" y="18" text-anchor="middle" class="forte">mercado 5</text>
+      <text x="208.8" y="58" text-anchor="middle">farmácia 6</text>
+      <text x="6" y="58">0</text><text x="344" y="58" text-anchor="end">10 min</text>
+    </svg>
+    <p class="t-rotulo grupo-titulo">Registros a até 150 m, em 12 meses</p>
+    <div class="lista">
+      <div class="linha"><span class="linha-texto"><b>Drenagem</b><small>pedidos de limpeza de galeria</small></span><span class="t-num p">6</span></div>
+      <div class="linha"><span class="linha-texto"><b>Entulho</b></span><span class="t-num p">5</span></div>
+      <div class="linha"><span class="linha-texto"><b>Sinistros com vítima</b><small>chamados da CTTU, 2022 a 2024</small></span><span class="t-num p">10</span></div>
+      <div class="linha"><span class="linha-texto"><b>Obra licenciada</b><small>acréscimo a 116 m</small></span><span class="t-num p">1</span></div>
+    </div>
+    <p class="t-corpo" style="margin-top: var(--e4)">Isso bate com a rua hoje?</p>
+    <div class="chips" role="radiogroup" aria-label="Isso bate com a rua hoje?" style="margin: var(--e1) 0 0; padding: 0">
+      <button class="chip" role="radio" aria-checked="false" data-escolhe="bate:sim" data-sem-inicial><span>Bate</span></button>
+      <button class="chip" role="radio" aria-checked="false" data-escolhe="bate:nao"><span>Não bate</span></button>
+    </div>
+    <textarea class="campo-area" style="margin-top: var(--e2)" placeholder="Por quê? (opcional)" aria-label="Por quê? (opcional)" data-quando="bate:nao"></textarea>
+    <div class="lista" style="margin-top: var(--e4)">
+      <a class="linha" href="#painel+por-perto"><span class="linha-texto"><b>Por perto</b><small>praça, ciclofaixa, bicicleta de aluguel</small></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+comercio"><span class="linha-texto"><b>Comércio em volta</b><small>1 bar a 120 m</small></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+renda"><span class="linha-texto"><b>Renda do setor</b><small>mediana de R$ 15.000</small></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+metodo-rua"><span class="linha-texto"><b>Como foi calculada</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+fonte"><span class="linha-texto"><b>Ver a fonte</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-calor" role="dialog" aria-modal="true" aria-labelledby="g-calor-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-calor-t">Calor · Parque Atlântico</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura topo-arco">
+      <div>
+        <p class="t-num xg">9,2<span class="t-un">de 10</span></p>
+        <p style="margin-top: var(--e1)"><span class="selo" style="margin-left: 0; vertical-align: 0">fresco e ventilado</span></p>
+      </div>
+      <svg class="arco" viewBox="0 0 48 28" aria-hidden="true"><path class="trilho" d="M4 25A20 20 0 0 1 44 25"/><path class="valor" d="M4 25A20 20 0 0 1 44 25" pathLength="100" stroke-dasharray="92 100"/></svg>
+    </div>
+    <p class="t-linha" style="margin: calc(var(--e2) * -1) 0 var(--e3)">Sol da manhã, brisa do mar e quadra 2,2 °C mais fresca que o bairro.</p>
+    <div class="lista">
+      <div class="linha"><span class="linha-texto"><b>Fachada</b></span><span class="valor-texto">sudeste (116°)</span></div>
+      <div class="linha"><span class="linha-texto"><b>Sol direto</b><small>por dia, no equinócio</small></span><span class="t-num p"><span class="aprox">~</span>5,5 h</span></div>
+      <div class="linha"><span class="linha-texto"><b>Brisa</b><small>de sudeste, sem vizinho mais alto</small></span><span class="valor-texto">livre</span></div>
+      <div class="linha"><span class="linha-texto"><b>Quadra</b><small>em relação ao bairro · satélite</small></span><span class="t-num p">−2,2 °C</span></div>
+    </div>
+    <div class="lista" style="margin-top: var(--e5)">
+      <a class="linha" href="#painel+andar"><span class="linha-texto"><b>Andar e fachada</b><small>14º · sudeste</small></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+metodo-calor"><span class="linha-texto"><b>Como foi calculada</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+fonte"><span class="linha-texto"><b>Ver a fonte</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-chuva" role="dialog" aria-modal="true" aria-labelledby="g-chuva-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-chuva-t">Chuva · Parque Atlântico</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura">
+      <p class="t-num xg">0<span class="t-un">alagamentos</span></p>
+      <p class="t-linha">registrados na rua.</p>
+    </div>
+    <div class="lista">
+      <div class="linha"><span class="linha-texto"><b>Altura do terreno</b><small>acima dos pontos baixos em volta</small></span><span class="t-num p">14,6 m</span></div>
+      <div class="linha"><span class="linha-texto"><b>Pedidos de drenagem</b><small>à Central 156, em 12 meses</small></span><span class="t-num p">6</span></div>
+      <div class="linha"><span class="linha-texto"><b>Defesa Civil na avenida</b><small>2014 a 2024 · a base não diz o prédio</small></span><span class="t-num p">80</span></div>
+      <div class="linha"><span class="linha-texto"><b>Água mapeada mais perto</b></span><span class="t-num p">566 m</span></div>
+    </div>
+    <p class="t-linha" style="margin-top: var(--e3)">Sem registro não garante que a rua não alaga: pergunte na visita.</p>
+    <div class="lista" style="margin-top: var(--e5)">
+      <a class="linha" href="#painel+fonte"><span class="linha-texto"><b>Ver a fonte</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-perguntas" role="dialog" aria-modal="true" aria-labelledby="g-perguntas-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-perguntas-t">Perguntas · Parque Atlântico</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura">
+      <p class="t-num xg">12<span class="t-un">pontos para a visita</span></p>
+    </div>
+    <div class="aviso" style="background: var(--papel)">
+      <span class="linha-texto"><b class="t-atencao">IPTU não confere</b><small>anúncio R$ 95 · cadastro R$ 142 para 58 m²</small></span>
+    </div>
+    <p class="t-rotulo grupo-titulo">Para o corretor</p>
+    <div class="lista">
+      <div class="linha"><span class="linha-texto"><b>O IPTU é R$ 95 ou R$ 142 por mês?</b></span></div>
+      <div class="linha"><span class="linha-texto"><b>O terreno é aforado ou só ocupado?</b></span></div>
+      <div class="linha"><span class="linha-texto"><b>Há cota extra ou obra aprovada?</b></span></div>
+      <div class="linha"><span class="linha-texto"><b>Qual é o saldo do fundo de reserva?</b></span></div>
+    </div>
+    <a class="botao" style="display: flex; margin-top: var(--e2)" href="#painel+mensagem">Copiar mensagem</a>
+    <div class="lista" style="margin-top: var(--e5)">
+      <a class="linha" href="#visita"><span class="linha-texto"><b>Roteiro da visita</b></span><span class="valor-texto">12 pontos</span><i class="vai"></i></a>
+      <a class="linha" href="#painel+negociacao"><span class="linha-texto"><b>Preparar a negociação</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+pacote"><span class="linha-texto"><b>Pacote para especialista</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+mudou"><span class="linha-texto"><b>O que mudou</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ GAVETAS: COMO FOI CALCULADA (6 campos) ═══════════════════════════════════ -->
+<section class="gaveta" id="g-metodo-comparar" role="dialog" aria-modal="true" aria-labelledby="g-metodo-comparar-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-metodo-comparar-t">Como foi calculada</h2><a class="fechar-alvo" data-fechar href="#comparar" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura"><p class="t-num g">3<span class="t-un">de 6 · vantagem de Ana Elizabeth</span></p></div>
+    <dl class="metodo">
+      <div><dt>O que mede</dt><dd>Em quantos de 6 pontos um imóvel sai na frente do outro.</dd></div>
+      <div><dt>Fonte</dt><dd>Anúncio, cadastro da Prefeitura, estimativa de ruído e regra de conforto.</dd></div>
+      <div><dt>Data</dt><dd>A de cada imóvel.</dd></div>
+      <div><dt>Cálculo</dt><dd>A mesma régua nos dois imóveis. É empate quando a diferença é pequena (sossego 7,3 e 7,5).</dd></div>
+      <div><dt>Limite</dt><dd>Os 6 pontos pesam igual e não dizem qual imóvel serve melhor para você.</dd></div>
+      <div><dt>Na visita</dt><dd>Confira primeiro os pontos de empate.</dd></div>
+    </dl>
+    <div class="lista" style="margin-top: var(--e3)"><a class="linha" href="#comparar+fonte"><span class="linha-texto"><b>Ver a fonte</b></span><i class="vai"></i></a></div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-metodo-bolso" role="dialog" aria-modal="true" aria-labelledby="g-metodo-bolso-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-metodo-bolso-t">Como foi calculada</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura"><p class="t-num g"><span class="aprox">~</span>R$ 6.805<span class="t-un">por mês</span></p></div>
+    <dl class="metodo">
+      <div><dt>O que mede</dt><dd>Quanto sai do bolso por mês morando no imóvel.</dd></div>
+      <div><dt>Fonte</dt><dd>Anúncio; IPTU 2026 da Prefeitura; tarifa de luz homologada pela ANEEL; taxa média de financiamento do Banco Central.</dd></div>
+      <div><dt>Data</dt><dd>IPTU de 2026 · taxa de ago/2026.</dd></div>
+      <div><dt>Cálculo</dt><dd>Parcela de 80% do preço em 30 anos, mais condomínio, IPTU do cadastro e luz estimada.</dd></div>
+      <div><dt>Limite</dt><dd>Sem seguros e tarifas do banco; a luz muda com o uso do ar; cartório fica de fora.</dd></div>
+      <div><dt>Na visita</dt><dd>Peça o último boleto do condomínio e o carnê do IPTU.</dd></div>
+    </dl>
+    <div class="lista" style="margin-top: var(--e3)">
+      <a class="linha" href="#painel+bolso"><span class="linha-texto"><b>Voltar ao bolso</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+fonte"><span class="linha-texto"><b>Ver a fonte</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-metodo-predio" role="dialog" aria-modal="true" aria-labelledby="g-metodo-predio-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-metodo-predio-t">Como foi calculada</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura"><p class="t-num g">12%<span class="t-un">acima da mediana</span></p></div>
+    <dl class="metodo">
+      <div><dt>O que mede</dt><dd>Onde o preço pedido cai entre as escrituras de apartamentos do prédio.</dd></div>
+      <div><dt>Fonte</dt><dd>ITBI, o imposto de transmissão da Prefeitura do Recife.</dd></div>
+      <div><dt>Data</dt><dd>Vendas dos últimos 36 meses.</dd></div>
+      <div><dt>Cálculo</dt><dd>Mediana do valor por apartamento em 12 vendas; a faixa guarda a metade central.</dd></div>
+      <div><dt>Limite</dt><dd>É valor fiscal, não preço de mercado, e vale para apartamento de qualquer tamanho.</dd></div>
+      <div><dt>Na visita</dt><dd>Pergunte por quanto saíram as últimas vendas.</dd></div>
+    </dl>
+    <div class="lista" style="margin-top: var(--e3)">
+      <a class="linha" href="#painel+predio"><span class="linha-texto"><b>Voltar ao prédio</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+fonte"><span class="linha-texto"><b>Ver a fonte</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-metodo-rua" role="dialog" aria-modal="true" aria-labelledby="g-metodo-rua-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-metodo-rua-t">Como foi calculada</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura"><p class="t-num g">6,9<span class="t-un">de 10 · a pé</span></p></div>
+    <dl class="metodo">
+      <div><dt>O que mede</dt><dd>Quão perto ficam mercado, farmácia, ônibus e praça, a pé, da porta do prédio.</dd></div>
+      <div><dt>Fonte</dt><dd>Rede de ruas do OpenStreetMap; locais da Prefeitura e do GTFS, o arquivo de linhas e paradas de ônibus.</dd></div>
+      <div><dt>Data</dt><dd>Camada do ciclo de novembro de 2026.</dd></div>
+      <div><dt>Cálculo</dt><dd>Minutos pela rua até cada um; pesos de 30% (mercado), 25% (farmácia), 25% (ônibus) e 20% (praça).</dd></div>
+      <div><dt>Limite</dt><dd>Não vê calçada ruim, horário de funcionamento nem loja que fechou.</dd></div>
+      <div><dt>Na visita</dt><dd>Faça a pé o caminho até o mercado.</dd></div>
+    </dl>
+    <div class="lista" style="margin-top: var(--e3)">
+      <a class="linha" href="#painel+rua"><span class="linha-texto"><b>Voltar</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+fonte"><span class="linha-texto"><b>Ver a fonte</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-metodo-calor" role="dialog" aria-modal="true" aria-labelledby="g-metodo-calor-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-metodo-calor-t">Como foi calculada</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura"><p class="t-num g">9,2<span class="t-un">de 10 · calor</span></p></div>
+    <dl class="metodo">
+      <div><dt>O que mede</dt><dd>Se o apartamento tende a ser fresco ou quente.</dd></div>
+      <div><dt>Fonte</dt><dd>Fachada e andar que você escolheu; andares do prédio no cadastro da Prefeitura; calor de superfície da quadra pelo satélite Landsat; praças e água por perto.</dd></div>
+      <div><dt>Data</dt><dd>Satélite de 2026 · cadastro de 2026.</dd></div>
+      <div><dt>Cálculo</dt><dd>Regra de pontos: orientação do sol, brisa de sudeste, andar, calor da quadra, praça ou árvore perto e distância da água. Nota de 1 a 9,8.</dd></div>
+      <div><dt>Limite</dt><dd>Fórmula do Vereda, sem medição: nenhuma temperatura foi medida no apartamento e a sombra dos vizinhos não entra.</dd></div>
+      <div><dt>Na visita</dt><dd>Abra janelas opostas e sinta se o ar passa.</dd></div>
+    </dl>
+    <div class="lista" style="margin-top: var(--e3)">
+      <a class="linha" href="#painel+calor"><span class="linha-texto"><b>Voltar ao calor</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+fonte"><span class="linha-texto"><b>Ver a fonte</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ GAVETAS SECUNDÁRIAS ═══════════════════════════════════ -->
+<section class="gaveta" id="g-financiamento" role="dialog" aria-modal="true" aria-labelledby="g-financiamento-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-financiamento-t">Simular financiamento</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <p class="t-rotulo">Entrada</p>
+    <div class="segmento" role="radiogroup" aria-label="Entrada" style="margin-top: var(--e2)">
+      <button role="radio" aria-checked="false" data-escolhe="entrada:10">10%</button>
+      <button role="radio" aria-checked="true" data-escolhe="entrada:20">20%</button>
+      <button role="radio" aria-checked="false" data-escolhe="entrada:30">30%</button>
+      <button role="radio" aria-checked="false" data-escolhe="entrada:50">50%</button>
+    </div>
+    <p class="t-rotulo grupo-titulo">Prazo</p>
+    <div class="segmento" role="radiogroup" aria-label="Prazo" style="margin-top: var(--e2)">
+      <button role="radio" aria-checked="false" data-escolhe="prazo:15">15</button>
+      <button role="radio" aria-checked="false" data-escolhe="prazo:20">20</button>
+      <button role="radio" aria-checked="true" data-escolhe="prazo:30">30</button>
+      <button role="radio" aria-checked="false" data-escolhe="prazo:35">35 anos</button>
+    </div>
+    <div class="leitura" style="padding-top: var(--e5)"><p class="t-num g"><span class="aprox">~</span>R$ 5.371<span class="t-un">por mês</span></p></div>
+    <div class="lista" style="margin-top: 0">
+      <div class="linha"><span class="linha-texto"><b>Financiado</b></span><span class="t-num p">R$ 576.000</span></div>
+      <div class="linha"><span class="linha-texto"><b>Total pago ao banco</b></span><span class="t-num p"><span class="aprox">~</span>R$ 1.933.560</span></div>
+      <div class="linha"><span class="linha-texto"><b>Juros</b></span><span class="t-num p"><span class="aprox">~</span>R$ 1.357.560</span></div>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e3)">TABELA PRICE · 11,28% AO ANO · BANCO CENTRAL, AGO/2026 · SEM SEGUROS E TARIFAS</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-andar" role="dialog" aria-modal="true" aria-labelledby="g-andar-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-andar-t">Andar e fachada</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <p class="t-rotulo">Andar</p>
+    <div class="contador" style="margin-top: var(--e2)">
+      <button class="icone" aria-label="Descer um andar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+      <p class="t-num p">14º andar</p>
+      <button class="icone" aria-label="Subir um andar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+    </div>
+    <div class="segmento" role="radiogroup" aria-label="Altura no prédio">
+      <button role="radio" aria-checked="false" data-escolhe="altura:baixo">Baixo</button>
+      <button role="radio" aria-checked="true" data-escolhe="altura:meio">Meio</button>
+      <button role="radio" aria-checked="false" data-escolhe="altura:topo">Topo</button>
+    </div>
+    <p class="t-rotulo grupo-titulo">Para que lado fica a janela?</p>
+    <div class="rosa" role="radiogroup" aria-label="Lado da janela">
+      <button role="radio" aria-checked="false" data-escolhe="lado:no" aria-label="Noroeste">NO</button>
+      <button role="radio" aria-checked="false" data-escolhe="lado:n" aria-label="Norte">N</button>
+      <button role="radio" aria-checked="false" data-escolhe="lado:ne" aria-label="Nordeste">NE</button>
+      <button role="radio" aria-checked="false" data-escolhe="lado:o" aria-label="Oeste">O</button>
+      <span class="meio"></span>
+      <button role="radio" aria-checked="false" data-escolhe="lado:l" aria-label="Leste">L</button>
+      <button role="radio" aria-checked="false" data-escolhe="lado:so" aria-label="Sudoeste">SO</button>
+      <button role="radio" aria-checked="false" data-escolhe="lado:s" aria-label="Sul">S</button>
+      <button role="radio" aria-checked="true" data-escolhe="lado:se" aria-label="Sudeste">SE</button>
+    </div>
+    <div class="lista" style="margin-top: var(--e4)">
+      <div class="linha"><span class="linha-texto"><b>Na janela, à noite</b><small>estimativa</small></span><span class="t-num p"><span class="aprox">~</span>58 dB(A)</span></div>
+      <div class="linha"><span class="linha-texto"><b>Sol direto</b><small>por dia, fachada sudeste</small></span><span class="t-num p"><span class="aprox">~</span>5,5 h</span></div>
+      <div class="linha"><span class="linha-texto"><b>Brisa</b></span><span class="valor-texto">livre</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-documentos" role="dialog" aria-modal="true" aria-labelledby="g-documentos-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-documentos-t">Documentos do sinal</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="lista" style="margin-top: 0">
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Matrícula atualizada"></button><span class="linha-texto"><b>Matrícula atualizada</b><small>vale 30 dias</small></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Última ata de assembleia"></button><span class="linha-texto"><b>Última ata de assembleia</b></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Boleto e fundo de reserva"></button><span class="linha-texto"><b>Boleto e fundo de reserva</b></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Declaração negativa do condomínio"></button><span class="linha-texto"><b>Declaração negativa do condomínio</b></span></div>
+    </div>
+    <p class="t-rotulo grupo-titulo">Travas</p>
+    <div class="lista">
+      <div class="linha"><span class="linha-texto"><b>Terreno da União</b><small class="t-atencao">peça a certidão: aforamento ou ocupação</small></span><span class="valor-texto">Trava</span></div>
+      <div class="linha"><span class="linha-texto"><b>Matrícula recente</b><small>sem ela, não dá para conferir dono e dívidas</small></span><span class="valor-texto">Depende</span></div>
+    </div>
+    <div class="lista" style="margin-top: var(--e4)">
+      <a class="linha" href="#painel+documentos"><span class="linha-texto"><b>Rateio de obra</b><small>~R$ 1.942 por apartamento</small></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-linha-do-tempo" role="dialog" aria-modal="true" aria-labelledby="g-linha-do-tempo-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-linha-do-tempo-t">Linha do tempo · Parque Atlântico</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="lista" style="margin-top: 0">
+      <div class="linha"><span class="t-mono ano">2016</span><span class="linha-texto"><b>Prédio entregue</b></span></div>
+      <div class="linha"><span class="t-mono ano">2017–2026</span><span class="linha-texto"><b>117 vendas registradas</b></span></div>
+      <div class="linha"><span class="t-mono ano">2014–2024</span><span class="linha-texto"><b>80 atendimentos da Defesa Civil na avenida</b></span></div>
+      <div class="linha"><span class="t-mono ano">nov/2024</span><span class="linha-texto"><b>Acréscimo licenciado a 116 m</b></span></div>
+      <div class="linha"><span class="t-mono ano">2031</span><span class="linha-texto"><b>Primeira obra de fachada</b><small>referência: 15 anos de uso</small></span></div>
+    </div>
+    <p class="t-linha" style="margin-top: var(--e3)">Nenhum laudo, vistoria ou interdição guardado.</p>
+    <div class="lista" style="margin-top: var(--e3)"><a class="linha" href="#painel+ata"><span class="linha-texto"><b>Registrar documento</b></span><i class="vai"></i></a></div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-ata" role="dialog" aria-modal="true" aria-labelledby="g-ata-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-ata-t">Ler ata</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <textarea class="campo-area" style="min-height: 140px" placeholder="Cole o texto da ata, do regimento ou do boleto" aria-label="Texto da ata, do regimento ou do boleto"></textarea>
+    <button class="botao" style="display: flex; width: 100%; margin-top: var(--e3)">Ler texto</button>
+    <p class="t-mono" style="margin-top: var(--e3)">LIDO NO APARELHO, POR REGRAS · SEM SERVIDOR</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-por-perto" role="dialog" aria-modal="true" aria-labelledby="g-por-perto-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-por-perto-t">Por perto</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <p class="t-rotulo grupo-titulo" style="margin-top: 0">A pé, da porta</p>
+    <div class="lista">
+      <div class="linha"><span class="linha-texto"><b>Mercado</b><small>outra opção a 5 min</small></span><span class="t-num p">5 min</span></div>
+      <div class="linha"><span class="linha-texto"><b>Farmácia</b><small>outra opção a 10 min</small></span><span class="t-num p">6 min</span></div>
+      <div class="linha"><span class="linha-texto"><b>Praça</b><small>outra opção a 5 min</small></span><span class="t-num p">3 min</span></div>
+      <div class="linha"><span class="linha-texto"><b>Ônibus</b><small>outra opção a 6 min</small></span><span class="t-num p">4 min</span></div>
+      <div class="linha"><span class="linha-texto"><b>Mercado e farmácia juntos</b><small>em vez de 1,6 km em duas idas</small></span><span class="t-num p">990 m</span></div>
+    </div>
+    <p class="t-rotulo grupo-titulo">Equipamentos públicos</p>
+    <div class="lista">
+      <div class="linha"><span class="linha-texto"><b>Bicicleta de aluguel</b></span><span class="t-num p">4 min</span></div>
+      <div class="linha"><span class="linha-texto"><b>Ciclofaixa</b></span><span class="valor-texto">na rua</span></div>
+      <div class="linha"><span class="linha-texto"><b>Unidade de conservação</b></span><span class="t-num p">80 m</span></div>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e3)">CADASTRO DA PREFEITURA · DISTÂNCIA EM LINHA RETA</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-comercio" role="dialog" aria-modal="true" aria-labelledby="g-comercio-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-comercio-t">Comércio em volta</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="lista" style="margin-top: 0">
+      <div class="linha"><span class="linha-texto"><b>Bar ou venda de bebida</b><small>o mais perto a 120 m</small></span><span class="t-num p">1</span></div>
+      <div class="linha"><span class="linha-texto"><b>Padaria, farmácia ou mercadinho</b><small>a 130 m</small></span><span class="t-num p">1</span></div>
+      <div class="linha"><span class="linha-texto"><b>Endereços em obra em 2022</b><small>a até 150 m</small></span><span class="t-num p">6</span></div>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e3)">CENSO 2022 (IBGE) · SÓ A CATEGORIA, SEM NOME</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-mensagem" role="dialog" aria-modal="true" aria-labelledby="g-mensagem-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-mensagem-t">Mensagem ao corretor</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <p class="texto-pronto">Olá. Vi o anúncio do apartamento de 2 quartos na Av. Boa Viagem. Pode confirmar: 1) o IPTU por mês (o anúncio diz R$ 95); 2) se o terreno é aforado ou só ocupado; 3) se há cota extra ou obra aprovada; 4) o saldo do fundo de reserva?</p>
+    <div class="fila" style="margin-top: var(--e4); flex-direction: column">
+      <button class="botao principal">Copiar mensagem</button>
+      <button class="botao">Abrir WhatsApp</button>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-negociacao" role="dialog" aria-modal="true" aria-labelledby="g-negociacao-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-negociacao-t">Preparar a negociação</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <p class="t-nome">Fatos para levar</p>
+    <div class="lista">
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Levar este fato"></button><span class="linha-texto"><b>Preço 12% acima das escrituras do prédio</b></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Levar este fato"></button><span class="linha-texto"><b>IPTU do anúncio abaixo do cadastro</b></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Levar este fato"></button><span class="linha-texto"><b>Ruído 8 dB acima da referência à noite</b><small>estimativa</small></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Levar este fato"></button><span class="linha-texto"><b>Terreno da União pede certidão</b></span></div>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e3)">O VEREDA NÃO SUGERE PREÇO NEM VALOR DE PROPOSTA</p>
+    <a class="botao" style="display: flex; margin-top: var(--e4)" href="#painel+mensagem">Montar mensagem</a>
+  </div>
+</section>
+
+<section class="gaveta" id="g-pacote" role="dialog" aria-modal="true" aria-labelledby="g-pacote-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-pacote-t">Pacote para especialista</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <p class="t-linha">O painel e o caderno, para advogado ou vistoriador.</p>
+    <div class="lista">
+      <a class="linha" href="#painel+pacote"><span class="linha-texto"><b>Imprimir</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+pacote"><span class="linha-texto"><b>Copiar texto</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+pacote"><span class="linha-texto"><b>Baixar arquivo</b></span><i class="vai"></i></a>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e3)">FICAM DE FORA: PERFIL DA CASA, FOTOS E DIÁRIO</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-mudou" role="dialog" aria-modal="true" aria-labelledby="g-mudou-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-mudou-t">O que mudou</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <p class="t-mono">GUARDADO EM 12/11/2026</p>
+    <div class="lista">
+      <div class="linha"><span class="linha-texto"><b>Obras a 150 m</b><small>1 licença</small></span><span class="valor-texto">igual</span></div>
+      <div class="linha"><span class="linha-texto"><b>Defesa Civil na avenida</b><small>80 atendimentos</small></span><span class="valor-texto">igual</span></div>
+      <div class="linha"><span class="linha-texto"><b>Anúncio</b></span><span class="valor-texto">igual</span></div>
+    </div>
+    <button class="botao" style="display: flex; width: 100%; margin-top: var(--e3)">Guardar de novo</button>
+  </div>
+</section>
+
+<section class="gaveta" id="g-trocar" role="dialog" aria-modal="true" aria-labelledby="g-trocar-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-trocar-t">Escolher imóvel</h2><a class="fechar-alvo" data-fechar href="#comparar" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="respostas" role="radiogroup" aria-label="Imóvel">
+      <div role="radio" tabindex="0" aria-checked="true" data-escolhe="imovel:pa">Parque Atlântico · Boa Viagem</div>
+      <div role="radio" tabindex="0" aria-checked="false" data-escolhe="imovel:ae">Ana Elizabeth · Graças</div>
+      <div role="radio" tabindex="0" aria-checked="false" data-escolhe="imovel:cf">Apto. em Casa Forte · a confirmar</div>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e3)">VIENA É ALUGUEL: COMPARA SÓ COM ALUGUEL</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-rotina" role="dialog" aria-modal="true" aria-labelledby="g-rotina-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-rotina-t">Tempo de trajeto</h2><a class="fechar-alvo" data-fechar href="#comparar" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="dois">
+      <div><p class="t-rotulo">Parque Atlântico</p><p class="t-num g">84<span class="t-un">min por dia</span></p></div>
+      <div><p class="t-rotulo">Ana Elizabeth</p><p class="t-num g">124<span class="t-un">min por dia</span></p></div>
+    </div>
+    <p class="t-linha" style="margin-top: var(--e3)">Recife Antigo e Boa Viagem, ida e volta, no pico</p>
+    <p class="t-mono" style="margin-top: var(--e3)">ESTIMATIVA: LINHA RETA × 1,38 · 20 DIAS POR MÊS · NÃO É O TRAJETO PELAS RUAS</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-sala" role="dialog" aria-modal="true" aria-labelledby="g-sala-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-sala-t">Decidir a dois</h2><a class="fechar-alvo" data-fechar href="#comparar" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <p class="t-linha">A outra pessoa abre o link, reage e devolve.</p>
+    <div class="lista">
+      <div class="linha"><span class="linha-texto"><b>Vai no link</b></span><span class="valor-texto">só o anúncio</span></div>
+      <div class="linha"><span class="linha-texto"><b>Fica de fora</b></span><span class="valor-texto">caderno, visita e perfil</span></div>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e3)">QUEM RECEBE RESPONDE: FAZ SENTIDO, DÚVIDA OU DESCARTAR</p>
+    <button class="botao principal" style="display: flex; width: 100%; margin-top: var(--e4)">Copiar link</button>
+    <div class="lista" style="margin-top: var(--e3)">
+      <a class="linha" href="#comparar+sala"><span class="linha-texto"><b>Abrir resposta</b><small>cole o link que voltou</small></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-roteiro" role="dialog" aria-modal="true" aria-labelledby="g-roteiro-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-roteiro-t">Roteiro · 12 pontos</h2><a class="fechar-alvo" data-fechar href="#visita" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="lista" style="margin-top: 0">
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="true" data-liga aria-label="Ponto 1 conferido"></button><span class="linha-texto"><b>A água da rua entra na garagem?</b><small>6 pedidos de drenagem em 12 meses</small></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Ponto 2 conferido"></button><span class="linha-texto"><b>Internet no cômodo</b><small>sem teste ainda</small></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="true" data-liga aria-label="Ponto 3 conferido"></button><span class="linha-texto"><b>As obras próximas afetam a rotina?</b><small>1 obra licenciada a 150 m</small></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Ponto 4 conferido"></button><span class="linha-texto"><b>A rua acumula água na chuva?</b><small>6 pedidos de drenagem em 12 meses</small></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Ponto 5 conferido"></button><span class="linha-texto"><b>Como é a rua à noite?</b><small>30 pedidos de lâmpada apagada</small></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Ponto 6 conferido"></button><span class="linha-texto"><b>Como é atravessar a rua a pé?</b><small>10 sinistros com vítima, 2022 a 2024</small></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Ponto 7 conferido"></button><span class="linha-texto"><b>Onde o lixo espera a coleta?</b><small>coleta à noite: seg, qua e sex</small></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Ponto 8 conferido"></button><span class="linha-texto"><b>A Defesa Civil já esteve no prédio?</b><small>80 atendimentos na avenida, 2014 a 2024</small></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Ponto 9 conferido"></button><span class="linha-texto"><b>Há cota extra ou obra aprovada?</b><small>peça atas e balancetes</small></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Ponto 10 conferido"></button><span class="linha-texto"><b>Como é a pressão da água?</b><small>teste torneiras e chuveiro</small></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Ponto 11 conferido"></button><span class="linha-texto"><b>Como é o ruído com a janela aberta?</b><small>ouça na visita</small></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Ponto 12 conferido"></button><span class="linha-texto"><b>O sol chega às janelas?</b><small>anote a orientação</small></span></div>
+      <a class="linha" href="#visita+roteiro"><span class="linha-texto"><b>Adicionar pergunta</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-descartados" role="dialog" aria-modal="true" aria-labelledby="g-descartados-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-descartados-t">Descartados</h2><a class="fechar-alvo" data-fechar href="#caderno" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="lista" style="margin-top: 0">
+      <div class="linha"><span class="linha-texto"><b>Apto. no Espinheiro</b><small>saiu por preço ou taxas</small></span><button class="botao pequeno">Restaurar</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-perfil" role="dialog" aria-modal="true" aria-labelledby="g-perfil-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-perfil-t">Perfil da casa</h2><a class="fechar-alvo" data-fechar href="#caderno" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <p class="t-rotulo">Quantas pessoas</p>
+    <div class="segmento" role="radiogroup" aria-label="Quantas pessoas" style="margin-top: var(--e2)">
+      <button role="radio" aria-checked="false" data-escolhe="pessoas:1">1</button>
+      <button role="radio" aria-checked="true" data-escolhe="pessoas:2">2</button>
+      <button role="radio" aria-checked="false" data-escolhe="pessoas:3">3</button>
+      <button role="radio" aria-checked="false" data-escolhe="pessoas:4">4 ou mais</button>
+    </div>
+    <p class="t-rotulo grupo-titulo">Ar-condicionado</p>
+    <div class="segmento" role="radiogroup" aria-label="Ar-condicionado" style="margin-top: var(--e2)">
+      <button role="radio" aria-checked="false" data-escolhe="ar:nao">Não uso</button>
+      <button role="radio" aria-checked="true" data-escolhe="ar:noite">À noite</button>
+      <button role="radio" aria-checked="false" data-escolhe="ar:dia">O dia todo</button>
+    </div>
+    <div class="lista" style="margin-top: var(--e3)">
+      <a class="linha" href="#caderno+perfil"><span class="linha-texto"><b>Destino diário</b></span><span class="valor-texto">A escolher</span><i class="vai"></i></a>
+    </div>
+    <p class="t-rotulo grupo-titulo">Acessibilidade</p>
+    <div class="lista">
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Mobilidade"></button><span class="linha-texto"><b>Mobilidade</b></span></div>
+      <div class="linha"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Visão"></button><span class="linha-texto"><b>Visão</b></span></div>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e3)">FICA SÓ NO APARELHO · NUNCA É COMPARTILHADO</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-copia" role="dialog" aria-modal="true" aria-labelledby="g-copia-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-copia-t">Cópia do caderno</h2><a class="fechar-alvo" data-fechar href="#caderno" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="lista" style="margin-top: 0">
+      <a class="linha" href="#caderno+copia"><span class="linha-texto"><b>Exportar caderno</b></span><i class="vai"></i></a>
+      <a class="linha" href="#caderno+copia"><span class="linha-texto"><b>Restaurar de arquivo</b></span><i class="vai"></i></a>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e3)">SEM CONTA, A CÓPIA É O ÚNICO JEITO DE TROCAR DE APARELHO</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-creditos" role="dialog" aria-modal="true" aria-labelledby="g-creditos-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-creditos-t">Créditos de teste</h2><a class="fechar-alvo" data-fechar href="#caderno" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura"><p class="t-num g">3<span class="t-un">créditos de teste</span></p></div>
+    <div class="lista" style="margin-top: 0">
+      <div class="linha"><span class="linha-texto"><b>Confirmar um prédio</b></span><span class="t-num p">−1</span></div>
+      <div class="linha"><span class="linha-texto"><b>Descartar com motivo</b></span><span class="t-num p">+1</span></div>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e3)">NÃO TÊM VALOR EM DINHEIRO</p>
+  </div>
+</section>
+
+<!-- Rodada 1: gavetas de cobertura -->
+<section class="gaveta" id="g-renda" role="dialog" aria-modal="true" aria-labelledby="g-renda-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-renda-t">Renda do setor</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura"><p class="t-num xg">R$ 15.000</p><p class="t-linha">por mês, mediana</p></div>
+    <div class="lista" style="margin-top: 0">
+      <div class="linha"><span class="linha-texto"><b>Média</b></span><span class="t-num p">R$ 21.213</span></div>
+      <div class="linha"><span class="linha-texto"><b>Domicílios no setor</b></span><span class="t-num p">205</span></div>
+      <div class="linha"><span class="linha-texto"><b>Moradores por domicílio</b></span><span class="t-num p">2,4</span></div>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e3)">CENSO 2022 (IBGE) · RENDA DE QUEM RESPONDE PELO DOMICÍLIO · SEM COMPARAÇÃO ENTRE SETORES</p>
+  </div>
+</section>
+<section class="gaveta" id="g-vizinhos" role="dialog" aria-modal="true" aria-labelledby="g-vizinhos-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-vizinhos-t">Registros policiais · por mil moradores, em 12 meses</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="lista" style="margin-top: 0">
+      <div class="linha"><span class="linha-texto"><b>Boa Viagem</b><small>2.148 registros · ameaça, roubo a transeunte e roubo são os mais comuns</small></span><span class="t-num p">17,1</span></div>
+      <div class="linha"><span class="linha-texto"><b>Ibura</b><small>796 registros</small></span><span class="t-num p">17,5</span></div>
+      <div class="linha"><span class="linha-texto"><b>Imbiribeira</b><small>890 registros</small></span><span class="t-num p">17,1</span></div>
+      <div class="linha"><span class="linha-texto"><b>Jordão</b><small>266 registros</small></span><span class="t-num p">13,0</span></div>
+      <div class="linha"><span class="linha-texto"><b>Pina</b><small>644 registros</small></span><span class="t-num p">22,1</span></div>
+    </div>
+    <p class="t-linha" style="margin-top: var(--e3)">Mediana dos bairros do Recife: 17,4.</p>
+    <p class="t-mono" style="margin-top: var(--e3)">CONTA SÓ O QUE CHEGOU À POLÍCIA · VIZINHO É QUEM DIVIDE 50 m OU MAIS DE LIMITE · SDS-PE COMPILADO PELO CRIME BRASIL · IBGE, CENSO 2022</p>
+  </div>
+</section>
+<section class="gaveta" id="g-pulso" role="dialog" aria-modal="true" aria-labelledby="g-pulso-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-pulso-t">Pulso da quadra · Parque Atlântico</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura"><p class="t-num xg">7,9<span class="t-un">de 10</span></p><p class="t-linha">média de 6 leituras</p></div>
+    <div class="lista" style="margin-top: 0">
+      <div class="linha"><span class="linha-texto"><b>Sol e ventilação</b><svg class="escala" viewBox="0 0 120 14" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path class="trilho" d="M2 7H118"/><circle class="marca" cx="108.7" cy="7" r="4.5"/></svg></span><span class="t-num p">9,2</span></div>
+      <div class="linha"><span class="linha-texto"><b>Sossego à noite</b><svg class="escala" viewBox="0 0 120 14" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path class="trilho" d="M2 7H118"/><circle class="marca" cx="86.7" cy="7" r="4.5"/></svg></span><span class="t-num p">7,3</span></div>
+      <div class="linha"><span class="linha-texto"><b>Serviços a pé</b><svg class="escala" viewBox="0 0 120 14" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path class="trilho" d="M2 7H118"/><circle class="marca" cx="82.0" cy="7" r="4.5"/></svg></span><span class="t-num p">6,9</span></div>
+      <div class="linha"><span class="linha-texto"><b>Custo conhecido</b><small>3 de 4 itens; falta o regime do terreno</small><svg class="escala" viewBox="0 0 120 14" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path class="trilho" d="M2 7H118"/><circle class="marca" cx="89.0" cy="7" r="4.5"/></svg></span><span class="t-num p">7,5</span></div>
+      <div class="linha"><span class="linha-texto"><b>Idade do prédio</b><small>10 anos</small><svg class="escala" viewBox="0 0 120 14" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path class="trilho" d="M2 7H118"/><circle class="marca" cx="90.2" cy="7" r="4.5"/></svg></span><span class="t-num p">7,6</span></div>
+      <div class="linha"><span class="linha-texto"><b>Obras a 150 m</b><small>1 licença em 24 meses</small><svg class="escala" viewBox="0 0 120 14" preserveAspectRatio="xMinYMid meet" aria-hidden="true"><path class="trilho" d="M2 7H118"/><circle class="marca" cx="105.2" cy="7" r="4.5"/></svg></span><span class="t-num p">8,9</span></div>
+    </div>
+    <p class="t-mono" style="margin-top: var(--e3)">LEITURA SEM DADO FICA FORA DA MÉDIA</p>
+    <div class="lista" style="margin-top: var(--e3)"><a class="linha" href="#painel+metodo-pulso"><span class="linha-texto"><b>Como foi calculada</b></span><i class="vai"></i></a></div>
+  </div>
+</section>
+<section class="gaveta" id="g-metodo-pulso" role="dialog" aria-modal="true" aria-labelledby="g-metodo-pulso-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-metodo-pulso-t">Como foi calculada</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="leitura"><p class="t-num g">7,9<span class="t-un">de 10 · pulso da quadra</span></p></div>
+    <dl class="metodo">
+      <div><dt>O que mede</dt><dd>Seis leituras do imóvel e da quadra, cada uma de 0 a 10.</dd></div>
+      <div><dt>Fonte</dt><dd>Cadastro e licenças da Prefeitura, rede de ruas, o anúncio e as contas de sol e de ruído do Vereda.</dd></div>
+      <div><dt>Data</dt><dd>Cadastro de 2026.</dd></div>
+      <div><dt>Cálculo</dt><dd>Média simples das leituras que têm dado.</dd></div>
+      <div><dt>Limite</dt><dd>As faixas e os pesos são escolhas do Vereda, não medições.</dd></div>
+      <div><dt>Na visita</dt><dd>Confira no local as leituras de nota mais baixa.</dd></div>
+    </dl>
+    <div class="lista" style="margin-top: var(--e3)">
+      <a class="linha" href="#painel+pulso"><span class="linha-texto"><b>Voltar ao pulso</b></span><i class="vai"></i></a>
+      <a class="linha" href="#painel+fonte"><span class="linha-texto"><b>Ver a fonte</b></span><i class="vai"></i></a>
+    </div>
+  </div>
+</section>
+<section class="gaveta" id="g-internet" role="dialog" aria-modal="true" aria-labelledby="g-internet-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-internet-t">Internet no cômodo</h2><a class="fechar-alvo" data-fechar href="#visita" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="lista" style="margin-top: 0">
+      <div class="linha"><span class="linha-texto"><b>Fibra no endereço</b><small>o que a operadora respondeu</small></span><span class="valor-texto">A consultar</span></div>
+      <div class="linha"><span class="linha-texto"><b>Sinal de celular na rua</b><small>cobertura prevista pela Anatel, ao ar livre</small></span><span class="valor-texto">ver mapa</span></div>
+      <div class="linha"><span class="linha-texto"><b>Medido no cômodo</b><small>teste no quarto, com a porta fechada</small></span><span class="t-sem pequeno">Sem leitura</span></div>
+    </div>
+    <button class="botao" style="display: flex; width: 100%; margin-top: var(--e3)">Registrar teste</button>
+    <p class="t-mono" style="margin-top: var(--e3)">FICA SÓ NESTE APARELHO</p>
+  </div>
+</section>
+<section class="gaveta" id="g-onde" role="dialog" aria-modal="true" aria-labelledby="g-onde-t">
+  <div class="pega"></div>
+  <header class="g-topo"><h2 class="t-rotulo" id="g-onde-t">Onde mais procurar</h2><a class="fechar-alvo" data-fechar href="#painel" aria-label="Fechar"><i class="fechar"></i></a></header>
+  <div class="corpo">
+    <div class="segmento" role="radiogroup" aria-label="Tempo até o destino">
+      <button role="radio" aria-checked="false" data-escolhe="tempo:20">20 min</button>
+      <button role="radio" aria-checked="true" data-escolhe="tempo:30">30 min</button>
+      <button role="radio" aria-checked="false" data-escolhe="tempo:45">45 min</button>
+    </div>
+    <p class="t-linha" style="margin-top: var(--e3)">Escolha um destino no Perfil da casa para ver as ruas com ônibus ou metrô até ele.</p>
+    <a class="botao" style="display: flex; margin-top: var(--e3)" href="#caderno+perfil">Abrir perfil</a>
+    <p class="t-mono" style="margin-top: var(--e3)">HORÁRIO PROGRAMADO DAS 7h, EM DIA ÚTIL</p>
+  </div>
+</section>
+
+</main>
+</div>
+
+<template id="dock">
+  <nav class="dock" aria-label="Seções do app">
+    <a data-aba="painel" href="#painel"><span class="pilula"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="2"/></svg></span>Painel</a>
+    <a data-aba="comparar" href="#comparar"><span class="pilula"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6.5" height="16" rx="2"/><rect x="13.5" y="4" width="6.5" height="16" rx="2"/></svg></span>Comparar</a>
+    <a data-aba="visita" href="#visita"><span class="pilula"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="m15.4 8.6-2 4.8-4.8 2 2-4.8z"/></svg></span>Visita</a>
+    <a data-aba="caderno" href="#caderno"><span class="pilula"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M9 3.5v17M12.5 8.5H16M12.5 12H16"/></svg></span>Caderno</a>
+  </nav>
+</template>
+
+<script>
+window.PROTOTIPO = { nome: "Opção B · Painel de bolso", resumo: "Cada imóvel cabe numa tela, em sete mostradores. O detalhe sobe em gaveta e desliza-se de um imóvel para o outro." };
+window.TELAS = [
+  { rota: "painel", nome: "Painel do imóvel", grupo: "Painel" },
+  { rota: "painel+bolso", nome: "Bolso: por mês, para entrar, 10 anos", grupo: "Painel" },
+  { rota: "painel+noite", nome: "Noite e ruído", grupo: "Painel" },
+  { rota: "painel+metodo-noite", nome: "Ficha de método (6 campos)", grupo: "Painel" },
+  { rota: "painel+fonte", nome: "Ver a fonte", grupo: "Painel" },
+  { rota: "painel@ae", nome: "Painel: Ana Elizabeth", grupo: "Painel" },
+  { rota: "painel@viena", nome: "Painel: Viena (aluguel)", grupo: "Painel" },
+  { rota: "painel@cf", nome: "Painel sem prédio: Sem leitura", grupo: "Painel" },
+  { rota: "painel-vazio", nome: "Primeiro uso", grupo: "Entrada" },
+  { rota: "painel+novo", nome: "Novo imóvel", grupo: "Entrada" },
+  { rota: "painel+novo-buscando", nome: "Buscando", grupo: "Entrada" },
+  { rota: "painel+novo-resultados", nome: "Resultados", grupo: "Entrada" },
+  { rota: "painel+novo-sem-permissao", nome: "Sem permissão de localização", grupo: "Entrada" },
+  { rota: "painel+confirmar", nome: "Anúncio lido: é este o prédio?", grupo: "Entrada" },
+  { rota: "painel+predio", nome: "Prédio", grupo: "Detalhes" },
+  { rota: "painel+rua", nome: "A pé", grupo: "Detalhes" },
+  { rota: "painel+calor", nome: "Calor", grupo: "Detalhes" },
+  { rota: "painel+chuva", nome: "Chuva", grupo: "Detalhes" },
+  { rota: "painel+perguntas", nome: "Perguntas", grupo: "Detalhes" },
+  { rota: "painel+mapa", nome: "Mapa do lote", grupo: "Detalhes" },
+  { rota: "painel+triagem", nome: "Triagem", grupo: "Detalhes" },
+  { rota: "painel+descartar", nome: "Descartar", grupo: "Detalhes" },
+  { rota: "painel+metodo-bolso", nome: "Como foi calculada: bolso", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+metodo-predio", nome: "Como foi calculada: prédio", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+metodo-rua", nome: "Como foi calculada: a pé", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+metodo-calor", nome: "Como foi calculada: calor", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+financiamento", nome: "Simular financiamento", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+andar", nome: "Ajustar andar e fachada", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+documentos", nome: "Documentos antes do sinal", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+linha-do-tempo", nome: "Linha do tempo do prédio", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+ata", nome: "Ler ata ou regimento", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+por-perto", nome: "Por perto", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+comercio", nome: "Comércio em volta", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+mensagem", nome: "Mensagem para o corretor", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+negociacao", nome: "Preparar a negociação", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+pacote", nome: "Pacote para especialista", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+mudou", nome: "O que mudou desde que guardei", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+renda", nome: "Renda do setor", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+vizinhos", nome: "Registros policiais: bairros vizinhos", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+pulso", nome: "Pulso da quadra", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+metodo-pulso", nome: "Como foi calculada: pulso", grupo: "Detalhes", secundaria: true },
+  { rota: "painel+onde", nome: "Onde mais procurar", grupo: "Entrada", secundaria: true },
+  { rota: "comparar", nome: "Comparar: duelo", grupo: "Comparar", inteira: true },
+  { rota: "comparar+metodo-comparar", nome: "Como foi calculada: placar", grupo: "Comparar" },
+  { rota: "comparar+trocar", nome: "Escolher imóvel", grupo: "Comparar", secundaria: true },
+  { rota: "comparar+rotina", nome: "Rotina até o trabalho", grupo: "Comparar", secundaria: true },
+  { rota: "comparar+sala", nome: "Decidir a dois", grupo: "Comparar", secundaria: true },
+  { rota: "visita", nome: "Visita: preparar", grupo: "Visita", inteira: true },
+  { rota: "visita-ponto", nome: "Um ponto por vez", grupo: "Visita" },
+  { rota: "visita-ruido", nome: "Sensor: ruído", grupo: "Visita" },
+  { rota: "visita-bussola", nome: "Sensor: bússola", grupo: "Visita" },
+  { rota: "visita-resumo", nome: "Resumo da visita", grupo: "Visita" },
+  { rota: "visita+roteiro", nome: "Roteiro dos 12 pontos", grupo: "Visita", secundaria: true },
+  { rota: "visita+internet", nome: "Internet no cômodo", grupo: "Visita", secundaria: true },
+  { rota: "caderno", nome: "Caderno", grupo: "Caderno", inteira: true },
+  { rota: "caderno-deslize", nome: "Caderno: deslizar uma linha", grupo: "Caderno" },
+  { rota: "caderno+descartados", nome: "Descartados", grupo: "Caderno", secundaria: true },
+  { rota: "caderno+perfil", nome: "Perfil da casa", grupo: "Caderno", secundaria: true },
+  { rota: "caderno+copia", nome: "Cópia do caderno", grupo: "Caderno", secundaria: true },
+  { rota: "caderno+creditos", nome: "Créditos de teste", grupo: "Caderno", secundaria: true },
+  { rota: "painel-sem-rede", nome: "Sem rede", grupo: "Estados", inteira: true },
+  { rota: "sobre", nome: "Sobre os dados", grupo: "Mais", inteira: true },
+];
+</script>
+<script src="../comum/prototipo.js"></script>
+<script>
+// Painel: as páginas deslizam de lado. A rota #painel@pa leva à página; os pontos acompanham o deslize.
+(function () {
+  const paginas = document.getElementById("paginas");
+  if (!paginas) return;
+  const pontos = [...document.querySelectorAll("#painel .pontos a")];
+  const ids = pontos.map((a) => a.getAttribute("href").split("@")[1]);
+  const ir = () => {
+    const h = decodeURIComponent(location.hash.slice(1));
+    if (!h.startsWith("painel")) return;
+    const ancora = (h.split("@")[1] || "").split("+")[0];
+    const alvo = document.getElementById("painel-" + (ancora || ids[0]));
+    if (alvo) paginas.scrollTo({ left: alvo.offsetLeft, behavior: "instant" });
+  };
+  // A faixa de cima e a ação de baixo são uma só para todas as páginas: acompanham o imóvel que está na tela
+  // (data-etapa, data-favorito, data-acao e data-acao-href em cada .pagina).
+  const tela = document.getElementById("painel");
+  const etapa = tela.querySelector(".etapa");
+  const estrela = tela.querySelector('.faixa [data-liga]');
+  const acao = tela.querySelector(".acao .botao");
+  const marcar = () => {
+    const i = Math.round(paginas.scrollLeft / Math.max(1, paginas.clientWidth));
+    pontos.forEach((a, n) => a.setAttribute("aria-current", String(n === i)));
+    const pagina = paginas.children[i];
+    if (!pagina || pagina.dataset.vista === "1") return;
+    for (const p of paginas.children) delete p.dataset.vista;
+    pagina.dataset.vista = "1";
+    if (pagina.dataset.etapa) {
+      etapa.firstElementChild.textContent = pagina.dataset.etapa;
+      etapa.setAttribute("aria-label", `Etapa: ${pagina.dataset.etapa}. Mudar`);
+    }
+    if (pagina.dataset.favorito) estrela.setAttribute("aria-pressed", pagina.dataset.favorito);
+    if (pagina.dataset.acao) {
+      acao.textContent = pagina.dataset.acao;
+      acao.setAttribute("href", pagina.dataset.acaoHref || "#visita");
+    }
+  };
+  paginas.addEventListener("scroll", marcar, { passive: true });
+  window.addEventListener("hashchange", () => { ir(); marcar(); });
+  ir();
+  marcar();
+})();
+</script>
+</body>
+</html>

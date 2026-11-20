@@ -1,0 +1,135 @@
+/* Base comum dos dois protótipos (fase 1). Só o que NÃO é desenho: marca, moldura do aparelho, troca de telas e gavetas.
+   A linguagem visual de cada opção fica no <style> do index.html dela.
+   Marca: src/tema/tokens.ts (CORES_CLARO) e motion/lib/marca.css. Sem gradiente, glow ou vidro. */
+
+/* As fontes vêm do Google Fonts (link no index.html). Sem rede, valem os arquivos do app em assets/fonts. */
+@font-face { font-family: "Fraunces Local"; src: url("../../../../../assets/fonts/Fraunces.ttf") format("truetype"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Jakarta Local"; src: url("../../../../../assets/fonts/PlusJakartaSans.ttf") format("truetype"); font-weight: 200 800; font-display: swap; }
+@font-face { font-family: "Mono Local"; src: url("../../../../../assets/fonts/JetBrainsMono.ttf") format("truetype"); font-weight: 100 800; font-display: swap; }
+
+:root {
+  --papel: #F2EBDD;
+  --papel-claro: #FAF6EE;
+  --superficie: #FFFFFF;
+  --creme: #FAF7F0;
+  --sutil: #E7DEC9;
+  --linha: #E2D9C8;
+  --linha-forte: #C9BEA8;
+  --traco: #7C8488;            /* só desenho: 3,2:1 sobre o papel, não serve para texto */
+  --texto: #171717;
+  --apoio: #625C51;            /* 5,6:1 sobre o papel */
+  --acao: #F47745;
+  --acao-pressionada: #E06332;
+  --sobre-acao: #171717;       /* 6,4:1 sobre o laranja */
+  --barro: #B94E36;            /* preenchimento e traço */
+  --barro-texto: #A8452F;      /* texto pequeno: 5,0:1 sobre o papel */
+  --barro-suave: #F9EBE8;
+  --salvia: #7F8870;           /* só desenho */
+  --salvia-escura: #3A5230;
+  --salvia-suave: #EBF2E8;
+  --azul: #2E5A85;             /* azul cadastral: 6,1:1 sobre o papel */
+  --azul-suave: #EBF1F8;
+  --cat-roxo: #6B4DB0;
+  --cat-goiaba: #B4436C;
+  --cat-amarelo: #A87512;
+  --cat-mare: #1F7F7A;
+  --cat-terra: #8A7A60;
+  --cat-outros: #B9C0BC;
+
+  --serifa: "Fraunces", "Fraunces Local", Georgia, serif;
+  --sans: "Plus Jakarta Sans", "Jakarta Local", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", "Mono Local", ui-monospace, Menlo, monospace;
+
+  /* Espaço: escala de 4 px. */
+  --e1: 4px; --e2: 8px; --e3: 12px; --e4: 16px; --e5: 20px; --e6: 24px; --e8: 32px; --e10: 40px; --e12: 48px;
+  /* Tipo: sete degraus. */
+  --t12: 12px; --t14: 14px; --t16: 16px; --t20: 20px; --t28: 28px; --t40: 40px; --t56: 56px;
+  --toque: 44px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: #D9CFBB;
+  color: var(--texto);
+  font-family: var(--sans);
+  font-size: var(--t16);
+  line-height: 1.375;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4, p, ul, ol, dl, dd, figure { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+input, textarea { font: inherit; color: inherit; }
+img, svg { display: block; }
+:focus-visible { outline: 2px solid var(--azul); outline-offset: 2px; border-radius: 4px; }
+/* O atributo hidden vale sempre, mesmo em elemento que uma classe põe em display: block ou flex (data-quando depende disso). */
+[hidden] { display: none !important; }
+.so-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ——— Palco: no computador, o roteiro das telas à esquerda e o aparelho de 390 × 844 ——— */
+.palco { min-height: 100%; display: flex; justify-content: center; align-items: flex-start; gap: 40px; padding: 32px; }
+.roteiro { width: 264px; flex: none; position: sticky; top: 32px; max-height: calc(100vh - 64px); overflow-y: auto; font-size: 13px; line-height: 1.35; color: #3b372f; }
+.roteiro h1 { font-family: var(--serifa); font-weight: 500; font-size: 22px; line-height: 1.15; letter-spacing: -0.01em; color: var(--texto); }
+.roteiro p { margin-top: 8px; }
+.roteiro h2 { margin: 20px 0 4px; font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #6b6455; }
+.roteiro a { display: block; padding: 5px 8px; margin-left: -8px; border-radius: 6px; }
+.roteiro a:hover { background: rgba(23, 23, 23, 0.06); }
+.roteiro a[aria-current="true"] { background: var(--texto); color: var(--papel-claro); }
+
+.aparelho {
+  position: relative; flex: none; width: 390px; height: 844px; overflow: hidden;
+  background: var(--papel); border-radius: 46px;
+  box-shadow: 0 0 0 11px #171717, 0 0 0 12px #44403a;
+}
+
+/* ——— Telas ——— */
+.tela { position: absolute; inset: 0; display: none; flex-direction: column; background: var(--papel); }
+.tela.ativa { display: flex; }
+.estado { flex: none; height: 44px; padding: 0 28px 0 32px; display: flex; align-items: center; justify-content: space-between; font-family: var(--sans); font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
+.estado svg { height: 12px; width: auto; }
+.rolagem { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.rolagem::-webkit-scrollbar { display: none; }
+
+/* Com uma gaveta aberta, a ação principal da tela de baixo perde o laranja: continua havendo um só botão laranja à vista. */
+.tela[inert] .principal { background: var(--sutil) !important; border-color: var(--sutil) !important; color: var(--apoio) !important; }
+
+/* Botão desativado: neutro e legível (4,9:1), em vez de laranja apagado, que caía para 2,3:1. */
+.aparelho .botao[aria-disabled="true"] { opacity: 1; background: var(--sutil); border-color: var(--sutil); color: var(--apoio); }
+
+/* ——— Gavetas (sobem de baixo) ——— */
+.veu { position: absolute; inset: 0; z-index: 40; background: rgba(23, 23, 23, 0.42); opacity: 0; pointer-events: none; }
+.veu.visivel { opacity: 1; pointer-events: auto; }
+.gaveta {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 50; max-height: 90%;
+  display: flex; flex-direction: column;
+  background: var(--superficie); border-radius: 20px 20px 0 0;
+  transform: translateY(102%); visibility: hidden;
+}
+.gaveta.aberta { transform: none; visibility: visible; }
+.gaveta .pega { flex: none; width: 36px; height: 4px; margin: 8px auto 0; border-radius: 2px; background: var(--linha-forte); }
+.gaveta .corpo { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.gaveta .corpo::-webkit-scrollbar { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .veu { transition: opacity 180ms ease-out; }
+  .gaveta { transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 240ms; }
+  .gaveta.aberta { transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+}
+
+/* ——— Celular de verdade e capturas: o aparelho ocupa a janela ——— */
+@media (max-width: 520px) {
+  body { background: var(--papel); }
+  .palco { padding: 0; gap: 0; }
+  .roteiro { display: none; }
+  .aparelho { width: 100vw; height: 100vh; height: 100dvh; border-radius: 0; box-shadow: none; }
+}
+
+/* ——— Captura da tela inteira (?inteira): a rolagem se abre e a janela cresce ——— */
+html.inteira, html.inteira body { height: auto; }
+html.inteira .aparelho { height: auto; min-height: 100vh; }
+html.inteira .tela.ativa { position: relative; inset: auto; min-height: 100vh; }
+html.inteira .rolagem { overflow: visible; flex: none; }
+html.inteira .fixa-no-topo { position: static !important; }

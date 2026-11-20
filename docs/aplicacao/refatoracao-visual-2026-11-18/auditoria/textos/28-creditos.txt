@@ -1,0 +1,13 @@
+Carteira de créditos
+Saldo disponível
+Cada prédio confirmado no cadastro usa 1 crédito.
+3
+Como os créditos entram e saem
+• Confirmar o prédio de um imóvel no cadastro: −1
+• Informar o motivo ao descartar um imóvel, uma vez por imóvel: +1
+Extrato de uso e contribuições
+Cota inicial
+19/11/2026
++3
+Na versão de teste, créditos não têm valor em dinheiro.
+Fechar

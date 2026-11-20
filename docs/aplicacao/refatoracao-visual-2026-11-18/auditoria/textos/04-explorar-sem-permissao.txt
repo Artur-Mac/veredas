@@ -1,0 +1,31 @@
+VEREDA
+3 créditos
+Anúncio, prédio ou rua
+Colar link
+Gerar Dossiê
+Usar minha localização agora
+Adicionar imóvel sem link
+Sem permissão de localização. Busque pelo nome do prédio, da rua ou do bairro.
+Explorar um endereço exemplo agora −
+Prédios reais para testar o dossiê em 1 toque.
+Beira-mar em Boa Viagem
+Torre recente na avenida da praia, com via movimentada e bar a menos de 150 m.
+Revenda antiga nas Graças
+Prédio de 1972 com histórico de ITBI para comparar o preço pedido.
+Rua da Madalena com pedidos de drenagem
+Rua perto do Capibaribe com pedidos de limpeza de galeria ao 156.
++ Importar anúncio da extensão
+Escolha o arquivo preparado pela extensão VEREDA. Os campos serão propostos para revisão; não salva nem confirma prédio automaticamente.
+Simular bolso em 15 segundos (sem colar link)
+Veja entrada, imposto do Recife e saída mensal antes de buscar anúncio
+Simular
+Análises Recentes
+Todos
+Alugar
+Comprar
+Seu caderno começa com um link, um prédio ou onde você está.
+Cole o endereço de um anúncio, busque um prédio pelo nome ou pela rua, ou abra um dos exemplos acima.
+Explorar
+Dossiê
+Comparar
+Visita

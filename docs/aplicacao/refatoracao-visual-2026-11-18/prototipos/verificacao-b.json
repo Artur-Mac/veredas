@@ -1,0 +1,2238 @@
+{
+  "geradoEm": "2026-11-19T04:50:06.521Z",
+  "opcao": "b",
+  "rotas": [
+    {
+      "rota": "painel",
+      "nome": "Painel do imóvel",
+      "largura": 390,
+      "palavras": 291,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+bolso",
+      "nome": "Bolso: por mês, para entrar, 10 anos",
+      "largura": 390,
+      "palavras": 355,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+noite",
+      "nome": "Noite e ruído",
+      "largura": 390,
+      "palavras": 436,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+metodo-noite",
+      "nome": "Ficha de método (6 campos)",
+      "largura": 390,
+      "palavras": 449,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+fonte",
+      "nome": "Ver a fonte",
+      "largura": 390,
+      "palavras": 334,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel@ae",
+      "nome": "Painel: Ana Elizabeth",
+      "largura": 390,
+      "palavras": 291,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel@viena",
+      "nome": "Painel: Viena (aluguel)",
+      "largura": 390,
+      "palavras": 291,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel@cf",
+      "nome": "Painel sem prédio: Sem leitura",
+      "largura": 390,
+      "palavras": 291,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel-vazio",
+      "nome": "Primeiro uso",
+      "largura": 390,
+      "palavras": 43,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+novo",
+      "nome": "Novo imóvel",
+      "largura": 390,
+      "palavras": 347,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+novo-buscando",
+      "nome": "Buscando",
+      "largura": 390,
+      "palavras": 296,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+novo-resultados",
+      "nome": "Resultados",
+      "largura": 390,
+      "palavras": 323,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+novo-sem-permissao",
+      "nome": "Sem permissão de localização",
+      "largura": 390,
+      "palavras": 337,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+confirmar",
+      "nome": "Anúncio lido: é este o prédio?",
+      "largura": 390,
+      "palavras": 350,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+predio",
+      "nome": "Prédio",
+      "largura": 390,
+      "palavras": 422,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+rua",
+      "nome": "A pé",
+      "largura": 390,
+      "palavras": 388,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+calor",
+      "nome": "Calor",
+      "largura": 390,
+      "palavras": 353,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+chuva",
+      "nome": "Chuva",
+      "largura": 390,
+      "palavras": 355,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+perguntas",
+      "nome": "Perguntas",
+      "largura": 390,
+      "palavras": 361,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+mapa",
+      "nome": "Mapa do lote",
+      "largura": 390,
+      "palavras": 331,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+triagem",
+      "nome": "Triagem",
+      "largura": 390,
+      "palavras": 313,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+descartar",
+      "nome": "Descartar",
+      "largura": 390,
+      "palavras": 319,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+metodo-bolso",
+      "nome": "Como foi calculada: bolso",
+      "largura": 390,
+      "palavras": 391,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+metodo-predio",
+      "nome": "Como foi calculada: prédio",
+      "largura": 390,
+      "palavras": 374,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+metodo-rua",
+      "nome": "Como foi calculada: a pé",
+      "largura": 390,
+      "palavras": 388,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+metodo-calor",
+      "nome": "Como foi calculada: calor",
+      "largura": 390,
+      "palavras": 407,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+financiamento",
+      "nome": "Simular financiamento",
+      "largura": 390,
+      "palavras": 332,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+andar",
+      "nome": "Ajustar andar e fachada",
+      "largura": 390,
+      "palavras": 331,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+documentos",
+      "nome": "Documentos antes do sinal",
+      "largura": 390,
+      "palavras": 342,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+linha-do-tempo",
+      "nome": "Linha do tempo do prédio",
+      "largura": 390,
+      "palavras": 335,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+ata",
+      "nome": "Ler ata ou regimento",
+      "largura": 390,
+      "palavras": 302,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+por-perto",
+      "nome": "Por perto",
+      "largura": 390,
+      "palavras": 365,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+comercio",
+      "nome": "Comércio em volta",
+      "largura": 390,
+      "palavras": 332,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+mensagem",
+      "nome": "Mensagem para o corretor",
+      "largura": 390,
+      "palavras": 347,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+negociacao",
+      "nome": "Preparar a negociação",
+      "largura": 390,
+      "palavras": 335,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+pacote",
+      "nome": "Pacote para especialista",
+      "largura": 390,
+      "palavras": 317,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+mudou",
+      "nome": "O que mudou desde que guardei",
+      "largura": 390,
+      "palavras": 316,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+renda",
+      "nome": "Renda do setor",
+      "largura": 390,
+      "palavras": 323,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+vizinhos",
+      "nome": "Registros policiais: bairros vizinhos",
+      "largura": 390,
+      "palavras": 361,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+pulso",
+      "nome": "Pulso da quadra",
+      "largura": 390,
+      "palavras": 353,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+metodo-pulso",
+      "nome": "Como foi calculada: pulso",
+      "largura": 390,
+      "palavras": 378,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+onde",
+      "nome": "Onde mais procurar",
+      "largura": 390,
+      "palavras": 326,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "comparar",
+      "nome": "Comparar: duelo",
+      "largura": 390,
+      "palavras": 155,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "comparar+metodo-comparar",
+      "nome": "Como foi calculada: placar",
+      "largura": 390,
+      "palavras": 241,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "comparar+trocar",
+      "nome": "Escolher imóvel",
+      "largura": 390,
+      "palavras": 177,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "comparar+rotina",
+      "nome": "Rotina até o trabalho",
+      "largura": 390,
+      "palavras": 194,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "comparar+sala",
+      "nome": "Decidir a dois",
+      "largura": 390,
+      "palavras": 197,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "visita",
+      "nome": "Visita: preparar",
+      "largura": 390,
+      "palavras": 67,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "visita-ponto",
+      "nome": "Um ponto por vez",
+      "largura": 390,
+      "palavras": 39,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "visita-ruido",
+      "nome": "Sensor: ruído",
+      "largura": 390,
+      "palavras": 48,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "visita-bussola",
+      "nome": "Sensor: bússola",
+      "largura": 390,
+      "palavras": 28,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "visita-resumo",
+      "nome": "Resumo da visita",
+      "largura": 390,
+      "palavras": 70,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "visita+roteiro",
+      "nome": "Roteiro dos 12 pontos",
+      "largura": 390,
+      "palavras": 208,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "visita+internet",
+      "nome": "Internet no cômodo",
+      "largura": 390,
+      "palavras": 112,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "caderno",
+      "nome": "Caderno",
+      "largura": 390,
+      "palavras": 84,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "caderno-deslize",
+      "nome": "Caderno: deslizar uma linha",
+      "largura": 390,
+      "palavras": 86,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "caderno+descartados",
+      "nome": "Descartados",
+      "largura": 390,
+      "palavras": 94,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "caderno+perfil",
+      "nome": "Perfil da casa",
+      "largura": 390,
+      "palavras": 117,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "caderno+copia",
+      "nome": "Cópia do caderno",
+      "largura": 390,
+      "palavras": 104,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "caderno+creditos",
+      "nome": "Créditos de teste",
+      "largura": 390,
+      "palavras": 104,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel-sem-rede",
+      "nome": "Sem rede",
+      "largura": 390,
+      "palavras": 44,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "sobre",
+      "nome": "Sobre os dados",
+      "largura": 390,
+      "palavras": 87,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel",
+      "nome": "Painel do imóvel",
+      "largura": 360,
+      "palavras": 291,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+bolso",
+      "nome": "Bolso: por mês, para entrar, 10 anos",
+      "largura": 360,
+      "palavras": 355,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+noite",
+      "nome": "Noite e ruído",
+      "largura": 360,
+      "palavras": 436,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+metodo-noite",
+      "nome": "Ficha de método (6 campos)",
+      "largura": 360,
+      "palavras": 449,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+fonte",
+      "nome": "Ver a fonte",
+      "largura": 360,
+      "palavras": 334,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel@ae",
+      "nome": "Painel: Ana Elizabeth",
+      "largura": 360,
+      "palavras": 291,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel@viena",
+      "nome": "Painel: Viena (aluguel)",
+      "largura": 360,
+      "palavras": 291,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel@cf",
+      "nome": "Painel sem prédio: Sem leitura",
+      "largura": 360,
+      "palavras": 291,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel-vazio",
+      "nome": "Primeiro uso",
+      "largura": 360,
+      "palavras": 43,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+novo",
+      "nome": "Novo imóvel",
+      "largura": 360,
+      "palavras": 347,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+novo-buscando",
+      "nome": "Buscando",
+      "largura": 360,
+      "palavras": 296,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+novo-resultados",
+      "nome": "Resultados",
+      "largura": 360,
+      "palavras": 323,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+novo-sem-permissao",
+      "nome": "Sem permissão de localização",
+      "largura": 360,
+      "palavras": 337,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+confirmar",
+      "nome": "Anúncio lido: é este o prédio?",
+      "largura": 360,
+      "palavras": 350,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+predio",
+      "nome": "Prédio",
+      "largura": 360,
+      "palavras": 422,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+rua",
+      "nome": "A pé",
+      "largura": 360,
+      "palavras": 388,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+calor",
+      "nome": "Calor",
+      "largura": 360,
+      "palavras": 353,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+chuva",
+      "nome": "Chuva",
+      "largura": 360,
+      "palavras": 355,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+perguntas",
+      "nome": "Perguntas",
+      "largura": 360,
+      "palavras": 361,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+mapa",
+      "nome": "Mapa do lote",
+      "largura": 360,
+      "palavras": 331,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+triagem",
+      "nome": "Triagem",
+      "largura": 360,
+      "palavras": 313,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+descartar",
+      "nome": "Descartar",
+      "largura": 360,
+      "palavras": 319,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+metodo-bolso",
+      "nome": "Como foi calculada: bolso",
+      "largura": 360,
+      "palavras": 391,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+metodo-predio",
+      "nome": "Como foi calculada: prédio",
+      "largura": 360,
+      "palavras": 374,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+metodo-rua",
+      "nome": "Como foi calculada: a pé",
+      "largura": 360,
+      "palavras": 388,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+metodo-calor",
+      "nome": "Como foi calculada: calor",
+      "largura": 360,
+      "palavras": 407,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+financiamento",
+      "nome": "Simular financiamento",
+      "largura": 360,
+      "palavras": 332,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+andar",
+      "nome": "Ajustar andar e fachada",
+      "largura": 360,
+      "palavras": 331,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+documentos",
+      "nome": "Documentos antes do sinal",
+      "largura": 360,
+      "palavras": 342,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+linha-do-tempo",
+      "nome": "Linha do tempo do prédio",
+      "largura": 360,
+      "palavras": 335,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+ata",
+      "nome": "Ler ata ou regimento",
+      "largura": 360,
+      "palavras": 302,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+por-perto",
+      "nome": "Por perto",
+      "largura": 360,
+      "palavras": 365,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+comercio",
+      "nome": "Comércio em volta",
+      "largura": 360,
+      "palavras": 332,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+mensagem",
+      "nome": "Mensagem para o corretor",
+      "largura": 360,
+      "palavras": 347,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+negociacao",
+      "nome": "Preparar a negociação",
+      "largura": 360,
+      "palavras": 335,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+pacote",
+      "nome": "Pacote para especialista",
+      "largura": 360,
+      "palavras": 317,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+mudou",
+      "nome": "O que mudou desde que guardei",
+      "largura": 360,
+      "palavras": 316,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+renda",
+      "nome": "Renda do setor",
+      "largura": 360,
+      "palavras": 323,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+vizinhos",
+      "nome": "Registros policiais: bairros vizinhos",
+      "largura": 360,
+      "palavras": 361,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+pulso",
+      "nome": "Pulso da quadra",
+      "largura": 360,
+      "palavras": 353,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+metodo-pulso",
+      "nome": "Como foi calculada: pulso",
+      "largura": 360,
+      "palavras": 378,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel+onde",
+      "nome": "Onde mais procurar",
+      "largura": 360,
+      "palavras": 326,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "comparar",
+      "nome": "Comparar: duelo",
+      "largura": 360,
+      "palavras": 155,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "comparar+metodo-comparar",
+      "nome": "Como foi calculada: placar",
+      "largura": 360,
+      "palavras": 241,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "comparar+trocar",
+      "nome": "Escolher imóvel",
+      "largura": 360,
+      "palavras": 177,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "comparar+rotina",
+      "nome": "Rotina até o trabalho",
+      "largura": 360,
+      "palavras": 194,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "comparar+sala",
+      "nome": "Decidir a dois",
+      "largura": 360,
+      "palavras": 197,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "visita",
+      "nome": "Visita: preparar",
+      "largura": 360,
+      "palavras": 67,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "visita-ponto",
+      "nome": "Um ponto por vez",
+      "largura": 360,
+      "palavras": 39,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "visita-ruido",
+      "nome": "Sensor: ruído",
+      "largura": 360,
+      "palavras": 48,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "visita-bussola",
+      "nome": "Sensor: bússola",
+      "largura": 360,
+      "palavras": 28,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "visita-resumo",
+      "nome": "Resumo da visita",
+      "largura": 360,
+      "palavras": 70,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "visita+roteiro",
+      "nome": "Roteiro dos 12 pontos",
+      "largura": 360,
+      "palavras": 208,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "visita+internet",
+      "nome": "Internet no cômodo",
+      "largura": 360,
+      "palavras": 112,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "caderno",
+      "nome": "Caderno",
+      "largura": 360,
+      "palavras": 84,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "caderno-deslize",
+      "nome": "Caderno: deslizar uma linha",
+      "largura": 360,
+      "palavras": 86,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "caderno+descartados",
+      "nome": "Descartados",
+      "largura": 360,
+      "palavras": 94,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "caderno+perfil",
+      "nome": "Perfil da casa",
+      "largura": 360,
+      "palavras": 117,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "caderno+copia",
+      "nome": "Cópia do caderno",
+      "largura": 360,
+      "palavras": 104,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "caderno+creditos",
+      "nome": "Créditos de teste",
+      "largura": 360,
+      "palavras": 104,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "painel-sem-rede",
+      "nome": "Sem rede",
+      "largura": 360,
+      "palavras": 44,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    },
+    {
+      "rota": "sobre",
+      "nome": "Sobre os dados",
+      "largura": 360,
+      "palavras": 87,
+      "problemas": {
+        "vazamento": [],
+        "toque": [],
+        "rotulo": [],
+        "principal": [],
+        "db": [],
+        "termo": [],
+        "emoji": [],
+        "contraste": [],
+        "paragrafo": [],
+        "console": []
+      }
+    }
+  ]
+}

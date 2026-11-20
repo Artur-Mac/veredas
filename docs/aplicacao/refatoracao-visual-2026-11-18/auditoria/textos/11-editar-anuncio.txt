@@ -1,0 +1,48 @@
+Editar análise
+Nome da análise
+Modalidade
+Alugar
+Comprar
+Bairro
+Boa Viagem
+Rua
+Número
+Edifício
+Custos mensais e compra
+Preço de venda (R$)
+você
+A confirmar na visita ou contrato
+Condomínio (R$ por mês)
+você
+A confirmar
+IPTU (R$)
+você
+Período
+Mês
+Ano
+Não sei
+A confirmar
+Seguro incêndio (R$ por mês)
+você
+A confirmar
+Taxa de serviço (R$ por mês)
+você
+A confirmar
+Outros custos (R$ por mês)
+você
+A confirmar
+Especificações do imóvel
+Área (m²)
+você
+Quartos
+você
+Suítes
+você
+Banheiros
+você
+Vagas
+você
+Andar
+você
+Salvar alterações
+Excluir análise

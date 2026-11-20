@@ -1,0 +1,174 @@
+VEREDA
+3 créditos
+Contém dados da Prefeitura do Recife (ODbL)
+Abrir mapa
+Madalena · Recife
+Lote confirmado ✓
+Exemplo · Rua da Madalena com pedidos de drenagem
+Avenida Visconde de Albuquerque, 186 · 5º andar
+141 m²
+4 qtos
+3 ban
+2 vg
+Prédio de 1976 · 11 andares
+· 18 unidades
+Dados do anúncio
+Cadastro oficial
+Mensal conhecido
+R$ 4.895
+/mês
++R$ 1.295 além do aluguel
+Aluguel anunciado
+R$ 3.600
+/mês
+R$ 26/m²
+Aluguel
+R$ 3.600
+Condomínio
+R$ 1.250
+IPTU
+~R$ 128
+referência do cadastro do prédio, fora do total conhecido até o boleto confirmar
+Seguro incêndio
+R$ 45
++ valores a confirmar
+IPTU fora da soma.
+Ao conferir o boleto do condomínio, valide também o saldo do fundo de reserva e a quitação da unidade.
+~R$ 324/mês
+Luz estimada
+Estimativas à parte · toque para ver e ajustar
+Ver composição e ajustar valores
+Personalizar perfil da casa
+Aluguel + taxas
+R$ 3.600/mês
+Confira os custos abaixo
+Total mensal estimado
+~R$ 5.219/mês
+Mensal conhecido + luz
+Sol & conforto
+Poente
+Quente à tarde · 1,8/10
+Sossego à noite
+Moderado
+~64 dB(A) à noite na janela (estimativa) · 5,8/10
+Sol e sossego calculados para: 5º andar (do anúncio) · fachada Poente (sugerida pela rua e pelo anúncio).
+Como foi calculada a nota de sol e conforto
+Como foi calculada a nota de sossego
+Destaques
+Entorno
+Edifício
+Antes de
+decidir.
+11
+a conferir
+O que pesa mais para você?
+Custo
+Conforto
+Documentos
+Qual é o IPTU deste apartamento?
+Não informado no anúncio; o cadastro dá ~R$ 128/mês para o prédio
+As obras próximas afetam a rotina?
+1 obra licenciada a 150 m
+A rua acumula água na chuva?
+20 pedidos de drenagem ao 156 em 12 meses
+Ver todas as verificações
+Identidade cadastral
+Estrutura e cadastro
+Viena
+Nome do edifício
+1976
+Ano de construção
+11
+Pavimentos
+18
+Unidades residenciais
+140,8 m²
+Área das unidades mais parecidas
+R$ 128/mês
+IPTU 2026 no prédio
+Médio
+Padrão
+4.1545.275.04.0298
+Chave cadastral
+Chave dupla do imóvel (Prefeitura + Cartório)
+Lote municipal (14 dígitos)
+41.5452.750.40.298
+Matrícula nacional (CNM · 16 dígitos)
+Pedir certidão de ônus (16 dígitos)
+Copiar chaves do imóvel
+Toque em um dado para ver a fonte.
+Abrir cadastro completo
+O valor em perspectiva
+Valor e histórico
+IPTU mensal no prédio
+R$ 128/mês
+Metade central das 18 unidades residenciais do prédio
+1976
+Construção registrada no cadastro
+2017
+1 transmissão
+2020
+3 transmissões
+2023
+1 transmissão
+2025
+1 transmissão
+2026
+Demolição licenciada a 127 m
+Construção: IPTU 2026 · transmissões: ITBI · demolições: licenciamento de obras.
+Histórico do prédio, registro e rua
+Linha unificada com 6 marcos oficiais do prédio e da quadra
+Três séries até hoje — Prédio: entrega em 1976 · Registro fiscal: 6 transmissões na série ITBI · Rua (150 m): 1 obra relevante em 24 meses e 4 chamados na via.
+2026-01
+Demolição licenciada a ~127 m
+ALVARA DE DEMOLICAO (DEFERIDO)
+2025
+1 transmissão fiscal registrada neste edifício
+Movimentação oficial usada na apuração fiscal do município (não é valor de anúncio).
+2015, 2016, 2023 e 2024
+4 chamados da Defesa Civil na via
+Base mascarada para Avenida Visconde de Albuquerque: confirmar na visita se ocorreu neste lote ou em outro número da mesma rua.
+2023
+1 transmissão fiscal registrada neste edifício
+Movimentação oficial usada na apuração fiscal do município (não é valor de anúncio).
+2020
+3 transmissões fiscais registradas neste edifício
+Movimentação oficial usada na apuração fiscal do município (não é valor de anúncio).
+1976
+Edifício entregue (50 anos de idade)
+Referência simples de manutenção: primeira janela de fachada aos 1991 (+15a) e prumadas aos 2001 (+25a).
+Ritmo fiscal no edifício: 1 transmissão em 2025 contra 1 em 2023.
+O que fazer com isso
+• Com 50 anos de entrega, peça as últimas atas para checar se fachada e prumadas já passaram por revisão e qual o saldo em caixa.
+• Observar na visita os canteiros num raio de 150 m para confirmar impacto de barulho diurno e insolação futura.
+O sol nas fachadas
+Qual lado do prédio pega sol.
+De manhã, o lado sul do prédio fica de frente para o sol por cerca de 7 h no verão; o lado norte, nenhuma. No inverno (junho) é o contrário. Se prédios vizinhos ou anexos tapam esse sol no 5º andar, o cadastro não permite dizer (há alturas desconhecidas). Para ver a diferença, visite por volta das 10h.
+Ver cada lado
+Levar para a visita
+De que lado vem o barulho
+A via movimentada mais perto.
+O lado oeste do prédio dá para a Avenida Visconde de Albuquerque, via principal a 22 m, com 556 partidas de ônibus num dia útil no ponto mais perto. Para comparar o barulho, visite num dia útil entre 17h e 19h e ouça também o lado leste.
+Levar para a visita
+Sem medição de decibéis. Via principal do mapa (OpenStreetMap), partidas do GTFS fixado e LUSE do Licenciamento Ambiental da Prefeitura.
+Linha do tempo da estrutura
+Nenhum ato documentado sobre a estrutura deste prédio.
+Chamado · sem documento
+Vistoria · sem documento
+Laudo com ART/RRT · sem documento
+Interdição · sem documento
+Reparo · sem documento
+Liberação · sem documento
+Falta saber se houve vistoria, laudo, interdição ou obra estrutural no prédio.
+Pergunta para o síndico: Houve vistoria da Defesa Civil ou do Controle Urbano? Há laudo de engenharia com ART ou RRT? Pode enviar a cópia? Houve interdição, reparo estrutural ou liberação? Em que datas?
+Registrar laudo, vistoria ou interdição no caderno
+Só entram atos com documento que você guardou e ligou a este imóvel. A linha do tempo organiza datas: não diagnostica a estrutura.
+Documentos e CNPJ do edifício
+Observações e histórico de visitas
+Comparar imóveis
+Preparar visita
+Descartar
+Explorar
+Dossiê
+Comparar
+Visita

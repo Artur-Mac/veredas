@@ -1,0 +1,27 @@
+Mapa do lote
+Avenida Boa Viagem, 2290
+Planta 2D
+Volume · manhã
+Volume · meio-dia
+Volume · tarde
+Av. Boa Viagem
+R. dos Navegantes
+Av. Boa Viagem
+R. dos Navegantes
+1
+50 m
+BAIRRO
+Boa Viagem
+Contém dados da Prefeitura do Recife (ODbL)
++
+−
+Área do lote no cadastro: ~954 m²
+Lote do prédio
+Prédios que o Vereda conhece
+Centro do prédio
+Acréscimo de área
+1
+Acréscimo de área
+novembro de 2024 · a 116 m · Deferido
+Licença vencida em 01/2025
+Contornos cadastrais dos lotes; não representam a planta das torres. Cada ponto numerado é onde a Prefeitura registrou a licença; toque nele para ver a distância e o estado da licença.

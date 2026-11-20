@@ -1,0 +1,51 @@
+Perfil da sua casa
+Preencha uma única vez. O Vereda usa essas escolhas para estimar luz, deslocamento e financiamento em todos os imóveis — sempre em fatias separadas, sem misturar com o valor oficial do anúncio.
+Prévia mensal desta rotina (separada do aluguel ou preço)
+Luz estimada ~R$ 324/mês
+Quantas pessoas vão morar?
+Ajuda a estimar o consumo básico mensal de energia da casa.
+1 pessoa
+2 pessoas
+3 pessoas
+4 pessoas
+5 ou mais
+Como vocês usam ar-condicionado?
+Calculado com a tarifa residencial da Neoenergia PE homologada pela ANEEL (0,79886 R$/kWh sem tributos; ~1,0625 R$/kWh com tributos médios).
+Sem ar-condicionado
+Ventilador e ventilação cruzada
+À noite em 1 quarto
+Cerca de 8h por noite (1 split)
+Uso intenso (2 ambientes)
+Dois quartos ou trabalho em casa climatizado
+Deslocamento frequente no Recife
+Escolha o bairro para onde você mais vai trabalhar ou estudar. Se trabalha de casa, deixe em Sem deslocamento fixo.
+Sem deslocamento fixo
+Recife (bairro)
+Boa Viagem
+Ilha do Leite
+Boa Vista
+Santo Amaro
+Casa Forte
+Espinheiro
+Cidade Universitária
+Ou busque qualquer um dos 94 bairros do Recife:
+Preferências para simulação de compra
+Usadas apenas em anúncios de venda, com a taxa média de mercado do Banco Central (11,28% a.a. · Série SGS 20774).
+Entrada na compra
+20%
+30%
+40%
+50%
+Prazo do financiamento
+15 anos
+20 anos
+30 anos
+35 anos
+Alguém na casa precisa de acessibilidade? (opcional)
+Se marcar, o dossiê mostra rampas do quarteirão e semáforos sonoros perto do prédio. Fica só neste aparelho e não entra em nada que você compartilhe.
+Mobilidade reduzida
+Baixa visão ou cegueira
+Teto mensal opcional (aluguel + taxas fixas)
+Se quiser, anote até quanto pretende comprometer por mês nas parcelas fixas do imóvel. Fica só neste aparelho.
+Salvar perfil neste aparelho
+Restaurar padrão

@@ -1,0 +1,316 @@
+Sobre os dados públicos
+De onde vêm os números
+O Vereda cruza 14 bases abertas do Recife e do IBGE com o anúncio lido no aparelho. Nossa regra central é: posição é fato, adjetivo é veredito.
+4 origens de informação:
+registro oficial: IPTU, ITBI, Licenciamento e Lotes
+declarado no anúncio: preço, área, condomínio
+inferência do cadastro: sinais que pedem confirmação
+não sabemos: vira pergunta para a visita
+Privacidade e amostra mínima:
+O Vereda não guarda nada sobre quem anuncia. Sem conta, sem sincronização em nuvem e sem perfilamento: toda análise, documento colado e preferência fica apenas neste aparelho, e nada é usado para treinar modelos. Esta leitura não substitui certidão oficial nem responsabiliza o app por divergências nas bases públicas de origem. Comparativos de bairro exigem amostra mínima de 20 edifícios; faixas fiscais exigem ao menos 3 transmissões em 36 meses.
+Fontes usadas
+IPTU 2026 (cadastro imobiliário)
+Prefeitura da Cidade do Recife · Secretaria de Finanças
+Licença
+ODbL
+Modificado em
+03/10/2026
+Consultado em
+15/11/2026
+Registros lidos
+413.750
+Colunas usadas
+logradouro, numero, Código Logradouro, AREA CONSTRUIDA, valor cobrado de IPTU, ano da construção corrigido, tipo de uso do imóvel, tipo de padrão da construção, Tipo de Construção, Tipo de Empreendimento, latitude, longitude
+Abrir no portal de dados abertos
+ITBI 2016 a 2026 (transmissão de bens imóveis)
+Prefeitura da Cidade do Recife · Secretaria de Finanças
+Licença
+ODbL
+Modificado em
+03/10/2026
+Consultado em
+15/11/2026
+Registros lidos
+144.576
+Colunas usadas
+cod_logradouro, numero, bairro, valor_avaliacao, area_construida, data_transacao, tipo_imovel, latitude, longitude
+Abrir no portal de dados abertos
+Licenciamento urbanístico (categoria Obra)
+Prefeitura da Cidade do Recife · Secretaria de Desenvolvimento Urbano e Licenciamento - SEDUL
+Licença
+ODbL
+Modificado em
+19/10/2026
+Consultado em
+15/11/2026
+Registros lidos
+39.067
+Colunas usadas
+dsqfl, tipo_processo, assunto, data_entrada, situacao_processo, latitude, longitude, categoria_empreendimento, data_emissao_licenca, data_validade_licenca, data_conclusao, empreendimento_de_impacto
+Abrir no portal de dados abertos
+Lotes (base cartográfica da área urbana)
+Prefeitura da Cidade do Recife · Secretaria de Infraestrutura
+Licença
+ODbL
+Modificado em
+02/03/2026
+Consultado em
+15/11/2026
+Registros lidos
+114.079
+Colunas usadas
+DSQFL, QTDPAVIMENTOS, NMEDIFICACAO, NMENDCOMP, geometry
+Abrir no portal de dados abertos
+Bairros e RPAs do Recife
+Prefeitura da Cidade do Recife · Secretaria de Infraestrutura
+Licença
+ODbL
+Modificado em
+02/03/2026
+Consultado em
+15/11/2026
+Registros lidos
+94
+Colunas usadas
+Bairro, rpa
+Abrir no portal de dados abertos
+Fontes da seção A rua
+Licenciamento Ambiental (licença de utilização sonora, LUSE)
+Prefeitura da Cidade do Recife · Secretaria de Desenvolvimento Urbano e Licenciamento - SEDUL
+Licença
+ODbL
+Modificado em
+19/10/2026
+Consultado em
+15/11/2026
+Registros lidos
+49.924
+Colunas usadas
+dsqfl, licenciamento_ambiental, data_entrada, situacao_processo, bairro, latitude, longitude
+Abrir no portal de dados abertos
+Central 156 da Emlurb (drenagem, lâmpada apagada e entulho)
+Prefeitura da Cidade do Recife · Empresa de Manutenção e Limpeza Urbana - EMLURB
+Licença
+ODbL
+Modificado em
+19/06/2026
+Período
+20/06/2025 a 19/06/2026
+Consultado em
+15/11/2026
+Registros lidos
+175.878
+Colunas usadas
+GRUPOSERVICO_DESCRICAO, SERVICO_DESCRICAO, LOGRADOURO, NUMERO, BAIRRO, DATA_DEMANDA, SITUACAO, DATA_ULT_SITUACAO, latitude, longitude
+Abrir no portal de dados abertos
+Iluminação pública do Recife 2025 (pontos desativados)
+Prefeitura da Cidade do Recife · Empresa de Manutenção e Limpeza Urbana - EMLURB
+Licença
+ODbL
+Modificado em
+04/03/2026
+Consultado em
+15/11/2026
+Registros lidos
+111.666
+Colunas usadas
+id_ponto, tipo_lampa, bairro, latitude, longitude
+Abrir no portal de dados abertos
+Roteiro da coleta domiciliar
+Prefeitura da Cidade do Recife · Empresa de Manutenção e Limpeza Urbana - EMLURB
+Licença
+ODbL
+Modificado em
+06/03/2026
+Consultado em
+15/11/2026
+Registros lidos
+5.046
+Colunas usadas
+setor, endereco, turno, intervalo, frequencia
+Abrir no portal de dados abertos
+Sinistros de trânsito com vítima (CTTU)
+Prefeitura da Cidade do Recife · Autarquia de Trânsito e Transporte Urbano do Recife - CTTU
+Licença
+ODbL
+Modificado em
+02/03/2026
+Período
+01/01/2022 a 31/12/2024
+Consultado em
+15/11/2026
+Registros lidos
+12.016
+Colunas usadas
+data, natureza, bairro, endereco, numero, detalhe_endereco_acidente, tipo, pedestre, vitimas, vitimasfatais
+Abrir no portal de dados abertos
+Atendimentos da Defesa Civil
+Prefeitura da Cidade do Recife · Secretaria Executiva de Defesa Civil
+Licença
+ODbL
+Modificado em
+06/03/2026
+Período
+01/01/2014 a 31/12/2024
+Consultado em
+15/11/2026
+Registros lidos
+886.263
+Colunas usadas
+Regional, Ano, Mes, Data, Ocorrencia, Solicitacao, Endereco, Bairro, Tipo_da_Acao
+Abrir no portal de dados abertos
+CNEFE 2022 (endereços do Censo, sem complemento)
+IBGE · Censo Demográfico 2022
+Licença
+Sem licença nomeada; citar o IBGE
+Modificado em
+20/05/2024
+Período
+01/01/2022 a 31/12/2022
+Consultado em
+15/11/2026
+Registros lidos
+737.511
+Colunas usadas
+COD_SETOR, DSC_LOCALIDADE, NOM_TIPO_SEGLOGR, NOM_TITULO_SEGLOGR, NOM_SEGLOGR, NUM_ENDERECO, LATITUDE, LONGITUDE, NV_GEO_COORD, COD_ESPECIE
+Abrir no servidor do IBGE
+Censo 2022: características urbanísticas do entorno e malha de setores
+IBGE · Censo Demográfico 2022
+Licença
+Sem licença nomeada; citar o IBGE
+Modificado em
+17/04/2025
+Período
+01/01/2022 a 31/12/2022
+Consultado em
+15/11/2026
+Registros lidos
+5.637
+Colunas usadas
+CD_setor, V05000, V05015, V05021, V05024, V05027, V05033, CD_SETOR, CD_MUN, NM_BAIRRO, geometria
+Abrir no servidor do IBGE
+Censo 2022: domicílios por condição de ocupação, por área de ponderação
+IBGE · Censo Demográfico 2022
+Licença
+Sem licença nomeada; citar o IBGE
+Modificado em
+01/09/2026
+Período
+01/01/2022 a 31/12/2022
+Consultado em
+15/11/2026
+Registros lidos
+2.885
+Colunas usadas
+Código do Município, Área de ponderação, Total, Alugado, Setor, Área de Ponderação
+Abrir no servidor do IBGE
+Inventário público por camada
+IPTU 2026 (cadastro imobiliário)
+03/10/2026 · 12 col. · 413.750 reg.
+Prefeitura da Cidade do Recife · Secretaria de Finanças · Campos lidos: logradouro, numero, Código Logradouro, AREA CONSTRUIDA, valor cobrado de IPTU, ano da construção corrigido…
+ITBI 2016 a 2026 (transmissão de bens imóveis)
+03/10/2026 · 9 col. · 144.576 reg.
+Prefeitura da Cidade do Recife · Secretaria de Finanças · Campos lidos: cod_logradouro, numero, bairro, valor_avaliacao, area_construida, data_transacao…
+Licenciamento urbanístico (categoria Obra)
+19/10/2026 · 12 col. · 39.067 reg.
+Prefeitura da Cidade do Recife · Secretaria de Desenvolvimento Urbano e Licenciamento - SEDUL · Campos lidos: dsqfl, tipo_processo, assunto, data_entrada, situacao_processo, latitude…
+Lotes (base cartográfica da área urbana)
+02/03/2026 · 5 col. · 114.079 reg.
+Prefeitura da Cidade do Recife · Secretaria de Infraestrutura · Campos lidos: DSQFL, QTDPAVIMENTOS, NMEDIFICACAO, NMENDCOMP, geometry
+Bairros e RPAs do Recife
+02/03/2026 · 2 col. · 94 reg.
+Prefeitura da Cidade do Recife · Secretaria de Infraestrutura · Campos lidos: Bairro, rpa
+Licenciamento Ambiental (licença de utilização sonora, LUSE)
+19/10/2026 · 7 col. · 49.924 reg.
+Prefeitura da Cidade do Recife · Secretaria de Desenvolvimento Urbano e Licenciamento - SEDUL · Campos lidos: dsqfl, licenciamento_ambiental, data_entrada, situacao_processo, bairro, latitude…
+Central 156 da Emlurb (drenagem, lâmpada apagada e entulho)
+19/06/2026 · 10 col. · 175.878 reg.
+Prefeitura da Cidade do Recife · Empresa de Manutenção e Limpeza Urbana - EMLURB · Campos lidos: GRUPOSERVICO_DESCRICAO, SERVICO_DESCRICAO, LOGRADOURO, NUMERO, BAIRRO, DATA_DEMANDA…
+Iluminação pública do Recife 2025 (pontos desativados)
+04/03/2026 · 5 col. · 111.666 reg.
+Prefeitura da Cidade do Recife · Empresa de Manutenção e Limpeza Urbana - EMLURB · Campos lidos: id_ponto, tipo_lampa, bairro, latitude, longitude
+Roteiro da coleta domiciliar
+06/03/2026 · 5 col. · 5.046 reg.
+Prefeitura da Cidade do Recife · Empresa de Manutenção e Limpeza Urbana - EMLURB · Campos lidos: setor, endereco, turno, intervalo, frequencia
+Sinistros de trânsito com vítima (CTTU)
+02/03/2026 · 10 col. · 12.016 reg.
+Prefeitura da Cidade do Recife · Autarquia de Trânsito e Transporte Urbano do Recife - CTTU · Campos lidos: data, natureza, bairro, endereco, numero, detalhe_endereco_acidente…
+Atendimentos da Defesa Civil
+06/03/2026 · 9 col. · 886.263 reg.
+Prefeitura da Cidade do Recife · Secretaria Executiva de Defesa Civil · Campos lidos: Regional, Ano, Mes, Data, Ocorrencia, Solicitacao…
+CNEFE 2022 (endereços do Censo, sem complemento)
+20/05/2024 · 10 col. · 737.511 reg.
+IBGE · Censo Demográfico 2022 · Campos lidos: COD_SETOR, DSC_LOCALIDADE, NOM_TIPO_SEGLOGR, NOM_TITULO_SEGLOGR, NOM_SEGLOGR, NUM_ENDERECO…
+Censo 2022: características urbanísticas do entorno e malha de setores
+17/04/2025 · 11 col. · 5.637 reg.
+IBGE · Censo Demográfico 2022 · Campos lidos: CD_setor, V05000, V05015, V05021, V05024, V05027…
+Censo 2022: domicílios por condição de ocupação, por área de ponderação
+01/09/2026 · 6 col. · 2.885 reg.
+IBGE · Censo Demográfico 2022 · Campos lidos: Código do Município, Área de ponderação, Total, Alugado, Setor, Área de Ponderação
+Versão do pacote e cobertura por camada
+Pacote de dados publicado em
+15/11/2026
+Cadastro IPTU / ITBI / Lotes
+Bairros cobertos do Recife
+Ativa
+Licenciamento de Obras (150 m)
+Construção, ampliação e demolição
+Ativa
+Entorno e Rua (Censo 2022 / 156 / LUSE)
+Faces de quadra e logradouros casados
+Parcial por rua
+Caminhabilidade em rede a pé
+Prédios com entrada ligada à malha
+Ativa nos cobertos
+Microclima, Satélite 100 m e Relevo
+Temperatura de superfície e drenagem
+Referência por ponto
+O que lemos sozinhos vs. o que pede confirmação
+Preço, condomínio, área e quartos
+Leitura automática determinística do texto ou página do anúncio. Sempre revisável antes de confirmar o vínculo do prédio.
+Andar, vagas e período do IPTU (mês ou ano)
+Lido só quando explícito; sem inventar nem assumir período. Marcado como a confirmar sempre que omitido pelo anúncio.
+Orientação solar e frentes da torre
+Inferida pela geometria do polígono e direção da via pública. Conferir na planta ou tocando a fachada desejada no 2.5D.
+Atas de condomínio, editais e matrículas
+Varredura por palavras-chave no aparelho citando trecho e página. Leitura humana indispensável; sem percentual estatístico sem amostra rotulada.
+Ver radar do pré-contrato · Edição 1 (sem preço)
+O desenho dos mapas
+O fundo dos mapas mostra ruas com nome, quadras, lotes, bairros, rios e canais, praças e pontes. Vem das bases Bairros do Recife, Quadras, Lotes, Trechos de Logradouros, Recursos Hídricos, Parques e Praças e Pontes do Recife, nos conjuntos "Área urbana" e "Parques e praças" do portal de dados abertos da Prefeitura do Recife.
+Licença
+ODbL
+Modificado em
+04/03/2026
+Crédito no mapa
+Contém dados da Prefeitura do Recife (ODbL)
+O que o desenho não é
+Não é foto de satélite: é um desenho feito com o cadastro da Prefeitura.
+Onde a base não tem o lote, aparece só a quadra. É comum nos morros e na periferia.
+A forma do lote não é a planta do prédio: mostra o terreno, não a construção.
+Contém dados da Prefeitura do Recife, disponibilizados sob a Open Database License (ODbL).
+© colaboradores do OpenStreetMap (ODbL): vias do ruído estimado, pista do aeroporto e rede de ruas a pé.
+As bases que o Vereda deriva desses dados (índice de prédios, desenho dos mapas e ruído estimado) são oferecidas sob a mesma licença, a ODbL 1.0, com os scripts que as geram. O local de download ainda está a definir. O reuso delas não tem restrição além das da própria licença.
+Ler a licença ODbL 1.0
+Contém dados do IBGE: CNEFE 2022 e Censo Demográfico 2022 (entorno dos domicílios, malha de setores e Amostra por área de ponderação).
+Sínteses cruzadas e custos de referência usam bases abertas oficiais sem parcerias comerciais: USGS Landsat 8/9 ST_B10 (Domínio Público), Copernicus DEM GLO-30 (CC-BY 4.0 ESA), Secretaria de Saúde do Recife / SINAN (ODbL), Grande Recife / CBTU (GTFS), IBGE Censo 2022 Renda por Setor, Banco Central (SGS 20774) e ANEEL Tarifas Homologadas.
+Segurança no bairro: registros da SDS-PE compilados pelo Crime Brasil (CC BY 4.0), janela de 12 meses por bairro; a taxa por 1.000 moradores usa a população do IBGE, Censo 2022 (variável V0001). É o que chegou à polícia, pelo bairro informado no registro.
+Aeroporto: eixo da pista 18/36 do Aeroporto dos Guararapes no OpenStreetMap (ODbL, © colaboradores do OpenStreetMap). A linha de pouso e decolagem segue a superfície de aproximação do Anexo 14 da ICAO, até 10 km da cabeceira; a altura do avião é estimada pela rampa padrão de 3°. As curvas oficiais de ruído da ANAC ainda não estão no app: o nível do avião entra só como estimativa, no ruído estimado abaixo.
+Ruído estimado (dB(A) de dia e à noite e nota de sossego): estimativa com dados abertos, não medição, pelo método publicado pelo Mapa Sossego (mapasossego.com.br/sobre). Vias: © colaboradores do OpenStreetMap, sob a Open Database License (ODbL), extrato do Geofabrik de 17/11/2026. Ônibus: partidas do GTFS Grande Recife. Metrô e VLT: traçado da CBTU. Som licenciado: LUSE da Prefeitura do Recife. Bares, oficinas e mercados: CNEFE do Censo 2022 (IBGE). A estimativa tem faixa de erro de ±5 dB; a comparação com 55 dB(A) de dia e 50 à noite usa a ABNT NBR 10151, norma técnica, não lei municipal.
+O que ainda não cobrimos
+Aluguel de mercado
+Ainda não usamos dados de aluguel de outros imóveis do bairro.
+Segurança por rua
+As ocorrências só vêm por bairro, sem rua nem ponto no mapa.
+Alagamento por endereço
+Ainda não sabemos se o endereço alaga.
+Fotos dos anúncios
+Não guardamos nem analisamos as fotos.
+Identificação dupla e arquitetura offline por município
+Cada dossiê separa o identificador municipal de lote (DSQFL) da matrícula cartorária (CNM 16 dígitos) e distingue explicitamente “não se aplica”, “sem ocorrência no período” e “ainda não sabemos”. Os dados públicos vêm em arquivos estáticos, separados do que você guarda no aparelho; a cada leitura o app confere o tamanho do arquivo e, na web, o resumo SHA-256 com o manifesto publicado (é conferência de integridade, não assinatura).
+Cobertura por bairro e camada
+Cadastro ampliado em revisão: 72 bairros do Recife. Confira endereço e lote antes de reconhecer um prédio. As camadas de rua têm cobertura própria. Nos demais locais, você pode manter os dados do anúncio e suas observações.
+Ver bairros com índice cadastral
+Seus dados neste aparelho
+Suas análises, seus créditos e suas visitas ficam só neste aparelho. Você pode apagar tudo quando quiser.
+Apagar meus dados deste aparelho
+Entendido

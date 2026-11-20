@@ -1,0 +1,1977 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Opção A · Ficha de campo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../comum/base.css">
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+   OPÇÃO A · FICHA DE CAMPO
+   Linguagem de cadastro e caderno. A hierarquia vem da tipografia e do espaço: não há cartão. O papel é o fundo
+   de tudo; o branco só aparece em campo de texto e em gaveta. Linhas finas separam; carimbos marcam o estado
+   de um dado (confirmado, estimativa, sem leitura, não confere); réguas mostram onde um número cai.
+   Fraunces: números e títulos. Plus Jakarta Sans: interface. JetBrains Mono: códigos, fontes, datas, rótulos.
+   Laranja: só a ação principal da tela. Azul cadastral: o que vem do cadastro e os elos de método e fonte.
+   Ferrugem (--barro-texto): o que pede atenção.
+   ═══════════════════════════════════════════════════════════════════════════════════════════════════════ */
+:root { --margem: 20px; }
+@media (max-width: 370px) { :root { --margem: 16px; } }
+
+/* ——— Tipografia: sete degraus (12, 14, 16, 20, 28, 40, 56) ——— */
+.rotulo { font-family: var(--mono); font-size: var(--t12); line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--apoio); }
+.rotulo b { color: var(--texto); font-weight: 600; margin-right: 6px; }
+.codigo { font-family: var(--mono); font-size: var(--t12); line-height: 16px; color: var(--apoio); letter-spacing: 0.01em; }
+.titulo { font-family: var(--serifa); font-weight: 500; font-size: var(--t28); line-height: 32px; letter-spacing: -0.015em; }
+.titulo-g { font-size: var(--t40); line-height: 44px; letter-spacing: -0.025em; }
+.numero { font-family: var(--serifa); font-weight: 400; font-size: var(--t56); line-height: 56px; letter-spacing: -0.035em; font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; }
+.numero-m { font-size: var(--t40); line-height: 44px; letter-spacing: -0.03em; }
+.numero-p { font-size: var(--t28); line-height: 32px; letter-spacing: -0.02em; font-weight: 500; }
+.numero .aprox { font-family: var(--sans); font-size: 0.5em; font-weight: 500; letter-spacing: 0; color: var(--apoio); margin-right: 3px; vertical-align: 0.28em; }
+.un { font-family: var(--sans); font-size: var(--t16); line-height: 22px; font-weight: 600; letter-spacing: 0; margin-left: 6px; white-space: normal; }
+.numero-p .un, .numero-m .un { font-size: var(--t14); }
+.contexto { font-size: var(--t16); line-height: 22px; font-weight: 500; }
+.apoio { font-size: var(--t14); line-height: 20px; color: var(--apoio); }
+.forte { font-weight: 700; }
+.atencao { color: var(--barro-texto); font-weight: 600; }
+
+/* ——— Carimbo: o estado de um dado. Discreto, levemente torto, sempre com texto. ——— */
+.carimbo { display: inline-block; padding: 3px 7px 2px; border: 1.5px solid currentColor; border-radius: 3px; font-family: var(--mono); font-size: var(--t12); line-height: 16px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; transform: rotate(-2deg); }
+.carimbo-azul { color: var(--azul); }
+.carimbo-barro { color: var(--barro-texto); }
+.carimbo-cinza { color: var(--apoio); border-style: dashed; }
+
+/* ——— Elos e botões ——— */
+.elo { display: inline-flex; align-items: center; min-height: var(--toque); color: var(--azul); font-size: var(--t14); font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.botao { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 20px; border: 1.5px solid var(--texto); border-radius: 10px; font-size: var(--t16); font-weight: 700; letter-spacing: -0.005em; white-space: nowrap; }
+.botao.principal { background: var(--acao); border-color: var(--acao); color: var(--sobre-acao); }
+.botao.principal:active { background: var(--acao-pressionada); border-color: var(--acao-pressionada); }
+.botao.largo { flex: 1; }
+.botao.pequeno { min-height: var(--toque); padding: 0 14px; font-size: var(--t14); border-width: 1px; }
+.botao[aria-disabled="true"] { opacity: 0.45; }
+.rodape { flex: none; display: flex; gap: var(--e2); padding: var(--e3) var(--margem); background: var(--papel); border-top: 1px solid var(--linha-forte); }
+.rodape:last-child { padding-bottom: 30px; }
+
+/* ——— Barra de cima e barra de baixo ——— */
+.barra { flex: none; height: 48px; padding: 0 var(--e2); display: flex; align-items: center; justify-content: space-between; }
+.voltar { display: inline-flex; align-items: center; gap: 6px; min-height: var(--toque); padding: 0 var(--e3); font-size: var(--t14); font-weight: 600; }
+.voltar::before { content: ""; width: 8px; height: 8px; border-left: 1.75px solid currentColor; border-bottom: 1.75px solid currentColor; transform: rotate(45deg); }
+.barra-acoes { display: flex; align-items: center; }
+.icone { width: var(--toque); height: var(--toque); display: grid; place-items: center; }
+.icone svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.icone[aria-pressed="true"] svg { fill: currentColor; }
+.cabeca { flex: none; height: 52px; padding: 0 var(--e2) 0 var(--margem); display: flex; align-items: center; justify-content: space-between; }
+.marca { display: inline-flex; align-items: center; gap: 10px; min-height: var(--toque); font-family: var(--serifa); font-weight: 500; font-size: var(--t16); letter-spacing: 0.2em; }
+.marca svg { width: 20px; height: 20px; fill: var(--acao); }
+.cabeca .elo { color: var(--texto); padding: 0 var(--e3); text-decoration: none; }
+
+.dock { position: relative; flex: none; display: flex; padding-bottom: 26px; background: var(--papel); border-top: 1px solid var(--linha-forte); }
+.dock a { position: relative; flex: 1; min-height: 52px; display: grid; place-items: center; font-size: var(--t14); font-weight: 500; color: var(--apoio); }
+.dock a[aria-current="page"] { color: var(--texto); font-weight: 700; }
+.dock a[aria-current="page"]::before { content: ""; position: absolute; top: -1px; left: 50%; width: 32px; margin-left: -16px; height: 2px; background: var(--texto); }
+.dock::after, .rodape:last-child::after { content: ""; position: absolute; bottom: 8px; left: 50%; width: 134px; margin-left: -67px; height: 5px; border-radius: 3px; background: var(--texto); }
+.rodape:last-child { position: relative; }
+
+/* ——— Caderno: a lista é de linhas, agrupadas pela etapa ——— */
+.abertura { padding: var(--e2) var(--margem) var(--e4); }
+.abertura .codigo { margin-top: var(--e2); }
+.escolhas { display: flex; gap: var(--e1); padding: 0 calc(var(--margem) - 10px); }
+.escolhas button, .escolhas a { min-height: var(--toque); padding: 0 10px; display: inline-flex; align-items: center; font-size: var(--t14); font-weight: 500; color: var(--apoio); }
+.escolhas [aria-checked="true"], .escolhas [aria-selected="true"], .escolhas [aria-current="true"] { color: var(--texto); font-weight: 700; box-shadow: inset 0 -2px 0 var(--texto); }
+.grupo { padding: var(--e5) var(--margem) var(--e1); border-top: 1px solid var(--linha-forte); margin-top: var(--e2); }
+.registro { position: relative; margin: 0 var(--margem); border-bottom: 1px solid var(--linha); }
+.registro:last-child { border-bottom: 0; }
+.registro-elo { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; column-gap: var(--e3); align-items: baseline; padding: var(--e4) 0 var(--e3); }
+.lote { grid-row: 1 / 4; align-self: start; width: 40px; height: 40px; margin-top: 2px; }
+.lote path { fill: var(--azul-suave); stroke: var(--azul); stroke-width: 3.5; stroke-linejoin: round; }
+.lote.sem path { fill: none; stroke: var(--linha-forte); stroke-dasharray: 6 6; }
+.registro-nome { display: block; font-family: var(--serifa); font-weight: 500; font-size: var(--t20); line-height: 24px; letter-spacing: -0.01em; }
+.registro-nome svg { display: inline-block; width: 14px; height: 14px; margin-right: 5px; fill: var(--texto); vertical-align: 0; }
+.registro-preco { font-family: var(--serifa); font-weight: 500; font-size: var(--t20); line-height: 24px; letter-spacing: -0.01em; white-space: nowrap; text-align: right; }
+.registro-mes { text-align: right; white-space: nowrap; }
+.registro-nota { grid-column: 2 / 4; margin-top: 6px; padding-right: 40px; font-size: var(--t14); line-height: 20px; }
+.registro-mais { position: absolute; bottom: 0; right: -12px; width: var(--toque); height: var(--toque); display: grid; place-items: center; }
+.registro-mais i { width: 4px; height: 4px; border-radius: 2px; background: var(--texto); box-shadow: -7px 0 0 var(--texto), 7px 0 0 var(--texto); }
+.fim-de-lista { padding: var(--e2) var(--margem) var(--e6); border-top: 1px solid var(--linha-forte); margin-top: var(--e2); }
+
+/* ——— Ficha: cabeçalho, índice fixo das perguntas, leitura rápida e seções ——— */
+.ficha-cabeca { padding: var(--e1) var(--margem) var(--e5); }
+.ficha-meta .codigo { white-space: nowrap; }
+.ficha-meta { display: flex; align-items: center; justify-content: space-between; gap: var(--e2); min-height: 28px; margin-bottom: var(--e3); }
+.ficha-cabeca .contexto { margin-top: var(--e2); }
+.mapa { position: relative; display: block; margin-top: var(--e4); border: 1px solid var(--linha-forte); border-radius: 6px; overflow: hidden; }
+.mapa img { width: 100%; height: 148px; object-fit: cover; object-position: 50% 100%; }
+.ficha-cabeca .mapa img { height: 104px; object-position: 50% 50%; }
+.ficha-cabeca .mapa-elo { top: 8px; bottom: auto; }
+.mapa-credito { position: absolute; left: 8px; bottom: 8px; padding: 2px 8px; background: var(--papel-claro); border-radius: 4px; font-size: var(--t12); line-height: 16px; color: var(--apoio); }
+.mapa-elo { position: absolute; bottom: 8px; right: 8px; min-height: 32px; padding: 0 10px; display: inline-flex; align-items: center; background: var(--papel-claro); border: 1px solid var(--linha-forte); border-radius: 6px; font-size: var(--t14); font-weight: 600; }
+.indice { position: sticky; top: 0; z-index: 5; display: flex; padding: 0 calc(var(--margem) - 8px); background: var(--papel); border-top: 1px solid var(--linha-forte); border-bottom: 1px solid var(--linha-forte); margin-bottom: -1px; overflow-x: auto; scrollbar-width: none; }
+.indice::-webkit-scrollbar { display: none; }
+.indice a { flex: none; min-height: var(--toque); padding: 0 8px; display: inline-flex; align-items: center; gap: 5px; font-size: var(--t14); font-weight: 500; color: var(--apoio); white-space: nowrap; }
+.indice a b { font-family: var(--mono); font-size: var(--t12); font-weight: 500; }
+.indice a[aria-current="true"] { color: var(--texto); font-weight: 700; box-shadow: inset 0 -2px 0 var(--texto); }
+@media (max-width: 370px) { .indice a { padding: 0 6px; gap: 4px; } }
+
+.rapida { padding: var(--e2) var(--margem) var(--e4); border-top: 1px solid var(--linha-forte); }
+.rapida a { display: grid; grid-template-columns: 92px 1fr 12px; column-gap: var(--e2); align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--linha); }
+.rapida li:last-child a { border-bottom: 0; }
+.rapida .rotulo { grid-row: 1 / 3; padding-top: 10px; }
+.rapida .numero-p { grid-column: 2; }
+.rapida .apoio { grid-column: 2; }
+.rapida .seta { grid-column: 3; grid-row: 1 / 3; align-self: center; }
+.seta { width: 8px; height: 8px; border-right: 1.5px solid var(--apoio); border-top: 1.5px solid var(--apoio); transform: rotate(45deg); display: inline-block; flex: none; }
+
+.secao { padding: var(--e8) var(--margem) var(--e6); border-top: 1px solid var(--linha-forte); }
+.secao > .titulo { margin-top: var(--e1); }
+.leitura { margin-top: var(--e5); }
+.leitura .contexto { margin-top: var(--e2); }
+.leitura .carimbo { margin: 0 0 var(--e2); }
+.sub { margin-top: var(--e8); }
+.sub > .rotulo { margin-bottom: var(--e2); }
+.dupla { display: grid; grid-template-columns: 1fr 1fr; column-gap: var(--e4); margin-top: var(--e5); }
+.dupla > div + div { padding-left: var(--e4); border-left: 1px solid var(--linha); }
+.dupla .numero { margin-top: var(--e2); }
+.dupla .apoio { margin-top: var(--e1); }
+
+/* Lançamentos: nome, pontilhado, valor; embaixo, de onde veio. */
+.lancamentos { margin-top: var(--e4); }
+.lanc { display: grid; grid-template-columns: auto 1fr auto; column-gap: var(--e2); align-items: baseline; padding: 10px 0 8px; min-height: var(--toque); }
+.lanc-nome { font-size: var(--t16); line-height: 22px; font-weight: 500; }
+.lanc-valor { font-family: var(--serifa); font-weight: 500; font-size: var(--t20); line-height: 24px; letter-spacing: -0.01em; font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; }
+.lanc-valor .aprox { font-family: var(--sans); font-size: 0.7em; font-weight: 500; color: var(--apoio); margin-right: 2px; vertical-align: 0.1em; }
+.lanc-valor.texto { font-family: var(--sans); font-size: var(--t16); font-weight: 600; letter-spacing: 0; }
+.lanc-valor.sem { font-family: var(--mono); font-size: var(--t12); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--apoio); }
+.guia { align-self: end; margin-bottom: 6px; border-bottom: 1.5px dotted var(--linha-forte); min-width: 12px; }
+.origem { grid-column: 1 / -1; font-family: var(--mono); font-size: var(--t12); line-height: 16px; color: var(--apoio); }
+.lanc.soma { margin-top: var(--e1); border-top: 1.5px solid var(--texto); padding-top: var(--e3); }
+.lanc.soma .lanc-nome { font-weight: 700; }
+.lanc.soma .lanc-valor { font-size: var(--t28); line-height: 32px; }
+
+/* Barra do que é conhecido e do que é estimativa (o hachurado é estimativa). */
+.partes { display: flex; height: 14px; margin-top: var(--e5); border: 1px solid var(--texto); }
+.partes i { display: block; }
+.partes .conhecido { background: var(--texto); }
+.partes .cadastro { background: var(--azul); }
+.partes .estimado { background: var(--papel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cpath d='M-1 7 7 -1M-1 1 1 -1M5 7 7 5' stroke='%23171717' stroke-width='1'/%3E%3C/svg%3E"); }
+.partes .estimado + .estimado { border-left: 1px solid var(--texto); }
+.legenda { display: flex; flex-wrap: wrap; gap: 2px var(--e4); margin-top: var(--e2); }
+.legenda span { display: inline-flex; align-items: center; gap: 6px; }
+.legenda i { width: 10px; height: 10px; border: 1px solid var(--texto); }
+.legenda .sw-anuncio { background: var(--texto); }
+.legenda .sw-cadastro { background: var(--azul); }
+.legenda .sw-estimativa { background: var(--papel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cpath d='M-1 7 7 -1M-1 1 1 -1M5 7 7 5' stroke='%23171717' stroke-width='1'/%3E%3C/svg%3E"); }
+
+/* Régua: uma linha com riscos, e marcas no lugar do número. */
+.regua { display: block; width: 100%; height: auto; margin-top: var(--e4); overflow: visible; color: var(--texto); }
+.regua text { font-family: var(--mono); font-size: 11px; fill: var(--apoio); }
+.regua .marca-forte { fill: var(--texto); font-weight: 600; }
+.regua .ref { fill: var(--apoio); }
+
+/* Linha grande que abre uma gaveta: rótulo, número, uma linha. */
+.abre { display: grid; grid-template-columns: 1fr 12px; column-gap: var(--e3); align-items: center; padding: var(--e4) 0; border-top: 1px solid var(--linha); }
+.abre .numero-p { margin-top: 2px; }
+.atalhos { margin-top: var(--e5); border-bottom: 1px solid var(--linha); }
+.atalho { display: flex; align-items: center; justify-content: space-between; gap: var(--e3); min-height: 48px; border-top: 1px solid var(--linha); font-size: var(--t16); font-weight: 600; }
+.atalho .apoio { margin-left: auto; font-weight: 500; }
+.achado { margin-top: var(--e5); }
+.achado .contexto { margin-top: var(--e2); }
+.rodape-secao { display: flex; gap: var(--e5); margin-top: var(--e3); }
+.numerada { margin-top: var(--e3); counter-reset: n; }
+.numerada li { counter-increment: n; display: grid; grid-template-columns: 28px 1fr; padding: 10px 0; border-top: 1px solid var(--linha); font-size: var(--t16); line-height: 22px; font-weight: 500; }
+.numerada li::before { content: counter(n, decimal-leading-zero); font-family: var(--mono); font-size: var(--t12); color: var(--apoio); padding-top: 3px; }
+.resposta { display: flex; gap: var(--e2); margin-top: var(--e3); }
+
+/* ——— Gavetas ——— */
+.gaveta-cabeca { flex: none; display: flex; align-items: flex-start; justify-content: space-between; gap: var(--e3); padding: var(--e4) var(--e2) var(--e3) var(--margem); border-bottom: 1px solid var(--linha); }
+.gaveta-cabeca .titulo { margin-top: 2px; }
+.fechar { flex: none; width: var(--toque); height: var(--toque); display: grid; place-items: center; }
+.fechar::before, .fechar::after { content: ""; grid-area: 1 / 1; width: 18px; height: 1.75px; background: var(--texto); transform: rotate(45deg); }
+.fechar::after { transform: rotate(-45deg); }
+.gaveta .corpo { padding: var(--e2) var(--margem) var(--e8); }
+.metodo > div { display: grid; grid-template-columns: 88px 1fr; column-gap: var(--e3); padding: var(--e3) 0; border-bottom: 1px solid var(--linha); }
+.metodo dt { padding-top: 3px; font-family: var(--mono); font-size: var(--t12); line-height: 16px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--apoio); }
+.metodo dd { font-size: var(--t14); line-height: 20px; }
+
+/* ——— Componentes das outras telas (entrada, comparar, visita, estados) ——— */
+.campo { display: flex; align-items: center; gap: var(--e2); min-height: 56px; padding: 0 6px 0 var(--e4); background: var(--superficie); border: 1.5px solid var(--texto); border-radius: 10px; }
+.campo input { flex: 1; min-width: 0; height: 52px; border: 0; outline: 0; background: none; font-size: var(--t16); font-weight: 500; }
+.campo input::placeholder { color: var(--apoio); }
+.campo:focus-within { outline: 2px solid var(--azul); outline-offset: 2px; }
+.campo-area { width: 100%; min-height: 88px; padding: var(--e3); background: var(--superficie); border: 1px solid var(--linha-forte); border-radius: 10px; font-size: var(--t16); resize: none; }
+.bloco { padding: var(--e2) var(--margem) var(--e5); }
+.bloco + .bloco { border-top: 1px solid var(--linha-forte); padding-top: var(--e5); }
+.resultado { display: grid; grid-template-columns: 1fr 12px; column-gap: var(--e3); align-items: center; padding: var(--e3) 0; min-height: 56px; border-top: 1px solid var(--linha); }
+.resultado b { display: block; font-family: var(--serifa); font-weight: 500; font-size: var(--t20); line-height: 24px; letter-spacing: -0.01em; }
+.esqueleto { display: block; height: 56px; border-top: 1px solid var(--linha); position: relative; }
+.esqueleto::before, .esqueleto::after { content: ""; position: absolute; left: 0; height: 0; border-top: 2px dotted var(--linha-forte); }
+.esqueleto::before { top: 20px; width: 46%; }
+.esqueleto::after { top: 36px; width: 72%; }
+.aviso { margin-top: var(--e4); }
+.aviso .contexto { margin-top: var(--e2); }
+.vazio { padding: var(--e10) var(--margem); }
+.vazio .contexto { margin-top: var(--e3); max-width: 30ch; }
+.abas-texto { display: flex; padding: 0 calc(var(--margem) - 10px); border-bottom: 1px solid var(--linha-forte); }
+.abas-texto a, .abas-texto button { min-height: var(--toque); padding: 0 10px; display: inline-flex; align-items: center; font-size: var(--t14); font-weight: 500; color: var(--apoio); }
+.abas-texto [aria-selected="true"], .abas-texto [aria-current="true"] { color: var(--texto); font-weight: 700; box-shadow: inset 0 -2px 0 var(--texto); }
+.ponto { display: grid; grid-template-columns: var(--toque) 1fr; column-gap: var(--e2); padding: var(--e2) 0; border-top: 1px solid var(--linha); }
+.caixa { width: var(--toque); height: var(--toque); display: grid; place-items: center; margin-left: -11px; }
+.caixa::before { content: ""; width: 22px; height: 22px; border: 1.5px solid var(--texto); border-radius: 3px; }
+.caixa[aria-checked="true"]::before { background: var(--texto) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='m5 11.5 4 4 8-9' fill='none' stroke='%23F2EBDD' stroke-width='2'/%3E%3C/svg%3E") center / 22px; }
+.ponto .contexto { padding-top: 11px; }
+.ponto .codigo { margin-top: 2px; }
+.opcoes { display: flex; gap: var(--e2); margin-top: var(--e3); }
+.opcoes button, .opcoes a { flex: 1; min-height: var(--toque); border: 1px solid var(--linha-forte); border-radius: 8px; font-size: var(--t14); font-weight: 600; display: inline-flex; align-items: center; justify-content: center; }
+.opcoes [aria-checked="true"], .opcoes [aria-pressed="true"] { background: var(--texto); border-color: var(--texto); color: var(--papel-claro); }
+.etapas { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: var(--e3); border: 1px solid var(--texto); border-radius: 8px; overflow: hidden; }
+.etapas button { min-height: var(--toque); font-size: var(--t12); font-weight: 600; border-left: 1px solid var(--texto); }
+.etapas button:first-child { border-left: 0; }
+.etapas [aria-checked="true"] { background: var(--texto); color: var(--papel-claro); }
+.cronometro { font-family: var(--mono); font-size: var(--t14); font-weight: 600; letter-spacing: 0.04em; padding: 0 var(--e3); }
+
+/* Comparar: três colunas (o que se compara, imóvel 1, imóvel 2). O ponto cheio marca quem leva vantagem. */
+.cmp-topo, .cmp-linha { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) minmax(0, 1.05fr); column-gap: var(--e3); }
+.cmp-topo { position: sticky; top: 0; z-index: 5; padding: var(--e2) var(--margem) var(--e3); background: var(--papel); border-bottom: 1px solid var(--linha-forte); align-items: end; }
+.cmp-topo b { font-family: var(--serifa); font-weight: 500; font-size: var(--t16); line-height: 20px; }
+.cmp-grupo { padding: var(--e5) var(--margem) var(--e1); }
+.cmp-linha { margin: 0 var(--margem); padding: var(--e3) 0; border-top: 1px solid var(--linha); align-items: start; }
+.cmp-linha > span:first-child { font-size: var(--t14); line-height: 20px; color: var(--apoio); padding-top: 3px; }
+.cmp-valor { font-family: var(--serifa); font-weight: 500; font-size: var(--t20); line-height: 24px; letter-spacing: -0.01em; font-variant-numeric: lining-nums tabular-nums; }
+.cmp-valor small { display: block; font-family: var(--sans); font-size: var(--t12); line-height: 16px; font-weight: 500; letter-spacing: 0; color: var(--apoio); }
+.cmp-valor.frente::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--texto); margin-right: 5px; vertical-align: 3px; }
+.cmp-valor.sem { font-family: var(--mono); font-size: var(--t12); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--apoio); }
+.cmp-barra { display: block; height: 3px; margin-top: 6px; background: var(--linha); }
+.cmp-barra i { display: block; height: 100%; background: var(--texto); }
+
+/* ═══ Acréscimos para as telas completadas (mesmo espírito: linha fina, sem caixa, sem sombra) ═══ */
+
+/* Entrada: o campo e os exemplos ficam no fluxo do papel. */
+.bloco > .titulo { margin-top: var(--e1); }
+.bloco > .campo { margin-top: var(--e4); }
+.bloco > .codigo { margin-top: var(--e2); }
+.bloco > .rotulo + .resultado, .bloco > .rotulo + .esqueleto { margin-top: var(--e2); }
+.bloco .escolhas { padding: 0; margin: var(--e2) 0 0 -10px; flex-wrap: wrap; }
+.elos { display: flex; flex-wrap: wrap; column-gap: var(--e5); }
+.resultado .apoio { display: block; }
+.resultado + .elo { margin-top: var(--e1); }
+.mapa.inteiro img { height: auto; }
+[data-quando][hidden] { display: none !important; }
+
+/* "Sem leitura" na leitura rápida: mono, caixa alta, cor de apoio. Fica fora de qualquer média. */
+.rapida .sem { grid-column: 2; font-family: var(--mono); font-size: var(--t14); line-height: 32px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--apoio); }
+
+/* Lista numerada em duas linhas: a pergunta e, embaixo, o porquê em mono. */
+.numerada li .codigo { display: block; margin-top: 2px; font-weight: 400; }
+
+/* Esqueleto com rótulo: o nome fica à esquerda, os pontilhados depois dele. */
+.esqueleto .rotulo { position: absolute; left: 0; top: 20px; }
+.esqueleto.com-rotulo::before, .esqueleto.com-rotulo::after { left: 100px; }
+.esqueleto.com-rotulo::before { width: 40%; }
+.esqueleto.com-rotulo::after { width: 58%; }
+
+/* Opções em coluna (motivo, troca de imóvel): uma linha por opção, marcador à esquerda. */
+.opcoes [role="radio"] { flex: 1; min-height: var(--toque); border: 1px solid var(--linha-forte); border-radius: 8px; font-size: var(--t14); font-weight: 600; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.opcoes.coluna { flex-direction: column; gap: 0; border-top: 1px solid var(--linha); }
+.opcoes.coluna [role="radio"] { justify-content: flex-start; gap: var(--e3); min-height: 52px; border: 0; border-bottom: 1px solid var(--linha); border-radius: 0; font-size: var(--t16); font-weight: 500; background: none; color: var(--texto); }
+.opcoes.coluna [role="radio"]::before { content: ""; flex: none; width: 20px; height: 20px; border: 1.5px solid var(--texto); border-radius: 50%; }
+.opcoes.coluna [aria-checked="true"] { background: none; color: var(--texto); font-weight: 700; }
+.opcoes.coluna [aria-checked="true"]::before { box-shadow: inset 0 0 0 4px var(--superficie); background: var(--texto); }
+.opcoes.coluna .apoio { font-weight: 500; }
+
+/* Passo a passo do andar: menos, valor, mais. */
+.passo { display: flex; align-items: center; gap: var(--e3); margin-top: var(--e2); }
+.passo button { width: var(--toque); height: var(--toque); border: 1px solid var(--linha-forte); border-radius: 8px; font-size: var(--t20); font-weight: 500; }
+.passo .numero { flex: 1; text-align: center; }
+
+/* Rosa dos ventos: grade 3 × 3, o centro vazio é o prédio. */
+.rosa { display: grid; grid-template-columns: repeat(3, var(--toque)); gap: var(--e1); margin-top: var(--e3); }
+.rosa button { height: var(--toque); border: 1px solid var(--linha-forte); border-radius: 8px; font-family: var(--mono); font-size: var(--t12); font-weight: 600; }
+.rosa [aria-checked="true"] { background: var(--texto); border-color: var(--texto); color: var(--papel-claro); }
+.rosa .centro { display: grid; place-items: center; }
+.rosa .centro::before { content: ""; width: 10px; height: 10px; background: var(--azul); }
+
+/* Citação: o texto pronto para copiar, como uma folha colada. */
+.citacao { margin-top: var(--e3); padding: var(--e4); background: var(--superficie); border: 1px solid var(--linha-forte); border-radius: 10px; font-size: var(--t16); line-height: 22px; }
+.citacao p + p { margin-top: var(--e1); }
+
+/* Cronologia: o ano em mono à esquerda, o fato à direita. */
+.cronologia li { display: grid; grid-template-columns: 96px 1fr; column-gap: var(--e3); padding: var(--e3) 0; border-top: 1px solid var(--linha); }
+.cronologia li:first-child { border-top: 0; }
+.cronologia .codigo { padding-top: 3px; color: var(--texto); font-weight: 600; }
+.cronologia small { display: block; font-size: var(--t14); line-height: 20px; color: var(--apoio); }
+
+/* Linha que liga e desliga (Favorito na triagem). */
+.alterna { display: flex; align-items: center; gap: var(--e3); width: 100%; min-height: 52px; border-bottom: 1px solid var(--linha); font-size: var(--t16); font-weight: 600; text-align: left; }
+.alterna svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
+.alterna[aria-pressed="true"] svg { fill: currentColor; }
+.alterna .apoio { margin-left: auto; font-weight: 500; }
+
+/* Linha do imóvel na visita: contorno do lote, nome, endereço, trocar. */
+.imovel-linha { display: grid; grid-template-columns: 40px 1fr auto; column-gap: var(--e3); align-items: center; padding: 0 var(--margem) var(--e3); }
+.imovel-linha .lote { grid-row: auto; margin: 0; }
+.imovel-linha .elo { min-width: var(--toque); justify-content: flex-end; }
+.escolhas button { min-width: var(--toque); justify-content: center; }
+.imovel-linha b { display: block; font-family: var(--serifa); font-weight: 500; font-size: var(--t20); line-height: 24px; letter-spacing: -0.01em; }
+
+/* Linha com o cronômetro e a pausa. */
+.linha-acao { display: flex; align-items: center; justify-content: space-between; gap: var(--e3); }
+.linha-acao .cronometro { padding: 0; }
+
+/* Gaveta: respiro entre os grupos de controles. */
+.gaveta .corpo > .rotulo { margin-top: var(--e5); }
+.gaveta .corpo > .rotulo:first-child { margin-top: var(--e2); }
+.gaveta .corpo > .codigo, .gaveta .corpo > .apoio { margin-top: var(--e3); }
+.gaveta .corpo > .botao, .gaveta .corpo > .resposta { margin-top: var(--e4); }
+.gaveta .corpo > .campo-area { margin-top: var(--e2); }
+.gaveta .escolhas { padding: 0; margin: var(--e2) 0 0 -10px; }
+.gaveta .dupla { margin-top: var(--e3); }
+button.atalho { width: 100%; text-align: left; }
+.atalho.atencao { color: var(--barro-texto); }
+/* Comparar: valores numa linha só; a coluna do rótulo cede espaço. */
+#comparar .cmp-topo, #comparar .cmp-linha { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.1fr) minmax(0, 1.1fr); column-gap: var(--e2); }
+#comparar .cmp-valor { white-space: nowrap; font-size: var(--t16); line-height: 22px; }
+#comparar .cmp-valor small { white-space: normal; }
+/* Rodada 1: aproximado e barras do comparar; Sem leitura no caderno; pulso; régua pequena das notas. */
+.cmp-valor .aprox { font-family: var(--sans); font-size: 0.7em; font-weight: 500; color: var(--apoio); margin-right: 2px; vertical-align: 0.1em; }
+.cmp-barra { height: 2px; }
+.cmp-barra.fraca i { background: var(--linha-forte); }
+.registro-mes.sem-leitura { font-family: var(--mono); font-size: var(--t12); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--apoio); }
+.rapida .pulso a { border-top: 1px solid var(--linha-forte); margin-top: var(--e2); }
+.rapida .pulso .numero-p { font-size: var(--t20); line-height: 24px; }
+.nota-linha { padding: var(--e3) 0; border-bottom: 1px solid var(--linha); }
+.nota-linha .lanc { padding: 0; min-height: 0; }
+.nota-linha .regua { margin-top: 6px; }
+.tela .secao:first-child { border-top: 0; padding-top: var(--e2); }
+</style>
+</head>
+<body>
+<div class="palco">
+<aside class="roteiro" id="roteiro" aria-label="Telas do protótipo"></aside>
+
+<main class="aparelho" id="aparelho">
+
+<!-- ═══════════════════════════════════ CADERNO ═══════════════════════════════════ -->
+<section class="tela" id="caderno" data-dock="caderno" aria-label="Caderno">
+  <header class="cabeca">
+    <a class="marca" href="#caderno" aria-label="Vereda, início"><svg viewBox="0 0 100 84" aria-hidden="true"><path fill-rule="evenodd" d="M18 80C7 79 2 66 2 49 2 24 20 4 50 3c29-1 47 22 47 46 0 19-8 31-18 31-15 0-45 1-61 0Zm22-22c-5-16 0-34 13-35 11-1 16 17 11 34-5 15-19 15-24 1Z"/></svg>VEREDA</a>
+    <a class="elo" href="#caderno+menu">Menu</a>
+  </header>
+  <div class="rolagem">
+    <div class="abertura">
+      <h1 class="titulo titulo-g">Caderno</h1>
+      <p class="codigo">4 IMÓVEIS · GUARDADOS SÓ NESTE APARELHO</p>
+    </div>
+    <div class="escolhas" role="radiogroup" aria-label="Mostrar">
+      <button role="radio" aria-checked="true" data-escolhe="modalidade:todos">Todos</button>
+      <button role="radio" aria-checked="false" data-escolhe="modalidade:comprar">Comprar</button>
+      <button role="radio" aria-checked="false" data-escolhe="modalidade:alugar">Alugar</button>
+    </div>
+
+    <p class="rotulo grupo"><b>1</b>Visita marcada</p>
+    <ul>
+      <li class="registro">
+        <a class="registro-elo" href="#ficha">
+          <svg class="lote" viewBox="0 0 100 100" aria-hidden="true"><path d="M92.4 9.6L89.7 47.6L94.0 91.4L7.4 93.2L7.0 73.5L6.8 58.1L6.6 49.8L6.6 40.1L6.4 31.7L6.2 23.8L6.0 6.8Z"/></svg>
+          <span class="registro-nome">Ana Elizabeth</span><b class="registro-preco">R$ 495 mil</b>
+          <span class="apoio">Graças · 130 m²</span><span class="apoio registro-mes">~R$ 5.476/mês</span>
+          <span class="atencao registro-nota">5 obras em volta</span>
+        </a>
+        <a class="registro-mais" href="#caderno+triagem" aria-label="Triagem de Ana Elizabeth"><i></i></a>
+      </li>
+    </ul>
+
+    <p class="rotulo grupo"><b>3</b>Triagem</p>
+    <ul>
+      <li class="registro">
+        <a class="registro-elo" href="#ficha">
+          <svg class="lote" viewBox="0 0 100 100" aria-hidden="true"><path d="M49.4 38.2L94.0 60.2L86.2 76.6L77.7 72.4L66.6 67.5L54.5 61.3L38.7 53.6L6.0 37.4L12.0 23.4Z"/></svg>
+          <span class="registro-nome"><svg viewBox="0 0 24 24" role="img" aria-label="Favorito"><path d="m12 2.6 2.9 6 6.5.9-4.7 4.6 1.1 6.5L12 17.5l-5.8 3.1 1.1-6.5L2.6 9.5l6.5-.9z"/></svg>Parque Atlântico</span><b class="registro-preco">R$ 720 mil</b>
+          <span class="apoio">Boa Viagem · 58 m²</span><span class="apoio registro-mes">~R$ 6.805/mês</span>
+          <span class="atencao registro-nota">IPTU não confere</span>
+        </a>
+        <a class="registro-mais" href="#caderno+triagem" aria-label="Triagem de Parque Atlântico"><i></i></a>
+      </li>
+      <li class="registro">
+        <a class="registro-elo" href="#ficha-aluguel">
+          <svg class="lote" viewBox="0 0 100 100" aria-hidden="true"><path d="M88.1 18.0L79.0 81.1L76.9 94.0L11.9 75.3L16.1 11.2L25.0 6.0L69.6 13.4Z"/></svg>
+          <span class="registro-nome">Viena</span><b class="registro-preco">R$ 3.600</b>
+          <span class="apoio">Madalena · 141 m²</span><span class="apoio registro-mes">R$ 4.895/mês</span>
+          <span class="atencao registro-nota">Aluguel · IPTU a confirmar</span>
+        </a>
+        <a class="registro-mais" href="#caderno+triagem" aria-label="Triagem de Viena"><i></i></a>
+      </li>
+      <li class="registro">
+        <a class="registro-elo" href="#ficha-sem-predio">
+          <svg class="lote sem" viewBox="0 0 100 100" aria-hidden="true"><path d="M10 10H90V90H10Z"/></svg>
+          <span class="registro-nome">Apto. em Casa Forte</span><b class="registro-preco">R$ 690 mil</b>
+          <span class="apoio">66 m² · 2 quartos</span><span class="registro-mes sem-leitura">Sem leitura</span>
+          <span class="atencao registro-nota">Prédio a confirmar</span>
+        </a>
+        <a class="registro-mais" href="#caderno+triagem" aria-label="Triagem de Apto. em Casa Forte"><i></i></a>
+      </li>
+    </ul>
+    <div class="fim-de-lista"><a class="elo" href="#caderno+descartados">1 descartado</a></div>
+  </div>
+  <div class="rodape"><a class="botao principal largo" href="#entrada">Novo imóvel</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ FICHA ═══════════════════════════════════ -->
+<section class="tela" id="ficha" aria-label="Ficha do Parque Atlântico">
+  <div class="barra">
+    <a class="voltar" href="#caderno">Caderno</a>
+    <div class="barra-acoes">
+      <button class="icone" aria-pressed="true" data-liga aria-label="Favorito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.4l-5.6 3 1.1-6.3L2.9 9.7l6.3-.9z"/></svg></button>
+      <a class="icone" href="#ficha+triagem" aria-label="Triagem deste imóvel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg></a>
+    </div>
+  </div>
+  <div class="rolagem" id="ficha-rolagem">
+    <header class="ficha-cabeca">
+      <div class="ficha-meta"><span class="codigo">FICHA 6.1755.205.02.0130</span><span class="carimbo carimbo-azul">Confirmado</span></div>
+      <h1 class="titulo titulo-g">Parque Atlântico</h1>
+      <p class="contexto">Av. Boa Viagem, 2290 · 14º andar</p>
+      <p class="apoio">Boa Viagem · 58 m² · 2 quartos · R$ 720.000</p>
+      <a class="mapa" href="#ficha+mapa"><img src="../mapas/parque-atlantico-topo.png" alt="Mapa do lote, entre a Rua dos Navegantes e a Avenida Boa Viagem"><span class="mapa-credito">Contém dados da Prefeitura do Recife (ODbL)</span><span class="mapa-elo">Abrir mapa</span></a>
+    </header>
+
+
+    <!-- Leitura rápida: o que a pessoa entende em 5 segundos. -->
+    <ul class="rapida" aria-label="Leitura rápida">
+      <li><a href="#ficha@bolso"><span class="rotulo"><b>1</b>Bolso</span><span class="numero numero-p"><span class="aprox">~</span>R$ 6.805<span class="un">por mês</span></span><span class="apoio">para entrar, R$ 152 mil</span><i class="seta"></i></a></li>
+      <li><a href="#ficha@predio"><span class="rotulo"><b>2</b>Prédio</span><span class="numero numero-p">2016<span class="un">29 andares</span></span><span class="apoio">12% acima das escrituras</span><i class="seta"></i></a></li>
+      <li><a href="#ficha@rua"><span class="rotulo"><b>3</b>Rua</span><span class="numero numero-p">6,9<span class="un">de 10, a pé</span></span><span class="apoio">mercado a 5 min · ônibus a 4</span><i class="seta"></i></a></li>
+      <li><a href="#ficha@conforto"><span class="rotulo"><b>4</b>Conforto</span><span class="numero numero-p"><span class="aprox">~</span>58<span class="un">dB(A) à noite</span></span><span class="apoio">estimativa · calor 9,2 de 10</span><i class="seta"></i></a></li>
+      <li><a href="#ficha@perguntas"><span class="rotulo"><b>5</b>Perguntas</span><span class="numero numero-p">12<span class="un">para a visita</span></span><span class="apoio atencao">1 achado: IPTU não confere</span><i class="seta"></i></a></li>
+      <li class="pulso"><a href="#ficha+pulso"><span class="rotulo">Pulso</span><span class="numero numero-p">7,9<span class="un">de 10</span></span><span class="apoio">média de 6 leituras da quadra</span><i class="seta"></i></a></li>
+    </ul>
+
+    <nav class="indice fixa-no-topo" aria-label="Perguntas desta ficha">
+      <a href="#ficha@bolso" data-secao="bolso"><b>1</b>Bolso</a>
+      <a href="#ficha@predio" data-secao="predio"><b>2</b>Prédio</a>
+      <a href="#ficha@rua" data-secao="rua"><b>3</b>Rua</a>
+      <a href="#ficha@conforto" data-secao="conforto"><b>4</b>Conforto</a>
+      <a href="#ficha@perguntas" data-secao="perguntas"><b>5</b>Perguntas</a>
+    </nav>
+
+    <!-- 01 BOLSO -->
+    <section class="secao" id="ficha-bolso" aria-labelledby="a-bolso">
+      <p class="rotulo"><b>01</b>Bolso</p>
+      <h2 class="titulo" id="a-bolso">Cabe no bolso?</h2>
+      <div class="leitura">
+        <p class="numero"><span class="aprox">~</span>R$ 6.805<span class="un">por mês</span></p>
+        <p class="contexto">O anúncio mostra R$ 1.075. Faltam a parcela e a luz.</p>
+      </div>
+      <div class="partes" role="img" aria-label="Do total, R$ 1.110 são conhecidos e R$ 5.695 são estimativa">
+        <i class="conhecido" style="flex: 980"></i><i class="cadastro" style="flex: 130"></i><i class="estimado" style="flex: 5371"></i><i class="estimado" style="flex: 324"></i>
+      </div>
+      <p class="legenda codigo"><span><i class="sw-anuncio"></i>anúncio</span><span><i class="sw-cadastro"></i>cadastro</span><span><i class="sw-estimativa"></i>estimativa</span></p>
+      <ul class="lancamentos">
+        <li><a class="lanc" href="#ficha+financiamento"><span class="lanc-nome">Parcela do banco</span><i class="guia"></i><span class="lanc-valor"><span class="aprox">~</span>R$ 5.371</span><span class="origem">estimativa · 80% em 30 anos</span></a></li>
+        <li><a class="lanc" href="#ficha+fonte"><span class="lanc-nome">Condomínio</span><i class="guia"></i><span class="lanc-valor">R$ 980</span><span class="origem">anúncio</span></a></li>
+        <li><a class="lanc" href="#ficha+fonte"><span class="lanc-nome">IPTU</span><i class="guia"></i><span class="lanc-valor">R$ 130</span><span class="origem">cadastro do prédio · IPTU 2026</span></a></li>
+        <li><a class="lanc" href="#ficha+fonte"><span class="lanc-nome">Luz</span><i class="guia"></i><span class="lanc-valor"><span class="aprox">~</span>R$ 324</span><span class="origem">estimativa · 2 pessoas, ar à noite</span></a></li>
+        <li><div class="lanc soma"><span class="lanc-nome">Soma</span><i class="guia"></i><span class="lanc-valor"><span class="aprox">~</span>R$ 6.805</span></div></li>
+      </ul>
+      <div class="achado">
+        <span class="carimbo carimbo-barro">Não confere</span>
+        <p class="contexto">O anúncio diz IPTU de R$ 95. No cadastro, apartamentos de 58 m² pagam R$ 142.</p>
+        <a class="elo" href="#ficha@perguntas">Perguntar ao corretor</a>
+      </div>
+      <div class="sub">
+        <a class="abre" href="#ficha+para-entrar"><span><span class="rotulo">Para entrar</span><span class="numero numero-p" style="display:block"><span class="aprox">~</span>R$ 152 mil</span><span class="apoio">entrada de 20% e ITBI · cartório a confirmar</span></span><i class="seta"></i></a>
+        <a class="abre" href="#ficha+dez-anos"><span><span class="rotulo">Em 10 anos</span><span class="numero numero-p" style="display:block"><span class="aprox">~</span>R$ 559 mil</span><span class="apoio">a favor de alugar, se o imóvel não valorizar</span></span><i class="seta"></i></a>
+      </div>
+      <div class="achado">
+        <span class="carimbo carimbo-barro">Trava</span>
+        <p class="contexto">Terreno da União: sem aforamento, o FGTS não entra.</p>
+      </div>
+      <div class="atalhos"><a class="atalho" href="#ficha+financiamento">Simular financiamento<i class="seta"></i></a></div>
+      <p class="rodape-secao"><a class="elo" href="#ficha+metodo-bolso">Como foi calculada</a><a class="elo" href="#ficha+fonte">Ver a fonte</a></p>
+    </section>
+
+    <!-- 02 PRÉDIO -->
+    <section class="secao" id="ficha-predio" aria-labelledby="a-predio">
+      <p class="rotulo"><b>02</b>Prédio</p>
+      <h2 class="titulo" id="a-predio">O prédio é confiável?</h2>
+      <div class="leitura">
+        <p class="numero">2016<span class="un">10 anos de uso</span></p>
+        <p class="contexto">29 andares, 103 apartamentos, padrão médio.</p>
+      </div>
+      <div class="sub">
+        <p class="rotulo">Preço e escrituras do prédio</p>
+        <p class="numero numero-m">12%<span class="un">acima da mediana</span></p>
+        <svg class="regua" viewBox="0 0 350 62" role="img" aria-label="Escrituras do prédio entre R$ 588 mil e R$ 783 mil por apartamento, mediana de R$ 641 mil. O anúncio pede R$ 720 mil.">
+          <rect x="45" y="30" width="275.3" height="8" fill="var(--sutil)" stroke="var(--linha-forte)"/>
+          <path d="M6 34H344" stroke="currentColor"/>
+          <path d="M119.7 26V42" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="231.3" cy="34" r="6" fill="currentColor"/>
+          <text x="119.7" y="18" text-anchor="middle">mediana 641 mil</text>
+          <text x="231.3" y="18" text-anchor="middle" class="marca-forte">anúncio 720 mil</text>
+          <text x="45" y="56" text-anchor="middle">588 mil</text>
+          <text x="320.3" y="56" text-anchor="middle">783 mil</text>
+        </svg>
+        <p class="codigo">12 VENDAS EM 36 MESES · VALOR FISCAL, NÃO PREÇO DE MERCADO</p>
+      </div>
+      <ul class="lancamentos">
+        <li><a class="lanc" href="#ficha+fonte"><span class="lanc-nome">Apartamentos como este</span><i class="guia"></i><span class="lanc-valor">25</span><span class="origem">de 57,72 m², no IPTU 2026</span></a></li>
+        <li><a class="lanc" href="#ficha+linha-do-tempo"><span class="lanc-nome">Estrutura</span><i class="guia"></i><span class="lanc-valor texto">sem registro</span><span class="origem">sem alerta de alvenaria resistente (29 andares) · nenhum laudo guardado</span></a></li>
+        <li><a class="lanc" href="#ficha+documentos"><span class="lanc-nome">Terreno</span><i class="guia"></i><span class="lanc-valor texto atencao">da União</span><span class="origem">marinha · trava o FGTS sem aforamento</span></a></li>
+        <li><div class="lanc"><span class="lanc-nome">Torre nova à frente</span><i class="guia"></i><span class="lanc-valor sem">Sem leitura</span><span class="origem">base ainda não publicada aqui · fora da média</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">Próxima obra grande</span><i class="guia"></i><span class="lanc-valor">2031</span><span class="origem">fachada, aos 15 anos do prédio</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">Condomínio por m²</span><i class="guia"></i><span class="lanc-valor">R$ 16,90</span><span class="origem">MEDIANA DO BAIRRO: SEM LEITURA · PRECISA DE 5 NO CADERNO</span></div></li>
+      </ul>
+      <div class="atalhos">
+        <a class="atalho" href="#ficha+documentos">Documentos do sinal<span class="apoio">0 de 4</span><i class="seta"></i></a>
+        <a class="atalho" href="#ficha+linha-do-tempo">Linha do tempo<i class="seta"></i></a>
+        <a class="atalho" href="#ficha+ata">Ler ata<i class="seta"></i></a>
+      </div>
+      <p class="rodape-secao"><a class="elo" href="#ficha+metodo-predio">Como foi calculada</a><a class="elo" href="#ficha+fonte">Ver a fonte</a></p>
+    </section>
+
+    <!-- 03 RUA -->
+    <section class="secao" id="ficha-rua" aria-labelledby="a-rua">
+      <p class="rotulo"><b>03</b>Rua</p>
+      <h2 class="titulo" id="a-rua">Como é a rua?</h2>
+      <div class="dupla">
+        <div>
+          <p class="rotulo">De dia, a pé</p>
+          <p class="numero numero-m">6,9<span class="un">de 10</span></p>
+          <p class="apoio">mais perto que 48% dos prédios do bairro</p>
+        </div>
+        <div>
+          <p class="rotulo">De noite</p>
+          <p class="numero numero-m">4<span class="un">min</span></p>
+          <p class="apoio">até o ônibus · último às 23:58, com 2 travessias</p>
+        </div>
+      </div>
+      <svg class="regua" viewBox="0 0 350 70" role="img" aria-label="A pé, da porta do prédio: praça a 3 minutos, ônibus a 4, mercado a 5 e farmácia a 6.">
+        <path d="M6 36H344" stroke="currentColor"/>
+        <path d="M6 36v8M175 36v8M344 36v8M39.8 36v4M73.6 36v4M107.4 36v4M141.2 36v4M208.8 36v4M242.6 36v4M276.4 36v4M310.2 36v4" stroke="currentColor"/>
+        <g fill="currentColor"><circle cx="107.4" cy="36" r="4.5"/><circle cx="141.2" cy="36" r="4.5"/><circle cx="175" cy="36" r="4.5"/><circle cx="208.8" cy="36" r="4.5"/></g>
+        <text x="107.4" y="24" text-anchor="middle" class="marca-forte">praça 3</text>
+        <text x="175" y="24" text-anchor="middle" class="marca-forte">mercado 5</text>
+        <text x="141.2" y="58" text-anchor="middle" class="marca-forte">ônibus 4</text>
+        <text x="216" y="58" text-anchor="middle" class="marca-forte">farmácia 6</text>
+        <text x="6" y="66">0</text><text x="344" y="66" text-anchor="end">10 min</text>
+      </svg>
+      <div class="sub">
+        <p class="rotulo">Registros a até 150 m, em 12 meses</p>
+        <ul class="lancamentos">
+          <li><a class="lanc" href="#ficha+fonte"><span class="lanc-nome">Lâmpada apagada</span><i class="guia"></i><span class="lanc-valor">30</span><span class="origem">pedidos à Central 156</span></a></li>
+          <li><a class="lanc" href="#ficha+fonte"><span class="lanc-nome">Drenagem</span><i class="guia"></i><span class="lanc-valor">6</span><span class="origem">pedidos de limpeza de galeria</span></a></li>
+          <li><a class="lanc" href="#ficha+fonte"><span class="lanc-nome">Sinistros com vítima</span><i class="guia"></i><span class="lanc-valor">10</span><span class="origem">chamados da CTTU, 2022 a 2024</span></a></li>
+          <li><a class="lanc" href="#ficha+mapa"><span class="lanc-nome">Obra licenciada</span><i class="guia"></i><span class="lanc-valor">1</span><span class="origem">acréscimo a 116 m · licença de nov/2024</span></a></li>
+        </ul>
+      </div>
+      <div class="sub">
+        <p class="rotulo">No bairro</p>
+        <p class="numero numero-m">17,1<span class="un">registros policiais por mil moradores</span></p>
+        <svg class="regua" viewBox="0 0 350 46" role="img" aria-label="Boa Viagem: 17,1 registros por mil moradores em 12 meses. Mediana dos bairros do Recife: 17,4.">
+          <path d="M6 22H344" stroke="currentColor"/>
+          <path d="M6 22v8M90.5 22v8M175 22v8M259.5 22v8M344 22v8" stroke="currentColor"/>
+          <path d="M153 8V22" stroke="currentColor" stroke-dasharray="2 2"/>
+          <circle cx="150.5" cy="22" r="5.5" fill="currentColor"/>
+          <text x="160" y="10" class="ref">mediana do Recife 17,4</text>
+          <text x="6" y="44">0</text><text x="175" y="44" text-anchor="middle">20</text><text x="344" y="44" text-anchor="end">40</text>
+        </svg>
+        <p class="codigo">12 MESES ATÉ OUT/2026 · SDS-PE COMPILADO PELO CRIME BRASIL</p>
+        <a class="elo" href="#ficha+vizinhos">Bairros vizinhos</a>
+      </div>
+      <div class="sub">
+        <p class="contexto forte">Isso bate com a rua hoje?</p>
+        <div class="opcoes" role="radiogroup" aria-label="Isso bate com a rua hoje?"><button role="radio" aria-checked="false" data-escolhe="bate:sim" data-sem-inicial>Bate</button><button role="radio" aria-checked="false" data-escolhe="bate:nao">Não bate</button></div>
+        <label class="campo" data-quando="bate:nao"><span class="so-leitor">Por quê? (opcional)</span><input type="text" placeholder="Por quê? (opcional)" aria-label="Por quê? (opcional)"></label>
+      </div>
+      <div class="atalhos">
+        <a class="atalho" href="#ficha+por-perto">Por perto<span class="apoio">praça, ciclofaixa, Bike PE</span><i class="seta"></i></a>
+        <a class="atalho" href="#ficha+comercio">Comércio em volta<span class="apoio">1 bar a 120 m</span><i class="seta"></i></a>
+        <a class="atalho" href="#ficha+renda">Renda do setor<span class="apoio">mediana de R$ 15.000</span><i class="seta"></i></a>
+      </div>
+      <p class="rodape-secao"><a class="elo" href="#ficha+metodo-rua">Como foi calculada</a><a class="elo" href="#ficha+fonte">Ver a fonte</a></p>
+    </section>
+
+    <!-- 04 CONFORTO -->
+    <section class="secao" id="ficha-conforto" aria-labelledby="a-conforto">
+      <p class="rotulo"><b>04</b>Conforto</p>
+      <h2 class="titulo" id="a-conforto">Barulho, calor e chuva</h2>
+      <div class="leitura">
+        <span class="carimbo carimbo-cinza">Estimativa</span>
+        <p class="numero"><span class="aprox">~</span>58<span class="un">dB(A) à noite, na janela</span></p>
+        <p class="contexto">8 dB acima da referência para área residencial.</p>
+      </div>
+      <svg class="regua" viewBox="0 0 350 66" role="img" aria-label="Estimativa à noite: quarto com a janela fechada 38 decibéis, janela 58, rua 61. Referência para área residencial: 50. Faixa da estimativa: 5 decibéis para mais ou para menos.">
+        <rect x="161.5" y="33" width="67.6" height="6" fill="var(--sutil)"/>
+        <path d="M6 36H344" stroke="currentColor"/>
+        <path d="M6 36v10M73.6 36v10M141.2 36v10M208.8 36v10M276.4 36v10M344 36v10M39.8 36v5M107.4 36v5M175 36v5M242.6 36v5M310.2 36v5" stroke="currentColor"/>
+        <path d="M141.2 14V36" stroke="currentColor" stroke-dasharray="2 2"/>
+        <circle cx="60.1" cy="36" r="4" fill="var(--papel)" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="215.6" cy="36" r="4" fill="var(--papel)" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="195.3" cy="36" r="6" fill="currentColor"/>
+        <text x="60.1" y="25" text-anchor="middle">quarto 38</text>
+        <text x="141.2" y="10" text-anchor="middle" class="ref">referência 50</text>
+        <text x="193" y="25" text-anchor="middle" class="marca-forte">janela 58</text>
+        <text x="232" y="25">rua 61</text>
+        <text x="6" y="60">30</text><text x="73.6" y="60" text-anchor="middle">40</text><text x="141.2" y="60" text-anchor="middle">50</text><text x="208.8" y="60" text-anchor="middle">60</text><text x="276.4" y="60" text-anchor="middle">70</text><text x="344" y="60" text-anchor="end">80</text>
+      </svg>
+      <p class="codigo">ESTIMATIVA COM DADOS ABERTOS, NÃO MEDIÇÃO · FAIXA DE ±5 dB</p>
+      <a class="abre" href="#ficha+metodo" style="margin-top: var(--e4)"><span><span class="rotulo">Sossego à noite</span><span class="numero numero-p" style="display:block">7,3<span class="un">de 10</span></span>
+        <svg class="regua" style="margin-top: var(--e2)" viewBox="0 0 350 14" aria-hidden="true"><path d="M6 7H344" stroke="currentColor"/><path d="M6 7v5M39.8 7v3M73.6 7v3M107.4 7v3M141.2 7v3M175 7v5M208.8 7v3M242.6 7v3M276.4 7v3M310.2 7v3M344 7v5" stroke="currentColor"/><circle cx="252.7" cy="7" r="5" fill="currentColor"/></svg>
+        <span class="apoio" style="display:block; margin-top: 6px">como foi calculada</span></span><i class="seta"></i></a>
+      <ul class="lancamentos" style="margin-top: 0; border-top: 1px solid var(--linha)">
+        <li><div class="lanc"><span class="lanc-nome">De dia, na janela</span><i class="guia"></i><span class="lanc-valor"><span class="aprox">~</span>65 dB(A)</span><span class="origem">estimativa · 10 dB acima da referência (55)</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">No quarto, janela fechada</span><i class="guia"></i><span class="lanc-valor"><span class="aprox">~</span>38 dB(A)</span><span class="origem">estimativa à noite · a janela tira cerca de 20 dB</span></div></li>
+        <li><a class="lanc" href="#ficha+mapa"><span class="lanc-nome">Via mais perto</span><i class="guia"></i><span class="lanc-valor texto">45 m</span><span class="origem">Rua dos Navegantes, lado noroeste</span></a></li>
+        <li><div class="lanc"><span class="lanc-nome">Avião</span><i class="guia"></i><span class="lanc-valor texto">não entra</span><span class="origem">fora da linha de pouso · não pesa neste prédio</span></div></li>
+      </ul>
+      <div class="atalhos"><a class="atalho" href="#ficha+andar">Andar e fachada<span class="apoio">14º · sudeste</span><i class="seta"></i></a></div>
+
+      <div class="sub">
+        <p class="rotulo">Calor</p>
+        <a class="abre" href="#ficha+metodo-calor" style="border-top: 0; padding-top: 0"><span><span class="numero numero-m" style="display:block">9,2<span class="un">de 10 · fresco e ventilado</span></span>
+          <svg class="regua" style="margin-top: var(--e2)" viewBox="0 0 350 14" aria-hidden="true"><path d="M6 7H344" stroke="currentColor"/><path d="M6 7v5M39.8 7v3M73.6 7v3M107.4 7v3M141.2 7v3M175 7v5M208.8 7v3M242.6 7v3M276.4 7v3M310.2 7v3M344 7v5" stroke="currentColor"/><circle cx="317" cy="7" r="5" fill="currentColor"/></svg>
+          <span class="apoio" style="display:block; margin-top: 6px">como foi calculada</span></span><i class="seta"></i></a>
+        <p class="contexto">Sol da manhã, brisa do mar e quadra 2,2 °C mais fresca que o bairro.</p>
+      </div>
+
+      <div class="sub">
+        <p class="rotulo">Chuva</p>
+        <p class="titulo">Sem alagamento registrado na rua.</p>
+        <ul class="lancamentos">
+          <li><a class="lanc" href="#ficha+fonte"><span class="lanc-nome">Altura do terreno</span><i class="guia"></i><span class="lanc-valor">14,6 m</span><span class="origem">acima dos pontos baixos em volta</span></a></li>
+          <li><a class="lanc" href="#ficha+fonte"><span class="lanc-nome">Água mapeada mais perto</span><i class="guia"></i><span class="lanc-valor">566 m</span></a></li>
+          <li><a class="lanc" href="#ficha+fonte"><span class="lanc-nome">Defesa Civil na avenida</span><i class="guia"></i><span class="lanc-valor">80</span><span class="origem">atendimentos de 2014 a 2024 · a base não diz o prédio</span></a></li>
+        </ul>
+        <p class="apoio" style="margin-top: var(--e2)">Sem registro não garante que a rua não alaga: pergunte na visita.</p>
+      </div>
+      <p class="rodape-secao"><a class="elo" href="#ficha+metodo">Como foi calculada</a><a class="elo" href="#ficha+fonte">Ver a fonte</a></p>
+    </section>
+
+    <!-- 05 PERGUNTAS -->
+    <section class="secao" id="ficha-perguntas" aria-labelledby="a-perguntas">
+      <p class="rotulo"><b>05</b>Perguntas</p>
+      <h2 class="titulo" id="a-perguntas">O que perguntar e conferir</h2>
+      <div class="leitura">
+        <p class="numero">12<span class="un">pontos para a visita</span></p>
+        <p class="contexto">7 vêm dos registros da rua; os 2 primeiros, do risco deste prédio.</p>
+      </div>
+      <div class="sub">
+        <p class="rotulo">Para o corretor</p>
+        <ol class="numerada">
+          <li>O IPTU é R$ 95 ou R$ 142 por mês?</li>
+          <li>O terreno é aforado ou só ocupado?</li>
+          <li>Há cota extra ou obra aprovada?</li>
+          <li>Qual é o saldo do fundo de reserva?</li>
+        </ol>
+        <div class="resposta"><a class="botao pequeno" href="#ficha+mensagem">Copiar mensagem</a></div>
+      </div>
+      <div class="atalhos">
+        <a class="atalho" href="#visita">Roteiro da visita<span class="apoio">12 pontos</span><i class="seta"></i></a>
+        <a class="atalho" href="#ficha+negociacao">Preparar a negociação<i class="seta"></i></a>
+        <a class="atalho" href="#ficha+pacote">Pacote para especialista<i class="seta"></i></a>
+        <a class="atalho" href="#ficha+mudou">O que mudou<i class="seta"></i></a>
+      </div>
+      <p class="codigo" style="margin-top: var(--e4)">GUARDADO SÓ NESTE APARELHO · ÍNDICE DE 15/11/2026</p>
+    </section>
+  </div>
+  <div class="rodape"><a class="botao principal largo" href="#visita">Preparar visita</a><a class="botao" href="#comparar">Comparar</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ FICHA DE ALUGUEL (TOPO) ═══════════════════════════════════ -->
+<section class="tela" id="ficha-aluguel" aria-label="Ficha do Viena">
+  <div class="barra">
+    <a class="voltar" href="#caderno">Caderno</a>
+    <div class="barra-acoes">
+      <button class="icone" aria-pressed="false" data-liga aria-label="Favorito"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.4l-5.6 3 1.1-6.3L2.9 9.7l6.3-.9z"/></svg></button>
+      <a class="icone" href="#ficha+triagem" aria-label="Triagem deste imóvel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg></a>
+    </div>
+  </div>
+  <div class="rolagem">
+    <header class="ficha-cabeca">
+      <div class="ficha-meta"><span class="codigo">FICHA 4.1545.275.04.0298</span><span class="carimbo carimbo-azul">Confirmado</span></div>
+      <h1 class="titulo titulo-g">Viena</h1>
+      <p class="contexto">Av. Visc. de Albuquerque, 186 · 5º andar</p>
+      <p class="apoio">Madalena · 141 m² · aluguel de R$ 3.600</p>
+      <a class="mapa" href="#ficha+mapa"><img src="../mapas/viena-topo.png" alt="Mapa do lote do Viena, na Avenida Visconde de Albuquerque"><span class="mapa-credito">Contém dados da Prefeitura do Recife (ODbL)</span><span class="mapa-elo">Abrir mapa</span></a>
+    </header>
+    <ul class="rapida" aria-label="Leitura rápida">
+      <li><a href="#ficha@bolso"><span class="rotulo"><b>1</b>Bolso</span><span class="numero numero-p">R$ 4.895<span class="un">por mês</span></span><span class="apoio atencao">IPTU a confirmar</span><i class="seta"></i></a></li>
+      <li><a href="#ficha@predio"><span class="rotulo"><b>2</b>Prédio</span><span class="numero numero-p">1976<span class="un">11 andares</span></span><span class="apoio">50 anos · 18 apartamentos</span><i class="seta"></i></a></li>
+      <li><a href="#ficha@rua"><span class="rotulo"><b>3</b>Rua</span><span class="numero numero-p">7,8<span class="un">de 10, a pé</span></span><span class="apoio">mercado a 5 min · ônibus a 1</span><i class="seta"></i></a></li>
+      <li><a href="#ficha@conforto"><span class="rotulo"><b>4</b>Conforto</span><span class="numero numero-p"><span class="aprox">~</span>64<span class="un">dB(A) à noite</span></span><span class="apoio">estimativa · <span class="atencao">calor 1,8 de 10</span></span><i class="seta"></i></a></li>
+      <li><a href="#ficha@perguntas"><span class="rotulo"><b>5</b>Perguntas</span><span class="numero numero-p">14<span class="un">para a visita</span></span><span class="apoio atencao">primeiro: água na garagem</span><i class="seta"></i></a></li>
+      <li class="pulso"><a href="#ficha+pulso"><span class="rotulo">Pulso</span><span class="numero numero-p">6,4<span class="un">de 10</span></span><span class="apoio">média de 6 leituras da quadra</span><i class="seta"></i></a></li>
+    </ul>
+  </div>
+  <div class="rodape"><a class="botao principal largo" href="#visita">Preparar visita</a><a class="botao" href="#comparar">Comparar</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ GAVETAS DE MÉTODO E FONTE ═══════════════════════════════════ -->
+<section class="gaveta" id="g-metodo" role="dialog" aria-modal="true" aria-labelledby="g-metodo-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Como foi calculada</p><h2 class="titulo" id="g-metodo-t">Sossego à noite</h2><p class="apoio">7,3 de 10 · estimativa</p></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <dl class="metodo">
+      <div><dt>O que mede</dt><dd>O barulho médio do lado de fora, à noite (22h às 7h), na janela do seu andar e da sua fachada.</dd></div>
+      <div><dt>Fonte</dt><dd>Vias e pista do aeroporto do OpenStreetMap; ônibus do GTFS Grande Recife; metrô da CBTU; licenças de som da Prefeitura; comércio do Censo 2022.</dd></div>
+      <div><dt>Data</dt><dd>Vias de 17/11/2026 · Censo de 2022.</dd></div>
+      <div><dt>Cálculo</dt><dd>Cada via entra com o nível da sua classe, mais os ônibus. O som cai com a distância, o andar e o lado da fachada. Nota 10 com 48 dB(A) ou menos; nota 0 com 86 ou mais (estimativa).</dd></div>
+      <div><dt>Limite</dt><dd>Estimativa com dados abertos, não medição. Não vê muro, vizinho, festa nem o trânsito de cada hora. Perto de avenida, leia como teto.</dd></div>
+      <div><dt>Na visita</dt><dd>Ouça da janela do quarto, aberta e fechada, num dia útil por volta das 18h e numa sexta depois das 22h.</dd></div>
+    </dl>
+    <a class="elo" href="#ficha+fonte">Ver a fonte</a>
+  </div>
+</section>
+
+<section class="gaveta" id="g-fonte" role="dialog" aria-modal="true" aria-labelledby="g-fonte-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Fonte</p><h2 class="titulo" id="g-fonte-t">IPTU 2026</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <ul class="lancamentos">
+      <li><div class="lanc"><span class="lanc-nome">Este dado</span><i class="guia"></i><span class="lanc-valor">R$ 130</span><span class="origem">mediana do IPTU das 103 unidades do prédio, por mês</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Órgão</span><i class="guia"></i><span class="lanc-valor texto">Prefeitura do Recife</span><span class="origem">Secretaria de Finanças · cadastro imobiliário</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Confiança</span><i class="guia"></i><span class="lanc-valor texto">registro oficial</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Licença</span><i class="guia"></i><span class="lanc-valor texto">ODbL</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Base modificada em</span><i class="guia"></i><span class="lanc-valor">03/10/2026</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Consultada em</span><i class="guia"></i><span class="lanc-valor">15/11/2026</span></div></li>
+    </ul>
+    <p class="codigo" style="margin-top: var(--e3)">RECORTE: APARTAMENTOS, AGRUPADOS POR RUA E NÚMERO</p>
+    <a class="elo" href="#sobre">Sobre os dados</a>
+  </div>
+</section>
+
+<!-- ═══════════════ A PARTIR DAQUI: TELAS E GAVETAS A COMPLETAR (ver a lista em window.TELAS) ═══════════════ -->
+
+<!-- ═══════════════════════════════════ CADERNO VAZIO (primeiro uso) ═══════════════════════════════════ -->
+<section class="tela" id="caderno-vazio" data-dock="caderno" aria-label="Caderno vazio">
+  <header class="cabeca">
+    <a class="marca" href="#caderno" aria-label="Vereda, início"><svg viewBox="0 0 100 84" aria-hidden="true"><path fill-rule="evenodd" d="M18 80C7 79 2 66 2 49 2 24 20 4 50 3c29-1 47 22 47 46 0 19-8 31-18 31-15 0-45 1-61 0Zm22-22c-5-16 0-34 13-35 11-1 16 17 11 34-5 15-19 15-24 1Z"/></svg>VEREDA</a>
+    <a class="elo" href="#caderno-vazio+menu">Menu</a>
+  </header>
+  <div class="rolagem">
+    <div class="abertura">
+      <h1 class="titulo titulo-g">Caderno</h1>
+      <p class="codigo">NENHUM IMÓVEL AINDA</p>
+    </div>
+    <div class="bloco">
+      <label class="campo"><span class="so-leitor">Link do anúncio, prédio ou rua</span><input type="text" placeholder="Link do anúncio, prédio ou rua"></label>
+      <p class="elos"><a class="elo" href="#entrada-sem-permissao">Usar minha localização</a><a class="elo" href="#leitura">Digitar sem link</a></p>
+    </div>
+    <div class="bloco">
+      <p class="rotulo">Exemplos</p>
+      <a class="resultado" href="#ficha"><span><b>Parque Atlântico</b><span class="apoio">torre de 2016 em Boa Viagem</span></span><i class="seta"></i></a>
+      <a class="resultado" href="#ficha"><span><b>Ana Elizabeth</b><span class="apoio">prédio de 1972 nas Graças</span></span><i class="seta"></i></a>
+      <a class="resultado" href="#ficha-aluguel"><span><b>Viena</b><span class="apoio">aluguel na Madalena</span></span><i class="seta"></i></a>
+    </div>
+  </div>
+  <div class="rodape"><a class="botao principal largo" href="#leitura">Colar link</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ ENTRADA: NOVO IMÓVEL ═══════════════════════════════════ -->
+<section class="tela" id="entrada" aria-label="Novo imóvel">
+  <div class="barra"><a class="voltar" href="#caderno">Caderno</a></div>
+  <div class="rolagem">
+    <div class="bloco">
+      <p class="rotulo">Novo imóvel</p>
+      <h1 class="titulo">Cole o link ou busque o prédio</h1>
+      <label class="campo"><span class="so-leitor">Link do anúncio, prédio ou rua</span><input type="text" placeholder="Link do anúncio, prédio ou rua"></label>
+      <p class="codigo">ZAP, VIVAREAL, QUINTOANDAR E OLX</p>
+      <div class="atalhos">
+        <a class="atalho" href="#entrada-sem-permissao">Usar minha localização<span class="apoio">prédio a até 250 m</span><i class="seta"></i></a>
+        <a class="atalho" href="#leitura">Digitar sem link<i class="seta"></i></a>
+        <a class="atalho" href="#ficha@bolso">Simular o bolso<span class="apoio">sem anúncio</span><i class="seta"></i></a>
+        <a class="atalho" href="#entrada+onde">Onde mais procurar<span class="apoio">ruas perto do seu destino</span><i class="seta"></i></a>
+      </div>
+    </div>
+    <div class="bloco">
+      <p class="rotulo">Exemplos</p>
+      <a class="resultado" href="#ficha"><span><b>Parque Atlântico</b><span class="apoio">torre de 2016 em Boa Viagem</span></span><i class="seta"></i></a>
+      <a class="resultado" href="#ficha"><span><b>Ana Elizabeth</b><span class="apoio">prédio de 1972 nas Graças</span></span><i class="seta"></i></a>
+      <a class="resultado" href="#ficha-aluguel"><span><b>Viena</b><span class="apoio">aluguel na Madalena</span></span><i class="seta"></i></a>
+    </div>
+  </div>
+  <div class="rodape"><a class="botao principal largo" href="#leitura">Colar link</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ ENTRADA: BUSCANDO ═══════════════════════════════════ -->
+<section class="tela" id="entrada-buscando" aria-label="Novo imóvel, buscando">
+  <div class="barra"><a class="voltar" href="#caderno">Caderno</a></div>
+  <div class="rolagem">
+    <div class="bloco">
+      <p class="rotulo">Novo imóvel</p>
+      <h1 class="titulo">Cole o link ou busque o prédio</h1>
+      <label class="campo"><span class="so-leitor">Link do anúncio, prédio ou rua</span><input type="text" value="Rosa e Silva"></label>
+    </div>
+    <div class="bloco" aria-busy="true">
+      <p class="rotulo" role="status">Procurando no cadastro</p>
+      <span class="esqueleto"></span><span class="esqueleto"></span><span class="esqueleto"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ ENTRADA: RESULTADOS ═══════════════════════════════════ -->
+<section class="tela" id="entrada-resultados" aria-label="Novo imóvel, resultados">
+  <div class="barra"><a class="voltar" href="#caderno">Caderno</a></div>
+  <div class="rolagem">
+    <div class="bloco">
+      <p class="rotulo">Novo imóvel</p>
+      <h1 class="titulo">Cole o link ou busque o prédio</h1>
+      <label class="campo"><span class="so-leitor">Link do anúncio, prédio ou rua</span><input type="text" value="Rosa e Silva"></label>
+      <div class="escolhas" role="radiogroup" aria-label="Porte do prédio">
+        <button role="radio" aria-checked="true" data-escolhe="porte:todos">Todos</button>
+        <button role="radio" aria-checked="false" data-escolhe="porte:ate6">Até 6 andares</button>
+        <button role="radio" aria-checked="false" data-escolhe="porte:7a14">7 a 14</button>
+        <button role="radio" aria-checked="false" data-escolhe="porte:15">15 ou mais</button>
+      </div>
+    </div>
+    <div class="bloco">
+      <p class="rotulo">1 de 12 prédios nesta avenida</p>
+      <a class="resultado" href="#ficha"><span><b>Ana Elizabeth</b><span class="apoio">Av. Conselheiro Rosa e Silva, 537 · Graças · 1972 · 62 apartamentos</span></span><i class="seta"></i></a>
+      <a class="elo" href="#entrada-resultados">Mais 11 prédios</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ ENTRADA: SEM PERMISSÃO ═══════════════════════════════════ -->
+<section class="tela" id="entrada-sem-permissao" aria-label="Novo imóvel, sem permissão de localização">
+  <div class="barra"><a class="voltar" href="#caderno">Caderno</a></div>
+  <div class="rolagem">
+    <div class="bloco">
+      <p class="rotulo">Novo imóvel</p>
+      <h1 class="titulo">Cole o link ou busque o prédio</h1>
+      <label class="campo"><span class="so-leitor">Link do anúncio, prédio ou rua</span><input type="text" placeholder="Link do anúncio, prédio ou rua"></label>
+      <p class="codigo">ZAP, VIVAREAL, QUINTOANDAR E OLX</p>
+      <div class="aviso" role="status">
+        <span class="carimbo carimbo-cinza">Sem permissão</span>
+        <p class="contexto">O Vereda não pode ver onde você está.</p>
+        <p class="apoio">Busque pelo nome do prédio ou da rua.</p>
+        <a class="elo" href="#entrada">Abrir ajustes</a>
+      </div>
+      <div class="atalhos">
+        <a class="atalho" href="#leitura">Digitar sem link<i class="seta"></i></a>
+        <a class="atalho" href="#ficha@bolso">Simular o bolso<span class="apoio">sem anúncio</span><i class="seta"></i></a>
+      </div>
+    </div>
+    <div class="bloco">
+      <p class="rotulo">Exemplos</p>
+      <a class="resultado" href="#ficha"><span><b>Parque Atlântico</b><span class="apoio">torre de 2016 em Boa Viagem</span></span><i class="seta"></i></a>
+      <a class="resultado" href="#ficha"><span><b>Ana Elizabeth</b><span class="apoio">prédio de 1972 nas Graças</span></span><i class="seta"></i></a>
+      <a class="resultado" href="#ficha-aluguel"><span><b>Viena</b><span class="apoio">aluguel na Madalena</span></span><i class="seta"></i></a>
+    </div>
+  </div>
+  <div class="rodape"><a class="botao principal largo" href="#leitura">Colar link</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ LEITURA: ANÚNCIO LIDO + É ESTE O PRÉDIO? ═══════════════════════════════════ -->
+<section class="tela" id="leitura" aria-label="Anúncio lido">
+  <div class="barra"><a class="voltar" href="#entrada">Novo imóvel</a></div>
+  <div class="rolagem">
+    <div class="bloco">
+      <p class="rotulo">Anúncio lido · zapimoveis.com.br</p>
+      <h1 class="titulo">2 quartos em Boa Viagem</h1>
+      <ul class="lancamentos">
+        <li><div class="lanc"><span class="lanc-nome">Preço</span><i class="guia"></i><span class="lanc-valor">R$ 720.000</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">Condomínio</span><i class="guia"></i><span class="lanc-valor">R$ 980</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">IPTU</span><i class="guia"></i><span class="lanc-valor">R$ 95</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">Área</span><i class="guia"></i><span class="lanc-valor">58 m²</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">Andar</span><i class="guia"></i><span class="lanc-valor">14º</span></div></li>
+      </ul>
+      <p class="elos"><a class="elo" href="#leitura">Corrigir dados</a><a class="elo" href="#leitura">Colar o texto</a></p>
+    </div>
+    <div class="bloco">
+      <p class="rotulo">É este o prédio?</p>
+      <span class="mapa"><img src="../mapas/parque-atlantico-topo.png" alt="Mapa do lote do Parque Atlântico, na Avenida Boa Viagem"></span>
+      <p class="numero numero-p" style="margin-top: var(--e4)">Parque Atlântico</p>
+      <p class="contexto">Av. Boa Viagem, 2290 · 2016 · 29 andares</p>
+      <p class="codigo" style="margin-top: var(--e3)">25 APARTAMENTOS DE 57,72 m² NO CADASTRO · MESMA AVENIDA DO ANÚNCIO</p>
+      <p class="codigo" style="margin-top: var(--e2)">USA 1 CRÉDITO DE TESTE</p>
+    </div>
+  </div>
+  <div class="rodape"><a class="botao principal largo" href="#ficha">É este prédio</a><a class="botao" href="#entrada-resultados">Não é este</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ FICHA SEM PRÉDIO (Sem leitura) ═══════════════════════════════════ -->
+<section class="tela" id="ficha-sem-predio" aria-label="Ficha sem prédio">
+  <div class="barra">
+    <a class="voltar" href="#caderno">Caderno</a>
+    <div class="barra-acoes"><a class="icone" href="#ficha-sem-predio+triagem" aria-label="Triagem deste imóvel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg></a></div>
+  </div>
+  <div class="rolagem">
+    <header class="ficha-cabeca">
+      <div class="ficha-meta"><span class="codigo">FICHA SEM PRÉDIO</span><span class="carimbo carimbo-cinza">A confirmar</span></div>
+      <h1 class="titulo titulo-g">Apto. em Casa Forte</h1>
+      <p class="contexto">Rua não informada no anúncio</p>
+      <p class="apoio">Casa Forte · 66 m² · 2 quartos · R$ 690.000</p>
+    </header>
+    <ul class="rapida" aria-label="Leitura rápida" style="border-top: 1px solid var(--linha-forte)">
+      <li><a href="#ficha-sem-predio"><span class="rotulo"><b>1</b>Bolso</span><span class="numero numero-p">R$ 780<span class="un">por mês conhecido</span></span><span class="apoio">IPTU de R$ 154, período a confirmar</span><i class="seta"></i></a></li>
+      <li><a href="#ficha-sem-predio"><span class="rotulo"><b>2</b>Prédio</span><span class="sem">Sem leitura</span><span class="apoio">idade e escrituras dependem do prédio</span><i class="seta"></i></a></li>
+      <li><a href="#ficha-sem-predio"><span class="rotulo"><b>3</b>Rua</span><span class="sem">Sem leitura</span><span class="apoio">a pé, noite e registros dependem do prédio</span><i class="seta"></i></a></li>
+      <li><a href="#ficha-sem-predio"><span class="rotulo"><b>4</b>Conforto</span><span class="sem">Sem leitura</span><span class="apoio">ruído e calor ficam fora da média</span><i class="seta"></i></a></li>
+      <li><a href="#ficha-sem-predio+mensagem"><span class="rotulo"><b>5</b>Perguntas</span><span class="numero numero-p">3<span class="un">para o corretor</span></span><span class="apoio atencao">qual é a rua e o número?</span><i class="seta"></i></a></li>
+    </ul>
+  </div>
+  <div class="rodape"><a class="botao principal largo" href="#leitura">Confirmar prédio</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ FICHA SEM REDE ═══════════════════════════════════ -->
+<section class="tela" id="ficha-sem-rede" aria-label="Ficha sem rede">
+  <div class="barra"><a class="voltar" href="#caderno">Caderno</a></div>
+  <div class="rolagem">
+    <header class="ficha-cabeca">
+      <div class="ficha-meta"><span class="codigo">FICHA 6.1755.205.02.0130</span><span class="carimbo carimbo-cinza">Sem rede</span></div>
+      <h1 class="titulo titulo-g">Parque Atlântico</h1>
+      <p class="contexto">Av. Boa Viagem, 2290 · 14º andar</p>
+      <p class="apoio">Boa Viagem · 58 m² · 2 quartos · R$ 720.000</p>
+    </header>
+    <div class="bloco" style="border-top: 1px solid var(--linha-forte); padding-top: var(--e5)">
+      <div class="aviso" role="status" style="margin-top: 0">
+        <p class="titulo">Os dados de Boa Viagem não chegaram.</p>
+        <p class="contexto">O que veio do anúncio continua aqui.</p>
+      </div>
+      <ul class="lancamentos">
+        <li><div class="lanc"><span class="lanc-nome">Preço</span><i class="guia"></i><span class="lanc-valor">R$ 720.000</span><span class="origem">anúncio</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">Condomínio</span><i class="guia"></i><span class="lanc-valor">R$ 980</span><span class="origem">anúncio</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">IPTU</span><i class="guia"></i><span class="lanc-valor">R$ 95</span><span class="origem">anúncio</span></div></li>
+      </ul>
+    </div>
+    <div class="bloco" aria-busy="true">
+      <p class="rotulo">Abre quando os dados chegarem</p>
+      <span class="esqueleto com-rotulo"><span class="rotulo">Prédio</span></span>
+      <span class="esqueleto com-rotulo"><span class="rotulo">Rua</span></span>
+      <span class="esqueleto com-rotulo"><span class="rotulo">Conforto</span></span>
+    </div>
+  </div>
+  <div class="rodape"><a class="botao principal largo" href="#ficha">Tentar de novo</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ COMPARAR ═══════════════════════════════════ -->
+<section class="tela" id="comparar" data-dock="comparar" aria-label="Comparar">
+  <div class="rolagem">
+    <div class="abertura">
+      <h1 class="titulo titulo-g">Comparar</h1>
+      <p class="codigo">2 IMÓVEIS DE COMPRA</p>
+      <p class="titulo" style="margin-top: var(--e5)">Ana Elizabeth leva vantagem em 3 de 6.</p>
+      <a class="elo" href="#comparar+metodo-comparar">Como foi calculada</a>
+    </div>
+    <div class="cmp-topo fixa-no-topo">
+      <span class="rotulo">Imóvel</span>
+      <a href="#comparar+trocar" style="min-height: var(--toque)"><b>Parque Atlântico</b><span class="apoio" style="display:block">Boa Viagem</span></a>
+      <a href="#comparar+trocar" style="min-height: var(--toque)"><b>Ana Elizabeth</b><span class="apoio" style="display:block">Graças</span></a>
+    </div>
+
+    <p class="rotulo cmp-grupo"><b>01</b>Bolso</p>
+    <div class="cmp-linha"><span>Por mês</span><span class="cmp-valor"><span class="aprox">~</span>R$ 6.805<span class="cmp-barra fraca"><i style="width:100%"></i></span></span><span class="cmp-valor frente"><span class="aprox">~</span>R$ 5.476<span class="cmp-barra"><i style="width:80%"></i></span></span></div>
+    <div class="cmp-linha"><span>Preço por m²</span><span class="cmp-valor">R$ 12.414<span class="cmp-barra fraca"><i style="width:100%"></i></span></span><span class="cmp-valor frente">R$ 3.808<span class="cmp-barra"><i style="width:31%"></i></span></span></div>
+    <div class="cmp-linha"><span>Para entrar</span><span class="cmp-valor"><span class="aprox">~</span>R$ 152 mil<span class="cmp-barra fraca"><i style="width:100%"></i></span></span><span class="cmp-valor"><span class="aprox">~</span>R$ 105 mil<span class="cmp-barra fraca"><i style="width:69%"></i></span></span></div>
+
+    <p class="rotulo cmp-grupo"><b>02</b>Prédio</p>
+    <div class="cmp-linha"><span>Idade</span><span class="cmp-valor frente">10 anos</span><span class="cmp-valor">54 anos</span></div>
+    <div class="cmp-linha"><span>Terreno</span><span class="cmp-valor atencao">da União<small>trava o FGTS</small></span><span class="cmp-valor frente">sem alerta</span></div>
+    <div class="cmp-linha"><span>Preço e escrituras</span><span class="cmp-valor">12% acima</span><span class="cmp-valor">34% acima</span></div>
+
+    <p class="rotulo cmp-grupo"><b>03</b>Rua</p>
+    <div class="cmp-linha"><span>A pé</span><span class="cmp-valor">6,9 de 10</span><span class="cmp-valor">8,8 de 10</span></div>
+    <div class="cmp-linha"><span>Ônibus à noite</span><span class="cmp-valor">4 min</span><span class="cmp-valor">1 min</span></div>
+    <div class="cmp-linha"><span>Obras a 150&nbsp;m</span><span class="cmp-valor">1</span><span class="cmp-valor">5</span></div>
+
+    <p class="rotulo cmp-grupo"><b>04</b>Conforto</p>
+    <div class="cmp-linha"><span>Sossego à noite</span><span class="cmp-valor">7,3 de 10<small>empate</small></span><span class="cmp-valor">7,5 de 10<small>empate</small></span></div>
+    <div class="cmp-linha"><span>Calor</span><span class="cmp-valor">9,2 de 10<small>empate</small></span><span class="cmp-valor">9,2 de 10<small>empate</small></span></div>
+    <div class="cmp-linha"><span>Ruído à noite</span><span class="cmp-valor"><span class="aprox">~</span>58 dB(A)<small>estimativa</small></span><span class="cmp-valor"><span class="aprox">~</span>58 dB(A)<small>estimativa</small></span></div>
+    <p class="codigo" style="margin: var(--e3) var(--margem) 0; padding-top: var(--e3); border-top: 1px solid var(--linha)">● CONTA NOS 6 PONTOS · EMPATE QUANDO A DIFERENÇA É PEQUENA</p>
+
+    <section class="secao" style="margin-top: var(--e6)" aria-labelledby="cmp-decide">
+      <p class="rotulo" id="cmp-peso">O que pesa mais</p>
+      <div class="escolhas" role="radiogroup" aria-labelledby="cmp-peso" style="padding: 0; margin: var(--e1) 0 var(--e4) -10px">
+        <button role="radio" aria-checked="true" data-escolhe="peso:custo">Custo</button>
+        <button role="radio" aria-checked="false" data-escolhe="peso:conforto">Conforto</button>
+        <button role="radio" aria-checked="false" data-escolhe="peso:documentos">Documentos</button>
+      </div>
+      <p class="rotulo">A pergunta que decide</p>
+      <div data-quando="peso:custo"><h2 class="titulo" id="cmp-decide">O IPTU é R$ 95 ou R$ 142 por mês?</h2><p class="contexto" style="margin-top: var(--e2)">São R$ 564 por ano de diferença no Parque Atlântico.</p></div>
+      <div data-quando="peso:conforto"><h2 class="titulo">A obra a 116 m ainda está ativa?</h2><p class="contexto" style="margin-top: var(--e2)">A licença venceu em 01/2025.</p></div>
+      <div data-quando="peso:documentos"><h2 class="titulo">O terreno do Parque Atlântico é aforado?</h2><p class="contexto" style="margin-top: var(--e2)">Sem aforamento, o FGTS não entra na compra.</p></div>
+      <div class="opcoes" role="group" aria-label="Resposta à pergunta"><button aria-pressed="false" data-liga>Já sei</button><button aria-pressed="false" data-liga>Perguntar</button></div>
+      <div class="atalhos">
+        <a class="atalho" href="#comparar+rotina">Tempo de trajeto<span class="apoio">84 e 124 min por dia</span><i class="seta"></i></a>
+        <a class="atalho" href="#comparar+trocar">Incluir terceiro imóvel<i class="seta"></i></a>
+        <a class="atalho" href="#comparar+sala">Decidir a dois<i class="seta"></i></a>
+      </div>
+    </section>
+  </div>
+  <div class="rodape"><a class="botao principal largo" href="#visita">Escolher para visitar</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ VISITA: PREPARAR ═══════════════════════════════════ -->
+<section class="tela" id="visita" data-dock="visita" aria-label="Visita, preparar">
+  <div class="rolagem">
+    <div class="abertura" style="padding-bottom: var(--e4)"><h1 class="titulo titulo-g">Visita</h1></div>
+    <div class="imovel-linha">
+      <svg class="lote" viewBox="0 0 100 100" aria-hidden="true"><path d="M49.4 38.2L94.0 60.2L86.2 76.6L77.7 72.4L66.6 67.5L54.5 61.3L38.7 53.6L6.0 37.4L12.0 23.4Z"/></svg>
+      <span><b>Parque Atlântico</b><span class="apoio">Av. Boa Viagem, 2290</span></span>
+      <a class="elo" href="#visita+trocar">Trocar</a>
+    </div>
+    <nav class="abas-texto" aria-label="Etapas da visita">
+      <a href="#visita" aria-current="true">Preparar</a><a href="#visita-no-imovel">No imóvel</a><a href="#visita-resumo">Resumo</a>
+    </nav>
+    <section class="secao" aria-label="Pontos para conferir">
+      <div class="leitura" style="margin-top: 0">
+        <p class="numero">12<span class="un">pontos para conferir</span></p>
+      </div>
+      <ol class="numerada" style="margin-top: var(--e4)">
+        <li><span>A água da rua entra na garagem?<span class="codigo">6 PEDIDOS DE DRENAGEM EM 12 MESES</span></span></li>
+        <li><span>Internet no cômodo<span class="codigo">SEM TESTE NO CADERNO</span></span></li>
+        <li><span>As obras próximas afetam a rotina?<span class="codigo">1 OBRA LICENCIADA A 150 m</span></span></li>
+        <li><span>A rua acumula água na chuva?<span class="codigo">6 PEDIDOS DE DRENAGEM EM 12 MESES</span></span></li>
+        <li><span>Como é a rua à noite?<span class="codigo">30 PEDIDOS DE LÂMPADA APAGADA</span></span></li>
+        <li><span>Como é atravessar a rua a pé?<span class="codigo">10 SINISTROS COM VÍTIMA, 2022 A 2024</span></span></li>
+        <li><span>Onde o lixo espera a coleta?<span class="codigo">COLETA À NOITE: SEG, QUA E SEX</span></span></li>
+        <li><span>A Defesa Civil já esteve no prédio?<span class="codigo">80 ATENDIMENTOS NA AVENIDA, 2014 A 2024</span></span></li>
+        <li><span>Há cota extra ou obra aprovada?<span class="codigo">PEÇA ATAS E BALANCETES</span></span></li>
+        <li><span>Como é a pressão da água?<span class="codigo">TESTE TORNEIRAS E CHUVEIRO</span></span></li>
+        <li><span>Como é o ruído com a janela aberta?<span class="codigo">OUÇA NA VISITA</span></span></li>
+        <li><span>O sol chega às janelas?<span class="codigo">ANOTE A ORIENTAÇÃO</span></span></li>
+      </ol>
+      <div class="atalhos">
+        <a class="atalho" href="#visita+mensagem">Mensagem ao corretor<i class="seta"></i></a>
+        <button class="atalho" type="button">Adicionar pergunta<i class="seta"></i></button>
+      </div>
+    </section>
+  </div>
+  <div class="rodape"><a class="botao principal largo" href="#visita-no-imovel">Começar visita</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ VISITA: NO IMÓVEL ═══════════════════════════════════ -->
+<section class="tela" id="visita-no-imovel" data-dock="visita" aria-label="Visita, no imóvel">
+  <div class="rolagem">
+    <div class="abertura" style="padding-bottom: var(--e4)"><h1 class="titulo titulo-g">Visita</h1></div>
+    <div class="imovel-linha">
+      <svg class="lote" viewBox="0 0 100 100" aria-hidden="true"><path d="M49.4 38.2L94.0 60.2L86.2 76.6L77.7 72.4L66.6 67.5L54.5 61.3L38.7 53.6L6.0 37.4L12.0 23.4Z"/></svg>
+      <span><b>Parque Atlântico</b><span class="apoio">Av. Boa Viagem, 2290</span></span>
+      <a class="elo" href="#visita+trocar">Trocar</a>
+    </div>
+    <nav class="abas-texto" aria-label="Etapas da visita">
+      <a href="#visita">Preparar</a><a href="#visita-no-imovel" aria-current="true">No imóvel</a><a href="#visita-resumo">Resumo</a>
+    </nav>
+    <section class="secao" aria-label="Conferir no imóvel">
+      <div class="linha-acao"><span class="rotulo">No imóvel há</span><span class="cronometro" role="timer" aria-label="12 minutos e 40 segundos">00:12:40</span><button class="botao pequeno" type="button">Pausar</button></div>
+      <ul style="margin-top: var(--e3)">
+        <li class="ponto"><button class="caixa" role="checkbox" aria-checked="true" data-liga aria-label="A água da rua entra na garagem?"></button><div><p class="contexto">A água da rua entra na garagem?</p><p class="codigo">6 PEDIDOS DE DRENAGEM EM 12 MESES</p></div></li>
+        <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Internet no cômodo"></button><div><p class="contexto">Internet no cômodo</p><p class="codigo">SEM TESTE NO CADERNO</p></div></li>
+        <li class="ponto"><button class="caixa" role="checkbox" aria-checked="true" data-liga aria-label="As obras próximas afetam a rotina?"></button><div><p class="contexto">As obras próximas afetam a rotina?</p><p class="codigo">1 OBRA LICENCIADA A 150 m</p></div></li>
+        <li class="ponto"><button class="caixa" role="checkbox" aria-checked="true" data-liga aria-label="A rua acumula água na chuva?"></button><div><p class="contexto">A rua acumula água na chuva?</p><p class="codigo">6 PEDIDOS DE DRENAGEM EM 12 MESES</p></div></li>
+        <li class="ponto"><button class="caixa" role="checkbox" aria-checked="true" data-liga aria-label="Como é a rua à noite?"></button><div><p class="contexto">Como é a rua à noite?</p><p class="codigo">30 PEDIDOS DE LÂMPADA APAGADA</p></div></li>
+        <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Como é atravessar a rua a pé?"></button><div><p class="contexto">Como é atravessar a rua a pé?</p><p class="codigo">10 SINISTROS COM VÍTIMA, 2022 A 2024</p></div></li>
+        <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Onde o lixo espera a coleta?"></button><div><p class="contexto">Onde o lixo espera a coleta?</p><p class="codigo">COLETA À NOITE: SEG, QUA E SEX</p></div></li>
+        <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="A Defesa Civil já esteve no prédio?"></button><div><p class="contexto">A Defesa Civil já esteve no prédio?</p><p class="codigo">80 ATENDIMENTOS NA AVENIDA, 2014 A 2024</p></div></li>
+        <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Há cota extra ou obra aprovada?"></button><div><p class="contexto">Há cota extra ou obra aprovada?</p><p class="codigo">PEÇA ATAS E BALANCETES</p></div></li>
+        <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Como é a pressão da água?"></button><div><p class="contexto">Como é a pressão da água?</p><p class="codigo">TESTE TORNEIRAS E CHUVEIRO</p></div></li>
+        <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Como é o ruído com a janela aberta?"></button><div><p class="contexto">Como é o ruído com a janela aberta?</p><p class="codigo">OUÇA NA VISITA</p></div></li>
+        <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="O sol chega às janelas?"></button><div><p class="contexto">O sol chega às janelas?</p><p class="codigo">ANOTE A ORIENTAÇÃO</p></div></li>
+      </ul>
+
+      <div class="sub">
+        <p class="rotulo" style="font-size: var(--t14); color: var(--texto)">Instrumentos</p>
+        <p class="rotulo" style="margin-top: var(--e4)">Ruído: janela aberta e fechada</p>
+        <div class="opcoes" role="group" aria-label="Medir o ruído"><button aria-pressed="true" data-liga>Medir aberta</button><button aria-pressed="true" data-liga>Medir fechada</button></div>
+        <p class="numero numero-p" style="margin-top: var(--e3)">−9 dB</p>
+        <p class="apoio">com a janela fechada · diferença no mesmo aparelho</p>
+      </div>
+      <div class="sub" style="margin-top: var(--e6)">
+        <p class="contexto forte">Como soa lá dentro?</p>
+        <div class="opcoes" role="radiogroup" aria-label="Como soa lá dentro?"><button role="radio" aria-checked="false" data-escolhe="soa:silencioso">Silencioso</button><button role="radio" aria-checked="true" data-escolhe="soa:moderado">Moderado</button><button role="radio" aria-checked="false" data-escolhe="soa:alto">Alto</button></div>
+      </div>
+      <ul class="lancamentos" style="margin-top: var(--e6); border-top: 1px solid var(--linha)">
+        <li><div class="lanc"><span class="lanc-nome">Fachada da sala</span><i class="guia"></i><span class="lanc-valor">116° sudeste</span><span class="origem">bússola do aparelho</span></div></li>
+      </ul>
+      <div class="resposta" style="margin-top: var(--e1)"><button class="botao pequeno" type="button">Apontar</button></div>
+      <div class="atalhos"><a class="atalho" href="#visita-no-imovel+sol">Sol nas janelas<span class="apoio">~5,5 h</span><i class="seta"></i></a><a class="atalho" href="#visita-no-imovel+internet">Teste de internet<span class="apoio">sem teste ainda</span><i class="seta"></i></a></div>
+      <div class="sub" style="margin-top: var(--e6)">
+        <label class="rotulo" for="impressoes" style="display:block">Suas impressões</label>
+        <textarea class="campo-area" id="impressoes" placeholder="O que você gostou? O que pesou contra?"></textarea>
+      </div>
+    </section>
+  </div>
+  <div class="rodape"><a class="botao principal largo" href="#visita-resumo">Encerrar visita</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ VISITA: RESUMO ═══════════════════════════════════ -->
+<section class="tela" id="visita-resumo" data-dock="visita" aria-label="Visita, resumo">
+  <div class="rolagem">
+    <div class="abertura" style="padding-bottom: var(--e4)"><h1 class="titulo titulo-g">Visita</h1></div>
+    <div class="imovel-linha">
+      <svg class="lote" viewBox="0 0 100 100" aria-hidden="true"><path d="M49.4 38.2L94.0 60.2L86.2 76.6L77.7 72.4L66.6 67.5L54.5 61.3L38.7 53.6L6.0 37.4L12.0 23.4Z"/></svg>
+      <span><b>Parque Atlântico</b><span class="apoio">Av. Boa Viagem, 2290</span></span>
+      <a class="elo" href="#visita+trocar">Trocar</a>
+    </div>
+    <nav class="abas-texto" aria-label="Etapas da visita">
+      <a href="#visita">Preparar</a><a href="#visita-no-imovel">No imóvel</a><a href="#visita-resumo" aria-current="true">Resumo</a>
+    </nav>
+    <section class="secao" aria-label="Resumo da visita">
+      <div class="leitura" style="margin-top: 0">
+        <p class="numero">9<span class="un">de 12 conferidos</span></p>
+        <p class="contexto">42 minutos no imóvel.</p>
+      </div>
+      <div class="sub" style="margin-top: var(--e6)">
+        <p class="rotulo">Para olhar de novo</p>
+        <ol class="numerada"><li>A rua acumula água na chuva?</li><li>Como é a rua à noite?</li></ol>
+      </div>
+      <div class="sub" style="margin-top: var(--e6)">
+        <p class="rotulo">Sem resposta</p>
+        <ol class="numerada"><li>Internet no cômodo</li><li>Há cota extra ou obra aprovada?</li><li>Onde o lixo espera a coleta?</li></ol>
+      </div>
+      <ul class="lancamentos" style="margin-top: var(--e6); border-top: 1px solid var(--linha-forte)">
+        <li><div class="lanc"><span class="lanc-nome">Ruído com a janela fechada</span><i class="guia"></i><span class="lanc-valor">−9 dB</span><span class="origem">diferença relativa, medida na visita</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">Como soou</span><i class="guia"></i><span class="lanc-valor texto">Moderado</span></div></li>
+      </ul>
+    </section>
+  </div>
+  <div class="rodape"><a class="botao principal largo" href="#comparar">Comparar</a></div>
+</section>
+
+<!-- ═══════════════════════════════════ SOBRE OS DADOS ═══════════════════════════════════ -->
+<section class="tela" id="sobre" aria-label="Sobre os dados">
+  <div class="barra"><a class="voltar" href="#caderno">Caderno</a></div>
+  <div class="rolagem">
+    <div class="abertura">
+      <h1 class="titulo titulo-g">Sobre os dados</h1>
+      <p class="contexto" style="margin-top: var(--e2)">14 bases públicas, lidas no aparelho.</p>
+    </div>
+    <div class="bloco" style="border-top: 1px solid var(--linha-forte)">
+      <ul class="lancamentos" style="margin-top: var(--e2)">
+        <li><div class="lanc"><span class="lanc-nome">IPTU 2026</span><i class="guia"></i><span class="lanc-valor texto">ODbL</span><span class="origem">Prefeitura do Recife · base de 03/10/2026</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">ITBI</span><i class="guia"></i><span class="lanc-valor texto">Prefeitura</span><span class="origem">Prefeitura do Recife · escrituras por prédio</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">Licenciamento de obras</span><i class="guia"></i><span class="lanc-valor texto">24 meses</span><span class="origem">Prefeitura do Recife</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">Central 156</span><i class="guia"></i><span class="lanc-valor texto">12 meses</span><span class="origem">20/06/2025 a 19/06/2026</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">Defesa Civil</span><i class="guia"></i><span class="lanc-valor texto">10 anos</span><span class="origem">2014 a 2024</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">Censo 2022</span><i class="guia"></i><span class="lanc-valor texto">IBGE</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">OpenStreetMap</span><i class="guia"></i><span class="lanc-valor texto">ODbL</span><span class="origem">vias · 17/11/2026</span></div></li>
+        <li><div class="lanc"><span class="lanc-nome">Registros policiais</span><i class="guia"></i><span class="lanc-valor texto">CC BY 4.0</span><span class="origem">SDS-PE compilado pelo Crime Brasil</span></div></li>
+      </ul>
+      <div class="atalhos">
+        <a class="atalho" href="#sobre">Fora da cobertura<i class="seta"></i></a>
+        <a class="atalho" href="#sobre">Bairros cobertos<span class="apoio">72 de 94</span><i class="seta"></i></a>
+        <a class="atalho" href="#sobre">Baixar as bases<span class="apoio">ODbL</span><i class="seta"></i></a>
+      </div>
+      <p class="codigo" style="margin-top: var(--e5)">CONTÉM DADOS DA PREFEITURA DO RECIFE (ODbL) · © COLABORADORES DO OPENSTREETMAP</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ GAVETAS PRINCIPAIS ═══════════════════════════════════ -->
+<section class="gaveta" id="g-triagem" role="dialog" aria-modal="true" aria-labelledby="g-triagem-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Triagem</p><h2 class="titulo" id="g-triagem-t">Parque Atlântico</h2></div>
+    <a class="fechar" data-fechar href="#caderno" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <button class="alterna" type="button" aria-pressed="true" data-liga><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.4l-5.6 3 1.1-6.3L2.9 9.7l6.3-.9z"/></svg>Favorito</button>
+    <p class="rotulo" id="g-triagem-etapa">Etapa</p>
+    <div class="etapas" role="radiogroup" aria-labelledby="g-triagem-etapa">
+      <button role="radio" aria-checked="true" data-escolhe="etapa:triagem">Triagem</button>
+      <button role="radio" aria-checked="false" data-escolhe="etapa:visita">Visita</button>
+      <button role="radio" aria-checked="false" data-escolhe="etapa:visitado">Visitado</button>
+      <button role="radio" aria-checked="false" data-escolhe="etapa:negociando">Negociando</button>
+    </div>
+    <label class="rotulo" for="g-triagem-nota" style="display:block">Anotar</label>
+    <textarea class="campo-area" id="g-triagem-nota" placeholder="Ex.: perguntar o IPTU do boleto"></textarea>
+    <div class="resposta"><button class="botao pequeno" type="button">Guardar nota</button></div>
+    <p class="codigo">18/11 · PERGUNTAR SE A VARANDA PEGA SOL DA TARDE</p>
+    <div class="atalhos"><a class="atalho atencao" href="#caderno+descartar">Descartar imóvel<i class="seta"></i></a></div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-descartar" role="dialog" aria-modal="true" aria-labelledby="g-descartar-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Descartar</p><h2 class="titulo" id="g-descartar-t">Por que saiu da lista?</h2></div>
+    <a class="fechar" data-fechar href="#caderno" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <div class="opcoes coluna" role="radiogroup" aria-labelledby="g-descartar-t">
+      <div role="radio" tabindex="0" aria-checked="false" data-escolhe="motivo:preco" data-sem-inicial>Preço ou taxas</div>
+      <div role="radio" tabindex="-1" aria-checked="false" data-escolhe="motivo:ruido">Ruído ou entorno</div>
+      <div role="radio" tabindex="-1" aria-checked="false" data-escolhe="motivo:planta">Planta, andar ou vaga</div>
+      <div role="radio" tabindex="-1" aria-checked="false" data-escolhe="motivo:outro">Outro motivo</div>
+    </div>
+    <p class="codigo">COM O MOTIVO, VOLTA 1 CRÉDITO DE TESTE</p>
+    <a class="botao principal largo" href="#caderno" style="display:flex" aria-disabled="true">Descartar imóvel</a>
+  </div>
+</section>
+
+<section class="gaveta" id="g-mapa" role="dialog" aria-modal="true" aria-labelledby="g-mapa-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Mapa do lote</p><h2 class="titulo" id="g-mapa-t">Av. Boa Viagem, 2290</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <div class="escolhas" role="radiogroup" aria-label="Vista do mapa">
+      <button role="radio" aria-checked="true" data-escolhe="mapa:planta">Planta</button>
+      <button role="radio" aria-checked="false" data-escolhe="mapa:manha">Manhã</button>
+      <button role="radio" aria-checked="false" data-escolhe="mapa:meio">Meio-dia</button>
+      <button role="radio" aria-checked="false" data-escolhe="mapa:tarde">Tarde</button>
+    </div>
+    <span class="mapa inteiro" data-quando="mapa:planta" style="margin-top: var(--e3)"><img src="../mapas/mapa-do-lote-planta.png" alt="Planta do lote com os prédios vizinhos"></span>
+    <span class="mapa inteiro" data-quando="mapa:manha" style="margin-top: var(--e3)"><img src="../mapas/mapa-do-lote-volume.png" alt="Volume dos prédios em volta, com a sombra da manhã"></span>
+    <span class="mapa inteiro" data-quando="mapa:meio" style="margin-top: var(--e3)"><img src="../mapas/mapa-do-lote-volume.png" alt="Volume dos prédios em volta, com a sombra do meio-dia"></span>
+    <span class="mapa inteiro" data-quando="mapa:tarde" style="margin-top: var(--e3)"><img src="../mapas/mapa-do-lote-volume.png" alt="Volume dos prédios em volta, com a sombra da tarde"></span>
+    <p class="codigo">MAPA ATUAL DO APP, SEM MUDANÇA · CONTÉM DADOS DA PREFEITURA DO RECIFE (ODbL)</p>
+    <ul class="lancamentos">
+      <li><div class="lanc"><span class="lanc-nome">Área do lote</span><i class="guia"></i><span class="lanc-valor">954 m²</span><span class="origem">cadastro</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Obra licenciada</span><i class="guia"></i><span class="lanc-valor">116 m</span><span class="origem">acréscimo · nov/2024 · licença vencida em 01/2025</span></div></li>
+    </ul>
+  </div>
+</section>
+
+<section class="gaveta" id="g-para-entrar" role="dialog" aria-modal="true" aria-labelledby="g-para-entrar-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo" id="g-para-entrar-t">Para entrar</p><p class="numero numero-m" style="margin-top: var(--e2)"><span class="aprox">~</span>R$ 152 mil</p></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <ul class="lancamentos">
+      <li><div class="lanc"><span class="lanc-nome">Entrada de 20%</span><i class="guia"></i><span class="lanc-valor">R$ 144.000</span><span class="origem">sobre o preço do anúncio</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">ITBI</span><i class="guia"></i><span class="lanc-valor">R$ 8.352</span><span class="origem">imposto da Prefeitura na compra</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Escritura e registro</span><i class="guia"></i><span class="lanc-valor sem">A confirmar</span><span class="origem">tabela do cartório, não segue o preço</span></div></li>
+      <li><div class="lanc soma"><span class="lanc-nome">Sem o cartório</span><i class="guia"></i><span class="lanc-valor"><span class="aprox">~</span>R$ 152 mil</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Custo total da compra</span><i class="guia"></i><span class="lanc-valor">R$ 733 a 742 mil</span><span class="origem">preço mais ITBI de 1,8% a 3% · cartório à parte</span></div></li>
+    </ul>
+    <p class="contexto" style="margin-top: var(--e4)">Pedindo o ITBI em até 180 dias, paga 1,8% em vez de 3%: até R$ 13.248 a menos.</p>
+    <p class="rodape-secao"><a class="elo" href="#ficha+metodo-bolso">Como foi calculada</a><a class="elo" href="#ficha+fonte">Ver a fonte</a></p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-dez-anos" role="dialog" aria-modal="true" aria-labelledby="g-dez-anos-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Em 10 anos</p><h2 class="titulo" id="g-dez-anos-t">Comprar ou alugar e aplicar?</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <p class="rotulo" id="g-dez-anos-v">Valorização do imóvel ao ano, pela sua suposição</p>
+    <div class="escolhas" role="radiogroup" aria-labelledby="g-dez-anos-v">
+      <button role="radio" aria-checked="true" data-escolhe="valor:0">0%</button>
+      <button role="radio" aria-checked="false" data-escolhe="valor:3">3%</button>
+      <button role="radio" aria-checked="false" data-escolhe="valor:5">5%</button>
+    </div>
+    <div class="leitura" data-quando="valor:0"><p class="numero numero-m"><span class="aprox">~</span>R$ 559 mil</p><p class="contexto">a favor de alugar e aplicar a entrada</p></div>
+    <div class="leitura" data-quando="valor:3"><p class="numero numero-m"><span class="aprox">~</span>R$ 311 mil</p><p class="contexto">a favor de alugar e aplicar a entrada</p></div>
+    <div class="leitura" data-quando="valor:5"><p class="numero numero-m"><span class="aprox">~</span>R$ 106 mil</p><p class="contexto">a favor de alugar e aplicar a entrada</p></div>
+    <p class="codigo" style="margin-top: var(--e4)">SUPOSIÇÕES: CDI LÍQUIDO DE 9,5% AO ANO · JUROS DE 11,3% EM 30 ANOS · REAJUSTES DE 4,5%</p>
+    <p class="apoio">O Vereda não prevê preço: a valorização é escolha sua.</p>
+    <a class="elo" href="#ficha+metodo-bolso">Como foi calculada</a>
+  </div>
+</section>
+
+<section class="gaveta" id="g-financiamento" role="dialog" aria-modal="true" aria-labelledby="g-financiamento-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Bolso</p><h2 class="titulo" id="g-financiamento-t">Simular financiamento</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <p class="rotulo" id="g-fin-entrada">Entrada</p>
+    <div class="opcoes" role="radiogroup" aria-labelledby="g-fin-entrada">
+      <button role="radio" aria-checked="false" data-escolhe="fin-entrada:10">10%</button>
+      <button role="radio" aria-checked="true" data-escolhe="fin-entrada:20">20%</button>
+      <button role="radio" aria-checked="false" data-escolhe="fin-entrada:30">30%</button>
+      <button role="radio" aria-checked="false" data-escolhe="fin-entrada:50">50%</button>
+    </div>
+    <p class="rotulo" id="g-fin-prazo">Prazo</p>
+    <div class="opcoes" role="radiogroup" aria-labelledby="g-fin-prazo">
+      <button role="radio" aria-checked="false" data-escolhe="fin-prazo:15">15</button>
+      <button role="radio" aria-checked="false" data-escolhe="fin-prazo:20">20</button>
+      <button role="radio" aria-checked="true" data-escolhe="fin-prazo:30">30</button>
+      <button role="radio" aria-checked="false" data-escolhe="fin-prazo:35">35 anos</button>
+    </div>
+    <div class="leitura"><p class="numero numero-m"><span class="aprox">~</span>R$ 5.371<span class="un">por mês</span></p></div>
+    <ul class="lancamentos">
+      <li><div class="lanc"><span class="lanc-nome">Financiado</span><i class="guia"></i><span class="lanc-valor">R$ 576.000</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Total pago ao banco</span><i class="guia"></i><span class="lanc-valor"><span class="aprox">~</span>R$ 1.933.560</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Juros</span><i class="guia"></i><span class="lanc-valor"><span class="aprox">~</span>R$ 1.357.560</span></div></li>
+    </ul>
+    <p class="codigo">TABELA PRICE · 11,28% AO ANO · BANCO CENTRAL, AGO/2026 · SEM SEGUROS E TARIFAS</p>
+    <a class="elo" href="#ficha+metodo-bolso">Como foi calculada</a>
+  </div>
+</section>
+
+<section class="gaveta" id="g-andar" role="dialog" aria-modal="true" aria-labelledby="g-andar-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Conforto</p><h2 class="titulo" id="g-andar-t">Andar e fachada</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <p class="rotulo">Andar</p>
+    <div class="passo"><button type="button" aria-label="Um andar abaixo">−</button><span class="numero numero-p" aria-live="polite">14º andar</span><button type="button" aria-label="Um andar acima">+</button></div>
+    <div class="opcoes" role="radiogroup" aria-label="Altura no prédio">
+      <button role="radio" aria-checked="false" data-escolhe="altura:baixo">Baixo</button>
+      <button role="radio" aria-checked="true" data-escolhe="altura:meio">Meio</button>
+      <button role="radio" aria-checked="false" data-escolhe="altura:topo">Topo</button>
+    </div>
+    <p class="rotulo" id="g-andar-lado">Para que lado fica a janela?</p>
+    <div class="rosa" role="radiogroup" aria-labelledby="g-andar-lado">
+      <button role="radio" aria-checked="false" data-escolhe="lado:no" aria-label="Noroeste">NO</button>
+      <button role="radio" aria-checked="false" data-escolhe="lado:n" aria-label="Norte">N</button>
+      <button role="radio" aria-checked="false" data-escolhe="lado:ne" aria-label="Nordeste">NE</button>
+      <button role="radio" aria-checked="false" data-escolhe="lado:o" aria-label="Oeste">O</button>
+      <span class="centro" aria-hidden="true"></span>
+      <button role="radio" aria-checked="false" data-escolhe="lado:l" aria-label="Leste">L</button>
+      <button role="radio" aria-checked="false" data-escolhe="lado:so" aria-label="Sudoeste">SO</button>
+      <button role="radio" aria-checked="false" data-escolhe="lado:s" aria-label="Sul">S</button>
+      <button role="radio" aria-checked="true" data-escolhe="lado:se" aria-label="Sudeste">SE</button>
+    </div>
+    <ul class="lancamentos">
+      <li><div class="lanc"><span class="lanc-nome">Na janela, à noite</span><i class="guia"></i><span class="lanc-valor"><span class="aprox">~</span>58 dB(A)</span><span class="origem">estimativa</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Sol direto</span><i class="guia"></i><span class="lanc-valor"><span class="aprox">~</span>5,5 h por dia</span><span class="origem">fachada sudeste, no equinócio</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Brisa</span><i class="guia"></i><span class="lanc-valor texto">livre</span><span class="origem">de sudeste, sem vizinho mais alto no caminho</span></div></li>
+    </ul>
+  </div>
+</section>
+
+<section class="gaveta" id="g-metodo-comparar" role="dialog" aria-modal="true" aria-labelledby="g-metodo-comparar-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Como foi calculada</p><h2 class="titulo" id="g-metodo-comparar-t">Vantagem em 3 de 6</h2></div>
+    <a class="fechar" data-fechar href="#comparar" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <dl class="metodo">
+      <div><dt>O que mede</dt><dd>Em quantos de 6 pontos um imóvel sai na frente do outro.</dd></div>
+      <div><dt>Fonte</dt><dd>Anúncio, cadastro da Prefeitura, estimativa de ruído e regra de conforto.</dd></div>
+      <div><dt>Data</dt><dd>A de cada ficha.</dd></div>
+      <div><dt>Cálculo</dt><dd>A mesma régua nos dois imóveis; é empate quando a diferença é pequena (sossego 7,3 e 7,5).</dd></div>
+      <div><dt>Limite</dt><dd>Os 6 pontos pesam igual e não dizem qual imóvel serve melhor para você.</dd></div>
+      <div><dt>Na visita</dt><dd>Confira primeiro os pontos de empate.</dd></div>
+    </dl>
+    <a class="elo" href="#comparar+fonte">Ver a fonte</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ GAVETAS SECUNDÁRIAS: MÉTODO ═══════════════════════════════════ -->
+<section class="gaveta" id="g-metodo-bolso" role="dialog" aria-modal="true" aria-labelledby="g-metodo-bolso-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Como foi calculada</p><h2 class="titulo" id="g-metodo-bolso-t">Bolso por mês</h2><p class="apoio">~R$ 6.805 · parte é estimativa</p></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <dl class="metodo">
+      <div><dt>O que mede</dt><dd>Quanto sai do bolso por mês morando no imóvel.</dd></div>
+      <div><dt>Fonte</dt><dd>Anúncio; IPTU 2026 da Prefeitura; tarifa de luz homologada pela ANEEL; taxa média de financiamento do Banco Central.</dd></div>
+      <div><dt>Data</dt><dd>IPTU de 2026 · taxa de ago/2026.</dd></div>
+      <div><dt>Cálculo</dt><dd>Parcela de 80% do preço em 30 anos, mais condomínio, IPTU do cadastro e luz estimada.</dd></div>
+      <div><dt>Limite</dt><dd>Sem seguros e tarifas do banco; a luz muda com o uso do ar; cartório fica de fora.</dd></div>
+      <div><dt>Na visita</dt><dd>Peça o último boleto do condomínio e o carnê do IPTU.</dd></div>
+    </dl>
+    <a class="elo" href="#ficha+fonte">Ver a fonte</a>
+  </div>
+</section>
+
+<section class="gaveta" id="g-metodo-predio" role="dialog" aria-modal="true" aria-labelledby="g-metodo-predio-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Como foi calculada</p><h2 class="titulo" id="g-metodo-predio-t">Preço e escrituras</h2><p class="apoio">12% acima da mediana</p></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <dl class="metodo">
+      <div><dt>O que mede</dt><dd>Onde o preço pedido cai entre as escrituras de apartamentos do prédio.</dd></div>
+      <div><dt>Fonte</dt><dd>ITBI, o imposto de transmissão da Prefeitura do Recife.</dd></div>
+      <div><dt>Data</dt><dd>Vendas dos últimos 36 meses.</dd></div>
+      <div><dt>Cálculo</dt><dd>Mediana do valor por apartamento em 12 vendas; a faixa cinza guarda a metade central.</dd></div>
+      <div><dt>Limite</dt><dd>É valor fiscal, não preço de mercado, e vale para apartamento de qualquer tamanho.</dd></div>
+      <div><dt>Na visita</dt><dd>Pergunte por quanto saíram as últimas vendas.</dd></div>
+    </dl>
+    <a class="elo" href="#ficha+fonte">Ver a fonte</a>
+  </div>
+</section>
+
+<section class="gaveta" id="g-metodo-rua" role="dialog" aria-modal="true" aria-labelledby="g-metodo-rua-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Como foi calculada</p><h2 class="titulo" id="g-metodo-rua-t">De dia, a pé</h2><p class="apoio">6,9 de 10</p></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <dl class="metodo">
+      <div><dt>O que mede</dt><dd>Quão perto ficam mercado, farmácia, ônibus e praça, a pé, da porta do prédio.</dd></div>
+      <div><dt>Fonte</dt><dd>Rede de ruas do OpenStreetMap; locais da Prefeitura e do GTFS, a tabela de horários dos ônibus.</dd></div>
+      <div><dt>Data</dt><dd>Camada do ciclo de novembro de 2026.</dd></div>
+      <div><dt>Cálculo</dt><dd>Minutos pela rua até cada um; pesos de 30% (mercado), 25% (farmácia), 25% (ônibus) e 20% (praça).</dd></div>
+      <div><dt>Limite</dt><dd>Não vê calçada ruim, horário de funcionamento nem loja que fechou.</dd></div>
+      <div><dt>Na visita</dt><dd>Faça a pé o caminho até o mercado.</dd></div>
+    </dl>
+    <a class="elo" href="#ficha+fonte">Ver a fonte</a>
+  </div>
+</section>
+
+<section class="gaveta" id="g-metodo-calor" role="dialog" aria-modal="true" aria-labelledby="g-metodo-calor-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Como foi calculada</p><h2 class="titulo" id="g-metodo-calor-t">Calor</h2><p class="apoio">9,2 de 10</p></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <dl class="metodo">
+      <div><dt>O que mede</dt><dd>Se o apartamento tende a ser fresco ou quente.</dd></div>
+      <div><dt>Fonte</dt><dd>Fachada e andar que você escolheu; andares do prédio no cadastro da Prefeitura; calor de superfície da quadra pelo satélite Landsat; praças e água por perto.</dd></div>
+      <div><dt>Data</dt><dd>Satélite de 2026 · cadastro de 2026.</dd></div>
+      <div><dt>Cálculo</dt><dd>Regra de pontos: orientação do sol, brisa de sudeste, andar, calor da quadra, praça ou árvore perto e distância da água. Nota de 1 a 9,8.</dd></div>
+      <div><dt>Limite</dt><dd>Fórmula do Vereda, sem medição: nenhuma temperatura foi medida no apartamento e a sombra dos vizinhos não entra.</dd></div>
+      <div><dt>Na visita</dt><dd>Abra janelas opostas e sinta se o ar passa.</dd></div>
+    </dl>
+    <a class="elo" href="#ficha+fonte">Ver a fonte</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ GAVETAS SECUNDÁRIAS: FICHA ═══════════════════════════════════ -->
+<section class="gaveta" id="g-documentos" role="dialog" aria-modal="true" aria-labelledby="g-documentos-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Prédio</p><h2 class="titulo" id="g-documentos-t">Documentos do sinal</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <ul>
+      <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Matrícula atualizada"></button><div><p class="contexto">Matrícula atualizada</p><p class="codigo">VALE 30 DIAS</p></div></li>
+      <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Última ata de assembleia"></button><div><p class="contexto">Última ata de assembleia</p></div></li>
+      <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Boleto e fundo de reserva"></button><div><p class="contexto">Boleto e fundo de reserva</p></div></li>
+      <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Declaração negativa do condomínio"></button><div><p class="contexto">Declaração negativa do condomínio</p></div></li>
+    </ul>
+    <p class="rotulo">Travas</p>
+    <div class="achado" style="margin-top: var(--e3)"><span class="carimbo carimbo-barro">Trava</span><p class="contexto">Terreno da União: peça a certidão que diz se é aforamento ou ocupação.</p></div>
+    <div class="achado"><span class="carimbo carimbo-cinza">Depende</span><p class="contexto">Sem matrícula recente, não dá para conferir dono e dívidas.</p></div>
+    <div class="atalhos"><a class="atalho" href="#ficha+documentos">Rateio de obra<span class="apoio">~R$ 1.942 por apartamento</span><i class="seta"></i></a></div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-linha-do-tempo" role="dialog" aria-modal="true" aria-labelledby="g-linha-do-tempo-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Prédio</p><h2 class="titulo" id="g-linha-do-tempo-t">Linha do tempo</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <ol class="cronologia">
+      <li><span class="codigo">2016</span><span class="contexto">Prédio entregue</span></li>
+      <li><span class="codigo">2017 a 2026</span><span class="contexto">117 vendas registradas</span></li>
+      <li><span class="codigo">2014 a 2024</span><span class="contexto">80 atendimentos da Defesa Civil na avenida</span></li>
+      <li><span class="codigo">nov/2024</span><span class="contexto">Acréscimo licenciado a 116 m</span></li>
+      <li><span class="codigo">2031</span><span class="contexto">Primeira obra de fachada<small>referência: 15 anos de uso</small></span></li>
+    </ol>
+    <p class="contexto" style="margin-top: var(--e4); padding-top: var(--e4); border-top: 1px solid var(--linha)">Nenhum laudo, vistoria ou interdição guardado.</p>
+    <a class="elo" href="#ficha+ata">Registrar documento</a>
+  </div>
+</section>
+
+<section class="gaveta" id="g-ata" role="dialog" aria-modal="true" aria-labelledby="g-ata-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Prédio</p><h2 class="titulo" id="g-ata-t">Ler ata</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <label class="so-leitor" for="g-ata-texto">Texto da ata</label>
+    <textarea class="campo-area" id="g-ata-texto" placeholder="Cole o texto da ata, do regimento ou do boleto" style="margin-top: var(--e3); min-height: 132px"></textarea>
+    <div class="resposta"><button class="botao pequeno" type="button">Ler texto</button></div>
+    <p class="codigo">LIDO NO APARELHO, POR REGRAS · SEM SERVIDOR</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-por-perto" role="dialog" aria-modal="true" aria-labelledby="g-por-perto-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Rua</p><h2 class="titulo" id="g-por-perto-t">Por perto</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <p class="rotulo" style="margin-top: var(--e2)">A pé, da porta</p>
+    <ul class="lancamentos">
+      <li><div class="lanc"><span class="lanc-nome">Mercado</span><i class="guia"></i><span class="lanc-valor">5 min</span><span class="origem">outra opção a 5 min</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Farmácia</span><i class="guia"></i><span class="lanc-valor">6 min</span><span class="origem">outra opção a 10 min</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Praça</span><i class="guia"></i><span class="lanc-valor">3 min</span><span class="origem">outra opção a 5 min</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Ônibus</span><i class="guia"></i><span class="lanc-valor">4 min</span><span class="origem">outra opção a 6 min</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Mercado e farmácia juntos</span><i class="guia"></i><span class="lanc-valor">990 m</span><span class="origem">em vez de 1,6 km em duas idas</span></div></li>
+    </ul>
+    <p class="rotulo" style="margin-top: var(--e6)">Equipamentos públicos</p>
+    <ul class="lancamentos">
+      <li><div class="lanc"><span class="lanc-nome">Bicicleta de aluguel</span><i class="guia"></i><span class="lanc-valor">4 min</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Ciclofaixa</span><i class="guia"></i><span class="lanc-valor texto">na rua</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Unidade de conservação</span><i class="guia"></i><span class="lanc-valor">80 m</span></div></li>
+    </ul>
+    <p class="codigo">CADASTRO DA PREFEITURA · DISTÂNCIA EM LINHA RETA</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-comercio" role="dialog" aria-modal="true" aria-labelledby="g-comercio-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Rua</p><h2 class="titulo" id="g-comercio-t">Comércio em volta</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <ul class="lancamentos" style="margin-top: var(--e2)">
+      <li><div class="lanc"><span class="lanc-nome">Bar ou venda de bebida</span><i class="guia"></i><span class="lanc-valor">1</span><span class="origem">o mais perto a 120 m</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Padaria, farmácia ou mercadinho</span><i class="guia"></i><span class="lanc-valor">1</span><span class="origem">a 130 m</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Endereços em obra em 2022</span><i class="guia"></i><span class="lanc-valor">6</span><span class="origem">a até 150 m</span></div></li>
+    </ul>
+    <p class="codigo">CENSO 2022 (IBGE) · SÓ A CATEGORIA, SEM NOME</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-mensagem" role="dialog" aria-modal="true" aria-labelledby="g-mensagem-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Perguntas</p><h2 class="titulo" id="g-mensagem-t">Mensagem ao corretor</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <div class="citacao">
+      <p>Olá. Vi o anúncio do apartamento de 2 quartos na Av. Boa Viagem. Pode confirmar:</p>
+      <p>1) o IPTU por mês (o anúncio diz R$ 95);</p>
+      <p>2) se o terreno é aforado ou só ocupado;</p>
+      <p>3) se há cota extra ou obra aprovada;</p>
+      <p>4) o saldo do fundo de reserva?</p>
+    </div>
+    <div class="resposta"><button class="botao pequeno principal" type="button">Copiar mensagem</button><button class="botao pequeno" type="button">Abrir WhatsApp</button></div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-negociacao" role="dialog" aria-modal="true" aria-labelledby="g-negociacao-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Preparar a negociação</p><h2 class="titulo" id="g-negociacao-t">Fatos para levar</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <ul>
+      <li class="ponto"><button class="caixa" role="checkbox" aria-checked="true" data-liga aria-label="Preço 12% acima das escrituras do prédio"></button><div><p class="contexto">Preço 12% acima das escrituras do prédio</p></div></li>
+      <li class="ponto"><button class="caixa" role="checkbox" aria-checked="true" data-liga aria-label="IPTU do anúncio abaixo do cadastro"></button><div><p class="contexto">IPTU do anúncio abaixo do cadastro</p></div></li>
+      <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Ruído 8 dB acima da referência à noite"></button><div><p class="contexto">Ruído 8 dB acima da referência à noite</p><p class="codigo">ESTIMATIVA</p></div></li>
+      <li class="ponto"><button class="caixa" role="checkbox" aria-checked="true" data-liga aria-label="Terreno da União pede certidão"></button><div><p class="contexto">Terreno da União pede certidão</p></div></li>
+    </ul>
+    <p class="codigo">O VEREDA NÃO SUGERE PREÇO NEM VALOR DE PROPOSTA</p>
+    <div class="resposta"><a class="botao pequeno" href="#ficha+mensagem">Montar mensagem</a></div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-pacote" role="dialog" aria-modal="true" aria-labelledby="g-pacote-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Perguntas</p><h2 class="titulo" id="g-pacote-t">Pacote para especialista</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <p class="contexto" style="margin-top: var(--e2)">A ficha e o caderno, para advogado ou vistoriador.</p>
+    <div class="atalhos">
+      <button class="atalho" type="button">Imprimir<i class="seta"></i></button>
+      <button class="atalho" type="button">Copiar texto<i class="seta"></i></button>
+      <button class="atalho" type="button">Baixar arquivo<i class="seta"></i></button>
+    </div>
+    <p class="codigo">FICAM DE FORA: PERFIL DA CASA, FOTOS E DIÁRIO</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-mudou" role="dialog" aria-modal="true" aria-labelledby="g-mudou-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Perguntas</p><h2 class="titulo" id="g-mudou-t">O que mudou</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <p class="codigo">GUARDADO EM 12/11/2026</p>
+    <ul class="lancamentos" style="margin-top: var(--e2)">
+      <li><div class="lanc"><span class="lanc-nome">Obras a 150 m</span><i class="guia"></i><span class="lanc-valor texto">igual</span><span class="origem">1 licença</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Defesa Civil na avenida</span><i class="guia"></i><span class="lanc-valor texto">igual</span><span class="origem">80 atendimentos</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Anúncio</span><i class="guia"></i><span class="lanc-valor texto">igual</span></div></li>
+    </ul>
+    <div class="resposta"><button class="botao pequeno" type="button">Guardar de novo</button></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ GAVETAS SECUNDÁRIAS: COMPARAR E VISITA ═══════════════════════════════════ -->
+<section class="gaveta" id="g-trocar" role="dialog" aria-modal="true" aria-labelledby="g-trocar-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Escolher imóvel</p><h2 class="titulo" id="g-trocar-t">Qual imóvel entra?</h2></div>
+    <a class="fechar" data-fechar href="#comparar" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <div class="opcoes coluna" role="radiogroup" aria-labelledby="g-trocar-t">
+      <div role="radio" tabindex="0" aria-checked="true" data-escolhe="troca:parque">Parque Atlântico<span class="apoio">Boa Viagem</span></div>
+      <div role="radio" tabindex="-1" aria-checked="false" data-escolhe="troca:ana">Ana Elizabeth<span class="apoio">Graças</span></div>
+      <div role="radio" tabindex="-1" aria-checked="false" data-escolhe="troca:casaforte">Apto. em Casa Forte<span class="apoio">prédio a confirmar</span></div>
+    </div>
+    <p class="codigo">VIENA É ALUGUEL: COMPARA SÓ COM ALUGUEL</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-rotina" role="dialog" aria-modal="true" aria-labelledby="g-rotina-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Comparar</p><h2 class="titulo" id="g-rotina-t">Tempo de trajeto</h2></div>
+    <a class="fechar" data-fechar href="#comparar" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <div class="dupla">
+      <div><p class="rotulo">Parque Atlântico</p><p class="numero numero-m">84<span class="un">min por dia</span></p></div>
+      <div><p class="rotulo">Ana Elizabeth</p><p class="numero numero-m">124<span class="un">min por dia</span></p></div>
+    </div>
+    <p class="apoio">Recife Antigo e Boa Viagem, ida e volta, no pico</p>
+    <p class="codigo">ESTIMATIVA: LINHA RETA × 1,38 · 20 DIAS POR MÊS · NÃO É O TRAJETO PELAS RUAS</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-sala" role="dialog" aria-modal="true" aria-labelledby="g-sala-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Comparar</p><h2 class="titulo" id="g-sala-t">Decidir a dois</h2></div>
+    <a class="fechar" data-fechar href="#comparar" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <p class="contexto" style="margin-top: var(--e2)">A outra pessoa abre o link, reage e devolve.</p>
+    <ul class="lancamentos">
+      <li><div class="lanc"><span class="lanc-nome">Vai no link</span><i class="guia"></i><span class="lanc-valor texto">só o anúncio</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Fica de fora</span><i class="guia"></i><span class="lanc-valor texto">caderno, visita e perfil</span></div></li>
+    </ul>
+    <p class="codigo">QUEM RECEBE RESPONDE: FAZ SENTIDO, DÚVIDA OU DESCARTAR</p>
+    <button class="botao principal largo" type="button" style="width: 100%">Copiar link</button>
+    <div class="atalhos"><a class="atalho" href="#comparar+sala">Abrir resposta<span class="apoio">cole o link que voltou</span><i class="seta"></i></a></div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-sol" role="dialog" aria-modal="true" aria-labelledby="g-sol-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Instrumentos</p><h2 class="titulo" id="g-sol-t">Sol nas janelas</h2></div>
+    <a class="fechar" data-fechar href="#visita-no-imovel" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <ul class="lancamentos" style="margin-top: var(--e2)">
+      <li><div class="lanc"><span class="lanc-nome">Fachada sudeste</span><i class="guia"></i><span class="lanc-valor"><span class="aprox">~</span>5,5 h</span><span class="origem">sol direto por dia, no equinócio</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">À tarde</span><i class="guia"></i><span class="lanc-valor texto">sombra</span></div></li>
+    </ul>
+    <div class="resposta"><button class="botao pequeno" type="button">Guardar janela</button></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ GAVETAS SECUNDÁRIAS: CADERNO E MENU ═══════════════════════════════════ -->
+<section class="gaveta" id="g-menu" role="dialog" aria-modal="true" aria-labelledby="g-menu-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><h2 class="titulo" id="g-menu-t">Menu</h2></div>
+    <a class="fechar" data-fechar href="#caderno" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <div class="atalhos" style="margin-top: var(--e2)">
+      <a class="atalho" href="#caderno+perfil">Perfil da casa<span class="apoio">2 pessoas</span><i class="seta"></i></a>
+      <a class="atalho" href="#sobre">Sobre os dados<i class="seta"></i></a>
+      <a class="atalho" href="#caderno+copia">Cópia do caderno<i class="seta"></i></a>
+      <a class="atalho" href="#caderno+creditos">Créditos de teste<span class="apoio">3</span><i class="seta"></i></a>
+      <a class="atalho" href="#caderno-vazio">Exemplos<i class="seta"></i></a>
+    </div>
+    <p class="codigo">SEM CADASTRO · DADOS SÓ NESTE APARELHO</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-descartados" role="dialog" aria-modal="true" aria-labelledby="g-descartados-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Caderno</p><h2 class="titulo" id="g-descartados-t">1 descartado</h2></div>
+    <a class="fechar" data-fechar href="#caderno" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <div class="linha-acao" style="padding: var(--e3) 0; border-bottom: 1px solid var(--linha)">
+      <span><b class="contexto forte" style="display:block">Apto. no Espinheiro</b><span class="apoio">saiu por preço ou taxas</span></span>
+      <button class="botao pequeno" type="button">Restaurar</button>
+    </div>
+  </div>
+</section>
+
+<section class="gaveta" id="g-perfil" role="dialog" aria-modal="true" aria-labelledby="g-perfil-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Menu</p><h2 class="titulo" id="g-perfil-t">Perfil da casa</h2></div>
+    <a class="fechar" data-fechar href="#caderno" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <p class="rotulo" id="g-perfil-pessoas">Quantas pessoas</p>
+    <div class="opcoes" role="radiogroup" aria-labelledby="g-perfil-pessoas">
+      <button role="radio" aria-checked="false" data-escolhe="pessoas:1">1</button>
+      <button role="radio" aria-checked="true" data-escolhe="pessoas:2">2</button>
+      <button role="radio" aria-checked="false" data-escolhe="pessoas:3">3</button>
+      <button role="radio" aria-checked="false" data-escolhe="pessoas:4">4 ou mais</button>
+    </div>
+    <p class="rotulo" id="g-perfil-ar">Ar-condicionado</p>
+    <div class="opcoes" role="radiogroup" aria-labelledby="g-perfil-ar">
+      <button role="radio" aria-checked="false" data-escolhe="ar:nao">Não uso</button>
+      <button role="radio" aria-checked="true" data-escolhe="ar:noite">À noite</button>
+      <button role="radio" aria-checked="false" data-escolhe="ar:dia">O dia todo</button>
+    </div>
+    <ul class="lancamentos">
+      <li><div class="lanc"><span class="lanc-nome">Destino do dia a dia</span><i class="guia"></i><span class="lanc-valor sem">A escolher</span></div></li>
+    </ul>
+    <p class="rotulo">Acessibilidade</p>
+    <ul style="margin-top: var(--e2)">
+      <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Mobilidade"></button><div><p class="contexto">Mobilidade</p></div></li>
+      <li class="ponto"><button class="caixa" role="checkbox" aria-checked="false" data-liga aria-label="Visão"></button><div><p class="contexto">Visão</p></div></li>
+    </ul>
+    <p class="codigo">FICA SÓ NO APARELHO · NUNCA É COMPARTILHADO</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-copia" role="dialog" aria-modal="true" aria-labelledby="g-copia-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Menu</p><h2 class="titulo" id="g-copia-t">Cópia do caderno</h2></div>
+    <a class="fechar" data-fechar href="#caderno" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <div class="atalhos" style="margin-top: var(--e2)">
+      <button class="atalho" type="button">Exportar caderno<i class="seta"></i></button>
+      <button class="atalho" type="button">Restaurar de arquivo<i class="seta"></i></button>
+    </div>
+    <p class="codigo">SEM CONTA, A CÓPIA É O ÚNICO JEITO DE TROCAR DE APARELHO</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-creditos" role="dialog" aria-modal="true" aria-labelledby="g-creditos-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Menu</p><h2 class="titulo" id="g-creditos-t">Créditos de teste</h2></div>
+    <a class="fechar" data-fechar href="#caderno" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <div class="leitura" style="margin-top: var(--e3)"><p class="numero numero-m">3<span class="un">créditos de teste</span></p></div>
+    <ul class="lancamentos">
+      <li><div class="lanc"><span class="lanc-nome">Confirmar um prédio</span><i class="guia"></i><span class="lanc-valor">−1</span></div></li>
+      <li><div class="lanc"><span class="lanc-nome">Descartar com motivo</span><i class="guia"></i><span class="lanc-valor">+1</span></div></li>
+    </ul>
+    <p class="codigo">NÃO TÊM VALOR EM DINHEIRO</p>
+  </div>
+</section>
+
+<!-- ═══════════ RODADA 1: GAVETAS DE COBERTURA (renda, vizinhos, pulso, internet, onde) ═══════════ -->
+<section class="gaveta" id="g-renda" role="dialog" aria-modal="true" aria-labelledby="g-renda-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Rua</p><h2 class="titulo" id="g-renda-t">Renda do setor</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <div class="leitura" style="margin-top: var(--e3)"><p class="numero numero-m">R$ 15.000<span class="un">por mês, mediana</span></p></div>
+    <ul class="lancamentos">
+<li><div class="lanc"><span class="lanc-nome">Média</span><i class="guia"></i><span class="lanc-valor">R$ 21.213</span></div></li>
+<li><div class="lanc"><span class="lanc-nome">Domicílios no setor</span><i class="guia"></i><span class="lanc-valor">205</span></div></li>
+<li><div class="lanc"><span class="lanc-nome">Moradores por domicílio</span><i class="guia"></i><span class="lanc-valor">2,4</span></div></li>
+    </ul>
+    <p class="codigo">CENSO 2022 (IBGE) · RENDA DE QUEM RESPONDE PELO DOMICÍLIO · SEM COMPARAÇÃO ENTRE SETORES</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-vizinhos" role="dialog" aria-modal="true" aria-labelledby="g-vizinhos-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Rua · Registros policiais</p><h2 class="titulo" id="g-vizinhos-t">Boa Viagem e vizinhos</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <p class="codigo">REGISTROS POR MIL MORADORES EM 12 MESES · ORDEM ALFABÉTICA</p>
+    <ul class="lancamentos">
+<li><div class="lanc"><span class="lanc-nome">Boa Viagem</span><i class="guia"></i><span class="lanc-valor">17,1</span><span class="origem">2.148 registros · ameaça, roubo a transeunte e roubo são os mais comuns</span></div></li>
+<li><div class="lanc"><span class="lanc-nome">Ibura</span><i class="guia"></i><span class="lanc-valor">17,5</span><span class="origem">796 registros</span></div></li>
+<li><div class="lanc"><span class="lanc-nome">Imbiribeira</span><i class="guia"></i><span class="lanc-valor">17,1</span><span class="origem">890 registros</span></div></li>
+<li><div class="lanc"><span class="lanc-nome">Jordão</span><i class="guia"></i><span class="lanc-valor">13,0</span><span class="origem">266 registros</span></div></li>
+<li><div class="lanc"><span class="lanc-nome">Pina</span><i class="guia"></i><span class="lanc-valor">22,1</span><span class="origem">644 registros</span></div></li>
+    </ul>
+    <p class="apoio">Mediana dos bairros do Recife: 17,4.</p>
+    <p class="codigo">CONTA SÓ O QUE CHEGOU À POLÍCIA · VIZINHO É QUEM DIVIDE 50 m OU MAIS DE LIMITE · SDS-PE COMPILADO PELO CRIME BRASIL · IBGE, CENSO 2022</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-pulso" role="dialog" aria-modal="true" aria-labelledby="g-pulso-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><h2 class="rotulo" id="g-pulso-t">Pulso da quadra</h2><p class="numero numero-m" style="margin-top: var(--e2)">7,9<span class="un">de 10</span></p></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <ul>
+      <li class="nota-linha"><div class="lanc"><span class="lanc-nome">Sol e ventilação</span><i class="guia"></i><span class="lanc-valor">9,2</span></div><svg class="regua" viewBox="0 0 350 14" aria-hidden="true"><path d="M6 7H344" stroke="currentColor"/><path d="M6 7v5M39.8 7v3M73.6 7v3M107.4 7v3M141.2 7v3M175 7v5M208.8 7v3M242.6 7v3M276.4 7v3M310.2 7v3M344 7v5" stroke="currentColor"/><circle cx="317.0" cy="7" r="5" fill="currentColor"/></svg></li>
+      <li class="nota-linha"><div class="lanc"><span class="lanc-nome">Sossego à noite</span><i class="guia"></i><span class="lanc-valor">7,3</span></div><svg class="regua" viewBox="0 0 350 14" aria-hidden="true"><path d="M6 7H344" stroke="currentColor"/><path d="M6 7v5M39.8 7v3M73.6 7v3M107.4 7v3M141.2 7v3M175 7v5M208.8 7v3M242.6 7v3M276.4 7v3M310.2 7v3M344 7v5" stroke="currentColor"/><circle cx="252.7" cy="7" r="5" fill="currentColor"/></svg></li>
+      <li class="nota-linha"><div class="lanc"><span class="lanc-nome">Serviços a pé</span><i class="guia"></i><span class="lanc-valor">6,9</span></div><svg class="regua" viewBox="0 0 350 14" aria-hidden="true"><path d="M6 7H344" stroke="currentColor"/><path d="M6 7v5M39.8 7v3M73.6 7v3M107.4 7v3M141.2 7v3M175 7v5M208.8 7v3M242.6 7v3M276.4 7v3M310.2 7v3M344 7v5" stroke="currentColor"/><circle cx="239.2" cy="7" r="5" fill="currentColor"/></svg></li>
+      <li class="nota-linha"><div class="lanc"><span class="lanc-nome">Custo conhecido</span><i class="guia"></i><span class="lanc-valor">7,5</span><span class="origem">3 de 4 itens; falta o regime do terreno</span></div><svg class="regua" viewBox="0 0 350 14" aria-hidden="true"><path d="M6 7H344" stroke="currentColor"/><path d="M6 7v5M39.8 7v3M73.6 7v3M107.4 7v3M141.2 7v3M175 7v5M208.8 7v3M242.6 7v3M276.4 7v3M310.2 7v3M344 7v5" stroke="currentColor"/><circle cx="259.5" cy="7" r="5" fill="currentColor"/></svg></li>
+      <li class="nota-linha"><div class="lanc"><span class="lanc-nome">Idade do prédio</span><i class="guia"></i><span class="lanc-valor">7,6</span><span class="origem">10 anos</span></div><svg class="regua" viewBox="0 0 350 14" aria-hidden="true"><path d="M6 7H344" stroke="currentColor"/><path d="M6 7v5M39.8 7v3M73.6 7v3M107.4 7v3M141.2 7v3M175 7v5M208.8 7v3M242.6 7v3M276.4 7v3M310.2 7v3M344 7v5" stroke="currentColor"/><circle cx="262.9" cy="7" r="5" fill="currentColor"/></svg></li>
+      <li class="nota-linha"><div class="lanc"><span class="lanc-nome">Obras a 150 m</span><i class="guia"></i><span class="lanc-valor">8,9</span><span class="origem">1 licença em 24 meses</span></div><svg class="regua" viewBox="0 0 350 14" aria-hidden="true"><path d="M6 7H344" stroke="currentColor"/><path d="M6 7v5M39.8 7v3M73.6 7v3M107.4 7v3M141.2 7v3M175 7v5M208.8 7v3M242.6 7v3M276.4 7v3M310.2 7v3M344 7v5" stroke="currentColor"/><circle cx="306.8" cy="7" r="5" fill="currentColor"/></svg></li>
+    </ul>
+    <p class="codigo">LEITURA SEM DADO FICA FORA DA MÉDIA</p>
+    <a class="elo" href="#ficha+metodo-pulso">Como foi calculada</a>
+  </div>
+</section>
+
+<section class="gaveta" id="g-metodo-pulso" role="dialog" aria-modal="true" aria-labelledby="g-metodo-pulso-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Como foi calculada</p><h2 class="titulo" id="g-metodo-pulso-t">Pulso da quadra</h2></div>
+    <a class="fechar" data-fechar href="#ficha" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <dl class="metodo">
+      <div><dt>O que mede</dt><dd>Seis leituras do imóvel e da quadra, cada uma de 0 a 10.</dd></div>
+      <div><dt>Fonte</dt><dd>Cadastro e licenças da Prefeitura, rede de ruas, o anúncio e as contas de sol e de ruído do Vereda.</dd></div>
+      <div><dt>Data</dt><dd>Cadastro de 2026.</dd></div>
+      <div><dt>Cálculo</dt><dd>Média simples das leituras que têm dado.</dd></div>
+      <div><dt>Limite</dt><dd>As faixas e os pesos são escolhas do Vereda, não medições.</dd></div>
+      <div><dt>Na visita</dt><dd>Confira no local as leituras de nota mais baixa.</dd></div>
+    </dl>
+    <a class="elo" href="#ficha+fonte">Ver a fonte</a>
+  </div>
+</section>
+
+<section class="gaveta" id="g-internet" role="dialog" aria-modal="true" aria-labelledby="g-internet-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Visita</p><h2 class="titulo" id="g-internet-t">Internet no cômodo</h2></div>
+    <a class="fechar" data-fechar href="#visita-no-imovel" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <ul class="lancamentos" style="margin-top: var(--e2)">
+<li><div class="lanc"><span class="lanc-nome">Fibra no endereço</span><i class="guia"></i><span class="lanc-valor sem">A consultar</span><span class="origem">o que a operadora respondeu</span></div></li>
+<li><div class="lanc"><span class="lanc-nome">Sinal de celular na rua</span><i class="guia"></i><span class="lanc-valor texto">ver mapa</span><span class="origem">cobertura prevista pela Anatel, ao ar livre</span></div></li>
+<li><div class="lanc"><span class="lanc-nome">Medido no cômodo</span><i class="guia"></i><span class="lanc-valor sem">Sem leitura</span><span class="origem">teste no quarto, com a porta fechada</span></div></li>
+    </ul>
+    <div class="resposta"><button class="botao pequeno" type="button">Registrar teste</button></div>
+    <p class="codigo">FICA SÓ NESTE APARELHO</p>
+  </div>
+</section>
+
+<section class="gaveta" id="g-onde" role="dialog" aria-modal="true" aria-labelledby="g-onde-t">
+  <div class="pega"></div>
+  <header class="gaveta-cabeca">
+    <div><p class="rotulo">Novo imóvel</p><h2 class="titulo" id="g-onde-t">Onde mais procurar</h2></div>
+    <a class="fechar" data-fechar href="#entrada" aria-label="Fechar"></a>
+  </header>
+  <div class="corpo">
+    <div class="opcoes" role="radiogroup" aria-label="Tempo até o destino">
+      <button role="radio" aria-checked="false" data-escolhe="onde:20">20 min</button>
+      <button role="radio" aria-checked="true" data-escolhe="onde:30">30 min</button>
+      <button role="radio" aria-checked="false" data-escolhe="onde:45">45 min</button>
+    </div>
+    <p class="contexto" style="margin-top: var(--e4)">Escolha um destino no Perfil da casa para ver as ruas com ônibus ou metrô até ele.</p>
+    <div class="resposta"><a class="botao pequeno" href="#caderno+perfil">Abrir perfil</a></div>
+    <p class="codigo">HORÁRIO PROGRAMADO DAS 7h, EM DIA ÚTIL</p>
+  </div>
+</section>
+
+</main>
+</div>
+
+<template id="dock">
+  <nav class="dock" aria-label="Seções do app">
+    <a data-aba="caderno" href="#caderno">Caderno</a>
+    <a data-aba="comparar" href="#comparar">Comparar</a>
+    <a data-aba="visita" href="#visita">Visita</a>
+  </nav>
+</template>
+
+<script>
+window.PROTOTIPO = { nome: "Opção A · Ficha de campo", resumo: "Cada imóvel é uma folha só, com o índice das perguntas fixo no topo. Linhas e números no lugar de cartões." };
+window.TELAS = [
+  { rota: "caderno", nome: "Caderno", grupo: "Caderno", inteira: true },
+  { rota: "caderno+triagem", nome: "Triagem", grupo: "Caderno" },
+  { rota: "caderno+descartar", nome: "Descartar", grupo: "Caderno" },
+  { rota: "caderno+menu", nome: "Menu", grupo: "Caderno", secundaria: true },
+  { rota: "caderno+descartados", nome: "Descartados", grupo: "Caderno", secundaria: true },
+  { rota: "caderno+perfil", nome: "Perfil da casa", grupo: "Caderno", secundaria: true },
+  { rota: "caderno+copia", nome: "Cópia do caderno", grupo: "Caderno", secundaria: true },
+  { rota: "caderno+creditos", nome: "Créditos de teste", grupo: "Caderno", secundaria: true },
+  { rota: "caderno-vazio", nome: "Caderno vazio (primeiro uso)", grupo: "Entrada" },
+  { rota: "entrada", nome: "Novo imóvel", grupo: "Entrada", inteira: true },
+  { rota: "entrada+onde", nome: "Onde mais procurar", grupo: "Entrada", secundaria: true },
+  { rota: "entrada-buscando", nome: "Buscando", grupo: "Entrada" },
+  { rota: "entrada-resultados", nome: "Resultados", grupo: "Entrada" },
+  { rota: "entrada-sem-permissao", nome: "Sem permissão de localização", grupo: "Entrada", inteira: true },
+  { rota: "leitura", nome: "Anúncio lido · é este o prédio?", grupo: "Entrada", inteira: true },
+  { rota: "ficha", nome: "Ficha: leitura rápida", grupo: "Ficha do imóvel", inteira: true },
+  { rota: "ficha@bolso", nome: "Ficha: 1 Bolso", grupo: "Ficha do imóvel" },
+  { rota: "ficha@predio", nome: "Ficha: 2 Prédio", grupo: "Ficha do imóvel" },
+  { rota: "ficha@rua", nome: "Ficha: 3 Rua", grupo: "Ficha do imóvel" },
+  { rota: "ficha@conforto", nome: "Ficha: 4 Conforto", grupo: "Ficha do imóvel" },
+  { rota: "ficha@perguntas", nome: "Ficha: 5 Perguntas", grupo: "Ficha do imóvel" },
+  { rota: "ficha+metodo", nome: "Ficha de método (6 campos)", grupo: "Ficha do imóvel" },
+  { rota: "ficha+fonte", nome: "Ver a fonte", grupo: "Ficha do imóvel" },
+  { rota: "ficha+triagem", nome: "Triagem pela ficha", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+mapa", nome: "Mapa do lote", grupo: "Ficha do imóvel" },
+  { rota: "ficha+para-entrar", nome: "Para entrar", grupo: "Ficha do imóvel" },
+  { rota: "ficha+dez-anos", nome: "Em 10 anos", grupo: "Ficha do imóvel" },
+  { rota: "ficha+financiamento", nome: "Simular financiamento", grupo: "Ficha do imóvel" },
+  { rota: "ficha+andar", nome: "Ajustar andar e fachada", grupo: "Ficha do imóvel" },
+  { rota: "ficha+metodo-bolso", nome: "Método: bolso", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+metodo-predio", nome: "Método: prédio", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+metodo-rua", nome: "Método: a pé", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+metodo-calor", nome: "Método: calor", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+documentos", nome: "Documentos antes do sinal", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+linha-do-tempo", nome: "Linha do tempo", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+ata", nome: "Ler ata ou regimento", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+por-perto", nome: "Por perto", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+comercio", nome: "Comércio em volta", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+mensagem", nome: "Mensagem para o corretor", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+negociacao", nome: "Preparar a negociação", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+pacote", nome: "Pacote para especialista", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+renda", nome: "Renda do setor", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+vizinhos", nome: "Bairros vizinhos", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+pulso", nome: "Pulso da quadra", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+metodo-pulso", nome: "Método: pulso", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha+mudou", nome: "O que mudou", grupo: "Ficha do imóvel", secundaria: true },
+  { rota: "ficha-aluguel", nome: "Ficha de aluguel (topo)", grupo: "Ficha do imóvel" },
+  { rota: "comparar", nome: "Comparar", grupo: "Comparar", inteira: true },
+  { rota: "comparar+metodo-comparar", nome: "Como foi calculada", grupo: "Comparar" },
+  { rota: "comparar+fonte", nome: "Ver a fonte pelo comparar", grupo: "Comparar", secundaria: true },
+  { rota: "comparar+trocar", nome: "Escolher imóvel", grupo: "Comparar", secundaria: true },
+  { rota: "comparar+rotina", nome: "Rotina até o trabalho", grupo: "Comparar", secundaria: true },
+  { rota: "comparar+sala", nome: "Decidir a dois", grupo: "Comparar", secundaria: true },
+  { rota: "visita", nome: "Visita: preparar", grupo: "Visita", inteira: true },
+  { rota: "visita-no-imovel", nome: "Visita: no imóvel", grupo: "Visita", inteira: true },
+  { rota: "visita-resumo", nome: "Visita: resumo", grupo: "Visita", inteira: true },
+  { rota: "visita+mensagem", nome: "Mensagem pela visita", grupo: "Visita", secundaria: true },
+  { rota: "visita+trocar", nome: "Trocar imóvel", grupo: "Visita", secundaria: true },
+  { rota: "visita-no-imovel+internet", nome: "Internet no cômodo", grupo: "Visita", secundaria: true },
+  { rota: "visita-no-imovel+sol", nome: "Sol nas janelas", grupo: "Visita", secundaria: true },
+  { rota: "ficha-sem-predio", nome: "Ficha sem prédio (Sem leitura)", grupo: "Estados" },
+  { rota: "ficha-sem-rede", nome: "Sem rede", grupo: "Estados", inteira: true },
+  { rota: "sobre", nome: "Sobre os dados", grupo: "Mais", inteira: true },
+];
+</script>
+<script src="../comum/prototipo.js"></script>
+<script>
+// Índice da ficha: marca a pergunta que está na tela enquanto a pessoa rola.
+(function () {
+  const rolagem = document.getElementById("ficha-rolagem");
+  if (!rolagem) return;
+  const elos = [...rolagem.querySelectorAll(".indice a")];
+  const secoes = elos.map((a) => document.getElementById("ficha-" + a.dataset.secao));
+  const marcar = () => {
+    const topo = rolagem.getBoundingClientRect().top + 60;
+    let atual = -1;
+    secoes.forEach((s, i) => { if (s.getBoundingClientRect().top <= topo) atual = i; });
+    elos.forEach((a, i) => a.setAttribute("aria-current", String(i === atual)));
+    if (atual >= 0) elos[atual].scrollIntoView({ block: "nearest", inline: "nearest" });
+  };
+  rolagem.addEventListener("scroll", marcar, { passive: true });
+  window.addEventListener("hashchange", () => setTimeout(marcar, 0));
+  marcar();
+})();
+</script>
+</body>
+</html>
